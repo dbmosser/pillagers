@@ -11,34 +11,44 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: dying with the FREEBIE KIT deleted the
-# Scav Pistol the player owns out of the armoury and billed him for it on the
-# card, because the death splice went by gun id alone and the free kit's
-# pistol is deliberately not flagged issued (an extraction keeps it). On a
-# fresh profile that pistol is the only gun there is.
+# FIRST TEN MINUTES AUDIT, 2026-09-06 (two readers): everything in the
+# profile loader runs only when a save exists. A first launch has none, so
+# the Settings rows were never applied, the wording watcher never armed
+# (every reworded sentence since v11.42 was missing for the whole first
+# session), and the menus drew at zoom 1.0 and grew a third larger on the
+# second launch. Both are set on every load now, save or none.
 SubRx @'
-    var _gunN=0,_gunVal=0;
-    for(j=0;j<gone.length;j++){
-      _gunN++;
-      if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
-      var wi=P.weapons.indexOf(gone[j].id);
-      if(wi>=0){ P.weapons.splice(wi,1);
+          else P.cfg=null;
+        } }
+}
+function loadProfile(){
 '@ @'
-    var _gunN=0,_gunVal=0;
-    for(j=0;j<gone.length;j++){
-      // v12.01: ONLY A GUN THAT CAME OUT OF THE ARMOURY COMES OFF THE LIST, and
-      // the free kit's loaner is not a gun you lost. The splice went by id
-      // alone, so dying with the free kit's Scav Pistol (not flagged issued,
-      // because an extraction keeps it) deleted the pistol you own, the only
-      // gun a fresh profile has, and the card billed you for it. Provenance is
-      // on the slot, the flag the pickup path has read since the same fault
-      // was fixed there; a field-found gun never touches the armoury either.
-      var _egp=G.player, _egArm=!!((gone[j]===_egp.wep&&_egp.wepFromArmory)||(gone[j]===_egp.sec&&_egp.secFromArmory));
-      var _egFree=!!(G.freeKit&&!_egArm&&gone[j].id===FREEKIT_GUN);
-      if(_egFree) continue;   // out of the ledger entirely, as an issued loaner already is: no count, no price, no line
-      _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
-      var wi=_egArm?P.weapons.indexOf(gone[j].id):-1;
-      if(wi>=0){ P.weapons.splice(wi,1);
+          else P.cfg=null;
+        } }
+  // v12.01: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE. Everything above
+  // runs only when a save exists. A friend on his first launch had none, so
+  // the Settings rows were never applied (the wording watcher of v9.74 stayed
+  // unarmed, so the menus and panels showed none of the reworded sentences
+  // shipped since v11.42 until his second launch; canvas text had them), and
+  // the menus drew at zoom 1.0 and grew a third larger the next day. Both are
+  // set here, on every load, save or none, and the Settings pass runs again at
+  // the end of the boot, where a loader that threw part way cannot skip it.
+  if(!P.menuZoom) P.menuZoom=1.3;
+  try{ applyGameOpts(); }catch(_ag){}
+}
+function loadProfile(){
+'@
+
+SubRx @'
+  log:[],pack:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,
+'@ @'
+  log:[],pack:0,contracts:[],cfg:null,menuZoom:1.3,lastSim:null,autoExport:true,autoDownload:false,
+'@
+SubRx @'
+  try{ applyMenuZoom(); }catch(_am){}
+'@ @'
+  try{ applyGameOpts(); }catch(_ag2){}   // v12.01: once more here, where a loader that threw part way cannot skip it
+  try{ applyMenuZoom(); }catch(_am){}
 '@
 
 # STAMPS.
@@ -47,20 +57,9 @@ var VER='12.00';
 '@ @'
 var VER='12.01';
 '@
-SubRx @'
-var WHATSNEW_VER='11.99';
-'@ @'
-var WHATSNEW_VER='12.01';
-'@
-SubRx @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-'@ @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'DYING WITH THE FREEBIE KIT NO LONGER DELETES THE SCAV PISTOL YOU OWN, and the loaner is not counted or billed as a gun you lost.',
-'@
 $cnt=([regex]::Matches($s,"now:'v12\.00:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.00 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.00:[^']*'",{ param($m) "now:'v12.01: from the 2026-09-06 first-ten-minutes audit, dying with the freebie kit deleted the Scav Pistol you own and billed you for it, because the death splice went by gun id and the free pistol is not flagged issued (an extraction keeps it). The splice now asks the slot whether the gun came out of the armoury, and the loaner is neither counted nor priced. Check 12.01 deploys with the free kit on a profile that owns one pistol, dies, and requires the pistol still owned and no gun counted lost; fails on v12.00.'" })
+$s=[regex]::Replace($s,"now:'v12\.00:[^']*'",{ param($m) "now:'v12.01: from the 2026-09-06 first-ten-minutes audit, a first launch with no save skipped the whole profile loader, so the Settings rows and the wording watcher (every reworded sentence since v11.42) were dead for the first session and the menus drew at zoom 1.0 and grew a third larger the next day. The menu zoom default and the Settings pass now run on every load, save or none. Check 12.01 loads a null record and requires the zoom at 1.3 and the watcher armed; fails on v12.00.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

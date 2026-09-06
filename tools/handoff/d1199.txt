@@ -1,29 +1,26 @@
-## v11.99 - FIRST TEN MINUTES: A PAUSE NOTE SURVIVES ESC
+## v11.99 - HIS NOTE: THE RIGHT-CLICK MENU IS THE SIZE OF THE STASH
 
-From the 2026-09-06 read-only audit of a new player's first ten minutes.
+His message of 2026-09-06, about 14:05: "right click menu in stash is
+wayyy too small -- you know i'm playing at 4k right??"
 
-THE FINDING. The pause box is the alpha's feedback channel: its own text
-asks for anything that went or felt wrong, and the alpha card on the floor
-tells a friend to use it. Its legend names two ways out, P and ESC. The
-resume button banked the typed note into the run record and cleared the
-box; ESC, handled by a capture listener on the window since v7.68, closed
-the box and left the text sitting in it, where the run report never looks.
-A note typed in a raid and closed with ESC, the way most people close a
-box, was gone.
+THE FINDING. applyMenuZoom scales every window, the pause box, the
+outcome card and the station panel by the menu zoom times the screen
+factor, which at 4K is 1.3 times 2. The item menu and the gun menu are
+built on demand and appended to the body, outside all of those, so they
+drew at 1.0: a 1080p-sized menu under a stash drawn at 2.6, on the one
+screen where he reads and drags the most.
 
-THE BUILD. The close itself banks the note. togglePauseBox already banked a
-floor note on close (v11.72); it now banks a raid note the same way, into
-the run's notes, whenever the box closes over a live raid. The resume and
-abandon buttons each carried their own copy of those lines; both are
-deleted so there is one copy. Both buttons close the box before anything
-ends the raid, so the close is what banks.
+THE BUILD. Both menus take the same factor through the CSS zoom the
+windows use. Zoom scales a fixed element's offsets as well as its
+contents, so the click point and the screen clamp are divided by the
+factor and the menu still opens under the cursor and stays on the screen.
 
-MEASURED. Check 11.99 deploys, opens the pause box, types a note, and
-presses ESC on the textarea itself, which is the element a real key reaches
-and which the window's capture listener sees first, as in play; requires
-the box closed, the note in the run record and the box empty. On the
-v11.98 fixture the box closes and the record has no note.
+MEASURED. Check 11.99 enters the floor, puts the pane at 3840x2160, opens
+the item menu on a stash Bandage through the real opener and requires its
+zoom to equal the windows' zoom, its width at least ninety percent of the
+zoomed minimum, and its box wholly on screen; then puts the pane back at
+1920x1080. On the v11.98 fixture the menu has no zoom.
 
-Not verified: the P key, which the same audit found cannot close the box
-while its textarea has focus (queued separately); a note typed and then
-the raid ended by death with the box still open, which no path banks.
+Not verified: by his eye at 4K; the menu near the right or bottom edge,
+where the clamp now works in zoomed units and is exercised only by the
+opener's own arithmetic.

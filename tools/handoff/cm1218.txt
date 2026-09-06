@@ -1,9 +1,9 @@
-v12.18: first ten minutes, browsing the backpack no longer walks you
+v12.18: a death banks the XP its card prints, drink bonus included
 
-With the backpack open an arrow key moved the selection and walked the
-operator at once, against the comment that promised otherwise. The arrow
-is cleared from the movement state while the bag is open; WASD still
-walks. Check 12.18 drives the real key handler and player update with the
-bag open and closed; fails on v12.17.
+The ending printed the card with the dose bonus, cleared the drink, then
+banked the run through addXp with the bonus read live as none. The
+multiplier is taken at the top of the ending, carried on the record, and
+handed to addXp. Check 12.18 dies with two doses in the blood and requires
+the profile paid what the card printed; fails on v12.17.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

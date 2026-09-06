@@ -5732,6 +5732,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.98',what:'a boarding hold that began before the window shut still extracts while E is held, and the ship can be called from the edge of the ring (his orders of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof tryExtractTick!=='function') return 'SKIP: no extraction tick in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, Z=null, i;
+       for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
+       if(!Z) return 'SKIP: no open extraction ring';
+       // TWO first, so the ring is still unclaimed: a call from the edge.
+       p.x=Z.x+70; p.y=Z.y; p.downed=false; keys={};
+       for(i=0;i<20;i++) tryExtractTick(0.1,true);
+       if(Z.beaconT===null||Z.beaconT===undefined) bad.push('holding E for two seconds 70 units from the ring centre (ring radius '+Z.r+') did not call the ship');
+       // ONE: the window at its last half second, a pull a second in, one tick past zero.
+       p.x=Z.x; p.y=Z.y; Z.beaconT=0; Z.hold=0.5; Z.holdMax=30; Z.pullT=1.0; Z.pullFloor=0; g.active=Z; g.shipHold=0.5;
+       tryExtractTick(0.6,true);
+       if(g.over!=='extract') bad.push('a pull one second in when the window hit zero did not extract (over '+g.over+', hold '+Z.hold+', pull '+Z.pullT+')');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.97',what:'with the backpack closed, a click on the hand cell still only selects, a real drag off the belt puts the gun in the backpack, and a key holding a gun drags to another key like any item (his notes of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__runPrep)) return 'SKIP: this fixture cannot deploy and draw';

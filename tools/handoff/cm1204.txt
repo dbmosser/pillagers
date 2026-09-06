@@ -1,8 +1,11 @@
-v12.04: the floor stops taking keys behind the character screen
+v12.04: the heal verb tells the truth and does not waste a second bandage
 
-hubModalOpen did not count #title, so E, R, F and T fired stations behind
-the character screen and R at the lift started a raid under it. One line:
-the character screen counts. Check 12.04 reads the gate with the screen
-on and off; fails on v12.03.
+The picker ran before the full-health test and skipped capped items, so
+two Bandages at their ceiling and a Medkit at full health both got No
+medical supplies; the sentence for the Bandage case was dead behind a
+guard that had returned. After v11.82 stacked heals the ceiling tests read
+health alone, so a second Bandage above the first one's reach was spent
+for nothing. Full-health first, the picker counts inbound, the belt slot
+gets the ceiling. Check 12.04 drives four cases; fails on v12.03.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

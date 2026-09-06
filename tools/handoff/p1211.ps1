@@ -11,22 +11,20 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.74 (EXTRACT NOW): the sector
-# map keeps a third copy of the boarding-window line, and while the map is
-# open it is the only copy the player can read, because the map paints over
-# the banner and the ring label. It still said OPEN TO EXTRACT, the wording
-# he rejected at v8.68 and again at v11.74. It reads the same words now (the
-# letter is already on the line above it, so the helper's letter is left
-# out), and the stale comment over the ring label names the owner.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.78 (the corner readout twice
+# the size): every station window stamps the same credits and XP into its
+# own heading (.modcur, pushed to the heading's right edge), and at 44px the
+# corner readout prints through the top of it. The v11.52 precedent for the
+# stash screen's own credits figure was to hide it, since the corner shows
+# the same two numbers at all times; the heading's balance goes the same way.
 SubRx @'
-      else if(_zHold) _zSub='OPEN TO EXTRACT  '+Math.max(0,Math.ceil(Z.hold))+'s';
+  .modal h3{ display:flex; align-items:baseline; gap:12px; }
 '@ @'
-      else if(_zHold) _zSub='EXTRACT NOW!  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v12.11: the banner's words (v11.74); the letter is the line above
-'@
-SubRx @'
-    // v8.68, his wording, same as the banner.
-'@ @'
-    // v11.74: extractNowLine, the same line as the banner (v8.68 named the window; v11.74 reworded it).
+  .modal h3{ display:flex; align-items:baseline; gap:12px; }
+  /* v12.11: the heading's own balance sat under the corner readout once that
+     grew (v11.78); the corner shows the same two figures at all times, so the
+     heading no longer repeats them (the v11.52 rule for the stash screen). */
+  .modal h3 .modcur{ display:none; }
 '@
 
 # STAMPS.
@@ -40,9 +38,15 @@ var WHATSNEW_VER='12.10';
 '@ @'
 var WHATSNEW_VER='12.11';
 '@
+SubRx @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+'@ @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
+'@
 $cnt=([regex]::Matches($s,"now:'v12\.10:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.10 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.10:[^']*'",{ param($m) "now:'v12.11: from the read-only review of the shipped v11.74, the sector map still said OPEN TO EXTRACT under a landed ring, and with the map open that is the only boarding line the player can read. It says EXTRACT NOW with the seconds left, the banner wording. Check 12.11 records what the map draws under a ring in the hold and requires the new words and not the old; fails on v12.10.'" })
+$s=[regex]::Replace($s,"now:'v12\.10:[^']*'",{ param($m) "now:'v12.11: from the read-only review of the shipped v11.78, every station window stamped its own credits and XP into its heading and the enlarged corner readout printed through them. The heading balance is hidden; the corner shows the same two figures at all times (the v11.52 rule for the stash screen). The same build repairs check 11.52, which double-scaled the CONDITIONS box top and could not see an overlap. Check 12.11 opens the shop window and requires the heading balance not to be drawn where the readout is; fails on v12.10 where the two boxes intersect.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

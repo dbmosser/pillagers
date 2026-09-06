@@ -11,30 +11,49 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.04 CHECK, inserted before the v12.03 entry. The gate the floor asks
-# before firing a station is read with the character screen on and off.
+# v12.04 CHECK, inserted before the v12.03 entry. Four cases through the
+# real verb, reading what it says through the fixture's say capture.
 SubRx @'
-  {v:'12.03',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
+  {v:'12.03',what:'dying with the free kit does not delete the Scav Pistol you own, and the loaner is not counted as a gun you lost (2026-09-06 first-ten-minutes audit)',
 '@ @'
-  {v:'12.04',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
+  {v:'12.04',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound, while a Medkit over running Bandages is still taken (2026-09-06 audits)',
    run:function(){
-     if(typeof hubModalOpen!=='function'||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the floor gate';
-     var ttl=document.getElementById('title'); if(!ttl) return 'SKIP: no character screen element';
-     var bad=[], wasOn=ttl.classList.contains('on');
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof useMedical!=='function'||typeof healCeil!=='function') return 'SKIP: no heal verb in this build';
+     var bad=[];
      try{
-       __topClear(); __cleanProfile();
-       G=null; keys={}; __showScreen('hub'); __hubEnter();
-       ttl.classList.remove('on');
-       var pb=document.getElementById('pausebox'); if(pb) pb.classList.remove('on');
-       if(hubModalOpen()) bad.push('control: with nothing open the gate already reads open, so it proves nothing');
-       ttl.classList.add('on');
-       if(!hubModalOpen()) bad.push('with the character screen on, the floor gate reads closed, so the stations behind it still take keys');
-       ttl.classList.remove('on');
-       if(hubModalOpen()) bad.push('control: with the character screen off again the gate still reads open');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(wasOn) ttl.classList.add('on'); else ttl.classList.remove('on'); }catch(_t){} __topClear(); __cleanProfile(); }
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, cap=healCeil(ITEMS.bandage);
+       if(!(cap<p.maxhp)) return 'SKIP: bandages have no ceiling under this profile';
+       p.downed=false; p.prep=null; p.healQ=0;
+       // ONE: two Bandages, health at their ceiling.
+       g.bag=['bandage','bandage']; p.hp=cap; window.__lastSay=null;
+       var r1=useMedical(), s1=String(window.__lastSay||'');
+       if(r1||g.bag.length!==2) bad.push('at '+cap+' health with only Bandages the verb spent one');
+       if(!/Only bandages left/.test(s1)) bad.push('at '+cap+' health with only Bandages the verb said "'+s1+'"');
+       // TWO: a Medkit at full health.
+       g.bag=['medkit']; p.hp=p.maxhp; p.healQ=0; window.__lastSay=null;
+       var r2=useMedical(), s2=String(window.__lastSay||'');
+       if(r2||g.bag.length!==1) bad.push('at full health the verb spent the Medkit');
+       if(!/Already at full/.test(s2)) bad.push('at full health with a Medkit the verb said "'+s2+'"');
+       // THREE: a Bandage already inbound reaches the ceiling; the second is kept.
+       g.bag=['bandage']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
+       var r3=useMedical();
+       if(r3||g.bag.length!==1) bad.push('a second Bandage was spent although the first already reaches '+cap+' (bag now '+g.bag.join(',')+')');
+       // FIVE: a Medkit over running Bandages is still taken; the queue delivers only to their ceiling.
+       g.bag=['medkit']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
+       var r5=useMedical();
+       if(!r5||g.bag.length!==0) bad.push('a Medkit over running Bandages was refused ("'+String(window.__lastSay||'')+'")');
+       p.healQ=0; p.healCap=undefined; p.prep=null;
+       // CONTROL: a Bandage under the ceiling with nothing inbound is used.
+       g.bag=['bandage']; p.hp=cap-30; p.healQ=0; p.prep=null; window.__lastSay=null;
+       var r4=useMedical();
+       if(!r4||g.bag.length!==0) bad.push('control: a Bandage at '+(cap-30)+' health was refused ("'+String(window.__lastSay||'')+'")');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.prep=null; g2.player.healQ=0; g2.player.healCap=undefined; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.03',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
+  {v:'12.03',what:'dying with the free kit does not delete the Scav Pistol you own, and the loaner is not counted as a gun you lost (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

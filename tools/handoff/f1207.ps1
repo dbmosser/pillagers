@@ -11,49 +11,36 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.07 CHECK, inserted before the v12.06 entry. The real bench: the
-# Component Kit recipe selected, its cream detail button pressed three ways.
+# v12.07 CHECK, inserted before the v12.06 entry. The real setSafe and the
+# real loader, with a frag, an ammo box and a medkit.
 SubRx @'
-  {v:'12.06',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
+  {v:'12.06',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
 '@ @'
-  {v:'12.07',what:'the bench detail button crafts on a synthetic click (a pad press) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
+  {v:'12.07',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
    run:function(){
-     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||typeof craftHoldStep!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the bench';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], P=__P(), md=document.getElementById('tradermodal'), keepStash=(P.stash||[]).slice();
-     function stock(){ P.stash=['scrap','scrap','scrap','wire','wire']; }
-     function select(){
-       renderWork();
-       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1;
-       for(var i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:0') ix=i;
-       if(ix<0) return null;
-       P._craftSel=ix; renderCraftDetail(rows);
-       return document.querySelector('#craftdetail .vbuy');
-     }
-     function crafted(){ return P.stash.indexOf('comp')>=0; }
+     if(typeof setSafe!=='function'||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot reach the pocket or the loader';
+     var bad=[], snap=null;
      try{
        __topClear(); __cleanProfile();
-       G=null; keys={}; __showScreen('hub'); __hubEnter();
-       stock(); openTrader('craft');
-       var b=select(); if(!b) return 'SKIP: the bench drew no detail button for the Component Kit';
-       if(b.disabled) bad.push('control: with the parts in the stash the detail button is disabled');
-       // ONE: a synthetic click (what the pad and Enter send) crafts.
-       b.click();
-       if(!crafted()) bad.push('a synthetic click on the detail button crafted nothing (a pad or Enter cannot craft)');
-       // TWO: a real mouse click spends nothing.
-       stock(); b=select();
-       if(b){ b.dispatchEvent(new MouseEvent('click',{detail:1,bubbles:true})); if(crafted()) bad.push('a real mouse click crafted; the hold is meant to be the only mouse way'); }
-       // THREE: the hold still crafts.
-       stock(); b=select();
-       if(b&&b.onmousedown){ b.onmousedown({button:0}); craftHoldStep(0.6); if(crafted()) bad.push('control: the hold crafted before it was full'); craftHoldStep(0.6); if(!crafted()) bad.push('control: a full hold crafted nothing'); }
-       else bad.push('control: the detail button has no hold to drive');
-       // FOUR: a hold dies when the window is hidden.
-       stock(); b=select();
-       if(b&&b.onmousedown&&md){ b.onmousedown({button:0}); craftHoldStep(0.3); md.style.display='none'; craftHoldStep(1.2); md.style.display=''; if(crafted()) bad.push('a hold outlived the trader window being hidden and spent the parts'); }
+       snap=JSON.stringify(__P());   // the loader below replaces the profile; it is put back at the end
+       var P=__P(); P.safe=null;
+       var r1=setSafe('frag');
+       if(!r1) bad.push('the pocket took a Frag Charge without a word');
+       if(P.safe==='frag') bad.push('the pocket is saved on a Frag Charge');
+       var r2=setSafe('ammobox');
+       if(!r2) bad.push('the pocket took an Ammo Box without a word');
+       if(P.safe==='ammobox') bad.push('the pocket is saved on an Ammo Box');
+       var r3=setSafe('medkit');
+       if(r3) bad.push('control: the pocket refused a Medkit ('+r3+')');
+       if(P.safe!=='medkit') bad.push('control: the pocket did not keep the Medkit');
+       __applyLoaded({credits:900,safe:'frag'});
+       if(__P().safe==='frag') bad.push('a saved pocket on a Frag Charge survived the load');
+       __applyLoaded({credits:900,safe:'medkit'});
+       if(__P().safe!=='medkit') bad.push('control: a saved pocket on a Medkit did not survive the load ('+__P().safe+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(md) md.style.display=''; craftHoldCancel(); try{ openTrader('buy'); }catch(_ob){} var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); P.stash=keepStash; saveProfile(); }catch(_c){} __topClear(); __cleanProfile(); }
+     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.06',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
+  {v:'12.06',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

@@ -1,9 +1,8 @@
-v11.99: first ten minutes, a pause note is kept when ESC closes the box
+v11.99: his note, the right-click menu is the size of the stash at 4K
 
-The resume button banked a raid note and ESC did not, so a note typed and
-closed the way the box's own legend names was thrown away. The close banks
-it now, for the buttons and for ESC alike; both buttons' duplicates are gone.
-Check 11.99 presses ESC on the textarea with a note typed and requires it
-in the run record; fails on v11.98.
+The item and gun menus are appended to the body, outside everything the
+menu zoom scales, so at 4K they drew at 1.0 under a stash at 2.6. Both
+take the windows' zoom now, with the click point scaled to match. Check
+11.99 opens the item menu at 4K through the real opener; fails on v11.98.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

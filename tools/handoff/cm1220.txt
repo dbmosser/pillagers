@@ -1,9 +1,9 @@
-v12.20: his note, the Howler does not shell through a roof
+v12.20: first ten minutes, browsing the backpack no longer walks you
 
-Both mortar sites aimed at a ground point and never asked whether a roof
-was over it. A target under a building the Howler is not itself in is
-refused; the clock and alert are kept so it fires in the open or once
-inside. Check 12.20 stages the two cases through the real entity step;
-fails on v12.19.
+With the backpack open an arrow key moved the selection and walked the
+operator at once, against the comment that promised otherwise. The arrow
+is cleared from the movement state while the bag is open; WASD still
+walks. Check 12.20 drives the real key handler and player update with the
+bag open and closed; fails on v12.19.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -1,8 +1,8 @@
-v12.06: taking the freebie kit no longer throws away what you packed
+v12.06: the floor stops taking keys behind the character screen
 
-The packing and the belt plan are kept aside when the kit is taken and put
-back by USE MY OWN GEAR, minus anything sold in between. Check 12.06
-presses the real button twice and once more with a sale in between; fails
-on v12.05.
+hubModalOpen did not count #title, so E, R, F and T fired stations behind
+the character screen and R at the lift started a raid under it. One line:
+the character screen counts. Check 12.06 reads the gate with the screen
+on and off; fails on v12.05.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

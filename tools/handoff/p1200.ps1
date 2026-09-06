@@ -11,44 +11,34 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06 (two readers): everything in the
-# profile loader runs only when a save exists. A first launch has none, so
-# the Settings rows were never applied, the wording watcher never armed
-# (every reworded sentence since v11.42 was missing for the whole first
-# session), and the menus drew at zoom 1.0 and grew a third larger on the
-# second launch. Both are set on every load now, save or none.
+# HIS NOTE, 2026-09-06 about 14:30: "howler shouldn't be able to bomb from
+# outside a building to the inside of the building". Both mortar sites aimed
+# at a point and never asked whether a roof was over it. A shell aimed at a
+# point under a roof the Howler is not itself under is refused; the machine
+# keeps its clock and fires when the target is in the open, or once it has
+# followed you inside.
 SubRx @'
-          else P.cfg=null;
-        } }
-}
-function loadProfile(){
+function buildingAtPt(map,x,y){
 '@ @'
-          else P.cfg=null;
-        } }
-  // v12.00: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE. Everything above
-  // runs only when a save exists. A friend on his first launch had none, so
-  // the Settings rows were never applied (the wording watcher of v9.74 stayed
-  // unarmed, so the menus and panels showed none of the reworded sentences
-  // shipped since v11.42 until his second launch; canvas text had them), and
-  // the menus drew at zoom 1.0 and grew a third larger the next day. Both are
-  // set here, on every load, save or none, and the Settings pass runs again at
-  // the end of the boot, where a loader that threw part way cannot skip it.
-  if(!P.menuZoom) P.menuZoom=1.3;
-  try{ applyGameOpts(); }catch(_ag){}
+// v12.00, HIS NOTE: no shells through a roof. True when the target point is
+// under a building the Howler is not itself in.
+function mortarRoofed(e,tx,ty){
+  var bt=buildingAtPt(G.map,tx,ty); if(!bt) return false;
+  return buildingAtPt(G.map,e.x,e.y)!==bt;
 }
-function loadProfile(){
-'@
-
-SubRx @'
-  log:[],pack:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,
-'@ @'
-  log:[],pack:0,contracts:[],cfg:null,menuZoom:1.3,lastSim:null,autoExport:true,autoDownload:false,
+function buildingAtPt(map,x,y){
 '@
 SubRx @'
-  try{ applyMenuZoom(); }catch(_am){}
+        if(_hd<e.rng&&_hd>140){
+          // Wider scatter than the aimed shot: it is shooting at a report, not
 '@ @'
-  try{ applyGameOpts(); }catch(_ag2){}   // v12.00: once more here, where a loader that threw part way cannot skip it
-  try{ applyMenuZoom(); }catch(_am){}
+        if(_hd<e.rng&&_hd>140&&!mortarRoofed(e,e.heardX,e.heardY)){   // v12.00: not through a roof
+          // Wider scatter than the aimed shot: it is shooting at a report, not
+'@
+SubRx @'
+        if(e.cd<=0&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)){
+'@ @'
+        if(e.cd<=0&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)&&!mortarRoofed(e,_htx,_hty)){   // v12.00: not through a roof
 '@
 
 # STAMPS.
@@ -57,9 +47,20 @@ var VER='11.99';
 '@ @'
 var VER='12.00';
 '@
+SubRx @'
+var WHATSNEW_VER='11.99';
+'@ @'
+var WHATSNEW_VER='12.00';
+'@
+SubRx @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+'@ @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE HOWLER DOES NOT SHELL THROUGH A ROOF: inside a building you are out of its reach until it comes in after you.',
+'@
 $cnt=([regex]::Matches($s,"now:'v11\.99:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.99 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.99:[^']*'",{ param($m) "now:'v12.00: from the 2026-09-06 first-ten-minutes audit, a first launch with no save skipped the whole profile loader, so the Settings rows and the wording watcher (every reworded sentence since v11.42) were dead for the first session and the menus drew at zoom 1.0 and grew a third larger the next day. The menu zoom default and the Settings pass now run on every load, save or none. Check 12.00 loads a null record and requires the zoom at 1.3 and the watcher armed; fails on v11.99.'" })
+$s=[regex]::Replace($s,"now:'v11\.99:[^']*'",{ param($m) "now:'v12.00: HIS NOTE of 2026-09-06, the Howler bombed from outside a building to the inside. Both mortar sites refuse a target under a roof the Howler is not itself under; the machine keeps its clock and fires in the open or once inside. Check 12.00 stages a Howler outside and the player inside a building and requires no shell, then both in the open and requires one; fails on v11.99.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

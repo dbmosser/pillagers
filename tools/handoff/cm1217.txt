@@ -1,9 +1,7 @@
-v12.17: first ten minutes, the trigger is never dead on an empty grenade cell
+v12.17: first ten minutes, the controls card stops teaching a dead X key
 
-An empty throwable cell selected on the belt left the trigger dead, or
-the cook cycled to another grenade and threw one the cell did not name.
-The press selects the gun and says so; the next click fires it. Check
-12.17 holds the trigger on an empty Frag cell with Smoke carried through
-the real player update; fails on v12.16.
+The H controls card taught X swaps primary and sidearm (Y on a pad); no
+such handler exists since the belt took the job. The rule names the belt
+keys now. Check 12.17 reads the rule; fails on v12.16.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -10,48 +10,37 @@ function SubRx([string]$old, [string]$new) {
   $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
   $script:n++
 }
+# The same block sits in openItemMenu and openGunMenu; both are patched.
+function SubRx2([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 2) { throw "regex matched $c times, wanted 2: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: a note typed into the pause box during
-# a raid and closed with ESC was thrown away. ESC is the way out the box's own
-# legend names; the resume button banked the note and ESC did not. The alpha
-# card asks him to leave notes; the channel dropped them.
-SubRx @'
-  if(!on&&!G){
-    var _fn=document.getElementById('pausenote'), _ft=_fn?_fn.value.trim():'';
+# HIS NOTE, 2026-09-06 about 14:05: "right click menu in stash is wayyy too
+# small -- you know i'm playing at 4k right??" The item menu and the gun menu
+# are appended to the body, outside every element applyMenuZoom scales, so
+# they drew at 1.0 under a stash drawn at 2.6. Same factor as the windows;
+# the click point and the screen clamp are scaled to match.
+SubRx2 @'
+  document.body.appendChild(m);
+  var w=m.offsetWidth,h=m.offsetHeight;
+  m.style.left=Math.max(4,Math.min(x,window.innerWidth-w-8))+'px';
+  m.style.top=Math.max(4,Math.min(y,window.innerHeight-h-8))+'px';
 '@ @'
-  // v11.99: A RAID NOTE SURVIVES ESC. The resume button banked the note and
-  // ESC, the way out the box's own legend names, did not: it closed the box
-  // with the text still sitting in it, unseen by the run report. Every close
-  // of the box over a live raid banks it now, and the two copies of these
-  // lines the resume and abandon buttons carried are gone: both close the box
-  // before anything ends the raid, so this is the one place that banks.
-  if(!on&&G&&!G.over){
-    var _rn=document.getElementById('pausenote'), _rt=_rn?_rn.value.trim():'';
-    if(_rt){ G.tel.notes.push({t:Math.round(elapsed()),txt:_rt}); _rn.value=''; }
-  }
-  if(!on&&!G){
-    var _fn=document.getElementById('pausenote'), _ft=_fn?_fn.value.trim():'';
-'@
-SubRx @'
-  disarmAbandon();   // v10.96: the same four lines this used to carry itself
-  var note=document.getElementById('pausenote').value.trim();
-  if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
-  togglePauseBox(false);
-};
-'@ @'
-  disarmAbandon();   // v10.96: the same four lines this used to carry itself
-  togglePauseBox(false);   // v11.99: the close banks the note, for this button and for ESC alike
-};
-'@
-
-SubRx @'
-  var note=document.getElementById('pausenote').value.trim();
-  if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
-  togglePauseBox(false);
-this.style.display='none';
-'@ @'
-  togglePauseBox(false);   // v11.99: the close banks the note
-this.style.display='none';
+  document.body.appendChild(m);
+  // v11.99, HIS NOTE: the menu is outside every element applyMenuZoom scales,
+  // so at 4K it was a 1080p menu under a 4K stash. Same factor as the windows;
+  // zoom scales the fixed offsets too, so the click point is divided by it.
+  var _mz=Math.max(1,(P&&P.menuZoom)||1)*titleRes();
+  var _hubEl=document.getElementById('hub');   // the stash runs at 0.92 of the window factor (v9.67); the menu matches the surface it opens over
+  if(_hubEl&&_hubEl.classList.contains('on')&&parseFloat(_hubEl.style.zoom)>0) _mz=parseFloat(_hubEl.style.zoom);
+  m.style.zoom=_mz; x=x/_mz; y=y/_mz;
+  var w=m.offsetWidth,h=m.offsetHeight;
+  m.style.left=Math.max(4,Math.min(x,window.innerWidth/_mz-w-8))+'px';
+  m.style.top=Math.max(4,Math.min(y,window.innerHeight/_mz-h-8))+'px';
 '@
 
 # STAMPS.
@@ -69,15 +58,15 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT, the same as the resume button; it goes out with your run report.',
+  'THE RIGHT-CLICK MENU IN THE STASH IS DRAWN AT THE SIZE OF THE SCREEN IT OPENS OVER, at 4K and at every text size.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.98:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.98 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.98:[^']*'",{ param($m) "now:'v11.99: from the 2026-09-06 first-ten-minutes audit, a note typed into the pause box during a raid and closed with ESC was thrown away; only the resume button banked it. Every close of the box over a live raid banks the note now, and the resume and abandon buttons lost their own copies of the lines. Check 11.99 pauses a raid, types a note, presses ESC on the box and requires the note in the run record; fails on v11.98.'" })
+$s=[regex]::Replace($s,"now:'v11\.98:[^']*'",{ param($m) "now:'v11.99: HIS NOTE of 2026-09-06, the stash right-click menu was far too small at 4K: it is appended to the body, outside everything applyMenuZoom scales. The item menu and the gun menu take the same zoom as the windows now, with the click point scaled to match. Check 11.99 opens the item menu at 3840x2160 and requires the zoom of the windows and a menu on screen; fails on v11.98.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
-$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count + 1
+$want = ([regex]::Matches($src, "(?m)^SubRx2? @'")).Count + 1
 if ($n -ne $want) { throw "expected $want edits, made $n" }
 [IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
 Write-Output "OK, $n edits applied"

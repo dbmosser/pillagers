@@ -11,34 +11,32 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# HIS NOTE, 2026-09-06 about 14:30: "howler shouldn't be able to bomb from
-# outside a building to the inside of the building". Both mortar sites aimed
-# at a point and never asked whether a roof was over it. A shell aimed at a
-# point under a roof the Howler is not itself under is refused; the machine
-# keeps its clock and fires when the target is in the open, or once it has
-# followed you inside.
+# FIRST TEN MINUTES AUDIT, 2026-09-06: with the backpack open the arrow keys
+# move the selection AND walk the operator, because raidKey sets keys[code]
+# true for every key before the bag branch and the movement reads the arrows
+# unconditionally. The comment above the bag branch promises the opposite.
+# Browsing the bag walked you off the spot you stopped on.
 SubRx @'
-function buildingAtPt(map,x,y){
+  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
+    // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
 '@ @'
-// v12.20, HIS NOTE: no shells through a roof. True when the target point is
-// under a building the Howler is not itself in.
-function mortarRoofed(e,tx,ty){
-  var bt=buildingAtPt(G.map,tx,ty); if(!bt) return false;
-  return buildingAtPt(G.map,e.x,e.y)!==bt;
-}
-function buildingAtPt(map,x,y){
+  // v12.20: AND THEY DO NOT WALK. keys[code] was set true at the top of this
+  // function for every key, so an arrow both moved the selection and moved the
+  // operator; browsing the bag walked you off the spot you stopped on. Cleared
+  // here for the arrows while the bag is open; WASD still walks, as promised.
+  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length&&code.indexOf('Arrow')===0) keys[code]=false;
+  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
+    // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
 '@
+
 SubRx @'
-        if(_hd<e.rng&&_hd>140){
-          // Wider scatter than the aimed shot: it is shooting at a report, not
+  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
 '@ @'
-        if(_hd<e.rng&&_hd>140&&!mortarRoofed(e,e.heardX,e.heardY)){   // v12.20: not through a roof
-          // Wider scatter than the aimed shot: it is shooting at a report, not
-'@
-SubRx @'
-        if(e.cd<=0&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)){
-'@ @'
-        if(e.cd<=0&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)&&!mortarRoofed(e,_htx,_hty)){   // v12.20: not through a roof
+  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){
+    G.bagOpen=!G.bagOpen; G.bagSel=0;
+    // v12.20: an arrow still held when the bag opens stops walking too.
+    if(G.bagOpen){ keys['ArrowUp']=false; keys['ArrowDown']=false; keys['ArrowLeft']=false; keys['ArrowRight']=false; }
+  }
 '@
 
 # STAMPS.
@@ -56,11 +54,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE HOWLER DOES NOT SHELL THROUGH A ROOF: inside a building you are out of its reach until it comes in after you.',
+  'THE ARROW KEYS BROWSE THE OPEN BACKPACK WITHOUT WALKING YOU; WASD still walks.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.19:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.19 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.19:[^']*'",{ param($m) "now:'v12.20: HIS NOTE of 2026-09-06, the Howler bombed from outside a building to the inside. Both mortar sites refuse a target under a roof the Howler is not itself under; the machine keeps its clock and fires in the open or once inside. Check 12.20 stages a Howler outside and the player inside a building and requires no shell, then both in the open and requires one; fails on v12.19.'" })
+$s=[regex]::Replace($s,"now:'v12\.19:[^']*'",{ param($m) "now:'v12.20: from the 2026-09-06 first-ten-minutes audit, the arrow keys moved the backpack selection and walked the operator at the same time, against the comment that promised otherwise. The arrows are cleared from the movement state while the backpack is open. Check 12.20 opens the backpack, presses an arrow through raidKey and one real player update, and requires the selection moved and the operator still; fails on v12.19.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

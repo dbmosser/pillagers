@@ -11,40 +11,43 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.18 CHECK, inserted before the v12.17 entry. The backpack is opened in
-# a raid, an arrow is pressed through raidKey and one real player update is
-# run: the selection must move and the operator must not; with the backpack
-# closed the same arrow must still walk.
+# v12.18 CHECK, inserted before the v12.17 entry. A raid with some base XP
+# is ended by death with two doses in the blood; the XP the card prints must
+# equal the XP the profile was paid.
 SubRx @'
-  {v:'12.17',what:'the trigger on an empty grenade cell selects the gun and says so, fires nothing on that same hold, and a loaded cell still cooks (2026-09-06 first-ten-minutes audit)',
+  {v:'12.17',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
 '@ @'
-  {v:'12.18',what:'an arrow key with the backpack open moves the selection and does not walk the operator, and still walks with it closed (2026-09-06 first-ten-minutes audit)',
+  {v:'12.18',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof raidKey!=='function'||typeof updatePlayer!=='function') return 'SKIP: no raid keys in this build';
-     var bad=[];
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
+     if(typeof buzzXpMul!=='function') return 'SKIP: no dose bonus in this build';
+     var bad=[], P2=__P(), keepBuzz=(P2.buzz||[]).slice(), keepXp=P2.xp||0;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player;
-       g.bag=['bandage','medkit','plate']; g.bagOpen=true; g.bagSel=0; keys={}; mouse.down=false; p.downed=false; p.roll=0;
-       var x0=p.x, y0=p.y;
-       raidKey('ArrowRight',false,null);
-       if(g.bagSel!==1) bad.push('control: the arrow did not move the selection (bagSel '+g.bagSel+')');
-       if(keys['ArrowRight']) bad.push('the arrow is still in the movement state with the backpack open');
-       updatePlayer(0.05);
-       var moved=Math.hypot(p.x-x0,p.y-y0);
-       if(moved>0.01) bad.push('browsing the backpack walked the operator '+moved.toFixed(1)+' units');
-       // CONTROL: with the backpack closed the arrow still walks.
-       keys={}; g.bagOpen=false; x0=p.x; y0=p.y;
-       raidKey('ArrowRight',false,null);
-       if(!keys['ArrowRight']) bad.push('control: the arrow is not in the movement state with the backpack closed');
-       updatePlayer(0.05);
-       if(Math.hypot(p.x-x0,p.y-y0)<0.01) bad.push('control: the arrow with the backpack closed did not walk the operator');
+       g.tel.containers=40; g.tel.kills={crawler:12,sentry:4};   // enough base XP for a 5 percent bonus to show
+       P2.buzz=[{id:'liquor',tag:'drunk',t:200,dur:200},{id:'liquor',tag:'drunk',t:200,dur:200}];
+       var mul=buzzXpMul();
+       if(!(mul>1)) return 'SKIP: two doses did not raise the multiplier ('+mul+')';
+       var xp0=P2.xp||0;
+       p.downed=false; __endRaid('dead');
+       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+       var m=/\+([\d,]+) XP/.exec(txt);
+       if(!m) bad.push('control: the card printed no XP line ('+txt.slice(0,80)+')');
+       else {
+         var shown=parseInt(m[1].replace(/,/g,''),10), banked=(P2.xp||0)-xp0;
+         if(!(shown>0)) bad.push('control: the card printed no XP gain');
+         if(banked!==shown) bad.push('the card says +'+shown+' XP and the profile was paid '+banked);
+         var rec=(P2.log||[]).slice(-1)[0];
+         if(!(rec&&rec.doseMul>1)) bad.push('control: the banked record carries no dose multiplier, so nothing was multiplied');
+         else if(shown!==Math.round(rec.xpBase*rec.doseMul)) bad.push('the card printed +'+shown+' against a base of '+rec.xpBase+' times '+rec.doseMul);
+       }
+       if((P2.buzz||[]).length) bad.push('control: the death did not clear the drink');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.bagOpen=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ P2.buzz=keepBuzz; P2.xp=keepXp; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.17',what:'the trigger on an empty grenade cell selects the gun and says so, fires nothing on that same hold, and a loaded cell still cooks (2026-09-06 first-ten-minutes audit)',
+  {v:'12.17',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

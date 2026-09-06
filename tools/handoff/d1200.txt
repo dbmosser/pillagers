@@ -1,34 +1,31 @@
-## v12.00 - FIRST TEN MINUTES: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE
+## v12.00 - HIS NOTE: THE HOWLER DOES NOT SHELL THROUGH A ROOF
 
-From the 2026-09-06 read-only audit of a new player's first ten minutes;
-two readers found the two halves of this independently.
+His message of 2026-09-06, about 14:30: "howler shouldn't be able to bomb
+from outside a building to the inside of the building".
 
-THE FINDING. The profile loader does everything inside a branch that runs
-only when a save exists. A friend on his first launch has no save, so none
-of it ran. Two things that matter fell through. The Settings pass
-(applyGameOpts) is the one call that arms the wording watcher, and without
-it the menus and panels showed none of the reworded sentences he has been
-given since v11.42 for the entire first session (canvas text is reworded at
-draw time and had them); the first click on a Settings row armed it and rewrote
-every sentence on the screen while he was reading. And the menu zoom
-default of 1.3 lived in that same branch, so the title, the welcome pack,
-the stash and every window drew at zoom 1.0 on the first day and grew a
-third larger on the second. The same class of hole v11.73 closed for the
-name three lines above it.
+THE FINDING. v10.63 already stops a shell hurting anyone under a roof it
+bursts on, and listed the aiming half as unverified. That half is this: the
+Howler has two ways to fire, at the last place it saw or was told about
+you (the aimed shot) and at a report it heard (the wider scatter), and
+neither asked whether a roof was over the target point. So a Howler in the
+street kept shelling the room you had run into, wasting its shots, and a
+shell whose scatter (up to 120 units) landed just outside the wall reached
+you through the doorway with its full blast, which is the leak he felt.
 
-THE BUILD. Two lines at the end of the loader, outside the branch: the
-menu zoom default, and the Settings pass. The default profile literal now
-carries the zoom as well, and the boot runs the Settings pass once more at
-its end, so a loader that threw part way cannot leave either unset. They
-run on every load, save or none, and both are already idempotent (the pass runs on every Settings
-click; the zoom line was already written for the saved branch).
+THE BUILD. A helper, mortarRoofed, answers whether the target point is
+under a building the Howler is not itself in. Both firing sites refuse
+such a shot. The machine keeps its clock and its alert, so it fires the
+moment you are in the open again, and a Howler that has followed you
+inside the same building can still shell you there.
 
-MEASURED. Check 12.00 clears the menu zoom and the wording watcher, hands
-the loader the null record the store resolves to when nothing is saved,
-and requires the zoom at 1.3 and the watcher armed. On the v11.99 fixture
-the zoom stays 0 and the watcher stays unarmed.
+MEASURED. Check 12.00 deploys, empties the room of every other machine,
+stands the player in the middle of a building at least 120 units each
+way, puts an alerted Howler 260 units outside it with the player as its
+target, steps the real entity update once and requires no mortar shell;
+then moves the player into the open beside the Howler and requires one.
+On the v11.99 fixture the first step drops a shell.
 
-Not verified: a true first launch in a clean browser profile, which this
-harness cannot make; whether the Settings rows' default options match the
-raw defaults the first session used to run on, which this build makes
-consistent with every later session rather than measures.
+Not verified: a Howler inside the same building as you, which the rule
+still allows and the check does not stage; a shell already in the air when he steps inside, which
+lands where it was aimed; a Howler in a neighbouring building, which is
+refused the same way; his own experience under a roof.

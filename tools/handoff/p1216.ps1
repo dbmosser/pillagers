@@ -11,43 +11,27 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: on a death or an abandon the outcome
-# card prints the run's XP with the drink's dose bonus, then the same
-# function clears the drink, then it banks the run through addXp, which
-# reads the bonus live and finds none. The card said more than the profile
-# got, the exact disagreement v11.63 was written to end.
+# FIRST TEN MINUTES AUDIT, 2026-09-06: with the Undercroft backpack open, ESC
+# raised the pause box instead of closing the backpack, because the backpack
+# is not a modal and the pause branch runs before the backpack's own ESC
+# line; a second ESC only closed the pause box. ESC could never close it.
 SubRx @'
-function endRaid(how){
-  if(G.over) return;
-  G.over=how;
+    if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&&
+       !document.querySelector('.imenu')&&!document.getElementById('hub').classList.contains('on')){
+      togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
+      e.preventDefault(); return;
+    }
 '@ @'
-function endRaid(how){
-  if(G.over) return;
-  G.over=how;
-  // v12.16: THE BONUS THE CARD PRINTS IS THE BONUS THE RUN BANKS. Taken here,
-  // before the death branch below clears the drink; the banking at the bottom
-  // of this function ran after that clear and paid the run without it.
-  if(G.tel) G.tel.doseMul=buzzXpMul();
-'@
-SubRx @'
-    dur:Math.round(elapsed()),
-'@ @'
-    doseMul:(T.doseMul>0)?T.doseMul:1,   // v12.16: the dose bonus the card printed, banked below
-    dur:Math.round(elapsed()),
-'@
-SubRx @'
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb);
-'@ @'
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb,(rec.doseMul>0)?rec.doseMul:undefined);   // v12.16: the multiplier the card printed
-'@
-SubRx @'
-function addXp(n){
-  n=Math.round(n||0); if(n<=0) return 0;
-  var g=Math.round(n*buzzXpMul());
-'@ @'
-function addXp(n,mul){
-  n=Math.round(n||0); if(n<=0) return 0;
-  var g=Math.round(n*((mul!==undefined)?mul:buzzXpMul()));   // v12.16: a run banks the bonus its card printed
+    // v12.16: NOT OVER AN OPEN BACKPACK. The floor backpack is not a modal, so
+    // ESC over it raised the pause box here and the backpack's own ESC line
+    // further down could never run; a second ESC closed the pause box and the
+    // backpack stayed. ESC belongs to whatever is in front, and the backpack is.
+    if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&&
+       !document.querySelector('.imenu')&&!document.getElementById('hub').classList.contains('on')&&
+       !(e.code==='Escape'&&hubBagOpen)){
+      togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
+      e.preventDefault(); return;
+    }
 '@
 
 # STAMPS.
@@ -65,11 +49,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A DEATH BANKS THE XP ITS CARD PRINTS, drink bonus included; it used to pay the run without the bonus after the drink was cleared.',
+  'ESC CLOSES THE OPEN BACKPACK IN THE UNDERCROFT instead of raising the pause box over it.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.15:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.15 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.15:[^']*'",{ param($m) "now:'v12.16: from the 2026-09-06 first-ten-minutes audit, a death or an abandon printed the run XP with the drink bonus on the card, cleared the drink, and then banked the run through addXp with no bonus, so the profile got less than the card said. The bonus is taken at the top of the ending and carried on the record into the banking. Check 12.16 dies with two doses in the blood and requires the profile paid exactly what the card printed; fails on v12.15.'" })
+$s=[regex]::Replace($s,"now:'v12\.15:[^']*'",{ param($m) "now:'v12.16: from the 2026-09-06 first-ten-minutes audit, ESC over the open Undercroft backpack raised the pause box instead of closing the backpack, because the backpack is not a modal and the pause branch ran first; ESC could never close it. The pause branch now steps aside while the backpack is open. Check 12.16 opens the backpack on the floor, presses ESC and requires it closed with no pause box, then presses ESC again and requires the pause box; fails on v12.15.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

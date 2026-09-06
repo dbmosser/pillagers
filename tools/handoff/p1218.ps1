@@ -11,32 +11,43 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: with the backpack open the arrow keys
-# move the selection AND walk the operator, because raidKey sets keys[code]
-# true for every key before the bag branch and the movement reads the arrows
-# unconditionally. The comment above the bag branch promises the opposite.
-# Browsing the bag walked you off the spot you stopped on.
+# FIRST TEN MINUTES AUDIT, 2026-09-06: on a death or an abandon the outcome
+# card prints the run's XP with the drink's dose bonus, then the same
+# function clears the drink, then it banks the run through addXp, which
+# reads the bonus live and finds none. The card said more than the profile
+# got, the exact disagreement v11.63 was written to end.
 SubRx @'
-  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
-    // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
+function endRaid(how){
+  if(G.over) return;
+  G.over=how;
 '@ @'
-  // v12.18: AND THEY DO NOT WALK. keys[code] was set true at the top of this
-  // function for every key, so an arrow both moved the selection and moved the
-  // operator; browsing the bag walked you off the spot you stopped on. Cleared
-  // here for the arrows while the bag is open; WASD still walks, as promised.
-  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length&&code.indexOf('Arrow')===0) keys[code]=false;
-  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
-    // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
+function endRaid(how){
+  if(G.over) return;
+  G.over=how;
+  // v12.18: THE BONUS THE CARD PRINTS IS THE BONUS THE RUN BANKS. Taken here,
+  // before the death branch below clears the drink; the banking at the bottom
+  // of this function ran after that clear and paid the run without it.
+  if(G.tel) G.tel.doseMul=buzzXpMul();
 '@
-
 SubRx @'
-  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
+    dur:Math.round(elapsed()),
 '@ @'
-  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){
-    G.bagOpen=!G.bagOpen; G.bagSel=0;
-    // v12.18: an arrow still held when the bag opens stops walking too.
-    if(G.bagOpen){ keys['ArrowUp']=false; keys['ArrowDown']=false; keys['ArrowLeft']=false; keys['ArrowRight']=false; }
-  }
+    doseMul:(T.doseMul>0)?T.doseMul:1,   // v12.18: the dose bonus the card printed, banked below
+    dur:Math.round(elapsed()),
+'@
+SubRx @'
+  var _xb=xpBaseFor(rec), _xg=addXp(_xb);
+'@ @'
+  var _xb=xpBaseFor(rec), _xg=addXp(_xb,(rec.doseMul>0)?rec.doseMul:undefined);   // v12.18: the multiplier the card printed
+'@
+SubRx @'
+function addXp(n){
+  n=Math.round(n||0); if(n<=0) return 0;
+  var g=Math.round(n*buzzXpMul());
+'@ @'
+function addXp(n,mul){
+  n=Math.round(n||0); if(n<=0) return 0;
+  var g=Math.round(n*((mul!==undefined)?mul:buzzXpMul()));   // v12.18: a run banks the bonus its card printed
 '@
 
 # STAMPS.
@@ -54,11 +65,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE ARROW KEYS BROWSE THE OPEN BACKPACK WITHOUT WALKING YOU; WASD still walks.',
+  'A DEATH BANKS THE XP ITS CARD PRINTS, drink bonus included; it used to pay the run without the bonus after the drink was cleared.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.17:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.17 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.17:[^']*'",{ param($m) "now:'v12.18: from the 2026-09-06 first-ten-minutes audit, the arrow keys moved the backpack selection and walked the operator at the same time, against the comment that promised otherwise. The arrows are cleared from the movement state while the backpack is open. Check 12.18 opens the backpack, presses an arrow through raidKey and one real player update, and requires the selection moved and the operator still; fails on v12.17.'" })
+$s=[regex]::Replace($s,"now:'v12\.17:[^']*'",{ param($m) "now:'v12.18: from the 2026-09-06 first-ten-minutes audit, a death or an abandon printed the run XP with the drink bonus on the card, cleared the drink, and then banked the run through addXp with no bonus, so the profile got less than the card said. The bonus is taken at the top of the ending and carried on the record into the banking. Check 12.18 dies with two doses in the blood and requires the profile paid exactly what the card printed; fails on v12.17.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

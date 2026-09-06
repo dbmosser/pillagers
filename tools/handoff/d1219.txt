@@ -1,26 +1,30 @@
-## v12.19 - HIS NOTE: THE RIGHT-CLICK MENU IS THE SIZE OF THE STASH
+## v12.19 - FIRST TEN MINUTES: THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL
 
-His message of 2026-09-06, about 14:05: "right click menu in stash is
-wayyy too small -- you know i'm playing at 4k right??"
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
 
-THE FINDING. applyMenuZoom scales every window, the pause box, the
-outcome card and the station panel by the menu zoom times the screen
-factor, which at 4K is 1.3 times 2. The item menu and the gun menu are
-built on demand and appended to the body, outside all of those, so they
-drew at 1.0: a 1080p-sized menu under a stash drawn at 2.6, on the one
-screen where he reads and drags the most.
+THE FINDING. On every first raid the grenade cells of the belt, 3 to 5,
+are empty. A new player pressing 3 selects the empty Frag cell, and from
+then on the trigger did nothing: the cook found no Frag and returned, the
+press was marked fired, and no click fired the gun until he pressed 1 on
+his own. Worse, if he happened to carry a Smoke, the cook cycled to it
+silently and threw the Smoke while the belt and the corner readout still
+named the Frag cell he chose. v2.92 wrote the rule that a held item owns
+the trigger absolutely and that the trigger is never dead, because
+spending the last of a stack selects the gun; an empty cell selected
+before the click was the case that rule never covered.
 
-THE BUILD. Both menus take the same factor through the CSS zoom the
-windows use. Zoom scales a fixed element's offsets as well as its
-contents, so the click point and the screen clamp are divided by the
-factor and the menu still opens under the cursor and stays on the screen.
+THE BUILD. A press on a throwable cell with nothing in it selects the gun
+and says so ("Nothing in that cell. Scav Pistol up."). It does not fire
+this click: the next click fires the gun, which is the automatic-weapon
+safety v2.92 was written for. A cell with something in it cooks as
+before.
 
-MEASURED. Check 12.19 enters the floor, puts the pane at 3840x2160, opens
-the item menu on a stash Bandage through the real opener and requires its
-zoom to equal the windows' zoom, its width at least ninety percent of the
-zoomed minimum, and its box wholly on screen; then puts the pane back at
-1920x1080. On the v12.18 fixture the menu has no zoom.
+MEASURED. Check 12.19 deploys with no Frag and two Smoke, selects the Frag
+cell, holds the trigger through one real player update, and requires the
+gun selected, nothing cooking, both Smoke still in the pouch and the toast.
+On the v12.18 fixture the Frag cell stays selected and a Smoke is cooking.
 
-Not verified: by his eye at 4K; the menu near the right or bottom edge,
-where the clamp now works in zoomed units and is exercised only by the
-opener's own arithmetic.
+Not verified: the G key and the pad, which reach the throw through useHot
+and doThrow and can still cycle to another grenade; a pad, whose trigger
+reaches the same branch; his own thumb
+on 3 in a first raid.

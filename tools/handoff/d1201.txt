@@ -1,34 +1,34 @@
-## v12.01 - FIRST TEN MINUTES: DYING WITH THE FREEBIE KIT KEEPS THE PISTOL YOU OWN
+## v12.01 - FIRST TEN MINUTES: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE
 
-From the 2026-09-06 read-only audit of a new player's first ten minutes.
+From the 2026-09-06 read-only audit of a new player's first ten minutes;
+two readers found the two halves of this independently.
 
-THE FINDING. The FREEBIE KIT issues a Scav Pistol. By his v6.88 spec an
-extraction keeps it, so the issued pistol is deliberately not flagged as
-issued (issued kit is never banked). On a death the outcome card walks the
-guns in hand and, for each one whose id is in the armoury list, deletes it
-from that list and prints LOST. It went by id alone. A fresh profile owns
-exactly one gun, a Scav Pistol, so a friend who took the freebie kit on his
-first run and died had his own pistol, the one that never left the
-Undercroft, deleted from his armoury and priced into the loss line. The
-pickup path fixed this same fault for field-found guns long ago by keeping
-provenance on the weapon slot; the death path never learned.
+THE FINDING. The profile loader does everything inside a branch that runs
+only when a save exists. A friend on his first launch has no save, so none
+of it ran. Two things that matter fell through. The Settings pass
+(applyGameOpts) is the one call that arms the wording watcher, and without
+it the menus and panels showed none of the reworded sentences he has been
+given since v11.42 for the entire first session (canvas text is reworded at
+draw time and had them); the first click on a Settings row armed it and rewrote
+every sentence on the screen while he was reading. And the menu zoom
+default of 1.3 lived in that same branch, so the title, the welcome pack,
+the stash and every window drew at zoom 1.0 on the first day and grew a
+third larger on the second. The same class of hole v11.73 closed for the
+name three lines above it.
 
-THE BUILD. The death splice asks the slot whether the gun came out of the
-armoury (the same wepFromArmory and secFromArmory flags the pickup path
-reads, carried through swaps), and only then removes it from the list. A
-field-found gun no longer touches the armoury on a death either. The free
-kit's pistol, not from the armoury and carrying the free kit's gun id in a
-free-kit raid, is out of the ledger entirely, as an issued loaner already
-is: not counted, not priced, no LOST line, so the count and the lines
-agree, which is the v10.72 rule.
+THE BUILD. Two lines at the end of the loader, outside the branch: the
+menu zoom default, and the Settings pass. The default profile literal now
+carries the zoom as well, and the boot runs the Settings pass once more at
+its end, so a loader that threw part way cannot leave either unset. They
+run on every load, save or none, and both are already idempotent (the pass runs on every Settings
+click; the zoom line was already written for the saved branch).
 
-MEASURED. Check 12.01 sets the profile to own one pistol with the free kit
-chosen, starts the raid the way the lift does (commitKit, then startRaid;
-the harness deploy clears the free kit flag before it builds, which the
-review caught), confirms the issued pistol is in hand, ends the raid by
-death, and requires the pistol still owned and the card counting no gun
-lost. On the v12.00 fixture the armoury comes back empty.
+MEASURED. Check 12.01 clears the menu zoom and the wording watcher, hands
+the loader the null record the store resolves to when nothing is saved,
+and requires the zoom at 1.3 and the watcher armed. On the v12.00 fixture
+the zoom stays 0 and the watcher stays unarmed.
 
-Not verified: an extraction with the free kit, which still sets the issued
-pistol as the equipped gun (the audit's separate medium finding, queued);
-his own reading of the card.
+Not verified: a true first launch in a clean browser profile, which this
+harness cannot make; whether the Settings rows' default options match the
+raw defaults the first session used to run on, which this build makes
+consistent with every later session rather than measures.

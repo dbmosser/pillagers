@@ -11,30 +11,22 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: the lift's FREEBIE KIT answer did not
-# clear the tactical belt plan, while the identical button on the stash
-# screen does. A friend who took the free kit at the lift landed with keys
-# bound to items left in the stash and, because an assigned heal key
-# replaces the derived Medical cell, two Bandages with no working key.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.74 (EXTRACT NOW): the sector
+# map keeps a third copy of the boarding-window line, and while the map is
+# open it is the only copy the player can read, because the map paints over
+# the banner and the ring label. It still said OPEN TO EXTRACT, the wording
+# he rejected at v8.68 and again at v11.74. It reads the same words now (the
+# letter is already on the line above it, so the helper's letter is left
+# out), and the stale comment over the ring label names the owner.
 SubRx @'
-  ASKALT=function(){
-    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
-    try{ renderStage(); }catch(_e){}
-    ascendNow();
-  };
+      else if(_zHold) _zSub='OPEN TO EXTRACT  '+Math.max(0,Math.ceil(Z.hold))+'s';
 '@ @'
-  ASKALT=function(){
-    // v12.13: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
-    // belt plan (a key pointing at something you are not carrying is the v5.72
-    // fault). This one did not, so a friend who took the free kit here landed
-    // with keys bound to items left in the stash and, because an assigned heal
-    // key replaces the derived Medical cell, two Bandages with no key to use.
-    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button does (v12.06)
-    P.hotAssign={}; P._gunSlot=null;
-    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
-    try{ renderStage(); }catch(_e){}
-    ascendNow();
-  };
+      else if(_zHold) _zSub='EXTRACT NOW!  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v12.13: the banner's words (v11.74); the letter is the line above
+'@
+SubRx @'
+    // v8.68, his wording, same as the banner.
+'@ @'
+    // v11.74: extractNowLine, the same line as the banner (v8.68 named the window; v11.74 reworded it).
 '@
 
 # STAMPS.
@@ -48,15 +40,9 @@ var WHATSNEW_VER='12.12';
 '@ @'
 var WHATSNEW_VER='12.13';
 '@
-SubRx @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-'@ @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'TAKING THE FREEBIE KIT AT THE LIFT CLEARS YOUR TACTICAL BELT PLAN, the same as the stash screen button, so no key points at something you left behind.',
-'@
 $cnt=([regex]::Matches($s,"now:'v12\.12:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.12 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.12:[^']*'",{ param($m) "now:'v12.13: from the 2026-09-06 first-ten-minutes audit, the lift FREEBIE KIT answer left the tactical belt plan pointing at items in the stash while the stash screen button cleared it, so a free-kit run landed with dead keys and no Medical cell. The lift answer clears the plan now. Check 12.13 takes the free kit at the lift with a key bound to a stash item and requires the plan empty and a free-kit raid started; fails on v12.12.'" })
+$s=[regex]::Replace($s,"now:'v12\.12:[^']*'",{ param($m) "now:'v12.13: from the read-only review of the shipped v11.74, the sector map still said OPEN TO EXTRACT under a landed ring, and with the map open that is the only boarding line the player can read. It says EXTRACT NOW with the seconds left, the banner wording. Check 12.13 records what the map draws under a ring in the hold and requires the new words and not the old; fails on v12.12.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

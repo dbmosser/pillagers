@@ -1,9 +1,9 @@
-v12.12: first ten minutes, the second down no longer sends you to a key that refuses you
+v12.12: the bigger blast, three things that did not move with it
 
-The going-down toast always said F gets you up, including the second
-down, when the one self-revive is spent and F answers Self-revive spent.
-With the revive spent the toast says so and names the crawl and the SPACE
-give-up hold. Check 12.12 downs him both ways through the real damage path
-and reads the toast; fails on v12.11.
+A pillager's throw band started inside his own 190 blast, the cover
+warning covered half the radius, and the card printed coefficients as the
+centre damage. All three follow the radius now, and check 11.44's sentinel
+is unpinned from 17. Check 12.12 stages a pillager throw at 200 and 260
+and reads the card; fails on v12.11.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

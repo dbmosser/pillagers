@@ -11,36 +11,38 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.05 CHECK, inserted before the v12.04 entry. The real setSafe and the
-# real loader, with a frag, an ammo box and a medkit.
+# v12.05 CHECK, inserted before the v12.04 entry. A raid is deployed with one
+# note logged, a frame drawn with the canvas text call recorded, and the
+# notes line must sit below the corner readout's bottom edge.
 SubRx @'
-  {v:'12.04',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
+  {v:'12.04',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound, while a Medkit over running Bandages is still taken (2026-09-06 audits)',
 '@ @'
-  {v:'12.05',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
+  {v:'12.05',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(typeof setSafe!=='function'||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot reach the pocket or the loader';
-     var bad=[], snap=null;
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and draw';
+     if(typeof topRightBottom!=='function') return 'SKIP: no corner readout helper in this build';
+     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
      try{
-       __topClear(); __cleanProfile();
-       snap=JSON.stringify(__P());   // the loader below replaces the profile; it is put back at the end
-       var P=__P(); P.safe=null;
-       var r1=setSafe('frag');
-       if(!r1) bad.push('the pocket took a Frag Charge without a word');
-       if(P.safe==='frag') bad.push('the pocket is saved on a Frag Charge');
-       var r2=setSafe('ammobox');
-       if(!r2) bad.push('the pocket took an Ammo Box without a word');
-       if(P.safe==='ammobox') bad.push('the pocket is saved on an Ammo Box');
-       var r3=setSafe('medkit');
-       if(r3) bad.push('control: the pocket refused a Medkit ('+r3+')');
-       if(P.safe!=='medkit') bad.push('control: the pocket did not keep the Medkit');
-       __applyLoaded({credits:900,safe:'frag'});
-       if(__P().safe==='frag') bad.push('a saved pocket on a Frag Charge survived the load');
-       __applyLoaded({credits:900,safe:'medkit'});
-       if(__P().safe!=='medkit') bad.push('control: a saved pocket on a Medkit did not survive the load ('+__P().safe+')');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); }
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __forceSize(1920,1080);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       g.tel.notes=[{t:1,txt:'probe note 4242'}];
+       __frame(0.016);
+       var bottom=topRightBottom();
+       if(!(bottom>26)) return 'SKIP: the corner readout is not on screen here (bottom '+Math.round(bottom)+')';
+       proto.fillText=function(t,x,y){ rec.push({t:String(t),y:y}); return o.apply(this,arguments); };
+       __frame(0.016);
+       proto.fillText=o;
+       var ln=null; for(var i=0;i<rec.length;i++) if(/notes? logged/.test(rec[i].t)){ ln=rec[i]; break; }
+       if(!ln) bad.push('control: the notes line was not drawn');
+       else if(ln.y<=bottom) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the corner readout that ends at '+Math.round(bottom));
+       else if(ln.y>H) bad.push('the notes line is drawn off the canvas at y '+Math.round(ln.y));
+       var C=(typeof HUDBOX!=='undefined')&&HUDBOX.cond;
+       if(ln&&C&&ln.y>C.y&&ln.y<C.y+C.h) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the conditions panel at '+Math.round(C.y)+' to '+Math.round(C.y+C.h));
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.tel.notes=[]; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.04',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
+  {v:'12.04',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound, while a Medkit over running Bandages is still taken (2026-09-06 audits)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

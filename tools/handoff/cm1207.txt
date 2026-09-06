@@ -1,10 +1,9 @@
-v12.07: a controller or the keyboard can craft again
+v12.07: the safe pocket refuses a grenade or an ammo box
 
-The hold-to-craft build deleted the button's click handler, which was the
-only way a pad or Enter could press it. A click that answers only
-synthetic clicks is back; a mouse click still spends nothing. The hold
-also dies when the trader window is hidden, and the tooltip reads the
-constant. Check 12.07 crafts by synthetic click and by hold and refuses a
-mouse click; fails on v12.06.
+Neither rides in the backpack, so neither could come home from the pocket,
+which said 1/1 anyway and spent the only death protection on nothing. The
+pocket refuses both with a sentence and a saved pocket on either is cleared
+on load. Check 12.07 drives the real pocket and the real loader; fails on
+v12.06.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

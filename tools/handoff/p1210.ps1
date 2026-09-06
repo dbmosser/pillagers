@@ -11,47 +11,75 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.77 (the bigger blast): three
-# things were calibrated to the old 150 radius and did not move with it. A
-# pillager throws only in a band whose near edge (180) cleared his own blast
-# at 150 and is inside it at 190, so he stood in his own charge at the near
-# edge of every throw; the near edge follows the dial now. The "It hit cover.
-# MOVE." warning fired only inside 110, half the new radius; it follows the
-# dial too. And the card printed the coefficients as the centre damage, when
-# the centre is coefficient plus floor: 140 and 98, not 115 and 80.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.79 (guns on the bench). The
+# Burst Carbine is BLUE everywhere the player looks (gunRarity by tier; the
+# price row's r is the one field v7.99 said is not a gun's rarity), so the
+# bench holds one green gun and three blue, and the card said two of each.
+# The bench's cream detail panel described a crafted gun as salvage to sell
+# and read its rarity from the price row. The stash's KEEP FOR reason for a
+# servo and an optic dropped from "contracts" to plain "crafting" because
+# craftUse had no case for either, and craftPart still said the servo is in
+# no recipe when four eat it. The shop panel still said the Carbine and the
+# Scattergun can only come from Wirt or a container.
 SubRx @'
-  if(fd<180||fd>520) return false;
-  var ix=-1;
-  for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
+  if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
 '@ @'
-  // v12.10: the near edge of the band follows the blast radius (it was 180
-  // against a 150 blast; at 190 he stood in his own charge), plus the scatter
-  // of the aim point below and his own body; and never above his reach, or a
-  // short-ranged pillager could never throw at all.
-  var _fR=(CFG.fragR===undefined?190:CFG.fragR);
-  if(fd<Math.min(_fR+52,(e.rng||520)-1)||fd>520) return false;
-  var ix=-1;
-  for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
+  if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
+  if(it.use==='gun') return 'A gun. Equip it from the stash, or sell it at the terminal.';   // v12.10: the bench makes these now
 '@
 SubRx @'
-  if(blocked&&rngT<110) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');
+function craftPart(k){
+  // v9.43: the servo is out. It appears in no recipe and in no rack, and the one
+  // thing it was for was repairing guns that have not worn since v9.01. Being a
+  // craft part is what made SELL ALL refuse it and made the stash tell him to KEEP
+  // it, so the item whose entire purpose had been deleted was also the item the
+  // game insisted he hoard. It is salvage now, and salvage sells for 310.
+  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp';
+}
 '@ @'
-  if(blocked&&rngT<(tk==='frag'?(CFG.fragR===undefined?190:CFG.fragR):110)) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');   // v12.10: the warning covers the whole blast
+function craftPart(k){
+  // v9.43 took the servo out: it was in no recipe and its one use, repairs, had
+  // gone with wear at v9.01, so keeping it was hoarding for nothing.
+  // v12.10: it is back, and the optic with it, because the four gun recipes of
+  // v11.79 eat the servo and one of them the optic; SELL ALL keeps them and
+  // the stash says what for.
+  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp'||k==='servo'||k==='optic';
+}
 '@
 SubRx @'
-  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 115 at the centre, was 85; to you 80 at the centre, was 60. The fuse is still 1.1 seconds.',
+  if(k==='comp')  return 'plates, medkits, smoke, decoys and frags';
+  return 'crafting';
 '@ @'
-  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 140 at the centre, was 100; to you 98 at the centre, was 72. The fuse is still 1.1 seconds.',
+  if(k==='comp')  return 'plates, medkits, smoke, decoys and frags';
+  if(k==='servo') return 'guns on the bench, and contracts';   // v12.10
+  if(k==='optic') return 'the Auto Rifle, and contracts';      // v12.10
+  return 'crafting';
 '@
 SubRx @'
-  // P.cfg=CFG;P.cfgv=17, and here CFG is still the file-scope default because
+       'anyone down here. Wirt puts one on his counter now and again, and otherwise '+
+       'they are found up top or not at all.</b></div>';
+  } else {
 '@ @'
-  // P.cfg=CFG;P.cfgv=18 (17 when this was written), and here CFG is still the file-scope default because
+       'anyone down here. Wirt puts one on his counter now and again, and otherwise '+
+       'they are found up top or not at all.</b></div>';
+    // v12.10: two of those, plus the SMG and the Auto Rifle, can be built now
+    // (v11.79); a separate line, because the sentence above is a key for his
+    // own rewording of it.
+    h+='<div class="vdesc">The Compact SMG, the Burst Carbine, the Riot Scattergun and the Auto Rifle can all be built at the crafting bench.</div>';
+  } else {
 '@
 SubRx @'
-  // the player's dials and stamped cfgv 17, skipping every cfgv migration. storeSet
+  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
 '@ @'
-  // the player's dials and stamped the current cfgv, skipping every cfgv migration. storeSet
+  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG in green, the Burst Carbine, Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
+'@
+
+# The recipe branch of the detail panel read the price row's rarity; every
+# other panel asks dispR, so it does too.
+SubRx @'
+       '<span class="vpill r">'+escHtml(String((oit&&oit.r)||'common').toUpperCase())+'</span></div>'+
+'@ @'
+       '<span class="vpill r">'+escHtml(String(((typeof dispR==='function')&&dispR(outKey))||(oit&&oit.r)||'common').toUpperCase())+'</span></div>'+   // v12.10: the shown rarity
 '@
 
 # STAMPS.
@@ -67,7 +95,7 @@ var WHATSNEW_VER='12.10';
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.09:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.09 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.09:[^']*'",{ param($m) "now:'v12.10: from the read-only review of the shipped v11.77, three things stayed calibrated to the old 150 blast: the pillager throw band near edge (180, inside a 190 blast) now follows the radius plus 52 (scatter and body), floored at his reach; the It hit cover MOVE warning covered 110, half the blast, and now covers the radius; and the card printed coefficients as centre damage (the centre is 140 and 98, was 100 and 72). The same build repairs check 11.44, whose cfgv sentinel was pinned at 17 and could never fire again. Check 12.10 hands a staged pillager a frag at 200 units and requires no throw, at 260 requires a throw, and reads the card figures; fails on v12.09.'" })
+$s=[regex]::Replace($s,"now:'v12\.09:[^']*'",{ param($m) "now:'v12.10: from the read-only review of the shipped v11.79, the bench guns told truthfully: the Burst Carbine is blue by the rarity every screen shows, so the bench holds one green and three blue and the card says so; the detail panel describes a crafted gun as a gun with its shown rarity; craftPart and craftUse know the servo and the optic again, so the stash keeps them and says for what; the shop panel adds that three of its unstocked guns can be built. The same build repairs check 11.79 (rarity through dispR, purchase price through replaceCost) and the v9.43 check that asserted a servo is in no recipe. Check 12.10 reads the bench through dispR, the blurb, the detail pill and the stash reasons; fails on v12.09.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

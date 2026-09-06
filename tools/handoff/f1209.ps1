@@ -11,57 +11,49 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# CHECK 11.52 double-scaled the CONDITIONS box top (HUDBOX.cond is already in
-# screen pixels after hudZoomRect), so it was too permissive by the zoom and
-# could not see an overlap; the v11.78 check reads the same field the right
-# way and the two disagreed.
+# v12.09 CHECK, inserted before the v12.08 entry. The real bench: the
+# Component Kit recipe selected, its cream detail button pressed three ways.
 SubRx @'
-       // CLEAR OF THE CONDITIONS BOX, in screen space: that box is drawn zoomed
-       // about the top right corner, so its top in pixels is y times its zoom.
-       var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
-       if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
-       else {
-         var cz=1; try{ cz=(HUDZ.cond||1)*hudRes()*hudUserZ('cond'); }catch(_z){ cz=1; }
-         var condTop=HB.y*cz;
+  {v:'12.08',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
 '@ @'
-       // CLEAR OF THE CONDITIONS BOX, in screen space. v12.09: HUDBOX.cond is
-       // already in screen pixels (drawHUD runs it through hudZoomRect), so it is
-       // read as it is; multiplying by the zoom again made this too permissive.
-       var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
-       if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
-       else {
-         var condTop=HB.y;
-'@
-
-# v12.09 CHECK, inserted before the v12.08 entry. The shop window is opened
-# for real and its heading balance measured against the corner readout.
-SubRx @'
-  {v:'12.08',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
-'@ @'
-  {v:'12.09',what:'a station window no longer repeats the credits and XP in its heading under the corner readout: the heading balance is hidden or clear of the readout (2026-09-06 review of v11.78)',
+  {v:'12.09',what:'the bench detail button crafts on a synthetic click (a pad press) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
    run:function(){
-     if(typeof openTrader!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open a station window';
+     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||typeof craftHoldStep!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the bench';
      if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], tr=document.getElementById('topright');
-     if(!tr) return 'SKIP: no corner readout in this build';
+     var bad=[], P=__P(), md=document.getElementById('tradermodal'), keepStash=(P.stash||[]).slice();
+     function stock(){ P.stash=['scrap','scrap','scrap','wire','wire']; }
+     function select(){
+       renderWork();
+       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1;
+       for(var i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:0') ix=i;
+       if(ix<0) return null;
+       P._craftSel=ix; renderCraftDetail(rows);
+       return document.querySelector('#craftdetail .vbuy');
+     }
+     function crafted(){ return P.stash.indexOf('comp')>=0; }
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       try{ if(window.__forceSize) __forceSize(1920,1080); }catch(_fs){}   // the modal zoom follows the pane; pinned so the control means the same on every run
-       G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
-       openTrader('buy');
-       var md=document.querySelector('.modal.on'); if(!md) bad.push('control: no station window opened');
-       var mc=md?md.querySelector('h3 .modcur'):null;
-       if(!mc) bad.push('control: the window heading carries no balance to measure');
-       else {
-         var shown=getComputedStyle(mc).display!=='none';
-         var a=mc.getBoundingClientRect(), b=tr.getBoundingClientRect();
-         var hit=shown&&a.width>0&&a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom;
-         if(hit) bad.push('the heading balance ('+Math.round(a.left)+'..'+Math.round(a.right)+' x '+Math.round(a.top)+'..'+Math.round(a.bottom)+') sits under the corner readout ('+Math.round(b.left)+'..'+Math.round(b.right)+' x '+Math.round(b.top)+'..'+Math.round(b.bottom)+')');
-       }
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       stock(); openTrader('craft');
+       var b=select(); if(!b) return 'SKIP: the bench drew no detail button for the Component Kit';
+       if(b.disabled) bad.push('control: with the parts in the stash the detail button is disabled');
+       // ONE: a synthetic click (what the pad and Enter send) crafts.
+       b.click();
+       if(!crafted()) bad.push('a synthetic click on the detail button crafted nothing (a pad or Enter cannot craft)');
+       // TWO: a real mouse click spends nothing.
+       stock(); b=select();
+       if(b){ b.dispatchEvent(new MouseEvent('click',{detail:1,bubbles:true})); if(crafted()) bad.push('a real mouse click crafted; the hold is meant to be the only mouse way'); }
+       // THREE: the hold still crafts.
+       stock(); b=select();
+       if(b&&b.onmousedown){ b.onmousedown({button:0}); craftHoldStep(0.6); if(crafted()) bad.push('control: the hold crafted before it was full'); craftHoldStep(0.6); if(!crafted()) bad.push('control: a full hold crafted nothing'); }
+       else bad.push('control: the detail button has no hold to drive');
+       // FOUR: a hold dies when the window is hidden.
+       stock(); b=select();
+       if(b&&b.onmousedown&&md){ b.onmousedown({button:0}); craftHoldStep(0.3); md.style.display='none'; craftHoldStep(1.2); md.style.display=''; if(crafted()) bad.push('a hold outlived the trader window being hidden and spent the parts'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
+     finally{ try{ if(md) md.style.display=''; craftHoldCancel(); try{ openTrader('buy'); }catch(_ob){} var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); P.stash=keepStash; saveProfile(); }catch(_c){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.08',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
+  {v:'12.08',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

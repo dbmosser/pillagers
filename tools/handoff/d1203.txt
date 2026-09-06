@@ -1,25 +1,34 @@
-## v12.03 - FIRST TEN MINUTES: THE NOTES LINE SITS BELOW THE CORNER READOUT
+## v12.03 - FIRST TEN MINUTES: DYING WITH THE FREEBIE KIT KEEPS THE PISTOL YOU OWN
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.
 
-THE FINDING. When a note has been logged, the raid HUD prints "N notes
-logged" at the top right, at a fixed y of 26 against the right edge. Since
-v11.78 the corner credits and XP readout is a large DOM block in that same
-corner, and 26 is inside it, so from the first note he leaves, which is
-what the alpha card asks him to do, the two print on top of each other.
+THE FINDING. The FREEBIE KIT issues a Scav Pistol. By his v6.88 spec an
+extraction keeps it, so the issued pistol is deliberately not flagged as
+issued (issued kit is never banked). On a death the outcome card walks the
+guns in hand and, for each one whose id is in the armoury list, deletes it
+from that list and prints LOST. It went by id alone. A fresh profile owns
+exactly one gun, a Scav Pistol, so a friend who took the freebie kit on his
+first run and died had his own pistol, the one that never left the
+Undercroft, deleted from his armoury and priced into the loss line. The
+pickup path fixed this same fault for field-found guns long ago by keeping
+provenance on the weapon slot; the death path never learned.
 
-THE BUILD. The line is drawn at the readout's bottom edge plus a line
-height, or at 26 when the readout is not on screen, through the same
-topRightBottom helper the gear stack already uses to keep clear of it. The
-CONDITIONS panel, which also starts under the readout, starts under the
-line when there is one, so one overlap is not traded for another (the
-review caught the first draft doing exactly that).
+THE BUILD. The death splice asks the slot whether the gun came out of the
+armoury (the same wepFromArmory and secFromArmory flags the pickup path
+reads, carried through swaps), and only then removes it from the list. A
+field-found gun no longer touches the armoury on a death either. The free
+kit's pistol, not from the armoury and carrying the free kit's gun id in a
+free-kit raid, is out of the ledger entirely, as an issued loaner already
+is: not counted, not priced, no LOST line, so the count and the lines
+agree, which is the v10.72 rule.
 
-MEASURED. Check 12.03 deploys with one note logged at 1920x1080, draws a
-frame, reads the readout's bottom edge (and skips if the readout is not on
-screen), then draws a frame with the canvas text call recorded and
-requires the notes line under that edge, inside the canvas and outside the CONDITIONS panel's box. On the
-v12.02 fixture the line is at y 26, inside the readout.
+MEASURED. Check 12.03 sets the profile to own one pistol with the free kit
+chosen, starts the raid the way the lift does (commitKit, then startRaid;
+the harness deploy clears the free kit flag before it builds, which the
+review caught), confirms the issued pistol is in hand, ends the raid by
+death, and requires the pistol still owned and the card counting no gun
+lost. On the v12.02 fixture the armoury comes back empty.
 
-Not verified: by eye at 4K, where the readout and the line both scale; a
-note count in the hundreds, which widens the line but not its height.
+Not verified: an extraction with the free kit, which still sets the issued
+pistol as the equipped gun (the audit's separate medium finding, queued);
+his own reading of the card.

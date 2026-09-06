@@ -1,9 +1,10 @@
-v12.10: the bigger blast, three things that did not move with it
+v12.10: the bench tells the truth about its guns
 
-A pillager's throw band started inside his own 190 blast, the cover
-warning covered half the radius, and the card printed coefficients as the
-centre damage. All three follow the radius now, and check 11.44's sentinel
-is unpinned from 17. Check 12.10 stages a pillager throw at 200 and 260
-and reads the card; fails on v12.09.
+The Burst Carbine is blue by the rarity every screen shows, so the bench
+holds one green and three blue and the card says so; the detail panel
+describes a crafted gun as a gun with its shown rarity; the stash keeps
+servos and optics again and says what for; the shop panel says three of
+its unstocked guns can be built. Checks 11.79 and 9.43 repaired to match.
+Check 12.10 reads all of it; fails on v12.09.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

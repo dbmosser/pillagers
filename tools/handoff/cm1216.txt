@@ -1,9 +1,8 @@
-v12.16: a death banks the XP its card prints, drink bonus included
+v12.16: first ten minutes, ESC closes the open backpack on the floor
 
-The ending printed the card with the dose bonus, cleared the drink, then
-banked the run through addXp with the bonus read live as none. The
-multiplier is taken at the top of the ending, carried on the record, and
-handed to addXp. Check 12.16 dies with two doses in the blood and requires
-the profile paid what the card printed; fails on v12.15.
+The floor's pause branch did not count the open backpack, which is not a
+modal, so ESC raised the pause box over it and the backpack's own ESC line
+could never run. The pause branch steps aside for ESC while the backpack
+is open. Check 12.16 drives ESC on the page body; fails on v12.15.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

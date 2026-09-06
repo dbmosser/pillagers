@@ -11,77 +11,42 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-06 MENU AUDIT (P1): TAKE THE FREEBIE KIT emptied the
-# packed backpack and the whole belt plan with no confirmation and no undo,
-# and a new player is likely to press it after packing. His own note behind
-# the emptying stands (anything already picked goes BACK to the stash, and a
-# key pointing at something you are not carrying is the v5.72 fault), so the
-# selection is not kept live; it is kept ASIDE, and switching back puts it
-# back, minus anything no longer in the stash, with dead keys pruned. The
-# review found the other two exits from the free kit: the lift's loadout
-# question (MY LOADOUT) now restores too, and a raid taken WITH the free kit
-# hands the saved packing to the death-restore that v6.88 already built.
+# FROM THE 2026-09-06 MENU AUDIT (P2): the floor kept taking E, R, F and T
+# behind the character screen, because #title is a .screen and not a .modal
+# and hubModalOpen asks only for modals, the Stash screen, the pause box and
+# the outcome card. At the lift, R ran commitKit and startRaid under the
+# title. One line: the character screen counts.
 SubRx @'
-function commitKit(){
-  // The freebie kit takes nothing out of the stash, so there is nothing to commit.
-  // kitChosen is still stamped so the raid does not fall back to the standard kit.
-  if(P.freeKit){
-    // v6.88, his spec: remember what he had packed before the free gear replaced it, so
-    // a death puts his own loadout back rather than making him rebuild it.
-    P.kitBeforeFree=(P.kit||[]).slice();
-'@ @'
-// v12.06, from the 2026-09-06 menu audit: the packing and the belt plan he had
-// before taking the free kit come back, minus anything no longer in the stash,
-// with any key left pointing at nothing pruned. Called by USE MY OWN GEAR and by
-// MY LOADOUT at the lift; commitKit hands the same list to the death restore.
-function freeKitRestore(){
-  var _ks=P.kitSaved; P.kitSaved=null;
-  if(!_ks) return false;
-  var _pool=(P.stash||[]).slice(), _kit=[];
-  for(var _ki=0;_ki<(_ks.kit||[]).length;_ki++){ var _kx=_pool.indexOf(_ks.kit[_ki]); if(_kx>=0){ _pool.splice(_kx,1); _kit.push(_ks.kit[_ki]); } }
-  P.kit=_kit; P.hotAssign=_ks.hot||{}; P._gunSlot=_ks.gun||null;
-  try{ dropDeadKeys(); }catch(_dk){}
-  return true;
+  if(document.getElementById('outcome').classList.contains('on')) return true;
+  return !!document.querySelector('.modal.on');
 }
-function commitKit(){
-  // The freebie kit takes nothing out of the stash, so there is nothing to commit.
-  // kitChosen is still stamped so the raid does not fall back to the standard kit.
-  if(P.freeKit){
-    // v6.88, his spec: remember what he had packed before the free gear replaced it, so
-    // a death puts his own loadout back rather than making him rebuild it.
-    // v12.06: the button already emptied P.kit and kept it aside; that is the list.
-    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
+function updateHubWorld(dt){
+'@ @'
+  if(document.getElementById('outcome').classList.contains('on')) return true;
+  // v12.06, from the 2026-09-06 menu audit: and the character screen, which is
+  // a .screen and not a .modal. Without this the floor took E, R, F and T
+  // behind it, and R at the lift started a raid under the title.
+  var _ttl=document.getElementById('title');
+  if(_ttl&&_ttl.classList.contains('on')) return true;
+  return !!document.querySelector('.modal.on');
+}
+function updateHubWorld(dt){
+'@
+
+# The keydown branch keeps its own hand-written copy of the same gate; the
+# already-computed flag folds into it, so SPACE, H, TAB and I stop too.
+SubRx @'
+    var _hubBusy=!!(document.querySelector('.modal.on')||document.querySelector('.imenu')||
+'@ @'
+    var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v12.06: the character screen counts here too
 '@
 SubRx @'
-    if(P.freeKit){ P.freeKit=0; saveProfile(); renderStage(); return; }
-    // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
-    // stash rather than a move, so emptying it returns those items by itself; the
-    // hotbar plan is cleared for the same reason, since a key pointing at something
-    // you are not carrying is the exact fault v5.72 fixed.
-    P.kit=[]; P.hotAssign={}; P._gunSlot=null;
+      if(document.querySelector('.imenu')) _anyModal=true;
+      if(!_anyModal){
 '@ @'
-    if(P.freeKit){
-      P.freeKit=0;
-      freeKitRestore();   // v12.06: what he had packed comes back
-      saveProfile(); try{ renderHub(); }catch(_fh0){} renderStage(); return;
-    }
-    // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
-    // stash rather than a move, so emptying it returns those items by itself; the
-    // hotbar plan is cleared for the same reason, since a key pointing at something
-    // you are not carrying is the exact fault v5.72 fixed.
-    // v12.06: kept aside first, so switching back to his own gear is not a wipe.
-    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};
-    P.kit=[]; P.hotAssign={}; P._gunSlot=null;
-'@
-SubRx @'
-  ASKYES=function(){ P.freeKit=0; saveProfile(); ascendNow(); };
-'@ @'
-  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v12.06: MY LOADOUT gets his packing back too
-'@
-SubRx @'
-    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText()):
-'@ @'
-    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText())+(P.kitSaved?' Your own packing is kept for when you switch back.':''):
+      if(document.querySelector('.imenu')) _anyModal=true;
+      if(_titleUp) _anyModal=true;   // v12.06
+      if(!_anyModal){
 '@
 
 # STAMPS.
@@ -91,7 +56,7 @@ var VER='12.05';
 var VER='12.06';
 '@
 SubRx @'
-var WHATSNEW_VER='12.05';
+var WHATSNEW_VER='12.03';
 '@ @'
 var WHATSNEW_VER='12.06';
 '@
@@ -99,11 +64,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear, at the counter or at the lift, and it is all still there.',
+  'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.05:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.05 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.05:[^']*'",{ param($m) "now:'v12.06: from the 2026-09-06 menu audit, TAKE THE FREEBIE KIT wiped the packed backpack and the whole belt plan with no undo. The selection is kept aside on the profile (kitSaved) when the kit is taken and put back by freeKitRestore, called by USE MY OWN GEAR and by MY LOADOUT at the lift, minus anything no longer in the stash and with dead keys pruned; a raid taken with the free kit hands the saved list to the v6.88 death restore. Check 12.06 packs two items and a key, presses the real button twice, and requires the packing and the key back, then sells one item between presses and requires only the other back; fails on v12.05.'" })
+$s=[regex]::Replace($s,"now:'v12\.05:[^']*'",{ param($m) "now:'v12.06: from the 2026-09-06 menu audit, the floor kept taking station keys behind the character screen because hubModalOpen did not count #title (a .screen, not a .modal); at the lift R started a raid under the title. One line: the character screen counts as a modal. Check 12.06 turns the character screen on over the floor and requires the gate to read open, then off and requires it closed; fails on v12.05.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

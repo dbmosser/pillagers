@@ -1,11 +1,9 @@
-v12.02: the heal verb tells the truth and does not waste a second bandage
+v12.02: first ten minutes, a pause note is kept when ESC closes the box
 
-The picker ran before the full-health test and skipped capped items, so
-two Bandages at their ceiling and a Medkit at full health both got No
-medical supplies; the sentence for the Bandage case was dead behind a
-guard that had returned. After v11.82 stacked heals the ceiling tests read
-health alone, so a second Bandage above the first one's reach was spent
-for nothing. Full-health first, the picker counts inbound, the belt slot
-gets the ceiling. Check 12.02 drives four cases; fails on v12.01.
+The resume button banked a raid note and ESC did not, so a note typed and
+closed the way the box's own legend names was thrown away. The close banks
+it now, for the buttons and for ESC alike; both buttons' duplicates are gone.
+Check 12.02 presses ESC on the textarea with a note typed and requires it
+in the run record; fails on v12.01.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

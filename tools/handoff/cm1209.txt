@@ -1,9 +1,10 @@
-v12.09: the station heading stops repeating the balance under the readout
+v12.09: a controller or the keyboard can craft again
 
-The enlarged corner readout printed through the credits and XP every
-station window stamps into its heading; the heading balance is hidden,
-as the stash screen's own figure was at v11.52. Check 11.52 is repaired
-(it double-scaled the CONDITIONS box top). Check 12.09 opens the shop and
-measures the heading against the readout; fails on v12.08.
+The hold-to-craft build deleted the button's click handler, which was the
+only way a pad or Enter could press it. A click that answers only
+synthetic clicks is back; a mouse click still spends nothing. The hold
+also dies when the trader window is hidden, and the tooltip reads the
+constant. Check 12.09 crafts by synthetic click and by hold and refuses a
+mouse click; fails on v12.08.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

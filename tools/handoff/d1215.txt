@@ -1,20 +1,26 @@
-## v12.15 - FIRST TEN MINUTES: THE CONTROLS CARD STOPS TEACHING A DEAD KEY
+## v12.15 - FIRST TEN MINUTES: THE LIFT'S FREEBIE KIT CLEARS THE BELT PLAN
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.
 
-THE FINDING. The full controls card behind H opens with "X swaps
-primary/sidearm" (Y on a pad). There is no KeyX handler anywhere in the
-build and no pad swap button: the swap key was deleted when the tactical
-belt took the job, and this one surface was missed. A friend reading the
-card presses X and nothing happens. The swap today is the belt itself:
-pressing the key of the stowed gun brings it up (v8.67).
+THE FINDING. The free kit can be taken in two places: a button on the
+stash screen, and the FREEBIE KIT answer to the lift's question. The stash
+button clears the packed kit and the tactical belt plan, on the v5.72 rule
+that a key pointing at something you are not carrying is a fault. The lift
+answer cleared neither. The kit itself is emptied a moment later by
+commitKit, but the belt plan rode into the raid pointing at items left in
+the stash, and because an assigned heal key replaces the derived Medical
+cell, a friend who took the free kit at the lift landed with two Bandages
+and no working key to use them.
 
-THE BUILD. The WEAPONS rule says "Belt keys 1 and 2 bring up either gun."
-The pad branch is gone with the key it named; the rule is one string.
+THE BUILD. The lift answer clears the belt plan and the gun slot the same
+way the stash button does. Nothing else changes: the kit is still put
+aside for the return by commitKit, as before.
 
-MEASURED. Check 12.15 reads the WEAPONS rule the way the card does and
-requires no X or Y swap claim and the belt keys named. On the v12.14
-fixture the rule reads "X swaps primary/sidearm."
+MEASURED. Check 12.15 enters the floor with a Medkit packed and key 4
+bound to it, asks the lift question, takes the FREEBIE KIT answer through
+the real handler, and requires a free-kit raid started with the belt plan
+empty. On the v12.14 fixture the plan still holds the Medkit key.
 
-Not verified: the pad's own belt selection, which this rule does not name;
-the rest of the card, which the audit did not fault.
+Not verified: the plan after a free run, which neither path restores yet
+because commitKit clears the kept-aside copy when it takes kitBeforeFree;
+his own reading of the belt after a free run.

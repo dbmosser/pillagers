@@ -1,9 +1,8 @@
-v12.05: the safe pocket refuses a grenade or an ammo box
+v12.05: first ten minutes, the notes line sits below the corner readout
 
-Neither rides in the backpack, so neither could come home from the pocket,
-which said 1/1 anyway and spent the only death protection on nothing. The
-pocket refuses both with a sentence and a saved pocket on either is cleared
-on load. Check 12.05 drives the real pocket and the real loader; fails on
-v12.04.
+The raid HUD's notes-logged line was drawn at y 26, inside the enlarged
+corner readout of v11.78, so the two printed over each other from the
+first note. It sits under the readout's bottom edge now, and the CONDITIONS panel starts under it. Check 12.05
+records the canvas text over a frame with a note logged; fails on v12.04.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -11,27 +11,21 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: with the Undercroft backpack open, ESC
-# raised the pause box instead of closing the backpack, because the backpack
-# is not a modal and the pause branch runs before the backpack's own ESC
-# line; a second ESC only closed the pause box. ESC could never close it.
+# FIRST TEN MINUTES AUDIT, 2026-09-06: every time he goes down the toast says
+# "DOWN. F to get back up. You get one per raid.", including the second time,
+# when the one self-revive is spent and F answers "Self-revive spent". A
+# second hit to zero downs him just the same (the down branch reads only
+# hp), so a new player on his second down is sent to a key that refuses him.
 SubRx @'
-    if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&&
-       !document.querySelector('.imenu')&&!document.getElementById('hub').classList.contains('on')){
-      togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
-      e.preventDefault(); return;
-    }
+    G.tel.downs++; say('DOWN. F to get back up. You get one per raid.');
 '@ @'
-    // v12.14: NOT OVER AN OPEN BACKPACK. The floor backpack is not a modal, so
-    // ESC over it raised the pause box here and the backpack's own ESC line
-    // further down could never run; a second ESC closed the pause box and the
-    // backpack stayed. ESC belongs to whatever is in front, and the backpack is.
-    if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&&
-       !document.querySelector('.imenu')&&!document.getElementById('hub').classList.contains('on')&&
-       !(e.code==='Escape'&&hubBagOpen)){
-      togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
-      e.preventDefault(); return;
-    }
+    G.tel.downs++;
+    // v12.14: THE SECOND DOWN TELLS THE TRUTH. Once the one self-revive is spent
+    // F answers Self-revive spent, so a toast that sent him to F was a lie the
+    // HUD contradicted in the same frame. He can still crawl for an extraction,
+    // or hold SPACE to give up where that is switched on.
+    say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold '+keyLabel('Space','SPACE')+' to give up.'))
+                 :'DOWN. '+keyLabel('KeyF','F')+' to get back up. You get one per raid.');
 '@
 
 # STAMPS.
@@ -49,11 +43,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'ESC CLOSES THE OPEN BACKPACK IN THE UNDERCROFT instead of raising the pause box over it.',
+  'THE SECOND TIME YOU GO DOWN THE GAME SAYS SO: your one self-revive is spent, so crawl for an extraction or hold SPACE to give up.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.13:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.13 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.13:[^']*'",{ param($m) "now:'v12.14: from the 2026-09-06 first-ten-minutes audit, ESC over the open Undercroft backpack raised the pause box instead of closing the backpack, because the backpack is not a modal and the pause branch ran first; ESC could never close it. The pause branch now steps aside while the backpack is open. Check 12.14 opens the backpack on the floor, presses ESC and requires it closed with no pause box, then presses ESC again and requires the pause box; fails on v12.13.'" })
+$s=[regex]::Replace($s,"now:'v12\.13:[^']*'",{ param($m) "now:'v12.14: from the 2026-09-06 first-ten-minutes audit, the going-down toast sent him to F on the second down too, when the one self-revive is spent and F refuses. The second down now says the revive is spent and names the crawl and the give-up hold. Check 12.14 downs him with the revive spent and requires no F in the toast and the word spent, then downs him fresh and requires F; fails on v12.13.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

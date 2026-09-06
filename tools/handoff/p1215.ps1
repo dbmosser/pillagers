@@ -11,18 +11,30 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: the controls card behind H still
-# teaches "X swaps primary/sidearm" (and Y on a pad). There is no KeyX
-# handler anywhere in the build and no pad swap button: the key was deleted
-# when the belt took over, and this one surface was missed. The swap today
-# is the belt: pressing the key of the stowed gun brings it up.
+# FIRST TEN MINUTES AUDIT, 2026-09-06: the lift's FREEBIE KIT answer did not
+# clear the tactical belt plan, while the identical button on the stash
+# screen does. A friend who took the free kit at the lift landed with keys
+# bound to items left in the stash and, because an assigned heal key
+# replaces the derived Medical cell, two Bandages with no working key.
 SubRx @'
-  ['WEAPONS',function(){ return (PAD&&PAD.on)?'Y swaps primary/sidearm.':'X swaps primary/sidearm.'; }],
+  ASKALT=function(){
+    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
+    try{ renderStage(); }catch(_e){}
+    ascendNow();
+  };
 '@ @'
-  // v12.15: there is no X (or pad Y) swap; the belt is the swap. Pressing the
-  // key of the stowed gun brings it up (setHot, the v8.67 rule).
-  ['WEAPONS','Keys 1 and 2 bring up'],
-  ['','either gun.'],
+  ASKALT=function(){
+    // v12.15: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
+    // belt plan (a key pointing at something you are not carrying is the v5.72
+    // fault). This one did not, so a friend who took the free kit here landed
+    // with keys bound to items left in the stash and, because an assigned heal
+    // key replaces the derived Medical cell, two Bandages with no key to use.
+    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button does (v12.08)
+    P.hotAssign={}; P._gunSlot=null;
+    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
+    try{ renderStage(); }catch(_e){}
+    ascendNow();
+  };
 '@
 
 # STAMPS.
@@ -40,11 +52,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE CONTROLS CARD NO LONGER PROMISES AN X KEY THAT DOES NOT EXIST: belt keys 1 and 2 bring up either gun.',
+  'TAKING THE FREEBIE KIT AT THE LIFT CLEARS YOUR TACTICAL BELT PLAN, the same as the stash screen button, so no key points at something you left behind.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.14:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.14 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.14:[^']*'",{ param($m) "now:'v12.15: from the 2026-09-06 first-ten-minutes audit, the controls card behind H still taught X swaps primary and sidearm (Y on a pad) and no such handler exists; the belt keys are the swap. The card says so now. Check 12.15 reads the WEAPONS rule and requires no X or Y swap claim and the belt keys named; fails on v12.14.'" })
+$s=[regex]::Replace($s,"now:'v12\.14:[^']*'",{ param($m) "now:'v12.15: from the 2026-09-06 first-ten-minutes audit, the lift FREEBIE KIT answer left the tactical belt plan pointing at items in the stash while the stash screen button cleared it, so a free-kit run landed with dead keys and no Medical cell. The lift answer clears the plan now. Check 12.15 takes the free kit at the lift with a key bound to a stash item and requires the plan empty and a free-kit raid started; fails on v12.14.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

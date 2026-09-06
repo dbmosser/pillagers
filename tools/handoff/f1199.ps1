@@ -11,37 +11,37 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.99 CHECK, inserted before the v11.98 entry. A raid is deployed, the
-# pause box opened, a note typed, and ESC pressed on the textarea itself,
-# which is the element a real key reaches; the capture listener on window
-# sees it first, as in play. The note must be in the run record.
+# v11.99 CHECK, inserted before the v11.98 entry. The pane is put at 4K, the
+# item menu is opened on a stash Bandage through the real opener, and its
+# zoom must equal the windows' zoom with the menu wholly on screen.
 SubRx @'
   {v:'11.98',what:'a boarding hold that began before the window shut still extracts while E is held, and the ship can be called from the edge of the ring (his orders of 2026-09-06)',
 '@ @'
-  {v:'11.99',what:'a note typed into the pause box during a raid is kept when ESC closes the box, the same as the resume button (2026-09-06 first-ten-minutes audit)',
+  {v:'11.99',what:'the stash right-click menu takes the menu zoom like every window, so at 4K it is not a 1080p-sized menu under a 4K stash (his note of 2026-09-06)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     var pb=document.getElementById('pausebox'), ta=document.getElementById('pausenote');
-     if(!pb||!ta||typeof togglePauseBox!=='function') return 'SKIP: no pause box in this build';
-     var bad=[];
+     if(!(window.__forceSize&&window.__hubEnter&&window.__showScreen&&window.__P)) return 'SKIP: this fixture cannot resize';
+     if(typeof openItemMenu!=='function'||typeof closeItemMenu!=='function'||typeof titleRes!=='function') return 'SKIP: no item menu in this build';
+     var bad=[], P2=__P(), keepStash=(P2.stash||[]).slice(), keepKit=(P2.kit||[]).slice();
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state();
-       togglePauseBox(true);
-       if(!pb.classList.contains('on')) bad.push('control: the pause box did not open');
-       ta.value='probe note 4242';
-       ta.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));
-       if(pb.classList.contains('on')) bad.push('control: ESC did not close the box');
-       var notes=(g.tel&&g.tel.notes)||[];
-       if(!notes.some(function(x){ return x&&x.txt==='probe note 4242'; })) bad.push('the note typed in the box was thrown away by ESC ('+notes.length+' notes in the record)');
-       if(ta.value) bad.push('the box still holds the note after the close');
+       __topClear(); __runPrep(); __cleanProfile();
+       G=null; __showScreen('hub'); __hubEnter();
+       __forceSize(3840,2160);
+       if(!(W>=3000)) return 'SKIP: the pane would not go to 4K ('+W+'x'+H+')';
+       P2.stash=['bandage']; saveProfile();
+       openItemMenu(400,400,'bandage','stash',1);
+       var m=document.querySelector('.imenu');
+       if(!m) bad.push('control: no menu opened');
+       else {
+         var hubEl=document.getElementById('hub');
+         var want=(hubEl&&hubEl.classList.contains('on')&&parseFloat(hubEl.style.zoom)>0)?parseFloat(hubEl.style.zoom):Math.max(1,(P2.menuZoom||1))*titleRes();
+         var z=parseFloat(m.style.zoom||'1')||1;
+         if(Math.abs(z-want)>0.05) bad.push('the menu zoom is '+z+' where the windows are at '+want.toFixed(2));
+         var r=m.getBoundingClientRect();
+         if(r.width<186*want*0.9) bad.push('the menu is only '+Math.round(r.width)+' px wide at 4K');
+         if(window.innerWidth>=1200&&(r.left<0||r.top<0||r.right>window.innerWidth+1||r.bottom>window.innerHeight+1)) bad.push('the menu is off the viewport at '+Math.round(r.left)+','+Math.round(r.top)+' to '+Math.round(r.right)+','+Math.round(r.bottom));
+       }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{
-       try{ ta.value=''; if(pb.classList.contains('on')){ togglePauseBox(false); pb.classList.remove('on'); } }catch(_c){}
-       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
-       __topClear(); __cleanProfile();
-     }
+     finally{ try{ closeItemMenu(); }catch(_c){} P2.stash=keepStash; P2.kit=keepKit; try{ saveProfile(); }catch(_s){} try{ __forceSize(1920,1080); }catch(_f){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.98',what:'a boarding hold that began before the window shut still extracts while E is held, and the ship can be called from the edge of the ring (his orders of 2026-09-06)',
 '@

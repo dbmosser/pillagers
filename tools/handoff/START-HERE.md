@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v11.96 (2dd5337). The tree has **v11.97 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v11.97 (d6f983a). The tree has **v11.98 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-2" (the tab named seed hung on 2026-09-06 12:40 and was closed).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1197 cm1197.txt
+    bash tools/handoff/ship.sh commit 1198 cm1198.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1197 1198
+    bash tools/handoff/ship.sh start 1198 1199
 and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -17,6 +17,16 @@ alone and straight after the new check; a bare profile left by a check is the
 usual cause (see memory dark-raiders-loader-replaces-the-profile).
 
 **THE QUEUE, ALL DRAFTED (p/f/d/a/cm in this folder), SHIP IN THIS ORDER:**
+
+**CURRENT QUEUE (2026-09-06 14:45, REORDERED by renum1219.ps1 so his two direct afternoon notes ship before alpha; this list outranks every older list below):**
+- **1198 A HOLD STARTED BEFORE THE WINDOW SHUT FINISHES, E ANYWHERE IN THE RING** (his orders). APPLIED, four gates green, corpus running at 14:45.
+- **1199 THE RIGHT-CLICK MENU IS THE SIZE OF THE STASH (4K)** (his note of 14:05; was 1219). Next.
+- **1200 THE HOWLER DOES NOT SHELL THROUGH A ROOF** (his note of 14:30; was 1220).
+- **1201 THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE** (was 1200; matters for every friend on a fresh profile).
+- **1202 A PAUSE NOTE SURVIVES ESC** (was 1199).
+- **1203 to 1220** are the former 1201 to 1218 in the same order, every label up two (freebie death keeps the pistol, heal verb, notes line, polish, second down toast, lift freebie clears the plan, ESC closes the floor backpack, controls card, death banks card XP, empty grenade cell, arrows with the bag open).
+- The WHATSNEW_VER chain was repaired by hand where a build does not bump it (1201, 1204 heal verb, 1205 notes line); `tools/handoff/verifychain.ps1 -First 1199 -Last 1220 -Ver 11.98 -Wn 11.98` walks the whole chain and must print "chain verified" before any dry run. Run it after EVERY renumber.
+- **DRY RUN:** `dry.ps1 1199 1220` from the tree at v11.98 (done 14:40 on the OLD order; redo after this reorder between corpora), then dry/mk.ps1, then checks 11.99 to 12.20 on :8801.
 
 **CURRENT QUEUE (2026-09-06 14:50, after his afternoon notes; this list outranks every older list below):**
 - **1194 HIS FOUR WORDING NOTES** (Crier alarm, Pillbox death, one per raid, Search resumed). In flight at 14:50.

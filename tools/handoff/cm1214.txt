@@ -1,8 +1,9 @@
-v12.14: first ten minutes, ESC closes the open backpack on the floor
+v12.14: first ten minutes, the second down no longer sends you to a key that refuses you
 
-The floor's pause branch did not count the open backpack, which is not a
-modal, so ESC raised the pause box over it and the backpack's own ESC line
-could never run. The pause branch steps aside for ESC while the backpack
-is open. Check 12.14 drives ESC on the page body; fails on v12.13.
+The going-down toast always said F gets you up, including the second
+down, when the one self-revive is spent and F answers Self-revive spent.
+With the revive spent the toast says so and names the crawl and the SPACE
+give-up hold. Check 12.14 downs him both ways through the real damage path
+and reads the toast; fails on v12.13.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

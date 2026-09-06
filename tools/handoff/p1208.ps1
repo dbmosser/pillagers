@@ -11,75 +11,77 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.79 (guns on the bench). The
-# Burst Carbine is BLUE everywhere the player looks (gunRarity by tier; the
-# price row's r is the one field v7.99 said is not a gun's rarity), so the
-# bench holds one green gun and three blue, and the card said two of each.
-# The bench's cream detail panel described a crafted gun as salvage to sell
-# and read its rarity from the price row. The stash's KEEP FOR reason for a
-# servo and an optic dropped from "contracts" to plain "crafting" because
-# craftUse had no case for either, and craftPart still said the servo is in
-# no recipe when four eat it. The shop panel still said the Carbine and the
-# Scattergun can only come from Wirt or a container.
+# FROM THE 2026-09-06 MENU AUDIT (P1): TAKE THE FREEBIE KIT emptied the
+# packed backpack and the whole belt plan with no confirmation and no undo,
+# and a new player is likely to press it after packing. His own note behind
+# the emptying stands (anything already picked goes BACK to the stash, and a
+# key pointing at something you are not carrying is the v5.72 fault), so the
+# selection is not kept live; it is kept ASIDE, and switching back puts it
+# back, minus anything no longer in the stash, with dead keys pruned. The
+# review found the other two exits from the free kit: the lift's loadout
+# question (MY LOADOUT) now restores too, and a raid taken WITH the free kit
+# hands the saved packing to the death-restore that v6.88 already built.
 SubRx @'
-  if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
+function commitKit(){
+  // The freebie kit takes nothing out of the stash, so there is nothing to commit.
+  // kitChosen is still stamped so the raid does not fall back to the standard kit.
+  if(P.freeKit){
+    // v6.88, his spec: remember what he had packed before the free gear replaced it, so
+    // a death puts his own loadout back rather than making him rebuild it.
+    P.kitBeforeFree=(P.kit||[]).slice();
 '@ @'
-  if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
-  if(it.use==='gun') return 'A gun. Equip it from the stash, or sell it at the terminal.';   // v12.08: the bench makes these now
-'@
-SubRx @'
-function craftPart(k){
-  // v9.43: the servo is out. It appears in no recipe and in no rack, and the one
-  // thing it was for was repairing guns that have not worn since v9.01. Being a
-  // craft part is what made SELL ALL refuse it and made the stash tell him to KEEP
-  // it, so the item whose entire purpose had been deleted was also the item the
-  // game insisted he hoard. It is salvage now, and salvage sells for 310.
-  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp';
+// v12.08, from the 2026-09-06 menu audit: the packing and the belt plan he had
+// before taking the free kit come back, minus anything no longer in the stash,
+// with any key left pointing at nothing pruned. Called by USE MY OWN GEAR and by
+// MY LOADOUT at the lift; commitKit hands the same list to the death restore.
+function freeKitRestore(){
+  var _ks=P.kitSaved; P.kitSaved=null;
+  if(!_ks) return false;
+  var _pool=(P.stash||[]).slice(), _kit=[];
+  for(var _ki=0;_ki<(_ks.kit||[]).length;_ki++){ var _kx=_pool.indexOf(_ks.kit[_ki]); if(_kx>=0){ _pool.splice(_kx,1); _kit.push(_ks.kit[_ki]); } }
+  P.kit=_kit; P.hotAssign=_ks.hot||{}; P._gunSlot=_ks.gun||null;
+  try{ dropDeadKeys(); }catch(_dk){}
+  return true;
 }
-'@ @'
-function craftPart(k){
-  // v9.43 took the servo out: it was in no recipe and its one use, repairs, had
-  // gone with wear at v9.01, so keeping it was hoarding for nothing.
-  // v12.08: it is back, and the optic with it, because the four gun recipes of
-  // v11.79 eat the servo and one of them the optic; SELL ALL keeps them and
-  // the stash says what for.
-  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp'||k==='servo'||k==='optic';
-}
+function commitKit(){
+  // The freebie kit takes nothing out of the stash, so there is nothing to commit.
+  // kitChosen is still stamped so the raid does not fall back to the standard kit.
+  if(P.freeKit){
+    // v6.88, his spec: remember what he had packed before the free gear replaced it, so
+    // a death puts his own loadout back rather than making him rebuild it.
+    // v12.08: the button already emptied P.kit and kept it aside; that is the list.
+    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
 '@
 SubRx @'
-  if(k==='comp')  return 'plates, medkits, smoke, decoys and frags';
-  return 'crafting';
+    if(P.freeKit){ P.freeKit=0; saveProfile(); renderStage(); return; }
+    // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
+    // stash rather than a move, so emptying it returns those items by itself; the
+    // hotbar plan is cleared for the same reason, since a key pointing at something
+    // you are not carrying is the exact fault v5.72 fixed.
+    P.kit=[]; P.hotAssign={}; P._gunSlot=null;
 '@ @'
-  if(k==='comp')  return 'plates, medkits, smoke, decoys and frags';
-  if(k==='servo') return 'guns on the bench, and contracts';   // v12.08
-  if(k==='optic') return 'the Auto Rifle, and contracts';      // v12.08
-  return 'crafting';
+    if(P.freeKit){
+      P.freeKit=0;
+      freeKitRestore();   // v12.08: what he had packed comes back
+      saveProfile(); try{ renderHub(); }catch(_fh0){} renderStage(); return;
+    }
+    // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
+    // stash rather than a move, so emptying it returns those items by itself; the
+    // hotbar plan is cleared for the same reason, since a key pointing at something
+    // you are not carrying is the exact fault v5.72 fixed.
+    // v12.08: kept aside first, so switching back to his own gear is not a wipe.
+    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};
+    P.kit=[]; P.hotAssign={}; P._gunSlot=null;
 '@
 SubRx @'
-       'anyone down here. Wirt puts one on his counter now and again, and otherwise '+
-       'they are found up top or not at all.</b></div>';
-  } else {
+  ASKYES=function(){ P.freeKit=0; saveProfile(); ascendNow(); };
 '@ @'
-       'anyone down here. Wirt puts one on his counter now and again, and otherwise '+
-       'they are found up top or not at all.</b></div>';
-    // v12.08: two of those, plus the SMG and the Auto Rifle, can be built now
-    // (v11.79); a separate line, because the sentence above is a key for his
-    // own rewording of it.
-    h+='<div class="vdesc">The Compact SMG, the Burst Carbine, the Riot Scattergun and the Auto Rifle can all be built at the crafting bench.</div>';
-  } else {
+  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v12.08: MY LOADOUT gets his packing back too
 '@
 SubRx @'
-  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
+    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText()):
 '@ @'
-  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG in green, the Burst Carbine, Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
-'@
-
-# The recipe branch of the detail panel read the price row's rarity; every
-# other panel asks dispR, so it does too.
-SubRx @'
-       '<span class="vpill r">'+escHtml(String((oit&&oit.r)||'common').toUpperCase())+'</span></div>'+
-'@ @'
-       '<span class="vpill r">'+escHtml(String(((typeof dispR==='function')&&dispR(outKey))||(oit&&oit.r)||'common').toUpperCase())+'</span></div>'+   // v12.08: the shown rarity
+    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText())+(P.kitSaved?' Your own packing is kept for when you switch back.':''):
 '@
 
 # STAMPS.
@@ -93,9 +95,15 @@ var WHATSNEW_VER='12.07';
 '@ @'
 var WHATSNEW_VER='12.08';
 '@
+SubRx @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+'@ @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear, at the counter or at the lift, and it is all still there.',
+'@
 $cnt=([regex]::Matches($s,"now:'v12\.07:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.07 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.07:[^']*'",{ param($m) "now:'v12.08: from the read-only review of the shipped v11.79, the bench guns told truthfully: the Burst Carbine is blue by the rarity every screen shows, so the bench holds one green and three blue and the card says so; the detail panel describes a crafted gun as a gun with its shown rarity; craftPart and craftUse know the servo and the optic again, so the stash keeps them and says for what; the shop panel adds that three of its unstocked guns can be built. The same build repairs check 11.79 (rarity through dispR, purchase price through replaceCost) and the v9.43 check that asserted a servo is in no recipe. Check 12.08 reads the bench through dispR, the blurb, the detail pill and the stash reasons; fails on v12.07.'" })
+$s=[regex]::Replace($s,"now:'v12\.07:[^']*'",{ param($m) "now:'v12.08: from the 2026-09-06 menu audit, TAKE THE FREEBIE KIT wiped the packed backpack and the whole belt plan with no undo. The selection is kept aside on the profile (kitSaved) when the kit is taken and put back by freeKitRestore, called by USE MY OWN GEAR and by MY LOADOUT at the lift, minus anything no longer in the stash and with dead keys pruned; a raid taken with the free kit hands the saved list to the v6.88 death restore. Check 12.08 packs two items and a key, presses the real button twice, and requires the packing and the key back, then sells one item between presses and requires only the other back; fails on v12.07.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

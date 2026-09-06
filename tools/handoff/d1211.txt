@@ -1,25 +1,29 @@
-## v12.11 - THE MAP SAYS EXTRACT NOW TOO
+## v12.11 - THE STATION HEADING STOPS REPEATING THE BALANCE UNDER THE READOUT
 
-From the read-only review of this morning's shipped builds, on v11.74.
+From the read-only review of this morning's shipped builds, on v11.78.
 
-WHAT IT WAS. v11.74 replaced EXTRACTION IN PROGRESS with EXTRACT NOW and the
-seconds left, on his note, in the two places the raid HUD draws the boarding
-window: the banner and the off-screen ring label. The sector map keeps a
-third copy of that line under each ring, and it still said OPEN TO EXTRACT,
-the wording he rejected at v8.68 and again at v11.74. Worse, the map paints
-an opaque wash over the whole screen before it draws, so while the map is
-open the map's copy is the only boarding line the player can read. The check
-for v11.74 read only the HUD function's source, so it could not see the map.
+WHAT IT WAS. Every station window (the shop, the bench, the armoury, the
+contracts) stamps the credits and XP into its own heading, pushed to the
+heading's right edge. v11.78 made the corner readout, which shows the same
+two figures at all times, forty-four pixels tall, and it now printed
+through the top of that heading balance. The only clearance v11.78 added
+was for the stash screen's top row. v11.52 had already set the rule for
+this case: the stash screen's own credits figure was hidden, because the
+corner shows it.
 
-THE BUILD. The map's line says EXTRACT NOW with the seconds left, the banner
-words; the ring's letter is already printed on the line above it. The stale
-comment over the ring label, which still credited the wording to v8.68,
-names the owner.
+THE BUILD. The heading balance follows the same rule and is hidden; the
+corner readout is the one place the two figures live. The same build
+repairs check 11.52, which measured the readout's clearance from the
+CONDITIONS box by multiplying a box top that is already in screen pixels
+by the zoom again, so it was too permissive by the zoom and could never
+have seen the overlap it stands guard over; the v11.78 check read the same
+field the right way, and the two disagreed.
 
-MEASURED. Check 12.11 deploys, puts a ring into the landed hold with twelve
-seconds left, opens the map and draws it with the canvas text call recorded,
-and requires the line under the ring to say EXTRACT NOW with 12S LEFT and
-not the old words. On the v12.10 fixture it says OPEN TO EXTRACT 12s.
+MEASURED. Check 12.11 walks the floor, opens the shop window for real,
+finds the heading balance, and requires it hidden or, if shown, its box
+clear of the corner readout's box. On the v12.10 fixture the two boxes
+intersect and the check prints both.
 
-Not verified: his own eye on the map; the CALLED and CLOSED lines, which
-were not in his note and stay as they were.
+Not verified: his own eye, and whether he wants the balance in the heading
+at all (it is one line to bring back); the other windows, which share the
+heading rule and are not opened one by one here.

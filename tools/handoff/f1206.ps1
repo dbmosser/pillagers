@@ -11,38 +11,30 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.06 CHECK, inserted before the v12.05 entry. The real button, pressed
-# through its own onclick, twice; then again with an item sold in between.
+# v12.06 CHECK, inserted before the v12.05 entry. The gate the floor asks
+# before firing a station is read with the character screen on and off.
 SubRx @'
-  {v:'12.05',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
+  {v:'12.05',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
 '@ @'
-  {v:'12.06',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
+  {v:'12.06',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
    run:function(){
-     if(typeof renderFreeKit!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the freebie kit';
-     var bad=[];
-     function btn(){ return document.querySelector('.fkbtn'); }
-     function press(){ var b=btn(); if(!b||!b.onclick) return 'no button'; try{ b.onclick(); }catch(e){ return 'threw '+(e&&e.message||e); } return null; }
+     if(typeof hubModalOpen!=='function'||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the floor gate';
+     var ttl=document.getElementById('title'); if(!ttl) return 'SKIP: no character screen element';
+     var bad=[], wasOn=ttl.classList.contains('on');
      try{
        __topClear(); __cleanProfile();
        G=null; keys={}; __showScreen('hub'); __hubEnter();
-       var P=__P();
-       P.stash=['medkit','plate','frag']; P.kit=['medkit','plate']; P.hotAssign={2:'medkit'}; P.freeKit=0; P.kitSaved=null;
-       renderFreeKit();
-       if(!btn()) return 'SKIP: the freebie kit button was not drawn';
-       var e1=press(); if(e1) bad.push('control: the first press failed ('+e1+')');
-       if(!P.freeKit) bad.push('control: the first press did not take the kit');
-       if((P.kit||[]).length) bad.push('control: the kit was not emptied while the free kit is taken (his rule)');
-       var e2=press(); if(e2) bad.push('control: the second press failed ('+e2+')');
-       if(P.freeKit) bad.push('control: the second press did not switch back');
-       if((P.kit||[]).join(',')!=='medkit,plate') bad.push('switching back did not restore the packing (kit '+(P.kit||[]).join(',')+')');
-       if(!P.hotAssign||P.hotAssign[2]!=='medkit') bad.push('switching back did not restore the belt plan');
-       // SOLD IN BETWEEN: only what is still in the stash comes back.
-       press(); P.stash=['medkit','frag']; press();
-       if((P.kit||[]).join(',')!=='medkit') bad.push('with the plate sold in between, switching back restored '+(P.kit||[]).join(',')+' and not medkit alone');
+       ttl.classList.remove('on');
+       var pb=document.getElementById('pausebox'); if(pb) pb.classList.remove('on');
+       if(hubModalOpen()) bad.push('control: with nothing open the gate already reads open, so it proves nothing');
+       ttl.classList.add('on');
+       if(!hubModalOpen()) bad.push('with the character screen on, the floor gate reads closed, so the stations behind it still take keys');
+       ttl.classList.remove('on');
+       if(hubModalOpen()) bad.push('control: with the character screen off again the gate still reads open');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ __topClear(); __cleanProfile(); }
+     finally{ try{ if(wasOn) ttl.classList.add('on'); else ttl.classList.remove('on'); }catch(_t){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.05',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
+  {v:'12.05',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

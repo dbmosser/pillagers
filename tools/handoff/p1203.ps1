@@ -11,25 +11,34 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: the "N notes logged" line is drawn at
-# y 26 against the right edge, inside the rectangle the enlarged corner
-# credits and XP readout (v11.78) now fills, so the two print over each other
-# from the first note he leaves, which is what the alpha card asks him to do.
+# FIRST TEN MINUTES AUDIT, 2026-09-06: dying with the FREEBIE KIT deleted the
+# Scav Pistol the player owns out of the armoury and billed him for it on the
+# card, because the death splice went by gun id alone and the free kit's
+# pistol is deliberately not flagged issued (an extraction keeps it). On a
+# fresh profile that pistol is the only gun there is.
 SubRx @'
-    ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,26); ctx.restore(); }
+    var _gunN=0,_gunVal=0;
+    for(j=0;j<gone.length;j++){
+      _gunN++;
+      if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
+      var wi=P.weapons.indexOf(gone[j].id);
+      if(wi>=0){ P.weapons.splice(wi,1);
 '@ @'
-    // v12.03: BELOW THE CORNER READOUT, not through it. y 26 sat inside the
-    // rectangle the v11.78 credits and XP readout now fills, so the line and
-    // the readout printed over each other from the first note he left. The
-    // CONDITIONS panel, which starts under the readout, starts under this too.
-    var _nly=Math.max(26,Math.ceil(topRightBottom())+LH(14));
-    ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,_nly); ctx.restore(); }
-'@
-
-SubRx @'
-    by=Math.max(by,Math.ceil((topRightBottom()+8)/_cz));
-'@ @'
-    by=Math.max(by,Math.ceil((topRightBottom()+8+((T.notes&&T.notes.length)?LH(20):0))/_cz));   // v12.03: and under the notes-logged line when there is one
+    var _gunN=0,_gunVal=0;
+    for(j=0;j<gone.length;j++){
+      // v12.03: ONLY A GUN THAT CAME OUT OF THE ARMOURY COMES OFF THE LIST, and
+      // the free kit's loaner is not a gun you lost. The splice went by id
+      // alone, so dying with the free kit's Scav Pistol (not flagged issued,
+      // because an extraction keeps it) deleted the pistol you own, the only
+      // gun a fresh profile has, and the card billed you for it. Provenance is
+      // on the slot, the flag the pickup path has read since the same fault
+      // was fixed there; a field-found gun never touches the armoury either.
+      var _egp=G.player, _egArm=!!((gone[j]===_egp.wep&&_egp.wepFromArmory)||(gone[j]===_egp.sec&&_egp.secFromArmory));
+      var _egFree=!!(G.freeKit&&!_egArm&&gone[j].id===FREEKIT_GUN);
+      if(_egFree) continue;   // out of the ledger entirely, as an issued loaner already is: no count, no price, no line
+      _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
+      var wi=_egArm?P.weapons.indexOf(gone[j].id):-1;
+      if(wi>=0){ P.weapons.splice(wi,1);
 '@
 
 # STAMPS.
@@ -38,9 +47,20 @@ var VER='12.02';
 '@ @'
 var VER='12.03';
 '@
+SubRx @'
+var WHATSNEW_VER='12.02';
+'@ @'
+var WHATSNEW_VER='12.03';
+'@
+SubRx @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+'@ @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'DYING WITH THE FREEBIE KIT NO LONGER DELETES THE SCAV PISTOL YOU OWN, and the loaner is not counted or billed as a gun you lost.',
+'@
 $cnt=([regex]::Matches($s,"now:'v12\.02:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.02 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.02:[^']*'",{ param($m) "now:'v12.03: from the 2026-09-06 first-ten-minutes audit, the notes-logged line in the raid HUD was drawn at y 26 inside the enlarged corner readout of v11.78, so the two printed over each other from the first note. It sits below the readout now. Check 12.03 logs a note, draws a frame with the canvas text call recorded, and requires the line under the bottom edge of the readout; fails on v12.02.'" })
+$s=[regex]::Replace($s,"now:'v12\.02:[^']*'",{ param($m) "now:'v12.03: from the 2026-09-06 first-ten-minutes audit, dying with the freebie kit deleted the Scav Pistol you own and billed you for it, because the death splice went by gun id and the free pistol is not flagged issued (an extraction keeps it). The splice now asks the slot whether the gun came out of the armoury, and the loaner is neither counted nor priced. Check 12.03 deploys with the free kit on a profile that owns one pistol, dies, and requires the pistol still owned and no gun counted lost; fails on v12.02.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

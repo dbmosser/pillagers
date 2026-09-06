@@ -11,20 +11,37 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.78 (the corner readout twice
-# the size): every station window stamps the same credits and XP into its
-# own heading (.modcur, pushed to the heading's right edge), and at 44px the
-# corner readout prints through the top of it. The v11.52 precedent for the
-# stash screen's own credits figure was to hide it, since the corner shows
-# the same two numbers at all times; the heading's balance goes the same way.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.75 (the hold-to-craft build):
+# deleting the button's onclick also deleted the only way a controller (the
+# pad presses controls with a synthetic click) or the keyboard (Enter on the
+# focused button) could craft, so with a pad crafting became impossible, not
+# merely un-holdable. A mouse click carries detail 1 or more; a pad's .click()
+# and a keyboard Enter carry detail 0. The click handler comes back and
+# answers only the synthetic kind, so a real click still spends nothing and
+# the hold is still the mouse's way. Also: the hold now dies when the trader
+# window is hidden (it was only checking that the button was still in the
+# page, and the window hides rather than detaches), the tooltip reads the
+# hold length from the constant it claims to, and the card stops describing
+# a SERVICE button the game cannot draw since wear went out at v9.43.
 SubRx @'
-  .modal h3{ display:flex; align-items:baseline; gap:12px; }
+    b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
+    b.onmouseleave=function(){ craftHoldCancel(); };
+    b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' (1 second)';
 '@ @'
-  .modal h3{ display:flex; align-items:baseline; gap:12px; }
-  /* v12.09: the heading's own balance sat under the corner readout once that
-     grew (v11.78); the corner shows the same two figures at all times, so the
-     heading no longer repeats them (the v11.52 rule for the stash screen). */
-  .modal h3 .modcur{ display:none; }
+    b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
+    b.onmouseleave=function(){ craftHoldCancel(); };
+    // v12.09: the pad presses a control with a synthetic click and the
+    // keyboard with Enter, both with detail 0; a real mouse click has detail
+    // 1 or more and still spends nothing, the hold is its way.
+    b.onclick=function(e){ if(e&&e.detail) return; btn.click(); };
+    b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' ('+CRAFT_HOLD+' second'+(CRAFT_HOLD===1?'':'s')+')';
+'@
+SubRx @'
+  if(!b||b.disabled||(b.isConnected===false)){ craftHoldCancel(); return; }
+'@ @'
+  // v12.09: and a button whose window has been hidden; the trader hides its
+  // modal rather than detaching it, so isConnected alone let a hold outlive it.
+  if(!b||b.disabled||(b.isConnected===false)||!b.offsetParent){ craftHoldCancel(); return; }
 '@
 
 # STAMPS.
@@ -42,15 +59,19 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
+  'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
 '@
+$cnt=([regex]::Matches($s," The same goes for the service button, which is the same control\.")).Count
+if($cnt -ne 1){ throw "service sentence matched $cnt times" }
+$s=[regex]::Replace($s," The same goes for the service button, which is the same control\.","")
+$n++
 $cnt=([regex]::Matches($s,"now:'v12\.08:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.08 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.08:[^']*'",{ param($m) "now:'v12.09: from the read-only review of the shipped v11.78, every station window stamped its own credits and XP into its heading and the enlarged corner readout printed through them. The heading balance is hidden; the corner shows the same two figures at all times (the v11.52 rule for the stash screen). The same build repairs check 11.52, which double-scaled the CONDITIONS box top and could not see an overlap. Check 12.09 opens the shop window and requires the heading balance not to be drawn where the readout is; fails on v12.08 where the two boxes intersect.'" })
+$s=[regex]::Replace($s,"now:'v12\.08:[^']*'",{ param($m) "now:'v12.09: from the read-only review of the shipped v11.75, the hold-to-craft build deleted the only way a controller (a synthetic click from the pad) could press CRAFT. A click handler that answers only synthetic clicks (detail 0) is back; a real mouse click still spends nothing. The hold also dies when the trader window is hidden, the tooltip reads CRAFT_HOLD, and the card no longer describes a SERVICE button the game cannot draw. Check 12.09 crafts through a synthetic click (the pad press), requires a detail-1 click to spend nothing, and requires a hold to die when the window is hidden; fails on v12.08.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
-$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count + 1
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count + 2
 if ($n -ne $want) { throw "expected $want edits, made $n" }
 [IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
 Write-Output "OK, $n edits applied"
