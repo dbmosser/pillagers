@@ -27,8 +27,14 @@ shout is silent at 1.5 s left; and requires the HUD draw to read cookShout.
 On the v11.54 fixture there is no cookShout and the check fails on its first
 line.
 
+WHAT COUNTS UP: nothing. Read on 2026-09-06 for his "COUNT down, NOT UP"
+line. The in-hand readout prints the fuse MINUS the elapsed cook, so it runs
+1.1 to 0.0; its bar is drawn with 1 minus the fraction, so it shrinks; and a
+grenade already on the ground draws a dot with a blinking spark and no timer
+at all. There is no rising number anywhere in the throwable path. The most
+likely thing he saw is a fuse so short that the tenths blur past: 1.1 seconds
+is eleven printed values at a tenth each, most of a single second.
+
 Not verified: his own eye, and whether the shout is readable in the last
 second of a 1.1 second fuse, which it barely can be; the fuse length itself,
-which is his ruling; what he saw counting UP, since the only cook readout
-counts down (it may have been the thrown grenade's fuse or the bar's fill
-direction, which needs his screenshot).
+which is his ruling and the one number that would answer his note properly.

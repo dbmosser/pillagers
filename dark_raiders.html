@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.53';
+var VER='11.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.53';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.53';
+var WHATSNEW_VER='11.54';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'EXTRACTION POINTS SAY WHICH STATE THEY ARE IN. Sound the alarm to begin the countdown; N seconds until extraction begins; extract now, N seconds until it ends; closed for the remainder of this raid. Your four lines, with the live clock.',
   'SPRINT AND ROLL STAND YOU UP. Holding Shift while crouched used to do nothing; now it leaves the crouch and sprints. A roll leaves the crouch too.',
   'YOUR CREDITS AND XP ARE IN THE TOP RIGHT CORNER, ALWAYS. In the Undercroft, in a raid, under every window. The stash screen no longer prints its own credits figure; the corner has it.',
   'THE SECTOR PAGE NAMES THE RIGHT MAP AGAIN. The line of facts under each map could end with the other map name, because the two lines share a digit shape and the reworded text was matched by shape. Each map keeps its own line now.',
@@ -22638,6 +22639,16 @@ function hudDodge(sx,sy,halfW,hgt,tail){
   var out=sy-lift;
   return (out-hgt<4)?sy:out;
 }
+// v11.54, HIS NOTE: the four states of an extraction point, in his words.
+// Nothing called yet; called and inbound (the beacon clock); landed and open
+// for the hold window (the ship clock); closed for the raid.
+function zoneBadge(z){
+  if(!z.open) return 'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID';
+  if(z.beaconT===null||z.beaconT===undefined) return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
+  if(z.beaconT>0) return 'EXTRACTION POINT - '+Math.max(0,Math.ceil(z.beaconT))+'S UNTIL EXTRACTION BEGINS';
+  if(z.hold!==null&&z.hold!==undefined) return 'EXTRACTION POINT - EXTRACT NOW! '+Math.max(0,Math.ceil(z.hold))+'S UNTIL EXTRACTION ENDS';
+  return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
+}
 function drawHUD(){
   var p=G.player,T=G.tel,i;
   hudClampAll();
@@ -23153,21 +23164,18 @@ ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
     // this one will not call; from further off it is noise on a screen that already has
     // a compass pointing at the nearest way out.
     if(!za&&dist(p,zz2)>800) continue;
-    var zlab=za?'EXTRACTION - OPEN':'EXTRACTION - CLOSED';
+    var zlab=zoneBadge(zz2);   // v11.54, HIS NOTE: his four states, his words
     ctx.font=FS(TYPE.label);
     var zwid=ctx.measureText(zlab).width;
     // v10.90, HIS NOTE: this is the label in his screenshot, drawn straight
     // through SUPPORT MG. It is lifted clear of the corner readout instead.
-    var zsy=hudDodge(zs.x,zs.y,zwid/2+6,LH(15),za?0:LH(13));
+    var zsy=hudDodge(zs.x,zs.y,zwid/2+6,LH(15),0);
     ctx.fillStyle='rgba(6,9,13,.78)';
     ctx.fillRect(zs.x-zwid/2-6,zsy-LH(11),zwid+12,LH(15));
     ctx.fillStyle=za?'#4de3d0':'rgba(168,180,193,.95)';
     ctx.fillText(zlab,zs.x,zsy);
-    if(!za){
-      ctx.font=FS(TYPE.micro);
-      ctx.fillStyle='rgba(168,180,193,.7)';
-      ctx.fillText('this one will not call',zs.x,zsy+LH(13));
-    }
+    // v11.54: the closed whisper ("this one will not call") is inside his
+    // CLOSED FOR THE REMAINDER OF THIS RAID line now.
   }
   ctx.textAlign='left';
   // projected world labels
@@ -23968,7 +23976,7 @@ var _slp=w2s(p.x,66,p.y);
       // Standing, it sits WELL above centre. At H/2-10 the box landed squarely on
       // the operator, who is drawn at the centre of the screen, so the one moment
       // you most need to see yourself was the one moment a panel covered you.
-      // It clears the world's own EXTRACTION - OPEN badge as well, which sits at
+      // It clears the world's own extraction point badge as well, which sits at
       // the ring, and the ring is always under you when this line is showing.
       // Downed, it goes below the bleed-out bar and the self-revive line instead,
       // because those are the other two things you need at once.
@@ -28145,7 +28153,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.53: HIS NOTES of 2026-09-05, sprint and roll leave the crouch. The crouch toggle vetoed the sprint key so Shift while crouched did nothing, and tryRoll never touched the toggle. Sprint with movement input clears the toggle in the same frame and tryRoll clears it. Check 11.53 crouches, holds Shift with W through real frames and requires the crouch gone and sprinting on; crouches and rolls and requires the crouch gone with the roll started; controls that walking without Shift keeps the crouch.',
+  now:'v11.54: HIS NOTE of 2026-09-05, EXTRACTION - OPEN is confusing. The ring badge said OPEN for three situations and CLOSED with a whisper under it. zoneBadge(z) owns his four lines (sound the alarm to begin countdown; NS until extraction begins; extract now! NS until extraction ends; closed for the remainder of this raid) with the live beacon and hold clocks, and the badge draws it. Check 11.54 stages a zone through all four states, requires each of his lines with the right seconds, and controls that the HUD draw reads zoneBadge.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

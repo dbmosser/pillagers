@@ -5440,6 +5440,22 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.54',what:'an extraction point badge names one of his four states in his words (sound the alarm to begin countdown; N s until extraction begins; extract now, N s until it ends; closed for the remainder of this raid) with the live seconds, and the HUD draws that badge',
+   run:function(){
+     if(typeof zoneBadge!=='function') return 'the extraction point badge still says OPEN or CLOSED; there is no state function to read';
+     if(typeof drawHUD!=='function') return 'SKIP: no HUD draw in this build';
+     var bad=[], oldWord=['EXTRACTION',' - OPEN'].join('');
+     function want(z,exp,what){ var got=String(zoneBadge(z)); if(got!==exp) bad.push(what+' reads "'+got+'" and not "'+exp+'"'); }
+     want({open:false,beaconT:null,hold:null},'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID','a closed point');
+     want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','an open point nobody has called');
+     want({open:true,beaconT:17.2,hold:null},'EXTRACTION POINT - 18S UNTIL EXTRACTION BEGINS','a called point with the beacon inbound');
+     want({open:true,beaconT:0,hold:11.4},'EXTRACTION POINT - EXTRACT NOW! 12S UNTIL EXTRACTION ENDS','a landed point in its hold window');
+     want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','a point the extraction has left');
+     // CONTROL: the HUD draw reads the function, or the words above are never on screen.
+     var src=''; try{ src=drawHUD.toString(); }catch(_s){}
+     if(src.indexOf('zoneBadge(')<0) bad.push('control: the HUD draw does not read zoneBadge, so the badge on screen is not these words');
+     if(src.indexOf(oldWord)>=0) bad.push('control: the HUD draw still carries the old '+oldWord+' badge');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.53',what:'holding Shift with movement while crouched leaves the crouch and sprints, a roll leaves the crouch, and walking without Shift keeps it (his notes of 2026-09-05)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__loop&&window.__keys&&window.__runPrep)) return 'SKIP: this fixture cannot drive the player';

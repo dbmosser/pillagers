@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.54 - HIS NOTE: AN EXTRACTION POINT SAYS WHICH STATE IT IS IN
+
+His in-run note of 2026-09-05, 53 seconds into his second run: "'EXTRACTION -
+OPEN' IS CONFUSING... POSSIBLE STATES FOR AN EXTRACTION POINT SHOULD INSTEAD
+BE" and four lines. The ring badge above every extraction point said OPEN for
+three different situations, nothing called yet, called with the beacon
+inbound, and landed and waiting for you, and said CLOSED with a whisper under
+it ("this one will not call"). The one word that mattered, what to DO at this
+ring right now, was not on it.
+
+THE BUILD. One function, zoneBadge, owns his four lines and the badge draws
+from it: EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN when nothing
+has been called; EXTRACTION POINT - 18S UNTIL EXTRACTION BEGINS while the
+beacon clock runs; EXTRACTION POINT - EXTRACT NOW! 12S UNTIL EXTRACTION ENDS
+through the hold window; EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS
+RAID once the ring has shut. His words, with the live seconds where he wrote
+30S. The closed whisper is gone, because his CLOSED line says it. The map's
+own short labels (CALLED 20s, OPEN TO EXTRACT 12s, STAYS OPEN, closes in) are
+untouched; his note was about the badge in the world.
+
+MEASURED. Check 11.54 stages a point through all four states and a fifth (the
+extraction has left, so it is callable again) and requires each of his lines
+with the right rounded seconds; a control reads the HUD draw and requires it
+to read zoneBadge and to carry no trace of the old OPEN badge. On the v11.53
+fixture there is no zoneBadge and the check fails on its first line.
+
+Not verified: his own eye; the badge's width at his HUD scale, since his
+longest line is about three times the old one and hudDodge only lifts it
+clear of the corner readout; the pad and the map labels, which did not change.
 ## v11.53 - HIS NOTES: SPRINT AND ROLL LEAVE THE CROUCH
 
 His in-run notes of 2026-09-05, at 266 and 269 seconds of his first run:
