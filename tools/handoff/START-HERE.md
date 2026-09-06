@@ -1,5 +1,72 @@
 # START HERE (written 2026-09-05, handoff from Fable to Opus)
 
+## HANDOFF TO FABLE, 2026-09-06 (second time; read this block first)
+
+**HIS FIVE NEW ORDERS THIS MORNING, in the order he gave them.** Two of them are
+BALANCE changes; he set the no-balancing-before-alpha rule and has overruled it
+here himself, so move ONLY the dials he named and record before and after.
+
+**STATE:** HEAD is v11.73 (e797309). The tree has **v11.74 APPLIED** (his note:
+EXTRACTION IN PROGRESS did not say whether to move; now EXTRACT NOW with the
+letter and seconds left). It passed parse, its check four times, __verifySafe,
+and its control on fx1173. Its FULL CORPUS is running on tab "seed". FIRST
+ACTION: poll `JSON.stringify(window.__PROG)`; when green with only the two
+known skips, `bash tools/handoff/ship.sh commit 1174 cm1174.txt`, then bump
+the HEAD line in memory dark-raiders-handoff-state.md.
+
+**THEN, IN THIS ORDER:**
+
+1. **1175 HOLD-TO-CRAFT.** His words: "you should have to hold the craft button
+   for just a moment (1s?) to craft the item and the button itself should act
+   like a status bar that fills up". p1175.ps1 is WRITTEN: CRAFT_HOLD=1.0 s,
+   the hold is stepped by the frame loop (craftHoldStep(dt) in the hub branch
+   of loop()), the fill is a gradient on the button's backgroundImage so an
+   untouched button looks unchanged, mouseup anywhere cancels, and a plain
+   click no longer crafts. The SERVICE button is the same control and behaves
+   the same. STILL TO WRITE: f1175 (check: start a hold on a stub button, step
+   0.5 s and require nothing fired and a partial fill, step past 1.0 and
+   require exactly one firing, cancel mid-hold and require none; control that
+   renderCraftDetail's source contains craftHoldStart and no longer assigns a
+   click that crafts), and d/a/cm1175. Insert the check before the v11.74 entry
+   whose what-line is in f1174.ps1.
+2. **1176 SCAV PISTOL CHEAPER.** p1176 and f1176 are WRITTEN and the check's
+   what-line is already what f1177 must anchor on. SHOP row pistol 3600 -> 1800
+   (MY number, half; he gave none). STILL TO WRITE: d/a/cm1176. The f1176
+   anchor names the 11.75 what-line exactly as: "the craft button is a hold: it
+   fills as you hold it, nothing is spent until it is full, and letting go early
+   spends nothing" -- f1175 MUST use that same what-line.
+3. **1177 GRENADES: BIGGER RADIUS, MORE DAMAGE.** Not drafted. My numbers:
+   fragR 150 -> 190 in DEF (anchor `smokeR:165,fragR:150,healSolo:1`) and the
+   inline fallback `CFG.fragR===undefined?150` -> 190 in explodeFrag; player
+   damage `60*(1-dp/R)+12` -> `80*(1-dp/R)+18` (centre 98, so a full-health man
+   at the epicentre lives by two points, on purpose, because he died to his own
+   charge twice); enemy damage `85*(1-Math.max(0,de-e.r)/R)+15` -> `115*(...)+25`
+   (centre 140). Leave the wall formula alone but SAY in the entry that a wider
+   R breaks walls over a wider area as a consequence. Check: stage an entity at
+   a known distance, call explodeFrag, require the hp loss to match the new
+   formula and exceed the old one; and read DEF.fragR.
+4. **1178 THE CORNER READOUT IS TOO SMALL IN THE UNDERCROFT.** His words:
+   "credits and xp in the corner in the undercroft are so small that they are
+   useless". The v11.52 readout is 15px in a 24px band because in a RAID the
+   CONDITIONS box starts at LH(30) and it must stay above it. In the Undercroft
+   there is no such box. Fix: syncTopRight already runs every frame; have it
+   toggle a class on #topright when state==='hub' (and no G), and add CSS
+   `#topright.hub{font-size:28px;height:44px;line-height:44px}` with the small
+   labels scaled to match; the raid size is unchanged. Check: in the hub the
+   element's bounding height is at least 40px and its font-size at least 26px;
+   in a raid it is still 24px tall and still clear of the CONDITIONS box
+   (reuse the clearance test from check 11.52).
+
+**STILL OPEN AFTER THOSE, from the 2026-09-06 menu audit:** the freebie kit
+wiping a packed backpack and belt plan with no undo; the safe pocket accepting
+a grenade it can never bank while reading 1/1; the floor taking station keys
+behind the character screen. AUDIT.md has the fixes.
+
+**AND HIS RULING STILL WANTED:** the frag fuse at 1.1 seconds, which is why the
+grenade kills him rather than the warning being late. If he gives a number it
+is one line, and it should probably ship WITH 1177, since a bigger blast on a
+1.1 s fuse makes self-kills easier.
+
 ## FINAL RUN BEFORE ALPHA (handoff to Fable, 2026-09-06)
 
 **STATE: HEAD is v11.72 (8ac8eec) and THE TREE IS CLEAN.** Nothing is

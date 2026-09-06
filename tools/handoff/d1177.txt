@@ -1,0 +1,36 @@
+## v11.77 - HIS ORDER: FRAG CHARGES REACH FURTHER AND HIT HARDER
+
+His order of 2026-09-06: "grenades should have larger explosion radius and do
+more damage". He set the rule that no dial moves before alpha, on 2026-09-04,
+and he has overruled it for these dials himself. Nothing else moves.
+
+THE NUMBERS. Radius 150 to 190 units, so the area of the blast is about six
+tenths larger. To a machine or a pillager, 115 at the centre falling to 25 at
+the edge; it was 85 falling to 15. To him, 80 at the centre falling to 18; it
+was 60 falling to 12. The centre figure for him is 98 on purpose: a man at full
+health standing on his own charge lives by two points, because he died to his
+own charge twice last night and the fuse is still 1.1 seconds, which is his
+ruling to make and has not been made. The wall damage formula is untouched, but
+it is applied inside the radius, so a wider radius reaches more wall; two
+charges still open a building, one now scars a little more of it.
+
+THE SAVED DIAL. The radius is a config dial that rides in every save, so
+changing the default alone would reach nobody who has ever saved, which is
+everybody. The config version goes 17 to 18 and a saved radius still sitting on
+the old 150 is moved to 190 on load; a radius he set himself in the console is
+left where he put it, which is the discipline that block records for every
+change before it.
+
+MEASURED. Check 11.77 reads the default radius and requires 190; deploys,
+finds a pillager with a clear line to a point forty units away, stands the
+player far outside any blast, lets the charge off there, and requires the
+pillager's loss to match the new formula within a point and a half and to
+exceed the old formula by at least five, so the numbers cannot have moved
+nowhere; then drives the real loader with a version 17 save carrying 150 and
+requires 190 after load, and with a hand-set 140 and requires it untouched. On
+the v11.76 fixture the default reads 150 and the loss matches the old formula,
+and the check names both.
+
+Not verified: his own play, and whether these are the numbers he wants, which
+are five figures in two lines; the fuse; how much more wall a raid now loses to
+grenades, which is a consequence and not a dial.

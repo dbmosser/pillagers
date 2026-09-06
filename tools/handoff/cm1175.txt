@@ -1,0 +1,11 @@
+v11.75: his order, hold the craft button and the button is the bar
+
+Hold the CRAFT button for a second and it fills from the left; when it is
+full the craft happens, once. Let go early, anywhere on the page, and nothing
+is spent. A plain click no longer crafts. The hold runs on the game clock
+through the frame loop, and the fill is a background image so an untouched
+button looks as it did. SERVICE is the same control. Check 11.75 steps the
+hold by hand through the real functions and reads the panel source for the
+wiring; fails on v11.74.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

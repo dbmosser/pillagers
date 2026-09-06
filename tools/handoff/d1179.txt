@@ -1,0 +1,34 @@
+## v11.79 - HIS ORDER: GREEN AND BLUE GUNS ON THE CRAFTING BENCH
+
+His order of 2026-09-06: "add some decent green and blue guns to crafting, make
+them moderately expensive to craft".
+
+WHAT THIS REVERSES. On 2026-08-29 he ordered gun recipes off the bench: guns
+were to come only from the Peddler and the surface, and that was confirmed
+true at v9.84, when the bench held eight recipes and not one gun. This order
+puts two colours back. Green and blue are on the bench; purple and gold stay
+where he left them.
+
+THE BUILD. Four recipes, the guns a new player would actually want. In green,
+the Compact SMG and the Burst Carbine. In blue, the Auto Rifle and the Riot
+Scattergun. Each obeys the rule the recipe table records for every entry above
+it: the parts are worth more than the gun sells for, so no recipe prints
+money, and less than buying the gun, so no recipe is a trap. In parts: the SMG
+1300 against 900 sold, the Carbine 1400 against 1100, the Rifle 1900 against
+1500, the Scattergun 1800 against 1300. That is moderately expensive: a good
+haul or two of components, boards and servos. No contract item is an input, so
+the contract board's shopping list is untouched. The crafting code needed no
+change; it pushes whatever a recipe makes into the stash, and a gun in the
+stash is already a thing the game handles.
+
+MEASURED. Check 11.79 reads the table and requires exactly four gun recipes,
+two green and two blue and none of any other colour; requires each to sit
+inside the price window and to ask for no contract item; then puts the SMG's
+parts in the stash, redraws the bench, presses the real row's button, and
+requires the gun in the stash with every part gone. On the v11.78 fixture the
+bench holds no gun at all and the check says so.
+
+Not verified: his own eye on the bench, and whether these four are the guns he
+meant by "decent"; whether the prices feel moderate in play, which is his to
+say and one number per recipe; the wear a crafted gun starts with, which is
+the same as a bought one.

@@ -1,0 +1,28 @@
+## v11.78 - HIS NOTE: THE CORNER READOUT WAS TOO SMALL TO BE WORTH HAVING
+
+His note of 2026-09-06: "credits and xp in the corner in the undercroft are so
+small that they are useless".
+
+WHY IT WAS SMALL. The v11.52 readout sits in the top right at all times, in a
+raid and on the floor. In a raid the CONDITIONS box starts thirty units down
+from the top, so the readout was drawn at 15px in a 24px band to stay above it.
+The floor has no CONDITIONS box, and the same 15px there is a whisper in the
+corner of a big dark room.
+
+THE BUILD. On the Undercroft floor the readout is twice the size, 30px type in
+a 46px band, a little further from the corner; in a raid it keeps the compact
+size, because that band is what fits. It is the same element with one class,
+toggled by the writer that already runs every frame and on every save, and only
+written when the answer changes. The stash screen's top row keeps a wider
+margin so its CLOSE button stays clear of the bigger readout.
+
+MEASURED. Check 11.78 enters the floor, saves so the writer runs, and requires
+the floor class, at least 26px of type and at least 40px of height; then
+deploys, draws, saves, and requires the class gone, the height back under 28px,
+and the readout's bottom above the CONDITIONS box measured through that box's
+own zoom, the same clearance test v11.52 made. On the v11.77 fixture the floor
+size never appears and the check names the 15px he called useless.
+
+Not verified: his own eye, at his monitor and his HUD scale; the ascent and
+character screens, which sit in hub state and so show the floor size, and were
+not measured for collisions; 1440p and 2160p.

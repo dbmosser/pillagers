@@ -1,0 +1,36 @@
+## v11.75 - HIS ORDER: HOLD THE CRAFT BUTTON, AND THE BUTTON IS THE BAR
+
+His order of 2026-09-06: "you should have to hold the craft button for just a
+moment (1s?) to craft the item and the button itself should act like a status
+bar that fills up".
+
+THE BUILD. The CRAFT button in the detail panel is a hold. Press and keep the
+button down and it fills from the left over one second, amber over its own
+colour; when it is full the craft happens, once. Let go before it is full and
+nothing is spent and the fill drains to nothing. Let go anywhere on the page,
+not only on the button, and the same happens, so a release off the edge cannot
+leave a hold filling towards a purchase he did not make. A plain click no longer
+crafts anything. The SERVICE button for gun repair is the same control drawn
+with a different word, and behaves the same way; its tooltip says so.
+
+The hold is stepped by the frame loop, on the same clock everything else in the
+game runs on, rather than by wall time, so it pauses when the game pauses and a
+check can step it exactly. The fill is painted as a background image only, so
+an untouched button keeps its own colour and looks exactly as it did.
+
+One second is his number with a question mark on it; CRAFT_HOLD is that one
+number and moves in one line.
+
+MEASURED. Check 11.75 starts a hold on a stub button through the same function
+the real button uses, steps the clock to half the hold and requires nothing
+fired and a half fill on the button, steps past the full hold and requires
+exactly one firing and no fill left, starts again and cancels at seven tenths
+and requires nothing fired and nothing left on the button, and requires a
+disabled button not to craft however long it is held. Two controls read the
+panel's own source and require it to wire the hold and no longer to craft on a
+click. On the v11.74 fixture there is no hold to drive and the check says the
+button is a plain click.
+
+Not verified: his own hand and eye, which is what "just a moment" is about; the
+pad, which reaches CRAFT through a button press it cannot hold; whether the
+fill colour reads against the button on his monitor.

@@ -5732,6 +5732,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.74',what:'the boarding window tells him to act: EXTRACT NOW with the ring letter and the seconds left, in both the banner above the belt and the label on an off-screen ring, and nowhere does it say the old in-progress wording',
+   run:function(){
+     if(typeof extractNowLine!=='function') return 'the boarding window has no line of its own to read; it is still written inline';
+     if(typeof drawHUD!=='function') return 'SKIP: no HUD draw in this build';
+     var bad=[], stale=['IN ','PROGRESS'].join('');
+     var line=String(extractNowLine('B',11.4));
+     // HIS WORDS, and the two things he needs from the line.
+     if(line.indexOf('EXTRACT NOW')<0) bad.push('the boarding window reads "'+line+'" instead of telling him to extract now');
+     if(line.indexOf('B')<0) bad.push('the line does not name which ring: "'+line+'"');
+     if(line.indexOf('12')<0) bad.push('the line does not round the seconds left up to 12: "'+line+'"');
+     if(line.indexOf(stale)>=0) bad.push('the line still carries the old wording: "'+line+'"');
+     // AND ZERO SECONDS DOES NOT GO NEGATIVE.
+     var z=String(extractNowLine('A',-3));
+     if(z.indexOf('-')>=0) bad.push('with the window already gone the line reads "'+z+'"');
+     // CONTROLS: both draw sites read the helper, and neither still carries the
+     // old phrase, its comment included.
+     var src=''; try{ src=drawHUD.toString(); }catch(_s){}
+     var uses=src.split('extractNowLine(').length-1;
+     if(uses<2) bad.push('control: the HUD draw reads the line in '+uses+' place(s), so the banner and the ring label can still disagree');
+     if(src.indexOf(stale)>=0) bad.push('control: the HUD draw still carries the old wording somewhere');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.73',what:'a character who has never saved still has a name, and the character screen does not read undefined beside their first raid',
    run:function(){
      if(!window.__P) return 'SKIP: this fixture cannot reach the profile';

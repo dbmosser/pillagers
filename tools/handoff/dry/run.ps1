@@ -11,37 +11,35 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.73 CHECK, inserted before the v11.72 entry.
+# v11.74 CHECK, inserted before the v11.73 entry. The stale phrase is assembled
+# from pieces so this check never matches its own text, and the draw sites are
+# read off drawHUD, whose SOURCE includes its comments, so the comment that
+# recorded the old wording is checked for too.
 SubRx @'
-  {v:'11.72',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
-'@ @'
   {v:'11.73',what:'a character who has never saved still has a name, and the character screen does not read undefined beside their first raid',
+'@ @'
+  {v:'11.74',what:'the boarding window tells him to act: EXTRACT NOW with the ring letter and the seconds left, in both the banner above the belt and the label on an off-screen ring, and nowhere does it say the old in-progress wording',
    run:function(){
-     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
-     var bad=[], prof, keepRuns, keepCred;
-     try{
-       __topClear(); __cleanProfile();
-       prof=__P();
-       // THE FIX: the name is born with the profile, not handed out by the loader.
-       if(typeof prof.pname!=='string'||!prof.pname) bad.push('a profile that has never been saved has no name (pname is '+(typeof prof.pname)+'), so the loader is the only thing that can give it one and a brand new player never meets the loader');
-       // AND THE CONSEQUENCE: the line that names him once he has a raid behind him.
-       if(typeof titleRefresh==='function'){
-         keepRuns=prof.runs; keepCred=prof.credits;
-         prof.runs=1; prof.credits=900;
-         try{ titleRefresh(); }catch(_t){}
-         var sub=document.getElementById('titlesub'), txt=sub?String(sub.textContent||''):'';
-         if(txt&&txt.indexOf('undefined')>=0) bad.push('the character screen reads "'+txt.slice(0,60)+'"');
-         // CONTROL: that line really is the one that carries the name, or the
-         // absence of "undefined" above proves nothing.
-         if(txt&&txt.indexOf(String(prof.pname))<0) bad.push('control: the character screen does not carry the name at all, so this line is not the one that shows it: "'+txt.slice(0,60)+'"');
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{
-       try{ var pf=__P(); if(keepRuns!==undefined) pf.runs=keepRuns; if(keepCred!==undefined) pf.credits=keepCred; }catch(_r){}
-       __topClear(); __cleanProfile();
-     }
+     if(typeof extractNowLine!=='function') return 'the boarding window has no line of its own to read; it is still written inline';
+     if(typeof drawHUD!=='function') return 'SKIP: no HUD draw in this build';
+     var bad=[], stale=['IN ','PROGRESS'].join('');
+     var line=String(extractNowLine('B',11.4));
+     // HIS WORDS, and the two things he needs from the line.
+     if(line.indexOf('EXTRACT NOW')<0) bad.push('the boarding window reads "'+line+'" instead of telling him to extract now');
+     if(line.indexOf('B')<0) bad.push('the line does not name which ring: "'+line+'"');
+     if(line.indexOf('12')<0) bad.push('the line does not round the seconds left up to 12: "'+line+'"');
+     if(line.indexOf(stale)>=0) bad.push('the line still carries the old wording: "'+line+'"');
+     // AND ZERO SECONDS DOES NOT GO NEGATIVE.
+     var z=String(extractNowLine('A',-3));
+     if(z.indexOf('-')>=0) bad.push('with the window already gone the line reads "'+z+'"');
+     // CONTROLS: both draw sites read the helper, and neither still carries the
+     // old phrase, its comment included.
+     var src=''; try{ src=drawHUD.toString(); }catch(_s){}
+     var uses=src.split('extractNowLine(').length-1;
+     if(uses<2) bad.push('control: the HUD draw reads the line in '+uses+' place(s), so the banner and the ring label can still disagree');
+     if(src.indexOf(stale)>=0) bad.push('control: the HUD draw still carries the old wording somewhere');
      return bad.length?bad.join('; '):null; }},
-  {v:'11.72',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
+  {v:'11.73',what:'a character who has never saved still has a name, and the character screen does not read undefined beside their first raid',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

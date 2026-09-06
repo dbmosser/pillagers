@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.73';
+var VER='11.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.73';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.73';
+var WHATSNEW_VER='11.74';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE BOARDING WINDOW SAYS EXTRACT NOW. It used to say EXTRACTION IN PROGRESS, which reads as something happening without you rather than the one moment you have to be in the ring holding E.',
   'A BRAND NEW CHARACTER HAS A NAME. Before this, someone playing for the first time had none until the game had saved and loaded once, and the character screen read "undefined" beside their first raid.',
   'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
   'THE [+] ON A COLLAPSED PILLAGER BOARD EXPANDS IT AGAIN. The resize grip had grown over the glyph on the folded board, so the click began a resize you could not see and the board stayed shut.',
@@ -22763,6 +22764,12 @@ function cookShout(p){
   var left=FRAG_FUSE-(p.cookT||0);
   return left<=1.0?'COOKED GRENADE! THROW GRENADE NOW':null;
 }
+// v11.74, HIS NOTE: the one line that says the window is open and he must move.
+// Both places that announce it read from here, so they cannot drift apart, and
+// the seconds are named as what is LEFT rather than a bare number.
+function extractNowLine(letter,secs){
+  return 'EXTRACT NOW!  '+letter+'  '+Math.max(0,Math.ceil(secs))+'S LEFT';
+}
 function drawHUD(){
   var p=G.player,T=G.tel,i;
   hudClampAll();
@@ -23395,7 +23402,7 @@ else if(nc2.tag) ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+String(nc2.ta
     ctx.fillStyle=_rHold?'#7fc4a0':'#4de3d0';
     // v8.68, his wording, same as the banner.
     ctx.fillText(_rHold?
-      ('EXTRACTION IN PROGRESS!  '+extLetter(RZ)+'  '+Math.max(0,Math.ceil(RZ.hold))+'s'):
+      extractNowLine(extLetter(RZ),RZ.hold):
       ('EXTRACT '+extLetter(RZ)+' INBOUND '+Math.ceil(RZ.beaconT)+'s'),rs.x,rs.y);
     ctx.textAlign='left';
   }
@@ -23888,8 +23895,10 @@ ctx.restore();
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
     var holding=G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined;
     ctx.fillStyle=holding?(inRing?'#4de3d0':'#ff5a4a'):(inRing?'#4de3d0':'#ffc04a');
-    // v8.68, his wording: the boarding window is EXTRACTION IN PROGRESS, not OPEN.
-    ctx.fillText(holding?('EXTRACTION IN PROGRESS!  '+_exL+'  '+Math.max(0,Math.ceil(G.shipHold))+'s'):('EXTRACT '+_exL+' INCOMING  '+Math.ceil(G.beaconT)+'s'),W/2,_exBan);
+    // v8.68 named this window for him rather than calling it OPEN. v11.74, his
+    // note: that name read as something happening elsewhere, so it tells him to
+    // move instead, in the words he gave for the ring badge at v11.54.
+    ctx.fillText(holding?extractNowLine(_exL,G.shipHold):('EXTRACT '+_exL+' INCOMING  '+Math.ceil(G.beaconT)+'s'),W/2,_exBan);
     // v6.41, his note: no bar. The line above it is already a countdown in seconds.
     if(!inRing){
 var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active));
@@ -28287,7 +28296,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.73: a character who has never saved had no name. The default profile literal carries no pname and the line that fills it in sits inside applyLoadedProfile, which only runs when a save is found, so it could never help a brand new player. After a first raid the character screen read undefined beside the run count, since that line only prints the name once runs is above zero. pname is born set in the literal now, like dayMigrated. From the 2026-09-06 menu audit.',
+  now:'v11.74: HIS NOTE of 2026-09-06, EXTRACTION IN PROGRESS at the bottom of the screen did not say whether the extraction was coming or was his to take. It marks the boarding window, the one moment he must be in the ring holding E. The wording was his own from v8.68, chosen over OPEN. Both places that announce the window now read one helper, extractNowLine, which says EXTRACT NOW with the ring letter and the seconds LEFT, the words he gave for the ring badge at v11.54. Check 11.74 reads the helper and requires his words, the letter and the seconds, and controls that both draw sites use it and that the phrase IN PROGRESS is gone from them.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

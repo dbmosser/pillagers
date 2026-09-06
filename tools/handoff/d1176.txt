@@ -1,0 +1,22 @@
+## v11.76 - HIS ORDER: THE SCAV PISTOL IS CHEAPER IN THE SHOP
+
+His order of 2026-09-06: "scav pistol should be cheaper in the shop".
+
+WHAT IT WAS. 3600 credits, against a starting purse of 900. The weakest gun on
+the shelf, which every player already owns one of, cost four raids of saving.
+The Compact SMG beside it is 13200.
+
+THE BUILD. 1800. That is my number and not his; he gave none. Half of what it
+was, one good haul rather than four, and still far under the SMG so the ladder
+on that shelf is unchanged. He set the rule that no dial moves before alpha,
+on 2026-09-04, and he has overruled it for this dial himself; nothing else in
+the shop moves.
+
+MEASURED. Check 11.76 reads the shop row and requires 1800, requires every
+other gun on the shelf to still cost more than the pistol, and requires the
+SMG to be exactly where it was, so more than the one dial cannot have moved.
+On the v11.75 fixture the row reads 3600 and the check names it.
+
+Not verified: whether 1800 is the number he wants, which is one edit; the
+Peddler's own price for a pistol on the surface, which is a separate rule
+(pedPrice) and untouched.

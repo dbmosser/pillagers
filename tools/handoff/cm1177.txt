@@ -1,0 +1,11 @@
+v11.77: his order, frag charges reach further and hit harder
+
+Radius 150 to 190. To a machine or a pillager 115 at the centre falling to
+25, was 85 and 15. To him 80 falling to 18, was 60 and 12, so a full man on
+his own charge lives by two points; the fuse is still 1.1 seconds and his
+ruling on it is pending. He overruled his own no-balancing rule for these
+dials. The radius is a saved dial, so cfgv goes 17 to 18 with a migration
+that moves a saved 150 to 190 and leaves a hand-set value. Check 11.77 stages
+a real blast against a pillager and drives the real loader; fails on v11.76.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

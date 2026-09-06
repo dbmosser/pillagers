@@ -1,0 +1,9 @@
+v11.76: his order, the Scav Pistol is cheaper in the shop
+
+It was 3600 credits against a 900 credit start. Now 1800, my number since he
+gave none: half, one good haul rather than four, still far under the SMG. He
+overruled his own no-balancing rule for this dial; nothing else in the shop
+moves. Check 11.76 requires the price, the ladder and the SMG unchanged;
+fails on v11.75.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
