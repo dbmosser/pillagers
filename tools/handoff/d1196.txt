@@ -1,0 +1,31 @@
+## v11.96 - HIS ORDER: A BELT KEY TAKES HALF THE STACK, AND SAYS HOW MANY
+
+His message of 2026-09-06, about 14:15: "when I hotbar an item it should
+automatically move half of the stash stack unless I indicate the quantity
+-- e.g. how am I supposed to take multiple grenades, heals, on tac belt
+etc. -- there's no quantity indicated".
+
+THE FINDING. Putting an item on a tactical belt key packed exactly one of
+it (planPut pushed a single copy into the kit when none was packed yet),
+and the plan cell showed only the icon and the key number, so a key on a
+stack of six Bandages meant one Bandage and looked no different from six.
+The exact-number rows exist on the right-click menu (Equip one, Equip all
+N), but the drag and the number keys, which are how he builds the belt,
+never used them.
+
+THE BUILD. A key on a stack packs half the stack, rounded up and at least
+one, when none of it is packed yet; a count he already packed through the
+menu is left as it is, so "unless I indicate the quantity" holds. The plan
+cell shows an amber xN when more than one is coming. In the raid the belt
+cell already counts what is in the backpack, so the number he saw at home
+is the number he sees up there.
+
+MEASURED. Check 11.96 gives the stash six Bandages, a Medkit and three
+plates, puts the Bandages on key 3 through the real planPut and requires
+three packed and x3 on the cell; puts the Medkit on key 4 and requires one
+packed with no count shown; packs two plates by hand, puts them on key 5
+and requires the two kept. On the v11.95 fixture the Bandages pack one.
+
+Not verified: the backpack slot cap, which is effectively unlimited
+(DEPLOY_SLOTS 9999) and is respected by the loop anyway; his own reading
+of the xN on the cell at 4K.

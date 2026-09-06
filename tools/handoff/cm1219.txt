@@ -1,0 +1,8 @@
+v12.19: his note, the right-click menu is the size of the stash at 4K
+
+The item and gun menus are appended to the body, outside everything the
+menu zoom scales, so at 4K they drew at 1.0 under a stash at 2.6. Both
+take the windows' zoom now, with the click point scaled to match. Check
+12.19 opens the item menu at 4K through the real opener; fails on v12.18.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

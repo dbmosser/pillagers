@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.93';
+var VER='11.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.93';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.93';
+var WHATSNEW_VER='11.94';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'FOUR LINES SAY WHAT THEY MEAN: the Crier names itself when its alarm goes out, the Pillbox says destroyed when it dies, the self-revive is one per raid, and a search picked up again says Search resumed.',
   'ENTER IN THE NAME BOX SETS YOUR NAME, and so does the start button: what you typed is what you are called.',
   'THIS CARD FITS THE SCREEN NOW, newest first, and a first launch never sees it at all.',
   'A BELT KEY HOLDING A GUN FROM YOUR BACKPACK NOW EQUIPS IT, and every belt cell can be dragged to another key.',
@@ -12156,7 +12157,7 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     // consumes none, by his v6.45 order, and the function's own comment says so.
     // This told a player bleeding out that they needed an item they do not have
     // and do not need, which is a reason not to press the key at all.
-    G.tel.downs++; say('DOWN. F to get back up. You get one a raid.');
+    G.tel.downs++; say('DOWN. F to get back up. You get one per raid.');   // v11.94, HIS NOTE: per raid
   }
 }
 // DESTRUCTIBLE ENVIRONMENT, v2.83. His note: "environment should be
@@ -14137,7 +14138,7 @@ function giveUpTick(dt){
 }
 function selfRevive(){
   var p=G.player;
-  if(p.revived) { say('Self-revive spent. One a raid.'); return false; }
+  if(p.revived) { say('Self-revive spent. One per raid.'); return false; }   // v11.94, HIS NOTE: per raid
   // v6.45, his note: no medical required and none consumed. Everyone lands with one
   // of these and it is gone once used, so the decision is WHEN to spend it rather
   // than whether the bag happens to hold a bandage at the moment you go down.
@@ -14896,7 +14897,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
       // away, fighting, and coming back.
       if(G.searching!==near){
         G.searching=near;
-        if(!G.sim&&(near.prog||0)>0) say('Resuming, '+Math.round(100*near.prog/near.time)+'% done.');
+        if(!G.sim&&(near.prog||0)>0) say('Search resumed, '+Math.round(100*near.prog/near.time)+'% done.');   // v11.94, HIS NOTE: resuming what
       }
       near.prog=(near.prog||0)+dt/buzzSlow();
       // STAGED PULLS, v1.61. His note: "looting feels so uninspired, how can we make it
@@ -16102,7 +16103,7 @@ if(e.state==='possum'){
         var cl2=setLoot(mkContainer(e.x,e.y,'cache'),
           [pick(['core','titan','coil']),pick(['optic','servo','board']),'cell']);
         cl2.time=1.3; G.containers.push(cl2);
-        if(!G.sim) say(e.name+' has stopped listening.');
+        if(!G.sim) say(e.name+' destroyed. It has stopped listening, and it dropped a cache.');   // v11.94, HIS NOTE: he could not tell this was a death
       // AMMUNITION COMES BACK OFF THE THINGS THAT MADE YOU SPEND IT, v1.68.
       // Measured over 40 raids on v1.67: the player fires 202 rounds a raid and 40
       // percent of raids run COMPLETELY DRY, spending an average of 98 seconds unable
@@ -16664,8 +16665,8 @@ if(e.state==='alarm'){
           sfx('alarm',e.x,e.y);
           ping(e.markX,e.markY,620,true,false,'robot','fire');
           G.marked=2.2; T.marked=(T.marked||0)+1;
-say(sees?'Alarm went out. It kept eyes on you: they know exactly where you are.'
-                 :'Alarm went out. They are coming to where it LAST saw you.');
+say(sees?'The Crier raised the alarm. It kept eyes on you: they know exactly where you are.'   // v11.94, HIS NOTE: name the Crier
+                 :'The Crier raised the alarm. They are coming to where it LAST saw you.');
           // Reinforcements converge on the MARKED position, not your current
           // one, which is what makes repositioning the counterplay.
           for(var sb=0;sb<G.ents.length;sb++){
@@ -28527,7 +28528,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.93: from the 2026-09-06 first-ten-minutes audit, the title name box had no key handler and the start button never read it, so a name typed and not committed with CHANGE NAME was thrown away. ENTER in the box commits the name and leaves the box; the start button commits whatever is typed. Check 11.93 types a name, presses ENTER in the box, and clicks the start button with another name typed, requiring both to reach the profile; fails on v11.92.',
+  now:'v11.94: HIS FOUR WORDING NOTES of 2026-09-06: the Crier alarm line names the Crier (it said Alarm went out. It...), the Pillbox death line says destroyed (it said has stopped listening and he asked why), the self-revive says one per raid, and a container search picked up again says Search resumed instead of Resuming. Check 11.94 drives all four lines through the real code and reads them; fails on v11.93.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

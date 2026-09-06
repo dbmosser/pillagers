@@ -1,0 +1,10 @@
+v11.95: his order, guns drag like any other item
+
+Owned guns live in the armoury, not the stash, and the rack cells were made
+not draggable at v8.20b because a belt drop had nothing to pack. They drag
+now: a drop on a belt key or the backpack moves the gun into the stash as
+its item form, packs it and binds the key; a figure gun takes the key alone.
+Check 11.95 drops the SMG rack cell on key 4 and the figure pistol on key 6
+through the real drop handlers; fails on v11.94.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

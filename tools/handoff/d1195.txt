@@ -1,0 +1,42 @@
+## v11.95 - HIS ORDER: GUNS DRAG LIKE ANY OTHER ITEM
+
+His messages of 2026-09-06, about 13:45: "dragging items, especially guns,
+in the stash isn't working right"; "GUNS in particular are fucked up, for
+some reason you keep treating them like they are special but they need to
+just move around like any other inventory item"; "in stash, blue and purple
+smgs won't drag onto tac belt".
+
+WHY THEY WERE SPECIAL. A gun you own lives in the armoury (the rack, with
+the two figure slots), not in the stash. Every gun that comes home in your
+hands is banked into the armoury, so the stash almost never holds a gun
+item, and the rack cells were made deliberately not draggable at v8.20b:
+an owned gun had no stash item behind it, so planPut had nothing to pack
+and every drop target refused. Right-click to equip was the only verb, and
+a blue or purple SMG he had carried out could not be put on a belt key at
+all.
+
+THE BUILD. Rack cells are drag sources. A drop on a belt key or on the
+backpack (on the stash screen or on the ascent check) goes through two new
+helpers: rackToStash moves the gun out of the armoury into the stash as its
+item form, and rackPut then packs it and binds the key exactly as planPut
+does for any item. A gun on the figure (gun 1 or gun 2) is not moved: it
+goes up in your hands already, so a drop on a key binds the key alone and a
+drop on the backpack says so. In the raid the bound key brings the gun up
+the way v11.91 made every belt gun key work; when he extracts, a gun in
+his hands is banked into the armoury again, so a rack gun that went up on
+a key comes back to the rack.
+
+MEASURED. Check 11.95 enters the floor with a pistol on the figure and an
+SMG in the rack, renders the stash screen, requires the SMG rack cell to be
+a drag source, drops it on belt key 4 through the real drop handler and
+requires it bound, in the stash, packed and gone from the armoury; then
+drops the figure pistol on key 6 and requires the key bound with the pistol
+still on the figure and not copied into the stash. On the v11.94 fixture
+the rack cell is not draggable and the drop is refused as not in the
+stash.
+
+Not verified: the digit keys over a hovered rack cell, which still go
+through the stash hover alone; a rack gun dragged back onto the rack, which
+does nothing; the belt key after extraction, which points at a stash item
+the banking turned back into an armoury gun (the queued kit-restore build
+drops dead keys); his own hands on it at 4K.

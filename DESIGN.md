@@ -40024,6 +40024,40 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.94 - HIS FOUR WORDING NOTES: LINES THAT SAY WHAT THEY MEAN
+
+His notes of 2026-09-06, about 13:20 to 13:30, in chat, all four about a
+line on the screen that did not say what it was about.
+
+ONE. '"Alarm went out. It..." It needs to say Crier or player wont know
+what it is.' The line is the Crier finishing its alarm windup. It now
+reads "The Crier raised the alarm. It kept eyes on you: they know exactly
+where you are." or "... They are coming to where it LAST saw you."
+
+TWO. "Listener has stopped listening -- why?" The line is the Pillbox's
+death message: it prints when the listening machine is destroyed and drops
+its cache, and nothing in it said so. It now reads "PILLBOX-K destroyed.
+It has stopped listening, and it dropped a cache."
+
+THREE. '"One a raid" -> "One per raid"'. Both self-revive lines, the one
+when he goes down and the one when F is pressed with the revive spent.
+
+FOUR. '"Resuming 6% done" -- wtf does this mean -- resuming what? randomly
+said this at the beginning of my game.' Search progress lives on the
+container (SPEC 7.4), so pressing E again on a container he had started
+picks up where he left off, and the line said only Resuming. It now reads
+"Search resumed, 6% done."
+
+MEASURED. Check 11.94 drives all four through the real code with the say
+calls recorded: a Crier set to the last instant of its windup and stepped;
+a Pillbox with no health stepped; the revive spent and F pressed; a
+container with six percent of its search done and E held. It requires the
+new words and none of the old. On the v11.93 fixture all four old lines
+print.
+
+Not verified: his own reading of the four lines; whether "Search resumed"
+should also name the container, which the container object does not carry
+a plain name for.
 ## v11.93 - FIRST TEN MINUTES: THE NAME HE TYPES IS THE NAME HE GETS
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.

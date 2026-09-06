@@ -1,0 +1,8 @@
+v11.96: his order, a belt key takes half the stack and shows how many
+
+Putting an item on a key packed exactly one and the plan cell showed no
+count. A key now packs half the stack (rounded up, at least one) unless
+some are already packed, and the cell shows xN. Check 11.96 drives the real
+planPut with a stack, a single and a hand-packed count; fails on v11.95.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

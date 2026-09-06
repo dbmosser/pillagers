@@ -1,0 +1,9 @@
+v11.98: his orders, a hold started before the window shut finishes
+
+The boarding window shut on the frame it hit zero and wiped the pull. It
+holds at its last instant while a pull is in progress inside the ring and
+shuts when E is released. E already works anywhere inside the ring; the
+check proves a call from the edge. Check 11.98 drives the real extraction
+tick; fails on v11.97.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

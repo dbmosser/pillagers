@@ -1,0 +1,28 @@
+## v12.20 - HIS NOTE: THE HOWLER DOES NOT SHELL THROUGH A ROOF
+
+His message of 2026-09-06, about 14:30: "howler shouldn't be able to bomb
+from outside a building to the inside of the building".
+
+THE FINDING. The Howler has two ways to fire: at the last place it saw or
+was told about you (the aimed shot) and at a report it heard (the wider
+scatter). Both aim at a point on the ground and neither asked whether a
+roof was over that point, so a Howler in the street dropped shells into
+the room you had run into, which is the one thing running inside is meant
+to buy.
+
+THE BUILD. A helper, mortarRoofed, answers whether the target point is
+under a building the Howler is not itself in. Both firing sites refuse
+such a shot. The machine keeps its clock and its alert, so it fires the
+moment you are in the open again, and a Howler that has followed you
+inside the same building can still shell you there.
+
+MEASURED. Check 12.20 deploys, empties the room of every other machine,
+stands the player in the middle of a building at least 120 units each
+way, puts an alerted Howler 260 units outside it with the player as its
+target, steps the real entity update once and requires no mortar shell;
+then moves the player into the open beside the Howler and requires one.
+On the v12.19 fixture the first step drops a shell.
+
+Not verified: a shell already in the air when he steps inside, which
+lands where it was aimed; a Howler in a neighbouring building, which is
+refused the same way; his own experience under a roof.

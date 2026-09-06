@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v11.92 (84b34c6). The tree has **v11.93 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v11.93 (a72e87f). The tree has **v11.94 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-2" (the tab named seed hung on 2026-09-06 12:40 and was closed).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1193 cm1193.txt
+    bash tools/handoff/ship.sh commit 1194 cm1194.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1193 1194
+    bash tools/handoff/ship.sh start 1194 1195
 and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -17,6 +17,21 @@ alone and straight after the new check; a bare profile left by a check is the
 usual cause (see memory dark-raiders-loader-replaces-the-profile).
 
 **THE QUEUE, ALL DRAFTED (p/f/d/a/cm in this folder), SHIP IN THIS ORDER:**
+
+**CURRENT QUEUE (2026-09-06 14:50, after his afternoon notes; this list outranks every older list below):**
+- **1194 HIS FOUR WORDING NOTES** (Crier alarm, Pillbox death, one per raid, Search resumed). In flight at 14:50.
+- **1195 GUNS DRAG LIKE ANY OTHER ITEM** (his order: rack cells drag; rackToStash and rackPut; a figure gun takes the key alone). Drafted, NOT dry-run.
+- **1196 A BELT KEY TAKES HALF THE STACK AND SHOWS xN** (his order; planPut packs half, the plan cell shows the count). Drafted, NOT dry-run.
+- **1197 THE TACTICAL BELT DRAGS WITH THE BACKPACK CLOSED** (his notes: ghost on the cursor, hand gun released off the belt bags it, a gun key drags). Drafted, NOT dry-run.
+- **1198 A HOLD STARTED BEFORE THE WINDOW SHUT FINISHES, E ANYWHERE IN THE RING** (his orders; the ring already accepted E anywhere, the first press is a 1.6 s hold). Drafted, NOT dry-run.
+- **1199 to 1201 FIRST TEN MINUTES** (were 1195 to 1197 this morning): pause note survives ESC, first session setup, freebie death keeps the pistol.
+- **1202 THE HEAL VERB, 1203 THE NOTES LINE** (were 1198 and 1199 earlier; check 12.02 was 11.97).
+- **1204 to 1211 POLISH** (were 1199 to 1206 this morning; labels 12.04 to 12.11).
+- **1212 to 1218 MORE FIRST-RAID FIXES** (were 1207 to 1213: second down toast, lift freebie clears the belt plan, ESC closes the floor backpack, controls card X key, death banks card XP, empty grenade cell trigger, arrows do not walk with the bag open). The read-only review wf_282ab182-3ea of these seven (as 1207 to 1213) is in its journal and NOT yet folded in: its first finding is that the second-down toast should name the pad button through keyLabel.
+- **NOT DRAFTED, his notes of 14:00 to 14:30:** the stash right-click menu gets no menu zoom at 4K (.imenu is appended to body; give it the same zoom applyMenuZoom gives modals and divide its clientX/Y by the zoom); the Howler should not bomb from outside a building into it.
+- **DRY RUN:** after the v11.94 commit, `dry.ps1 1195 1218` from the tree at v11.94, then dry/mk.ps1, then checks 11.95 to 12.18 on :8801 between corpora. The pane is hidden all afternoon, so a corpus takes about 45 minutes.
+
+
 
 **CURRENT QUEUE (2026-09-06 midday, after two renumbers; this list outranks every older list below):**
 - **1188 HIS ORDER: "left to be gone" and "nothing killed yet" out of the CONDITIONS panel** (his message with a screenshot, about 11:40). They were the verdicts of the kill-nothing and three-minute conduct contracts, printed without their names; the panel skips those two.

@@ -1,0 +1,35 @@
+## v11.98 - HIS ORDERS: A HOLD STARTED BEFORE THE WINDOW SHUT FINISHES, AND E WORKS ANYWHERE IN THE RING
+
+His messages of 2026-09-06: "should be able to activate the extract or
+extract with E ANYWHERE within the extraction circle -- shouldn't have to
+go to the middle"; and "if extraction is open to extract and 30 second
+extraction counter is counting down and player starts extracting before it
+finishes, then player should still be able to extract even if counter hits
+zero so long as player started holding E before counter hit zero".
+
+THE WINDOW. The boarding window counted down on the ring and, on the frame
+it reached zero, shut and wiped the pull with it, so a hold begun with a
+second left was lost with 0.4 s to go. The window now holds at its last
+instant for as long as a pull is in progress inside the ring; the pull is
+cleared the frame E is released, so the window can outlive its clock only
+while he keeps pulling, and shuts as before the moment he lets go.
+
+THE RING. The code already takes E anywhere inside the ring: the ring you
+stand in is the one whose centre is within its radius, 78 units, and the
+prompt and the call read the same test. What is not obvious is that the
+first press must be HELD for 1.6 seconds to call the ship, and a tap does
+nothing but start that clock, which reads as "it only works in the
+middle" when the tap happened at the edge. The check below proves a call
+from 70 units out. The wording of the prompt is not changed here.
+
+MEASURED. Check 11.98 deploys, stands 70 of 78 units from the ring centre,
+holds E for two seconds through the real extraction tick and requires the
+ship called; then sets the window to its last half second with a pull one
+second in and runs one real tick of six tenths with E held, and requires
+the raid to end EXTRACTED. On the v11.97 fixture the window shuts and the
+pull is lost.
+
+Not verified: what he actually saw at the ring's edge, which the check
+cannot see; the on-screen prompt, which says CALL FOR EXTRACTION and not
+that it is a hold; a hold released and re-pressed after the clock ran out,
+which correctly finds the ship gone.
