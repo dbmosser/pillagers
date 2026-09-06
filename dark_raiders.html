@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.78';
+var VER='11.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.78';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.78';
+var WHATSNEW_VER='11.79';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
   'THE CREDITS AND XP READOUT IN THE CORNER IS TWICE THE SIZE, on the floor and in a raid. The CONDITIONS box starts below it.',
   'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 115 at the centre, was 85; to you 80 at the centre, was 60. The fuse is still 1.1 seconds.',
   'THE SCAV PISTOL IS HALF PRICE IN THE SHOP: 1800 credits, down from 3600. Say the number you want and it moves again.',
@@ -1984,7 +1985,15 @@ var RECIPES=[
   // at 179 is the only clean way to land inside it.
   {name:'2x Smoke Canister',out:{smoke:2},need:{comp:1,cell:1,scrap:2}},
   {name:'2x Decoy Beacon',out:{decoy:2},need:{comp:1,scrap:2}},
-  {name:'Frag Charge',out:{frag:1},need:{comp:2,cell:2,scrap:2}}
+  {name:'Frag Charge',out:{frag:1},need:{comp:2,cell:2,scrap:2}},
+  // v11.79, HIS ORDER: green and blue guns on the bench, moderately expensive.
+  // Reverses the 2026-08-29 rule for these two colours only; purple and gold
+  // are still the Peddler and the surface. Parts worth more than the gun sells
+  // for and less than buying it, the same window every recipe above sits in.
+  {name:'Compact SMG',out:{gun_smg:1},need:{comp:4,cell:3,board:2,servo:1}},
+  {name:'Burst Carbine',out:{gun_carbine:1},need:{comp:4,servo:2,board:2}},
+  {name:'Auto Rifle',out:{gun_rifle:1},need:{comp:5,servo:2,board:3,optic:1}},
+  {name:'Riot Scattergun',out:{gun_shotgun:1},need:{comp:5,cell:4,board:2,servo:2}}
 ];
 var THROWKEYS=['smoke','decoy','frag'];
 // v10.97, HIS NOTE 12: THE CONTRACT BOARD'S SHOPPING LIST. It used to be a
@@ -28323,7 +28332,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.78: HIS NOTES of 2026-09-06, the credits and XP readout in the corner was useless on the Undercroft floor and still far too tiny in a raid. One size everywhere, twice what it was: 32px figures, 14px labels, 44px tall. The raid CONDITIONS box now starts below the readout, read from the page in CSS pixels (topRightBottom) and put into the box scaled space, instead of the readout being squeezed into the band above the box. Check 11.78 requires the readout at 28px or more and 40px or more tall on the floor and in a raid, and in a raid requires the CONDITIONS box top at or below the readout bottom; fails on v11.77.',
+  now:'v11.79: HIS ORDER of 2026-09-06, decent green and blue guns on the crafting bench, moderately expensive. Reverses his 2026-08-29 rule for those two colours only. Four recipes: Compact SMG and Burst Carbine (green), Auto Rifle and Riot Scattergun (blue), each with parts worth more than the gun sells for and less than buying it, no contract items as inputs. Check 11.79 requires exactly those four gun recipes with those rarities, the price window on each, and drives the real craft row with the parts in the stash and requires the gun in the stash and the parts gone.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

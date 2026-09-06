@@ -40024,6 +40024,44 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.79 - HIS ORDER: GREEN AND BLUE GUNS ON THE CRAFTING BENCH
+
+His order of 2026-09-06: "add some decent green and blue guns to crafting, make
+them moderately expensive to craft".
+
+WHAT THIS REVERSES. On 2026-08-29 he ordered gun recipes off the bench: guns
+were to come only from the Peddler and the surface, and that was confirmed
+true at v9.84, when the bench held eight recipes and not one gun. This order
+puts two colours back. Green and blue are on the bench; purple and gold stay
+where he left them.
+
+THE BUILD. Four recipes, the guns a new player would actually want. In green,
+the Compact SMG and the Burst Carbine. In blue, the Auto Rifle and the Riot
+Scattergun. Each obeys the rule the recipe table records for every entry above
+it: the parts are worth more than the gun sells for, so no recipe prints
+money, and less than buying the gun, so no recipe is a trap. In parts: the SMG
+1300 against 900 sold, the Carbine 1400 against 1100, the Rifle 1900 against
+1500, the Scattergun 1800 against 1300. That is moderately expensive: a good
+haul or two of components, boards and servos. Boards, servos and optics are
+also what the contract board asks for, as they already were for the Armour
+Plate recipe, so a gun on the bench competes with a contract for the same
+parts, which is a choice and not an accident. The crafting code needed no
+change; it pushes whatever a recipe makes into the stash, and a gun in the
+stash is already a thing the game handles.
+
+MEASURED. Check 11.79 reads the table and requires exactly four gun recipes,
+two green and two blue and none of any other colour; requires each to sit
+inside the price window; then puts the SMG's parts in the stash, redraws the
+bench, presses the real row's button, and requires the gun in the stash with
+every part gone. On the v11.78 fixture the bench holds no gun at all and the
+check says so. My first draft of the check also forbade contract parts as
+inputs, which the plate recipe had broken since v1.x; the rule was mine, not
+his, and it is gone.
+
+Not verified: his own eye on the bench, and whether these four are the guns he
+meant by "decent"; whether the prices feel moderate in play, which is his to
+say and one number per recipe; the wear a crafted gun starts with, which is
+the same as a bought one.
 ## v11.78 - HIS NOTES: THE CORNER READOUT IS TWICE THE SIZE, EVERYWHERE
 
 His notes of 2026-09-06: "credits and xp in the corner in the undercroft are
