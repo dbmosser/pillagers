@@ -40024,6 +40024,49 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.82 - HIS NOTES: HEALING STACKS AGAIN, AND A PLATE GOES ON OVER A BANDAGE
+
+His notes of 2026-09-06, from his third and fourth runs this morning: the
+"countdown on 'still applying prior healing item' isn't accurate -- just get
+rid of it", and "player should be able to equip armor plates while bandage
+is applying healing; player should be able to use next bandage while prior
+bandage is healing".
+
+WHAT THIS REVERSES. v3.34 was his rule too: one heal at a time, slower, and
+the next one only after the full cycle of the previous. That rule refused
+the next item at the two places a heal can start and printed the queue in
+health points as if it were seconds, which is the inaccurate countdown he
+saw. He has now asked for the opposite, so it is the opposite.
+
+THE BUILD. Three parts. A heal already running no longer refuses the next
+one, and the wrong countdown goes with the refusal; the only refusal left is
+being at full health, counting what is already inbound. A second item ADDS
+its health to the queue, takes the faster of the two rates and the higher of
+the two ceilings, so a Medkit after a Bandage still climbs past the Bandage's
+85. And the application timer is two timers now, one for medical and one for
+armour, each ticked on its own, so a plate goes on while a bandage is being
+applied and a bandage goes on while a plate is being slotted; each still
+refuses a second of its own kind while its own timer runs. The bar above the
+character draws both when both are running, armour a row above. The healSolo
+dial that gated the old refusal is removed; nothing read it but the refusal.
+The sim bot heals through the same verbs, so it stacks now too and every
+extract-rate figure from before this build was measured under the old rule.
+
+MEASURED. Check 11.82 deploys, sets the player to 30 health with two Bandages
+and a plate, applies the first Bandage and runs the game's own timer until it
+is healing; then applies the second while the first heals and requires it to
+have started and the bag to be short a Bandage; then slots the plate while
+the second Bandage is being applied and requires the armour timer running
+and the plate gone from the bag; requires the old refusal never to have been
+said; then runs both timers out and requires the heal queue larger than it
+was before the second Bandage and the armour on. On the v11.81 fixture the
+second Bandage is refused with the countdown, and the plate, having no timer
+of its own, takes the single one; the check names both.
+
+Not verified: his own play; whether the second Bandage's health should add
+in full or be capped by the first one's ceiling, which is a rule he has not
+given (it adds in full, to the higher ceiling); the sim's extract rate under
+stacking, which is a consequence of his order and not a dial.
 ## v11.81 - HIS ORDER: THE KIA CARD NO LONGER COUNTS THE CUTTING LOST WITH YOU
 
 His note of 2026-09-06, from the run report of his third run this morning:

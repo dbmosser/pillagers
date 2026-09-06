@@ -1,0 +1,25 @@
+## v11.98 - THE MAP SAYS EXTRACT NOW TOO
+
+From the read-only review of this morning's shipped builds, on v11.74.
+
+WHAT IT WAS. v11.74 replaced EXTRACTION IN PROGRESS with EXTRACT NOW and the
+seconds left, on his note, in the two places the raid HUD draws the boarding
+window: the banner and the off-screen ring label. The sector map keeps a
+third copy of that line under each ring, and it still said OPEN TO EXTRACT,
+the wording he rejected at v8.68 and again at v11.74. Worse, the map paints
+an opaque wash over the whole screen before it draws, so while the map is
+open the map's copy is the only boarding line the player can read. The check
+for v11.74 read only the HUD function's source, so it could not see the map.
+
+THE BUILD. The map's line says EXTRACT NOW with the seconds left, the banner
+words; the ring's letter is already printed on the line above it. The stale
+comment over the ring label, which still credited the wording to v8.68,
+names the owner.
+
+MEASURED. Check 11.98 deploys, puts a ring into the landed hold with twelve
+seconds left, opens the map and draws it with the canvas text call recorded,
+and requires the line under the ring to say EXTRACT NOW with 12S LEFT and
+not the old words. On the v11.97 fixture it says OPEN TO EXTRACT 12s.
+
+Not verified: his own eye on the map; the CALLED and CLOSED lines, which
+were not in his note and stay as they were.

@@ -1,0 +1,10 @@
+v11.95: the bench tells the truth about its guns
+
+The Burst Carbine is blue by the rarity every screen shows, so the bench
+holds one green and three blue and the card says so; the detail panel
+describes a crafted gun as a gun with its shown rarity; the stash keeps
+servos and optics again and says what for; the shop panel says three of
+its unstocked guns can be built. Checks 11.79 and 9.43 repaired to match.
+Check 11.95 reads all of it; fails on v11.94.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

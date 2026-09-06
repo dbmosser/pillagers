@@ -1,0 +1,10 @@
+v11.94: a controller or the keyboard can craft again
+
+The hold-to-craft build deleted the button's click handler, which was the
+only way a pad or Enter could press it. A click that answers only
+synthetic clicks is back; a mouse click still spends nothing. The hold
+also dies when the trader window is hidden, and the tooltip reads the
+constant. Check 11.94 crafts by synthetic click and by hold and refuses a
+mouse click; fails on v11.93.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

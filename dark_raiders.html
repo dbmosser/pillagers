@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.81';
+var VER='11.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.81';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.81';
+var WHATSNEW_VER='11.82';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'HEALING STACKS AGAIN. The next bandage goes on while the prior one is still healing, and a plate goes on while a bandage is being applied. The one-at-a-time refusal and its countdown are gone.',
   'THE KILLED IN ACTION CARD NO LONGER COUNTS THE SEAL-CUTTING LOST WITH YOU. A cut still banks only when you walk out.',
   'THE HUM AFTER AN EXTRACTION IS GONE. The frame that ended the raid was writing the raid ambience back up after it had been cut, and the level held on the floor.',
   'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
@@ -1537,7 +1538,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -12082,7 +12083,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
   G.shake=Math.max(G.shake,4+7*_sev);
   blip('hit'); decal(p.x+rnd(-10,10),p.y+rnd(-10,10),'#7a1a14',rnd(6,13));
   if(p.hp<=0){
-p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null;
+p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null;
   (function(){
     if(G.sim) return;
     var near=null,nd=1e9;
@@ -12445,21 +12446,31 @@ function applyHeal(key){
   var hot=(typeof it.hot==='number')?it.hot:0;
   var p=G.player;
   if(hot>0&&CFG.healOverTime!==0&&amt>0){
-    // ONE AT A TIME, AND SLOWER, v3.34. His note: "change it so you can only use
+    // ONE AT A TIME, AND SLOWER, v3.34 (the one-at-a-time half REVERSED at v11.82
+    // on his later note; the slower half stands). His note then: "change it so you can only use
     // one heal at a time and it heals slower and you can't apply the next one
     // until the full heal cycle of the previous one is done."
     // The old rule was the opposite of that on purpose: a second item ADDED its
     // health and took the FASTER of the two rates, so stacking was never a
     // downgrade and the correct play under fire was to dump your whole medical
     // bag at once. That made healing a resource dump rather than a commitment.
-    // Now a heal already running refuses the next one outright, at the two call
-    // sites that can start one, and the rate itself is divided by healSlow.
-    // healSolo 0 restores stacking and healSlow 1 restores the old speed.
-    p.healQ=amt; p.healAmt0=amt;
-    p.healRate=amt/(hot*(CFG.healSlow===undefined?1.6:CFG.healSlow));
-    // v9.62: the ceiling travels with the heal, because the drain runs for
-    // seconds afterwards and has no idea which item started it.
-    p.healCap=healCeil(it);
+    // The rate itself is divided by healSlow; healSlow 1 restores the old speed.
+    // v11.82, HIS NOTE: the refusal is gone again. The next bandage goes on
+    // while the prior one is still healing; a second item ADDS its health and
+    // takes the faster of the two rates and the higher of the two ceilings.
+    // The healSolo dial that gated the refusal is gone with it.
+    var _rate=amt/(hot*(CFG.healSlow===undefined?1.6:CFG.healSlow)), _cap=healCeil(it);
+    if((p.healQ||0)>0){
+      p.healQ+=amt; p.healAmt0=p.healQ;
+      p.healRate=Math.max(p.healRate||0,_rate);
+      p.healCap=Math.max((p.healCap===undefined)?0:p.healCap,_cap);
+    } else {
+      p.healQ=amt; p.healAmt0=amt;
+      p.healRate=_rate;
+      // v9.62: the ceiling travels with the heal, because the drain runs for
+      // seconds afterwards and has no idea which item started it.
+      p.healCap=_cap;
+    }
     return 0;
   }
   // v9.62: a ceiling never takes health away. Above it already, this does
@@ -12486,11 +12497,9 @@ function useMedical(){
   var p=G.player;
   var idx=findHeal();
   if(idx<0){ say('No medical supplies'); return false; }
-  // What is already on its way counts as health you have.
-  if((p.healQ||0)>0&&CFG.healSolo!==0){
-    say('Still applying prior healing item. '+(p.healQ).toFixed(0)+' to go.');
-    return false;
-  }
+  // What is already on its way counts as health you have. v11.82, HIS NOTE: a
+  // heal already running no longer refuses the next one, and the countdown
+  // that refusal printed (which was wrong) is gone with it.
   if(p.hp+(p.healQ||0)>=p.maxhp){
     say((p.healQ>0)?'Already healing.':'Already at full');
     return false;
@@ -12523,18 +12532,26 @@ function useMedical(){
 // item is spent at the press, not at the landing, so being downed mid-apply
 // loses the item, which is the cost that makes starting one under fire a
 // decision. One wind-up at a time, and every entry path refuses while one runs.
+// v11.82, HIS NOTE: a plate goes on while a bandage is being applied. Two
+// timers, prep for medical and prepA for armour, each ticked on its own, so
+// neither verb waits for the other; each still refuses a second of its own
+// kind while it runs.
 function startPrep(kind,key){
-  G.player.prep={t:0,
+  var _pr={t:0,
     max:(kind==='armor'?(CFG.armorPrep===undefined?2:CFG.armorPrep)
                        :(CFG.healPrep===undefined?1.5:CFG.healPrep)),
     kind:kind,key:key};
+  if(kind==='armor') G.player.prepA=_pr; else G.player.prep=_pr;
 }
 function tickPrep(dt){
   var p=G.player;
-  if(!p.prep) return;
-  p.prep.t+=dt;
-  if(p.prep.t<p.prep.max) return;
-  var PR=p.prep; p.prep=null;
+  tickPrepSlot(p,'prep',dt); tickPrepSlot(p,'prepA',dt);
+}
+function tickPrepSlot(p,slot,dt){
+  if(!p[slot]) return;
+  p[slot].t+=dt;
+  if(p[slot].t<p[slot].max) return;
+  var PR=p[slot]; p[slot]=null;
   var it=ITEMS[PR.key];
   if(PR.kind==='armor'){
     var cap=armorCap();
@@ -13188,7 +13205,8 @@ function useArmor(){
   var cap=armorCap();
 
   if(p.armor>=cap){ say('Armour is already full.'); return; }
-  if(p.prep){ say('Already applying '+(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'something')+'.'); return; }
+  // v11.82: only another plate blocks a plate; a bandage being applied does not.
+  if(p.prepA){ say('Already slotting '+(ITEMS[p.prepA.key]?ITEMS[p.prepA.key].name:'a plate')+'.'); return; }
   var it=ITEMS[G.bag[ix]],k4=G.bag[ix];
   G.bag.splice(ix,1); startPrep('armor',k4);
   say('Slotting '+it.name+'...');
@@ -13252,11 +13270,9 @@ function useHot(){
       // Same inbound-aware guard as useMedical; this path names ONE item so it
       // cannot just delegate, but it must not overfill either.
       var _pp=G.player;
-      // The same refusal as useMedical. Two ways in, one rule: a named slot must
-      // not be a way around a limit the generic verb enforces.
-      if((_pp.healQ||0)>0&&CFG.healSolo!==0){
-        say('Still applying prior healing item. '+(_pp.healQ).toFixed(0)+' to go.'); return;
-      }
+      // The same rules as useMedical. Two ways in, one rule: a named slot must
+      // not be a way around a limit the generic verb enforces. v11.82: the
+      // one-heal-at-a-time refusal is gone from both, on his note.
       if(_pp.hp+(_pp.healQ||0)>=_pp.maxhp){
         say((_pp.healQ>0)?'Already healing.':'Already at full'); return;
       }
@@ -13573,8 +13589,9 @@ function raiderUseKit(e,dt){
     }
   }
   // ---- HEAL. Hurt, not currently in the middle of one, and holding something
-  // that heals. One at a time and over time, exactly as v3.34 made it for the
-  // player, so the same three seconds of vulnerability applies to him.
+  // that heals. One at a time and over time, as v3.34 made it for the player
+  // (the player's one-at-a-time rule was reversed at v11.82; his stays, so the
+  // same three seconds of vulnerability still applies to him).
   if((e.healQ||0)>0){
     var give=Math.min(e.healQ,(e.healRate||9)*dt);
     var room=e.maxhp-e.hp;
@@ -20878,14 +20895,18 @@ if(!sc.seen) continue;
   // that shows in a bar above character", and it was mostly invisible.
   // Raised rather than pushed into the y-sort, because the sort would still let a
   // wall cover it and the whole point is that it reads at a glance mid-fight.
-  if(p.prep){
-    var _pf=clamp(p.prep.t/p.prep.max,0,1);
-    var _py=p.y-62;
+  // v11.82: two timers now (prep is medical, prepA is armour); each gets its
+  // own bar, the armour bar a row above when both are running.
+  var _pbs=[p.prep,p.prepA], _pbi;
+  for(_pbi=0;_pbi<2;_pbi++) if(_pbs[_pbi]){
+    var _pb=_pbs[_pbi];
+    var _pf=clamp(_pb.t/_pb.max,0,1);
+    var _py=p.y-62-((_pbi&&p.prep)?10:0);
     wc.fillStyle='rgba(6,9,13,.85)';
     wc.fillRect(p.x-24,_py,48,8);
     wc.strokeStyle='rgba(255,255,255,.22)'; wc.lineWidth=1;
     wc.strokeRect(p.x-23.5,_py+0.5,47,7);
-    wc.fillStyle=p.prep.kind==='armor'?'#5aa9e6':'#6fe0a0';
+    wc.fillStyle=_pb.kind==='armor'?'#5aa9e6':'#6fe0a0';
     wc.fillRect(p.x-23,_py+1,46*_pf,6);
   }
   // marked ring
@@ -27865,7 +27886,7 @@ function loop(ts){
     for(var _shk in keys){ if(keys[_shk]){ _shAny=true; break; } }
     var _shAct=_shAny||(typeof mouse!=='undefined'&&mouse&&mouse.down)||
                (typeof PAD!=='undefined'&&PAD.on&&(PAD.mx||PAD.my||PAD.aiming))||
-               (_shp.roll>0)||(_shp.reloading>0)||(!!_shp.prep);
+               (_shp.roll>0)||(_shp.reloading>0)||(!!_shp.prep)||(!!_shp.prepA);
     if(!_shAct) dt=0;
   }
   // v10.86, HIS NOTE: the raid update below is gated on !G.paused and
@@ -28343,7 +28364,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.81: HIS ORDER of 2026-09-06, the KIA card line about seconds of cutting lost with you is removed; it meant nothing to him. The seal still banks only on an extraction. Check 11.81 stages a cut of 40 seconds, ends a raid by death and requires the phrase absent from the card, and ends one by extraction and requires the banked line still present as the control; fails on v11.80.',
+  now:'v11.82: HIS NOTES of 2026-09-06, the countdown on still applying prior healing item was wrong and is gone with the refusal it belonged to; the next bandage goes on while the prior one heals (a second item adds its health at the faster rate and the higher ceiling), and a plate goes on while a bandage is being applied (two application timers, prep for medical and prepA for armour). Reverses his v3.34 one-heal-at-a-time rule on his own note; the healSolo dial is removed. Check 11.82 stages a hurt player with two bandages and a plate, applies one, applies the second while the first heals and the plate while the second is being applied, requires each to have started and the refusal never said, and after the timers requires the queue to have grown and the armour to be on; fails on v11.81.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

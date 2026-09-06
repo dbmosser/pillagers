@@ -612,7 +612,7 @@ var want={simGreed:14,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
     // restores its own dials so the A/Bs were safe, but nothing else was.
     // Same defect again at v3.17: raiderDown shipped unpinned. Every new dial
     // must land here in the same build that introduces it.
-    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSolo:1,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1500,raiderHaul:7,healPow:0.70,healSlow:2.4,wardenHp:900,wardenDmg:46,wardenRng:620,downTime:17,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,machVsRaider:1,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:1,simFlee:1,simCover:1,simHoldFire:0,simDodgeRing:1,
+    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1500,raiderHaul:7,healPow:0.70,healSlow:2.4,wardenHp:900,wardenDmg:46,wardenRng:620,downTime:17,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,machVsRaider:1,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:1,simFlee:1,simCover:1,simHoldFire:0,simDodgeRing:1,
     // v3.41 gave the PLAYER plain-language control of eight of these dials and
     // persists his choice on the profile. The fixture loads that profile, so a
     // saved "Raiders: Many" would silently run every A/B at nRaider 15 and every
@@ -5731,6 +5731,41 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.82',what:'the next bandage goes on while the prior one is still healing and a plate goes on while a bandage is being applied; the one-at-a-time refusal and its countdown are gone (his notes of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof useMedical!=='function'||typeof useArmor!=='function'||typeof tickHeal!=='function') return 'SKIP: no medical verbs in this build';
+     var bad=[], said=[], realSay=say, refusal='Still '+'applying prior';
+     say=function(m){ said.push(String(m)); return realSay.apply(null,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       p.hp=30; p.armor=0; p.healQ=0; p.healRate=0; p.healCap=undefined; p.prep=null; p.prepA=null; p.downed=false;
+       g.bag=['bandage','bandage','plate'];
+       useMedical();
+       if(!p.prep||g.bag.length!==2) bad.push('control: the first bandage did not start applying (bag '+g.bag.join(',')+')');
+       tickHeal(1.6);   // the 1.5 s application finishes and the bandage starts healing
+       var q1=p.healQ||0;
+       if(!(q1>0)) bad.push('control: after the application the first bandage is not healing (queue '+q1.toFixed(1)+')');
+       // THE NEXT BANDAGE WHILE THE PRIOR ONE HEALS.
+       useMedical();
+       if(!p.prep) bad.push('the second bandage was refused while the first was still healing');
+       if(g.bag.indexOf('bandage')>=0) bad.push('the second bandage is still in the bag');
+       // A PLATE WHILE THE BANDAGE IS BEING APPLIED.
+       useArmor();
+       if(p.prep&&p.prep.kind==='armor') bad.push('this build has one application timer, so the plate took the medical one and a bandage would have waited on it');
+       else if(!p.prepA) bad.push('the plate was refused while a bandage was being applied');
+       if(g.bag.indexOf('plate')>=0) bad.push('the plate is still in the bag');
+       for(var i=0;i<said.length;i++) if(said[i].indexOf(refusal)===0) bad.push('the game still said "'+said[i].slice(0,40)+'"');
+       tickHeal(2.2);   // both timers finish (1.5 and 2.0)
+       var q2=p.healQ||0;
+       if(p.prep||p.prepA) bad.push('control: a timer is still running after 2.2 s');
+       if(!(q2>q1)) bad.push('the second bandage did not add to the heal queue ('+q1.toFixed(1)+' before, '+q2.toFixed(1)+' after)');
+       if(!(p.armor>=19)) bad.push('the plate did not go on (armour '+p.armor+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ say=realSay; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.81',what:'the KILLED IN ACTION card no longer says how many seconds of cutting were lost with you, and an extraction still banks the cut (his order of 2026-09-06)',
    run:function(){
