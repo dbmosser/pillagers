@@ -40024,6 +40024,41 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.07 - HIS NOTE: A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING
+
+His message of 2026-09-06, 16:33: "last time I played crawler attacks and
+pathfinding were still kinda messed up... like if the player stops walking
+sometimes the crawler will too". At last a symptom for the "crawler charging
+is still messed up" note of the morning.
+
+THE FINDING, reproduced before anything was touched. On COLD STORAGE at seed
+4242, one crawler was given his live position as its last sighting from 778
+units and he stood still. It ran at him; its alert clock (2.4, decaying 0.5 a
+second, under five seconds) ran out at 378 units and the chase exit dropped it
+to investigate; packScatter, written so a pack fans out over a last sighting,
+pushed its point 90 to 240 units off him; it walked to that point and turned
+to patrol 106 units from a man standing still, just outside its 100-unit
+sight, and wandered off. Walking feeds a crawler fresh sightings and
+footsteps, which keep the clock full; standing still starves it, so the chase
+expired on the way. That is the coupling he felt: he stops, it stops.
+
+THE BUILD. While a crawler is still more than 40 units from its last
+sighting, the chase is held past the clock, for at most chaseHold seconds of
+overtime (8), so a point nothing can reach cannot hold it forever; any fresh
+sighting resets the overtime. Only crawlers, only the exit; raiders and the
+long-sighted machines are untouched, and chaseHold 0 restores the old clock.
+
+MEASURED. Check 12.07 empties the map of every other machine, runs a crawler
+at the standing player from a spawn 600 units out with his live position as
+its last sighting, and requires a bite within 14 seconds; then gives it a
+point off the map and requires the chase to end within 15 seconds. On the
+v12.06 fixture the first arm fails: no bite, the crawler turns to patrol on
+the way.
+
+Not verified: what this does to the bot extract rate (crawlers are more
+persistent now; not measured, on his no-balancing rule the dial is there for
+him); a crawler that reaches the point and still does not see him, which
+scatters as before; his own next run.
 ## v12.06 - THE FLOOR STOPS TAKING KEYS BEHIND THE CHARACTER SCREEN
 
 From the 2026-09-06 read-only menu audit, the last of its three open items

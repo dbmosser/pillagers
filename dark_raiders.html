@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.06';
+var VER='12.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='12.06';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.06';
+var WHATSNEW_VER='12.07';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING. It no longer gives up on the way to the last place it saw you; standing still does not switch it off.',
   'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
   'DYING WITH THE FREEBIE KIT NO LONGER DELETES THE SCAV PISTOL YOU OWN, and the loaner is not counted or billed as a gun you lost.',
   'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT, the same as the resume button; it goes out with your run report.',
@@ -17123,7 +17124,24 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
           if(!G.sim) sfx('charge',e.x,e.y);
         }
       }
-      if(!sees&&e.alert<=0){
+      // v12.07, HIS NOTE of 2026-09-06 ("if the player stops walking sometimes
+      // the crawler will too"): A CHASE DOES NOT EXPIRE BEFORE THE CHASER GETS
+      // WHERE IT WAS GOING. The alert clock (2.4 at 0.5 a second, under five
+      // seconds) ran while a crawler was still crossing the ground to the last
+      // place it saw him, so a crawler more than five seconds of travel from that
+      // point dropped to investigate on the way, packScatter pushed it 90 to 240
+      // units off the point, and it walked past a man standing still just
+      // outside its 100-unit sight. Measured at seed 4242: from 778 units it
+      // gave up 106 short of him and turned away. While a crawler is still more
+      // than 40 units from its last sighting the chase is held, for at most
+      // chaseHold seconds of overtime (8; 0 restores the old clock), so a point
+      // nothing can reach cannot hold it forever. A sighting resets the overtime.
+      if(sees) e.chaseHold=0;
+      var _chHold=(CFG.chaseHold===undefined?8:CFG.chaseHold);
+      var _chFar=(e.kind==='crawler'&&_cg&&e.tx!==undefined&&_chHold>0&&(e.chaseHold||0)<_chHold&&dist(e,{x:e.tx,y:e.ty})>40);
+      if(!sees&&e.alert<=0&&_chFar){ e.chaseHold=(e.chaseHold||0)+dt; }
+      else if(!sees&&e.alert<=0){
+        e.chaseHold=0;
         e.state=e.kind==='raider'?'loot':'investigate';
         e.role=null; e.scattered=0;
         if(e.state==='investigate') packScatter();
@@ -28609,7 +28627,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.06: from the 2026-09-06 menu audit, the floor kept taking station keys behind the character screen because hubModalOpen did not count #title (a .screen, not a .modal); at the lift R started a raid under the title. One line: the character screen counts as a modal. Check 12.06 turns the character screen on over the floor and requires the gate to read open, then off and requires it closed; fails on v12.05.',
+  now:'v12.07: HIS NOTE of 2026-09-06, a crawler stopped when he stopped. Its alert clock ran out while it was still crossing the ground to the last place it saw him, so it dropped to investigate on the way, was scattered 90 to 240 units off the point, and walked past a man standing still just outside its 100-unit sight. A crawler still more than 40 units from its last sighting now holds the chase for up to 8 seconds of overtime (chaseHold; 0 restores the old clock). Check 12.07 runs a crawler at a standing player from 600 units and requires a bite, and requires a chase on an unreachable point to end; fails on v12.06.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

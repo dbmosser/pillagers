@@ -5732,6 +5732,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.07',what:'a crawler still on its way to the last place it saw you keeps the chase until it gets there and bites a man standing still, and a chase on an unreachable point still ends (his note of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__ents)) return 'SKIP: this fixture cannot deploy and step';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, i, e=null, spot=null, best=1e9;
+       for(i=0;i<g.ents.length;i++){ if(!e&&g.ents[i].kind==='crawler') e=g.ents[i]; var _d=dist(g.ents[i],p); if(_d>600&&_d<best){ best=_d; spot={x:g.ents[i].x,y:g.ents[i].y}; } }
+       if(!e||!spot) return 'SKIP: no crawler, or no spawn 600 units out';
+       for(i=g.ents.length-1;i>=0;i--) if(g.ents[i]!==e) g.ents.splice(i,1);   // only the crawler moves in this room
+       p.downed=false; var hp0=p.hp;
+       // ARM A: his live position is its last sighting; he stands still.
+       e.x=spot.x; e.y=spot.y; e.cd=0; e.path=null; e.pathGoal=null; e.chaseHold=0;
+       e.state='chase'; e.alert=2.4; e.tx=p.x; e.ty=p.y; e.face=Math.atan2(p.y-e.y,p.x-e.x);
+       var f, dmin=1e9;
+       for(f=0;f<840&&p.hp>=hp0;f++){ __ents(1/60); var _dd=dist(e,p); if(_dd<dmin) dmin=_dd; }
+       if(p.hp>=hp0) bad.push('the crawler never bit a man standing still '+Math.round(best)+' units from its start in 14 s (closest '+Math.round(dmin)+', ended '+e.state+' at '+Math.round(dist(e,p))+')');
+       // ARM B: a last sighting nothing can reach still ends the chase.
+       e.x=spot.x; e.y=spot.y; e.cd=0; e.path=null; e.pathGoal=null; e.chaseHold=0; p.hp=hp0;
+       e.state='chase'; e.alert=2.4; e.tx=-600; e.ty=-600;
+       for(f=0;f<900;f++) __ents(1/60);
+       if(e.state==='chase') bad.push('a chase on an unreachable point never ended (15 s)');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.06',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
    run:function(){
      if(typeof hubModalOpen!=='function'||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the floor gate';
