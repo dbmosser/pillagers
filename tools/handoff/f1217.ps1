@@ -11,23 +11,49 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.17 CHECK, inserted before the v12.16 entry. The WEAPONS rule of the
-# controls card is read as the card reads it (a string, or a function of the
-# pad state) and must name the belt keys and no X or Y swap.
+# v12.17 CHECK, inserted before the v12.16 entry. The real bench: the
+# Component Kit recipe selected, its cream detail button pressed three ways.
 SubRx @'
-  {v:'12.16',what:'ESC over the open Undercroft backpack closes the backpack instead of raising the pause box, and ESC with it closed still pauses (2026-09-06 first-ten-minutes audit)',
+  {v:'12.16',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
 '@ @'
-  {v:'12.17',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
+  {v:'12.17',what:'the bench detail button crafts on a synthetic click (a pad press) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
    run:function(){
-     if(typeof GEARRULES==='undefined'||!GEARRULES.length) return 'SKIP: no controls card rules in this build';
-     var bad=[], row=null;
-     for(var i=0;i<GEARRULES.length;i++) if(GEARRULES[i][0]==='WEAPONS'){ row=GEARRULES[i]; break; }
-     if(!row) return 'SKIP: the card has no WEAPONS rule';
-     var txt=(typeof row[1]==='function')?String(row[1]()):String(row[1]);
-     if(/\bX swaps\b|\bY swaps\b/.test(txt)) bad.push('the WEAPONS rule still teaches a swap key that does not exist: "'+txt+'"');
-     if(!/1 and 2/.test(txt)) bad.push('the WEAPONS rule does not name the belt keys: "'+txt+'"');
+     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||typeof craftHoldStep!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the bench';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], P=__P(), md=document.getElementById('tradermodal'), keepStash=(P.stash||[]).slice();
+     function stock(){ P.stash=['scrap','scrap','scrap','wire','wire']; }
+     function select(){
+       renderWork();
+       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1;
+       for(var i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:0') ix=i;
+       if(ix<0) return null;
+       P._craftSel=ix; renderCraftDetail(rows);
+       return document.querySelector('#craftdetail .vbuy');
+     }
+     function crafted(){ return P.stash.indexOf('comp')>=0; }
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       stock(); openTrader('craft');
+       var b=select(); if(!b) return 'SKIP: the bench drew no detail button for the Component Kit';
+       if(b.disabled) bad.push('control: with the parts in the stash the detail button is disabled');
+       // ONE: a synthetic click (what the pad and Enter send) crafts.
+       b.click();
+       if(!crafted()) bad.push('a synthetic click on the detail button crafted nothing (a pad or Enter cannot craft)');
+       // TWO: a real mouse click spends nothing.
+       stock(); b=select();
+       if(b){ b.dispatchEvent(new MouseEvent('click',{detail:1,bubbles:true})); if(crafted()) bad.push('a real mouse click crafted; the hold is meant to be the only mouse way'); }
+       // THREE: the hold still crafts.
+       stock(); b=select();
+       if(b&&b.onmousedown){ b.onmousedown({button:0}); craftHoldStep(0.6); if(crafted()) bad.push('control: the hold crafted before it was full'); craftHoldStep(0.6); if(!crafted()) bad.push('control: a full hold crafted nothing'); }
+       else bad.push('control: the detail button has no hold to drive');
+       // FOUR: a hold dies when the window is hidden.
+       stock(); b=select();
+       if(b&&b.onmousedown&&md){ b.onmousedown({button:0}); craftHoldStep(0.3); md.style.display='none'; craftHoldStep(1.2); md.style.display=''; if(crafted()) bad.push('a hold outlived the trader window being hidden and spent the parts'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(md) md.style.display=''; craftHoldCancel(); try{ openTrader('buy'); }catch(_ob){} var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); P.stash=keepStash; saveProfile(); }catch(_c){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.16',what:'ESC over the open Undercroft backpack closes the backpack instead of raising the pause box, and ESC with it closed still pauses (2026-09-06 first-ten-minutes audit)',
+  {v:'12.16',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

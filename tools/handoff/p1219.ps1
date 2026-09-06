@@ -11,44 +11,20 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: with an EMPTY throwable cell selected
-# (cells 3 to 5 on every first raid) the trigger was dead: startCook found
-# nothing, or worse, cycled to a DIFFERENT grenade you happened to carry and
-# cooked that one while the belt and the corner readout still named the cell
-# you chose. v2.92's own rule is that the trigger is never dead: spending the
-# last of a stack selects the gun. An empty cell now does the same on the
-# press, and the next click fires the gun.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.78 (the corner readout twice
+# the size): every station window stamps the same credits and XP into its
+# own heading (.modcur, pushed to the heading's right edge), and at 44px the
+# corner readout prints through the top of it. The v11.52 precedent for the
+# stash screen's own credits figure was to hide it, since the corner shows
+# the same two numbers at all times; the heading's balance goes the same way.
 SubRx @'
-    if(HSC&&HSC.kind==='throw'){
-      if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
-      else {
+  .modal h3{ display:flex; align-items:baseline; gap:12px; }
 '@ @'
-    if(HSC&&HSC.kind==='throw'){
-      // v12.19: AN EMPTY THROWABLE CELL DOES NOT OWN THE TRIGGER. Selected empty
-      // (cells 3 to 5 on a first raid), the press started nothing and said
-      // nothing, or cooked a different grenade than the cell named. By v2.92's
-      // own rule the press selects the gun; the next click fires it, never this
-      // one, which is the automatic-weapon safety that rule was written for.
-      if(!p.cooking&&!p.fired&&!((HSC.count|0)>0)){
-        p.fired=true; setHot(0); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded
-        if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
-      }
-      else if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
-      else {
-'@
-
-SubRx @'
-  else if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
-'@ @'
-  else if(mouse.down&&!p.trigYield&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v12.19: not on the hold that yielded to the gun
-'@
-SubRx @'
-  if(!mouse.down){
-    // Let go of a cooked grenade and it goes. Done before p.fired clears so a
-'@ @'
-  if(!mouse.down){
-    p.trigYield=0;   // v12.19: the latch lives for one hold
-    // Let go of a cooked grenade and it goes. Done before p.fired clears so a
+  .modal h3{ display:flex; align-items:baseline; gap:12px; }
+  /* v12.19: the heading's own balance sat under the corner readout once that
+     grew (v11.78); the corner shows the same two figures at all times, so the
+     heading no longer repeats them (the v11.52 rule for the stash screen). */
+  .modal h3 .modcur{ display:none; }
 '@
 
 # STAMPS.
@@ -66,11 +42,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL: the press brings your gun up and says so, and it never throws a grenade the cell did not name.',
+  'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.18:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.18 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.18:[^']*'",{ param($m) "now:'v12.19: from the 2026-09-06 first-ten-minutes audit, an empty throwable cell selected on the belt left the trigger dead, or cooked a different grenade than the cell named. The press selects the gun and says so; the next click fires it. Check 12.19 selects an empty Frag cell with Smoke in the pouch, presses the trigger through the real player update, and requires the gun selected, nothing cooking and the Smoke untouched; fails on v12.18.'" })
+$s=[regex]::Replace($s,"now:'v12\.18:[^']*'",{ param($m) "now:'v12.19: from the read-only review of the shipped v11.78, every station window stamped its own credits and XP into its heading and the enlarged corner readout printed through them. The heading balance is hidden; the corner shows the same two figures at all times (the v11.52 rule for the stash screen). The same build repairs check 11.52, which double-scaled the CONDITIONS box top and could not see an overlap. Check 12.19 opens the shop window and requires the heading balance not to be drawn where the readout is; fails on v12.18 where the two boxes intersect.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

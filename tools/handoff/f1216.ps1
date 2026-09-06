@@ -11,38 +11,38 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.16 CHECK, inserted before the v12.15 entry. The floor backpack is
-# opened, ESC is pressed on the page body (so the pause box's window capture
-# listener runs first, as a real key does), and the backpack must be closed
-# with no pause box; a second
-# ESC with the backpack closed must still pause.
+# v12.16 CHECK, inserted before the v12.15 entry. The real button, pressed
+# through its own onclick, twice; then again with an item sold in between.
 SubRx @'
-  {v:'12.15',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
+  {v:'12.15',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
 '@ @'
-  {v:'12.16',what:'ESC over the open Undercroft backpack closes the backpack instead of raising the pause box, and ESC with it closed still pauses (2026-09-06 first-ten-minutes audit)',
+  {v:'12.16',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
    run:function(){
-     if(!(window.__showScreen&&window.__hubEnter)) return 'SKIP: this fixture cannot enter the floor';
-     if(typeof hubBagOpenSet!=='function'||typeof togglePauseBox!=='function') return 'SKIP: no floor backpack or pause box in this build';
-     var bad=[], pb=document.getElementById('pausebox');
+     if(typeof renderFreeKit!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the freebie kit';
+     var bad=[];
+     function btn(){ return document.querySelector('.fkbtn'); }
+     function press(){ var b=btn(); if(!b||!b.onclick) return 'no button'; try{ b.onclick(); }catch(e){ return 'threw '+(e&&e.message||e); } return null; }
      try{
-       __topClear(); __runPrep(); __cleanProfile();
+       __topClear(); __cleanProfile();
        G=null; keys={}; __showScreen('hub'); __hubEnter();
-       var t=document.getElementById('title'); if(t) t.classList.remove('on');
-       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
-       hubBagOpenSet(true);
-       if(!hubBagOpen) bad.push('control: the backpack did not open');
-       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
-       if(hubBagOpen) bad.push('ESC left the backpack open');
-       if(pb&&pb.classList.contains('on')) bad.push('ESC raised the pause box over the open backpack');
-       // CONTROL: with the backpack closed, ESC still pauses.
-       if(hubBagOpen) hubBagOpenSet(false);
-       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
-       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
-       if(!(pb&&pb.classList.contains('on'))) bad.push('control: ESC with the backpack closed did not raise the pause box');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ if(pb&&pb.classList.contains('on')) togglePauseBox(false); }catch(_p){} try{ if(hubBagOpen) hubBagOpenSet(false); }catch(_b){} keys={}; __topClear(); __cleanProfile(); }
+       var P=__P();
+       P.stash=['medkit','plate','frag']; P.kit=['medkit','plate']; P.hotAssign={2:'medkit'}; P.freeKit=0; P.kitSaved=null;
+       renderFreeKit();
+       if(!btn()) return 'SKIP: the freebie kit button was not drawn';
+       var e1=press(); if(e1) bad.push('control: the first press failed ('+e1+')');
+       if(!P.freeKit) bad.push('control: the first press did not take the kit');
+       if((P.kit||[]).length) bad.push('control: the kit was not emptied while the free kit is taken (his rule)');
+       var e2=press(); if(e2) bad.push('control: the second press failed ('+e2+')');
+       if(P.freeKit) bad.push('control: the second press did not switch back');
+       if((P.kit||[]).join(',')!=='medkit,plate') bad.push('switching back did not restore the packing (kit '+(P.kit||[]).join(',')+')');
+       if(!P.hotAssign||P.hotAssign[2]!=='medkit') bad.push('switching back did not restore the belt plan');
+       // SOLD IN BETWEEN: only what is still in the stash comes back.
+       press(); P.stash=['medkit','frag']; press();
+       if((P.kit||[]).join(',')!=='medkit') bad.push('with the plate sold in between, switching back restored '+(P.kit||[]).join(',')+' and not medkit alone');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.15',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
+  {v:'12.15',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

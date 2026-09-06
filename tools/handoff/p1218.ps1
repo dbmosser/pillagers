@@ -11,43 +11,75 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: on a death or an abandon the outcome
-# card prints the run's XP with the drink's dose bonus, then the same
-# function clears the drink, then it banks the run through addXp, which
-# reads the bonus live and finds none. The card said more than the profile
-# got, the exact disagreement v11.63 was written to end.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.79 (guns on the bench). The
+# Burst Carbine is BLUE everywhere the player looks (gunRarity by tier; the
+# price row's r is the one field v7.99 said is not a gun's rarity), so the
+# bench holds one green gun and three blue, and the card said two of each.
+# The bench's cream detail panel described a crafted gun as salvage to sell
+# and read its rarity from the price row. The stash's KEEP FOR reason for a
+# servo and an optic dropped from "contracts" to plain "crafting" because
+# craftUse had no case for either, and craftPart still said the servo is in
+# no recipe when four eat it. The shop panel still said the Carbine and the
+# Scattergun can only come from Wirt or a container.
 SubRx @'
-function endRaid(how){
-  if(G.over) return;
-  G.over=how;
+  if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
 '@ @'
-function endRaid(how){
-  if(G.over) return;
-  G.over=how;
-  // v12.18: THE BONUS THE CARD PRINTS IS THE BONUS THE RUN BANKS. Taken here,
-  // before the death branch below clears the drink; the banking at the bottom
-  // of this function ran after that clear and paid the run without it.
-  if(G.tel) G.tel.doseMul=buzzXpMul();
+  if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
+  if(it.use==='gun') return 'A gun. Equip it from the stash, or sell it at the terminal.';   // v12.18: the bench makes these now
 '@
 SubRx @'
-    dur:Math.round(elapsed()),
+function craftPart(k){
+  // v9.43: the servo is out. It appears in no recipe and in no rack, and the one
+  // thing it was for was repairing guns that have not worn since v9.01. Being a
+  // craft part is what made SELL ALL refuse it and made the stash tell him to KEEP
+  // it, so the item whose entire purpose had been deleted was also the item the
+  // game insisted he hoard. It is salvage now, and salvage sells for 310.
+  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp';
+}
 '@ @'
-    doseMul:(T.doseMul>0)?T.doseMul:1,   // v12.18: the dose bonus the card printed, banked below
-    dur:Math.round(elapsed()),
+function craftPart(k){
+  // v9.43 took the servo out: it was in no recipe and its one use, repairs, had
+  // gone with wear at v9.01, so keeping it was hoarding for nothing.
+  // v12.18: it is back, and the optic with it, because the four gun recipes of
+  // v11.79 eat the servo and one of them the optic; SELL ALL keeps them and
+  // the stash says what for.
+  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp'||k==='servo'||k==='optic';
+}
 '@
 SubRx @'
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb);
+  if(k==='comp')  return 'plates, medkits, smoke, decoys and frags';
+  return 'crafting';
 '@ @'
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb,(rec.doseMul>0)?rec.doseMul:undefined);   // v12.18: the multiplier the card printed
+  if(k==='comp')  return 'plates, medkits, smoke, decoys and frags';
+  if(k==='servo') return 'guns on the bench, and contracts';   // v12.18
+  if(k==='optic') return 'the Auto Rifle, and contracts';      // v12.18
+  return 'crafting';
 '@
 SubRx @'
-function addXp(n){
-  n=Math.round(n||0); if(n<=0) return 0;
-  var g=Math.round(n*buzzXpMul());
+       'anyone down here. Wirt puts one on his counter now and again, and otherwise '+
+       'they are found up top or not at all.</b></div>';
+  } else {
 '@ @'
-function addXp(n,mul){
-  n=Math.round(n||0); if(n<=0) return 0;
-  var g=Math.round(n*((mul!==undefined)?mul:buzzXpMul()));   // v12.18: a run banks the bonus its card printed
+       'anyone down here. Wirt puts one on his counter now and again, and otherwise '+
+       'they are found up top or not at all.</b></div>';
+    // v12.18: two of those, plus the SMG and the Auto Rifle, can be built now
+    // (v11.79); a separate line, because the sentence above is a key for his
+    // own rewording of it.
+    h+='<div class="vdesc">The Compact SMG, the Burst Carbine, the Riot Scattergun and the Auto Rifle can all be built at the crafting bench.</div>';
+  } else {
+'@
+SubRx @'
+  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
+'@ @'
+  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG in green, the Burst Carbine, Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
+'@
+
+# The recipe branch of the detail panel read the price row's rarity; every
+# other panel asks dispR, so it does too.
+SubRx @'
+       '<span class="vpill r">'+escHtml(String((oit&&oit.r)||'common').toUpperCase())+'</span></div>'+
+'@ @'
+       '<span class="vpill r">'+escHtml(String(((typeof dispR==='function')&&dispR(outKey))||(oit&&oit.r)||'common').toUpperCase())+'</span></div>'+   // v12.18: the shown rarity
 '@
 
 # STAMPS.
@@ -61,15 +93,9 @@ var WHATSNEW_VER='12.17';
 '@ @'
 var WHATSNEW_VER='12.18';
 '@
-SubRx @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-'@ @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A DEATH BANKS THE XP ITS CARD PRINTS, drink bonus included; it used to pay the run without the bonus after the drink was cleared.',
-'@
 $cnt=([regex]::Matches($s,"now:'v12\.17:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.17 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.17:[^']*'",{ param($m) "now:'v12.18: from the 2026-09-06 first-ten-minutes audit, a death or an abandon printed the run XP with the drink bonus on the card, cleared the drink, and then banked the run through addXp with no bonus, so the profile got less than the card said. The bonus is taken at the top of the ending and carried on the record into the banking. Check 12.18 dies with two doses in the blood and requires the profile paid exactly what the card printed; fails on v12.17.'" })
+$s=[regex]::Replace($s,"now:'v12\.17:[^']*'",{ param($m) "now:'v12.18: from the read-only review of the shipped v11.79, the bench guns told truthfully: the Burst Carbine is blue by the rarity every screen shows, so the bench holds one green and three blue and the card says so; the detail panel describes a crafted gun as a gun with its shown rarity; craftPart and craftUse know the servo and the optic again, so the stash keeps them and says for what; the shop panel adds that three of its unstocked guns can be built. The same build repairs check 11.79 (rarity through dispR, purchase price through replaceCost) and the v9.43 check that asserted a servo is in no recipe. Check 12.18 reads the bench through dispR, the blurb, the detail pill and the stash reasons; fails on v12.17.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

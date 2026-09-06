@@ -1,10 +1,9 @@
-v12.10: the bench tells the truth about its guns
+v12.10: first ten minutes, the second down no longer sends you to a key that refuses you
 
-The Burst Carbine is blue by the rarity every screen shows, so the bench
-holds one green and three blue and the card says so; the detail panel
-describes a crafted gun as a gun with its shown rarity; the stash keeps
-servos and optics again and says what for; the shop panel says three of
-its unstocked guns can be built. Checks 11.79 and 9.43 repaired to match.
-Check 12.10 reads all of it; fails on v12.09.
+The going-down toast always said F gets you up, including the second
+down, when the one self-revive is spent and F answers Self-revive spent.
+With the revive spent the toast says so and names the crawl and the SPACE
+give-up hold. Check 12.10 downs him both ways through the real damage path
+and reads the toast; fails on v12.09.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

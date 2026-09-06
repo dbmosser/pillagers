@@ -40024,6 +40024,42 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.06 - THE FLOOR STOPS TAKING KEYS BEHIND THE CHARACTER SCREEN
+
+From the 2026-09-06 read-only menu audit, the last of its three open items
+on the alpha path.
+
+WHAT IT WAS. The Undercroft floor asks one gate, hubModalOpen, before a key
+fires the station you are standing in; v8.12 made that gate ask the page
+for any modal that is on, plus the Stash screen, the pause box and the
+outcome card, which are not modals. The character screen is not a modal
+either, and it was not in the list, so while it was up the floor kept
+running behind it: WASD walked, harmlessly, and E, R, F and T fired whatever
+station you had been standing in. At the lift, R ran the kit commit and
+started a raid, so a player choosing a name could find himself in a live
+raid with the title painted over it and the clock running.
+
+THE FIX. One line: the character screen counts, the same way the pause box
+was added at v8.70.
+
+MEASURED. Check 12.06 walks the floor with nothing open and requires the
+gate closed, turns the character screen on and requires it open, turns it
+off and requires it closed again. On the v12.05 fixture the gate reads
+closed with the screen on and the check says so.
+
+HARNESS, found by this build's own corpus. The fixture boots with the title
+screen on and the runner never dismissed it; four older checks (8.84, 8.95,
+8.96, 9.32) pressed I on the floor under the boot title and passed only
+because the floor answered keys behind it, which is the leak this build
+closes. All four went red on the v12.06 corpus and passed alone once a later
+check had switched the title off. __runPrep and __hubEnter now dismiss the
+boot title, as a player does before he ever stands on the floor; checks that
+measure the title switch it on themselves. Lesson recorded: the dry run
+proves the new checks, not the old ones against the new build.
+
+Not verified: the raid start itself, which sits behind this gate and is
+not driven here; a station left mid-interaction when the screen opens,
+which the gate now simply pauses.
 ## v12.05 - FIRST TEN MINUTES: THE NOTES LINE SITS BELOW THE CORNER READOUT
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.

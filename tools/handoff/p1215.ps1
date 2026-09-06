@@ -11,30 +11,46 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: the lift's FREEBIE KIT answer did not
-# clear the tactical belt plan, while the identical button on the stash
-# screen does. A friend who took the free kit at the lift landed with keys
-# bound to items left in the stash and, because an assigned heal key
-# replaces the derived Medical cell, two Bandages with no working key.
+# FROM THE 2026-09-06 MENU AUDIT (P1, raised by two regions): the safe pocket
+# accepted a Frag Charge, a Smoke, a Decoy or an Ammo Box and read 1/1, but
+# those ride in the pouch and the reserve, not the backpack, and the death
+# path banks only the backpack; so naming one spent the only death
+# protection there is on nothing, for the whole raid. Refused now, the way a
+# gun is refused, and a pocket already saved on one is cleared on load.
 SubRx @'
-  ASKALT=function(){
-    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
-    try{ renderStage(); }catch(_e){}
-    ascendNow();
-  };
+function setSafe(k){
+  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
+  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
+  P.safe=k||null; saveProfile(); return null;
+}
 '@ @'
-  ASKALT=function(){
-    // v12.15: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
-    // belt plan (a key pointing at something you are not carrying is the v5.72
-    // fault). This one did not, so a friend who took the free kit here landed
-    // with keys bound to items left in the stash and, because an assigned heal
-    // key replaces the derived Medical cell, two Bandages with no key to use.
-    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button does (v12.08)
-    P.hotAssign={}; P._gunSlot=null;
-    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
-    try{ renderStage(); }catch(_e){}
-    ascendNow();
-  };
+function setSafe(k){
+  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
+  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
+  // v12.15, from the 2026-09-06 menu audit: a grenade rides in the pouch and
+  // ammunition in the reserve, and the death path banks the backpack only,
+  // so a pocket naming either came home with nothing while reading 1/1.
+  if(k&&ITEMS[k].use==='throw') return 'A throwable rides in the pouch, not a pocket. It cannot come home from there.';
+  if(k&&ITEMS[k].use==='ammo') return 'Ammunition rides in the reserve, not a pocket. It cannot come home from there.';
+  P.safe=k||null; saveProfile(); return null;
+}
+'@
+SubRx @'
+if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
+'@ @'
+if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
+// v12.15: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
+if(P.safe&&ITEMS[P.safe]&&(ITEMS[P.safe].use==='throw'||ITEMS[P.safe].use==='ammo')) P.safe=null;
+'@
+
+# The right-click menu offered the pocket for the same items; a verb the game
+# cannot perform is the rule that file states twelve lines above the row.
+SubRx @'
+  if(it.use!=='gun'){
+    var _isSafe=(P.safe===key);
+'@ @'
+  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v12.15: the pocket refuses these, so the menu does not offer it
+    var _isSafe=(P.safe===key);
 '@
 
 # STAMPS.
@@ -52,11 +68,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'TAKING THE FREEBIE KIT AT THE LIFT CLEARS YOUR TACTICAL BELT PLAN, the same as the stash screen button, so no key points at something you left behind.',
+  'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.14:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.14 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.14:[^']*'",{ param($m) "now:'v12.15: from the 2026-09-06 first-ten-minutes audit, the lift FREEBIE KIT answer left the tactical belt plan pointing at items in the stash while the stash screen button cleared it, so a free-kit run landed with dead keys and no Medical cell. The lift answer clears the plan now. Check 12.15 takes the free kit at the lift with a key bound to a stash item and requires the plan empty and a free-kit raid started; fails on v12.14.'" })
+$s=[regex]::Replace($s,"now:'v12\.14:[^']*'",{ param($m) "now:'v12.15: from the 2026-09-06 menu audit, the safe pocket accepted a grenade or an ammo box and read 1/1, but both ride outside the backpack and the death path banks the backpack only, so the one death protection there is was spent on nothing. setSafe refuses throwables and ammunition the way it refuses a gun, and a saved pocket on either is cleared on load. Check 12.15 drives setSafe with a frag, an ammo box and a medkit and the real loader with a saved frag pocket; fails on v12.14.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

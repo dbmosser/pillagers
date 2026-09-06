@@ -1,28 +1,34 @@
-## v12.20 - FIRST TEN MINUTES: BROWSING THE BACKPACK NO LONGER WALKS YOU
+## v12.20 - THE BIGGER BLAST, THREE THINGS THAT DID NOT MOVE WITH IT
 
-From the 2026-09-06 read-only audit of a new player's first ten minutes.
+From the read-only review of this morning's shipped builds, on v11.77.
 
-THE FINDING. With the backpack open in a raid, the arrow keys walk the
-tile grid of the bag (v2.87), and the comment above that code says the
-arrows select instead of walking while the bag is open, so you can sort
-without being rooted. The first line of the key handler sets every key
-into the movement state, and the movement code reads the arrows without
-asking whether the bag is open, so an arrow did both: the selection moved
-and the operator walked. Browsing the bag walked you off the spot you
-stopped on, into whatever was next to it.
+WHAT IT WAS. v11.77 took the frag radius from 150 to 190 on his order, and
+three things that had been calibrated to 150 stayed where they were. A
+pillager throws a charge only in a band whose near edge, 180, cleared his
+own blast at 150; at 190 that edge is inside it, so at the near edge of
+every throw he stood in his own charge, which is the mistake the band
+exists to prevent. The "It hit cover. MOVE." warning, for a charge that
+bounces off cover you are standing against, fired only inside 110 units,
+half the new radius, so the ground where you were in your own blast with
+no warning had doubled. And the NEW IN card printed the formula's
+coefficients as if they were the damage at the centre: the centre is
+coefficient plus floor, 140 to a machine or a pillager (was 100) and 98 to
+you (was 72), which is what the DESIGN entry said and the card did not.
 
-THE BUILD. One line: while the backpack is open an arrow is cleared from
-the movement state as soon as it has moved the selection. WASD still walks
-with the bag open, as the comment promised; with the bag closed the arrows
-walk as before.
+THE BUILD. The near edge of the throw band follows the radius plus forty,
+so it moves with the dial the way the blast does; the cover warning covers
+the whole radius for a frag; the card says 140 and 98. The same build
+repairs check 11.44, whose cfgv sentinel was pinned at 17 by the v11.77
+stamp and so could never fire again, and a comment that still quoted the
+old stamp.
 
-MEASURED. Check 12.20 deploys, opens the backpack with three items,
-presses an arrow through the real key handler and runs one real player
-update; requires the selection moved, the arrow out of the movement state
-and the operator still. Then closes the backpack, presses the arrow again
-and requires the operator to have walked. On the v12.19 fixture the
-operator walks with the backpack open.
+MEASURED. Check 12.20 deploys with the radius pinned at 190, hands a real
+pillager a real frag with his throw clock ready, asks him to throw at the
+player from 200 units and requires no throw and no charge in the air, then
+from 260 and requires a throw, so the band is proven live; and reads the
+card's frag line for the true centre figures. On the v12.19 fixture the
+200-unit throw happens and the card prints 115 and 80.
 
-Not verified: a held arrow that keeps repeating, which the handler clears
-on every repeat the same way; the pad, which routes its stick through the
-same movement reads and never through raidKey.
+Not verified: his own play; the far edge of the band, 520, which was not
+calibrated to the radius and stays; the cover warning itself, which is not
+staged here (a comment-level reading; the line now reads the dial).

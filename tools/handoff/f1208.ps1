@@ -11,38 +11,48 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.08 CHECK, inserted before the v12.07 entry. The real button, pressed
-# through its own onclick, twice; then again with an item sold in between.
+# v12.08 CHECK, inserted before the v12.07 entry. A raid is deployed with no
+# Frag and two Smoke, the Frag cell is selected, and the trigger is held for
+# one real player update. The gun must be selected, nothing cooking, the
+# Smoke untouched, and the toast must say so.
 SubRx @'
-  {v:'12.07',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
+  {v:'12.07',what:'a crawler still on its way to the last place it saw you keeps the chase until it gets there and bites a man standing still, and a chase on an unreachable point still ends (his note of 2026-09-06)',
 '@ @'
-  {v:'12.08',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
+  {v:'12.08',what:'the trigger on an empty grenade cell selects the gun and says so, fires nothing on that same hold, and a loaded cell still cooks (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(typeof renderFreeKit!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the freebie kit';
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof updatePlayer!=='function'||typeof hotbarSlots!=='function'||typeof setHot!=='function') return 'SKIP: no belt or player update in this build';
      var bad=[];
-     function btn(){ return document.querySelector('.fkbtn'); }
-     function press(){ var b=btn(); if(!b||!b.onclick) return 'no button'; try{ b.onclick(); }catch(e){ return 'threw '+(e&&e.message||e); } return null; }
      try{
-       __topClear(); __cleanProfile();
-       G=null; keys={}; __showScreen('hub'); __hubEnter();
-       var P=__P();
-       P.stash=['medkit','plate','frag']; P.kit=['medkit','plate']; P.hotAssign={2:'medkit'}; P.freeKit=0; P.kitSaved=null;
-       renderFreeKit();
-       if(!btn()) return 'SKIP: the freebie kit button was not drawn';
-       var e1=press(); if(e1) bad.push('control: the first press failed ('+e1+')');
-       if(!P.freeKit) bad.push('control: the first press did not take the kit');
-       if((P.kit||[]).length) bad.push('control: the kit was not emptied while the free kit is taken (his rule)');
-       var e2=press(); if(e2) bad.push('control: the second press failed ('+e2+')');
-       if(P.freeKit) bad.push('control: the second press did not switch back');
-       if((P.kit||[]).join(',')!=='medkit,plate') bad.push('switching back did not restore the packing (kit '+(P.kit||[]).join(',')+')');
-       if(!P.hotAssign||P.hotAssign[2]!=='medkit') bad.push('switching back did not restore the belt plan');
-       // SOLD IN BETWEEN: only what is still in the stash comes back.
-       press(); P.stash=['medkit','frag']; press();
-       if((P.kit||[]).join(',')!=='medkit') bad.push('with the plate sold in between, switching back restored '+(P.kit||[]).join(',')+' and not medkit alone');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ __topClear(); __cleanProfile(); }
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.pouch.frag=0; g.pouch.smoke=2; g.pouch.decoy=0;
+       var sl=hotbarSlots(), fi=-1;
+       for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='throw'&&/frag/i.test(String(sl[i].k||sl[i].itemKey||sl[i].icon||''))){ fi=i; break; }
+       if(fi<0) return 'SKIP: no Frag cell on the belt ('+sl.map(function(c){ return c&&(c.k||c.kind); }).join(',')+')';
+       setHot(fi);
+       if(hotSel()!==fi) return 'SKIP: the empty Frag cell could not be selected (selected '+hotSel()+')';
+       p.downed=false; p.cooking=0; p.fired=false; mouse.down=true; window.__lastSay=null;
+       updatePlayer(0.016);
+       if(hotSel()!==0) bad.push('the press on the empty Frag cell left cell '+hotSel()+' selected instead of the gun');
+       // TWO: the same hold, two more frames: the gun it raised must not fire.
+       var _sh0=g.tel.shots||0, _am0=p.ammo;
+       updatePlayer(0.016); updatePlayer(0.016);
+       if((g.tel.shots||0)!==_sh0||p.ammo!==_am0) bad.push('the hold that yielded to the gun fired it on the same hold ('+((g.tel.shots||0)-_sh0)+' shots, ammo '+_am0+' to '+p.ammo+')');
+       mouse.down=false; updatePlayer(0.016);
+       if(p.cooking) bad.push('the press cooked a '+p.cookKind+' the cell did not name');
+       if(g.pouch.smoke!==2) bad.push('the press spent a Smoke from an empty Frag cell (smoke now '+g.pouch.smoke+')');
+       if(!/Nothing in that cell/.test(String(window.__lastSay||''))) bad.push('the press did not say the cell is empty (said "'+String(window.__lastSay||'')+'")');
+       // THREE, CONTROL: a loaded Frag cell still cooks on the press and keeps the selection.
+       g.pouch.frag=2; setHot(fi); p.fired=false; p.cooking=0; p.trigYield=0; mouse.down=true; updatePlayer(0.016);
+       if(!p.cooking||p.cookKind!=='frag') bad.push('control: a loaded Frag cell did not cook on the press (cooking '+p.cooking+', kind '+p.cookKind+')');
+       if(hotSel()!==fi) bad.push('control: a loaded Frag cell lost the selection');
+       mouse.down=false; updatePlayer(0.016);
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ mouse.down=false; var g2=__state(); if(g2&&!g2.over){ g2.player.cooking=0; g2.player.fired=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.07',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
+  {v:'12.07',what:'a crawler still on its way to the last place it saw you keeps the chase until it gets there and bites a man standing still, and a chase on an unreachable point still ends (his note of 2026-09-06)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

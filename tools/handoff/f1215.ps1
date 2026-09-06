@@ -11,37 +11,36 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.15 CHECK, inserted before the v12.14 entry. The lift question is asked
-# with a belt key bound to a stash item, the FREEBIE KIT answer is taken, and
-# the plan must be empty with a free-kit raid started.
+# v12.15 CHECK, inserted before the v12.14 entry. The real setSafe and the
+# real loader, with a frag, an ammo box and a medkit.
 SubRx @'
-  {v:'12.14',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
+  {v:'12.14',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
 '@ @'
-  {v:'12.15',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
+  {v:'12.15',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
    run:function(){
-     if(!(window.__state&&window.__endRaid&&window.__P&&window.__showScreen)) return 'SKIP: this fixture cannot drive the lift';
-     if(typeof askKit!=='function') return 'SKIP: no lift question in this build';
-     var bad=[], P2=__P(), keepKit=(P2.kit||[]).slice(), keepHot=P2.hotAssign, keepGun=P2._gunSlot, keepFree=P2.freeKit, keepKBF=P2.kitBeforeFree, keepStash=(P2.stash||[]).slice(), keepChosen=P2.kitChosen, keepEq=P2.equipped, keepSec=P2.equippedSec, keepW=(P2.weapons||[]).slice(), keepKS=P2.kitSaved;
+     if(typeof setSafe!=='function'||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot reach the pocket or the loader';
+     var bad=[], snap=null;
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       G=null; keys={}; __showScreen('hub');
-       P2.stash=['medkit','plate']; P2.kit=['medkit']; P2.hotAssign={4:'medkit'}; P2._gunSlot=null; P2.freeKit=0; P2.kitChosen=0; saveProfile();
-       askKit();
-       if(typeof ASKALT!=='function') bad.push('control: the lift question set no freebie answer');
-       else ASKALT();
-       var g=__state();
-       if(!g||!g.freeKit) bad.push('control: the freebie answer did not start a free-kit raid');
-       var ks=Object.keys(P2.hotAssign||{});
-       if(ks.length) bad.push('the belt plan still holds '+ks.length+' key'+(ks.length===1?'':'s')+' ('+ks.map(function(k){ return k+':'+P2.hotAssign[k]; }).join(',')+') after the freebie kit was taken at the lift');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{
-       try{ var m=document.getElementById('askmodal'); if(m) m.classList.remove('on'); }catch(_m){}
-       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
-       P2.kit=keepKit; P2.hotAssign=keepHot||{}; P2._gunSlot=keepGun; P2.freeKit=keepFree; P2.kitBeforeFree=keepKBF; P2.stash=keepStash; P2.kitChosen=keepChosen; P2.equipped=keepEq; P2.equippedSec=keepSec; P2.weapons=keepW; P2.kitSaved=keepKS;
-       try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
-     }
+       __topClear(); __cleanProfile();
+       snap=JSON.stringify(__P());   // the loader below replaces the profile; it is put back at the end
+       var P=__P(); P.safe=null;
+       var r1=setSafe('frag');
+       if(!r1) bad.push('the pocket took a Frag Charge without a word');
+       if(P.safe==='frag') bad.push('the pocket is saved on a Frag Charge');
+       var r2=setSafe('ammobox');
+       if(!r2) bad.push('the pocket took an Ammo Box without a word');
+       if(P.safe==='ammobox') bad.push('the pocket is saved on an Ammo Box');
+       var r3=setSafe('medkit');
+       if(r3) bad.push('control: the pocket refused a Medkit ('+r3+')');
+       if(P.safe!=='medkit') bad.push('control: the pocket did not keep the Medkit');
+       __applyLoaded({credits:900,safe:'frag'});
+       if(__P().safe==='frag') bad.push('a saved pocket on a Frag Charge survived the load');
+       __applyLoaded({credits:900,safe:'medkit'});
+       if(__P().safe!=='medkit') bad.push('control: a saved pocket on a Medkit did not survive the load ('+__P().safe+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.14',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
+  {v:'12.14',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

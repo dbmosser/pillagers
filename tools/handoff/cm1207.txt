@@ -1,9 +1,11 @@
-v12.07: the safe pocket refuses a grenade or an ammo box
+v12.07: his note, a crawler that was coming for you keeps coming
 
-Neither rides in the backpack, so neither could come home from the pocket,
-which said 1/1 anyway and spent the only death protection on nothing. The
-pocket refuses both with a sentence and a saved pocket on either is cleared
-on load. Check 12.07 drives the real pocket and the real loader; fails on
-v12.06.
+A crawler's alert clock ran out while it was still crossing the ground to
+the last place it saw you, so it dropped to investigate on the way, was
+scattered off the point, and turned away 106 units from a man standing
+still, outside its sight. The chase is held while the crawler is still more
+than 40 units from its last sighting, for at most 8 seconds of overtime
+(chaseHold; 0 restores the old clock). Check 12.07 requires a bite from 600
+units and a capped chase on an unreachable point; fails on v12.06.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

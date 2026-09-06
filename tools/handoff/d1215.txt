@@ -1,26 +1,28 @@
-## v12.15 - FIRST TEN MINUTES: THE LIFT'S FREEBIE KIT CLEARS THE BELT PLAN
+## v12.15 - THE SAFE POCKET REFUSES WHAT IT CANNOT BRING HOME
 
-From the 2026-09-06 read-only audit of a new player's first ten minutes.
+From the 2026-09-06 read-only menu audit, raised independently by two of
+its regions.
 
-THE FINDING. The free kit can be taken in two places: a button on the
-stash screen, and the FREEBIE KIT answer to the lift's question. The stash
-button clears the packed kit and the tactical belt plan, on the v5.72 rule
-that a key pointing at something you are not carrying is a fault. The lift
-answer cleared neither. The kit itself is emptied a moment later by
-commitKit, but the belt plan rode into the raid pointing at items left in
-the stash, and because an assigned heal key replaces the derived Medical
-cell, a friend who took the free kit at the lift landed with two Bandages
-and no working key to use them.
+WHAT IT WAS. The safe pocket names one item that comes home if you die.
+Since v5.32 the general safe slots have been zero for everyone, so the
+named pocket is the only death protection in the game. The pocket refused a
+gun and accepted anything else, and "anything else" included a Frag Charge,
+a Smoke, a Decoy and an Ammo Box; but grenades ride in the pouch and
+ammunition in the reserve, not in the backpack, and the death path banks
+the backpack only. So a player who named his grenade saw 1/1 on the ascent
+screen, went up covered, and died with his only protection spent on
+nothing, for that raid and every raid after until he happened to change it.
 
-THE BUILD. The lift answer clears the belt plan and the gun slot the same
-way the stash button does. Nothing else changes: the kit is still put
-aside for the return by commitKit, as before.
+THE FIX. The pocket refuses a throwable and an ammo box the way it refuses
+a gun, and says why in the same sentence; and a profile already saved on
+one is cleared on load, so the ascent screen stops saying 1/1 for it.
 
-MEASURED. Check 12.15 enters the floor with a Medkit packed and key 4
-bound to it, asks the lift question, takes the FREEBIE KIT answer through
-the real handler, and requires a free-kit raid started with the belt plan
-empty. On the v12.14 fixture the plan still holds the Medkit key.
+MEASURED. Check 12.15 offers the real pocket a Frag Charge and an Ammo Box
+and requires a refusal and no save, offers it a Medkit and requires it
+taken, then drives the real loader with a profile saved on a Frag Charge
+and requires the pocket empty, and with one saved on a Medkit and requires
+it kept. On the v12.14 fixture the grenade and the box are taken silently
+and the saved grenade survives the load.
 
-Not verified: the plan after a free run, which neither path restores yet
-because commitKit clears the kept-aside copy when it takes kitBeforeFree;
-his own reading of the belt after a free run.
+Not verified: the death path itself, which is unchanged; the Stash screen's
+pocket cell after a refusal, which repaints as before.

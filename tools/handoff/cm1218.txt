@@ -1,9 +1,10 @@
-v12.18: a death banks the XP its card prints, drink bonus included
+v12.18: the bench tells the truth about its guns
 
-The ending printed the card with the dose bonus, cleared the drink, then
-banked the run through addXp with the bonus read live as none. The
-multiplier is taken at the top of the ending, carried on the record, and
-handed to addXp. Check 12.18 dies with two doses in the blood and requires
-the profile paid what the card printed; fails on v12.17.
+The Burst Carbine is blue by the rarity every screen shows, so the bench
+holds one green and three blue and the card says so; the detail panel
+describes a crafted gun as a gun with its shown rarity; the stash keeps
+servos and optics again and says what for; the shop panel says three of
+its unstocked guns can be built. Checks 11.79 and 9.43 repaired to match.
+Check 12.18 reads all of it; fails on v12.17.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

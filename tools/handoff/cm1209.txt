@@ -1,10 +1,9 @@
-v12.09: a controller or the keyboard can craft again
+v12.09: first ten minutes, browsing the backpack no longer walks you
 
-The hold-to-craft build deleted the button's click handler, which was the
-only way a pad or Enter could press it. A click that answers only
-synthetic clicks is back; a mouse click still spends nothing. The hold
-also dies when the trader window is hidden, and the tooltip reads the
-constant. Check 12.09 crafts by synthetic click and by hold and refuses a
-mouse click; fails on v12.08.
+With the backpack open an arrow key moved the selection and walked the
+operator at once, against the comment that promised otherwise. The arrow
+is cleared from the movement state while the bag is open; WASD still
+walks. Check 12.09 drives the real key handler and player update with the
+bag open and closed; fails on v12.08.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

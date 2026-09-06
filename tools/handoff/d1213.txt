@@ -1,25 +1,26 @@
-## v12.13 - THE MAP SAYS EXTRACT NOW TOO
+## v12.13 - FIRST TEN MINUTES: THE LIFT'S FREEBIE KIT CLEARS THE BELT PLAN
 
-From the read-only review of this morning's shipped builds, on v11.74.
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
 
-WHAT IT WAS. v11.74 replaced EXTRACTION IN PROGRESS with EXTRACT NOW and the
-seconds left, on his note, in the two places the raid HUD draws the boarding
-window: the banner and the off-screen ring label. The sector map keeps a
-third copy of that line under each ring, and it still said OPEN TO EXTRACT,
-the wording he rejected at v8.68 and again at v11.74. Worse, the map paints
-an opaque wash over the whole screen before it draws, so while the map is
-open the map's copy is the only boarding line the player can read. The check
-for v11.74 read only the HUD function's source, so it could not see the map.
+THE FINDING. The free kit can be taken in two places: a button on the
+stash screen, and the FREEBIE KIT answer to the lift's question. The stash
+button clears the packed kit and the tactical belt plan, on the v5.72 rule
+that a key pointing at something you are not carrying is a fault. The lift
+answer cleared neither. The kit itself is emptied a moment later by
+commitKit, but the belt plan rode into the raid pointing at items left in
+the stash, and because an assigned heal key replaces the derived Medical
+cell, a friend who took the free kit at the lift landed with two Bandages
+and no working key to use them.
 
-THE BUILD. The map's line says EXTRACT NOW with the seconds left, the banner
-words; the ring's letter is already printed on the line above it. The stale
-comment over the ring label, which still credited the wording to v8.68,
-names the owner.
+THE BUILD. The lift answer clears the belt plan and the gun slot the same
+way the stash button does. Nothing else changes: the kit is still put
+aside for the return by commitKit, as before.
 
-MEASURED. Check 12.13 deploys, puts a ring into the landed hold with twelve
-seconds left, opens the map and draws it with the canvas text call recorded,
-and requires the line under the ring to say EXTRACT NOW with 12S LEFT and
-not the old words. On the v12.12 fixture it says OPEN TO EXTRACT 12s.
+MEASURED. Check 12.13 enters the floor with a Medkit packed and key 4
+bound to it, asks the lift question, takes the FREEBIE KIT answer through
+the real handler, and requires a free-kit raid started with the belt plan
+empty. On the v12.12 fixture the plan still holds the Medkit key.
 
-Not verified: his own eye on the map; the CALLED and CLOSED lines, which
-were not in his note and stay as they were.
+Not verified: the plan after a free run, which neither path restores yet
+because commitKit clears the kept-aside copy when it takes kitBeforeFree;
+his own reading of the belt after a free run.

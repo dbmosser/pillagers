@@ -1,34 +1,28 @@
-## v12.09 - A CONTROLLER OR THE KEYBOARD CAN CRAFT AGAIN
+## v12.09 - FIRST TEN MINUTES: BROWSING THE BACKPACK NO LONGER WALKS YOU
 
-From the read-only review of this morning's shipped builds, on v11.75.
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
 
-WHAT IT WAS. v11.75 made the craft button a one-second hold on his order,
-and did it by deleting the button's click handler and wiring the hold to
-the mouse. That deleted the only way a controller presses anything in a
-panel (the pad focuses a control and sends it a synthetic click) and the
-only way the keyboard does (Enter on the focused button), so with a pad or
-by keyboard crafting and servicing were not merely un-holdable, they were
-impossible. Two smaller faults in the same build: the hold's only guard
-was that the button was still in the page, but the trader hides its window
-rather than removing it, so a hold could outlive the window being shut and
-still spend the materials; and the tooltip and the NEW IN card wrote the
-hold length out by hand, and the card described a SERVICE button the game
-cannot draw since wear went out at v9.43.
+THE FINDING. With the backpack open in a raid, the arrow keys walk the
+tile grid of the bag (v2.87), and the comment above that code says the
+arrows select instead of walking while the bag is open, so you can sort
+without being rooted. The first line of the key handler sets every key
+into the movement state, and the movement code reads the arrows without
+asking whether the bag is open, so an arrow did both: the selection moved
+and the operator walked. Browsing the bag walked you off the spot you
+stopped on, into whatever was next to it.
 
-THE BUILD. The click handler comes back and answers only synthetic clicks:
-a real mouse click carries a detail count of one or more and still spends
-nothing, the hold is still the mouse's way; a pad press and a keyboard
-Enter carry zero and craft at once. The hold dies when the button's window
-is hidden. The tooltip reads the hold length from the one constant. The
-card drops the sentence about the service button.
+THE BUILD. One line: while the backpack is open an arrow is cleared from
+the movement state as soon as it has moved the selection. WASD still walks
+with the bag open, as the comment promised; with the bag closed the arrows
+walk as before.
 
-MEASURED. Check 12.09 opens the bench with the parts for a Component Kit in
-the stash, selects that recipe, and presses the cream detail button three
-ways: a synthetic click, which must craft; a click with a detail count of
-one, which must craft nothing; and a real hold stepped past one second,
-which must craft. Then it starts a hold, hides the window, steps the hold
-and requires it cancelled with nothing spent. On the v12.08 fixture the
-synthetic click crafts nothing and the hold survives the hidden window.
+MEASURED. Check 12.09 deploys, opens the backpack with three items,
+presses an arrow through the real key handler and runs one real player
+update; requires the selection moved, the arrow out of the movement state
+and the operator still. Then closes the backpack, presses the arrow again
+and requires the operator to have walked. On the v12.08 fixture the
+operator walks with the backpack open.
 
-Not verified: a real pad in his hands; Enter from a focused button, which
-this check sends as the same detail-zero click the pad sends.
+Not verified: a held arrow that keeps repeating, which the handler clears
+on every repeat the same way; the pad, which routes its stick through the
+same movement reads and never through raidKey.

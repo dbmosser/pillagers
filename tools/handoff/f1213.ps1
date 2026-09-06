@@ -11,42 +11,37 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# CHECK 11.85's line filter follows the new wording, so the landed-hold line
-# stays under its label-face floor.
+# v12.13 CHECK, inserted before the v12.12 entry. The lift question is asked
+# with a belt key bound to a stash item, the FREEBIE KIT answer is taken, and
+# the plan must be empty with a free-kit raid started.
 SubRx @'
-       var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |OPEN TO EXTRACT)/.test(r.t); });
+  {v:'12.12',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
 '@ @'
-       var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |EXTRACT NOW)/.test(r.t); });
-'@
-
-# v12.13 CHECK, inserted before the v12.12 entry. A ring is put into the
-# hold state and the map overlay drawn with the canvas text call recorded.
-SubRx @'
-  {v:'12.12',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 52 (242 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
-'@ @'
-  {v:'12.13',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
+  {v:'12.13',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
-     if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
-     var oldWords='OPEN TO '+'EXTRACT', newWords='EXTRACT '+'NOW';
-     proto.fillText=function(t){ try{ rec.push(String(t)); }catch(_r){} return orig.apply(this,arguments); };
+     if(!(window.__state&&window.__endRaid&&window.__P&&window.__showScreen)) return 'SKIP: this fixture cannot drive the lift';
+     if(typeof askKit!=='function') return 'SKIP: no lift question in this build';
+     var bad=[], P2=__P(), keepKit=(P2.kit||[]).slice(), keepHot=P2.hotAssign, keepGun=P2._gunSlot, keepFree=P2.freeKit, keepKBF=P2.kitBeforeFree, keepStash=(P2.stash||[]).slice(), keepChosen=P2.kitChosen, keepEq=P2.equipped, keepSec=P2.equippedSec, keepW=(P2.weapons||[]).slice(), keepKS=P2.kitSaved;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(); if(!g.zones||!g.zones.length) return 'SKIP: no extraction ring';
-       var Z=g.zones[0]; Z.open=true; Z.beaconT=0; Z.hold=12; g.active=Z; g.mapOpen=true;
-       drawMapOverlay();
-       var subs=rec.filter(function(t){ return t.indexOf(oldWords)===0||t.indexOf(newWords)===0; });
-       if(!subs.length) bad.push('control: the map drew no boarding line under the landed ring');
-       if(subs.some(function(t){ return t.indexOf(oldWords)===0; })) bad.push('the map still says '+oldWords+' under a landed ring ("'+subs[0]+'")');
-       if(!subs.some(function(t){ return t.indexOf(newWords)===0&&/12S LEFT/.test(t); })) bad.push('the map does not say '+newWords+' with the seconds left (drew: '+subs.join(' | ').slice(0,80)+')');
-       if(!subs.some(function(t){ return t.indexOf(newWords+'!')===0; })) bad.push('the map line lacks the banner mark');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ proto.fillText=orig; try{ var g2=__state(); if(g2){ g2.mapOpen=false; } }catch(_m){} __topClear(); __cleanProfile(); }
+       G=null; keys={}; __showScreen('hub');
+       P2.stash=['medkit','plate']; P2.kit=['medkit']; P2.hotAssign={4:'medkit'}; P2._gunSlot=null; P2.freeKit=0; P2.kitChosen=0; saveProfile();
+       askKit();
+       if(typeof ASKALT!=='function') bad.push('control: the lift question set no freebie answer');
+       else ASKALT();
+       var g=__state();
+       if(!g||!g.freeKit) bad.push('control: the freebie answer did not start a free-kit raid');
+       var ks=Object.keys(P2.hotAssign||{});
+       if(ks.length) bad.push('the belt plan still holds '+ks.length+' key'+(ks.length===1?'':'s')+' ('+ks.map(function(k){ return k+':'+P2.hotAssign[k]; }).join(',')+') after the freebie kit was taken at the lift');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var m=document.getElementById('askmodal'); if(m) m.classList.remove('on'); }catch(_m){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       P2.kit=keepKit; P2.hotAssign=keepHot||{}; P2._gunSlot=keepGun; P2.freeKit=keepFree; P2.kitBeforeFree=keepKBF; P2.stash=keepStash; P2.kitChosen=keepChosen; P2.equipped=keepEq; P2.equippedSec=keepSec; P2.weapons=keepW; P2.kitSaved=keepKS;
+       try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.12',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 52 (242 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
+  {v:'12.12',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

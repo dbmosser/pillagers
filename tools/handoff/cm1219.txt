@@ -1,9 +1,9 @@
-v12.19: first ten minutes, the trigger is never dead on an empty grenade cell
+v12.19: the station heading stops repeating the balance under the readout
 
-An empty throwable cell selected on the belt left the trigger dead, or
-the cook cycled to another grenade and threw one the cell did not name.
-The press selects the gun and says so; the next click fires it. Check
-12.19 holds the trigger on an empty Frag cell with Smoke carried through
-the real player update; fails on v12.18.
+The enlarged corner readout printed through the credits and XP every
+station window stamps into its heading; the heading balance is hidden,
+as the stash screen's own figure was at v11.52. Check 11.52 is repaired
+(it double-scaled the CONDITIONS box top). Check 12.19 opens the shop and
+measures the heading against the readout; fails on v12.18.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -1,8 +1,9 @@
-v12.13: the map says EXTRACT NOW too
+v12.13: first ten minutes, the freebie kit taken at the lift clears the belt plan
 
-The sector map kept a third copy of the boarding line that still said
-OPEN TO EXTRACT, and with the map open it was the only copy readable. It
-says EXTRACT NOW with the seconds left. Check 12.13 draws the map with a
-landed ring and reads the line; fails on v12.12.
+The stash screen's freebie button clears the tactical belt plan and the
+lift's FREEBIE KIT answer did not, so a free-kit run from the lift landed
+with keys bound to items left in the stash and no working Medical cell.
+The lift answer clears the plan now. Check 12.13 takes the free kit at the
+lift through the real handler; fails on v12.12.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -1,28 +1,35 @@
-## v12.07 - THE SAFE POCKET REFUSES WHAT IT CANNOT BRING HOME
+## v12.07 - HIS NOTE: A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING
 
-From the 2026-09-06 read-only menu audit, raised independently by two of
-its regions.
+His message of 2026-09-06, 16:33: "last time I played crawler attacks and
+pathfinding were still kinda messed up... like if the player stops walking
+sometimes the crawler will too". At last a symptom for the "crawler charging
+is still messed up" note of the morning.
 
-WHAT IT WAS. The safe pocket names one item that comes home if you die.
-Since v5.32 the general safe slots have been zero for everyone, so the
-named pocket is the only death protection in the game. The pocket refused a
-gun and accepted anything else, and "anything else" included a Frag Charge,
-a Smoke, a Decoy and an Ammo Box; but grenades ride in the pouch and
-ammunition in the reserve, not in the backpack, and the death path banks
-the backpack only. So a player who named his grenade saw 1/1 on the ascent
-screen, went up covered, and died with his only protection spent on
-nothing, for that raid and every raid after until he happened to change it.
+THE FINDING, reproduced before anything was touched. On COLD STORAGE at seed
+4242, one crawler was given his live position as its last sighting from 778
+units and he stood still. It ran at him; its alert clock (2.4, decaying 0.5 a
+second, under five seconds) ran out at 378 units and the chase exit dropped it
+to investigate; packScatter, written so a pack fans out over a last sighting,
+pushed its point 90 to 240 units off him; it walked to that point and turned
+to patrol 106 units from a man standing still, just outside its 100-unit
+sight, and wandered off. Walking feeds a crawler fresh sightings and
+footsteps, which keep the clock full; standing still starves it, so the chase
+expired on the way. That is the coupling he felt: he stops, it stops.
 
-THE FIX. The pocket refuses a throwable and an ammo box the way it refuses
-a gun, and says why in the same sentence; and a profile already saved on
-one is cleared on load, so the ascent screen stops saying 1/1 for it.
+THE BUILD. While a crawler is still more than 40 units from its last
+sighting, the chase is held past the clock, for at most chaseHold seconds of
+overtime (8), so a point nothing can reach cannot hold it forever; any fresh
+sighting resets the overtime. Only crawlers, only the exit; raiders and the
+long-sighted machines are untouched, and chaseHold 0 restores the old clock.
 
-MEASURED. Check 12.07 offers the real pocket a Frag Charge and an Ammo Box
-and requires a refusal and no save, offers it a Medkit and requires it
-taken, then drives the real loader with a profile saved on a Frag Charge
-and requires the pocket empty, and with one saved on a Medkit and requires
-it kept. On the v12.06 fixture the grenade and the box are taken silently
-and the saved grenade survives the load.
+MEASURED. Check 12.07 empties the map of every other machine, runs a crawler
+at the standing player from a spawn 600 units out with his live position as
+its last sighting, and requires a bite within 14 seconds; then gives it a
+point off the map and requires the chase to end within 15 seconds. On the
+v12.06 fixture the first arm fails: no bite, the crawler turns to patrol on
+the way.
 
-Not verified: the death path itself, which is unchanged; the Stash screen's
-pocket cell after a refusal, which repaints as before.
+Not verified: what this does to the bot extract rate (crawlers are more
+persistent now; not measured, on his no-balancing rule the dial is there for
+him); a crawler that reaches the point and still does not see him, which
+scatters as before; his own next run.

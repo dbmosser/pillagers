@@ -11,32 +11,47 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: with the backpack open the arrow keys
-# move the selection AND walk the operator, because raidKey sets keys[code]
-# true for every key before the bag branch and the movement reads the arrows
-# unconditionally. The comment above the bag branch promises the opposite.
-# Browsing the bag walked you off the spot you stopped on.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.77 (the bigger blast): three
+# things were calibrated to the old 150 radius and did not move with it. A
+# pillager throws only in a band whose near edge (180) cleared his own blast
+# at 150 and is inside it at 190, so he stood in his own charge at the near
+# edge of every throw; the near edge follows the dial now. The "It hit cover.
+# MOVE." warning fired only inside 110, half the new radius; it follows the
+# dial too. And the card printed the coefficients as the centre damage, when
+# the centre is coefficient plus floor: 140 and 98, not 115 and 80.
 SubRx @'
-  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
-    // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
+  if(fd<180||fd>520) return false;
+  var ix=-1;
+  for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
 '@ @'
-  // v12.20: AND THEY DO NOT WALK. keys[code] was set true at the top of this
-  // function for every key, so an arrow both moved the selection and moved the
-  // operator; browsing the bag walked you off the spot you stopped on. Cleared
-  // here for the arrows while the bag is open; WASD still walks, as promised.
-  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length&&code.indexOf('Arrow')===0) keys[code]=false;
-  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
-    // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
+  // v12.20: the near edge of the band follows the blast radius (it was 180
+  // against a 150 blast; at 190 he stood in his own charge), plus the scatter
+  // of the aim point below and his own body; and never above his reach, or a
+  // short-ranged pillager could never throw at all.
+  var _fR=(CFG.fragR===undefined?190:CFG.fragR);
+  if(fd<Math.min(_fR+52,(e.rng||520)-1)||fd>520) return false;
+  var ix=-1;
+  for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
 '@
-
 SubRx @'
-  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
+  if(blocked&&rngT<110) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');
 '@ @'
-  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){
-    G.bagOpen=!G.bagOpen; G.bagSel=0;
-    // v12.20: an arrow still held when the bag opens stops walking too.
-    if(G.bagOpen){ keys['ArrowUp']=false; keys['ArrowDown']=false; keys['ArrowLeft']=false; keys['ArrowRight']=false; }
-  }
+  if(blocked&&rngT<(tk==='frag'?(CFG.fragR===undefined?190:CFG.fragR):110)) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');   // v12.20: the warning covers the whole blast
+'@
+SubRx @'
+  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 115 at the centre, was 85; to you 80 at the centre, was 60. The fuse is still 1.1 seconds.',
+'@ @'
+  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 140 at the centre, was 100; to you 98 at the centre, was 72. The fuse is still 1.1 seconds.',
+'@
+SubRx @'
+  // P.cfg=CFG;P.cfgv=17, and here CFG is still the file-scope default because
+'@ @'
+  // P.cfg=CFG;P.cfgv=18 (17 when this was written), and here CFG is still the file-scope default because
+'@
+SubRx @'
+  // the player's dials and stamped cfgv 17, skipping every cfgv migration. storeSet
+'@ @'
+  // the player's dials and stamped the current cfgv, skipping every cfgv migration. storeSet
 '@
 
 # STAMPS.
@@ -50,15 +65,9 @@ var WHATSNEW_VER='12.19';
 '@ @'
 var WHATSNEW_VER='12.20';
 '@
-SubRx @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-'@ @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE ARROW KEYS BROWSE THE OPEN BACKPACK WITHOUT WALKING YOU; WASD still walks.',
-'@
 $cnt=([regex]::Matches($s,"now:'v12\.19:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.19 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.19:[^']*'",{ param($m) "now:'v12.20: from the 2026-09-06 first-ten-minutes audit, the arrow keys moved the backpack selection and walked the operator at the same time, against the comment that promised otherwise. The arrows are cleared from the movement state while the backpack is open. Check 12.20 opens the backpack, presses an arrow through raidKey and one real player update, and requires the selection moved and the operator still; fails on v12.19.'" })
+$s=[regex]::Replace($s,"now:'v12\.19:[^']*'",{ param($m) "now:'v12.20: from the read-only review of the shipped v11.77, three things stayed calibrated to the old 150 blast: the pillager throw band near edge (180, inside a 190 blast) now follows the radius plus 52 (scatter and body), floored at his reach; the It hit cover MOVE warning covered 110, half the blast, and now covers the radius; and the card printed coefficients as centre damage (the centre is 140 and 98, was 100 and 72). The same build repairs check 11.44, whose cfgv sentinel was pinned at 17 and could never fire again. Check 12.20 hands a staged pillager a frag at 200 units and requires no throw, at 260 requires a throw, and reads the card figures; fails on v12.19.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

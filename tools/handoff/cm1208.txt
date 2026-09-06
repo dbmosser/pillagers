@@ -1,8 +1,9 @@
-v12.08: taking the freebie kit no longer throws away what you packed
+v12.08: first ten minutes, the trigger is never dead on an empty grenade cell
 
-The packing and the belt plan are kept aside when the kit is taken and put
-back by USE MY OWN GEAR, minus anything sold in between. Check 12.08
-presses the real button twice and once more with a sale in between; fails
-on v12.07.
+An empty throwable cell selected on the belt left the trigger dead, or
+the cook cycled to another grenade and threw one the cell did not name.
+The press selects the gun and says so; the next click fires it. Check
+12.08 holds the trigger on an empty Frag cell with Smoke carried through
+the real player update; fails on v12.07.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

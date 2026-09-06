@@ -11,48 +11,57 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.19 CHECK, inserted before the v12.18 entry. A raid is deployed with no
-# Frag and two Smoke, the Frag cell is selected, and the trigger is held for
-# one real player update. The gun must be selected, nothing cooking, the
-# Smoke untouched, and the toast must say so.
+# CHECK 11.52 double-scaled the CONDITIONS box top (HUDBOX.cond is already in
+# screen pixels after hudZoomRect), so it was too permissive by the zoom and
+# could not see an overlap; the v11.78 check reads the same field the right
+# way and the two disagreed.
 SubRx @'
-  {v:'12.18',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
+       // CLEAR OF THE CONDITIONS BOX, in screen space: that box is drawn zoomed
+       // about the top right corner, so its top in pixels is y times its zoom.
+       var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
+       if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
+       else {
+         var cz=1; try{ cz=(HUDZ.cond||1)*hudRes()*hudUserZ('cond'); }catch(_z){ cz=1; }
+         var condTop=HB.y*cz;
 '@ @'
-  {v:'12.19',what:'the trigger on an empty grenade cell selects the gun and says so, fires nothing on that same hold, and a loaded cell still cooks (2026-09-06 first-ten-minutes audit)',
+       // CLEAR OF THE CONDITIONS BOX, in screen space. v12.19: HUDBOX.cond is
+       // already in screen pixels (drawHUD runs it through hudZoomRect), so it is
+       // read as it is; multiplying by the zoom again made this too permissive.
+       var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
+       if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
+       else {
+         var condTop=HB.y;
+'@
+
+# v12.19 CHECK, inserted before the v12.18 entry. The shop window is opened
+# for real and its heading balance measured against the corner readout.
+SubRx @'
+  {v:'12.18',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
+'@ @'
+  {v:'12.19',what:'a station window no longer repeats the credits and XP in its heading under the corner readout: the heading balance is hidden or clear of the readout (2026-09-06 review of v11.78)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof updatePlayer!=='function'||typeof hotbarSlots!=='function'||typeof setHot!=='function') return 'SKIP: no belt or player update in this build';
-     var bad=[];
+     if(typeof openTrader!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open a station window';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], tr=document.getElementById('topright');
+     if(!tr) return 'SKIP: no corner readout in this build';
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player;
-       g.pouch.frag=0; g.pouch.smoke=2; g.pouch.decoy=0;
-       var sl=hotbarSlots(), fi=-1;
-       for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='throw'&&/frag/i.test(String(sl[i].k||sl[i].itemKey||sl[i].icon||''))){ fi=i; break; }
-       if(fi<0) return 'SKIP: no Frag cell on the belt ('+sl.map(function(c){ return c&&(c.k||c.kind); }).join(',')+')';
-       setHot(fi);
-       if(hotSel()!==fi) return 'SKIP: the empty Frag cell could not be selected (selected '+hotSel()+')';
-       p.downed=false; p.cooking=0; p.fired=false; mouse.down=true; window.__lastSay=null;
-       updatePlayer(0.016);
-       if(hotSel()!==0) bad.push('the press on the empty Frag cell left cell '+hotSel()+' selected instead of the gun');
-       // TWO: the same hold, two more frames: the gun it raised must not fire.
-       var _sh0=g.tel.shots||0, _am0=p.ammo;
-       updatePlayer(0.016); updatePlayer(0.016);
-       if((g.tel.shots||0)!==_sh0||p.ammo!==_am0) bad.push('the hold that yielded to the gun fired it on the same hold ('+((g.tel.shots||0)-_sh0)+' shots, ammo '+_am0+' to '+p.ammo+')');
-       mouse.down=false; updatePlayer(0.016);
-       if(p.cooking) bad.push('the press cooked a '+p.cookKind+' the cell did not name');
-       if(g.pouch.smoke!==2) bad.push('the press spent a Smoke from an empty Frag cell (smoke now '+g.pouch.smoke+')');
-       if(!/Nothing in that cell/.test(String(window.__lastSay||''))) bad.push('the press did not say the cell is empty (said "'+String(window.__lastSay||'')+'")');
-       // THREE, CONTROL: a loaded Frag cell still cooks on the press and keeps the selection.
-       g.pouch.frag=2; setHot(fi); p.fired=false; p.cooking=0; p.trigYield=0; mouse.down=true; updatePlayer(0.016);
-       if(!p.cooking||p.cookKind!=='frag') bad.push('control: a loaded Frag cell did not cook on the press (cooking '+p.cooking+', kind '+p.cookKind+')');
-       if(hotSel()!==fi) bad.push('control: a loaded Frag cell lost the selection');
-       mouse.down=false; updatePlayer(0.016);
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ mouse.down=false; var g2=__state(); if(g2&&!g2.over){ g2.player.cooking=0; g2.player.fired=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+       try{ if(window.__forceSize) __forceSize(1920,1080); }catch(_fs){}   // the modal zoom follows the pane; pinned so the control means the same on every run
+       G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
+       openTrader('buy');
+       var md=document.querySelector('.modal.on'); if(!md) bad.push('control: no station window opened');
+       var mc=md?md.querySelector('h3 .modcur'):null;
+       if(!mc) bad.push('control: the window heading carries no balance to measure');
+       else {
+         var shown=getComputedStyle(mc).display!=='none';
+         var a=mc.getBoundingClientRect(), b=tr.getBoundingClientRect();
+         var hit=shown&&a.width>0&&a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom;
+         if(hit) bad.push('the heading balance ('+Math.round(a.left)+'..'+Math.round(a.right)+' x '+Math.round(a.top)+'..'+Math.round(a.bottom)+') sits under the corner readout ('+Math.round(b.left)+'..'+Math.round(b.right)+' x '+Math.round(b.top)+'..'+Math.round(b.bottom)+')');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.18',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
+  {v:'12.18',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

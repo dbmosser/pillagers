@@ -1,25 +1,20 @@
-## v12.14 - FIRST TEN MINUTES: THE SECOND DOWN TELLS THE TRUTH
+## v12.14 - FIRST TEN MINUTES: THE CONTROLS CARD STOPS TEACHING A DEAD KEY
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.
 
-THE FINDING. Every time the player goes down the toast says "DOWN. F to
-get back up. You get one per raid." The down branch reads only health, so a
-second hit to zero downs him just the same after the one self-revive is
-spent, and the same toast sends him to F, which answers "Self-revive
-spent. One per raid." The HUD line drawn in the same frame says the revive
-is gone. A new player on his second down is told to press a key that
-refuses him, while the two things he can actually do, crawl for an
-extraction or hold SPACE to give up, go unsaid.
+THE FINDING. The full controls card behind H opens with "X swaps
+primary/sidearm" (Y on a pad). There is no KeyX handler anywhere in the
+build and no pad swap button: the swap key was deleted when the tactical
+belt took the job, and this one surface was missed. A friend reading the
+card presses X and nothing happens. The swap today is the belt itself:
+pressing the key of the stowed gun brings it up (v8.67).
 
-THE BUILD. One line: when the revive is already spent the toast says so
-and names the crawl and, where the give-up hold is switched on, the SPACE
-hold. The first down's toast is unchanged.
+THE BUILD. The WEAPONS rule says "Belt keys 1 and 2 bring up either gun."
+The pad branch is gone with the key it named; the rule is one string.
 
-MEASURED. Check 12.14 deploys, marks the revive spent, hits him to zero
-through the real damage path with a crawler as the source, and requires
-the toast to say spent and not F; then resets him fresh, hits him again,
-and requires F. On the v12.13 fixture the first arm reads the F toast.
+MEASURED. Check 12.14 reads the WEAPONS rule the way the card does and
+requires no X or Y swap claim and the belt keys named. On the v12.13
+fixture the rule reads "X swaps primary/sidearm."
 
-Not verified: the bleed-out HUD line's own wording, untouched; the
-give-up hold itself, which v9.37 and v10.96 cover; his own reading of the
-toast.
+Not verified: the pad's own belt selection, which this rule does not name;
+the rest of the card, which the audit did not fault.

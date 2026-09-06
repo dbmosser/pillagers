@@ -1,9 +1,7 @@
-v12.14: first ten minutes, the second down no longer sends you to a key that refuses you
+v12.14: first ten minutes, the controls card stops teaching a dead X key
 
-The going-down toast always said F gets you up, including the second
-down, when the one self-revive is spent and F answers Self-revive spent.
-With the revive spent the toast says so and names the crawl and the SPACE
-give-up hold. Check 12.14 downs him both ways through the real damage path
-and reads the toast; fails on v12.13.
+The H controls card taught X swaps primary and sidearm (Y on a pad); no
+such handler exists since the belt took the job. The rule names the belt
+keys now. Check 12.14 reads the rule; fails on v12.13.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

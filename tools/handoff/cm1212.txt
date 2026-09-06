@@ -1,9 +1,9 @@
-v12.12: the bigger blast, three things that did not move with it
+v12.12: a death banks the XP its card prints, drink bonus included
 
-A pillager's throw band started inside his own 190 blast, the cover
-warning covered half the radius, and the card printed coefficients as the
-centre damage. All three follow the radius now, and check 11.44's sentinel
-is unpinned from 17. Check 12.12 stages a pillager throw at 200 and 260
-and reads the card; fails on v12.11.
+The ending printed the card with the dose bonus, cleared the drink, then
+banked the run through addXp with the bonus read live as none. The
+multiplier is taken at the top of the ending, carried on the record, and
+handed to addXp. Check 12.12 dies with two doses in the blood and requires
+the profile paid what the card printed; fails on v12.11.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

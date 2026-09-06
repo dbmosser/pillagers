@@ -11,57 +11,38 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# CHECK 11.52 double-scaled the CONDITIONS box top (HUDBOX.cond is already in
-# screen pixels after hudZoomRect), so it was too permissive by the zoom and
-# could not see an overlap; the v11.78 check reads the same field the right
-# way and the two disagreed.
+# v12.11 CHECK, inserted before the v12.10 entry. The floor backpack is
+# opened, ESC is pressed on the page body (so the pause box's window capture
+# listener runs first, as a real key does), and the backpack must be closed
+# with no pause box; a second
+# ESC with the backpack closed must still pause.
 SubRx @'
-       // CLEAR OF THE CONDITIONS BOX, in screen space: that box is drawn zoomed
-       // about the top right corner, so its top in pixels is y times its zoom.
-       var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
-       if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
-       else {
-         var cz=1; try{ cz=(HUDZ.cond||1)*hudRes()*hudUserZ('cond'); }catch(_z){ cz=1; }
-         var condTop=HB.y*cz;
+  {v:'12.10',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
 '@ @'
-       // CLEAR OF THE CONDITIONS BOX, in screen space. v12.11: HUDBOX.cond is
-       // already in screen pixels (drawHUD runs it through hudZoomRect), so it is
-       // read as it is; multiplying by the zoom again made this too permissive.
-       var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
-       if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
-       else {
-         var condTop=HB.y;
-'@
-
-# v12.11 CHECK, inserted before the v12.10 entry. The shop window is opened
-# for real and its heading balance measured against the corner readout.
-SubRx @'
-  {v:'12.10',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
-'@ @'
-  {v:'12.11',what:'a station window no longer repeats the credits and XP in its heading under the corner readout: the heading balance is hidden or clear of the readout (2026-09-06 review of v11.78)',
+  {v:'12.11',what:'ESC over the open Undercroft backpack closes the backpack instead of raising the pause box, and ESC with it closed still pauses (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(typeof openTrader!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open a station window';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], tr=document.getElementById('topright');
-     if(!tr) return 'SKIP: no corner readout in this build';
+     if(!(window.__showScreen&&window.__hubEnter)) return 'SKIP: this fixture cannot enter the floor';
+     if(typeof hubBagOpenSet!=='function'||typeof togglePauseBox!=='function') return 'SKIP: no floor backpack or pause box in this build';
+     var bad=[], pb=document.getElementById('pausebox');
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       try{ if(window.__forceSize) __forceSize(1920,1080); }catch(_fs){}   // the modal zoom follows the pane; pinned so the control means the same on every run
-       G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
-       openTrader('buy');
-       var md=document.querySelector('.modal.on'); if(!md) bad.push('control: no station window opened');
-       var mc=md?md.querySelector('h3 .modcur'):null;
-       if(!mc) bad.push('control: the window heading carries no balance to measure');
-       else {
-         var shown=getComputedStyle(mc).display!=='none';
-         var a=mc.getBoundingClientRect(), b=tr.getBoundingClientRect();
-         var hit=shown&&a.width>0&&a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom;
-         if(hit) bad.push('the heading balance ('+Math.round(a.left)+'..'+Math.round(a.right)+' x '+Math.round(a.top)+'..'+Math.round(a.bottom)+') sits under the corner readout ('+Math.round(b.left)+'..'+Math.round(b.right)+' x '+Math.round(b.top)+'..'+Math.round(b.bottom)+')');
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
+       __topClear(); __runPrep(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       var t=document.getElementById('title'); if(t) t.classList.remove('on');
+       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
+       hubBagOpenSet(true);
+       if(!hubBagOpen) bad.push('control: the backpack did not open');
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
+       if(hubBagOpen) bad.push('ESC left the backpack open');
+       if(pb&&pb.classList.contains('on')) bad.push('ESC raised the pause box over the open backpack');
+       // CONTROL: with the backpack closed, ESC still pauses.
+       if(hubBagOpen) hubBagOpenSet(false);
+       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
+       if(!(pb&&pb.classList.contains('on'))) bad.push('control: ESC with the backpack closed did not raise the pause box');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ if(pb&&pb.classList.contains('on')) togglePauseBox(false); }catch(_p){} try{ if(hubBagOpen) hubBagOpenSet(false); }catch(_b){} keys={}; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.10',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
+  {v:'12.10',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

@@ -11,46 +11,49 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-06 MENU AUDIT (P1, raised by two regions): the safe pocket
-# accepted a Frag Charge, a Smoke, a Decoy or an Ammo Box and read 1/1, but
-# those ride in the pouch and the reserve, not the backpack, and the death
-# path banks only the backpack; so naming one spent the only death
-# protection there is on nothing, for the whole raid. Refused now, the way a
-# gun is refused, and a pocket already saved on one is cleared on load.
+# HIS NOTE, 2026-09-06 16:33: "crawler attacks and pathfinding were still kinda
+# messed up... like if the player stops walking sometimes the crawler will too".
+# Reproduced on COLD STORAGE at seed 4242: a crawler given his live position
+# as its last sighting from 778 units ran at him, its alert clock (2.4 at 0.5 a
+# second) ran out at 378 units, it dropped to investigate, packScatter sent it
+# 90 to 240 units off the point, and it turned to patrol 106 units from a man
+# standing still, just outside its 100-unit sight. Walking feeds it sightings
+# and footsteps; standing still starves the clock. The chase is now held while
+# the crawler is still more than 40 units from its last sighting, for at most
+# chaseHold seconds of overtime, so an unreachable point cannot hold it forever.
 SubRx @'
-function setSafe(k){
-  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
-  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
-  P.safe=k||null; saveProfile(); return null;
-}
+      if(!sees&&e.alert<=0){
+        e.state=e.kind==='raider'?'loot':'investigate';
+        e.role=null; e.scattered=0;
+        if(e.state==='investigate') packScatter();
+      }
+    }
+    else if(e.state==='investigate'){
 '@ @'
-function setSafe(k){
-  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
-  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
-  // v12.07, from the 2026-09-06 menu audit: a grenade rides in the pouch and
-  // ammunition in the reserve, and the death path banks the backpack only,
-  // so a pocket naming either came home with nothing while reading 1/1.
-  if(k&&ITEMS[k].use==='throw') return 'A throwable rides in the pouch, not a pocket. It cannot come home from there.';
-  if(k&&ITEMS[k].use==='ammo') return 'Ammunition rides in the reserve, not a pocket. It cannot come home from there.';
-  P.safe=k||null; saveProfile(); return null;
-}
-'@
-SubRx @'
-if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
-'@ @'
-if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
-// v12.07: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
-if(P.safe&&ITEMS[P.safe]&&(ITEMS[P.safe].use==='throw'||ITEMS[P.safe].use==='ammo')) P.safe=null;
-'@
-
-# The right-click menu offered the pocket for the same items; a verb the game
-# cannot perform is the rule that file states twelve lines above the row.
-SubRx @'
-  if(it.use!=='gun'){
-    var _isSafe=(P.safe===key);
-'@ @'
-  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v12.07: the pocket refuses these, so the menu does not offer it
-    var _isSafe=(P.safe===key);
+      // v12.07, HIS NOTE of 2026-09-06 ("if the player stops walking sometimes
+      // the crawler will too"): A CHASE DOES NOT EXPIRE BEFORE THE CHASER GETS
+      // WHERE IT WAS GOING. The alert clock (2.4 at 0.5 a second, under five
+      // seconds) ran while a crawler was still crossing the ground to the last
+      // place it saw him, so a crawler more than five seconds of travel from that
+      // point dropped to investigate on the way, packScatter pushed it 90 to 240
+      // units off the point, and it walked past a man standing still just
+      // outside its 100-unit sight. Measured at seed 4242: from 778 units it
+      // gave up 106 short of him and turned away. While a crawler is still more
+      // than 40 units from its last sighting the chase is held, for at most
+      // chaseHold seconds of overtime (8; 0 restores the old clock), so a point
+      // nothing can reach cannot hold it forever. A sighting resets the overtime.
+      if(sees) e.chaseHold=0;
+      var _chHold=(CFG.chaseHold===undefined?8:CFG.chaseHold);
+      var _chFar=(e.kind==='crawler'&&_cg&&e.tx!==undefined&&_chHold>0&&(e.chaseHold||0)<_chHold&&dist(e,{x:e.tx,y:e.ty})>40);
+      if(!sees&&e.alert<=0&&_chFar){ e.chaseHold=(e.chaseHold||0)+dt; }
+      else if(!sees&&e.alert<=0){
+        e.chaseHold=0;
+        e.state=e.kind==='raider'?'loot':'investigate';
+        e.role=null; e.scattered=0;
+        if(e.state==='investigate') packScatter();
+      }
+    }
+    else if(e.state==='investigate'){
 '@
 
 # STAMPS.
@@ -68,11 +71,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
+  'A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING. It no longer gives up on the way to the last place it saw you; standing still does not switch it off.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.06:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.06 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.06:[^']*'",{ param($m) "now:'v12.07: from the 2026-09-06 menu audit, the safe pocket accepted a grenade or an ammo box and read 1/1, but both ride outside the backpack and the death path banks the backpack only, so the one death protection there is was spent on nothing. setSafe refuses throwables and ammunition the way it refuses a gun, and a saved pocket on either is cleared on load. Check 12.07 drives setSafe with a frag, an ammo box and a medkit and the real loader with a saved frag pocket; fails on v12.06.'" })
+$s=[regex]::Replace($s,"now:'v12\.06:[^']*'",{ param($m) "now:'v12.07: HIS NOTE of 2026-09-06, a crawler stopped when he stopped. Its alert clock ran out while it was still crossing the ground to the last place it saw him, so it dropped to investigate on the way, was scattered 90 to 240 units off the point, and walked past a man standing still just outside its 100-unit sight. A crawler still more than 40 units from its last sighting now holds the chase for up to 8 seconds of overtime (chaseHold; 0 restores the old clock). Check 12.07 runs a crawler at a standing player from 600 units and requires a bite, and requires a chase on an unreachable point to end; fails on v12.06.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

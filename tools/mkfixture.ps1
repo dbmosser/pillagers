@@ -819,7 +819,7 @@ window.__guns={
 };
 // v8.83: STAND ON THE UNDERCROFT FLOOR. showScreen('hub') is the real entry the
 // game uses, so this is the play path and not a rebuilt copy of it.
-window.__hubEnter=function(){ showScreen('hub'); return !!HB; };
+window.__hubEnter=function(){ showScreen('hub'); var _t=document.getElementById('title'); if(_t) _t.classList.remove('on'); return !!HB; };   // v12.06: the floor is past the title, and since v12.06 a title left up blocks every floor key
 window.__hubP=function(){ return HB?HB.player:null; };
 window.__hubStep=function(dt){
   if(!HB||!wc||!(W>0)) return false;
@@ -5731,6 +5731,24 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.06',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
+   run:function(){
+     if(typeof hubModalOpen!=='function'||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the floor gate';
+     var ttl=document.getElementById('title'); if(!ttl) return 'SKIP: no character screen element';
+     var bad=[], wasOn=ttl.classList.contains('on');
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       ttl.classList.remove('on');
+       var pb=document.getElementById('pausebox'); if(pb) pb.classList.remove('on');
+       if(hubModalOpen()) bad.push('control: with nothing open the gate already reads open, so it proves nothing');
+       ttl.classList.add('on');
+       if(!hubModalOpen()) bad.push('with the character screen on, the floor gate reads closed, so the stations behind it still take keys');
+       ttl.classList.remove('on');
+       if(hubModalOpen()) bad.push('control: with the character screen off again the gate still reads open');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(wasOn) ttl.classList.add('on'); else ttl.classList.remove('on'); }catch(_t){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'12.05',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
    run:function(){
@@ -18111,6 +18129,7 @@ window.__topClear=function(){
 // rather than inheriting whatever the last hand probe in this tab left behind.
 window.__runPrep=function(){
   try{ if(window.__pinDPR) __pinDPR(1); }catch(e){}
+  try{ var _bt=document.getElementById('title'); if(_bt) _bt.classList.remove('on'); }catch(e){}   // v12.06: the boot title is dismissed, as a player does before the floor
   try{ if(window.__cleanProfile) __cleanProfile(); }catch(e){}
 };
 window.__regress=function(){

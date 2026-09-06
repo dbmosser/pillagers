@@ -1,44 +1,25 @@
-## v12.10 - THE BENCH TELLS THE TRUTH ABOUT ITS GUNS
+## v12.10 - FIRST TEN MINUTES: THE SECOND DOWN TELLS THE TRUTH
 
-From the read-only review of this morning's shipped builds, on v11.79.
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
 
-WHAT IT WAS. v11.79 put four guns on the crafting bench on his order and
-called two of them green. The Burst Carbine is blue everywhere the player
-looks: a gun's shown rarity comes from its tier, and the price row's own
-rarity field is the one v7.99 said is not a gun's rarity. So the bench
-holds one green gun and three blue, the NEW IN card and the v11.79 entry
-said two of each, and the check agreed with them only because it read the
-same wrong field. Three more things followed from putting guns where no
-recipe had ever put one: the bench's cream detail panel described a
-crafted gun as salvage to sell at the terminal, because its blurb had no
-gun branch; the same panel read the gun's rarity from the price row, the
-one screen in the game that could disagree with every other; and the
-stash's KEEP FOR reason for a servo and an optic dropped from "contracts"
-to plain "crafting", because the recipe lookup runs first and the reason
-table had no entry for either, while craftPart still said the servo is in
-no recipe when four eat it. The shop panel still told the player the
-Carbine and the Scattergun come only from Wirt or a container.
+THE FINDING. Every time the player goes down the toast says "DOWN. F to
+get back up. You get one per raid." The down branch reads only health, so a
+second hit to zero downs him just the same after the one self-revive is
+spent, and the same toast sends him to F, which answers "Self-revive
+spent. One per raid." The HUD line drawn in the same frame says the revive
+is gone. A new player on his second down is told to press a key that
+refuses him, while the two things he can actually do, crawl for an
+extraction or hold SPACE to give up, go unsaid.
 
-THE BUILD. The card says one green and three blue, and this entry corrects
-the v11.79 entry. The blurb describes a gun as a gun. The servo and the
-optic are craft parts again with their own reasons, so SELL ALL keeps them
-and the stash says why. The shop panel adds one line that three of its
-unstocked guns can be built; the existing sentence is left alone because
-it is a key for his own rewording of it. The same build repairs check
-11.79, which now reads the shown rarity and the game's own purchase price
-(the shop stocks no blue gun, so three of its four price controls were
-silent no-ops), and the v9.43 check that asserted a servo is in no recipe.
+THE BUILD. One line: when the revive is already spent the toast says so
+and names the crawl and, where the give-up hold is switched on, the SPACE
+hold. The first down's toast is unchanged.
 
-MEASURED. Check 12.10 reads the bench through the shown rarity and
-requires at least one green and one blue and nothing else; requires the
-card not to call the Carbine green; requires the blurb for a crafted gun to
-say gun and not salvage; requires the stash reasons for a servo and an
-optic to name contracts; and opens the bench, selects the Carbine and
-requires its detail pill to read RARE. On the v12.09 fixture the card says
-green, the blurb says salvage, the reasons say crafting and the pill says
-UNCOMMON.
+MEASURED. Check 12.10 deploys, marks the revive spent, hits him to zero
+through the real damage path with a crawler as the source, and requires
+the toast to say spent and not F; then resets him fresh, hits him again,
+and requires F. On the v12.09 fixture the first arm reads the F toast.
 
-Not verified: his own eye on the bench; whether he wants a second green
-gun there (only the Compact SMG is green by tier; the Magnum and the
-Carbine are blue), which is his call; the detail panel's rarity pill, which
-the same build changes only where the review quoted it.
+Not verified: the bleed-out HUD line's own wording, untouched; the
+give-up hold itself, which v9.37 and v10.96 cover; his own reading of the
+toast.

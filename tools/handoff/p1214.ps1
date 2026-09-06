@@ -11,21 +11,18 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: every time he goes down the toast says
-# "DOWN. F to get back up. You get one per raid.", including the second time,
-# when the one self-revive is spent and F answers "Self-revive spent". A
-# second hit to zero downs him just the same (the down branch reads only
-# hp), so a new player on his second down is sent to a key that refuses him.
+# FIRST TEN MINUTES AUDIT, 2026-09-06: the controls card behind H still
+# teaches "X swaps primary/sidearm" (and Y on a pad). There is no KeyX
+# handler anywhere in the build and no pad swap button: the key was deleted
+# when the belt took over, and this one surface was missed. The swap today
+# is the belt: pressing the key of the stowed gun brings it up.
 SubRx @'
-    G.tel.downs++; say('DOWN. F to get back up. You get one per raid.');
+  ['WEAPONS',function(){ return (PAD&&PAD.on)?'Y swaps primary/sidearm.':'X swaps primary/sidearm.'; }],
 '@ @'
-    G.tel.downs++;
-    // v12.14: THE SECOND DOWN TELLS THE TRUTH. Once the one self-revive is spent
-    // F answers Self-revive spent, so a toast that sent him to F was a lie the
-    // HUD contradicted in the same frame. He can still crawl for an extraction,
-    // or hold SPACE to give up where that is switched on.
-    say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold '+keyLabel('Space','SPACE')+' to give up.'))
-                 :'DOWN. '+keyLabel('KeyF','F')+' to get back up. You get one per raid.');
+  // v12.14: there is no X (or pad Y) swap; the belt is the swap. Pressing the
+  // key of the stowed gun brings it up (setHot, the v8.67 rule).
+  ['WEAPONS','Keys 1 and 2 bring up'],
+  ['','either gun.'],
 '@
 
 # STAMPS.
@@ -43,11 +40,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE SECOND TIME YOU GO DOWN THE GAME SAYS SO: your one self-revive is spent, so crawl for an extraction or hold SPACE to give up.',
+  'THE CONTROLS CARD NO LONGER PROMISES AN X KEY THAT DOES NOT EXIST: belt keys 1 and 2 bring up either gun.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.13:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.13 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.13:[^']*'",{ param($m) "now:'v12.14: from the 2026-09-06 first-ten-minutes audit, the going-down toast sent him to F on the second down too, when the one self-revive is spent and F refuses. The second down now says the revive is spent and names the crawl and the give-up hold. Check 12.14 downs him with the revive spent and requires no F in the toast and the word spent, then downs him fresh and requires F; fails on v12.13.'" })
+$s=[regex]::Replace($s,"now:'v12\.13:[^']*'",{ param($m) "now:'v12.14: from the 2026-09-06 first-ten-minutes audit, the controls card behind H still taught X swaps primary and sidearm (Y on a pad) and no such handler exists; the belt keys are the swap. The card says so now. Check 12.14 reads the WEAPONS rule and requires no X or Y swap claim and the belt keys named; fails on v12.13.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

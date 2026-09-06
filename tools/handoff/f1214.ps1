@@ -11,39 +11,23 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.14 CHECK, inserted before the v12.13 entry. A raid is deployed and the
-# player is hit to zero twice through the real damage path: first with the
-# self-revive already spent, then fresh. The toast is read through the
-# fixture's say capture.
+# v12.14 CHECK, inserted before the v12.13 entry. The WEAPONS rule of the
+# controls card is read as the card reads it (a string, or a function of the
+# pad state) and must name the belt keys and no X or Y swap.
 SubRx @'
-  {v:'12.13',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
+  {v:'12.13',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
 '@ @'
-  {v:'12.14',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
+  {v:'12.14',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof damagePlayer!=='function') return 'SKIP: no damagePlayer in this build';
-     var bad=[];
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, en=null;
-       for(var i=0;i<g.ents.length&&!en;i++) if(g.ents[i].kind==='crawler'&&!g.ents[i].downed) en=g.ents[i];
-       // ARM ONE: the second down, the revive already spent.
-       p.downed=false; p.revived=true; p.hp=5; p.armor=0; p.iv=0; window.__lastSay=null;
-       damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
-       var s1=String(window.__lastSay||'');
-       if(!p.downed) bad.push('control: the hit did not put him down (hp '+p.hp+')');
-       if(/F to get back up/.test(s1)) bad.push('the second down still says F gets him up: "'+s1+'"');
-       if(!/spent/.test(s1)) bad.push('the second down does not say the revive is spent: "'+s1+'"');
-       // ARM TWO: the first down still points at F.
-       p.downed=false; p.revived=false; p.hp=5; p.armor=0; p.iv=0; window.__lastSay=null;
-       damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
-       var s2=String(window.__lastSay||'');
-       if(!/F to get back up/.test(s2)) bad.push('control: the first down no longer says F gets him up: "'+s2+'"');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.hp=100; g2.player.revived=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     if(typeof GEARRULES==='undefined'||!GEARRULES.length) return 'SKIP: no controls card rules in this build';
+     var bad=[], row=null;
+     for(var i=0;i<GEARRULES.length;i++) if(GEARRULES[i][0]==='WEAPONS'){ row=GEARRULES[i]; break; }
+     if(!row) return 'SKIP: the card has no WEAPONS rule';
+     var txt=(typeof row[1]==='function')?String(row[1]()):String(row[1]);
+     if(/\bX swaps\b|\bY swaps\b/.test(txt)) bad.push('the WEAPONS rule still teaches a swap key that does not exist: "'+txt+'"');
+     if(!/1 and 2/.test(txt)) bad.push('the WEAPONS rule does not name the belt keys: "'+txt+'"');
      return bad.length?bad.join('; '):null; }},
-  {v:'12.13',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
+  {v:'12.13',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

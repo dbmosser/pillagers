@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.05';
+var VER='12.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='12.05';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.03';
+var WHATSNEW_VER='12.06';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
   'DYING WITH THE FREEBIE KIT NO LONGER DELETES THE SCAV PISTOL YOU OWN, and the loaner is not counted or billed as a gun you lost.',
   'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT, the same as the resume button; it goes out with your run report.',
   'THE HOWLER DOES NOT SHELL THROUGH A ROOF: inside a building you are out of its reach until it comes in after you.',
@@ -10484,7 +10485,7 @@ window.addEventListener('keydown',function(e){
     // v8.16, audit: nothing on the floor answers a key while something is open
     // over it. SPACE used to roll the character behind an open window rather
     // than pressing the control he was looking at.
-    var _hubBusy=!!(document.querySelector('.modal.on')||document.querySelector('.imenu')||
+    var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v12.06: the character screen counts here too
                     document.getElementById('hub').classList.contains('on'));
     // v6.73, his notes: H shows the controls down here too, and SPACE rolls.
     if(e.code==='KeyH'&&!e.repeat&&HB&&!_hubBusy){ HB.legend=!HB.legend; e.preventDefault(); return; }
@@ -10543,6 +10544,7 @@ window.addEventListener('keydown',function(e){
       // leave the menu floating over the Undercroft, still acting on a screen
       // that could no longer repaint it.
       if(document.querySelector('.imenu')) _anyModal=true;
+      if(_titleUp) _anyModal=true;   // v12.06
       if(!_anyModal){
         var _hb=document.getElementById('hub');
         // The terminal being open means he is reading it; the key closes it and
@@ -27346,6 +27348,11 @@ function hubModalOpen(){
   var _pbx=document.getElementById('pausebox');
   if(_pbx&&_pbx.classList.contains('on')) return true;
   if(document.getElementById('outcome').classList.contains('on')) return true;
+  // v12.06, from the 2026-09-06 menu audit: and the character screen, which is
+  // a .screen and not a .modal. Without this the floor took E, R, F and T
+  // behind it, and R at the lift started a raid under the title.
+  var _ttl=document.getElementById('title');
+  if(_ttl&&_ttl.classList.contains('on')) return true;
   return !!document.querySelector('.modal.on');
 }
 function updateHubWorld(dt){
@@ -28602,7 +28609,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.05: from the 2026-09-06 first-ten-minutes audit, the notes-logged line in the raid HUD was drawn at y 26 inside the enlarged corner readout of v11.78, so the two printed over each other from the first note. It sits below the readout now. Check 12.05 logs a note, draws a frame with the canvas text call recorded, and requires the line under the bottom edge of the readout; fails on v12.04.',
+  now:'v12.06: from the 2026-09-06 menu audit, the floor kept taking station keys behind the character screen because hubModalOpen did not count #title (a .screen, not a .modal); at the lift R started a raid under the title. One line: the character screen counts as a modal. Check 12.06 turns the character screen on over the floor and requires the gate to read open, then off and requires it closed; fails on v12.05.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -11,49 +11,43 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# CHECK 11.44'S SENTINEL was pinned at 17 by the v11.77 stamp bump and could
-# never fire again; it fires on any stamp at or above 17 now.
+# v12.12 CHECK, inserted before the v12.11 entry. A raid with some base XP
+# is ended by death with two doses in the blood; the XP the card prints must
+# equal the XP the profile was paid.
 SubRx @'
-       if(P.cfgv===17) bad.push('cfgv was stamped to 17 during the load, which is saveProfile running before the cfgv block');
+  {v:'12.11',what:'ESC over the open Undercroft backpack closes the backpack instead of raising the pause box, and ESC with it closed still pauses (2026-09-06 first-ten-minutes audit)',
 '@ @'
-       if(P.cfgv>=17) bad.push('cfgv was stamped to '+P.cfgv+' during the load, which is saveProfile running before the cfgv block');
-'@
-
-# v12.12 CHECK, inserted before the v12.11 entry. A real pillager with a real
-# frag in his bag is asked to throw at the player from 200 units (inside the
-# new near edge) and from 260 (inside the band); the card line is read.
-SubRx @'
-  {v:'12.11',what:'a station window no longer repeats the credits and XP in its heading under the corner readout: the heading balance is hidden or clear of the readout (2026-09-06 review of v11.78)',
-'@ @'
-  {v:'12.12',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 52 (242 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
+  {v:'12.12',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
-     if(typeof raiderThrow!=='function'||typeof WHATSNEW==='undefined') return 'SKIP: no pillager throw or card in this build';
-     var bad=[], i;
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
+     if(typeof buzzXpMul!=='function') return 'SKIP: no dose bonus in this build';
+     var bad=[], P2=__P(), keepBuzz=(P2.buzz||[]).slice(), keepXp=P2.xp||0;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       CFG.fragR=190;
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, e=null;
-       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].downed&&!g.ents[i].finished&&!g.ents[i].merc) e=g.ents[i];
-       if(!e) return 'SKIP: no pillager to hand a frag to';
-       function ask(fd){
-         e.bag=['frag']; e.thrT=0; e.smkT=99; e.hp=e.maxhp||100; e.downed=false; e.rng=Math.max(e.rng||0,520);   // a long-armed pillager, so the reach floor is not what stops him
-         var n0=g.frags.length;
-         var r=raiderThrow(e,p,fd,0.016);
-         return {threw:!!r,frags:g.frags.length-n0};
+       var g=__state(), p=g.player;
+       g.tel.containers=40; g.tel.kills={crawler:12,sentry:4};   // enough base XP for a 5 percent bonus to show
+       P2.buzz=[{id:'liquor',tag:'drunk',t:200,dur:200},{id:'liquor',tag:'drunk',t:200,dur:200}];
+       var mul=buzzXpMul();
+       if(!(mul>1)) return 'SKIP: two doses did not raise the multiplier ('+mul+')';
+       var xp0=P2.xp||0;
+       p.downed=false; __endRaid('dead');
+       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+       var m=/\+([\d,]+) XP/.exec(txt);
+       if(!m) bad.push('control: the card printed no XP line ('+txt.slice(0,80)+')');
+       else {
+         var shown=parseInt(m[1].replace(/,/g,''),10), banked=(P2.xp||0)-xp0;
+         if(!(shown>0)) bad.push('control: the card printed no XP gain');
+         if(banked!==shown) bad.push('the card says +'+shown+' XP and the profile was paid '+banked);
+         var rec=(P2.log||[]).slice(-1)[0];
+         if(!(rec&&rec.doseMul>1)) bad.push('control: the banked record carries no dose multiplier, so nothing was multiplied');
+         else if(shown!==Math.round(rec.xpBase*rec.doseMul)) bad.push('the card printed +'+shown+' against a base of '+rec.xpBase+' times '+rec.doseMul);
        }
-       var near=ask(200);
-       if(near.threw||near.frags) bad.push('a pillager threw from 200 units, inside his own 190 blast');
-       var band=ask(260);
-       if(!band.threw||!band.frags) bad.push('control: a pillager would not throw from 260 units, so the band is not live here');
-       var line=null; for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FRAG CHARGES REACH FURTHER')===0) line=WHATSNEW[i];
-       if(!line) bad.push('control: the card has no frag line to read');
-       else if(line.indexOf('140 at the centre')<0||line.indexOf('98 at the centre')<0) bad.push('the card still prints the coefficients as the centre damage: '+line.slice(0,120));
+       if((P2.buzz||[]).length) bad.push('control: the death did not clear the drink');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
+     finally{ P2.buzz=keepBuzz; P2.xp=keepXp; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.11',what:'a station window no longer repeats the credits and XP in its heading under the corner readout: the heading balance is hidden or clear of the readout (2026-09-06 review of v11.78)',
+  {v:'12.11',what:'ESC over the open Undercroft backpack closes the backpack instead of raising the pause box, and ESC with it closed still pauses (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
