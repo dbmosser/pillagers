@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.04';
+var VER='12.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23487,7 +23487,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     // at LH(30), under it. It starts below the readout's real bottom, read from
     // the page in CSS pixels and put into this scaled space; LH(30) still holds
     // if the readout is ever shorter than that.
-    by=Math.max(by,Math.ceil((topRightBottom()+8)/_cz));
+    by=Math.max(by,Math.ceil((topRightBottom()+8+((T.notes&&T.notes.length)?LH(20):0))/_cz));   // v12.05: and under the notes-logged line when there is one
     bx=clamp(bx+HOc.dx/_cz,Math.min(W-16-bw,W-(W-4)/_cz),Math.max(W-(W-4)/_cz,W-bw-4/_cz));
     by=clamp(by+HOc.dy/_cz,LH(10),Math.max(LH(10),H/_cz-LH(30)));
 ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
@@ -24143,7 +24143,12 @@ ctx.restore();
   // string started at x=1904 on a 1920 canvas and ran off the edge. Set locally
   // rather than relying on a caller, which is how it got lost in the first place.
   if(T.notes.length){ ctx.save(); ctx.textAlign='right'; ctx.fillStyle='#6b7783';
-    ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,26); ctx.restore(); }
+    // v12.05: BELOW THE CORNER READOUT, not through it. y 26 sat inside the
+    // rectangle the v11.78 credits and XP readout now fills, so the line and
+    // the readout printed over each other from the first note he left. The
+    // CONDITIONS panel, which starts under the readout, starts under this too.
+    var _nly=Math.max(26,Math.ceil(topRightBottom())+LH(14));
+    ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,_nly); ctx.restore(); }
   ctx.textAlign='left';
   // v8.98: everything below stacks UP FROM THE BELT rather than up from the
   // bottom of the screen. The belt has sized itself to the screen since v8.81
@@ -28597,7 +28602,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.04: from the two 2026-09-06 reviews, the heal verb said No medical supplies with two Bandages at their ceiling (the sentence for that case sat behind a guard that had already returned) and at full health with a Medkit; and since v11.82 let heals stack, the ceiling tests read health alone, so a second Bandage above the reach of the first was spent for nothing, and the named belt slot had no ceiling at all. The full-health test comes first, the picker counts what is inbound, and the belt slot has the ceiling. Check 12.04 drives four cases through the real verb; fails on v12.03.',
+  now:'v12.05: from the 2026-09-06 first-ten-minutes audit, the notes-logged line in the raid HUD was drawn at y 26 inside the enlarged corner readout of v11.78, so the two printed over each other from the first note. It sits below the readout now. Check 12.05 logs a note, draws a frame with the canvas text call recorded, and requires the line under the bottom edge of the readout; fails on v12.04.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

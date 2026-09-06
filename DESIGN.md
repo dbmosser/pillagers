@@ -40024,6 +40024,31 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.05 - FIRST TEN MINUTES: THE NOTES LINE SITS BELOW THE CORNER READOUT
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
+
+THE FINDING. When a note has been logged, the raid HUD prints "N notes
+logged" at the top right, at a fixed y of 26 against the right edge. Since
+v11.78 the corner credits and XP readout is a large DOM block in that same
+corner, and 26 is inside it, so from the first note he leaves, which is
+what the alpha card asks him to do, the two print on top of each other.
+
+THE BUILD. The line is drawn at the readout's bottom edge plus a line
+height, or at 26 when the readout is not on screen, through the same
+topRightBottom helper the gear stack already uses to keep clear of it. The
+CONDITIONS panel, which also starts under the readout, starts under the
+line when there is one, so one overlap is not traded for another (the
+review caught the first draft doing exactly that).
+
+MEASURED. Check 12.05 deploys with one note logged at 1920x1080, draws a
+frame, reads the readout's bottom edge (and skips if the readout is not on
+screen), then draws a frame with the canvas text call recorded and
+requires the notes line under that edge, inside the canvas and outside the CONDITIONS panel's box. On the
+v12.04 fixture the line is at y 26, inside the readout.
+
+Not verified: by eye at 4K, where the readout and the line both scale; a
+note count in the hundreds, which widens the line but not its height.
 ## v12.04 - THE HEAL VERB TELLS THE TRUTH
 
 From the two 2026-09-06 read-only reviews: the first-ten-minutes audit
