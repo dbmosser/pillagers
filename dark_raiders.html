@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.60';
+var VER='11.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.60';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.60';
+var WHATSNEW_VER='11.61';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'WIRT SELLS YOU THE THING ON THE COUNTER. If the Limited Time Offer rolled over while you were reading it, Buy used to take your money and hand you the next offer instead. You get the one that was named and priced when you clicked.',
   'A GRENADE ON A BELT KEY WORKS NOW. Putting a Frag Charge, Smoke or Decoy on a tactical belt key gave you a dead key: it read x0, the trigger fired your gun instead, and it deleted the working grenade cell. The key you choose is now the grenade.',
   'EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. Four never did: the storm telegraph and the extraction pulse, touchdown and last call. They do now.',
   'THE UNDERCROFT HAS ITS SCREEN BACK. The floor was painting its heading, its [E] STATION prompt, the key list, the H controls panel and the line that teaches the controls, and then erasing all of it in the same frame. It has been invisible for a long time, and H did nothing. It is all there now.',
@@ -28234,7 +28235,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.60: a throwable put on a tactical belt key was a dead key and it deleted the working one. From the 2026-09-06 read-only audit, raised by two regions. It is the v8.31 stim hole one item type later: a throwable is never in the backpack so have is 0 and the cell fell through to kind item, which the trigger treats as a held gun, so the key fired his rifle under a caption saying FIRE use, G did nothing, the cell read x0 while the pouch held two, and the dedupe blanked the real throwable cell. The cell is now built as the derived throw cell is built and useHot throws it. Check 11.60 binds a frag to a key, requires a live throw cell with the pouch count, exactly one cell for that grenade, the selector synced by setHot and the key actually throwing it.',
+  now:'v11.61: Wirt Limited Time Offer sold whatever the clock said at click time. The card is drawn from wirtLotKey, which the clock picks in five-minute windows, and the Buy button recomputed wirtLotKey at click time while the card never redraws on the boundary, so a click after the roll took the money and pushed a different lot. Buy now sells the lot the card showed. From the v11.46 audit, P1.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -28899,7 +28900,7 @@ function renderWirtLot(){
     lb.disabled=!afford;
     lb.onclick=function(){
       if(P.credits<WIRT_LOT_PRICE) return;
-      var lot2=wirtLotKey();
+      var lot2=lot;   // v11.61: the lot that was NAMED AND PRICED on the card, not the clock at click time
       if(!lot2||!lot2.length||!ITEMS[lot2[0]]) return;
       P.credits-=WIRT_LOT_PRICE;
       // v9.44: the whole lot, not just the headline. Anything not in the item

@@ -40024,6 +40024,33 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.61 - WIRT'S LIMITED TIME OFFER SOLD WHATEVER THE CLOCK SAID AT CLICK TIME
+
+From the v11.46 read-only audit, P1. The one thing on Wirt's counter is picked
+by the clock in five-minute windows (WIRT_LOT_MS, his v9.94 note) and drawn on
+a card that names it, prices it and says when the next one comes, which is the
+whole difference between this and the pull (v9.11): you see what you are paying
+for before you pay. But the Buy button recomputed wirtLotKey() at click time,
+and the card never redraws on the window boundary. Read the card near the end
+of a window, click after the roll, and 10,000 was taken and a different lot,
+one you were never shown, went to the stash.
+
+THE FIX. The button sells the lot the card was drawn from, captured when the
+card was drawn, which is the lot he was named and priced. Nothing else moves:
+the card still redraws after a buy and on each open.
+
+MEASURED. Check 11.61 opens Wirt through his real station act, reads the lot the
+clock has picked, then moves Date.now forward one window (two or three if the
+next window happens to hold the same lot) so a roll has happened between the
+draw and the click, presses the real Buy button, and requires the item that
+reached the stash to be the shown one; a control requires credits to have been
+taken, so a buy really went through. On the v11.60 fixture Buy delivers the
+rolled window's lot and the check fails naming both.
+
+Not verified: his own play; whether the card should also redraw itself on the
+boundary while open, which would be a nicety on top of this and is not needed
+for the contract to hold; what happens to a card left open across many windows
+(it sells the old lot, which is what it says).
 ## v11.60 - A GRENADE ON A BELT KEY WAS A DEAD KEY, AND IT DELETED THE WORKING ONE
 
 From the read-only raid audit of 2026-09-06, raised independently by two
