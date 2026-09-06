@@ -32,6 +32,11 @@ SubRx @'
 '@ @'
      if(green<1||blue<1) bad.push('the bench holds '+green+' green and '+blue+' blue gun recipes, not at least one of each');   // v11.95: the Carbine is blue by dispR
 '@
+SubRx @'
+  {v:'11.79',what:'four guns are on the crafting bench, two green and two blue, each priced in parts between what it sells for and what it costs to buy, and crafting one through the real row puts the gun in the stash and takes the parts (his order of 2026-09-06)',
+'@ @'
+  {v:'11.79',what:'four guns are on the crafting bench, one green and three blue by the rarity every screen shows, each priced in parts between what it sells for and what it costs to buy, and crafting one through the real row puts the gun in the stash and takes the parts (his order of 2026-09-06)',
+'@
 # THE v9.43 CHECK asserted a servo is in no recipe; four recipes eat it now.
 SubRx @'
        if(__stashRules.craftPart('servo'))
@@ -45,7 +50,7 @@ SubRx @'
 
 # v11.95 CHECK, inserted before the v11.94 entry.
 SubRx @'
-  {v:'11.94',what:'the bench detail button crafts on a synthetic click (a pad press or Enter) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
+  {v:'11.94',what:'the bench detail button crafts on a synthetic click (a pad press) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
 '@ @'
   {v:'11.95',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
    run:function(){
@@ -84,7 +89,7 @@ SubRx @'
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.94',what:'the bench detail button crafts on a synthetic click (a pad press or Enter) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
+  {v:'11.94',what:'the bench detail button crafts on a synthetic click (a pad press) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

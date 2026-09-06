@@ -41,7 +41,8 @@ function craftPart(k){
   // v9.43 took the servo out: it was in no recipe and its one use, repairs, had
   // gone with wear at v9.01, so keeping it was hoarding for nothing.
   // v11.95: it is back, and the optic with it, because the four gun recipes of
-  // v11.79 eat both; SELL ALL keeps them and the stash says what for.
+  // v11.79 eat the servo and one of them the optic; SELL ALL keeps them and
+  // the stash says what for.
   return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp'||k==='servo'||k==='optic';
 }
 '@
@@ -61,9 +62,10 @@ SubRx @'
 '@ @'
        'anyone down here. Wirt puts one on his counter now and again, and otherwise '+
        'they are found up top or not at all.</b></div>';
-    // v11.95: three of those can be built now (v11.79); a separate line, because
-    // the sentence above is a key for his own rewording of it.
-    h+='<div class="vdesc">The Carbine, the Scattergun and the Auto Rifle can also be built at the crafting bench.</div>';
+    // v11.95: two of those, plus the SMG and the Auto Rifle, can be built now
+    // (v11.79); a separate line, because the sentence above is a key for his
+    // own rewording of it.
+    h+='<div class="vdesc">The Compact SMG, the Burst Carbine, the Riot Scattergun and the Auto Rifle can all be built at the crafting bench.</div>';
   } else {
 '@
 SubRx @'

@@ -5732,6 +5732,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.86',what:'meeting the survivor request pays 900 or more, puts a piece of salvage in your hands at once, and the card names the gift without saying already banked (his notes of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__runPrep&&window.__P)) return 'SKIP: this fixture cannot deploy and read the card';
+     if(typeof strayGive!=='function'||typeof mkStray!=='function') return 'SKIP: no survivor in this build';
+     var bad=[], banked='already '+'banked', paidLine='The survivor '+'paid you';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, P=__P(), e=null, i;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='stray'&&!g.ents[i].downed) e=g.ents[i];
+       if(!e){ e=mkStray(p.x+40,p.y); g.ents.push(e); }
+       e.want='bandage'; e.helped=0; e.hostile=false; e.downed=false;
+       g.bag=['bandage']; p.reserve=0;
+       var c0=P.credits||0;
+       strayGive(e);
+       if(!e.helped) bad.push('control: the survivor was not helped (bag '+g.bag.join(',')+')');
+       var paid=(P.credits||0)-c0;
+       if(paid<900) bad.push('the survivor paid '+paid+', under 900');
+       if(!g.strayGave) bad.push('the survivor gave nothing on the spot');
+       else if(g.bag.indexOf(g.strayGave)<0&&!g.containers.some(function(c){ return c.loot&&c.loot.indexOf(g.strayGave)>=0&&Math.hypot(c.x-e.x,c.y-e.y)<60; })) bad.push('the gift '+g.strayGave+' is neither in the bag nor at his feet');
+       p.downed=false; __endRaid('extract');
+       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+       if(txt.indexOf(paidLine)<0) bad.push('control: the card has no survivor line (card says: '+txt.slice(0,80)+')');
+       if(txt.indexOf(banked)>=0) bad.push('the card still says '+banked);
+       if(g.strayGave&&txt.indexOf('gave you a')<0) bad.push('the card does not name the gift');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.85',what:'the map names each extraction in the callout face and counts down to its close in the label face, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';

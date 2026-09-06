@@ -45,9 +45,10 @@ SubRx @'
      var bad=[], tr=document.getElementById('topright');
      if(!tr) return 'SKIP: no corner readout in this build';
      try{
-       __topClear(); __cleanProfile();
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ if(window.__forceSize) __forceSize(1920,1080); }catch(_fs){}   // the modal zoom follows the pane; pinned so the control means the same on every run
        G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
-       openTrader('shop');
+       openTrader('buy');
        var md=document.querySelector('.modal.on'); if(!md) bad.push('control: no station window opened');
        var mc=md?md.querySelector('h3 .modcur'):null;
        if(!mc) bad.push('control: the window heading carries no balance to measure');

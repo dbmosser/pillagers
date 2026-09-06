@@ -21,7 +21,7 @@ function SubRx([string]$old, [string]$new) {
 SubRx @'
       else if(_zHold) _zSub='OPEN TO EXTRACT  '+Math.max(0,Math.ceil(Z.hold))+'s';
 '@ @'
-      else if(_zHold) _zSub='EXTRACT NOW  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v11.98: the same words as the banner (v11.74), the letter is the line above
+      else if(_zHold) _zSub='EXTRACT NOW!  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v11.98: the banner's words (v11.74); the letter is the line above
 '@
 SubRx @'
     // v8.68, his wording, same as the banner.

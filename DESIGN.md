@@ -40024,6 +40024,38 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.86 - HIS NOTES: THE SURVIVOR PAYS MORE AND HANDS YOU SOMETHING NOW
+
+His notes of 2026-09-06, from his fourth and fifth runs this morning:
+"survivor should pay more -- don't need to say 'already banked'" and
+"survivor should give you something instantly when you meet his request,
+not just mark a cache".
+
+WHAT IT WAS. Meeting the survivor's request, a bandage, a medkit, a plate
+or forty rounds, marked a cache on the map and paid 260 to 540 credits
+straight into the bank, and the card afterwards said so with the words
+"already banked". The mark is a promise; the money is invisible until the
+card; and the thing he had just given up was in his hand a second ago.
+
+THE BUILD. Three parts. He pays 900 to 1,500, three times what he did, MY
+number since he said only "more". He hands over one piece of salvage on
+the spot, a Titanium Cell, a Data Core, an optic or a servo, through the
+same grant a container uses, so a full bag is handled exactly as it is at a
+crate and the item floats its name and value the way loot does. The cache
+is still marked. And the card says what he paid and what he gave, with no
+"already banked".
+
+MEASURED. Check 11.86 deploys, takes the map's survivor or builds one,
+gives him the want of a bandage, hands it over through the real strayGive,
+and requires the credits up by 900 or more, the gift recorded and either in
+the bag or at his feet, and, after an extraction, the card's survivor line
+present, naming the gift, and free of the old wording. On the v11.85 fixture
+the pay is under 900, nothing is given, and the card says "already banked".
+
+Not verified: his own play, and whether 900 to 1,500 is "more" enough,
+which is one line; whether the four gifts are the right pool; the survivor
+who wants ammunition, whose forty rounds still come from the reserve as
+before.
 ## v11.85 - HIS NOTE: THE MAP COUNTS DOWN TO EACH EXTRACTION, READABLY
 
 His note of 2026-09-06, from his third run this morning: "the map should

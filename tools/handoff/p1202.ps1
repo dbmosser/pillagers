@@ -59,7 +59,7 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A CONTROLLER OR THE KEYBOARD CAN CRAFT AGAIN. The hold is the mouse way; a pad press or Enter on the button crafts at once.',
+  'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
 '@
 $cnt=([regex]::Matches($s," The same goes for the service button, which is the same control\.")).Count
 if($cnt -ne 1){ throw "service sentence matched $cnt times" }
@@ -67,7 +67,7 @@ $s=[regex]::Replace($s," The same goes for the service button, which is the same
 $n++
 $cnt=([regex]::Matches($s,"now:'v11\.93:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.93 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.93:[^']*'",{ param($m) "now:'v11.94: from the read-only review of the shipped v11.75, the hold-to-craft build deleted the only way a controller (synthetic click) or the keyboard (Enter) could press CRAFT. A click handler that answers only synthetic clicks (detail 0) is back; a real mouse click still spends nothing. The hold also dies when the trader window is hidden, the tooltip reads CRAFT_HOLD, and the card no longer describes a SERVICE button the game cannot draw. Check 11.94 crafts through a synthetic click and through Enter, requires a detail-1 click to spend nothing, and requires a hold to die when the window is hidden; fails on v11.93.'" })
+$s=[regex]::Replace($s,"now:'v11\.93:[^']*'",{ param($m) "now:'v11.94: from the read-only review of the shipped v11.75, the hold-to-craft build deleted the only way a controller (a synthetic click from the pad) could press CRAFT. A click handler that answers only synthetic clicks (detail 0) is back; a real mouse click still spends nothing. The hold also dies when the trader window is hidden, the tooltip reads CRAFT_HOLD, and the card no longer describes a SERVICE button the game cannot draw. Check 11.94 crafts through a synthetic click (the pad press), requires a detail-1 click to spend nothing, and requires a hold to die when the window is hidden; fails on v11.93.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

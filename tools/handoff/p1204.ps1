@@ -38,6 +38,12 @@ var WHATSNEW_VER='11.95';
 '@ @'
 var WHATSNEW_VER='11.96';
 '@
+SubRx @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+'@ @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
+'@
 $cnt=([regex]::Matches($s,"now:'v11\.95:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.95 matched $cnt times" }
 $s=[regex]::Replace($s,"now:'v11\.95:[^']*'",{ param($m) "now:'v11.96: from the read-only review of the shipped v11.78, every station window stamped its own credits and XP into its heading and the enlarged corner readout printed through them. The heading balance is hidden; the corner shows the same two figures at all times (the v11.52 rule for the stash screen). The same build repairs check 11.52, which double-scaled the CONDITIONS box top and could not see an overlap. Check 11.96 opens the shop window and requires the heading balance not to be drawn where the readout is; fails on v11.95 where the two boxes intersect.'" })
