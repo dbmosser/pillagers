@@ -5732,6 +5732,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.70',what:'with Other pillagers set to None the extraction-heat row still reads its own word rather than CUSTOM, the waves are off, and they come back when pillagers return to Standard',
+   run:function(){
+     if(!window.__P||typeof applyGameOpts!=='function'||typeof gameOptLive!=='function'||typeof gameOptIx!=='function') return 'SKIP: no settings rows in this build';
+     var bad=[], prof=__P(), keepGO=JSON.stringify(prof.gameOpts===undefined?null:prof.gameOpts), keepT=JSON.stringify(prof.tuned||{}), keepRW=CFG.raiderWaves, keepNR=CFG.nRaider;
+     try{
+       prof.gameOpts={}; prof.tuned={};
+       prof.gameOpts.raiders=3;              // None
+       applyGameOpts();
+       if(CFG.raiderWaves!==0) bad.push('control: with pillagers None the waves are still on ('+CFG.raiderWaves+')');
+       var lv=gameOptLive('ext');
+       if(lv<0) bad.push('with pillagers None the extraction-heat row reads CUSTOM, no option matching the live dials, though nothing about the ring was changed');
+       else if(lv!==gameOptIx('ext')) bad.push('the extraction-heat row reads option '+lv+' and not the chosen '+gameOptIx('ext'));
+       if(gameOptLive('raiders')!==3) bad.push('control: the pillagers row does not read None after being set to it ('+gameOptLive('raiders')+')');
+       prof.gameOpts.raiders=1;              // back to Standard
+       applyGameOpts();
+       if(CFG.raiderWaves!==1) bad.push('control: with pillagers back on Standard the waves did not return ('+CFG.raiderWaves+')');
+       if(gameOptLive('raiders')!==1) bad.push('control: the pillagers row does not read Standard after being set to it ('+gameOptLive('raiders')+')');
+       if(gameOptLive('ext')<0) bad.push('control: the extraction-heat row reads CUSTOM with pillagers on Standard');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var go=JSON.parse(keepGO); if(go===null) delete prof.gameOpts; else prof.gameOpts=go; prof.tuned=JSON.parse(keepT); applyGameOpts(); CFG.raiderWaves=keepRW; CFG.nRaider=keepNR; saveProfile(); }catch(_r){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.68',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
    run:function(){
      if(typeof notoBite!=='function'||typeof pedOpen!=='function') return 'SKIP: no notoriety banner in this build';

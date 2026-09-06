@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.69';
+var VER='11.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.69';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.69';
+var WHATSNEW_VER='11.70';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'SETTINGS: THE EXTRACTION-HEAT ROW NO LONGER READS CUSTOM WHEN PILLAGERS ARE OFF. It showed CUSTOM in amber, with the tuning-console hint, for a row you had never touched. Nothing about the raid changes.',
   'DROPPING A BELT ITEM ON THE STASH NOW SAYS WHERE IT WENT. It said "back in the backpack" while taking it out of the backpack; it went to the stash, and the line says so.',
   'THE NOTORIETY BANNER STOPPED LYING ABOUT THE PEDDLER. At two notoriety it said the Peddler was done with you; he has traded with anyone since the stall stopped shutting. It says what notoriety really costs now.',
   'A NAME WITH AN EMOJI OR A CURLY QUOTE GETS A RESTORE CODE. Before this the code at the bottom of the run report came out blank for any such name, and the friend it belonged to could not be restored. Old codes still read.',
@@ -28260,7 +28261,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.69: dropping a tactical belt item on the stash said back in the backpack while splicing it out of the backpack (v8.72 drop: clears the belt key, leaves the kit, lands in the stash). The line names the stash now. From the v11.46 audit, P2.',
+  now:'v11.70: with Other pillagers set to None the extraction-heat row read CUSTOM in amber with the tuning-console hint. None turns the waves off and applyGameOpts gives the pillager row the last word, but raiderWaves:1 rode along on the heat row so no option matched. The waves are on the pillager row now on every option and the heat row carries siegeVol alone; every combination lands on the same dials as before, and leaving None for Standard with the heat on Light now brings the waves back, which nothing did before. From the v11.46 audit, P2.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32547,9 +32548,11 @@ var GAMEOPTS=[
   {k:'raiders', label:'Other pillagers',
    hint:'Human-shaped rivals looting the same map. They fight each other and the machines as well as you.',
    opts:[
-     {n:'Many',     cfg:{nRaider:15}},
-     {n:'Standard', cfg:{nRaider:10}},
-     {n:'Few',      cfg:{nRaider:5}},
+     // v11.70: the waves live here, with the pillagers, on every option; the
+     // heat row used to carry raiderWaves:1 and read CUSTOM whenever this was None.
+     {n:'Many',     cfg:{nRaider:15, raiderWaves:1}},
+     {n:'Standard', cfg:{nRaider:10, raiderWaves:1}},
+     {n:'Few',      cfg:{nRaider:5,  raiderWaves:1}},
      // v8.42, audit: and the WAVES off with them. nRaider 0 empties the opening
      // roster, but the wave loop treats an empty map as urgent and waives its own
      // ceilings, so None was delivering a steady four pillagers all raid.
@@ -32598,8 +32601,8 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
   {k:'ext', label:'Heat when you call for extraction',
    hint:'How much of the map comes to the extraction ring once the beacon is up.',
    opts:[
-     {n:'Heavy',    cfg:{siegeVol:1.4, raiderWaves:1}},
-     {n:'Standard', cfg:{siegeVol:1,   raiderWaves:1}},
+     {n:'Heavy',    cfg:{siegeVol:1.4}},
+     {n:'Standard', cfg:{siegeVol:1}},
      // v8.74, his order: this row is about the RING. raiderWaves:0 used to ride
      // along here and it is whole-raid pillager reinforcement, ticked every frame
      // from the first second of the raid, so Light silently emptied the map for
