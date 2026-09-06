@@ -1,0 +1,59 @@
+## v11.46 - THE BEAT TO REACT WAS A FLOOR, NOT A BEAT
+
+Closes the STILL OPEN line "THE BEAT TO REACT IS A FLOOR, NOT A BEAT", his
+2026-08-26 note. Building the line-of-sight harness that line asked for turned
+up TWO layers, and the earlier measurement had run them together.
+
+THE DESIGN LAYER, not a bug. A pillager in extract fires only while he is
+standing INSIDE the extraction ring: the fire block sits inside the ring
+branch, by design since v2.93 and v8.22 ("he returns fire now WITHOUT leaving
+extract"). A man still walking to the ring does not shoot, he leaves. So the
+earlier "parked 200 units away, never fires" was mostly this, not the floor.
+
+THE BUG. Inside the ring, with you in sight, he should return fire after one
+beat and never could. The line meant to give him that beat,
+`if(e.kind==="raider"&&e.state!=="chase") e.cd=Math.max(e.cd,e.react||0.5);`,
+ran on EVERY frame he could see you outside chase, re-flooring his cooldown to
+about 0.5 s each time, and his ring fire gate needs sight, cd at or below zero
+and an acquisition timer past raiderReact (0.34 s) at once. cd never reached
+zero.
+
+THE FIX. An edge trigger: floor once per acquisition on a per-pillager flag,
+re-armed only after a full second without sight, so a one-frame blink does not
+hand him a fresh beat and a man who truly loses you and finds you again still
+gets one.
+
+THE HARNESS, and every wrong turn it took, because each one is a rule. Off the
+map the game's sight test is false at any distance. On the map at 150 units the
+ring geometry blocks the line. Turned away at 60 units he STILL sees you,
+peripheral sight reaching ambient range (100), so facing away is not a control.
+A DOWNED player is not a control either: updatePlayer stands a full-health
+downed man straight back up, and he fired 13 rounds at one, which is how I
+found that out. Counting rounds by proximity to him was wrong twice over: the
+sentry by the ring and the player himself both put rounds within reach of him,
+and my first "proof" (rounds after five seconds) was the bot player's own fire.
+Rounds are his by the bullet's owner field, never by distance. And __rawStep
+is the wrong stepper for a stationary pair: it runs the bot, whose sidestep
+swings the player to the edge of the 0.8 rad cone every frame, so sight
+flickered and acquisition never accumulated the three consecutive frames the
+0.34 s gate needs; __sim runs the player with no input, and he stands still.
+The seat that works: pillager at the ring centre, player 60 units west and
+inside the ring so the line never crosses the pylon edge, facing, hostile,
+extract, cooldown clear, beat unarmed, both re-pinned every step, the beacon
+call and the rival feud pinned off (either pulls him OUT of the ring block),
+sight asserted through the game's own canSee, and the seat SKIPs if he is not
+in the ring or cannot see. The negative control is the same seat with the
+acquisition gate pinned shut, raiderReact 99, which the game cannot undo.
+
+MEASURED. On this build: acquisition climbs steadily (0.15, 0.30, 0.45 ...),
+cooldown decays 0.44, 0.29, 0.14, below zero, and he fires 28 rounds of his own
+in nine seconds, the FIRST at step 4, 0.6 s: one beat, then fire. Gate pinned
+shut, same seat, same sight (acquisition to 9 s), 0 rounds, so the rounds pass
+through the gate and not round it. On the v11.45 fixture, the same sight and
+the same acquisition (9 s), but cooldown reads 0.44 on every frame and he fires
+0. Check 11.46 requires at least one round of his own from the sighted man,
+none with the gate shut, and that the shut-gate seat still had sight; it fails
+on the v11.45 fixture.
+
+Not verified: his own play; the loot state, which the same lines cover but this
+seat does not stage; and full-raid pillager balance, which no sim can measure.

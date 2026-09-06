@@ -1017,6 +1017,7 @@ window.__syncReport=function(){ syncAutoEx(); return document.getElementById('re
 window.__loadProfile=function(){ return loadProfile(); };
 window.__applyLoaded=(typeof applyLoadedProfile==='function')?function(prof){ applyLoadedProfile({key:SKEY,value:JSON.stringify(prof)}); return true; }:undefined;
 window.__wnseen=function(v){ if(v!==undefined) WNSEEN=v; return WNSEEN; };
+window.__see=function(){ return canSee.apply(null,arguments); };
 
 window.__status={player:function(){ return playerStatus(); },raider:function(e){ return raiderStatus(e); },col:STATCOL};
 window.__board=function(){ renderSeason(); return ROADMAP; };
@@ -5434,6 +5435,57 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.46',what:'a hostile pillager standing in the extraction ring who can see you returns fire after ONE beat, instead of having his cooldown floored every frame so he never shoots; and with the acquisition gate pinned shut (raiderReact 99) he fires none, so the rounds pass through the gate',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__sim&&window.__see&&window.__cfg&&window.__keys&&window.__mouse)) return 'SKIP: this fixture cannot stage the ring seat';
+     var bad=[], dt=0.15;
+     function seat(gateShut){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // The beacon call and the rival feud both pull a man OUT of the ring block
+       // (standoff, or a fight with a rival crew), and the fire block only runs
+       // inside it, so both are pinned off for the seat. Harness pins, not the game.
+       // The control pins the acquisition gate shut instead: a downed player is
+       // no control, because updatePlayer stands a full-health man straight back up.
+       __cfg(gateShut?{raiderBeacon:0, raiderFeud:0, raiderReact:99}:{raiderBeacon:0, raiderFeud:0});
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, z=g.active, R=null, i;
+       if(!z) return null;
+       for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.downed&&!e.finished&&!e.merc){ R=e; break; } }
+       if(!R) return null;
+       // THE PLAYER STANDS STILL. __sim runs updatePlayer with no input, so he
+       // neither moves nor fires. __rawStep would run the bot, whose sidestep
+       // swings him to the edge of the cone every frame and flickers sight, and
+       // whose own rounds land inside any proximity count.
+       var K=__keys(); for(var q in K) delete K[q]; __mouse().down=false;
+       __sim(dt);   // builds the sight segments
+       // THE SEAT: the pillager at the ring centre (the extract fire block only runs
+       // inside the ring), the player 60 units west, inside the ring too so the line
+       // of sight never crosses the pylon edge. He faces the player, hostile, in
+       // extract, cooldown clear, beat unarmed. Both re-pinned every step.
+       function pin(){ R.x=z.x; R.y=z.y; p.x=z.x-60; p.y=z.y; p.downed=false; R.face=Math.PI; R.state='extract'; R.hostile=true; R.friendlyPC=0; R.merc=0; R.downed=false; R.finished=false; R.extracting=0; }
+       pin(); R.cd=0; R.windup=null; R.alert=2; R.beat=0; R.beatLost=0; R.acqT=0;
+       var sees=null; try{ sees=!!__see(R.x,R.y,R.face,p.x,p.y,g.vseg,600,R.cone,100); }catch(e2){ sees=null; }
+       var inRing=(Math.sqrt((R.x-z.x)*(R.x-z.x)+(R.y-z.y)*(R.y-z.y))<z.r);
+       // ROUNDS ARE HIS BY OWNER, never by proximity: a sentry near the ring and
+       // the player himself both put rounds within reach of him.
+       var mine=0, first=-1, maxAcq=0;
+       for(var s=0;s<60;s++){ pin(); __sim(dt); if((R.acqT||0)>maxAcq) maxAcq=R.acqT;
+         for(var b=0;b<g.bullets.length;b++){ var B=g.bullets[b]; if(!B.__cnt){ B.__cnt=1; if(B.owner===R){ mine++; if(first<0) first=s; } } } }
+       return {sees:sees, inRing:inRing, fired:mine, first:first, acq:+maxAcq.toFixed(2)};
+     }
+     var on=seat(false);
+     if(!on) return 'SKIP: no active ring or no pillager to stage';
+     if(!on.inRing) return 'SKIP: the pillager could not be seated inside the ring';
+     if(on.sees===false) return 'SKIP: the game says the seated pillager cannot see the player, so the seat is wrong, not the game';
+     // THE FIX: in the ring, with sight, he returns fire after one beat.
+     if(on.fired<1) bad.push('a hostile pillager in the extraction ring with sight of you at 60 units fired '+on.fired+' rounds of his own in nine seconds (acquisition '+on.acq+' s), so his reaction beat is still a permanent floor');
+     // CONTROL: the same seat with the acquisition gate pinned shut fires nothing,
+     // and still had sight, so the rounds above went through the gate and not round it.
+     var off=seat(true);
+     if(off&&off.fired>0) bad.push('control: with the acquisition gate pinned shut (raiderReact 99) he still fired '+off.fired+' rounds, so the rounds do not pass through the gate');
+     if(off&&off.acq<1) bad.push('control: with the gate shut his acquisition read only '+off.acq+' s, so he had no sight and the control proves nothing');
+     __topClear(); __resetCfg();
+     return bad.length?bad.join('; '):null; }},
   {v:'11.45',what:'the title screen does not answer the floor keys: P and ESC on the boot title leave the pause box closed, ENTER there does not stamp the NEW IN card as seen, and ENTER still starts the game',
    run:function(){
      if(!(window.__showScreen&&window.__keys&&window.__wnseen)) return 'SKIP: this fixture cannot stage the boot title';

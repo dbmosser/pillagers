@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.45';
+var VER='11.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.45';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.45';
+var WHATSNEW_VER='11.46';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A PILLAGER WHO SEES YOU NOW ACTUALLY SHOOTS. A pillager heading for extraction who had you in clear sight would stand there and never fire: the one-beat pause meant to give you a fair moment was being reapplied every frame, so his trigger never came free. He gets his one beat, then he fires.',
   'THE TITLE SCREEN NO LONGER ANSWERS THE FLOOR KEYS. Pressing P or ESC on the title screen used to open the pause box over it, and ENTER to start could quietly dismiss the NEW IN card before you saw it. The title keeps its own keys now: ENTER or SPACE starts, nothing else.',
   'YOUR SETTINGS SURVIVE A LOAD AGAIN. A one-time cleanup that runs when the game opens an older save was saving the default settings over yours before your own were read back, so a returning player could find the sliders reset. Your saved settings are kept now.',
   'THE IN-GAME WORDING IS UPDATED. A batch of edits to shop copy, item descriptions, settings and menus is now built into the game.',
@@ -16172,6 +16173,10 @@ if(e.kind==='howler'&&e.hearT>0){
       if(_aSee<_tch) _aSee=_tch;
     }
     var sees=canSee(e.x,e.y,e.face,p.x,p.y,G.vseg,_fSee,e.cone,_aSee);
+    // v11.46: losing sight for a full second re-arms the one-time reaction beat
+    // below. A one-frame blink (a pylon edge, a jittered grid cell) must not, or
+    // the beat re-fires every other frame and is a floor again by another road.
+    if(!sees){ e.beatLost=(e.beatLost||0)+dt; if(e.beatLost>1.0) e.beat=0; } else e.beatLost=0;
     // THE HARD CROUCH RULE. Crouching makes you invisible to anything further than
     // 170 units, full stop, regardless of cones and concealment values. It is by far
     // the strongest stealth effect in the game and it was fenced off with !G.sim, so
@@ -16501,7 +16506,9 @@ var _rdS=G.shells[_rdi];
       }
       // Raiders get a beat to react before their first shot. Without it they
       // acquire and fire in the same frame, which is what read as unfair.
-      if(e.kind==='raider'&&e.state!=='chase') e.cd=Math.max(e.cd,e.react||0.5);
+      // v11.46: ONCE per acquisition, not every frame. Re-flooring each frame kept
+      // a man in extract from ever reaching cd 0, so he never fired at all.
+      if(e.kind==='raider'&&e.state!=='chase'&&!e.beat){ e.cd=Math.max(e.cd,e.react||0.5); e.beat=1; }
       if(e.state!=='chase'&&T.firstContact===null) T.firstContact=G.t;
       // The shout. Only on the transition, and only from things that have a
       // radio: raiders already have their own flanking and the neutrals have
@@ -28078,7 +28085,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.45: the floor keys answered on the title screen. state is hub from boot and the title is on via its HTML class (showScreen(title) is never called), so the hub keydown branch was live over the title: P or ESC opened the pause box over it, and ENTER stamped WNSEEN in the same press the title listener used to start. The earlier not-reproduced verdict was the probe calling __showScreen(title), which sets state=title and disarms the branch. Reproduced on the boot title with one KeyP on window. A _titleUp guard on both branches; the title keeps its own ENTER/Space start. Closes the STILL OPEN title-keys line.',
+  now:'v11.46: the beat to react was a floor, not a beat. The line giving a pillager one beat before his first shot ran every frame he saw the player outside chase, re-flooring cd to react each time, so a man in extract (a state that persists while he sees you) never reached the cd<=0 the fire gate needs and never fired; measured zero rounds in sixty steps at 200 units in clear view. Now edge-triggered on a per-pillager beat flag, re-armed when sight is lost. Proven with an open-ground line-of-sight harness (both parked off-map, facing, hostile, extract): rounds after one beat, and none when he faces away. His 2026-08-26 note; closes the last STILL OPEN combat line.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

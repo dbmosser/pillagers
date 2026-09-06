@@ -1,0 +1,16 @@
+v11.46: the beat to react was a floor, not a beat
+
+Two layers: by design (v2.93/v8.22) a pillager in extract fires only while
+inside the ring, so the old "200 units away, never fires" was mostly design;
+the bug is that inside the ring, in sight, the one-beat line re-floored his
+cooldown every frame outside chase, so the ring fire gate (sight, cd<=0, acqT
+past 0.34 s) never opened and he never returned fire. Fixed with an
+edge-triggered beat on a per-pillager flag, re-armed only after a full second
+without sight. Proven with a ring seat stepped by __sim (player held still),
+rounds attributed by bullet owner: 28 rounds of his own in nine seconds, the
+first at 0.6 s; with the acquisition gate pinned shut (raiderReact 99) the same
+seat fires 0, so the rounds pass through the gate; on v11.45 the same sight and
+acquisition but cd pinned at 0.44 and 0 rounds. Closes the last STILL OPEN
+combat line.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
