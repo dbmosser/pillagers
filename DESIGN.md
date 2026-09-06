@@ -40024,6 +40024,39 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.12 - A DEATH BANKS THE XP ITS CARD PRINTS
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
+
+THE FINDING. Every XP grant goes through one writer, addXp, which applies
+the bar's dose bonus live from the drink in the blood. The outcome card
+prints the run's XP through the same multiplier, and v11.63 made the card
+and the banking read the same base so they could never disagree. They
+still could, on a death or an abandon: the ending function prints the card
+with the bonus, then clears the drink (v7.35, a death sobers you), then
+banks the run at its bottom, where addXp reads the bonus live and finds
+none. The card said +N with the bonus; the profile got N without it.
+
+THE BUILD. The multiplier is taken at the top of the ending, before the
+drink is cleared, carried on the run record as doseMul, and handed to
+addXp by the banking, so the number the card printed is the number paid.
+Every other XP grant still reads the bonus live.
+
+MEASURED. Check 12.12 deploys, gives the run enough containers and kills
+for a base worth multiplying, puts two doses in the blood, ends the raid by
+death, reads the +N XP line off the card and requires the profile paid
+exactly N. On the v12.11 fixture the profile is paid the base alone.
+
+CORPUS NOTE. The full corpus for this build came back with one red, the
+tattoo sprite pixel check 10.36 ("tatspider draws nothing on the sprite"),
+which this build cannot reach: it changes XP banking only. Re-run alone on
+the same fixture it passed, passed straight after check 12.12, and passed
+again; four green runs. Treated as a one-off of the pixel ruler, as 10.60
+was on 2026-09-06 midday.
+
+Not verified: an abandon, which takes the same path and is not driven by
+the check; an extraction, where the drink is not cleared and the live
+bonus and the carried one are the same number.
 ## v12.11 - FIRST TEN MINUTES: ESC CLOSES THE OPEN BACKPACK ON THE FLOOR
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.
