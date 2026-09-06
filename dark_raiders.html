@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.00';
+var VER='12.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2065,7 +2065,7 @@ var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,die
   // save exists, so a player who has never saved had no name at all and the
   // character screen read "undefined" beside his first raid.
   pname:'PILLAGER',
-  log:[],pack:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day',crashes:[]};
+  log:[],pack:0,contracts:[],cfg:null,menuZoom:1.3,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day',crashes:[]};
 var SLOT=(function(){ try{ return localStorage.getItem('salvagerun:activeSlot')||'1'; }catch(e){ return '1'; } })();
 var SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT);
 function storeSet(v){
@@ -2647,6 +2647,16 @@ if((P.cfgv>=9&&P.cfgv<=18)&&P.cfg){
             applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; try{ applyGameOpts(); }catch(e){} }
           else P.cfg=null;
         } }
+  // v12.01: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE. Everything above
+  // runs only when a save exists. A friend on his first launch had none, so
+  // the Settings rows were never applied (the wording watcher of v9.74 stayed
+  // unarmed, so the menus and panels showed none of the reworded sentences
+  // shipped since v11.42 until his second launch; canvas text had them), and
+  // the menus drew at zoom 1.0 and grew a third larger the next day. Both are
+  // set here, on every load, save or none, and the Settings pass runs again at
+  // the end of the boot, where a loader that threw part way cannot skip it.
+  if(!P.menuZoom) P.menuZoom=1.3;
+  try{ applyGameOpts(); }catch(_ag){}
 }
 function loadProfile(){
   try{
@@ -28554,7 +28564,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.00: HIS NOTE of 2026-09-06, the Howler bombed from outside a building to the inside. Both mortar sites refuse a target under a roof the Howler is not itself under; the machine keeps its clock and fires in the open or once inside. Check 12.00 stages a Howler outside and the player inside a building and requires no shell, then both in the open and requires one; fails on v11.99.',
+  now:'v12.01: from the 2026-09-06 first-ten-minutes audit, a first launch with no save skipped the whole profile loader, so the Settings rows and the wording watcher (every reworded sentence since v11.42) were dead for the first session and the menus drew at zoom 1.0 and grew a third larger the next day. The menu zoom default and the Settings pass now run on every load, save or none. Check 12.01 loads a null record and requires the zoom at 1.3 and the watcher armed; fails on v12.00.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33752,6 +33762,7 @@ loadProfile().then(function(){
   // screen but nothing calls applyMenuZoom at boot, so it stayed at zoom 1 until
   // something else happened to trigger it. The profile exists by here, which is
   // the whole reason this block is at the bottom of the load.
+  try{ applyGameOpts(); }catch(_ag2){}   // v12.01: once more here, where a loader that threw part way cannot skip it
   try{ applyMenuZoom(); }catch(_am){}
   ensureContracts();
   saveProfile();

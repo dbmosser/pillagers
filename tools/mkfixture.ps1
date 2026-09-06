@@ -5732,6 +5732,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.01',what:'a load with no save sets the menu zoom to 1.3 and runs the Settings pass that arms the wording watcher, the same as a load with a save (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(typeof applyLoadedProfile!=='function'||typeof applyGameOpts!=='function') return 'SKIP: no profile loader in this build';
+     if(typeof MutationObserver!=='function') return 'SKIP: no MutationObserver here';
+     var bad=[], keepZ=P.menuZoom, keepObs=TXOBS;
+     try{
+       __topClear(); __runPrep();
+       P.menuZoom=0;
+       if(TXOBS){ try{ TXOBS.disconnect(); }catch(_d){} TXOBS=null; }
+       applyLoadedProfile(null);   // what storeGet resolves to when nothing is saved
+       if(P.menuZoom!==1.3) bad.push('a load with no save left the menu zoom at '+P.menuZoom);
+       if(!TXOBS) bad.push('a load with no save did not arm the wording watcher');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       P.menuZoom=keepZ||1.3;
+       if(!TXOBS&&keepObs){ TXOBS=keepObs; try{ TXOBS.observe(document.getElementById('root'),{childList:true,subtree:true,characterData:true}); }catch(_o){} }
+       try{ applyMenuZoom(); }catch(_z){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.00',what:'the Howler does not shell a target under a roof it is not itself under, and still shells one in the open (his note of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__ents)) return 'SKIP: this fixture cannot deploy and step';
