@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.02';
+var VER='12.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='12.02';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.02';
+var WHATSNEW_VER='12.03';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'DYING WITH THE FREEBIE KIT NO LONGER DELETES THE SCAV PISTOL YOU OWN, and the loaner is not counted or billed as a gun you lost.',
   'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT, the same as the resume button; it goes out with your run report.',
   'THE HOWLER DOES NOT SHELL THROUGH A ROOF: inside a building you are out of its reach until it comes in after you.',
   'THE RIGHT-CLICK MENU IN THE STASH IS DRAWN AT THE SIZE OF THE SCREEN IT OPENS OVER, at 4K and at every text size.',
@@ -18670,9 +18671,18 @@ var _cdone=contractExtract(G.bag,haul);
     // print LOST, so both are counted here, once, before the branch.
     var _gunN=0,_gunVal=0;
     for(j=0;j<gone.length;j++){
-      _gunN++;
-      if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
-      var wi=P.weapons.indexOf(gone[j].id);
+      // v12.03: ONLY A GUN THAT CAME OUT OF THE ARMOURY COMES OFF THE LIST, and
+      // the free kit's loaner is not a gun you lost. The splice went by id
+      // alone, so dying with the free kit's Scav Pistol (not flagged issued,
+      // because an extraction keeps it) deleted the pistol you own, the only
+      // gun a fresh profile has, and the card billed you for it. Provenance is
+      // on the slot, the flag the pickup path has read since the same fault
+      // was fixed there; a field-found gun never touches the armoury either.
+      var _egp=G.player, _egArm=!!((gone[j]===_egp.wep&&_egp.wepFromArmory)||(gone[j]===_egp.sec&&_egp.secFromArmory));
+      var _egFree=!!(G.freeKit&&!_egArm&&gone[j].id===FREEKIT_GUN);
+      if(_egFree) continue;   // out of the ledger entirely, as an issued loaner already is: no count, no price, no line
+      _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
+      var wi=_egArm?P.weapons.indexOf(gone[j].id):-1;
       if(wi>=0){ P.weapons.splice(wi,1);
         lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }
       // v9.55, HIS QUESTION: "KIA screen -- why is the gun different from the
@@ -28575,7 +28585,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.02: from the 2026-09-06 first-ten-minutes audit, a note typed into the pause box during a raid and closed with ESC was thrown away; only the resume button banked it. Every close of the box over a live raid banks the note now, and the resume and abandon buttons lost their own copies of the lines. Check 12.02 pauses a raid, types a note, presses ESC on the box and requires the note in the run record; fails on v12.01.',
+  now:'v12.03: from the 2026-09-06 first-ten-minutes audit, dying with the freebie kit deleted the Scav Pistol you own and billed you for it, because the death splice went by gun id and the free pistol is not flagged issued (an extraction keeps it). The splice now asks the slot whether the gun came out of the armoury, and the loaner is neither counted nor priced. Check 12.03 deploys with the free kit on a profile that owns one pistol, dies, and requires the pistol still owned and no gun counted lost; fails on v12.02.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
