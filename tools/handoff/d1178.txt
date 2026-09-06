@@ -1,28 +1,32 @@
-## v11.78 - HIS NOTE: THE CORNER READOUT WAS TOO SMALL TO BE WORTH HAVING
+## v11.78 - HIS NOTES: THE CORNER READOUT IS TWICE THE SIZE, EVERYWHERE
 
-His note of 2026-09-06: "credits and xp in the corner in the undercroft are so
-small that they are useless".
+His notes of 2026-09-06: "credits and xp in the corner in the undercroft are
+so small that they are useless", and then, in a raid, "credits and xp in
+corner during raid still wayyyyyy too tiny".
 
-WHY IT WAS SMALL. The v11.52 readout sits in the top right at all times, in a
-raid and on the floor. In a raid the CONDITIONS box starts thirty units down
-from the top, so the readout was drawn at 15px in a 24px band to stay above it.
-The floor has no CONDITIONS box, and the same 15px there is a whisper in the
-corner of a big dark room.
+WHAT IT WAS. v11.52 put credits and XP in the top right at all times, as he
+asked, and sized them to fit the only space the raid HUD had free up there:
+the 30-unit band above the CONDITIONS box. That gave 15px figures and 9.5px
+labels in a 24px strip, on a 1080p screen, at arm's length. Right that it was
+there, useless as a thing to read, and the floor got the same strip because
+the readout is one element for the whole page.
 
-THE BUILD. On the Undercroft floor the readout is twice the size, 30px type in
-a 46px band, a little further from the corner; in a raid it keeps the compact
-size, because that band is what fits. It is the same element with one class,
-toggled by the writer that already runs every frame and on every save, and only
-written when the answer changes. The stash screen's top row keeps a wider
-margin so its CLOSE button stays clear of the bigger readout.
+THE BUILD. One size everywhere, twice what it was: 32px figures, 14px labels,
+44px tall, at top 6px. In a raid the CONDITIONS box no longer owns the corner:
+the HUD reads the readout's real bottom from the page in CSS pixels, puts it
+into the box's scaled space, and starts the box below it, with LH(30) still
+the floor if the readout is ever shorter. Dragging the box up still works,
+since that is his hand and his choice. The stash screen's top row keeps clear
+of the wider readout so CLOSE stays reachable.
 
-MEASURED. Check 11.78 enters the floor, saves so the writer runs, and requires
-the floor class, at least 26px of type and at least 40px of height; then
-deploys, draws, saves, and requires the class gone, the height back under 28px,
-and the readout's bottom above the CONDITIONS box measured through that box's
-own zoom, the same clearance test v11.52 made. On the v11.77 fixture the floor
-size never appears and the check names the 15px he called useless.
+MEASURED. Check 11.78 walks the floor, saves so the readout is drawn, and
+requires the page's computed font size at 28px or more and the element 40px
+or taller; deploys, draws two frames, and requires the same in a raid, and
+requires the CONDITIONS box top, in screen pixels, at or below the readout's
+bottom. On the v11.77 fixture the readout is 15px and 24px tall in both
+places, and the check says so.
 
-Not verified: his own eye, at his monitor and his HUD scale; the ascent and
-character screens, which sit in hub state and so show the floor size, and were
-not measured for collisions; 1440p and 2160p.
+Not verified: his own eye, and whether twice is the size he wants, which is
+one number; the readout at 1440p and 4K, where the HUD scales and the readout
+does not, which he has not asked for; the text size setting, which moves the
+box and not the readout.

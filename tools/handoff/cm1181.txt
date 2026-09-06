@@ -1,0 +1,8 @@
+v11.81: his order, the KIA card no longer counts the cutting lost with you
+
+The line meant nothing to him and it is removed; the seal still banks only
+on an extraction. Check 11.81 stages a forty second cut, requires the phrase
+absent from the death card and the banked line present on the extraction
+card; fails on v11.80.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

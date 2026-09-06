@@ -1,61 +1,77 @@
-# START HERE (written 2026-09-05, handoff from Fable to Opus)
+# START HERE (written 2026-09-05, handoff from Fable to Opus; rewritten 2026-09-06 08:00 for the alpha run)
 
-## HANDOFF TO FABLE, 2026-09-06 (second time; read this block first)
+## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 08:00. Read this block first.
 
-**HIS FIVE NEW ORDERS THIS MORNING, in the order he gave them.** Two of them are
-BALANCE changes; he set the no-balancing-before-alpha rule and has overruled it
-here himself, so move ONLY the dials he named and record before and after.
+**STATE AT 08:00:** HEAD is v11.74 (f2547d9). The tree has **v11.75 APPLIED**
+(hold-to-craft) and verified on all four gates (parse PASS, check 4x PASS and
+once after 11.62, __verifySafe PASS, control fails on fx1174). Its FULL CORPUS
+is running on the Browser pane tab "seed". When `window.__PROG` is finished,
+pass true, fail [] and only the two known skips (v8.88, v11.24):
+    bash tools/handoff/ship.sh commit 1175 cm1175.txt
+then bump the HEAD line in memory dark-raiders-handoff-state.md, then
+    bash tools/handoff/ship.sh start 1175 1176
+and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
+CronList shows nothing. Resize the pane to 1920x1080 after any restart.
 
-**STATE:** HEAD is v11.73 (e797309). The tree has **v11.74 APPLIED** (his note:
-EXTRACTION IN PROGRESS did not say whether to move; now EXTRACT NOW with the
-letter and seconds left). It passed parse, its check four times, __verifySafe,
-and its control on fx1173. Its FULL CORPUS is running on tab "seed". FIRST
-ACTION: poll `JSON.stringify(window.__PROG)`; when green with only the two
-known skips, `bash tools/handoff/ship.sh commit 1174 cm1174.txt`, then bump
-the HEAD line in memory dark-raiders-handoff-state.md.
+**THE QUEUE, ALL DRAFTED (p/f/d/a/cm in this folder), SHIP IN THIS ORDER:**
+1. **1176 SCAV PISTOL 3600 -> 1800** (his order; my number). Trivial.
+2. **1177 FRAG: RADIUS 150 -> 190, ENEMY 85..15 -> 115..25, HIM 60..12 -> 80..18**
+   (his order; he overruled his own no-balancing rule). cfgv 17 -> 18 with a
+   migration moving a saved 150 to 190. The check stages a real blast 40 units
+   from a pillager and drives the real loader with a cfgv 17 save. The fuse is
+   still 1.1 s, his ruling pending.
+3. **1178 THE CORNER READOUT, TWICE THE SIZE EVERYWHERE** (his notes: useless on
+   the floor; then "in corner during raid still wayyyyyy too tiny"). 32px
+   figures, 14px labels, 44px tall, one size in the hub and in raids; the raid
+   CONDITIONS box starts below the readout's real bottom (topRightBottom(),
+   read in drawHUD). REDRAFTED at 08:00; the earlier hub-only draft is gone.
+   f1179's anchor was repointed to the new 11.78 what-line.
+4. **1179 GREEN AND BLUE GUNS ON THE BENCH** (his order). Four recipes: Compact
+   SMG, Burst Carbine (green), Auto Rifle, Riot Scattergun (blue), parts worth
+   more than the gun sells for and less than buying it. Reverses his v9.84
+   rule for those two colours only.
+5. **1180 THE HUM ON THE FLOOR AFTER AN EXTRACTION** (his note, chat, 07:40).
+   Root cause found by reading: the raid branch keeps calling tickAmbience
+   over the outcome card with alive = !downed, true after an EXTRACTION, so
+   the bed was written back up to 0.16 after endRaid cut it, then held there
+   once the raid was dropped. A death leaves him downed, so only extractions
+   hummed. One line at the call site. The check wraps tickAmbience.
 
-**THEN, IN THIS ORDER:**
+**Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/handoff/dry.ps1 1176 1180`
+before shipping 1176** (the range must start at the tree's VER+1). Run each
+new check 3 to 5 times in one page and once after a raid-ending check (11.62).
 
-1. **1175 HOLD-TO-CRAFT.** His words: "you should have to hold the craft button
-   for just a moment (1s?) to craft the item and the button itself should act
-   like a status bar that fills up". p1175.ps1 is WRITTEN: CRAFT_HOLD=1.0 s,
-   the hold is stepped by the frame loop (craftHoldStep(dt) in the hub branch
-   of loop()), the fill is a gradient on the button's backgroundImage so an
-   untouched button looks unchanged, mouseup anywhere cancels, and a plain
-   click no longer crafts. The SERVICE button is the same control and behaves
-   the same. STILL TO WRITE: f1175 (check: start a hold on a stub button, step
-   0.5 s and require nothing fired and a partial fill, step past 1.0 and
-   require exactly one firing, cancel mid-hold and require none; control that
-   renderCraftDetail's source contains craftHoldStart and no longer assigns a
-   click that crafts), and d/a/cm1175. Insert the check before the v11.74 entry
-   whose what-line is in f1174.ps1.
-2. **1176 SCAV PISTOL CHEAPER.** p1176 and f1176 are WRITTEN and the check's
-   what-line is already what f1177 must anchor on. SHOP row pistol 3600 -> 1800
-   (MY number, half; he gave none). STILL TO WRITE: d/a/cm1176. The f1176
-   anchor names the 11.75 what-line exactly as: "the craft button is a hold: it
-   fills as you hold it, nothing is spent until it is full, and letting go early
-   spends nothing" -- f1175 MUST use that same what-line.
-3. **1177 GRENADES: BIGGER RADIUS, MORE DAMAGE.** Not drafted. My numbers:
-   fragR 150 -> 190 in DEF (anchor `smokeR:165,fragR:150,healSolo:1`) and the
-   inline fallback `CFG.fragR===undefined?150` -> 190 in explodeFrag; player
-   damage `60*(1-dp/R)+12` -> `80*(1-dp/R)+18` (centre 98, so a full-health man
-   at the epicentre lives by two points, on purpose, because he died to his own
-   charge twice); enemy damage `85*(1-Math.max(0,de-e.r)/R)+15` -> `115*(...)+25`
-   (centre 140). Leave the wall formula alone but SAY in the entry that a wider
-   R breaks walls over a wider area as a consequence. Check: stage an entity at
-   a known distance, call explodeFrag, require the hp loss to match the new
-   formula and exceed the old one; and read DEF.fragR.
-4. **1178 THE CORNER READOUT IS TOO SMALL IN THE UNDERCROFT.** His words:
-   "credits and xp in the corner in the undercroft are so small that they are
-   useless". The v11.52 readout is 15px in a 24px band because in a RAID the
-   CONDITIONS box starts at LH(30) and it must stay above it. In the Undercroft
-   there is no such box. Fix: syncTopRight already runs every frame; have it
-   toggle a class on #topright when state==='hub' (and no G), and add CSS
-   `#topright.hub{font-size:28px;height:44px;line-height:44px}` with the small
-   labels scaled to match; the raid size is unchanged. Check: in the hub the
-   element's bounding height is at least 40px and its font-size at least 26px;
-   in a raid it is still 24px tall and still clear of the CONDITIONS box
-   (reuse the clearance test from check 11.52).
+**NOT YET DRAFTED, FROM HIS 06:26 EXPORT (exports/consumed-run-20260906-062618.txt,
+v11.73 runs, authenticated: dur 267 to 427 s, real killers), in value order:**
+6. **1181 REMOVE "N seconds of cutting, lost with you."** from the KIA card.
+   His words: "I have no idea what the fuck that means, just remove it." The
+   line is the else branch under `if(G.seal&&G.seal.gained>0)` in the outcome
+   card (~18370). Delete the push; keep the extract branch. Check: build the
+   card on 'dead' with G.seal.gained>0 and require the assembled phrase absent;
+   control on the previous fixture finds it.
+7. **1182 HEALING: no "Still applying prior healing item. N to go."** (his
+   note: "isn't accurate -- just get rid of it") **AND plates while a bandage
+   is healing AND the next bandage while the prior one heals** (his note
+   @164s). The gate is `(p.healQ||0)>0&&CFG.healSolo!==0` in useMedical
+   (~12459) and the belt path (~13226); healSolo is a DEF dial (1). Read
+   startPrep/prep and how plates are applied before drafting; the
+   `if(_pp.prep) say('Already applying ...')` line is the plate blocker if
+   plates go through prep.
+8. **1183 STIM INJECTOR: unlimited stamina and 1.2x speed for 10 seconds** (his
+   spec). Read the current stim effect first.
+9. **1184 MERIDIAN LANCE ROUNDS TRAVEL THROUGH CRAWLERS** (his note @248s).
+   Bullet-vs-entity hit code; the lance is `lance` in the gun table (dmg 96,
+   optic 1.6). Pass through crawlers only, keep hitting them.
+10. **1185 THE MAP SHOWS A CLOSE COUNTDOWN ON EACH EXTRACTION** (his note
+    @327s). The HUD already has `_zSub='closes in '+fmtMS(...)` (~26437); the
+    map screen needs the same per marker.
+11. **1186 THE SURVIVOR PAYS MORE, and drop ", already banked"** (his note).
+    The line is at ~18323 (`G.strayPaid`). The amount is his call; pick a
+    number, say it is mine.
+12. LOGGED, NOT ORDERS: "crawler movement and charging at player is still
+    messed up" (vague; needs a reproduction), and "too many enemies converge
+    on extraction point -- maybe some of them should go back to patrol more
+    quickly if they don't find anything?" ("maybe": balance, for his ruling).
 
 **STILL OPEN AFTER THOSE, from the 2026-09-06 menu audit:** the freebie kit
 wiping a packed backpack and belt plan with no undo; the safe pocket accepting
@@ -64,8 +80,7 @@ behind the character screen. AUDIT.md has the fixes.
 
 **AND HIS RULING STILL WANTED:** the frag fuse at 1.1 seconds, which is why the
 grenade kills him rather than the warning being late. If he gives a number it
-is one line, and it should probably ship WITH 1177, since a bigger blast on a
-1.1 s fuse makes self-kills easier.
+is one line.
 
 ## FINAL RUN BEFORE ALPHA (handoff to Fable, 2026-09-06)
 

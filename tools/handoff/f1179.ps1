@@ -14,7 +14,7 @@ function SubRx([string]$old, [string]$new) {
 # v11.79 CHECK, inserted before the v11.78 entry. The table is read for the
 # four recipes and their price window, and one is crafted through the real row.
 SubRx @'
-  {v:'11.78',what:'the credits and XP readout is twice the size on the Undercroft floor, and keeps its compact size and its clearance from the CONDITIONS box in a raid (his note of 2026-09-06)',
+  {v:'11.78',what:'the credits and XP readout in the corner is twice the size everywhere, on the Undercroft floor and in a raid, and the CONDITIONS box starts below it (his notes of 2026-09-06)',
 '@ @'
   {v:'11.79',what:'four guns are on the crafting bench, two green and two blue, each priced in parts between what it sells for and what it costs to buy, and crafting one through the real row puts the gun in the stash and takes the parts (his order of 2026-09-06)',
    run:function(){
@@ -61,7 +61,7 @@ SubRx @'
        finally{ try{ __P().stash=keepStash; }catch(_r){} __topClear(); __cleanProfile(); }
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.78',what:'the credits and XP readout is twice the size on the Undercroft floor, and keeps its compact size and its clearance from the CONDITIONS box in a raid (his note of 2026-09-06)',
+  {v:'11.78',what:'the credits and XP readout in the corner is twice the size everywhere, on the Undercroft floor and in a raid, and the CONDITIONS box starts below it (his notes of 2026-09-06)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

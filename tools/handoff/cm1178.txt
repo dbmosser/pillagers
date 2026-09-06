@@ -1,10 +1,10 @@
-v11.78: his note, the corner readout was too small on the floor
+v11.78: his notes, the corner readout is twice the size everywhere
 
-The credits and XP readout was 15px because in a raid it must sit above the
-CONDITIONS box; the Undercroft has no such box and 15px there is useless. The
-writer that already runs every frame toggles a floor class, which doubles the
-size on the floor; the raid keeps the compact size, and the stash top row
-keeps clear of the bigger readout. Check 11.78 requires the floor size on the
-floor and the compact size plus clearance in a raid; fails on v11.77.
+Useless on the floor and still far too tiny in a raid. One size everywhere:
+32px figures, 14px labels, 44px tall, where it was 15, 9.5 and 24 to fit the
+band above the raid CONDITIONS box. The box now starts below the readout's
+real bottom, read from the page, instead of the readout fitting the box.
+Check 11.78 measures the computed size on the floor and in a raid and the
+box against the readout; fails on v11.77.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

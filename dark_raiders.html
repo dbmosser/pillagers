@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.74';
+var VER='11.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.74';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.74';
+var WHATSNEW_VER='11.75';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'HOLD THE CRAFT BUTTON FOR A SECOND. The button fills as you hold it and the work happens when it is full. Let go early and nothing is spent. The same goes for the service button, which is the same control.',
   'THE BOARDING WINDOW SAYS EXTRACT NOW. It used to say EXTRACTION IN PROGRESS, which reads as something happening without you rather than the one moment you have to be in the ring holding E.',
   'A BRAND NEW CHARACTER HAS A NAME. Before this, someone playing for the first time had none until the game had saved and loaded once, and the character screen read "undefined" beside their first raid.',
   'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
@@ -27798,6 +27799,7 @@ function loop(ts){
   tickZoom(dt);
   pollPad();
   if(state==='hub'){
+    try{ craftHoldStep(dt); }catch(_ch){}   // v11.75: the craft hold fills here
     if(HB&&wc&&W>0){
       // v8.95: the HUD canvas holds whatever the last raid left there, so it is
       // cleared every frame. v11.58, from the 2026-09-06 menu audit: ABOVE the
@@ -28296,7 +28298,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.74: HIS NOTE of 2026-09-06, EXTRACTION IN PROGRESS at the bottom of the screen did not say whether the extraction was coming or was his to take. It marks the boarding window, the one moment he must be in the ring holding E. The wording was his own from v8.68, chosen over OPEN. Both places that announce the window now read one helper, extractNowLine, which says EXTRACT NOW with the ring letter and the seconds LEFT, the words he gave for the ring badge at v11.54. Check 11.74 reads the helper and requires his words, the letter and the seconds, and controls that both draw sites use it and that the phrase IN PROGRESS is gone from them.',
+  now:'v11.75: HIS NOTE of 2026-09-06, holding the craft button for about a second to craft, with the button itself filling like a status bar. CRAFT_HOLD is 1.0 s, the hold is stepped by the frame loop rather than wall time so it runs on the same clock as everything else, the fill is a gradient painted onto the button so an untouched button looks unchanged, releasing anywhere cancels, and a plain click no longer spends anything. The service button is the same control and behaves the same way. Check 11.75 starts a hold on a stub button, steps it to just under a second and requires nothing fired and the bar partly filled, steps past and requires exactly one firing, cancels mid-hold and requires nothing fired, and controls that the real panel wires the hold and no longer crafts on a click.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31087,6 +31089,46 @@ function renderCraftGrid(){
   });
   renderCraftDetail(rows);
 }
+// v11.75, HIS NOTE: hold the button for a moment, and the button is the bar.
+// One second of commitment before anything is spent, and a fill he can watch
+// so the wait is legible rather than a dead press. Stepped by the frame loop,
+// not by wall time.
+var CRAFT_HOLD=1.0;
+var craftHold=null;
+function craftHoldPaint(b,f){
+  if(!b) return;
+  var pct=Math.round(clamp(f,0,1)*100);
+  // Only the image, so the button keeps its own colour underneath and an
+  // untouched button looks exactly as it did.
+  b.style.backgroundImage=pct?('linear-gradient(to right, rgba(255,192,74,.55) '+pct+'%, rgba(0,0,0,0) '+pct+'%)'):'';
+}
+function craftHoldCancel(){
+  if(!craftHold) return;
+  craftHoldPaint(craftHold.b,0);
+  craftHold=null;
+}
+function craftHoldStart(b,fire){
+  if(!b||b.disabled) return;
+  craftHold={b:b,fire:fire,t:0};
+  craftHoldPaint(b,0);
+}
+function craftHoldStep(dt){
+  if(!craftHold) return;
+  var b=craftHold.b;
+  // The panel redraws itself on every change, so a button that has left the
+  // page or gone dead takes its hold with it.
+  if(!b||b.disabled||(b.isConnected===false)){ craftHoldCancel(); return; }
+  craftHold.t+=dt;
+  craftHoldPaint(b,craftHold.t/CRAFT_HOLD);
+  if(craftHold.t>=CRAFT_HOLD){
+    var f=craftHold.fire;
+    craftHoldCancel();
+    if(f) f();
+  }
+}
+// Letting go anywhere at all cancels, not only on the button, or a release off
+// the edge would leave it filling to a purchase he did not make.
+try{ window.addEventListener('mouseup',function(){ craftHoldCancel(); }); }catch(_chm){}
 function renderCraftDetail(rows){
   var d=document.getElementById('craftdetail'); if(!d) return;
   var row=rows[P._craftSel||0]; if(!row){ d.innerHTML=''; return; }
@@ -31133,7 +31175,12 @@ function renderCraftDetail(rows){
   b.className='vbuy';
   b.textContent=(kind==='repair')?'SERVICE':'CRAFT';
   b.disabled=btn?btn.disabled:true;
-  if(btn&&!btn.disabled) b.onclick=function(){ btn.click(); };
+  if(btn&&!btn.disabled){
+    // v11.75, HIS NOTE: a click no longer spends anything. The hold does.
+    b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
+    b.onmouseleave=function(){ craftHoldCancel(); };
+    b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' (1 second)';
+  }
   d.appendChild(b);
 }
 

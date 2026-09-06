@@ -1,0 +1,35 @@
+## v11.80 - HIS NOTE: A HUM ON THE FLOOR AFTER COMPLETING A RUN
+
+His note of 2026-09-06: "strange humming sound in undercroft after completing
+a run".
+
+WHAT IT WAS. The raid has an ambient bed: two low sines, a loop of room noise,
+a weather voice and a dread voice, all started once and never stopped, driven
+every frame by one function that writes their gains. v10.85 found the bed held
+its last level after a raid and cut it in endRaid; v10.86 found the same on
+pause and ducked it there. Both were right and both missed the frame after.
+The raid branch of the loop keeps running while the outcome card is up, the
+drive call is in it, and its "alive" argument is "not downed". After a death
+he is downed, so the bed is written to 0 and stays there. After an EXTRACTION
+he is not, so from the very next frame the bed was written back up to its
+floor of 0.16, every frame, for as long as the card was open; and when LOG RUN
+AND RETURN dropped the raid there was nothing left to drive it, so it held
+that level on the Undercroft floor for as long as the page was open. That is
+the hum, and that is why it followed a run he completed and never one he
+died in.
+
+THE FIX. One line. Over the card the bed is driven with threat 0, alive false
+and dread 0, which is silence, the same thing endRaid asked for. The frames
+after the end now agree with the cut instead of undoing it.
+
+MEASURED. This fixture blocks AudioContext, so the gain cannot be read; check
+11.80 wraps the drive function and computes, from its own arguments and with
+its own formula, the target it would write. It deploys, steps twelve frames
+and requires the bed to have been driven above 0 (so silence afterwards means
+something), ends the raid by extraction, steps thirty more, and requires every
+target written after the end to be 0 and the last one to be 0. On the v11.79
+fixture the bed is driven back up thirty times to 0.16, and the check says so.
+
+Not verified: by ear, which this fixture cannot do; the pause duck of v10.86,
+which is unchanged; whether the hub has any voice of its own that he might
+also be hearing, which nothing in his note suggests.

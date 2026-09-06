@@ -1,0 +1,10 @@
+v11.82: his notes, healing stacks again and a plate goes on over a bandage
+
+The one-heal-at-a-time refusal and its wrong countdown are gone; a second
+item adds its health at the faster rate and the higher ceiling; and the
+application timer is two timers, medical and armour, so a plate goes on
+while a bandage is being applied. Reverses his v3.34 rule on his own note;
+the healSolo dial is removed. Check 11.82 drives the real verbs on a real
+raid; fails on v11.81.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
