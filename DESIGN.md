@@ -40024,6 +40024,40 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.90 - HIS NOTE: A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK
+
+His note of 2026-09-06, from his fifth run this morning: "not letting me put
+guns back into backpack -- GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY
+ITEM!!!!"
+
+WHAT IT WAS. Since v7.21 the two gun cells on the belt were select-only: a
+press picked that gun to fire, and nothing could be dragged off them. A gun
+could go INTO your hands from the bag, by ENTER or by dropping it on a gun
+cell, and the displaced gun went to the bag; but the gun already in your
+hands had no way out of them except finding a better one. He is right that
+this is the one item in the game that did not move like an item.
+
+THE BUILD. With the backpack open, a press on a gun cell picks that gun up
+and a release over the bag puts it there, through one new verb that follows
+the rules the equip path already had for a displaced gun: issued kit is
+refused and stays in your hands, and a gun from your own armoury leaves the
+armoury for the raid and is recorded so an abandoned raid puts it back. If
+the bagged gun was the one in your hands, the other gun comes up and keeps
+the numbered slot it had, or bare hands if there is no other. Released
+anywhere else, nothing happens. With the backpack closed a press on a gun
+cell still only selects, which is the combat rule and stays.
+
+MEASURED. Check 11.90 deploys with a field SMG in hand and bare hands in the
+other slot, opens the backpack, draws two frames so the belt cells and the
+bag panel exist, points the mouse at cell 1 and sends a real mousedown to
+the canvas, requires a drag carrying the gun, points the mouse at the bag
+panel and sends a real mouseup to the window, and requires the SMG in the
+bag, bare hands up and no drag left hanging. On the v11.89 fixture the press
+starts no drag and the bag stays empty.
+
+Not verified: his own hand at it; a gun dropped on the bag when the bag is
+too heavy for it, which is the same overflow the equip path has always had;
+the ghost drawn under the pointer, which is the existing drag ghost.
 ## v11.89 - HIS NOTE: A STRIKE LEAVES FULGURITE AND NOTHING ELSE
 
 His note of 2026-09-06, from his fifth run this morning: "when Fulgerite is

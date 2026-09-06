@@ -1,0 +1,9 @@
+v12.07: first ten minutes, the second down no longer sends you to a key that refuses you
+
+The going-down toast always said F gets you up, including the second
+down, when the one self-revive is spent and F answers Self-revive spent.
+With the revive spent the toast says so and names the crawl and the SPACE
+give-up hold. Check 12.07 downs him both ways through the real damage path
+and reads the toast; fails on v12.06.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

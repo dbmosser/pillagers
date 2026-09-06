@@ -2071,7 +2071,7 @@ var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,die
   // save exists, so a player who has never saved had no name at all and the
   // character screen read "undefined" beside his first raid.
   pname:'PILLAGER',
-  log:[],pack:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day',crashes:[]};
+  log:[],pack:0,contracts:[],cfg:null,menuZoom:1.3,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day',crashes:[]};
 var SLOT=(function(){ try{ return localStorage.getItem('salvagerun:activeSlot')||'1'; }catch(e){ return '1'; } })();
 var SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT);
 function storeSet(v){
@@ -2658,9 +2658,11 @@ if((P.cfgv>=9&&P.cfgv<=18)&&P.cfg){
   // v11.95: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE. Everything above
   // runs only when a save exists. A friend on his first launch had none, so
   // the Settings rows were never applied (the wording watcher of v9.74 stayed
-  // unarmed and every reworded sentence shipped since v11.42 was missing until
-  // his second launch), and the menus drew at zoom 1.0 and grew a third larger
-  // the next day. Both are set here, on every load, save or none.
+  // unarmed, so the menus and panels showed none of the reworded sentences
+  // shipped since v11.42 until his second launch; canvas text had them), and
+  // the menus drew at zoom 1.0 and grew a third larger the next day. Both are
+  // set here, on every load, save or none, and the Settings pass runs again at
+  // the end of the boot, where a loader that threw part way cannot skip it.
   if(!P.menuZoom) P.menuZoom=1.3;
   try{ applyGameOpts(); }catch(_ag){}
 }
@@ -11409,9 +11411,9 @@ function togglePauseBox(on){
   // v11.94: A RAID NOTE SURVIVES ESC. The resume button banked the note and
   // ESC, the way out the box's own legend names, did not: it closed the box
   // with the text still sitting in it, unseen by the run report. Every close
-  // of the box over a live raid banks it now; the resume button's own copy of
-  // these lines is gone, and the abandon path keeps its copy because it ends
-  // the raid before it closes the box.
+  // of the box over a live raid banks it now, and the two copies of these
+  // lines the resume and abandon buttons carried are gone: both close the box
+  // before anything ends the raid, so this is the one place that banks.
   if(!on&&G&&!G.over){
     var _rn=document.getElementById('pausenote'), _rt=_rn?_rn.value.trim():'';
     if(_rt){ G.tel.notes.push({t:Math.round(elapsed()),txt:_rt}); _rn.value=''; }
@@ -12588,7 +12590,11 @@ function useMedical(){
   // started above the first one's reach was spent for nothing.
   // What is already on its way counts as health you have (v11.82, HIS NOTE: a
   // heal already running no longer refuses the next one).
-  if(p.hp+(p.healQ||0)>=p.maxhp){
+  // What the queue can DELIVER, not what was poured in: a running heal stops
+  // at its own ceiling (healCap), so a Medkit over two Bandages that end at
+  // 85 is not refused as Already healing.
+  var _reach=Math.min(p.hp+(p.healQ||0),(p.healCap===undefined?p.maxhp:p.healCap));
+  if(_reach>=p.maxhp){
     say((p.healQ>0)?'Already healing.':'Already at full');
     return false;
   }
@@ -12759,7 +12765,7 @@ function findHeal(){
     // so with his ceiling in place it would otherwise reach for a Bandage at 90
     // health, find it useless and report that he has no medical supplies while a
     // Medkit sat in the bag.
-    if(G.player&&G.player.hp+(G.player.healQ||0)>=healCeil(it)) continue;   // v11.97: what is inbound counts
+    if(G.player&&Math.min(G.player.hp+(G.player.healQ||0),(G.player.healCap===undefined?G.player.maxhp:G.player.healCap))>=healCeil(it)) continue;   // v11.97: what is inbound counts, up to what the running heal can deliver
     var amt=it.amt||0,val=ival(G.bag[i]);
     if(amt<bestAmt||(amt===bestAmt&&val<bestVal)){ best=i; bestAmt=amt; bestVal=val; }
   }
@@ -13420,7 +13426,7 @@ function useHot(){
       // v11.97: and the item's own ceiling, counting what is inbound. The
       // generic verb has had this since v9.62; a named Bandage above 85 was
       // spent for nothing while the toast said it was healing you.
-      if(_pp.hp+(_pp.healQ||0)>=healCeil(ait)){ say(ait.name+' will not take you past '+Math.round(healCeil(ait))+'.'); return; }
+      if(Math.min(_pp.hp+(_pp.healQ||0),(_pp.healCap===undefined?_pp.maxhp:_pp.healCap))>=healCeil(ait)){ say(ait.name+' will not take you past '+Math.round(healCeil(ait))+'.'); return; }
       if(_pp.prep){ say('Already applying '+(ITEMS[_pp.prep.key]?ITEMS[_pp.prep.key].name:'something')+'.'); return; }
       G.bag.splice(ix,1); startPrep('heal',s2.itemKey); blip('pick');
       say('Applying '+ait.name+'...');
@@ -18678,7 +18684,8 @@ var _cdone=contractExtract(G.bag,haul);
       // was fixed there; a field-found gun never touches the armoury either.
       var _egp=G.player, _egArm=!!((gone[j]===_egp.wep&&_egp.wepFromArmory)||(gone[j]===_egp.sec&&_egp.secFromArmory));
       var _egFree=!!(G.freeKit&&!_egArm&&gone[j].id===FREEKIT_GUN);
-      if(!_egFree){ _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id); }
+      if(_egFree) continue;   // out of the ledger entirely, as an issued loaner already is: no count, no price, no line
+      _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
       var wi=_egArm?P.weapons.indexOf(gone[j].id):-1;
       if(wi>=0){ P.weapons.splice(wi,1);
         lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }
@@ -23472,7 +23479,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     // at LH(30), under it. It starts below the readout's real bottom, read from
     // the page in CSS pixels and put into this scaled space; LH(30) still holds
     // if the readout is ever shorter than that.
-    by=Math.max(by,Math.ceil((topRightBottom()+8)/_cz));
+    by=Math.max(by,Math.ceil((topRightBottom()+8+((T.notes&&T.notes.length)?LH(20):0))/_cz));   // v11.98: and under the notes-logged line when there is one
     bx=clamp(bx+HOc.dx/_cz,Math.min(W-16-bw,W-(W-4)/_cz),Math.max(W-(W-4)/_cz,W-bw-4/_cz));
     by=clamp(by+HOc.dy/_cz,LH(10),Math.max(LH(10),H/_cz-LH(30)));
 ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
@@ -24130,8 +24137,9 @@ ctx.restore();
   if(T.notes.length){ ctx.save(); ctx.textAlign='right'; ctx.fillStyle='#6b7783';
     // v11.98: BELOW THE CORNER READOUT, not through it. y 26 sat inside the
     // rectangle the v11.78 credits and XP readout now fills, so the line and
-    // the readout printed over each other from the first note he left.
-    var _nly=Math.max(26,Math.ceil(topRightBottom())+LH(16));
+    // the readout printed over each other from the first note he left. The
+    // CONDITIONS panel, which starts under the readout, starts under this too.
+    var _nly=Math.max(26,Math.ceil(topRightBottom())+LH(14));
     ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,_nly); ctx.restore(); }
   ctx.textAlign='left';
   // v8.98: everything below stacks UP FROM THE BELT rather than up from the
@@ -28591,7 +28599,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.06: from the read-only review of the shipped v11.74, the sector map still said OPEN TO EXTRACT under a landed ring, and with the map open that is the only boarding line the player can read. It says EXTRACT NOW with the seconds left, the banner wording. Check 12.06 records what the map draws under a ring in the hold and requires the new words and not the old; fails on v12.05.''s bottom edge; fails on v11.97.''s reach was spent for nothing, and the named belt slot had no ceiling at all. The full-health test comes first, the picker counts what is inbound, and the belt slot has the ceiling. Check 11.97 drives four cases through the real verb; fails on v11.96.',
+  now:'v12.06: from the read-only review of the shipped v11.74, the sector map still said OPEN TO EXTRACT under a landed ring, and with the map open that is the only boarding line the player can read. It says EXTRACT NOW with the seconds left, the banner wording. Check 12.06 records what the map draws under a ring in the hold and requires the new words and not the old; fails on v12.05.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31957,9 +31965,7 @@ document.getElementById('confirmabandon').onclick=function(){
     P.xp=Math.max(0,(P.xp||0)-_rc);
     say('Walked out on the job. XP -'+_rc+'.');
   }
-  var note=document.getElementById('pausenote').value.trim();
-  if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
-  togglePauseBox(false);
+  togglePauseBox(false);   // v11.94: the close banks the note
 this.style.display='none';
   var _ab2=document.getElementById('abandonbtn');
   _ab2.textContent='Abandon run'; _ab2.style.borderColor='var(--rust)'; _ab2.style.color='var(--rust)';
@@ -39677,10 +39683,12 @@ window.__REGRESS=[
        if(!ln) bad.push('control: the notes line was not drawn');
        else if(ln.y<=bottom) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the corner readout that ends at '+Math.round(bottom));
        else if(ln.y>H) bad.push('the notes line is drawn off the canvas at y '+Math.round(ln.y));
+       var C=(typeof HUDBOX!=='undefined')&&HUDBOX.cond;
+       if(ln&&C&&ln.y>C.y&&ln.y<C.y+C.h) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the conditions panel at '+Math.round(C.y)+' to '+Math.round(C.y+C.h));
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.tel.notes=[]; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.97',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound (2026-09-06 audits)',
+  {v:'11.97',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound, while a Medkit over running Bandages is still taken (2026-09-06 audits)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof useMedical!=='function'||typeof healCeil!=='function') return 'SKIP: no heal verb in this build';
@@ -39702,33 +39710,45 @@ window.__REGRESS=[
        if(r2||g.bag.length!==1) bad.push('at full health the verb spent the Medkit');
        if(!/Already at full/.test(s2)) bad.push('at full health with a Medkit the verb said "'+s2+'"');
        // THREE: a Bandage already inbound reaches the ceiling; the second is kept.
-       g.bag=['bandage']; p.hp=cap-20; p.healQ=25; p.prep=null; window.__lastSay=null;
+       g.bag=['bandage']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
        var r3=useMedical();
        if(r3||g.bag.length!==1) bad.push('a second Bandage was spent although the first already reaches '+cap+' (bag now '+g.bag.join(',')+')');
+       // FIVE: a Medkit over running Bandages is still taken; the queue delivers only to their ceiling.
+       g.bag=['medkit']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
+       var r5=useMedical();
+       if(!r5||g.bag.length!==0) bad.push('a Medkit over running Bandages was refused ("'+String(window.__lastSay||'')+'")');
+       p.healQ=0; p.healCap=undefined; p.prep=null;
        // CONTROL: a Bandage under the ceiling with nothing inbound is used.
        g.bag=['bandage']; p.hp=cap-30; p.healQ=0; p.prep=null; window.__lastSay=null;
        var r4=useMedical();
        if(!r4||g.bag.length!==0) bad.push('control: a Bandage at '+(cap-30)+' health was refused ("'+String(window.__lastSay||'')+'")');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.prep=null; g2.player.healQ=0; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.prep=null; g2.player.healQ=0; g2.player.healCap=undefined; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.96',what:'dying with the free kit does not delete the Scav Pistol you own, and the loaner is not counted as a gun you lost (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     var bad=[], P2=__P(), keepW=(P2.weapons||[]).slice(), keepEq=P2.equipped, keepFree=P2.freeKit, keepKit=(P2.kit||[]).slice(), keepChosen=P2.kitChosen;
+     if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P&&typeof commitKit==='function')) return 'SKIP: this fixture cannot start a raid';
+     var bad=[], P2=__P(), keepW=(P2.weapons||[]).slice(), keepEq=P2.equipped, keepFree=P2.freeKit, keepKit=(P2.kit||[]).slice(), keepChosen=P2.kitChosen, keepStash=(P2.stash||[]).slice(), keepSafe=P2.safe, keepKBF=P2.kitBeforeFree;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       P2.weapons=['pistol']; P2.equipped='fists'; P2.freeKit=1; P2.kit=[]; P2.kitChosen=1; saveProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       // Not __deploy: it clears the free kit flag before it builds the raid. The
+       // route the lift takes: the free kit chosen, commitKit stamps it, startRaid reads it.
+       P2.stash=[]; P2.kit=[]; P2.safe=null; P2.weapons=['pistol']; P2.equipped='fists'; P2.freeKit=1; P2.kitChosen=0; saveProfile();
+       commitKit(); __startRaid({mapIx:0,seed:4242});
        var g=__state(), p=g.player;
-       if(!g.freeKit) return 'SKIP: the deploy did not take the free kit';
+       if(!g||!g.freeKit) bad.push('control: the raid did not take the free kit');
        if(!p.wep||p.wep.id!=='pistol') bad.push('control: the free kit did not issue a Scav Pistol (holding '+(p.wep&&p.wep.id)+')');
        p.downed=false; __endRaid('dead');
        if(P2.weapons.indexOf('pistol')<0) bad.push('dying with the free kit deleted the Scav Pistol you own');
        var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+       if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: the card did not open on the death');
        if(/and 1 gun/.test(txt)) bad.push('the card counts the loaner as a gun you lost');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ P2.weapons=keepW; P2.equipped=keepEq; P2.freeKit=keepFree; P2.kit=keepKit; P2.kitChosen=keepChosen; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       P2.weapons=keepW; P2.equipped=keepEq; P2.freeKit=keepFree; P2.kit=keepKit; P2.kitChosen=keepChosen; P2.stash=keepStash; P2.safe=keepSafe; P2.kitBeforeFree=keepKBF;
+       try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'11.95',what:'a load with no save sets the menu zoom to 1.3 and runs the Settings pass that arms the wording watcher, the same as a load with a save (2026-09-06 first-ten-minutes audit)',
    run:function(){
@@ -39784,9 +39804,15 @@ window.__REGRESS=[
        __topClear(); __runPrep();
        t.classList.add('on');
        pin.value='KESTREL 4242'; try{ pin.focus(); }catch(_f){}
+       var focused=(document.activeElement===pin);   // a hidden pane may refuse focus; the blur is measured only when it took
        pin.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));
        if(P2.pname!=='KESTREL 4242') bad.push('ENTER in the box left the name as '+P2.pname);
        if(!t.classList.contains('on')) bad.push('control: ENTER in the box started the game');
+       if(focused&&document.activeElement===pin) bad.push('ENTER committed the name but did not leave the box');
+       // A SECOND ENTER, with the box left, starts the game.
+       t.classList.add('on');
+       window.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));
+       if(t.classList.contains('on')) bad.push('a second ENTER after leaving the box did not start the game');
        t.classList.add('on');
        pin.value='MERLIN 4242';
        st.click();
@@ -39804,9 +39830,11 @@ window.__REGRESS=[
   {v:'11.92',what:'the NEW IN card greets only a player with runs behind him, and for him it fits the screen with its heading and its dismiss line both on the canvas (2026-09-06 first-ten-minutes audit)',
    run:function(){
      if(!(window.__wnseen&&window.__hubEnter&&window.__hubFrame&&window.__forceSize&&window.__showScreen)) return 'SKIP: this fixture cannot drive the floor card';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
      var bad=[], P2=__P(), keepRuns=P2.runs, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
      try{
        __topClear(); __runPrep(); __forceSize(1920,1080);
+       if(!(H>400)) return 'SKIP: the canvas came back '+W+'x'+H+', too small to measure the card';
        G=null; keys={}; __showScreen('hub'); __hubEnter();
        proto.fillText=function(t,x,y){ rec.push({t:String(t),y:y}); return o.apply(this,arguments); };
        // ARM ONE: a profile with no runs never sees the card and stamps itself current.
@@ -39821,7 +39849,7 @@ window.__REGRESS=[
        for(var i=0;i<rec.length;i++){
          if(!hd&&rec[i].t.indexOf('NEW IN v')===0) hd=rec[i];
          if(!dm&&/press ENTER or walk to dismiss/.test(rec[i].t)) dm=rec[i];
-         if(/^1\. /.test(rec[i].t)) first++;
+         if(/^2\. /.test(rec[i].t)) first++;   // the second row: the first is the pinned ALPHA notice, which the cut always keeps
        }
        if(!hd) bad.push('control: a returning player was not shown the card');
        else if(hd.y<0||hd.y>H) bad.push('the heading is drawn at y '+Math.round(hd.y)+' on a canvas '+H+' tall');
@@ -51994,6 +52022,7 @@ loadProfile().then(function(){
   // screen but nothing calls applyMenuZoom at boot, so it stayed at zoom 1 until
   // something else happened to trigger it. The profile exists by here, which is
   // the whole reason this block is at the bottom of the load.
+  try{ applyGameOpts(); }catch(_ag2){}   // v11.95: once more here, where a loader that threw part way cannot skip it
   try{ applyMenuZoom(); }catch(_am){}
   ensureContracts();
   saveProfile();

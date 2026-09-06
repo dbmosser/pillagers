@@ -10,7 +10,7 @@ $end = $s.IndexOf('**THE QUEUE, ALL DRAFTED')
 if ($start -lt 0 -or $end -lt 0 -or $end -le $start) { throw 'STATE block anchors not found' }
 $nl = if ($s.IndexOf("`r`n") -ge 0) { "`r`n" } else { "`n" }
 $block = '**STATE (kept current by fixstate.ps1):** HEAD is v' + $HeadV + ' (' + $HeadSha + '). The tree has **v' + $FlightV + ' APPLIED** and' + $nl +
-  'verified on all four gates; its FULL CORPUS is running on the Browser pane tab "seed".' + $nl +
+  'verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-2" (the tab named seed hung on 2026-09-06 12:40 and was closed).' + $nl +
   'When `window.__PROG` is finished, pass true, fail [] and only the two known skips' + $nl +
   '(v8.88, v11.24):' + $nl +
   '    bash tools/handoff/ship.sh commit ' + $FlightN + ' cm' + $FlightN + '.txt' + $nl +

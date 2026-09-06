@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.89';
+var VER='11.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.89';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.89';
+var WHATSNEW_VER='11.90';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK: with the backpack open, drag it off its slot and drop it in.',
   'A LIGHTNING STRIKE THAT MISSES YOU SOMETIMES FUSES THE GROUND. What it leaves is FULGURITE, worth 2,500, and nothing else.',
   'THE RAID CONDITIONS PANEL NO LONGER PRINTS "left to be gone" OR "nothing killed yet", on his order; those two contracts still stand at the Mainframe.',
   'A HELPED SURVIVOR WALKS TO THE NEAREST OPEN EXTRACTION on his own and leaves when he reaches it, instead of following you.',
@@ -10783,7 +10784,7 @@ cv.addEventListener('mousedown',function(e){
   // drawBag painted this frame.
   if(e.button===0&&G&&!G.over&&G.bagOpen&&G.bagPanel&&inRect(G.bagPanel,mouse.x,mouse.y)) return;
   // BELT CELLS CLAIM THE CLICK TOO, v7.21. Select on press; assignable items arm the
-  // same drag the bag uses. Guns select only.
+  // same drag the bag uses. Guns select only while the backpack is closed (v11.90).
   if(e.button===0&&G&&!G.over&&G.hotCells){
     for(var _hd=0;_hd<G.hotCells.length;_hd++){
       var _HC2=G.hotCells[_hd];
@@ -10796,6 +10797,13 @@ cv.addEventListener('mousedown',function(e){
         setHot(_HC2.i);
         if(_hs2&&_hs2.kind!=='gun'&&_hs2.itemKey){
           G.drag={key:_hs2.itemKey,fromHot:_HC2.i};
+          blip('pick');
+        }
+        // v11.90, HIS NOTE: "GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY
+        // ITEM". With the backpack open, the gun in a hand cell can be picked
+        // up and dropped into the bag. Closed, a click still only selects.
+        else if(_hs2&&_hs2.kind==='gun'&&(_hs2.k==='gunA'||_hs2.k==='gunB')&&!_hs2.vacant&&G.bagOpen&&_hs2.icon&&_hs2.icon!=='fists'){
+          G.drag={key:'gun_'+_hs2.icon,gunSlot:_hs2.k,fromHot:_HC2.i};
           blip('pick');
         }
         return;
@@ -10884,13 +10892,19 @@ window.addEventListener('mouseup',function(e){
   if(e.button===0&&G&&G.drag){
     var d=G.drag; G.drag=null;
     var dropped=false;
+    // v11.90, HIS NOTE: a gun dragged off a hand cell. Released over the open
+    // backpack it goes in; released anywhere else it stays where it was.
+    if(d.gunSlot){
+      if(G.bagOpen&&G.bagPanel&&inRect(G.bagPanel,mouse.x,mouse.y)) bagHeldGun(d.gunSlot);
+      d={key:null}; dropped=true;
+    }
     // v9.31: did the release land on a belt cell at all? `dropped` cannot answer
     // that, because handing an item to a merc sets it too and that one is meant to
     // come off the belt. Every belt outcome - assign, move, refuse, and the
     // put-it-back-where-it-came-from click - already writes the bar correctly by
     // itself and must not be second guessed below.
     var _onBelt=false;
-    if(G.hotCells) for(var hc=0;hc<G.hotCells.length;hc++){
+    if(G.hotCells&&d.key) for(var hc=0;hc<G.hotCells.length;hc++){
       var HC=G.hotCells[hc];
       if(mouse.x>=HC.x&&mouse.x<=HC.x+HC.w&&mouse.y>=HC.y&&mouse.y<=HC.y+HC.h){
         _onBelt=true;
@@ -12925,6 +12939,32 @@ function tickRegen(dt){
 // The slots are FIXED now. Slot one is always the gun you deployed with and
 // slot two is always the other one, whichever happens to be in your hands, and
 // pressing a number puts that specific gun up. `swapped` is the only new state.
+// v11.90, HIS NOTE: a gun in your hands goes back into the backpack like any
+// other item. slot is the derived cell it was dragged from; gunA is the gun you
+// deployed with and gunB the other one, mapped through p.swapped the way
+// hotbarSlots maps them. The gun in hand is always p.wep; if that is the one
+// bagged, the other gun comes up and keeps its own numbered slot.
+function bagHeldGun(slot){
+  var p=G&&G.player; if(!p||p.downed||G.over) return false;
+  var sw=!!p.swapped;
+  var isHand=(slot==='gunA')?!sw:sw;
+  var g=isHand?p.wep:p.sec, issued=isHand?p.wepIssued:p.secIssued, arm=isHand?p.wepFromArmory:p.secFromArmory;
+  if(!g||g.id==='fists'||g.mag===0){ say('Nothing there to bag.'); return false; }
+  if(issued){ say(g.name+' is issued kit; it stays in your hands.'); return false; }
+  if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in a bag.'); return false; }
+  G.bag.push('gun_'+g.id);
+  if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); } }
+  if(isHand){
+    p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0;
+    p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
+    if(p.wep&&p.wep.id!=='fists') p.swapped=!sw;   // the gun that came up keeps its numbered slot; nothing came up, nothing flips
+  } else {
+    p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
+  }
+  G.tel.weapon=p.wep.name;
+  say(g.name+' into the backpack.'); blip('pick');
+  return true;
+}
 function swapGuns(){
   var pp=G&&G.player;
   if(!pp||!pp.sec||pp.downed||pp.roll>0||G.over||G.paused) return false;
@@ -28442,7 +28482,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.89: HIS NOTE of 2026-09-06, the scorched cache a strike leaves should hold only Fulgurite, worth about 2500 salvage. New item fulgurite (val 2500, elite); the strike cache holds it and nothing else; the seeded draws are kept so the stream is unchanged. Check 11.89 forces a strike to miss and leave a cache and requires its loot to be exactly one Fulgurite worth 2500; fails on v11.88 where the cache holds a core or a Warden Core.',
+  now:'v11.90: HIS NOTE of 2026-09-06, guns should function like every other inventory item; a gun in his hands could not be put back in the backpack because the two gun cells were select-only. With the backpack open a press on a gun cell starts a drag and a release over the bag calls bagHeldGun, which puts the gun in the bag (issued kit refused, an armoury gun spliced and recorded as v8.32 does) and brings the other gun or bare hands up, keeping its numbered slot. Check 11.90 opens the bag, presses on slot 1 through the real canvas mousedown, releases over the bag panel through the real window mouseup, and requires the gun in the bag and bare hands up; fails on v11.89.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

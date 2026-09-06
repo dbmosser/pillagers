@@ -5967,10 +5967,12 @@ window.__REGRESS=[
        if(!ln) bad.push('control: the notes line was not drawn');
        else if(ln.y<=bottom) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the corner readout that ends at '+Math.round(bottom));
        else if(ln.y>H) bad.push('the notes line is drawn off the canvas at y '+Math.round(ln.y));
+       var C=(typeof HUDBOX!=='undefined')&&HUDBOX.cond;
+       if(ln&&C&&ln.y>C.y&&ln.y<C.y+C.h) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the conditions panel at '+Math.round(C.y)+' to '+Math.round(C.y+C.h));
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.tel.notes=[]; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.97',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound (2026-09-06 audits)',
+  {v:'11.97',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound, while a Medkit over running Bandages is still taken (2026-09-06 audits)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof useMedical!=='function'||typeof healCeil!=='function') return 'SKIP: no heal verb in this build';
@@ -5992,33 +5994,45 @@ window.__REGRESS=[
        if(r2||g.bag.length!==1) bad.push('at full health the verb spent the Medkit');
        if(!/Already at full/.test(s2)) bad.push('at full health with a Medkit the verb said "'+s2+'"');
        // THREE: a Bandage already inbound reaches the ceiling; the second is kept.
-       g.bag=['bandage']; p.hp=cap-20; p.healQ=25; p.prep=null; window.__lastSay=null;
+       g.bag=['bandage']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
        var r3=useMedical();
        if(r3||g.bag.length!==1) bad.push('a second Bandage was spent although the first already reaches '+cap+' (bag now '+g.bag.join(',')+')');
+       // FIVE: a Medkit over running Bandages is still taken; the queue delivers only to their ceiling.
+       g.bag=['medkit']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
+       var r5=useMedical();
+       if(!r5||g.bag.length!==0) bad.push('a Medkit over running Bandages was refused ("'+String(window.__lastSay||'')+'")');
+       p.healQ=0; p.healCap=undefined; p.prep=null;
        // CONTROL: a Bandage under the ceiling with nothing inbound is used.
        g.bag=['bandage']; p.hp=cap-30; p.healQ=0; p.prep=null; window.__lastSay=null;
        var r4=useMedical();
        if(!r4||g.bag.length!==0) bad.push('control: a Bandage at '+(cap-30)+' health was refused ("'+String(window.__lastSay||'')+'")');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.prep=null; g2.player.healQ=0; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.prep=null; g2.player.healQ=0; g2.player.healCap=undefined; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.96',what:'dying with the free kit does not delete the Scav Pistol you own, and the loaner is not counted as a gun you lost (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     var bad=[], P2=__P(), keepW=(P2.weapons||[]).slice(), keepEq=P2.equipped, keepFree=P2.freeKit, keepKit=(P2.kit||[]).slice(), keepChosen=P2.kitChosen;
+     if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P&&typeof commitKit==='function')) return 'SKIP: this fixture cannot start a raid';
+     var bad=[], P2=__P(), keepW=(P2.weapons||[]).slice(), keepEq=P2.equipped, keepFree=P2.freeKit, keepKit=(P2.kit||[]).slice(), keepChosen=P2.kitChosen, keepStash=(P2.stash||[]).slice(), keepSafe=P2.safe, keepKBF=P2.kitBeforeFree;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       P2.weapons=['pistol']; P2.equipped='fists'; P2.freeKit=1; P2.kit=[]; P2.kitChosen=1; saveProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       // Not __deploy: it clears the free kit flag before it builds the raid. The
+       // route the lift takes: the free kit chosen, commitKit stamps it, startRaid reads it.
+       P2.stash=[]; P2.kit=[]; P2.safe=null; P2.weapons=['pistol']; P2.equipped='fists'; P2.freeKit=1; P2.kitChosen=0; saveProfile();
+       commitKit(); __startRaid({mapIx:0,seed:4242});
        var g=__state(), p=g.player;
-       if(!g.freeKit) return 'SKIP: the deploy did not take the free kit';
+       if(!g||!g.freeKit) bad.push('control: the raid did not take the free kit');
        if(!p.wep||p.wep.id!=='pistol') bad.push('control: the free kit did not issue a Scav Pistol (holding '+(p.wep&&p.wep.id)+')');
        p.downed=false; __endRaid('dead');
        if(P2.weapons.indexOf('pistol')<0) bad.push('dying with the free kit deleted the Scav Pistol you own');
        var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+       if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: the card did not open on the death');
        if(/and 1 gun/.test(txt)) bad.push('the card counts the loaner as a gun you lost');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ P2.weapons=keepW; P2.equipped=keepEq; P2.freeKit=keepFree; P2.kit=keepKit; P2.kitChosen=keepChosen; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       P2.weapons=keepW; P2.equipped=keepEq; P2.freeKit=keepFree; P2.kit=keepKit; P2.kitChosen=keepChosen; P2.stash=keepStash; P2.safe=keepSafe; P2.kitBeforeFree=keepKBF;
+       try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'11.95',what:'a load with no save sets the menu zoom to 1.3 and runs the Settings pass that arms the wording watcher, the same as a load with a save (2026-09-06 first-ten-minutes audit)',
    run:function(){
@@ -6074,9 +6088,15 @@ window.__REGRESS=[
        __topClear(); __runPrep();
        t.classList.add('on');
        pin.value='KESTREL 4242'; try{ pin.focus(); }catch(_f){}
+       var focused=(document.activeElement===pin);   // a hidden pane may refuse focus; the blur is measured only when it took
        pin.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));
        if(P2.pname!=='KESTREL 4242') bad.push('ENTER in the box left the name as '+P2.pname);
        if(!t.classList.contains('on')) bad.push('control: ENTER in the box started the game');
+       if(focused&&document.activeElement===pin) bad.push('ENTER committed the name but did not leave the box');
+       // A SECOND ENTER, with the box left, starts the game.
+       t.classList.add('on');
+       window.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));
+       if(t.classList.contains('on')) bad.push('a second ENTER after leaving the box did not start the game');
        t.classList.add('on');
        pin.value='MERLIN 4242';
        st.click();
@@ -6094,9 +6114,11 @@ window.__REGRESS=[
   {v:'11.92',what:'the NEW IN card greets only a player with runs behind him, and for him it fits the screen with its heading and its dismiss line both on the canvas (2026-09-06 first-ten-minutes audit)',
    run:function(){
      if(!(window.__wnseen&&window.__hubEnter&&window.__hubFrame&&window.__forceSize&&window.__showScreen)) return 'SKIP: this fixture cannot drive the floor card';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
      var bad=[], P2=__P(), keepRuns=P2.runs, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
      try{
        __topClear(); __runPrep(); __forceSize(1920,1080);
+       if(!(H>400)) return 'SKIP: the canvas came back '+W+'x'+H+', too small to measure the card';
        G=null; keys={}; __showScreen('hub'); __hubEnter();
        proto.fillText=function(t,x,y){ rec.push({t:String(t),y:y}); return o.apply(this,arguments); };
        // ARM ONE: a profile with no runs never sees the card and stamps itself current.
@@ -6111,7 +6133,7 @@ window.__REGRESS=[
        for(var i=0;i<rec.length;i++){
          if(!hd&&rec[i].t.indexOf('NEW IN v')===0) hd=rec[i];
          if(!dm&&/press ENTER or walk to dismiss/.test(rec[i].t)) dm=rec[i];
-         if(/^1\. /.test(rec[i].t)) first++;
+         if(/^2\. /.test(rec[i].t)) first++;   // the second row: the first is the pinned ALPHA notice, which the cut always keeps
        }
        if(!hd) bad.push('control: a returning player was not shown the card');
        else if(hd.y<0||hd.y>H) bad.push('the heading is drawn at y '+Math.round(hd.y)+' on a canvas '+H+' tall');
