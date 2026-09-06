@@ -40024,6 +40024,30 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.67 - THE RESTORE CODE WAS BLANK FOR ANY NAME ABOVE U+00FF
+
+From the v11.46 read-only audit, P1. The restore code is the character as
+JSON, run through the browser's base64 encoder, which takes Latin-1 only. A
+name with an emoji, a CJK character or a curly quote made that encoder throw;
+the catch around it returned an empty string, and the run report carried a
+blank restore code for exactly the friend most likely to have typed such a
+name. The name box accepts any sixteen characters and says nothing.
+
+THE FIX. The JSON is encoded as UTF-8 before base64, so every name makes a
+code. The reader tries the UTF-8 read first and falls back to the plain read
+when the bytes are not UTF-8, so every code written before this build still
+reads as it did.
+
+MEASURED. Check 11.67 names the character with a curly apostrophe and an
+emoji, built from code points so the check file stays ASCII, makes a code,
+and requires the code to exist and to read back the same name. Two controls:
+a code written the old way, plain base64 of ASCII JSON, still reads; and a
+plain ASCII name still round-trips. On the v11.66 fixture the fancy name
+makes no code and the check fails saying so.
+
+Not verified: his own play; a Latin-1 name from an older code whose bytes
+happen to form valid UTF-8, which would read differently (two accented
+characters in a row in exactly the right order; not a name anyone has used).
 ## v11.66 - THE RESTORE CODE LEFT THE ARMOURY BEHIND
 
 From the v11.46 read-only audit, P1. Since v11.03 every run report ends with

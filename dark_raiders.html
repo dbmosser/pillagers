@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.66';
+var VER='11.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.66';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.66';
+var WHATSNEW_VER='11.67';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A NAME WITH AN EMOJI OR A CURLY QUOTE GETS A RESTORE CODE. Before this the code at the bottom of the run report came out blank for any such name, and the friend it belonged to could not be restored. Old codes still read.',
   'YOUR RESTORE CODE NOW CARRIES YOUR GUNS. The code at the bottom of every run report promised what you had unlocked and left the armoury out: restored from it, you came back with a Scav Pistol. It carries every gun you own, the one in hand, the second slot and their wear now. Copy a fresh one.',
   'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
   'SAVING A MAN YOU SHOT NO LONGER PINS HIS LATER DEATH ON YOU. If you downed a pillager, then picked him up, and a crawler killed him later, the game still called it your kill: a contract tick, a grudge, the lot. Once you have saved him, only you can make his death yours again.',
@@ -28255,7 +28256,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.66: the restore code left the armoury behind. restoreMake carried credits, XP, stash, cosmetics and junk and not one gun, while the card promised what you have unlocked and the panel said REPLACES; a friend restored from it came back with the fresh Scav Pistol. The code carries guns owned, the one in hand, the second slot and the wear on each now, applying it brings them back with unknown guns dropped, and an older code without the block leaves the guns as they are. From the v11.46 audit, P1.',
+  now:'v11.67: the restore code was blank for any name above U+00FF. btoa takes Latin-1 only, so an emoji, a CJK character or a curly quote in the name made it throw and the catch returned an empty code, while the name box accepts any sixteen characters. The code is UTF-8 through btoa now and the reader tries the UTF-8 read first and falls back to the plain read, so every code written before this build still reads. From the v11.46 audit, P1.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30394,7 +30395,8 @@ function restoreMake(){
   return o;
 }
 function restoreCode(){
-  try{ return 'PIL1'+btoa(JSON.stringify(restoreMake())).replace(/=+$/,''); }
+  // v11.67: UTF-8 through btoa, so a name above U+00FF makes a code at all.
+  try{ return 'PIL1'+btoa(unescape(encodeURIComponent(JSON.stringify(restoreMake())))).replace(/=+$/,''); }
   catch(e){ return ''; }
 }
 // The other direction, written in the same build as the maker so the two can
@@ -30407,7 +30409,11 @@ function restoreRead(code){
     if(b.slice(0,4)!=='PIL1') return null;
     b=b.slice(4);
     while(b.length%4) b+='=';
-    var o=JSON.parse(atob(b));
+    var raw=atob(b), js;
+    // v11.67: the code is UTF-8 from this build on; an older one is plain
+    // Latin-1 and reads as itself when the UTF-8 read refuses it.
+    try{ js=decodeURIComponent(escape(raw)); }catch(_u){ js=raw; }
+    var o=JSON.parse(js);
     if(!o||typeof o.c!=='number'||typeof o.n!=='string') return null;
     return o;
   }catch(e){ return null; }
