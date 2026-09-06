@@ -40024,6 +40024,34 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.15 - THE SAFE POCKET REFUSES WHAT IT CANNOT BRING HOME
+
+From the 2026-09-06 read-only menu audit, raised independently by two of
+its regions.
+
+WHAT IT WAS. The safe pocket names one item that comes home if you die.
+Since v5.32 the general safe slots have been zero for everyone, so the
+named pocket is the only death protection in the game. The pocket refused a
+gun and accepted anything else, and "anything else" included a Frag Charge,
+a Smoke, a Decoy and an Ammo Box; but grenades ride in the pouch and
+ammunition in the reserve, not in the backpack, and the death path banks
+the backpack only. So a player who named his grenade saw 1/1 on the ascent
+screen, went up covered, and died with his only protection spent on
+nothing, for that raid and every raid after until he happened to change it.
+
+THE FIX. The pocket refuses a throwable and an ammo box the way it refuses
+a gun, and says why in the same sentence; and a profile already saved on
+one is cleared on load, so the ascent screen stops saying 1/1 for it.
+
+MEASURED. Check 12.15 offers the real pocket a Frag Charge and an Ammo Box
+and requires a refusal and no save, offers it a Medkit and requires it
+taken, then drives the real loader with a profile saved on a Frag Charge
+and requires the pocket empty, and with one saved on a Medkit and requires
+it kept. On the v12.14 fixture the grenade and the box are taken silently
+and the saved grenade survives the load.
+
+Not verified: the death path itself, which is unchanged; the Stash screen's
+pocket cell after a refusal, which repaints as before.
 ## v12.14 - FIRST TEN MINUTES: THE CONTROLS CARD STOPS TEACHING A DEAD KEY
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.
