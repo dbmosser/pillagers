@@ -1,12 +1,13 @@
-v11.62: with pillagers off, the extraction-heat row read CUSTOM
+v11.62: a pillager you downed and then saved was still your kill
 
-Other pillagers: None turns the waves off and gets the last word, but the
-heat row's Heavy and Standard still carried the waves dial, so nothing matched
-and the row showed CUSTOM in amber for a setting he never touched. The waves
-dial lives on the pillager row now, on every option, and the heat row carries
-the ring alone; every combination lands on the same numbers as before, and
-leaving None for Standard with the heat on Light brings the waves back, which
-nothing did before. Check 11.62 drives None and Standard and reads both rows;
-fails on v11.61. From the v11.46 audit, P2.
+The downing shot stamps byPlayer, the one door for a kill to be credited to
+you. Reviving him with E stood him up, cleared hostile and grudge and made him
+friendly, and never cleared byPlayer; a crawler bite writes none. So when a
+crawler downed the man you saved and he bled out, the stale flag gave you the
+kill, ticked a kill contract, and wrote a permanent -2 grudge on his crew. The
+revive now clears byPlayer with the rest; his next death is yours only if you
+down him again. Check 11.62 lays a marked pillager down within reach, holds E
+through one step, controls that the revive happened and requires the flag
+clear; fails on v11.61. From the v11.46 audit, P1.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

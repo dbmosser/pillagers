@@ -1,0 +1,23 @@
+## v11.69 - [+] ON A COLLAPSED PILLAGER BOARD STARTED AN INVISIBLE RESIZE
+
+From the v11.46 read-only audit, P2. A HUD panel folds to one line with its
+[-] glyph, which becomes [+]. The resize grip (v8.93) is tested first on
+mousedown because it is the smallest target on the panel; the cursor code and
+the grip draw both skip collapsed panels, and mousedown did not. A collapsed
+CURRENT PILLAGERS board is shorter than the grip zone, so the grip covered the
+whole [+] glyph: the pointer promised a click, the click began a resize nobody
+could see, and the board never expanded. mouseup ended the resize, the board
+stayed folded, and the glyph looked dead.
+
+THE FIX. mousedown skips the grip on a collapsed panel, the same rule the
+cursor and the grip draw already follow, so the [+] click reaches the toggle.
+
+MEASURED. Check 11.69 deploys, folds the pillager board, draws two frames so
+the folded box is measured, confirms the glyph centre sits inside the grip
+zone (or skips, since the clash cannot be driven), presses at the glyph
+centre, and requires no resize started and the board unfolded. On the v11.68
+fixture the press starts a resize of the board and it stays folded, and the
+check fails naming both.
+
+Not verified: his own play; the other four panels, which follow the same
+line of code and are not folded and pressed here.

@@ -11,46 +11,29 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.54 HOOK: the identity ids a merc can be hired as, so a check can hire one.
+# v11.54 CHECK, inserted before the v11.53 entry. The words are read off the
+# function the badge draws from, and a control proves the draw reads it. The
+# old phrase is assembled so this check never matches its own text.
 SubRx @'
-window.__loadProfile=function(){ return loadProfile(); };
+  {v:'11.53',what:'holding Shift with movement while crouched leaves the crouch and sprints, a roll leaves the crouch, and walking without Shift keeps it (his notes of 2026-09-05)',
 '@ @'
-window.__loadProfile=function(){ return loadProfile(); };
-window.__identityIds=function(){ var o=[]; try{ for(var i=0;i<IDENTITIES.length;i++) o.push(IDENTITIES[i].id); }catch(e){} return o; };
-'@
-
-# v11.54 CHECK, inserted before the v11.53 entry.
-SubRx @'
-  {v:'11.53',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
-'@ @'
-  {v:'11.54',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+  {v:'11.54',what:'an extraction point badge names one of his four states in his words (sound the alarm to begin countdown; N s until extraction begins; extract now, N s until it ends; closed for the remainder of this raid) with the live seconds, and the HUD draws that badge',
    run:function(){
-     if(!(window.__identityIds&&window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot hire a merc and end a raid';
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var ids=window.__identityIds(); if(!ids.length) return 'SKIP: no identities to hire';
-     var P=window.__P(), bad=[];
-     P.merc=ids[0]; P.credits=1000;
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(), M=null, i;
-     for(i=0;i<g.ents.length;i++){ if(g.ents[i].merc){ M=g.ents[i]; break; } }
-     if(!M){ __cleanProfile(); return 'SKIP: the hired merc did not spawn'; }
-     var row=null; for(i=0;i<(g.roster||[]).length;i++){ if(g.roster[i].ref===M){ row=g.roster[i]; break; } }
-     // THE FIX: he is on the roster at all.
-     if(!row) bad.push('the hired merc has no roster row, so boarding cannot stamp his haul and endRaid cannot pay your cut');
-     else {
-       // He fled low and boarded an earlier ship: the boarding code stamps the
-       // row and removes him from the world. Then you extract.
-       row.out=true; row.outAt=0; row.val=1234;
-       var ix=g.ents.indexOf(M); if(ix>=0) g.ents.splice(ix,1);
-       var c0=P.credits;
-       try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
-       var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
-       if(!/extracted earlier/i.test(txt)) bad.push('the card did not say he extracted earlier (it says: '+txt.replace(/\s+/g,' ').slice(0,90)+')');
-       if(!(P.credits-c0>=123)) bad.push('your ten percent of his 1,234 was not paid (credits moved '+(P.credits-c0)+')');
-     }
-     __topClear(); __cleanProfile();
+     if(typeof zoneBadge!=='function') return 'the extraction point badge still says OPEN or CLOSED; there is no state function to read';
+     if(typeof drawHUD!=='function') return 'SKIP: no HUD draw in this build';
+     var bad=[], oldWord=['EXTRACTION',' - OPEN'].join('');
+     function want(z,exp,what){ var got=String(zoneBadge(z)); if(got!==exp) bad.push(what+' reads "'+got+'" and not "'+exp+'"'); }
+     want({open:false,beaconT:null,hold:null},'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID','a closed point');
+     want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','an open point nobody has called');
+     want({open:true,beaconT:17.2,hold:null},'EXTRACTION POINT - 18S UNTIL EXTRACTION BEGINS','a called point with the beacon inbound');
+     want({open:true,beaconT:0,hold:11.4},'EXTRACTION POINT - EXTRACT NOW! 12S UNTIL EXTRACTION ENDS','a landed point in its hold window');
+     want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','a point the extraction has left');
+     // CONTROL: the HUD draw reads the function, or the words above are never on screen.
+     var src=''; try{ src=drawHUD.toString(); }catch(_s){}
+     if(src.indexOf('zoneBadge(')<0) bad.push('control: the HUD draw does not read zoneBadge, so the badge on screen is not these words');
+     if(src.indexOf(oldWord)>=0) bad.push('control: the HUD draw still carries the old '+oldWord+' badge');
      return bad.length?bad.join('; '):null; }},
-  {v:'11.53',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
+  {v:'11.53',what:'holding Shift with movement while crouched leaves the crouch and sprints, a roll leaves the crouch, and walking without Shift keeps it (his notes of 2026-09-05)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

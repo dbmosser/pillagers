@@ -11,32 +11,62 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# A MERC WHO BOARDED AN EARLIER SHIP WAS NEVER PAID. endRaid settles the merc's
-# ten percent by looking for his ROSTER row (v8.46: "the roster remembers the
-# man and what he carried out"), and the boarding code stamps out and val onto
-# the roster row whose ref is the boarding entity. But only ordinary raiders
-# were ever pushed to the roster; the hired merc went to ents alone. So when he
-# fled low and boarded before you, no row was there to stamp or to find, and the
-# card said "was left out there": no cut, no standing. He gets a row now, and
-# the pillager board skips it so your hire is not listed as a rival.
+# HIS NOTE, 2026-09-05 in-run at 53 s of his second run: "'EXTRACTION - OPEN'
+# IS CONFUSING... POSSIBLE STATES FOR AN EXTRACTION POINT SHOULD INSTEAD BE"
+# and his four lines. The ring badge said OPEN for three different situations
+# (nothing called yet, called and inbound, landed and waiting) and CLOSED with
+# a whisper under it. It says which of his four states the ring is in now, in
+# his words, with the live seconds where he wrote 30S. One function owns the
+# words so the badge can never disagree with the clock.
+
+# 1. THE FOUR STATES, in one place, before the HUD draw.
 SubRx @'
-      M2.merc=1; M2.hostile=false; M2.grudge=false; M2.friendly=1;
-      ents.push(M2);
+function drawHUD(){
+  var p=G.player,T=G.tel,i;
 '@ @'
-      M2.merc=1; M2.hostile=false; M2.grudge=false; M2.friendly=1;
-      ents.push(M2);
-      // v11.54: a roster row, so boarding stamps his haul and endRaid can pay
-      // his cut when he went up before you. The board skips merc rows.
-      roster.push({ref:M2,name:M2.name,crew:M2.crew,val:0,out:false,merc:1});
+// v11.54, HIS NOTE: the four states of an extraction point, in his words.
+// Nothing called yet; called and inbound (the beacon clock); landed and open
+// for the hold window (the ship clock); closed for the raid.
+function zoneBadge(z){
+  if(!z.open) return 'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID';
+  if(z.beaconT===null||z.beaconT===undefined) return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
+  if(z.beaconT>0) return 'EXTRACTION POINT - '+Math.max(0,Math.ceil(z.beaconT))+'S UNTIL EXTRACTION BEGINS';
+  if(z.hold!==null&&z.hold!==undefined) return 'EXTRACTION POINT - EXTRACT NOW! '+Math.max(0,Math.ceil(z.hold))+'S UNTIL EXTRACTION ENDS';
+  return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
+}
+function drawHUD(){
+  var p=G.player,T=G.tel,i;
 '@
 
+# 2. THE BADGE READS IT. The closed whisper is folded into his CLOSED line.
 SubRx @'
-  for(i=0;i<R.length;i++){
-    var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
+    var zlab=za?'EXTRACTION - OPEN':'EXTRACTION - CLOSED';
+    ctx.font=FS(TYPE.label);
+    var zwid=ctx.measureText(zlab).width;
+    // v10.90, HIS NOTE: this is the label in his screenshot, drawn straight
+    // through SUPPORT MG. It is lifted clear of the corner readout instead.
+    var zsy=hudDodge(zs.x,zs.y,zwid/2+6,LH(15),za?0:LH(13));
 '@ @'
-  for(i=0;i<R.length;i++){
-    var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
-    if(r.merc||(e&&e.merc)) continue;   // v11.54: your hire is not a rival on the board
+    var zlab=zoneBadge(zz2);   // v11.54, HIS NOTE: his four states, his words
+    ctx.font=FS(TYPE.label);
+    var zwid=ctx.measureText(zlab).width;
+    // v10.90, HIS NOTE: this is the label in his screenshot, drawn straight
+    // through SUPPORT MG. It is lifted clear of the corner readout instead.
+    var zsy=hudDodge(zs.x,zs.y,zwid/2+6,LH(15),0);
+'@
+SubRx @'
+    ctx.fillText(zlab,zs.x,zsy);
+    if(!za){
+      ctx.font=FS(TYPE.micro);
+      ctx.fillStyle='rgba(168,180,193,.7)';
+      ctx.fillText('this one will not call',zs.x,zsy+LH(13));
+    }
+  }
+'@ @'
+    ctx.fillText(zlab,zs.x,zsy);
+    // v11.54: the closed whisper ("this one will not call") is inside his
+    // CLOSED FOR THE REMAINDER OF THIS RAID line now.
+  }
 '@
 
 # STAMPS.
@@ -54,11 +84,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and boarded an earlier ship, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
+  'EXTRACTION POINTS SAY WHICH STATE THEY ARE IN. Sound the alarm to begin the countdown; N seconds until extraction begins; extract now, N seconds until it ends; closed for the remainder of this raid. Your four lines, with the live clock.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.53:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.53 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.53:[^']*'",{ param($m) "now:'v11.54: a merc who boarded an earlier ship was never paid. endRaid settles his cut by finding his roster row and boarding stamps out and val onto that row, but only ordinary raiders were pushed to the roster; the hired merc went to ents alone, so no row was stamped or found and the card said left out there. He gets a roster row at spawn now and the pillager board skips merc rows. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.53:[^']*'",{ param($m) "now:'v11.54: HIS NOTE of 2026-09-05, EXTRACTION - OPEN is confusing. The ring badge said OPEN for three situations and CLOSED with a whisper under it. zoneBadge(z) owns his four lines (sound the alarm to begin countdown; NS until extraction begins; extract now! NS until extraction ends; closed for the remainder of this raid) with the live beacon and hold clocks, and the badge draws it. Check 11.54 stages a zone through all four states, requires each of his lines with the right seconds, and controls that the HUD draw reads zoneBadge.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

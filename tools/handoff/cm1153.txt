@@ -1,12 +1,10 @@
-v11.53: Wirt's Limited Time Offer sold whatever the clock said at click time
+v11.53: his notes, sprint and roll leave the crouch
 
-The counter lot is picked by the clock in five-minute windows and drawn on a
-card that names and prices it before he pays; the Buy button recomputed
-wirtLotKey() at click time and the card never redraws on the boundary, so a
-click after the roll took the money and pushed a lot he was never shown. Buy
-now sells the lot the card was drawn from. Check 11.53 opens Wirt through the
-real station act, moves the clock forward a window so a roll has happened,
-presses the real Buy, and requires the stash to receive the shown lot with
-credits taken as the control; fails on v11.52. From the v11.46 audit, P1.
+His in-run notes of 2026-09-05: activating sprint should stop crouching, and
+rolling should stop crouching. The crouch toggle vetoed the sprint key, so
+Shift while crouched did nothing, and the roll never touched the toggle. Now
+Shift with movement input clears the crouch in the same frame and sprints,
+and a roll clears it as it starts. Check 11.53 drives both through real
+player frames with a keep-the-crouch control; fails on v11.52.
 
-Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

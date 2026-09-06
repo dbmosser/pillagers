@@ -1,23 +1,31 @@
-## v11.63 - [+] ON A COLLAPSED PILLAGER BOARD STARTED AN INVISIBLE RESIZE
+## v11.63 - TAGS AND A NOTE CHOSEN AFTER COPY REPORT WERE DROPPED
 
-From the v11.46 read-only audit, P2. A HUD panel folds to one line with its
-[-] glyph, which becomes [+]. The resize grip (v8.93) is tested first on
-mousedown because it is the smallest target on the panel; the cursor code and
-the grip draw both skip collapsed panels, and mousedown did not. A collapsed
-CURRENT PILLAGERS board is shorter than the grip zone, so the grip covered the
-whole [+] glyph: the pointer promised a click, the click began a resize nobody
-could see, and the board never expanded. mouseup ended the resize, the board
-stayed folded, and the glyph looked dead.
+From the v11.46 read-only audit, P1. Since v10.65 there is one commit for the
+end-of-raid card, so Copy report and Log run and return cannot disagree about
+whether the raid was logged and neither can log it twice. Copy report commits
+FIRST, so the report he pastes holds the raid he just played, and the commit
+nulls the pending run. That is where the words went missing: anything he
+tagged or typed after pressing Copy, and then confirmed with Log run and
+return, met the early return for an already-committed run and was thrown
+away. The row kept the tags it had at Copy time, usually none, and the note
+never existed. The comment on the commit promised the late tags would be
+"patched onto the already written row"; nothing did that.
 
-THE FIX. mousedown skips the grip on a collapsed panel, the same rule the
-cursor and the grip draw already follow, so the [+] click reaches the toggle.
+THE FIX. The committed row is remembered for the life of the card. A later
+commit, finding nothing pending, compares the tags and the note on the card
+with the row and, if they differ, writes them onto it, saves, and sends the
+report again so the collector's copy carries them too. The exactly-once rule
+stands: the row is patched, never re-added, and the XP is not paid twice
+because the record itself is the guard.
 
-MEASURED. Check 11.63 deploys, folds the pillager board, draws two frames so
-the folded box is measured, confirms the glyph centre sits inside the grip
-zone (or skips, since the clash cannot be driven), presses at the glyph
-centre, and requires no resize started and the board unfolded. On the v11.62
-fixture the press starts a resize of the board and it stays folded, and the
-check fails naming both.
+MEASURED. Check 11.63 ends a raid as an extract, forces the synchronous copy
+path as check 11.32 does, presses Copy report, controls that exactly one row
+was logged with no tags, then chooses a tag and types a note and presses Log
+run and return. It requires that tag and that note on the logged row and that
+the log still has exactly one new row. On the v11.62 fixture the tag and the
+note are missing from the row and the check fails naming both.
 
-Not verified: his own play; the other four panels, which follow the same
-line of code and are not folded and pressed here.
+Not verified: his own play; the collector actually receiving the re-sent
+report (autoExport is switched off inside the check so no download starts);
+the Recorder pane's text, which still holds the Copy-time report until the
+next Copy.

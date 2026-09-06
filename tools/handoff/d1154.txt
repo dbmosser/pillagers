@@ -1,29 +1,29 @@
-## v11.54 - A MERC WHO BOARDED AN EARLIER SHIP WAS NEVER PAID
+## v11.54 - HIS NOTE: AN EXTRACTION POINT SAYS WHICH STATE IT IS IN
 
-From the v11.46 read-only audit, P1. The deal with a hired merc (v6.72): if you
-BOTH get out you take ten percent of what he carried. v8.46 taught endRaid to
-settle that from the ROSTER, because a merc who fled low and boarded an earlier
-ship is gone from the world by the time you extract: "the roster remembers the
-man and what he carried out", and the boarding code stamps out and val onto
-the roster row whose ref is the boarding entity. The gap: only ordinary raiders
-were ever pushed to the roster, at spawn and on each wave. The hired merc was
-built and pushed to ents alone. So there was never a row to stamp when he
-boarded and never a row for endRaid to find, and the card said "was left out
-there": no cut, no standing, every time he got out before you.
+His in-run note of 2026-09-05, 53 seconds into his second run: "'EXTRACTION -
+OPEN' IS CONFUSING... POSSIBLE STATES FOR AN EXTRACTION POINT SHOULD INSTEAD
+BE" and four lines. The ring badge above every extraction point said OPEN for
+three different situations, nothing called yet, called with the beacon
+inbound, and landed and waiting for you, and said CLOSED with a whisper under
+it ("this one will not call"). The one word that mattered, what to DO at this
+ring right now, was not on it.
 
-THE FIX. The merc gets a roster row at spawn, marked merc, so boarding stamps
-his haul and endRaid finds him. And drawRaiderBoard skips merc rows, so your
-hire is not listed among CURRENT PILLAGERS as a rival; the board is unchanged
-for everyone else on it.
+THE BUILD. One function, zoneBadge, owns his four lines and the badge draws
+from it: EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN when nothing
+has been called; EXTRACTION POINT - 18S UNTIL EXTRACTION BEGINS while the
+beacon clock runs; EXTRACTION POINT - EXTRACT NOW! 12S UNTIL EXTRACTION ENDS
+through the hold window; EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS
+RAID once the ring has shut. His words, with the live seconds where he wrote
+30S. The closed whisper is gone, because his CLOSED line says it. The map's
+own short labels (CALLED 20s, OPEN TO EXTRACT 12s, STAYS OPEN, closes in) are
+untouched; his note was about the badge in the world.
 
-MEASURED. Check 11.54 hires a merc (P.merc set to a real identity), deploys,
-finds him in the world, and requires his roster row to exist; then plays the
-boarding the way the game does (stamps out and a haul of 1,234 on the row,
-removes him from the world) and ends the raid as an extract, requiring the card
-to say he extracted earlier and the credits to have moved by at least his ten
-percent. On the v11.53 fixture there is no row and the check fails on the first
-line.
+MEASURED. Check 11.54 stages a point through all four states and a fifth (the
+extraction has left, so it is callable again) and requires each of his lines
+with the right rounded seconds; a control reads the HUD draw and requires it
+to read zoneBadge and to carry no trace of the old OPEN badge. On the v11.53
+fixture there is no zoneBadge and the check fails on its first line.
 
-Not verified: his own play; the merc's standing bump on that path, which is
-part of the same settle branch and is exercised but not asserted; the shape of
-the board with the merc row skipped, which is read and not painted here.
+Not verified: his own eye; the badge's width at his HUD scale, since his
+longest line is about three times the old one and hudDodge only lifts it
+clear of the corner readout; the pad and the map labels, which did not change.

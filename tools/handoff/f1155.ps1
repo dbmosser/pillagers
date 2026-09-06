@@ -11,49 +11,29 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.55 HOOK: whether a weather id counts as hard, so a check can force a
-# multiplier into play.
-SubRx @'
-window.__loadProfile=function(){ return loadProfile(); };
-'@ @'
-window.__loadProfile=function(){ return loadProfile(); };
-window.__wxHard=function(id){ try{ return wxHardId(id); }catch(e){ return null; } };
-'@
-
 # v11.55 CHECK, inserted before the v11.54 entry.
 SubRx @'
-  {v:'11.54',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+  {v:'11.54',what:'an extraction point badge names one of his four states in his words (sound the alarm to begin countdown; N s until extraction begins; extract now, N s until it ends; closed for the remainder of this raid) with the live seconds, and the HUD draws that badge',
 '@ @'
-  {v:'11.55',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
+  {v:'11.55',what:'a cooked frag shouts COOKED GRENADE! THROW GRENADE NOW for its last second in hand, nothing else in hand shouts, and the HUD draws the shout (his notes of 2026-09-05)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__wxHard)) return 'SKIP: this fixture cannot end a raid and read the card';
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var P=window.__P(), bad=[];
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(), p=g.player;
-     // A multiplier must be in play or the two figures agree by accident: force hard weather.
-     var hard=null; if(window.__wxHard('storm')) hard='storm'; else if(window.__wxHard('fog')) hard='fog';
-     if(!hard) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
-     if(!g.wx) g.wx={}; g.wx.id=hard;
-     // Something to bank: a bag worth carrying out.
-     p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
-     var n0=(P.log||[]).length;
-     try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
-     var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
-     var m=/\+\s*([\d,]+)\s*XP/.exec(txt);
-     var card=m?parseInt(m[1].replace(/,/g,''),10):null;
-     var rec=(P.log&&P.log.length>n0)?P.log[P.log.length-1]:null;
-     if(card===null) bad.push('the card printed no "+N XP" line (card says: '+txt.replace(/\s+/g,' ').slice(0,80)+')');
-     if(!rec||typeof rec.xpGot!=='number') bad.push('the run was not banked with an xpGot figure');
-     if(card!==null&&rec&&typeof rec.xpGot==='number'){
-       // THE FIX: what the card says is what was banked.
-       if(card!==rec.xpGot) bad.push('the card printed +'+card+' XP but the profile banked '+rec.xpGot+' (base '+rec.xpBase+', weather hard '+rec.wxHard+')');
-       // CONTROL: the multiplier really was in play, or the agreement proves nothing.
-       if(!rec.wxHard) bad.push('control: the banked record does not carry the hard-weather flag, so no multiplier was in play');
+     if(typeof cookShout!=='function') return 'there is no last-second shout for a cooked grenade';
+     if(typeof drawHUD!=='function'||typeof FRAG_FUSE==='undefined') return 'SKIP: no HUD draw or no fuse in this build';
+     var bad=[], line='COOKED GRENADE! THROW GRENADE NOW';
+     var got1=cookShout({cooking:1,cookKind:'frag',cookT:FRAG_FUSE-0.5});
+     if(got1!==line) bad.push('with half a second left in hand the shout is '+JSON.stringify(got1)+' and not the line');
+     var got0=cookShout({cooking:1,cookKind:'frag',cookT:FRAG_FUSE-0.05});
+     if(got0!==line) bad.push('at the last instant the shout is '+JSON.stringify(got0));
+     if(FRAG_FUSE>1.5){
+       var gotE=cookShout({cooking:1,cookKind:'frag',cookT:FRAG_FUSE-1.5});
+       if(gotE!==null) bad.push('control: with 1.5 s left the shout already shows');
      }
-     __topClear(); __cleanProfile();
+     if(cookShout({cooking:1,cookKind:'smoke',cookT:5})!==null) bad.push('control: a smoke in hand shouts about a grenade');
+     if(cookShout({cooking:0,cookKind:'frag',cookT:1})!==null) bad.push('control: an empty hand still shouts');
+     var src=''; try{ src=drawHUD.toString(); }catch(_s){}
+     if(src.indexOf('cookShout(')<0) bad.push('control: the HUD draw does not read cookShout, so the shout is never on screen');
      return bad.length?bad.join('; '):null; }},
-  {v:'11.54',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+  {v:'11.54',what:'an extraction point badge names one of his four states in his words (sound the alarm to begin countdown; N s until extraction begins; extract now, N s until it ends; closed for the remainder of this raid) with the live seconds, and the HUD draws that badge',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

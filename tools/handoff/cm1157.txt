@@ -1,13 +1,9 @@
-v11.57: tags and a note chosen after Copy report were dropped
+v11.57: his note, the storm warning ring says lightning incoming
 
-Copy report commits the run first, so the paste holds it, and the commit nulls
-the pending run. Anything tagged or typed after that and confirmed with Log run
-and return met the early return for an already-committed run and was thrown
-away; the comment promised a patch onto the written row that did not exist.
-The committed row is now remembered for the life of the card, and a later
-commit with nothing pending writes the changed tags and note onto it, saves,
-and re-sends the report. Check 11.57 presses Copy report, then a tag and a
-note, then Log run and return, and requires both on the one logged row; fails
-on v11.56. From the v11.46 audit, P1.
+His in-run note of 2026-09-05: when lightning is about to hit it should say
+lightning incoming at the circle. The warning ring closed and said nothing.
+One function owns his line with the seconds left and the world draw puts it
+above the ring, in world space with the ring. Check 11.57 reads the label at
+two moments and controls that the draw reads it; fails on v11.56.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

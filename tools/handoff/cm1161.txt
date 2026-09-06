@@ -1,9 +1,13 @@
-v11.61: dropping a belt item on the stash said back in the backpack
+v11.61: the outcome card printed base XP while the profile was credited more
 
-The drop takes the item off its belt key and out of the backpack and it lands
-in the stash; the line named the backpack it had just left. It names the stash
-now. Check 11.61 drives the stash grid's drop handler with a belt cell as the
-source, controls that the item left the backpack and its key, and requires the
-line to name the stash; fails on v11.60. From the v11.46 audit, P2.
+The bank credits round(base x night x weather) x dose, but the card is drawn
+before the bank from its own record, which carried no night or wxHard flag, so
+it printed the raw base and derived the total and the distance to the next
+reward from it: a night run said +100 and banked 120. One helper, xpBaseFor,
+now owns the night and weather arithmetic; addProgress banks through it and
+the card's record carries the same two flags and prints xpBaseFor times the
+dose multiplier. Check 11.61 forces hard weather, ends a raid as an extract,
+reads "+N XP" off the real card and xpGot off the banked record and requires
+them equal; fails on v11.60. From the v11.46 audit, P1.
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

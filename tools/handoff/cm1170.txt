@@ -1,0 +1,11 @@
+v11.70: a note typed in the pause box on the floor rode into the next raid
+
+The pause box opens on the floor with the same feedback field a raid has, and
+nothing on the floor read or cleared it, so a note typed in the Undercroft sat
+in the box and became the next raid's first pause note, stamped with that
+raid's clock. Closing the box on the floor now banks it to the profile, clears
+the box and says so, and every report prints it under FLOOR NOTES. Check 11.70
+types a note on the floor, closes the box, and requires it banked, cleared and
+in the report; fails on v11.69. From the v11.46 audit, P2.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

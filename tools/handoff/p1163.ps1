@@ -11,23 +11,47 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# [+] ON A COLLAPSED CURRENT PILLAGERS BOARD STARTED AN INVISIBLE RESIZE. The
-# collapsed box is one line tall and the resize grip zone (v8.93) is taller
-# than that, so the grip covered the whole [+] glyph; mousedown tests the grip
-# first, by design, and had no collapsed guard, while hudHit (the cursor) and
-# the grip draw both skip collapsed panels. So the pointer promised a click,
-# the click began a resize nobody could see, and the board never expanded.
-# mousedown now agrees with the other two.
+# TAGS AND A NOTE CHOSEN AFTER COPY REPORT WERE DROPPED. Copy report commits
+# the run first (v10.65, so the pasted report holds the raid he just played),
+# and the commit nulls pendingRun. Anything he tags or types AFTER that, and
+# then confirms with Log run and return, hits the early return: the row is
+# already written, so it keeps the tags it had at Copy time and the note is
+# lost. The comment on ocCommit promised the late tags would be "patched onto
+# the already written row"; nothing did. Now the committed row is remembered
+# for the life of the card, and a second commit patches tags and note onto it
+# and re-sends the report when they changed.
 SubRx @'
-        if(HUDZ[hk]!==undefined){
-          if(hudOnGrip(HB2,mouse.x,mouse.y)){
+var pendingRun=null,selTags=[];
 '@ @'
-        // v11.63: never on a collapsed panel. Its box is shorter than the grip
-        // zone, so the grip covered the [+] glyph and the click that should
-        // expand the board started a resize nobody could see. hudHit and the
-        // grip draw already skip collapsed panels; mousedown agrees with them.
-        if(HUDZ[hk]!==undefined&&!hudOff(hk).c){
-          if(hudOnGrip(HB2,mouse.x,mouse.y)){
+var pendingRun=null,selTags=[],committedRun=null;   // v11.63: the row Copy report wrote, for late tags
+'@
+SubRx @'
+function ocCommit(){
+  if(!pendingRun) return false;
+'@ @'
+function ocCommit(){
+  if(!pendingRun){
+    // v11.63: the commit already happened (Copy report does it first). Tags and
+    // a note chosen since then land on the row it wrote, and the report goes
+    // out again with them, instead of being thrown away at the early return.
+    if(committedRun){
+      var _lt=selTags.slice(), _ln=document.getElementById('oc_note');
+      _ln=_ln?_ln.value.trim():'';
+      if(_lt.join('|')!==(committedRun.tags||[]).join('|')||_ln!==(committedRun.note||'')){
+        committedRun.tags=_lt; committedRun.note=_ln;
+        saveProfile(); autoExport();
+      }
+    }
+    return false;
+  }
+'@
+SubRx @'
+  commitRun(pendingRun);
+  pendingRun=null;
+'@ @'
+  commitRun(pendingRun);
+  committedRun=pendingRun;
+  pendingRun=null;
 '@
 
 # STAMPS.
@@ -45,11 +69,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE [+] ON A COLLAPSED PILLAGER BOARD EXPANDS IT AGAIN. The resize grip had grown over the glyph on the folded board, so the click began a resize you could not see and the board stayed shut.',
+  'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.62:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.62 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.62:[^']*'",{ param($m) "now:'v11.63: [+] on a collapsed CURRENT PILLAGERS board started an invisible resize instead of expanding it. The collapsed box is one line tall and the grip zone is taller, so the grip covered the glyph; mousedown tests the grip first and had no collapsed guard while hudHit and the grip draw both skip collapsed panels. mousedown skips them now. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.62:[^']*'",{ param($m) "now:'v11.63: tags and a note chosen after Copy report were dropped. Copy report commits the run first and nulls pendingRun, so Log run and return afterwards hit the early return and the row kept the tags it had at Copy time; the ocCommit comment promised a patch onto the written row that did not exist. The committed row is remembered for the life of the card and a later commit patches tags and note onto it and re-sends the report when they changed. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

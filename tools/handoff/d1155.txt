@@ -1,29 +1,34 @@
-## v11.55 - THE OUTCOME CARD PRINTED BASE XP; THE PROFILE WAS CREDITED MORE
+## v11.55 - HIS NOTES: A COOKED GRENADE SHOUTS FOR ITS LAST SECOND
 
-From the v11.46 read-only audit, P1, raised independently by two regions. XP
-for a run is the season and kill figures, and since v9.96, v10.06 and v11.00 it
-pays more with a dose in your blood, at night and in hard weather: the bank,
-addProgress, rounds base times night times weather, and addXp then rounds that
-times the dose multiplier. The outcome card is drawn a moment BEFORE the run is
-banked, from a record it builds itself, and that record carried no night or
-weather flag, so the card printed the raw sum. A night run that banked 120
-said "+100 XP", and because the same line derives "XP in all" and "N XP away"
-from that figure, every number on it was wrong with it. The sector page had
-promised "XP pays 1.2x" on the way up.
+His notes of 2026-09-05: "cooking grenades should give more warning before
+exploding in your hand, need a message with 1 sec left like COOKED GRENADE!
+THROW GRENADE NOW" and, at 111 seconds of his second run, "COOKING A GRENADE
+SHOULD COUNT down, NOT UP!!!". He died to his own charge in both runs that
+night: downs 2, revived once, last hit YOUR OWN CHARGE, both times.
 
-THE FIX. One helper, xpBaseFor, now owns the night and weather arithmetic.
-addProgress banks through it, so nothing about what is banked changes. The
-card's record carries the same two flags the banked record does, and prints
-xpBaseFor times the dose multiplier addXp applies: the figure that will be
-banked, to the XP, every time.
+WHAT IS TRUE. The in-hand readout has counted DOWN since v3.11: "COOKING
+0.8s" and a bar that shrinks, going red over the last third. What it never
+did was shout. And the reason a beat too long on the button kills him is the
+fuse: FRAG_FUSE is 1.1 seconds. Hold the button for one second and a tenth
+and it goes off in your hand. A "one second left" warning on that fuse
+appears a tenth of a second after the press. The fuse is a balance number and
+his standing order is no in-raid balancing before alpha, so it is NOT moved
+here; it is the finding, and the report asks him for the number he wants.
 
-MEASURED. Check 11.55 deploys, forces hard weather (so a multiplier is in play,
-or agreement would prove nothing), gives the player a bag worth carrying out,
-ends the raid as an extract, reads the "+N XP" line off the real card and the
-xpGot the run banked, and requires them equal; a control requires the banked
-record to carry the hard-weather flag. On the v11.54 fixture the card prints
-the base and the bank credits a tenth more, and the check fails naming both.
+THE BUILD. One function, cookShout, owns his line for the last second of a
+frag in hand, and the HUD draws it flashing red and bone in the head size
+above the countdown at the operator, where his eyes are. A smoke or a decoy
+in hand, which have no fuse, never shout.
 
-Not verified: his own play; the night flag, which reads the raid clock and is
-exercised by the same helper but not forced by this check; a dose in his
-blood, applied by addXp on both paths and not staged here.
+MEASURED. Check 11.55 reads the shout at half a second and at the last
+instant and requires his line; controls that a smoke in hand and an empty
+hand say nothing, and (only when the fuse is longer than 1.5 s) that the
+shout is silent at 1.5 s left; and requires the HUD draw to read cookShout.
+On the v11.54 fixture there is no cookShout and the check fails on its first
+line.
+
+Not verified: his own eye, and whether the shout is readable in the last
+second of a 1.1 second fuse, which it barely can be; the fuse length itself,
+which is his ruling; what he saw counting UP, since the only cook readout
+counts down (it may have been the thrown grenade's fuse or the bar's fill
+direction, which needs his screenshot).

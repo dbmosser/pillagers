@@ -40024,6 +40024,34 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.53 - HIS NOTES: SPRINT AND ROLL LEAVE THE CROUCH
+
+His in-run notes of 2026-09-05, at 266 and 269 seconds of his first run:
+"activating sprint should automatically stop crouching" and "rolling should
+automatically stop crouching". Crouch has been a toggle since v10.07 (his
+answer 33) and sprint a held key since v10.87. The line that decides sprint
+let the crouch veto the key, so Shift while crouched did nothing at all: no
+sprint, no stand, a dead key. The roll never looked at the toggle, so he came
+out of a roll still crouched.
+
+THE BUILD. Sprint wins: when Shift is held with movement input and the crouch
+toggle is on, the toggle clears and the stance follows in the same frame, so
+the first sprinting step is a standing one. Movement input is required, the
+same rule sprint itself has, so a held Shift while standing still changes
+nothing. A roll clears the toggle the moment it starts. Nothing else about
+crouch, sprint or the roll changes: stamina, the exhaustion lock, the sprint
+trail, the roll cost and cooldown are all as they were.
+
+MEASURED. Check 11.53 deploys with the map emptied, crouches, holds Shift with
+W through four real frames of the player update, and requires the crouch gone
+and sprinting on; crouches again, rolls, and requires the roll started and the
+crouch gone; then crouches and walks without Shift and requires the crouch
+kept. On the v11.52 fixture the first arm leaves the crouch on and never
+sprints, and the roll leaves it on, and the check fails naming both.
+
+Not verified: his own hand; the pad, whose stick click writes ShiftLeft into
+the same keys object and should follow, but was not pressed; the crouch
+readout on the HUD, which reads the same toggle and was not looked at.
 ## v11.52 - HIS NOTE: CREDITS AND XP IN THE UPPER RIGHT, AT ALL TIMES
 
 His note, 2026-09-05: "credits and xp should be shown at all times in the

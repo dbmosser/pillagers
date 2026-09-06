@@ -11,24 +11,32 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# THE NOTORIETY BANNER SAID THE PEDDLER WAS DONE WITH YOU. His ruling at v8.28
-# was that the Peddler always trades regardless of notoriety, and pedOpen has
-# answered true ever since; the hub card was renamed at the same build. The
-# in-raid banner that fires when the score reaches two still said the stall
-# had shut. It names what notoriety actually costs now, at every score.
+# A MERC WHO BOARDED AN EARLIER SHIP WAS NEVER PAID. endRaid settles the merc's
+# ten percent by looking for his ROSTER row (v8.46: "the roster remembers the
+# man and what he carried out"), and the boarding code stamps out and val onto
+# the roster row whose ref is the boarding entity. But only ordinary raiders
+# were ever pushed to the roster; the hired merc went to ents alone. So when he
+# fled low and boarded before you, no row was there to stamp or to find, and the
+# card said "was left out there": no cut, no standing. He gets a row now, and
+# the pillager board skips it so your hire is not listed as a rival.
 SubRx @'
-  if(n>=2) return 'The Peddler is done with you.';
-  return 'Hiring costs more and pillagers are slower to trust you.';
+      M2.merc=1; M2.hostile=false; M2.grudge=false; M2.friendly=1;
+      ents.push(M2);
 '@ @'
-  // v11.60: the stall never shuts (pedOpen, his v8.28 ruling); this said it did.
-  if(n>=2) return 'Hiring costs more and pillagers are slower to trust you. Word has got round.';
-  return 'Hiring costs more and pillagers are slower to trust you.';
+      M2.merc=1; M2.hostile=false; M2.grudge=false; M2.friendly=1;
+      ents.push(M2);
+      // v11.60: a roster row, so boarding stamps his haul and endRaid can pay
+      // his cut when he went up before you. The board skips merc rows.
+      roster.push({ref:M2,name:M2.name,crew:M2.crew,val:0,out:false,merc:1});
 '@
+
 SubRx @'
-// 2 gets its own word because 2 is where the stall actually shuts.
+  for(i=0;i<R.length;i++){
+    var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
 '@ @'
-// 2 gets its own word because 2 is where the stall used to shut (it never shuts
-// since v8.28; the banner caught up at v11.60).
+  for(i=0;i<R.length;i++){
+    var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
+    if(r.merc||(e&&e.merc)) continue;   // v11.60: your hire is not a rival on the board
 '@
 
 # STAMPS.
@@ -46,11 +54,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE NOTORIETY BANNER STOPPED LYING ABOUT THE PEDDLER. At two notoriety it said the Peddler was done with you; he has traded with anyone since the stall stopped shutting. It says what notoriety really costs now.',
+  'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and boarded an earlier ship, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.59:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.59 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.59:[^']*'",{ param($m) "now:'v11.60: the in-raid notoriety banner at two or more said the Peddler was done with you, while the stall has never shut since his v8.28 ruling (pedOpen answers true) and the hub card was renamed then. The banner names the real cost at every score now. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.59:[^']*'",{ param($m) "now:'v11.60: a merc who boarded an earlier ship was never paid. endRaid settles his cut by finding his roster row and boarding stamps out and val onto that row, but only ordinary raiders were pushed to the roster; the hired merc went to ents alone, so no row was stamped or found and the card said left out there. He gets a roster row at spawn now and the pillager board skips merc rows. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

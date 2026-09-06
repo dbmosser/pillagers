@@ -11,48 +11,46 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.53 HOOK: the lot the clock picks right now, so a check can tell a rolled
-# window from the one the card was drawn in.
+# v11.53 CHECK, inserted before the v11.52 entry. Real frames through __loop,
+# because the sprint decision lives in updatePlayer and reads the keys object.
 SubRx @'
-window.__loadProfile=function(){ return loadProfile(); };
+  {v:'11.52',what:'credits and XP are shown at all times in the upper right corner, in the Undercroft and in a raid, above the screens and clear of the CONDITIONS box, and the readout follows the profile when a figure changes',
 '@ @'
-window.__loadProfile=function(){ return loadProfile(); };
-window.__wirtLot=function(){ return wirtLotKey(); };
-'@
-
-# v11.53 CHECK, inserted before the v11.52 entry.
-SubRx @'
-  {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
-'@ @'
-  {v:'11.53',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
+  {v:'11.53',what:'holding Shift with movement while crouched leaves the crouch and sprints, a roll leaves the crouch, and walking without Shift keeps it (his notes of 2026-09-05)',
    run:function(){
-     if(!(window.__wirtLot&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open Wirt';
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var P=window.__P(), bad=[], realNow=Date.now;
-     P.credits=999999; P.stash=[];
-     var st=null; try{ st=window.__station('gamble','KeyE'); }catch(e){ st={err:String(e)}; }
-     if(st&&st.err) return 'SKIP: '+st.err;
-     var shown=window.__wirtLot();
-     if(!(shown&&shown.length)) return 'SKIP: the counter is empty';
-     var btn=document.getElementById('wirtlotbtn');
-     if(!btn) return 'SKIP: no Buy button on the counter';
-     // THE WINDOW ROLLS between the card and the click: move the clock forward
-     // one window, or two, or three, until the lot differs from the shown one.
-     var base=realNow(), next=null, rolled=0;
-     for(var r=1;r<=3&&!next;r++){ Date.now=function(){ return base+r*300000; }; var cand=window.__wirtLot(); if(cand&&cand.length&&cand[0]!==shown[0]){ next=cand; rolled=r; } }
-     if(!next){ Date.now=realNow; return 'SKIP: the next three windows hold the same lot, so a roll cannot be told apart'; }
-     Date.now=function(){ return base+rolled*300000; };
-     try{ btn.click(); }catch(e2){}
-     Date.now=realNow;
-     var got=(P.stash||[]).length?P.stash[P.stash.length-1]:null;
-     // THE FIX: he receives what the card NAMED AND PRICED.
-     if(got!==shown[0]) bad.push('after the window rolled, Buy delivered '+got+' instead of the shown '+shown[0]);
-     // CONTROL: he was charged, so a buy went through and the comparison is real.
-     if(!(P.credits<999999)) bad.push('control: no credits were taken, so nothing was bought and the comparison proves nothing');
-     try{ var gm=document.getElementById('gamblemodal'); if(gm) gm.classList.remove('on'); }catch(e3){}
-     __cleanProfile(); __topClear();
+     if(!(window.__deploy&&window.__state&&window.__loop&&window.__keys&&window.__runPrep)) return 'SKIP: this fixture cannot drive the player';
+     if(typeof tryRoll!=='function') return 'SKIP: no roll in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, K=__keys(), q;
+       for(q in K) delete K[q];
+       g.ents.length=0;   // nothing on the map to change the stance for us
+       p.stam=100; p.stamLock=0; p.stamRelease=0; p.ads=false; p.downed=false; p.roll=0; p.rollCd=0;
+       // ARM ONE: crouched, then Shift with W through four real frames.
+       G.crouchTog=true;
+       K['ShiftLeft']=true; K['KeyW']=true;
+       var t0=performance.now();
+       for(var f=0;f<4;f++) __loop(t0+f*16.7);
+       if(G.crouchTog) bad.push('holding Shift with W while crouched left the crouch on');
+       if(!G.sprinting) bad.push('holding Shift with W while crouched did not sprint (sprinting '+G.sprinting+', stamina '+Math.round(p.stam)+')');
+       delete K['ShiftLeft']; delete K['KeyW'];
+       // ARM TWO: crouched, then a roll.
+       G.crouchTog=true; p.stam=100; p.roll=0; p.rollCd=0; p.downed=false;
+       K['KeyW']=true; tryRoll(); delete K['KeyW'];
+       if(!(p.roll>0)) bad.push('control: the roll did not start (roll '+p.roll+')');
+       if(G.crouchTog) bad.push('rolling left the crouch on');
+       // CONTROL: walking without Shift keeps the crouch.
+       G.crouchTog=true; p.roll=0; p.rollCd=0; K['KeyW']=true;
+       for(var f2=0;f2<4;f2++) __loop(t0+200+f2*16.7);
+       delete K['KeyW'];
+       if(!G.crouchTog) bad.push('control: walking without Shift cleared the crouch on its own');
+       G.crouchTog=false;
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var K2=__keys(); for(var q2 in K2) delete K2[q2]; }catch(_k){} try{ G.crouchTog=false; }catch(_g){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
+  {v:'11.52',what:'credits and XP are shown at all times in the upper right corner, in the Undercroft and in a raid, above the screens and clear of the CONDITIONS box, and the readout follows the profile when a figure changes',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

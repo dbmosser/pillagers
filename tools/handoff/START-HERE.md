@@ -59,11 +59,19 @@ READ BEFORE BUILDING A AND B (Fable read the code 2026-09-05 23:20):
   and requires crouchTog false and sprint true, then sets it again, rolls
   and requires it false; control fails on the previous fixture.
 
-NUMBERING: his note builds ship FIRST as v11.53, v11.54, ... in A to F order.
-Before shipping the drafted queue, renumber it to follow the last note build
-(renumber1152.ps1 is the template; run its fixdev twin after it, because the
-renumber tool cannot see the escaped "11\.NN" in each p-file's DEVNOW regex),
-then dry-run the whole range again. The old crash line in his report (v10.96, sub
+NUMBERING (done 2026-09-05 23:45): the audit queue was shifted to 1159 to
+1170 (renumber1159.ps1 then fixdev1159.ps1), so his note builds take 1153 to
+1158. STATUS: B = v11.53 (sprint and roll leave the crouch) verified on all
+four gates; check git log for whether its corpus committed it. DRAFTED and
+dry-run green in sequence: C = 1154 (extraction point states in his words),
+A = 1155 (the cooked-grenade shout; the 1.1 s fuse NOT moved, his number
+requested in the report), D = 1156 (no strike point inside a building), E =
+1157 (LIGHTNING INCOMING at the ring), F = 1158 (the four sounds that
+bypassed the heard-not-seen ring: strike telegraph, extraction inbound pulse,
+touchdown, last call, now positioned through sfx; the ring system noiseMark
+already existed since v9.07). Ship them in order with `ship.sh start PREV
+NEW`, each through the full procedure below. The audit queue 1159 to 1170
+follows directly; no further renumbering is needed. The old crash line in his report (v10.96, sub
 is not defined) is history, fixed at v10.98.
 
 **HIS NOTE, 2026-09-05 ~22:30, OUTRANKS THE DRAFTED QUEUE:** "credits and xp

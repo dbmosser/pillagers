@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.52';
+var VER='11.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.52';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.52';
+var WHATSNEW_VER='11.53';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'SPRINT AND ROLL STAND YOU UP. Holding Shift while crouched used to do nothing; now it leaves the crouch and sprints. A roll leaves the crouch too.',
   'YOUR CREDITS AND XP ARE IN THE TOP RIGHT CORNER, ALWAYS. In the Undercroft, in a raid, under every window. The stash screen no longer prints its own credits figure; the corner has it.',
   'THE SECTOR PAGE NAMES THE RIGHT MAP AGAIN. The line of facts under each map could end with the other map name, because the two lines share a digit shape and the reworded text was matched by shape. Each map keeps its own line now.',
   'PACKING AT THE STASH WITH YOUR BACKPACK OPEN NO LONGER GETS UNDONE. If you opened your backpack on the Undercroft floor, then walked to THE STASH and packed your loadout there, closing the backpack afterwards put back the old loadout over the new one. The backpack now closes itself when the stash opens.',
@@ -11311,6 +11312,7 @@ var ROLLSPD=320,ROLLSTAM=45;
 function tryRoll(){
   var p=G.player;
   if(p.downed||p.roll>0||p.rollCd>0||p.stam<ROLLSTAM) return;
+  G.crouchTog=false;   // v11.53, HIS NOTE: "rolling should automatically stop crouching"
   var mx=0,my=0,ana=1;
   if(keys['KeyW']||keys['ArrowUp'])my-=1;
   if(keys['KeyS']||keys['ArrowDown'])my+=1;
@@ -14056,6 +14058,12 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // key is actually let go, so a held Shift cannot saw sprint on and off.
   var _shHeld=!!(keys['ShiftLeft']||keys['ShiftRight']);
   if(!_shHeld) p.stamRelease=0;
+  // v11.53, HIS NOTE: "activating sprint should automatically stop crouching".
+  // The crouch toggle (v10.07) used to veto the sprint key on the line below,
+  // so Shift while crouched did nothing. Sprint wins: the toggle clears and
+  // the stance follows this same frame. Movement input is required, the same
+  // rule sprint itself has, so a held Shift while standing still changes nothing.
+  if(_shHeld&&mg>0&&G.crouchTog&&!p.downed){ G.crouchTog=false; crouch=false; }
 var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   if(sprint&&mg>0){
     G.prints=G.prints||[];
@@ -28137,7 +28145,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.52: HIS NOTE of 2026-09-05, credits and XP shown at all times in the upper right, in the Undercroft and in a raid. One fixed element (#topright, z 9000) in the band above the CONDITIONS box, written from saveProfile and the frame loop only when a figure changes; the stash screen retires its own credits figure and its top row keeps clear of the corner. Check 11.52 reads the element in the Undercroft and in a raid, requires position, size, both figures and both labels, clearance from the CONDITIONS box in screen space, and that a changed credit figure is shown.',
+  now:'v11.53: HIS NOTES of 2026-09-05, sprint and roll leave the crouch. The crouch toggle vetoed the sprint key so Shift while crouched did nothing, and tryRoll never touched the toggle. Sprint with movement input clears the toggle in the same frame and tryRoll clears it. Check 11.53 crouches, holds Shift with W through real frames and requires the crouch gone and sprinting on; crouches and rolls and requires the crouch gone with the roll started; controls that walking without Shift keeps the crouch.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

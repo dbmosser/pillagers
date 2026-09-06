@@ -13,39 +13,41 @@ function SubRx([string]$old, [string]$new) {
 
 # v11.64 CHECK, inserted before the v11.63 entry.
 SubRx @'
-  {v:'11.63',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+  {v:'11.63',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
 '@ @'
-  {v:'11.64',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
+  {v:'11.64',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
    run:function(){
-     if(!window.__P||typeof togglePauseBox!=='function'||typeof buildExport!=='function') return 'SKIP: no pause box in this build';
-     if(!document.getElementById('pausenote')) return 'SKIP: no note box in this document';
-     var bad=[], prof, note='ZQX floor note 8812';
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     if(typeof restoreCode!=='function'||typeof restoreRead!=='function'||typeof restoreApply!=='function') return 'SKIP: this build has no restore code';
+     var bad=[], prof;
      try{
        __topClear(); __cleanProfile(); prof=__P();
-       if(window.__hubEnter){ try{ __hubEnter(); }catch(_h){} }
-       if(G) return 'SKIP: a raid is running, so this is not the floor';
-       if(typeof state!=='undefined'&&state!=='hub') return 'SKIP: not on the floor (state '+state+'), so the box cannot open';
-       delete prof.floorNotes;
-       togglePauseBox(true);
-       var ta=document.getElementById('pausenote'); ta.value=note;
-       togglePauseBox(false);
-       var fl=prof.floorNotes||[], last=fl[fl.length-1];
-       if(!last||last.txt!==note) bad.push('the note typed on the floor was not banked (floorNotes: '+JSON.stringify(fl).slice(0,80)+')');
-       if((ta.value||'').trim()===note) bad.push('the note is still sitting in the box, waiting to ride into the next raid');
-       var rep=buildExport(), txt=(rep&&rep.join)?rep.join('\n'):String(rep);
-       if(txt.indexOf(note)<0) bad.push('the run report does not carry the floor note');
-       else if(txt.indexOf('FLOOR NOTES')<0) bad.push('the report carries the note but does not say what it is');
-       // CONTROL: a second close with an empty box banks nothing more.
-       togglePauseBox(true); togglePauseBox(false);
-       if((prof.floorNotes||[]).length!==fl.length) bad.push('control: closing an empty box banked a note');
+       // DISTINCTIVE: three guns no fresh profile owns, the marksman rifle in hand,
+       // the magnum second, and worn figures nothing rolls.
+       prof.weapons=['dmr','magnum','sniper']; prof.equipped='dmr'; prof.equippedSec='magnum'; prof.wear={dmr:137,magnum:41};
+       var code=restoreCode();
+       if(!code) bad.push('no restore code was made');
+       var o=code?restoreRead(code):null;
+       if(code&&!o) bad.push('the code cannot be read back');
+       else if(o&&!o.g) bad.push('the code carries no armoury: three owned guns, the one in hand and their wear are not in it, while the card promises what you have unlocked');
+       else if(o){
+         // Wipe to a fresh armoury, then apply the code.
+         prof.weapons=['pistol']; prof.equipped='pistol'; prof.equippedSec='none'; prof.wear={};
+         var ok=restoreApply(o);
+         if(!ok) bad.push('control: the code was refused');
+         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('the guns came back as '+((prof.weapons||[]).join(',')||'nothing')+' and not dmr,magnum,sniper');
+         if(prof.equipped!=='dmr') bad.push('the gun in hand came back as '+prof.equipped+' and not dmr');
+         if((prof.equippedSec||'none')!=='magnum') bad.push('the second slot came back as '+(prof.equippedSec||'none')+' and not magnum');
+         if(((prof.wear||{}).dmr|0)!==137) bad.push('the wear on the marksman rifle came back as '+((prof.wear||{}).dmr|0)+' and not 137');
+         // CONTROL: a gun the build does not know is dropped, not restored.
+         o.g.w.push('zqxgun'); restoreApply(o);
+         if((prof.weapons||[]).indexOf('zqxgun')>=0) bad.push('control: a gun this build does not have was restored into the armoury');
+         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('control: after the unknown gun the armoury reads '+(prof.weapons||[]).join(','));
+       }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{
-       try{ var ta2=document.getElementById('pausenote'); if(ta2) ta2.value=''; }catch(_t){}
-       try{ togglePauseBox(false); }catch(_c){}
-       __topClear(); __cleanProfile();
-     }
+     finally{ __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.63',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+  {v:'11.63',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

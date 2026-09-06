@@ -1,24 +1,27 @@
-## v11.59 - THE RESTORE CODE WAS BLANK FOR ANY NAME ABOVE U+00FF
+## v11.59 - WIRT'S LIMITED TIME OFFER SOLD WHATEVER THE CLOCK SAID AT CLICK TIME
 
-From the v11.46 read-only audit, P1. The restore code is the character as
-JSON, run through the browser's base64 encoder, which takes Latin-1 only. A
-name with an emoji, a CJK character or a curly quote made that encoder throw;
-the catch around it returned an empty string, and the run report carried a
-blank restore code for exactly the friend most likely to have typed such a
-name. The name box accepts any sixteen characters and says nothing.
+From the v11.46 read-only audit, P1. The one thing on Wirt's counter is picked
+by the clock in five-minute windows (WIRT_LOT_MS, his v9.94 note) and drawn on
+a card that names it, prices it and says when the next one comes, which is the
+whole difference between this and the pull (v9.11): you see what you are paying
+for before you pay. But the Buy button recomputed wirtLotKey() at click time,
+and the card never redraws on the window boundary. Read the card near the end
+of a window, click after the roll, and 10,000 was taken and a different lot,
+one you were never shown, went to the stash.
 
-THE FIX. The JSON is encoded as UTF-8 before base64, so every name makes a
-code. The reader tries the UTF-8 read first and falls back to the plain read
-when the bytes are not UTF-8, so every code written before this build still
-reads as it did.
+THE FIX. The button sells the lot the card was drawn from, captured when the
+card was drawn, which is the lot he was named and priced. Nothing else moves:
+the card still redraws after a buy and on each open.
 
-MEASURED. Check 11.59 names the character with a curly apostrophe and an
-emoji, built from code points so the check file stays ASCII, makes a code,
-and requires the code to exist and to read back the same name. Two controls:
-a code written the old way, plain base64 of ASCII JSON, still reads; and a
-plain ASCII name still round-trips. On the v11.58 fixture the fancy name
-makes no code and the check fails saying so.
+MEASURED. Check 11.59 opens Wirt through his real station act, reads the lot the
+clock has picked, then moves Date.now forward one window (two or three if the
+next window happens to hold the same lot) so a roll has happened between the
+draw and the click, presses the real Buy button, and requires the item that
+reached the stash to be the shown one; a control requires credits to have been
+taken, so a buy really went through. On the v11.58 fixture Buy delivers the
+rolled window's lot and the check fails naming both.
 
-Not verified: his own play; a Latin-1 name from an older code whose bytes
-happen to form valid UTF-8, which would read differently (two accented
-characters in a row in exactly the right order; not a name anyone has used).
+Not verified: his own play; whether the card should also redraw itself on the
+boundary while open, which would be a nicety on top of this and is not needed
+for the contract to hold; what happens to a card left open across many windows
+(it sells the old lot, which is what it says).

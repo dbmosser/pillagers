@@ -11,59 +11,58 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FEEDBACK TYPED IN THE PAUSE BOX ON THE FLOOR WAS KEPT SILENTLY AND ATTACHED
-# TO THE NEXT RAID. The box opens on the floor since v8.70, with the same note
-# field, and the buttons that read the field attach a note only when a raid is
-# running. On the floor nothing read it and nothing cleared it (only the way
-# to the character screen did), so the words sat in the box and rode into the
-# next raid's first pause as if written there, stamped with that raid's clock.
-# The close banks a floor note to the profile now, says so, and every report
-# prints them under FLOOR NOTES.
+# THE RESTORE CODE LEFT THE ARMOURY BEHIND. The card promises "what you have
+# unlocked" and the panel says REPLACES, and the maker (v11.03) carried the
+# credits, the XP, the stash, the cosmetics and the junk, and not one gun: not
+# the guns owned, not the one in hand, not the second slot, not the wear on
+# any of them. A friend restored from his code came back with the fresh
+# profile's Scav Pistol and nothing else. The code carries the armoury now,
+# and applying it brings the guns back; an older code without that block
+# leaves the guns as they are rather than stripping them.
 SubRx @'
-  pauseOpen=on;
-  // v10.96: every opening starts unarmed.
+  for(var i=0;i<st.length;i++) o.s[st[i]]=(o.s[st[i]]||0)+1;
+  return o;
+}
 '@ @'
-  pauseOpen=on;
-  // v11.64: a note typed on the floor has no raid to attach to. It used to sit
-  // in the box and ride into the NEXT raid's first pause as if written there.
-  // The close banks it to the profile; every report prints it under FLOOR NOTES.
-  if(!on&&!G){
-    var _fn=document.getElementById('pausenote'), _ft=_fn?_fn.value.trim():'';
-    if(_ft){
-      P.floorNotes=P.floorNotes||[];
-      P.floorNotes.push({run:P.runs||0,t:Date.now(),txt:_ft.slice(0,400)});
-      if(P.floorNotes.length>20) P.floorNotes.shift();
-      _fn.value='';
-      saveProfile();
-      try{ say2('Noted. It goes out with your next run report.'); }catch(_sn){}
-    }
-  }
-  // v10.96: every opening starts unarmed.
+  for(var i=0;i<st.length;i++) o.s[st[i]]=(o.s[st[i]]||0)+1;
+  // v11.64: the armoury. Guns owned, the one in hand, the second slot, and the
+  // rounds worn through each, which is what condition is made of.
+  o.g={w:(P.weapons||[]).slice(),e:P.equipped||'fists',e2:P.equippedSec||'none',wr:{}};
+  for(var wk in (P.wear||{})) if(P.wear[wk]) o.g.wr[wk]=P.wear[wk]|0;
+  return o;
+}
 '@
 SubRx @'
-  var _pn=document.getElementById('pausenote');
-  if(_pn) _pn.value='';               // a note on the floor has no raid to attach to
-  try{ saveProfile(); }catch(_sp){}
-  togglePauseBox(false);
+  P.stash=st;
+  saveProfile();
+  return true;
+}
 '@ @'
-  // v11.64: a note typed here is banked by the close below, not thrown away.
-  try{ saveProfile(); }catch(_sp){}
-  togglePauseBox(false);
+  P.stash=st;
+  // v11.64: the armoury, when the code carries one. A gun this build does not
+  // know is dropped, the same rule as the stash; an older code without the
+  // block leaves the guns as they are rather than stripping them.
+  if(o.g){
+    var gw=[], gi, gl=(o.g.w||[]);
+    for(gi=0;gi<gl.length;gi++) if(WEAPONS[gl[gi]]&&gl[gi]!=='fists'&&gw.indexOf(gl[gi])<0) gw.push(gl[gi]);
+    P.weapons=gw;
+    P.equipped=(o.g.e&&gw.indexOf(o.g.e)>=0)?o.g.e:'fists';
+    P.equippedSec=(o.g.e2&&gw.indexOf(o.g.e2)>=0&&o.g.e2!==P.equipped)?o.g.e2:'none';
+    P.wear={};
+    for(var wk in (o.g.wr||{})) if(WEAPONS[wk]) P.wear[wk]=Math.max(0,o.g.wr[wk]|0);
+  }
+  saveProfile();
+  return true;
+}
 '@
 SubRx @'
-  }catch(_te){}
-  L.push('Active config ['+(CFG.preset||'custom')+']: '+JSON.stringify(CFG));
+  return o.n+', '+(o.r|0)+' raid'+((o.r|0)===1?'':'s')+', '+'$'+(o.c|0).toLocaleString()+
+         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash.';
 '@ @'
-  }catch(_te){}
-  // v11.64: notes typed in the pause box on the floor, with no raid to carry them.
-  if(P.floorNotes&&P.floorNotes.length){
-    L.push('FLOOR NOTES ('+P.floorNotes.length+'):');
-    P.floorNotes.forEach(function(fn){
-      var when=''; try{ when=new Date(fn.t).toISOString(); }catch(_w){}
-      L.push('  after run #'+fn.run+' '+when+': '+fn.txt);
-    });
-  }
-  L.push('Active config ['+(CFG.preset||'custom')+']: '+JSON.stringify(CFG));
+  var ng=(o.g&&o.g.w)?o.g.w.length:0;
+  return o.n+', '+(o.r|0)+' raid'+((o.r|0)===1?'':'s')+', '+'$'+(o.c|0).toLocaleString()+
+         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash'+
+         (o.g?', '+ng+' gun'+(ng===1?'':'s'):'')+'.';
 '@
 
 # STAMPS.
@@ -81,11 +80,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
+  'YOUR RESTORE CODE NOW CARRIES YOUR GUNS. The code at the bottom of every run report promised what you had unlocked and left the armoury out: restored from it, you came back with a Scav Pistol. It carries every gun you own, the one in hand, the second slot and their wear now. Copy a fresh one.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.63:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.63 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.63:[^']*'",{ param($m) "now:'v11.64: feedback typed in the pause box on the floor was kept silently and attached to the next raid. The buttons attach a note only when a raid runs and nothing on the floor read or cleared the field, so the words rode into the next raid first pause stamped with its clock. The close banks a floor note to P.floorNotes (20 kept), says so, and buildExport prints them under FLOOR NOTES; the character-screen button no longer discards it. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.63:[^']*'",{ param($m) "now:'v11.64: the restore code left the armoury behind. restoreMake carried credits, XP, stash, cosmetics and junk and not one gun, while the card promised what you have unlocked and the panel said REPLACES; a friend restored from it came back with the fresh Scav Pistol. The code carries guns owned, the one in hand, the second slot and the wear on each now, applying it brings them back with unknown guns dropped, and an older code without the block leaves the guns as they are. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

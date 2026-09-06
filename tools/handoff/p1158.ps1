@@ -11,58 +11,53 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# THE RESTORE CODE LEFT THE ARMOURY BEHIND. The card promises "what you have
-# unlocked" and the panel says REPLACES, and the maker (v11.03) carried the
-# credits, the XP, the stash, the cosmetics and the junk, and not one gun: not
-# the guns owned, not the one in hand, not the second slot, not the wear on
-# any of them. A friend restored from his code came back with the fresh
-# profile's Scav Pistol and nothing else. The code carries the armoury now,
-# and applying it brings the guns back; an older code without that block
-# leaves the guns as they are rather than stripping them.
+# HIS NOTE, 2026-09-05 in-run at 130 s: "how lightning shows red noise, I want
+# ALL noises to do that when they are outside the player's vision but within
+# earshot, eg visualize noises with red circles!" That ring is noiseMark
+# (v9.07): every world sound routed through sfx(type,x,y) draws a ring when
+# you could hear it and could not see it. Four sounds never went through it,
+# because they were played by distance alone with no position: the storm's
+# strike telegraph, and the extraction's inbound pulse, touchdown and last
+# call. They go through sfx now, with a ring size each, so every noise in the
+# game marks itself the same way.
+
+# 1. RING SIZES for the three sounds that had none.
 SubRx @'
-  for(var i=0;i<st.length;i++) o.s[st[i]]=(o.s[st[i]]||0)+1;
-  return o;
-}
+  step:  {r:26, hear:420},
+  board: {r:34, hear:520}
+};
 '@ @'
-  for(var i=0;i<st.length;i++) o.s[st[i]]=(o.s[st[i]]||0)+1;
-  // v11.58: the armoury. Guns owned, the one in hand, the second slot, and the
-  // rounds worn through each, which is what condition is made of.
-  o.g={w:(P.weapons||[]).slice(),e:P.equipped||'fists',e2:P.equippedSec||'none',wr:{}};
-  for(var wk in (P.wear||{})) if(P.wear[wk]) o.g.wr[wk]=P.wear[wk]|0;
-  return o;
-}
+  step:  {r:26, hear:420},
+  board: {r:34, hear:520},
+  // v11.58, HIS NOTE: the extraction's own sounds mark themselves too.
+  inbound:  {r:30, hear:1400},
+  touchdown:{r:88, hear:1500},
+  lastcall: {r:44, hear:1400}
+};
+'@
+
+# 2. THE STORM TELEGRAPH, at the strike point.
+SubRx @'
+    if(!G.sim) blip('charge',dist(p,{x:sx,y:sy}));
+'@ @'
+    if(!G.sim) sfx('charge',sx,sy);   // v11.58, HIS NOTE: a positioned sound marks itself
+'@
+
+# 3. THE EXTRACTION'S INBOUND PULSE, TOUCHDOWN AND LAST CALL, at the ring.
+SubRx @'
+      if(z.pingT>=_iv){ z.pingT=0; blip('inbound',dist(p,z)); }
+'@ @'
+      if(z.pingT>=_iv){ z.pingT=0; sfx('inbound',z.x,z.y); }   // v11.58: marks itself
 '@
 SubRx @'
-  P.stash=st;
-  saveProfile();
-  return true;
-}
+      if(dist(p,z)<1400){ blip('touchdown',dist(p,z)); blip('alarm',dist(p,z));
 '@ @'
-  P.stash=st;
-  // v11.58: the armoury, when the code carries one. A gun this build does not
-  // know is dropped, the same rule as the stash; an older code without the
-  // block leaves the guns as they are rather than stripping them.
-  if(o.g){
-    var gw=[], gi, gl=(o.g.w||[]);
-    for(gi=0;gi<gl.length;gi++) if(WEAPONS[gl[gi]]&&gl[gi]!=='fists'&&gw.indexOf(gl[gi])<0) gw.push(gl[gi]);
-    P.weapons=gw;
-    P.equipped=(o.g.e&&gw.indexOf(o.g.e)>=0)?o.g.e:'fists';
-    P.equippedSec=(o.g.e2&&gw.indexOf(o.g.e2)>=0&&o.g.e2!==P.equipped)?o.g.e2:'none';
-    P.wear={};
-    for(var wk in (o.g.wr||{})) if(WEAPONS[wk]) P.wear[wk]=Math.max(0,o.g.wr[wk]|0);
-  }
-  saveProfile();
-  return true;
-}
+      if(dist(p,z)<1400){ sfx('touchdown',z.x,z.y); sfx('alarm',z.x,z.y);   // v11.58: mark themselves
 '@
 SubRx @'
-  return o.n+', '+(o.r|0)+' raid'+((o.r|0)===1?'':'s')+', '+'$'+(o.c|0).toLocaleString()+
-         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash.';
+      blip('lastcall',dist(p,z));
 '@ @'
-  var ng=(o.g&&o.g.w)?o.g.w.length:0;
-  return o.n+', '+(o.r|0)+' raid'+((o.r|0)===1?'':'s')+', '+'$'+(o.c|0).toLocaleString()+
-         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash'+
-         (o.g?', '+ng+' gun'+(ng===1?'':'s'):'')+'.';
+      sfx('lastcall',z.x,z.y);   // v11.58: marks itself
 '@
 
 # STAMPS.
@@ -80,11 +75,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'YOUR RESTORE CODE NOW CARRIES YOUR GUNS. The code at the bottom of every run report promised what you had unlocked and left the armoury out: restored from it, you came back with a Scav Pistol. It carries every gun you own, the one in hand, the second slot and their wear now. Copy a fresh one.',
+  'EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. Four never did: the storm telegraph and the extraction pulse, touchdown and last call. They do now.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.57:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.57 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.57:[^']*'",{ param($m) "now:'v11.58: the restore code left the armoury behind. restoreMake carried credits, XP, stash, cosmetics and junk and not one gun, while the card promised what you have unlocked and the panel said REPLACES; a friend restored from it came back with the fresh Scav Pistol. The code carries guns owned, the one in hand, the second slot and the wear on each now, applying it brings them back with unknown guns dropped, and an older code without the block leaves the guns as they are. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.57:[^']*'",{ param($m) "now:'v11.58: HIS NOTE of 2026-09-05, all noises outside vision but within earshot should draw a ring like lightning does. noiseMark (v9.07) already does that for every sound routed through sfx(type,x,y); four sounds bypassed it by playing by distance with no position: the strike telegraph and the extraction inbound pulse, touchdown and last call. They go through sfx now with ring sizes of their own. Check 11.58 requires the three new ring sizes, a ring for an unseen inbound behind the player and none for a seen one in front, and that strikeTick and tickExtractPoints route those four sounds through sfx.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

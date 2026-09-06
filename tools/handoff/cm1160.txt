@@ -1,10 +1,13 @@
-v11.60: the notoriety banner said the Peddler was done with you
+v11.60: a merc who boarded an earlier ship was never paid
 
-The stall has not shut since his v8.28 ruling that the Peddler always trades,
-and the hub card was renamed then; the in-raid banner at two notoriety still
-said the Peddler was done with you. It names what notoriety actually costs
-now, at every score. Check 11.60 confirms the stall is open and requires the
-two and three lines to name the cost and make no claim about the stall; fails
-on v11.59. From the v11.46 audit, P2.
+endRaid settles the merc's ten percent from his roster row and the boarding
+code stamps his haul onto that row, but only ordinary raiders were ever pushed
+to the roster; the hired merc went to ents alone, so no row was stamped when he
+boarded and none was found at settle, and the card said he was left out there.
+He gets a roster row at spawn now, marked merc, and the pillager board skips
+merc rows so your hire is not listed as a rival. Check 11.60 hires a real
+identity, deploys, requires the row, plays the boarding as the game does, ends
+the raid as an extract, and requires "extracted earlier" and the ten percent;
+fails on v11.59. From the v11.46 audit, P1.
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

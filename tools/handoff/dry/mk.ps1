@@ -1016,9 +1016,6 @@ window.__syncReport=function(){ syncAutoEx(); return document.getElementById('re
 // driven rather than read. __load is loadOf(), a loadout helper, and calling it
 // for this proved nothing at all.
 window.__loadProfile=function(){ return loadProfile(); };
-window.__wxHard=function(id){ try{ return wxHardId(id); }catch(e){ return null; } };
-window.__identityIds=function(){ var o=[]; try{ for(var i=0;i<IDENTITIES.length;i++) o.push(IDENTITIES[i].id); }catch(e){} return o; };
-window.__wirtLot=function(){ return wirtLotKey(); };
 window.__itemMenuRows=function(key,ctx,count){ return itemMenuRows(key,ctx,count); };
 window.__itemGk=function(k){ var it=(typeof ITEMS!=='undefined')&&ITEMS[k]; return it?(it.gk||null):null; };
 window.__noteCrash=function(k,m,w){ return noteCrash(k,m,w); };
@@ -5443,6 +5440,147 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.58',what:'the extraction inbound pulse, touchdown and last call and the storm telegraph draw the heard-not-seen noise ring like every other sound (his note of 2026-09-05): ring sizes exist, an unseen source rings and a seen one does not, and the four call sites are positioned',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof noiseMark!=='function'||typeof NOISEMARK==='undefined') return 'SKIP: no noise rings in this build';
+     var bad=[], need=['inbound','touchdown','lastcall'];
+     for(var i=0;i<need.length;i++) if(!NOISEMARK[need[i]]) bad.push('the '+need[i]+' sound has no ring size, so it can never mark itself');
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.noiseRings=[]; p.face=0;   // facing +x
+       if(NOISEMARK.inbound){
+         // BEHIND the player, within earshot: heard, not seen, so it rings.
+         noiseMark('inbound',p.x-400,p.y);
+         var n1=(g.noiseRings||[]).length;
+         if(n1<1) bad.push('an inbound pulse 400 units behind the player drew no ring');
+         // IN FRONT, close, in the open: seen, so no ring (the game own eyes rule).
+         g.noiseRings=[];
+         noiseMark('inbound',p.x+60,p.y);
+         if((g.noiseRings||[]).length>0&&canSee(p.x,p.y,p.face,p.x+60,p.y,g.vseg)) bad.push('control: a seen source 60 units ahead drew a ring');
+       }
+       var s1='', s2='';
+       try{ s1=strikeTick.toString(); s2=tickExtractPoints.toString(); }catch(_s){}
+       var sfxc=['sfx(',"'charge'"].join(''), sfxi=['sfx(',"'inbound'"].join(''), sfxt=['sfx(',"'touchdown'"].join(''), sfxl=['sfx(',"'lastcall'"].join('');
+       if(s1.indexOf(sfxc)<0) bad.push('the storm telegraph is still played by distance alone, with no position to ring at');
+       if(s2.indexOf(sfxi)<0) bad.push('the inbound pulse is still played by distance alone');
+       if(s2.indexOf(sfxt)<0) bad.push('the touchdown is still played by distance alone');
+       if(s2.indexOf(sfxl)<0) bad.push('the last call is still played by distance alone');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var g3=__state(); if(g3) g3.noiseRings=[]; }catch(_r){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.57',what:'the storm warning ring says LIGHTNING INCOMING with the seconds left, and the world draw puts it at the circle (his note of 2026-09-05)',
+   run:function(){
+     if(typeof strikeLabel!=='function') return 'the strike warning ring says nothing; there is no label to read';
+     if(typeof render2D!=='function') return 'SKIP: no world draw in this build';
+     var bad=[];
+     var a=String(strikeLabel({t:1.6})), b=String(strikeLabel({t:0.3}));
+     if(a.indexOf('LIGHTNING INCOMING')<0) bad.push('at 1.6 s the label reads "'+a+'"');
+     if(a.indexOf('2S')<0) bad.push('at 1.6 s the label does not round to 2S: "'+a+'"');
+     if(b.indexOf('LIGHTNING INCOMING')<0||b.indexOf('1S')<0) bad.push('at 0.3 s the label reads "'+b+'" and not LIGHTNING INCOMING 1S');
+     var src=''; try{ src=render2D.toString(); }catch(_s){}
+     if(src.indexOf('strikeLabel(')<0) bad.push('control: the world draw does not read strikeLabel, so the words are never at the circle');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.56',what:'no storm strike point lands inside a building (his note of 2026-09-05); the storm still strikes',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__wxHard)) return 'SKIP: this fixture cannot deploy under a storm';
+     if(typeof strikeTick!=='function'||typeof buildingAtPt!=='function') return 'SKIP: no storm strikes in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, B=(g.map&&g.map.buildings)||[];
+       if(!B.length) return 'SKIP: this map has no buildings to stand in';
+       if(!__wxHard('storm')) return 'SKIP: storm is not a weather here';
+       if(!g.wx) g.wx={}; g.wx.id='storm';
+       // Stand in the middle of the largest building, so rolls of 180 to 800 units land indoors often.
+       var big=B[0]; for(var i=1;i<B.length;i++) if(B[i].w*B[i].h>big.w*big.h) big=B[i];
+       p.x=big.x+big.w/2; p.y=big.y+big.h/2; p.downed=false; g.over=false; g.paused=false;
+       var spawned=0, inside=0, sample=null;
+       for(var k=0;k<60;k++){
+         g.strikes=[]; g.strikeAt=0;
+         strikeTick(0.05);
+         for(var j=0;j<g.strikes.length;j++){
+           spawned++;
+           var S=g.strikes[j], bb=buildingAtPt(g.map,S.x,S.y);
+           if(bb){ inside++; if(!sample) sample=Math.round(S.x)+','+Math.round(S.y); }
+         }
+       }
+       if(spawned<20) bad.push('control: the storm spawned only '+spawned+' strike points in sixty tries, so nothing was measured');
+       if(inside>0) bad.push(inside+' of '+spawned+' strike points landed inside a building (first at '+sample+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var g2=__state(); if(g2){ g2.strikes=[]; g2.strikeAt=8; } }catch(_r){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.55',what:'a cooked frag shouts COOKED GRENADE! THROW GRENADE NOW for its last second in hand, nothing else in hand shouts, and the HUD draws the shout (his notes of 2026-09-05)',
+   run:function(){
+     if(typeof cookShout!=='function') return 'there is no last-second shout for a cooked grenade';
+     if(typeof drawHUD!=='function'||typeof FRAG_FUSE==='undefined') return 'SKIP: no HUD draw or no fuse in this build';
+     var bad=[], line='COOKED GRENADE! THROW GRENADE NOW';
+     var got1=cookShout({cooking:1,cookKind:'frag',cookT:FRAG_FUSE-0.5});
+     if(got1!==line) bad.push('with half a second left in hand the shout is '+JSON.stringify(got1)+' and not the line');
+     var got0=cookShout({cooking:1,cookKind:'frag',cookT:FRAG_FUSE-0.05});
+     if(got0!==line) bad.push('at the last instant the shout is '+JSON.stringify(got0));
+     if(FRAG_FUSE>1.5){
+       var gotE=cookShout({cooking:1,cookKind:'frag',cookT:FRAG_FUSE-1.5});
+       if(gotE!==null) bad.push('control: with 1.5 s left the shout already shows');
+     }
+     if(cookShout({cooking:1,cookKind:'smoke',cookT:5})!==null) bad.push('control: a smoke in hand shouts about a grenade');
+     if(cookShout({cooking:0,cookKind:'frag',cookT:1})!==null) bad.push('control: an empty hand still shouts');
+     var src=''; try{ src=drawHUD.toString(); }catch(_s){}
+     if(src.indexOf('cookShout(')<0) bad.push('control: the HUD draw does not read cookShout, so the shout is never on screen');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.54',what:'an extraction point badge names one of his four states in his words (sound the alarm to begin countdown; N s until extraction begins; extract now, N s until it ends; closed for the remainder of this raid) with the live seconds, and the HUD draws that badge',
+   run:function(){
+     if(typeof zoneBadge!=='function') return 'the extraction point badge still says OPEN or CLOSED; there is no state function to read';
+     if(typeof drawHUD!=='function') return 'SKIP: no HUD draw in this build';
+     var bad=[], oldWord=['EXTRACTION',' - OPEN'].join('');
+     function want(z,exp,what){ var got=String(zoneBadge(z)); if(got!==exp) bad.push(what+' reads "'+got+'" and not "'+exp+'"'); }
+     want({open:false,beaconT:null,hold:null},'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID','a closed point');
+     want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','an open point nobody has called');
+     want({open:true,beaconT:17.2,hold:null},'EXTRACTION POINT - 18S UNTIL EXTRACTION BEGINS','a called point with the beacon inbound');
+     want({open:true,beaconT:0,hold:11.4},'EXTRACTION POINT - EXTRACT NOW! 12S UNTIL EXTRACTION ENDS','a landed point in its hold window');
+     want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','a point the extraction has left');
+     // CONTROL: the HUD draw reads the function, or the words above are never on screen.
+     var src=''; try{ src=drawHUD.toString(); }catch(_s){}
+     if(src.indexOf('zoneBadge(')<0) bad.push('control: the HUD draw does not read zoneBadge, so the badge on screen is not these words');
+     if(src.indexOf(oldWord)>=0) bad.push('control: the HUD draw still carries the old '+oldWord+' badge');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.53',what:'holding Shift with movement while crouched leaves the crouch and sprints, a roll leaves the crouch, and walking without Shift keeps it (his notes of 2026-09-05)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop&&window.__keys&&window.__runPrep)) return 'SKIP: this fixture cannot drive the player';
+     if(typeof tryRoll!=='function') return 'SKIP: no roll in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, K=__keys(), q;
+       for(q in K) delete K[q];
+       g.ents.length=0;   // nothing on the map to change the stance for us
+       p.stam=100; p.stamLock=0; p.stamRelease=0; p.ads=false; p.downed=false; p.roll=0; p.rollCd=0;
+       // ARM ONE: crouched, then Shift with W through four real frames.
+       G.crouchTog=true;
+       K['ShiftLeft']=true; K['KeyW']=true;
+       var t0=performance.now();
+       for(var f=0;f<4;f++) __loop(t0+f*16.7);
+       if(G.crouchTog) bad.push('holding Shift with W while crouched left the crouch on');
+       if(!G.sprinting) bad.push('holding Shift with W while crouched did not sprint (sprinting '+G.sprinting+', stamina '+Math.round(p.stam)+')');
+       delete K['ShiftLeft']; delete K['KeyW'];
+       // ARM TWO: crouched, then a roll.
+       G.crouchTog=true; p.stam=100; p.roll=0; p.rollCd=0; p.downed=false;
+       K['KeyW']=true; tryRoll(); delete K['KeyW'];
+       if(!(p.roll>0)) bad.push('control: the roll did not start (roll '+p.roll+')');
+       if(G.crouchTog) bad.push('rolling left the crouch on');
+       // CONTROL: walking without Shift keeps the crouch.
+       G.crouchTog=true; p.roll=0; p.rollCd=0; K['KeyW']=true;
+       for(var f2=0;f2<4;f2++) __loop(t0+200+f2*16.7);
+       delete K['KeyW'];
+       if(!G.crouchTog) bad.push('control: walking without Shift cleared the crouch on its own');
+       G.crouchTog=false;
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var K2=__keys(); for(var q2 in K2) delete K2[q2]; }catch(_k){} try{ G.crouchTog=false; }catch(_g){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.52',what:'credits and XP are shown at all times in the upper right corner, in the Undercroft and in a raid, above the screens and clear of the CONDITIONS box, and the readout follows the profile when a figure changes',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__P&&window.__hubEnter)) return 'SKIP: this fixture cannot deploy and read the screen';
@@ -5491,338 +5629,6 @@ window.__REGRESS=[
        try{ var pf=__P(); pf.credits=keepC; pf.xp=keepX; saveProfile(); }catch(_r){}
        __topClear(); __cleanProfile();
      }
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.61',what:'dropping a tactical belt item on the stash says it went to the stash, and it did: it left the backpack and its belt key',
-   run:function(){
-     if(!(window.__P&&window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot walk the Undercroft';
-     if(typeof say2!=='function') return 'SKIP: no say2 in this build';
-     var zone=document.getElementById('stashgrid');
-     if(!zone) return 'SKIP: no stash grid in this document';
-     var bad=[], prof, got=[], _s2=say2, stale=['back in the ','backpack'].join('');
-     try{
-       __topClear(); __cleanProfile(); prof=__P();
-       try{ __hubEnter(); __station('stash'); }catch(_h){}
-       try{ renderHub(); }catch(_r){}
-       if(typeof zone.__grabDrop!=='function') return 'SKIP: the stash grid is not a drop zone here (no __grabDrop), so the drop cannot be driven';
-       // A medkit in the backpack, on belt key 1.
-       prof.kit=['medkit']; prof.hotAssign={0:'medkit'}; prof.stash=[];
-       say2=function(t){ got.push(String(t)); };
-       zone.__grabDrop('medkit','plan:0');
-       say2=_s2;
-       var line=got.join(' | ');
-       // CONTROL: the item really left the backpack and its key, or the words are not about this drop.
-       if((prof.kit||[]).indexOf('medkit')>=0) bad.push('control: the medkit is still in the backpack after the drop');
-       if(prof.hotAssign&&prof.hotAssign[0]!==undefined) bad.push('control: the belt key still holds the medkit after the drop');
-       if(!got.length) bad.push('control: the drop said nothing at all');
-       // THE FIX: the line names where it went.
-       if(line.indexOf(stale)>=0) bad.push('the drop said "'+line+'" while taking the item out of the backpack');
-       if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ say2=_s2; __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.64',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
-   run:function(){
-     if(!window.__P||typeof togglePauseBox!=='function'||typeof buildExport!=='function') return 'SKIP: no pause box in this build';
-     if(!document.getElementById('pausenote')) return 'SKIP: no note box in this document';
-     var bad=[], prof, note='ZQX floor note 8812';
-     try{
-       __topClear(); __cleanProfile(); prof=__P();
-       if(window.__hubEnter){ try{ __hubEnter(); }catch(_h){} }
-       if(G) return 'SKIP: a raid is running, so this is not the floor';
-       if(typeof state!=='undefined'&&state!=='hub') return 'SKIP: not on the floor (state '+state+'), so the box cannot open';
-       delete prof.floorNotes;
-       togglePauseBox(true);
-       var ta=document.getElementById('pausenote'); ta.value=note;
-       togglePauseBox(false);
-       var fl=prof.floorNotes||[], last=fl[fl.length-1];
-       if(!last||last.txt!==note) bad.push('the note typed on the floor was not banked (floorNotes: '+JSON.stringify(fl).slice(0,80)+')');
-       if((ta.value||'').trim()===note) bad.push('the note is still sitting in the box, waiting to ride into the next raid');
-       var rep=buildExport(), txt=(rep&&rep.join)?rep.join('\n'):String(rep);
-       if(txt.indexOf(note)<0) bad.push('the run report does not carry the floor note');
-       else if(txt.indexOf('FLOOR NOTES')<0) bad.push('the report carries the note but does not say what it is');
-       // CONTROL: a second close with an empty box banks nothing more.
-       togglePauseBox(true); togglePauseBox(false);
-       if((prof.floorNotes||[]).length!==fl.length) bad.push('control: closing an empty box banked a note');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{
-       try{ var ta2=document.getElementById('pausenote'); if(ta2) ta2.value=''; }catch(_t){}
-       try{ togglePauseBox(false); }catch(_c){}
-       __topClear(); __cleanProfile();
-     }
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.63',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__frame&&window.__mouse&&window.__canvases&&window.__P)) return 'SKIP: this fixture cannot click a panel';
-     if(typeof HUDBOX==='undefined'||typeof hudOnGrip!=='function') return 'SKIP: no HUD panels in this build';
-     var bad=[], prof, keepHud;
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       prof=__P(); keepHud=JSON.stringify(prof.hud===undefined?null:prof.hud);
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state();
-       if(!g.roster||!g.roster.length) return 'SKIP: no pillager roster, so there is no board to fold';
-       prof.hud=prof.hud||{}; prof.hud.raiders={c:true};
-       __frame(); __frame();
-       var HB=HUDBOX.raiders;
-       if(!HB||!HB.tg) bad.push('control: the folded board drew no box or no glyph');
-       else {
-         var m=__mouse(), cv=__canvases().world;
-         var x=Math.round(HB.tg.x+HB.tg.w/2), y=Math.round(HB.tg.y+HB.tg.h/2);
-         // CONTROL: the glyph centre really sits inside the grip zone, or the click proves nothing.
-         if(!hudOnGrip(HB,x,y)) return 'SKIP: the glyph centre is outside the grip zone at this size, so the clash cannot be driven here';
-         m.x=x; m.y=y; m.down=false;
-         cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true,cancelable:true,clientX:x,clientY:y}));
-         var rz=(typeof HUDRESIZE!=='undefined'&&HUDRESIZE)?HUDRESIZE.id:null;
-         try{ window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true})); }catch(_u){}
-         if(rz) bad.push('the click on [+] of the folded board started a resize of "'+rz+'"');
-         if(prof.hud.raiders&&prof.hud.raiders.c) bad.push('the click on [+] did not expand the board');
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{
-       try{ var kh=JSON.parse(keepHud); if(kh===null) delete prof.hud; else prof.hud=kh; }catch(_h){}
-       try{ HUDRESIZE=null; }catch(_z){}
-       __topClear(); __cleanProfile();
-     }
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.62',what:'with Other pillagers set to None the extraction-heat row still reads its own word rather than CUSTOM, the waves are off, and they come back when pillagers return to Standard',
-   run:function(){
-     if(!window.__P||typeof applyGameOpts!=='function'||typeof gameOptLive!=='function'||typeof gameOptIx!=='function') return 'SKIP: no settings rows in this build';
-     var bad=[], prof=__P(), keepGO=JSON.stringify(prof.gameOpts===undefined?null:prof.gameOpts), keepT=JSON.stringify(prof.tuned||{}), keepRW=CFG.raiderWaves, keepNR=CFG.nRaider;
-     try{
-       prof.gameOpts={}; prof.tuned={};
-       prof.gameOpts.raiders=3;              // None
-       applyGameOpts();
-       if(CFG.raiderWaves!==0) bad.push('control: with pillagers None the waves are still on ('+CFG.raiderWaves+')');
-       var lv=gameOptLive('ext');
-       if(lv<0) bad.push('with pillagers None the extraction-heat row reads CUSTOM, no option matching the live dials, though nothing about the ring was changed');
-       else if(lv!==gameOptIx('ext')) bad.push('the extraction-heat row reads option '+lv+' and not the chosen '+gameOptIx('ext'));
-       if(gameOptLive('raiders')!==3) bad.push('control: the pillagers row does not read None after being set to it ('+gameOptLive('raiders')+')');
-       prof.gameOpts.raiders=1;              // back to Standard
-       applyGameOpts();
-       if(CFG.raiderWaves!==1) bad.push('control: with pillagers back on Standard the waves did not return ('+CFG.raiderWaves+')');
-       if(gameOptLive('raiders')!==1) bad.push('control: the pillagers row does not read Standard after being set to it ('+gameOptLive('raiders')+')');
-       if(gameOptLive('ext')<0) bad.push('control: the extraction-heat row reads CUSTOM with pillagers on Standard');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{
-       try{ var go=JSON.parse(keepGO); if(go===null) delete prof.gameOpts; else prof.gameOpts=go; prof.tuned=JSON.parse(keepT); applyGameOpts(); CFG.raiderWaves=keepRW; CFG.nRaider=keepNR; saveProfile(); }catch(_r){}
-     }
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.60',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
-   run:function(){
-     if(typeof notoBite!=='function'||typeof pedOpen!=='function') return 'SKIP: no notoriety banner in this build';
-     if(!pedOpen()) return 'SKIP: the stall shuts in this build, so the old line would be true';
-     var bad=[], stale=['done with',' you'].join(''), b1=String(notoBite(1)), b2=String(notoBite(2)), b3=String(notoBite(3));
-     if(b2.indexOf(stale)>=0) bad.push('at notoriety 2 the banner says "'+b2+'" while the stall stays open');
-     if(b3.indexOf(stale)>=0) bad.push('at notoriety 3 the banner says "'+b3+'" while the stall stays open');
-     if(b2.indexOf('Hiring')<0) bad.push('at notoriety 2 the banner does not name the hiring cost: "'+b2+'"');
-     if(b1.indexOf('Hiring')<0) bad.push('control: at notoriety 1 the banner does not name the hiring cost: "'+b1+'"');
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.59',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
-   run:function(){
-     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
-     if(typeof restoreCode!=='function'||typeof restoreRead!=='function') return 'SKIP: this build has no restore code';
-     var bad=[], prof=__P(), keepN=prof.pname;
-     try{
-       var fancy='ZQX'+String.fromCharCode(0x2019)+'S '+String.fromCharCode(0xD83D,0xDD25);
-       prof.pname=fancy;
-       var code=restoreCode();
-       if(!code) bad.push('a name with a curly quote and an emoji produced no restore code at all, so the friend it belongs to cannot be restored');
-       else {
-         var o=restoreRead(code);
-         if(!o) bad.push('the code for that name cannot be read back');
-         else if(o.n!==fancy) bad.push('the name came back as '+JSON.stringify(o.n)+' and not '+JSON.stringify(fancy));
-       }
-       // CONTROL: a code written the old way, plain btoa of ASCII JSON, still reads.
-       var old='PIL1'+btoa(JSON.stringify({v:1,n:'OLDCODE',c:4471,x:1})).replace(/=+$/,'');
-       var o2=restoreRead(old);
-       if(!o2||o2.n!=='OLDCODE'||o2.c!==4471) bad.push('control: a code written before this build no longer reads ('+(o2?JSON.stringify(o2.n):'null')+')');
-       // CONTROL: the plain-ASCII case is unchanged.
-       prof.pname='PLAINNAME';
-       var o3=restoreRead(restoreCode());
-       if(!o3||o3.n!=='PLAINNAME') bad.push('control: a plain name no longer round-trips ('+(o3?JSON.stringify(o3.n):'null')+')');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ prof.pname=keepN; try{ saveProfile(); }catch(_s){} }
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.58',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
-   run:function(){
-     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
-     if(typeof restoreCode!=='function'||typeof restoreRead!=='function'||typeof restoreApply!=='function') return 'SKIP: this build has no restore code';
-     var bad=[], prof;
-     try{
-       __topClear(); __cleanProfile(); prof=__P();
-       // DISTINCTIVE: three guns no fresh profile owns, the marksman rifle in hand,
-       // the magnum second, and worn figures nothing rolls.
-       prof.weapons=['dmr','magnum','sniper']; prof.equipped='dmr'; prof.equippedSec='magnum'; prof.wear={dmr:137,magnum:41};
-       var code=restoreCode();
-       if(!code) bad.push('no restore code was made');
-       var o=code?restoreRead(code):null;
-       if(code&&!o) bad.push('the code cannot be read back');
-       else if(o&&!o.g) bad.push('the code carries no armoury: three owned guns, the one in hand and their wear are not in it, while the card promises what you have unlocked');
-       else if(o){
-         // Wipe to a fresh armoury, then apply the code.
-         prof.weapons=['pistol']; prof.equipped='pistol'; prof.equippedSec='none'; prof.wear={};
-         var ok=restoreApply(o);
-         if(!ok) bad.push('control: the code was refused');
-         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('the guns came back as '+((prof.weapons||[]).join(',')||'nothing')+' and not dmr,magnum,sniper');
-         if(prof.equipped!=='dmr') bad.push('the gun in hand came back as '+prof.equipped+' and not dmr');
-         if((prof.equippedSec||'none')!=='magnum') bad.push('the second slot came back as '+(prof.equippedSec||'none')+' and not magnum');
-         if(((prof.wear||{}).dmr|0)!==137) bad.push('the wear on the marksman rifle came back as '+((prof.wear||{}).dmr|0)+' and not 137');
-         // CONTROL: a gun the build does not know is dropped, not restored.
-         o.g.w.push('zqxgun'); restoreApply(o);
-         if((prof.weapons||[]).indexOf('zqxgun')>=0) bad.push('control: a gun this build does not have was restored into the armoury');
-         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('control: after the unknown gun the armoury reads '+(prof.weapons||[]).join(','));
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.57',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&document.getElementById('tagwrap')&&document.getElementById('oc_copy')&&document.getElementById('oc_btn'))) return 'SKIP: this fixture cannot end a raid and press the card';
-     // Force the SYNCHRONOUS copy path, as check 11.32 does, so Copy report has
-     // committed by the time click() returns.
-     var desc; try{ desc=Object.getOwnPropertyDescriptor(navigator,'clipboard'); }catch(_d){ desc=null; }
-     var redefined=false;
-     try{ Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true}); redefined=(navigator.clipboard===undefined); }catch(_e){ redefined=false; }
-     if(!redefined) return 'SKIP: navigator.clipboard cannot be hidden here, so Copy report cannot be pressed synchronously';
-     var bad=[], origExec=document.execCommand, prof, keepAE, lateNote='ZQX late note 4471';
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       prof=__P(); keepAE=prof.autoExport; prof.autoExport=false;   // a check must not start a download
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(); g.ents.length=0;
-       __endRaid('extract');
-       document.execCommand=function(){ return true; };
-       var n0=(prof.log||[]).length;
-       document.getElementById('oc_copy').click();   // logs the run, with no tags yet
-       var log=prof.log||[], rec=log[log.length-1];
-       if(log.length!==n0+1||!rec) bad.push('control: Copy report did not log the run ('+(log.length-n0)+' rows added)');
-       else {
-         if((rec.tags||[]).length) bad.push('control: the row Copy wrote already carries tags '+rec.tags.join(', ')+', so a late tag proves nothing');
-         var cells=document.getElementById('tagwrap').querySelectorAll('.tag');
-         if(cells.length<2) bad.push('control: the card drew '+cells.length+' tag buttons');
-         else {
-           var lateTag=String(cells[1].textContent);
-           cells[1].click();                                   // chosen AFTER Copy report
-           document.getElementById('oc_note').value=lateNote;  // typed AFTER Copy report
-           document.getElementById('oc_btn').click();          // Log run and return
-           var log2=prof.log||[], rec2=log2[log2.length-1];
-           if(log2.length!==n0+1) bad.push('control: Log run and return added '+(log2.length-n0-1)+' extra row(s), so the run was logged twice');
-           var got=(rec2&&rec2.tags||[]).map(function(x){ return String(x).toUpperCase(); }).join(' | ');
-           if(got.indexOf(lateTag.toUpperCase())<0) bad.push('the tag '+lateTag+' chosen after Copy report did not reach the run (tags: '+(got||'none')+')');
-           if(((rec2&&rec2.note)||'')!==lateNote) bad.push('the note typed after Copy report did not reach the run (note: "'+((rec2&&rec2.note)||'')+'")');
-         }
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{
-       document.execCommand=origExec;
-       try{ if(desc) Object.defineProperty(navigator,'clipboard',desc); }catch(_r){}
-       try{ if(prof) prof.autoExport=keepAE; }catch(_a){}
-       __topClear(); __cleanProfile();
-     }
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.56',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__sim&&window.__keys)) return 'SKIP: this fixture cannot revive a man';
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(), p=g.player, R=null, i, bad=[];
-     for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.merc&&!e.finished){ R=e; break; } }
-     if(!R) return 'SKIP: no pillager to down';
-     // You downed him: the downing shot stamped byPlayer. He lies within reach.
-     R.downed=1; R.byPlayer=true; R.hostile=true; R.friendlyPC=0; R.x=p.x+20; R.y=p.y;
-     g.over=false; p.downed=false; g.revLock=0;
-     var K=__keys(); for(var q in K) delete K[q]; K['KeyE']=true;
-     try{ __sim(0.15); }catch(e2){ bad.push('the step threw: '+String(e2&&e2.message||e2).slice(0,80)); }
-     delete K['KeyE'];
-     // CONTROL: the revive happened at all, or the flag reading proves nothing.
-     if(!(R.downed===0&&R.friendlyPC===1)) bad.push('control: E next to the downed man did not revive him (downed '+R.downed+', friendlyPC '+R.friendlyPC+')');
-     // THE FIX: his next death is no longer yours.
-     else if(R.byPlayer) bad.push('the revived man still carries byPlayer, so a crawler killing him later would be your kill, your contract tick and a grudge');
-     __topClear(); __cleanProfile();
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.55',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__wxHard)) return 'SKIP: this fixture cannot end a raid and read the card';
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var P=window.__P(), bad=[];
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(), p=g.player;
-     // A multiplier must be in play or the two figures agree by accident: force hard weather.
-     var hard=null; if(window.__wxHard('storm')) hard='storm'; else if(window.__wxHard('fog')) hard='fog';
-     if(!hard) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
-     if(!g.wx) g.wx={}; g.wx.id=hard;
-     // Something to bank: a bag worth carrying out.
-     p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
-     var n0=(P.log||[]).length;
-     try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
-     var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
-     var m=/\+\s*([\d,]+)\s*XP/.exec(txt);
-     var card=m?parseInt(m[1].replace(/,/g,''),10):null;
-     var rec=(P.log&&P.log.length>n0)?P.log[P.log.length-1]:null;
-     if(card===null) bad.push('the card printed no "+N XP" line (card says: '+txt.replace(/\s+/g,' ').slice(0,80)+')');
-     if(!rec||typeof rec.xpGot!=='number') bad.push('the run was not banked with an xpGot figure');
-     if(card!==null&&rec&&typeof rec.xpGot==='number'){
-       // THE FIX: what the card says is what was banked.
-       if(card!==rec.xpGot) bad.push('the card printed +'+card+' XP but the profile banked '+rec.xpGot+' (base '+rec.xpBase+', weather hard '+rec.wxHard+')');
-       // CONTROL: the multiplier really was in play, or the agreement proves nothing.
-       if(!rec.wxHard) bad.push('control: the banked record does not carry the hard-weather flag, so no multiplier was in play');
-     }
-     __topClear(); __cleanProfile();
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.54',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
-   run:function(){
-     if(!(window.__identityIds&&window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot hire a merc and end a raid';
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var ids=window.__identityIds(); if(!ids.length) return 'SKIP: no identities to hire';
-     var P=window.__P(), bad=[];
-     P.merc=ids[0]; P.credits=1000;
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(), M=null, i;
-     for(i=0;i<g.ents.length;i++){ if(g.ents[i].merc){ M=g.ents[i]; break; } }
-     if(!M){ __cleanProfile(); return 'SKIP: the hired merc did not spawn'; }
-     var row=null; for(i=0;i<(g.roster||[]).length;i++){ if(g.roster[i].ref===M){ row=g.roster[i]; break; } }
-     // THE FIX: he is on the roster at all.
-     if(!row) bad.push('the hired merc has no roster row, so boarding cannot stamp his haul and endRaid cannot pay your cut');
-     else {
-       // He fled low and boarded an earlier ship: the boarding code stamps the
-       // row and removes him from the world. Then you extract.
-       row.out=true; row.outAt=0; row.val=1234;
-       var ix=g.ents.indexOf(M); if(ix>=0) g.ents.splice(ix,1);
-       var c0=P.credits;
-       try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
-       var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
-       if(!/extracted earlier/i.test(txt)) bad.push('the card did not say he extracted earlier (it says: '+txt.replace(/\s+/g,' ').slice(0,90)+')');
-       if(!(P.credits-c0>=123)) bad.push('your ten percent of his 1,234 was not paid (credits moved '+(P.credits-c0)+')');
-     }
-     __topClear(); __cleanProfile();
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.53',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
-   run:function(){
-     if(!(window.__wirtLot&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open Wirt';
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var P=window.__P(), bad=[], realNow=Date.now;
-     P.credits=999999; P.stash=[];
-     var st=null; try{ st=window.__station('gamble','KeyE'); }catch(e){ st={err:String(e)}; }
-     if(st&&st.err) return 'SKIP: '+st.err;
-     var shown=window.__wirtLot();
-     if(!(shown&&shown.length)) return 'SKIP: the counter is empty';
-     var btn=document.getElementById('wirtlotbtn');
-     if(!btn) return 'SKIP: no Buy button on the counter';
-     // THE WINDOW ROLLS between the card and the click: move the clock forward
-     // one window, or two, or three, until the lot differs from the shown one.
-     var base=realNow(), next=null, rolled=0;
-     for(var r=1;r<=3&&!next;r++){ Date.now=function(){ return base+r*300000; }; var cand=window.__wirtLot(); if(cand&&cand.length&&cand[0]!==shown[0]){ next=cand; rolled=r; } }
-     if(!next){ Date.now=realNow; return 'SKIP: the next three windows hold the same lot, so a roll cannot be told apart'; }
-     Date.now=function(){ return base+rolled*300000; };
-     try{ btn.click(); }catch(e2){}
-     Date.now=realNow;
-     var got=(P.stash||[]).length?P.stash[P.stash.length-1]:null;
-     // THE FIX: he receives what the card NAMED AND PRICED.
-     if(got!==shown[0]) bad.push('after the window rolled, Buy delivered '+got+' instead of the shown '+shown[0]);
-     // CONTROL: he was charged, so a buy went through and the comparison is real.
-     if(!(P.credits<999999)) bad.push('control: no credits were taken, so nothing was bought and the comparison proves nothing');
-     try{ var gm=document.getElementById('gamblemodal'); if(gm) gm.classList.remove('on'); }catch(e3){}
-     __cleanProfile(); __topClear();
      return bad.length?bad.join('; '):null; }},
   {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
    run:function(){

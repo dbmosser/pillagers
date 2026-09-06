@@ -11,43 +11,53 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# THE OUTCOME CARD PRINTED BASE XP; THE PROFILE WAS CREDITED BASE x NIGHT x
-# WEATHER x DOSE. The card built its own record without the night and wxHard
-# flags and printed spForRun+xpForRun raw, while commitRun, a moment later, ran
-# addProgress (round(base x night x weather)) and addXp (round(that x dose)). A
-# night run said +100 and banked 120, and the "XP in all" and "XP away" figures
-# on the same line were wrong with it. One helper now owns the night and weather
-# arithmetic, the bank uses it, and the card prints exactly what will be banked.
+# HIS NOTES, 2026-09-05: "cooking grenades should give more warning before
+# exploding in your hand, need a message with 1 sec left like COOKED GRENADE!
+# THROW GRENADE NOW" and "COOKING A GRENADE SHOULD COUNT down, NOT UP!!!". He
+# died to his own charge in both runs that night. The in-hand readout already
+# counts down (COOKING 0.8s, and a shrinking bar); what it never did was
+# shout. FRAG_FUSE is 1.1 seconds and is NOT moved here (his order: no in-raid
+# balancing before alpha); with that fuse the last second is nearly the whole
+# cook, which is the finding, and the shout is honest about it.
+
+# 1. THE WORDS, in one place, before the HUD draw.
 SubRx @'
-function addProgress(rec){
+function drawHUD(){
+  var p=G.player,T=G.tel,i;
 '@ @'
-// v11.55: the one place the night and weather multipliers are applied to a run's
-// base XP. addProgress banks it; the outcome card prints it (times the dose
-// multiplier addXp applies), so the two can never disagree again.
-function xpBaseFor(rec){
-  return Math.round((spForRun(rec)+xpForRun(rec))*(rec.night?nightXpMul():1)*(rec.wxHard?wxXpMul():1));
+// v11.55, HIS NOTE: the last second of a cooked frag, in his words. One place,
+// so the draw and the check read the same line.
+function cookShout(p){
+  if(!p||!p.cooking||p.cookKind!=='frag') return null;
+  var left=FRAG_FUSE-(p.cookT||0);
+  return left<=1.0?'COOKED GRENADE! THROW GRENADE NOW':null;
 }
-function addProgress(rec){
+function drawHUD(){
+  var p=G.player,T=G.tel,i;
 '@
 
+# 2. THE SHOUT ON SCREEN, above the countdown, flashing.
 SubRx @'
-  var _xb=Math.round((spForRun(rec)+xpForRun(rec))*(rec.night?nightXpMul():1)*(rec.wxHard?wxXpMul():1)), _xg=addXp(_xb);
+      if(isFrag) bar(cs2.x-24,cs2.y-LH(22),48,4,1-cf,ccol);
+    }
+  }
 '@ @'
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb);
-'@
-
-SubRx @'
-    var _grec={outcome:how,haul:haul,containers:T.containers,kills:T.kills,termPay:tPay,
-      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:T.distance||0};
-    var gained=spForRun(_grec)+xpForRun(_grec);
-'@ @'
-    var _grec={outcome:how,haul:haul,containers:T.containers,kills:T.kills,termPay:tPay,
-      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:T.distance||0,
-      // v11.55: the same two flags the banked record carries, so the card prints
-      // what addProgress and addXp will actually credit: night, weather and dose.
-      night:(typeof isDay==='function'&&!isDay())?1:0,
-      wxHard:(typeof wxHardId==='function')?wxHardId((G.wx&&G.wx.id)||'clear'):0};
-    var gained=Math.round(xpBaseFor(_grec)*buzzXpMul());
+      if(isFrag) bar(cs2.x-24,cs2.y-LH(22),48,4,1-cf,ccol);
+      // v11.55, HIS NOTE: the last second shouts. Drawn above the countdown at
+      // the operator, where his eyes are, in the head size and flashing.
+      var _cshout=cookShout(p);
+      if(_cshout){
+        ctx.font=FS(TYPE.head); ctx.textAlign='center';
+        ctx.fillStyle=(Math.floor(G.t*8)%2)?'#ff5a4a':'#fff0c0';
+        var _csw=ctx.measureText(_cshout).width;
+        ctx.fillStyle='rgba(6,9,13,.78)';
+        ctx.fillRect(cs2.x-_csw/2-8,cs2.y-LH(62),_csw+16,LH(22));
+        ctx.fillStyle=(Math.floor(G.t*8)%2)?'#ff5a4a':'#fff0c0';
+        ctx.fillText(_cshout,cs2.x,cs2.y-LH(46));
+        ctx.font=FS(TYPE.micro); ctx.textAlign='left';
+      }
+    }
+  }
 '@
 
 # STAMPS.
@@ -65,11 +75,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE XP ON THE OUTCOME CARD IS THE XP YOU GET. A night run, hard weather or a dose in your blood pays more, and the game banked that bonus but the card printed the plain figure, so the XP line, the total and the distance to the next reward were all off. The card now prints exactly what is banked.',
+  'A COOKED GRENADE SHOUTS FOR ITS LAST SECOND: COOKED GRENADE! THROW GRENADE NOW, above the countdown. The fuse is still 1.1 seconds, so that is most of the cook; say the number you want and it changes.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.54:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.54 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.54:[^']*'",{ param($m) "now:'v11.55: the outcome card printed base XP while the profile was credited base x night x weather x dose. The card built its own record without the night and wxHard flags and printed the raw sum, while commitRun ran addProgress (round of base x night x weather) and addXp (round of that x dose); a night run said +100 and banked 120, and the total and the distance to the next reward were wrong with it. One helper, xpBaseFor, now owns the night and weather arithmetic, the bank uses it, and the card prints the same figure times the dose multiplier. From the v11.46 audit, P1, raised by two regions.'" })
+$s=[regex]::Replace($s,"now:'v11\.54:[^']*'",{ param($m) "now:'v11.55: HIS NOTES of 2026-09-05, a cooked grenade needs a shout with a second left, and the count must go down. The readout already counted down; nothing shouted. cookShout(p) owns his line for the last second of a frag in hand and drawHUD draws it flashing above the countdown. FRAG_FUSE stays 1.1 s (no balancing before alpha), so the shout covers nearly the whole cook, which is the finding: he died to his own charge twice that night. Check 11.55 reads cookShout at half a second left, controls a smoke and an empty hand, and requires drawHUD to read it.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

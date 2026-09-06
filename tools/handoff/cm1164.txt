@@ -1,11 +1,12 @@
-v11.64: a note typed in the pause box on the floor rode into the next raid
+v11.64: the restore code left the armoury behind
 
-The pause box opens on the floor with the same feedback field a raid has, and
-nothing on the floor read or cleared it, so a note typed in the Undercroft sat
-in the box and became the next raid's first pause note, stamped with that
-raid's clock. Closing the box on the floor now banks it to the profile, clears
-the box and says so, and every report prints it under FLOOR NOTES. Check 11.64
-types a note on the floor, closes the box, and requires it banked, cleared and
-in the report; fails on v11.63. From the v11.46 audit, P2.
+The restore code at the bottom of every run report promised what you have
+unlocked and carried no gun: not the guns owned, the one in hand, the second
+slot, or the wear on any of them. Restored from it, a friend came back with
+the fresh Scav Pistol. The code carries the armoury now; applying it brings
+the guns back, drops any this build does not know, and an older code without
+the block leaves the guns as they are. Check 11.64 makes a code from three
+distinctive guns with slots and wear, wipes, applies and requires them back,
+with an unknown-gun control; fails on v11.63. From the v11.46 audit, P1.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

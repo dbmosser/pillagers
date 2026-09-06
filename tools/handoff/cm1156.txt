@@ -1,13 +1,10 @@
-v11.56: a pillager you downed and then saved was still your kill
+v11.56: his note, lightning does not strike inside a building
 
-The downing shot stamps byPlayer, the one door for a kill to be credited to
-you. Reviving him with E stood him up, cleared hostile and grudge and made him
-friendly, and never cleared byPlayer; a crawler bite writes none. So when a
-crawler downed the man you saved and he bled out, the stale flag gave you the
-kill, ticked a kill contract, and wrote a permanent -2 grudge on his crew. The
-revive now clears byPlayer with the rest; his next death is yours only if you
-down him again. Check 11.56 lays a marked pillager down within reach, holds E
-through one step, controls that the revive happened and requires the flag
-clear; fails on v11.55. From the v11.46 audit, P1.
+His in-run note of 2026-09-05: lightning should not strike inside buildings.
+The storm rolled a strike point near the player with no roof test. A point
+under a roof is now walked out through its nearest wall by the crier's own
+deterministic step, so no new random draw is made. Check 11.56 stands the
+player in a building under a forced storm, spawns sixty points and requires
+none indoors; fails on v11.55. The blast radius is unchanged.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

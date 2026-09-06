@@ -11,42 +11,49 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.61 CHECK, inserted before the v11.60 entry. The drop handler is reached
-# the way the real mouseup reaches it: the zone's __grabDrop, with the belt
-# cell as the source. The stale phrase is assembled so the check never matches
-# its own text.
+# v11.61 HOOK: whether a weather id counts as hard, so a check can force a
+# multiplier into play.
 SubRx @'
-  {v:'11.60',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
+window.__loadProfile=function(){ return loadProfile(); };
 '@ @'
-  {v:'11.61',what:'dropping a tactical belt item on the stash says it went to the stash, and it did: it left the backpack and its belt key',
+window.__loadProfile=function(){ return loadProfile(); };
+window.__wxHard=function(id){ try{ return wxHardId(id); }catch(e){ return null; } };
+'@
+
+# v11.61 CHECK, inserted before the v11.60 entry.
+SubRx @'
+  {v:'11.60',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+'@ @'
+  {v:'11.61',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
    run:function(){
-     if(!(window.__P&&window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot walk the Undercroft';
-     if(typeof say2!=='function') return 'SKIP: no say2 in this build';
-     var zone=document.getElementById('stashgrid');
-     if(!zone) return 'SKIP: no stash grid in this document';
-     var bad=[], prof, got=[], _s2=say2, stale=['back in the ','backpack'].join('');
-     try{
-       __topClear(); __cleanProfile(); prof=__P();
-       try{ __hubEnter(); __station('stash'); }catch(_h){}
-       try{ renderHub(); }catch(_r){}
-       if(typeof zone.__grabDrop!=='function') return 'SKIP: the stash grid is not a drop zone here (no __grabDrop), so the drop cannot be driven';
-       // A medkit in the backpack, on belt key 1.
-       prof.kit=['medkit']; prof.hotAssign={0:'medkit'}; prof.stash=[];
-       say2=function(t){ got.push(String(t)); };
-       zone.__grabDrop('medkit','plan:0');
-       say2=_s2;
-       var line=got.join(' | ');
-       // CONTROL: the item really left the backpack and its key, or the words are not about this drop.
-       if((prof.kit||[]).indexOf('medkit')>=0) bad.push('control: the medkit is still in the backpack after the drop');
-       if(prof.hotAssign&&prof.hotAssign[0]!==undefined) bad.push('control: the belt key still holds the medkit after the drop');
-       if(!got.length) bad.push('control: the drop said nothing at all');
-       // THE FIX: the line names where it went.
-       if(line.indexOf(stale)>=0) bad.push('the drop said "'+line+'" while taking the item out of the backpack');
-       if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__wxHard)) return 'SKIP: this fixture cannot end a raid and read the card';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[];
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player;
+     // A multiplier must be in play or the two figures agree by accident: force hard weather.
+     var hard=null; if(window.__wxHard('storm')) hard='storm'; else if(window.__wxHard('fog')) hard='fog';
+     if(!hard) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
+     if(!g.wx) g.wx={}; g.wx.id=hard;
+     // Something to bank: a bag worth carrying out.
+     p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
+     var n0=(P.log||[]).length;
+     try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
+     var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
+     var m=/\+\s*([\d,]+)\s*XP/.exec(txt);
+     var card=m?parseInt(m[1].replace(/,/g,''),10):null;
+     var rec=(P.log&&P.log.length>n0)?P.log[P.log.length-1]:null;
+     if(card===null) bad.push('the card printed no "+N XP" line (card says: '+txt.replace(/\s+/g,' ').slice(0,80)+')');
+     if(!rec||typeof rec.xpGot!=='number') bad.push('the run was not banked with an xpGot figure');
+     if(card!==null&&rec&&typeof rec.xpGot==='number'){
+       // THE FIX: what the card says is what was banked.
+       if(card!==rec.xpGot) bad.push('the card printed +'+card+' XP but the profile banked '+rec.xpGot+' (base '+rec.xpBase+', weather hard '+rec.wxHard+')');
+       // CONTROL: the multiplier really was in play, or the agreement proves nothing.
+       if(!rec.wxHard) bad.push('control: the banked record does not carry the hard-weather flag, so no multiplier was in play');
+     }
+     __topClear(); __cleanProfile();
      return bad.length?bad.join('; '):null; }},
-  {v:'11.60',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
+  {v:'11.60',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

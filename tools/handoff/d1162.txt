@@ -1,28 +1,30 @@
-## v11.62 - WITH PILLAGERS OFF, THE EXTRACTION-HEAT ROW READ CUSTOM
+## v11.62 - A PILLAGER YOU DOWNED AND THEN SAVED WAS STILL YOUR KILL
 
-From the v11.46 read-only audit, P2. Two settings rows disagreed about who
-owns one dial. Other pillagers: None turns the pillager waves off (v8.42,
-because the wave loop treated an empty map as urgent and kept delivering
-four pillagers), and applyGameOpts gives the pillager row the last word on
-that (v8.74, his order: None means none). But the extraction-heat row's Heavy
-and Standard still carried raiderWaves:1, so with the waves off neither of
-them matched the live dials and the row showed CUSTOM in amber, with the
-tuning-console hint, for a setting he had never touched. The v8.74 comment on
-that row already says it describes the RING only.
+From the v11.46 read-only audit, P1. Since v8.30 the only door for a kill to
+be credited to you is a flag the downing shot stamps on the man: byPlayer. When
+he later bleeds out, the code that hands out the kill, ticks any kill contract,
+says "will remember that" and writes a permanent -2 grudge on his crew reads
+that one flag. Reviving a downed pillager with E (v9.24) stands him up, clears
+hostile and grudge and makes him friendly for the rest of the raid, and never
+touched byPlayer. A crawler bite writes no attribution at all. So the man you
+shot, then walked over to and picked up, carried your mark for the rest of the
+raid: when a crawler downed him ten minutes later and he bled out alone, the
+game gave you the kill, ticked your contract, and wrote a grudge on the crew of
+the man you had saved.
 
-THE FIX. The waves belong to the pillager row, on every option: Many, Standard
-and Few write them on, None writes them off. The heat row carries siegeVol
-alone. Every combination of choices lands on the same dial values it did
-before, with one exception that is itself a fix: choosing None and then going
-back to Standard with the heat on Light used to leave the waves off, because
-nothing wrote them back; the pillager row writes them now.
+THE FIX. The revive clears byPlayer along with hostile and grudge. His next
+death is yours only if you cause it: a second downing shot from you stamps the
+flag again, exactly as before.
 
-MEASURED. Check 11.62 sets pillagers to None, applies, and requires the waves
-off (control) and the heat row reading its own word rather than CUSTOM; then
-sets pillagers back to Standard and requires the waves back on and both rows
-reading Standard. On the v11.61 fixture the heat row reads CUSTOM with
-pillagers off and the check fails saying so. The dials this build writes are
-the same numbers as before; nothing in a raid changes.
+MEASURED. Check 11.62 deploys, lays a pillager down with your mark on him within
+reach, holds E through one player step, and requires two things: the control,
+that the revive actually happened (he is up and friendly, or the flag reading
+proves nothing); and the fix, that he no longer carries byPlayer. On the v11.61
+fixture the revive happens and the flag survives it, and the check fails naming
+the consequence.
 
-Not verified: his own play; the None-then-Standard-with-Light case in a
-played raid (measured on the dials, not on a spawned map).
+Not verified: his own play; the full chain through a crawler downing and a
+bleed-out after the revive, which the flag reading stands in for (that code has
+not changed and reads only this flag); whether the flag ought also to clear
+when a downed man is revived by his own crew, which is a different code path
+and not part of this finding.

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.64';
+var VER='11.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,22 +1361,16 @@ var VER='11.64';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.64';
+var WHATSNEW_VER='11.58';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
-  'THE [+] ON A COLLAPSED PILLAGER BOARD EXPANDS IT AGAIN. The resize grip had grown over the glyph on the folded board, so the click began a resize you could not see and the board stayed shut.',
-  'SETTINGS: THE EXTRACTION-HEAT ROW NO LONGER READS CUSTOM WHEN PILLAGERS ARE OFF. It showed CUSTOM in amber, with the tuning-console hint, for a row you had never touched. Nothing about the raid changes.',
-  'DROPPING A BELT ITEM ON THE STASH NOW SAYS WHERE IT WENT. It said "back in the backpack" while taking it out of the backpack; it went to the stash, and the line says so.',
-  'THE NOTORIETY BANNER STOPPED LYING ABOUT THE PEDDLER. At two notoriety it said the Peddler was done with you; he has traded with anyone since the stall stopped shutting. It says what notoriety really costs now.',
-  'A NAME WITH AN EMOJI OR A CURLY QUOTE GETS A RESTORE CODE. Before this the code at the bottom of the run report came out blank for any such name, and the friend it belonged to could not be restored. Old codes still read.',
-  'YOUR RESTORE CODE NOW CARRIES YOUR GUNS. The code at the bottom of every run report promised what you had unlocked and left the armoury out: restored from it, you came back with a Scav Pistol. It carries every gun you own, the one in hand, the second slot and their wear now. Copy a fresh one.',
-  'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
-  'SAVING A MAN YOU SHOT NO LONGER PINS HIS LATER DEATH ON YOU. If you downed a pillager, then picked him up, and a crawler killed him later, the game still called it your kill: a contract tick, a grudge, the lot. Once you have saved him, only you can make his death yours again.',
-  'THE XP ON THE OUTCOME CARD IS THE XP YOU GET. A night run, hard weather or a dose in your blood pays more, and the game banked that bonus but the card printed the plain figure, so the XP line, the total and the distance to the next reward were all off. The card now prints exactly what is banked.',
-  'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and boarded an earlier ship, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
-  'WIRT SELLS YOU THE THING ON THE COUNTER. If the Limited Time Offer rolled over while you were reading it, Buy used to take your money and hand you the next offer instead. You get the one that was named and priced when you clicked.',
+  'EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. Four never did: the storm telegraph and the extraction pulse, touchdown and last call. They do now.',
+  'THE STORM WARNING RING SAYS LIGHTNING INCOMING, with the seconds left, right at the circle.',
+  'LIGHTNING NO LONGER STRIKES INSIDE A BUILDING. A strike that would have landed under a roof lands just outside its nearest wall instead.',
+  'A COOKED GRENADE SHOUTS FOR ITS LAST SECOND: COOKED GRENADE! THROW GRENADE NOW, above the countdown. The fuse is still 1.1 seconds, so that is most of the cook; say the number you want and it changes.',
+  'EXTRACTION POINTS SAY WHICH STATE THEY ARE IN. Sound the alarm to begin the countdown; N seconds until extraction begins; extract now, N seconds until it ends; closed for the remainder of this raid. Your four lines, with the live clock.',
+  'SPRINT AND ROLL STAND YOU UP. Holding Shift while crouched used to do nothing; now it leaves the crouch and sprints. A roll leaves the crouch too.',
   'YOUR CREDITS AND XP ARE IN THE TOP RIGHT CORNER, ALWAYS. In the Undercroft, in a raid, under every window. The stash screen no longer prints its own credits figure; the corner has it.',
   'THE SECTOR PAGE NAMES THE RIGHT MAP AGAIN. The line of facts under each map could end with the other map name, because the two lines share a digit shape and the reworded text was matched by shape. Each map keeps its own line now.',
   'PACKING AT THE STASH WITH YOUR BACKPACK OPEN NO LONGER GETS UNDONE. If you opened your backpack on the Undercroft floor, then walked to THE STASH and packed your loadout there, closing the backpack afterwards put back the old loadout over the new one. The backpack now closes itself when the stash opens.',
@@ -2329,7 +2323,7 @@ function syncTopRight(){
   var c=(P.credits||0).toLocaleString(), x=(P.xp||0).toLocaleString(), s=c+'|'+x;
   if(s===_trLast) return;
   _trLast=s;
-  el.innerHTML=c+'<small>CREDITS</small>'+x+'<small>XP</small>';
+  el.innerHTML=c+' <small>CREDITS</small> '+x+' <small>XP</small>';   // spaces, so the text reads right when copied
 }
 function saveProfile(){ P.cfg=CFG; P.cfgv=17; storeSet(JSON.stringify(P));
   try{ syncTopRight(); }catch(_tr){}   // v11.52: every path that moves credits or XP saves
@@ -3479,7 +3473,11 @@ var NOISEMARK={
   clank: {r:56, hear:900},
   hit:   {r:44, hear:620},
   step:  {r:26, hear:420},
-  board: {r:34, hear:520}
+  board: {r:34, hear:520},
+  // v11.58, HIS NOTE: the extraction's own sounds mark themselves too.
+  inbound:  {r:30, hear:1400},
+  touchdown:{r:88, hear:1500},
+  lastcall: {r:44, hear:1400}
 };
 var NOISEMARK_MAX=22;
 // The ring itself. Called for every world sound, and it keeps only the ones you
@@ -5104,6 +5102,11 @@ function wxTick(dt){
 // His four parts: a flash you can see, a flash that shows you the map even indoors, a
 // telegraphed strike that can hit you, and something worth having where it lands.
 var STRIKE_WARN=1.6, STRIKE_R=118, STRIKE_DMG=62;
+// v11.57, HIS NOTE: what the warning ring says, in his words, with the
+// seconds left. One place, so the draw and the check read the same line.
+function strikeLabel(S){
+  return 'LIGHTNING INCOMING '+Math.max(1,Math.ceil((S&&S.t)||0))+'S';
+}
 function strikeTick(dt){
   if(!G||G.over||G.paused) return;
   var W2=wx();
@@ -5117,8 +5120,18 @@ function strikeTick(dt){
     var ang=rr()*6.2832, rad=180+rr()*620;
     var sx=clamp(p.x+Math.cos(ang)*rad,80,WORLD_W-80);
     var sy=clamp(p.y+Math.sin(ang)*rad,80,WORLD_H-80);
+    // v11.56, HIS NOTE: "lightning shouldn't strike inside buildings". A point
+    // under a roof is walked out through its nearest wall (the crier's own
+    // deterministic step, no random draw), up to three times in case it
+    // lands in a neighbour.
+    for(var _sk=0;_sk<3;_sk++){
+      var _sb=buildingAtPt(G.map,sx,sy);
+      if(!_sb) break;
+      var _so=outOfBuilding(_sb,sx,sy,40);
+      sx=clamp(_so.x,80,WORLD_W-80); sy=clamp(_so.y,80,WORLD_H-80);
+    }
     G.strikes.push({x:sx,y:sy,t:STRIKE_WARN,hit:0});
-    if(!G.sim) blip('charge',dist(p,{x:sx,y:sy}));
+    if(!G.sim) sfx('charge',sx,sy);   // v11.58, HIS NOTE: a positioned sound marks itself
   }
   for(var i=G.strikes.length-1;i>=0;i--){
     var S=G.strikes[i];
@@ -8793,8 +8806,7 @@ function pedSellPromise(){
 }
 // v8.27: the word for a number. Used by the stats card and by the banner that
 // fires when it changes, so the two can never call the same score two things.
-// 2 gets its own word because 2 is where the stall used to shut (it never shuts
-// since v8.28; the banner caught up at v11.60).
+// 2 gets its own word because 2 is where the stall actually shuts.
 // THE PLAYER STARTED IT, v8.30, his ruling. Every way he can lay hands on a
 // pillager who was not fighting him comes through here: a bullet, his own
 // charge, or his fists. Once per man however many times he does it, and the
@@ -8824,8 +8836,7 @@ function notoName(n){
 // And what it just cost him, in one clause, for the banner.
 function notoBite(n){
   n=n||0;
-  // v11.60: the stall never shuts (pedOpen, his v8.28 ruling); this said it did.
-  if(n>=2) return 'Hiring costs more and pillagers are slower to trust you. Word has got round.';
+  if(n>=2) return 'The Peddler is done with you.';
   return 'Hiring costs more and pillagers are slower to trust you.';
 }
 function mkPeddler(x,y,map){
@@ -9945,9 +9956,6 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       var M2=mkRaider(msp.x,msp.y,mid,sim);
       M2.merc=1; M2.hostile=false; M2.grudge=false; M2.friendly=1;
       ents.push(M2);
-      // v11.54: a roster row, so boarding stamps his haul and endRaid can pay
-      // his cut when he went up before you. The board skips merc rows.
-      roster.push({ref:M2,name:M2.name,crew:M2.crew,val:0,out:false,merc:1});
     }
   });
   // One Peddler per raid, parked at whichever landmark sits about 1700 out from
@@ -10725,11 +10733,7 @@ cv.addEventListener('mousedown',function(e){
       if(inRect(HB2,mouse.x,mouse.y)){
         // v8.93: the resize corner wins, because it is the smallest target on
         // the panel and anything that beat it would make the grip feel dead.
-        // v11.63: never on a collapsed panel. Its box is shorter than the grip
-        // zone, so the grip covered the [+] glyph and the click that should
-        // expand the board started a resize nobody could see. hudHit and the
-        // grip draw already skip collapsed panels; mousedown agrees with them.
-        if(HUDZ[hk]!==undefined&&!hudOff(hk).c){
+        if(HUDZ[hk]!==undefined){
           if(hudOnGrip(HB2,mouse.x,mouse.y)){
             // The diagonal from the ANCHOR corner to the pointer IS the size, so
             // the panel tracks the corner under his hand rather than a guess.
@@ -11267,20 +11271,6 @@ function togglePauseBox(on){
   if(G&&G.over) return;
   if(!G&&state!=='hub') return;
   pauseOpen=on;
-  // v11.64: a note typed on the floor has no raid to attach to. It used to sit
-  // in the box and ride into the NEXT raid's first pause as if written there.
-  // The close banks it to the profile; every report prints it under FLOOR NOTES.
-  if(!on&&!G){
-    var _fn=document.getElementById('pausenote'), _ft=_fn?_fn.value.trim():'';
-    if(_ft){
-      P.floorNotes=P.floorNotes||[];
-      P.floorNotes.push({run:P.runs||0,t:Date.now(),txt:_ft.slice(0,400)});
-      if(P.floorNotes.length>20) P.floorNotes.shift();
-      _fn.value='';
-      saveProfile();
-      try{ say2('Noted. It goes out with your next run report.'); }catch(_sn){}
-    }
-  }
   // v10.96: every opening starts unarmed. An arm that outlives the box is a run
   // ended by a misclick on a screen he only opened to read the controls.
   if(on) disarmAbandon();
@@ -11346,6 +11336,7 @@ var ROLLSPD=320,ROLLSTAM=45;
 function tryRoll(){
   var p=G.player;
   if(p.downed||p.roll>0||p.rollCd>0||p.stam<ROLLSTAM) return;
+  G.crouchTog=false;   // v11.53, HIS NOTE: "rolling should automatically stop crouching"
   var mx=0,my=0,ana=1;
   if(keys['KeyW']||keys['ArrowUp'])my-=1;
   if(keys['KeyS']||keys['ArrowDown'])my+=1;
@@ -13634,7 +13625,7 @@ function tickExtractPoints(dt){
       var _fr=clamp(1-z.beaconT/Math.max(1,CFG.extractWait),0,1);
       var _iv=2.2-1.65*_fr;
       z.pingT=(z.pingT||0)+dt;
-      if(z.pingT>=_iv){ z.pingT=0; blip('inbound',dist(p,z)); }
+      if(z.pingT>=_iv){ z.pingT=0; sfx('inbound',z.x,z.y); }   // v11.58: marks itself
     }
     z.beaconT-=dt;
     if(z===G.active) G.beaconT=z.beaconT;
@@ -13822,7 +13813,7 @@ z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
         }
         G.tel.ringCrowd={mapBorn:_rcm,siegeBorn:_rcs};
       }
-      if(dist(p,z)<1400){ blip('touchdown',dist(p,z)); blip('alarm',dist(p,z));
+      if(dist(p,z)<1400){ sfx('touchdown',z.x,z.y); sfx('alarm',z.x,z.y);   // v11.58: mark themselves
         say('EXTRACTION IS OPEN. Hold E to extract, '+Math.round(z.hold)+'s.'); }
     }
     // THE WINDOW CLOSING, once a second for the last eight. This is the only
@@ -13831,7 +13822,7 @@ z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
     var _hPrev=z.hold;
     z.hold-=dt;
     if(!G.sim&&z===G.active&&z.hold<=8&&z.hold>0&&Math.ceil(z.hold)!==Math.ceil(_hPrev)){
-      blip('lastcall',dist(p,z));
+      sfx('lastcall',z.x,z.y);   // v11.58: marks itself
     }
     if(z===G.active){ G.shipHold=z.hold; G.shipHoldMax=z.holdMax; }
     if(z.hold<=0){
@@ -14091,6 +14082,12 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // key is actually let go, so a held Shift cannot saw sprint on and off.
   var _shHeld=!!(keys['ShiftLeft']||keys['ShiftRight']);
   if(!_shHeld) p.stamRelease=0;
+  // v11.53, HIS NOTE: "activating sprint should automatically stop crouching".
+  // The crouch toggle (v10.07) used to veto the sprint key on the line below,
+  // so Shift while crouched did nothing. Sprint wins: the toggle clears and
+  // the stance follows this same frame. Movement input is required, the same
+  // rule sprint itself has, so a held Shift while standing still changes nothing.
+  if(_shHeld&&mg>0&&G.crouchTog&&!p.downed){ G.crouchTog=false; crouch=false; }
 var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   if(sprint&&mg>0){
     G.prints=G.prints||[];
@@ -14480,7 +14477,6 @@ if(!p.fired||p.wep.auto){
       // and still hostile:true.
       downRdr.alert=0; downRdr.goal=null;
       downRdr.hostile=false; downRdr.grudge=false; downRdr.friendlyPC=1;
-      downRdr.byPlayer=false;   // v11.56: his next death is not yours unless you cause it
       G.tel.revives=(G.tel.revives||0)+1;
       G.tel.raiderRevives=(G.tel.raiderRevives||0)+1;
       blip('pick');
@@ -17679,7 +17675,7 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
 }
 
 // ================================================================ end of run
-var pendingRun=null,selTags=[],committedRun=null;   // v11.57: the row Copy report wrote, for late tags
+var pendingRun=null,selTags=[];
 // v8.17, audit: EXACTLY ONCE, WHEREVER HE LEAVES. The XP and the ledger row
 // used to be written by the outcome button alone, so any other way off that
 // screen kept the credits endRaid had already banked and threw the progress
@@ -17993,18 +17989,12 @@ function nightXpMul(){ return (CFG.nightXp===undefined)?1.2:CFG.nightXp; }
 // haul alone, which is the best the log can say about them.
 function runEarnings(rec){ return ((rec.outcome==='extract')?(rec.haul||0):0)-(rec.carriedIn||0); }
 function netEarnFromLog(){ var t=0, L=(P&&P.log)||[]; for(var i=0;i<L.length;i++) t+=runEarnings(L[i]||{}); return t; }
-// v11.55: the one place the night and weather multipliers are applied to a run's
-// base XP. addProgress banks it; the outcome card prints it (times the dose
-// multiplier addXp applies), so the two can never disagree again.
-function xpBaseFor(rec){
-  return Math.round((spForRun(rec)+xpForRun(rec))*(rec.night?nightXpMul():1)*(rec.wxHard?wxXpMul():1));
-}
 function addProgress(rec){
   // v9.96: through addXp, so a dose in his blood pays its bonus on the run.
   // v10.06: and a night run pays its multiplier on top.
   // v11.00, his note 16: hard weather pays too, and both apply, so a hard night
   // is 1.2 times 1.1.
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb);
+  var _xb=Math.round((spForRun(rec)+xpForRun(rec))*(rec.night?nightXpMul():1)*(rec.wxHard?wxXpMul():1)), _xg=addXp(_xb);
   rec.xpBase=_xb; rec.xpGot=_xg;
   P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
   // v10.27, his note: NET LIFETIME EARNINGS. Everything extracted minus
@@ -18222,12 +18212,8 @@ silentExit:T.silentExit||0,
   var tPay=termsPay();
   (function(){
     var _grec={outcome:how,haul:haul,containers:T.containers,kills:T.kills,termPay:tPay,
-      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:T.distance||0,
-      // v11.55: the same two flags the banked record carries, so the card prints
-      // what addProgress and addXp will actually credit: night, weather and dose.
-      night:(typeof isDay==='function'&&!isDay())?1:0,
-      wxHard:(typeof wxHardId==='function')?wxHardId((G.wx&&G.wx.id)||'clear'):0};
-    var gained=Math.round(xpBaseFor(_grec)*buzzXpMul());
+      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:T.distance||0};
+    var gained=spForRun(_grec)+xpForRun(_grec);
     if(gained>0){
       var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp;
       // HIS NOTE, v3.59: "it says Season 1 +84 progress -- but what the hell
@@ -22339,6 +22325,15 @@ wc.drawImage(fogC,0,0);
       wc.strokeStyle='rgba(255,255,255,'+(0.45+0.45*_k).toFixed(3)+')';
       wc.lineWidth=2.4;
       wc.beginPath(); wc.arc(_S.x,_S.y,STRIKE_R*(1-_k*0.86),0,6.2832); wc.stroke();
+      // v11.57, HIS NOTE: "it should say like 'lightning incoming' at the circle".
+      var _slt=strikeLabel(_S);
+      wc.font=FS(TYPE.label); wc.textAlign='center';
+      var _slw=wc.measureText(_slt).width;
+      wc.fillStyle='rgba(6,9,13,.72)';
+      wc.fillRect(_S.x-_slw/2-6,_S.y-STRIKE_R-LH(26),_slw+12,LH(15));
+      wc.fillStyle='rgba(190,210,255,'+(0.55+0.45*_k).toFixed(3)+')';
+      wc.fillText(_slt,_S.x,_S.y-STRIKE_R-LH(15));
+      wc.textAlign='left';
       if(_k>0.55){
         wc.globalCompositeOperation='lighter';
         wc.fillStyle='rgba(150,190,255,'+(0.05+0.12*_k).toFixed(3)+')';
@@ -22675,6 +22670,23 @@ function hudDodge(sx,sy,halfW,hgt,tail){
   var lift=b-B.y+6;
   var out=sy-lift;
   return (out-hgt<4)?sy:out;
+}
+// v11.54, HIS NOTE: the four states of an extraction point, in his words.
+// Nothing called yet; called and inbound (the beacon clock); landed and open
+// for the hold window (the ship clock); closed for the raid.
+function zoneBadge(z){
+  if(!z.open) return 'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID';
+  if(z.beaconT===null||z.beaconT===undefined) return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
+  if(z.beaconT>0) return 'EXTRACTION POINT - '+Math.max(0,Math.ceil(z.beaconT))+'S UNTIL EXTRACTION BEGINS';
+  if(z.hold!==null&&z.hold!==undefined) return 'EXTRACTION POINT - EXTRACT NOW! '+Math.max(0,Math.ceil(z.hold))+'S UNTIL EXTRACTION ENDS';
+  return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
+}
+// v11.55, HIS NOTE: the last second of a cooked frag, in his words. One place,
+// so the draw and the check read the same line.
+function cookShout(p){
+  if(!p||!p.cooking||p.cookKind!=='frag') return null;
+  var left=FRAG_FUSE-(p.cookT||0);
+  return left<=1.0?'COOKED GRENADE! THROW GRENADE NOW':null;
 }
 function drawHUD(){
   var p=G.player,T=G.tel,i;
@@ -23191,21 +23203,18 @@ ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
     // this one will not call; from further off it is noise on a screen that already has
     // a compass pointing at the nearest way out.
     if(!za&&dist(p,zz2)>800) continue;
-    var zlab=za?'EXTRACTION - OPEN':'EXTRACTION - CLOSED';
+    var zlab=zoneBadge(zz2);   // v11.54, HIS NOTE: his four states, his words
     ctx.font=FS(TYPE.label);
     var zwid=ctx.measureText(zlab).width;
     // v10.90, HIS NOTE: this is the label in his screenshot, drawn straight
     // through SUPPORT MG. It is lifted clear of the corner readout instead.
-    var zsy=hudDodge(zs.x,zs.y,zwid/2+6,LH(15),za?0:LH(13));
+    var zsy=hudDodge(zs.x,zs.y,zwid/2+6,LH(15),0);
     ctx.fillStyle='rgba(6,9,13,.78)';
     ctx.fillRect(zs.x-zwid/2-6,zsy-LH(11),zwid+12,LH(15));
     ctx.fillStyle=za?'#4de3d0':'rgba(168,180,193,.95)';
     ctx.fillText(zlab,zs.x,zsy);
-    if(!za){
-      ctx.font=FS(TYPE.micro);
-      ctx.fillStyle='rgba(168,180,193,.7)';
-      ctx.fillText('this one will not call',zs.x,zsy+LH(13));
-    }
+    // v11.54: the closed whisper ("this one will not call") is inside his
+    // CLOSED FOR THE REMAINDER OF THIS RAID line now.
   }
   ctx.textAlign='left';
   // projected world labels
@@ -23382,6 +23391,19 @@ ctx.fillStyle='#4de3d0';
       }
       ctx.textAlign='left';
       if(isFrag) bar(cs2.x-24,cs2.y-LH(22),48,4,1-cf,ccol);
+      // v11.55, HIS NOTE: the last second shouts. Drawn above the countdown at
+      // the operator, where his eyes are, in the head size and flashing.
+      var _cshout=cookShout(p);
+      if(_cshout){
+        ctx.font=FS(TYPE.head); ctx.textAlign='center';
+        ctx.fillStyle=(Math.floor(G.t*8)%2)?'#ff5a4a':'#fff0c0';
+        var _csw=ctx.measureText(_cshout).width;
+        ctx.fillStyle='rgba(6,9,13,.78)';
+        ctx.fillRect(cs2.x-_csw/2-8,cs2.y-LH(62),_csw+16,LH(22));
+        ctx.fillStyle=(Math.floor(G.t*8)%2)?'#ff5a4a':'#fff0c0';
+        ctx.fillText(_cshout,cs2.x,cs2.y-LH(46));
+        ctx.font=FS(TYPE.micro); ctx.textAlign='left';
+      }
     }
   }
 // v4.05: "maybe a bar above character too", so there is one, in the same
@@ -24715,7 +24737,6 @@ function drawRaiderBoard(){
   var live=0,out=0,dead=0,i,rows=[];
   for(i=0;i<R.length;i++){
     var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
-    if(r.merc||(e&&e.merc)) continue;   // v11.54: your hire is not a rival on the board
     if(inEnts){
       var v=0;
       for(var b=0;b<e.bag.length;b++) v+=ival(e.bag[b]);
@@ -28184,7 +28205,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.64: feedback typed in the pause box on the floor was kept silently and attached to the next raid. The buttons attach a note only when a raid runs and nothing on the floor read or cleared the field, so the words rode into the next raid first pause stamped with its clock. The close banks a floor note to P.floorNotes (20 kept), says so, and buildExport prints them under FLOOR NOTES; the character-screen button no longer discards it. From the v11.46 audit, P2.',
+  now:'v11.58: HIS NOTE of 2026-09-05, all noises outside vision but within earshot should draw a ring like lightning does. noiseMark (v9.07) already does that for every sound routed through sfx(type,x,y); four sounds bypassed it by playing by distance with no position: the strike telegraph and the extraction inbound pulse, touchdown and last call. They go through sfx now with ring sizes of their own. Check 11.58 requires the three new ring sizes, a ring for an unseen inbound behind the player and none for a seen one in front, and that strikeTick and tickExtractPoints route those four sounds through sfx.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -28849,7 +28870,7 @@ function renderWirtLot(){
     lb.disabled=!afford;
     lb.onclick=function(){
       if(P.credits<WIRT_LOT_PRICE) return;
-      var lot2=lot;   // v11.53: the lot that was NAMED AND PRICED on the card, not the clock at click time
+      var lot2=wirtLotKey();
       if(!lot2||!lot2.length||!ITEMS[lot2[0]]) return;
       P.credits-=WIRT_LOT_PRICE;
       // v9.44: the whole lot, not just the headline. Anything not in the item
@@ -29685,7 +29706,7 @@ try{ renderFreeKit(); }catch(_fk){}
       var _pi=P.kit.indexOf(key);
       if(_pi>=0) P.kit.splice(_pi,1);
       saveProfile(); try{ sfx('pick'); }catch(e){}
-      say2((ITEMS[key]?ITEMS[key].name:key)+' back in the stash.');   // v11.61: it left the backpack
+      say2((ITEMS[key]?ITEMS[key].name:key)+' back in the backpack.');
       renderHub();
       return;
     }
@@ -30316,15 +30337,10 @@ function restoreMake(){
   // same thing.
   var st=P.stash||[];
   for(var i=0;i<st.length;i++) o.s[st[i]]=(o.s[st[i]]||0)+1;
-  // v11.58: the armoury. Guns owned, the one in hand, the second slot, and the
-  // rounds worn through each, which is what condition is made of.
-  o.g={w:(P.weapons||[]).slice(),e:P.equipped||'fists',e2:P.equippedSec||'none',wr:{}};
-  for(var wk in (P.wear||{})) if(P.wear[wk]) o.g.wr[wk]=P.wear[wk]|0;
   return o;
 }
 function restoreCode(){
-  // v11.59: UTF-8 through btoa, so a name above U+00FF makes a code at all.
-  try{ return 'PIL1'+btoa(unescape(encodeURIComponent(JSON.stringify(restoreMake())))).replace(/=+$/,''); }
+  try{ return 'PIL1'+btoa(JSON.stringify(restoreMake())).replace(/=+$/,''); }
   catch(e){ return ''; }
 }
 // The other direction, written in the same build as the maker so the two can
@@ -30337,11 +30353,7 @@ function restoreRead(code){
     if(b.slice(0,4)!=='PIL1') return null;
     b=b.slice(4);
     while(b.length%4) b+='=';
-    var raw=atob(b), js;
-    // v11.59: the code is UTF-8 from this build on; an older one is plain
-    // Latin-1 and reads as itself when the UTF-8 read refuses it.
-    try{ js=decodeURIComponent(escape(raw)); }catch(_u){ js=raw; }
-    var o=JSON.parse(js);
+    var o=JSON.parse(atob(b));
     if(!o||typeof o.c!=='number'||typeof o.n!=='string') return null;
     return o;
   }catch(e){ return null; }
@@ -30372,18 +30384,6 @@ function restoreApply(o){
     for(i=0;i<c;i++) st.push(id);
   }
   P.stash=st;
-  // v11.58: the armoury, when the code carries one. A gun this build does not
-  // know is dropped, the same rule as the stash; an older code without the
-  // block leaves the guns as they are rather than stripping them.
-  if(o.g){
-    var gw=[], gi, gl=(o.g.w||[]);
-    for(gi=0;gi<gl.length;gi++) if(WEAPONS[gl[gi]]&&gl[gi]!=='fists'&&gw.indexOf(gl[gi])<0) gw.push(gl[gi]);
-    P.weapons=gw;
-    P.equipped=(o.g.e&&gw.indexOf(o.g.e)>=0)?o.g.e:'fists';
-    P.equippedSec=(o.g.e2&&gw.indexOf(o.g.e2)>=0&&o.g.e2!==P.equipped)?o.g.e2:'none';
-    P.wear={};
-    for(var wk in (o.g.wr||{})) if(WEAPONS[wk]) P.wear[wk]=Math.max(0,o.g.wr[wk]|0);
-  }
   saveProfile();
   return true;
 }
@@ -30392,10 +30392,8 @@ function restoreSay(o){
   if(!o) return 'That is not a restore code.';
   var st=0, id;
   for(id in (o.s||{})) st+=(o.s[id]|0);
-  var ng=(o.g&&o.g.w)?o.g.w.length:0;
   return o.n+', '+(o.r|0)+' raid'+((o.r|0)===1?'':'s')+', '+'$'+(o.c|0).toLocaleString()+
-         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash'+
-         (o.g?', '+ng+' gun'+(ng===1?'':'s'):'')+'.';
+         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash.';
 }
 function buildExport(){
   var L=[],i;
@@ -30422,14 +30420,6 @@ function buildExport(){
     if(P.txt&&typeof P.txt==='object'&&Object.keys(P.txt).length) L.push('TEXT EDITS: '+JSON.stringify(P.txt));
     if(P.txp&&typeof P.txp==='object'&&Object.keys(P.txp).length) L.push('TEXT PATTERNS: '+JSON.stringify(P.txp));
   }catch(_te){}
-  // v11.64: notes typed in the pause box on the floor, with no raid to carry them.
-  if(P.floorNotes&&P.floorNotes.length){
-    L.push('FLOOR NOTES ('+P.floorNotes.length+'):');
-    P.floorNotes.forEach(function(fn){
-      var when=''; try{ when=new Date(fn.t).toISOString(); }catch(_w){}
-      L.push('  after run #'+fn.run+' '+when+': '+fn.txt);
-    });
-  }
   L.push('Active config ['+(CFG.preset||'custom')+']: '+JSON.stringify(CFG));
   // HIS PRIORITY ORDER RIDES IN EVERY EXPORT, v3.63. The dev box lets him drag
   // the open roadmap questions into his own order; this line is how that order
@@ -31443,7 +31433,8 @@ document.getElementById('closesim').onclick=function(){ document.getElementById(
 // memory, shows what he has just earned.
 document.getElementById('charselbtn').onclick=function(){
   if(G) return;                       // never from inside a raid
-  // v11.64: a note typed here is banked by the close below, not thrown away.
+  var _pn=document.getElementById('pausenote');
+  if(_pn) _pn.value='';               // a note on the floor has no raid to attach to
   try{ saveProfile(); }catch(_sp){}
   togglePauseBox(false);
   var _t=document.getElementById('title');
@@ -31617,20 +31608,7 @@ function autoExport(){
 // v10.65: the one commit, so the copy button and the way out cannot disagree
 // about whether this raid was logged, and neither can log it twice.
 function ocCommit(){
-  if(!pendingRun){
-    // v11.57: the commit already happened (Copy report does it first). Tags and
-    // a note chosen since then land on the row it wrote, and the report goes
-    // out again with them, instead of being thrown away at the early return.
-    if(committedRun){
-      var _lt=selTags.slice(), _ln=document.getElementById('oc_note');
-      _ln=_ln?_ln.value.trim():'';
-      if(_lt.join('|')!==(committedRun.tags||[]).join('|')||_ln!==(committedRun.note||'')){
-        committedRun.tags=_lt; committedRun.note=_ln;
-        saveProfile(); autoExport();
-      }
-    }
-    return false;
-  }
+  if(!pendingRun) return false;
   // The tags and the note are collected HERE, so they are attached before the
   // commit when the button is the way out, and patched onto the already
   // written row when the commit happened without him.
@@ -31638,7 +31616,6 @@ function ocCommit(){
   var _ocn=document.getElementById('oc_note');
   pendingRun.note=_ocn?_ocn.value.trim():'';
   commitRun(pendingRun);
-  committedRun=pendingRun;
   pendingRun=null;
   saveProfile();
   autoExport();
@@ -32478,11 +32455,9 @@ var GAMEOPTS=[
   {k:'raiders', label:'Other pillagers',
    hint:'Human-shaped rivals looting the same map. They fight each other and the machines as well as you.',
    opts:[
-     // v11.62: the waves live here, with the pillagers, on every option; the
-     // heat row used to carry raiderWaves:1 and read CUSTOM whenever this was None.
-     {n:'Many',     cfg:{nRaider:15, raiderWaves:1}},
-     {n:'Standard', cfg:{nRaider:10, raiderWaves:1}},
-     {n:'Few',      cfg:{nRaider:5,  raiderWaves:1}},
+     {n:'Many',     cfg:{nRaider:15}},
+     {n:'Standard', cfg:{nRaider:10}},
+     {n:'Few',      cfg:{nRaider:5}},
      // v8.42, audit: and the WAVES off with them. nRaider 0 empties the opening
      // roster, but the wave loop treats an empty map as urgent and waives its own
      // ceilings, so None was delivering a steady four pillagers all raid.
@@ -32531,8 +32506,8 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
   {k:'ext', label:'Heat when you call for extraction',
    hint:'How much of the map comes to the extraction ring once the beacon is up.',
    opts:[
-     {n:'Heavy',    cfg:{siegeVol:1.4}},
-     {n:'Standard', cfg:{siegeVol:1}},
+     {n:'Heavy',    cfg:{siegeVol:1.4, raiderWaves:1}},
+     {n:'Standard', cfg:{siegeVol:1,   raiderWaves:1}},
      // v8.74, his order: this row is about the RING. raiderWaves:0 used to ride
      // along here and it is whole-raid pillager reinforcement, ticked every frame
      // from the first second of the raid, so Light silently emptied the map for

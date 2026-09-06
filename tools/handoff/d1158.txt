@@ -1,31 +1,35 @@
-## v11.58 - THE RESTORE CODE LEFT THE ARMOURY BEHIND
+## v11.58 - HIS NOTE: EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING
 
-From the v11.46 read-only audit, P1. Since v11.03 every run report ends with
-a restore code, a short pasteable line that carries the character so a friend
-who loses a save can be given one back. The card promises "what you have
-unlocked" and the panel that applies it says REPLACES. The maker carried the
-credits, the XP, the runs, the stash, the cosmetics, the junk tags and the
-chosen sector, and not one gun: not the guns owned, not the one in hand, not
-the second slot, not the wear on any of them. A friend restored from his own
-code came back with the fresh profile's Scav Pistol and nothing else, having
-been told he was getting everything.
+His in-run note of 2026-09-05, 130 seconds into his first run: "how lightning
+shows red noise, I want ALL noises to do that when they are outside the
+player's vision but within earshot, eg visualize noises with red circles!"
 
-THE FIX. The code carries the armoury: the guns owned, the one in hand, the
-second slot, and the rounds worn through each, which is what condition is
-made of. Applying it brings them back. A gun this build does not know is
-dropped, the same rule the stash already follows, and the slots fall back to
-fists and none if they name a gun that was dropped. An older code without the
-block leaves the guns as they are rather than stripping them. The line that
-says what a code holds before it is applied now counts the guns too.
+WHAT IS TRUE. That ring is noiseMark, built at v9.07: every world sound that
+is played at a position goes through sfx, and sfx asks noiseMark, which draws
+a ring sized for the sound when you could hear it and could not see it, with
+the cone counting so something behind you is unseen even in the open, and
+nothing at all when you can see the source. Gunfire, steps, hits, clanks and
+the strike's alarm all do this already; the ring he saw was the strike
+landing. Four sounds never did, because they were played by distance alone
+with no position to ring at: the storm's strike telegraph (the charge before
+the bolt), and the extraction's inbound pulse, its touchdown and its last
+call.
 
-MEASURED. Check 11.58 gives the profile three guns no fresh profile owns, the
-marksman rifle in hand, the magnum second, and worn figures nothing rolls;
-makes a code, wipes the armoury back to a Scav Pistol, applies the code, and
-requires all four things back exactly. A control pushes a gun that does not
-exist into the code and requires it dropped with the rest intact. On the
-v11.57 fixture the code carries no armoury and the check fails saying so.
+THE BUILD. Those four are played at their positions through sfx now, so they
+mark themselves like every other sound, and the three that had no ring size
+get one: a small pulse for inbound, a large one for touchdown, a middling
+one for last call. Nothing about the rule changes, and the seen-source case
+still draws nothing.
 
-Not verified: his own play; a code from a build before v11.58 applied on this
-one (the guns are left alone by construction, not driven here); any gun field
-beyond ownership, slots and wear, such as a per-gun quality roll, if one
-exists in the profile.
+MEASURED. Check 11.58 requires the three ring sizes, drives noiseMark with an
+inbound pulse 400 units behind the player and requires a ring, and with one
+60 units ahead in the open and requires none; then reads strikeTick and
+tickExtractPoints and requires the four sounds to be positioned calls. On
+the v11.57 fixture the ring sizes are missing and all four sites play by
+distance, and the check fails naming each.
+
+Not verified: his own eye; whether the inbound pulse's repeated ring (every
+half second to two seconds while the extraction is inbound) reads as
+information or as clutter, which is his to say and one number to change; the
+noise ring's colour, which is unchanged and not red for every source (his
+word was "red circles"; the table at NOISECOL has the colours by source).

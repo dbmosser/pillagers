@@ -11,31 +11,43 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.56 CHECK, inserted before the v11.55 entry.
+# v11.56 CHECK, inserted before the v11.55 entry. The player stands in the
+# middle of a building under a forced storm so the roll lands indoors often;
+# the strike clock is forced to zero each call so every call spawns one point.
 SubRx @'
-  {v:'11.55',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
+  {v:'11.55',what:'a cooked frag shouts COOKED GRENADE! THROW GRENADE NOW for its last second in hand, nothing else in hand shouts, and the HUD draws the shout (his notes of 2026-09-05)',
 '@ @'
-  {v:'11.56',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
+  {v:'11.56',what:'no storm strike point lands inside a building (his note of 2026-09-05); the storm still strikes',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__sim&&window.__keys)) return 'SKIP: this fixture cannot revive a man';
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(), p=g.player, R=null, i, bad=[];
-     for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.merc&&!e.finished){ R=e; break; } }
-     if(!R) return 'SKIP: no pillager to down';
-     // You downed him: the downing shot stamped byPlayer. He lies within reach.
-     R.downed=1; R.byPlayer=true; R.hostile=true; R.friendlyPC=0; R.x=p.x+20; R.y=p.y;
-     g.over=false; p.downed=false; g.revLock=0;
-     var K=__keys(); for(var q in K) delete K[q]; K['KeyE']=true;
-     try{ __sim(0.15); }catch(e2){ bad.push('the step threw: '+String(e2&&e2.message||e2).slice(0,80)); }
-     delete K['KeyE'];
-     // CONTROL: the revive happened at all, or the flag reading proves nothing.
-     if(!(R.downed===0&&R.friendlyPC===1)) bad.push('control: E next to the downed man did not revive him (downed '+R.downed+', friendlyPC '+R.friendlyPC+')');
-     // THE FIX: his next death is no longer yours.
-     else if(R.byPlayer) bad.push('the revived man still carries byPlayer, so a crawler killing him later would be your kill, your contract tick and a grudge');
-     __topClear(); __cleanProfile();
+     if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__wxHard)) return 'SKIP: this fixture cannot deploy under a storm';
+     if(typeof strikeTick!=='function'||typeof buildingAtPt!=='function') return 'SKIP: no storm strikes in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, B=(g.map&&g.map.buildings)||[];
+       if(!B.length) return 'SKIP: this map has no buildings to stand in';
+       if(!__wxHard('storm')) return 'SKIP: storm is not a weather here';
+       if(!g.wx) g.wx={}; g.wx.id='storm';
+       // Stand in the middle of the largest building, so rolls of 180 to 800 units land indoors often.
+       var big=B[0]; for(var i=1;i<B.length;i++) if(B[i].w*B[i].h>big.w*big.h) big=B[i];
+       p.x=big.x+big.w/2; p.y=big.y+big.h/2; p.downed=false; g.over=false; g.paused=false;
+       var spawned=0, inside=0, sample=null;
+       for(var k=0;k<60;k++){
+         g.strikes=[]; g.strikeAt=0;
+         strikeTick(0.05);
+         for(var j=0;j<g.strikes.length;j++){
+           spawned++;
+           var S=g.strikes[j], bb=buildingAtPt(g.map,S.x,S.y);
+           if(bb){ inside++; if(!sample) sample=Math.round(S.x)+','+Math.round(S.y); }
+         }
+       }
+       if(spawned<20) bad.push('control: the storm spawned only '+spawned+' strike points in sixty tries, so nothing was measured');
+       if(inside>0) bad.push(inside+' of '+spawned+' strike points landed inside a building (first at '+sample+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var g2=__state(); if(g2){ g2.strikes=[]; g2.strikeAt=8; } }catch(_r){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.55',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
+  {v:'11.55',what:'a cooked frag shouts COOKED GRENADE! THROW GRENADE NOW for its last second in hand, nothing else in hand shouts, and the HUD draws the shout (his notes of 2026-09-05)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

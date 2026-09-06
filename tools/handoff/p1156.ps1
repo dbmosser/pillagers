@@ -11,18 +11,31 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# A PILLAGER YOU DOWNED AND THEN SAVED WAS STILL YOUR KILL. Your downing shot
-# stamps byPlayer on him (v8.30, the one door for attribution). Reviving him
-# (E, v9.24) stands him up, clears hostile and grudge, makes him friendly, and
-# never clears byPlayer. A crawler bite writes no byPlayer, so when a crawler
-# downs him minutes later and he bleeds out, the kill code reads the stale flag:
-# you get the kill, a kill contract ticks, "will remember that", and a permanent
-# -2 grudge on the man you saved. The revive clears the flag with the rest.
+# HIS NOTE, 2026-09-05 in-run at 71 s: "lightning shouldn't strike inside
+# buildings". The storm (v6.87) rolls a strike point 180 to 800 units from
+# the player in any direction and clamps it to the world; nothing asked
+# whether that point was under a roof, so a strike could telegraph and land
+# inside a shed he was looting. A point inside a building is now walked to
+# its nearest wall and set outside it, by the crier's own deterministic step
+# (v9.04), so no new random draw is made and the seeded stream is unchanged.
 SubRx @'
-      downRdr.hostile=false; downRdr.grudge=false; downRdr.friendlyPC=1;
+    var sx=clamp(p.x+Math.cos(ang)*rad,80,WORLD_W-80);
+    var sy=clamp(p.y+Math.sin(ang)*rad,80,WORLD_H-80);
+    G.strikes.push({x:sx,y:sy,t:STRIKE_WARN,hit:0});
 '@ @'
-      downRdr.hostile=false; downRdr.grudge=false; downRdr.friendlyPC=1;
-      downRdr.byPlayer=false;   // v11.56: his next death is not yours unless you cause it
+    var sx=clamp(p.x+Math.cos(ang)*rad,80,WORLD_W-80);
+    var sy=clamp(p.y+Math.sin(ang)*rad,80,WORLD_H-80);
+    // v11.56, HIS NOTE: "lightning shouldn't strike inside buildings". A point
+    // under a roof is walked out through its nearest wall (the crier's own
+    // deterministic step, no random draw), up to three times in case it
+    // lands in a neighbour.
+    for(var _sk=0;_sk<3;_sk++){
+      var _sb=buildingAtPt(G.map,sx,sy);
+      if(!_sb) break;
+      var _so=outOfBuilding(_sb,sx,sy,40);
+      sx=clamp(_so.x,80,WORLD_W-80); sy=clamp(_so.y,80,WORLD_H-80);
+    }
+    G.strikes.push({x:sx,y:sy,t:STRIKE_WARN,hit:0});
 '@
 
 # STAMPS.
@@ -40,11 +53,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'SAVING A MAN YOU SHOT NO LONGER PINS HIS LATER DEATH ON YOU. If you downed a pillager, then picked him up, and a crawler killed him later, the game still called it your kill: a contract tick, a grudge, the lot. Once you have saved him, only you can make his death yours again.',
+  'LIGHTNING NO LONGER STRIKES INSIDE A BUILDING. A strike that would have landed under a roof lands just outside its nearest wall instead.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.55:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.55 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.55:[^']*'",{ param($m) "now:'v11.56: a pillager you downed and then saved was still your kill. The downing shot stamps byPlayer; the revive cleared hostile and grudge and made him friendly but never byPlayer, and a crawler bite writes none, so when a crawler downed him later and he bled out the stale flag credited you the kill, ticked a kill contract and wrote a permanent -2 grudge on the man you saved. The revive clears byPlayer now. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.55:[^']*'",{ param($m) "now:'v11.56: HIS NOTE of 2026-09-05, lightning should not strike inside buildings. The storm rolled a point 180 to 800 units from the player with no roof test. A point inside a building is walked out through its nearest wall by outOfBuilding (deterministic, no new random draw), up to three times. Check 11.56 stands the player in a building under a forced storm, spawns sixty strike points, requires none inside a building and at least twenty spawned; fails on the v11.55 fixture where some land indoors. Not moved: the blast radius, which still reaches through a wall.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

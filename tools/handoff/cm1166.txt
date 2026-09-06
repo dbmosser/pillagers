@@ -1,0 +1,10 @@
+v11.66: the notoriety banner said the Peddler was done with you
+
+The stall has not shut since his v8.28 ruling that the Peddler always trades,
+and the hub card was renamed then; the in-raid banner at two notoriety still
+said the Peddler was done with you. It names what notoriety actually costs
+now, at every score. Check 11.66 confirms the stall is open and requires the
+two and three lines to name the cost and make no claim about the stall; fails
+on v11.65. From the v11.46 audit, P2.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

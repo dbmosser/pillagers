@@ -1,12 +1,12 @@
-v11.59: the restore code was blank for any name above U+00FF
+v11.59: Wirt's Limited Time Offer sold whatever the clock said at click time
 
-The base64 encoder takes Latin-1 only, so an emoji, a CJK character or a curly
-quote in the name made it throw and the run report carried an empty restore
-code, for exactly the friend most likely to have typed one. The JSON is
-encoded as UTF-8 before base64 now, and the reader tries the UTF-8 read first
-and falls back to the plain read so every older code still reads. Check 11.59
-names the character with a curly apostrophe and an emoji and requires a code
-that reads back the same name, with old-code and plain-name controls; fails
-on v11.58. From the v11.46 audit, P1.
+The counter lot is picked by the clock in five-minute windows and drawn on a
+card that names and prices it before he pays; the Buy button recomputed
+wirtLotKey() at click time and the card never redraws on the boundary, so a
+click after the roll took the money and pushed a lot he was never shown. Buy
+now sells the lot the card was drawn from. Check 11.59 opens Wirt through the
+real station act, moves the clock forward a window so a roll has happened,
+presses the real Buy, and requires the stash to receive the shown lot with
+credits taken as the control; fails on v11.58. From the v11.46 audit, P1.
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

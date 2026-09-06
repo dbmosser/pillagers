@@ -1,12 +1,11 @@
-v11.58: the restore code left the armoury behind
+v11.58: his note, every noise you can hear but not see draws its ring
 
-The restore code at the bottom of every run report promised what you have
-unlocked and carried no gun: not the guns owned, the one in hand, the second
-slot, or the wear on any of them. Restored from it, a friend came back with
-the fresh Scav Pistol. The code carries the armoury now; applying it brings
-the guns back, drops any this build does not know, and an older code without
-the block leaves the guns as they are. Check 11.58 makes a code from three
-distinctive guns with slots and wear, wipes, applies and requires them back,
-with an unknown-gun control; fails on v11.57. From the v11.46 audit, P1.
+His in-run note of 2026-09-05: all noises outside vision but within earshot
+should draw a ring like lightning does. That ring already exists for every
+sound played at a position; four sounds bypassed it by playing by distance
+alone: the strike telegraph and the extraction inbound pulse, touchdown and
+last call. They are positioned now and have ring sizes. Check 11.58 requires
+the sizes, an unseen ring and no seen ring, and the four positioned call
+sites; fails on v11.57.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

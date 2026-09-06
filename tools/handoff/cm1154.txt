@@ -1,13 +1,10 @@
-v11.54: a merc who boarded an earlier ship was never paid
+v11.54: his note, an extraction point says which state it is in
 
-endRaid settles the merc's ten percent from his roster row and the boarding
-code stamps his haul onto that row, but only ordinary raiders were ever pushed
-to the roster; the hired merc went to ents alone, so no row was stamped when he
-boarded and none was found at settle, and the card said he was left out there.
-He gets a roster row at spawn now, marked merc, and the pillager board skips
-merc rows so your hire is not listed as a rival. Check 11.54 hires a real
-identity, deploys, requires the row, plays the boarding as the game does, ends
-the raid as an extract, and requires "extracted earlier" and the ten percent;
-fails on v11.53. From the v11.46 audit, P1.
+His in-run note of 2026-09-05: EXTRACTION - OPEN is confusing, with his four
+lines for the four states. The badge said OPEN whether nothing was called,
+the beacon was inbound or the extraction had landed, and CLOSED with a
+whisper. One function owns his four lines with the live seconds and the badge
+draws it. Check 11.54 stages every state and requires his words, with a
+control that the HUD draw reads the function; fails on v11.53.
 
-Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

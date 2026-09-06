@@ -11,31 +11,16 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# THE RESTORE CODE WAS BLANK FOR ANY NAME ABOVE U+00FF. btoa takes Latin-1
-# only; a name with an emoji, a CJK character or a curly quote made it throw,
-# the catch returned '', and the run report carried an empty restore code for
-# exactly the friend most likely to have typed one. The name box accepts any
-# sixteen characters. The code is UTF-8 now; the reader tries the UTF-8 read
-# first and falls back to the old plain read, so every code written before
-# this build still reads.
+# WIRT'S LIMITED TIME OFFER SOLD WHATEVER THE CLOCK SAID AT CLICK TIME. The card
+# is drawn from wirtLotKey(), which the clock picks in five-minute windows, and
+# it is named and priced before he pays: that is the whole point of it (v9.11).
+# But the Buy button recomputed wirtLotKey() at click time, and the card never
+# redraws on the window boundary, so a click after the roll took the money and
+# pushed a different lot to the stash. It sells the lot it showed him.
 SubRx @'
-  try{ return 'PIL1'+btoa(JSON.stringify(restoreMake())).replace(/=+$/,''); }
-  catch(e){ return ''; }
+      var lot2=wirtLotKey();
 '@ @'
-  // v11.59: UTF-8 through btoa, so a name above U+00FF makes a code at all.
-  try{ return 'PIL1'+btoa(unescape(encodeURIComponent(JSON.stringify(restoreMake())))).replace(/=+$/,''); }
-  catch(e){ return ''; }
-'@
-SubRx @'
-    while(b.length%4) b+='=';
-    var o=JSON.parse(atob(b));
-'@ @'
-    while(b.length%4) b+='=';
-    var raw=atob(b), js;
-    // v11.59: the code is UTF-8 from this build on; an older one is plain
-    // Latin-1 and reads as itself when the UTF-8 read refuses it.
-    try{ js=decodeURIComponent(escape(raw)); }catch(_u){ js=raw; }
-    var o=JSON.parse(js);
+      var lot2=lot;   // v11.59: the lot that was NAMED AND PRICED on the card, not the clock at click time
 '@
 
 # STAMPS.
@@ -53,11 +38,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A NAME WITH AN EMOJI OR A CURLY QUOTE GETS A RESTORE CODE. Before this the code at the bottom of the run report came out blank for any such name, and the friend it belonged to could not be restored. Old codes still read.',
+  'WIRT SELLS YOU THE THING ON THE COUNTER. If the Limited Time Offer rolled over while you were reading it, Buy used to take your money and hand you the next offer instead. You get the one that was named and priced when you clicked.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.58:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.58 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.58:[^']*'",{ param($m) "now:'v11.59: the restore code was blank for any name above U+00FF. btoa takes Latin-1 only, so an emoji, a CJK character or a curly quote in the name made it throw and the catch returned an empty code, while the name box accepts any sixteen characters. The code is UTF-8 through btoa now and the reader tries the UTF-8 read first and falls back to the plain read, so every code written before this build still reads. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.58:[^']*'",{ param($m) "now:'v11.59: Wirt Limited Time Offer sold whatever the clock said at click time. The card is drawn from wirtLotKey, which the clock picks in five-minute windows, and the Buy button recomputed wirtLotKey at click time while the card never redraws on the boundary, so a click after the roll took the money and pushed a different lot. Buy now sells the lot the card showed. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

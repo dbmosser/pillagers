@@ -11,16 +11,37 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# WIRT'S LIMITED TIME OFFER SOLD WHATEVER THE CLOCK SAID AT CLICK TIME. The card
-# is drawn from wirtLotKey(), which the clock picks in five-minute windows, and
-# it is named and priced before he pays: that is the whole point of it (v9.11).
-# But the Buy button recomputed wirtLotKey() at click time, and the card never
-# redraws on the window boundary, so a click after the roll took the money and
-# pushed a different lot to the stash. It sells the lot it showed him.
+# HIS NOTES, 2026-09-05 in-run at 266 s and 269 s: "activating sprint should
+# automatically stop crouching" and "rolling should automatically stop
+# crouching". Crouch has been a toggle since v10.07 (his answer 33) and sprint
+# a held key since v10.87. The sprint line let the crouch veto the key, so
+# Shift while crouched did nothing at all, and the roll never touched the
+# toggle, so he came out of a roll still crouched. Sprint wins and a roll
+# stands you up.
+
+# 1. SPRINT LEAVES THE CROUCH.
 SubRx @'
-      var lot2=wirtLotKey();
+  var _shHeld=!!(keys['ShiftLeft']||keys['ShiftRight']);
+  if(!_shHeld) p.stamRelease=0;
+var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
 '@ @'
-      var lot2=lot;   // v11.53: the lot that was NAMED AND PRICED on the card, not the clock at click time
+  var _shHeld=!!(keys['ShiftLeft']||keys['ShiftRight']);
+  if(!_shHeld) p.stamRelease=0;
+  // v11.53, HIS NOTE: "activating sprint should automatically stop crouching".
+  // The crouch toggle (v10.07) used to veto the sprint key on the line below,
+  // so Shift while crouched did nothing. Sprint wins: the toggle clears and
+  // the stance follows this same frame. Movement input is required, the same
+  // rule sprint itself has, so a held Shift while standing still changes nothing.
+  if(_shHeld&&mg>0&&G.crouchTog&&!p.downed){ G.crouchTog=false; crouch=false; }
+var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
+'@
+
+# 2. A ROLL LEAVES THE CROUCH.
+SubRx @'
+  if(p.downed||p.roll>0||p.rollCd>0||p.stam<ROLLSTAM) return;
+'@ @'
+  if(p.downed||p.roll>0||p.rollCd>0||p.stam<ROLLSTAM) return;
+  G.crouchTog=false;   // v11.53, HIS NOTE: "rolling should automatically stop crouching"
 '@
 
 # STAMPS.
@@ -38,11 +59,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'WIRT SELLS YOU THE THING ON THE COUNTER. If the Limited Time Offer rolled over while you were reading it, Buy used to take your money and hand you the next offer instead. You get the one that was named and priced when you clicked.',
+  'SPRINT AND ROLL STAND YOU UP. Holding Shift while crouched used to do nothing; now it leaves the crouch and sprints. A roll leaves the crouch too.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.52:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.52 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.52:[^']*'",{ param($m) "now:'v11.53: Wirt Limited Time Offer sold whatever the clock said at click time. The card is drawn from wirtLotKey, which the clock picks in five-minute windows, and the Buy button recomputed wirtLotKey at click time while the card never redraws on the boundary, so a click after the roll took the money and pushed a different lot. Buy now sells the lot the card showed. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.52:[^']*'",{ param($m) "now:'v11.53: HIS NOTES of 2026-09-05, sprint and roll leave the crouch. The crouch toggle vetoed the sprint key so Shift while crouched did nothing, and tryRoll never touched the toggle. Sprint with movement input clears the toggle in the same frame and tryRoll clears it. Check 11.53 crouches, holds Shift with W through real frames and requires the crouch gone and sprinting on; crouches and rolls and requires the crouch gone with the roll started; controls that walking without Shift keeps the crouch.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

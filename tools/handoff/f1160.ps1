@@ -11,22 +11,46 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.60 CHECK, inserted before the v11.59 entry. The stale phrase is assembled
-# so this check never matches its own text.
+# v11.60 HOOK: the identity ids a merc can be hired as, so a check can hire one.
 SubRx @'
-  {v:'11.59',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
+window.__loadProfile=function(){ return loadProfile(); };
 '@ @'
-  {v:'11.60',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
+window.__loadProfile=function(){ return loadProfile(); };
+window.__identityIds=function(){ var o=[]; try{ for(var i=0;i<IDENTITIES.length;i++) o.push(IDENTITIES[i].id); }catch(e){} return o; };
+'@
+
+# v11.60 CHECK, inserted before the v11.59 entry.
+SubRx @'
+  {v:'11.59',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
+'@ @'
+  {v:'11.60',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
    run:function(){
-     if(typeof notoBite!=='function'||typeof pedOpen!=='function') return 'SKIP: no notoriety banner in this build';
-     if(!pedOpen()) return 'SKIP: the stall shuts in this build, so the old line would be true';
-     var bad=[], stale=['done with',' you'].join(''), b1=String(notoBite(1)), b2=String(notoBite(2)), b3=String(notoBite(3));
-     if(b2.indexOf(stale)>=0) bad.push('at notoriety 2 the banner says "'+b2+'" while the stall stays open');
-     if(b3.indexOf(stale)>=0) bad.push('at notoriety 3 the banner says "'+b3+'" while the stall stays open');
-     if(b2.indexOf('Hiring')<0) bad.push('at notoriety 2 the banner does not name the hiring cost: "'+b2+'"');
-     if(b1.indexOf('Hiring')<0) bad.push('control: at notoriety 1 the banner does not name the hiring cost: "'+b1+'"');
+     if(!(window.__identityIds&&window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot hire a merc and end a raid';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var ids=window.__identityIds(); if(!ids.length) return 'SKIP: no identities to hire';
+     var P=window.__P(), bad=[];
+     P.merc=ids[0]; P.credits=1000;
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), M=null, i;
+     for(i=0;i<g.ents.length;i++){ if(g.ents[i].merc){ M=g.ents[i]; break; } }
+     if(!M){ __cleanProfile(); return 'SKIP: the hired merc did not spawn'; }
+     var row=null; for(i=0;i<(g.roster||[]).length;i++){ if(g.roster[i].ref===M){ row=g.roster[i]; break; } }
+     // THE FIX: he is on the roster at all.
+     if(!row) bad.push('the hired merc has no roster row, so boarding cannot stamp his haul and endRaid cannot pay your cut');
+     else {
+       // He fled low and boarded an earlier ship: the boarding code stamps the
+       // row and removes him from the world. Then you extract.
+       row.out=true; row.outAt=0; row.val=1234;
+       var ix=g.ents.indexOf(M); if(ix>=0) g.ents.splice(ix,1);
+       var c0=P.credits;
+       try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
+       var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
+       if(!/extracted earlier/i.test(txt)) bad.push('the card did not say he extracted earlier (it says: '+txt.replace(/\s+/g,' ').slice(0,90)+')');
+       if(!(P.credits-c0>=123)) bad.push('your ten percent of his 1,234 was not paid (credits moved '+(P.credits-c0)+')');
+     }
+     __topClear(); __cleanProfile();
      return bad.length?bad.join('; '):null; }},
-  {v:'11.59',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
+  {v:'11.59',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

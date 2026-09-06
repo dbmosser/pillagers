@@ -11,47 +11,41 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# TAGS AND A NOTE CHOSEN AFTER COPY REPORT WERE DROPPED. Copy report commits
-# the run first (v10.65, so the pasted report holds the raid he just played),
-# and the commit nulls pendingRun. Anything he tags or types AFTER that, and
-# then confirms with Log run and return, hits the early return: the row is
-# already written, so it keeps the tags it had at Copy time and the note is
-# lost. The comment on ocCommit promised the late tags would be "patched onto
-# the already written row"; nothing did. Now the committed row is remembered
-# for the life of the card, and a second commit patches tags and note onto it
-# and re-sends the report when they changed.
+# HIS NOTE, 2026-09-05 in-run at 130 s: "when lightning is about to hit, it
+# should say like 'lightning incoming' at the circle." The warning ring
+# (v6.87, on the ground since v11.35) closes as the strike nears and says
+# nothing. It carries his words now, with the seconds left, above the ring.
+
+# 1. THE WORDS, in one place, beside the strike code.
 SubRx @'
-var pendingRun=null,selTags=[];
+var STRIKE_WARN=1.6, STRIKE_R=118, STRIKE_DMG=62;
+function strikeTick(dt){
 '@ @'
-var pendingRun=null,selTags=[],committedRun=null;   // v11.57: the row Copy report wrote, for late tags
+var STRIKE_WARN=1.6, STRIKE_R=118, STRIKE_DMG=62;
+// v11.57, HIS NOTE: what the warning ring says, in his words, with the
+// seconds left. One place, so the draw and the check read the same line.
+function strikeLabel(S){
+  return 'LIGHTNING INCOMING '+Math.max(1,Math.ceil((S&&S.t)||0))+'S';
+}
+function strikeTick(dt){
 '@
+
+# 2. DRAWN AT THE CIRCLE, above the ring, in world space with the ring.
 SubRx @'
-function ocCommit(){
-  if(!pendingRun) return false;
+      wc.beginPath(); wc.arc(_S.x,_S.y,STRIKE_R*(1-_k*0.86),0,6.2832); wc.stroke();
+      if(_k>0.55){
 '@ @'
-function ocCommit(){
-  if(!pendingRun){
-    // v11.57: the commit already happened (Copy report does it first). Tags and
-    // a note chosen since then land on the row it wrote, and the report goes
-    // out again with them, instead of being thrown away at the early return.
-    if(committedRun){
-      var _lt=selTags.slice(), _ln=document.getElementById('oc_note');
-      _ln=_ln?_ln.value.trim():'';
-      if(_lt.join('|')!==(committedRun.tags||[]).join('|')||_ln!==(committedRun.note||'')){
-        committedRun.tags=_lt; committedRun.note=_ln;
-        saveProfile(); autoExport();
-      }
-    }
-    return false;
-  }
-'@
-SubRx @'
-  commitRun(pendingRun);
-  pendingRun=null;
-'@ @'
-  commitRun(pendingRun);
-  committedRun=pendingRun;
-  pendingRun=null;
+      wc.beginPath(); wc.arc(_S.x,_S.y,STRIKE_R*(1-_k*0.86),0,6.2832); wc.stroke();
+      // v11.57, HIS NOTE: "it should say like 'lightning incoming' at the circle".
+      var _slt=strikeLabel(_S);
+      wc.font=FS(TYPE.label); wc.textAlign='center';
+      var _slw=wc.measureText(_slt).width;
+      wc.fillStyle='rgba(6,9,13,.72)';
+      wc.fillRect(_S.x-_slw/2-6,_S.y-STRIKE_R-LH(26),_slw+12,LH(15));
+      wc.fillStyle='rgba(190,210,255,'+(0.55+0.45*_k).toFixed(3)+')';
+      wc.fillText(_slt,_S.x,_S.y-STRIKE_R-LH(15));
+      wc.textAlign='left';
+      if(_k>0.55){
 '@
 
 # STAMPS.
@@ -69,11 +63,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
+  'THE STORM WARNING RING SAYS LIGHTNING INCOMING, with the seconds left, right at the circle.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.56:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.56 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.56:[^']*'",{ param($m) "now:'v11.57: tags and a note chosen after Copy report were dropped. Copy report commits the run first and nulls pendingRun, so Log run and return afterwards hit the early return and the row kept the tags it had at Copy time; the ocCommit comment promised a patch onto the written row that did not exist. The committed row is remembered for the life of the card and a later commit patches tags and note onto it and re-sends the report when they changed. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.56:[^']*'",{ param($m) "now:'v11.57: HIS NOTE of 2026-09-05, the strike warning should say lightning incoming at the circle. strikeLabel(S) owns his line with the seconds left and render2D draws it above the closing ring in world space. Check 11.57 reads the label at 1.6 s and at 0.3 s and requires his words and the rounded seconds, and controls that render2D reads strikeLabel.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

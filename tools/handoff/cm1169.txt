@@ -1,0 +1,10 @@
+v11.69: [+] on a collapsed pillager board started an invisible resize
+
+The folded board is shorter than the resize grip zone, so the grip covered the
+[+] glyph; mousedown tests the grip first and had no collapsed guard while the
+cursor and the grip draw both skip folded panels. mousedown skips them now,
+so the click reaches the toggle. Check 11.69 folds the board, presses the
+glyph, and requires no resize and the board unfolded; fails on v11.68. From
+the v11.46 audit, P2.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

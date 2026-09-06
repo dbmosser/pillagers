@@ -11,41 +11,44 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.64 CHECK, inserted before the v11.63 entry.
+# v11.58 CHECK, inserted before the v11.57 entry. The ring rule is driven
+# directly (noiseMark) for an unseen and a seen source, and the four call
+# sites are read off their functions.
 SubRx @'
-  {v:'11.63',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+  {v:'11.57',what:'the storm warning ring says LIGHTNING INCOMING with the seconds left, and the world draw puts it at the circle (his note of 2026-09-05)',
 '@ @'
-  {v:'11.64',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
+  {v:'11.58',what:'the extraction inbound pulse, touchdown and last call and the storm telegraph draw the heard-not-seen noise ring like every other sound (his note of 2026-09-05): ring sizes exist, an unseen source rings and a seen one does not, and the four call sites are positioned',
    run:function(){
-     if(!window.__P||typeof togglePauseBox!=='function'||typeof buildExport!=='function') return 'SKIP: no pause box in this build';
-     if(!document.getElementById('pausenote')) return 'SKIP: no note box in this document';
-     var bad=[], prof, note='ZQX floor note 8812';
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof noiseMark!=='function'||typeof NOISEMARK==='undefined') return 'SKIP: no noise rings in this build';
+     var bad=[], need=['inbound','touchdown','lastcall'];
+     for(var i=0;i<need.length;i++) if(!NOISEMARK[need[i]]) bad.push('the '+need[i]+' sound has no ring size, so it can never mark itself');
      try{
-       __topClear(); __cleanProfile(); prof=__P();
-       if(window.__hubEnter){ try{ __hubEnter(); }catch(_h){} }
-       if(G) return 'SKIP: a raid is running, so this is not the floor';
-       if(typeof state!=='undefined'&&state!=='hub') return 'SKIP: not on the floor (state '+state+'), so the box cannot open';
-       delete prof.floorNotes;
-       togglePauseBox(true);
-       var ta=document.getElementById('pausenote'); ta.value=note;
-       togglePauseBox(false);
-       var fl=prof.floorNotes||[], last=fl[fl.length-1];
-       if(!last||last.txt!==note) bad.push('the note typed on the floor was not banked (floorNotes: '+JSON.stringify(fl).slice(0,80)+')');
-       if((ta.value||'').trim()===note) bad.push('the note is still sitting in the box, waiting to ride into the next raid');
-       var rep=buildExport(), txt=(rep&&rep.join)?rep.join('\n'):String(rep);
-       if(txt.indexOf(note)<0) bad.push('the run report does not carry the floor note');
-       else if(txt.indexOf('FLOOR NOTES')<0) bad.push('the report carries the note but does not say what it is');
-       // CONTROL: a second close with an empty box banks nothing more.
-       togglePauseBox(true); togglePauseBox(false);
-       if((prof.floorNotes||[]).length!==fl.length) bad.push('control: closing an empty box banked a note');
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.noiseRings=[]; p.face=0;   // facing +x
+       if(NOISEMARK.inbound){
+         // BEHIND the player, within earshot: heard, not seen, so it rings.
+         noiseMark('inbound',p.x-400,p.y);
+         var n1=(g.noiseRings||[]).length;
+         if(n1<1) bad.push('an inbound pulse 400 units behind the player drew no ring');
+         // IN FRONT, close, in the open: seen, so no ring (the game own eyes rule).
+         g.noiseRings=[];
+         noiseMark('inbound',p.x+60,p.y);
+         if((g.noiseRings||[]).length>0&&canSee(p.x,p.y,p.face,p.x+60,p.y,g.vseg)) bad.push('control: a seen source 60 units ahead drew a ring');
+       }
+       var s1='', s2='';
+       try{ s1=strikeTick.toString(); s2=tickExtractPoints.toString(); }catch(_s){}
+       var sfxc=['sfx(',"'charge'"].join(''), sfxi=['sfx(',"'inbound'"].join(''), sfxt=['sfx(',"'touchdown'"].join(''), sfxl=['sfx(',"'lastcall'"].join('');
+       if(s1.indexOf(sfxc)<0) bad.push('the storm telegraph is still played by distance alone, with no position to ring at');
+       if(s2.indexOf(sfxi)<0) bad.push('the inbound pulse is still played by distance alone');
+       if(s2.indexOf(sfxt)<0) bad.push('the touchdown is still played by distance alone');
+       if(s2.indexOf(sfxl)<0) bad.push('the last call is still played by distance alone');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{
-       try{ var ta2=document.getElementById('pausenote'); if(ta2) ta2.value=''; }catch(_t){}
-       try{ togglePauseBox(false); }catch(_c){}
-       __topClear(); __cleanProfile();
-     }
+     finally{ try{ var g3=__state(); if(g3) g3.noiseRings=[]; }catch(_r){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.63',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+  {v:'11.57',what:'the storm warning ring says LIGHTNING INCOMING with the seconds left, and the world draw puts it at the circle (his note of 2026-09-05)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
