@@ -30,12 +30,15 @@ SubRx @'
        prof=__P(); keepAE=prof.autoExport; prof.autoExport=false;   // a check must not start a download
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(); g.ents.length=0;
+       var n0=(prof.log||[]).length;
        __endRaid('extract');
        document.execCommand=function(){ return true; };
-       var n0=(prof.log||[]).length;
-       document.getElementById('oc_copy').click();   // logs the run, with no tags yet
+       // The row may already be written by the time the card is up; Copy report
+       // writes it when it is not. Either way exactly ONE row must exist, and
+       // that is the row a tag chosen afterwards has to reach.
+       document.getElementById('oc_copy').click();
        var log=prof.log||[], rec=log[log.length-1];
-       if(log.length!==n0+1||!rec) bad.push('control: Copy report did not log the run ('+(log.length-n0)+' rows added)');
+       if(log.length!==n0+1||!rec) bad.push('control: ending the raid and pressing Copy report did not log exactly one run ('+(log.length-n0)+' rows added)');
        else {
          if((rec.tags||[]).length) bad.push('control: the row Copy wrote already carries tags '+rec.tags.join(', ')+', so a late tag proves nothing');
          var cells=document.getElementById('tagwrap').querySelectorAll('.tag');

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.64';
+var VER='11.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.64';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.64';
+var WHATSNEW_VER='11.65';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
   'SAVING A MAN YOU SHOT NO LONGER PINS HIS LATER DEATH ON YOU. If you downed a pillager, then picked him up, and a crawler killed him later, the game still called it your kill: a contract tick, a grudge, the lot. Once you have saved him, only you can make his death yours again.',
   'THE XP ON THE OUTCOME CARD IS THE XP YOU GET. A night run, hard weather or a dose in your blood pays more, and the game banked that bonus but the card printed the plain figure, so the XP line, the total and the distance to the next reward were all off. The card now prints exactly what is banked.',
   'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and boarded an earlier ship, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
@@ -17706,7 +17707,7 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
 }
 
 // ================================================================ end of run
-var pendingRun=null,selTags=[];
+var pendingRun=null,selTags=[],committedRun=null;   // v11.65: the row Copy report wrote, for late tags
 // v8.17, audit: EXACTLY ONCE, WHEREVER HE LEAVES. The XP and the ledger row
 // used to be written by the outcome button alone, so any other way off that
 // screen kept the credits endRaid had already banked and threw the progress
@@ -28253,7 +28254,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.64: a pillager you downed and then saved was still your kill. The downing shot stamps byPlayer; the revive cleared hostile and grudge and made him friendly but never byPlayer, and a crawler bite writes none, so when a crawler downed him later and he bled out the stale flag credited you the kill, ticked a kill contract and wrote a permanent -2 grudge on the man you saved. The revive clears byPlayer now. From the v11.46 audit, P1.',
+  now:'v11.65: tags and a note chosen after Copy report were dropped. Copy report commits the run first and nulls pendingRun, so Log run and return afterwards hit the early return and the row kept the tags it had at Copy time; the ocCommit comment promised a patch onto the written row that did not exist. The committed row is remembered for the life of the card and a later commit patches tags and note onto it and re-sends the report when they changed. From the v11.46 audit, P1.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31656,7 +31657,20 @@ function autoExport(){
 // v10.65: the one commit, so the copy button and the way out cannot disagree
 // about whether this raid was logged, and neither can log it twice.
 function ocCommit(){
-  if(!pendingRun) return false;
+  if(!pendingRun){
+    // v11.65: the commit already happened (Copy report does it first). Tags and
+    // a note chosen since then land on the row it wrote, and the report goes
+    // out again with them, instead of being thrown away at the early return.
+    if(committedRun){
+      var _lt=selTags.slice(), _ln=document.getElementById('oc_note');
+      _ln=_ln?_ln.value.trim():'';
+      if(_lt.join('|')!==(committedRun.tags||[]).join('|')||_ln!==(committedRun.note||'')){
+        committedRun.tags=_lt; committedRun.note=_ln;
+        saveProfile(); autoExport();
+      }
+    }
+    return false;
+  }
   // The tags and the note are collected HERE, so they are attached before the
   // commit when the button is the way out, and patched onto the already
   // written row when the commit happened without him.
@@ -31664,6 +31678,7 @@ function ocCommit(){
   var _ocn=document.getElementById('oc_note');
   pendingRun.note=_ocn?_ocn.value.trim():'';
   commitRun(pendingRun);
+  committedRun=pendingRun;
   pendingRun=null;
   saveProfile();
   autoExport();
