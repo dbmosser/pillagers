@@ -86,6 +86,21 @@ smokeR:165,fragR:190,healSolo:1
 '@ @'
 smokeR:165,fragR:190
 '@
+# The v3.34 heading and the raider's parity comment, made history rather than rule.
+SubRx @'
+    // ONE AT A TIME, AND SLOWER, v3.34. His note: "change it so you can only use
+'@ @'
+    // ONE AT A TIME, AND SLOWER, v3.34 (the one-at-a-time half REVERSED at v11.82
+    // on his later note; the slower half stands). His note then: "change it so you can only use
+'@
+SubRx @'
+  // that heals. One at a time and over time, exactly as v3.34 made it for the
+  // player, so the same three seconds of vulnerability applies to him.
+'@ @'
+  // that heals. One at a time and over time, as v3.34 made it for the player
+  // (the player's one-at-a-time rule was reversed at v11.82; his stays, so the
+  // same three seconds of vulnerability still applies to him).
+'@
 
 # 3. TWO TIMERS: prep is medical, prepA is armour.
 SubRx @'

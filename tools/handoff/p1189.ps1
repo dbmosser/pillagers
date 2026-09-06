@@ -45,7 +45,7 @@ function bagHeldGun(slot){
   if(isHand){
     p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0;
     p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
-    p.swapped=!sw;   // the gun that came up keeps the numbered slot it had
+    if(p.wep&&p.wep.id!=='fists') p.swapped=!sw;   // the gun that came up keeps its numbered slot; nothing came up, nothing flips
   } else {
     p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
   }
@@ -104,6 +104,13 @@ SubRx @'
 '@ @'
     if(G.hotCells&&d.key) for(var hc=0;hc<G.hotCells.length;hc++){
       var HC=G.hotCells[hc];
+'@
+
+# The header above the belt block stated the old rule.
+SubRx @'
+  // same drag the bag uses. Guns select only.
+'@ @'
+  // same drag the bag uses. Guns select only while the backpack is closed (v11.89).
 '@
 
 # STAMPS.

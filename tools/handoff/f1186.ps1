@@ -15,7 +15,7 @@ function SubRx([string]$old, [string]$new) {
 # map's own if it has one, else one built by mkStray), handed his bandage
 # through the real strayGive, and the pay, the gift and the card are read.
 SubRx @'
-  {v:'11.85',what:'the map names each extraction at 18px or more and counts down to its close at 15px or more, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
+  {v:'11.85',what:'the map names each extraction in the callout face and counts down to its close in the label face, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
 '@ @'
   {v:'11.86',what:'meeting the survivor request pays 900 or more, puts a piece of salvage in your hands at once, and the card names the gift without saying already banked (his notes of 2026-09-06)',
    run:function(){
@@ -45,7 +45,7 @@ SubRx @'
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.85',what:'the map names each extraction at 18px or more and counts down to its close at 15px or more, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
+  {v:'11.85',what:'the map names each extraction in the callout face and counts down to its close in the label face, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

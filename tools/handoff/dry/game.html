@@ -1369,17 +1369,19 @@ var WHATSNEW_VER='11.93';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear and it is all still there.',
-  'THE SAFE POCKET REFUSES A GRENADE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
+  'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear, at the counter or at the lift, and it is all still there.',
+  'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
+  'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
   'A BELT KEY HOLDING A GUN FROM YOUR BACKPACK NOW EQUIPS IT, and every belt cell can be dragged to another key.',
   'A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK: with the backpack open, drag it off its slot and drop it in.',
-  'A LIGHTNING STRIKE LEAVES FULGURITE, worth 2,500, and nothing else.',
+  'A LIGHTNING STRIKE THAT MISSES YOU SOMETIMES FUSES THE GROUND. What it leaves is FULGURITE, worth 2,500, and nothing else.',
   'A HELPED SURVIVOR WALKS TO THE NEAREST OPEN EXTRACTION on his own and leaves when he reaches it, instead of following you.',
   'THE SURVIVOR PAYS THREE TIMES AS MUCH and hands you a piece of salvage on the spot when you meet his request.',
   'THE MAP NAMES EACH EXTRACTION AND COUNTS DOWN TO ITS CLOSE in a size you can read.',
   'THE MERIDIAN LANCE TRAVELS THROUGH CRAWLERS, hitting every one on the line with its full damage.',
   'THE STIM INJECTOR IS TEN SECONDS OF LEGS: unlimited stamina and a fifth more speed while it runs.',
   'HEALING STACKS AGAIN. The next bandage goes on while the prior one is still healing, and a plate goes on while a bandage is being applied. The one-at-a-time refusal and its countdown are gone.',
+  'THE KILLED IN ACTION CARD NO LONGER COUNTS THE SEAL-CUTTING LOST WITH YOU. A cut still banks only when you walk out.',
   'THE HUM AFTER AN EXTRACTION IS GONE. The frame that ended the raid was writing the raid ambience back up after it had been cut, and the level held on the floor.',
   'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
   'THE CREDITS AND XP READOUT IN THE CORNER IS TWICE THE SIZE, on the floor and in a raid. The CONDITIONS box starts below it.',
@@ -2131,7 +2133,7 @@ function txFill(pat,nums){
 // no override of its own, so his wording is the game's wording for everyone. The
 // number-shaped lines become the same blanked patterns txSet builds, so a line
 // like the credit counter refills its numbers at draw time. His own P.txt wins.
-var TXSHIP={"No refunds, no complaints, no telling you first.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","Most of it is rubbish. That is why the good one feels good.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","You hold $375,700  ·  $2,500 per roll":"Current credits: $375,700  ·  Gambling costs $2,500 per roll","Gamble with Wirt. No refunds, no complaints.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","New item in 4 minutes":"New limited time offer arrives in 4 minutes","XP comes from selling salvage in the Undercroft.":"Shop before you drop.","Refills a magazine from your backpack.":"Think ammo is expensive?  Try living without it.","Thrown. Goes on a tactical belt key.":"Belt consumables ftw. ","Refills stamina and clears winded.":"Ooooh yeeah that's the stuff.","Restores 20 armour.":"Restores 20 armour.  Armour plates don't auto equip; you must put them in during the raid.","The Whisper and the Meridian Lance are not stocked by anyone down here. Wirt puts one on his counter now and again, and otherwise they are found up top or not at all.":" ","The Carbine, the Scattergun and the Support MG are not stocked here. Wirt deals them, and anything can turn up in a container. ":"Better guns are found at Wirt and in raids.","plates, medkits, smoke, decoys and frags":"Needed to craft plates, medkits, smoke, decoys and frags.","Thrown. Goes on a tactical belt key. Makes 2.":"Belt consumables ftw.","***EXPERIMENTAL***":"***EXPERIMENTAL FEATURE MAY GLITCH***","One run, paid up front. He loots for himself, and if you BOTH get out you take ten percent of what he carried. If YOU do not make it you get nothing. If HE does not make it you owe his family $3,400 on top of the fee. On the surface B cycles his orders. Your shots cannot hurt him. If you go down, he comes for you.":"Buy a friend.","THE DEAL":" ","A free shop. Click a thing and it will be transferred to your stash. No judgment.":"Cmon you dirty cheating cheater, just take it all, why don'tcha?","Selling salvage here pays XP equal to the price. Finishing a raid pays XP too. The Peddler in the field pays cash only.":"Selling salvage here pays XP equal to the price.","Go up with issued gear instead of your own. A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.":"Go up with issued gear instead of your own. A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.  You cheap bastard.","Double vision, then triple. Every glass stacks on the last, and your hands slow with your legs.  Each lasts 3 min.":"We're going streaking!","The surface stops agreeing with itself. Every tab makes it worse, up to the ten your body can hold.  Each lasts 3 min.":"Cast off the paltry limitations of ego that reinforce your sad existence.","No tab, no credit. Every dose stacks on the last, and the bar cuts you off at ten. While a dose is in your blood, every XP a raid pays you is 2.5% more per dose.":"Shit's about to get real.","THE RAID rows below change how the game plays, and every option named Standard is how it plays out of the box. Everything under them is presentation and changes nothing.":"So you are too good for default settings, eh?","Turns every line of text in the game into something you can click and type over. Click a word anywhere, in a menu or on the screen during a raid, and rewrite it. Clear the box and press Enter to put the original back. Your wording is saved with your profile and follows the phrase everywhere it appears.":"Don't use this unless you know what you are doing!","Time only moves when you act. Stand still and it stops dead; any key, click or trigger runs it, and holding E runs it at full speed.":"Time only moves when you act.","Human-shaped rivals looting the same map. They fight each other and the machines as well as you.":"Make some friends.","Sentries and crawlers. They own the surface and they are what usually kills you.":"Make some enemies.","Damage taken from everything on the surface. Standard is how the game has always actually played; Hardened is the old design intent, a fifth harder.":"Are you scared?","How hard they hit":"Damage","How long you have before the surface stops being survivable at all.":"Too much time on your hands?","What everything is WORTH, including the stash you have already banked. The same items still turn up just as often.":"Value is relative.","How much of the map comes to the extraction ring once the beacon is up.":"Turn down for what?","Scales every string on every canvas and in every panel.":"Since Claude can't seem to figure this out on its own...","Ten arrangements of the stash and backpack grids. Lower numbers are roomier cells and fewer of them; higher numbers pack more items on screen. 6 is the default.":"Clade came up with this.","A faint 16-bit loop, five pieces, one picked at random each time you come back down. UNDERCROFT plays it, OFF is silence. The surface is deliberately silent either way.":"Wake up, Crono!","The cursor hides while you are aiming and returns with the backpack. BACKSPACE forces it back at any time.":"If the cursor disappears (known glitch), this brings it back","Every dial the rows above set, and the rest of them, as live sliders. A slider you move is yours until you click its row again. SHIFT and the backquote key open it too.":"For the choosiest.","Puts the DEV CHEAT BOX on the Undercroft floor. Off, nobody finds it.":"Adds the DEV CHEAT BOX to the Undercroft. You dirty cheating cheater.","Every raid is logged here. Copy it out and send it to Daniel so the game can be tuned on real play.":"Copy this and send it to Daniel.","Paste a RESTORE CODE from the end of a run report. It REPLACES the save you are playing. Read it first: the game will tell you whose character it is before anything is written.":"Paste a RESTORE CODE from the end of a run report (above). WARNING: this will REPLACE the save you are playing.","Work you have signed for. Contracts pay on top of your haul, and they do not expire while you are down here.":"Stuff for you to do.","Kills, loot, doors, selling and extracting all pay XP. Dying pays half. A hundred rewards, claimed in order, and nothing here ever resets.":"This is like a season pass.  More stuff to do.","The mainframe pays per extraction, every extraction, for as long as it is running.":"BUILD THE MAINFRAME.  The mainframe pays per extraction, every extraction, for as long as it is running.","A rack costs 12 Scrap Metal (1 held), 9 Copper Wire (0 held), 6 Cracked Cell (0 held), 6 Circuit Board (3 held). Each pays $200 every time you extract alive. Junk becomes infrastructure.":"A rack costs 12 Scrap Metal (1 held), 9 Copper Wire (0 held), 6 Cracked Cell (0 held), 6 Circuit Board (3 held).","Ten racks fold into one Array. An Array pays $2,600 an extraction against the $2,000 those racks paid, and it clears the wall so you can build ten more behind it. There is no limit on Arrays.":"Ten racks become one Array. There is no limit on Arrays.","Spend a Data Core ($520 on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. None in the stash right now.":"Spend a Data Core for better map info. Every locked-room key location and every elite will be live on the M map.","A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.":"This is some shit Claude came up with.  A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.","Nobody out there has a problem with you. Starting a fight with someone who was not fighting you is what earns it: the Peddler, an unarmed survivor, or a pillager who had not raised a hand to you.":" Starting a fight with someone who was not fighting you earns Notoriety.","Quiet, then lethal. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once, and machines account for almost every death here.":" ","Quiet, then lethal, by the mile. Two arterials quarter the complex and every crossing is a toll - a gate, a kill-lane, a long look down someone else's sightline. Tight aisles, long holds, and the cold keeps the machines honest.":" ","you: 2 runs here  ·  420 by 340 metres, 14.3 hectares  ·  5 named zones  ·  2 keyed rooms  ·  the test robot extracts 39.2% of its raids here  ·  first contact ~35s  ·  5.2 containers a raid  ·  median haul $1,865":"you: 2 runs here  ·  420 by 340 metres, 14.3 hectares  ·  5 named zones  ·  2 keyed rooms  ·  the test robot extracts in 39.2% of its raids in Cold Storage.","YOU HAVE NEVER RAIDED HERE  ·  900 by 760 metres, 68.4 hectares  ·  12 named zones  ·  8 keyed rooms  ·  the test robot extracts 38.3% of its raids here  ·  first contact ~37s  ·  5.5 containers a raid  ·  median haul $1,690":"YOU HAVE NEVER RAIDED HERE  ·  900 by 760 metres, 68.4 hectares  ·  12 named zones  ·  8 keyed rooms  ·  the test robot extracts 38.3% of its raids in The Cold Mile.","Clear. No bonus for an easy sky.":" ","Rainy. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","Foggy. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","Blackout. Only harder if the lamps were on, and in daylight that depends on the hour you land at.":"XP multiplier = 1.1x (only at night)","Storming. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","no armour on":"no armour equipped","The freebie kit":"The Freebie Kit","Please provide feedback anything that went or felt wrong.":"Please provide feedback -- tell us anything that went or felt wrong.","5 items that you had in your loadout before choosing the freebie kit have been restored.":"The items in your loadout before choosing the freebie kit have been restored.","Next: Bandages and ammo, reward 1 of 100, 6,925 XP away. Claim it at the Mainframe.":" ","Run abandoned. $530 left behind.":"Run abandoned. $530 in loot left behind.","+42 XP (75% penalty for backing out)  ·  275 of 1,200,000":"+42 XP (75% penalty for backing out)  ·  Total XP: 275 of 1,200,000","CLOSEST YOU CAME TO EXTRACTION: 178M":" ","Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.":" ","\n      The elites left the surface to the machines and went somewhere better.\n      You go up, you take what is worth taking, and you come back down.\n    ":"The elites left you for dead. You live underground.  The machines control the surface.  Nothing left to do now except pillage what remains.","\n          Hold E on anything worth opening. Beware of hostile robots and fellow pillagers.":"          Loot all the things. Beware of hostile robots and fellow pillagers.","\n          Stand in a ring and hold E to call for extraction. Die out there and it is all gone.":"    Die out there and it is all gone.","\n          Take the lift up with whatever you dare carry. What you bring, you can lose.":"          Take the lift up with whatever you dare carry. "};
+var TXSHIP={"No refunds, no complaints, no telling you first.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","Most of it is rubbish. That is why the good one feels good.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","You hold $375,700  ·  $2,500 per roll":"Current credits: $375,700  ·  Gambling costs $2,500 per roll","Gamble with Wirt. No refunds, no complaints.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","New item in 4 minutes":"New limited time offer arrives in 4 minutes","XP comes from selling salvage in the Undercroft.":"Shop before you drop.","Refills a magazine from your backpack.":"Think ammo is expensive?  Try living without it.","Thrown. Goes on a tactical belt key.":"Belt consumables ftw. ","Ten seconds of unlimited stamina and a fifth more speed.":"Ooooh yeeah that's the stuff.","Restores 20 armour.":"Restores 20 armour.  Armour plates don't auto equip; you must put them in during the raid.","The Whisper and the Meridian Lance are not stocked by anyone down here. Wirt puts one on his counter now and again, and otherwise they are found up top or not at all.":" ","The Carbine, the Scattergun and the Support MG are not stocked here. Wirt deals them, and anything can turn up in a container. ":"Better guns are found at Wirt and in raids.","plates, medkits, smoke, decoys and frags":"Needed to craft plates, medkits, smoke, decoys and frags.","Thrown. Goes on a tactical belt key. Makes 2.":"Belt consumables ftw.","***EXPERIMENTAL***":"***EXPERIMENTAL FEATURE MAY GLITCH***","One run, paid up front. He loots for himself, and if you BOTH get out you take ten percent of what he carried. If YOU do not make it you get nothing. If HE does not make it you owe his family $3,400 on top of the fee. On the surface B cycles his orders. Your shots cannot hurt him. If you go down, he comes for you.":"Buy a friend.","THE DEAL":" ","A free shop. Click a thing and it will be transferred to your stash. No judgment.":"Cmon you dirty cheating cheater, just take it all, why don'tcha?","Selling salvage here pays XP equal to the price. Finishing a raid pays XP too. The Peddler in the field pays cash only.":"Selling salvage here pays XP equal to the price.","Go up with issued gear instead of your own. A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.":"Go up with issued gear instead of your own. A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.  You cheap bastard.","Double vision, then triple. Every glass stacks on the last, and your hands slow with your legs.  Each lasts 3 min.":"We're going streaking!","The surface stops agreeing with itself. Every tab makes it worse, up to the ten your body can hold.  Each lasts 3 min.":"Cast off the paltry limitations of ego that reinforce your sad existence.","No tab, no credit. Every dose stacks on the last, and the bar cuts you off at ten. While a dose is in your blood, every XP a raid pays you is 2.5% more per dose.":"Shit's about to get real.","THE RAID rows below change how the game plays, and every option named Standard is how it plays out of the box. Everything under them is presentation and changes nothing.":"So you are too good for default settings, eh?","Turns every line of text in the game into something you can click and type over. Click a word anywhere, in a menu or on the screen during a raid, and rewrite it. Clear the box and press Enter to put the original back. Your wording is saved with your profile and follows the phrase everywhere it appears.":"Don't use this unless you know what you are doing!","Time only moves when you act. Stand still and it stops dead; any key, click or trigger runs it, and holding E runs it at full speed.":"Time only moves when you act.","Human-shaped rivals looting the same map. They fight each other and the machines as well as you.":"Make some friends.","Sentries and crawlers. They own the surface and they are what usually kills you.":"Make some enemies.","Damage taken from everything on the surface. Standard is how the game has always actually played; Hardened is the old design intent, a fifth harder.":"Are you scared?","How hard they hit":"Damage","How long you have before the surface stops being survivable at all.":"Too much time on your hands?","What everything is WORTH, including the stash you have already banked. The same items still turn up just as often.":"Value is relative.","How much of the map comes to the extraction ring once the beacon is up.":"Turn down for what?","Scales every string on every canvas and in every panel.":"Since Claude can't seem to figure this out on its own...","Ten arrangements of the stash and backpack grids. Lower numbers are roomier cells and fewer of them; higher numbers pack more items on screen. 6 is the default.":"Clade came up with this.","A faint 16-bit loop, five pieces, one picked at random each time you come back down. UNDERCROFT plays it, OFF is silence. The surface is deliberately silent either way.":"Wake up, Crono!","The cursor hides while you are aiming and returns with the backpack. BACKSPACE forces it back at any time.":"If the cursor disappears (known glitch), this brings it back","Every dial the rows above set, and the rest of them, as live sliders. A slider you move is yours until you click its row again. SHIFT and the backquote key open it too.":"For the choosiest.","Puts the DEV CHEAT BOX on the Undercroft floor. Off, nobody finds it.":"Adds the DEV CHEAT BOX to the Undercroft. You dirty cheating cheater.","Every raid is logged here. Copy it out and send it to Daniel so the game can be tuned on real play.":"Copy this and send it to Daniel.","Paste a RESTORE CODE from the end of a run report. It REPLACES the save you are playing. Read it first: the game will tell you whose character it is before anything is written.":"Paste a RESTORE CODE from the end of a run report (above). WARNING: this will REPLACE the save you are playing.","Work you have signed for. Contracts pay on top of your haul, and they do not expire while you are down here.":"Stuff for you to do.","Kills, loot, doors, selling and extracting all pay XP. Dying pays half. A hundred rewards, claimed in order, and nothing here ever resets.":"This is like a season pass.  More stuff to do.","The mainframe pays per extraction, every extraction, for as long as it is running.":"BUILD THE MAINFRAME.  The mainframe pays per extraction, every extraction, for as long as it is running.","A rack costs 12 Scrap Metal (1 held), 9 Copper Wire (0 held), 6 Cracked Cell (0 held), 6 Circuit Board (3 held). Each pays $200 every time you extract alive. Junk becomes infrastructure.":"A rack costs 12 Scrap Metal (1 held), 9 Copper Wire (0 held), 6 Cracked Cell (0 held), 6 Circuit Board (3 held).","Ten racks fold into one Array. An Array pays $2,600 an extraction against the $2,000 those racks paid, and it clears the wall so you can build ten more behind it. There is no limit on Arrays.":"Ten racks become one Array. There is no limit on Arrays.","Spend a Data Core ($520 on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. None in the stash right now.":"Spend a Data Core for better map info. Every locked-room key location and every elite will be live on the M map.","A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.":"This is some shit Claude came up with.  A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.","Nobody out there has a problem with you. Starting a fight with someone who was not fighting you is what earns it: the Peddler, an unarmed survivor, or a pillager who had not raised a hand to you.":" Starting a fight with someone who was not fighting you earns Notoriety.","Quiet, then lethal. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once, and machines account for almost every death here.":" ","Quiet, then lethal, by the mile. Two arterials quarter the complex and every crossing is a toll - a gate, a kill-lane, a long look down someone else's sightline. Tight aisles, long holds, and the cold keeps the machines honest.":" ","you: 2 runs here  ·  420 by 340 metres, 14.3 hectares  ·  5 named zones  ·  2 keyed rooms  ·  the test robot extracts 39.2% of its raids here  ·  first contact ~35s  ·  5.2 containers a raid  ·  median haul $1,865":"you: 2 runs here  ·  420 by 340 metres, 14.3 hectares  ·  5 named zones  ·  2 keyed rooms  ·  the test robot extracts in 39.2% of its raids in Cold Storage.","YOU HAVE NEVER RAIDED HERE  ·  900 by 760 metres, 68.4 hectares  ·  12 named zones  ·  8 keyed rooms  ·  the test robot extracts 38.3% of its raids here  ·  first contact ~37s  ·  5.5 containers a raid  ·  median haul $1,690":"YOU HAVE NEVER RAIDED HERE  ·  900 by 760 metres, 68.4 hectares  ·  12 named zones  ·  8 keyed rooms  ·  the test robot extracts 38.3% of its raids in The Cold Mile.","Clear. No bonus for an easy sky.":" ","Rainy. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","Foggy. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","Blackout. Only harder if the lamps were on, and in daylight that depends on the hour you land at.":"XP multiplier = 1.1x (only at night)","Storming. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","no armour on":"no armour equipped","The freebie kit":"The Freebie Kit","Please provide feedback anything that went or felt wrong.":"Please provide feedback -- tell us anything that went or felt wrong.","5 items that you had in your loadout before choosing the freebie kit have been restored.":"The items in your loadout before choosing the freebie kit have been restored.","Next: Bandages and ammo, reward 1 of 100, 6,925 XP away. Claim it at the Mainframe.":" ","Run abandoned. $530 left behind.":"Run abandoned. $530 in loot left behind.","+42 XP (75% penalty for backing out)  ·  275 of 1,200,000":"+42 XP (75% penalty for backing out)  ·  Total XP: 275 of 1,200,000","CLOSEST YOU CAME TO EXTRACTION: 178M":" ","Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.":" ","\n      The elites left the surface to the machines and went somewhere better.\n      You go up, you take what is worth taking, and you come back down.\n    ":"The elites left you for dead. You live underground.  The machines control the surface.  Nothing left to do now except pillage what remains.","\n          Hold E on anything worth opening. Beware of hostile robots and fellow pillagers.":"          Loot all the things. Beware of hostile robots and fellow pillagers.","\n          Stand in a ring and hold E to call for extraction. Die out there and it is all gone.":"    Die out there and it is all gone.","\n          Take the lift up with whatever you dare carry. What you bring, you can lose.":"          Take the lift up with whatever you dare carry. "};
 var TXPSHIP={}, TXPSHIPANY=0;
 (function(){
   for(var _tk in TXSHIP){
@@ -5244,7 +5246,7 @@ function strikeTick(dt){
           // flung-out arm - a dead man on the scorched ground, and bodies were
           // removed at v5.28 by his order. A cache is what it is.
           var ct=mkContainer(_fx,_fy,'cache',G.map.districtAt?G.map.districtAt(_fx,_fy):-1);
-          ct.loot=[key]; ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;
+          setLoot(ct,[key]); ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;   // v11.88: setLoot, so best is right
           G.containers.push(ct);
           if(!G.sim) say('Something fused in the ground where that landed.');
         }
@@ -8938,6 +8940,8 @@ function mkPeddler(x,y,map){
 // hurt, he is hiding, and he wants one specific thing. He is NOT marked on the
 // map until you find him, which is the difference: the Peddler is an errand you
 // can plan and the Stray is something you stumble into.
+// v11.86, HIS NOTES: three times the money and a piece of salvage in hand as
+// well; the cache is still marked. The paragraph below is the original design.
 // What he pays with is the interesting part. Not much money: he tells you where
 // an Meridian cache is. That answers the loot complaint directly, because a cache is
 // pure high tier, and it means the reward for being decent to someone is a
@@ -9004,25 +9008,27 @@ function strayGive(e){
   if(!fromReserve) G.bag.splice(ix,1);
   e.helped=1; e.want2=null;
   blip('pick');
-  var c=strayReveal();
-  if(c){
-    c.revealed=1;
-    say('He tells you where a cache is. It is on your map.');
-    label(e.x,e.y-20,'CACHE MARKED','#e6b4ff',0,true);
-  } else {
-    say('He has nothing left to tell you, so he gives you what he has.');
-  }
   // Money, banked the way the Peddler banks it: he pays before you have earned
   // the right to survive the trip. v11.86, HIS NOTES: three times what it was
   // (my number; he said "more"), and something in your hands NOW, not only a
   // mark on the map: one piece of salvage from his own pockets, through the
-  // same grant a container uses.
+  // same grant a container uses. The grant goes first so its own Found line
+  // is the one that gets overwritten; say() holds one line, so what he did is
+  // one sentence, built below and appended to the cache line.
   var pay=ri(900,1500);
   P.credits+=pay;
   G.strayPaid=(G.strayPaid||0)+pay;
   var gift=pick(['titan','core','optic','servo']);
   try{ grantLoot(mkContainer(e.x,e.y,'crate'),[gift]); G.strayGave=gift; }catch(_sg){}
-  say('He pays you $'+pay.toLocaleString()+(G.strayGave?' and presses a '+ITEMS[gift].name+' into your hands.':'.'));
+  var _tail=' He pays you $'+pay.toLocaleString()+(G.strayGave?' and presses a '+ITEMS[gift].name+' into your hands.':'.');
+  var c=strayReveal();
+  if(c){
+    c.revealed=1;
+    say('He tells you where a cache is. It is on your map.'+_tail);
+    label(e.x,e.y-20,'CACHE MARKED','#e6b4ff',0,true);
+  } else {
+    say('He has nothing left to tell you, so he gives you what he has.'+_tail);
+  }
   if(G.tel) G.tel.strayHelped=(G.tel.strayHelped||0)+1;
   if((P.notoriety||0)>0){
     P.notoriety--;
@@ -10455,7 +10461,7 @@ window.addEventListener('keydown',function(e){
     // v8.16, audit: nothing on the floor answers a key while something is open
     // over it. SPACE used to roll the character behind an open window rather
     // than pressing the control he was looking at.
-    var _hubBusy=!!(document.querySelector('.modal.on')||document.querySelector('.imenu')||
+    var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v11.91: the character screen counts here too
                     document.getElementById('hub').classList.contains('on'));
     // v6.73, his notes: H shows the controls down here too, and SPACE rolls.
     if(e.code==='KeyH'&&!e.repeat&&HB&&!_hubBusy){ HB.legend=!HB.legend; e.preventDefault(); return; }
@@ -10514,6 +10520,7 @@ window.addEventListener('keydown',function(e){
       // leave the menu floating over the Undercroft, still acting on a screen
       // that could no longer repaint it.
       if(document.querySelector('.imenu')) _anyModal=true;
+      if(_titleUp) _anyModal=true;   // v11.91
       if(!_anyModal){
         var _hb=document.getElementById('hub');
         // The terminal being open means he is reading it; the key closes it and
@@ -10757,7 +10764,9 @@ cv.addEventListener('mousedown',function(e){
         var _H=HCq[_q2];
         if(mouse.x>=_H.x&&mouse.x<=_H.x+_H.w&&mouse.y>=_H.y&&mouse.y<=_H.y+_H.h){
           var _sl=hotbarSlots()[_H.i];
-          if(_sl&&_sl.itemKey){ G.drag={key:_sl.itemKey,fromHot:_H.i}; blip('pick'); }
+          // v11.90, HIS NOTE: the floor's belt drags derived cells by the item they show too.
+          var _sdk=_sl?(_sl.itemKey||((_sl.kind==='heal'||_sl.kind==='armor'||_sl.kind==='throw')&&_sl.icon&&ITEMS[_sl.icon]&&(_sl.kind!=='heal'||_sl.count>0)?_sl.icon:null)):null;
+          if(_sl&&_sl.kind!=='gun'&&_sdk){ G.drag={key:_sdk,fromHot:_H.i}; blip('pick'); }
           _hbDone=true; return;
         }
       }
@@ -10783,7 +10792,7 @@ cv.addEventListener('mousedown',function(e){
   // drawBag painted this frame.
   if(e.button===0&&G&&!G.over&&G.bagOpen&&G.bagPanel&&inRect(G.bagPanel,mouse.x,mouse.y)) return;
   // BELT CELLS CLAIM THE CLICK TOO, v7.21. Select on press; assignable items arm the
-  // same drag the bag uses. Guns select only.
+  // same drag the bag uses. Guns select only while the backpack is closed (v11.89).
   if(e.button===0&&G&&!G.over&&G.hotCells){
     for(var _hd=0;_hd<G.hotCells.length;_hd++){
       var _HC2=G.hotCells[_hd];
@@ -10798,7 +10807,7 @@ cv.addEventListener('mousedown',function(e){
         // cells (Medical, Armour Plate, the grenades) carried no item key, so
         // only a cell he had already assigned could be picked up. A derived
         // cell drags by the item it shows.
-        var _dk=_hs2?(_hs2.itemKey||((_hs2.kind==='heal'||_hs2.kind==='armor'||_hs2.kind==='throw')&&_hs2.icon&&ITEMS[_hs2.icon]?_hs2.icon:null)):null;
+        var _dk=_hs2?(_hs2.itemKey||((_hs2.kind==='heal'||_hs2.kind==='armor'||_hs2.kind==='throw')&&_hs2.icon&&ITEMS[_hs2.icon]&&(_hs2.kind!=='heal'||_hs2.count>0)?_hs2.icon:null)):null;   // an empty Medical cell shows a bandage it does not hold
         if(_hs2&&_hs2.kind!=='gun'&&_dk){
           G.drag={key:_dk,fromHot:_HC2.i};
           blip('pick');
@@ -12488,7 +12497,8 @@ function applyHeal(key){
   var hot=(typeof it.hot==='number')?it.hot:0;
   var p=G.player;
   if(hot>0&&CFG.healOverTime!==0&&amt>0){
-    // ONE AT A TIME, AND SLOWER, v3.34. His note: "change it so you can only use
+    // ONE AT A TIME, AND SLOWER, v3.34 (the one-at-a-time half REVERSED at v11.82
+    // on his later note; the slower half stands). His note then: "change it so you can only use
     // one heal at a time and it heals slower and you can't apply the next one
     // until the full heal cycle of the previous one is done."
     // The old rule was the opposite of that on purpose: a second item ADDED its
@@ -12960,7 +12970,7 @@ function bagHeldGun(slot){
   if(isHand){
     p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0;
     p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
-    p.swapped=!sw;   // the gun that came up keeps the numbered slot it had
+    if(p.wep&&p.wep.id!=='fists') p.swapped=!sw;   // the gun that came up keeps its numbered slot; nothing came up, nothing flips
   } else {
     p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
   }
@@ -13310,7 +13320,8 @@ function setHot(i){
     else {
       var _gk=ITEMS[s2.itemKey]&&ITEMS[s2.itemKey].gk;
       if(_gk&&G.player.wep.id!==_gk&&G.player.sec&&G.player.sec.id===_gk) swapGuns();
-      G.hot=G.player.swapped?1:0;
+      // The highlight stays on the pressed cell: once the gun is in hand the
+      // derived gun cell is blanked by the dedupe, so pointing at it read EMPTY.
     }
     _hinted=true;
   }
@@ -13322,11 +13333,11 @@ function setHot(i){
   blip('pick');
 }
 // v11.83, HIS SPEC: "stim injector should give unlimited stamina and 1.2 speed
-// boost for 10 seconds". STIM_SEC and STIM_SPD are the whole of it: the
-// stamina line in updatePlayer holds the bar full while stimT runs and the
-// speed line multiplies by STIM_SPD. A second stim while one runs tops the
-// clock back up to the full ten rather than stacking. One verb, so any later
-// route into a stim uses the same numbers.
+// boost for 10 seconds". STIM_SEC and STIM_SPD are the whole of it: the clock
+// runs down with the other per-frame timers in updatePlayer, the stamina line
+// holds the bar full while it runs and the speed line multiplies by STIM_SPD.
+// A second stim while one runs tops the clock back up to the full ten rather
+// than stacking. One verb, so any later route into a stim uses the same numbers.
 var STIM_SEC=10, STIM_SPD=1.2;
 function useStim(ix){
   var p=G.player;
@@ -13677,8 +13688,9 @@ function raiderUseKit(e,dt){
     }
   }
   // ---- HEAL. Hurt, not currently in the middle of one, and holding something
-  // that heals. One at a time and over time, exactly as v3.34 made it for the
-  // player, so the same three seconds of vulnerability applies to him.
+  // that heals. One at a time and over time, as v3.34 made it for the player
+  // (the player's one-at-a-time rule was reversed at v11.82; his stays, so the
+  // same three seconds of vulnerability still applies to him).
   if((e.healQ||0)>0){
     var give=Math.min(e.healQ,(e.healRate||9)*dt);
     var room=e.maxhp-e.hp;
@@ -14159,6 +14171,9 @@ function updatePlayer(dt){
   if(p.recoil>0) p.recoil-=dt*7;
   if(p.muzzle>0) p.muzzle-=dt;
   if(p.iv>0) p.iv-=dt;
+  // v11.83, HIS SPEC: the stim clock, up here with the other timers so it keeps
+  // running through a roll and while downed (both return before the stamina line).
+  if(p.stimT>0){ p.stimT-=dt; if(p.stimT<=0){ p.stimT=0; if(!G.sim) say('The stim wears off.'); } }
 
   if(p.downed){
     if(tickDowned(dt)) return;
@@ -14334,8 +14349,8 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   // is undone: wading empty is 53.7 and untouched.
   if(spd<SPEED_FLOOR) spd=SPEED_FLOOR;
 // v11.83, HIS SPEC: unlimited stamina while the stim runs; the bar is held full
-// and the drain below is skipped, so the release latch never arms either.
-if(p.stimT>0){ p.stimT-=dt; p.stam=100; if(p.stimT<=0){ p.stimT=0; if(!G.sim) say('The stim wears off.'); } }
+// and the drain is skipped, so the release latch never arms either.
+if(p.stimT>0) p.stam=100;
 else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*dt);
   if(sprint&&p.stam<45&&!G.sim){ p.brT=(p.brT||0)-dt; if(p.brT<=0){ p.brT=0.55; voxBreath(); } }
   // v4.24 HIS NOTE: running dry locks the sprint until the bar is back to 12,
@@ -16218,7 +16233,10 @@ if(e.kind==='stray'){
         // and leaves when he reaches it.
         var _sz=null,_szd=1e9;
         for(var _zq=0;_zq<G.zones.length;_zq++){ var _zz=G.zones[_zq]; if(!_zz.open) continue; var _zd=dist(e,_zz); if(_zd<_szd){ _szd=_zd; _sz=_zz; } }
-        if(_sz&&_szd>_sz.r*0.9){ navSeek(e,_sz.x,_sz.y,120,dt); e.moving=true; }
+        if(_sz&&_szd>_sz.r*0.9){
+          navSeek(e,_sz.x,_sz.y,120,dt); e.moving=true;
+          e.face+=clamp(angDiff(Math.atan2(_sz.y-e.y,_sz.x-e.x),e.face),-2.2*dt,2.2*dt);   // he faces where he walks
+        }
         else if(_sz){
           e.moving=false; e.gone=1; e.x=-9000; e.y=-9000;
           say('The survivor made it to Extraction '+extLetter(_sz)+'.');
@@ -16239,7 +16257,7 @@ if(e.kind==='stray'){
           if(_sgT){ e.face=Math.atan2(_sgT.y-e.y,_sgT.x-e.x); e.cd=1.1; fireWeapon(e,WEAPONS.pistol,_sgT.x,_sgT.y,false); }
         }
       }
-      if(sdd<300) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.2*dt,2.2*dt);
+      if(sdd<300&&!(e.helped&&!e.hostile)) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.2*dt,2.2*dt);   // v11.87: a helped man faces his road, not you
       if(!e.found&&sdd<190&&!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)){
         e.found=1;
         say(e.helped?'The survivor is still there.'
@@ -17751,7 +17769,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                 en.state='alarm'; en.lost=0; en.wind=rnd(3,4);
                 en.markX=p.x; en.markY=p.y;
               }
-              G.tel.hits++;
+              if(!b._hitTold){ b._hitTold=1; G.tel.hits++; }   // v11.84: one hit per round, however many it passes through
               // Hit feedback at the reticle. The sprite flash and spark happen out
               // in the dark at range, so a landed shot could read as a miss.
 G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
@@ -18479,9 +18497,10 @@ silentExit:T.silentExit||0,
     }
   })();
   if(G.strayPaid){
-    // v11.86, HIS NOTE: no "already banked"; and the gift, if there was one.
+    // v11.86, HIS NOTE: no "already banked"; and the gift, on the card of a run
+    // that brought it home (a death or an abandonment lost the bag it went into).
     lines.push('<span style="color:var(--coolant)">The survivor paid you '+'$'+G.strayPaid.toLocaleString()+
-      (G.strayGave&&ITEMS[G.strayGave]?' and gave you a '+escHtml(ITEMS[G.strayGave].name):'')+'.</span>');
+      (how==='extract'&&G.strayGave&&ITEMS[G.strayGave]?' and gave you a '+escHtml(ITEMS[G.strayGave].name):'')+'.</span>');
   }
   if(G.pedSold){
     lines.push(how==='extract'
@@ -18788,7 +18807,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     weakHits:T.weakHits||0,wallsDown:T.wallsDown||0,storyRead:T.storyRead||0,
     rivalMet:T.rivalMet||0,parleys:T.parleys||0,ringCrowd:T.ringCrowd||null,
     pgLook:T.pgLook||null,
-    strayHelped:T.strayHelped||0,strayKilled:T.strayKilled||0,wildKilled:T.wildKilled||0,
+    strayHelped:T.strayHelped||0,strayKilled:T.strayKilled||0,strayOut:T.strayOut||0,wildKilled:T.wildKilled||0,
     pedSold:T.pedSold||0,pedKilled:T.pedKilled||0,rackPay:T.rackPay||0,
     crewRevives:T.crewRevives||0,mercRevives:T.mercRevives||0,raiderRevives:T.raiderRevives||0,
     lastHitName:T.lastHitName||null,
@@ -26221,9 +26240,9 @@ function drawMapOverlay(){
   // through the global FS, which knows about the text size dial and nothing
   // about the screen. Measured before this: the drawn world went from 1161x940
   // to 2495x2020 between 1080p and 4K while every label stayed at 18.7px.
-  // Declared here so it shadows the global for this function only. All fourteen
+  // Declared here so it shadows the global for this function only. All fifteen
   // font calls below pick it up, and there is one place to change it rather than
-  // fourteen. hudRes() is exactly 1 at 1920x1080, so that screen is unchanged.
+  // fifteen. hudRes() is exactly 1 at 1920x1080, so that screen is unchanged.
   var _MZ=hudRes();
   function FS(spec){ return FSz(spec,_MZ); }
   mapLabelReset();
@@ -27333,7 +27352,7 @@ function askKit(){
     (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current tactical belt and backpack.')
          :'your current tactical belt and backpack.')+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
-  ASKYES=function(){ P.freeKit=0; saveProfile(); ascendNow(); };
+  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v11.93: MY LOADOUT gets his packing back too
   ASKALT=function(){
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
     try{ renderStage(); }catch(_e){}
@@ -28085,11 +28104,15 @@ function loop(ts){
       // v8.52, audit: musThreat had no reader either; th itself is still needed
       // below, so only the stamp goes.
       // v11.80, HIS NOTE: the extraction hold ends the raid inside updatePlayer
-      // above, and this frame runs on to here after endRaid's cut. Not downed
-      // after an extraction, so this wrote the bed back up to its floor in the
-      // same frame, and the level held on the Undercroft floor for as long as
-      // the page was open. Over an ended raid the bed is driven to silence.
+      // above, and this frame runs on to here after endRaid's cut, so this wrote
+      // the bed back up to its floor in the same frame, and the level held on the
+      // Undercroft floor for as long as the page was open. A death never did:
+      // it ends the raid from the death-beat branch, which never reaches here.
+      // Over an ended raid the bed is driven to silence, and the cut is written
+      // again LAST, because two automations at one currentTime resolve to the
+      // later one and this drive's ramps are four to ten times slower than it.
       tickAmbience(dt,G.over?0:th,!pp.downed&&!G.over,G.over?0:wdread);
+      if(G.over){ try{ ambienceOff(); }catch(_a2){} }
       tickEnemyAudio(dt);
       tickMachineVoices(dt);
       tickVerb(dt);
@@ -28483,7 +28506,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.93: from the 2026-09-06 menu audit, TAKE THE FREEBIE KIT wiped the packed backpack and the whole belt plan with no undo. The selection is kept aside on the profile (kitSaved) when the kit is taken and put back by USE MY OWN GEAR, minus anything no longer in the stash. Check 11.93 packs two items and a key, presses the real button twice, and requires the packing and the key back, then sells one item between presses and requires only the other back; fails on v11.92.',
+  now:'v11.93: from the 2026-09-06 menu audit, TAKE THE FREEBIE KIT wiped the packed backpack and the whole belt plan with no undo. The selection is kept aside on the profile (kitSaved) when the kit is taken and put back by freeKitRestore, called by USE MY OWN GEAR and by MY LOADOUT at the lift, minus anything no longer in the stash and with dead keys pruned; a raid taken with the free kit hands the saved list to the v6.88 death restore. Check 11.93 packs two items and a key, presses the real button twice, and requires the packing and the key back, then sells one item between presses and requires only the other back; fails on v11.92.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29301,7 +29324,7 @@ function setSafe(k){
   // v11.92, from the 2026-09-06 menu audit: a grenade rides in the pouch and
   // ammunition in the reserve, and the death path banks the backpack only,
   // so a pocket naming either came home with nothing while reading 1/1.
-  if(k&&ITEMS[k].use==='throw') return 'A grenade rides in the pouch, not a pocket. It cannot come home from there.';
+  if(k&&ITEMS[k].use==='throw') return 'A throwable rides in the pouch, not a pocket. It cannot come home from there.';
   if(k&&ITEMS[k].use==='ammo') return 'Ammunition rides in the reserve, not a pocket. It cannot come home from there.';
   P.safe=k||null; saveProfile(); return null;
 }
@@ -29588,7 +29611,7 @@ function itemMenuRows(key,ctx,count){
   rows.push({sep:1});
   rows.push({keys:1,label:'Put on key'});
   // v6.01: naming the safe pocket is a menu verb as well as a drop target.
-  if(it.use!=='gun'){
+  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v11.92: the pocket refuses these, so the menu does not offer it
     var _isSafe=(P.safe===key);
     rows.push({label:_isSafe?'Take out of safe pocket':'Put in safe pocket',
       hint:_isSafe?null:'survives death',
@@ -30095,8 +30118,8 @@ try{ renderFreeKit(); }catch(_fk){}
       // v5.92: 'stim' belongs here. useHot has always known how to use one, but
       // the only route into useHot's item branch is an assigned key, and this
       // gate was the thing refusing to assign it. Without this the Stim Injector
-      // is loot and shop stock that can never be used, while the ascent check
-      // counts it as healing you are carrying.
+      // is loot and shop stock that can never be used. (Until v11.83 the ascent
+      // check also counted it as healing you are carrying; it no longer does.)
       if(it.use==='heal'||it.use==='throw'||it.use==='armor'||it.use==='stim'){
         var _lab=document.createElement('span');
         _lab.textContent='  put on key';
@@ -30208,7 +30231,7 @@ try{ renderFreeKit(); }catch(_fk){}
   // anywhere in the file, so it is a lifetime career total, and it is granted in
   // exactly three places, all of them a SALE FROM THE STASH in the Undercroft.
   // Every other way money reaches you pays credits and no rep at all: the Stray
-  // pays 260 to 540, the in-raid Peddler pays whatever you fence, the merc's cut
+  // pays 900 to 1500 (v11.86), the in-raid Peddler pays whatever you fence, the merc's cut
   // pays 10 percent of what he walked out with, and hazard pay is a percentage of
   // the haul. Four credit sources, zero rep sources.
   // So a player who fences in the field and never sells at home banks money,
@@ -30798,7 +30821,7 @@ if(r.ghostIn) line+=' ghost:1';
     if(r.wallsDown) line+=' wallsDown:'+r.wallsDown;
     if(r.storyRead) line+=' storyRead:'+r.storyRead;
     if(r.parleys) line+=' parleys:'+r.parleys;
-    if(r.strayHelped||r.strayKilled) line+=' strays:'+(r.strayHelped||0)+'helped/'+(r.strayKilled||0)+'killed';
+    if(r.strayHelped||r.strayKilled||r.strayOut) line+=' strays:'+(r.strayHelped||0)+'helped/'+(r.strayKilled||0)+'killed/'+(r.strayOut||0)+'out';
     if(r.wildKilled) line+=' wildKilled:'+r.wildKilled;
     if(r.pedSold||r.pedKilled) line+=' pedlar:'+(r.pedSold||0)+'sold'+(r.pedKilled?'/killed':'');
     if(r.rackPay) line+=' rackPay:'+r.rackPay+'c';
@@ -32590,7 +32613,7 @@ function renderStage(prefill){
   var w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
   var warn=[];
   if(!w) warn.push('no gun of your own');
-  var hasHeal=kit.some(function(k){ return ITEMS[k]&&(ITEMS[k].use==='heal'||ITEMS[k].use==='stim'); });
+  var hasHeal=kit.some(function(k){ return ITEMS[k]&&ITEMS[k].use==='heal'; });   // v11.83: a stim is legs, not healing
   if(!hasHeal) warn.push('nothing to heal with');
   var W=document.getElementById('stagewarn');
   // The freebie kit is a complete loadout of its own, so warnings about HIS kit are
@@ -32624,7 +32647,7 @@ function renderFreeKit(){
   // fixes: getElementById only ever reached the copy on a screen that no longer opens.
   var html='<div class="fkbox">'+
     '<b>FREEBIE KIT</b>'+
-    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText())+' Your own packing is kept for when you switch back.':
+    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText())+(P.kitSaved?' Your own packing is kept for when you switch back.':''):
       'Go up with issued gear instead of your own. '+escHtml(freeKitText()))+'</span>'+
     '<button class="deploy ghost fkbtn">'+(on?'USE MY OWN GEAR':'TAKE THE FREEBIE KIT')+'</button>'+
     '</div>';
@@ -32641,14 +32664,7 @@ function renderFreeKit(){
   for(var bi=0;bi<btns.length;bi++) btns[bi].onclick=function(){
     if(P.freeKit){
       P.freeKit=0;
-      // v11.93, from the 2026-09-06 menu audit: what he had packed before he
-      // took the free kit comes back, minus anything no longer in the stash.
-      var _ks=P.kitSaved; P.kitSaved=null;
-      if(_ks){
-        var _pool=(P.stash||[]).slice(), _kit=[];
-        for(var _ki=0;_ki<(_ks.kit||[]).length;_ki++){ var _kx=_pool.indexOf(_ks.kit[_ki]); if(_kx>=0){ _pool.splice(_kx,1); _kit.push(_ks.kit[_ki]); } }
-        P.kit=_kit; P.hotAssign=_ks.hot||{}; P._gunSlot=_ks.gun||null;
-      }
+      freeKitRestore();   // v11.93: what he had packed comes back
       saveProfile(); try{ renderHub(); }catch(_fh0){} renderStage(); return;
     }
     // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
@@ -32669,13 +32685,27 @@ function renderFreeKit(){
     renderStage();
   };
 }
+// v11.93, from the 2026-09-06 menu audit: the packing and the belt plan he had
+// before taking the free kit come back, minus anything no longer in the stash,
+// with any key left pointing at nothing pruned. Called by USE MY OWN GEAR and by
+// MY LOADOUT at the lift; commitKit hands the same list to the death restore.
+function freeKitRestore(){
+  var _ks=P.kitSaved; P.kitSaved=null;
+  if(!_ks) return false;
+  var _pool=(P.stash||[]).slice(), _kit=[];
+  for(var _ki=0;_ki<(_ks.kit||[]).length;_ki++){ var _kx=_pool.indexOf(_ks.kit[_ki]); if(_kx>=0){ _pool.splice(_kx,1); _kit.push(_ks.kit[_ki]); } }
+  P.kit=_kit; P.hotAssign=_ks.hot||{}; P._gunSlot=_ks.gun||null;
+  try{ dropDeadKeys(); }catch(_dk){}
+  return true;
+}
 function commitKit(){
   // The freebie kit takes nothing out of the stash, so there is nothing to commit.
   // kitChosen is still stamped so the raid does not fall back to the standard kit.
   if(P.freeKit){
     // v6.88, his spec: remember what he had packed before the free gear replaced it, so
     // a death puts his own loadout back rather than making him rebuild it.
-    P.kitBeforeFree=(P.kit||[]).slice();
+    // v11.93: the button already emptied P.kit and kept it aside; that is the list.
+    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
     P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;   // v8.40: safeUp is armed in buildRaid
   }
   var kit=stageKitLive();

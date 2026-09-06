@@ -48,7 +48,8 @@ SubRx @'
        if(g.bag.indexOf('bandage')>=0) bad.push('the second bandage is still in the bag');
        // A PLATE WHILE THE BANDAGE IS BEING APPLIED.
        useArmor();
-       if(!p.prepA) bad.push('the plate was refused while a bandage was being applied');
+       if(p.prep&&p.prep.kind==='armor') bad.push('this build has one application timer, so the plate took the medical one and a bandage would have waited on it');
+       else if(!p.prepA) bad.push('the plate was refused while a bandage was being applied');
        if(g.bag.indexOf('plate')>=0) bad.push('the plate is still in the bag');
        for(var i=0;i<said.length;i++) if(said[i].indexOf(refusal)===0) bad.push('the game still said "'+said[i].slice(0,40)+'"');
        tickHeal(2.2);   // both timers finish (1.5 and 2.0)

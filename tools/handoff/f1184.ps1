@@ -54,7 +54,7 @@ SubRx @'
        var l1=1000-cs[0].hp, l2=1000-cs[1].hp;
        if(!(l1>=60)) bad.push('control: the lance did not hit the first crawler (loss '+l1.toFixed(0)+')');
        if(!(l2>=60)) bad.push('the lance round stopped at the first crawler; the second took '+l2.toFixed(0));
-       if(l1>200||l2>200) bad.push('a crawler was hit more than once by one round (losses '+l1.toFixed(0)+' and '+l2.toFixed(0)+')');
+       if(l1>150||l2>150) bad.push('a crawler was hit more than once by one round (losses '+l1.toFixed(0)+' and '+l2.toFixed(0)+')');
        // A RIFLE STOPS AT THE FIRST.
        stage(); err=shoot(WEAPONS.rifle||WEAPONS.pistol);
        if(err) bad.push('control: the rifle fired nothing ('+err+')');

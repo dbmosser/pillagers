@@ -26,14 +26,14 @@ SubRx @'
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(); g.seal={gained:40,done:0}; g.player.bag=[];
+       var g=__state(); g.seal={gained:40,done:0}; g.bag=[];
        __endRaid('dead');
        var t1=card();
        if(t1.indexOf('KILLED')<0) bad.push('control: the death card did not come up (card says: '+t1.slice(0,60)+')');
        if(t1.indexOf(lost)>=0) bad.push('the death card still says the cutting was '+lost.slice(-4)+' with you');
        __topClear(); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       g=__state(); g.seal={gained:40,done:0}; g.player.bag=[];
+       g=__state(); g.seal={gained:40,done:0}; g.bag=[];
        __endRaid('extract');
        var t2=card();
        if(t2.indexOf(banked)<0) bad.push('control: an extraction with 40 seconds of cutting did not print the banked line, so the seal path was not live in this staging (card says: '+t2.slice(0,80)+')');

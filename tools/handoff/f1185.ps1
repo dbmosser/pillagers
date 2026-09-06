@@ -17,7 +17,7 @@ function SubRx([string]$old, [string]$new) {
 SubRx @'
   {v:'11.84',what:'a Meridian Lance round travels through crawlers, hitting each one on the line once with its full damage, while a rifle round still stops at the first (his note of 2026-09-06)',
 '@ @'
-  {v:'11.85',what:'the map names each extraction at 18px or more and counts down to its close at 15px or more, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
+  {v:'11.85',what:'the map names each extraction in the callout face and counts down to its close in the label face, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
      if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
@@ -34,9 +34,10 @@ SubRx @'
        var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |OPEN TO EXTRACT)/.test(r.t); });
        if(!names.length) bad.push('control: the map drew no EXTRACT name');
        if(!subs.length) bad.push('control: the map drew no countdown or state line under a ring');
-       var smallN=names.filter(function(r){ return px(r.font)<18; }), smallS=subs.filter(function(r){ return px(r.font)<15; });
-       if(smallN.length) bad.push(smallN.length+' extraction name(s) drawn at '+px(smallN[0].font)+'px, under 18');
-       if(smallS.length) bad.push(smallS.length+' countdown line(s) drawn at '+px(smallS[0].font)+'px, under 15 ("'+smallS[0].t+'")');
+       var _hp=(window.__type&&__type.px('head'))||18, _lp=(window.__type&&__type.px('label'))||15;
+       var smallN=names.filter(function(r){ return px(r.font)<_hp-0.5; }), smallS=subs.filter(function(r){ return px(r.font)<_lp-0.5; });
+       if(smallN.length) bad.push(smallN.length+' extraction name(s) drawn at '+px(smallN[0].font)+'px, under the callout face at '+_hp+'px');
+       if(smallS.length) bad.push(smallS.length+' countdown line(s) drawn at '+px(smallS[0].font)+'px, under the label face at '+_lp+'px ("'+smallS[0].t+'")');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ proto.fillText=orig; try{ var g2=__state(); if(g2) g2.mapOpen=false; }catch(_m){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},

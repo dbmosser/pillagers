@@ -40024,6 +40024,55 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.80 - HIS NOTE: A HUM ON THE FLOOR AFTER COMPLETING A RUN
+
+His note of 2026-09-06: "strange humming sound in undercroft after completing
+a run".
+
+WHAT IT WAS. The raid has an ambient bed: two low sines, a loop of room noise,
+a weather voice and a dread voice, started once and never stopped, driven
+every frame by one function that writes their gains. v10.85 found the bed
+holding its last level after a raid and cut it in endRaid, which was right
+and is still there. What it missed is the rest of the frame. The extraction
+hold calls endRaid from inside the player update, and that frame is already
+inside the raid block (its guard was read before the raid ended), so it runs
+on to the bed's drive line, which wrote the bed back up to its floor of 0.16
+in the very frame the raid ended, after the cut; no later frame drives it, and
+it held that level on the Undercroft floor for as long as the page was open.
+A death never did this: a live death sets the death beat and the raid is
+ended a second or two later from that branch, which never reaches the drive
+line at all. That is why it hummed after a completed run and never after one
+he died in. (My first explanation said a death "arrives downed"; the read-only
+review showed killPlayer clears downed, and the branch is the real reason.)
+
+I READ THIS WRONG ONCE. My first draft blamed the outcome card, as if the
+loop kept driving the bed while the card was open; it does not, the raid
+block is gated on the raid being live. The dry run's check ended the raid
+between frames, saw a silent bed on the broken build, and said so; a real
+audio graph instrument on a dry build with the ambience left live showed the
+bed cut cleanly between frames too. The fault only exists inside one frame,
+where the hold ends the raid. The one-line fix was the same either way; the
+check was not.
+
+THE FIX. Two lines. When the raid is over the bed is driven with threat 0,
+alive false and dread 0, which is silence, and then endRaid's cut is written
+once more, last: two automations scheduled at the same instant resolve to the
+later one, and the drive's ramps are four to ten times slower than the cut,
+so without that second write the zeroed drive would have slowed the fade
+from under half a second to over one (the review caught this too).
+
+MEASURED. This fixture stubs the bed and blocks AudioContext, so check 11.80
+wraps the drive function and computes, from its arguments and with the
+function's own formula, the target it would write; and it wraps the player
+update to end the raid from inside it, once, exactly where the hold does. It
+deploys, steps the loop until that frame, steps thirty more, and requires the
+bed to have been driven above 0 before the end and every target written from
+the ending frame on to be 0. On the v11.79 fixture the ending frame writes
+0.16 after the cut and the check names the level.
+
+Not verified: by ear, which no fixture can do; the pause duck of v10.86,
+which is unchanged; the other paths that end a raid, which never reach the
+drive line (the death beat, the clock, the abandon).
 ## v11.79 - HIS ORDER: GREEN AND BLUE GUNS ON THE CRAFTING BENCH
 
 His order of 2026-09-06: "add some decent green and blue guns to crafting, make

@@ -37,6 +37,14 @@ SubRx @'
         var key='fulgurite';
 '@
 
+# Built through setLoot, so the cache's glow knows what it holds (mkContainer
+# stamped best from the roll it threw away).
+SubRx @'
+          ct.loot=[key]; ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;
+'@ @'
+          setLoot(ct,[key]); ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;   // v11.88: setLoot, so best is right
+'@
+
 # STAMPS.
 SubRx @'
 var VER='11.87';
@@ -52,7 +60,7 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A LIGHTNING STRIKE LEAVES FULGURITE, worth 2,500, and nothing else.',
+  'A LIGHTNING STRIKE THAT MISSES YOU SOMETIMES FUSES THE GROUND. What it leaves is FULGURITE, worth 2,500, and nothing else.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.87:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.87 matched $cnt times" }

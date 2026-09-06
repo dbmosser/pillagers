@@ -33,6 +33,22 @@ function updateHubWorld(dt){
 function updateHubWorld(dt){
 '@
 
+# The keydown branch keeps its own hand-written copy of the same gate; the
+# already-computed flag folds into it, so SPACE, H, TAB and I stop too.
+SubRx @'
+    var _hubBusy=!!(document.querySelector('.modal.on')||document.querySelector('.imenu')||
+'@ @'
+    var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v11.91: the character screen counts here too
+'@
+SubRx @'
+      if(document.querySelector('.imenu')) _anyModal=true;
+      if(!_anyModal){
+'@ @'
+      if(document.querySelector('.imenu')) _anyModal=true;
+      if(_titleUp) _anyModal=true;   // v11.91
+      if(!_anyModal){
+'@
+
 # STAMPS.
 SubRx @'
 var VER='11.90';
@@ -43,6 +59,12 @@ SubRx @'
 var WHATSNEW_VER='11.90';
 '@ @'
 var WHATSNEW_VER='11.91';
+'@
+SubRx @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+'@ @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.90:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.90 matched $cnt times" }

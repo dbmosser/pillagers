@@ -34,8 +34,8 @@ the second Bandage is being applied and requires the armour timer running
 and the plate gone from the bag; requires the old refusal never to have been
 said; then runs both timers out and requires the heal queue larger than it
 was before the second Bandage and the armour on. On the v11.81 fixture the
-second Bandage is refused with the countdown and the plate is refused, and
-the check names both.
+second Bandage is refused with the countdown, and the plate, having no timer
+of its own, takes the single one; the check names both.
 
 Not verified: his own play; whether the second Bandage's health should add
 in full or be capped by the first one's ceiling, which is a rule he has not

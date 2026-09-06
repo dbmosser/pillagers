@@ -32,7 +32,8 @@ SubRx @'
   }
 '@
 
-# STAMPS.
+# STAMPS. WHATSNEW_VER moves only with the list (v2.77 rule), so the list gets
+# its line; the review caught the bump without one.
 SubRx @'
 var VER='11.80';
 '@ @'
@@ -42,6 +43,12 @@ SubRx @'
 var WHATSNEW_VER='11.80';
 '@ @'
 var WHATSNEW_VER='11.81';
+'@
+SubRx @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+'@ @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE KILLED IN ACTION CARD NO LONGER COUNTS THE SEAL-CUTTING LOST WITH YOU. A cut still banks only when you walk out.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.80:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.80 matched $cnt times" }

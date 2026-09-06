@@ -5761,9 +5761,10 @@ window.__REGRESS=[
   {v:'11.92',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
    run:function(){
      if(typeof setSafe!=='function'||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot reach the pocket or the loader';
-     var bad=[];
+     var bad=[], snap=null;
      try{
        __topClear(); __cleanProfile();
+       snap=JSON.stringify(__P());   // the loader below replaces the profile; it is put back at the end
        var P=__P(); P.safe=null;
        var r1=setSafe('frag');
        if(!r1) bad.push('the pocket took a Frag Charge without a word');
@@ -5779,7 +5780,7 @@ window.__REGRESS=[
        __applyLoaded({credits:900,safe:'medkit'});
        if(__P().safe!=='medkit') bad.push('control: a saved pocket on a Medkit did not survive the load ('+__P().safe+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ __topClear(); __cleanProfile(); }
+     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.91',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
    run:function(){
@@ -5897,7 +5898,7 @@ window.__REGRESS=[
   {v:'11.87',what:'a helped survivor walks to the nearest open extraction on his own instead of following you, and leaves when he reaches the ring (his note of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
-     if(typeof updateEnts!=='function'||typeof mkStray!=='function') return 'SKIP: no survivor or entity update in this build';
+     if(typeof mkStray!=='function'||!window.__ents) return 'SKIP: no survivor or entity step in this build';
      var bad=[], i;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -5914,13 +5915,14 @@ window.__REGRESS=[
        p.x=clamp(Z.x+dir[1]*1400,100,WORLD_W-100); p.y=clamp(Z.y-dir[0]*1400,100,WORLD_H-100); p.downed=false;   // off to the side, so the walk to the ring is not a walk toward him
        var d0=dist(e,Z), dp0=dist(e,p), minDp=dp0, reached=false, t=0;
        for(i=0;i<400&&!reached;i++){
-         updateEnts(0.1); t+=0.1;
+         __ents(0.1); t+=0.1;   // the harness step: refreshVseg first, so routes are granted
          if(e.gone){ reached=true; break; }
          var dp=dist(e,p); if(dp<minDp) minDp=dp;
        }
        if(!reached) bad.push('after '+t.toFixed(0)+' s the survivor never reached the ring and left (he is '+dist(e,Z).toFixed(0)+' from it, was '+d0.toFixed(0)+')');
        if(minDp<dp0-120) bad.push('control: he closed on the player by '+(dp0-minDp).toFixed(0)+' units, which is following, not walking out');
        if(reached&&!(g.tel&&g.tel.strayOut)) bad.push('the run report does not count the survivor as out');
+       if(reached){ p.downed=false; __endRaid('extract'); var rec=(__P().log||[]).slice(-1)[0]; if(!rec||!rec.strayOut) bad.push('the banked run record carries no strayOut'); }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -5952,7 +5954,7 @@ window.__REGRESS=[
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.85',what:'the map names each extraction at 18px or more and counts down to its close at 15px or more, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
+  {v:'11.85',what:'the map names each extraction in the callout face and counts down to its close in the label face, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
      if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
@@ -5969,9 +5971,10 @@ window.__REGRESS=[
        var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |OPEN TO EXTRACT)/.test(r.t); });
        if(!names.length) bad.push('control: the map drew no EXTRACT name');
        if(!subs.length) bad.push('control: the map drew no countdown or state line under a ring');
-       var smallN=names.filter(function(r){ return px(r.font)<18; }), smallS=subs.filter(function(r){ return px(r.font)<15; });
-       if(smallN.length) bad.push(smallN.length+' extraction name(s) drawn at '+px(smallN[0].font)+'px, under 18');
-       if(smallS.length) bad.push(smallS.length+' countdown line(s) drawn at '+px(smallS[0].font)+'px, under 15 ("'+smallS[0].t+'")');
+       var _hp=(window.__type&&__type.px('head'))||18, _lp=(window.__type&&__type.px('label'))||15;
+       var smallN=names.filter(function(r){ return px(r.font)<_hp-0.5; }), smallS=subs.filter(function(r){ return px(r.font)<_lp-0.5; });
+       if(smallN.length) bad.push(smallN.length+' extraction name(s) drawn at '+px(smallN[0].font)+'px, under the callout face at '+_hp+'px');
+       if(smallS.length) bad.push(smallS.length+' countdown line(s) drawn at '+px(smallS[0].font)+'px, under the label face at '+_lp+'px ("'+smallS[0].t+'")');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ proto.fillText=orig; try{ var g2=__state(); if(g2) g2.mapOpen=false; }catch(_m){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -6011,7 +6014,7 @@ window.__REGRESS=[
        var l1=1000-cs[0].hp, l2=1000-cs[1].hp;
        if(!(l1>=60)) bad.push('control: the lance did not hit the first crawler (loss '+l1.toFixed(0)+')');
        if(!(l2>=60)) bad.push('the lance round stopped at the first crawler; the second took '+l2.toFixed(0));
-       if(l1>200||l2>200) bad.push('a crawler was hit more than once by one round (losses '+l1.toFixed(0)+' and '+l2.toFixed(0)+')');
+       if(l1>150||l2>150) bad.push('a crawler was hit more than once by one round (losses '+l1.toFixed(0)+' and '+l2.toFixed(0)+')');
        // A RIFLE STOPS AT THE FIRST.
        stage(); err=shoot(WEAPONS.rifle||WEAPONS.pistol);
        if(err) bad.push('control: the rifle fired nothing ('+err+')');
@@ -6086,7 +6089,8 @@ window.__REGRESS=[
        if(g.bag.indexOf('bandage')>=0) bad.push('the second bandage is still in the bag');
        // A PLATE WHILE THE BANDAGE IS BEING APPLIED.
        useArmor();
-       if(!p.prepA) bad.push('the plate was refused while a bandage was being applied');
+       if(p.prep&&p.prep.kind==='armor') bad.push('this build has one application timer, so the plate took the medical one and a bandage would have waited on it');
+       else if(!p.prepA) bad.push('the plate was refused while a bandage was being applied');
        if(g.bag.indexOf('plate')>=0) bad.push('the plate is still in the bag');
        for(var i=0;i<said.length;i++) if(said[i].indexOf(refusal)===0) bad.push('the game still said "'+said[i].slice(0,40)+'"');
        tickHeal(2.2);   // both timers finish (1.5 and 2.0)
@@ -6106,14 +6110,14 @@ window.__REGRESS=[
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(); g.seal={gained:40,done:0}; g.player.bag=[];
+       var g=__state(); g.seal={gained:40,done:0}; g.bag=[];
        __endRaid('dead');
        var t1=card();
        if(t1.indexOf('KILLED')<0) bad.push('control: the death card did not come up (card says: '+t1.slice(0,60)+')');
        if(t1.indexOf(lost)>=0) bad.push('the death card still says the cutting was '+lost.slice(-4)+' with you');
        __topClear(); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       g=__state(); g.seal={gained:40,done:0}; g.player.bag=[];
+       g=__state(); g.seal={gained:40,done:0}; g.bag=[];
        __endRaid('extract');
        var t2=card();
        if(t2.indexOf(banked)<0) bad.push('control: an extraction with 40 seconds of cutting did not print the banked line, so the seal path was not live in this staging (card says: '+t2.slice(0,80)+')');
@@ -6224,11 +6228,15 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy or drive the loader';
      if(typeof explodeFrag!=='function'||typeof DEF==='undefined') return 'SKIP: no frag blast in this build';
-     var bad=[], k;
+     var bad=[], k, snap=null;
      if(DEF.fragR!==190) bad.push('the default blast radius is '+DEF.fragR+' and not 190');
      function withCfg(fr){ var c={}; for(k in DEF) c[k]=DEF[k]; c.fragR=fr; return {credits:900,cfgv:17,cfg:c}; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // The loader below REPLACES the profile with a bare one and __cleanProfile
+       // keeps what it finds, so the clean profile is put back through the same
+       // loader at the end; without this three later checks each went red once.
+       snap=JSON.stringify(__P());
        CFG.fragR=DEF.fragR;   // the game reads CFG; the blast is measured at the shipped default
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player, R=(CFG.fragR===undefined?190:CFG.fragR);
@@ -6255,7 +6263,7 @@ window.__REGRESS=[
        __applyLoaded(withCfg(140));
        if(CFG.fragR!==140) bad.push('control: a hand-set 140 was overwritten to '+CFG.fragR+' by the migration');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
+     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); __resetCfg(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.76',what:'the Scav Pistol costs 1800 in the shop, down from 3600, and is still the cheapest gun on the shelf (his order of 2026-09-06)',
    run:function(){

@@ -14,17 +14,19 @@ function SubRx([string]$old, [string]$new) {
 # HIS SPEC, 2026-09-06 (his 06:26 export, run 4, @204s): "stim injector should
 # give unlimited stamina and 1.2 speed boost for 10 seconds". It refilled the
 # bar once, which is a bandage for legs. One verb now, two numbers, and the
-# stamina and speed lines in updatePlayer read the clock.
+# stamina and speed lines in updatePlayer read the clock. The review moved the
+# clock itself up beside the other per-frame timers, because the stamina line
+# sits below the downed and rolling early returns and would have frozen it.
 SubRx @'
 // One action key drives whatever is selected, which is the point of the hotbar.
 function useHot(){
 '@ @'
 // v11.83, HIS SPEC: "stim injector should give unlimited stamina and 1.2 speed
-// boost for 10 seconds". STIM_SEC and STIM_SPD are the whole of it: the
-// stamina line in updatePlayer holds the bar full while stimT runs and the
-// speed line multiplies by STIM_SPD. A second stim while one runs tops the
-// clock back up to the full ten rather than stacking. One verb, so any later
-// route into a stim uses the same numbers.
+// boost for 10 seconds". STIM_SEC and STIM_SPD are the whole of it: the clock
+// runs down with the other per-frame timers in updatePlayer, the stamina line
+// holds the bar full while it runs and the speed line multiplies by STIM_SPD.
+// A second stim while one runs tops the clock back up to the full ten rather
+// than stacking. One verb, so any later route into a stim uses the same numbers.
 var STIM_SEC=10, STIM_SPD=1.2;
 function useStim(ix){
   var p=G.player;
@@ -52,6 +54,20 @@ SubRx @'
     if(ait.use==='stim'){ useStim(ix); return; }   // v11.83: ten seconds of legs, see useStim
 '@
 SubRx @'
+  if(p.muzzle>0) p.muzzle-=dt;
+  if(p.iv>0) p.iv-=dt;
+
+  if(p.downed){
+'@ @'
+  if(p.muzzle>0) p.muzzle-=dt;
+  if(p.iv>0) p.iv-=dt;
+  // v11.83, HIS SPEC: the stim clock, up here with the other timers so it keeps
+  // running through a roll and while downed (both return before the stamina line).
+  if(p.stimT>0){ p.stimT-=dt; if(p.stimT<=0){ p.stimT=0; if(!G.sim) say('The stim wears off.'); } }
+
+  if(p.downed){
+'@
+SubRx @'
   var spd=CFG.pSpeed*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
 '@ @'
   var spd=CFG.pSpeed*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
@@ -61,14 +77,34 @@ SubRx @'
 if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*dt);
 '@ @'
 // v11.83, HIS SPEC: unlimited stamina while the stim runs; the bar is held full
-// and the drain below is skipped, so the release latch never arms either.
-if(p.stimT>0){ p.stimT-=dt; p.stam=100; if(p.stimT<=0){ p.stimT=0; if(!G.sim) say('The stim wears off.'); } }
+// and the drain is skipped, so the release latch never arms either.
+if(p.stimT>0) p.stam=100;
 else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*dt);
 '@
 SubRx @'
   if(it.use==='stim') return 'Refills stamina and clears winded.';
 '@ @'
   if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
+'@
+# His baked wording for that tooltip is keyed by the sentence it replaces; the
+# key follows the sentence so his words still show.
+SubRx @'
+"Refills stamina and clears winded.":"Ooooh yeeah that's the stuff."
+'@ @'
+"Ten seconds of unlimited stamina and a fifth more speed.":"Ooooh yeeah that's the stuff."
+'@
+# The ascent check counted a stim as something to heal with; it is not.
+SubRx @'
+  var hasHeal=kit.some(function(k){ return ITEMS[k]&&(ITEMS[k].use==='heal'||ITEMS[k].use==='stim'); });
+'@ @'
+  var hasHeal=kit.some(function(k){ return ITEMS[k]&&ITEMS[k].use==='heal'; });   // v11.83: a stim is legs, not healing
+'@
+SubRx @'
+      // is loot and shop stock that can never be used, while the ascent check
+      // counts it as healing you are carrying.
+'@ @'
+      // is loot and shop stock that can never be used. (Until v11.83 the ascent
+      // check also counted it as healing you are carrying; it no longer does.)
 '@
 
 # STAMPS.
@@ -90,7 +126,7 @@ SubRx @'
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.82:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.82 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.82:[^']*'",{ param($m) "now:'v11.83: HIS SPEC of 2026-09-06, the stim injector gives unlimited stamina and a 1.2x speed boost for 10 seconds; it used to refill the bar once. useStim sets stimT, the stamina line holds the bar full while it runs, the speed line multiplies by 1.2, and the belt path calls the one verb. Check 11.83 puts a stim on key 3 and uses it through useHot, sprints from an extraction ring along a clear line and requires the bar still full and the distance covered 1.2x the same sprint without the stim; fails on v11.82.'" })
+$s=[regex]::Replace($s,"now:'v11\.82:[^']*'",{ param($m) "now:'v11.83: HIS SPEC of 2026-09-06, the stim injector gives unlimited stamina and a 1.2x speed boost for 10 seconds; it used to refill the bar once. useStim sets stimT, the clock runs down with the other per-frame timers, the stamina line holds the bar full while it runs, the speed line multiplies by 1.2, the belt path calls the one verb, his baked tooltip wording follows the new sentence, and the ascent check no longer counts a stim as healing. Check 11.83 puts a stim on key 3 and uses it through useHot, sprints from an extraction ring along a clear line and requires the bar still full and the distance covered 1.2x the same sprint without the stim; fails on v11.82.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

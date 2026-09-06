@@ -20,7 +20,7 @@ SubRx @'
   {v:'11.87',what:'a helped survivor walks to the nearest open extraction on his own instead of following you, and leaves when he reaches the ring (his note of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
-     if(typeof updateEnts!=='function'||typeof mkStray!=='function') return 'SKIP: no survivor or entity update in this build';
+     if(typeof mkStray!=='function'||!window.__ents) return 'SKIP: no survivor or entity step in this build';
      var bad=[], i;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -37,13 +37,14 @@ SubRx @'
        p.x=clamp(Z.x+dir[1]*1400,100,WORLD_W-100); p.y=clamp(Z.y-dir[0]*1400,100,WORLD_H-100); p.downed=false;   // off to the side, so the walk to the ring is not a walk toward him
        var d0=dist(e,Z), dp0=dist(e,p), minDp=dp0, reached=false, t=0;
        for(i=0;i<400&&!reached;i++){
-         updateEnts(0.1); t+=0.1;
+         __ents(0.1); t+=0.1;   // the harness step: refreshVseg first, so routes are granted
          if(e.gone){ reached=true; break; }
          var dp=dist(e,p); if(dp<minDp) minDp=dp;
        }
        if(!reached) bad.push('after '+t.toFixed(0)+' s the survivor never reached the ring and left (he is '+dist(e,Z).toFixed(0)+' from it, was '+d0.toFixed(0)+')');
        if(minDp<dp0-120) bad.push('control: he closed on the player by '+(dp0-minDp).toFixed(0)+' units, which is following, not walking out');
        if(reached&&!(g.tel&&g.tel.strayOut)) bad.push('the run report does not count the survivor as out');
+       if(reached){ p.downed=false; __endRaid('extract'); var rec=(__P().log||[]).slice(-1)[0]; if(!rec||!rec.strayOut) bad.push('the banked run record carries no strayOut'); }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},

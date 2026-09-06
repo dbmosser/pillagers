@@ -40,7 +40,8 @@ SubRx @'
     else {
       var _gk=ITEMS[s2.itemKey]&&ITEMS[s2.itemKey].gk;
       if(_gk&&G.player.wep.id!==_gk&&G.player.sec&&G.player.sec.id===_gk) swapGuns();
-      G.hot=G.player.swapped?1:0;
+      // The highlight stays on the pressed cell: once the gun is in hand the
+      // derived gun cell is blanked by the dedupe, so pointing at it read EMPTY.
     }
     _hinted=true;
   }
@@ -55,11 +56,22 @@ SubRx @'
         // cells (Medical, Armour Plate, the grenades) carried no item key, so
         // only a cell he had already assigned could be picked up. A derived
         // cell drags by the item it shows.
-        var _dk=_hs2?(_hs2.itemKey||((_hs2.kind==='heal'||_hs2.kind==='armor'||_hs2.kind==='throw')&&_hs2.icon&&ITEMS[_hs2.icon]?_hs2.icon:null)):null;
+        var _dk=_hs2?(_hs2.itemKey||((_hs2.kind==='heal'||_hs2.kind==='armor'||_hs2.kind==='throw')&&_hs2.icon&&ITEMS[_hs2.icon]&&(_hs2.kind!=='heal'||_hs2.count>0)?_hs2.icon:null)):null;   // an empty Medical cell shows a bandage it does not hold
         if(_hs2&&_hs2.kind!=='gun'&&_dk){
           G.drag={key:_dk,fromHot:_HC2.i};
           blip('pick');
         }
+'@
+
+# AND THE UNDERCROFT BELT, which had the same fault: only an assigned cell dragged.
+SubRx @'
+          var _sl=hotbarSlots()[_H.i];
+          if(_sl&&_sl.itemKey){ G.drag={key:_sl.itemKey,fromHot:_H.i}; blip('pick'); }
+'@ @'
+          var _sl=hotbarSlots()[_H.i];
+          // v11.90, HIS NOTE: the floor's belt drags derived cells by the item they show too.
+          var _sdk=_sl?(_sl.itemKey||((_sl.kind==='heal'||_sl.kind==='armor'||_sl.kind==='throw')&&_sl.icon&&ITEMS[_sl.icon]&&(_sl.kind!=='heal'||_sl.count>0)?_sl.icon:null)):null;
+          if(_sl&&_sl.kind!=='gun'&&_sdk){ G.drag={key:_sdk,fromHot:_H.i}; blip('pick'); }
 '@
 
 # STAMPS.

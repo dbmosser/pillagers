@@ -50,6 +50,17 @@ SubRx @'
           }
 '@
 
+# ONE SHOT, ONE HIT: a round that passes through two crawlers is still one hit
+# against its one shot, or the run report's accuracy climbs past 100 percent
+# (the pellet rule in fireWeapon exists for exactly this).
+SubRx @'
+              G.tel.hits++;
+              // Hit feedback at the reticle. The sprite flash and spark happen out
+'@ @'
+              if(!b._hitTold){ b._hitTold=1; G.tel.hits++; }   // v11.84: one hit per round, however many it passes through
+              // Hit feedback at the reticle. The sprite flash and spark happen out
+'@
+
 # STAMPS.
 SubRx @'
 var VER='11.83';

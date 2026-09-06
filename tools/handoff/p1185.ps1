@@ -38,6 +38,18 @@ SubRx @'
       ctx.textAlign='left';
 '@
 
+# The comment that counts the font calls in drawMapOverlay counts one more now.
+SubRx @'
+  // Declared here so it shadows the global for this function only. All fourteen
+'@ @'
+  // Declared here so it shadows the global for this function only. All fifteen
+'@
+SubRx @'
+  // fourteen. hudRes() is exactly 1 at 1920x1080, so that screen is unchanged.
+'@ @'
+  // fifteen. hudRes() is exactly 1 at 1920x1080, so that screen is unchanged.
+'@
+
 # STAMPS.
 SubRx @'
 var VER='11.84';
@@ -57,7 +69,7 @@ SubRx @'
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.84:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.84 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.84:[^']*'",{ param($m) "now:'v11.85: HIS NOTE of 2026-09-06, the map should count down to each extraction closing. It did since v7.60 in TYPE.micro, the smallest face in the game, so he never saw it; the name is drawn in TYPE.head and the countdown in TYPE.label, each on its own row above the ring. Check 11.85 records every fillText the map overlay makes and requires the EXTRACT names at 18px or more and their countdown lines at 15px or more, with at least one of each drawn; fails on v11.84 at 13px.'" })
+$s=[regex]::Replace($s,"now:'v11\.84:[^']*'",{ param($m) "now:'v11.85: HIS NOTE of 2026-09-06, the map should count down to each extraction closing. It did since v7.60 in TYPE.micro, the smallest face in the game, so he never saw it; the name is drawn in TYPE.head and the countdown in TYPE.label, each on its own row above the ring. Check 11.85 records every fillText the map overlay makes and requires the EXTRACT names in the callout face and their countdown lines in the label face, measured against the fixture type table, with at least one of each drawn; fails on v11.84, which drew both in the micro face (15.6px at 1080p, 13px at the text floor).'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

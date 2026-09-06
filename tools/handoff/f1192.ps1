@@ -19,9 +19,10 @@ SubRx @'
   {v:'11.92',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
    run:function(){
      if(typeof setSafe!=='function'||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot reach the pocket or the loader';
-     var bad=[];
+     var bad=[], snap=null;
      try{
        __topClear(); __cleanProfile();
+       snap=JSON.stringify(__P());   // the loader below replaces the profile; it is put back at the end
        var P=__P(); P.safe=null;
        var r1=setSafe('frag');
        if(!r1) bad.push('the pocket took a Frag Charge without a word');
@@ -37,7 +38,7 @@ SubRx @'
        __applyLoaded({credits:900,safe:'medkit'});
        if(__P().safe!=='medkit') bad.push('control: a saved pocket on a Medkit did not survive the load ('+__P().safe+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ __topClear(); __cleanProfile(); }
+     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.91',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
 '@

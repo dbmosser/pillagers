@@ -40,7 +40,10 @@ SubRx @'
         // and leaves when he reaches it.
         var _sz=null,_szd=1e9;
         for(var _zq=0;_zq<G.zones.length;_zq++){ var _zz=G.zones[_zq]; if(!_zz.open) continue; var _zd=dist(e,_zz); if(_zd<_szd){ _szd=_zd; _sz=_zz; } }
-        if(_sz&&_szd>_sz.r*0.9){ navSeek(e,_sz.x,_sz.y,120,dt); e.moving=true; }
+        if(_sz&&_szd>_sz.r*0.9){
+          navSeek(e,_sz.x,_sz.y,120,dt); e.moving=true;
+          e.face+=clamp(angDiff(Math.atan2(_sz.y-e.y,_sz.x-e.x),e.face),-2.2*dt,2.2*dt);   // he faces where he walks
+        }
         else if(_sz){
           e.moving=false; e.gone=1; e.x=-9000; e.y=-9000;
           say('The survivor made it to Extraction '+extLetter(_sz)+'.');
@@ -48,6 +51,24 @@ SubRx @'
           continue;
         }
         else e.moving=false;
+'@
+
+# He no longer turns to face you while walking out, the count reaches the run
+# record, and the export prints it.
+SubRx @'
+      if(sdd<300) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.2*dt,2.2*dt);
+'@ @'
+      if(sdd<300&&!(e.helped&&!e.hostile)) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.2*dt,2.2*dt);   // v11.87: a helped man faces his road, not you
+'@
+SubRx @'
+    strayHelped:T.strayHelped||0,strayKilled:T.strayKilled||0,wildKilled:T.wildKilled||0,
+'@ @'
+    strayHelped:T.strayHelped||0,strayKilled:T.strayKilled||0,strayOut:T.strayOut||0,wildKilled:T.wildKilled||0,
+'@
+SubRx @'
+    if(r.strayHelped||r.strayKilled) line+=' strays:'+(r.strayHelped||0)+'helped/'+(r.strayKilled||0)+'killed';
+'@ @'
+    if(r.strayHelped||r.strayKilled||r.strayOut) line+=' strays:'+(r.strayHelped||0)+'helped/'+(r.strayKilled||0)+'killed/'+(r.strayOut||0)+'out';
 '@
 
 # STAMPS.
