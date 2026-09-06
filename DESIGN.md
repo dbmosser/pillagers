@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.02 - FIRST TEN MINUTES: A PAUSE NOTE SURVIVES ESC
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
+
+THE FINDING. The pause box is the alpha's feedback channel: its own text
+asks for anything that went or felt wrong, and the alpha card on the floor
+tells a friend to use it. Its legend names two ways out, P and ESC. The
+resume button banked the typed note into the run record and cleared the
+box; ESC, handled by a capture listener on the window since v7.68, closed
+the box and left the text sitting in it, where the run report never looks.
+A note typed in a raid and closed with ESC, the way most people close a
+box, was gone.
+
+THE BUILD. The close itself banks the note. togglePauseBox already banked a
+floor note on close (v11.72); it now banks a raid note the same way, into
+the run's notes, whenever the box closes over a live raid. The resume and
+abandon buttons each carried their own copy of those lines; both are
+deleted so there is one copy. Both buttons close the box before anything
+ends the raid, so the close is what banks.
+
+MEASURED. Check 12.02 deploys, opens the pause box, types a note, and
+presses ESC on the textarea itself, which is the element a real key reaches
+and which the window's capture listener sees first, as in play; requires
+the box closed, the note in the run record and the box empty. On the
+v12.01 fixture the box closes and the record has no note.
+
+Not verified: the P key, which the same audit found cannot close the box
+while its textarea has focus (queued separately); a note typed and then
+the raid ended by death with the box still open, which no path banks.
 ## v12.01 - FIRST TEN MINUTES: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes;

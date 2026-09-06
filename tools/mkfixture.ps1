@@ -5732,6 +5732,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.02',what:'a note typed into the pause box during a raid is kept when ESC closes the box, the same as the resume button (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     var pb=document.getElementById('pausebox'), ta=document.getElementById('pausenote');
+     if(!pb||!ta||typeof togglePauseBox!=='function') return 'SKIP: no pause box in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       togglePauseBox(true);
+       if(!pb.classList.contains('on')) bad.push('control: the pause box did not open');
+       ta.value='probe note 4242';
+       ta.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));
+       if(pb.classList.contains('on')) bad.push('control: ESC did not close the box');
+       var notes=(g.tel&&g.tel.notes)||[];
+       if(!notes.some(function(x){ return x&&x.txt==='probe note 4242'; })) bad.push('the note typed in the box was thrown away by ESC ('+notes.length+' notes in the record)');
+       if(ta.value) bad.push('the box still holds the note after the close');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ ta.value=''; if(pb.classList.contains('on')){ togglePauseBox(false); pb.classList.remove('on'); } }catch(_c){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.01',what:'a load with no save sets the menu zoom to 1.3 and runs the Settings pass that arms the wording watcher, the same as a load with a save (2026-09-06 first-ten-minutes audit)',
    run:function(){
      if(typeof applyLoadedProfile!=='function'||typeof applyGameOpts!=='function') return 'SKIP: no profile loader in this build';

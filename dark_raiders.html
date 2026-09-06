@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.01';
+var VER='12.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='12.01';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.00';
+var WHATSNEW_VER='12.02';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT, the same as the resume button; it goes out with your run report.',
   'THE HOWLER DOES NOT SHELL THROUGH A ROOF: inside a building you are out of its reach until it comes in after you.',
   'THE RIGHT-CLICK MENU IN THE STASH IS DRAWN AT THE SIZE OF THE SCREEN IT OPENS OVER, at 4K and at every text size.',
   'A HOLD YOU STARTED BEFORE THE EXTRACTION WINDOW SHUT FINISHES: keep holding E and the ship waits for you; let go and it is gone.',
@@ -11415,6 +11416,16 @@ function togglePauseBox(on){
   // v11.72: a note typed on the floor has no raid to attach to. It used to sit
   // in the box and ride into the NEXT raid's first pause as if written there.
   // The close banks it to the profile; every report prints it under FLOOR NOTES.
+  // v12.02: A RAID NOTE SURVIVES ESC. The resume button banked the note and
+  // ESC, the way out the box's own legend names, did not: it closed the box
+  // with the text still sitting in it, unseen by the run report. Every close
+  // of the box over a live raid banks it now, and the two copies of these
+  // lines the resume and abandon buttons carried are gone: both close the box
+  // before anything ends the raid, so this is the one place that banks.
+  if(!on&&G&&!G.over){
+    var _rn=document.getElementById('pausenote'), _rt=_rn?_rn.value.trim():'';
+    if(_rt){ G.tel.notes.push({t:Math.round(elapsed()),txt:_rt}); _rn.value=''; }
+  }
   if(!on&&!G){
     var _fn=document.getElementById('pausenote'), _ft=_fn?_fn.value.trim():'';
     if(_ft){
@@ -28564,7 +28575,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.01: from the 2026-09-06 first-ten-minutes audit, a first launch with no save skipped the whole profile loader, so the Settings rows and the wording watcher (every reworded sentence since v11.42) were dead for the first session and the menus drew at zoom 1.0 and grew a third larger the next day. The menu zoom default and the Settings pass now run on every load, save or none. Check 12.01 loads a null record and requires the zoom at 1.3 and the watcher armed; fails on v12.00.',
+  now:'v12.02: from the 2026-09-06 first-ten-minutes audit, a note typed into the pause box during a raid and closed with ESC was thrown away; only the resume button banked it. Every close of the box over a live raid banks the note now, and the resume and abandon buttons lost their own copies of the lines. Check 12.02 pauses a raid, types a note, presses ESC on the box and requires the note in the run record; fails on v12.01.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31934,9 +31945,7 @@ document.getElementById('charselbtn').onclick=function(){
 };
 document.getElementById('resumebtn').onclick=function(){
   disarmAbandon();   // v10.96: the same four lines this used to carry itself
-  var note=document.getElementById('pausenote').value.trim();
-  if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
-  togglePauseBox(false);
+  togglePauseBox(false);   // v12.02: the close banks the note, for this button and for ESC alike
 };
 // v4.24 HIS ORDER: no accidental abandons. First click arms a YES button on
 // the FAR side of the row (left of Resume, nowhere near the cursor), so a
@@ -31973,9 +31982,7 @@ document.getElementById('confirmabandon').onclick=function(){
     P.xp=Math.max(0,(P.xp||0)-_rc);
     say('Walked out on the job. XP -'+_rc+'.');
   }
-  var note=document.getElementById('pausenote').value.trim();
-  if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
-  togglePauseBox(false);
+  togglePauseBox(false);   // v12.02: the close banks the note
 this.style.display='none';
   var _ab2=document.getElementById('abandonbtn');
   _ab2.textContent='Abandon run'; _ab2.style.borderColor='var(--rust)'; _ab2.style.color='var(--rust)';
