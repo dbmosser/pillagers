@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.48';
+var VER='11.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.48';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.48';
+var WHATSNEW_VER='11.49';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'CLICKING ON YOUR OPEN BACKPACK NO LONGER FIRES YOUR GUN. With the backpack open, a click on the panel itself (the equipped line, the stats, the space between tiles) used to reach the trigger. The panel now catches its own clicks, like every other panel.',
   'A GUN YOU EQUIP FROM THE STASH MENU NO LONGER VANISHES. Right-clicking a looted gun in the stash and picking the equip line used to remove it from the stash and then fail before it reached your armoury, so the gun was simply gone. It now lands in your armoury and is equipped.',
   'A CRASH WHILE THE GAME IS STILL LOADING CAN NO LONGER WIPE YOUR SAVE. If something broke before your character was read in, the crash catcher used to write a blank starting profile over the real one. It now keeps the note aside and adds it to your report once your character is loaded.',
   'A PILLAGER WHO SEES YOU NOW ACTUALLY SHOOTS. A pillager heading for extraction who had you in clear sight would stand there and never fire: the one-beat pause meant to give you a fair moment was being reapplied every frame, so his trigger never came free. He gets his one beat, then he fires.',
@@ -10642,6 +10643,11 @@ cv.addEventListener('mousedown',function(e){
       }
     }
   }
+  // v11.49: AND THE PANEL ITSELF. A click anywhere on the open backpack that is
+  // not a tile is a click on furniture, the same rule the HUD panels have had
+  // since v3.64, and must not reach the trigger. G.bagPanel is the rectangle
+  // drawBag painted this frame.
+  if(e.button===0&&G&&!G.over&&G.bagOpen&&G.bagPanel&&inRect(G.bagPanel,mouse.x,mouse.y)) return;
   // BELT CELLS CLAIM THE CLICK TOO, v7.21. Select on press; assignable items arm the
   // same drag the bag uses. Guns select only.
   if(e.button===0&&G&&!G.over&&G.hotCells){
@@ -28101,7 +28107,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.48: right-click Equip as your gun on a stash gun lost the gun. itemMenuRows is built for key, but the equip row spliced the gun out of P.stash and then called clearKeysFor(k); k is undeclared in that function and the IIFE is use strict, so it threw ReferenceError after the splice and the push to P.weapons, the equip and the save never ran. The row now clears keys for key. The copy in the stash grid used a loop-scoped k and was fine. From the v11.46 audit, P0.',
+  now:'v11.49: with the backpack open a click on the panel background fired the gun. The mousedown claims a backpack tile and, while the bag is closed, any HUD panel; with the bag open the HUD claim is skipped and G.bagPanel, the rectangle drawBag paints, was never hit-tested, so a click on the EQUIPPED line, the stats or the padding between tiles fell through to mouse.down and updatePlayer pulled the trigger. The panel now claims its own rectangle. From the v11.46 audit, P0.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

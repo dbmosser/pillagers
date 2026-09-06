@@ -5439,6 +5439,32 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.49',what:'with the backpack open, a click on the panel background (not a tile) does not reach the trigger; a click outside the panel still does',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop&&window.__mouse&&window.__canvases)) return 'SKIP: this fixture cannot click the backpack';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so no click can land';
+     __pinDPR(1); __forceSize(1920,1080);
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:['medkit','frag'],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, m=__mouse(), cv=__canvases().world, bad=[];
+     g.over=false; g.mapOpen=false; p.downed=false; g.bagOpen=true;
+     try{ __loop(performance.now()); }catch(e){}   // drawBag records G.bagPanel and G.bagCells
+     var B=g.bagPanel; if(!B||!(B.w>0&&B.h>0)) return 'SKIP: the backpack panel did not record its rectangle';
+     function inCell(x,y){ var C=g.bagCells||[]; for(var i=0;i<C.length;i++){ var c=C[i]; if(x>=c.x&&x<=c.x+c.w&&y>=c.y&&y<=c.y+c.h) return true; } return false; }
+     // A point inside the panel that is on no tile: scan the panel top-down.
+     var px=null, py=null;
+     for(var yy=B.y+4; yy<B.y+B.h-4 && px===null; yy+=6){ for(var xx=B.x+4; xx<B.x+B.w-4; xx+=6){ if(!inCell(xx,yy)){ px=xx; py=yy; break; } } }
+     if(px===null) return 'SKIP: every point of the panel is a tile, nothing to click on';
+     function click(x,y){ m.x=x; m.y=y; m.down=false; var ev=new MouseEvent('mousedown',{button:0,bubbles:true,cancelable:true,clientX:x,clientY:y}); cv.dispatchEvent(ev); var d=m.down; m.down=false; try{ window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true})); }catch(e2){} return d; }
+     // THE FIX: the panel background does not arm the trigger.
+     var onPanel=click(px,py);
+     if(onPanel) bad.push('a click on the open backpack at '+px+','+py+' (panel background, no tile) armed the trigger');
+     // CONTROL: a click well outside the panel still arms it, so the claim is the panel and not the whole screen.
+     var ox=(B.x>200)?20:1900, oy=(B.y>200)?20:1060;
+     var offPanel=click(ox,oy);
+     if(!offPanel) bad.push('control: a click outside the panel at '+ox+','+oy+' did not arm the trigger, so clicks are being swallowed everywhere');
+     g.bagOpen=false; m.down=false; __forceSize(1920,1080); __topClear();
+     return bad.length?bad.join('; '):null; }},
   {v:'11.48',what:'right-click Equip as your gun on a stash gun moves it into the armoury and equips it, instead of removing it from the stash and then throwing so the gun is lost',
    run:function(){
      if(!(window.__itemMenuRows&&window.__itemGk&&window.__P)) return 'SKIP: this fixture cannot open the item menu';

@@ -40024,6 +40024,34 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.49 - WITH THE BACKPACK OPEN, A CLICK ON THE PANEL BACKGROUND FIRED THE GUN
+
+From the v11.46 read-only audit, a P0 wrong-state line: the kind a friend hits
+in his first minute. Press TAB in a raid and click anywhere on the backpack
+that is not a tile, the EQUIPPED line, the stats rows, the padding between
+tiles, and the held gun fires, or the held belt item is used. The mousedown
+handler claims a click on a backpack TILE (that is the drag) and, while the bag
+is closed, a click on any HUD panel (v3.64, "a click on furniture must not pull
+the trigger"). With the bag open the HUD claim is skipped on purpose, and the
+backpack panel's own rectangle, G.bagPanel, which drawBag records every frame,
+was never hit-tested by anything. So the click fell through to mouse.down=true
+and updatePlayer, which has no bag gate, pulled the trigger.
+
+THE FIX. One line at the point the tiles have already had their chance: with
+the bag open, a left click inside G.bagPanel returns before the trigger, the
+same rule every other panel has. A click OUTSIDE the panel is left exactly as it
+was, so nothing is swallowed that was not swallowed before.
+
+MEASURED. Check 11.49 deploys at 1920x1080, opens the bag, draws a frame so the
+panel and tiles record their rectangles, finds a point inside the panel that is
+on no tile, and dispatches a real left mousedown on the canvas there: the
+trigger must not arm. Control: the same click in a far corner outside the
+panel must still arm it, so the claim is the panel and not the whole screen.
+On the v11.48 fixture the panel click arms the trigger and the check fails.
+
+Not verified: his own play; whether a click outside the panel while the bag is
+open SHOULD fire, which is a design question this build leaves as it was; the
+Undercroft backpack, which has its own handler and was not changed.
 ## v11.48 - RIGHT-CLICK "EQUIP AS YOUR GUN" ON A STASH GUN LOST THE GUN
 
 The second P0 data-loss line from the v11.46 read-only audit. The item context
