@@ -32,9 +32,14 @@ SubRx @'
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(), p=g.player;
      // A multiplier must be in play or the two figures agree by accident: force hard weather.
-     var hard=null; if(window.__wxHard('storm')) hard='storm'; else if(window.__wxHard('fog')) hard='fog';
-     if(!hard) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
-     if(!g.wx) g.wx={}; g.wx.id=hard;
+     // v11.63: find the hard row and INSTALL it. Writing g.wx.id renamed a row of
+     // the shared WEATHER table for the whole page, which poisoned every later
+     // run of this check; and a weather turn in progress makes wx() blend, so the
+     // turn is cleared too.
+     var hardRow=null;
+     for(var wi=0;wi<WEATHER.length;wi++){ if(window.__wxHard(WEATHER[wi].id)){ hardRow=WEATHER[wi]; break; } }
+     if(!hardRow) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
+     g.wx=hardRow; g.wxNext=null; g.wxT=0;
      // Something to bank: a bag worth carrying out.
      p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
      var n0=(P.log||[]).length;

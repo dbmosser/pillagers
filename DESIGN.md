@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.63 - THE OUTCOME CARD PRINTED BASE XP; THE PROFILE WAS CREDITED MORE
+
+From the v11.46 read-only audit, P1, raised independently by two regions. XP
+for a run is the season and kill figures, and since v9.96, v10.06 and v11.00 it
+pays more with a dose in your blood, at night and in hard weather: the bank,
+addProgress, rounds base times night times weather, and addXp then rounds that
+times the dose multiplier. The outcome card is drawn a moment BEFORE the run is
+banked, from a record it builds itself, and that record carried no night or
+weather flag, so the card printed the raw sum. A night run that banked 120
+said "+100 XP", and because the same line derives "XP in all" and "N XP away"
+from that figure, every number on it was wrong with it. The sector page had
+promised "XP pays 1.2x" on the way up.
+
+THE FIX. One helper, xpBaseFor, now owns the night and weather arithmetic.
+addProgress banks through it, so nothing about what is banked changes. The
+card's record carries the same two flags the banked record does, and prints
+xpBaseFor times the dose multiplier addXp applies: the figure that will be
+banked, to the XP, every time.
+
+MEASURED. Check 11.63 deploys, forces hard weather (so a multiplier is in play,
+or agreement would prove nothing), gives the player a bag worth carrying out,
+ends the raid as an extract, reads the "+N XP" line off the real card and the
+xpGot the run banked, and requires them equal; a control requires the banked
+record to carry the hard-weather flag. On the v11.62 fixture the card prints
+the base and the bank credits a tenth more, and the check fails naming both.
+
+Not verified: his own play; the night flag, which reads the raid clock and is
+exercised by the same helper but not forced by this check; a dose in his
+blood, applied by addXp on both paths and not staged here.
 ## v11.62 - A MERC WHO BOARDED AN EARLIER SHIP WAS NEVER PAID
 
 From the v11.46 read-only audit, P1. The deal with a hired merc (v6.72): if you
