@@ -11,38 +11,33 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.93 CHECK, inserted before the v11.92 entry. The real button, pressed
-# through its own onclick, twice; then again with an item sold in between.
+# v11.98 CHECK, inserted before the v11.97 entry. A ring is put into the
+# hold state and the map overlay drawn with the canvas text call recorded.
 SubRx @'
-  {v:'11.92',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
+  {v:'11.97',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 40 (230 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
 '@ @'
-  {v:'11.93',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
+  {v:'11.98',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
    run:function(){
-     if(typeof renderFreeKit!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the freebie kit';
-     var bad=[];
-     function btn(){ return document.querySelector('.fkbtn'); }
-     function press(){ var b=btn(); if(!b||!b.onclick) return 'no button'; try{ b.onclick(); }catch(e){ return 'threw '+(e&&e.message||e); } return null; }
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
+     var oldWords='OPEN TO '+'EXTRACT', newWords='EXTRACT '+'NOW';
+     proto.fillText=function(t){ try{ rec.push(String(t)); }catch(_r){} return orig.apply(this,arguments); };
      try{
-       __topClear(); __cleanProfile();
-       G=null; keys={}; __showScreen('hub'); __hubEnter();
-       var P=__P();
-       P.stash=['medkit','plate','frag']; P.kit=['medkit','plate']; P.hotAssign={2:'medkit'}; P.freeKit=0; P.kitSaved=null;
-       renderFreeKit();
-       if(!btn()) return 'SKIP: the freebie kit button was not drawn';
-       var e1=press(); if(e1) bad.push('control: the first press failed ('+e1+')');
-       if(!P.freeKit) bad.push('control: the first press did not take the kit');
-       if((P.kit||[]).length) bad.push('control: the kit was not emptied while the free kit is taken (his rule)');
-       var e2=press(); if(e2) bad.push('control: the second press failed ('+e2+')');
-       if(P.freeKit) bad.push('control: the second press did not switch back');
-       if((P.kit||[]).join(',')!=='medkit,plate') bad.push('switching back did not restore the packing (kit '+(P.kit||[]).join(',')+')');
-       if(!P.hotAssign||P.hotAssign[2]!=='medkit') bad.push('switching back did not restore the belt plan');
-       // SOLD IN BETWEEN: only what is still in the stash comes back.
-       press(); P.stash=['medkit','frag']; press();
-       if((P.kit||[]).join(',')!=='medkit') bad.push('with the plate sold in between, switching back restored '+(P.kit||[]).join(',')+' and not medkit alone');
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); if(!g.zones||!g.zones.length) return 'SKIP: no extraction ring';
+       var Z=g.zones[0]; Z.open=true; Z.beaconT=0; Z.hold=12; g.active=Z; g.mapOpen=true;
+       drawMapOverlay();
+       var subs=rec.filter(function(t){ return t.indexOf(oldWords)===0||t.indexOf(newWords)===0; });
+       if(!subs.length) bad.push('control: the map drew no boarding line under the landed ring');
+       if(subs.some(function(t){ return t.indexOf(oldWords)===0; })) bad.push('the map still says '+oldWords+' under a landed ring ("'+subs[0]+'")');
+       if(!subs.some(function(t){ return t.indexOf(newWords)===0&&/12S LEFT/.test(t); })) bad.push('the map does not say '+newWords+' with the seconds left (drew: '+subs.join(' | ').slice(0,80)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ __topClear(); __cleanProfile(); }
+     finally{ proto.fillText=orig; try{ var g2=__state(); if(g2){ g2.mapOpen=false; } }catch(_m){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.92',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
+  {v:'11.97',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 40 (230 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

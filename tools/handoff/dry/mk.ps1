@@ -5685,13 +5685,13 @@ window.__REGRESS=[
        __frame(); __frame();
        prof=__P(); prof.credits=4471337; prof.xp=98761; saveProfile();
        shown('in a raid');
-       // CLEAR OF THE CONDITIONS BOX, in screen space: that box is drawn zoomed
-       // about the top right corner, so its top in pixels is y times its zoom.
+       // CLEAR OF THE CONDITIONS BOX, in screen space. v11.96: HUDBOX.cond is
+       // already in screen pixels (drawHUD runs it through hudZoomRect), so it is
+       // read as it is; multiplying by the zoom again made this too permissive.
        var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
        if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
        else {
-         var cz=1; try{ cz=(HUDZ.cond||1)*hudRes()*hudUserZ('cond'); }catch(_z){ cz=1; }
-         var condTop=HB.y*cz;
+         var condTop=HB.y;
          if(r.b>condTop+1) bad.push('in a raid the readout reaches down to '+Math.round(r.b)+' while the CONDITIONS box starts at '+Math.round(condTop)+', so the two overlap');
        }
        // IT FOLLOWS A CHANGE.
@@ -5731,6 +5731,151 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.98',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
+     var oldWords='OPEN TO '+'EXTRACT', newWords='EXTRACT '+'NOW';
+     proto.fillText=function(t){ try{ rec.push(String(t)); }catch(_r){} return orig.apply(this,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); if(!g.zones||!g.zones.length) return 'SKIP: no extraction ring';
+       var Z=g.zones[0]; Z.open=true; Z.beaconT=0; Z.hold=12; g.active=Z; g.mapOpen=true;
+       drawMapOverlay();
+       var subs=rec.filter(function(t){ return t.indexOf(oldWords)===0||t.indexOf(newWords)===0; });
+       if(!subs.length) bad.push('control: the map drew no boarding line under the landed ring');
+       if(subs.some(function(t){ return t.indexOf(oldWords)===0; })) bad.push('the map still says '+oldWords+' under a landed ring ("'+subs[0]+'")');
+       if(!subs.some(function(t){ return t.indexOf(newWords)===0&&/12S LEFT/.test(t); })) bad.push('the map does not say '+newWords+' with the seconds left (drew: '+subs.join(' | ').slice(0,80)+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ proto.fillText=orig; try{ var g2=__state(); if(g2){ g2.mapOpen=false; } }catch(_m){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.97',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 40 (230 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof raiderThrow!=='function'||typeof WHATSNEW==='undefined') return 'SKIP: no pillager throw or card in this build';
+     var bad=[], i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       CFG.fragR=190;
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, e=null;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].downed&&!g.ents[i].finished&&!g.ents[i].merc) e=g.ents[i];
+       if(!e) return 'SKIP: no pillager to hand a frag to';
+       function ask(fd){
+         e.bag=['frag']; e.thrT=0; e.smkT=99; e.hp=e.maxhp||100; e.downed=false;
+         var n0=g.frags.length;
+         var r=raiderThrow(e,p,fd,0.016);
+         return {threw:!!r,frags:g.frags.length-n0};
+       }
+       var near=ask(200);
+       if(near.threw||near.frags) bad.push('a pillager threw from 200 units, inside his own 190 blast');
+       var band=ask(260);
+       if(!band.threw||!band.frags) bad.push('control: a pillager would not throw from 260 units, so the band is not live here');
+       var line=null; for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FRAG CHARGES REACH FURTHER')===0) line=WHATSNEW[i];
+       if(!line) bad.push('control: the card has no frag line to read');
+       else if(line.indexOf('140 at the centre')<0||line.indexOf('98 at the centre')<0) bad.push('the card still prints the coefficients as the centre damage: '+line.slice(0,120));
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.96',what:'a station window no longer repeats the credits and XP in its heading under the corner readout: the heading balance is hidden or clear of the readout (2026-09-06 review of v11.78)',
+   run:function(){
+     if(typeof openTrader!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open a station window';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], tr=document.getElementById('topright');
+     if(!tr) return 'SKIP: no corner readout in this build';
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
+       openTrader('shop');
+       var md=document.querySelector('.modal.on'); if(!md) bad.push('control: no station window opened');
+       var mc=md?md.querySelector('h3 .modcur'):null;
+       if(!mc) bad.push('control: the window heading carries no balance to measure');
+       else {
+         var shown=getComputedStyle(mc).display!=='none';
+         var a=mc.getBoundingClientRect(), b=tr.getBoundingClientRect();
+         var hit=shown&&a.width>0&&a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom;
+         if(hit) bad.push('the heading balance ('+Math.round(a.left)+'..'+Math.round(a.right)+' x '+Math.round(a.top)+'..'+Math.round(a.bottom)+') sits under the corner readout ('+Math.round(b.left)+'..'+Math.round(b.right)+' x '+Math.round(b.top)+'..'+Math.round(b.bottom)+')');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.95',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
+   run:function(){
+     if(typeof RECIPES==='undefined'||typeof dispR!=='function'||typeof itemBlurb!=='function'||typeof itemWanted!=='function') return 'SKIP: no bench, rarity or blurb in this build';
+     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open the bench';
+     var bad=[], i, k, green=0, blue=0, carbIx=-1;
+     for(i=0;i<RECIPES.length;i++){
+       var out=null; for(k in RECIPES[i].out){ out=k; break; }
+       var it=ITEMS[out]; if(!it||it.use!=='gun') continue;
+       var rar=dispR(out)||it.r;
+       if(rar==='uncommon') green++; else if(rar==='rare') blue++; else bad.push(RECIPES[i].name+' shows as '+rar);
+       if(out==='gun_carbine') carbIx=i;
+     }
+     if(!(green>=1&&blue>=1)) bad.push('by the shown rarity the bench holds '+green+' green and '+blue+' blue');
+     var line=null; if(typeof WHATSNEW!=='undefined') for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FOUR GUNS ON THE CRAFTING BENCH')===0) line=WHATSNEW[i];
+     if(line&&line.indexOf('Compact SMG and Burst Carbine in green')>=0) bad.push('the card still calls the Burst Carbine green');
+     var bl=itemBlurb('gun_smg')||'';
+     if(bl.indexOf('Salvage')===0||bl.toLowerCase().indexOf('gun')<0) bad.push('the blurb for a crafted gun reads: '+bl);
+     var sv=itemWanted('servo')||'', op=itemWanted('optic')||'';
+     if(sv.indexOf('contracts')<0) bad.push('the stash keeps a servo for "'+sv+'", not for guns and contracts');
+     if(op.indexOf('contracts')<0) bad.push('the stash keeps an optic for "'+op+'", not for the rifle and contracts');
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       __P().stash=['comp','comp','comp','comp','servo','servo','board','board'];
+       openTrader('craft'); renderWork();
+       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1;
+       for(i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:'+carbIx) ix=i;
+       if(ix<0||carbIx<0) bad.push('control: the bench drew no Burst Carbine row');
+       else {
+         __P()._craftSel=ix; renderCraftDetail(rows);
+         var pill=document.querySelector('#craftdetail .vpill.r');
+         var txt=pill?pill.textContent.trim().toUpperCase():'';
+         if(txt!=='RARE') bad.push('the detail panel calls the Burst Carbine '+(txt||'nothing')+' where every other screen says RARE');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.94',what:'the bench detail button crafts on a synthetic click (a pad press or Enter) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
+   run:function(){
+     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||typeof craftHoldStep!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the bench';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], P=__P(), md=document.getElementById('tradermodal');
+     function stock(){ P.stash=['scrap','scrap','scrap','wire','wire']; }
+     function select(){
+       renderWork();
+       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1;
+       for(var i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:0') ix=i;
+       if(ix<0) return null;
+       P._craftSel=ix; renderCraftDetail(rows);
+       return document.querySelector('#craftdetail .vbuy');
+     }
+     function crafted(){ return P.stash.indexOf('comp')>=0; }
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       stock(); openTrader('craft');
+       var b=select(); if(!b) return 'SKIP: the bench drew no detail button for the Component Kit';
+       if(b.disabled) bad.push('control: with the parts in the stash the detail button is disabled');
+       // ONE: a synthetic click (what the pad and Enter send) crafts.
+       b.click();
+       if(!crafted()) bad.push('a synthetic click on the detail button crafted nothing (a pad or Enter cannot craft)');
+       // TWO: a real mouse click spends nothing.
+       stock(); b=select();
+       if(b){ b.dispatchEvent(new MouseEvent('click',{detail:1,bubbles:true})); if(crafted()) bad.push('a real mouse click crafted; the hold is meant to be the only mouse way'); }
+       // THREE: the hold still crafts.
+       stock(); b=select();
+       if(b&&b.onmousedown){ b.onmousedown({button:0}); craftHoldStep(0.6); if(crafted()) bad.push('control: the hold crafted before it was full'); craftHoldStep(0.6); if(!crafted()) bad.push('control: a full hold crafted nothing'); }
+       else bad.push('control: the detail button has no hold to drive');
+       // FOUR: a hold dies when the window is hidden.
+       stock(); b=select();
+       if(b&&b.onmousedown&&md){ b.onmousedown({button:0}); craftHoldStep(0.3); md.style.display='none'; craftHoldStep(1.2); md.style.display=''; if(crafted()) bad.push('a hold outlived the trader window being hidden and spent the parts'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(md) md.style.display=''; craftHoldCancel(); var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.93',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
    run:function(){
@@ -6169,15 +6314,16 @@ window.__REGRESS=[
      if(guns.length!==4) bad.push('the bench holds '+guns.length+' gun recipe(s) and not four');
      var green=0, blue=0;
      for(i=0;i<guns.length;i++){
-       var G2=guns[i], rar=G2.it.r;
+       var G2=guns[i], rar=((typeof dispR==='function')?dispR(G2.out):null)||G2.it.r;   // v11.95: the rarity every screen shows
        if(rar==='uncommon') green++; else if(rar==='rare') blue++; else bad.push(G2.r.name+' is '+rar+', and only green and blue guns belong on the bench');
        // THE PRICE WINDOW: parts worth more than the gun sells for, less than buying it.
        var parts=0; for(k in G2.r.need){ parts+=(ITEMS[k]?ITEMS[k].val:0)*G2.r.need[k]; }
        if(parts<=G2.it.val) bad.push(G2.r.name+' costs '+parts+' in parts and sells for '+G2.it.val+', which prints money');
-       var shopRow=null; if(typeof SHOP!=='undefined') for(var si=0;si<SHOP.length;si++) if(SHOP[si].kind==='wep'&&SHOP[si].k===G2.it.gk) shopRow=SHOP[si];
-       if(shopRow&&parts>=shopRow.price) bad.push(G2.r.name+' costs '+parts+' in parts against '+shopRow.price+' to buy, which is a trap');
+       var buy=(typeof replaceCost==='function')?replaceCost(G2.it.gk):null;   // v11.95: the game's own purchase price, which exists for every gun
+       if(!buy) bad.push('control: no purchase price could be found for '+G2.r.name);
+       else if(parts>=buy) bad.push(G2.r.name+' costs '+parts+' in parts against '+buy+' to buy, which is a trap');
      }
-     if(green!==2||blue!==2) bad.push('the bench holds '+green+' green and '+blue+' blue gun recipes, not two of each');
+     if(green<1||blue<1) bad.push('the bench holds '+green+' green and '+blue+' blue gun recipes, not at least one of each');   // v11.95: the Carbine is blue by dispR
      // AND ONE CRAFTS THROUGH THE REAL ROW.
      var smg=null; for(i=0;i<guns.length;i++) if(guns[i].out==='gun_smg') smg=guns[i];
      if(smg){
@@ -6909,7 +7055,7 @@ window.__REGRESS=[
        // THE FIX: the saved dial survives the load, both in the profile and live.
        if(!(P.cfg&&P.cfg.ambient===250)) bad.push('the saved ambient 250 loaded back as '+(P.cfg?P.cfg.ambient:'(cfg null)')+', so the rig-buyback migration saved defaults over the player config');
        if(CFG.ambient!==250) bad.push('the live CFG.ambient loaded as '+CFG.ambient+' rather than the saved 250, so the config did not reach the game');
-       if(P.cfgv===17) bad.push('cfgv was stamped to 17 during the load, which is saveProfile running before the cfgv block');
+       if(P.cfgv>=17) bad.push('cfgv was stamped to '+P.cfgv+' during the load, which is saveProfile running before the cfgv block');
        // CONTROL: the buyback still ran, or the fix broke the migration.
        if(!(P.credits>5000)) bad.push('control: the rig buyback did not pay (credits '+P.credits+'), so the migration no longer runs');
        if(P.stash&&P.stash.indexOf('rig_medium')>=0) bad.push('control: the bought-back rig is still in the stash, so the buyback did not run');
@@ -17524,8 +17670,10 @@ window.__REGRESS=[
            bad.push('the Servo Actuator is still kept for a repair that no longer exists, its reason reads '+_sv);
        } else if(!__stashRules.sellable('servo'))
          bad.push('the Servo Actuator is still withheld from SELL ALL for a repair that no longer exists');
-       if(__stashRules.craftPart('servo'))
-         bad.push('the Servo Actuator is still classed as a crafting part and appears in no recipe');
+       // v11.95: four gun recipes eat the servo, so it is a craft part again and
+       // the stash must say so; the repair reason above is still forbidden.
+       if(!__stashRules.craftPart('servo'))
+         bad.push('the Servo Actuator is not classed as a crafting part though four recipes eat it');
        // CONTROL THREE: a real crafting part must still be protected, or this was
        // done by breaking the keep rule for everything.
        if(__stashRules.sellable('scrap'))

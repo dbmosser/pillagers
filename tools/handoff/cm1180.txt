@@ -4,9 +4,9 @@ The extraction hold ends the raid from inside the player update; endRaid
 cut the ambient bed, but the same frame ran on to tickAmbience with alive
 meaning not downed, true after an extraction, so the bed was written back
 up to its 0.16 floor after the cut and held that level on the Undercroft
-floor once the raid was dropped. A death arrives downed and writes 0, so
-only completed runs hummed. Over an ended raid the bed is now driven to
-silence. Check 11.80 ends the raid from inside a wrapped updatePlayer and
+floor once the raid was dropped. A death ends the raid from the death-beat
+branch, which never reaches the drive, so only completed runs hummed. Over
+an ended raid the bed is driven to silence and the cut is written again last. Check 11.80 ends the raid from inside a wrapped updatePlayer and
 requires every target from that frame on to be 0; fails on v11.79.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

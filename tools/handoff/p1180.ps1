@@ -19,18 +19,23 @@ function SubRx([string]$old, [string]$new) {
 # EXTRACTION is true: the bed was written back up to its floor of 0.16 in the
 # same frame, after the cut, and with no later frame driving it that level
 # held on the Undercroft floor for as long as the page was open. A death
-# leaves him downed, alive reads false, and the same order writes 0, which is
-# why only a completed run hummed. Over an ended raid the bed is now driven to
-# silence, which is what endRaid asked for one call earlier.
+# never did this: it ends the raid from the death-beat branch, which never
+# reaches that line, which is why only a completed run hummed. Over an ended
+# raid the bed is driven to silence, and the 0.12 s cut is written again last
+# (two automations at one currentTime resolve to the later one).
 SubRx @'
       tickAmbience(dt,th,!pp.downed,wdread);
 '@ @'
       // v11.80, HIS NOTE: the extraction hold ends the raid inside updatePlayer
-      // above, and this frame runs on to here after endRaid's cut. Not downed
-      // after an extraction, so this wrote the bed back up to its floor in the
-      // same frame, and the level held on the Undercroft floor for as long as
-      // the page was open. Over an ended raid the bed is driven to silence.
+      // above, and this frame runs on to here after endRaid's cut, so this wrote
+      // the bed back up to its floor in the same frame, and the level held on the
+      // Undercroft floor for as long as the page was open. A death never did:
+      // it ends the raid from the death-beat branch, which never reaches here.
+      // Over an ended raid the bed is driven to silence, and the cut is written
+      // again LAST, because two automations at one currentTime resolve to the
+      // later one and this drive's ramps are four to ten times slower than it.
       tickAmbience(dt,G.over?0:th,!pp.downed&&!G.over,G.over?0:wdread);
+      if(G.over){ try{ ambienceOff(); }catch(_a2){} }
 '@
 
 # STAMPS.

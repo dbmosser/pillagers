@@ -292,6 +292,10 @@
     color:var(--ash); margin-left:3px; font-weight:400; }
   .modcur i{ font-style:normal; color:var(--bone); font-weight:700; }
   .modal h3{ display:flex; align-items:baseline; gap:12px; }
+  /* v11.96: the heading's own balance sat under the corner readout once that
+     grew (v11.78); the corner shows the same two figures at all times, so the
+     heading no longer repeats them (the v11.52 rule for the stash screen). */
+  .modal h3 .modcur{ display:none; }
   .imenu{ position:fixed; z-index:12000; min-width:186px; max-width:260px;
     background:rgba(9,13,19,.97); border:1px solid var(--steel-hi); border-radius:4px;
     box-shadow:0 10px 34px rgba(0,0,0,.66); padding:4px 0;
@@ -1354,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.93';
+var VER='11.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1369,11 @@ var VER='11.93';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.93';
+var WHATSNEW_VER='11.98';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A CONTROLLER OR THE KEYBOARD CAN CRAFT AGAIN. The hold is the mouse way; a pad press or Enter on the button crafts at once.',
   'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear, at the counter or at the lift, and it is all still there.',
   'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
   'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
@@ -1383,11 +1388,11 @@ var WHATSNEW=[
   'HEALING STACKS AGAIN. The next bandage goes on while the prior one is still healing, and a plate goes on while a bandage is being applied. The one-at-a-time refusal and its countdown are gone.',
   'THE KILLED IN ACTION CARD NO LONGER COUNTS THE SEAL-CUTTING LOST WITH YOU. A cut still banks only when you walk out.',
   'THE HUM AFTER AN EXTRACTION IS GONE. The frame that ended the raid was writing the raid ambience back up after it had been cut, and the level held on the floor.',
-  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
+  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG in green, the Burst Carbine, Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
   'THE CREDITS AND XP READOUT IN THE CORNER IS TWICE THE SIZE, on the floor and in a raid. The CONDITIONS box starts below it.',
-  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 115 at the centre, was 85; to you 80 at the centre, was 60. The fuse is still 1.1 seconds.',
+  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 140 at the centre, was 100; to you 98 at the centre, was 72. The fuse is still 1.1 seconds.',
   'THE SCAV PISTOL IS HALF PRICE IN THE SHOP: 1800 credits, down from 3600. Say the number you want and it moves again.',
-  'HOLD THE CRAFT BUTTON FOR A SECOND. The button fills as you hold it and the work happens when it is full. Let go early and nothing is spent. The same goes for the service button, which is the same control.',
+  'HOLD THE CRAFT BUTTON FOR A SECOND. The button fills as you hold it and the work happens when it is full. Let go early and nothing is spent.',
   'THE BOARDING WINDOW SAYS EXTRACT NOW. It used to say EXTRACTION IN PROGRESS, which reads as something happening without you rather than the one moment you have to be in the ring holding E.',
   'A BRAND NEW CHARACTER HAS A NAME. Before this, someone playing for the first time had none until the game had saved and loaded once, and the character screen read "undefined" beside their first raid.',
   'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
@@ -1958,12 +1963,11 @@ var TAGS=[
 // that decides what is salvage can ask rather than carry its own copy.
 var REPAIR_PARTS={light:'comp',heavy:'servo'};
 function craftPart(k){
-  // v9.43: the servo is out. It appears in no recipe and in no rack, and the one
-  // thing it was for was repairing guns that have not worn since v9.01. Being a
-  // craft part is what made SELL ALL refuse it and made the stash tell him to KEEP
-  // it, so the item whose entire purpose had been deleted was also the item the
-  // game insisted he hoard. It is salvage now, and salvage sells for 310.
-  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp';
+  // v9.43 took the servo out: it was in no recipe and its one use, repairs, had
+  // gone with wear at v9.01, so keeping it was hoarding for nothing.
+  // v11.95: it is back, and the optic with it, because the four gun recipes of
+  // v11.79 eat both; SELL ALL keeps them and the stash says what for.
+  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp'||k==='servo'||k==='optic';
 }
 function craftUse(k){
   // v5.87: completed against RECIPES and RACK_COST. Every one of these was true
@@ -1973,6 +1977,8 @@ function craftUse(k){
   if(k==='cell')  return 'ammunition, smoke, frags, mainframe racks';
   if(k==='board') return 'armour plates and mainframe racks';
   if(k==='comp')  return 'plates, medkits, smoke, decoys and frags';
+  if(k==='servo') return 'guns on the bench, and contracts';   // v11.95
+  if(k==='optic') return 'the Auto Rifle, and contracts';      // v11.95
   return 'crafting';
 }
 var RECIPES=[
@@ -2433,9 +2439,9 @@ if(P.rigs!==undefined) delete P.rigs;
 // rigBuyback is declared above loadProfile, not in it, so anything can call it.
 if(!P.mig945){ rigBuyback(P); P.mig945=1;
   // v11.42: persist through storeSet, NOT saveProfile. saveProfile writes
-  // P.cfg=CFG;P.cfgv=17, and here CFG is still the file-scope default because
+  // P.cfg=CFG;P.cfgv=18 (17 when this was written), and here CFG is still the file-scope default because
   // the cfgv block below has not loaded the saved P.cfg yet, so saveProfile wiped
-  // the player's dials and stamped cfgv 17, skipping every cfgv migration. storeSet
+  // the player's dials and stamped the current cfgv, skipping every cfgv migration. storeSet
   // writes P as it stands, saved cfg and cfgv intact, and still locks in the buyback.
   storeSet(JSON.stringify(P)); }
 // v8.38, audit: STAMPED. This is the v7.39 fold-to-one-map migration and it had
@@ -11579,7 +11585,7 @@ function throwFrom(tk,cookT){
   // That is a fair mistake to make, but only if you are told you made it: the
   // fuse is 1.1s and you can clear the radius, so the call goes out the instant
   // it leaves your hand rather than when it goes off.
-  if(blocked&&rngT<110) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');
+  if(blocked&&rngT<(tk==='frag'?(CFG.fragR===undefined?190:CFG.fragR):110)) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');   // v11.97: the warning covers the whole blast
   ping(p.x,p.y,90,false,false,'player','move');
 }
 // The instant path, unchanged in behaviour and still what the gamepad and any
@@ -13727,7 +13733,11 @@ function raiderThrow(e,foe,fd,dt){
     return true;
   }
   if(e.smkT!==undefined) e.smkT-=dt;
-  if(fd<180||fd>520) return false;
+  // v11.97: the near edge of the band follows the blast radius (it was 180
+  // against a 150 blast; at 190 he stood in his own charge), plus the scatter
+  // of the aim point below.
+  var _fR=(CFG.fragR===undefined?190:CFG.fragR);
+  if(fd<_fR+40||fd>520) return false;
   var ix=-1;
   for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
   if(ix<0) return false;
@@ -23590,7 +23600,7 @@ else if(nc2.tag) ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+String(nc2.ta
     var _rHold=(RZ.hold!==undefined&&RZ.hold!==null&&RZ.hold>0);
     ctx.font=FS(TYPE.label); ctx.textAlign='center';
     ctx.fillStyle=_rHold?'#7fc4a0':'#4de3d0';
-    // v8.68, his wording, same as the banner.
+    // v11.74: extractNowLine, the same line as the banner (v8.68 named the window; v11.74 reworded it).
     ctx.fillText(_rHold?
       extractNowLine(extLetter(RZ),RZ.hold):
       ('EXTRACT '+extLetter(RZ)+' INBOUND '+Math.ceil(RZ.beaconT)+'s'),rs.x,rs.y);
@@ -26624,7 +26634,7 @@ if(G.trail&&G.trail.length>1){
       ctx.fillText('EXTRACT '+String.fromCharCode(65+_fz),ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-LH(24));
       var _zSub;
       if(!Z.open) _zSub='CLOSED';
-      else if(_zHold) _zSub='OPEN TO EXTRACT  '+Math.max(0,Math.ceil(Z.hold))+'s';
+      else if(_zHold) _zSub='EXTRACT NOW  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v11.98: the same words as the banner (v11.74), the letter is the line above
       else if(_zAct) _zSub='CALLED  '+Math.max(0,Math.ceil(Z.beaconT))+'s';
       else if(Z.closeAt===undefined) _zSub='STAYS OPEN';
       else _zSub='closes in '+fmtMS(Math.max(0,Math.ceil(G.timeLeft-Z.closeAt)));
@@ -28506,7 +28516,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.93: from the 2026-09-06 menu audit, TAKE THE FREEBIE KIT wiped the packed backpack and the whole belt plan with no undo. The selection is kept aside on the profile (kitSaved) when the kit is taken and put back by freeKitRestore, called by USE MY OWN GEAR and by MY LOADOUT at the lift, minus anything no longer in the stash and with dead keys pruned; a raid taken with the free kit hands the saved list to the v6.88 death restore. Check 11.93 packs two items and a key, presses the real button twice, and requires the packing and the key back, then sells one item between presses and requires only the other back; fails on v11.92.',
+  now:'v11.98: from the read-only review of the shipped v11.74, the sector map still said OPEN TO EXTRACT under a landed ring, and with the map open that is the only boarding line the player can read. It says EXTRACT NOW with the seconds left, the banner wording. Check 11.98 records what the map draws under a ring in the hold and requires the new words and not the old; fails on v11.97.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31074,6 +31084,9 @@ function renderShopDetail(rows){
        '<b style="color:#c9962c">The Whisper and the Meridian Lance are not stocked by '+
        'anyone down here. Wirt puts one on his counter now and again, and otherwise '+
        'they are found up top or not at all.</b></div>';
+    // v11.95: three of those can be built now (v11.79); a separate line, because
+    // the sentence above is a key for his own rewording of it.
+    h+='<div class="vdesc">The Carbine, the Scattergun and the Auto Rifle can also be built at the crafting bench.</div>';
   } else {
     var it=ITEMS[o.k];
     h+='<div class="vdesc">'+escHtml(it?(itemBlurb(o.k)||''):'')+'</div>';
@@ -31134,6 +31147,7 @@ function itemBlurb(k){
   if(it.use==='throw') return 'Thrown. Goes on a tactical belt key.';
   if(it.use==='ammo') return 'Refills a magazine from your backpack.';
   if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
+  if(it.use==='gun') return 'A gun. Equip it from the stash, or sell it at the terminal.';   // v11.95: the bench makes these now
   if(it.use==='key') return 'Opens one locked room.';
   if(craftPart(k)) return craftUse(k)||'Crafting material.';
   return 'Salvage. Sell it at the terminal for credits and XP.';
@@ -31330,7 +31344,9 @@ function craftHoldStep(dt){
   var b=craftHold.b;
   // The panel redraws itself on every change, so a button that has left the
   // page or gone dead takes its hold with it.
-  if(!b||b.disabled||(b.isConnected===false)){ craftHoldCancel(); return; }
+  // v11.94: and a button whose window has been hidden; the trader hides its
+  // modal rather than detaching it, so isConnected alone let a hold outlive it.
+  if(!b||b.disabled||(b.isConnected===false)||!b.offsetParent){ craftHoldCancel(); return; }
   craftHold.t+=dt;
   craftHoldPaint(b,craftHold.t/CRAFT_HOLD);
   if(craftHold.t>=CRAFT_HOLD){
@@ -31376,7 +31392,7 @@ function renderCraftDetail(rows){
     var oit=ITEMS[outKey];
     h+='<div class="vpills"><span class="vpill">'+
        escHtml((oit&&ICLASS[oit.use])?ICLASS[oit.use].t:'CRAFTED')+'</span>'+
-       '<span class="vpill r">'+escHtml(String((oit&&oit.r)||'common').toUpperCase())+'</span></div>'+
+       '<span class="vpill r">'+escHtml(String(((typeof dispR==='function')&&dispR(outKey))||(oit&&oit.r)||'common').toUpperCase())+'</span></div>'+   // v11.95: the shown rarity
        '<h4>'+escHtml(r.name)+'</h4>'+
        '<div class="vdesc">'+escHtml(oit?(itemBlurb(outKey)||''):'')+
        (outN>1?(' Makes '+outN+'.'):'')+'</div>'+
@@ -31392,7 +31408,11 @@ function renderCraftDetail(rows){
     // v11.75, HIS NOTE: a click no longer spends anything. The hold does.
     b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
     b.onmouseleave=function(){ craftHoldCancel(); };
-    b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' (1 second)';
+    // v11.94: the pad presses a control with a synthetic click and the
+    // keyboard with Enter, both with detail 0; a real mouse click has detail
+    // 1 or more and still spends nothing, the hold is its way.
+    b.onclick=function(e){ if(e&&e.detail) return; btn.click(); };
+    b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' ('+CRAFT_HOLD+' second'+(CRAFT_HOLD===1?'':'s')+')';
   }
   d.appendChild(b);
 }
