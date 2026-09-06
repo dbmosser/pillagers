@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.00 - HIS NOTE: THE HOWLER DOES NOT SHELL THROUGH A ROOF
+
+His message of 2026-09-06, about 14:30: "howler shouldn't be able to bomb
+from outside a building to the inside of the building".
+
+THE FINDING. v10.63 already stops a shell hurting anyone under a roof it
+bursts on, and listed the aiming half as unverified. That half is this: the
+Howler has two ways to fire, at the last place it saw or was told about
+you (the aimed shot) and at a report it heard (the wider scatter), and
+neither asked whether a roof was over the target point. So a Howler in the
+street kept shelling the room you had run into, wasting its shots, and a
+shell whose scatter (up to 120 units) landed just outside the wall reached
+you through the doorway with its full blast, which is the leak he felt.
+
+THE BUILD. A helper, mortarRoofed, answers whether the target point is
+under a building the Howler is not itself in. Both firing sites refuse
+such a shot. The machine keeps its clock and its alert, so it fires the
+moment you are in the open again, and a Howler that has followed you
+inside the same building can still shell you there.
+
+MEASURED. Check 12.00 deploys, empties the room of every other machine,
+stands the player in the middle of a building at least 120 units each
+way, puts an alerted Howler 260 units outside it with the player as its
+target, steps the real entity update once and requires no mortar shell;
+then moves the player into the open beside the Howler and requires one.
+On the v11.99 fixture the first step drops a shell.
+
+Not verified: a Howler inside the same building as you, which the rule
+still allows and the check does not stage; a shell already in the air when he steps inside, which
+lands where it was aimed; a Howler in a neighbouring building, which is
+refused the same way; his own experience under a roof.
 ## v11.99 - HIS NOTE: THE RIGHT-CLICK MENU IS THE SIZE OF THE STASH
 
 His message of 2026-09-06, about 14:05: "right click menu in stash is
