@@ -40024,6 +40024,36 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.64 - A PILLAGER YOU DOWNED AND THEN SAVED WAS STILL YOUR KILL
+
+From the v11.46 read-only audit, P1. Since v8.30 the only door for a kill to
+be credited to you is a flag the downing shot stamps on the man: byPlayer. When
+he later bleeds out, the code that hands out the kill, ticks any kill contract,
+says "will remember that" and writes a permanent -2 grudge on his crew reads
+that one flag. Reviving a downed pillager with E (v9.24) stands him up, clears
+hostile and grudge and makes him friendly for the rest of the raid, and never
+touched byPlayer. A crawler bite writes no attribution at all. So the man you
+shot, then walked over to and picked up, carried your mark for the rest of the
+raid: when a crawler downed him ten minutes later and he bled out alone, the
+game gave you the kill, ticked your contract, and wrote a grudge on the crew of
+the man you had saved.
+
+THE FIX. The revive clears byPlayer along with hostile and grudge. His next
+death is yours only if you cause it: a second downing shot from you stamps the
+flag again, exactly as before.
+
+MEASURED. Check 11.64 deploys, lays a pillager down with your mark on him within
+reach, holds E through one player step, and requires two things: the control,
+that the revive actually happened (he is up and friendly, or the flag reading
+proves nothing); and the fix, that he no longer carries byPlayer. On the v11.63
+fixture the revive happens and the flag survives it, and the check fails naming
+the consequence.
+
+Not verified: his own play; the full chain through a crawler downing and a
+bleed-out after the revive, which the flag reading stands in for (that code has
+not changed and reads only this flag); whether the flag ought also to clear
+when a downed man is revived by his own crew, which is a different code path
+and not part of this finding.
 ## v11.63 - THE OUTCOME CARD PRINTED BASE XP; THE PROFILE WAS CREDITED MORE
 
 From the v11.46 read-only audit, P1, raised independently by two regions. XP
