@@ -40024,6 +40024,48 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.60 - A GRENADE ON A BELT KEY WAS A DEAD KEY, AND IT DELETED THE WORKING ONE
+
+From the read-only raid audit of 2026-09-06, raised independently by two
+regions and confirmed by a skeptic each. It is the same hole the v8.31 comment
+records for the Stim Injector, one item type later, sitting four lines under
+that comment.
+
+WHAT WAS WRONG. A throwable is never in your backpack: Frag Charges, Smoke and
+Decoys live in the pouch, and every path that gives you one, the deploy kit,
+loot, and the Peddler's stall, puts it there. The belt's assignment loop asks
+the backpack how many you have, gets none, and falls through its list of item
+kinds to the catch-all 'item'. The trigger treats 'item' as a held gun. So
+putting a Frag Charge on a key, which the game offers on every item with "Put
+on key", gave you a key that: fired the rifle in your hands when you pulled
+the trigger, under a caption that read "Frag Charge   [FIRE] use"; did nothing
+at all on the use key; drew greyed with a count of none while the pouch held
+two; and, through the pass that stops one item appearing twice on the bar,
+blanked the working Frag Charge cell, so the only way left to that grenade was
+a cell labelled with a different item. Bind all three throwables and nothing
+on the belt could throw anything for the whole raid. In the Undercroft the key
+looked fine, because the staging screen counts your kit rather than a pouch
+you do not have yet, so the fault appeared only after landing.
+
+THE FIX. A belted throwable is built exactly as the bar's own throwable cell is
+built: same key, same kind, the live pouch count. Everything downstream then
+works because it already worked for that cell: selecting the key points the
+throw selector at that grenade, the trigger cooks it, and the duplicate pass
+removes the bar's own copy instead of his. The use key gets the same verb the
+bar's cell has, since the backpack test above it would otherwise refuse
+anything living in the pouch.
+
+MEASURED. Check 11.60 deploys, puts two Frag Charges in the pouch, binds one to
+belt key 2, and requires: the cell is a throwable and not the dead item cell;
+it reads two; exactly one cell on the whole bar is that grenade; selecting it
+moves the throw selector onto frag; and the use key spends one and puts a
+throw in the air. On the v11.59 fixture the cell builds as 'item' and the check
+fails on its first line, naming the consequence.
+
+Not verified: his own hand; Smoke and Decoy, which take the identical path and
+were not bound in the check; the pad, whose belt buttons route through setHot
+and should follow; whether the caption for a belted grenade should read cook
+rather than use, which is wording and his to say.
 ## v11.59 - HIS NOTE: EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING
 
 His in-run note of 2026-09-05, 130 seconds into his first run: "how lightning
