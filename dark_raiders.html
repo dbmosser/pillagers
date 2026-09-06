@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.09';
+var VER='12.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='12.09';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.09';
+var WHATSNEW_VER='12.10';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE SECOND TIME YOU GO DOWN THE GAME SAYS SO: your one self-revive is spent, so crawl for an extraction or hold SPACE to give up.',
   'THE ARROW KEYS BROWSE THE OPEN BACKPACK WITHOUT WALKING YOU; WASD still walks.',
   'THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL: the press brings your gun up and says so, and it never throws a grenade the cell did not name.',
   'A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING. It no longer gives up on the way to the last place it saw you; standing still does not switch it off.',
@@ -12215,7 +12216,13 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     // consumes none, by his v6.45 order, and the function's own comment says so.
     // This told a player bleeding out that they needed an item they do not have
     // and do not need, which is a reason not to press the key at all.
-    G.tel.downs++; say('DOWN. F to get back up. You get one per raid.');   // v11.94, HIS NOTE: per raid
+    G.tel.downs++;
+    // v12.10: THE SECOND DOWN TELLS THE TRUTH. Once the one self-revive is spent
+    // F answers Self-revive spent, so a toast that sent him to F was a lie the
+    // HUD contradicted in the same frame. He can still crawl for an extraction,
+    // or hold SPACE to give up where that is switched on.
+    say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold '+keyLabel('Space','SPACE')+' to give up.'))
+                 :'DOWN. '+keyLabel('KeyF','F')+' to get back up. You get one per raid.');   // v11.94, HIS NOTE: per raid
   }
 }
 // DESTRUCTIBLE ENVIRONMENT, v2.83. His note: "environment should be
@@ -28648,7 +28655,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.09: from the 2026-09-06 first-ten-minutes audit, the arrow keys moved the backpack selection and walked the operator at the same time, against the comment that promised otherwise. The arrows are cleared from the movement state while the backpack is open. Check 12.09 opens the backpack, presses an arrow through raidKey and one real player update, and requires the selection moved and the operator still; fails on v12.08.',
+  now:'v12.10: from the 2026-09-06 first-ten-minutes audit, the going-down toast sent him to F on the second down too, when the one self-revive is spent and F refuses. The second down now says the revive is spent and names the crawl and the give-up hold. Check 12.10 downs him with the revive spent and requires no F in the toast and the word spent, then downs him fresh and requires F; fails on v12.09.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

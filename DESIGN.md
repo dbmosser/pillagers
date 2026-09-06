@@ -40024,6 +40024,31 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.10 - FIRST TEN MINUTES: THE SECOND DOWN TELLS THE TRUTH
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
+
+THE FINDING. Every time the player goes down the toast says "DOWN. F to
+get back up. You get one per raid." The down branch reads only health, so a
+second hit to zero downs him just the same after the one self-revive is
+spent, and the same toast sends him to F, which answers "Self-revive
+spent. One per raid." The HUD line drawn in the same frame says the revive
+is gone. A new player on his second down is told to press a key that
+refuses him, while the two things he can actually do, crawl for an
+extraction or hold SPACE to give up, go unsaid.
+
+THE BUILD. One line: when the revive is already spent the toast says so
+and names the crawl and, where the give-up hold is switched on, the SPACE
+hold. The first down's toast is unchanged.
+
+MEASURED. Check 12.10 deploys, marks the revive spent, hits him to zero
+through the real damage path with a crawler as the source, and requires
+the toast to say spent and not F; then resets him fresh, hits him again,
+and requires F. On the v12.09 fixture the first arm reads the F toast.
+
+Not verified: the bleed-out HUD line's own wording, untouched; the
+give-up hold itself, which v9.37 and v10.96 cover; his own reading of the
+toast.
 ## v12.09 - FIRST TEN MINUTES: BROWSING THE BACKPACK NO LONGER WALKS YOU
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.
