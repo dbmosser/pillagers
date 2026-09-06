@@ -40024,6 +40024,40 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.17 - A CONTROLLER OR THE KEYBOARD CAN CRAFT AGAIN
+
+From the read-only review of this morning's shipped builds, on v11.75.
+
+WHAT IT WAS. v11.75 made the craft button a one-second hold on his order,
+and did it by deleting the button's click handler and wiring the hold to
+the mouse. That deleted the only way a controller presses anything in a
+panel (the pad focuses a control and sends it a synthetic click) and the
+only way the keyboard does (Enter on the focused button), so with a pad or
+by keyboard crafting and servicing were not merely un-holdable, they were
+impossible. Two smaller faults in the same build: the hold's only guard
+was that the button was still in the page, but the trader hides its window
+rather than removing it, so a hold could outlive the window being shut and
+still spend the materials; and the tooltip and the NEW IN card wrote the
+hold length out by hand, and the card described a SERVICE button the game
+cannot draw since wear went out at v9.43.
+
+THE BUILD. The click handler comes back and answers only synthetic clicks:
+a real mouse click carries a detail count of one or more and still spends
+nothing, the hold is still the mouse's way; a pad press and a keyboard
+Enter carry zero and craft at once. The hold dies when the button's window
+is hidden. The tooltip reads the hold length from the one constant. The
+card drops the sentence about the service button.
+
+MEASURED. Check 12.17 opens the bench with the parts for a Component Kit in
+the stash, selects that recipe, and presses the cream detail button three
+ways: a synthetic click, which must craft; a click with a detail count of
+one, which must craft nothing; and a real hold stepped past one second,
+which must craft. Then it starts a hold, hides the window, steps the hold
+and requires it cancelled with nothing spent. On the v12.16 fixture the
+synthetic click crafts nothing and the hold survives the hidden window.
+
+Not verified: a real pad in his hands; Enter from a focused button, which
+this check sends as the same detail-zero click the pad sends.
 ## v12.16 - TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED
 
 From the 2026-09-06 read-only menu audit, its highest-value open item on
