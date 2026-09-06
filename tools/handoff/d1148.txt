@@ -1,0 +1,28 @@
+## v11.48 - RIGHT-CLICK "EQUIP AS YOUR GUN" ON A STASH GUN LOST THE GUN
+
+The second P0 data-loss line from the v11.46 read-only audit. The item context
+menu, itemMenuRows(key,ctx,count), builds its rows for `key`. The row that turns
+a looted gun into one of your own did three things in order: splice the gun out
+of P.stash, clearKeysFor(k) so no belt key still pointed at it, then push it to
+P.weapons, equip it and save. But `k` is not declared anywhere in that function,
+and the whole file runs under 'use strict', so the second step threw
+ReferenceError. The splice had already happened; the push, the equip and the
+save never did. The gun was in neither the stash nor the armoury: gone, with no
+message, and nothing in the report because the throw is the ordinary kind the
+crash catcher records after the fact. The other copy of this verb, in the stash
+grid, uses a loop-scoped k and was fine, which is why it was not seen sooner.
+
+THE FIX. One token: clearKeysFor(key). The row is built for key; that is the gun.
+
+MEASURED. Check 11.48 drives the REAL rows through a new hook: a gun item the
+profile does not own is put in the stash, the equip-as-gun row is taken from
+itemMenuRows and its act run. On this build the gun leaves the stash, lands in
+P.weapons and is equipped, and nothing throws. On the v11.47 fixture the same
+act throws ReferenceError after the splice and the check fails on "in neither
+the stash nor the armoury: it was lost". A control requires the gun that
+reached the armoury to be the equipped one.
+
+Not verified: his own play; the stash-grid copy of the verb, which was read and
+is sound but is not driven by this check; whether any friend has already lost a
+gun this way (it would show as a ReferenceError naming clearKeysFor in a run
+report's crash list).

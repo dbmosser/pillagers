@@ -1015,6 +1015,8 @@ window.__syncReport=function(){ syncAutoEx(); return document.getElementById('re
 // driven rather than read. __load is loadOf(), a loadout helper, and calling it
 // for this proved nothing at all.
 window.__loadProfile=function(){ return loadProfile(); };
+window.__itemMenuRows=function(key,ctx,count){ return itemMenuRows(key,ctx,count); };
+window.__itemGk=function(k){ var it=(typeof ITEMS!=='undefined')&&ITEMS[k]; return it?(it.gk||null):null; };
 window.__noteCrash=function(k,m,w){ return noteCrash(k,m,w); };
 window.__ploaded=function(v){ if(typeof PLOADED==='undefined') return null; if(v!==undefined) PLOADED=!!v; return PLOADED; };
 window.__applyLoaded=(typeof applyLoadedProfile==='function')?function(prof){ applyLoadedProfile({key:SKEY,value:JSON.stringify(prof)}); return true; }:undefined;
@@ -5437,6 +5439,29 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.48',what:'right-click Equip as your gun on a stash gun moves it into the armoury and equips it, instead of removing it from the stash and then throwing so the gun is lost',
+   run:function(){
+     if(!(window.__itemMenuRows&&window.__itemGk&&window.__P)) return 'SKIP: this fixture cannot open the item menu';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[];
+     // A gun item the profile does not own yet, so the row takes the equip path
+     // and not the "already yours" branch.
+     var cands=['gun_smg','gun_carbine','gun_rifle','gun_shotgun','gun_scattergun','gun_pistol'], K=null, gk=null;
+     for(var c=0;c<cands.length;c++){ var g=window.__itemGk(cands[c]); if(g){ K=cands[c]; gk=g; break; } }
+     if(!K) return 'SKIP: no gun item in the item table to stage';
+     P.stash=[K]; P.kit=[]; P.hotAssign={};
+     P.weapons=(P.weapons||[]).filter(function(w){ return w!==gk; });
+     var rows=window.__itemMenuRows(K,'stash',1)||[], row=null;
+     for(var r=0;r<rows.length;r++){ if(/gun/i.test(String(rows[r].label||''))&&typeof rows[r].act==='function'){ row=rows[r]; break; } }
+     if(!row) return 'SKIP: the stash menu offered no equip-as-gun row for '+K;
+     var threw=null; try{ row.act(); }catch(e){ threw=String(e&&e.message||e); }
+     var inStash=(P.stash||[]).indexOf(K)>=0, inArm=(P.weapons||[]).indexOf(gk)>=0;
+     // THE FIX: the gun reaches the armoury and is equipped; it is never in neither place.
+     if(!inStash&&!inArm) bad.push('the gun '+K+' is in neither the stash nor the armoury after Equip: it was lost'+(threw?(' (the row threw: '+threw.slice(0,80)+')'):''));
+     else if(!inArm) bad.push('the gun stayed in the stash and never reached the armoury'+(threw?(' (the row threw: '+threw.slice(0,80)+')'):''));
+     if(inArm&&P.equipped!==gk) bad.push('control: the gun reached the armoury but was not equipped (equipped is '+P.equipped+')');
+     __cleanProfile(); __topClear();
+     return bad.length?bad.join('; '):null; }},
   {v:'11.47',what:'a crash caught before the profile is read never saves over the real save: it goes to its own key, and a crash after the read still lands in P.crashes',
    run:function(){
      if(!(window.__noteCrash&&window.__P)) return 'SKIP: this fixture cannot raise a crash through the catcher';

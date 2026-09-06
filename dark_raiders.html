@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.47';
+var VER='11.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.47';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.47';
+var WHATSNEW_VER='11.48';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A GUN YOU EQUIP FROM THE STASH MENU NO LONGER VANISHES. Right-clicking a looted gun in the stash and picking the equip line used to remove it from the stash and then fail before it reached your armoury, so the gun was simply gone. It now lands in your armoury and is equipped.',
   'A CRASH WHILE THE GAME IS STILL LOADING CAN NO LONGER WIPE YOUR SAVE. If something broke before your character was read in, the crash catcher used to write a blank starting profile over the real one. It now keeps the note aside and adds it to your report once your character is loaded.',
   'A PILLAGER WHO SEES YOU NOW ACTUALLY SHOOTS. A pillager heading for extraction who had you in clear sight would stand there and never fire: the one-beat pause meant to give you a fair moment was being reapplied every frame, so his trigger never came free. He gets his one beat, then he fires.',
   'THE TITLE SCREEN NO LONGER ANSWERS THE FLOOR KEYS. Pressing P or ESC on the title screen used to open the pause box over it, and ENTER to start could quietly dismiss the NEW IN card before you saw it. The title keeps its own keys now: ENTER or SPACE starts, nothing else.',
@@ -28100,7 +28101,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.47: the crash catcher saved the default profile over the real save. noteCrash ended with saveProfile, and P is the file-scope default until applyLoadedProfile sets P=d when loadProfile resolves near the end of the file; any uncaught error at file scope between the catcher and that call, or during the read, wrote credits 900 over the saved character. A PLOADED flag is set when the read resolves; before it a crash is written to its own key, salvagerun:precrash, and merged into P.crashes after the read. From the v11.46 audit, P0.',
+  now:'v11.48: right-click Equip as your gun on a stash gun lost the gun. itemMenuRows is built for key, but the equip row spliced the gun out of P.stash and then called clearKeysFor(k); k is undeclared in that function and the IIFE is use strict, so it threw ReferenceError after the splice and the push to P.weapons, the equip and the save never ran. The row now clears keys for key. The copy in the stash grid used a loop-scoped k and was fine. From the v11.46 audit, P0.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29167,7 +29168,10 @@ function itemMenuRows(key,ctx,count){
         return;
       }
       P.stash.splice(ix,1);
-      clearKeysFor(k);                 // v8.51, audit: it left the backpack
+      // v11.48: k was never declared in this function (the IIFE is 'use strict'),
+      // so this line threw ReferenceError AFTER the splice and the gun was gone,
+      // neither in the stash nor in the armoury. The row is built for key.
+      clearKeysFor(key);               // v8.51, audit: it left the backpack
       P.weapons.push(it.gk);
       P.equipped=it.gk; saveProfile(); refreshInv();
     }});

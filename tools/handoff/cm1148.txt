@@ -1,0 +1,13 @@
+v11.48: right-click Equip as your gun on a stash gun lost the gun
+
+itemMenuRows builds its rows for key, but the equip-as-gun row spliced the gun
+out of P.stash and then called clearKeysFor(k); k is undeclared in that
+function and the IIFE is use strict, so it threw ReferenceError after the
+splice and the push to P.weapons, the equip and the save never ran. The gun was
+in neither the stash nor the armoury. One token: clearKeysFor(key). Check 11.48
+drives the real rows through a new hook: a gun item the profile does not own
+goes in the stash, the equip row runs, and the gun must reach the armoury and
+be equipped; fails on v11.47 with "in neither place: lost". Second of the two
+P0 data-loss lines from the v11.46 audit.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
