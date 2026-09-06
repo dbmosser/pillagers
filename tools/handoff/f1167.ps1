@@ -11,22 +11,38 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.67 CHECK, inserted before the v11.66 entry. The stale phrase is assembled
-# so this check never matches its own text.
+# v11.67 CHECK, inserted before the v11.66 entry. The fancy name is built from
+# code points so this file stays ASCII.
 SubRx @'
-  {v:'11.66',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
+  {v:'11.66',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
 '@ @'
-  {v:'11.67',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
+  {v:'11.67',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
    run:function(){
-     if(typeof notoBite!=='function'||typeof pedOpen!=='function') return 'SKIP: no notoriety banner in this build';
-     if(!pedOpen()) return 'SKIP: the stall shuts in this build, so the old line would be true';
-     var bad=[], stale=['done with',' you'].join(''), b1=String(notoBite(1)), b2=String(notoBite(2)), b3=String(notoBite(3));
-     if(b2.indexOf(stale)>=0) bad.push('at notoriety 2 the banner says "'+b2+'" while the stall stays open');
-     if(b3.indexOf(stale)>=0) bad.push('at notoriety 3 the banner says "'+b3+'" while the stall stays open');
-     if(b2.indexOf('Hiring')<0) bad.push('at notoriety 2 the banner does not name the hiring cost: "'+b2+'"');
-     if(b1.indexOf('Hiring')<0) bad.push('control: at notoriety 1 the banner does not name the hiring cost: "'+b1+'"');
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     if(typeof restoreCode!=='function'||typeof restoreRead!=='function') return 'SKIP: this build has no restore code';
+     var bad=[], prof=__P(), keepN=prof.pname;
+     try{
+       var fancy='ZQX'+String.fromCharCode(0x2019)+'S '+String.fromCharCode(0xD83D,0xDD25);
+       prof.pname=fancy;
+       var code=restoreCode();
+       if(!code) bad.push('a name with a curly quote and an emoji produced no restore code at all, so the friend it belongs to cannot be restored');
+       else {
+         var o=restoreRead(code);
+         if(!o) bad.push('the code for that name cannot be read back');
+         else if(o.n!==fancy) bad.push('the name came back as '+JSON.stringify(o.n)+' and not '+JSON.stringify(fancy));
+       }
+       // CONTROL: a code written the old way, plain btoa of ASCII JSON, still reads.
+       var old='PIL1'+btoa(JSON.stringify({v:1,n:'OLDCODE',c:4471,x:1})).replace(/=+$/,'');
+       var o2=restoreRead(old);
+       if(!o2||o2.n!=='OLDCODE'||o2.c!==4471) bad.push('control: a code written before this build no longer reads ('+(o2?JSON.stringify(o2.n):'null')+')');
+       // CONTROL: the plain-ASCII case is unchanged.
+       prof.pname='PLAINNAME';
+       var o3=restoreRead(restoreCode());
+       if(!o3||o3.n!=='PLAINNAME') bad.push('control: a plain name no longer round-trips ('+(o3?JSON.stringify(o3.n):'null')+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ prof.pname=keepN; try{ saveProfile(); }catch(_s){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.66',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
+  {v:'11.66',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

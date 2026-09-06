@@ -1,14 +1,11 @@
-v11.59: a grenade on a belt key was a dead key, and it deleted the working one
+v11.59: his note, every noise you can hear but not see draws its ring
 
-From the 2026-09-06 read-only raid audit, raised by two regions independently.
-The same hole the v8.31 comment records for the stim, one item type later: a
-throwable lives in the pouch and never in the backpack, so the belt built it
-as a plain item, which the trigger treats as a held gun. Putting a Frag Charge
-on a key gave a key that fired your rifle under a caption saying use, did
-nothing on the use key, read x0 while the pouch held two, and blanked the
-working grenade cell; binding all three left nothing able to throw. A belted
-throwable is now built exactly as the bar's own throwable cell is, and the use
-key throws it. Check 11.59 binds a frag and requires a live cell, one cell,
-a synced selector and a real throw; fails on v11.58.
+His in-run note of 2026-09-05: all noises outside vision but within earshot
+should draw a ring like lightning does. That ring already exists for every
+sound played at a position; four sounds bypassed it by playing by distance
+alone: the strike telegraph and the extraction inbound pulse, touchdown and
+last call. They are positioned now and have ring sizes. Check 11.59 requires
+the sizes, an unseen ring and no seen ring, and the four positioned call
+sites; fails on v11.58.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

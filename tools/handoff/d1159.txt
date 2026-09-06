@@ -1,42 +1,35 @@
-## v11.59 - A GRENADE ON A BELT KEY WAS A DEAD KEY, AND IT DELETED THE WORKING ONE
+## v11.59 - HIS NOTE: EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING
 
-From the read-only raid audit of 2026-09-06, raised independently by two
-regions and confirmed by a skeptic each. It is the same hole the v8.31 comment
-records for the Stim Injector, one item type later, sitting four lines under
-that comment.
+His in-run note of 2026-09-05, 130 seconds into his first run: "how lightning
+shows red noise, I want ALL noises to do that when they are outside the
+player's vision but within earshot, eg visualize noises with red circles!"
 
-WHAT WAS WRONG. A throwable is never in your backpack: Frag Charges, Smoke and
-Decoys live in the pouch, and every path that gives you one, the deploy kit,
-loot, and the Peddler's stall, puts it there. The belt's assignment loop asks
-the backpack how many you have, gets none, and falls through its list of item
-kinds to the catch-all 'item'. The trigger treats 'item' as a held gun. So
-putting a Frag Charge on a key, which the game offers on every item with "Put
-on key", gave you a key that: fired the rifle in your hands when you pulled
-the trigger, under a caption that read "Frag Charge   [FIRE] use"; did nothing
-at all on the use key; drew greyed with a count of none while the pouch held
-two; and, through the pass that stops one item appearing twice on the bar,
-blanked the working Frag Charge cell, so the only way left to that grenade was
-a cell labelled with a different item. Bind all three throwables and nothing
-on the belt could throw anything for the whole raid. In the Undercroft the key
-looked fine, because the staging screen counts your kit rather than a pouch
-you do not have yet, so the fault appeared only after landing.
+WHAT IS TRUE. That ring is noiseMark, built at v9.07: every world sound that
+is played at a position goes through sfx, and sfx asks noiseMark, which draws
+a ring sized for the sound when you could hear it and could not see it, with
+the cone counting so something behind you is unseen even in the open, and
+nothing at all when you can see the source. Gunfire, steps, hits, clanks and
+the strike's alarm all do this already; the ring he saw was the strike
+landing. Four sounds never did, because they were played by distance alone
+with no position to ring at: the storm's strike telegraph (the charge before
+the bolt), and the extraction's inbound pulse, its touchdown and its last
+call.
 
-THE FIX. A belted throwable is built exactly as the bar's own throwable cell is
-built: same key, same kind, the live pouch count. Everything downstream then
-works because it already worked for that cell: selecting the key points the
-throw selector at that grenade, the trigger cooks it, and the duplicate pass
-removes the bar's own copy instead of his. The use key gets the same verb the
-bar's cell has, since the backpack test above it would otherwise refuse
-anything living in the pouch.
+THE BUILD. Those four are played at their positions through sfx now, so they
+mark themselves like every other sound, and the three that had no ring size
+get one: a small pulse for inbound, a large one for touchdown, a middling
+one for last call. Nothing about the rule changes, and the seen-source case
+still draws nothing.
 
-MEASURED. Check 11.59 deploys, puts two Frag Charges in the pouch, binds one to
-belt key 2, and requires: the cell is a throwable and not the dead item cell;
-it reads two; exactly one cell on the whole bar is that grenade; selecting it
-moves the throw selector onto frag; and the use key spends one and puts a
-throw in the air. On the v11.58 fixture the cell builds as 'item' and the check
-fails on its first line, naming the consequence.
+MEASURED. Check 11.59 requires the three ring sizes, drives noiseMark with an
+inbound pulse 400 units behind the player and requires a ring, and with one
+60 units ahead in the open and requires none; then reads strikeTick and
+tickExtractPoints and requires the four sounds to be positioned calls. On
+the v11.58 fixture the ring sizes are missing and all four sites play by
+distance, and the check fails naming each.
 
-Not verified: his own hand; Smoke and Decoy, which take the identical path and
-were not bound in the check; the pad, whose belt buttons route through setHot
-and should follow; whether the caption for a belted grenade should read cook
-rather than use, which is wording and his to say.
+Not verified: his own eye; whether the inbound pulse's repeated ring (every
+half second to two seconds while the extraction is inbound) reads as
+information or as clutter, which is his to say and one number to change; the
+noise ring's colour, which is unchanged and not red for every source (his
+word was "red circles"; the table at NOISECOL has the colours by source).

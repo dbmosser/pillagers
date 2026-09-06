@@ -1,11 +1,13 @@
-v11.58: his note, every noise you can hear but not see draws its ring
+v11.58: the Undercroft HUD was painted and then erased in the same frame
 
-His in-run note of 2026-09-05: all noises outside vision but within earshot
-should draw a ring like lightning does. That ring already exists for every
-sound played at a position; four sounds bypassed it by playing by distance
-alone: the strike telegraph and the extraction inbound pulse, touchdown and
-last call. They are positioned now and have ring sizes. Check 11.58 requires
-the sizes, an unseen ring and no seen ring, and the four positioned call
-sites; fails on v11.57.
+From the 2026-09-06 read-only menu audit. drawHubWorld ends by calling
+drawHubHUD, which paints the floor heading, the stash and runs line, the
+[E] STATION prompt and its key list, the H controls panel, the NEW IN card and
+the line that teaches WASD and E onto the HUD canvas. v8.95's clear sat below
+that call and wiped all of it every frame, repainting only the belt, so the
+floor had no screen furniture at all and H was a dead key. The clear moves
+above the world draw and keeps its original purpose. Check 11.58 drives six
+real loop frames in the hub and counts opaque pixels in the top strip of the
+HUD canvas, with a control that the belt still draws; fails on v11.57.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

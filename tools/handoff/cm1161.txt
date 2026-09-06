@@ -1,13 +1,12 @@
-v11.61: a merc who boarded an earlier ship was never paid
+v11.61: Wirt's Limited Time Offer sold whatever the clock said at click time
 
-endRaid settles the merc's ten percent from his roster row and the boarding
-code stamps his haul onto that row, but only ordinary raiders were ever pushed
-to the roster; the hired merc went to ents alone, so no row was stamped when he
-boarded and none was found at settle, and the card said he was left out there.
-He gets a roster row at spawn now, marked merc, and the pillager board skips
-merc rows so your hire is not listed as a rival. Check 11.61 hires a real
-identity, deploys, requires the row, plays the boarding as the game does, ends
-the raid as an extract, and requires "extracted earlier" and the ten percent;
-fails on v11.60. From the v11.46 audit, P1.
+The counter lot is picked by the clock in five-minute windows and drawn on a
+card that names and prices it before he pays; the Buy button recomputed
+wirtLotKey() at click time and the card never redraws on the boundary, so a
+click after the roll took the money and pushed a lot he was never shown. Buy
+now sells the lot the card was drawn from. Check 11.61 opens Wirt through the
+real station act, moves the clock forward a window so a roll has happened,
+presses the real Buy, and requires the stash to receive the shown lot with
+credits taken as the control; fails on v11.60. From the v11.46 audit, P1.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

@@ -11,42 +11,43 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.58 CHECK, inserted before the v11.57 entry. The ring rule is driven
-# directly (noiseMark) for an unseen and a seen source, and the four call
-# sites are read off their functions.
+# v11.58 CHECK, inserted before the v11.57 entry. Driven through the REAL frame
+# loop, because the hub HUD is painted by __loop and not by __hubFrame, and
+# read off the real HUD canvas in pixels, because that is the only instrument
+# that can tell a painted floor from an erased one.
 SubRx @'
   {v:'11.57',what:'the storm warning ring says LIGHTNING INCOMING with the seconds left, and the world draw puts it at the circle (his note of 2026-09-05)',
 '@ @'
-  {v:'11.58',what:'the extraction inbound pulse, touchdown and last call and the storm telegraph draw the heard-not-seen noise ring like every other sound (his note of 2026-09-05): ring sizes exist, an unseen source rings and a seen one does not, and the four call sites are positioned',
+  {v:'11.58',what:'the Undercroft floor HUD survives the frame it is painted in: the heading and the station prompt are on the HUD canvas after real frames, and the belt is still drawn under them',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
-     if(typeof noiseMark!=='function'||typeof NOISEMARK==='undefined') return 'SKIP: no noise rings in this build';
-     var bad=[], need=['inbound','touchdown','lastcall'];
-     for(var i=0;i<need.length;i++) if(!NOISEMARK[need[i]]) bad.push('the '+need[i]+' sound has no ring size, so it can never mark itself');
+     if(!(window.__hubEnter&&window.__loop&&window.__P)) return 'SKIP: this fixture cannot drive the Undercroft loop';
+     var cv2=document.getElementById('hcv');
+     if(!cv2||!cv2.width||!cv2.height) return 'SKIP: no HUD canvas with a size here';
+     var bad=[];
+     function ink(x0,y0,x1,y1){
+       // CSS pixels in, device pixels out: the canvas is DPR-scaled.
+       var scx=cv2.width/Math.max(1,W), scy=cv2.height/Math.max(1,H);
+       var rx=Math.max(0,Math.round(x0*scx)), ry=Math.max(0,Math.round(y0*scy));
+       var rw=Math.min(cv2.width-rx,Math.round((x1-x0)*scx)), rh=Math.min(cv2.height-ry,Math.round((y1-y0)*scy));
+       if(rw<=0||rh<=0) return -1;
+       var d=cv2.getContext('2d').getImageData(rx,ry,rw,rh).data, n=0;
+       for(var i=3;i<d.length;i+=4) if(d[i]>16) n++;
+       return n;
+     }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player;
-       g.noiseRings=[]; p.face=0;   // facing +x
-       if(NOISEMARK.inbound){
-         // BEHIND the player, within earshot: heard, not seen, so it rings.
-         noiseMark('inbound',p.x-400,p.y);
-         var n1=(g.noiseRings||[]).length;
-         if(n1<1) bad.push('an inbound pulse 400 units behind the player drew no ring');
-         // IN FRONT, close, in the open: seen, so no ring (the game own eyes rule).
-         g.noiseRings=[];
-         noiseMark('inbound',p.x+60,p.y);
-         if((g.noiseRings||[]).length>0&&canSee(p.x,p.y,p.face,p.x+60,p.y,g.vseg)) bad.push('control: a seen source 60 units ahead drew a ring');
-       }
-       var s1='', s2='';
-       try{ s1=strikeTick.toString(); s2=tickExtractPoints.toString(); }catch(_s){}
-       var sfxc=['sfx(',"'charge'"].join(''), sfxi=['sfx(',"'inbound'"].join(''), sfxt=['sfx(',"'touchdown'"].join(''), sfxl=['sfx(',"'lastcall'"].join('');
-       if(s1.indexOf(sfxc)<0) bad.push('the storm telegraph is still played by distance alone, with no position to ring at');
-       if(s2.indexOf(sfxi)<0) bad.push('the inbound pulse is still played by distance alone');
-       if(s2.indexOf(sfxt)<0) bad.push('the touchdown is still played by distance alone');
-       if(s2.indexOf(sfxl)<0) bad.push('the last call is still played by distance alone');
+       __hubEnter();
+       var t0=performance.now();
+       for(var f=0;f<6;f++) __loop(t0+f*16.7);
+       var head=ink(0,0,420,64);
+       if(head<0) return 'SKIP: the HUD canvas is too small to measure at this size';
+       // THE FIX: the floor heading and the line under it are actually on the canvas.
+       if(head<150) bad.push('the Undercroft HUD is blank where the heading and the stash line are drawn ('+head+' opaque pixels in the top strip), so the floor is painting its screen and erasing it in the same frame');
+       // CONTROL: the belt is still drawn, so the clear did not simply move the problem.
+       var belt=ink(0,H-150,W,H);
+       if(belt===0) bad.push('control: nothing is drawn along the bottom of the HUD canvas, so the belt was lost');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ var g3=__state(); if(g3) g3.noiseRings=[]; }catch(_r){} __topClear(); __cleanProfile(); }
+     finally{ __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.57',what:'the storm warning ring says LIGHTNING INCOMING with the seconds left, and the world draw puts it at the circle (his note of 2026-09-05)',
 '@

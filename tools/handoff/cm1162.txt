@@ -1,13 +1,13 @@
-v11.62: the outcome card printed base XP while the profile was credited more
+v11.62: a merc who boarded an earlier ship was never paid
 
-The bank credits round(base x night x weather) x dose, but the card is drawn
-before the bank from its own record, which carried no night or wxHard flag, so
-it printed the raw base and derived the total and the distance to the next
-reward from it: a night run said +100 and banked 120. One helper, xpBaseFor,
-now owns the night and weather arithmetic; addProgress banks through it and
-the card's record carries the same two flags and prints xpBaseFor times the
-dose multiplier. Check 11.62 forces hard weather, ends a raid as an extract,
-reads "+N XP" off the real card and xpGot off the banked record and requires
-them equal; fails on v11.61. From the v11.46 audit, P1.
+endRaid settles the merc's ten percent from his roster row and the boarding
+code stamps his haul onto that row, but only ordinary raiders were ever pushed
+to the roster; the hired merc went to ents alone, so no row was stamped when he
+boarded and none was found at settle, and the card said he was left out there.
+He gets a roster row at spawn now, marked merc, and the pillager board skips
+merc rows so your hire is not listed as a rival. Check 11.62 hires a real
+identity, deploys, requires the row, plays the boarding as the game does, ends
+the raid as an extract, and requires "extracted earlier" and the ten percent;
+fails on v11.61. From the v11.46 audit, P1.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

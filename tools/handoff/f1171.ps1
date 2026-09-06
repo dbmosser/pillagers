@@ -13,39 +13,43 @@ function SubRx([string]$old, [string]$new) {
 
 # v11.71 CHECK, inserted before the v11.70 entry.
 SubRx @'
-  {v:'11.70',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+  {v:'11.70',what:'with Other pillagers set to None the extraction-heat row still reads its own word rather than CUSTOM, the waves are off, and they come back when pillagers return to Standard',
 '@ @'
-  {v:'11.71',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
+  {v:'11.71',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
    run:function(){
-     if(!window.__P||typeof togglePauseBox!=='function'||typeof buildExport!=='function') return 'SKIP: no pause box in this build';
-     if(!document.getElementById('pausenote')) return 'SKIP: no note box in this document';
-     var bad=[], prof, note='ZQX floor note 8812';
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__mouse&&window.__canvases&&window.__P)) return 'SKIP: this fixture cannot click a panel';
+     if(typeof HUDBOX==='undefined'||typeof hudOnGrip!=='function') return 'SKIP: no HUD panels in this build';
+     var bad=[], prof, keepHud;
      try{
-       __topClear(); __cleanProfile(); prof=__P();
-       if(window.__hubEnter){ try{ __hubEnter(); }catch(_h){} }
-       if(G) return 'SKIP: a raid is running, so this is not the floor';
-       if(typeof state!=='undefined'&&state!=='hub') return 'SKIP: not on the floor (state '+state+'), so the box cannot open';
-       delete prof.floorNotes;
-       togglePauseBox(true);
-       var ta=document.getElementById('pausenote'); ta.value=note;
-       togglePauseBox(false);
-       var fl=prof.floorNotes||[], last=fl[fl.length-1];
-       if(!last||last.txt!==note) bad.push('the note typed on the floor was not banked (floorNotes: '+JSON.stringify(fl).slice(0,80)+')');
-       if((ta.value||'').trim()===note) bad.push('the note is still sitting in the box, waiting to ride into the next raid');
-       var rep=buildExport(), txt=(rep&&rep.join)?rep.join('\n'):String(rep);
-       if(txt.indexOf(note)<0) bad.push('the run report does not carry the floor note');
-       else if(txt.indexOf('FLOOR NOTES')<0) bad.push('the report carries the note but does not say what it is');
-       // CONTROL: a second close with an empty box banks nothing more.
-       togglePauseBox(true); togglePauseBox(false);
-       if((prof.floorNotes||[]).length!==fl.length) bad.push('control: closing an empty box banked a note');
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       prof=__P(); keepHud=JSON.stringify(prof.hud===undefined?null:prof.hud);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       if(!g.roster||!g.roster.length) return 'SKIP: no pillager roster, so there is no board to fold';
+       prof.hud=prof.hud||{}; prof.hud.raiders={c:true};
+       __frame(); __frame();
+       var HB=HUDBOX.raiders;
+       if(!HB||!HB.tg) bad.push('control: the folded board drew no box or no glyph');
+       else {
+         var m=__mouse(), cv=__canvases().world;
+         var x=Math.round(HB.tg.x+HB.tg.w/2), y=Math.round(HB.tg.y+HB.tg.h/2);
+         // CONTROL: the glyph centre really sits inside the grip zone, or the click proves nothing.
+         if(!hudOnGrip(HB,x,y)) return 'SKIP: the glyph centre is outside the grip zone at this size, so the clash cannot be driven here';
+         m.x=x; m.y=y; m.down=false;
+         cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true,cancelable:true,clientX:x,clientY:y}));
+         var rz=(typeof HUDRESIZE!=='undefined'&&HUDRESIZE)?HUDRESIZE.id:null;
+         try{ window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true})); }catch(_u){}
+         if(rz) bad.push('the click on [+] of the folded board started a resize of "'+rz+'"');
+         if(prof.hud.raiders&&prof.hud.raiders.c) bad.push('the click on [+] did not expand the board');
+       }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       try{ var ta2=document.getElementById('pausenote'); if(ta2) ta2.value=''; }catch(_t){}
-       try{ togglePauseBox(false); }catch(_c){}
+       try{ var kh=JSON.parse(keepHud); if(kh===null) delete prof.hud; else prof.hud=kh; }catch(_h){}
+       try{ HUDRESIZE=null; }catch(_z){}
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.70',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+  {v:'11.70',what:'with Other pillagers set to None the extraction-heat row still reads its own word rather than CUSTOM, the waves are off, and they come back when pillagers return to Standard',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

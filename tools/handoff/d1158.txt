@@ -1,35 +1,38 @@
-## v11.58 - HIS NOTE: EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING
+## v11.58 - THE UNDERCROFT HUD WAS PAINTED AND THEN ERASED IN THE SAME FRAME
 
-His in-run note of 2026-09-05, 130 seconds into his first run: "how lightning
-shows red noise, I want ALL noises to do that when they are outside the
-player's vision but within earshot, eg visualize noises with red circles!"
+From the read-only menu audit of 2026-09-06, and it is the largest thing found
+in a long time. The floor has been running with no screen furniture at all.
 
-WHAT IS TRUE. That ring is noiseMark, built at v9.07: every world sound that
-is played at a position goes through sfx, and sfx asks noiseMark, which draws
-a ring sized for the sound when you could hear it and could not see it, with
-the cone counting so something behind you is unseen even in the open, and
-nothing at all when you can see the source. Gunfire, steps, hits, clanks and
-the strike's alarm all do this already; the ring he saw was the strike
-landing. Four sounds never did, because they were played by distance alone
-with no position to ring at: the storm's strike telegraph (the charge before
-the bolt), and the extraction's inbound pulse, its touchdown and its last
-call.
+WHAT WAS WRONG. The Undercroft has two canvases: the world underneath and the
+HUD on top. drawHubWorld ends by calling drawHubHUD, which paints the floor's
+whole HUD onto the top canvas: the heading THE UNDERCROFT, the line under it
+with your stash count and your runs, the "[E] STATION" prompt that appears when
+you stand at a station and the list of that station's keys beneath it, the H
+CONTROLS panel, the NEW IN card, and the bottom line that reads WASD WALK,
+SHIFT JOG, E USE STATION, which since the briefing card was deleted at v10.88
+is the only place the floor controls are taught. Then, four lines later in the
+frame loop, v8.95's clear wiped that canvas and repainted only the belt. Every
+one of those things was drawn and erased inside the same frame, every frame,
+for as long as that clear has been there. H toggled a panel that could never
+appear, so the key was dead. The project's own note recorded "0 opaque pixels
+on the entire HUD canvas" of the Undercroft floor and read it as a description
+of the floor rather than as the bug.
 
-THE BUILD. Those four are played at their positions through sfx now, so they
-mark themselves like every other sound, and the three that had no ring size
-get one: a small pulse for inbound, a large one for touchdown, a middling
-one for last call. Nothing about the rule changes, and the seen-source case
-still draws nothing.
+THE FIX. The clear moves above the world draw instead of below it. v8.95's
+reason still holds, the canvas is still wiped of whatever the last raid left
+on it, and now the floor's own HUD is painted after the wipe rather than
+before it. The belt and the opened backpack still draw last, over the top.
 
-MEASURED. Check 11.58 requires the three ring sizes, drives noiseMark with an
-inbound pulse 400 units behind the player and requires a ring, and with one
-60 units ahead in the open and requires none; then reads strikeTick and
-tickExtractPoints and requires the four sounds to be positioned calls. On
-the v11.57 fixture the ring sizes are missing and all four sites play by
-distance, and the check fails naming each.
+MEASURED. Check 11.58 walks into the Undercroft and drives six real frames of
+the actual loop, because the floor HUD is painted by the loop and not by the
+world draw, then reads the HUD canvas itself and counts opaque pixels in the
+top strip where the heading and the stash line are drawn. It requires ink
+there, and a control requires ink along the bottom so the moved clear cannot
+have taken the belt with it. On the v11.57 fixture the top strip is empty and
+the check fails saying the floor paints its screen and erases it.
 
-Not verified: his own eye; whether the inbound pulse's repeated ring (every
-half second to two seconds while the extraction is inbound) reads as
-information or as clutter, which is his to say and one number to change; the
-noise ring's colour, which is unchanged and not red for every source (his
-word was "red circles"; the table at NOISECOL has the colours by source).
+Not verified: his own eye, which is the real test and the reason this is worth
+shipping tonight; the NEW IN card, which was written to show once per page
+load and has been unreachable, so it will now appear on the floor at boot
+until you move, and whether that is wanted is his call; whether anything else
+was written on the assumption that the floor HUD was invisible.

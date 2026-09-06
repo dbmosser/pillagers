@@ -1,20 +1,30 @@
 # START HERE (written 2026-09-05, handoff from Fable to Opus)
 
-**MID-FLIGHT (2026-09-06, after a machine shutdown):** HEAD is cf50d00 (v11.55
-plus the audit commit). The tree has v11.56 APPLIED (his note D, no lightning
-inside buildings) and re-verified on all four gates after the restart: parse
-PASS, check 11.56 PASS, __verifySafe PASS at 1920x1080, and the control on
-fx1155.html fails hard, 26 of 60 strike points landing inside a building on
-the previous build. Its FULL CORPUS is running on the Browser pane tab "seed".
-FIRST THING: on that tab run `JSON.stringify(window.__PROG)`; when finished is
-true, pass is true, fail is [] and only the two known skips (v8.88, v11.24)
-are listed:
-    bash tools/handoff/ship.sh commit 1156 cm1156.txt
+**MID-FLIGHT (2026-09-06, handing back to Fable):** HEAD is v11.56 (5afdc0a).
+The tree has v11.57 APPLIED (his note E, LIGHTNING INCOMING at the ring) and
+verified on all four gates: parse PASS, check 11.57 PASS, __verifySafe PASS at
+1920x1080, control fails on fx1156.html. Its FULL CORPUS is running on the
+Browser pane tab "seed". FIRST THING: on that tab run
+`JSON.stringify(window.__PROG)`; when finished is true, pass is true, fail is
+[] and only the two known skips (v8.88, v11.24) are listed:
+    bash tools/handoff/ship.sh commit 1157 cm1157.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1156 1157
-and carry on: 1157 (E, LIGHTNING INCOMING at the ring), 1158 (F, the four
-sounds that bypassed the heard-not-seen ring), 1159 (the belt-key grenade fix
-from the 2026-09-06 audit), then the audit queue 1160 to 1171.
+    bash tools/handoff/ship.sh start 1157 1158
+and carry on down the list below. Everything from 1158 to 1163 was dry-run
+green in sequence at 2026-09-06.
+
+THE ORDER FROM HERE (renumbered twice tonight; this list is the truth):
+- 1158 THE UNDERCROFT HUD ERASE. The biggest find of the night and the one to
+  get in before alpha. The floor painted its heading, its [E] STATION prompt
+  and key list, the H controls panel, the NEW IN card and the line teaching
+  WASD, then wiped all of it in the same frame; H has been a dead key. From
+  the 2026-09-06 menu audit. NOTE FOR HIM: this makes the NEW IN card visible
+  again at boot until he moves, which is that card's original design and may
+  not be what he wants now.
+- 1159 his note F, the four sounds that bypassed the heard-not-seen noise ring.
+- 1160 the belt-key grenade fix (a throwable on a tactical belt key was a dead
+  key that also deleted the working grenade cell).
+- 1161 to 1172 the v11.46 audit queue, unchanged.
 
 **AFTER ANY MACHINE RESTART, in this order, or every measurement is void:**
 1. `powershell -ExecutionPolicy Bypass -File tools/start-servers.ps1`

@@ -11,48 +11,49 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.60 HOOK: the lot the clock picks right now, so a check can tell a rolled
-# window from the one the card was drawn in.
+# v11.60 CHECK, inserted before the v11.59 entry. Driven through the real belt
+# functions: hotbarSlots builds the bar, setHot selects, useHot acts.
 SubRx @'
-window.__loadProfile=function(){ return loadProfile(); };
+  {v:'11.59',what:'the extraction inbound pulse, touchdown and last call and the storm telegraph draw the heard-not-seen noise ring like every other sound (his note of 2026-09-05): ring sizes exist, an unseen source rings and a seen one does not, and the four call sites are positioned',
 '@ @'
-window.__loadProfile=function(){ return loadProfile(); };
-window.__wirtLot=function(){ return wirtLotKey(); };
-'@
-
-# v11.60 CHECK, inserted before the v11.59 entry.
-SubRx @'
-  {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
-'@ @'
-  {v:'11.60',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
+  {v:'11.60',what:'a Frag Charge put on a tactical belt key is a live throwable cell: it shows the pouch count, it is the only cell for that grenade, selecting it points the throw selector at it, and the key throws it',
    run:function(){
-     if(!(window.__wirtLot&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open Wirt';
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var P=window.__P(), bad=[], realNow=Date.now;
-     P.credits=999999; P.stash=[];
-     var st=null; try{ st=window.__station('gamble','KeyE'); }catch(e){ st={err:String(e)}; }
-     if(st&&st.err) return 'SKIP: '+st.err;
-     var shown=window.__wirtLot();
-     if(!(shown&&shown.length)) return 'SKIP: the counter is empty';
-     var btn=document.getElementById('wirtlotbtn');
-     if(!btn) return 'SKIP: no Buy button on the counter';
-     // THE WINDOW ROLLS between the card and the click: move the clock forward
-     // one window, or two, or three, until the lot differs from the shown one.
-     var base=realNow(), next=null, rolled=0;
-     for(var r=1;r<=3&&!next;r++){ Date.now=function(){ return base+r*300000; }; var cand=window.__wirtLot(); if(cand&&cand.length&&cand[0]!==shown[0]){ next=cand; rolled=r; } }
-     if(!next){ Date.now=realNow; return 'SKIP: the next three windows hold the same lot, so a roll cannot be told apart'; }
-     Date.now=function(){ return base+rolled*300000; };
-     try{ btn.click(); }catch(e2){}
-     Date.now=realNow;
-     var got=(P.stash||[]).length?P.stash[P.stash.length-1]:null;
-     // THE FIX: he receives what the card NAMED AND PRICED.
-     if(got!==shown[0]) bad.push('after the window rolled, Buy delivered '+got+' instead of the shown '+shown[0]);
-     // CONTROL: he was charged, so a buy went through and the comparison is real.
-     if(!(P.credits<999999)) bad.push('control: no credits were taken, so nothing was bought and the comparison proves nothing');
-     try{ var gm=document.getElementById('gamblemodal'); if(gm) gm.classList.remove('on'); }catch(e3){}
-     __cleanProfile(); __topClear();
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof hotbarSlots!=='function'||typeof setHot!=='function'||typeof useHot!=='function') return 'SKIP: no tactical belt in this build';
+     var bad=[], SLOT=1;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.over=false; p.downed=false; p.roll=0;
+       g.pouch=g.pouch||{}; g.pouch.frag=2;
+       g.hotAssign={}; g.hotAssign[SLOT]='frag';
+       g.hot=0;
+       var sl=hotbarSlots();
+       if(!sl||sl.length<=SLOT) return 'SKIP: the belt has no slot '+SLOT+' on this build';
+       var cell=sl[SLOT];
+       // THE CELL IS A THROWABLE, not the dead item cell the trigger treats as a gun.
+       if(cell.kind!=='throw') bad.push('a Frag Charge on belt key '+(SLOT+1)+' builds a "'+cell.kind+'" cell, so the trigger fires your gun instead of cooking it and the key does nothing');
+       if(cell.count!==2) bad.push('the belted Frag Charge reads x'+cell.count+' while the pouch holds 2');
+       // AND IT IS THE ONLY ONE. The dedupe must blank the derived cell, not this.
+       var live=0;
+       for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].k==='throw:frag') live++;
+       if(live!==1) bad.push('the bar carries '+live+' cells for the same Frag Charge');
+       // SELECTING IT POINTS THE THROW SELECTOR AT IT.
+       if(cell.kind==='throw'){
+         setHot(SLOT);
+         var want=THROWKEYS.indexOf('frag');
+         if(g.tsel!==want) bad.push('selecting the belted Frag Charge left the throw selector on '+THROWKEYS[g.tsel]+' instead of frag');
+         // AND THE KEY THROWS IT.
+         var n0=(g.throws||[]).length, q0=g.pouch.frag;
+         useHot();
+         if((g.pouch.frag|0)!==q0-1) bad.push('the key did not spend a Frag Charge (pouch '+q0+' then '+g.pouch.frag+')');
+         if((g.throws||[]).length<=n0) bad.push('the key threw nothing');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var g2=__state(); if(g2){ g2.hotAssign={}; g2.throws=[]; } }catch(_r){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
+  {v:'11.59',what:'the extraction inbound pulse, touchdown and last call and the storm telegraph draw the heard-not-seen noise ring like every other sound (his note of 2026-09-05): ring sizes exist, an unseen source rings and a seen one does not, and the four call sites are positioned',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

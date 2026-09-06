@@ -1,12 +1,13 @@
-v11.65: the restore code left the armoury behind
+v11.65: tags and a note chosen after Copy report were dropped
 
-The restore code at the bottom of every run report promised what you have
-unlocked and carried no gun: not the guns owned, the one in hand, the second
-slot, or the wear on any of them. Restored from it, a friend came back with
-the fresh Scav Pistol. The code carries the armoury now; applying it brings
-the guns back, drops any this build does not know, and an older code without
-the block leaves the guns as they are. Check 11.65 makes a code from three
-distinctive guns with slots and wear, wipes, applies and requires them back,
-with an unknown-gun control; fails on v11.64. From the v11.46 audit, P1.
+Copy report commits the run first, so the paste holds it, and the commit nulls
+the pending run. Anything tagged or typed after that and confirmed with Log run
+and return met the early return for an already-committed run and was thrown
+away; the comment promised a patch onto the written row that did not exist.
+The committed row is now remembered for the life of the card, and a later
+commit with nothing pending writes the changed tags and note onto it, saves,
+and re-sends the report. Check 11.65 presses Copy report, then a tag and a
+note, then Log run and return, and requires both on the one logged row; fails
+on v11.64. From the v11.46 audit, P1.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

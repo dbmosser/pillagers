@@ -1016,6 +1016,9 @@ window.__syncReport=function(){ syncAutoEx(); return document.getElementById('re
 // driven rather than read. __load is loadOf(), a loadout helper, and calling it
 // for this proved nothing at all.
 window.__loadProfile=function(){ return loadProfile(); };
+window.__wxHard=function(id){ try{ return wxHardId(id); }catch(e){ return null; } };
+window.__identityIds=function(){ var o=[]; try{ for(var i=0;i<IDENTITIES.length;i++) o.push(IDENTITIES[i].id); }catch(e){} return o; };
+window.__wirtLot=function(){ return wirtLotKey(); };
 window.__itemMenuRows=function(key,ctx,count){ return itemMenuRows(key,ctx,count); };
 window.__itemGk=function(k){ var it=(typeof ITEMS!=='undefined')&&ITEMS[k]; return it?(it.gk||null):null; };
 window.__noteCrash=function(k,m,w){ return noteCrash(k,m,w); };
@@ -5440,7 +5443,7 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
-  {v:'11.59',what:'a Frag Charge put on a tactical belt key is a live throwable cell: it shows the pouch count, it is the only cell for that grenade, selecting it points the throw selector at it, and the key throws it',
+  {v:'11.60',what:'a Frag Charge put on a tactical belt key is a live throwable cell: it shows the pouch count, it is the only cell for that grenade, selecting it points the throw selector at it, and the key throws it',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
      if(typeof hotbarSlots!=='function'||typeof setHot!=='function'||typeof useHot!=='function') return 'SKIP: no tactical belt in this build';
@@ -5477,7 +5480,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var g2=__state(); if(g2){ g2.hotAssign={}; g2.throws=[]; } }catch(_r){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.58',what:'the extraction inbound pulse, touchdown and last call and the storm telegraph draw the heard-not-seen noise ring like every other sound (his note of 2026-09-05): ring sizes exist, an unseen source rings and a seen one does not, and the four call sites are positioned',
+  {v:'11.59',what:'the extraction inbound pulse, touchdown and last call and the storm telegraph draw the heard-not-seen noise ring like every other sound (his note of 2026-09-05): ring sizes exist, an unseen source rings and a seen one does not, and the four call sites are positioned',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
      if(typeof noiseMark!=='function'||typeof NOISEMARK==='undefined') return 'SKIP: no noise rings in this build';
@@ -5508,6 +5511,37 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var g3=__state(); if(g3) g3.noiseRings=[]; }catch(_r){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.58',what:'the Undercroft floor HUD survives the frame it is painted in: the heading and the station prompt are on the HUD canvas after real frames, and the belt is still drawn under them',
+   run:function(){
+     if(!(window.__hubEnter&&window.__loop&&window.__P)) return 'SKIP: this fixture cannot drive the Undercroft loop';
+     var cv2=document.getElementById('hcv');
+     if(!cv2||!cv2.width||!cv2.height) return 'SKIP: no HUD canvas with a size here';
+     var bad=[];
+     function ink(x0,y0,x1,y1){
+       // CSS pixels in, device pixels out: the canvas is DPR-scaled.
+       var scx=cv2.width/Math.max(1,W), scy=cv2.height/Math.max(1,H);
+       var rx=Math.max(0,Math.round(x0*scx)), ry=Math.max(0,Math.round(y0*scy));
+       var rw=Math.min(cv2.width-rx,Math.round((x1-x0)*scx)), rh=Math.min(cv2.height-ry,Math.round((y1-y0)*scy));
+       if(rw<=0||rh<=0) return -1;
+       var d=cv2.getContext('2d').getImageData(rx,ry,rw,rh).data, n=0;
+       for(var i=3;i<d.length;i+=4) if(d[i]>16) n++;
+       return n;
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __hubEnter();
+       var t0=performance.now();
+       for(var f=0;f<6;f++) __loop(t0+f*16.7);
+       var head=ink(0,0,420,64);
+       if(head<0) return 'SKIP: the HUD canvas is too small to measure at this size';
+       // THE FIX: the floor heading and the line under it are actually on the canvas.
+       if(head<150) bad.push('the Undercroft HUD is blank where the heading and the stash line are drawn ('+head+' opaque pixels in the top strip), so the floor is painting its screen and erasing it in the same frame');
+       // CONTROL: the belt is still drawn, so the clear did not simply move the problem.
+       var belt=ink(0,H-150,W,H);
+       if(belt===0) bad.push('control: nothing is drawn along the bottom of the HUD canvas, so the belt was lost');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.57',what:'the storm warning ring says LIGHTNING INCOMING with the seconds left, and the world draw puts it at the circle (his note of 2026-09-05)',
    run:function(){
      if(typeof strikeLabel!=='function') return 'the strike warning ring says nothing; there is no label to read';
@@ -5522,7 +5556,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'11.56',what:'no storm strike point lands inside a building (his note of 2026-09-05); the storm still strikes',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__wxHard)) return 'SKIP: this fixture cannot deploy under a storm';
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
      if(typeof strikeTick!=='function'||typeof buildingAtPt!=='function') return 'SKIP: no storm strikes in this build';
      var bad=[];
      try{
@@ -5530,8 +5564,11 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player, B=(g.map&&g.map.buildings)||[];
        if(!B.length) return 'SKIP: this map has no buildings to stand in';
-       if(!__wxHard('storm')) return 'SKIP: storm is not a weather here';
-       if(!g.wx) g.wx={}; g.wx.id='storm';
+       // wx() hands back G.wx itself, so the storm has to BE the weather.
+       var storm=null;
+       for(var wi=0;wi<WEATHER.length;wi++) if(WEATHER[wi].lightning){ storm=WEATHER[wi]; break; }
+       if(!storm) return 'SKIP: no weather in this build carries lightning';
+       g.wx=storm; g.wxNext=null; g.wxT=0;
        // Stand in the middle of the largest building, so rolls of 180 to 800 units land indoors often.
        var big=B[0]; for(var i=1;i<B.length;i++) if(B[i].w*B[i].h>big.w*big.h) big=B[i];
        p.x=big.x+big.w/2; p.y=big.y+big.h/2; p.downed=false; g.over=false; g.paused=false;
@@ -5666,6 +5703,90 @@ window.__REGRESS=[
        try{ var pf=__P(); pf.credits=keepC; pf.xp=keepX; saveProfile(); }catch(_r){}
        __topClear(); __cleanProfile();
      }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.63',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__wxHard)) return 'SKIP: this fixture cannot end a raid and read the card';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[];
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player;
+     // A multiplier must be in play or the two figures agree by accident: force hard weather.
+     var hard=null; if(window.__wxHard('storm')) hard='storm'; else if(window.__wxHard('fog')) hard='fog';
+     if(!hard) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
+     if(!g.wx) g.wx={}; g.wx.id=hard;
+     // Something to bank: a bag worth carrying out.
+     p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
+     var n0=(P.log||[]).length;
+     try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
+     var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
+     var m=/\+\s*([\d,]+)\s*XP/.exec(txt);
+     var card=m?parseInt(m[1].replace(/,/g,''),10):null;
+     var rec=(P.log&&P.log.length>n0)?P.log[P.log.length-1]:null;
+     if(card===null) bad.push('the card printed no "+N XP" line (card says: '+txt.replace(/\s+/g,' ').slice(0,80)+')');
+     if(!rec||typeof rec.xpGot!=='number') bad.push('the run was not banked with an xpGot figure');
+     if(card!==null&&rec&&typeof rec.xpGot==='number'){
+       // THE FIX: what the card says is what was banked.
+       if(card!==rec.xpGot) bad.push('the card printed +'+card+' XP but the profile banked '+rec.xpGot+' (base '+rec.xpBase+', weather hard '+rec.wxHard+')');
+       // CONTROL: the multiplier really was in play, or the agreement proves nothing.
+       if(!rec.wxHard) bad.push('control: the banked record does not carry the hard-weather flag, so no multiplier was in play');
+     }
+     __topClear(); __cleanProfile();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.62',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+   run:function(){
+     if(!(window.__identityIds&&window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot hire a merc and end a raid';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var ids=window.__identityIds(); if(!ids.length) return 'SKIP: no identities to hire';
+     var P=window.__P(), bad=[];
+     P.merc=ids[0]; P.credits=1000;
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), M=null, i;
+     for(i=0;i<g.ents.length;i++){ if(g.ents[i].merc){ M=g.ents[i]; break; } }
+     if(!M){ __cleanProfile(); return 'SKIP: the hired merc did not spawn'; }
+     var row=null; for(i=0;i<(g.roster||[]).length;i++){ if(g.roster[i].ref===M){ row=g.roster[i]; break; } }
+     // THE FIX: he is on the roster at all.
+     if(!row) bad.push('the hired merc has no roster row, so boarding cannot stamp his haul and endRaid cannot pay your cut');
+     else {
+       // He fled low and boarded an earlier ship: the boarding code stamps the
+       // row and removes him from the world. Then you extract.
+       row.out=true; row.outAt=0; row.val=1234;
+       var ix=g.ents.indexOf(M); if(ix>=0) g.ents.splice(ix,1);
+       var c0=P.credits;
+       try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
+       var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
+       if(!/extracted earlier/i.test(txt)) bad.push('the card did not say he extracted earlier (it says: '+txt.replace(/\s+/g,' ').slice(0,90)+')');
+       if(!(P.credits-c0>=123)) bad.push('your ten percent of his 1,234 was not paid (credits moved '+(P.credits-c0)+')');
+     }
+     __topClear(); __cleanProfile();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.61',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
+   run:function(){
+     if(!(window.__wirtLot&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open Wirt';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[], realNow=Date.now;
+     P.credits=999999; P.stash=[];
+     var st=null; try{ st=window.__station('gamble','KeyE'); }catch(e){ st={err:String(e)}; }
+     if(st&&st.err) return 'SKIP: '+st.err;
+     var shown=window.__wirtLot();
+     if(!(shown&&shown.length)) return 'SKIP: the counter is empty';
+     var btn=document.getElementById('wirtlotbtn');
+     if(!btn) return 'SKIP: no Buy button on the counter';
+     // THE WINDOW ROLLS between the card and the click: move the clock forward
+     // one window, or two, or three, until the lot differs from the shown one.
+     var base=realNow(), next=null, rolled=0;
+     for(var r=1;r<=3&&!next;r++){ Date.now=function(){ return base+r*300000; }; var cand=window.__wirtLot(); if(cand&&cand.length&&cand[0]!==shown[0]){ next=cand; rolled=r; } }
+     if(!next){ Date.now=realNow; return 'SKIP: the next three windows hold the same lot, so a roll cannot be told apart'; }
+     Date.now=function(){ return base+rolled*300000; };
+     try{ btn.click(); }catch(e2){}
+     Date.now=realNow;
+     var got=(P.stash||[]).length?P.stash[P.stash.length-1]:null;
+     // THE FIX: he receives what the card NAMED AND PRICED.
+     if(got!==shown[0]) bad.push('after the window rolled, Buy delivered '+got+' instead of the shown '+shown[0]);
+     // CONTROL: he was charged, so a buy went through and the comparison is real.
+     if(!(P.credits<999999)) bad.push('control: no credits were taken, so nothing was bought and the comparison proves nothing');
+     try{ var gm=document.getElementById('gamblemodal'); if(gm) gm.classList.remove('on'); }catch(e3){}
+     __cleanProfile(); __topClear();
      return bad.length?bad.join('; '):null; }},
   {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
    run:function(){

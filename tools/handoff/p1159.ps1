@@ -11,54 +11,53 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# A THROWABLE PUT ON A TACTICAL BELT KEY WAS A DEAD KEY, AND IT DELETED THE
-# WORKING ONE. Found by the 2026-09-06 read-only audit, raised independently by
-# two regions and confirmed by a skeptic each. It is the same hole the v8.31
-# comment records for the Stim Injector, one item type later: a throwable never
-# enters the backpack (it lives in G.pouch), so `have` is always 0 and the cell
-# fell through the kind ternary to 'item'. The trigger treats 'item' as a held
-# gun, so pulling the trigger on his own Frag Charge fired his rifle, under a
-# caption reading "[FIRE] use"; G did nothing; the cell drew greyed with a count
-# of none while the pouch held two; and the dedupe pass then blanked the real
-# throwable cell, so the only working way to that grenade was a cell labelled
-# with a different item. Bind all three and nothing could throw at all.
+# HIS NOTE, 2026-09-05 in-run at 130 s: "how lightning shows red noise, I want
+# ALL noises to do that when they are outside the player's vision but within
+# earshot, eg visualize noises with red circles!" That ring is noiseMark
+# (v9.07): every world sound routed through sfx(type,x,y) draws a ring when
+# you could hear it and could not see it. Four sounds never went through it,
+# because they were played by distance alone with no position: the storm's
+# strike telegraph, and the extraction's inbound pulse, touchdown and last
+# call. They go through sfx now, with a ring size each, so every noise in the
+# game marks itself the same way.
 
-# 1. THE CELL, built the way the derived throw cell is built.
+# 1. RING SIZES for the three sounds that had none.
 SubRx @'
-    } else {
-      out[aix]={k:'item:'+akey,name:ait.name,icon:akey,
+  step:  {r:26, hear:420},
+  board: {r:34, hear:520}
+};
 '@ @'
-    } else if(ait.use==='throw'){
-      // v11.59, from the 2026-09-06 audit: THE v8.31 STIM HOLE, one item type
-      // later. A throwable lives in the pouch and never in the backpack, so
-      // `have` is always 0 and this fell through to kind 'item', which the
-      // trigger treats as a held gun: the key fired his rifle under a caption
-      // saying [FIRE] use, G did nothing, and the dedupe below then blanked the
-      // working throwable cell. Built exactly as the derived cell at 12930 is
-      // built, so setHot syncs the selector, the trigger cooks it, and the
-      // dedupe leaves exactly one cell for that grenade: the key he chose.
-      var _pq=(G.pouch&&G.pouch[akey])||0;
-      out[aix]={k:'throw:'+akey,name:ait.name,icon:akey,kind:'throw',
-        count:_pq,c:ait.c||'#cdd6dd',assigned:1,itemKey:akey,empty:(_pq<=0)?1:0};
-    } else {
-      out[aix]={k:'item:'+akey,name:ait.name,icon:akey,
+  step:  {r:26, hear:420},
+  board: {r:34, hear:520},
+  // v11.59, HIS NOTE: the extraction's own sounds mark themselves too.
+  inbound:  {r:30, hear:1400},
+  touchdown:{r:88, hear:1500},
+  lastcall: {r:44, hear:1400}
+};
 '@
 
-# 2. THE KEY ITSELF. The assigned branch refuses anything not in the backpack,
-# which is every throwable, so it needs the same verb the derived cell has.
+# 2. THE STORM TELEGRAPH, at the strike point.
 SubRx @'
-    var ait=ITEMS[s2.itemKey]; if(!ait) return;
+    if(!G.sim) blip('charge',dist(p,{x:sx,y:sy}));
 '@ @'
-    var ait=ITEMS[s2.itemKey]; if(!ait) return;
-    // v11.59: a throwable is carried in the pouch, not the backpack, so the bag
-    // test below would refuse it. Same verb the derived cell has: the key
-    // throws it, and the selector is pointed at it first so the cook and the
-    // throw can never disagree about which grenade is in hand.
-    if(ait.use==='throw'){
-      var _tsx=THROWKEYS.indexOf(s2.itemKey);
-      if(_tsx>=0) G.tsel=_tsx;
-      doThrow(); return;
-    }
+    if(!G.sim) sfx('charge',sx,sy);   // v11.59, HIS NOTE: a positioned sound marks itself
+'@
+
+# 3. THE EXTRACTION'S INBOUND PULSE, TOUCHDOWN AND LAST CALL, at the ring.
+SubRx @'
+      if(z.pingT>=_iv){ z.pingT=0; blip('inbound',dist(p,z)); }
+'@ @'
+      if(z.pingT>=_iv){ z.pingT=0; sfx('inbound',z.x,z.y); }   // v11.59: marks itself
+'@
+SubRx @'
+      if(dist(p,z)<1400){ blip('touchdown',dist(p,z)); blip('alarm',dist(p,z));
+'@ @'
+      if(dist(p,z)<1400){ sfx('touchdown',z.x,z.y); sfx('alarm',z.x,z.y);   // v11.59: mark themselves
+'@
+SubRx @'
+      blip('lastcall',dist(p,z));
+'@ @'
+      sfx('lastcall',z.x,z.y);   // v11.59: marks itself
 '@
 
 # STAMPS.
@@ -76,11 +75,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A GRENADE ON A BELT KEY WORKS NOW. Putting a Frag Charge, Smoke or Decoy on a tactical belt key gave you a dead key: it read x0, the trigger fired your gun instead, and it deleted the working grenade cell. The key you choose is now the grenade.',
+  'EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. Four never did: the storm telegraph and the extraction pulse, touchdown and last call. They do now.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.58:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.58 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.58:[^']*'",{ param($m) "now:'v11.59: a throwable put on a tactical belt key was a dead key and it deleted the working one. From the 2026-09-06 read-only audit, raised by two regions. It is the v8.31 stim hole one item type later: a throwable is never in the backpack so have is 0 and the cell fell through to kind item, which the trigger treats as a held gun, so the key fired his rifle under a caption saying FIRE use, G did nothing, the cell read x0 while the pouch held two, and the dedupe blanked the real throwable cell. The cell is now built as the derived throw cell is built and useHot throws it. Check 11.59 binds a frag to a key, requires a live throw cell with the pouch count, exactly one cell for that grenade, the selector synced by setHot and the key actually throwing it.'" })
+$s=[regex]::Replace($s,"now:'v11\.58:[^']*'",{ param($m) "now:'v11.59: HIS NOTE of 2026-09-05, all noises outside vision but within earshot should draw a ring like lightning does. noiseMark (v9.07) already does that for every sound routed through sfx(type,x,y); four sounds bypassed it by playing by distance with no position: the strike telegraph and the extraction inbound pulse, touchdown and last call. They go through sfx now with ring sizes of their own. Check 11.59 requires the three new ring sizes, a ring for an unseen inbound behind the player and none for a seen one in front, and that strikeTick and tickExtractPoints route those four sounds through sfx.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

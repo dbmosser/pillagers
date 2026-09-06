@@ -1,29 +1,29 @@
-## v11.62 - THE OUTCOME CARD PRINTED BASE XP; THE PROFILE WAS CREDITED MORE
+## v11.62 - A MERC WHO BOARDED AN EARLIER SHIP WAS NEVER PAID
 
-From the v11.46 read-only audit, P1, raised independently by two regions. XP
-for a run is the season and kill figures, and since v9.96, v10.06 and v11.00 it
-pays more with a dose in your blood, at night and in hard weather: the bank,
-addProgress, rounds base times night times weather, and addXp then rounds that
-times the dose multiplier. The outcome card is drawn a moment BEFORE the run is
-banked, from a record it builds itself, and that record carried no night or
-weather flag, so the card printed the raw sum. A night run that banked 120
-said "+100 XP", and because the same line derives "XP in all" and "N XP away"
-from that figure, every number on it was wrong with it. The sector page had
-promised "XP pays 1.2x" on the way up.
+From the v11.46 read-only audit, P1. The deal with a hired merc (v6.72): if you
+BOTH get out you take ten percent of what he carried. v8.46 taught endRaid to
+settle that from the ROSTER, because a merc who fled low and boarded an earlier
+ship is gone from the world by the time you extract: "the roster remembers the
+man and what he carried out", and the boarding code stamps out and val onto
+the roster row whose ref is the boarding entity. The gap: only ordinary raiders
+were ever pushed to the roster, at spawn and on each wave. The hired merc was
+built and pushed to ents alone. So there was never a row to stamp when he
+boarded and never a row for endRaid to find, and the card said "was left out
+there": no cut, no standing, every time he got out before you.
 
-THE FIX. One helper, xpBaseFor, now owns the night and weather arithmetic.
-addProgress banks through it, so nothing about what is banked changes. The
-card's record carries the same two flags the banked record does, and prints
-xpBaseFor times the dose multiplier addXp applies: the figure that will be
-banked, to the XP, every time.
+THE FIX. The merc gets a roster row at spawn, marked merc, so boarding stamps
+his haul and endRaid finds him. And drawRaiderBoard skips merc rows, so your
+hire is not listed among CURRENT PILLAGERS as a rival; the board is unchanged
+for everyone else on it.
 
-MEASURED. Check 11.62 deploys, forces hard weather (so a multiplier is in play,
-or agreement would prove nothing), gives the player a bag worth carrying out,
-ends the raid as an extract, reads the "+N XP" line off the real card and the
-xpGot the run banked, and requires them equal; a control requires the banked
-record to carry the hard-weather flag. On the v11.61 fixture the card prints
-the base and the bank credits a tenth more, and the check fails naming both.
+MEASURED. Check 11.62 hires a merc (P.merc set to a real identity), deploys,
+finds him in the world, and requires his roster row to exist; then plays the
+boarding the way the game does (stamps out and a haul of 1,234 on the row,
+removes him from the world) and ends the raid as an extract, requiring the card
+to say he extracted earlier and the credits to have moved by at least his ten
+percent. On the v11.61 fixture there is no row and the check fails on the first
+line.
 
-Not verified: his own play; the night flag, which reads the raid clock and is
-exercised by the same helper but not forced by this check; a dose in his
-blood, applied by addXp on both paths and not staged here.
+Not verified: his own play; the merc's standing bump on that path, which is
+part of the same settle branch and is exercised but not asserted; the shape of
+the board with the merc row skipped, which is read and not painted here.

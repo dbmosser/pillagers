@@ -11,14 +11,24 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# DROPPING A TACTICAL BELT ITEM ON THE STASH SAID "BACK IN THE BACKPACK" while
-# taking it OUT of the backpack. The drop (v8.72) clears its belt key, splices
-# it from the kit, and it lands in the stash, which is where the pointer let go
-# of it. The line names the stash now, the word the rest of the room uses.
+# THE NOTORIETY BANNER SAID THE PEDDLER WAS DONE WITH YOU. His ruling at v8.28
+# was that the Peddler always trades regardless of notoriety, and pedOpen has
+# answered true ever since; the hub card was renamed at the same build. The
+# in-raid banner that fires when the score reaches two still said the stall
+# had shut. It names what notoriety actually costs now, at every score.
 SubRx @'
-      say2((ITEMS[key]?ITEMS[key].name:key)+' back in the backpack.');
+  if(n>=2) return 'The Peddler is done with you.';
+  return 'Hiring costs more and pillagers are slower to trust you.';
 '@ @'
-      say2((ITEMS[key]?ITEMS[key].name:key)+' back in the stash.');   // v11.68: it left the backpack
+  // v11.68: the stall never shuts (pedOpen, his v8.28 ruling); this said it did.
+  if(n>=2) return 'Hiring costs more and pillagers are slower to trust you. Word has got round.';
+  return 'Hiring costs more and pillagers are slower to trust you.';
+'@
+SubRx @'
+// 2 gets its own word because 2 is where the stall actually shuts.
+'@ @'
+// 2 gets its own word because 2 is where the stall used to shut (it never shuts
+// since v8.28; the banner caught up at v11.68).
 '@
 
 # STAMPS.
@@ -36,11 +46,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'DROPPING A BELT ITEM ON THE STASH NOW SAYS WHERE IT WENT. It said "back in the backpack" while taking it out of the backpack; it went to the stash, and the line says so.',
+  'THE NOTORIETY BANNER STOPPED LYING ABOUT THE PEDDLER. At two notoriety it said the Peddler was done with you; he has traded with anyone since the stall stopped shutting. It says what notoriety really costs now.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.67:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.67 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.67:[^']*'",{ param($m) "now:'v11.68: dropping a tactical belt item on the stash said back in the backpack while splicing it out of the backpack (v8.72 drop: clears the belt key, leaves the kit, lands in the stash). The line names the stash now. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.67:[^']*'",{ param($m) "now:'v11.68: the in-raid notoriety banner at two or more said the Peddler was done with you, while the stall has never shut since his v8.28 ruling (pedOpen answers true) and the hub card was renamed then. The banner names the real cost at every score now. From the v11.46 audit, P2.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

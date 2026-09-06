@@ -11,49 +11,49 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.59 CHECK, inserted before the v11.58 entry. Driven through the real belt
-# functions: hotbarSlots builds the bar, setHot selects, useHot acts.
+# v11.63 HOOK: whether a weather id counts as hard, so a check can force a
+# multiplier into play.
 SubRx @'
-  {v:'11.58',what:'the extraction inbound pulse, touchdown and last call and the storm telegraph draw the heard-not-seen noise ring like every other sound (his note of 2026-09-05): ring sizes exist, an unseen source rings and a seen one does not, and the four call sites are positioned',
+window.__loadProfile=function(){ return loadProfile(); };
 '@ @'
-  {v:'11.59',what:'a Frag Charge put on a tactical belt key is a live throwable cell: it shows the pouch count, it is the only cell for that grenade, selecting it points the throw selector at it, and the key throws it',
+window.__loadProfile=function(){ return loadProfile(); };
+window.__wxHard=function(id){ try{ return wxHardId(id); }catch(e){ return null; } };
+'@
+
+# v11.63 CHECK, inserted before the v11.62 entry.
+SubRx @'
+  {v:'11.62',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+'@ @'
+  {v:'11.63',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
-     if(typeof hotbarSlots!=='function'||typeof setHot!=='function'||typeof useHot!=='function') return 'SKIP: no tactical belt in this build';
-     var bad=[], SLOT=1;
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player;
-       g.over=false; p.downed=false; p.roll=0;
-       g.pouch=g.pouch||{}; g.pouch.frag=2;
-       g.hotAssign={}; g.hotAssign[SLOT]='frag';
-       g.hot=0;
-       var sl=hotbarSlots();
-       if(!sl||sl.length<=SLOT) return 'SKIP: the belt has no slot '+SLOT+' on this build';
-       var cell=sl[SLOT];
-       // THE CELL IS A THROWABLE, not the dead item cell the trigger treats as a gun.
-       if(cell.kind!=='throw') bad.push('a Frag Charge on belt key '+(SLOT+1)+' builds a "'+cell.kind+'" cell, so the trigger fires your gun instead of cooking it and the key does nothing');
-       if(cell.count!==2) bad.push('the belted Frag Charge reads x'+cell.count+' while the pouch holds 2');
-       // AND IT IS THE ONLY ONE. The dedupe must blank the derived cell, not this.
-       var live=0;
-       for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].k==='throw:frag') live++;
-       if(live!==1) bad.push('the bar carries '+live+' cells for the same Frag Charge');
-       // SELECTING IT POINTS THE THROW SELECTOR AT IT.
-       if(cell.kind==='throw'){
-         setHot(SLOT);
-         var want=THROWKEYS.indexOf('frag');
-         if(g.tsel!==want) bad.push('selecting the belted Frag Charge left the throw selector on '+THROWKEYS[g.tsel]+' instead of frag');
-         // AND THE KEY THROWS IT.
-         var n0=(g.throws||[]).length, q0=g.pouch.frag;
-         useHot();
-         if((g.pouch.frag|0)!==q0-1) bad.push('the key did not spend a Frag Charge (pouch '+q0+' then '+g.pouch.frag+')');
-         if((g.throws||[]).length<=n0) bad.push('the key threw nothing');
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ var g2=__state(); if(g2){ g2.hotAssign={}; g2.throws=[]; } }catch(_r){} __topClear(); __cleanProfile(); }
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__wxHard)) return 'SKIP: this fixture cannot end a raid and read the card';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[];
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player;
+     // A multiplier must be in play or the two figures agree by accident: force hard weather.
+     var hard=null; if(window.__wxHard('storm')) hard='storm'; else if(window.__wxHard('fog')) hard='fog';
+     if(!hard) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
+     if(!g.wx) g.wx={}; g.wx.id=hard;
+     // Something to bank: a bag worth carrying out.
+     p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
+     var n0=(P.log||[]).length;
+     try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
+     var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
+     var m=/\+\s*([\d,]+)\s*XP/.exec(txt);
+     var card=m?parseInt(m[1].replace(/,/g,''),10):null;
+     var rec=(P.log&&P.log.length>n0)?P.log[P.log.length-1]:null;
+     if(card===null) bad.push('the card printed no "+N XP" line (card says: '+txt.replace(/\s+/g,' ').slice(0,80)+')');
+     if(!rec||typeof rec.xpGot!=='number') bad.push('the run was not banked with an xpGot figure');
+     if(card!==null&&rec&&typeof rec.xpGot==='number'){
+       // THE FIX: what the card says is what was banked.
+       if(card!==rec.xpGot) bad.push('the card printed +'+card+' XP but the profile banked '+rec.xpGot+' (base '+rec.xpBase+', weather hard '+rec.wxHard+')');
+       // CONTROL: the multiplier really was in play, or the agreement proves nothing.
+       if(!rec.wxHard) bad.push('control: the banked record does not carry the hard-weather flag, so no multiplier was in play');
+     }
+     __topClear(); __cleanProfile();
      return bad.length?bad.join('; '):null; }},
-  {v:'11.58',what:'the extraction inbound pulse, touchdown and last call and the storm telegraph draw the heard-not-seen noise ring like every other sound (his note of 2026-09-05): ring sizes exist, an unseen source rings and a seen one does not, and the four call sites are positioned',
+  {v:'11.62',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

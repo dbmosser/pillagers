@@ -1,12 +1,14 @@
-v11.60: Wirt's Limited Time Offer sold whatever the clock said at click time
+v11.60: a grenade on a belt key was a dead key, and it deleted the working one
 
-The counter lot is picked by the clock in five-minute windows and drawn on a
-card that names and prices it before he pays; the Buy button recomputed
-wirtLotKey() at click time and the card never redraws on the boundary, so a
-click after the roll took the money and pushed a lot he was never shown. Buy
-now sells the lot the card was drawn from. Check 11.60 opens Wirt through the
-real station act, moves the clock forward a window so a roll has happened,
-presses the real Buy, and requires the stash to receive the shown lot with
-credits taken as the control; fails on v11.59. From the v11.46 audit, P1.
+From the 2026-09-06 read-only raid audit, raised by two regions independently.
+The same hole the v8.31 comment records for the stim, one item type later: a
+throwable lives in the pouch and never in the backpack, so the belt built it
+as a plain item, which the trigger treats as a held gun. Putting a Frag Charge
+on a key gave a key that fired your rifle under a caption saying use, did
+nothing on the use key, read x0 while the pouch held two, and blanked the
+working grenade cell; binding all three left nothing able to throw. A belted
+throwable is now built exactly as the bar's own throwable cell is, and the use
+key throws it. Check 11.60 binds a frag and requires a live cell, one cell,
+a synced selector and a real throw; fails on v11.59.
 
-Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

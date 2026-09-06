@@ -11,53 +11,47 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# HIS NOTE, 2026-09-05 in-run at 130 s: "how lightning shows red noise, I want
-# ALL noises to do that when they are outside the player's vision but within
-# earshot, eg visualize noises with red circles!" That ring is noiseMark
-# (v9.07): every world sound routed through sfx(type,x,y) draws a ring when
-# you could hear it and could not see it. Four sounds never went through it,
-# because they were played by distance alone with no position: the storm's
-# strike telegraph, and the extraction's inbound pulse, touchdown and last
-# call. They go through sfx now, with a ring size each, so every noise in the
-# game marks itself the same way.
-
-# 1. RING SIZES for the three sounds that had none.
+# THE WHOLE UNDERCROFT HUD WAS PAINTED AND THEN ERASED IN THE SAME FRAME.
+# Found by the 2026-09-06 read-only menu audit and confirmed by a skeptic
+# against the project's own measurement, which recorded zero opaque pixels on
+# the HUD canvas of the Undercroft floor and read it as a fact about the floor
+# rather than as the bug it is. v8.95 added a clear BELOW the world draw, to
+# wipe whatever the last raid had left on that canvas. But drawHubWorld ENDS by
+# calling drawHubHUD, which paints the entire floor HUD onto the same canvas.
+# So every frame the floor drew its heading, its "[E] STATION" prompt and the
+# key list under it, the H controls panel, the NEW IN card and the line that
+# teaches WASD and E, and then wiped all of it a few lines later, repainting
+# only the belt. The floor has been running with no HUD at all, and H has been
+# a dead key. Clearing FIRST keeps the v8.95 guarantee and lets the floor be
+# seen.
 SubRx @'
-  step:  {r:26, hear:420},
-  board: {r:34, hear:520}
-};
+      tickBuzz(dt); updateHubWorld(dt); drawHubWorld(dt); drawBuzzFx();
+      // v8.95: the HUD canvas is never drawn on the Undercroft, so it is holding
+      // whatever the last raid left there. Cleared every frame, and the backpack
+      // painted onto it when he asks for it.
+      try{
+        ctx.clearRect(0,0,W,H);
+        // v9.88: the belt is on the floor now, answer 22. The opened backpack
+        // draws its own copy of it as before, so exactly one is ever drawn.
+        if(hubBagOpen) drawHubBag(); else drawHubBelt();
+      }catch(_hbd){}
 '@ @'
-  step:  {r:26, hear:420},
-  board: {r:34, hear:520},
-  // v11.58, HIS NOTE: the extraction's own sounds mark themselves too.
-  inbound:  {r:30, hear:1400},
-  touchdown:{r:88, hear:1500},
-  lastcall: {r:44, hear:1400}
-};
-'@
-
-# 2. THE STORM TELEGRAPH, at the strike point.
-SubRx @'
-    if(!G.sim) blip('charge',dist(p,{x:sx,y:sy}));
-'@ @'
-    if(!G.sim) sfx('charge',sx,sy);   // v11.58, HIS NOTE: a positioned sound marks itself
-'@
-
-# 3. THE EXTRACTION'S INBOUND PULSE, TOUCHDOWN AND LAST CALL, at the ring.
-SubRx @'
-      if(z.pingT>=_iv){ z.pingT=0; blip('inbound',dist(p,z)); }
-'@ @'
-      if(z.pingT>=_iv){ z.pingT=0; sfx('inbound',z.x,z.y); }   // v11.58: marks itself
-'@
-SubRx @'
-      if(dist(p,z)<1400){ blip('touchdown',dist(p,z)); blip('alarm',dist(p,z));
-'@ @'
-      if(dist(p,z)<1400){ sfx('touchdown',z.x,z.y); sfx('alarm',z.x,z.y);   // v11.58: mark themselves
-'@
-SubRx @'
-      blip('lastcall',dist(p,z));
-'@ @'
-      sfx('lastcall',z.x,z.y);   // v11.58: marks itself
+      // v8.95: the HUD canvas holds whatever the last raid left there, so it is
+      // cleared every frame. v11.58, from the 2026-09-06 menu audit: ABOVE the
+      // world draw, not below it. drawHubWorld ENDS by calling drawHubHUD,
+      // which paints the whole floor HUD on this same canvas: the heading, the
+      // [E] STATION prompt and its key list, the H controls panel, the NEW IN
+      // card and the line that teaches WASD and E. Clearing after that erased
+      // every one of them on every frame, so the floor had no HUD and H was a
+      // dead key. Cleared first, the raid leftovers still go and the floor
+      // survives to be seen.
+      try{ ctx.clearRect(0,0,W,H); }catch(_hc0){}
+      tickBuzz(dt); updateHubWorld(dt); drawHubWorld(dt); drawBuzzFx();
+      try{
+        // v9.88: the belt is on the floor now, answer 22. The opened backpack
+        // draws its own copy of it as before, so exactly one is ever drawn.
+        if(hubBagOpen) drawHubBag(); else drawHubBelt();
+      }catch(_hbd){}
 '@
 
 # STAMPS.
@@ -75,11 +69,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. Four never did: the storm telegraph and the extraction pulse, touchdown and last call. They do now.',
+  'THE UNDERCROFT HAS ITS SCREEN BACK. The floor was painting its heading, its [E] STATION prompt, the key list, the H controls panel and the line that teaches the controls, and then erasing all of it in the same frame. It has been invisible for a long time, and H did nothing. It is all there now.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.57:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.57 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.57:[^']*'",{ param($m) "now:'v11.58: HIS NOTE of 2026-09-05, all noises outside vision but within earshot should draw a ring like lightning does. noiseMark (v9.07) already does that for every sound routed through sfx(type,x,y); four sounds bypassed it by playing by distance with no position: the strike telegraph and the extraction inbound pulse, touchdown and last call. They go through sfx now with ring sizes of their own. Check 11.58 requires the three new ring sizes, a ring for an unseen inbound behind the player and none for a seen one in front, and that strikeTick and tickExtractPoints route those four sounds through sfx.'" })
+$s=[regex]::Replace($s,"now:'v11\.57:[^']*'",{ param($m) "now:'v11.58: the whole Undercroft HUD was painted and then erased in the same frame. From the 2026-09-06 read-only menu audit. v8.95 cleared the HUD canvas BELOW the world draw to wipe the last raid leftovers, but drawHubWorld ends by calling drawHubHUD, which paints the floor heading, the E STATION prompt and its key list, the H controls panel, the NEW IN card and the WASD teaching line onto that same canvas; the clear erased all of it every frame and repainted only the belt, so the floor had no HUD and H was a dead key. The clear moved above the world draw. Check 11.58 drives the real loop in the hub and counts opaque pixels in the top strip of the HUD canvas, with a control that the belt still draws.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

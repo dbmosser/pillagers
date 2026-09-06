@@ -11,46 +11,48 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.61 HOOK: the identity ids a merc can be hired as, so a check can hire one.
+# v11.61 HOOK: the lot the clock picks right now, so a check can tell a rolled
+# window from the one the card was drawn in.
 SubRx @'
 window.__loadProfile=function(){ return loadProfile(); };
 '@ @'
 window.__loadProfile=function(){ return loadProfile(); };
-window.__identityIds=function(){ var o=[]; try{ for(var i=0;i<IDENTITIES.length;i++) o.push(IDENTITIES[i].id); }catch(e){} return o; };
+window.__wirtLot=function(){ return wirtLotKey(); };
 '@
 
 # v11.61 CHECK, inserted before the v11.60 entry.
 SubRx @'
-  {v:'11.60',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
+  {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
 '@ @'
-  {v:'11.61',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+  {v:'11.61',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
    run:function(){
-     if(!(window.__identityIds&&window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot hire a merc and end a raid';
+     if(!(window.__wirtLot&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open Wirt';
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var ids=window.__identityIds(); if(!ids.length) return 'SKIP: no identities to hire';
-     var P=window.__P(), bad=[];
-     P.merc=ids[0]; P.credits=1000;
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(), M=null, i;
-     for(i=0;i<g.ents.length;i++){ if(g.ents[i].merc){ M=g.ents[i]; break; } }
-     if(!M){ __cleanProfile(); return 'SKIP: the hired merc did not spawn'; }
-     var row=null; for(i=0;i<(g.roster||[]).length;i++){ if(g.roster[i].ref===M){ row=g.roster[i]; break; } }
-     // THE FIX: he is on the roster at all.
-     if(!row) bad.push('the hired merc has no roster row, so boarding cannot stamp his haul and endRaid cannot pay your cut');
-     else {
-       // He fled low and boarded an earlier ship: the boarding code stamps the
-       // row and removes him from the world. Then you extract.
-       row.out=true; row.outAt=0; row.val=1234;
-       var ix=g.ents.indexOf(M); if(ix>=0) g.ents.splice(ix,1);
-       var c0=P.credits;
-       try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
-       var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
-       if(!/extracted earlier/i.test(txt)) bad.push('the card did not say he extracted earlier (it says: '+txt.replace(/\s+/g,' ').slice(0,90)+')');
-       if(!(P.credits-c0>=123)) bad.push('your ten percent of his 1,234 was not paid (credits moved '+(P.credits-c0)+')');
-     }
-     __topClear(); __cleanProfile();
+     var P=window.__P(), bad=[], realNow=Date.now;
+     P.credits=999999; P.stash=[];
+     var st=null; try{ st=window.__station('gamble','KeyE'); }catch(e){ st={err:String(e)}; }
+     if(st&&st.err) return 'SKIP: '+st.err;
+     var shown=window.__wirtLot();
+     if(!(shown&&shown.length)) return 'SKIP: the counter is empty';
+     var btn=document.getElementById('wirtlotbtn');
+     if(!btn) return 'SKIP: no Buy button on the counter';
+     // THE WINDOW ROLLS between the card and the click: move the clock forward
+     // one window, or two, or three, until the lot differs from the shown one.
+     var base=realNow(), next=null, rolled=0;
+     for(var r=1;r<=3&&!next;r++){ Date.now=function(){ return base+r*300000; }; var cand=window.__wirtLot(); if(cand&&cand.length&&cand[0]!==shown[0]){ next=cand; rolled=r; } }
+     if(!next){ Date.now=realNow; return 'SKIP: the next three windows hold the same lot, so a roll cannot be told apart'; }
+     Date.now=function(){ return base+rolled*300000; };
+     try{ btn.click(); }catch(e2){}
+     Date.now=realNow;
+     var got=(P.stash||[]).length?P.stash[P.stash.length-1]:null;
+     // THE FIX: he receives what the card NAMED AND PRICED.
+     if(got!==shown[0]) bad.push('after the window rolled, Buy delivered '+got+' instead of the shown '+shown[0]);
+     // CONTROL: he was charged, so a buy went through and the comparison is real.
+     if(!(P.credits<999999)) bad.push('control: no credits were taken, so nothing was bought and the comparison proves nothing');
+     try{ var gm=document.getElementById('gamblemodal'); if(gm) gm.classList.remove('on'); }catch(e3){}
+     __cleanProfile(); __topClear();
      return bad.length?bad.join('; '):null; }},
-  {v:'11.60',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
+  {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
