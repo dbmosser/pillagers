@@ -1,4 +1,4 @@
-## v11.97 - THE BIGGER BLAST, THREE THINGS THAT DID NOT MOVE WITH IT
+## v12.05 - THE BIGGER BLAST, THREE THINGS THAT DID NOT MOVE WITH IT
 
 From the read-only review of this morning's shipped builds, on v11.77.
 
@@ -22,11 +22,11 @@ repairs check 11.44, whose cfgv sentinel was pinned at 17 by the v11.77
 stamp and so could never fire again, and a comment that still quoted the
 old stamp.
 
-MEASURED. Check 11.97 deploys with the radius pinned at 190, hands a real
+MEASURED. Check 12.05 deploys with the radius pinned at 190, hands a real
 pillager a real frag with his throw clock ready, asks him to throw at the
 player from 200 units and requires no throw and no charge in the air, then
 from 260 and requires a throw, so the band is proven live; and reads the
-card's frag line for the true centre figures. On the v11.96 fixture the
+card's frag line for the true centre figures. On the v12.04 fixture the
 200-unit throw happens and the card prints 115 and 80.
 
 Not verified: his own play; the far edge of the band, 520, which was not

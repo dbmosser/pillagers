@@ -1,4 +1,4 @@
-## v11.92 - THE SAFE POCKET REFUSES WHAT IT CANNOT BRING HOME
+## v12.00 - THE SAFE POCKET REFUSES WHAT IT CANNOT BRING HOME
 
 From the 2026-09-06 read-only menu audit, raised independently by two of
 its regions.
@@ -17,11 +17,11 @@ THE FIX. The pocket refuses a throwable and an ammo box the way it refuses
 a gun, and says why in the same sentence; and a profile already saved on
 one is cleared on load, so the ascent screen stops saying 1/1 for it.
 
-MEASURED. Check 11.92 offers the real pocket a Frag Charge and an Ammo Box
+MEASURED. Check 12.00 offers the real pocket a Frag Charge and an Ammo Box
 and requires a refusal and no save, offers it a Medkit and requires it
 taken, then drives the real loader with a profile saved on a Frag Charge
 and requires the pocket empty, and with one saved on a Medkit and requires
-it kept. On the v11.91 fixture the grenade and the box are taken silently
+it kept. On the v11.99 fixture the grenade and the box are taken silently
 and the saved grenade survives the load.
 
 Not verified: the death path itself, which is unchanged; the Stash screen's

@@ -23,7 +23,7 @@ SubRx @'
 function updateHubWorld(dt){
 '@ @'
   if(document.getElementById('outcome').classList.contains('on')) return true;
-  // v11.91, from the 2026-09-06 menu audit: and the character screen, which is
+  // v11.99, from the 2026-09-06 menu audit: and the character screen, which is
   // a .screen and not a .modal. Without this the floor took E, R, F and T
   // behind it, and R at the lift started a raid under the title.
   var _ttl=document.getElementById('title');
@@ -38,27 +38,27 @@ function updateHubWorld(dt){
 SubRx @'
     var _hubBusy=!!(document.querySelector('.modal.on')||document.querySelector('.imenu')||
 '@ @'
-    var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v11.91: the character screen counts here too
+    var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v11.99: the character screen counts here too
 '@
 SubRx @'
       if(document.querySelector('.imenu')) _anyModal=true;
       if(!_anyModal){
 '@ @'
       if(document.querySelector('.imenu')) _anyModal=true;
-      if(_titleUp) _anyModal=true;   // v11.91
+      if(_titleUp) _anyModal=true;   // v11.99
       if(!_anyModal){
 '@
 
 # STAMPS.
 SubRx @'
-var VER='11.90';
+var VER='11.98';
 '@ @'
-var VER='11.91';
+var VER='11.99';
 '@
 SubRx @'
-var WHATSNEW_VER='11.90';
+var WHATSNEW_VER='11.98';
 '@ @'
-var WHATSNEW_VER='11.91';
+var WHATSNEW_VER='11.99';
 '@
 SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -66,9 +66,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.90:[^']*'")).Count
-if($cnt -ne 1){ throw "DEVNOW v11.90 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.90:[^']*'",{ param($m) "now:'v11.91: from the 2026-09-06 menu audit, the floor kept taking station keys behind the character screen because hubModalOpen did not count #title (a .screen, not a .modal); at the lift R started a raid under the title. One line: the character screen counts as a modal. Check 11.91 turns the character screen on over the floor and requires the gate to read open, then off and requires it closed; fails on v11.90.'" })
+$cnt=([regex]::Matches($s,"now:'v11\.98:[^']*'")).Count
+if($cnt -ne 1){ throw "DEVNOW v11.98 matched $cnt times" }
+$s=[regex]::Replace($s,"now:'v11\.98:[^']*'",{ param($m) "now:'v11.99: from the 2026-09-06 menu audit, the floor kept taking station keys behind the character screen because hubModalOpen did not count #title (a .screen, not a .modal); at the lift R started a raid under the title. One line: the character screen counts as a modal. Check 11.99 turns the character screen on over the floor and requires the gate to read open, then off and requires it closed; fails on v11.98.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

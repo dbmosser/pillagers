@@ -27,7 +27,7 @@ function setSafe(k){
 function setSafe(k){
   if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
   if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
-  // v11.92, from the 2026-09-06 menu audit: a grenade rides in the pouch and
+  // v12.00, from the 2026-09-06 menu audit: a grenade rides in the pouch and
   // ammunition in the reserve, and the death path banks the backpack only,
   // so a pocket naming either came home with nothing while reading 1/1.
   if(k&&ITEMS[k].use==='throw') return 'A throwable rides in the pouch, not a pocket. It cannot come home from there.';
@@ -39,7 +39,7 @@ SubRx @'
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
 '@ @'
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
-// v11.92: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
+// v12.00: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
 if(P.safe&&ITEMS[P.safe]&&(ITEMS[P.safe].use==='throw'||ITEMS[P.safe].use==='ammo')) P.safe=null;
 '@
 
@@ -49,20 +49,20 @@ SubRx @'
   if(it.use!=='gun'){
     var _isSafe=(P.safe===key);
 '@ @'
-  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v11.92: the pocket refuses these, so the menu does not offer it
+  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v12.00: the pocket refuses these, so the menu does not offer it
     var _isSafe=(P.safe===key);
 '@
 
 # STAMPS.
 SubRx @'
-var VER='11.91';
+var VER='11.99';
 '@ @'
-var VER='11.92';
+var VER='12.00';
 '@
 SubRx @'
-var WHATSNEW_VER='11.91';
+var WHATSNEW_VER='11.99';
 '@ @'
-var WHATSNEW_VER='11.92';
+var WHATSNEW_VER='12.00';
 '@
 SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -70,9 +70,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.91:[^']*'")).Count
-if($cnt -ne 1){ throw "DEVNOW v11.91 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.91:[^']*'",{ param($m) "now:'v11.92: from the 2026-09-06 menu audit, the safe pocket accepted a grenade or an ammo box and read 1/1, but both ride outside the backpack and the death path banks the backpack only, so the one death protection there is was spent on nothing. setSafe refuses throwables and ammunition the way it refuses a gun, and a saved pocket on either is cleared on load. Check 11.92 drives setSafe with a frag, an ammo box and a medkit and the real loader with a saved frag pocket; fails on v11.91.'" })
+$cnt=([regex]::Matches($s,"now:'v11\.99:[^']*'")).Count
+if($cnt -ne 1){ throw "DEVNOW v11.99 matched $cnt times" }
+$s=[regex]::Replace($s,"now:'v11\.99:[^']*'",{ param($m) "now:'v12.00: from the 2026-09-06 menu audit, the safe pocket accepted a grenade or an ammo box and read 1/1, but both ride outside the backpack and the death path banks the backpack only, so the one death protection there is was spent on nothing. setSafe refuses throwables and ammunition the way it refuses a gun, and a saved pocket on either is cleared on load. Check 12.00 drives setSafe with a frag, an ammo box and a medkit and the real loader with a saved frag pocket; fails on v11.99.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

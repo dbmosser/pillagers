@@ -21,7 +21,7 @@ function SubRx([string]$old, [string]$new) {
 SubRx @'
       else if(_zHold) _zSub='OPEN TO EXTRACT  '+Math.max(0,Math.ceil(Z.hold))+'s';
 '@ @'
-      else if(_zHold) _zSub='EXTRACT NOW!  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v11.98: the banner's words (v11.74); the letter is the line above
+      else if(_zHold) _zSub='EXTRACT NOW!  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v12.06: the banner's words (v11.74); the letter is the line above
 '@
 SubRx @'
     // v8.68, his wording, same as the banner.
@@ -31,18 +31,18 @@ SubRx @'
 
 # STAMPS.
 SubRx @'
-var VER='11.97';
+var VER='12.05';
 '@ @'
-var VER='11.98';
+var VER='12.06';
 '@
 SubRx @'
-var WHATSNEW_VER='11.97';
+var WHATSNEW_VER='12.05';
 '@ @'
-var WHATSNEW_VER='11.98';
+var WHATSNEW_VER='12.06';
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.97:[^']*'")).Count
-if($cnt -ne 1){ throw "DEVNOW v11.97 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.97:[^']*'",{ param($m) "now:'v11.98: from the read-only review of the shipped v11.74, the sector map still said OPEN TO EXTRACT under a landed ring, and with the map open that is the only boarding line the player can read. It says EXTRACT NOW with the seconds left, the banner wording. Check 11.98 records what the map draws under a ring in the hold and requires the new words and not the old; fails on v11.97.'" })
+$cnt=([regex]::Matches($s,"now:'v12\.05:[^']*'")).Count
+if($cnt -ne 1){ throw "DEVNOW v12.05 matched $cnt times" }
+$s=[regex]::Replace($s,"now:'v12\.05:[^']*'",{ param($m) "now:'v12.06: from the read-only review of the shipped v11.74, the sector map still said OPEN TO EXTRACT under a landed ring, and with the map open that is the only boarding line the player can read. It says EXTRACT NOW with the seconds left, the banner wording. Check 12.06 records what the map draws under a ring in the hold and requires the new words and not the old; fails on v12.05.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

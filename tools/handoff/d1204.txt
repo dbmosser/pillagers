@@ -1,4 +1,4 @@
-## v11.96 - THE STATION HEADING STOPS REPEATING THE BALANCE UNDER THE READOUT
+## v12.04 - THE STATION HEADING STOPS REPEATING THE BALANCE UNDER THE READOUT
 
 From the read-only review of this morning's shipped builds, on v11.78.
 
@@ -19,9 +19,9 @@ by the zoom again, so it was too permissive by the zoom and could never
 have seen the overlap it stands guard over; the v11.78 check read the same
 field the right way, and the two disagreed.
 
-MEASURED. Check 11.96 walks the floor, opens the shop window for real,
+MEASURED. Check 12.04 walks the floor, opens the shop window for real,
 finds the heading balance, and requires it hidden or, if shown, its box
-clear of the corner readout's box. On the v11.95 fixture the two boxes
+clear of the corner readout's box. On the v12.03 fixture the two boxes
 intersect and the check prints both.
 
 Not verified: his own eye, and whether he wants the balance in the heading

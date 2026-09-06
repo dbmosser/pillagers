@@ -1,36 +1,34 @@
-## v11.90 - HIS NOTE: THE BELT KEY EQUIPS THE GUN IT SHOWS, AND EVERY CELL DRAGS
+## v11.90 - HIS NOTE: A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK
 
-His note of 2026-09-06, from his fifth run this morning: "it says i have
-support mg but it is firing like a pistol -- hotbar is wonky, why can't i
-drag items to diff keys??"
+His note of 2026-09-06, from his fifth run this morning: "not letting me put
+guns back into backpack -- GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY
+ITEM!!!!"
 
-TWO FAULTS, ONE NOTE. First: a belt key with a gun from the backpack pinned
-to it drew the gun's name and icon, and pressing it said "is in your
-backpack. TAB, then ENTER to equip it" (a v11.30 sentence) and did nothing
-else, so the trigger fired the pistol in his hands under a cell that said
-Support MG. That is exactly what he saw. Second: the belt is derived, rebuilt
-every frame from what you carry, and the derived cells (Medical, Armour
-Plate, the grenades) carried no item key of their own, so a press on them
-selected and never dragged; only a cell he had already assigned by dragging
-from the bag could be moved. He could not move what the game had placed.
+WHAT IT WAS. Since v7.21 the two gun cells on the belt were select-only: a
+press picked that gun to fire, and nothing could be dragged off them. A gun
+could go INTO your hands from the bag, by ENTER or by dropping it on a gun
+cell, and the displaced gun went to the bag; but the gun already in your
+hands had no way out of them except finding a better one. He is right that
+this is the one item in the game that did not move like an item.
 
-THE BUILD. Pressing a belt key that holds a gun from the backpack EQUIPS it,
-through the same path ENTER uses; if that path routes it to the free hand
-slot the guns are swapped so the one he pressed for is the one that fires,
-the displaced gun goes to the bag, and the highlight follows the gun to the
-hand cell it now lives in. And a derived cell drags by the item it shows,
-so any cell can be picked up and dropped on another key, which is the same
-drag he already had for assigned cells.
+THE BUILD. With the backpack open, a press on a gun cell picks that gun up
+and a release over the bag puts it there, through one new verb that follows
+the rules the equip path already had for a displaced gun: issued kit is
+refused and stays in your hands, and a gun from your own armoury leaves the
+armoury for the raid and is recorded so an abandoned raid puts it back. If
+the bagged gun was the one in your hands, the other gun comes up and keeps
+the numbered slot it had, or bare hands if there is no other. Released
+anywhere else, nothing happens. With the backpack closed a press on a gun
+cell still only selects, which is the combat rule and stays.
 
-MEASURED. Check 11.90 deploys with a pistol in hand and an SMG in the bag
-pinned to key 4, presses key 4 through the real selector, and requires the
-SMG in hand and gone from the bag; then, with a bandage in the bag and the
-backpack open, finds the derived Medical cell, points the mouse at it and
-sends a real mousedown to the canvas, and requires a drag carrying the
-bandage. On the v11.89 fixture the key leaves the pistol in hand and the
-press starts no drag.
+MEASURED. Check 11.90 deploys with a field SMG in hand and bare hands in the
+other slot, opens the backpack, draws two frames so the belt cells and the
+bag panel exist, points the mouse at cell 1 and sends a real mousedown to
+the canvas, requires a drag carrying the gun, points the mouse at the bag
+panel and sends a real mouseup to the window, and requires the SMG in the
+bag, bare hands up and no drag left hanging. On the v11.89 fixture the press
+starts no drag and the bag stays empty.
 
-Not verified: his own hand at it; the two Medical cells that can exist for a
-moment when a derived item is also assigned elsewhere, which the derived
-list's dedupe handles as before; keys held for a gun that is not in the bag
-any more, which now say so.
+Not verified: his own hand at it; a gun dropped on the bag when the bag is
+too heavy for it, which is the same overflow the equip path has always had;
+the ghost drawn under the pointer, which is the existing drag ghost.

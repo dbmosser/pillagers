@@ -1,9 +1,8 @@
-v11.90: his note, the belt key equips the gun it shows and every cell drags
+v11.90: his note, a gun in your hands goes back into the backpack
 
-A key holding a gun from the backpack showed the gun and left it there, so
-the trigger fired the pistol in hand under a cell that said Support MG; the
-key equips it now and the highlight follows. The derived cells carried no
-item key and could not be dragged; they drag by the item they show. Check
-11.90 drives the real selector and the real canvas press; fails on v11.89.
+The two gun cells were select-only. With the backpack open a gun cell now
+drags and a release over the bag puts the gun there; the other gun or bare
+hands come up, and issued kit stays. Check 11.90 drives the real mouse
+handlers; fails on v11.89.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

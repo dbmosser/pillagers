@@ -11,38 +11,27 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# HIS NOTE, 2026-09-06 (his 06:39 export, run 5, @293s): "when Fulgerite is
-# searched, it should only return the item 'Fulgerite', which should be like
-# $2500 salvagable -- it makes no sense for it to be anything else, given that
-# it resulted from a lightning strike." A new item, and the scorched cache
-# holds only that. The two draws from the seeded stream are kept exactly as
-# they were, because this block runs in the sim and a draw removed here would
-# move every number after it.
+# HIS ORDER, 2026-09-06, with a screenshot of the raid CONDITIONS panel:
+# '"left to be gone" -- no idea why this is in the conditions menu or what
+# it means. "nothing killed yet" -- same comment. remove both of these from
+# conditions'. They were the live verdicts of two conduct contracts he holds
+# (Extract without killing anything; Extract within 3 minutes of landing),
+# printed without the contract's name. Removed from the panel as ordered; the
+# contracts still stand and pay at the Mainframe.
 SubRx @'
-  wcore:{name:'Warden Core',val:3800,wt:5,r:'elite',c:'#ffc04a'},
+        if(!CC||CC.type!=='conduct'||CC.prog>=CC.n) continue;
+        var lost=false,note='';
+        if(CC.ck==='clean'){ lost=(T.heals||0)>0; note=lost?'BROKEN, you healed':'no heals yet'; }
 '@ @'
-  wcore:{name:'Warden Core',val:3800,wt:5,r:'elite',c:'#ffc04a'},
-  // v11.88, HIS NOTE: what a lightning strike leaves in the ground, and the only
-  // thing the scorched cache holds. Salvage, worth what he said.
-  fulgurite:{name:'Fulgurite',val:2500,wt:2,r:'elite',c:'#e6d3ff'},
-'@
-SubRx @'
-        var pool=['titan','core','blackbox','reactor','wcore'];
-        var key=pool[Math.min(pool.length-1,Math.floor(rr()*pool.length))];
-'@ @'
-        // v11.88, HIS NOTE: the strike leaves Fulgurite and nothing else; a
-        // Warden Core in the dirt made no sense to him. The draw is kept so the
-        // seeded stream is unchanged.
-        var _fdraw=rr();
-        var key='fulgurite';
-'@
-
-# Built through setLoot, so the cache's glow knows what it holds (mkContainer
-# stamped best from the roll it threw away).
-SubRx @'
-          ct.loot=[key]; ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;
-'@ @'
-          setLoot(ct,[key]); ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;   // v11.88: setLoot, so best is right
+        if(!CC||CC.type!=='conduct'||CC.prog>=CC.n) continue;
+        // v11.88, HIS ORDER: '"left to be gone" -- no idea why this is in the
+        // conditions menu or what it means. "nothing killed yet" -- same
+        // comment. remove both of these from conditions'. The kill-nothing and
+        // three-minute contracts keep their verdicts off this panel; they still
+        // stand and pay at the Mainframe.
+        if(CC.ck==='quiet'||CC.ck==='swift') continue;
+        var lost=false,note='';
+        if(CC.ck==='clean'){ lost=(T.heals||0)>0; note=lost?'BROKEN, you healed':'no heals yet'; }
 '@
 
 # STAMPS.
@@ -60,11 +49,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A LIGHTNING STRIKE THAT MISSES YOU SOMETIMES FUSES THE GROUND. What it leaves is FULGURITE, worth 2,500, and nothing else.',
+  'THE RAID CONDITIONS PANEL NO LONGER PRINTS "left to be gone" OR "nothing killed yet", on his order; those two contracts still stand at the Mainframe.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.87:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.87 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.87:[^']*'",{ param($m) "now:'v11.88: HIS NOTE of 2026-09-06, the scorched cache a strike leaves should hold only Fulgurite, worth about 2500 salvage. New item fulgurite (val 2500, elite); the strike cache holds it and nothing else; the seeded draws are kept so the stream is unchanged. Check 11.88 forces a strike to miss and leave a cache and requires its loot to be exactly one Fulgurite worth 2500; fails on v11.87 where the cache holds a core or a Warden Core.'" })
+$s=[regex]::Replace($s,"now:'v11\.87:[^']*'",{ param($m) "now:'v11.88: HIS ORDER of 2026-09-06, with a screenshot: left to be gone and nothing killed yet mean nothing to him in the conditions panel, remove both. They were the live verdicts of the kill-nothing and three-minute conduct contracts, printed without their names; the panel skips those two now and the contracts still stand at the Mainframe. Check 11.88 holds both contracts plus a no-heals one, draws a raid frame with the canvas text recorded, and requires neither verdict drawn and the no-heals one still there; fails on v11.87.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

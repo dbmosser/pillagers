@@ -1,0 +1,38 @@
+## v11.92 - FIRST TEN MINUTES: THE NEW IN CARD FITS, AND A FIRST LAUNCH NEVER SEES IT
+
+From the read-only audit of a brand-new player's first ten minutes
+(2026-09-06, eight readers, one screen each). Two of them found this one
+independently.
+
+THE FINDING. The NEW IN card on the Undercroft floor carries a comment from
+v2.79 that says it is for returning players only and that a profile with no
+runs stamps itself current and never sees it. No line ever did that: the
+only gate was the once-per-load latch, so a friend arriving cold from the
+link pressed ENTER on the title and landed under a list of changes to
+controls he had never used. Worse, the list is 137 entries long and grows
+every build. The card's two-pass sizing drops one text size when the block
+will not fit and then draws all of it anyway, so at 1080p the card was near
+five screens tall: its heading and its only dismiss line ("press ENTER or
+walk to dismiss") were both thousands of pixels off the canvas, and what
+was on screen was an opaque black slab over the whole floor with a middle
+slice of patch notes in it. He has been walking through it for weeks
+without seeing it for what it was, because the first thing anyone does on
+the floor is walk, and walking dismisses it.
+
+THE BUILD. Two lines. A profile with no runs stamps the latch and the card
+is never drawn, which is what the comment promised. When the block does not
+fit the screen, what does not fit is cut: the list is newest first, so the
+cut takes the oldest, and it falls between entries, never inside one, so
+the heading, the entries that fit and the dismiss line are always on the
+canvas.
+
+MEASURED. Check 11.92 enters the floor at 1920x1080 with the canvas text
+call recorded. With runs at 0 it draws two frames and requires no NEW IN
+heading and the latch stamped; with runs on the profile it draws one frame
+and requires the heading and the dismiss line both inside the canvas and
+the newest entry on the card. On the v11.91 fixture the first arm draws the
+card and the second arm's heading lands at a negative y.
+
+Not verified: by eye at 4K, where the card is smaller than the screen and
+the cut never runs; a player who has runs but had never seen the card
+before, who now sees only the newest entries and not the whole history.

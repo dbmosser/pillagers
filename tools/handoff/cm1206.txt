@@ -1,8 +1,8 @@
-v11.98: the map says EXTRACT NOW too
+v12.06: the map says EXTRACT NOW too
 
 The sector map kept a third copy of the boarding line that still said
 OPEN TO EXTRACT, and with the map open it was the only copy readable. It
-says EXTRACT NOW with the seconds left. Check 11.98 draws the map with a
-landed ring and reads the line; fails on v11.97.
+says EXTRACT NOW with the seconds left. Check 12.06 draws the map with a
+landed ring and reads the line; fails on v12.05.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

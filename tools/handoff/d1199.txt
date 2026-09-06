@@ -1,4 +1,4 @@
-## v11.91 - THE FLOOR STOPS TAKING KEYS BEHIND THE CHARACTER SCREEN
+## v11.99 - THE FLOOR STOPS TAKING KEYS BEHIND THE CHARACTER SCREEN
 
 From the 2026-09-06 read-only menu audit, the last of its three open items
 on the alpha path.
@@ -16,9 +16,9 @@ raid with the title painted over it and the clock running.
 THE FIX. One line: the character screen counts, the same way the pause box
 was added at v8.70.
 
-MEASURED. Check 11.91 walks the floor with nothing open and requires the
+MEASURED. Check 11.99 walks the floor with nothing open and requires the
 gate closed, turns the character screen on and requires it open, turns it
-off and requires it closed again. On the v11.90 fixture the gate reads
+off and requires it closed again. On the v11.98 fixture the gate reads
 closed with the screen on and the check says so.
 
 Not verified: the raid start itself, which sits behind this gate and is

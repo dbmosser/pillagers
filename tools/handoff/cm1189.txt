@@ -1,8 +1,8 @@
-v11.89: his note, a gun in your hands goes back into the backpack
+v11.89: his note, a strike leaves Fulgurite and nothing else
 
-The two gun cells were select-only. With the backpack open a gun cell now
-drags and a release over the bag puts the gun there; the other gun or bare
-hands come up, and issued kit stays. Check 11.89 drives the real mouse
-handlers; fails on v11.88.
+New item, worth 2,500; the scorched cache holds one of it instead of a
+random valuable, with the seeded draws kept so the stream is unchanged.
+Check 11.89 forces a strike through the real tick and reads the cache;
+fails on v11.88.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

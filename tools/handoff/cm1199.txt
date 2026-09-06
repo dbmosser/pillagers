@@ -1,8 +1,8 @@
-v11.91: the floor stops taking keys behind the character screen
+v11.99: the floor stops taking keys behind the character screen
 
 hubModalOpen did not count #title, so E, R, F and T fired stations behind
 the character screen and R at the lift started a raid under it. One line:
-the character screen counts. Check 11.91 reads the gate with the screen
-on and off; fails on v11.90.
+the character screen counts. Check 11.99 reads the gate with the screen
+on and off; fails on v11.98.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

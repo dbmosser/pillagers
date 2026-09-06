@@ -1,4 +1,4 @@
-## v11.98 - THE MAP SAYS EXTRACT NOW TOO
+## v12.06 - THE MAP SAYS EXTRACT NOW TOO
 
 From the read-only review of this morning's shipped builds, on v11.74.
 
@@ -16,10 +16,10 @@ words; the ring's letter is already printed on the line above it. The stale
 comment over the ring label, which still credited the wording to v8.68,
 names the owner.
 
-MEASURED. Check 11.98 deploys, puts a ring into the landed hold with twelve
+MEASURED. Check 12.06 deploys, puts a ring into the landed hold with twelve
 seconds left, opens the map and draws it with the canvas text call recorded,
 and requires the line under the ring to say EXTRACT NOW with 12S LEFT and
-not the old words. On the v11.97 fixture it says OPEN TO EXTRACT 12s.
+not the old words. On the v12.05 fixture it says OPEN TO EXTRACT 12s.
 
 Not verified: his own eye on the map; the CALLED and CLOSED lines, which
 were not in his note and stay as they were.

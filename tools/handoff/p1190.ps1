@@ -11,67 +11,106 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# HIS NOTE, 2026-09-06 (his 06:39 export, run 5, @255s): "it says i have
-# support mg but it is firing like a pistol -- hotbar is wonky, why can't i
-# drag items to diff keys??". Two faults, one note. A belt key holding a gun
-# from the backpack showed the gun, said a hint nobody read, and left it in
-# the bag, so the trigger fired what was in his hands: the key EQUIPS it now.
-# And the derived cells (Medical, Armour Plate, the grenades) carried no item
-# key, so only a cell he had already assigned could be picked up: a derived
-# cell drags by the item it shows.
+# HIS NOTE, 2026-09-06 (his 06:39 export, run 5, @264s): "not letting me put
+# guns back into backpack -- GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY
+# ITEM!!!!". The two gun cells were select-only since v7.21 ("Guns select
+# only"), so a gun in your hands had no way into the bag. With the backpack
+# open, a press on a gun cell picks the gun up and a release over the bag
+# puts it there; the other gun comes up, or bare hands. Closed, a click on a
+# gun cell still only selects, which is the combat rule.
+
+# 1. THE VERB. Mirrors equipFromBag's displaced-gun rules: issued kit cannot
+# be bagged, and a gun from your own armoury leaves the armoury for the raid
+# (recorded on G.spliced so an abandoned raid puts it back), as v8.32 does.
 SubRx @'
-  else if(s2.kind==='gun'&&!_inHands&&s2.itemKey){
-    // v11.30: this sentence was overwritten by the slot label two lines down
-    // in the same call, so nobody ever read it; the label yields to it now.
-    say(s2.name+' is in your backpack. TAB, then ENTER to equip it.');
-    _hinted=true;
-  }
+// pressing a number puts that specific gun up. `swapped` is the only new state.
+function swapGuns(){
 '@ @'
-  else if(s2.kind==='gun'&&!_inHands&&s2.itemKey){
-    // v11.30 said "TAB, then ENTER to equip it" here, and nobody read it.
-    // v11.90, HIS NOTE: "it says i have support mg but it is firing like a
-    // pistol". The key showed the gun and left it in the backpack, and the
-    // trigger fired what was in his hands. The key EQUIPS it now, into the
-    // hands (the equip path may route it to the free slot; it is swapped up),
-    // the displaced gun goes to the bag, and the highlight follows it.
-    var _bix=G.bag.indexOf(s2.itemKey);
-    if(_bix<0) say(s2.name+' is not in your backpack.');
-    else if(!equipFromBag(_bix,1)) say('Cannot equip '+s2.name+' right now.');
-    else {
-      var _gk=ITEMS[s2.itemKey]&&ITEMS[s2.itemKey].gk;
-      if(_gk&&G.player.wep.id!==_gk&&G.player.sec&&G.player.sec.id===_gk) swapGuns();
-      // The highlight stays on the pressed cell: once the gun is in hand the
-      // derived gun cell is blanked by the dedupe, so pointing at it read EMPTY.
-    }
-    _hinted=true;
+// pressing a number puts that specific gun up. `swapped` is the only new state.
+// v11.90, HIS NOTE: a gun in your hands goes back into the backpack like any
+// other item. slot is the derived cell it was dragged from; gunA is the gun you
+// deployed with and gunB the other one, mapped through p.swapped the way
+// hotbarSlots maps them. The gun in hand is always p.wep; if that is the one
+// bagged, the other gun comes up and keeps its own numbered slot.
+function bagHeldGun(slot){
+  var p=G&&G.player; if(!p||p.downed||G.over) return false;
+  var sw=!!p.swapped;
+  var isHand=(slot==='gunA')?!sw:sw;
+  var g=isHand?p.wep:p.sec, issued=isHand?p.wepIssued:p.secIssued, arm=isHand?p.wepFromArmory:p.secFromArmory;
+  if(!g||g.id==='fists'||g.mag===0){ say('Nothing there to bag.'); return false; }
+  if(issued){ say(g.name+' is issued kit; it stays in your hands.'); return false; }
+  if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in a bag.'); return false; }
+  G.bag.push('gun_'+g.id);
+  if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); } }
+  if(isHand){
+    p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0;
+    p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
+    if(p.wep&&p.wep.id!=='fists') p.swapped=!sw;   // the gun that came up keeps its numbered slot; nothing came up, nothing flips
+  } else {
+    p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
   }
+  G.tel.weapon=p.wep.name;
+  say(g.name+' into the backpack.'); blip('pick');
+  return true;
+}
+function swapGuns(){
 '@
+
+# 2. THE PRESS: a gun cell drags while the backpack is open.
 SubRx @'
+        setHot(_HC2.i);
         if(_hs2&&_hs2.kind!=='gun'&&_hs2.itemKey){
           G.drag={key:_hs2.itemKey,fromHot:_HC2.i};
           blip('pick');
         }
+        return;
 '@ @'
-        // v11.90, HIS NOTE: "why can't i drag items to diff keys??" The derived
-        // cells (Medical, Armour Plate, the grenades) carried no item key, so
-        // only a cell he had already assigned could be picked up. A derived
-        // cell drags by the item it shows.
-        var _dk=_hs2?(_hs2.itemKey||((_hs2.kind==='heal'||_hs2.kind==='armor'||_hs2.kind==='throw')&&_hs2.icon&&ITEMS[_hs2.icon]&&(_hs2.kind!=='heal'||_hs2.count>0)?_hs2.icon:null)):null;   // an empty Medical cell shows a bandage it does not hold
-        if(_hs2&&_hs2.kind!=='gun'&&_dk){
-          G.drag={key:_dk,fromHot:_HC2.i};
+        setHot(_HC2.i);
+        if(_hs2&&_hs2.kind!=='gun'&&_hs2.itemKey){
+          G.drag={key:_hs2.itemKey,fromHot:_HC2.i};
           blip('pick');
         }
+        // v11.90, HIS NOTE: "GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY
+        // ITEM". With the backpack open, the gun in a hand cell can be picked
+        // up and dropped into the bag. Closed, a click still only selects.
+        else if(_hs2&&_hs2.kind==='gun'&&(_hs2.k==='gunA'||_hs2.k==='gunB')&&!_hs2.vacant&&G.bagOpen&&_hs2.icon&&_hs2.icon!=='fists'){
+          G.drag={key:'gun_'+_hs2.icon,gunSlot:_hs2.k,fromHot:_HC2.i};
+          blip('pick');
+        }
+        return;
 '@
 
-# AND THE UNDERCROFT BELT, which had the same fault: only an assigned cell dragged.
+# 3. THE RELEASE: over the open backpack, the gun is bagged; anywhere else,
+# nothing happens. The belt loop below is skipped for this drag (d.key is
+# cleared), so a gun let go back on its own cell says nothing.
 SubRx @'
-          var _sl=hotbarSlots()[_H.i];
-          if(_sl&&_sl.itemKey){ G.drag={key:_sl.itemKey,fromHot:_H.i}; blip('pick'); }
+  if(e.button===0&&G&&G.drag){
+    var d=G.drag; G.drag=null;
+    var dropped=false;
 '@ @'
-          var _sl=hotbarSlots()[_H.i];
-          // v11.90, HIS NOTE: the floor's belt drags derived cells by the item they show too.
-          var _sdk=_sl?(_sl.itemKey||((_sl.kind==='heal'||_sl.kind==='armor'||_sl.kind==='throw')&&_sl.icon&&ITEMS[_sl.icon]&&(_sl.kind!=='heal'||_sl.count>0)?_sl.icon:null)):null;
-          if(_sl&&_sl.kind!=='gun'&&_sdk){ G.drag={key:_sdk,fromHot:_H.i}; blip('pick'); }
+  if(e.button===0&&G&&G.drag){
+    var d=G.drag; G.drag=null;
+    var dropped=false;
+    // v11.90, HIS NOTE: a gun dragged off a hand cell. Released over the open
+    // backpack it goes in; released anywhere else it stays where it was.
+    if(d.gunSlot){
+      if(G.bagOpen&&G.bagPanel&&inRect(G.bagPanel,mouse.x,mouse.y)) bagHeldGun(d.gunSlot);
+      d={key:null}; dropped=true;
+    }
+'@
+SubRx @'
+    if(G.hotCells) for(var hc=0;hc<G.hotCells.length;hc++){
+      var HC=G.hotCells[hc];
+'@ @'
+    if(G.hotCells&&d.key) for(var hc=0;hc<G.hotCells.length;hc++){
+      var HC=G.hotCells[hc];
+'@
+
+# The header above the belt block stated the old rule.
+SubRx @'
+  // same drag the bag uses. Guns select only.
+'@ @'
+  // same drag the bag uses. Guns select only while the backpack is closed (v11.90).
 '@
 
 # STAMPS.
@@ -89,11 +128,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A BELT KEY HOLDING A GUN FROM YOUR BACKPACK NOW EQUIPS IT, and every belt cell can be dragged to another key.',
+  'A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK: with the backpack open, drag it off its slot and drop it in.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.89:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.89 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.89:[^']*'",{ param($m) "now:'v11.90: HIS NOTE of 2026-09-06, the belt said Support MG but the pistol fired, and items could not be dragged to other keys. A belt key holding a gun from the backpack now equips it into the hands (swapped up if the equip path routed it to the free slot) and the highlight follows; and the derived cells (Medical, Armour Plate, grenades) drag by the item they show, so any cell can be moved to another key. Check 11.90 assigns a bagged SMG to key 4 and presses it, requiring the SMG in hand, and presses on the derived Medical cell through the real canvas mousedown requiring a drag carrying the bandage; fails on v11.89.'" })
+$s=[regex]::Replace($s,"now:'v11\.89:[^']*'",{ param($m) "now:'v11.90: HIS NOTE of 2026-09-06, guns should function like every other inventory item; a gun in his hands could not be put back in the backpack because the two gun cells were select-only. With the backpack open a press on a gun cell starts a drag and a release over the bag calls bagHeldGun, which puts the gun in the bag (issued kit refused, an armoury gun spliced and recorded as v8.32 does) and brings the other gun or bare hands up, keeping its numbered slot. Check 11.90 opens the bag, presses on slot 1 through the real canvas mousedown, releases over the bag panel through the real window mouseup, and requires the gun in the bag and bare hands up; fails on v11.89.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

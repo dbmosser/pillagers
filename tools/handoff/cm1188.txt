@@ -1,8 +1,9 @@
-v11.88: his note, a strike leaves Fulgurite and nothing else
+v11.88: his order, two contract verdict lines out of the conditions panel
 
-New item, worth 2,500; the scorched cache holds one of it instead of a
-random valuable, with the seeded draws kept so the stream is unchanged.
-Check 11.88 forces a strike through the real tick and reads the cache;
-fails on v11.87.
+"left to be gone" and "nothing killed yet" were the live verdicts of the
+kill-nothing and three-minute conduct contracts he holds, printed without
+their names. Removed from the raid panel as ordered; the contracts still
+stand at the Mainframe. Check 11.88 records the canvas text over a raid
+frame with both contracts held and a no-heals control; fails on v11.87.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

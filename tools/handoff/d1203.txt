@@ -1,4 +1,4 @@
-## v11.95 - THE BENCH TELLS THE TRUTH ABOUT ITS GUNS
+## v12.03 - THE BENCH TELLS THE TRUTH ABOUT ITS GUNS
 
 From the read-only review of this morning's shipped builds, on v11.79.
 
@@ -29,12 +29,12 @@ it is a key for his own rewording of it. The same build repairs check
 (the shop stocks no blue gun, so three of its four price controls were
 silent no-ops), and the v9.43 check that asserted a servo is in no recipe.
 
-MEASURED. Check 11.95 reads the bench through the shown rarity and
+MEASURED. Check 12.03 reads the bench through the shown rarity and
 requires at least one green and one blue and nothing else; requires the
 card not to call the Carbine green; requires the blurb for a crafted gun to
 say gun and not salvage; requires the stash reasons for a servo and an
 optic to name contracts; and opens the bench, selects the Carbine and
-requires its detail pill to read RARE. On the v11.94 fixture the card says
+requires its detail pill to read RARE. On the v12.02 fixture the card says
 green, the blurb says salvage, the reasons say crafting and the pill says
 UNCOMMON.
 

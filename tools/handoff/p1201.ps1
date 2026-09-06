@@ -30,7 +30,7 @@ function commitKit(){
     // a death puts his own loadout back rather than making him rebuild it.
     P.kitBeforeFree=(P.kit||[]).slice();
 '@ @'
-// v11.93, from the 2026-09-06 menu audit: the packing and the belt plan he had
+// v12.01, from the 2026-09-06 menu audit: the packing and the belt plan he had
 // before taking the free kit come back, minus anything no longer in the stash,
 // with any key left pointing at nothing pruned. Called by USE MY OWN GEAR and by
 // MY LOADOUT at the lift; commitKit hands the same list to the death restore.
@@ -49,7 +49,7 @@ function commitKit(){
   if(P.freeKit){
     // v6.88, his spec: remember what he had packed before the free gear replaced it, so
     // a death puts his own loadout back rather than making him rebuild it.
-    // v11.93: the button already emptied P.kit and kept it aside; that is the list.
+    // v12.01: the button already emptied P.kit and kept it aside; that is the list.
     P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
 '@
 SubRx @'
@@ -62,21 +62,21 @@ SubRx @'
 '@ @'
     if(P.freeKit){
       P.freeKit=0;
-      freeKitRestore();   // v11.93: what he had packed comes back
+      freeKitRestore();   // v12.01: what he had packed comes back
       saveProfile(); try{ renderHub(); }catch(_fh0){} renderStage(); return;
     }
     // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
     // stash rather than a move, so emptying it returns those items by itself; the
     // hotbar plan is cleared for the same reason, since a key pointing at something
     // you are not carrying is the exact fault v5.72 fixed.
-    // v11.93: kept aside first, so switching back to his own gear is not a wipe.
+    // v12.01: kept aside first, so switching back to his own gear is not a wipe.
     P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};
     P.kit=[]; P.hotAssign={}; P._gunSlot=null;
 '@
 SubRx @'
   ASKYES=function(){ P.freeKit=0; saveProfile(); ascendNow(); };
 '@ @'
-  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v11.93: MY LOADOUT gets his packing back too
+  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v12.01: MY LOADOUT gets his packing back too
 '@
 SubRx @'
     '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText()):
@@ -86,14 +86,14 @@ SubRx @'
 
 # STAMPS.
 SubRx @'
-var VER='11.92';
+var VER='12.00';
 '@ @'
-var VER='11.93';
+var VER='12.01';
 '@
 SubRx @'
-var WHATSNEW_VER='11.92';
+var WHATSNEW_VER='12.00';
 '@ @'
-var WHATSNEW_VER='11.93';
+var WHATSNEW_VER='12.01';
 '@
 SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -101,9 +101,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear, at the counter or at the lift, and it is all still there.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.92:[^']*'")).Count
-if($cnt -ne 1){ throw "DEVNOW v11.92 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.92:[^']*'",{ param($m) "now:'v11.93: from the 2026-09-06 menu audit, TAKE THE FREEBIE KIT wiped the packed backpack and the whole belt plan with no undo. The selection is kept aside on the profile (kitSaved) when the kit is taken and put back by freeKitRestore, called by USE MY OWN GEAR and by MY LOADOUT at the lift, minus anything no longer in the stash and with dead keys pruned; a raid taken with the free kit hands the saved list to the v6.88 death restore. Check 11.93 packs two items and a key, presses the real button twice, and requires the packing and the key back, then sells one item between presses and requires only the other back; fails on v11.92.'" })
+$cnt=([regex]::Matches($s,"now:'v12\.00:[^']*'")).Count
+if($cnt -ne 1){ throw "DEVNOW v12.00 matched $cnt times" }
+$s=[regex]::Replace($s,"now:'v12\.00:[^']*'",{ param($m) "now:'v12.01: from the 2026-09-06 menu audit, TAKE THE FREEBIE KIT wiped the packed backpack and the whole belt plan with no undo. The selection is kept aside on the profile (kitSaved) when the kit is taken and put back by freeKitRestore, called by USE MY OWN GEAR and by MY LOADOUT at the lift, minus anything no longer in the stash and with dead keys pruned; a raid taken with the free kit hands the saved list to the v6.88 death restore. Check 12.01 packs two items and a key, presses the real button twice, and requires the packing and the key back, then sells one item between presses and requires only the other back; fails on v12.00.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

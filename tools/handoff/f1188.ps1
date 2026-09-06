@@ -11,44 +11,38 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.88 CHECK, inserted before the v11.87 entry. A strike is forced to land
-# away from the player with the find chance at 1, through the real strike
-# tick, and the scorched cache it leaves is read.
+# v11.88 CHECK, inserted before the v11.87 entry. The profile is given the
+# two contracts he complained about plus a no-heals one as the control, a raid
+# is deployed and a frame drawn with the canvas text call recorded.
 SubRx @'
   {v:'11.87',what:'a helped survivor walks to the nearest open extraction on his own instead of following you, and leaves when he reaches the ring (his note of 2026-09-06)',
 '@ @'
-  {v:'11.88',what:'the scorched cache a lightning strike leaves holds one Fulgurite worth 2500 and nothing else (his note of 2026-09-06)',
+  {v:'11.88',what:'the raid conditions panel no longer prints the kill-nothing and three-minute contract verdicts, and still prints the no-heals one (his order of 2026-09-06)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
-     if(typeof strikeTick!=='function'||typeof ITEMS==='undefined') return 'SKIP: no storm in this build';
-     var bad=[], i;
-     if(!ITEMS.fulgurite) bad.push('there is no Fulgurite item');
-     else if(ITEMS.fulgurite.val!==2500) bad.push('Fulgurite is worth '+ITEMS.fulgurite.val+' and not 2500');
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and draw';
+     var bad=[], P2=__P(), keepC=P2.contracts, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __forceSize(1920,1080);
+       P2.contracts=[
+         {type:'conduct',ck:'quiet',n:1,prog:0,reward:1300,desc:'Extract without killing anything',tier:0},
+         {type:'conduct',ck:'swift',n:1,prog:0,reward:1000,desc:'Extract within 3 minutes of landing',tier:0},
+         {type:'conduct',ck:'clean',n:1,prog:0,reward:900,desc:'Extract without using a single heal',tier:0}];
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player;
-       // A STORM WITH LIGHTNING, installed the way check 11.56 does it (never by
-       // renaming a shared WEATHER row): the strike tick empties the list without one.
-       var storm=null; for(var w=0;w<WEATHER.length;w++) if(WEATHER[w].lightning){ storm=WEATHER[w]; break; }
-       if(!storm) return 'SKIP: no weather row carries lightning';
-       g.wx=storm; g.wxNext=null; g.wxT=0;
-       CFG.strikeFind=1;
-       var n0=g.containers.length, found=null;
-       var spots=[[600,0],[-600,0],[0,600],[0,-600],[400,400],[-400,-400]];
-       for(i=0;i<spots.length&&!found;i++){
-         g.strikes=g.strikes||[];
-         g.strikes.push({x:clamp(p.x+spots[i][0],120,WORLD_W-120),y:clamp(p.y+spots[i][1],120,WORLD_H-120),t:0.001,hit:0});
-         strikeTick(0.01);
-         for(var c=n0;c<g.containers.length&&!found;c++) if(g.containers[c].tag==='FULGURITE') found=g.containers[c];
-       }
-       if(!found) bad.push('control: no strike left a scorched cache in six tries, so nothing here can be measured');
-       else {
-         var loot=(found.loot||[]).slice();
-         if(loot.length!==1||loot[0]!=='fulgurite') bad.push('the scorched cache holds '+(loot.join(',')||'nothing')+' and not one Fulgurite');
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
+       __frame(0.016);
+       proto.fillText=function(t,x,y){ rec.push(String(t)); return o.apply(this,arguments); };
+       __frame(0.016);
+       proto.fillText=o;
+       var all=rec.join(' | ');
+       if(all.indexOf('CONDITIONS')<0) return 'SKIP: the conditions panel is not drawn here';
+       if(all.indexOf('no heals yet')<0) bad.push('control: the no-heals contract verdict is not on the panel');
+       if(all.indexOf('killed yet')>=0||all.indexOf('killed')>=0&&all.indexOf('BROKEN, ')>=0&&/BROKEN, \d+ killed/.test(all)) bad.push('the panel still prints the kill-nothing verdict');
+       if(all.indexOf('left to be gone')>=0||all.indexOf('past three minutes')>=0) bad.push('the panel still prints the three-minute verdict');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       proto.fillText=o; P2.contracts=keepC; try{ saveProfile(); }catch(_s){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       __topClear(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'11.87',what:'a helped survivor walks to the nearest open extraction on his own instead of following you, and leaves when he reaches the ring (his note of 2026-09-06)',
 '@

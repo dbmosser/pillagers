@@ -1,4 +1,4 @@
-## v11.94 - A CONTROLLER OR THE KEYBOARD CAN CRAFT AGAIN
+## v12.02 - A CONTROLLER OR THE KEYBOARD CAN CRAFT AGAIN
 
 From the read-only review of this morning's shipped builds, on v11.75.
 
@@ -22,12 +22,12 @@ Enter carry zero and craft at once. The hold dies when the button's window
 is hidden. The tooltip reads the hold length from the one constant. The
 card drops the sentence about the service button.
 
-MEASURED. Check 11.94 opens the bench with the parts for a Component Kit in
+MEASURED. Check 12.02 opens the bench with the parts for a Component Kit in
 the stash, selects that recipe, and presses the cream detail button three
 ways: a synthetic click, which must craft; a click with a detail count of
 one, which must craft nothing; and a real hold stepped past one second,
 which must craft. Then it starts a hold, hides the window, steps the hold
-and requires it cancelled with nothing spent. On the v11.93 fixture the
+and requires it cancelled with nothing spent. On the v12.01 fixture the
 synthetic click crafts nothing and the hold survives the hidden window.
 
 Not verified: a real pad in his hands; Enter from a focused button, which

@@ -1,0 +1,32 @@
+## v11.95 - FIRST TEN MINUTES: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes;
+two readers found the two halves of this independently.
+
+THE FINDING. The profile loader does everything inside a branch that runs
+only when a save exists. A friend on his first launch has no save, so none
+of it ran. Two things that matter fell through. The Settings pass
+(applyGameOpts) is the one call that arms the wording watcher, and without
+it every reworded sentence he has been given since v11.42, the whole
+shipped-wording layer, was missing from every window for the entire first
+session; the first click on a Settings row armed it and silently rewrote
+every sentence on the screen while he was reading. And the menu zoom
+default of 1.3 lived in that same branch, so the title, the welcome pack,
+the stash and every window drew at zoom 1.0 on the first day and grew a
+third larger on the second. The same class of hole v11.73 closed for the
+name three lines above it.
+
+THE BUILD. Two lines at the end of the loader, outside the branch: the
+menu zoom default, and the Settings pass. They run on every load, save or
+none, and both are already idempotent (the pass runs on every Settings
+click; the zoom line was already written for the saved branch).
+
+MEASURED. Check 11.95 clears the menu zoom and the wording watcher, hands
+the loader the null record the store resolves to when nothing is saved,
+and requires the zoom at 1.3 and the watcher armed. On the v11.94 fixture
+the zoom stays 0 and the watcher stays unarmed.
+
+Not verified: a true first launch in a clean browser profile, which this
+harness cannot make; whether the Settings rows' default options match the
+raw defaults the first session used to run on, which this build makes
+consistent with every later session rather than measures.

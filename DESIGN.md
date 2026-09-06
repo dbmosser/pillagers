@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.87 - HIS NOTE: THE SURVIVOR WALKS TO THE NEAREST EXTRACTION
+
+His note of 2026-09-06, from his fifth run this morning: "survivor should
+move towards closest extract, not follow player".
+
+WHAT THIS REVERSES. His earlier note, from August, was the opposite:
+"Survivor should follow you to extract and help you", and since then a
+helped survivor has trailed you at a hundred and fifty units and shot at
+machines near him. The later order stands.
+
+THE BUILD. A helped survivor finds the nearest open extraction ring and
+walks to it on his own, at the speed he followed at, routed by the same
+seek the machines use; he still faces you when you are near and still
+shoots at machines within his reach on the way, so he is company on the
+road and not a chore. When he reaches the ring he is gone: the game says
+which extraction he made, the run report counts him out, and he is parked
+off the map with a flag rather than removed, so nothing that iterates the
+bodies sees an index shift and no count changes. A survivor who has not
+been helped, or who has turned hostile, is unchanged.
+
+MEASURED. Check 11.87 deploys, takes the map's survivor or builds one, sets
+him down 260 units from the nearest open ring along a line proven clear,
+puts the player fourteen hundred units the other way, and steps the real
+entity update for up to forty seconds; requires him to reach the ring and
+leave, the report to count him out, and his distance to the player never
+to have closed by more than 120 units, which is what following would do.
+On the v11.86 fixture he walks to the player and never reaches the ring.
+
+Not verified: his own play; what a survivor does at a ring that closes
+while he walks, which is the next nearest open ring on the next frame;
+whether he should still fight, which nothing in his note removed.
 ## v11.86 - HIS NOTES: THE SURVIVOR PAYS MORE AND HANDS YOU SOMETHING NOW
 
 His notes of 2026-09-06, from his fourth and fifth runs this morning:

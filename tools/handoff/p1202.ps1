@@ -30,7 +30,7 @@ SubRx @'
 '@ @'
     b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
     b.onmouseleave=function(){ craftHoldCancel(); };
-    // v11.94: the pad presses a control with a synthetic click and the
+    // v12.02: the pad presses a control with a synthetic click and the
     // keyboard with Enter, both with detail 0; a real mouse click has detail
     // 1 or more and still spends nothing, the hold is its way.
     b.onclick=function(e){ if(e&&e.detail) return; btn.click(); };
@@ -39,21 +39,21 @@ SubRx @'
 SubRx @'
   if(!b||b.disabled||(b.isConnected===false)){ craftHoldCancel(); return; }
 '@ @'
-  // v11.94: and a button whose window has been hidden; the trader hides its
+  // v12.02: and a button whose window has been hidden; the trader hides its
   // modal rather than detaching it, so isConnected alone let a hold outlive it.
   if(!b||b.disabled||(b.isConnected===false)||!b.offsetParent){ craftHoldCancel(); return; }
 '@
 
 # STAMPS.
 SubRx @'
-var VER='11.93';
+var VER='12.01';
 '@ @'
-var VER='11.94';
+var VER='12.02';
 '@
 SubRx @'
-var WHATSNEW_VER='11.93';
+var WHATSNEW_VER='12.01';
 '@ @'
-var WHATSNEW_VER='11.94';
+var WHATSNEW_VER='12.02';
 '@
 SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -65,9 +65,9 @@ $cnt=([regex]::Matches($s," The same goes for the service button, which is the s
 if($cnt -ne 1){ throw "service sentence matched $cnt times" }
 $s=[regex]::Replace($s," The same goes for the service button, which is the same control\.","")
 $n++
-$cnt=([regex]::Matches($s,"now:'v11\.93:[^']*'")).Count
-if($cnt -ne 1){ throw "DEVNOW v11.93 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.93:[^']*'",{ param($m) "now:'v11.94: from the read-only review of the shipped v11.75, the hold-to-craft build deleted the only way a controller (a synthetic click from the pad) could press CRAFT. A click handler that answers only synthetic clicks (detail 0) is back; a real mouse click still spends nothing. The hold also dies when the trader window is hidden, the tooltip reads CRAFT_HOLD, and the card no longer describes a SERVICE button the game cannot draw. Check 11.94 crafts through a synthetic click (the pad press), requires a detail-1 click to spend nothing, and requires a hold to die when the window is hidden; fails on v11.93.'" })
+$cnt=([regex]::Matches($s,"now:'v12\.01:[^']*'")).Count
+if($cnt -ne 1){ throw "DEVNOW v12.01 matched $cnt times" }
+$s=[regex]::Replace($s,"now:'v12\.01:[^']*'",{ param($m) "now:'v12.02: from the read-only review of the shipped v11.75, the hold-to-craft build deleted the only way a controller (a synthetic click from the pad) could press CRAFT. A click handler that answers only synthetic clicks (detail 0) is back; a real mouse click still spends nothing. The hold also dies when the trader window is hidden, the tooltip reads CRAFT_HOLD, and the card no longer describes a SERVICE button the game cannot draw. Check 12.02 crafts through a synthetic click (the pad press), requires a detail-1 click to spend nothing, and requires a hold to die when the window is hidden; fails on v12.01.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

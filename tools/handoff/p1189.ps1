@@ -11,106 +11,38 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# HIS NOTE, 2026-09-06 (his 06:39 export, run 5, @264s): "not letting me put
-# guns back into backpack -- GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY
-# ITEM!!!!". The two gun cells were select-only since v7.21 ("Guns select
-# only"), so a gun in your hands had no way into the bag. With the backpack
-# open, a press on a gun cell picks the gun up and a release over the bag
-# puts it there; the other gun comes up, or bare hands. Closed, a click on a
-# gun cell still only selects, which is the combat rule.
-
-# 1. THE VERB. Mirrors equipFromBag's displaced-gun rules: issued kit cannot
-# be bagged, and a gun from your own armoury leaves the armoury for the raid
-# (recorded on G.spliced so an abandoned raid puts it back), as v8.32 does.
+# HIS NOTE, 2026-09-06 (his 06:39 export, run 5, @293s): "when Fulgerite is
+# searched, it should only return the item 'Fulgerite', which should be like
+# $2500 salvagable -- it makes no sense for it to be anything else, given that
+# it resulted from a lightning strike." A new item, and the scorched cache
+# holds only that. The two draws from the seeded stream are kept exactly as
+# they were, because this block runs in the sim and a draw removed here would
+# move every number after it.
 SubRx @'
-// pressing a number puts that specific gun up. `swapped` is the only new state.
-function swapGuns(){
+  wcore:{name:'Warden Core',val:3800,wt:5,r:'elite',c:'#ffc04a'},
 '@ @'
-// pressing a number puts that specific gun up. `swapped` is the only new state.
-// v11.89, HIS NOTE: a gun in your hands goes back into the backpack like any
-// other item. slot is the derived cell it was dragged from; gunA is the gun you
-// deployed with and gunB the other one, mapped through p.swapped the way
-// hotbarSlots maps them. The gun in hand is always p.wep; if that is the one
-// bagged, the other gun comes up and keeps its own numbered slot.
-function bagHeldGun(slot){
-  var p=G&&G.player; if(!p||p.downed||G.over) return false;
-  var sw=!!p.swapped;
-  var isHand=(slot==='gunA')?!sw:sw;
-  var g=isHand?p.wep:p.sec, issued=isHand?p.wepIssued:p.secIssued, arm=isHand?p.wepFromArmory:p.secFromArmory;
-  if(!g||g.id==='fists'||g.mag===0){ say('Nothing there to bag.'); return false; }
-  if(issued){ say(g.name+' is issued kit; it stays in your hands.'); return false; }
-  if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in a bag.'); return false; }
-  G.bag.push('gun_'+g.id);
-  if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); } }
-  if(isHand){
-    p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0;
-    p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
-    if(p.wep&&p.wep.id!=='fists') p.swapped=!sw;   // the gun that came up keeps its numbered slot; nothing came up, nothing flips
-  } else {
-    p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
-  }
-  G.tel.weapon=p.wep.name;
-  say(g.name+' into the backpack.'); blip('pick');
-  return true;
-}
-function swapGuns(){
-'@
-
-# 2. THE PRESS: a gun cell drags while the backpack is open.
-SubRx @'
-        setHot(_HC2.i);
-        if(_hs2&&_hs2.kind!=='gun'&&_hs2.itemKey){
-          G.drag={key:_hs2.itemKey,fromHot:_HC2.i};
-          blip('pick');
-        }
-        return;
-'@ @'
-        setHot(_HC2.i);
-        if(_hs2&&_hs2.kind!=='gun'&&_hs2.itemKey){
-          G.drag={key:_hs2.itemKey,fromHot:_HC2.i};
-          blip('pick');
-        }
-        // v11.89, HIS NOTE: "GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY
-        // ITEM". With the backpack open, the gun in a hand cell can be picked
-        // up and dropped into the bag. Closed, a click still only selects.
-        else if(_hs2&&_hs2.kind==='gun'&&(_hs2.k==='gunA'||_hs2.k==='gunB')&&!_hs2.vacant&&G.bagOpen&&_hs2.icon&&_hs2.icon!=='fists'){
-          G.drag={key:'gun_'+_hs2.icon,gunSlot:_hs2.k,fromHot:_HC2.i};
-          blip('pick');
-        }
-        return;
-'@
-
-# 3. THE RELEASE: over the open backpack, the gun is bagged; anywhere else,
-# nothing happens. The belt loop below is skipped for this drag (d.key is
-# cleared), so a gun let go back on its own cell says nothing.
-SubRx @'
-  if(e.button===0&&G&&G.drag){
-    var d=G.drag; G.drag=null;
-    var dropped=false;
-'@ @'
-  if(e.button===0&&G&&G.drag){
-    var d=G.drag; G.drag=null;
-    var dropped=false;
-    // v11.89, HIS NOTE: a gun dragged off a hand cell. Released over the open
-    // backpack it goes in; released anywhere else it stays where it was.
-    if(d.gunSlot){
-      if(G.bagOpen&&G.bagPanel&&inRect(G.bagPanel,mouse.x,mouse.y)) bagHeldGun(d.gunSlot);
-      d={key:null}; dropped=true;
-    }
+  wcore:{name:'Warden Core',val:3800,wt:5,r:'elite',c:'#ffc04a'},
+  // v11.89, HIS NOTE: what a lightning strike leaves in the ground, and the only
+  // thing the scorched cache holds. Salvage, worth what he said.
+  fulgurite:{name:'Fulgurite',val:2500,wt:2,r:'elite',c:'#e6d3ff'},
 '@
 SubRx @'
-    if(G.hotCells) for(var hc=0;hc<G.hotCells.length;hc++){
-      var HC=G.hotCells[hc];
+        var pool=['titan','core','blackbox','reactor','wcore'];
+        var key=pool[Math.min(pool.length-1,Math.floor(rr()*pool.length))];
 '@ @'
-    if(G.hotCells&&d.key) for(var hc=0;hc<G.hotCells.length;hc++){
-      var HC=G.hotCells[hc];
+        // v11.89, HIS NOTE: the strike leaves Fulgurite and nothing else; a
+        // Warden Core in the dirt made no sense to him. The draw is kept so the
+        // seeded stream is unchanged.
+        var _fdraw=rr();
+        var key='fulgurite';
 '@
 
-# The header above the belt block stated the old rule.
+# Built through setLoot, so the cache's glow knows what it holds (mkContainer
+# stamped best from the roll it threw away).
 SubRx @'
-  // same drag the bag uses. Guns select only.
+          ct.loot=[key]; ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;
 '@ @'
-  // same drag the bag uses. Guns select only while the backpack is closed (v11.89).
+          setLoot(ct,[key]); ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;   // v11.89: setLoot, so best is right
 '@
 
 # STAMPS.
@@ -128,11 +60,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK: with the backpack open, drag it off its slot and drop it in.',
+  'A LIGHTNING STRIKE THAT MISSES YOU SOMETIMES FUSES THE GROUND. What it leaves is FULGURITE, worth 2,500, and nothing else.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.88:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.88 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.88:[^']*'",{ param($m) "now:'v11.89: HIS NOTE of 2026-09-06, guns should function like every other inventory item; a gun in his hands could not be put back in the backpack because the two gun cells were select-only. With the backpack open a press on a gun cell starts a drag and a release over the bag calls bagHeldGun, which puts the gun in the bag (issued kit refused, an armoury gun spliced and recorded as v8.32 does) and brings the other gun or bare hands up, keeping its numbered slot. Check 11.89 opens the bag, presses on slot 1 through the real canvas mousedown, releases over the bag panel through the real window mouseup, and requires the gun in the bag and bare hands up; fails on v11.88.'" })
+$s=[regex]::Replace($s,"now:'v11\.88:[^']*'",{ param($m) "now:'v11.89: HIS NOTE of 2026-09-06, the scorched cache a strike leaves should hold only Fulgurite, worth about 2500 salvage. New item fulgurite (val 2500, elite); the strike cache holds it and nothing else; the seeded draws are kept so the stream is unchanged. Check 11.89 forces a strike to miss and leave a cache and requires its loot to be exactly one Fulgurite worth 2500; fails on v11.88 where the cache holds a core or a Warden Core.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

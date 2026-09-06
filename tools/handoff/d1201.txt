@@ -1,4 +1,4 @@
-## v11.93 - TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED
+## v12.01 - TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED
 
 From the 2026-09-06 read-only menu audit, its highest-value open item on
 the alpha path.
@@ -19,11 +19,11 @@ the stash, so a sale in between cannot resurrect an item. The button's own
 text says the packing is kept. No confirmation dialog, because the undo is
 one press and a dialog on a reversible act is a nag.
 
-MEASURED. Check 11.93 packs a medkit and a plate with the medkit on key 3,
+MEASURED. Check 12.01 packs a medkit and a plate with the medkit on key 3,
 presses the real button and requires the kit taken and the packing emptied,
 presses it again and requires the packing and the key back; then takes the
 kit again, sells the plate out of the stash, switches back and requires the
-medkit alone restored. On the v11.92 fixture the second press leaves the
+medkit alone restored. On the v12.00 fixture the second press leaves the
 bag empty and the check says so.
 
 Not verified: the related audit line that the Stash panel goes inert, sell

@@ -1,0 +1,8 @@
+v11.93: first ten minutes, ENTER and the start button both commit the typed name
+
+The title name box had no key handler and the start button never read it,
+so a name typed and not committed with CHANGE NAME was thrown away. ENTER
+in the box commits and leaves it; the start button commits what is typed.
+Check 11.93 drives both on the real elements; fails on v11.92.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

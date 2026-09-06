@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.86';
+var VER='11.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.86';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.86';
+var WHATSNEW_VER='11.87';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A HELPED SURVIVOR WALKS TO THE NEAREST OPEN EXTRACTION on his own and leaves when he reaches it, instead of following you.',
   'THE SURVIVOR PAYS THREE TIMES AS MUCH and hands you a piece of salvage on the spot when you meet his request.',
   'THE MAP NAMES EACH EXTRACTION AND COUNTS DOWN TO ITS CLOSE in a size you can read.',
   'THE MERIDIAN LANCE TRAVELS THROUGH CRAWLERS, hitting every one on the line with its full damage.',
@@ -16141,6 +16142,7 @@ if(e.state==='possum'){
     // and hails you once when you are near enough to deal. Nothing else about
     // him ticks, which is exactly why he can never become a movement bug.
 if(e.kind==='stray'){
+      if(e.gone) continue;   // v11.87: he reached an extraction and left
       var sdd=dist(e,p);
       if(!G.sim&&e.hostile&&!e.downed){
         if(sdd<420&&losClear(e.x,e.y,p.x,p.y,G.vseg)){
@@ -16151,8 +16153,23 @@ if(e.kind==='stray'){
         continue;
       }
       if(!G.sim&&e.helped&&!e.downed){
-        // HIS NOTE: "Survivor should follow you to extract and help you."
-        if(sdd>150){ navSeek(e,p.x,p.y,120,dt); e.moving=true; }
+        // HIS NOTE of 2026-08: "Survivor should follow you to extract and help
+        // you." HIS NOTE of 2026-09-06: "survivor should move towards closest
+        // extract, not follow player". The later order stands: he walks to the
+        // nearest open ring on his own, shooting at machines on the way (below),
+        // and leaves when he reaches it.
+        var _sz=null,_szd=1e9;
+        for(var _zq=0;_zq<G.zones.length;_zq++){ var _zz=G.zones[_zq]; if(!_zz.open) continue; var _zd=dist(e,_zz); if(_zd<_szd){ _szd=_zd; _sz=_zz; } }
+        if(_sz&&_szd>_sz.r*0.9){
+          navSeek(e,_sz.x,_sz.y,120,dt); e.moving=true;
+          e.face+=clamp(angDiff(Math.atan2(_sz.y-e.y,_sz.x-e.x),e.face),-2.2*dt,2.2*dt);   // he faces where he walks
+        }
+        else if(_sz){
+          e.moving=false; e.gone=1; e.x=-9000; e.y=-9000;
+          say('The survivor made it to Extraction '+extLetter(_sz)+'.');
+          if(G.tel) G.tel.strayOut=(G.tel.strayOut||0)+1;
+          continue;
+        }
         else e.moving=false;
         e.cd=(e.cd||0)-dt;
         if(e.cd<=0){
@@ -16167,7 +16184,7 @@ if(e.kind==='stray'){
           if(_sgT){ e.face=Math.atan2(_sgT.y-e.y,_sgT.x-e.x); e.cd=1.1; fireWeapon(e,WEAPONS.pistol,_sgT.x,_sgT.y,false); }
         }
       }
-      if(sdd<300) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.2*dt,2.2*dt);
+      if(sdd<300&&!(e.helped&&!e.hostile)) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.2*dt,2.2*dt);   // v11.87: a helped man faces his road, not you
       if(!e.found&&sdd<190&&!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)){
         e.found=1;
         say(e.helped?'The survivor is still there.'
@@ -18717,7 +18734,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     weakHits:T.weakHits||0,wallsDown:T.wallsDown||0,storyRead:T.storyRead||0,
     rivalMet:T.rivalMet||0,parleys:T.parleys||0,ringCrowd:T.ringCrowd||null,
     pgLook:T.pgLook||null,
-    strayHelped:T.strayHelped||0,strayKilled:T.strayKilled||0,wildKilled:T.wildKilled||0,
+    strayHelped:T.strayHelped||0,strayKilled:T.strayKilled||0,strayOut:T.strayOut||0,wildKilled:T.wildKilled||0,
     pedSold:T.pedSold||0,pedKilled:T.pedKilled||0,rackPay:T.rackPay||0,
     crewRevives:T.crewRevives||0,mercRevives:T.mercRevives||0,raiderRevives:T.raiderRevives||0,
     lastHitName:T.lastHitName||null,
@@ -28411,7 +28428,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.86: HIS NOTES of 2026-09-06, the survivor should pay more, give something instantly when his request is met, and the card should not say already banked. He pays 900 to 1500 (was 260 to 540; my number), hands over one piece of salvage through the same grant a container uses, one sentence says all of it, and the card names the gift on an extraction. Check 11.86 stages a survivor who wants a bandage, hands it over through strayGive, requires the pay at 900 or more, the gift in the bag, and the card line without the old wording; fails on v11.85.',
+  now:'v11.87: HIS NOTE of 2026-09-06, the survivor should move towards the closest extraction, not follow the player; reverses his earlier follow-me note. A helped survivor walks to the nearest open ring at his old speed, still shooting at machines on the way, and when he reaches it he leaves (parked off the map with a gone flag, not spliced). Check 11.87 stages a helped survivor near a ring with the player far away, steps the real entity update, and requires him to reach the ring and leave while his distance to the player never falls; fails on v11.86 where he walks to the player.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30721,7 +30738,7 @@ if(r.ghostIn) line+=' ghost:1';
     if(r.wallsDown) line+=' wallsDown:'+r.wallsDown;
     if(r.storyRead) line+=' storyRead:'+r.storyRead;
     if(r.parleys) line+=' parleys:'+r.parleys;
-    if(r.strayHelped||r.strayKilled) line+=' strays:'+(r.strayHelped||0)+'helped/'+(r.strayKilled||0)+'killed';
+    if(r.strayHelped||r.strayKilled||r.strayOut) line+=' strays:'+(r.strayHelped||0)+'helped/'+(r.strayKilled||0)+'killed/'+(r.strayOut||0)+'out';
     if(r.wildKilled) line+=' wildKilled:'+r.wildKilled;
     if(r.pedSold||r.pedKilled) line+=' pedlar:'+(r.pedSold||0)+'sold'+(r.pedKilled?'/killed':'');
     if(r.rackPay) line+=' rackPay:'+r.rackPay+'c';
