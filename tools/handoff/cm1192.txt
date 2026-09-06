@@ -1,0 +1,9 @@
+v11.92: the safe pocket refuses a grenade or an ammo box
+
+Neither rides in the backpack, so neither could come home from the pocket,
+which said 1/1 anyway and spent the only death protection on nothing. The
+pocket refuses both with a sentence and a saved pocket on either is cleared
+on load. Check 11.92 drives the real pocket and the real loader; fails on
+v11.91.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -5732,6 +5732,337 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.93',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
+   run:function(){
+     if(typeof renderFreeKit!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the freebie kit';
+     var bad=[];
+     function btn(){ return document.querySelector('.fkbtn'); }
+     function press(){ var b=btn(); if(!b||!b.onclick) return 'no button'; try{ b.onclick(); }catch(e){ return 'threw '+(e&&e.message||e); } return null; }
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       var P=__P();
+       P.stash=['medkit','plate','frag']; P.kit=['medkit','plate']; P.hotAssign={2:'medkit'}; P.freeKit=0; P.kitSaved=null;
+       renderFreeKit();
+       if(!btn()) return 'SKIP: the freebie kit button was not drawn';
+       var e1=press(); if(e1) bad.push('control: the first press failed ('+e1+')');
+       if(!P.freeKit) bad.push('control: the first press did not take the kit');
+       if((P.kit||[]).length) bad.push('control: the kit was not emptied while the free kit is taken (his rule)');
+       var e2=press(); if(e2) bad.push('control: the second press failed ('+e2+')');
+       if(P.freeKit) bad.push('control: the second press did not switch back');
+       if((P.kit||[]).join(',')!=='medkit,plate') bad.push('switching back did not restore the packing (kit '+(P.kit||[]).join(',')+')');
+       if(!P.hotAssign||P.hotAssign[2]!=='medkit') bad.push('switching back did not restore the belt plan');
+       // SOLD IN BETWEEN: only what is still in the stash comes back.
+       press(); P.stash=['medkit','frag']; press();
+       if((P.kit||[]).join(',')!=='medkit') bad.push('with the plate sold in between, switching back restored '+(P.kit||[]).join(',')+' and not medkit alone');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.92',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
+   run:function(){
+     if(typeof setSafe!=='function'||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot reach the pocket or the loader';
+     var bad=[];
+     try{
+       __topClear(); __cleanProfile();
+       var P=__P(); P.safe=null;
+       var r1=setSafe('frag');
+       if(!r1) bad.push('the pocket took a Frag Charge without a word');
+       if(P.safe==='frag') bad.push('the pocket is saved on a Frag Charge');
+       var r2=setSafe('ammobox');
+       if(!r2) bad.push('the pocket took an Ammo Box without a word');
+       if(P.safe==='ammobox') bad.push('the pocket is saved on an Ammo Box');
+       var r3=setSafe('medkit');
+       if(r3) bad.push('control: the pocket refused a Medkit ('+r3+')');
+       if(P.safe!=='medkit') bad.push('control: the pocket did not keep the Medkit');
+       __applyLoaded({credits:900,safe:'frag'});
+       if(__P().safe==='frag') bad.push('a saved pocket on a Frag Charge survived the load');
+       __applyLoaded({credits:900,safe:'medkit'});
+       if(__P().safe!=='medkit') bad.push('control: a saved pocket on a Medkit did not survive the load ('+__P().safe+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.91',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
+   run:function(){
+     if(typeof hubModalOpen!=='function'||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the floor gate';
+     var ttl=document.getElementById('title'); if(!ttl) return 'SKIP: no character screen element';
+     var bad=[], wasOn=ttl.classList.contains('on');
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       ttl.classList.remove('on');
+       var pb=document.getElementById('pausebox'); if(pb) pb.classList.remove('on');
+       if(hubModalOpen()) bad.push('control: with nothing open the gate already reads open, so it proves nothing');
+       ttl.classList.add('on');
+       if(!hubModalOpen()) bad.push('with the character screen on, the floor gate reads closed, so the stations behind it still take keys');
+       ttl.classList.remove('on');
+       if(hubModalOpen()) bad.push('control: with the character screen off again the gate still reads open');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(wasOn) ttl.classList.add('on'); else ttl.classList.remove('on'); }catch(_t){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.90',what:'a belt key holding a gun from the backpack equips it into your hands, and a derived belt cell (Medical, plate, grenade) can be dragged to another key (his note of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__runPrep)) return 'SKIP: this fixture cannot deploy and draw';
+     if(typeof setHot!=='function'||typeof hotbarSlots!=='function'||typeof cv==='undefined'||typeof mouse==='undefined') return 'SKIP: no belt in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], g=null, k, i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); var p=g.player;
+       // ONE: the key equips the bagged gun.
+       var pistol={}; for(k in WEAPONS.pistol) pistol[k]=WEAPONS.pistol[k]; pistol.q='field'; pistol.qRank=1;
+       p.wep=pistol; p.ammo=8; p.wepIssued=false; p.wepFromArmory=false;
+       p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false; p.swapped=false; p.downed=false; p.roll=0;
+       g.bag=['gun_smg']; g.hotAssign={3:'gun_smg'}; g.hot=0; g.paused=false;
+       setHot(3);
+       if(!p.wep||p.wep.id!=='smg') bad.push('key 4 showed the SMG but left '+(p.wep&&p.wep.id)+' in hand');
+       if(g.bag.indexOf('gun_smg')>=0) bad.push('the SMG is still in the backpack after the key');
+       // TWO: a derived cell drags.
+       g.bag=['bandage']; g.hotAssign={}; g.bagOpen=true; g.drag=null; g.mapOpen=false;
+       __frame(0.016); __frame(0.016);
+       var sl=hotbarSlots(), hi=-1;
+       for(i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='heal'&&!sl[i].assigned){ hi=i; break; }
+       var cell=(hi>=0&&g.hotCells)?g.hotCells[hi]:null;
+       if(!cell) bad.push('control: the belt drew no Medical cell to press');
+       else {
+         mouse.x=cell.x+cell.w/2; mouse.y=cell.y+cell.h/2;
+         cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
+         if(!g.drag||g.drag.key!=='bandage') bad.push('pressing on the derived Medical cell started no drag'+(g.drag?' (drag: '+JSON.stringify(g.drag).slice(0,60)+')':''));
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(g){ g.bagOpen=false; g.drag=null; } mouse.down=false; }catch(_c){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.89',what:'with the backpack open, the gun in your hands can be dragged off its belt cell and dropped into the bag; bare hands come up (his note of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__runPrep)) return 'SKIP: this fixture cannot deploy and draw';
+     if(typeof cv==='undefined'||typeof mouse==='undefined'||typeof WEAPONS==='undefined') return 'SKIP: no canvas or mouse in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], g=null, k;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); var p=g.player;
+       var smg={}; for(k in WEAPONS.smg) smg[k]=WEAPONS.smg[k]; smg.q='field'; smg.qRank=1;
+       p.wep=smg; p.ammo=20; p.wepIssued=false; p.wepFromArmory=false;
+       p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false; p.swapped=false; p.downed=false;
+       g.bag=[]; g.bagOpen=true; g.drag=null; g.mapOpen=false;
+       __frame(0.016); __frame(0.016);
+       var cell=(g.hotCells||[])[0];
+       if(!cell) return 'SKIP: the belt drew no cells';
+       if(!g.bagPanel) bad.push('control: the open backpack drew no panel');
+       mouse.x=cell.x+cell.w/2; mouse.y=cell.y+cell.h/2;
+       cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
+       if(!g.drag||g.drag.gunSlot!=='gunA') bad.push('pressing on the gun in slot 1 with the backpack open started no drag'+(g.drag?' (drag: '+JSON.stringify(g.drag).slice(0,60)+')':''));
+       if(g.bagPanel){ mouse.x=g.bagPanel.x+g.bagPanel.w/2; mouse.y=g.bagPanel.y+g.bagPanel.h/2; }
+       window.dispatchEvent(new MouseEvent('mouseup',{button:0}));
+       if(g.bag.indexOf('gun_smg')<0) bad.push('the gun did not land in the backpack (bag '+g.bag.join(',')+')');
+       if(!p.wep||p.wep.id!=='fists') bad.push('the hands still hold '+(p.wep&&p.wep.id));
+       if(g.drag) bad.push('control: the drag was left hanging after the release');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(g){ g.bagOpen=false; g.drag=null; } mouse.down=false; }catch(_c){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.88',what:'the scorched cache a lightning strike leaves holds one Fulgurite worth 2500 and nothing else (his note of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof strikeTick!=='function'||typeof ITEMS==='undefined') return 'SKIP: no storm in this build';
+     var bad=[], i;
+     if(!ITEMS.fulgurite) bad.push('there is no Fulgurite item');
+     else if(ITEMS.fulgurite.val!==2500) bad.push('Fulgurite is worth '+ITEMS.fulgurite.val+' and not 2500');
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       // A STORM WITH LIGHTNING, installed the way check 11.56 does it (never by
+       // renaming a shared WEATHER row): the strike tick empties the list without one.
+       var storm=null; for(var w=0;w<WEATHER.length;w++) if(WEATHER[w].lightning){ storm=WEATHER[w]; break; }
+       if(!storm) return 'SKIP: no weather row carries lightning';
+       g.wx=storm; g.wxNext=null; g.wxT=0;
+       CFG.strikeFind=1;
+       var n0=g.containers.length, found=null;
+       var spots=[[600,0],[-600,0],[0,600],[0,-600],[400,400],[-400,-400]];
+       for(i=0;i<spots.length&&!found;i++){
+         g.strikes=g.strikes||[];
+         g.strikes.push({x:clamp(p.x+spots[i][0],120,WORLD_W-120),y:clamp(p.y+spots[i][1],120,WORLD_H-120),t:0.001,hit:0});
+         strikeTick(0.01);
+         for(var c=n0;c<g.containers.length&&!found;c++) if(g.containers[c].tag==='FULGURITE') found=g.containers[c];
+       }
+       if(!found) bad.push('control: no strike left a scorched cache in six tries, so nothing here can be measured');
+       else {
+         var loot=(found.loot||[]).slice();
+         if(loot.length!==1||loot[0]!=='fulgurite') bad.push('the scorched cache holds '+(loot.join(',')||'nothing')+' and not one Fulgurite');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.87',what:'a helped survivor walks to the nearest open extraction on his own instead of following you, and leaves when he reaches the ring (his note of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof updateEnts!=='function'||typeof mkStray!=='function') return 'SKIP: no survivor or entity update in this build';
+     var bad=[], i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       var Z=null; for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
+       if(!Z) return 'SKIP: no open extraction ring';
+       var dirs=[[1,0],[-1,0],[0,1],[0,-1]], dir=null;
+       for(i=0;i<dirs.length&&!dir;i++) if(losClear(Z.x,Z.y,Z.x+dirs[i][0]*280,Z.y+dirs[i][1]*280,g.map.segs)) dir=dirs[i];
+       if(!dir) return 'SKIP: no clear approach to the ring';
+       var e=null; for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='stray') e=g.ents[i];
+       if(!e){ e=mkStray(Z.x,Z.y); g.ents.push(e); }
+       e.x=Z.x+dir[0]*260; e.y=Z.y+dir[1]*260; e.helped=1; e.hostile=false; e.downed=false; e.gone=0; e.found=1; e.hp=e.maxhp||70;
+       p.x=clamp(Z.x+dir[1]*1400,100,WORLD_W-100); p.y=clamp(Z.y-dir[0]*1400,100,WORLD_H-100); p.downed=false;   // off to the side, so the walk to the ring is not a walk toward him
+       var d0=dist(e,Z), dp0=dist(e,p), minDp=dp0, reached=false, t=0;
+       for(i=0;i<400&&!reached;i++){
+         updateEnts(0.1); t+=0.1;
+         if(e.gone){ reached=true; break; }
+         var dp=dist(e,p); if(dp<minDp) minDp=dp;
+       }
+       if(!reached) bad.push('after '+t.toFixed(0)+' s the survivor never reached the ring and left (he is '+dist(e,Z).toFixed(0)+' from it, was '+d0.toFixed(0)+')');
+       if(minDp<dp0-120) bad.push('control: he closed on the player by '+(dp0-minDp).toFixed(0)+' units, which is following, not walking out');
+       if(reached&&!(g.tel&&g.tel.strayOut)) bad.push('the run report does not count the survivor as out');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.86',what:'meeting the survivor request pays 900 or more, puts a piece of salvage in your hands at once, and the card names the gift without saying already banked (his notes of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__runPrep&&window.__P)) return 'SKIP: this fixture cannot deploy and read the card';
+     if(typeof strayGive!=='function'||typeof mkStray!=='function') return 'SKIP: no survivor in this build';
+     var bad=[], banked='already '+'banked', paidLine='The survivor '+'paid you';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, P=__P(), e=null, i;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='stray'&&!g.ents[i].downed) e=g.ents[i];
+       if(!e){ e=mkStray(p.x+40,p.y); g.ents.push(e); }
+       e.want='bandage'; e.helped=0; e.hostile=false; e.downed=false;
+       g.bag=['bandage']; p.reserve=0;
+       var c0=P.credits||0;
+       strayGive(e);
+       if(!e.helped) bad.push('control: the survivor was not helped (bag '+g.bag.join(',')+')');
+       var paid=(P.credits||0)-c0;
+       if(paid<900) bad.push('the survivor paid '+paid+', under 900');
+       if(!g.strayGave) bad.push('the survivor gave nothing on the spot');
+       else if(g.bag.indexOf(g.strayGave)<0&&!g.containers.some(function(c){ return c.loot&&c.loot.indexOf(g.strayGave)>=0&&Math.hypot(c.x-e.x,c.y-e.y)<60; })) bad.push('the gift '+g.strayGave+' is neither in the bag nor at his feet');
+       p.downed=false; __endRaid('extract');
+       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+       if(txt.indexOf(paidLine)<0) bad.push('control: the card has no survivor line (card says: '+txt.slice(0,80)+')');
+       if(txt.indexOf(banked)>=0) bad.push('the card still says '+banked);
+       if(g.strayGave&&txt.indexOf('gave you a')<0) bad.push('the card does not name the gift');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.85',what:'the map names each extraction at 18px or more and counts down to its close at 15px or more, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
+     proto.fillText=function(t){ try{ rec.push({t:String(t),font:this.font}); }catch(_r){} return orig.apply(this,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.mapOpen=true;
+       drawMapOverlay();
+       function px(f){ var m=/([\d.]+)px/.exec(f||''); return m?parseFloat(m[1]):0; }
+       var names=rec.filter(function(r){ return r.t.indexOf('EXTRACT ')===0&&r.t.length<=10; });
+       var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |OPEN TO EXTRACT)/.test(r.t); });
+       if(!names.length) bad.push('control: the map drew no EXTRACT name');
+       if(!subs.length) bad.push('control: the map drew no countdown or state line under a ring');
+       var smallN=names.filter(function(r){ return px(r.font)<18; }), smallS=subs.filter(function(r){ return px(r.font)<15; });
+       if(smallN.length) bad.push(smallN.length+' extraction name(s) drawn at '+px(smallN[0].font)+'px, under 18');
+       if(smallS.length) bad.push(smallS.length+' countdown line(s) drawn at '+px(smallS[0].font)+'px, under 15 ("'+smallS[0].t+'")');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ proto.fillText=orig; try{ var g2=__state(); if(g2) g2.mapOpen=false; }catch(_m){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.84',what:'a Meridian Lance round travels through crawlers, hitting each one on the line once with its full damage, while a rifle round still stops at the first (his note of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof fireWeapon!=='function'||typeof updateBullets!=='function'||typeof WEAPONS==='undefined'||!WEAPONS.lance) return 'SKIP: no lance in this build';
+     var bad=[], i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       if(!g.zones||!g.zones.length) return 'SKIP: no open ground to stage on';
+       var Z=g.zones[0], ok=false, dx=0, dy=0;
+       var dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+       for(i=0;i<dirs.length&&!ok;i++) if(losClear(Z.x,Z.y,Z.x+dirs[i][0]*260,Z.y+dirs[i][1]*260,g.map.segs)){ ok=true; dx=dirs[i][0]; dy=dirs[i][1]; }
+       if(!ok) return 'SKIP: no clear line from the ring to shoot along';
+       // TWO CRAWLERS ON THE LINE, both facing the shooter.
+       var cs=[]; for(i=0;i<g.ents.length&&cs.length<2;i++) if(g.ents[i].kind==='crawler'&&!g.ents[i].downed&&!g.ents[i].finished) cs.push(g.ents[i]);
+       if(cs.length<2) return 'SKIP: fewer than two crawlers on this map';
+       function stage(){
+         p.x=Z.x; p.y=Z.y; p.downed=false; p.face=Math.atan2(dy,dx);
+         for(var c=0;c<2;c++){ var e=cs[c]; e.x=Z.x+dx*(110+c*70); e.y=Z.y+dy*(110+c*70); e.hp=1000; e.maxhp=1000; e.face=Math.atan2(-dy,-dx); e.hitT=0; }
+         for(var o=0;o<g.ents.length;o++){ var oe=g.ents[o]; if(cs.indexOf(oe)<0&&Math.abs(oe.x-Z.x)<400&&Math.abs(oe.y-Z.y)<400){ oe.x=Z.x-dx*900-dy*900; oe.y=Z.y-dy*900+dx*900; } }
+         g.bullets.length=0;
+       }
+       function shoot(wep){
+         p.wep=wep; p.ammo=wep.mag; p.reloading=0; p.jam=0;
+         fireWeapon(p,wep,Z.x+dx*300,Z.y+dy*300,true);
+         if(!g.bullets.length) return 'no round left the muzzle';
+         for(var f=0;f<40;f++) updateBullets(0.016);
+         return null;
+       }
+       // THE LANCE.
+       stage(); var err=shoot(WEAPONS.lance);
+       if(err) bad.push('control: the lance fired nothing ('+err+')');
+       var l1=1000-cs[0].hp, l2=1000-cs[1].hp;
+       if(!(l1>=60)) bad.push('control: the lance did not hit the first crawler (loss '+l1.toFixed(0)+')');
+       if(!(l2>=60)) bad.push('the lance round stopped at the first crawler; the second took '+l2.toFixed(0));
+       if(l1>200||l2>200) bad.push('a crawler was hit more than once by one round (losses '+l1.toFixed(0)+' and '+l2.toFixed(0)+')');
+       // A RIFLE STOPS AT THE FIRST.
+       stage(); err=shoot(WEAPONS.rifle||WEAPONS.pistol);
+       if(err) bad.push('control: the rifle fired nothing ('+err+')');
+       var r1=1000-cs[0].hp, r2=1000-cs[1].hp;
+       if(!(r1>=10)) bad.push('control: the rifle did not hit the first crawler (loss '+r1.toFixed(0)+')');
+       if(r2>0) bad.push('control: a rifle round went through the first crawler too (second took '+r2.toFixed(0)+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.83',what:'a stim is ten seconds of unlimited stamina and a fifth more speed, used through the belt key: the bar stays full through a sprint and the same sprint covers 1.2x the ground (his spec of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__P)) return 'SKIP: this fixture cannot deploy';
+     if(typeof useHot!=='function'||typeof setHot!=='function'||typeof updatePlayer!=='function') return 'SKIP: no belt or player update in this build';
+     var bad=[], k;
+     function clearKeys(){ for(k in keys) delete keys[k]; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, P=__P();
+       if(!g.zones||!g.zones.length) return 'SKIP: no extraction ring to sprint from';
+       var Z=g.zones[0];
+       // A CLEAR LINE FROM THE RING, 220 units, in whichever direction has one.
+       var dirs=[['KeyD',1,0],['KeyA',-1,0],['KeyS',0,1],['KeyW',0,-1]], dir=null;
+       for(var d=0;d<dirs.length&&!dir;d++) if(losClear(Z.x,Z.y,Z.x+dirs[d][1]*220,Z.y+dirs[d][2]*220,g.map.segs)) dir=dirs[d];
+       if(!dir) return 'SKIP: no clear line from the ring to sprint along';
+       function sprintRun(){
+         p.x=Z.x; p.y=Z.y; p.downed=false; p.roll=0; p.reloading=0; g.crouchTog=false; p.stamLock=0; p.stamRelease=0;
+         clearKeys(); keys['ShiftLeft']=true; keys[dir[0]]=true;
+         var x0=p.x,y0=p.y;
+         for(var i=0;i<8;i++) updatePlayer(0.05);
+         clearKeys();
+         return Math.hypot(p.x-x0,p.y-y0);
+       }
+       // THE STIM, THROUGH THE REAL KEY.
+       g.bag=['stim']; g.hotAssign={2:'stim'}; P.hotAssign={2:'stim'}; p.stam=20; p.stimT=0;   // the raid reads its own plan
+       setHot(2); useHot();
+       if(g.bag.indexOf('stim')>=0) bad.push('control: key 3 did not use the stim (bag '+g.bag.join(',')+')');
+       if(!(p.stimT>=9.9)) bad.push('the stim did not start its ten seconds (stimT '+p.stimT+')');
+       var dStim=sprintRun();
+       if(p.stam<99.9) bad.push('the bar drained to '+p.stam.toFixed(1)+' during a sprint under the stim; it should be unlimited');
+       if(!(p.stimT>0&&p.stimT<9.9)) bad.push('the stim clock did not run down during the sprint (stimT '+p.stimT+')');
+       // THE SAME SPRINT WITHOUT IT.
+       p.stimT=0; p.stam=100;
+       var dPlain=sprintRun();
+       if(!(dPlain>20)) bad.push('control: the plain sprint covered only '+dPlain.toFixed(0)+' units, so the line was not clear');
+       if(p.stam>95) bad.push('control: the plain sprint drained nothing ('+p.stam.toFixed(1)+'), so sprint was not running');
+       var ratio=dPlain>0?dStim/dPlain:0;
+       if(!(ratio>1.12&&ratio<1.28)) bad.push('under the stim the sprint covered '+dStim.toFixed(0)+' against '+dPlain.toFixed(0)+' without, a ratio of '+ratio.toFixed(2)+' and not 1.2');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ clearKeys(); __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.82',what:'the next bandage goes on while the prior one is still healing and a plate goes on while a bandage is being applied; the one-at-a-time refusal and its countdown are gone (his notes of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';

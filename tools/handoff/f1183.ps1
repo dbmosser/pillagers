@@ -43,7 +43,7 @@ SubRx @'
          return Math.hypot(p.x-x0,p.y-y0);
        }
        // THE STIM, THROUGH THE REAL KEY.
-       g.bag=['stim']; P.hotAssign={2:'stim'}; p.stam=20; p.stimT=0;
+       g.bag=['stim']; g.hotAssign={2:'stim'}; P.hotAssign={2:'stim'}; p.stam=20; p.stimT=0;   // the raid reads its own plan
        setHot(2); useHot();
        if(g.bag.indexOf('stim')>=0) bad.push('control: key 3 did not use the stim (bag '+g.bag.join(',')+')');
        if(!(p.stimT>=9.9)) bad.push('the stim did not start its ten seconds (stimT '+p.stimT+')');

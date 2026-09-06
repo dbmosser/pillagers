@@ -34,7 +34,7 @@ SubRx @'
        var e=null; for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='stray') e=g.ents[i];
        if(!e){ e=mkStray(Z.x,Z.y); g.ents.push(e); }
        e.x=Z.x+dir[0]*260; e.y=Z.y+dir[1]*260; e.helped=1; e.hostile=false; e.downed=false; e.gone=0; e.found=1; e.hp=e.maxhp||70;
-       p.x=clamp(Z.x-dir[0]*1400,100,WORLD_W-100); p.y=clamp(Z.y-dir[1]*1400,100,WORLD_H-100); p.downed=false;
+       p.x=clamp(Z.x+dir[1]*1400,100,WORLD_W-100); p.y=clamp(Z.y-dir[0]*1400,100,WORLD_H-100); p.downed=false;   // off to the side, so the walk to the ring is not a walk toward him
        var d0=dist(e,Z), dp0=dist(e,p), minDp=dp0, reached=false, t=0;
        for(i=0;i<400&&!reached;i++){
          updateEnts(0.1); t+=0.1;

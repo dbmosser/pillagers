@@ -612,7 +612,7 @@ var want={simGreed:14,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
     // restores its own dials so the A/Bs were safe, but nothing else was.
     // Same defect again at v3.17: raiderDown shipped unpinned. Every new dial
     // must land here in the same build that introduces it.
-    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1500,raiderHaul:7,healPow:0.70,healSlow:2.4,wardenHp:900,wardenDmg:46,wardenRng:620,downTime:17,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,machVsRaider:1,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:1,simFlee:1,simCover:1,simHoldFire:0,simDodgeRing:1,
+    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSolo:1,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1500,raiderHaul:7,healPow:0.70,healSlow:2.4,wardenHp:900,wardenDmg:46,wardenRng:620,downTime:17,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,machVsRaider:1,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:1,simFlee:1,simCover:1,simHoldFire:0,simDodgeRing:1,
     // v3.41 gave the PLAYER plain-language control of eight of these dials and
     // persists his choice on the profile. The fixture loads that profile, so a
     // saved "Raiders: Many" would silently run every A/B at nRaider 15 and every
@@ -5731,6 +5731,47 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.77',what:'a frag blast reaches further and hits harder: the radius is 190 and the damage at a fixed distance matches the new formula and exceeds the old one (his order of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy or drive the loader';
+     if(typeof explodeFrag!=='function'||typeof DEF==='undefined') return 'SKIP: no frag blast in this build';
+     var bad=[], k, snap=null;
+     if(DEF.fragR!==190) bad.push('the default blast radius is '+DEF.fragR+' and not 190');
+     function withCfg(fr){ var c={}; for(k in DEF) c[k]=DEF[k]; c.fragR=fr; return {credits:900,cfgv:17,cfg:c}; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // The loader below REPLACES the profile with a bare one and __cleanProfile
+       // keeps what it finds, so the clean profile is put back through the same
+       // loader at the end; without this three later checks each went red once.
+       snap=JSON.stringify(__P());
+       CFG.fragR=DEF.fragR;   // the game reads CFG; the blast is measured at the shipped default
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, R=(CFG.fragR===undefined?190:CFG.fragR);
+       if(R!==190) bad.push('control: the blast is being measured at radius '+R+', not 190');
+       // A PILLAGER WITH A CLEAR LINE TO A POINT 40 UNITS AWAY.
+       var e=null, fx=0, fy=0;
+       for(var i=0;i<g.ents.length&&!e;i++){
+         var c=g.ents[i]; if(c.kind!=='raider'||c.downed||c.finished||c.merc) continue;
+         var tries=[[c.x+40,c.y],[c.x-40,c.y],[c.x,c.y+40],[c.x,c.y-40]];
+         for(var t=0;t<tries.length;t++){ if(losClear(tries[t][0],tries[t][1],c.x,c.y,g.map.segs)){ e=c; fx=tries[t][0]; fy=tries[t][1]; break; } }
+       }
+       if(!e) return 'SKIP: no pillager with a clear line to a blast point';
+       e.hp=1000; p.x=e.x+1500; p.y=e.y;   // he is well outside any radius
+       var de=Math.hypot(e.x-fx,e.y-fy), eff=Math.max(0,de-e.r);
+       var expectNew=115*(1-eff/190)+25, expectOld=85*(1-eff/150)+15;
+       explodeFrag({x:fx,y:fy});
+       var loss=1000-e.hp;
+       if(Math.abs(loss-expectNew)>1.5) bad.push('a blast '+Math.round(de)+' units from a pillager took '+loss.toFixed(1)+' and not the '+expectNew.toFixed(1)+' the new formula gives');
+       // CONTROL: it hits harder than it did, or the numbers moved nowhere.
+       if(loss<expectOld+5) bad.push('control: the blast took '+loss.toFixed(1)+', no more than the old formula ('+expectOld.toFixed(1)+')');
+       // THE MIGRATION: an old save still on 150 comes up at 190; a hand-set 140 survives.
+       __applyLoaded(withCfg(150));
+       if(CFG.fragR!==190) bad.push('a cfgv 17 save carrying the old 150 loaded with fragR '+CFG.fragR+' instead of 190');
+       __applyLoaded(withCfg(140));
+       if(CFG.fragR!==140) bad.push('control: a hand-set 140 was overwritten to '+CFG.fragR+' by the migration');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); __resetCfg(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.76',what:'the Scav Pistol costs 1800 in the shop, down from 3600, and is still the cheapest gun on the shelf (his order of 2026-09-06)',
    run:function(){

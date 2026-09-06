@@ -1,8 +1,8 @@
-# START HERE (written 2026-09-05, handoff from Fable to Opus; rewritten 2026-09-06 08:00 for the alpha run)
+# START HERE (written 2026-09-05, handoff from Fable to Opus; rewritten 2026-09-06 (morning) for the alpha run)
 
-## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 08:00. Read this block first.
+## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE AT 08:00:** HEAD is v11.74 (f2547d9). The tree has **v11.75 APPLIED**
+**STATE AT 07:00:** HEAD is v11.74 (f2547d9). The tree has **v11.75 APPLIED**
 (hold-to-craft) and verified on all four gates (parse PASS, check 4x PASS and
 once after 11.62, __verifySafe PASS, control fails on fx1174). Its FULL CORPUS
 is running on the Browser pane tab "seed". When `window.__PROG` is finished,
@@ -24,13 +24,13 @@ CronList shows nothing. Resize the pane to 1920x1080 after any restart.
    the floor; then "in corner during raid still wayyyyyy too tiny"). 32px
    figures, 14px labels, 44px tall, one size in the hub and in raids; the raid
    CONDITIONS box starts below the readout's real bottom (topRightBottom(),
-   read in drawHUD). REDRAFTED at 08:00; the earlier hub-only draft is gone.
+   read in drawHUD). REDRAFTED this morning; the earlier hub-only draft is gone.
    f1179's anchor was repointed to the new 11.78 what-line.
 4. **1179 GREEN AND BLUE GUNS ON THE BENCH** (his order). Four recipes: Compact
    SMG, Burst Carbine (green), Auto Rifle, Riot Scattergun (blue), parts worth
    more than the gun sells for and less than buying it. Reverses his v9.84
    rule for those two colours only.
-5. **1180 THE HUM ON THE FLOOR AFTER AN EXTRACTION** (his note, chat, 07:40).
+5. **1180 THE HUM ON THE FLOOR AFTER AN EXTRACTION** (his note, chat, about 06:50).
    Root cause found by reading: the raid branch keeps calling tickAmbience
    over the outcome card with alive = !downed, true after an EXTRACTION, so
    the bed was written back up to 0.16 after endRaid cut it, then held there
@@ -41,7 +41,7 @@ CronList shows nothing. Resize the pane to 1920x1080 after any restart.
 before shipping 1176** (the range must start at the tree's VER+1). Run each
 new check 3 to 5 times in one page and once after a raid-ending check (11.62).
 
-**DRAFTED AT 08:40, FROM HIS 06:26 AND 06:39 EXPORTS (p/f/d/a/cm 1181 to 1188 in this folder; 1183 to 1188 NOT yet dry-run, do that first: dry.ps1 from the tree VER+1 to 1188, build dry/fixture.html, run each check twice on :8801):** 1181 the KIA cutting line removed; 1182 healing stacks and a plate goes on over a bandage (two prep timers); 1183 stim = 10 s unlimited stamina and 1.2x speed (useStim); 1184 the Lance travels through crawlers (b.thru); 1185 map extraction names and countdowns readable (TYPE.head/label); 1186 survivor pays 900 to 1500 and hands over one of titan/core/optic/servo, card drops already banked; 1187 helped survivor walks to the nearest open ring and leaves (e.gone, parked off-map); 1188 Fulgurite item (2500) and the strike cache holds only it. THE DRY RUN OF 1177 TO 1182 CAUGHT THREE BROKEN CHECKS (11.77 read the fixture pin fragR 150 and handed __applyLoaded a wrapped object; 11.79 forbade contract parts the plate recipe uses; 11.80 ended the raid between frames, and the real hum lives INSIDE the frame that ends the raid, see d1180) and all are repaired; the dry fixture is served on :8801 from tools/handoff/dry (not in start-servers.ps1). The v11.76 corpus went red once on 10.34 because I resized a second tab while it ran: leave the pane alone during a corpus. Still to draft: 1189 guns back into the backpack (his @264s, GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY ITEM); 1190 the hotbar: Support MG shown but a pistol fires, and no dragging items to other keys (his @255s). The older list follows for the record.
+**DRAFTED THIS MORNING (about 07:20), FROM HIS 06:26 AND 06:39 EXPORTS (p/f/d/a/cm 1181 to 1188 in this folder; 1183 to 1188 NOT yet dry-run, do that first: dry.ps1 from the tree VER+1 to 1188, build dry/fixture.html, run each check twice on :8801):** 1181 the KIA cutting line removed; 1182 healing stacks and a plate goes on over a bandage (two prep timers); 1183 stim = 10 s unlimited stamina and 1.2x speed (useStim); 1184 the Lance travels through crawlers (b.thru); 1185 map extraction names and countdowns readable (TYPE.head/label); 1186 survivor pays 900 to 1500 and hands over one of titan/core/optic/servo, card drops already banked; 1187 helped survivor walks to the nearest open ring and leaves (e.gone, parked off-map); 1188 Fulgurite item (2500) and the strike cache holds only it. THE DRY RUN OF 1177 TO 1182 CAUGHT THREE BROKEN CHECKS (11.77 read the fixture pin fragR 150 and handed __applyLoaded a wrapped object; 11.79 forbade contract parts the plate recipe uses; 11.80 ended the raid between frames, and the real hum lives INSIDE the frame that ends the raid, see d1180) and all are repaired; the dry fixture is served on :8801 from tools/handoff/dry (not in start-servers.ps1). The v11.76 corpus went red once on 10.34 because I resized a second tab while it ran: leave the pane alone during a corpus. DRAFTED this morning as well (about 07:35): 1189 a held gun drags into the open backpack (bagHeldGun; the gun cells were select-only since v7.21); 1190 a belt key holding a bagged gun equips it (setHot calls equipFromBag, swaps up, moves the highlight) and derived cells drag by the item they show. ALSO DRAFTED this morning (about 07:40), the three menu-audit items: 1191 hubModalOpen counts #title (floor keys behind the character screen); 1192 the safe pocket refuses throw and ammo and a bad saved pocket is cleared on load; 1193 the freebie kit keeps the packing aside (P.kitSaved) and USE MY OWN GEAR restores it minus what was sold. The dry range 1178 to 1193 applies (dry game v11.93); run 11.83 to 11.93 twice on :8801 between corpora before shipping each. Still open for his ruling: the 1.1 s fuse; the crawler charging note (vague); enemies converging on extraction (his maybe). AFTER 1193 the queue is empty: audit what shipped today by reading, and watch exports/ for his next notes. The older list follows for the record.
 
 **NOT YET DRAFTED (superseded list), FROM HIS 06:26 EXPORT (exports/consumed-run-20260906-062618.txt,
 v11.73 runs, authenticated: dur 267 to 427 s, real killers), in value order:**

@@ -1,0 +1,26 @@
+## v11.91 - THE FLOOR STOPS TAKING KEYS BEHIND THE CHARACTER SCREEN
+
+From the 2026-09-06 read-only menu audit, the last of its three open items
+on the alpha path.
+
+WHAT IT WAS. The Undercroft floor asks one gate, hubModalOpen, before a key
+fires the station you are standing in; v8.12 made that gate ask the page
+for any modal that is on, plus the Stash screen, the pause box and the
+outcome card, which are not modals. The character screen is not a modal
+either, and it was not in the list, so while it was up the floor kept
+running behind it: WASD walked, harmlessly, and E, R, F and T fired whatever
+station you had been standing in. At the lift, R ran the kit commit and
+started a raid, so a player choosing a name could find himself in a live
+raid with the title painted over it and the clock running.
+
+THE FIX. One line: the character screen counts, the same way the pause box
+was added at v8.70.
+
+MEASURED. Check 11.91 walks the floor with nothing open and requires the
+gate closed, turns the character screen on and requires it open, turns it
+off and requires it closed again. On the v11.90 fixture the gate reads
+closed with the screen on and the check says so.
+
+Not verified: the raid start itself, which sits behind this gate and is
+not driven here; a station left mid-interaction when the screen opens,
+which the gate now simply pauses.

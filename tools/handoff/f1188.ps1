@@ -28,6 +28,11 @@ SubRx @'
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player;
+       // A STORM WITH LIGHTNING, installed the way check 11.56 does it (never by
+       // renaming a shared WEATHER row): the strike tick empties the list without one.
+       var storm=null; for(var w=0;w<WEATHER.length;w++) if(WEATHER[w].lightning){ storm=WEATHER[w]; break; }
+       if(!storm) return 'SKIP: no weather row carries lightning';
+       g.wx=storm; g.wxNext=null; g.wxT=0;
        CFG.strikeFind=1;
        var n0=g.containers.length, found=null;
        var spots=[[600,0],[-600,0],[0,600],[0,-600],[400,400],[-400,-400]];

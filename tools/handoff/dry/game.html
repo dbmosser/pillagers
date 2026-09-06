@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.82';
+var VER='11.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,20 @@ var VER='11.82';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.82';
+var WHATSNEW_VER='11.93';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear and it is all still there.',
+  'THE SAFE POCKET REFUSES A GRENADE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
+  'A BELT KEY HOLDING A GUN FROM YOUR BACKPACK NOW EQUIPS IT, and every belt cell can be dragged to another key.',
+  'A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK: with the backpack open, drag it off its slot and drop it in.',
+  'A LIGHTNING STRIKE LEAVES FULGURITE, worth 2,500, and nothing else.',
+  'A HELPED SURVIVOR WALKS TO THE NEAREST OPEN EXTRACTION on his own and leaves when he reaches it, instead of following you.',
+  'THE SURVIVOR PAYS THREE TIMES AS MUCH and hands you a piece of salvage on the spot when you meet his request.',
+  'THE MAP NAMES EACH EXTRACTION AND COUNTS DOWN TO ITS CLOSE in a size you can read.',
+  'THE MERIDIAN LANCE TRAVELS THROUGH CRAWLERS, hitting every one on the line with its full damage.',
+  'THE STIM INJECTOR IS TEN SECONDS OF LEGS: unlimited stamina and a fifth more speed while it runs.',
   'HEALING STACKS AGAIN. The next bandage goes on while the prior one is still healing, and a plate goes on while a bandage is being applied. The one-at-a-time refusal and its countdown are gone.',
   'THE HUM AFTER AN EXTRACTION IS GONE. The frame that ended the raid was writing the raid ambience back up after it had been cut, and the level held on the floor.',
   'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
@@ -1767,6 +1777,9 @@ var ITEMS={
   // be lucky about.
   reactor:{name:'Meridian Reactor Core',val:2600,wt:4,r:'elite',c:'#e08cff'},
   wcore:{name:'Warden Core',val:3800,wt:5,r:'elite',c:'#ffc04a'},
+  // v11.88, HIS NOTE: what a lightning strike leaves in the ground, and the only
+  // thing the scorched cache holds. Salvage, worth what he said.
+  fulgurite:{name:'Fulgurite',val:2500,wt:2,r:'elite',c:'#e6d3ff'},
   // SPEC 7.6: keys. Single use, they say what they open, sellable if you will
   // never use one, and they can be extracted and brought back for a targeted raid.
   key_dam_turbine:{name:'Turbine Room Key',val:600,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'dam_turbine'},
@@ -2403,6 +2416,8 @@ function applyLoadedProfile(r){
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
 if(typeof P.pname!=='string'||!P.pname)P.pname='PILLAGER';   // v7.64: named at the title screen; v7.85: typed
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
+// v11.92: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
+if(P.safe&&ITEMS[P.safe]&&(ITEMS[P.safe].use==='throw'||ITEMS[P.safe].use==='ammo')) P.safe=null;
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
 if(P.sp!==undefined) delete P.sp;   // v7.38: PROGRESS folded into XP; the field is dead
@@ -5201,8 +5216,11 @@ function strikeTick(dt){
       // MISSED YOU: a small chance it leaves something behind. Scorched ground with
       // something rare in it is the reason to move toward a storm rather than away.
       if(rr()<(CFG.strikeFind===undefined?0.16:CFG.strikeFind)){
-        var pool=['titan','core','blackbox','reactor','wcore'];
-        var key=pool[Math.min(pool.length-1,Math.floor(rr()*pool.length))];
+        // v11.88, HIS NOTE: the strike leaves Fulgurite and nothing else; a
+        // Warden Core in the dirt made no sense to him. The draw is kept so the
+        // seeded stream is unchanged.
+        var _fdraw=rr();
+        var key='fulgurite';
         // v8.55, audit: SOMEWHERE YOU CAN ACTUALLY REACH. The strike point is
         // clamped to the world box and nothing else, so this dropped the rarest
         // item in the game inside walls, inside ruins and inside sealed locked
@@ -8994,11 +9012,17 @@ function strayGive(e){
   } else {
     say('He has nothing left to tell you, so he gives you what he has.');
   }
-  // A little money, banked the way the Peddler banks it: he pays before you
-  // have earned the right to survive the trip.
-  var pay=ri(260,540);
+  // Money, banked the way the Peddler banks it: he pays before you have earned
+  // the right to survive the trip. v11.86, HIS NOTES: three times what it was
+  // (my number; he said "more"), and something in your hands NOW, not only a
+  // mark on the map: one piece of salvage from his own pockets, through the
+  // same grant a container uses.
+  var pay=ri(900,1500);
   P.credits+=pay;
   G.strayPaid=(G.strayPaid||0)+pay;
+  var gift=pick(['titan','core','optic','servo']);
+  try{ grantLoot(mkContainer(e.x,e.y,'crate'),[gift]); G.strayGave=gift; }catch(_sg){}
+  say('He pays you $'+pay.toLocaleString()+(G.strayGave?' and presses a '+ITEMS[gift].name+' into your hands.':'.'));
   if(G.tel) G.tel.strayHelped=(G.tel.strayHelped||0)+1;
   if((P.notoriety||0)>0){
     P.notoriety--;
@@ -10770,8 +10794,20 @@ cv.addEventListener('mousedown',function(e){
         // readout - and left the key dead afterwards, because setHot returns
         // early when the slot is already selected.
         setHot(_HC2.i);
-        if(_hs2&&_hs2.kind!=='gun'&&_hs2.itemKey){
-          G.drag={key:_hs2.itemKey,fromHot:_HC2.i};
+        // v11.90, HIS NOTE: "why can't i drag items to diff keys??" The derived
+        // cells (Medical, Armour Plate, the grenades) carried no item key, so
+        // only a cell he had already assigned could be picked up. A derived
+        // cell drags by the item it shows.
+        var _dk=_hs2?(_hs2.itemKey||((_hs2.kind==='heal'||_hs2.kind==='armor'||_hs2.kind==='throw')&&_hs2.icon&&ITEMS[_hs2.icon]?_hs2.icon:null)):null;
+        if(_hs2&&_hs2.kind!=='gun'&&_dk){
+          G.drag={key:_dk,fromHot:_HC2.i};
+          blip('pick');
+        }
+        // v11.89, HIS NOTE: "GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY
+        // ITEM". With the backpack open, the gun in a hand cell can be picked
+        // up and dropped into the bag. Closed, a click still only selects.
+        else if(_hs2&&_hs2.kind==='gun'&&(_hs2.k==='gunA'||_hs2.k==='gunB')&&!_hs2.vacant&&G.bagOpen&&_hs2.icon&&_hs2.icon!=='fists'){
+          G.drag={key:'gun_'+_hs2.icon,gunSlot:_hs2.k,fromHot:_HC2.i};
           blip('pick');
         }
         return;
@@ -10860,13 +10896,19 @@ window.addEventListener('mouseup',function(e){
   if(e.button===0&&G&&G.drag){
     var d=G.drag; G.drag=null;
     var dropped=false;
+    // v11.89, HIS NOTE: a gun dragged off a hand cell. Released over the open
+    // backpack it goes in; released anywhere else it stays where it was.
+    if(d.gunSlot){
+      if(G.bagOpen&&G.bagPanel&&inRect(G.bagPanel,mouse.x,mouse.y)) bagHeldGun(d.gunSlot);
+      d={key:null}; dropped=true;
+    }
     // v9.31: did the release land on a belt cell at all? `dropped` cannot answer
     // that, because handing an item to a merc sets it too and that one is meant to
     // come off the belt. Every belt outcome - assign, move, refuse, and the
     // put-it-back-where-it-came-from click - already writes the bar correctly by
     // itself and must not be second guessed below.
     var _onBelt=false;
-    if(G.hotCells) for(var hc=0;hc<G.hotCells.length;hc++){
+    if(G.hotCells&&d.key) for(var hc=0;hc<G.hotCells.length;hc++){
       var HC=G.hotCells[hc];
       if(mouse.x>=HC.x&&mouse.x<=HC.x+HC.w&&mouse.y>=HC.y&&mouse.y<=HC.y+HC.h){
         _onBelt=true;
@@ -12254,7 +12296,8 @@ if(wep.mag===0){
     var ang=base+rnd(-spx,spx);
     G.bullets.push({x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
       vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),
-      life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a'});
+      life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
+      thru:(wep.id==='lance')?1:0});   // v11.84, HIS NOTE: the Lance travels through crawlers
   }
   // A burst weapon fires its extra rounds on a short delay, one per 70ms, each
   // rolled for spread on its own. Queued as world state so the burst finishes
@@ -12899,6 +12942,32 @@ function tickRegen(dt){
 // The slots are FIXED now. Slot one is always the gun you deployed with and
 // slot two is always the other one, whichever happens to be in your hands, and
 // pressing a number puts that specific gun up. `swapped` is the only new state.
+// v11.89, HIS NOTE: a gun in your hands goes back into the backpack like any
+// other item. slot is the derived cell it was dragged from; gunA is the gun you
+// deployed with and gunB the other one, mapped through p.swapped the way
+// hotbarSlots maps them. The gun in hand is always p.wep; if that is the one
+// bagged, the other gun comes up and keeps its own numbered slot.
+function bagHeldGun(slot){
+  var p=G&&G.player; if(!p||p.downed||G.over) return false;
+  var sw=!!p.swapped;
+  var isHand=(slot==='gunA')?!sw:sw;
+  var g=isHand?p.wep:p.sec, issued=isHand?p.wepIssued:p.secIssued, arm=isHand?p.wepFromArmory:p.secFromArmory;
+  if(!g||g.id==='fists'||g.mag===0){ say('Nothing there to bag.'); return false; }
+  if(issued){ say(g.name+' is issued kit; it stays in your hands.'); return false; }
+  if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in a bag.'); return false; }
+  G.bag.push('gun_'+g.id);
+  if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); } }
+  if(isHand){
+    p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0;
+    p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
+    p.swapped=!sw;   // the gun that came up keeps the numbered slot it had
+  } else {
+    p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
+  }
+  G.tel.weapon=p.wep.name;
+  say(g.name+' into the backpack.'); blip('pick');
+  return true;
+}
 function swapGuns(){
   var pp=G&&G.player;
   if(!pp||!pp.sec||pp.downed||pp.roll>0||G.over||G.paused) return false;
@@ -13229,9 +13298,20 @@ function setHot(i){
   if(s2.vacant){ if(!G.sim) say('No second weapon. Drag one here to carry it.'); }
   else if(s2.kind==='gun'&&_inHands&&!s2.inHand) swapGuns();
   else if(s2.kind==='gun'&&!_inHands&&s2.itemKey){
-    // v11.30: this sentence was overwritten by the slot label two lines down
-    // in the same call, so nobody ever read it; the label yields to it now.
-    say(s2.name+' is in your backpack. TAB, then ENTER to equip it.');
+    // v11.30 said "TAB, then ENTER to equip it" here, and nobody read it.
+    // v11.90, HIS NOTE: "it says i have support mg but it is firing like a
+    // pistol". The key showed the gun and left it in the backpack, and the
+    // trigger fired what was in his hands. The key EQUIPS it now, into the
+    // hands (the equip path may route it to the free slot; it is swapped up),
+    // the displaced gun goes to the bag, and the highlight follows it.
+    var _bix=G.bag.indexOf(s2.itemKey);
+    if(_bix<0) say(s2.name+' is not in your backpack.');
+    else if(!equipFromBag(_bix,1)) say('Cannot equip '+s2.name+' right now.');
+    else {
+      var _gk=ITEMS[s2.itemKey]&&ITEMS[s2.itemKey].gk;
+      if(_gk&&G.player.wep.id!==_gk&&G.player.sec&&G.player.sec.id===_gk) swapGuns();
+      G.hot=G.player.swapped?1:0;
+    }
     _hinted=true;
   }
   if(s2.kind==='throw'){
@@ -13240,6 +13320,23 @@ function setHot(i){
   }
   if(!_hinted) say(s2.name+(s2.count!==null&&s2.count!==undefined?'  x'+s2.count:''));
   blip('pick');
+}
+// v11.83, HIS SPEC: "stim injector should give unlimited stamina and 1.2 speed
+// boost for 10 seconds". STIM_SEC and STIM_SPD are the whole of it: the
+// stamina line in updatePlayer holds the bar full while stimT runs and the
+// speed line multiplies by STIM_SPD. A second stim while one runs tops the
+// clock back up to the full ten rather than stacking. One verb, so any later
+// route into a stim uses the same numbers.
+var STIM_SEC=10, STIM_SPD=1.2;
+function useStim(ix){
+  var p=G.player;
+  if(ix===undefined||ix<0||G.bag[ix]!=='stim') ix=G.bag.indexOf('stim');
+  if(ix<0){ say('No stim.'); return false; }
+  G.bag.splice(ix,1);
+  p.stam=100; p.stamLock=0; p.stamRelease=0; p.stimT=STIM_SEC;
+  blip('pick'); say('Stim. Ten seconds of legs.');
+  if(G.tel) G.tel.stims=(G.tel.stims||0)+1;
+  return true;
 }
 // One action key drives whatever is selected, which is the point of the hotbar.
 function useHot(){
@@ -13281,14 +13378,7 @@ function useHot(){
       return;
     }
 
-    if(ait.use==='stim'){
-      var _sp3=G.player;
-      if(_sp3.stam>=95){ say('Legs are fresh already.'); return; }
-      G.bag.splice(ix,1);
-      _sp3.stam=100; _sp3.stamLock=0;
-      blip('pick'); say('Stim. The legs come back at once.');
-      return;
-    }
+    if(ait.use==='stim'){ useStim(ix); return; }   // v11.83: ten seconds of legs, see useStim
     if(ait.use==='armor'){ useArmor(); return; }
     // v6.60, his note: a gun on the belt is used by equipping it, the same as picking
     // it out of the bag, which is the only thing "use" can mean for a gun.
@@ -14224,6 +14314,7 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   if(wading) sprint=false;
   G.sprinting=sprint;
   var spd=CFG.pSpeed*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
+  if(p.stimT>0) spd*=STIM_SPD;   // v11.83, HIS SPEC: a fifth more while the stim runs
   // "make character much slower". 0.55 was a shrug; deep water you are wading
   // through at waist height should be a commitment, not a texture. A dial so the
   // feel is his to set without going back into the movement code.
@@ -14242,7 +14333,10 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   // combinations that would otherwise drop below a walk, so nothing he asked for
   // is undone: wading empty is 53.7 and untouched.
   if(spd<SPEED_FLOOR) spd=SPEED_FLOOR;
-if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*dt);
+// v11.83, HIS SPEC: unlimited stamina while the stim runs; the bar is held full
+// and the drain below is skipped, so the release latch never arms either.
+if(p.stimT>0){ p.stimT-=dt; p.stam=100; if(p.stimT<=0){ p.stimT=0; if(!G.sim) say('The stim wears off.'); } }
+else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*dt);
   if(sprint&&p.stam<45&&!G.sim){ p.brT=(p.brT||0)-dt; if(p.brT<=0){ p.brT=0.55; voxBreath(); } }
   // v4.24 HIS NOTE: running dry locks the sprint until the bar is back to 12,
   // so you cannot flutter the key at zero for free bursts.
@@ -16106,6 +16200,7 @@ if(e.state==='possum'){
     // and hails you once when you are near enough to deal. Nothing else about
     // him ticks, which is exactly why he can never become a movement bug.
 if(e.kind==='stray'){
+      if(e.gone) continue;   // v11.87: he reached an extraction and left
       var sdd=dist(e,p);
       if(!G.sim&&e.hostile&&!e.downed){
         if(sdd<420&&losClear(e.x,e.y,p.x,p.y,G.vseg)){
@@ -16116,8 +16211,20 @@ if(e.kind==='stray'){
         continue;
       }
       if(!G.sim&&e.helped&&!e.downed){
-        // HIS NOTE: "Survivor should follow you to extract and help you."
-        if(sdd>150){ navSeek(e,p.x,p.y,120,dt); e.moving=true; }
+        // HIS NOTE of 2026-08: "Survivor should follow you to extract and help
+        // you." HIS NOTE of 2026-09-06: "survivor should move towards closest
+        // extract, not follow player". The later order stands: he walks to the
+        // nearest open ring on his own, shooting at machines on the way (below),
+        // and leaves when he reaches it.
+        var _sz=null,_szd=1e9;
+        for(var _zq=0;_zq<G.zones.length;_zq++){ var _zz=G.zones[_zq]; if(!_zz.open) continue; var _zd=dist(e,_zz); if(_zd<_szd){ _szd=_zd; _sz=_zz; } }
+        if(_sz&&_szd>_sz.r*0.9){ navSeek(e,_sz.x,_sz.y,120,dt); e.moving=true; }
+        else if(_sz){
+          e.moving=false; e.gone=1; e.x=-9000; e.y=-9000;
+          say('The survivor made it to Extraction '+extLetter(_sz)+'.');
+          if(G.tel) G.tel.strayOut=(G.tel.strayOut||0)+1;
+          continue;
+        }
         else e.moving=false;
         e.cd=(e.cd||0)-dt;
         if(e.cd<=0){
@@ -17508,6 +17615,7 @@ function updateBullets(dt){
         if(b.player){
           for(var e2=0;e2<G.ents.length;e2++){
             var en=G.ents[e2];
+            if(b._thru&&b._thru.indexOf(en)>=0) continue;   // v11.84: already passed through this one
             // v6.72, his note: a hired companion takes no friendly fire from you. The
             // round passes through him rather than being stopped, so he cannot be used
             // as cover either.
@@ -17649,7 +17757,13 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
 G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
               if(en.hp<=0&&dist(en,p)>620) blip('clank',760);
               spark(b.x,b.y,en.kind==='raider'?'#ff5a4a':'#ffc25c',9,220);
-              sfx("hit",en.x,en.y); hit=true; break;
+              sfx("hit",en.x,en.y);
+              // v11.84, HIS NOTE: "meridian lance bullets should travel through
+              // crawlers". The round keeps going after a crawler with its damage
+              // intact and remembers him so he is not hit again next frame;
+              // anything else stops it as before.
+              if(b.thru&&en.kind==='crawler'){ (b._thru||(b._thru=[])).push(en); continue; }
+              hit=true; break;
             }
           }
           // HIS NOTE, 2026-08-24: "you should be able to kill animals". They were
@@ -18365,7 +18479,9 @@ silentExit:T.silentExit||0,
     }
   })();
   if(G.strayPaid){
-    lines.push('<span style="color:var(--coolant)">The survivor paid you '+'$'+G.strayPaid.toLocaleString()+', already banked.</span>');
+    // v11.86, HIS NOTE: no "already banked"; and the gift, if there was one.
+    lines.push('<span style="color:var(--coolant)">The survivor paid you '+'$'+G.strayPaid.toLocaleString()+
+      (G.strayGave&&ITEMS[G.strayGave]?' and gave you a '+escHtml(ITEMS[G.strayGave].name):'')+'.</span>');
   }
   if(G.pedSold){
     lines.push(how==='extract'
@@ -26480,16 +26596,21 @@ if(G.trail&&G.trail.length>1){
       ctx.strokeStyle=Z.open?('rgba(77,227,208,'+((((Z===G.active)?0.95:0.45))*_fl).toFixed(3)+')'):'rgba(127,146,216,.42)';
       ctx.lineWidth=(Z===G.active)?2:1;
       ctx.beginPath(); ctx.arc(ox+Z.x*sc,oy+Z.y*sc,Math.max(4,Z.r*sc),0,6.2832); ctx.stroke();
-      ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+      // v11.85, HIS NOTE: "the map should show when the extracts are going to
+      // close via countdown on each one". It did, since v7.60, in the smallest
+      // face the game has, so he never saw it. Name as a callout, countdown as
+      // a label, each on its own row.
+      ctx.font=FS(TYPE.head); ctx.textAlign='center';
       ctx.fillStyle=Z.open?('rgba(77,227,208,'+(0.9*_fl).toFixed(3)+')'):'rgba(154,168,208,.80)';
-      ctx.fillText('EXTRACT '+String.fromCharCode(65+_fz),ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-14);
+      ctx.fillText('EXTRACT '+String.fromCharCode(65+_fz),ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-LH(24));
       var _zSub;
       if(!Z.open) _zSub='CLOSED';
       else if(_zHold) _zSub='OPEN TO EXTRACT  '+Math.max(0,Math.ceil(Z.hold))+'s';
       else if(_zAct) _zSub='CALLED  '+Math.max(0,Math.ceil(Z.beaconT))+'s';
       else if(Z.closeAt===undefined) _zSub='STAYS OPEN';
       else _zSub='closes in '+fmtMS(Math.max(0,Math.ceil(G.timeLeft-Z.closeAt)));
-      ctx.fillText(_zSub,ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-4);
+      ctx.font=FS(TYPE.label);   // v11.85: the countdown, readable
+      ctx.fillText(_zSub,ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-LH(6));
       ctx.textAlign='left';
     }
   })();
@@ -27128,6 +27249,11 @@ function hubModalOpen(){
   var _pbx=document.getElementById('pausebox');
   if(_pbx&&_pbx.classList.contains('on')) return true;
   if(document.getElementById('outcome').classList.contains('on')) return true;
+  // v11.91, from the 2026-09-06 menu audit: and the character screen, which is
+  // a .screen and not a .modal. Without this the floor took E, R, F and T
+  // behind it, and R at the lift started a raid under the title.
+  var _ttl=document.getElementById('title');
+  if(_ttl&&_ttl.classList.contains('on')) return true;
   return !!document.querySelector('.modal.on');
 }
 function updateHubWorld(dt){
@@ -28357,7 +28483,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.82: HIS NOTES of 2026-09-06, the countdown on still applying prior healing item was wrong and is gone with the refusal it belonged to; the next bandage goes on while the prior one heals (a second item adds its health at the faster rate and the higher ceiling), and a plate goes on while a bandage is being applied (two application timers, prep for medical and prepA for armour). Reverses his v3.34 one-heal-at-a-time rule on his own note; the healSolo dial is removed. Check 11.82 stages a hurt player with two bandages and a plate, applies one, applies the second while the first heals and the plate while the second is being applied, requires each to have started and the refusal never said, and after the timers requires the queue to have grown and the armour to be on; fails on v11.81.',
+  now:'v11.93: from the 2026-09-06 menu audit, TAKE THE FREEBIE KIT wiped the packed backpack and the whole belt plan with no undo. The selection is kept aside on the profile (kitSaved) when the kit is taken and put back by USE MY OWN GEAR, minus anything no longer in the stash. Check 11.93 packs two items and a key, presses the real button twice, and requires the packing and the key back, then sells one item between presses and requires only the other back; fails on v11.92.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29172,6 +29298,11 @@ function safeUpKey(){
 function setSafe(k){
   if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
   if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
+  // v11.92, from the 2026-09-06 menu audit: a grenade rides in the pouch and
+  // ammunition in the reserve, and the death path banks the backpack only,
+  // so a pocket naming either came home with nothing while reading 1/1.
+  if(k&&ITEMS[k].use==='throw') return 'A grenade rides in the pouch, not a pocket. It cannot come home from there.';
+  if(k&&ITEMS[k].use==='ammo') return 'Ammunition rides in the reserve, not a pocket. It cannot come home from there.';
   P.safe=k||null; saveProfile(); return null;
 }
 function renderSafe(){
@@ -30979,7 +31110,7 @@ function itemBlurb(k){
   if(it.use==='armor') return 'Restores '+(it.amt||0)+' armour.';
   if(it.use==='throw') return 'Thrown. Goes on a tactical belt key.';
   if(it.use==='ammo') return 'Refills a magazine from your backpack.';
-  if(it.use==='stim') return 'Refills stamina and clears winded.';
+  if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
   if(it.use==='key') return 'Opens one locked room.';
   if(craftPart(k)) return craftUse(k)||'Crafting material.';
   return 'Salvage. Sell it at the terminal for credits and XP.';
@@ -32493,7 +32624,7 @@ function renderFreeKit(){
   // fixes: getElementById only ever reached the copy on a screen that no longer opens.
   var html='<div class="fkbox">'+
     '<b>FREEBIE KIT</b>'+
-    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText()):
+    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText())+' Your own packing is kept for when you switch back.':
       'Go up with issued gear instead of your own. '+escHtml(freeKitText()))+'</span>'+
     '<button class="deploy ghost fkbtn">'+(on?'USE MY OWN GEAR':'TAKE THE FREEBIE KIT')+'</button>'+
     '</div>';
@@ -32508,11 +32639,24 @@ function renderFreeKit(){
   // EVERY copy gets the handler, so whichever screen you are on can turn it off.
   var btns=document.querySelectorAll('.fkbtn');
   for(var bi=0;bi<btns.length;bi++) btns[bi].onclick=function(){
-    if(P.freeKit){ P.freeKit=0; saveProfile(); renderStage(); return; }
+    if(P.freeKit){
+      P.freeKit=0;
+      // v11.93, from the 2026-09-06 menu audit: what he had packed before he
+      // took the free kit comes back, minus anything no longer in the stash.
+      var _ks=P.kitSaved; P.kitSaved=null;
+      if(_ks){
+        var _pool=(P.stash||[]).slice(), _kit=[];
+        for(var _ki=0;_ki<(_ks.kit||[]).length;_ki++){ var _kx=_pool.indexOf(_ks.kit[_ki]); if(_kx>=0){ _pool.splice(_kx,1); _kit.push(_ks.kit[_ki]); } }
+        P.kit=_kit; P.hotAssign=_ks.hot||{}; P._gunSlot=_ks.gun||null;
+      }
+      saveProfile(); try{ renderHub(); }catch(_fh0){} renderStage(); return;
+    }
     // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
     // stash rather than a move, so emptying it returns those items by itself; the
     // hotbar plan is cleared for the same reason, since a key pointing at something
     // you are not carrying is the exact fault v5.72 fixed.
+    // v11.93: kept aside first, so switching back to his own gear is not a wipe.
+    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};
     P.kit=[]; P.hotAssign={}; P._gunSlot=null;
     P.freeKit=1;
     saveProfile();

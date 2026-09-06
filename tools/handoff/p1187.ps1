@@ -40,7 +40,7 @@ SubRx @'
         // and leaves when he reaches it.
         var _sz=null,_szd=1e9;
         for(var _zq=0;_zq<G.zones.length;_zq++){ var _zz=G.zones[_zq]; if(!_zz.open) continue; var _zd=dist(e,_zz); if(_zd<_szd){ _szd=_zd; _sz=_zz; } }
-        if(_sz&&_szd>_sz.r*0.5){ navSeek(e,_sz.x,_sz.y,120,dt); e.moving=true; }
+        if(_sz&&_szd>_sz.r*0.9){ navSeek(e,_sz.x,_sz.y,120,dt); e.moving=true; }
         else if(_sz){
           e.moving=false; e.gone=1; e.x=-9000; e.y=-9000;
           say('The survivor made it to Extraction '+extLetter(_sz)+'.');

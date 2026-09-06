@@ -33,11 +33,12 @@ SubRx @'
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy or drive the loader';
      if(typeof explodeFrag!=='function'||typeof DEF==='undefined') return 'SKIP: no frag blast in this build';
-     var bad=[], k;
+     var bad=[], k, snap=null;
      if(DEF.fragR!==190) bad.push('the default blast radius is '+DEF.fragR+' and not 190');
      function withCfg(fr){ var c={}; for(k in DEF) c[k]=DEF[k]; c.fragR=fr; return {credits:900,cfgv:17,cfg:c}; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       snap=JSON.stringify(__P());   // the loader below replaces the profile; it is put back at the end
        CFG.fragR=DEF.fragR;   // the game reads CFG; the blast is measured at the shipped default
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player, R=(CFG.fragR===undefined?190:CFG.fragR);
@@ -64,7 +65,7 @@ SubRx @'
        __applyLoaded(withCfg(140));
        if(CFG.fragR!==140) bad.push('control: a hand-set 140 was overwritten to '+CFG.fragR+' by the migration');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
+     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); __resetCfg(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.76',what:'the Scav Pistol costs 1800 in the shop, down from 3600, and is still the cheapest gun on the shelf (his order of 2026-09-06)',
 '@
