@@ -1,0 +1,12 @@
+v11.52: Wirt's Limited Time Offer sold whatever the clock said at click time
+
+The counter lot is picked by the clock in five-minute windows and drawn on a
+card that names and prices it before he pays; the Buy button recomputed
+wirtLotKey() at click time and the card never redraws on the boundary, so a
+click after the roll took the money and pushed a lot he was never shown. Buy
+now sells the lot the card was drawn from. Check 11.52 opens Wirt through the
+real station act, moves the clock forward a window so a roll has happened,
+presses the real Buy, and requires the stash to receive the shown lot with
+credits taken as the control; fails on v11.51. From the v11.46 audit, P1.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

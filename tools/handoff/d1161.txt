@@ -1,0 +1,28 @@
+## v11.61 - WITH PILLAGERS OFF, THE EXTRACTION-HEAT ROW READ CUSTOM
+
+From the v11.46 read-only audit, P2. Two settings rows disagreed about who
+owns one dial. Other pillagers: None turns the pillager waves off (v8.42,
+because the wave loop treated an empty map as urgent and kept delivering
+four pillagers), and applyGameOpts gives the pillager row the last word on
+that (v8.74, his order: None means none). But the extraction-heat row's Heavy
+and Standard still carried raiderWaves:1, so with the waves off neither of
+them matched the live dials and the row showed CUSTOM in amber, with the
+tuning-console hint, for a setting he had never touched. The v8.74 comment on
+that row already says it describes the RING only.
+
+THE FIX. The waves belong to the pillager row, on every option: Many, Standard
+and Few write them on, None writes them off. The heat row carries siegeVol
+alone. Every combination of choices lands on the same dial values it did
+before, with one exception that is itself a fix: choosing None and then going
+back to Standard with the heat on Light used to leave the waves off, because
+nothing wrote them back; the pillager row writes them now.
+
+MEASURED. Check 11.61 sets pillagers to None, applies, and requires the waves
+off (control) and the heat row reading its own word rather than CUSTOM; then
+sets pillagers back to Standard and requires the waves back on and both rows
+reading Standard. On the v11.60 fixture the heat row reads CUSTOM with
+pillagers off and the check fails saying so. The dials this build writes are
+the same numbers as before; nothing in a raid changes.
+
+Not verified: his own play; the None-then-Standard-with-Light case in a
+played raid (measured on the dials, not on a spawned map).

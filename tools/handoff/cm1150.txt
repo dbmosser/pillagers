@@ -1,0 +1,13 @@
+v11.50: closing the Undercroft backpack overwrote loadout edits made at the terminal
+
+Opening the Undercroft backpack snapshots P.kit and P.hotAssign and closing
+commits the copy back, by design; but hubModalOpen never asks hubBagOpen, so
+with the backpack open the floor still ran, E at THE STASH opened the terminal
+(which edits P.kit and P.hotAssign directly), and ESC then wrote the stale
+snapshot over the terminal's work. The terminal act now commits and closes the
+open backpack before it draws. Check 11.50 opens the backpack through the real
+hubBagOpenSet, opens THE STASH through its real station act, packs an item and
+binds a key as the terminal does, runs the close path, and requires both edits
+to survive; fails on v11.49. From the v11.46 audit, P0.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

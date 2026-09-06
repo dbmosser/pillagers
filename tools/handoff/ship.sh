@@ -5,7 +5,7 @@
 # Versions are given as 4-digit tags (1000 = v10.00, 999 = v9.99).
 set -e
 cd "/c/claudecode/dark raiders"
-SP='/c/claudecode/dark raiders/tools/handoff'
+SP="${SP:-/c/claudecode/dark raiders/tools/handoff}"
 vstr(){ local t=$1; if [ ${#t} -ge 4 ]; then echo "${t:0:2}.${t:2}"; else echo "${t:0:1}.${t:1}"; fi; }
 case "$1" in
   commit)

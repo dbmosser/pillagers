@@ -1,0 +1,29 @@
+## v11.53 - A MERC WHO BOARDED AN EARLIER SHIP WAS NEVER PAID
+
+From the v11.46 read-only audit, P1. The deal with a hired merc (v6.72): if you
+BOTH get out you take ten percent of what he carried. v8.46 taught endRaid to
+settle that from the ROSTER, because a merc who fled low and boarded an earlier
+ship is gone from the world by the time you extract: "the roster remembers the
+man and what he carried out", and the boarding code stamps out and val onto
+the roster row whose ref is the boarding entity. The gap: only ordinary raiders
+were ever pushed to the roster, at spawn and on each wave. The hired merc was
+built and pushed to ents alone. So there was never a row to stamp when he
+boarded and never a row for endRaid to find, and the card said "was left out
+there": no cut, no standing, every time he got out before you.
+
+THE FIX. The merc gets a roster row at spawn, marked merc, so boarding stamps
+his haul and endRaid finds him. And drawRaiderBoard skips merc rows, so your
+hire is not listed among CURRENT PILLAGERS as a rival; the board is unchanged
+for everyone else on it.
+
+MEASURED. Check 11.53 hires a merc (P.merc set to a real identity), deploys,
+finds him in the world, and requires his roster row to exist; then plays the
+boarding the way the game does (stamps out and a haul of 1,234 on the row,
+removes him from the world) and ends the raid as an extract, requiring the card
+to say he extracted earlier and the credits to have moved by at least his ten
+percent. On the v11.52 fixture there is no row and the check fails on the first
+line.
+
+Not verified: his own play; the merc's standing bump on that path, which is
+part of the same settle branch and is exercised but not asserted; the shape of
+the board with the merc row skipped, which is read and not painted here.

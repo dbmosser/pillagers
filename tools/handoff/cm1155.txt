@@ -1,0 +1,13 @@
+v11.55: a pillager you downed and then saved was still your kill
+
+The downing shot stamps byPlayer, the one door for a kill to be credited to
+you. Reviving him with E stood him up, cleared hostile and grudge and made him
+friendly, and never cleared byPlayer; a crawler bite writes none. So when a
+crawler downed the man you saved and he bled out, the stale flag gave you the
+kill, ticked a kill contract, and wrote a permanent -2 grudge on his crew. The
+revive now clears byPlayer with the rest; his next death is yours only if you
+down him again. Check 11.55 lays a marked pillager down within reach, holds E
+through one step, controls that the revive happened and requires the flag
+clear; fails on v11.54. From the v11.46 audit, P1.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

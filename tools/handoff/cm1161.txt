@@ -1,0 +1,12 @@
+v11.61: with pillagers off, the extraction-heat row read CUSTOM
+
+Other pillagers: None turns the waves off and gets the last word, but the
+heat row's Heavy and Standard still carried the waves dial, so nothing matched
+and the row showed CUSTOM in amber for a setting he never touched. The waves
+dial lives on the pillager row now, on every option, and the heat row carries
+the ring alone; every combination lands on the same numbers as before, and
+leaving None for Standard with the heat on Light brings the waves back, which
+nothing did before. Check 11.61 drives None and Standard and reads both rows;
+fails on v11.60. From the v11.46 audit, P2.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

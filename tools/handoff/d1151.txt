@@ -1,0 +1,31 @@
+## v11.51 - MY v11.42 BAKE NAMED THE WRONG MAP ON THE SECTOR PAGE
+
+From the v11.46 read-only audit, P1, and mine. When his 71 wording edits were
+baked in at v11.42, every number-shaped line was also turned into a digit-shape
+pattern, the same thing his own editor does, so a line like the credit counter
+refills its live numbers. Two of his lines are the sector-facts line under each
+map: "you: 2 runs here, 420 by 340 metres, 14.3 hectares, 5 named zones, 2 keyed
+rooms, the test robot extracts in 39.2% of its raids in Cold Storage." and the
+same for The Cold Mile. Strip the digits and the two are one shape. The
+derivation keyed both to that shape, the second overwrote the first, and TX
+then matched ANY sector line of that shape by its digits, so COLD STORAGE could
+end "in The Cold Mile." and a player with two runs on the mile could read "in
+Cold Storage." The exact lines, with his own figures, were right; every other
+figure took the wrong map.
+
+THE FIX. Those two lines are exact-only. The derivation skips any key that
+carries "test robot extracts", so each map keeps its own baked line with his
+own figures, and a line drawn with other figures is left exactly as the game
+drew it, which is the original wording, correct for its map.
+
+MEASURED. Check 11.51 reads both sector keys from the shipped map at run time
+(they hold a middot, so they are never typed into a check), requires the exact
+line to still map to his wording, then changes the first figure in each and
+requires TX to hand the changed line back untouched. On the v11.50 fixture the
+changed line is rewritten by shape and the check fails naming the map it
+printed.
+
+Not verified: his own eye on the sector page; his OWN profile, whose editor
+also derived these two shapes into P.txp and will still cross the names for
+him until he clears those two edits (his profile wins over the shipped map by
+design); whether a third map would need the same exemption.

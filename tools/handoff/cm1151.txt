@@ -1,0 +1,12 @@
+v11.51: my v11.42 bake named the wrong map on the sector page
+
+His two sector-facts lines end "in Cold Storage." and "in The Cold Mile." and
+share one digit shape, so the v11.42 pattern derivation keyed both to that
+shape, the second overwrote the first, and TX matched any sector line of that
+shape by digits: one map could print the other map's name. Those two keys are
+exact-only now (the derivation skips any key carrying "test robot extracts").
+Check 11.51 reads both keys from the shipped map at run time, requires the
+exact line to still map, then changes the first figure of each and requires TX
+to hand it back untouched; fails on v11.50. From the v11.46 audit, P1, mine.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
