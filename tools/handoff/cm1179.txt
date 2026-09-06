@@ -3,9 +3,8 @@ v11.79: his order, green and blue guns on the crafting bench
 Reverses his 2026-08-29 rule for these two colours only; purple and gold stay
 with the Peddler and the surface. Four recipes: Compact SMG and Burst Carbine
 in green, Auto Rifle and Riot Scattergun in blue, each with parts worth more
-than the gun sells for and less than buying it, no contract items as inputs.
-The craft code needed no change. Check 11.79 reads the table for the four,
-their colours and their price window, and crafts the SMG through the real
-row; fails on v11.78.
+than the gun sells for and less than buying it. The craft code needed no
+change. Check 11.79 reads the table for the four, their colours and their
+price window, and crafts the SMG through the real row; fails on v11.78.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

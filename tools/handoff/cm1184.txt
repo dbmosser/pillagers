@@ -1,0 +1,9 @@
+v11.84: his note, the Meridian Lance travels through crawlers
+
+The round is stamped at the muzzle and the hit test lets it continue after
+a crawler with its damage intact, remembering the body so it is never hit
+twice; anything else stops it as before. Check 11.84 fires the real lance at
+two staged crawlers and requires one hit each, and a rifle that stops at the
+first; fails on v11.83.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

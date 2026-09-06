@@ -612,7 +612,7 @@ var want={simGreed:14,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
     // restores its own dials so the A/Bs were safe, but nothing else was.
     // Same defect again at v3.17: raiderDown shipped unpinned. Every new dial
     // must land here in the same build that introduces it.
-    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1500,raiderHaul:7,healPow:0.70,healSlow:2.4,wardenHp:900,wardenDmg:46,wardenRng:620,downTime:17,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,machVsRaider:1,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:1,simFlee:1,simCover:1,simHoldFire:0,simDodgeRing:1,
+    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1500,raiderHaul:7,healPow:0.70,healSlow:2.4,wardenHp:900,wardenDmg:46,wardenRng:620,downTime:17,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,machVsRaider:1,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:1,simFlee:1,simCover:1,simHoldFire:0,simDodgeRing:1,
     // v3.41 gave the PLAYER plain-language control of eight of these dials and
     // persists his choice on the profile. The fixture loads that profile, so a
     // saved "Raiders: Many" would silently run every A/B at nRaider 15 and every
@@ -5731,6 +5731,249 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.82',what:'the next bandage goes on while the prior one is still healing and a plate goes on while a bandage is being applied; the one-at-a-time refusal and its countdown are gone (his notes of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof useMedical!=='function'||typeof useArmor!=='function'||typeof tickHeal!=='function') return 'SKIP: no medical verbs in this build';
+     var bad=[], said=[], realSay=say, refusal='Still '+'applying prior';
+     say=function(m){ said.push(String(m)); return realSay.apply(null,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       p.hp=30; p.armor=0; p.healQ=0; p.healRate=0; p.healCap=undefined; p.prep=null; p.prepA=null; p.downed=false;
+       g.bag=['bandage','bandage','plate'];
+       useMedical();
+       if(!p.prep||g.bag.length!==2) bad.push('control: the first bandage did not start applying (bag '+g.bag.join(',')+')');
+       tickHeal(1.6);   // the 1.5 s application finishes and the bandage starts healing
+       var q1=p.healQ||0;
+       if(!(q1>0)) bad.push('control: after the application the first bandage is not healing (queue '+q1.toFixed(1)+')');
+       // THE NEXT BANDAGE WHILE THE PRIOR ONE HEALS.
+       useMedical();
+       if(!p.prep) bad.push('the second bandage was refused while the first was still healing');
+       if(g.bag.indexOf('bandage')>=0) bad.push('the second bandage is still in the bag');
+       // A PLATE WHILE THE BANDAGE IS BEING APPLIED.
+       useArmor();
+       if(!p.prepA) bad.push('the plate was refused while a bandage was being applied');
+       if(g.bag.indexOf('plate')>=0) bad.push('the plate is still in the bag');
+       for(var i=0;i<said.length;i++) if(said[i].indexOf(refusal)===0) bad.push('the game still said "'+said[i].slice(0,40)+'"');
+       tickHeal(2.2);   // both timers finish (1.5 and 2.0)
+       var q2=p.healQ||0;
+       if(p.prep||p.prepA) bad.push('control: a timer is still running after 2.2 s');
+       if(!(q2>q1)) bad.push('the second bandage did not add to the heal queue ('+q1.toFixed(1)+' before, '+q2.toFixed(1)+' after)');
+       if(!(p.armor>=19)) bad.push('the plate did not go on (armour '+p.armor+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ say=realSay; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.81',what:'the KILLED IN ACTION card no longer says how many seconds of cutting were lost with you, and an extraction still banks the cut (his order of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot end a raid and read the card';
+     if(typeof sealHere!=='function') return 'SKIP: no seal in this build';
+     var bad=[], lost='seconds of '+'cutting, lost', banked='Seal '+'cut ';
+     function card(){ try{ return ((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(e){ return ''; } }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.seal={gained:40,done:0}; g.player.bag=[];
+       __endRaid('dead');
+       var t1=card();
+       if(t1.indexOf('KILLED')<0) bad.push('control: the death card did not come up (card says: '+t1.slice(0,60)+')');
+       if(t1.indexOf(lost)>=0) bad.push('the death card still says the cutting was '+lost.slice(-4)+' with you');
+       __topClear(); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); g.seal={gained:40,done:0}; g.player.bag=[];
+       __endRaid('extract');
+       var t2=card();
+       if(t2.indexOf(banked)<0) bad.push('control: an extraction with 40 seconds of cutting did not print the banked line, so the seal path was not live in this staging (card says: '+t2.slice(0,80)+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.80',what:'when the extraction hold ends the raid from inside the player update, the rest of that frame drives the ambient bed to silence instead of back up to its floor, so nothing hums on the Undercroft floor afterwards (his note of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop&&window.__runPrep)) return 'SKIP: this fixture cannot deploy and step the loop';
+     if(typeof tickAmbience!=='function'||typeof updatePlayer!=='function'||typeof endRaid!=='function') return 'SKIP: no ambient bed or player update in this build';
+     var bad=[], log=[], origTA=tickAmbience, origUP=updatePlayer, ended=false, i;
+     tickAmbience=function(dt,threat,alive,dread){
+       log.push({target:alive?(0.16+0.30*(threat||0)):0,over:!!(G&&G.over),ended:ended});
+       return origTA.apply(this,arguments);
+     };
+     // The hold ends the raid from inside updatePlayer; so does this, once.
+     updatePlayer=function(dt){
+       var r=origUP.apply(this,arguments);
+       if(!ended&&G&&!G.over&&G.t>0.5){ ended=true; endRaid('extract'); }
+       return r;
+     };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __state().player.downed=false;
+       var t0=performance.now();
+       for(i=0;i<60&&!ended;i++) __loop(t0+i*16.7);
+       if(!ended) bad.push('control: the raid was never ended from inside the player update, so the frame order cannot be measured');
+       for(var j=0;j<30;j++) __loop(t0+(i+j)*16.7);
+       var before=log.filter(function(e){ return !e.ended; }), after=log.filter(function(e){ return e.ended; });
+       if(!before.filter(function(e){ return e.target>0; }).length) bad.push('control: the bed was never driven above 0 before the end, so silence afterwards would prove nothing');
+       if(!after.length) bad.push('control: the bed was not driven at all on the frame that ended the raid, so the order cannot be measured here');
+       var up=after.filter(function(e){ return e.target>0; });
+       if(up.length) bad.push('on the frame that ended the raid the bed was driven back up to '+up[up.length-1].target.toFixed(2)+' after the cut, which is the level it then holds on the floor');
+       if(after.length&&after[after.length-1].target!==0) bad.push('the last level written after the end was '+after[after.length-1].target.toFixed(2)+' and not 0');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ tickAmbience=origTA; updatePlayer=origUP; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.79',what:'four guns are on the crafting bench, two green and two blue, each priced in parts between what it sells for and what it costs to buy, and crafting one through the real row puts the gun in the stash and takes the parts (his order of 2026-09-06)',
+   run:function(){
+     if(typeof RECIPES==='undefined'||typeof ITEMS==='undefined') return 'SKIP: no recipes in this build';
+     if(!window.__P||typeof renderWork!=='function') return 'SKIP: this fixture cannot reach the bench';
+     var bad=[], guns=[], i, k;
+     for(i=0;i<RECIPES.length;i++){
+       var r=RECIPES[i], out=null; for(k in r.out){ out=k; break; }
+       var it=ITEMS[out];
+       if(it&&it.use==='gun') guns.push({ix:i,r:r,out:out,it:it});
+     }
+     if(guns.length!==4) bad.push('the bench holds '+guns.length+' gun recipe(s) and not four');
+     var green=0, blue=0;
+     for(i=0;i<guns.length;i++){
+       var G2=guns[i], rar=G2.it.r;
+       if(rar==='uncommon') green++; else if(rar==='rare') blue++; else bad.push(G2.r.name+' is '+rar+', and only green and blue guns belong on the bench');
+       // THE PRICE WINDOW: parts worth more than the gun sells for, less than buying it.
+       var parts=0; for(k in G2.r.need){ parts+=(ITEMS[k]?ITEMS[k].val:0)*G2.r.need[k]; }
+       if(parts<=G2.it.val) bad.push(G2.r.name+' costs '+parts+' in parts and sells for '+G2.it.val+', which prints money');
+       var shopRow=null; if(typeof SHOP!=='undefined') for(var si=0;si<SHOP.length;si++) if(SHOP[si].kind==='wep'&&SHOP[si].k===G2.it.gk) shopRow=SHOP[si];
+       if(shopRow&&parts>=shopRow.price) bad.push(G2.r.name+' costs '+parts+' in parts against '+shopRow.price+' to buy, which is a trap');
+     }
+     if(green!==2||blue!==2) bad.push('the bench holds '+green+' green and '+blue+' blue gun recipes, not two of each');
+     // AND ONE CRAFTS THROUGH THE REAL ROW.
+     var smg=null; for(i=0;i<guns.length;i++) if(guns[i].out==='gun_smg') smg=guns[i];
+     if(smg){
+       var prof=__P(), keepStash=(prof.stash||[]).slice();
+       try{
+         __topClear(); __cleanProfile(); prof=__P();
+         var st=[]; for(k in smg.r.need) for(var q=0;q<smg.r.need[k];q++) st.push(k);
+         prof.stash=st;
+         renderWork();
+         var row=document.querySelector('#worklist [data-w="recipe:'+smg.ix+'"]');
+         var btn=row?row.querySelector('button'):null;
+         if(!btn) bad.push('control: the bench drew no row for the Compact SMG');
+         else if(btn.disabled) bad.push('control: with every part in the stash the Compact SMG row is still locked');
+         else {
+           btn.click();
+           if((prof.stash||[]).indexOf('gun_smg')<0) bad.push('crafting the Compact SMG put no gun in the stash (stash: '+(prof.stash||[]).join(',')+')');
+           var left=0; for(var j=0;j<(prof.stash||[]).length;j++) if(prof.stash[j]!=='gun_smg') left++;
+           if(left) bad.push('control: '+left+' part(s) were left in the stash after the craft');
+         }
+       }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+       finally{ try{ __P().stash=keepStash; }catch(_r){} __topClear(); __cleanProfile(); }
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.78',what:'the credits and XP readout in the corner is twice the size everywhere, on the Undercroft floor and in a raid, and the CONDITIONS box starts below it (his notes of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__frame&&window.__hubEnter&&window.__runPrep)) return 'SKIP: this fixture cannot walk the floor and a raid';
+     var el=document.getElementById('topright'); if(!el) return 'SKIP: no corner readout in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[];
+     function sz(){ var cs=getComputedStyle(el), r=el.getBoundingClientRect(); return {f:parseFloat(cs.fontSize)||0,h:r.height||0,b:r.bottom||0}; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
+       var hub=sz();
+       if(hub.f<28) bad.push('on the floor the readout is '+hub.f+'px and not 28px or more');
+       if(hub.h<40) bad.push('on the floor the readout is '+hub.h.toFixed(0)+'px tall and not 40px or more');
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __frame(0.016); __frame(0.016); saveProfile();
+       var raid=sz();
+       if(raid.f<28) bad.push('in a raid the readout is '+raid.f+'px and not 28px or more');
+       if(raid.h<40) bad.push('in a raid the readout is '+raid.h.toFixed(0)+'px tall and not 40px or more');
+       if(!HUDBOX.cond) bad.push('control: the raid drew no CONDITIONS box to measure against');
+       else if(HUDBOX.cond.y<raid.b) bad.push('the CONDITIONS box starts at '+HUDBOX.cond.y.toFixed(0)+'px, above the readout bottom at '+raid.b.toFixed(0)+'px, so the two overlap');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.77',what:'a frag blast reaches further and hits harder: the radius is 190 and the damage at a fixed distance matches the new formula and exceeds the old one (his order of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy or drive the loader';
+     if(typeof explodeFrag!=='function'||typeof DEF==='undefined') return 'SKIP: no frag blast in this build';
+     var bad=[], k;
+     if(DEF.fragR!==190) bad.push('the default blast radius is '+DEF.fragR+' and not 190');
+     function withCfg(fr){ var c={}; for(k in DEF) c[k]=DEF[k]; c.fragR=fr; return {credits:900,cfgv:17,cfg:c}; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       CFG.fragR=DEF.fragR;   // the game reads CFG; the blast is measured at the shipped default
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, R=(CFG.fragR===undefined?190:CFG.fragR);
+       if(R!==190) bad.push('control: the blast is being measured at radius '+R+', not 190');
+       // A PILLAGER WITH A CLEAR LINE TO A POINT 40 UNITS AWAY.
+       var e=null, fx=0, fy=0;
+       for(var i=0;i<g.ents.length&&!e;i++){
+         var c=g.ents[i]; if(c.kind!=='raider'||c.downed||c.finished||c.merc) continue;
+         var tries=[[c.x+40,c.y],[c.x-40,c.y],[c.x,c.y+40],[c.x,c.y-40]];
+         for(var t=0;t<tries.length;t++){ if(losClear(tries[t][0],tries[t][1],c.x,c.y,g.map.segs)){ e=c; fx=tries[t][0]; fy=tries[t][1]; break; } }
+       }
+       if(!e) return 'SKIP: no pillager with a clear line to a blast point';
+       e.hp=1000; p.x=e.x+1500; p.y=e.y;   // he is well outside any radius
+       var de=Math.hypot(e.x-fx,e.y-fy), eff=Math.max(0,de-e.r);
+       var expectNew=115*(1-eff/190)+25, expectOld=85*(1-eff/150)+15;
+       explodeFrag({x:fx,y:fy});
+       var loss=1000-e.hp;
+       if(Math.abs(loss-expectNew)>1.5) bad.push('a blast '+Math.round(de)+' units from a pillager took '+loss.toFixed(1)+' and not the '+expectNew.toFixed(1)+' the new formula gives');
+       // CONTROL: it hits harder than it did, or the numbers moved nowhere.
+       if(loss<expectOld+5) bad.push('control: the blast took '+loss.toFixed(1)+', no more than the old formula ('+expectOld.toFixed(1)+')');
+       // THE MIGRATION: an old save still on 150 comes up at 190; a hand-set 140 survives.
+       __applyLoaded(withCfg(150));
+       if(CFG.fragR!==190) bad.push('a cfgv 17 save carrying the old 150 loaded with fragR '+CFG.fragR+' instead of 190');
+       __applyLoaded(withCfg(140));
+       if(CFG.fragR!==140) bad.push('control: a hand-set 140 was overwritten to '+CFG.fragR+' by the migration');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.76',what:'the Scav Pistol costs 1800 in the shop, down from 3600, and is still the cheapest gun on the shelf (his order of 2026-09-06)',
+   run:function(){
+     if(typeof SHOP==='undefined') return 'SKIP: no shop in this build';
+     var bad=[], pistol=null, smg=null;
+     for(var i=0;i<SHOP.length;i++){
+       if(SHOP[i].kind==='wep'&&SHOP[i].k==='pistol') pistol=SHOP[i];
+       if(SHOP[i].kind==='wep'&&SHOP[i].k==='smg') smg=SHOP[i];
+     }
+     if(!pistol) return 'SKIP: the shop has no Scav Pistol row';
+     if(pistol.price!==1800) bad.push('the Scav Pistol costs '+pistol.price+' in the shop and not the 1800 he asked for');
+     // CONTROL: it is still the cheapest gun there, so the ladder did not inv    ert.
+     for(var j=0;j<SHOP.length;j++){
+       var r=SHOP[j];
+       if(r.kind==='wep'&&r.k!=='pistol'&&r.price<=pistol.price)
+         bad.push('control: '+r.k+' now costs '+r.price+', at or under the pistol, so the pistol is no longer the cheapest gun');
+     }
+     if(smg&&smg.price!==13200) bad.push('control: the Compact SMG moved to '+smg.price+', so more than the one dial changed');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.75',what:'the craft button is a hold: it fills as you hold it, nothing is spent until it is full, and letting go early spends nothing',
+   run:function(){
+     if(typeof craftHoldStart!=='function'||typeof craftHoldStep!=='function'||typeof craftHoldCancel!=='function') return 'the craft button is a plain click; there is no hold to drive';
+     if(typeof CRAFT_HOLD==='undefined') return 'SKIP: no hold length in this build';
+     var bad=[], fired=0, stub=document.createElement('button');
+     stub.disabled=false; document.body.appendChild(stub);
+     try{
+       // A HOLD FILLS AND THEN FIRES, ONCE.
+       craftHoldStart(stub,function(){ fired++; });
+       craftHoldStep(CRAFT_HOLD*0.5);
+       if(fired) bad.push('the craft fired at half the hold');
+       var bg=String(stub.style.backgroundImage||'');
+       if(bg.indexOf('50%')<0) bad.push('at half the hold the button is not half full (background "'+bg.slice(0,70)+'")');
+       craftHoldStep(CRAFT_HOLD*0.6);
+       if(fired!==1) bad.push('past the full hold the craft fired '+fired+' time(s) and not once');
+       if(String(stub.style.backgroundImage||'')) bad.push('after firing the button still carries a fill');
+       // LETTING GO EARLY SPENDS NOTHING.
+       fired=0; craftHoldStart(stub,function(){ fired++; }); craftHoldStep(CRAFT_HOLD*0.7); craftHoldCancel(); craftHoldStep(CRAFT_HOLD*2);
+       if(fired) bad.push('a hold released early still crafted');
+       if(String(stub.style.backgroundImage||'')) bad.push('a cancelled hold left a fill on the button');
+       // A DEAD BUTTON CANNOT BE HELD.
+       fired=0; stub.disabled=true; craftHoldStart(stub,function(){ fired++; }); craftHoldStep(CRAFT_HOLD*2);
+       if(fired) bad.push('a disabled button crafted on a hold');
+       // CONTROL: the real panel wires the hold, and no longer crafts on a click.
+       var src=''; try{ src=renderCraftDetail.toString(); }catch(_s){}
+       if(src.indexOf('craftHoldStart(')<0) bad.push('control: the craft panel does not wire the hold to its button');
+       var oldClick=['b.onclick=function(){ btn.','click(); };'].join('');
+       if(src.indexOf(oldClick)>=0) bad.push('control: the craft panel still crafts on a plain click');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ craftHoldCancel(); }catch(_c){} try{ document.body.removeChild(stub); }catch(_r){} }
      return bad.length?bad.join('; '):null; }},
   {v:'11.74',what:'the boarding window tells him to act: EXTRACT NOW with the ring letter and the seconds left, in both the banner above the belt and the label on an off-screen ring, and nowhere does it say the old in-progress wording',
    run:function(){

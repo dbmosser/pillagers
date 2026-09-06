@@ -1,0 +1,32 @@
+## v11.83 - HIS SPEC: THE STIM IS TEN SECONDS OF LEGS
+
+His note of 2026-09-06, from his fourth run this morning: "stim injector
+should give unlimited stamina and 1.2 speed boost for 10 seconds".
+
+WHAT IT WAS. A Stim Injector refilled the stamina bar once and cleared the
+sprint lock, and that was all: a bandage for legs, spent in the two seconds
+it took to sprint the bar back down. He has given it a real shape.
+
+THE BUILD. One verb, useStim, and two numbers, STIM_SEC 10 and STIM_SPD 1.2.
+Using a stim, through the belt key or any later route, sets a ten second
+clock; while it runs the stamina line in the player update holds the bar
+full and skips the drain, so the release latch that guards against
+fluttering the sprint key never arms, and the speed line multiplies every
+speed by 1.2 on top of sprint, crouch, load and water. A second stim while
+one runs tops the clock back up to ten rather than stacking. The game says
+when it starts and when it wears off. The tooltip says what it does now.
+
+MEASURED. Check 11.83 puts a stim on key 3 and uses it through the real key
+handler, requires the ten second clock running, then sprints from an
+extraction ring along a line proven clear for 220 units, with Shift and the
+movement key held through the real player update, and requires the bar
+still full and the clock run down; then makes the identical sprint from the
+same spot without the stim and requires the plain run to have drained
+stamina and the stim run to have covered 1.2 times the ground, within a
+tolerance of 0.08. On the v11.82 fixture there is no clock, the bar drains
+under the stim, and the two sprints cover the same ground.
+
+Not verified: his own play, and whether ten seconds and a fifth are the
+feel he wants; the stim in the sim bot, which never uses one; what a stim
+does to the footstep and noise model at the higher speed, which is
+unchanged and simply faster.

@@ -471,13 +471,17 @@
   .credits small{ font-size:10.5px; color:var(--ash); letter-spacing:.28em; display:block; font-weight:400; }
   /* v11.52, HIS NOTE: credits and XP in the upper right, at all times. z 9000 puts
      it above every screen (10), pause box (35), card (40) and window (60), and
-     below the item menu (12000) and the drag ghost (9999). 24px tall at top 4px,
-     inside the band above the raid's CONDITIONS box, which starts at LH(30). */
-  #topright{ position:fixed; top:4px; right:16px; height:24px; line-height:24px; z-index:9000; pointer-events:none;
-    font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:15px; color:var(--amber); white-space:nowrap; text-align:right; }
-  #topright small{ font-size:9.5px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:5px; margin-right:14px; }
+     below the item menu (12000) and the drag ghost (9999).
+     v11.78, HIS NOTES: too small to be useful on the floor, and still far too
+     small in a raid. One size everywhere, twice what it was: 32px figures, 14px
+     labels, 44px tall at top 6px. The raid's CONDITIONS box now starts below
+     the readout's real bottom (drawHUD reads it) rather than the readout
+     fitting the band above the box. */
+  #topright{ position:fixed; top:6px; right:20px; height:44px; line-height:44px; z-index:9000; pointer-events:none;
+    font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }
+  #topright small{ font-size:14px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:7px; margin-right:20px; }
   #topright small:last-child{ margin-right:0; }
-  .toprow{ padding-right:270px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable */
+  .toprow{ padding-right:480px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide */
   #credits{ display:none; }         /* v11.52: the corner readout replaces the stash screen's own credits figure */
   /* The pause and modal overlays were a flat black wash with content floating
      loose on them and no frame at all. Each now gets a proper framed window;
@@ -1350,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.74';
+var VER='11.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1365,17 @@ var VER='11.74';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.74';
+var WHATSNEW_VER='11.82';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'HEALING STACKS AGAIN. The next bandage goes on while the prior one is still healing, and a plate goes on while a bandage is being applied. The one-at-a-time refusal and its countdown are gone.',
+  'THE HUM AFTER AN EXTRACTION IS GONE. The frame that ended the raid was writing the raid ambience back up after it had been cut, and the level held on the floor.',
+  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
+  'THE CREDITS AND XP READOUT IN THE CORNER IS TWICE THE SIZE, on the floor and in a raid. The CONDITIONS box starts below it.',
+  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 115 at the centre, was 85; to you 80 at the centre, was 60. The fuse is still 1.1 seconds.',
+  'THE SCAV PISTOL IS HALF PRICE IN THE SHOP: 1800 credits, down from 3600. Say the number you want and it moves again.',
+  'HOLD THE CRAFT BUTTON FOR A SECOND. The button fills as you hold it and the work happens when it is full. Let go early and nothing is spent. The same goes for the service button, which is the same control.',
   'THE BOARDING WINDOW SAYS EXTRACT NOW. It used to say EXTRACTION IN PROGRESS, which reads as something happening without you rather than the one moment you have to be in the ring holding E.',
   'A BRAND NEW CHARACTER HAS A NAME. Before this, someone playing for the first time had none until the game had saved and loaded once, and the character screen read "undefined" beside their first raid.',
   'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
@@ -1526,7 +1537,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -1860,7 +1871,8 @@ var SHOP=[
   // common and a green, which is the floor you can always buy back to.
   // replaceCost falls back to ival*2.4 for anything not listed here, so a rifle
   // and a DMR still price for servicing.
-  {k:'pistol',kind:'wep',price:3600,rep:0},{k:'smg',kind:'wep',price:13200,rep:0}
+  // v11.76, HIS ORDER: cheaper. Was 3600 against a 900 credit start.
+  {k:'pistol',kind:'wep',price:1800,rep:0},{k:'smg',kind:'wep',price:13200,rep:0}
 ];
 var LOOT={
   crate:[['scrap',32],['wire',22],['cell',13],['bandage',11],['ammobox',15],['board',5],['comp',3],['optic',2]],
@@ -1975,7 +1987,15 @@ var RECIPES=[
   // at 179 is the only clean way to land inside it.
   {name:'2x Smoke Canister',out:{smoke:2},need:{comp:1,cell:1,scrap:2}},
   {name:'2x Decoy Beacon',out:{decoy:2},need:{comp:1,scrap:2}},
-  {name:'Frag Charge',out:{frag:1},need:{comp:2,cell:2,scrap:2}}
+  {name:'Frag Charge',out:{frag:1},need:{comp:2,cell:2,scrap:2}},
+  // v11.79, HIS ORDER: green and blue guns on the bench, moderately expensive.
+  // Reverses the 2026-08-29 rule for these two colours only; purple and gold
+  // are still the Peddler and the surface. Parts worth more than the gun sells
+  // for and less than buying it, the same window every recipe above sits in.
+  {name:'Compact SMG',out:{gun_smg:1},need:{comp:4,cell:3,board:2,servo:1}},
+  {name:'Burst Carbine',out:{gun_carbine:1},need:{comp:4,servo:2,board:2}},
+  {name:'Auto Rifle',out:{gun_rifle:1},need:{comp:5,servo:2,board:3,optic:1}},
+  {name:'Riot Scattergun',out:{gun_shotgun:1},need:{comp:5,cell:4,board:2,servo:2}}
 ];
 var THROWKEYS=['smoke','decoy','frag'];
 // v10.97, HIS NOTE 12: THE CONTRACT BOARD'S SHOPPING LIST. It used to be a
@@ -2339,6 +2359,13 @@ function txClick(cx,cy){
 // the Undercroft and in a raid. One element, rewritten only when a figure
 // changes, so the frame loop can call it for free.
 var _trLast='';
+// v11.78: where the corner readout ends, in CSS pixels, so the raid HUD can
+// start its CONDITIONS box below it. The HUD canvas is W CSS pixels wide (the
+// device ratio is applied to the backing store, not to W), so no conversion.
+function topRightBottom(){
+  var el=document.getElementById('topright'); if(!el) return 0;
+  try{ return el.getBoundingClientRect().bottom||0; }catch(_e){ return 0; }
+}
 function syncTopRight(){
   var el=document.getElementById('topright'); if(!el) return;
   var c=(P.credits||0).toLocaleString(), x=(P.xp||0).toLocaleString(), s=c+'|'+x;
@@ -2346,7 +2373,7 @@ function syncTopRight(){
   _trLast=s;
   el.innerHTML=c+' <small>CREDITS</small> '+x+' <small>XP</small>';   // spaces, so the text reads right when copied
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=17; storeSet(JSON.stringify(P));
+function saveProfile(){ P.cfg=CFG; P.cfgv=18; storeSet(JSON.stringify(P));
   try{ syncTopRight(); }catch(_tr){}   // v11.52: every path that moves credits or XP saves
   var _mOpen=document.querySelector('.modal.on');
   if(_mOpen) stampBalance(_mOpen);
@@ -2558,7 +2585,7 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
           // THE DISCIPLINE THIS REINSTATES: when a shipped default changes
           // deliberately, bump cfgv in saveProfile AND here, or the old value
           // rides back in on every save.
-if((P.cfgv>=9&&P.cfgv<=17)&&P.cfg){
+if((P.cfgv>=9&&P.cfgv<=18)&&P.cfg){
             // cfgv 10: downed timer default moved 24 to 17 on his run-55 order.
             if(P.cfgv===9&&P.cfg.downTime===24) P.cfg.downTime=17;
             // cfgv 11: he reversed the automatic pickup on his run-59 note, so a
@@ -2592,6 +2619,9 @@ if((P.cfgv>=9&&P.cfgv<=17)&&P.cfg){
             // every operator now wears. Only moved off the old default, so a rig
             // he picked himself in the console survives.
             if(P.cfgv<17&&P.cfg.simRig==='light') P.cfg.simRig='std';
+            // cfgv 18: his order of 2026-09-06, a bigger blast. Only moved off
+            // the old default, so a radius he set himself in the console survives.
+            if(P.cfgv<18&&P.cfg.fragR===150) P.cfg.fragR=190;
             applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; try{ applyGameOpts(); }catch(e){} }
           else P.cfg=null;
         } }
@@ -11563,7 +11593,9 @@ function explodeFrag(f){
   // The blast was 95 units, a little over four player widths, so a charge landing
   // a stride away from a crawler often did nothing to it. 150 makes the throw
   // worth the slot without reaching the 310 unit flash it already draws.
-  var p=G.player,R=(CFG.fragR===undefined?150:CFG.fragR),i;
+  // v11.77, HIS ORDER: bigger and harder. 150 to 190, and the two damage lines
+  // below moved with it; the saved dial is migrated at cfgv 18.
+  var p=G.player,R=(CFG.fragR===undefined?190:CFG.fragR),i;
   sfx("boom",f.x,f.y);
   if(!G.sim){ spark(f.x,f.y,'#ffcf7a',34,340); decal(f.x,f.y,'#141210',fxn(20,30));   // v8.35
     G.puffs.push({x:f.x,y:f.y,t:0,life:.6,c:'#ffb267',r:52}); }
@@ -11588,7 +11620,7 @@ function explodeFrag(f){
   var _fName=_fMine?'YOUR OWN CHARGE':((f.by.name||'A PILLAGER')+"'S CHARGE");
   var _fSrc=_fMine?'other':(f.by.kind||'raider');
   if(dp<R&&losClear(f.x,f.y,p.x,p.y,G.map.segs))
-    damagePlayer(60*(1-dp/R)+12,_fSrc,_fName,f.x,f.y);
+    damagePlayer(80*(1-dp/R)+18,_fSrc,_fName,f.x,f.y);   // v11.77: was 60 and 12; 98 at the centre, so a full man just lives
   // The blast takes walls with it. 200 at the centre falling to 40 at the edge:
   // one charge breaks glass, furniture, wrecks and trees outright and leaves a
   // building wall over half gone, so two charges open a building, which is what
@@ -11606,7 +11638,7 @@ function explodeFrag(f){
   for(i=G.ents.length-1;i>=0;i--){
     var e=G.ents[i],de=dist(e,f);
     if(de<R+e.r&&losClear(f.x,f.y,e.x,e.y,G.map.segs)){
-      e.hp-=85*(1-Math.max(0,de-e.r)/R)+15; e.hitT=.2;
+      e.hp-=115*(1-Math.max(0,de-e.r)/R)+25; e.hitT=.2;   // v11.77: was 85 and 15
       // v8.30, his ruling: "frag kills a neutral should def get a point." And
       // it closes the hole v8.29 opened - a frag that only WOUNDED a neutral
       // still turned him hostile, so frag-then-shoot cost nothing at all.
@@ -12050,7 +12082,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
   G.shake=Math.max(G.shake,4+7*_sev);
   blip('hit'); decal(p.x+rnd(-10,10),p.y+rnd(-10,10),'#7a1a14',rnd(6,13));
   if(p.hp<=0){
-p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null;
+p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null;
   (function(){
     if(G.sim) return;
     var near=null,nd=1e9;
@@ -12420,14 +12452,23 @@ function applyHeal(key){
     // health and took the FASTER of the two rates, so stacking was never a
     // downgrade and the correct play under fire was to dump your whole medical
     // bag at once. That made healing a resource dump rather than a commitment.
-    // Now a heal already running refuses the next one outright, at the two call
-    // sites that can start one, and the rate itself is divided by healSlow.
-    // healSolo 0 restores stacking and healSlow 1 restores the old speed.
-    p.healQ=amt; p.healAmt0=amt;
-    p.healRate=amt/(hot*(CFG.healSlow===undefined?1.6:CFG.healSlow));
-    // v9.62: the ceiling travels with the heal, because the drain runs for
-    // seconds afterwards and has no idea which item started it.
-    p.healCap=healCeil(it);
+    // The rate itself is divided by healSlow; healSlow 1 restores the old speed.
+    // v11.82, HIS NOTE: the refusal is gone again. The next bandage goes on
+    // while the prior one is still healing; a second item ADDS its health and
+    // takes the faster of the two rates and the higher of the two ceilings.
+    // The healSolo dial that gated the refusal is gone with it.
+    var _rate=amt/(hot*(CFG.healSlow===undefined?1.6:CFG.healSlow)), _cap=healCeil(it);
+    if((p.healQ||0)>0){
+      p.healQ+=amt; p.healAmt0=p.healQ;
+      p.healRate=Math.max(p.healRate||0,_rate);
+      p.healCap=Math.max((p.healCap===undefined)?0:p.healCap,_cap);
+    } else {
+      p.healQ=amt; p.healAmt0=amt;
+      p.healRate=_rate;
+      // v9.62: the ceiling travels with the heal, because the drain runs for
+      // seconds afterwards and has no idea which item started it.
+      p.healCap=_cap;
+    }
     return 0;
   }
   // v9.62: a ceiling never takes health away. Above it already, this does
@@ -12454,11 +12495,9 @@ function useMedical(){
   var p=G.player;
   var idx=findHeal();
   if(idx<0){ say('No medical supplies'); return false; }
-  // What is already on its way counts as health you have.
-  if((p.healQ||0)>0&&CFG.healSolo!==0){
-    say('Still applying prior healing item. '+(p.healQ).toFixed(0)+' to go.');
-    return false;
-  }
+  // What is already on its way counts as health you have. v11.82, HIS NOTE: a
+  // heal already running no longer refuses the next one, and the countdown
+  // that refusal printed (which was wrong) is gone with it.
   if(p.hp+(p.healQ||0)>=p.maxhp){
     say((p.healQ>0)?'Already healing.':'Already at full');
     return false;
@@ -12491,18 +12530,26 @@ function useMedical(){
 // item is spent at the press, not at the landing, so being downed mid-apply
 // loses the item, which is the cost that makes starting one under fire a
 // decision. One wind-up at a time, and every entry path refuses while one runs.
+// v11.82, HIS NOTE: a plate goes on while a bandage is being applied. Two
+// timers, prep for medical and prepA for armour, each ticked on its own, so
+// neither verb waits for the other; each still refuses a second of its own
+// kind while it runs.
 function startPrep(kind,key){
-  G.player.prep={t:0,
+  var _pr={t:0,
     max:(kind==='armor'?(CFG.armorPrep===undefined?2:CFG.armorPrep)
                        :(CFG.healPrep===undefined?1.5:CFG.healPrep)),
     kind:kind,key:key};
+  if(kind==='armor') G.player.prepA=_pr; else G.player.prep=_pr;
 }
 function tickPrep(dt){
   var p=G.player;
-  if(!p.prep) return;
-  p.prep.t+=dt;
-  if(p.prep.t<p.prep.max) return;
-  var PR=p.prep; p.prep=null;
+  tickPrepSlot(p,'prep',dt); tickPrepSlot(p,'prepA',dt);
+}
+function tickPrepSlot(p,slot,dt){
+  if(!p[slot]) return;
+  p[slot].t+=dt;
+  if(p[slot].t<p[slot].max) return;
+  var PR=p[slot]; p[slot]=null;
   var it=ITEMS[PR.key];
   if(PR.kind==='armor'){
     var cap=armorCap();
@@ -13156,7 +13203,8 @@ function useArmor(){
   var cap=armorCap();
 
   if(p.armor>=cap){ say('Armour is already full.'); return; }
-  if(p.prep){ say('Already applying '+(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'something')+'.'); return; }
+  // v11.82: only another plate blocks a plate; a bandage being applied does not.
+  if(p.prepA){ say('Already slotting '+(ITEMS[p.prepA.key]?ITEMS[p.prepA.key].name:'a plate')+'.'); return; }
   var it=ITEMS[G.bag[ix]],k4=G.bag[ix];
   G.bag.splice(ix,1); startPrep('armor',k4);
   say('Slotting '+it.name+'...');
@@ -13220,11 +13268,9 @@ function useHot(){
       // Same inbound-aware guard as useMedical; this path names ONE item so it
       // cannot just delegate, but it must not overfill either.
       var _pp=G.player;
-      // The same refusal as useMedical. Two ways in, one rule: a named slot must
-      // not be a way around a limit the generic verb enforces.
-      if((_pp.healQ||0)>0&&CFG.healSolo!==0){
-        say('Still applying prior healing item. '+(_pp.healQ).toFixed(0)+' to go.'); return;
-      }
+      // The same rules as useMedical. Two ways in, one rule: a named slot must
+      // not be a way around a limit the generic verb enforces. v11.82: the
+      // one-heal-at-a-time refusal is gone from both, on his note.
       if(_pp.hp+(_pp.healQ||0)>=_pp.maxhp){
         say((_pp.healQ>0)?'Already healing.':'Already at full'); return;
       }
@@ -18364,10 +18410,10 @@ silentExit:T.silentExit||0,
           ' of '+needE+' seconds. Banked.</span>');
       }
       saveProfile();
-    } else {
-      lines.push('<span style="color:var(--rust)">'+Math.round(G.seal.gained)+
-        ' seconds of cutting, lost with you.</span>');
     }
+    // v11.81, HIS ORDER: the KIA card no longer says how much cutting died
+    // with him; it meant nothing to him. The cut still does not bank on a
+    // death, which is the seal's whole point; the card just does not say so.
   }
   if(how==='extract'){
     P.ext++;
@@ -20846,14 +20892,18 @@ if(!sc.seen) continue;
   // that shows in a bar above character", and it was mostly invisible.
   // Raised rather than pushed into the y-sort, because the sort would still let a
   // wall cover it and the whole point is that it reads at a glance mid-fight.
-  if(p.prep){
-    var _pf=clamp(p.prep.t/p.prep.max,0,1);
-    var _py=p.y-62;
+  // v11.82: two timers now (prep is medical, prepA is armour); each gets its
+  // own bar, the armour bar a row above when both are running.
+  var _pbs=[p.prep,p.prepA], _pbi;
+  for(_pbi=0;_pbi<2;_pbi++) if(_pbs[_pbi]){
+    var _pb=_pbs[_pbi];
+    var _pf=clamp(_pb.t/_pb.max,0,1);
+    var _py=p.y-62-((_pbi&&p.prep)?10:0);
     wc.fillStyle='rgba(6,9,13,.85)';
     wc.fillRect(p.x-24,_py,48,8);
     wc.strokeStyle='rgba(255,255,255,.22)'; wc.lineWidth=1;
     wc.strokeRect(p.x-23.5,_py+0.5,47,7);
-    wc.fillStyle=p.prep.kind==='armor'?'#5aa9e6':'#6fe0a0';
+    wc.fillStyle=_pb.kind==='armor'?'#5aa9e6':'#6fe0a0';
     wc.fillRect(p.x-23,_py+1,46*_pf,6);
   }
   // marked ring
@@ -23225,6 +23275,11 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     // the top right corner, so dx is worth dx/_cz here and the left screen edge
     // sits at W-(W-4)/_cz. Applied raw it moved 105 for a 100 pixel hand.
     var _cz=(HUDZ.cond||1)*hudRes()*hudUserZ('cond');
+    // v11.78, HIS NOTES: the corner readout is 44px tall now and this box sat
+    // at LH(30), under it. It starts below the readout's real bottom, read from
+    // the page in CSS pixels and put into this scaled space; LH(30) still holds
+    // if the readout is ever shorter than that.
+    by=Math.max(by,Math.ceil((topRightBottom()+8)/_cz));
     bx=clamp(bx+HOc.dx/_cz,Math.min(W-16-bw,W-(W-4)/_cz),Math.max(W-(W-4)/_cz,W-bw-4/_cz));
     by=clamp(by+HOc.dy/_cz,LH(10),Math.max(LH(10),H/_cz-LH(30)));
 ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
@@ -27798,6 +27853,7 @@ function loop(ts){
   tickZoom(dt);
   pollPad();
   if(state==='hub'){
+    try{ craftHoldStep(dt); }catch(_ch){}   // v11.75: the craft hold fills here
     if(HB&&wc&&W>0){
       // v8.95: the HUD canvas holds whatever the last raid left there, so it is
       // cleared every frame. v11.58, from the 2026-09-06 menu audit: ABOVE the
@@ -27827,7 +27883,7 @@ function loop(ts){
     for(var _shk in keys){ if(keys[_shk]){ _shAny=true; break; } }
     var _shAct=_shAny||(typeof mouse!=='undefined'&&mouse&&mouse.down)||
                (typeof PAD!=='undefined'&&PAD.on&&(PAD.mx||PAD.my||PAD.aiming))||
-               (_shp.roll>0)||(_shp.reloading>0)||(!!_shp.prep);
+               (_shp.roll>0)||(_shp.reloading>0)||(!!_shp.prep)||(!!_shp.prepA);
     if(!_shAct) dt=0;
   }
   // v10.86, HIS NOTE: the raid update below is gated on !G.paused and
@@ -27902,7 +27958,12 @@ function loop(ts){
       }
       // v8.52, audit: musThreat had no reader either; th itself is still needed
       // below, so only the stamp goes.
-      tickAmbience(dt,th,!pp.downed,wdread);
+      // v11.80, HIS NOTE: the extraction hold ends the raid inside updatePlayer
+      // above, and this frame runs on to here after endRaid's cut. Not downed
+      // after an extraction, so this wrote the bed back up to its floor in the
+      // same frame, and the level held on the Undercroft floor for as long as
+      // the page was open. Over an ended raid the bed is driven to silence.
+      tickAmbience(dt,G.over?0:th,!pp.downed&&!G.over,G.over?0:wdread);
       tickEnemyAudio(dt);
       tickMachineVoices(dt);
       tickVerb(dt);
@@ -28296,7 +28357,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.74: HIS NOTE of 2026-09-06, EXTRACTION IN PROGRESS at the bottom of the screen did not say whether the extraction was coming or was his to take. It marks the boarding window, the one moment he must be in the ring holding E. The wording was his own from v8.68, chosen over OPEN. Both places that announce the window now read one helper, extractNowLine, which says EXTRACT NOW with the ring letter and the seconds LEFT, the words he gave for the ring badge at v11.54. Check 11.74 reads the helper and requires his words, the letter and the seconds, and controls that both draw sites use it and that the phrase IN PROGRESS is gone from them.',
+  now:'v11.82: HIS NOTES of 2026-09-06, the countdown on still applying prior healing item was wrong and is gone with the refusal it belonged to; the next bandage goes on while the prior one heals (a second item adds its health at the faster rate and the higher ceiling), and a plate goes on while a bandage is being applied (two application timers, prep for medical and prepA for armour). Reverses his v3.34 one-heal-at-a-time rule on his own note; the healSolo dial is removed. Check 11.82 stages a hurt player with two bandages and a plate, applies one, applies the second while the first heals and the plate while the second is being applied, requires each to have started and the refusal never said, and after the timers requires the queue to have grown and the armour to be on; fails on v11.81.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31087,6 +31148,46 @@ function renderCraftGrid(){
   });
   renderCraftDetail(rows);
 }
+// v11.75, HIS NOTE: hold the button for a moment, and the button is the bar.
+// One second of commitment before anything is spent, and a fill he can watch
+// so the wait is legible rather than a dead press. Stepped by the frame loop,
+// not by wall time.
+var CRAFT_HOLD=1.0;
+var craftHold=null;
+function craftHoldPaint(b,f){
+  if(!b) return;
+  var pct=Math.round(clamp(f,0,1)*100);
+  // Only the image, so the button keeps its own colour underneath and an
+  // untouched button looks exactly as it did.
+  b.style.backgroundImage=pct?('linear-gradient(to right, rgba(255,192,74,.55) '+pct+'%, rgba(0,0,0,0) '+pct+'%)'):'';
+}
+function craftHoldCancel(){
+  if(!craftHold) return;
+  craftHoldPaint(craftHold.b,0);
+  craftHold=null;
+}
+function craftHoldStart(b,fire){
+  if(!b||b.disabled) return;
+  craftHold={b:b,fire:fire,t:0};
+  craftHoldPaint(b,0);
+}
+function craftHoldStep(dt){
+  if(!craftHold) return;
+  var b=craftHold.b;
+  // The panel redraws itself on every change, so a button that has left the
+  // page or gone dead takes its hold with it.
+  if(!b||b.disabled||(b.isConnected===false)){ craftHoldCancel(); return; }
+  craftHold.t+=dt;
+  craftHoldPaint(b,craftHold.t/CRAFT_HOLD);
+  if(craftHold.t>=CRAFT_HOLD){
+    var f=craftHold.fire;
+    craftHoldCancel();
+    if(f) f();
+  }
+}
+// Letting go anywhere at all cancels, not only on the button, or a release off
+// the edge would leave it filling to a purchase he did not make.
+try{ window.addEventListener('mouseup',function(){ craftHoldCancel(); }); }catch(_chm){}
 function renderCraftDetail(rows){
   var d=document.getElementById('craftdetail'); if(!d) return;
   var row=rows[P._craftSel||0]; if(!row){ d.innerHTML=''; return; }
@@ -31133,7 +31234,12 @@ function renderCraftDetail(rows){
   b.className='vbuy';
   b.textContent=(kind==='repair')?'SERVICE':'CRAFT';
   b.disabled=btn?btn.disabled:true;
-  if(btn&&!btn.disabled) b.onclick=function(){ btn.click(); };
+  if(btn&&!btn.disabled){
+    // v11.75, HIS NOTE: a click no longer spends anything. The hold does.
+    b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
+    b.onmouseleave=function(){ craftHoldCancel(); };
+    b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' (1 second)';
+  }
   d.appendChild(b);
 }
 

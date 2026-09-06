@@ -1,0 +1,27 @@
+## v11.85 - HIS NOTE: THE MAP COUNTS DOWN TO EACH EXTRACTION, READABLY
+
+His note of 2026-09-06, from his third run this morning: "the map should
+show when the extracts are going to close via countdown on each one".
+
+WHAT IT WAS. It did. Since v7.60 every ring on the map has carried its name
+and, under it, CLOSED, STAYS OPEN, CALLED with the seconds, OPEN TO EXTRACT
+with the hold, or "closes in" with the minutes and seconds; his own order at
+the time. Both lines were drawn in TYPE.micro, the smallest face the game
+has, ten source pixels, thirteen rendered, at 1080p, on a screen he opens
+for two seconds under fire. He never saw it, which is the same finding as
+the corner readout and the same fix.
+
+THE BUILD. The name is drawn in TYPE.head, the callout face, and the
+countdown in TYPE.label, the prompt face, each on its own row above the
+ring, spaced by the line-height helper so they scale with the text size
+setting. Nothing about what is shown changes; only that it can be read.
+
+MEASURED. Check 11.85 wraps the canvas text call, opens the map on a live
+raid and draws the overlay, and requires every EXTRACT name drawn at 18
+rendered pixels or more and every countdown or state line at 15 or more,
+with at least one of each drawn. On the v11.84 fixture both are drawn at
+13 and the check says so.
+
+Not verified: his own eye; whether the rows now collide with a ring's
+neighbour on the densest map, which the fixture cannot judge; the map at
+1440p and 4K.

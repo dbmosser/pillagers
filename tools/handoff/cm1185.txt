@@ -1,0 +1,9 @@
+v11.85: his note, the map counts down to each extraction in a size he can read
+
+The countdown had been there since v7.60 in the smallest face in the game.
+The name is a callout now and the countdown a label, each on its own row
+above the ring. Check 11.85 records every text the map draws and requires
+the names at 18px or more and the countdowns at 15px or more; fails on
+v11.84 at 13px.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

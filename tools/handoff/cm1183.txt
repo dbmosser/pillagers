@@ -1,0 +1,8 @@
+v11.83: his spec, the stim is ten seconds of unlimited stamina and a fifth more speed
+
+It used to refill the bar once. useStim sets a ten second clock; the
+stamina line holds the bar full while it runs and the speed line
+multiplies by 1.2. Check 11.83 uses one through the real belt key and
+measures a sprint with and without it; fails on v11.82.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

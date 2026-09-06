@@ -1,0 +1,8 @@
+v11.87: his note, the survivor walks to the nearest extraction instead of following
+
+Reverses his August follow-me note on his own order. A helped survivor
+walks to the nearest open ring, still shooting at machines on the way, and
+leaves when he reaches it. Check 11.87 stages one near a ring with the
+player far off and steps the real entity update; fails on v11.86.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

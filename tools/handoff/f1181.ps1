@@ -15,7 +15,7 @@ function SubRx([string]$old, [string]$new) {
 # cut in hand, whose card must not mention the loss; one extraction with the
 # same cut, whose card must still bank it, so the seal path is proven live.
 SubRx @'
-  {v:'11.80',what:'after an extraction the ambient bed is driven to silence over the outcome card instead of back up to its floor, so nothing hums on the Undercroft floor afterwards (his note of 2026-09-06)',
+  {v:'11.80',what:'when the extraction hold ends the raid from inside the player update, the rest of that frame drives the ambient bed to silence instead of back up to its floor, so nothing hums on the Undercroft floor afterwards (his note of 2026-09-06)',
 '@ @'
   {v:'11.81',what:'the KILLED IN ACTION card no longer says how many seconds of cutting were lost with you, and an extraction still banks the cut (his order of 2026-09-06)',
    run:function(){
@@ -40,7 +40,7 @@ SubRx @'
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.80',what:'after an extraction the ambient bed is driven to silence over the outcome card instead of back up to its floor, so nothing hums on the Undercroft floor afterwards (his note of 2026-09-06)',
+  {v:'11.80',what:'when the extraction hold ends the raid from inside the player update, the rest of that frame drives the ambient bed to silence instead of back up to its floor, so nothing hums on the Undercroft floor afterwards (his note of 2026-09-06)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

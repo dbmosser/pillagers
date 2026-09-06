@@ -11,9 +11,21 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
+# THE PIN TABLE FOLLOWS THE DEFAULT. __pinDefaults pins every dial for every
+# check; a pin left at 150 would have the whole corpus measuring a blast the
+# game no longer throws.
+SubRx @'
+smokeR:165,fragR:150,healSolo:1
+'@ @'
+smokeR:165,fragR:190,healSolo:1
+'@
+
 # v11.77 CHECK, inserted before the v11.76 entry. A real blast against a real
 # pillager at a fixed distance, the loss compared with both formulas; and the
 # real loader driven with an old save, so the migration is measured too.
+# __applyLoaded takes a plain profile object (it wraps and stringifies it);
+# my first draft handed it {value:...} and the loader rejected the profile,
+# which read as the migration failing.
 SubRx @'
   {v:'11.76',what:'the Scav Pistol costs 1800 in the shop, down from 3600, and is still the cheapest gun on the shelf (his order of 2026-09-06)',
 '@ @'
@@ -21,12 +33,15 @@ SubRx @'
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy or drive the loader';
      if(typeof explodeFrag!=='function'||typeof DEF==='undefined') return 'SKIP: no frag blast in this build';
-     var bad=[];
+     var bad=[], k;
      if(DEF.fragR!==190) bad.push('the default blast radius is '+DEF.fragR+' and not 190');
+     function withCfg(fr){ var c={}; for(k in DEF) c[k]=DEF[k]; c.fragR=fr; return {credits:900,cfgv:17,cfg:c}; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       CFG.fragR=DEF.fragR;   // the game reads CFG; the blast is measured at the shipped default
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player, R=(CFG.fragR===undefined?190:CFG.fragR);
+       if(R!==190) bad.push('control: the blast is being measured at radius '+R+', not 190');
        // A PILLAGER WITH A CLEAR LINE TO A POINT 40 UNITS AWAY.
        var e=null, fx=0, fy=0;
        for(var i=0;i<g.ents.length&&!e;i++){
@@ -44,9 +59,9 @@ SubRx @'
        // CONTROL: it hits harder than it did, or the numbers moved nowhere.
        if(loss<expectOld+5) bad.push('control: the blast took '+loss.toFixed(1)+', no more than the old formula ('+expectOld.toFixed(1)+')');
        // THE MIGRATION: an old save still on 150 comes up at 190; a hand-set 140 survives.
-       __applyLoaded({value:JSON.stringify({credits:900,cfgv:17,cfg:Object.assign({},DEF,{fragR:150})})});
+       __applyLoaded(withCfg(150));
        if(CFG.fragR!==190) bad.push('a cfgv 17 save carrying the old 150 loaded with fragR '+CFG.fragR+' instead of 190');
-       __applyLoaded({value:JSON.stringify({credits:900,cfgv:17,cfg:Object.assign({},DEF,{fragR:140})})});
+       __applyLoaded(withCfg(140));
        if(CFG.fragR!==140) bad.push('control: a hand-set 140 was overwritten to '+CFG.fragR+' by the migration');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ __topClear(); __cleanProfile(); __resetCfg(); }

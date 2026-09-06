@@ -11,6 +11,14 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
+# THE PIN TABLE FOLLOWS THE DEFAULT: healSolo is gone from DEF, so it goes
+# from the fixture's pin table too.
+SubRx @'
+smokeR:165,fragR:190,healSolo:1
+'@ @'
+smokeR:165,fragR:190
+'@
+
 # v11.82 CHECK, inserted before the v11.81 entry. The real verbs are driven
 # on a real raid: useMedical twice, useArmor between, the game's own tickHeal
 # for the timers, and say() captured to prove the refusal is never printed.

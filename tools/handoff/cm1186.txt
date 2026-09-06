@@ -1,0 +1,8 @@
+v11.86: his notes, the survivor pays more and hands you something on the spot
+
+Three times the money, one piece of salvage through the same grant a
+container uses, and the card no longer says already banked. Check 11.86
+hands a bandage over through the real strayGive and reads the pay, the
+gift and the card; fails on v11.85.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
