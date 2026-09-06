@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.07';
+var VER='12.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='12.07';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.07';
+var WHATSNEW_VER='12.08';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL: the press brings your gun up and says so, and it never throws a grenade the cell did not name.',
   'A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING. It no longer gives up on the way to the last place it saw you; standing still does not switch it off.',
   'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
   'DYING WITH THE FREEBIE KIT NO LONGER DELETES THE SCAV PISTOL YOU OWN, and the loaner is not counted or billed as a gun you lost.',
@@ -14574,7 +14575,16 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     // keeps the single-shot press behaviour it has always had, because a bandage
     // has nothing to hold down for.
     if(HSC&&HSC.kind==='throw'){
-      if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
+      // v12.08: AN EMPTY THROWABLE CELL DOES NOT OWN THE TRIGGER. Selected empty
+      // (cells 3 to 5 on a first raid), the press started nothing and said
+      // nothing, or cooked a different grenade than the cell named. By v2.92's
+      // own rule the press selects the gun; the next click fires it, never this
+      // one, which is the automatic-weapon safety that rule was written for.
+      if(!p.cooking&&!p.fired&&!((HSC.count|0)>0)){
+        p.fired=true; setHot(0); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded
+        if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
+      }
+      else if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
       else {
         p.cookT=(p.cookT||0)+dt;
         if(p.cookKind==='frag'&&p.cookT>=FRAG_FUSE) cookOff();
@@ -14591,7 +14601,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       }
     }
   }
-  else if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
+  else if(mouse.down&&!p.trigYield&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v12.08: not on the hold that yielded to the gun
     var _mw=p.wep;
     if(_mw.mag===0){
       if(_mw.auto||!p.fired){ p.lastShot=now; p.fired=true;
@@ -14638,6 +14648,7 @@ if(!p.fired||p.wep.auto){
     }
   }
   if(!mouse.down){
+    p.trigYield=0;   // v12.08: the latch lives for one hold
     // Let go of a cooked grenade and it goes. Done before p.fired clears so a
     // release can never be read as a fresh press on the same frame.
     if(p.cooking){
@@ -28627,7 +28638,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.07: HIS NOTE of 2026-09-06, a crawler stopped when he stopped. Its alert clock ran out while it was still crossing the ground to the last place it saw him, so it dropped to investigate on the way, was scattered 90 to 240 units off the point, and walked past a man standing still just outside its 100-unit sight. A crawler still more than 40 units from its last sighting now holds the chase for up to 8 seconds of overtime (chaseHold; 0 restores the old clock). Check 12.07 runs a crawler at a standing player from 600 units and requires a bite, and requires a chase on an unreachable point to end; fails on v12.06.',
+  now:'v12.08: from the 2026-09-06 first-ten-minutes audit, an empty throwable cell selected on the belt left the trigger dead, or cooked a different grenade than the cell named. The press selects the gun and says so; the next click fires it. Check 12.08 selects an empty Frag cell with Smoke in the pouch, presses the trigger through the real player update, and requires the gun selected, nothing cooking and the Smoke untouched; fails on v12.07.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

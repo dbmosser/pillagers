@@ -40024,6 +40024,36 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.08 - FIRST TEN MINUTES: THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
+
+THE FINDING. On every first raid the grenade cells of the belt, 3 to 5,
+are empty. A new player pressing 3 selects the empty Frag cell, and from
+then on the trigger did nothing: the cook found no Frag and returned, the
+press was marked fired, and no click fired the gun until he pressed 1 on
+his own. Worse, if he happened to carry a Smoke, the cook cycled to it
+silently and threw the Smoke while the belt and the corner readout still
+named the Frag cell he chose. v2.92 wrote the rule that a held item owns
+the trigger absolutely and that the trigger is never dead, because
+spending the last of a stack selects the gun; an empty cell selected
+before the click was the case that rule never covered.
+
+THE BUILD. A press on a throwable cell with nothing in it selects the gun
+and says so ("Nothing in that cell. Scav Pistol up."). It does not fire
+this click: the next click fires the gun, which is the automatic-weapon
+safety v2.92 was written for. A cell with something in it cooks as
+before.
+
+MEASURED. Check 12.08 deploys with no Frag and two Smoke, selects the Frag
+cell, holds the trigger through one real player update, and requires the
+gun selected, nothing cooking, both Smoke still in the pouch and the toast.
+On the v12.07 fixture the Frag cell stays selected and a Smoke is cooking.
+
+Not verified: the G key and the pad, which reach the throw through useHot
+and doThrow and can still cycle to another grenade; a pad, whose trigger
+reaches the same branch; his own thumb
+on 3 in a first raid.
 ## v12.07 - HIS NOTE: A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING
 
 His message of 2026-09-06, 16:33: "last time I played crawler attacks and
