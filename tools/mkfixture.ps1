@@ -5704,6 +5704,16 @@ window.__REGRESS=[
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.68',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
+   run:function(){
+     if(typeof notoBite!=='function'||typeof pedOpen!=='function') return 'SKIP: no notoriety banner in this build';
+     if(!pedOpen()) return 'SKIP: the stall shuts in this build, so the old line would be true';
+     var bad=[], stale=['done with',' you'].join(''), b1=String(notoBite(1)), b2=String(notoBite(2)), b3=String(notoBite(3));
+     if(b2.indexOf(stale)>=0) bad.push('at notoriety 2 the banner says "'+b2+'" while the stall stays open');
+     if(b3.indexOf(stale)>=0) bad.push('at notoriety 3 the banner says "'+b3+'" while the stall stays open');
+     if(b2.indexOf('Hiring')<0) bad.push('at notoriety 2 the banner does not name the hiring cost: "'+b2+'"');
+     if(b1.indexOf('Hiring')<0) bad.push('control: at notoriety 1 the banner does not name the hiring cost: "'+b1+'"');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.67',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
    run:function(){
      if(!window.__P) return 'SKIP: this fixture cannot reach the profile';

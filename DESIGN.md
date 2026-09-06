@@ -40024,6 +40024,29 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.68 - THE NOTORIETY BANNER SAID THE PEDDLER WAS DONE WITH YOU
+
+From the v11.46 read-only audit, P2. His ruling at v8.28 was that the Peddler
+always trades regardless of notoriety; the stall stopped shutting then, the
+hub card's words were renamed then ("Barred" went, because nothing is barred),
+and pedOpen has answered true ever since. The banner that fires on the surface
+when the score reaches two was not renamed. It said "The Peddler is done with
+you." over a stall that would trade with him the moment he walked up to it.
+
+THE FIX. The banner names what notoriety actually costs, at every score:
+hiring costs more and pillagers are slower to trust you, and at two or more,
+that word has got round. The stale comment beside it, which said two is where
+the stall shuts, says what is true now.
+
+MEASURED. Check 11.68 reads the banner at one, two and three, confirms the
+stall is open, and requires that neither the two nor the three line claims the
+Peddler is done and that both name the hiring cost; a control requires the
+one line to name it too. On the v11.67 fixture the two line claims the stall
+is shut and the check fails quoting it.
+
+Not verified: his own play; whether hiring really costs more at two than at
+one (the banner says "more", the same claim it has made since v8.27, and this
+build does not change what hiring costs).
 ## v11.67 - THE RESTORE CODE WAS BLANK FOR ANY NAME ABOVE U+00FF
 
 From the v11.46 read-only audit, P1. The restore code is the character as
