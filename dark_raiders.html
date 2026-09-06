@@ -471,13 +471,17 @@
   .credits small{ font-size:10.5px; color:var(--ash); letter-spacing:.28em; display:block; font-weight:400; }
   /* v11.52, HIS NOTE: credits and XP in the upper right, at all times. z 9000 puts
      it above every screen (10), pause box (35), card (40) and window (60), and
-     below the item menu (12000) and the drag ghost (9999). 24px tall at top 4px,
-     inside the band above the raid's CONDITIONS box, which starts at LH(30). */
-  #topright{ position:fixed; top:4px; right:16px; height:24px; line-height:24px; z-index:9000; pointer-events:none;
-    font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:15px; color:var(--amber); white-space:nowrap; text-align:right; }
-  #topright small{ font-size:9.5px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:5px; margin-right:14px; }
+     below the item menu (12000) and the drag ghost (9999).
+     v11.78, HIS NOTES: too small to be useful on the floor, and still far too
+     small in a raid. One size everywhere, twice what it was: 32px figures, 14px
+     labels, 44px tall at top 6px. The raid's CONDITIONS box now starts below
+     the readout's real bottom (drawHUD reads it) rather than the readout
+     fitting the band above the box. */
+  #topright{ position:fixed; top:6px; right:20px; height:44px; line-height:44px; z-index:9000; pointer-events:none;
+    font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }
+  #topright small{ font-size:14px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:7px; margin-right:20px; }
   #topright small:last-child{ margin-right:0; }
-  .toprow{ padding-right:270px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable */
+  .toprow{ padding-right:480px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide */
   #credits{ display:none; }         /* v11.52: the corner readout replaces the stash screen's own credits figure */
   /* The pause and modal overlays were a flat black wash with content floating
      loose on them and no frame at all. Each now gets a proper framed window;
@@ -1350,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.77';
+var VER='11.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1365,11 @@ var VER='11.77';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.77';
+var WHATSNEW_VER='11.78';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE CREDITS AND XP READOUT IN THE CORNER IS TWICE THE SIZE, on the floor and in a raid. The CONDITIONS box starts below it.',
   'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 115 at the centre, was 85; to you 80 at the centre, was 60. The fuse is still 1.1 seconds.',
   'THE SCAV PISTOL IS HALF PRICE IN THE SHOP: 1800 credits, down from 3600. Say the number you want and it moves again.',
   'HOLD THE CRAFT BUTTON FOR A SECOND. The button fills as you hold it and the work happens when it is full. Let go early and nothing is spent. The same goes for the service button, which is the same control.',
@@ -2343,6 +2348,13 @@ function txClick(cx,cy){
 // the Undercroft and in a raid. One element, rewritten only when a figure
 // changes, so the frame loop can call it for free.
 var _trLast='';
+// v11.78: where the corner readout ends, in CSS pixels, so the raid HUD can
+// start its CONDITIONS box below it. The HUD canvas is W CSS pixels wide (the
+// device ratio is applied to the backing store, not to W), so no conversion.
+function topRightBottom(){
+  var el=document.getElementById('topright'); if(!el) return 0;
+  try{ return el.getBoundingClientRect().bottom||0; }catch(_e){ return 0; }
+}
 function syncTopRight(){
   var el=document.getElementById('topright'); if(!el) return;
   var c=(P.credits||0).toLocaleString(), x=(P.xp||0).toLocaleString(), s=c+'|'+x;
@@ -23234,6 +23246,11 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     // the top right corner, so dx is worth dx/_cz here and the left screen edge
     // sits at W-(W-4)/_cz. Applied raw it moved 105 for a 100 pixel hand.
     var _cz=(HUDZ.cond||1)*hudRes()*hudUserZ('cond');
+    // v11.78, HIS NOTES: the corner readout is 44px tall now and this box sat
+    // at LH(30), under it. It starts below the readout's real bottom, read from
+    // the page in CSS pixels and put into this scaled space; LH(30) still holds
+    // if the readout is ever shorter than that.
+    by=Math.max(by,Math.ceil((topRightBottom()+8)/_cz));
     bx=clamp(bx+HOc.dx/_cz,Math.min(W-16-bw,W-(W-4)/_cz),Math.max(W-(W-4)/_cz,W-bw-4/_cz));
     by=clamp(by+HOc.dy/_cz,LH(10),Math.max(LH(10),H/_cz-LH(30)));
 ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
@@ -28306,7 +28323,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.77: HIS ORDER of 2026-09-06, grenades with a larger radius and more damage. fragR 150 to 190; enemy damage 85 down to 15 becomes 115 down to 25; damage to him 60 down to 12 becomes 80 down to 18, so a full-health man at the epicentre lives by two points because he died to his own charge twice with the fuse still 1.1 s. He overruled his own no-balancing rule for these dials. cfgv 17 to 18 with a migration that moves a saved fragR of 150 to 190 and leaves a hand-set value alone. Check 11.77 reads DEF.fragR, stages a blast a fixed distance from a pillager and requires the loss to match the new formula and exceed the old, and drives the real loader with a cfgv 17 save carrying fragR 150 and requires 190 after load.',
+  now:'v11.78: HIS NOTES of 2026-09-06, the credits and XP readout in the corner was useless on the Undercroft floor and still far too tiny in a raid. One size everywhere, twice what it was: 32px figures, 14px labels, 44px tall. The raid CONDITIONS box now starts below the readout, read from the page in CSS pixels (topRightBottom) and put into the box scaled space, instead of the readout being squeezed into the band above the box. Check 11.78 requires the readout at 28px or more and 40px or more tall on the floor and in a raid, and in a raid requires the CONDITIONS box top at or below the readout bottom; fails on v11.77.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

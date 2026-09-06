@@ -5732,6 +5732,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.78',what:'the credits and XP readout in the corner is twice the size everywhere, on the Undercroft floor and in a raid, and the CONDITIONS box starts below it (his notes of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__frame&&window.__hubEnter&&window.__runPrep)) return 'SKIP: this fixture cannot walk the floor and a raid';
+     var el=document.getElementById('topright'); if(!el) return 'SKIP: no corner readout in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[];
+     function sz(){ var cs=getComputedStyle(el), r=el.getBoundingClientRect(); return {f:parseFloat(cs.fontSize)||0,h:r.height||0,b:r.bottom||0}; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
+       var hub=sz();
+       if(hub.f<28) bad.push('on the floor the readout is '+hub.f+'px and not 28px or more');
+       if(hub.h<40) bad.push('on the floor the readout is '+hub.h.toFixed(0)+'px tall and not 40px or more');
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __frame(0.016); __frame(0.016); saveProfile();
+       var raid=sz();
+       if(raid.f<28) bad.push('in a raid the readout is '+raid.f+'px and not 28px or more');
+       if(raid.h<40) bad.push('in a raid the readout is '+raid.h.toFixed(0)+'px tall and not 40px or more');
+       if(!HUDBOX.cond) bad.push('control: the raid drew no CONDITIONS box to measure against');
+       else if(HUDBOX.cond.y<raid.b) bad.push('the CONDITIONS box starts at '+HUDBOX.cond.y.toFixed(0)+'px, above the readout bottom at '+raid.b.toFixed(0)+'px, so the two overlap');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.77',what:'a frag blast reaches further and hits harder: the radius is 190 and the damage at a fixed distance matches the new formula and exceeds the old one (his order of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy or drive the loader';

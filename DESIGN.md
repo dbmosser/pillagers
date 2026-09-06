@@ -40024,6 +40024,38 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.78 - HIS NOTES: THE CORNER READOUT IS TWICE THE SIZE, EVERYWHERE
+
+His notes of 2026-09-06: "credits and xp in the corner in the undercroft are
+so small that they are useless", and then, in a raid, "credits and xp in
+corner during raid still wayyyyyy too tiny".
+
+WHAT IT WAS. v11.52 put credits and XP in the top right at all times, as he
+asked, and sized them to fit the only space the raid HUD had free up there:
+the 30-unit band above the CONDITIONS box. That gave 15px figures and 9.5px
+labels in a 24px strip, on a 1080p screen, at arm's length. Right that it was
+there, useless as a thing to read, and the floor got the same strip because
+the readout is one element for the whole page.
+
+THE BUILD. One size everywhere, twice what it was: 32px figures, 14px labels,
+44px tall, at top 6px. In a raid the CONDITIONS box no longer owns the corner:
+the HUD reads the readout's real bottom from the page in CSS pixels, puts it
+into the box's scaled space, and starts the box below it, with LH(30) still
+the floor if the readout is ever shorter. Dragging the box up still works,
+since that is his hand and his choice. The stash screen's top row keeps clear
+of the wider readout so CLOSE stays reachable.
+
+MEASURED. Check 11.78 walks the floor, saves so the readout is drawn, and
+requires the page's computed font size at 28px or more and the element 40px
+or taller; deploys, draws two frames, and requires the same in a raid, and
+requires the CONDITIONS box top, in screen pixels, at or below the readout's
+bottom. On the v11.77 fixture the readout is 15px and 24px tall in both
+places, and the check says so.
+
+Not verified: his own eye, and whether twice is the size he wants, which is
+one number; the readout at 1440p and 4K, where the HUD scales and the readout
+does not, which he has not asked for; the text size setting, which moves the
+box and not the readout.
 ## v11.77 - HIS ORDER: FRAG CHARGES REACH FURTHER AND HIT HARDER
 
 His order of 2026-09-06: "grenades should have larger explosion radius and do

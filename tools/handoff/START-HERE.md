@@ -2,16 +2,19 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE AT 07:00:** HEAD is v11.74 (f2547d9). The tree has **v11.75 APPLIED**
-(hold-to-craft) and verified on all four gates (parse PASS, check 4x PASS and
-once after 11.62, __verifySafe PASS, control fails on fx1174). Its FULL CORPUS
-is running on the Browser pane tab "seed". When `window.__PROG` is finished,
-pass true, fail [] and only the two known skips (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1175 cm1175.txt
+**STATE (kept current by fixstate.ps1):** HEAD is v11.77 (3dd0fcb). The tree has **v11.78 APPLIED** and
+verified on all four gates; its FULL CORPUS is running on the Browser pane tab "seed".
+When `window.__PROG` is finished, pass true, fail [] and only the two known skips
+(v8.88, v11.24):
+    bash tools/handoff/ship.sh commit 1178 cm1178.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1175 1176
+    bash tools/handoff/ship.sh start 1178 1179
 and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
-CronList shows nothing. Resize the pane to 1920x1080 after any restart.
+CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
+pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
+each turned one unrelated check red). If one unrelated check goes red, re-run it
+alone and straight after the new check; a bare profile left by a check is the
+usual cause (see memory dark-raiders-loader-replaces-the-profile).
 
 **THE QUEUE, ALL DRAFTED (p/f/d/a/cm in this folder), SHIP IN THIS ORDER:**
 1. **1176 SCAV PISTOL 3600 -> 1800** (his order; my number). Trivial.
