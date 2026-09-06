@@ -1,30 +1,29 @@
-## v11.62 - A PILLAGER YOU DOWNED AND THEN SAVED WAS STILL YOUR KILL
+## v11.62 - THE OUTCOME CARD PRINTED BASE XP; THE PROFILE WAS CREDITED MORE
 
-From the v11.46 read-only audit, P1. Since v8.30 the only door for a kill to
-be credited to you is a flag the downing shot stamps on the man: byPlayer. When
-he later bleeds out, the code that hands out the kill, ticks any kill contract,
-says "will remember that" and writes a permanent -2 grudge on his crew reads
-that one flag. Reviving a downed pillager with E (v9.24) stands him up, clears
-hostile and grudge and makes him friendly for the rest of the raid, and never
-touched byPlayer. A crawler bite writes no attribution at all. So the man you
-shot, then walked over to and picked up, carried your mark for the rest of the
-raid: when a crawler downed him ten minutes later and he bled out alone, the
-game gave you the kill, ticked your contract, and wrote a grudge on the crew of
-the man you had saved.
+From the v11.46 read-only audit, P1, raised independently by two regions. XP
+for a run is the season and kill figures, and since v9.96, v10.06 and v11.00 it
+pays more with a dose in your blood, at night and in hard weather: the bank,
+addProgress, rounds base times night times weather, and addXp then rounds that
+times the dose multiplier. The outcome card is drawn a moment BEFORE the run is
+banked, from a record it builds itself, and that record carried no night or
+weather flag, so the card printed the raw sum. A night run that banked 120
+said "+100 XP", and because the same line derives "XP in all" and "N XP away"
+from that figure, every number on it was wrong with it. The sector page had
+promised "XP pays 1.2x" on the way up.
 
-THE FIX. The revive clears byPlayer along with hostile and grudge. His next
-death is yours only if you cause it: a second downing shot from you stamps the
-flag again, exactly as before.
+THE FIX. One helper, xpBaseFor, now owns the night and weather arithmetic.
+addProgress banks through it, so nothing about what is banked changes. The
+card's record carries the same two flags the banked record does, and prints
+xpBaseFor times the dose multiplier addXp applies: the figure that will be
+banked, to the XP, every time.
 
-MEASURED. Check 11.62 deploys, lays a pillager down with your mark on him within
-reach, holds E through one player step, and requires two things: the control,
-that the revive actually happened (he is up and friendly, or the flag reading
-proves nothing); and the fix, that he no longer carries byPlayer. On the v11.61
-fixture the revive happens and the flag survives it, and the check fails naming
-the consequence.
+MEASURED. Check 11.62 deploys, forces hard weather (so a multiplier is in play,
+or agreement would prove nothing), gives the player a bag worth carrying out,
+ends the raid as an extract, reads the "+N XP" line off the real card and the
+xpGot the run banked, and requires them equal; a control requires the banked
+record to carry the hard-weather flag. On the v11.61 fixture the card prints
+the base and the bank credits a tenth more, and the check fails naming both.
 
-Not verified: his own play; the full chain through a crawler downing and a
-bleed-out after the revive, which the flag reading stands in for (that code has
-not changed and reads only this flag); whether the flag ought also to clear
-when a downed man is revived by his own crew, which is a different code path
-and not part of this finding.
+Not verified: his own play; the night flag, which reads the raid clock and is
+exercised by the same helper but not forced by this check; a dose in his
+blood, applied by addXp on both paths and not staged here.

@@ -11,47 +11,18 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# TAGS AND A NOTE CHOSEN AFTER COPY REPORT WERE DROPPED. Copy report commits
-# the run first (v10.65, so the pasted report holds the raid he just played),
-# and the commit nulls pendingRun. Anything he tags or types AFTER that, and
-# then confirms with Log run and return, hits the early return: the row is
-# already written, so it keeps the tags it had at Copy time and the note is
-# lost. The comment on ocCommit promised the late tags would be "patched onto
-# the already written row"; nothing did. Now the committed row is remembered
-# for the life of the card, and a second commit patches tags and note onto it
-# and re-sends the report when they changed.
+# A PILLAGER YOU DOWNED AND THEN SAVED WAS STILL YOUR KILL. Your downing shot
+# stamps byPlayer on him (v8.30, the one door for attribution). Reviving him
+# (E, v9.24) stands him up, clears hostile and grudge, makes him friendly, and
+# never clears byPlayer. A crawler bite writes no byPlayer, so when a crawler
+# downs him minutes later and he bleeds out, the kill code reads the stale flag:
+# you get the kill, a kill contract ticks, "will remember that", and a permanent
+# -2 grudge on the man you saved. The revive clears the flag with the rest.
 SubRx @'
-var pendingRun=null,selTags=[];
+      downRdr.hostile=false; downRdr.grudge=false; downRdr.friendlyPC=1;
 '@ @'
-var pendingRun=null,selTags=[],committedRun=null;   // v11.63: the row Copy report wrote, for late tags
-'@
-SubRx @'
-function ocCommit(){
-  if(!pendingRun) return false;
-'@ @'
-function ocCommit(){
-  if(!pendingRun){
-    // v11.63: the commit already happened (Copy report does it first). Tags and
-    // a note chosen since then land on the row it wrote, and the report goes
-    // out again with them, instead of being thrown away at the early return.
-    if(committedRun){
-      var _lt=selTags.slice(), _ln=document.getElementById('oc_note');
-      _ln=_ln?_ln.value.trim():'';
-      if(_lt.join('|')!==(committedRun.tags||[]).join('|')||_ln!==(committedRun.note||'')){
-        committedRun.tags=_lt; committedRun.note=_ln;
-        saveProfile(); autoExport();
-      }
-    }
-    return false;
-  }
-'@
-SubRx @'
-  commitRun(pendingRun);
-  pendingRun=null;
-'@ @'
-  commitRun(pendingRun);
-  committedRun=pendingRun;
-  pendingRun=null;
+      downRdr.hostile=false; downRdr.grudge=false; downRdr.friendlyPC=1;
+      downRdr.byPlayer=false;   // v11.63: his next death is not yours unless you cause it
 '@
 
 # STAMPS.
@@ -69,11 +40,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
+  'SAVING A MAN YOU SHOT NO LONGER PINS HIS LATER DEATH ON YOU. If you downed a pillager, then picked him up, and a crawler killed him later, the game still called it your kill: a contract tick, a grudge, the lot. Once you have saved him, only you can make his death yours again.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.62:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.62 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.62:[^']*'",{ param($m) "now:'v11.63: tags and a note chosen after Copy report were dropped. Copy report commits the run first and nulls pendingRun, so Log run and return afterwards hit the early return and the row kept the tags it had at Copy time; the ocCommit comment promised a patch onto the written row that did not exist. The committed row is remembered for the life of the card and a later commit patches tags and note onto it and re-sends the report when they changed. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.62:[^']*'",{ param($m) "now:'v11.63: a pillager you downed and then saved was still your kill. The downing shot stamps byPlayer; the revive cleared hostile and grudge and made him friendly but never byPlayer, and a crawler bite writes none, so when a crawler downed him later and he bled out the stale flag credited you the kill, ticked a kill contract and wrote a permanent -2 grudge on the man you saved. The revive clears byPlayer now. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

@@ -11,34 +11,14 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# WITH OTHER PILLAGERS SET TO NONE, THE EXTRACTION-HEAT ROW READ CUSTOM. The
-# None option turns the waves off (v8.42) and applyGameOpts gives the pillager
-# row the last word on that (v8.74). But raiderWaves:1 still rode along on the
-# heat row's Heavy and Standard, so with the waves off neither option matched
-# the live dials and the row showed CUSTOM in amber with the tuning-console
-# hint, for a setting he had never touched. The v8.74 comment already says the
-# heat row describes the RING only. So: the waves belong to the pillager row,
-# on every option, and the heat row carries siegeVol alone. Every combination
-# of choices lands on the same dial values as before, with one exception that
-# is a fix: leaving None for Standard with the heat on Light used to leave the
-# waves off (nothing wrote them back); the pillager row writes them now.
+# DROPPING A TACTICAL BELT ITEM ON THE STASH SAID "BACK IN THE BACKPACK" while
+# taking it OUT of the backpack. The drop (v8.72) clears its belt key, splices
+# it from the kit, and it lands in the stash, which is where the pointer let go
+# of it. The line names the stash now, the word the rest of the room uses.
 SubRx @'
-     {n:'Many',     cfg:{nRaider:15}},
-     {n:'Standard', cfg:{nRaider:10}},
-     {n:'Few',      cfg:{nRaider:5}},
+      say2((ITEMS[key]?ITEMS[key].name:key)+' back in the backpack.');
 '@ @'
-     // v11.68: the waves live here, with the pillagers, on every option; the
-     // heat row used to carry raiderWaves:1 and read CUSTOM whenever this was None.
-     {n:'Many',     cfg:{nRaider:15, raiderWaves:1}},
-     {n:'Standard', cfg:{nRaider:10, raiderWaves:1}},
-     {n:'Few',      cfg:{nRaider:5,  raiderWaves:1}},
-'@
-SubRx @'
-     {n:'Heavy',    cfg:{siegeVol:1.4, raiderWaves:1}},
-     {n:'Standard', cfg:{siegeVol:1,   raiderWaves:1}},
-'@ @'
-     {n:'Heavy',    cfg:{siegeVol:1.4}},
-     {n:'Standard', cfg:{siegeVol:1}},
+      say2((ITEMS[key]?ITEMS[key].name:key)+' back in the stash.');   // v11.68: it left the backpack
 '@
 
 # STAMPS.
@@ -56,11 +36,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'SETTINGS: THE EXTRACTION-HEAT ROW NO LONGER READS CUSTOM WHEN PILLAGERS ARE OFF. It showed CUSTOM in amber, with the tuning-console hint, for a row you had never touched. Nothing about the raid changes.',
+  'DROPPING A BELT ITEM ON THE STASH NOW SAYS WHERE IT WENT. It said "back in the backpack" while taking it out of the backpack; it went to the stash, and the line says so.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.67:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.67 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.67:[^']*'",{ param($m) "now:'v11.68: with Other pillagers set to None the extraction-heat row read CUSTOM in amber with the tuning-console hint. None turns the waves off and applyGameOpts gives the pillager row the last word, but raiderWaves:1 rode along on the heat row so no option matched. The waves are on the pillager row now on every option and the heat row carries siegeVol alone; every combination lands on the same dials as before, and leaving None for Standard with the heat on Light now brings the waves back, which nothing did before. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.67:[^']*'",{ param($m) "now:'v11.68: dropping a tactical belt item on the stash said back in the backpack while splicing it out of the backpack (v8.72 drop: clears the belt key, leaves the kit, lands in the stash). The line names the stash now. From the v11.46 audit, P2.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

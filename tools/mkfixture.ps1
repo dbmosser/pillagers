@@ -5440,6 +5440,24 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.55',what:'a cooked frag shouts COOKED GRENADE! THROW GRENADE NOW for its last second in hand, nothing else in hand shouts, and the HUD draws the shout (his notes of 2026-09-05)',
+   run:function(){
+     if(typeof cookShout!=='function') return 'there is no last-second shout for a cooked grenade';
+     if(typeof drawHUD!=='function'||typeof FRAG_FUSE==='undefined') return 'SKIP: no HUD draw or no fuse in this build';
+     var bad=[], line='COOKED GRENADE! THROW GRENADE NOW';
+     var got1=cookShout({cooking:1,cookKind:'frag',cookT:FRAG_FUSE-0.5});
+     if(got1!==line) bad.push('with half a second left in hand the shout is '+JSON.stringify(got1)+' and not the line');
+     var got0=cookShout({cooking:1,cookKind:'frag',cookT:FRAG_FUSE-0.05});
+     if(got0!==line) bad.push('at the last instant the shout is '+JSON.stringify(got0));
+     if(FRAG_FUSE>1.5){
+       var gotE=cookShout({cooking:1,cookKind:'frag',cookT:FRAG_FUSE-1.5});
+       if(gotE!==null) bad.push('control: with 1.5 s left the shout already shows');
+     }
+     if(cookShout({cooking:1,cookKind:'smoke',cookT:5})!==null) bad.push('control: a smoke in hand shouts about a grenade');
+     if(cookShout({cooking:0,cookKind:'frag',cookT:1})!==null) bad.push('control: an empty hand still shouts');
+     var src=''; try{ src=drawHUD.toString(); }catch(_s){}
+     if(src.indexOf('cookShout(')<0) bad.push('control: the HUD draw does not read cookShout, so the shout is never on screen');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.54',what:'an extraction point badge names one of his four states in his words (sound the alarm to begin countdown; N s until extraction begins; extract now, N s until it ends; closed for the remainder of this raid) with the live seconds, and the HUD draws that badge',
    run:function(){
      if(typeof zoneBadge!=='function') return 'the extraction point badge still says OPEN or CLOSED; there is no state function to read';

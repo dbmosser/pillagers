@@ -13,54 +13,29 @@ function SubRx([string]$old, [string]$new) {
 
 # v11.63 CHECK, inserted before the v11.62 entry.
 SubRx @'
-  {v:'11.62',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
+  {v:'11.62',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
 '@ @'
-  {v:'11.63',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
+  {v:'11.63',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&document.getElementById('tagwrap')&&document.getElementById('oc_copy')&&document.getElementById('oc_btn'))) return 'SKIP: this fixture cannot end a raid and press the card';
-     // Force the SYNCHRONOUS copy path, as check 11.32 does, so Copy report has
-     // committed by the time click() returns.
-     var desc; try{ desc=Object.getOwnPropertyDescriptor(navigator,'clipboard'); }catch(_d){ desc=null; }
-     var redefined=false;
-     try{ Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true}); redefined=(navigator.clipboard===undefined); }catch(_e){ redefined=false; }
-     if(!redefined) return 'SKIP: navigator.clipboard cannot be hidden here, so Copy report cannot be pressed synchronously';
-     var bad=[], origExec=document.execCommand, prof, keepAE, lateNote='ZQX late note 4471';
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       prof=__P(); keepAE=prof.autoExport; prof.autoExport=false;   // a check must not start a download
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(); g.ents.length=0;
-       __endRaid('extract');
-       document.execCommand=function(){ return true; };
-       var n0=(prof.log||[]).length;
-       document.getElementById('oc_copy').click();   // logs the run, with no tags yet
-       var log=prof.log||[], rec=log[log.length-1];
-       if(log.length!==n0+1||!rec) bad.push('control: Copy report did not log the run ('+(log.length-n0)+' rows added)');
-       else {
-         if((rec.tags||[]).length) bad.push('control: the row Copy wrote already carries tags '+rec.tags.join(', ')+', so a late tag proves nothing');
-         var cells=document.getElementById('tagwrap').querySelectorAll('.tag');
-         if(cells.length<2) bad.push('control: the card drew '+cells.length+' tag buttons');
-         else {
-           var lateTag=String(cells[1].textContent);
-           cells[1].click();                                   // chosen AFTER Copy report
-           document.getElementById('oc_note').value=lateNote;  // typed AFTER Copy report
-           document.getElementById('oc_btn').click();          // Log run and return
-           var log2=prof.log||[], rec2=log2[log2.length-1];
-           if(log2.length!==n0+1) bad.push('control: Log run and return added '+(log2.length-n0-1)+' extra row(s), so the run was logged twice');
-           var got=(rec2&&rec2.tags||[]).map(function(x){ return String(x).toUpperCase(); }).join(' | ');
-           if(got.indexOf(lateTag.toUpperCase())<0) bad.push('the tag '+lateTag+' chosen after Copy report did not reach the run (tags: '+(got||'none')+')');
-           if(((rec2&&rec2.note)||'')!==lateNote) bad.push('the note typed after Copy report did not reach the run (note: "'+((rec2&&rec2.note)||'')+'")');
-         }
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{
-       document.execCommand=origExec;
-       try{ if(desc) Object.defineProperty(navigator,'clipboard',desc); }catch(_r){}
-       try{ if(prof) prof.autoExport=keepAE; }catch(_a){}
-       __topClear(); __cleanProfile();
-     }
+     if(!(window.__deploy&&window.__state&&window.__sim&&window.__keys)) return 'SKIP: this fixture cannot revive a man';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, R=null, i, bad=[];
+     for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.merc&&!e.finished){ R=e; break; } }
+     if(!R) return 'SKIP: no pillager to down';
+     // You downed him: the downing shot stamped byPlayer. He lies within reach.
+     R.downed=1; R.byPlayer=true; R.hostile=true; R.friendlyPC=0; R.x=p.x+20; R.y=p.y;
+     g.over=false; p.downed=false; g.revLock=0;
+     var K=__keys(); for(var q in K) delete K[q]; K['KeyE']=true;
+     try{ __sim(0.15); }catch(e2){ bad.push('the step threw: '+String(e2&&e2.message||e2).slice(0,80)); }
+     delete K['KeyE'];
+     // CONTROL: the revive happened at all, or the flag reading proves nothing.
+     if(!(R.downed===0&&R.friendlyPC===1)) bad.push('control: E next to the downed man did not revive him (downed '+R.downed+', friendlyPC '+R.friendlyPC+')');
+     // THE FIX: his next death is no longer yours.
+     else if(R.byPlayer) bad.push('the revived man still carries byPlayer, so a crawler killing him later would be your kill, your contract tick and a grudge');
+     __topClear(); __cleanProfile();
      return bad.length?bad.join('; '):null; }},
-  {v:'11.62',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
+  {v:'11.62',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

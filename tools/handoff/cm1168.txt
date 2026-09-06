@@ -1,12 +1,9 @@
-v11.68: with pillagers off, the extraction-heat row read CUSTOM
+v11.68: dropping a belt item on the stash said back in the backpack
 
-Other pillagers: None turns the waves off and gets the last word, but the
-heat row's Heavy and Standard still carried the waves dial, so nothing matched
-and the row showed CUSTOM in amber for a setting he never touched. The waves
-dial lives on the pillager row now, on every option, and the heat row carries
-the ring alone; every combination lands on the same numbers as before, and
-leaving None for Standard with the heat on Light brings the waves back, which
-nothing did before. Check 11.68 drives None and Standard and reads both rows;
-fails on v11.67. From the v11.46 audit, P2.
+The drop takes the item off its belt key and out of the backpack and it lands
+in the stash; the line named the backpack it had just left. It names the stash
+now. Check 11.68 drives the stash grid's drop handler with a belt cell as the
+source, controls that the item left the backpack and its key, and requires the
+line to name the stash; fails on v11.67. From the v11.46 audit, P2.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

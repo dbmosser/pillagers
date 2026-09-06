@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.54';
+var VER='11.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.54';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.54';
+var WHATSNEW_VER='11.55';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A COOKED GRENADE SHOUTS FOR ITS LAST SECOND: COOKED GRENADE! THROW GRENADE NOW, above the countdown. The fuse is still 1.1 seconds, so that is most of the cook; say the number you want and it changes.',
   'EXTRACTION POINTS SAY WHICH STATE THEY ARE IN. Sound the alarm to begin the countdown; N seconds until extraction begins; extract now, N seconds until it ends; closed for the remainder of this raid. Your four lines, with the live clock.',
   'SPRINT AND ROLL STAND YOU UP. Holding Shift while crouched used to do nothing; now it leaves the crouch and sprints. A roll leaves the crouch too.',
   'YOUR CREDITS AND XP ARE IN THE TOP RIGHT CORNER, ALWAYS. In the Undercroft, in a raid, under every window. The stash screen no longer prints its own credits figure; the corner has it.',
@@ -22649,6 +22650,13 @@ function zoneBadge(z){
   if(z.hold!==null&&z.hold!==undefined) return 'EXTRACTION POINT - EXTRACT NOW! '+Math.max(0,Math.ceil(z.hold))+'S UNTIL EXTRACTION ENDS';
   return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
 }
+// v11.55, HIS NOTE: the last second of a cooked frag, in his words. One place,
+// so the draw and the check read the same line.
+function cookShout(p){
+  if(!p||!p.cooking||p.cookKind!=='frag') return null;
+  var left=FRAG_FUSE-(p.cookT||0);
+  return left<=1.0?'COOKED GRENADE! THROW GRENADE NOW':null;
+}
 function drawHUD(){
   var p=G.player,T=G.tel,i;
   hudClampAll();
@@ -23352,6 +23360,19 @@ ctx.fillStyle='#4de3d0';
       }
       ctx.textAlign='left';
       if(isFrag) bar(cs2.x-24,cs2.y-LH(22),48,4,1-cf,ccol);
+      // v11.55, HIS NOTE: the last second shouts. Drawn above the countdown at
+      // the operator, where his eyes are, in the head size and flashing.
+      var _cshout=cookShout(p);
+      if(_cshout){
+        ctx.font=FS(TYPE.head); ctx.textAlign='center';
+        ctx.fillStyle=(Math.floor(G.t*8)%2)?'#ff5a4a':'#fff0c0';
+        var _csw=ctx.measureText(_cshout).width;
+        ctx.fillStyle='rgba(6,9,13,.78)';
+        ctx.fillRect(cs2.x-_csw/2-8,cs2.y-LH(62),_csw+16,LH(22));
+        ctx.fillStyle=(Math.floor(G.t*8)%2)?'#ff5a4a':'#fff0c0';
+        ctx.fillText(_cshout,cs2.x,cs2.y-LH(46));
+        ctx.font=FS(TYPE.micro); ctx.textAlign='left';
+      }
     }
   }
 // v4.05: "maybe a bar above character too", so there is one, in the same
@@ -28153,7 +28174,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.54: HIS NOTE of 2026-09-05, EXTRACTION - OPEN is confusing. The ring badge said OPEN for three situations and CLOSED with a whisper under it. zoneBadge(z) owns his four lines (sound the alarm to begin countdown; NS until extraction begins; extract now! NS until extraction ends; closed for the remainder of this raid) with the live beacon and hold clocks, and the badge draws it. Check 11.54 stages a zone through all four states, requires each of his lines with the right seconds, and controls that the HUD draw reads zoneBadge.',
+  now:'v11.55: HIS NOTES of 2026-09-05, a cooked grenade needs a shout with a second left, and the count must go down. The readout already counted down; nothing shouted. cookShout(p) owns his line for the last second of a frag in hand and drawHUD draws it flashing above the countdown. FRAG_FUSE stays 1.1 s (no balancing before alpha), so the shout covers nearly the whole cook, which is the finding: he died to his own charge twice that night. Check 11.55 reads cookShout at half a second left, controls a smoke and an empty hand, and requires drawHUD to read it.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

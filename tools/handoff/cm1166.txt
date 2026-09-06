@@ -1,10 +1,12 @@
-v11.66: the notoriety banner said the Peddler was done with you
+v11.66: the restore code was blank for any name above U+00FF
 
-The stall has not shut since his v8.28 ruling that the Peddler always trades,
-and the hub card was renamed then; the in-raid banner at two notoriety still
-said the Peddler was done with you. It names what notoriety actually costs
-now, at every score. Check 11.66 confirms the stall is open and requires the
-two and three lines to name the cost and make no claim about the stall; fails
-on v11.65. From the v11.46 audit, P2.
+The base64 encoder takes Latin-1 only, so an emoji, a CJK character or a curly
+quote in the name made it throw and the run report carried an empty restore
+code, for exactly the friend most likely to have typed one. The JSON is
+encoded as UTF-8 before base64 now, and the reader tries the UTF-8 read first
+and falls back to the plain read so every older code still reads. Check 11.66
+names the character with a curly apostrophe and an emoji and requires a code
+that reads back the same name, with old-code and plain-name controls; fails
+on v11.65. From the v11.46 audit, P1.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

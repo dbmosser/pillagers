@@ -11,23 +11,34 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# [+] ON A COLLAPSED CURRENT PILLAGERS BOARD STARTED AN INVISIBLE RESIZE. The
-# collapsed box is one line tall and the resize grip zone (v8.93) is taller
-# than that, so the grip covered the whole [+] glyph; mousedown tests the grip
-# first, by design, and had no collapsed guard, while hudHit (the cursor) and
-# the grip draw both skip collapsed panels. So the pointer promised a click,
-# the click began a resize nobody could see, and the board never expanded.
-# mousedown now agrees with the other two.
+# WITH OTHER PILLAGERS SET TO NONE, THE EXTRACTION-HEAT ROW READ CUSTOM. The
+# None option turns the waves off (v8.42) and applyGameOpts gives the pillager
+# row the last word on that (v8.74). But raiderWaves:1 still rode along on the
+# heat row's Heavy and Standard, so with the waves off neither option matched
+# the live dials and the row showed CUSTOM in amber with the tuning-console
+# hint, for a setting he had never touched. The v8.74 comment already says the
+# heat row describes the RING only. So: the waves belong to the pillager row,
+# on every option, and the heat row carries siegeVol alone. Every combination
+# of choices lands on the same dial values as before, with one exception that
+# is a fix: leaving None for Standard with the heat on Light used to leave the
+# waves off (nothing wrote them back); the pillager row writes them now.
 SubRx @'
-        if(HUDZ[hk]!==undefined){
-          if(hudOnGrip(HB2,mouse.x,mouse.y)){
+     {n:'Many',     cfg:{nRaider:15}},
+     {n:'Standard', cfg:{nRaider:10}},
+     {n:'Few',      cfg:{nRaider:5}},
 '@ @'
-        // v11.69: never on a collapsed panel. Its box is shorter than the grip
-        // zone, so the grip covered the [+] glyph and the click that should
-        // expand the board started a resize nobody could see. hudHit and the
-        // grip draw already skip collapsed panels; mousedown agrees with them.
-        if(HUDZ[hk]!==undefined&&!hudOff(hk).c){
-          if(hudOnGrip(HB2,mouse.x,mouse.y)){
+     // v11.69: the waves live here, with the pillagers, on every option; the
+     // heat row used to carry raiderWaves:1 and read CUSTOM whenever this was None.
+     {n:'Many',     cfg:{nRaider:15, raiderWaves:1}},
+     {n:'Standard', cfg:{nRaider:10, raiderWaves:1}},
+     {n:'Few',      cfg:{nRaider:5,  raiderWaves:1}},
+'@
+SubRx @'
+     {n:'Heavy',    cfg:{siegeVol:1.4, raiderWaves:1}},
+     {n:'Standard', cfg:{siegeVol:1,   raiderWaves:1}},
+'@ @'
+     {n:'Heavy',    cfg:{siegeVol:1.4}},
+     {n:'Standard', cfg:{siegeVol:1}},
 '@
 
 # STAMPS.
@@ -45,11 +56,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE [+] ON A COLLAPSED PILLAGER BOARD EXPANDS IT AGAIN. The resize grip had grown over the glyph on the folded board, so the click began a resize you could not see and the board stayed shut.',
+  'SETTINGS: THE EXTRACTION-HEAT ROW NO LONGER READS CUSTOM WHEN PILLAGERS ARE OFF. It showed CUSTOM in amber, with the tuning-console hint, for a row you had never touched. Nothing about the raid changes.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.68:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.68 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.68:[^']*'",{ param($m) "now:'v11.69: [+] on a collapsed CURRENT PILLAGERS board started an invisible resize instead of expanding it. The collapsed box is one line tall and the grip zone is taller, so the grip covered the glyph; mousedown tests the grip first and had no collapsed guard while hudHit and the grip draw both skip collapsed panels. mousedown skips them now. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.68:[^']*'",{ param($m) "now:'v11.69: with Other pillagers set to None the extraction-heat row read CUSTOM in amber with the tuning-console hint. None turns the waves off and applyGameOpts gives the pillager row the last word, but raiderWaves:1 rode along on the heat row so no option matched. The waves are on the pillager row now on every option and the heat row carries siegeVol alone; every combination lands on the same dials as before, and leaving None for Standard with the heat on Light now brings the waves back, which nothing did before. From the v11.46 audit, P2.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

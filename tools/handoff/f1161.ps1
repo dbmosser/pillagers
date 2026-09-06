@@ -11,49 +11,46 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.61 HOOK: whether a weather id counts as hard, so a check can force a
-# multiplier into play.
+# v11.61 HOOK: the identity ids a merc can be hired as, so a check can hire one.
 SubRx @'
 window.__loadProfile=function(){ return loadProfile(); };
 '@ @'
 window.__loadProfile=function(){ return loadProfile(); };
-window.__wxHard=function(id){ try{ return wxHardId(id); }catch(e){ return null; } };
+window.__identityIds=function(){ var o=[]; try{ for(var i=0;i<IDENTITIES.length;i++) o.push(IDENTITIES[i].id); }catch(e){} return o; };
 '@
 
 # v11.61 CHECK, inserted before the v11.60 entry.
 SubRx @'
-  {v:'11.60',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+  {v:'11.60',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
 '@ @'
-  {v:'11.61',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
+  {v:'11.61',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__wxHard)) return 'SKIP: this fixture cannot end a raid and read the card';
+     if(!(window.__identityIds&&window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot hire a merc and end a raid';
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var ids=window.__identityIds(); if(!ids.length) return 'SKIP: no identities to hire';
      var P=window.__P(), bad=[];
+     P.merc=ids[0]; P.credits=1000;
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(), p=g.player;
-     // A multiplier must be in play or the two figures agree by accident: force hard weather.
-     var hard=null; if(window.__wxHard('storm')) hard='storm'; else if(window.__wxHard('fog')) hard='fog';
-     if(!hard) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
-     if(!g.wx) g.wx={}; g.wx.id=hard;
-     // Something to bank: a bag worth carrying out.
-     p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
-     var n0=(P.log||[]).length;
-     try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
-     var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
-     var m=/\+\s*([\d,]+)\s*XP/.exec(txt);
-     var card=m?parseInt(m[1].replace(/,/g,''),10):null;
-     var rec=(P.log&&P.log.length>n0)?P.log[P.log.length-1]:null;
-     if(card===null) bad.push('the card printed no "+N XP" line (card says: '+txt.replace(/\s+/g,' ').slice(0,80)+')');
-     if(!rec||typeof rec.xpGot!=='number') bad.push('the run was not banked with an xpGot figure');
-     if(card!==null&&rec&&typeof rec.xpGot==='number'){
-       // THE FIX: what the card says is what was banked.
-       if(card!==rec.xpGot) bad.push('the card printed +'+card+' XP but the profile banked '+rec.xpGot+' (base '+rec.xpBase+', weather hard '+rec.wxHard+')');
-       // CONTROL: the multiplier really was in play, or the agreement proves nothing.
-       if(!rec.wxHard) bad.push('control: the banked record does not carry the hard-weather flag, so no multiplier was in play');
+     var g=__state(), M=null, i;
+     for(i=0;i<g.ents.length;i++){ if(g.ents[i].merc){ M=g.ents[i]; break; } }
+     if(!M){ __cleanProfile(); return 'SKIP: the hired merc did not spawn'; }
+     var row=null; for(i=0;i<(g.roster||[]).length;i++){ if(g.roster[i].ref===M){ row=g.roster[i]; break; } }
+     // THE FIX: he is on the roster at all.
+     if(!row) bad.push('the hired merc has no roster row, so boarding cannot stamp his haul and endRaid cannot pay your cut');
+     else {
+       // He fled low and boarded an earlier ship: the boarding code stamps the
+       // row and removes him from the world. Then you extract.
+       row.out=true; row.outAt=0; row.val=1234;
+       var ix=g.ents.indexOf(M); if(ix>=0) g.ents.splice(ix,1);
+       var c0=P.credits;
+       try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
+       var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
+       if(!/extracted earlier/i.test(txt)) bad.push('the card did not say he extracted earlier (it says: '+txt.replace(/\s+/g,' ').slice(0,90)+')');
+       if(!(P.credits-c0>=123)) bad.push('your ten percent of his 1,234 was not paid (credits moved '+(P.credits-c0)+')');
      }
      __topClear(); __cleanProfile();
      return bad.length?bad.join('; '):null; }},
-  {v:'11.60',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+  {v:'11.60',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

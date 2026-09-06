@@ -40024,6 +40024,46 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.55 - HIS NOTES: A COOKED GRENADE SHOUTS FOR ITS LAST SECOND
+
+His notes of 2026-09-05: "cooking grenades should give more warning before
+exploding in your hand, need a message with 1 sec left like COOKED GRENADE!
+THROW GRENADE NOW" and, at 111 seconds of his second run, "COOKING A GRENADE
+SHOULD COUNT down, NOT UP!!!". He died to his own charge in both runs that
+night: downs 2, revived once, last hit YOUR OWN CHARGE, both times.
+
+WHAT IS TRUE. The in-hand readout has counted DOWN since v3.11: "COOKING
+0.8s" and a bar that shrinks, going red over the last third. What it never
+did was shout. And the reason a beat too long on the button kills him is the
+fuse: FRAG_FUSE is 1.1 seconds. Hold the button for one second and a tenth
+and it goes off in your hand. A "one second left" warning on that fuse
+appears a tenth of a second after the press. The fuse is a balance number and
+his standing order is no in-raid balancing before alpha, so it is NOT moved
+here; it is the finding, and the report asks him for the number he wants.
+
+THE BUILD. One function, cookShout, owns his line for the last second of a
+frag in hand, and the HUD draws it flashing red and bone in the head size
+above the countdown at the operator, where his eyes are. A smoke or a decoy
+in hand, which have no fuse, never shout.
+
+MEASURED. Check 11.55 reads the shout at half a second and at the last
+instant and requires his line; controls that a smoke in hand and an empty
+hand say nothing, and (only when the fuse is longer than 1.5 s) that the
+shout is silent at 1.5 s left; and requires the HUD draw to read cookShout.
+On the v11.54 fixture there is no cookShout and the check fails on its first
+line.
+
+WHAT COUNTS UP: nothing. Read on 2026-09-06 for his "COUNT down, NOT UP"
+line. The in-hand readout prints the fuse MINUS the elapsed cook, so it runs
+1.1 to 0.0; its bar is drawn with 1 minus the fraction, so it shrinks; and a
+grenade already on the ground draws a dot with a blinking spark and no timer
+at all. There is no rising number anywhere in the throwable path. The most
+likely thing he saw is a fuse so short that the tenths blur past: 1.1 seconds
+is eleven printed values at a tenth each, most of a single second.
+
+Not verified: his own eye, and whether the shout is readable in the last
+second of a 1.1 second fuse, which it barely can be; the fuse length itself,
+which is his ruling and the one number that would answer his note properly.
 ## v11.54 - HIS NOTE: AN EXTRACTION POINT SAYS WHICH STATE IT IS IN
 
 His in-run note of 2026-09-05, 53 seconds into his second run: "'EXTRACTION -

@@ -11,24 +11,31 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# THE NOTORIETY BANNER SAID THE PEDDLER WAS DONE WITH YOU. His ruling at v8.28
-# was that the Peddler always trades regardless of notoriety, and pedOpen has
-# answered true ever since; the hub card was renamed at the same build. The
-# in-raid banner that fires when the score reaches two still said the stall
-# had shut. It names what notoriety actually costs now, at every score.
+# THE RESTORE CODE WAS BLANK FOR ANY NAME ABOVE U+00FF. btoa takes Latin-1
+# only; a name with an emoji, a CJK character or a curly quote made it throw,
+# the catch returned '', and the run report carried an empty restore code for
+# exactly the friend most likely to have typed one. The name box accepts any
+# sixteen characters. The code is UTF-8 now; the reader tries the UTF-8 read
+# first and falls back to the old plain read, so every code written before
+# this build still reads.
 SubRx @'
-  if(n>=2) return 'The Peddler is done with you.';
-  return 'Hiring costs more and pillagers are slower to trust you.';
+  try{ return 'PIL1'+btoa(JSON.stringify(restoreMake())).replace(/=+$/,''); }
+  catch(e){ return ''; }
 '@ @'
-  // v11.66: the stall never shuts (pedOpen, his v8.28 ruling); this said it did.
-  if(n>=2) return 'Hiring costs more and pillagers are slower to trust you. Word has got round.';
-  return 'Hiring costs more and pillagers are slower to trust you.';
+  // v11.66: UTF-8 through btoa, so a name above U+00FF makes a code at all.
+  try{ return 'PIL1'+btoa(unescape(encodeURIComponent(JSON.stringify(restoreMake())))).replace(/=+$/,''); }
+  catch(e){ return ''; }
 '@
 SubRx @'
-// 2 gets its own word because 2 is where the stall actually shuts.
+    while(b.length%4) b+='=';
+    var o=JSON.parse(atob(b));
 '@ @'
-// 2 gets its own word because 2 is where the stall used to shut (it never shuts
-// since v8.28; the banner caught up at v11.66).
+    while(b.length%4) b+='=';
+    var raw=atob(b), js;
+    // v11.66: the code is UTF-8 from this build on; an older one is plain
+    // Latin-1 and reads as itself when the UTF-8 read refuses it.
+    try{ js=decodeURIComponent(escape(raw)); }catch(_u){ js=raw; }
+    var o=JSON.parse(js);
 '@
 
 # STAMPS.
@@ -46,11 +53,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE NOTORIETY BANNER STOPPED LYING ABOUT THE PEDDLER. At two notoriety it said the Peddler was done with you; he has traded with anyone since the stall stopped shutting. It says what notoriety really costs now.',
+  'A NAME WITH AN EMOJI OR A CURLY QUOTE GETS A RESTORE CODE. Before this the code at the bottom of the run report came out blank for any such name, and the friend it belonged to could not be restored. Old codes still read.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.65:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.65 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.65:[^']*'",{ param($m) "now:'v11.66: the in-raid notoriety banner at two or more said the Peddler was done with you, while the stall has never shut since his v8.28 ruling (pedOpen answers true) and the hub card was renamed then. The banner names the real cost at every score now. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.65:[^']*'",{ param($m) "now:'v11.66: the restore code was blank for any name above U+00FF. btoa takes Latin-1 only, so an emoji, a CJK character or a curly quote in the name made it throw and the catch returned an empty code, while the name box accepts any sixteen characters. The code is UTF-8 through btoa now and the reader tries the UTF-8 read first and falls back to the plain read, so every code written before this build still reads. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

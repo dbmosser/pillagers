@@ -11,58 +11,47 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# THE RESTORE CODE LEFT THE ARMOURY BEHIND. The card promises "what you have
-# unlocked" and the panel says REPLACES, and the maker (v11.03) carried the
-# credits, the XP, the stash, the cosmetics and the junk, and not one gun: not
-# the guns owned, not the one in hand, not the second slot, not the wear on
-# any of them. A friend restored from his code came back with the fresh
-# profile's Scav Pistol and nothing else. The code carries the armoury now,
-# and applying it brings the guns back; an older code without that block
-# leaves the guns as they are rather than stripping them.
+# TAGS AND A NOTE CHOSEN AFTER COPY REPORT WERE DROPPED. Copy report commits
+# the run first (v10.65, so the pasted report holds the raid he just played),
+# and the commit nulls pendingRun. Anything he tags or types AFTER that, and
+# then confirms with Log run and return, hits the early return: the row is
+# already written, so it keeps the tags it had at Copy time and the note is
+# lost. The comment on ocCommit promised the late tags would be "patched onto
+# the already written row"; nothing did. Now the committed row is remembered
+# for the life of the card, and a second commit patches tags and note onto it
+# and re-sends the report when they changed.
 SubRx @'
-  for(var i=0;i<st.length;i++) o.s[st[i]]=(o.s[st[i]]||0)+1;
-  return o;
-}
+var pendingRun=null,selTags=[];
 '@ @'
-  for(var i=0;i<st.length;i++) o.s[st[i]]=(o.s[st[i]]||0)+1;
-  // v11.64: the armoury. Guns owned, the one in hand, the second slot, and the
-  // rounds worn through each, which is what condition is made of.
-  o.g={w:(P.weapons||[]).slice(),e:P.equipped||'fists',e2:P.equippedSec||'none',wr:{}};
-  for(var wk in (P.wear||{})) if(P.wear[wk]) o.g.wr[wk]=P.wear[wk]|0;
-  return o;
-}
+var pendingRun=null,selTags=[],committedRun=null;   // v11.64: the row Copy report wrote, for late tags
 '@
 SubRx @'
-  P.stash=st;
-  saveProfile();
-  return true;
-}
+function ocCommit(){
+  if(!pendingRun) return false;
 '@ @'
-  P.stash=st;
-  // v11.64: the armoury, when the code carries one. A gun this build does not
-  // know is dropped, the same rule as the stash; an older code without the
-  // block leaves the guns as they are rather than stripping them.
-  if(o.g){
-    var gw=[], gi, gl=(o.g.w||[]);
-    for(gi=0;gi<gl.length;gi++) if(WEAPONS[gl[gi]]&&gl[gi]!=='fists'&&gw.indexOf(gl[gi])<0) gw.push(gl[gi]);
-    P.weapons=gw;
-    P.equipped=(o.g.e&&gw.indexOf(o.g.e)>=0)?o.g.e:'fists';
-    P.equippedSec=(o.g.e2&&gw.indexOf(o.g.e2)>=0&&o.g.e2!==P.equipped)?o.g.e2:'none';
-    P.wear={};
-    for(var wk in (o.g.wr||{})) if(WEAPONS[wk]) P.wear[wk]=Math.max(0,o.g.wr[wk]|0);
+function ocCommit(){
+  if(!pendingRun){
+    // v11.64: the commit already happened (Copy report does it first). Tags and
+    // a note chosen since then land on the row it wrote, and the report goes
+    // out again with them, instead of being thrown away at the early return.
+    if(committedRun){
+      var _lt=selTags.slice(), _ln=document.getElementById('oc_note');
+      _ln=_ln?_ln.value.trim():'';
+      if(_lt.join('|')!==(committedRun.tags||[]).join('|')||_ln!==(committedRun.note||'')){
+        committedRun.tags=_lt; committedRun.note=_ln;
+        saveProfile(); autoExport();
+      }
+    }
+    return false;
   }
-  saveProfile();
-  return true;
-}
 '@
 SubRx @'
-  return o.n+', '+(o.r|0)+' raid'+((o.r|0)===1?'':'s')+', '+'$'+(o.c|0).toLocaleString()+
-         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash.';
+  commitRun(pendingRun);
+  pendingRun=null;
 '@ @'
-  var ng=(o.g&&o.g.w)?o.g.w.length:0;
-  return o.n+', '+(o.r|0)+' raid'+((o.r|0)===1?'':'s')+', '+'$'+(o.c|0).toLocaleString()+
-         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash'+
-         (o.g?', '+ng+' gun'+(ng===1?'':'s'):'')+'.';
+  commitRun(pendingRun);
+  committedRun=pendingRun;
+  pendingRun=null;
 '@
 
 # STAMPS.
@@ -80,11 +69,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'YOUR RESTORE CODE NOW CARRIES YOUR GUNS. The code at the bottom of every run report promised what you had unlocked and left the armoury out: restored from it, you came back with a Scav Pistol. It carries every gun you own, the one in hand, the second slot and their wear now. Copy a fresh one.',
+  'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.63:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.63 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.63:[^']*'",{ param($m) "now:'v11.64: the restore code left the armoury behind. restoreMake carried credits, XP, stash, cosmetics and junk and not one gun, while the card promised what you have unlocked and the panel said REPLACES; a friend restored from it came back with the fresh Scav Pistol. The code carries guns owned, the one in hand, the second slot and the wear on each now, applying it brings them back with unknown guns dropped, and an older code without the block leaves the guns as they are. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.63:[^']*'",{ param($m) "now:'v11.64: tags and a note chosen after Copy report were dropped. Copy report commits the run first and nulls pendingRun, so Log run and return afterwards hit the early return and the row kept the tags it had at Copy time; the ocCommit comment promised a patch onto the written row that did not exist. The committed row is remembered for the life of the card and a later commit patches tags and note onto it and re-sends the report when they changed. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

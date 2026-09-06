@@ -11,43 +11,32 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# THE OUTCOME CARD PRINTED BASE XP; THE PROFILE WAS CREDITED BASE x NIGHT x
-# WEATHER x DOSE. The card built its own record without the night and wxHard
-# flags and printed spForRun+xpForRun raw, while commitRun, a moment later, ran
-# addProgress (round(base x night x weather)) and addXp (round(that x dose)). A
-# night run said +100 and banked 120, and the "XP in all" and "XP away" figures
-# on the same line were wrong with it. One helper now owns the night and weather
-# arithmetic, the bank uses it, and the card prints exactly what will be banked.
+# A MERC WHO BOARDED AN EARLIER SHIP WAS NEVER PAID. endRaid settles the merc's
+# ten percent by looking for his ROSTER row (v8.46: "the roster remembers the
+# man and what he carried out"), and the boarding code stamps out and val onto
+# the roster row whose ref is the boarding entity. But only ordinary raiders
+# were ever pushed to the roster; the hired merc went to ents alone. So when he
+# fled low and boarded before you, no row was there to stamp or to find, and the
+# card said "was left out there": no cut, no standing. He gets a row now, and
+# the pillager board skips it so your hire is not listed as a rival.
 SubRx @'
-function addProgress(rec){
+      M2.merc=1; M2.hostile=false; M2.grudge=false; M2.friendly=1;
+      ents.push(M2);
 '@ @'
-// v11.61: the one place the night and weather multipliers are applied to a run's
-// base XP. addProgress banks it; the outcome card prints it (times the dose
-// multiplier addXp applies), so the two can never disagree again.
-function xpBaseFor(rec){
-  return Math.round((spForRun(rec)+xpForRun(rec))*(rec.night?nightXpMul():1)*(rec.wxHard?wxXpMul():1));
-}
-function addProgress(rec){
+      M2.merc=1; M2.hostile=false; M2.grudge=false; M2.friendly=1;
+      ents.push(M2);
+      // v11.61: a roster row, so boarding stamps his haul and endRaid can pay
+      // his cut when he went up before you. The board skips merc rows.
+      roster.push({ref:M2,name:M2.name,crew:M2.crew,val:0,out:false,merc:1});
 '@
 
 SubRx @'
-  var _xb=Math.round((spForRun(rec)+xpForRun(rec))*(rec.night?nightXpMul():1)*(rec.wxHard?wxXpMul():1)), _xg=addXp(_xb);
+  for(i=0;i<R.length;i++){
+    var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
 '@ @'
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb);
-'@
-
-SubRx @'
-    var _grec={outcome:how,haul:haul,containers:T.containers,kills:T.kills,termPay:tPay,
-      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:T.distance||0};
-    var gained=spForRun(_grec)+xpForRun(_grec);
-'@ @'
-    var _grec={outcome:how,haul:haul,containers:T.containers,kills:T.kills,termPay:tPay,
-      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:T.distance||0,
-      // v11.61: the same two flags the banked record carries, so the card prints
-      // what addProgress and addXp will actually credit: night, weather and dose.
-      night:(typeof isDay==='function'&&!isDay())?1:0,
-      wxHard:(typeof wxHardId==='function')?wxHardId((G.wx&&G.wx.id)||'clear'):0};
-    var gained=Math.round(xpBaseFor(_grec)*buzzXpMul());
+  for(i=0;i<R.length;i++){
+    var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
+    if(r.merc||(e&&e.merc)) continue;   // v11.61: your hire is not a rival on the board
 '@
 
 # STAMPS.
@@ -65,11 +54,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE XP ON THE OUTCOME CARD IS THE XP YOU GET. A night run, hard weather or a dose in your blood pays more, and the game banked that bonus but the card printed the plain figure, so the XP line, the total and the distance to the next reward were all off. The card now prints exactly what is banked.',
+  'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and boarded an earlier ship, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.60:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.60 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.60:[^']*'",{ param($m) "now:'v11.61: the outcome card printed base XP while the profile was credited base x night x weather x dose. The card built its own record without the night and wxHard flags and printed the raw sum, while commitRun ran addProgress (round of base x night x weather) and addXp (round of that x dose); a night run said +100 and banked 120, and the total and the distance to the next reward were wrong with it. One helper, xpBaseFor, now owns the night and weather arithmetic, the bank uses it, and the card prints the same figure times the dose multiplier. From the v11.46 audit, P1, raised by two regions.'" })
+$s=[regex]::Replace($s,"now:'v11\.60:[^']*'",{ param($m) "now:'v11.61: a merc who boarded an earlier ship was never paid. endRaid settles his cut by finding his roster row and boarding stamps out and val onto that row, but only ordinary raiders were pushed to the roster; the hired merc went to ents alone, so no row was stamped or found and the card said left out there. He gets a roster row at spawn now and the pillager board skips merc rows. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

@@ -11,31 +11,49 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
+# v11.62 HOOK: whether a weather id counts as hard, so a check can force a
+# multiplier into play.
+SubRx @'
+window.__loadProfile=function(){ return loadProfile(); };
+'@ @'
+window.__loadProfile=function(){ return loadProfile(); };
+window.__wxHard=function(id){ try{ return wxHardId(id); }catch(e){ return null; } };
+'@
+
 # v11.62 CHECK, inserted before the v11.61 entry.
 SubRx @'
-  {v:'11.61',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
+  {v:'11.61',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
 '@ @'
-  {v:'11.62',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
+  {v:'11.62',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__sim&&window.__keys)) return 'SKIP: this fixture cannot revive a man';
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__wxHard)) return 'SKIP: this fixture cannot end a raid and read the card';
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[];
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(), p=g.player, R=null, i, bad=[];
-     for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.merc&&!e.finished){ R=e; break; } }
-     if(!R) return 'SKIP: no pillager to down';
-     // You downed him: the downing shot stamped byPlayer. He lies within reach.
-     R.downed=1; R.byPlayer=true; R.hostile=true; R.friendlyPC=0; R.x=p.x+20; R.y=p.y;
-     g.over=false; p.downed=false; g.revLock=0;
-     var K=__keys(); for(var q in K) delete K[q]; K['KeyE']=true;
-     try{ __sim(0.15); }catch(e2){ bad.push('the step threw: '+String(e2&&e2.message||e2).slice(0,80)); }
-     delete K['KeyE'];
-     // CONTROL: the revive happened at all, or the flag reading proves nothing.
-     if(!(R.downed===0&&R.friendlyPC===1)) bad.push('control: E next to the downed man did not revive him (downed '+R.downed+', friendlyPC '+R.friendlyPC+')');
-     // THE FIX: his next death is no longer yours.
-     else if(R.byPlayer) bad.push('the revived man still carries byPlayer, so a crawler killing him later would be your kill, your contract tick and a grudge');
+     var g=__state(), p=g.player;
+     // A multiplier must be in play or the two figures agree by accident: force hard weather.
+     var hard=null; if(window.__wxHard('storm')) hard='storm'; else if(window.__wxHard('fog')) hard='fog';
+     if(!hard) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
+     if(!g.wx) g.wx={}; g.wx.id=hard;
+     // Something to bank: a bag worth carrying out.
+     p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
+     var n0=(P.log||[]).length;
+     try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
+     var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
+     var m=/\+\s*([\d,]+)\s*XP/.exec(txt);
+     var card=m?parseInt(m[1].replace(/,/g,''),10):null;
+     var rec=(P.log&&P.log.length>n0)?P.log[P.log.length-1]:null;
+     if(card===null) bad.push('the card printed no "+N XP" line (card says: '+txt.replace(/\s+/g,' ').slice(0,80)+')');
+     if(!rec||typeof rec.xpGot!=='number') bad.push('the run was not banked with an xpGot figure');
+     if(card!==null&&rec&&typeof rec.xpGot==='number'){
+       // THE FIX: what the card says is what was banked.
+       if(card!==rec.xpGot) bad.push('the card printed +'+card+' XP but the profile banked '+rec.xpGot+' (base '+rec.xpBase+', weather hard '+rec.wxHard+')');
+       // CONTROL: the multiplier really was in play, or the agreement proves nothing.
+       if(!rec.wxHard) bad.push('control: the banked record does not carry the hard-weather flag, so no multiplier was in play');
+     }
      __topClear(); __cleanProfile();
      return bad.length?bad.join('; '):null; }},
-  {v:'11.61',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
+  {v:'11.61',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

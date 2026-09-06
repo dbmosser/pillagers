@@ -74,6 +74,21 @@ READ BEFORE BUILDING A AND B (Fable read the code 2026-09-05 23:20):
   and requires crouchTog false and sprint true, then sets it again, rolls
   and requires it false; control fails on the previous fixture.
 
+NEW, 2026-09-06 (Opus): a second read-only audit ran over the IN-RAID
+subsystems (14 agents, 27 raw findings, top 8 refute-tested, none refuted;
+19 raw findings were NOT verified and are listed in the run output at
+tasks/wgxerrwcf.output). Its strongest finding is DRAFTED AND DRY-RUN GREEN
+as 1159 and ships after his notes: a throwable put on a tactical belt key was
+a dead key that also deleted the working grenade cell (the v8.31 stim hole,
+one item type later). The audit queue moved again to 1160 to 1171
+(renumber1160.ps1 then fixdev1160.ps1) to make room. The other seven
+confirmed findings are written into AUDIT.md under the 2026-09-06 heading:
+a frozen cook while downed that throws itself on revive, Q desyncing the
+throw selector from the belt, a pinned weather burning seeded rolls every
+frame, the fulgurite cache glowing the rarity it discarded, a second open
+ring hijacking the extraction pointer, and a 3-second boarding window when
+the raid clock is OFF.
+
 NUMBERING (done 2026-09-05 23:45): the audit queue was shifted to 1159 to
 1170 (renumber1159.ps1 then fixdev1159.ps1), so his note builds take 1153 to
 1158. STATUS: B = v11.53 (sprint and roll leave the crouch) verified on all
