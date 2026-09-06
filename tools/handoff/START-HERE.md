@@ -2,19 +2,15 @@
 
 ## FINAL RUN BEFORE ALPHA (handoff to Fable, 2026-09-06)
 
-**STATE:** HEAD is v11.71 (b0b5377). The tree has **v11.72 APPLIED** (a note
-typed in the pause box on the floor is banked instead of riding into the next
-raid). It passed parse, its own check four times in a row, __verifySafe, and
-its control fails on fx1171. Its FULL CORPUS is running on the Browser pane tab
-"seed". FIRST ACTION: poll `JSON.stringify(window.__PROG)` there; when finished
-is true, pass is true, fail is [] and only the two known skips are listed:
-    bash tools/handoff/ship.sh commit 1172 cm1172.txt
-That commit RETIRES THE WHOLE v11.46 AUDIT QUEUE. Then bump the HEAD line in
-memory dark-raiders-handoff-state.md.
+**STATE: HEAD is v11.72 (8ac8eec) and THE TREE IS CLEAN.** Nothing is
+mid-flight. The whole v11.46 audit queue is shipped, along with all six of his
+2026-09-05 notes, the Undercroft HUD erase and the belt-key grenade: 21 builds,
+v11.52 to v11.72, every one with a green corpus (304 checks, only the two known
+skips) and a control that fails on the previous build.
 
-**NEXT, ALREADY DRAFTED:** 1173, a character who has never saved had no name
-(`ship.sh start 1172 1173`). Not yet dry-run: run
-`powershell -File tools/handoff/dry.ps1 1173 1173` first.
+**FIRST ACTION: `bash tools/handoff/ship.sh start 1172 1173`.** 1173 is drafted
+AND dry-run green: a character who has never saved had no name. Then the usual
+four gates and the corpus.
 
 **THEN, THE ALPHA-PATH ITEMS STILL OPEN** (all from the 2026-09-06 menu audit,
 recorded in AUDIT.md under its 2026-09-06 heading, none drafted as builds):
