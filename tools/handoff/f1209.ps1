@@ -30,13 +30,13 @@ SubRx @'
        if(pb&&pb.classList.contains('on')) togglePauseBox(false);
        hubBagOpenSet(true);
        if(!hubBagOpen) bad.push('control: the backpack did not open');
-       window.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
        if(hubBagOpen) bad.push('ESC left the backpack open');
        if(pb&&pb.classList.contains('on')) bad.push('ESC raised the pause box over the open backpack');
        // CONTROL: with the backpack closed, ESC still pauses.
        if(hubBagOpen) hubBagOpenSet(false);
        if(pb&&pb.classList.contains('on')) togglePauseBox(false);
-       window.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
        if(!(pb&&pb.classList.contains('on'))) bad.push('control: ESC with the backpack closed did not raise the pause box');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ try{ if(pb&&pb.classList.contains('on')) togglePauseBox(false); }catch(_p){} try{ if(hubBagOpen) hubBagOpenSet(false); }catch(_b){} keys={}; __topClear(); __cleanProfile(); }

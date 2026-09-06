@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.07';
+var VER='12.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,14 @@ var VER='12.07';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.07';
+var WHATSNEW_VER='12.11';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A DEATH BANKS THE XP ITS CARD PRINTS, drink bonus included; it used to pay the run without the bonus after the drink was cleared.',
+  'THE CONTROLS CARD NO LONGER PROMISES AN X KEY THAT DOES NOT EXIST: belt keys 1 and 2 bring up either gun.',
+  'ESC CLOSES THE OPEN BACKPACK IN THE UNDERCROFT instead of raising the pause box over it.',
+  'TAKING THE FREEBIE KIT AT THE LIFT CLEARS YOUR TACTICAL BELT PLAN, the same as the stash screen button, so no key points at something you left behind.',
   'THE SECOND TIME YOU GO DOWN THE GAME SAYS SO: your one self-revive is spent, so crawl for an extraction or hold SPACE to give up.',
   'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
   'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
@@ -10492,8 +10496,13 @@ window.addEventListener('keydown',function(e){
     // v8.70, HIS REPORT: ESC and P pause on the floor. The raid owns these keys
     // further down and the hub branch returns long before reaching it. Only when
     // no window is open, so ESC still belongs to whatever panel is in front.
+    // v12.09: NOT OVER AN OPEN BACKPACK. The floor backpack is not a modal, so
+    // ESC over it raised the pause box here and the backpack's own ESC line
+    // further down could never run; a second ESC closed the pause box and the
+    // backpack stayed. ESC belongs to whatever is in front, and the backpack is.
     if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&&
-       !document.querySelector('.imenu')&&!document.getElementById('hub').classList.contains('on')){
+       !document.querySelector('.imenu')&&!document.getElementById('hub').classList.contains('on')&&
+       !(e.code==='Escape'&&hubBagOpen)){
       togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
       e.preventDefault(); return;
     }
@@ -18301,7 +18310,7 @@ function addProgress(rec){
   // v10.06: and a night run pays its multiplier on top.
   // v11.00, his note 16: hard weather pays too, and both apply, so a hard night
   // is 1.2 times 1.1.
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb);
+  var _xb=xpBaseFor(rec), _xg=addXp(_xb,(rec.doseMul>0)?rec.doseMul:undefined);   // v12.11: the multiplier the card printed
   rec.xpBase=_xb; rec.xpGot=_xg;
   P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
   // v10.27, his note: NET LIFETIME EARNINGS. Everything extracted minus
@@ -18356,6 +18365,10 @@ var DEATH_FEED_HTML='';
 function endRaid(how){
   if(G.over) return;
   G.over=how;
+  // v12.11: THE BONUS THE CARD PRINTS IS THE BONUS THE RUN BANKS. Taken here,
+  // before the death branch below clears the drink; the banking at the bottom
+  // of this function ran after that clear and paid the run without it.
+  if(G.tel) G.tel.doseMul=buzzXpMul();
   // v10.85: the raid loop stops here, and it is the only thing that was driving
   // the ambient bed down. Cut it now or it hums at its last level for as long as
   // the page is open. Ahead of everything below because everything below can
@@ -18849,6 +18862,7 @@ var _cdone=contractExtract(G.bag,haul);
     wxHard:(typeof wxHardId==='function')?wxHardId((G.wx&&G.wx.id)||'clear'):0,   // v11.00, his note 16
     caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,rounds:T.rounds||0,jams:T.jams||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
+    doseMul:(T.doseMul>0)?T.doseMul:1,   // v12.11: the dose bonus the card printed, banked below
     dur:Math.round(elapsed()),
     census:G.census||null,
     intel:G.intel?1:0,
@@ -24654,7 +24668,9 @@ var LEGEND_PAD=[
 // when charges started stopping at walls, which is the behaviour most likely to
 // look like a bug the first time a frag lands short.
 var GEARRULES=[
-  ['WEAPONS',function(){ return (PAD&&PAD.on)?'Y swaps primary/sidearm.':'X swaps primary/sidearm.'; }],
+  // v12.10: there is no X (or pad Y) swap; the belt is the swap. Pressing the
+  // key of the stowed gun brings it up (setHot, the v8.67 rule).
+  ['WEAPONS','Belt keys 1 and 2 bring up either gun.'],
   // v8.51, audit: this said a better gun equips itself only "if you switch it on
   // in Settings". autoEquipOn returns the dial for the BOT and true for a human,
   // deliberately, and Settings has no such row - so the card described a switch
@@ -27431,6 +27447,12 @@ function askKit(){
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
   ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v12.01: MY LOADOUT gets his packing back too
   ASKALT=function(){
+    // v12.08: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
+    // belt plan (a key pointing at something you are not carrying is the v5.72
+    // fault). This one did not, so a friend who took the free kit here landed
+    // with keys bound to items left in the stash and, because an assigned heal
+    // key replaces the derived Medical cell, two Bandages with no key to use.
+    P.hotAssign={}; P._gunSlot=null;
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
     try{ renderStage(); }catch(_e){}
     ascendNow();
@@ -28606,7 +28628,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.07: from the 2026-09-06 first-ten-minutes audit, the going-down toast sent him to F on the second down too, when the one self-revive is spent and F refuses. The second down now says the revive is spent and names the crawl and the give-up hold. Check 12.07 downs him with the revive spent and requires no F in the toast and the word spent, then downs him fresh and requires F; fails on v12.06.',
+  now:'v12.11: from the 2026-09-06 first-ten-minutes audit, a death or an abandon printed the run XP with the drink bonus on the card, cleared the drink, and then banked the run through addXp with no bonus, so the profile got less than the card said. The bonus is taken at the top of the ending and carried on the record into the banking. Check 12.11 dies with two doses in the blood and requires the profile paid exactly what the card printed; fails on v12.10.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29116,9 +29138,9 @@ function buzzXpPer(){ return (CFG.buzzXp===undefined)?0.025:CFG.buzzXp; }
 function buzzXpMul(){ var d=buzzDoses('drunk')+buzzDoses('lsd'); return 1+Math.min(d,10)*buzzXpPer(); }
 // ONE WRITER for earned XP, so every grant takes the bar's bonus. Returns what
 // was actually added.
-function addXp(n){
+function addXp(n,mul){
   n=Math.round(n||0); if(n<=0) return 0;
-  var g=Math.round(n*buzzXpMul());
+  var g=Math.round(n*((mul!==undefined)?mul:buzzXpMul()));   // v12.11: a run banks the bonus its card printed
   P.xp=(P.xp||0)+g;
   return g;
 }

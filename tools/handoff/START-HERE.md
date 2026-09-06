@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v11.90 (447cda3). The tree has **v11.91 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v11.91 (287820e). The tree has **v11.92 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-2" (the tab named seed hung on 2026-09-06 12:40 and was closed).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1191 cm1191.txt
+    bash tools/handoff/ship.sh commit 1192 cm1192.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1191 1192
+    bash tools/handoff/ship.sh start 1192 1193
 and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -29,7 +29,9 @@ usual cause (see memory dark-raiders-loader-replaces-the-profile).
 - **1208 THE LIFT FREEBIE KIT CLEARS THE BELT PLAN** (first-ten-minutes audit, verified 2026-09-06 13:20: askKit ASKALT set freeKit and nothing else while the stash button clears P.kit, P.hotAssign, P._gunSlot). Drafted, NOT yet dry-run.
 - **1209 ESC CLOSES THE OPEN FLOOR BACKPACK** (same audit, verified: the v8.70 pause branch does not count hubBagOpen and returns before the v8.95 backpack line). Drafted, NOT yet dry-run.
 - **1210 THE CONTROLS CARD STOPS TEACHING A DEAD X KEY** (same audit, verified: no KeyX handler and no pad swap exist; the belt keys are the swap). Drafted, NOT yet dry-run.
-- **1211 A DEATH BANKS THE XP ITS CARD PRINTS** (same audit, verified: endRaid prints the card with buzzXpMul, clears P.buzz on dead or abandon, then commitRun banks through addXp with the bonus read live as none). Drafted, NOT yet dry-run. Dry-run all four with dry.ps1 from the tree VER+1 to 1211.
+- **1211 A DEATH BANKS THE XP ITS CARD PRINTS** (same audit, verified: endRaid prints the card with buzzXpMul, clears P.buzz on dead or abandon, then commitRun banks through addXp with the bonus read live as none). Drafted, NOT yet dry-run.
+- **1212 THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL** (same audit, verified: startCook on an empty selected cell returns or cycles to another grenade; v2.92 never covered a cell selected empty). Drafted, NOT yet dry-run.
+- **1213 BROWSING THE BACKPACK NO LONGER WALKS YOU** (same audit, verified: raidKey sets keys[code] for every key and the movement reads the arrows regardless of G.bagOpen). Drafted, NOT yet dry-run. Dry-run all six with dry.ps1 from the tree VER+1 to 1213.
 - **NOT DRAFTED, from the same audits, in value order:** P cannot close the pause box while its textarea has focus; hub belt may cover the [E] STATION prompt (UNVERIFIED, take a screenshot of the floor with the operator at the lift); the second review of v11.84 says only the player's Lance rounds pass through crawlers (stamp `thru` on fromPlayer or copy the two lines into the enemy branch); check 11.80 should also count __ambOff calls rising by 2; check 11.85 should pin __forceSize(1920,1080); check 11.81's control arm should restore P.seals.
 - **LEFTOVERS OF THE DRAFT REVIEW wf_cfc891c0-f2e (47 findings; highs and mediums folded in by fixdrafts5.ps1 + fixdup5.ps1):** check 11.88 should reset and restore P.hud (a collapsed CONDITIONS panel on the saved profile reads as a red for the wrong reason; copy the idiom at mkfixture ~3191); the v11.88 patch left the quiet and swift verdict branches unreachable rather than deleting them, and the v9.70 comment under it still cites "nothing killed yet" as a live example (delete both branches and reword the comment in a polish build); check 11.97 has no arm for the named belt heal slot (stage P.hotAssign the way check ~1468 does, then setHot and useHot); the 1188 check spies fillText by hand where __textTrace exists; the queue drafts still use the DEVNOW idiom `now:'v11\.NN:[^']*'` which cannot carry an apostrophe (never put one in a DEVNOW sentence).
 - **DRY RUN BEFORE SHIPPING 1189:** `powershell -NoProfile -ExecutionPolicy Bypass -File tools/handoff/dry.ps1 1189 1206` from the tree at v11.88, then `dry/mk.ps1`, then run checks 11.89 to 12.06 on :8801 between corpora (tools/serve.ps1 -Root tools/handoff/dry -Port 8801 if the server is down).

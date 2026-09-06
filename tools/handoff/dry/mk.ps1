@@ -188,6 +188,7 @@ window.__canvases=function(){ return {world:cv,overlay:hcv}; };
 window.__movers={seekPoint:seekPoint,navSeek:navSeek,mkSentry:mkSentry,mkRaider:mkRaider,dist:dist,buildNav:buildNav};
 window.__newRaid=function(){ G=buildRaid(true); return G; };
 window.__hub=function(){ return HB; };
+window.__tpbCount=0; window.__tpbLast=null; try{ var _tpbReal=togglePauseBox; togglePauseBox=function(on){ window.__tpbCount++; window.__tpbLast=on; try{ return _tpbReal.apply(this,arguments); }catch(_te){ window.__tpbErr=String(_te&&_te.message||_te); throw _te; } }; }catch(_tw){ window.__tpbErr='wrap: '+_tw; }
 window.__P=function(){ return P; };
 window.__buzzFx=function(){ drawBuzzFx(); };
 window.__buzzT=function(dt){ tickBuzz(dt===undefined?0.033:dt); };
@@ -5732,6 +5733,90 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.11',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
+     if(typeof buzzXpMul!=='function') return 'SKIP: no dose bonus in this build';
+     var bad=[], P2=__P(), keepBuzz=(P2.buzz||[]).slice(), keepXp=P2.xp||0;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.tel.containers=40; g.tel.kills={crawler:12,sentry:4};   // enough base XP for a 5 percent bonus to show
+       P2.buzz=[{id:'liquor',tag:'drunk',t:200,dur:200},{id:'liquor',tag:'drunk',t:200,dur:200}];
+       var mul=buzzXpMul();
+       if(!(mul>1)) return 'SKIP: two doses did not raise the multiplier ('+mul+')';
+       var xp0=P2.xp||0;
+       p.downed=false; __endRaid('dead');
+       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+       var m=/\+([\d,]+) XP/.exec(txt);
+       if(!m) bad.push('control: the card printed no XP line ('+txt.slice(0,80)+')');
+       else {
+         var shown=parseInt(m[1].replace(/,/g,''),10), banked=(P2.xp||0)-xp0;
+         if(!(shown>0)) bad.push('control: the card printed no XP gain');
+         if(banked!==shown) bad.push('the card says +'+shown+' XP and the profile was paid '+banked);
+       }
+       if((P2.buzz||[]).length) bad.push('control: the death did not clear the drink');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ P2.buzz=keepBuzz; P2.xp=keepXp; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.10',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(typeof GEARRULES==='undefined'||!GEARRULES.length) return 'SKIP: no controls card rules in this build';
+     var bad=[], row=null;
+     for(var i=0;i<GEARRULES.length;i++) if(GEARRULES[i][0]==='WEAPONS'){ row=GEARRULES[i]; break; }
+     if(!row) return 'SKIP: the card has no WEAPONS rule';
+     var txt=(typeof row[1]==='function')?String(row[1]()):String(row[1]);
+     if(/\bX swaps\b|\bY swaps\b/.test(txt)) bad.push('the WEAPONS rule still teaches a swap key that does not exist: "'+txt+'"');
+     if(!/1 and 2/.test(txt)) bad.push('the WEAPONS rule does not name the belt keys: "'+txt+'"');
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.09',what:'ESC over the open Undercroft backpack closes the backpack instead of raising the pause box, and ESC with it closed still pauses (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__showScreen&&window.__hubEnter)) return 'SKIP: this fixture cannot enter the floor';
+     if(typeof hubBagOpenSet!=='function'||typeof togglePauseBox!=='function') return 'SKIP: no floor backpack or pause box in this build';
+     var bad=[], pb=document.getElementById('pausebox');
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       var t=document.getElementById('title'); if(t) t.classList.remove('on');
+       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
+       hubBagOpenSet(true);
+       if(!hubBagOpen) bad.push('control: the backpack did not open');
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
+       if(hubBagOpen) bad.push('ESC left the backpack open');
+       if(pb&&pb.classList.contains('on')) bad.push('ESC raised the pause box over the open backpack');
+       // CONTROL: with the backpack closed, ESC still pauses.
+       if(hubBagOpen) hubBagOpenSet(false);
+       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
+       if(!(pb&&pb.classList.contains('on'))) bad.push('control: ESC with the backpack closed did not raise the pause box (G='+(!!G)+' over='+((G&&G.over)||'-')+' state='+state+' bag='+hubBagOpen+' pauseOpen='+pauseOpen+' titleUp='+document.getElementById('title').classList.contains('on')+' modal='+(document.querySelector('.modal.on')?document.querySelector('.modal.on').id:'-')+' hubOn='+document.getElementById('hub').classList.contains('on')+' active='+(document.activeElement&&document.activeElement.id)+' keysN='+Object.keys(keys).length+' tpb='+window.__tpbCount+'/'+window.__tpbLast+' err='+window.__tpbErr+')');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ if(pb&&pb.classList.contains('on')) togglePauseBox(false); }catch(_p){} try{ if(hubBagOpen) hubBagOpenSet(false); }catch(_b){} keys={}; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.08',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__state&&window.__endRaid&&window.__P&&window.__showScreen)) return 'SKIP: this fixture cannot drive the lift';
+     if(typeof askKit!=='function') return 'SKIP: no lift question in this build';
+     var bad=[], P2=__P(), keepKit=(P2.kit||[]).slice(), keepHot=P2.hotAssign, keepGun=P2._gunSlot, keepFree=P2.freeKit, keepKBF=P2.kitBeforeFree, keepStash=(P2.stash||[]).slice(), keepChosen=P2.kitChosen;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       G=null; keys={}; __showScreen('hub');
+       P2.stash=['medkit','plate']; P2.kit=['medkit']; P2.hotAssign={4:'medkit'}; P2._gunSlot=null; P2.freeKit=0; P2.kitChosen=0; saveProfile();
+       askKit();
+       if(typeof ASKALT!=='function') bad.push('control: the lift question set no freebie answer');
+       else ASKALT();
+       var g=__state();
+       if(!g||!g.freeKit) bad.push('control: the freebie answer did not start a free-kit raid');
+       var ks=Object.keys(P2.hotAssign||{});
+       if(ks.length) bad.push('the belt plan still holds '+ks.length+' key'+(ks.length===1?'':'s')+' ('+ks.map(function(k){ return k+':'+P2.hotAssign[k]; }).join(',')+') after the freebie kit was taken at the lift');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var m=document.getElementById('askmodal'); if(m) m.classList.remove('on'); }catch(_m){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       P2.kit=keepKit; P2.hotAssign=keepHot||{}; P2._gunSlot=keepGun; P2.freeKit=keepFree; P2.kitBeforeFree=keepKBF; P2.stash=keepStash; P2.kitChosen=keepChosen;
+       try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.07',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
@@ -7674,7 +7759,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ for(k in keep) prof[k]=keep[k]; for(k in prof) if(!(k in keep)) delete prof[k]; var sc=document.getElementById('stashscreen')||document.querySelector('.screen.on'); if(window.__topClear) __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.30',what:'a belt key for a gun still in the backpack names the key that equips it, ENTER, and not TAB alone; a belt key for the gun in hand says nothing of the sort',
+  {v:'11.30',what:'a belt key for a gun still in the backpack brings it up (v11.91) with no TAB-then-ENTER message, and a belt key for the gun in hand says nothing of the sort',
    run:function(){
      if(!(window.__deploy&&window.__loop&&window.__state)) return 'SKIP: this fixture cannot press keys in a raid';
      var bad=[];
@@ -7689,9 +7774,12 @@ window.__REGRESS=[
      press('Digit3','3'); frames(2);
      var m=String(g.msg||'');
      var wrong=['TAB to ','equip it'].join('');
+     // v11.91, HIS ORDER: the key EQUIPS the gun it shows; the v11.30 message
+     // that named ENTER is gone with the detour it described.
      if(m.indexOf(wrong)>=0) bad.push('the belt key still says "'+m+'"');
-     if(m.indexOf('ENTER')<0) bad.push('the belt key does not name ENTER: "'+m+'"');
-     if(m.indexOf('backpack')<0) bad.push('control: the belt key did not produce the backpack message at all: "'+m+'", so key 3 did not reach the pistol');
+     if(m.indexOf('ENTER')>=0) bad.push('the belt key still names ENTER: "'+m+'"');
+     if(!(p.wep&&p.wep.id==='pistol')) bad.push('key 3 did not bring the backpack pistol up (in hand: '+(p.wep&&p.wep.id)+', said "'+m+'")');
+     if(g.bag.indexOf('gun_pistol')>=0) bad.push('the pistol is still in the backpack after key 3');
      // CONTROL: a belt key for the gun in hand prints no such message.
      g.bag=[]; g.hotAssign={}; g.msg=''; frames(1);
      press('Digit1','1'); frames(2);
