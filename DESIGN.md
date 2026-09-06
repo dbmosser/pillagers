@@ -40024,6 +40024,34 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.09 - FIRST TEN MINUTES: BROWSING THE BACKPACK NO LONGER WALKS YOU
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
+
+THE FINDING. With the backpack open in a raid, the arrow keys walk the
+tile grid of the bag (v2.87), and the comment above that code says the
+arrows select instead of walking while the bag is open, so you can sort
+without being rooted. The first line of the key handler sets every key
+into the movement state, and the movement code reads the arrows without
+asking whether the bag is open, so an arrow did both: the selection moved
+and the operator walked. Browsing the bag walked you off the spot you
+stopped on, into whatever was next to it.
+
+THE BUILD. One line: while the backpack is open an arrow is cleared from
+the movement state as soon as it has moved the selection. WASD still walks
+with the bag open, as the comment promised; with the bag closed the arrows
+walk as before.
+
+MEASURED. Check 12.09 deploys, opens the backpack with three items,
+presses an arrow through the real key handler and runs one real player
+update; requires the selection moved, the arrow out of the movement state
+and the operator still. Then closes the backpack, presses the arrow again
+and requires the operator to have walked. On the v12.08 fixture the
+operator walks with the backpack open.
+
+Not verified: a held arrow that keeps repeating, which the handler clears
+on every repeat the same way; the pad, which routes its stick through the
+same movement reads and never through raidKey.
 ## v12.08 - FIRST TEN MINUTES: THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.

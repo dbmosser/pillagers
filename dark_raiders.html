@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.08';
+var VER='12.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='12.08';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.08';
+var WHATSNEW_VER='12.09';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE ARROW KEYS BROWSE THE OPEN BACKPACK WITHOUT WALKING YOU; WASD still walks.',
   'THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL: the press brings your gun up and says so, and it never throws a grenade the cell did not name.',
   'A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING. It no longer gives up on the way to the last place it saw you; standing still does not switch it off.',
   'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
@@ -10654,7 +10655,11 @@ function raidKey(code,repeat,ev){
   // rescues the hub screen.
   if(code==='Backspace'&&!repeat) restoreCursor();
   if(code==='Space'&&G&&!G.over&&!G.paused&&!repeat) tryRoll();
-  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
+  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){
+    G.bagOpen=!G.bagOpen; G.bagSel=0;
+    // v12.09: an arrow still held when the bag opens stops walking too.
+    if(G.bagOpen){ keys['ArrowUp']=false; keys['ArrowDown']=false; keys['ArrowLeft']=false; keys['ArrowRight']=false; }
+  }
   // Bag browsing. The arrows double as movement keys, so while the bag is open
   // they select instead and WASD still walks: you can sort without being rooted.
   // v11.28: the guard tests the STACKS, which is what the arithmetic below
@@ -10662,6 +10667,11 @@ function raidKey(code,repeat,ev){
   // belt key the stack count is zero while the bag is not, so an arrow key
   // took the selection to NaN (x % 0). drawBag clamped it back each frame, so
   // nothing threw, but the selection was lost and Z dropped from index -1.
+  // v12.09: AND THEY DO NOT WALK. keys[code] was set true at the top of this
+  // function for every key, so an arrow both moved the selection and moved the
+  // operator; browsing the bag walked you off the spot you stopped on. Cleared
+  // here for the arrows while the bag is open; WASD still walks, as promised.
+  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length&&code.indexOf('Arrow')===0) keys[code]=false;
   if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
     // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
     // arrows walk the tile grid. Left/right step one tile, up/down step a row
@@ -28638,7 +28648,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.08: from the 2026-09-06 first-ten-minutes audit, an empty throwable cell selected on the belt left the trigger dead, or cooked a different grenade than the cell named. The press selects the gun and says so; the next click fires it. Check 12.08 selects an empty Frag cell with Smoke in the pouch, presses the trigger through the real player update, and requires the gun selected, nothing cooking and the Smoke untouched; fails on v12.07.',
+  now:'v12.09: from the 2026-09-06 first-ten-minutes audit, the arrow keys moved the backpack selection and walked the operator at the same time, against the comment that promised otherwise. The arrows are cleared from the movement state while the backpack is open. Check 12.09 opens the backpack, presses an arrow through raidKey and one real player update, and requires the selection moved and the operator still; fails on v12.08.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

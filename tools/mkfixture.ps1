@@ -5732,6 +5732,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.09',what:'an arrow key with the backpack open moves the selection and does not walk the operator, and still walks with it closed (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof raidKey!=='function'||typeof updatePlayer!=='function') return 'SKIP: no raid keys in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.bag=['bandage','medkit','plate']; g.bagOpen=true; g.bagSel=0; keys={}; mouse.down=false; p.downed=false; p.roll=0;
+       var x0=p.x, y0=p.y;
+       raidKey('ArrowRight',false,null);
+       if(g.bagSel!==1) bad.push('control: the arrow did not move the selection (bagSel '+g.bagSel+')');
+       if(keys['ArrowRight']) bad.push('the arrow is still in the movement state with the backpack open');
+       updatePlayer(0.05);
+       var moved=Math.hypot(p.x-x0,p.y-y0);
+       if(moved>0.01) bad.push('browsing the backpack walked the operator '+moved.toFixed(1)+' units');
+       // CONTROL: with the backpack closed the arrow still walks.
+       keys={}; g.bagOpen=false; x0=p.x; y0=p.y;
+       raidKey('ArrowRight',false,null);
+       if(!keys['ArrowRight']) bad.push('control: the arrow is not in the movement state with the backpack closed');
+       updatePlayer(0.05);
+       if(Math.hypot(p.x-x0,p.y-y0)<0.01) bad.push('control: the arrow with the backpack closed did not walk the operator');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.bagOpen=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.08',what:'the trigger on an empty grenade cell selects the gun and says so, fires nothing on that same hold, and a loaded cell still cooks (2026-09-06 first-ten-minutes audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
