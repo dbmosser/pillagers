@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.83';
+var VER='11.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.83';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.83';
+var WHATSNEW_VER='11.84';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE MERIDIAN LANCE TRAVELS THROUGH CRAWLERS, hitting every one on the line with its full damage.',
   'THE STIM INJECTOR IS TEN SECONDS OF LEGS: unlimited stamina and a fifth more speed while it runs.',
   'HEALING STACKS AGAIN. The next bandage goes on while the prior one is still healing, and a plate goes on while a bandage is being applied. The one-at-a-time refusal and its countdown are gone.',
   'THE KILLED IN ACTION CARD NO LONGER COUNTS THE SEAL-CUTTING LOST WITH YOU. A cut still banks only when you walk out.',
@@ -12256,7 +12257,8 @@ if(wep.mag===0){
     var ang=base+rnd(-spx,spx);
     G.bullets.push({x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
       vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),
-      life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a'});
+      life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
+      thru:(wep.id==='lance')?1:0});   // v11.84, HIS NOTE: the Lance travels through crawlers
   }
   // A burst weapon fires its extra rounds on a short delay, one per 70ms, each
   // rolled for spread on its own. Queued as world state so the burst finishes
@@ -17529,6 +17531,7 @@ function updateBullets(dt){
         if(b.player){
           for(var e2=0;e2<G.ents.length;e2++){
             var en=G.ents[e2];
+            if(b._thru&&b._thru.indexOf(en)>=0) continue;   // v11.84: already passed through this one
             // v6.72, his note: a hired companion takes no friendly fire from you. The
             // round passes through him rather than being stopped, so he cannot be used
             // as cover either.
@@ -17664,13 +17667,19 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                 en.state='alarm'; en.lost=0; en.wind=rnd(3,4);
                 en.markX=p.x; en.markY=p.y;
               }
-              G.tel.hits++;
+              if(!b._hitTold){ b._hitTold=1; G.tel.hits++; }   // v11.84: one hit per round, however many it passes through
               // Hit feedback at the reticle. The sprite flash and spark happen out
               // in the dark at range, so a landed shot could read as a miss.
 G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
               if(en.hp<=0&&dist(en,p)>620) blip('clank',760);
               spark(b.x,b.y,en.kind==='raider'?'#ff5a4a':'#ffc25c',9,220);
-              sfx("hit",en.x,en.y); hit=true; break;
+              sfx("hit",en.x,en.y);
+              // v11.84, HIS NOTE: "meridian lance bullets should travel through
+              // crawlers". The round keeps going after a crawler with its damage
+              // intact and remembers him so he is not hit again next frame;
+              // anything else stops it as before.
+              if(b.thru&&en.kind==='crawler'){ (b._thru||(b._thru=[])).push(en); continue; }
+              hit=true; break;
             }
           }
           // HIS NOTE, 2026-08-24: "you should be able to kill animals". They were
@@ -28382,7 +28391,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.83: HIS SPEC of 2026-09-06, the stim injector gives unlimited stamina and a 1.2x speed boost for 10 seconds; it used to refill the bar once. useStim sets stimT, the clock runs down with the other per-frame timers, the stamina line holds the bar full while it runs, the speed line multiplies by 1.2, the belt path calls the one verb, his baked tooltip wording follows the new sentence, and the ascent check no longer counts a stim as healing. Check 11.83 puts a stim on key 3 and uses it through useHot, sprints from an extraction ring along a clear line and requires the bar still full and the distance covered 1.2x the same sprint without the stim; fails on v11.82.',
+  now:'v11.84: HIS NOTE of 2026-09-06, Meridian Lance rounds travel through crawlers. The round is stamped thru at the muzzle when the weapon is the lance; the hit test damages a crawler and lets the round continue, remembering him so he is not hit again next frame; anything else stops it as before. Check 11.84 stands two crawlers on a clear line, fires the real lance through fireWeapon and steps the real bullet update, requires both to have taken one hit each, and fires a rifle the same way requiring only the first hit; fails on v11.83.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

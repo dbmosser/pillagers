@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.84 - HIS NOTE: THE MERIDIAN LANCE TRAVELS THROUGH CRAWLERS
+
+His note of 2026-09-06, from his third run this morning: "meridian lance
+bullets should travel through crawlers".
+
+WHAT IT WAS. Every round stopped at the first body it met. The Lance is the
+gold rifle, ninety-six damage a shot from a three round magazine with a four
+second reload, and a crawler has a fraction of that; a swarm of them ate one
+round each, which is the one thing a rifle like that should never do.
+
+THE BUILD. A round is stamped at the muzzle when the weapon that fired it is
+the Lance. In the hit test, when such a round meets a crawler it does its
+full damage, the number floats, the spark and the hit sound play, and then
+the round keeps going instead of ending; it remembers the crawler so the
+same body is never hit twice by one round on consecutive frames. Anything
+that is not a crawler, a pillager, a sentry, a Warden, stops it as before,
+and every other weapon is unchanged.
+
+MEASURED. Check 11.84 stands two crawlers on a line proven clear from an
+extraction ring, both facing the shooter so no hit is a back shot, moves
+everything else out of the way, fires the real Lance through fireWeapon
+and steps the real bullet update, and requires both crawlers to have taken
+one hit each and neither more than one; then fires a rifle the same way
+and requires only the first crawler hit. On the v11.83 fixture the Lance
+round stops at the first crawler and the second takes nothing.
+
+Not verified: his own play; whether the round should also pass through
+other machines, which he did not ask for; the Lance's noise and its
+reload, which are unchanged.
 ## v11.83 - HIS SPEC: THE STIM IS TEN SECONDS OF LEGS
 
 His note of 2026-09-06, from his fourth run this morning: "stim injector
