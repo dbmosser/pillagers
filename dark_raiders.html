@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.12';
+var VER='12.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='12.12';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.12';
+var WHATSNEW_VER='12.13';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'TAKING THE FREEBIE KIT AT THE LIFT CLEARS YOUR TACTICAL BELT PLAN, the same as the stash screen button, so no key points at something you left behind.',
   'A DEATH BANKS THE XP ITS CARD PRINTS, drink bonus included; it used to pay the run without the bonus after the drink was cleared.',
   'ESC CLOSES THE OPEN BACKPACK IN THE UNDERCROFT instead of raising the pause box over it.',
   'THE SECOND TIME YOU GO DOWN THE GAME SAYS SO: your one self-revive is spent, so crawl for an extraction or hold SPACE to give up.',
@@ -27492,6 +27493,13 @@ function askKit(){
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
   ASKYES=function(){ P.freeKit=0; saveProfile(); ascendNow(); };
   ASKALT=function(){
+    // v12.13: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
+    // belt plan (a key pointing at something you are not carrying is the v5.72
+    // fault). This one did not, so a friend who took the free kit here landed
+    // with keys bound to items left in the stash and, because an assigned heal
+    // key replaces the derived Medical cell, two Bandages with no key to use.
+    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button will at v12.16 (nothing reads it before then)
+    P.hotAssign={}; P._gunSlot=null;
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
     try{ renderStage(); }catch(_e){}
     ascendNow();
@@ -28667,7 +28675,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.12: from the 2026-09-06 first-ten-minutes audit, a death or an abandon printed the run XP with the drink bonus on the card, cleared the drink, and then banked the run through addXp with no bonus, so the profile got less than the card said. The bonus is taken at the top of the ending and carried on the record into the banking. Check 12.12 dies with two doses in the blood and requires the profile paid exactly what the card printed; fails on v12.11.',
+  now:'v12.13: from the 2026-09-06 first-ten-minutes audit, the lift FREEBIE KIT answer left the tactical belt plan pointing at items in the stash while the stash screen button cleared it, so a free-kit run landed with dead keys and no Medical cell. The lift answer clears the plan now. Check 12.13 takes the free kit at the lift with a key bound to a stash item and requires the plan empty and a free-kit raid started; fails on v12.12.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,32 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.13 - FIRST TEN MINUTES: THE LIFT'S FREEBIE KIT CLEARS THE BELT PLAN
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
+
+THE FINDING. The free kit can be taken in two places: a button on the
+stash screen, and the FREEBIE KIT answer to the lift's question. The stash
+button clears the packed kit and the tactical belt plan, on the v5.72 rule
+that a key pointing at something you are not carrying is a fault. The lift
+answer cleared neither. The kit itself is emptied a moment later by
+commitKit, but the belt plan rode into the raid pointing at items left in
+the stash, and because an assigned heal key replaces the derived Medical
+cell, a friend who took the free kit at the lift landed with two Bandages
+and no working key to use them.
+
+THE BUILD. The lift answer clears the belt plan and the gun slot the same
+way the stash button does. Nothing else changes: the kit is still put
+aside for the return by commitKit, as before.
+
+MEASURED. Check 12.13 enters the floor with a Medkit packed and key 4
+bound to it, asks the lift question, takes the FREEBIE KIT answer through
+the real handler, and requires a free-kit raid started with the belt plan
+empty. On the v12.12 fixture the plan still holds the Medkit key.
+
+Not verified: the plan after a free run, which neither path restores yet
+because commitKit clears the kept-aside copy when it takes kitBeforeFree;
+his own reading of the belt after a free run.
 ## v12.12 - A DEATH BANKS THE XP ITS CARD PRINTS
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.
