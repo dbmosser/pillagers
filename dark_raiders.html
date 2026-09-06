@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.03';
+var VER='12.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12588,19 +12588,27 @@ function applyHeal(key){
 // synthesises a keypress any more: both the key and the slot call this.
 function useMedical(){
   var p=G.player;
-  var idx=findHeal();
-  if(idx<0){ say('No medical supplies'); return false; }
-  // What is already on its way counts as health you have. v11.82, HIS NOTE: a
-  // heal already running no longer refuses the next one, and the countdown
-  // that refusal printed (which was wrong) is gone with it.
-  if(p.hp+(p.healQ||0)>=p.maxhp){
+  // v12.04: THE VERB TELLS THE TRUTH. Three faults in one function. The
+  // full-health test came after the picker, so at full health with a Medkit
+  // in the bag the picker found nothing usable and the verb said No medical
+  // supplies. The sentence for "only Bandages, and you are above their reach"
+  // sat behind idx<0 twelve lines down, which the first line had already
+  // returned on, so with two Bandages at 85 health the verb said No medical
+  // supplies while the belt cell beside it read Medical x2. And the ceiling
+  // tests read health alone: v11.82 let heals stack, so a second Bandage
+  // started above the first one's reach was spent for nothing.
+  // What is already on its way counts as health you have (v11.82, HIS NOTE: a
+  // heal already running no longer refuses the next one).
+  // What the queue can DELIVER, not what was poured in: a running heal stops
+  // at its own ceiling (healCap), so a Medkit over two Bandages that end at
+  // 85 is not refused as Already healing.
+  var _reach=Math.min(p.hp+(p.healQ||0),(p.healCap===undefined?p.maxhp:p.healCap));
+  if(_reach>=p.maxhp){
     say((p.healQ>0)?'Already healing.':'Already at full');
     return false;
   }
-  // v9.62: and the item he is actually about to use. findHeal has already
-  // skipped anything that cannot help, so reaching here with nothing usable
-  // means only capped items are left and he deserves to be told which.
-  if(idx<0||G.player.hp>=healCeil(ITEMS[G.bag[idx]])){
+  var idx=findHeal();   // skips anything that cannot raise him past what is inbound
+  if(idx<0){
     var _anyHeal=false;
     for(var _h=0;_h<G.bag.length;_h++){ var _hi=ITEMS[G.bag[_h]]; if(_hi&&_hi.use==='heal'){ _anyHeal=true; break; } }
     say(_anyHeal?'Only bandages left, and they will not take you past '+
@@ -12766,7 +12774,7 @@ function findHeal(){
     // so with his ceiling in place it would otherwise reach for a Bandage at 90
     // health, find it useless and report that he has no medical supplies while a
     // Medkit sat in the bag.
-    if(G.player&&G.player.hp>=healCeil(it)) continue;
+    if(G.player&&Math.min(G.player.hp+(G.player.healQ||0),(G.player.healCap===undefined?G.player.maxhp:G.player.healCap))>=healCeil(it)) continue;   // v12.04: what is inbound counts, up to what the running heal can deliver
     var amt=it.amt||0,val=ival(G.bag[i]);
     if(amt<bestAmt||(amt===bestAmt&&val<bestVal)){ best=i; bestAmt=amt; bestVal=val; }
   }
@@ -13424,6 +13432,10 @@ function useHot(){
       if(_pp.hp+(_pp.healQ||0)>=_pp.maxhp){
         say((_pp.healQ>0)?'Already healing.':'Already at full'); return;
       }
+      // v12.04: and the item's own ceiling, counting what is inbound. The
+      // generic verb has had this since v9.62; a named Bandage above 85 was
+      // spent for nothing while the toast said it was healing you.
+      if(Math.min(_pp.hp+(_pp.healQ||0),(_pp.healCap===undefined?_pp.maxhp:_pp.healCap))>=healCeil(ait)){ say(ait.name+' will not take you past '+Math.round(healCeil(ait))+'.'); return; }
       if(_pp.prep){ say('Already applying '+(ITEMS[_pp.prep.key]?ITEMS[_pp.prep.key].name:'something')+'.'); return; }
       G.bag.splice(ix,1); startPrep('heal',s2.itemKey); blip('pick');
       say('Applying '+ait.name+'...');
@@ -28585,7 +28597,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.03: from the 2026-09-06 first-ten-minutes audit, dying with the freebie kit deleted the Scav Pistol you own and billed you for it, because the death splice went by gun id and the free pistol is not flagged issued (an extraction keeps it). The splice now asks the slot whether the gun came out of the armoury, and the loaner is neither counted nor priced. Check 12.03 deploys with the free kit on a profile that owns one pistol, dies, and requires the pistol still owned and no gun counted lost; fails on v12.02.',
+  now:'v12.04: from the two 2026-09-06 reviews, the heal verb said No medical supplies with two Bandages at their ceiling (the sentence for that case sat behind a guard that had already returned) and at full health with a Medkit; and since v11.82 let heals stack, the ceiling tests read health alone, so a second Bandage above the reach of the first was spent for nothing, and the named belt slot had no ceiling at all. The full-health test comes first, the picker counts what is inbound, and the belt slot has the ceiling. Check 12.04 drives four cases through the real verb; fails on v12.03.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
