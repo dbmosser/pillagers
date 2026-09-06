@@ -11,46 +11,60 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.52 HOOK: the lot the clock picks right now, so a check can tell a rolled
-# window from the one the card was drawn in.
-SubRx @'
-window.__loadProfile=function(){ return loadProfile(); };
-'@ @'
-window.__loadProfile=function(){ return loadProfile(); };
-window.__wirtLot=function(){ return wirtLotKey(); };
-'@
-
-# v11.52 CHECK, inserted before the v11.51 entry.
+# v11.52 CHECK, inserted before the v11.51 entry. The pane is hidden while the
+# corpus runs, so the frame loop does not fire; saveProfile is the path the
+# check relies on, and it is the path every credit or XP change already takes.
 SubRx @'
   {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
 '@ @'
-  {v:'11.52',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
+  {v:'11.52',what:'credits and XP are shown at all times in the upper right corner, in the Undercroft and in a raid, above the screens and clear of the CONDITIONS box, and the readout follows the profile when a figure changes',
    run:function(){
-     if(!(window.__wirtLot&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open Wirt';
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var P=window.__P(), bad=[], realNow=Date.now;
-     P.credits=999999; P.stash=[];
-     var st=null; try{ st=window.__station('gamble','KeyE'); }catch(e){ st={err:String(e)}; }
-     if(st&&st.err) return 'SKIP: '+st.err;
-     var shown=window.__wirtLot();
-     if(!(shown&&shown.length)) return 'SKIP: the counter is empty';
-     var btn=document.getElementById('wirtlotbtn');
-     if(!btn) return 'SKIP: no Buy button on the counter';
-     // THE WINDOW ROLLS between the card and the click: move the clock forward
-     // one window, or two, or three, until the lot differs from the shown one.
-     var base=realNow(), next=null, rolled=0;
-     for(var r=1;r<=3&&!next;r++){ Date.now=function(){ return base+r*300000; }; var cand=window.__wirtLot(); if(cand&&cand.length&&cand[0]!==shown[0]){ next=cand; rolled=r; } }
-     if(!next){ Date.now=realNow; return 'SKIP: the next three windows hold the same lot, so a roll cannot be told apart'; }
-     Date.now=function(){ return base+rolled*300000; };
-     try{ btn.click(); }catch(e2){}
-     Date.now=realNow;
-     var got=(P.stash||[]).length?P.stash[P.stash.length-1]:null;
-     // THE FIX: he receives what the card NAMED AND PRICED.
-     if(got!==shown[0]) bad.push('after the window rolled, Buy delivered '+got+' instead of the shown '+shown[0]);
-     // CONTROL: he was charged, so a buy went through and the comparison is real.
-     if(!(P.credits<999999)) bad.push('control: no credits were taken, so nothing was bought and the comparison proves nothing');
-     try{ var gm=document.getElementById('gamblemodal'); if(gm) gm.classList.remove('on'); }catch(e3){}
-     __cleanProfile(); __topClear();
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__P&&window.__hubEnter)) return 'SKIP: this fixture cannot deploy and read the screen';
+     var el=document.getElementById('topright');
+     if(!el) return 'there is no credits and XP readout in the upper right corner';
+     var bad=[], prof, keepC, keepX;
+     function rect(){ var r=el.getBoundingClientRect(); return {l:r.left,t:r.top,r:r.right,b:r.bottom,w:r.width,h:r.height}; }
+     function shown(where){
+       var cs=getComputedStyle(el), r=rect();
+       if(cs.display==='none'||cs.visibility==='hidden'||parseFloat(cs.opacity)===0) bad.push(where+': the readout is hidden');
+       if(!(r.w>40&&r.h>10)) bad.push(where+': the readout has no size ('+Math.round(r.w)+'x'+Math.round(r.h)+')');
+       if(!(r.r<=innerWidth+1&&r.r>=innerWidth-48)) bad.push(where+': the readout is not at the right edge (right '+Math.round(r.r)+' of '+innerWidth+')');
+       if(!(r.t>=0&&r.t<=40)) bad.push(where+': the readout is not at the top (top '+Math.round(r.t)+')');
+       var t=(el.textContent||'').replace(/\s+/g,' ');
+       var c=(prof.credits||0).toLocaleString(), x=(prof.xp||0).toLocaleString();
+       if(t.indexOf(c)<0) bad.push(where+': the readout does not show the credits '+c+' ("'+t+'")');
+       if(t.indexOf(x)<0) bad.push(where+': the readout does not show the XP '+x+' ("'+t+'")');
+       if(!/CREDITS/i.test(t)||!/\bXP\b/.test(t)) bad.push(where+': the readout does not say which figure is which ("'+t+'")');
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       prof=__P(); keepC=prof.credits; keepX=prof.xp;
+       // DISTINCTIVE figures no fresh profile carries.
+       prof.credits=4471337; prof.xp=98761; saveProfile();
+       try{ __hubEnter(); }catch(_h){}
+       shown('in the Undercroft');
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __frame(); __frame();
+       prof=__P(); prof.credits=4471337; prof.xp=98761; saveProfile();
+       shown('in a raid');
+       // CLEAR OF THE CONDITIONS BOX, in screen space: that box is drawn zoomed
+       // about the top right corner, so its top in pixels is y times its zoom.
+       var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
+       if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
+       else {
+         var cz=1; try{ cz=(HUDZ.cond||1)*hudRes()*hudUserZ('cond'); }catch(_z){ cz=1; }
+         var condTop=HB.y*cz;
+         if(r.b>condTop+1) bad.push('in a raid the readout reaches down to '+Math.round(r.b)+' while the CONDITIONS box starts at '+Math.round(condTop)+', so the two overlap');
+       }
+       // IT FOLLOWS A CHANGE.
+       prof.credits=1234567; saveProfile();
+       var t2=(el.textContent||'').replace(/\s+/g,' ');
+       if(t2.indexOf((1234567).toLocaleString())<0) bad.push('after the credits changed the readout still says "'+t2+'"');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var pf=__P(); pf.credits=keepC; pf.xp=keepX; saveProfile(); }catch(_r){}
+       __topClear(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
 '@

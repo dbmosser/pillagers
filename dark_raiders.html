@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.50';
+var VER='11.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.50';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.50';
+var WHATSNEW_VER='11.51';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE SECTOR PAGE NAMES THE RIGHT MAP AGAIN. The line of facts under each map could end with the other map name, because the two lines share a digit shape and the reworded text was matched by shape. Each map keeps its own line now.',
   'PACKING AT THE STASH WITH YOUR BACKPACK OPEN NO LONGER GETS UNDONE. If you opened your backpack on the Undercroft floor, then walked to THE STASH and packed your loadout there, closing the backpack afterwards put back the old loadout over the new one. The backpack now closes itself when the stash opens.',
   'CLICKING ON YOUR OPEN BACKPACK NO LONGER FIRES YOUR GUN. With the backpack open, a click on the panel itself (the equipped line, the stats, the space between tiles) used to reach the trigger. The panel now catches its own clicks, like every other panel.',
   'A GUN YOU EQUIP FROM THE STASH MENU NO LONGER VANISHES. Right-clicking a looted gun in the stash and picking the equip line used to remove it from the stash and then fail before it reached your armoury, so the gun was simply gone. It now lands in your armoury and is equipped.',
@@ -2063,6 +2064,9 @@ var TXPSHIP={}, TXPSHIPANY=0;
 (function(){
   for(var _tk in TXSHIP){
     if(!TXSHIP.hasOwnProperty(_tk)) continue;
+    // v11.51: the sector-facts lines stay exact-only. Both maps draw the same
+    // digit shape, so matched by shape one map printed the other map's name.
+    if(_tk.indexOf('test robot extracts')>=0) continue;
     var _tn=''+TXSHIP[_tk], _ts=txSplit(_tk);
     if(_ts.nums.length&&txShapeOk(_ts.pat)){
       var _ti=0;
@@ -28108,7 +28112,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.50: closing the Undercroft backpack overwrote loadout edits made at the terminal. Opening it snapshots P.kit and P.hotAssign and closing commits the copy back, by design; but hubModalOpen ignores hubBagOpen, so with the bag open the floor still runs, E at THE STASH opens the terminal, which edits P.kit and P.hotAssign directly, and ESC then wrote the stale snapshot over the lot. The terminal act now commits and closes the open backpack before it draws. From the v11.46 audit, P0.',
+  now:'v11.51: my v11.42 bake named the wrong map on the sector page. His two sector-facts lines end in Cold Storage and in The Cold Mile and share one digit shape, so the pattern derivation keyed both to one shape, the second overwrote the first, and TX matched any sector line of that shape by digits: one map printed the other map name. The two lines are exact-only now, skipped by the derivation. From the v11.46 audit, P1, mine.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

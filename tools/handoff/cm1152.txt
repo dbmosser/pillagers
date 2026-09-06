@@ -1,12 +1,12 @@
-v11.52: Wirt's Limited Time Offer sold whatever the clock said at click time
+v11.52: his note, credits and XP in the upper right at all times
 
-The counter lot is picked by the clock in five-minute windows and drawn on a
-card that names and prices it before he pays; the Buy button recomputed
-wirtLotKey() at click time and the card never redraws on the boundary, so a
-click after the roll took the money and pushed a lot he was never shown. Buy
-now sells the lot the card was drawn from. Check 11.52 opens Wirt through the
-real station act, moves the clock forward a window so a roll has happened,
-presses the real Buy, and requires the stash to receive the shown lot with
-credits taken as the control; fails on v11.51. From the v11.46 audit, P1.
+His note of 2026-09-05: credits and XP shown at all times in the upper right,
+in raids and in the Undercroft. One fixed element now sits in that corner
+above every screen and window, written from saveProfile and the frame loop
+only when a figure changes, in the band above the raid's CONDITIONS box. The
+stash screen retires its own credits figure and keeps its top row clear of
+the corner. Check 11.52 reads the element in the Undercroft and in a raid,
+requires position, size, both figures and labels, clearance from the
+CONDITIONS box, and a changed figure shown; fails on v11.51.
 
-Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

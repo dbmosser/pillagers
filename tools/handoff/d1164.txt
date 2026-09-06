@@ -1,0 +1,25 @@
+## v11.64 - A NOTE TYPED IN THE PAUSE BOX ON THE FLOOR RODE INTO THE NEXT RAID
+
+From the v11.46 read-only audit, P2. The pause box opens on the floor since
+v8.70, with the same feedback field a raid has. The buttons that read that
+field attach a note only when a raid is running, and on the floor nothing
+read it and nothing cleared it; only the way to the character screen threw
+it away. So a note typed in the Undercroft sat in the box, invisible, and
+appeared as a raid note the first time he paused his next raid, stamped with
+that raid's clock, as if he had written it there.
+
+THE FIX. Closing the box on the floor banks the note to the profile (twenty
+kept), clears the box, and says so: "Noted. It goes out with your next run
+report." Every report prints them near the top under FLOOR NOTES, each with
+the run it followed and the time. The character-screen button no longer
+discards the note; the close banks it first.
+
+MEASURED. Check 11.64 stands on the floor with no raid, opens the box, types a
+distinctive note, closes it, and requires the note banked, the box empty, and
+the report carrying it under FLOOR NOTES; a control closes an empty box and
+requires nothing more banked. On the v11.63 fixture nothing is banked and the
+words are still in the box, and the check fails naming both.
+
+Not verified: his own play; the ESC close, which calls the same close and is
+not keyed here; the note reaching the collector (the report is built, not
+sent, inside the check).

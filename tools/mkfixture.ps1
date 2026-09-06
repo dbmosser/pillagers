@@ -5440,6 +5440,25 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
+   run:function(){
+     if(!(window.__tx&&__tx.get&&__tx.ship)) return 'SKIP: this build has no text engine to drive';
+     var ship=__tx.ship(), keys=[], k;
+     for(k in ship) if(k.indexOf('test robot extracts')>=0) keys.push(k);
+     if(keys.length<2) return 'SKIP: the baked map holds '+keys.length+' sector-facts lines, not both';
+     var bad=[];
+     for(var i=0;i<keys.length;i++){
+       var key=keys[i];
+       // The exact line still maps to his wording.
+       if(__tx.get(key)!==ship[key]) bad.push('the exact sector line no longer maps to his wording');
+       // A line with other figures, as the game draws it for another player or
+       // another day, must pass through untouched.
+       var mut=key.replace(/\d+/, function(d){ return String((+d)+7); });
+       if(mut===key) continue;
+       var got=__tx.get(mut);
+       if(got!==mut) bad.push('a sector line with other figures was rewritten by digit shape into "...'+String(got).slice(-34)+'", so one map can print the other map name');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.50',what:'opening THE STASH with the Undercroft backpack open commits and closes the backpack first, so what you pack at the terminal is not overwritten by the stale backpack snapshot when it closes',
    run:function(){
      if(!(window.__hubBagSet&&window.__hubBagLive&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open the Undercroft backpack and the terminal';

@@ -13,41 +13,54 @@ function SubRx([string]$old, [string]$new) {
 
 # v11.57 CHECK, inserted before the v11.56 entry.
 SubRx @'
-  {v:'11.56',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
+  {v:'11.56',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
 '@ @'
-  {v:'11.57',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
+  {v:'11.57',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
    run:function(){
-     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
-     if(typeof restoreCode!=='function'||typeof restoreRead!=='function'||typeof restoreApply!=='function') return 'SKIP: this build has no restore code';
-     var bad=[], prof;
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&document.getElementById('tagwrap')&&document.getElementById('oc_copy')&&document.getElementById('oc_btn'))) return 'SKIP: this fixture cannot end a raid and press the card';
+     // Force the SYNCHRONOUS copy path, as check 11.32 does, so Copy report has
+     // committed by the time click() returns.
+     var desc; try{ desc=Object.getOwnPropertyDescriptor(navigator,'clipboard'); }catch(_d){ desc=null; }
+     var redefined=false;
+     try{ Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true}); redefined=(navigator.clipboard===undefined); }catch(_e){ redefined=false; }
+     if(!redefined) return 'SKIP: navigator.clipboard cannot be hidden here, so Copy report cannot be pressed synchronously';
+     var bad=[], origExec=document.execCommand, prof, keepAE, lateNote='ZQX late note 4471';
      try{
-       __topClear(); __cleanProfile(); prof=__P();
-       // DISTINCTIVE: three guns no fresh profile owns, the marksman rifle in hand,
-       // the magnum second, and worn figures nothing rolls.
-       prof.weapons=['dmr','magnum','sniper']; prof.equipped='dmr'; prof.equippedSec='magnum'; prof.wear={dmr:137,magnum:41};
-       var code=restoreCode();
-       if(!code) bad.push('no restore code was made');
-       var o=code?restoreRead(code):null;
-       if(code&&!o) bad.push('the code cannot be read back');
-       else if(o&&!o.g) bad.push('the code carries no armoury: three owned guns, the one in hand and their wear are not in it, while the card promises what you have unlocked');
-       else if(o){
-         // Wipe to a fresh armoury, then apply the code.
-         prof.weapons=['pistol']; prof.equipped='pistol'; prof.equippedSec='none'; prof.wear={};
-         var ok=restoreApply(o);
-         if(!ok) bad.push('control: the code was refused');
-         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('the guns came back as '+((prof.weapons||[]).join(',')||'nothing')+' and not dmr,magnum,sniper');
-         if(prof.equipped!=='dmr') bad.push('the gun in hand came back as '+prof.equipped+' and not dmr');
-         if((prof.equippedSec||'none')!=='magnum') bad.push('the second slot came back as '+(prof.equippedSec||'none')+' and not magnum');
-         if(((prof.wear||{}).dmr|0)!==137) bad.push('the wear on the marksman rifle came back as '+((prof.wear||{}).dmr|0)+' and not 137');
-         // CONTROL: a gun the build does not know is dropped, not restored.
-         o.g.w.push('zqxgun'); restoreApply(o);
-         if((prof.weapons||[]).indexOf('zqxgun')>=0) bad.push('control: a gun this build does not have was restored into the armoury');
-         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('control: after the unknown gun the armoury reads '+(prof.weapons||[]).join(','));
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       prof=__P(); keepAE=prof.autoExport; prof.autoExport=false;   // a check must not start a download
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0;
+       __endRaid('extract');
+       document.execCommand=function(){ return true; };
+       var n0=(prof.log||[]).length;
+       document.getElementById('oc_copy').click();   // logs the run, with no tags yet
+       var log=prof.log||[], rec=log[log.length-1];
+       if(log.length!==n0+1||!rec) bad.push('control: Copy report did not log the run ('+(log.length-n0)+' rows added)');
+       else {
+         if((rec.tags||[]).length) bad.push('control: the row Copy wrote already carries tags '+rec.tags.join(', ')+', so a late tag proves nothing');
+         var cells=document.getElementById('tagwrap').querySelectorAll('.tag');
+         if(cells.length<2) bad.push('control: the card drew '+cells.length+' tag buttons');
+         else {
+           var lateTag=String(cells[1].textContent);
+           cells[1].click();                                   // chosen AFTER Copy report
+           document.getElementById('oc_note').value=lateNote;  // typed AFTER Copy report
+           document.getElementById('oc_btn').click();          // Log run and return
+           var log2=prof.log||[], rec2=log2[log2.length-1];
+           if(log2.length!==n0+1) bad.push('control: Log run and return added '+(log2.length-n0-1)+' extra row(s), so the run was logged twice');
+           var got=(rec2&&rec2.tags||[]).map(function(x){ return String(x).toUpperCase(); }).join(' | ');
+           if(got.indexOf(lateTag.toUpperCase())<0) bad.push('the tag '+lateTag+' chosen after Copy report did not reach the run (tags: '+(got||'none')+')');
+           if(((rec2&&rec2.note)||'')!==lateNote) bad.push('the note typed after Copy report did not reach the run (note: "'+((rec2&&rec2.note)||'')+'")');
+         }
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ __cleanProfile(); }
+     finally{
+       document.execCommand=origExec;
+       try{ if(desc) Object.defineProperty(navigator,'clipboard',desc); }catch(_r){}
+       try{ if(prof) prof.autoExport=keepAE; }catch(_a){}
+       __topClear(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.56',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
+  {v:'11.56',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

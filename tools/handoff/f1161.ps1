@@ -11,34 +11,42 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.61 CHECK, inserted before the v11.59 entry.
+# v11.61 CHECK, inserted before the v11.60 entry. The drop handler is reached
+# the way the real mouseup reaches it: the zone's __grabDrop, with the belt
+# cell as the source. The stale phrase is assembled so the check never matches
+# its own text.
 SubRx @'
-  {v:'11.59',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
+  {v:'11.60',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
 '@ @'
-  {v:'11.61',what:'with Other pillagers set to None the extraction-heat row still reads its own word rather than CUSTOM, the waves are off, and they come back when pillagers return to Standard',
+  {v:'11.61',what:'dropping a tactical belt item on the stash says it went to the stash, and it did: it left the backpack and its belt key',
    run:function(){
-     if(!window.__P||typeof applyGameOpts!=='function'||typeof gameOptLive!=='function'||typeof gameOptIx!=='function') return 'SKIP: no settings rows in this build';
-     var bad=[], prof=__P(), keepGO=JSON.stringify(prof.gameOpts===undefined?null:prof.gameOpts), keepT=JSON.stringify(prof.tuned||{}), keepRW=CFG.raiderWaves, keepNR=CFG.nRaider;
+     if(!(window.__P&&window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot walk the Undercroft';
+     if(typeof say2!=='function') return 'SKIP: no say2 in this build';
+     var zone=document.getElementById('stashgrid');
+     if(!zone) return 'SKIP: no stash grid in this document';
+     var bad=[], prof, got=[], _s2=say2, stale=['back in the ','backpack'].join('');
      try{
-       prof.gameOpts={}; prof.tuned={};
-       prof.gameOpts.raiders=3;              // None
-       applyGameOpts();
-       if(CFG.raiderWaves!==0) bad.push('control: with pillagers None the waves are still on ('+CFG.raiderWaves+')');
-       var lv=gameOptLive('ext');
-       if(lv<0) bad.push('with pillagers None the extraction-heat row reads CUSTOM, no option matching the live dials, though nothing about the ring was changed');
-       else if(lv!==gameOptIx('ext')) bad.push('the extraction-heat row reads option '+lv+' and not the chosen '+gameOptIx('ext'));
-       if(gameOptLive('raiders')!==3) bad.push('control: the pillagers row does not read None after being set to it ('+gameOptLive('raiders')+')');
-       prof.gameOpts.raiders=1;              // back to Standard
-       applyGameOpts();
-       if(CFG.raiderWaves!==1) bad.push('control: with pillagers back on Standard the waves did not return ('+CFG.raiderWaves+')');
-       if(gameOptLive('raiders')!==1) bad.push('control: the pillagers row does not read Standard after being set to it ('+gameOptLive('raiders')+')');
-       if(gameOptLive('ext')<0) bad.push('control: the extraction-heat row reads CUSTOM with pillagers on Standard');
+       __topClear(); __cleanProfile(); prof=__P();
+       try{ __hubEnter(); __station('stash'); }catch(_h){}
+       try{ renderHub(); }catch(_r){}
+       if(typeof zone.__grabDrop!=='function') return 'SKIP: the stash grid is not a drop zone here (no __grabDrop), so the drop cannot be driven';
+       // A medkit in the backpack, on belt key 1.
+       prof.kit=['medkit']; prof.hotAssign={0:'medkit'}; prof.stash=[];
+       say2=function(t){ got.push(String(t)); };
+       zone.__grabDrop('medkit','plan:0');
+       say2=_s2;
+       var line=got.join(' | ');
+       // CONTROL: the item really left the backpack and its key, or the words are not about this drop.
+       if((prof.kit||[]).indexOf('medkit')>=0) bad.push('control: the medkit is still in the backpack after the drop');
+       if(prof.hotAssign&&prof.hotAssign[0]!==undefined) bad.push('control: the belt key still holds the medkit after the drop');
+       if(!got.length) bad.push('control: the drop said nothing at all');
+       // THE FIX: the line names where it went.
+       if(line.indexOf(stale)>=0) bad.push('the drop said "'+line+'" while taking the item out of the backpack');
+       if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{
-       try{ var go=JSON.parse(keepGO); if(go===null) delete prof.gameOpts; else prof.gameOpts=go; prof.tuned=JSON.parse(keepT); applyGameOpts(); CFG.raiderWaves=keepRW; CFG.nRaider=keepNR; saveProfile(); }catch(_r){}
-     }
+     finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.59',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
+  {v:'11.60',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

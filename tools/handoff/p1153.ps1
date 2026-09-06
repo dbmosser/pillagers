@@ -11,32 +11,16 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# A MERC WHO BOARDED AN EARLIER SHIP WAS NEVER PAID. endRaid settles the merc's
-# ten percent by looking for his ROSTER row (v8.46: "the roster remembers the
-# man and what he carried out"), and the boarding code stamps out and val onto
-# the roster row whose ref is the boarding entity. But only ordinary raiders
-# were ever pushed to the roster; the hired merc went to ents alone. So when he
-# fled low and boarded before you, no row was there to stamp or to find, and the
-# card said "was left out there": no cut, no standing. He gets a row now, and
-# the pillager board skips it so your hire is not listed as a rival.
+# WIRT'S LIMITED TIME OFFER SOLD WHATEVER THE CLOCK SAID AT CLICK TIME. The card
+# is drawn from wirtLotKey(), which the clock picks in five-minute windows, and
+# it is named and priced before he pays: that is the whole point of it (v9.11).
+# But the Buy button recomputed wirtLotKey() at click time, and the card never
+# redraws on the window boundary, so a click after the roll took the money and
+# pushed a different lot to the stash. It sells the lot it showed him.
 SubRx @'
-      M2.merc=1; M2.hostile=false; M2.grudge=false; M2.friendly=1;
-      ents.push(M2);
+      var lot2=wirtLotKey();
 '@ @'
-      M2.merc=1; M2.hostile=false; M2.grudge=false; M2.friendly=1;
-      ents.push(M2);
-      // v11.53: a roster row, so boarding stamps his haul and endRaid can pay
-      // his cut when he went up before you. The board skips merc rows.
-      roster.push({ref:M2,name:M2.name,crew:M2.crew,val:0,out:false,merc:1});
-'@
-
-SubRx @'
-  for(i=0;i<R.length;i++){
-    var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
-'@ @'
-  for(i=0;i<R.length;i++){
-    var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
-    if(r.merc||(e&&e.merc)) continue;   // v11.53: your hire is not a rival on the board
+      var lot2=lot;   // v11.53: the lot that was NAMED AND PRICED on the card, not the clock at click time
 '@
 
 # STAMPS.
@@ -54,11 +38,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and boarded an earlier ship, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
+  'WIRT SELLS YOU THE THING ON THE COUNTER. If the Limited Time Offer rolled over while you were reading it, Buy used to take your money and hand you the next offer instead. You get the one that was named and priced when you clicked.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.52:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.51:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.52 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.52:[^']*'",{ param($m) "now:'v11.53: a merc who boarded an earlier ship was never paid. endRaid settles his cut by finding his roster row and boarding stamps out and val onto that row, but only ordinary raiders were pushed to the roster; the hired merc went to ents alone, so no row was stamped or found and the card said left out there. He gets a roster row at spawn now and the pillager board skips merc rows. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.51:[^']*'",{ param($m) "now:'v11.53: Wirt Limited Time Offer sold whatever the clock said at click time. The card is drawn from wirtLotKey, which the clock picks in five-minute windows, and the Buy button recomputed wirtLotKey at click time while the card never redraws on the boundary, so a click after the roll took the money and pushed a different lot. Buy now sells the lot the card showed. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

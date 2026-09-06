@@ -1,23 +1,28 @@
-## v11.62 - [+] ON A COLLAPSED PILLAGER BOARD STARTED AN INVISIBLE RESIZE
+## v11.62 - WITH PILLAGERS OFF, THE EXTRACTION-HEAT ROW READ CUSTOM
 
-From the v11.46 read-only audit, P2. A HUD panel folds to one line with its
-[-] glyph, which becomes [+]. The resize grip (v8.93) is tested first on
-mousedown because it is the smallest target on the panel; the cursor code and
-the grip draw both skip collapsed panels, and mousedown did not. A collapsed
-CURRENT PILLAGERS board is shorter than the grip zone, so the grip covered the
-whole [+] glyph: the pointer promised a click, the click began a resize nobody
-could see, and the board never expanded. mouseup ended the resize, the board
-stayed folded, and the glyph looked dead.
+From the v11.46 read-only audit, P2. Two settings rows disagreed about who
+owns one dial. Other pillagers: None turns the pillager waves off (v8.42,
+because the wave loop treated an empty map as urgent and kept delivering
+four pillagers), and applyGameOpts gives the pillager row the last word on
+that (v8.74, his order: None means none). But the extraction-heat row's Heavy
+and Standard still carried raiderWaves:1, so with the waves off neither of
+them matched the live dials and the row showed CUSTOM in amber, with the
+tuning-console hint, for a setting he had never touched. The v8.74 comment on
+that row already says it describes the RING only.
 
-THE FIX. mousedown skips the grip on a collapsed panel, the same rule the
-cursor and the grip draw already follow, so the [+] click reaches the toggle.
+THE FIX. The waves belong to the pillager row, on every option: Many, Standard
+and Few write them on, None writes them off. The heat row carries siegeVol
+alone. Every combination of choices lands on the same dial values it did
+before, with one exception that is itself a fix: choosing None and then going
+back to Standard with the heat on Light used to leave the waves off, because
+nothing wrote them back; the pillager row writes them now.
 
-MEASURED. Check 11.62 deploys, folds the pillager board, draws two frames so
-the folded box is measured, confirms the glyph centre sits inside the grip
-zone (or skips, since the clash cannot be driven), presses at the glyph
-centre, and requires no resize started and the board unfolded. On the v11.61
-fixture the press starts a resize of the board and it stays folded, and the
-check fails naming both.
+MEASURED. Check 11.62 sets pillagers to None, applies, and requires the waves
+off (control) and the heat row reading its own word rather than CUSTOM; then
+sets pillagers back to Standard and requires the waves back on and both rows
+reading Standard. On the v11.61 fixture the heat row reads CUSTOM with
+pillagers off and the check fails saying so. The dials this build writes are
+the same numbers as before; nothing in a raid changes.
 
-Not verified: his own play; the other four panels, which follow the same
-line of code and are not folded and pressed here.
+Not verified: his own play; the None-then-Standard-with-Light case in a
+played raid (measured on the dials, not on a spawned map).

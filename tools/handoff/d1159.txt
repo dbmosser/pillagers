@@ -1,23 +1,24 @@
-## v11.59 - THE NOTORIETY BANNER SAID THE PEDDLER WAS DONE WITH YOU
+## v11.59 - THE RESTORE CODE WAS BLANK FOR ANY NAME ABOVE U+00FF
 
-From the v11.46 read-only audit, P2. His ruling at v8.28 was that the Peddler
-always trades regardless of notoriety; the stall stopped shutting then, the
-hub card's words were renamed then ("Barred" went, because nothing is barred),
-and pedOpen has answered true ever since. The banner that fires on the surface
-when the score reaches two was not renamed. It said "The Peddler is done with
-you." over a stall that would trade with him the moment he walked up to it.
+From the v11.46 read-only audit, P1. The restore code is the character as
+JSON, run through the browser's base64 encoder, which takes Latin-1 only. A
+name with an emoji, a CJK character or a curly quote made that encoder throw;
+the catch around it returned an empty string, and the run report carried a
+blank restore code for exactly the friend most likely to have typed such a
+name. The name box accepts any sixteen characters and says nothing.
 
-THE FIX. The banner names what notoriety actually costs, at every score:
-hiring costs more and pillagers are slower to trust you, and at two or more,
-that word has got round. The stale comment beside it, which said two is where
-the stall shuts, says what is true now.
+THE FIX. The JSON is encoded as UTF-8 before base64, so every name makes a
+code. The reader tries the UTF-8 read first and falls back to the plain read
+when the bytes are not UTF-8, so every code written before this build still
+reads as it did.
 
-MEASURED. Check 11.59 reads the banner at one, two and three, confirms the
-stall is open, and requires that neither the two nor the three line claims the
-Peddler is done and that both name the hiring cost; a control requires the
-one line to name it too. On the v11.58 fixture the two line claims the stall
-is shut and the check fails quoting it.
+MEASURED. Check 11.59 names the character with a curly apostrophe and an
+emoji, built from code points so the check file stays ASCII, makes a code,
+and requires the code to exist and to read back the same name. Two controls:
+a code written the old way, plain base64 of ASCII JSON, still reads; and a
+plain ASCII name still round-trips. On the v11.58 fixture the fancy name
+makes no code and the check fails saying so.
 
-Not verified: his own play; whether hiring really costs more at two than at
-one (the banner says "more", the same claim it has made since v8.27, and this
-build does not change what hiring costs).
+Not verified: his own play; a Latin-1 name from an older code whose bytes
+happen to form valid UTF-8, which would read differently (two accented
+characters in a row in exactly the right order; not a name anyone has used).

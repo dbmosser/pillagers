@@ -1,12 +1,12 @@
-v11.58: the restore code was blank for any name above U+00FF
+v11.58: the restore code left the armoury behind
 
-The base64 encoder takes Latin-1 only, so an emoji, a CJK character or a curly
-quote in the name made it throw and the run report carried an empty restore
-code, for exactly the friend most likely to have typed one. The JSON is
-encoded as UTF-8 before base64 now, and the reader tries the UTF-8 read first
-and falls back to the plain read so every older code still reads. Check 11.58
-names the character with a curly apostrophe and an emoji and requires a code
-that reads back the same name, with old-code and plain-name controls; fails
-on v11.57. From the v11.46 audit, P1.
+The restore code at the bottom of every run report promised what you have
+unlocked and carried no gun: not the guns owned, the one in hand, the second
+slot, or the wear on any of them. Restored from it, a friend came back with
+the fresh Scav Pistol. The code carries the armoury now; applying it brings
+the guns back, drops any this build does not know, and an older code without
+the block leaves the guns as they are. Check 11.58 makes a code from three
+distinctive guns with slots and wear, wipes, applies and requires them back,
+with an unknown-gun control; fails on v11.57. From the v11.46 audit, P1.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

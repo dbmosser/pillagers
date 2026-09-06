@@ -1,9 +1,10 @@
-v11.60: dropping a belt item on the stash said back in the backpack
+v11.60: the notoriety banner said the Peddler was done with you
 
-The drop takes the item off its belt key and out of the backpack and it lands
-in the stash; the line named the backpack it had just left. It names the stash
-now. Check 11.60 drives the stash grid's drop handler with a belt cell as the
-source, controls that the item left the backpack and its key, and requires the
-line to name the stash; fails on v11.59. From the v11.46 audit, P2.
+The stall has not shut since his v8.28 ruling that the Peddler always trades,
+and the hub card was renamed then; the in-raid banner at two notoriety still
+said the Peddler was done with you. It names what notoriety actually costs
+now, at every score. Check 11.60 confirms the stall is open and requires the
+two and three lines to name the cost and make no claim about the stall; fails
+on v11.59. From the v11.46 audit, P2.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

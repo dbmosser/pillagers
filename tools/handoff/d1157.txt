@@ -1,31 +1,31 @@
-## v11.57 - THE RESTORE CODE LEFT THE ARMOURY BEHIND
+## v11.57 - TAGS AND A NOTE CHOSEN AFTER COPY REPORT WERE DROPPED
 
-From the v11.46 read-only audit, P1. Since v11.03 every run report ends with
-a restore code, a short pasteable line that carries the character so a friend
-who loses a save can be given one back. The card promises "what you have
-unlocked" and the panel that applies it says REPLACES. The maker carried the
-credits, the XP, the runs, the stash, the cosmetics, the junk tags and the
-chosen sector, and not one gun: not the guns owned, not the one in hand, not
-the second slot, not the wear on any of them. A friend restored from his own
-code came back with the fresh profile's Scav Pistol and nothing else, having
-been told he was getting everything.
+From the v11.46 read-only audit, P1. Since v10.65 there is one commit for the
+end-of-raid card, so Copy report and Log run and return cannot disagree about
+whether the raid was logged and neither can log it twice. Copy report commits
+FIRST, so the report he pastes holds the raid he just played, and the commit
+nulls the pending run. That is where the words went missing: anything he
+tagged or typed after pressing Copy, and then confirmed with Log run and
+return, met the early return for an already-committed run and was thrown
+away. The row kept the tags it had at Copy time, usually none, and the note
+never existed. The comment on the commit promised the late tags would be
+"patched onto the already written row"; nothing did that.
 
-THE FIX. The code carries the armoury: the guns owned, the one in hand, the
-second slot, and the rounds worn through each, which is what condition is
-made of. Applying it brings them back. A gun this build does not know is
-dropped, the same rule the stash already follows, and the slots fall back to
-fists and none if they name a gun that was dropped. An older code without the
-block leaves the guns as they are rather than stripping them. The line that
-says what a code holds before it is applied now counts the guns too.
+THE FIX. The committed row is remembered for the life of the card. A later
+commit, finding nothing pending, compares the tags and the note on the card
+with the row and, if they differ, writes them onto it, saves, and sends the
+report again so the collector's copy carries them too. The exactly-once rule
+stands: the row is patched, never re-added, and the XP is not paid twice
+because the record itself is the guard.
 
-MEASURED. Check 11.57 gives the profile three guns no fresh profile owns, the
-marksman rifle in hand, the magnum second, and worn figures nothing rolls;
-makes a code, wipes the armoury back to a Scav Pistol, applies the code, and
-requires all four things back exactly. A control pushes a gun that does not
-exist into the code and requires it dropped with the rest intact. On the
-v11.56 fixture the code carries no armoury and the check fails saying so.
+MEASURED. Check 11.57 ends a raid as an extract, forces the synchronous copy
+path as check 11.32 does, presses Copy report, controls that exactly one row
+was logged with no tags, then chooses a tag and types a note and presses Log
+run and return. It requires that tag and that note on the logged row and that
+the log still has exactly one new row. On the v11.56 fixture the tag and the
+note are missing from the row and the check fails naming both.
 
-Not verified: his own play; a code from a build before v11.57 applied on this
-one (the guns are left alone by construction, not driven here); any gun field
-beyond ownership, slots and wear, such as a per-gun quality roll, if one
-exists in the profile.
+Not verified: his own play; the collector actually receiving the re-sent
+report (autoExport is switched off inside the check so no download starts);
+the Recorder pane's text, which still holds the Copy-time report until the
+next Copy.

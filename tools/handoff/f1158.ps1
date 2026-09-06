@@ -11,38 +11,43 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.58 CHECK, inserted before the v11.57 entry. The fancy name is built from
-# code points so this file stays ASCII.
+# v11.58 CHECK, inserted before the v11.57 entry.
 SubRx @'
-  {v:'11.57',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
+  {v:'11.57',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
 '@ @'
-  {v:'11.58',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
+  {v:'11.58',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
    run:function(){
      if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
-     if(typeof restoreCode!=='function'||typeof restoreRead!=='function') return 'SKIP: this build has no restore code';
-     var bad=[], prof=__P(), keepN=prof.pname;
+     if(typeof restoreCode!=='function'||typeof restoreRead!=='function'||typeof restoreApply!=='function') return 'SKIP: this build has no restore code';
+     var bad=[], prof;
      try{
-       var fancy='ZQX'+String.fromCharCode(0x2019)+'S '+String.fromCharCode(0xD83D,0xDD25);
-       prof.pname=fancy;
+       __topClear(); __cleanProfile(); prof=__P();
+       // DISTINCTIVE: three guns no fresh profile owns, the marksman rifle in hand,
+       // the magnum second, and worn figures nothing rolls.
+       prof.weapons=['dmr','magnum','sniper']; prof.equipped='dmr'; prof.equippedSec='magnum'; prof.wear={dmr:137,magnum:41};
        var code=restoreCode();
-       if(!code) bad.push('a name with a curly quote and an emoji produced no restore code at all, so the friend it belongs to cannot be restored');
-       else {
-         var o=restoreRead(code);
-         if(!o) bad.push('the code for that name cannot be read back');
-         else if(o.n!==fancy) bad.push('the name came back as '+JSON.stringify(o.n)+' and not '+JSON.stringify(fancy));
+       if(!code) bad.push('no restore code was made');
+       var o=code?restoreRead(code):null;
+       if(code&&!o) bad.push('the code cannot be read back');
+       else if(o&&!o.g) bad.push('the code carries no armoury: three owned guns, the one in hand and their wear are not in it, while the card promises what you have unlocked');
+       else if(o){
+         // Wipe to a fresh armoury, then apply the code.
+         prof.weapons=['pistol']; prof.equipped='pistol'; prof.equippedSec='none'; prof.wear={};
+         var ok=restoreApply(o);
+         if(!ok) bad.push('control: the code was refused');
+         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('the guns came back as '+((prof.weapons||[]).join(',')||'nothing')+' and not dmr,magnum,sniper');
+         if(prof.equipped!=='dmr') bad.push('the gun in hand came back as '+prof.equipped+' and not dmr');
+         if((prof.equippedSec||'none')!=='magnum') bad.push('the second slot came back as '+(prof.equippedSec||'none')+' and not magnum');
+         if(((prof.wear||{}).dmr|0)!==137) bad.push('the wear on the marksman rifle came back as '+((prof.wear||{}).dmr|0)+' and not 137');
+         // CONTROL: a gun the build does not know is dropped, not restored.
+         o.g.w.push('zqxgun'); restoreApply(o);
+         if((prof.weapons||[]).indexOf('zqxgun')>=0) bad.push('control: a gun this build does not have was restored into the armoury');
+         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('control: after the unknown gun the armoury reads '+(prof.weapons||[]).join(','));
        }
-       // CONTROL: a code written the old way, plain btoa of ASCII JSON, still reads.
-       var old='PIL1'+btoa(JSON.stringify({v:1,n:'OLDCODE',c:4471,x:1})).replace(/=+$/,'');
-       var o2=restoreRead(old);
-       if(!o2||o2.n!=='OLDCODE'||o2.c!==4471) bad.push('control: a code written before this build no longer reads ('+(o2?JSON.stringify(o2.n):'null')+')');
-       // CONTROL: the plain-ASCII case is unchanged.
-       prof.pname='PLAINNAME';
-       var o3=restoreRead(restoreCode());
-       if(!o3||o3.n!=='PLAINNAME') bad.push('control: a plain name no longer round-trips ('+(o3?JSON.stringify(o3.n):'null')+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ prof.pname=keepN; try{ saveProfile(); }catch(_s){} }
+     finally{ __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.57',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
+  {v:'11.57',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
