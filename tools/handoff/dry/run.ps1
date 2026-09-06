@@ -31,16 +31,18 @@ SubRx @'
        if(!b) return 'SKIP: no building large enough to stand in';
        for(i=g.ents.length-1;i>=0;i--) g.ents.splice(i,1);   // only the Howler shoots in this room
        p.x=b.x+b.w/2; p.y=b.y+b.h/2; p.downed=false;
-       var e=mkHowler(b.x-260,b.y+b.h/2); e.cd=0; e.alert=3; e.tx=p.x; e.ty=p.y; e.rng=2000; e.hearT=0; e.state='patrol'; g.ents.push(e);
+       var e=mkHowler(b.x-260,b.y+b.h/2); e.cd=0; e.alert=3; e.tx=p.x; e.ty=p.y; e.rng=2000; e.hearT=0; e.state='chase'; g.ents.push(e);
        if(buildingAtPt(g.map,e.x,e.y)) return 'SKIP: the Howler could not be placed outside';
        var n0=g.shells.filter(function(s){ return s.mortar; }).length;
        __ents(0.1);
        var n1=g.shells.filter(function(s){ return s.mortar; }).length;
        if(n1>n0) bad.push('the Howler outside shelled the player under a roof ('+(n1-n0)+' shell'+((n1-n0)===1?'':'s')+')');
        // CONTROL: the same Howler shells the same player in the open.
-       p.x=e.x+300; p.y=e.y; e.cd=0; e.alert=3; e.tx=p.x; e.ty=p.y;
-       if(buildingAtPt(g.map,p.x,p.y)) bad.push('control: the open spot is under a roof');
+       var _spot=null, _rr, _aa;
+       for(_rr=300;_rr<=600&&!_spot;_rr+=150) for(_aa=0;_aa<8&&!_spot;_aa++){ var _sx=e.x+Math.cos(_aa*0.785)*_rr, _sy=e.y+Math.sin(_aa*0.785)*_rr; if(_sx>60&&_sy>60&&_sx<WORLD_W-60&&_sy<WORLD_H-60&&!buildingAtPt(g.map,_sx,_sy)) _spot={x:_sx,y:_sy}; }
+       if(!_spot) bad.push('control: no open spot beside the Howler');
        else {
+         p.x=_spot.x; p.y=_spot.y; e.cd=0; e.alert=3; e.state='chase'; e.tx=p.x; e.ty=p.y;
          __ents(0.1);
          var n2=g.shells.filter(function(s){ return s.mortar; }).length;
          if(n2<=n1) bad.push('control: the Howler did not shell the player in the open');

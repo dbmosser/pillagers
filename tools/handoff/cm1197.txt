@@ -1,10 +1,11 @@
 v11.97: his notes, the tactical belt drags with the backpack closed
 
-A raid belt drag drew no ghost, the gun in a hand cell dragged only with
-the backpack open and dropped only on its panel, and a key holding a gun
-could not be picked up. The item rides the cursor, a hand gun released
-anywhere off the belt goes into the backpack open or closed, and a gun key
-drags like any key. Check 11.97 drives the real canvas press and release;
-fails on v11.96.
+The gun in a hand cell dragged only with the backpack open and dropped
+only on its panel, so closed the drag never started, and a key holding a
+gun could not be picked up in the raid or on the floor. The hand cell
+drags open or closed with a press point so a click stays a click, a real
+drag off the belt bags the gun, a drop on another cell is refused in words,
+and a gun key drags like any key in both places. Check 11.97 drives the
+real canvas press and release; fails on v11.96.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

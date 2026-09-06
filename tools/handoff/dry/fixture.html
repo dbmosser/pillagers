@@ -10676,7 +10676,11 @@ function raidKey(code,repeat,ev){
   // rescues the hub screen.
   if(code==='Backspace'&&!repeat) restoreCursor();
   if(code==='Space'&&G&&!G.over&&!G.paused&&!repeat) tryRoll();
-  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
+  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){
+    G.bagOpen=!G.bagOpen; G.bagSel=0;
+    // v12.18: an arrow still held when the bag opens stops walking too.
+    if(G.bagOpen){ keys['ArrowUp']=false; keys['ArrowDown']=false; keys['ArrowLeft']=false; keys['ArrowRight']=false; }
+  }
   // Bag browsing. The arrows double as movement keys, so while the bag is open
   // they select instead and WASD still walks: you can sort without being rooted.
   // v11.28: the guard tests the STACKS, which is what the arithmetic below
@@ -10688,7 +10692,7 @@ function raidKey(code,repeat,ev){
   // function for every key, so an arrow both moved the selection and moved the
   // operator; browsing the bag walked you off the spot you stopped on. Cleared
   // here for the arrows while the bag is open; WASD still walks, as promised.
-  if(G&&G.bagOpen&&code.indexOf('Arrow')===0) keys[code]=false;
+  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length&&code.indexOf('Arrow')===0) keys[code]=false;
   if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
     // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
     // arrows walk the tile grid. Left/right step one tile, up/down step a row
@@ -12233,8 +12237,8 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     // F answers Self-revive spent, so a toast that sent him to F was a lie the
     // HUD contradicted in the same frame. He can still crawl for an extraction,
     // or hold SPACE to give up where that is switched on.
-    say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold SPACE to give up.'))
-                 :'DOWN. F to get back up. You get one per raid.');   // v11.94, HIS NOTE: per raid
+    say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold '+keyLabel('Space','SPACE')+' to give up.'))
+                 :'DOWN. '+keyLabel('KeyF','F')+' to get back up. You get one per raid.');   // v11.94, HIS NOTE: per raid
   }
 }
 // DESTRUCTIBLE ENVIRONMENT, v2.83. His note: "environment should be
@@ -14615,7 +14619,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // own rule the press selects the gun; the next click fires it, never this
       // one, which is the automatic-weapon safety that rule was written for.
       if(!p.cooking&&!p.fired&&!((HSC.count|0)>0)){
-        p.fired=true; setHot(0);
+        p.fired=true; setHot(0); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded
         if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
       }
       else if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
@@ -14635,7 +14639,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       }
     }
   }
-  else if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
+  else if(mouse.down&&!p.trigYield&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v12.17: not on the hold that yielded to the gun
     var _mw=p.wep;
     if(_mw.mag===0){
       if(_mw.auto||!p.fired){ p.lastShot=now; p.fired=true;
@@ -14682,6 +14686,7 @@ if(!p.fired||p.wep.auto){
     }
   }
   if(!mouse.down){
+    p.trigYield=0;   // v12.17: the latch lives for one hold
     // Let go of a cooked grenade and it goes. Done before p.fired clears so a
     // release can never be read as a fresh press on the same frame.
     if(p.cooking){
@@ -24713,7 +24718,8 @@ var LEGEND_PAD=[
 var GEARRULES=[
   // v12.15: there is no X (or pad Y) swap; the belt is the swap. Pressing the
   // key of the stowed gun brings it up (setHot, the v8.67 rule).
-  ['WEAPONS','Belt keys 1 and 2 bring up either gun.'],
+  ['WEAPONS','Keys 1 and 2 bring up'],
+  ['','either gun.'],
   // v8.51, audit: this said a better gun equips itself only "if you switch it on
   // in Settings". autoEquipOn returns the dial for the BOT and true for a human,
   // deliberately, and Settings has no such row - so the card described a switch
@@ -27495,6 +27501,7 @@ function askKit(){
     // fault). This one did not, so a friend who took the free kit here landed
     // with keys bound to items left in the stash and, because an assigned heal
     // key replaces the derived Medical cell, two Bandages with no key to use.
+    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button does (v12.06)
     P.hotAssign={}; P._gunSlot=null;
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
     try{ renderStage(); }catch(_e){}
@@ -39663,7 +39670,7 @@ window.__REGRESS=[
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.bagOpen=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.17',what:'the trigger on an empty grenade cell selects the gun and says so instead of going dead or cooking a grenade the cell did not name (2026-09-06 first-ten-minutes audit)',
+  {v:'12.17',what:'the trigger on an empty grenade cell selects the gun and says so, fires nothing on that same hold, and a loaded cell still cooks (2026-09-06 first-ten-minutes audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof updatePlayer!=='function'||typeof hotbarSlots!=='function'||typeof setHot!=='function') return 'SKIP: no belt or player update in this build';
@@ -39680,11 +39687,20 @@ window.__REGRESS=[
        if(hotSel()!==fi) return 'SKIP: the empty Frag cell could not be selected (selected '+hotSel()+')';
        p.downed=false; p.cooking=0; p.fired=false; mouse.down=true; window.__lastSay=null;
        updatePlayer(0.016);
-       mouse.down=false;
        if(hotSel()!==0) bad.push('the press on the empty Frag cell left cell '+hotSel()+' selected instead of the gun');
+       // TWO: the same hold, two more frames: the gun it raised must not fire.
+       var _sh0=g.tel.shots||0, _am0=p.ammo;
+       updatePlayer(0.016); updatePlayer(0.016);
+       if((g.tel.shots||0)!==_sh0||p.ammo!==_am0) bad.push('the hold that yielded to the gun fired it on the same hold ('+((g.tel.shots||0)-_sh0)+' shots, ammo '+_am0+' to '+p.ammo+')');
+       mouse.down=false; updatePlayer(0.016);
        if(p.cooking) bad.push('the press cooked a '+p.cookKind+' the cell did not name');
        if(g.pouch.smoke!==2) bad.push('the press spent a Smoke from an empty Frag cell (smoke now '+g.pouch.smoke+')');
        if(!/Nothing in that cell/.test(String(window.__lastSay||''))) bad.push('the press did not say the cell is empty (said "'+String(window.__lastSay||'')+'")');
+       // THREE, CONTROL: a loaded Frag cell still cooks on the press and keeps the selection.
+       g.pouch.frag=2; setHot(fi); p.fired=false; p.cooking=0; p.trigYield=0; mouse.down=true; updatePlayer(0.016);
+       if(!p.cooking||p.cookKind!=='frag') bad.push('control: a loaded Frag cell did not cook on the press (cooking '+p.cooking+', kind '+p.cookKind+')');
+       if(hotSel()!==fi) bad.push('control: a loaded Frag cell lost the selection');
+       mouse.down=false; updatePlayer(0.016);
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ try{ mouse.down=false; var g2=__state(); if(g2&&!g2.over){ g2.player.cooking=0; g2.player.fired=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -39710,6 +39726,9 @@ window.__REGRESS=[
          var shown=parseInt(m[1].replace(/,/g,''),10), banked=(P2.xp||0)-xp0;
          if(!(shown>0)) bad.push('control: the card printed no XP gain');
          if(banked!==shown) bad.push('the card says +'+shown+' XP and the profile was paid '+banked);
+         var rec=(P2.log||[]).slice(-1)[0];
+         if(!(rec&&rec.doseMul>1)) bad.push('control: the banked record carries no dose multiplier, so nothing was multiplied');
+         else if(shown!==Math.round(rec.xpBase*rec.doseMul)) bad.push('the card printed +'+shown+' against a base of '+rec.xpBase+' times '+rec.doseMul);
        }
        if((P2.buzz||[]).length) bad.push('control: the death did not clear the drink');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -39752,7 +39771,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__P&&window.__showScreen)) return 'SKIP: this fixture cannot drive the lift';
      if(typeof askKit!=='function') return 'SKIP: no lift question in this build';
-     var bad=[], P2=__P(), keepKit=(P2.kit||[]).slice(), keepHot=P2.hotAssign, keepGun=P2._gunSlot, keepFree=P2.freeKit, keepKBF=P2.kitBeforeFree, keepStash=(P2.stash||[]).slice(), keepChosen=P2.kitChosen;
+     var bad=[], P2=__P(), keepKit=(P2.kit||[]).slice(), keepHot=P2.hotAssign, keepGun=P2._gunSlot, keepFree=P2.freeKit, keepKBF=P2.kitBeforeFree, keepStash=(P2.stash||[]).slice(), keepChosen=P2.kitChosen, keepEq=P2.equipped, keepSec=P2.equippedSec, keepW=(P2.weapons||[]).slice(), keepKS=P2.kitSaved;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        G=null; keys={}; __showScreen('hub');
@@ -39768,7 +39787,7 @@ window.__REGRESS=[
      finally{
        try{ var m=document.getElementById('askmodal'); if(m) m.classList.remove('on'); }catch(_m){}
        try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
-       P2.kit=keepKit; P2.hotAssign=keepHot||{}; P2._gunSlot=keepGun; P2.freeKit=keepFree; P2.kitBeforeFree=keepKBF; P2.stash=keepStash; P2.kitChosen=keepChosen;
+       P2.kit=keepKit; P2.hotAssign=keepHot||{}; P2._gunSlot=keepGun; P2.freeKit=keepFree; P2.kitBeforeFree=keepKBF; P2.stash=keepStash; P2.kitChosen=keepChosen; P2.equipped=keepEq; P2.equippedSec=keepSec; P2.weapons=keepW; P2.kitSaved=keepKS;
        try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},

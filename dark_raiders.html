@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.95';
+var VER='11.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.95';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.95';
+var WHATSNEW_VER='11.96';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A BELT KEY TAKES HALF THE STACK: put a stack on a key and half of it comes with you, and the key shows how many; the right-click menu still packs an exact number.',
   'GUNS DRAG LIKE ANY OTHER ITEM. Drag a gun off the rack onto a tactical belt key or into the backpack and it comes with you; a gun on the figure takes the key and stays in your hands.',
   'FOUR LINES SAY WHAT THEY MEAN: the Crier names itself when its alarm goes out, the Pillbox says destroyed when it dies, the self-revive is one per raid, and a search picked up again says Search resumed.',
   'ENTER IN THE NAME BOX SETS YOUR NAME, and so does the start button: what you typed is what you are called.',
@@ -28529,7 +28530,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.95: HIS ORDER of 2026-09-06, guns must move around like any other inventory item; the armoury rack cells were not draggable (v8.20b) because an owned gun had no stash item behind it. They drag now: a drop on a belt key or the backpack moves the gun out of the armoury into the stash as its item form, packs it and binds the key; a figure gun takes the key alone. Check 11.95 drops the SMG rack cell on key 4 and the figure pistol on key 6 through the real drop handlers; fails on v11.94.',
+  now:'v11.96: HIS ORDER of 2026-09-06, a belt key should take half the stash stack unless he sets a quantity, and the belt showed no count. planPut packs half the stack (rounded up) when nothing of it is packed yet, and the plan cell shows how many are coming. Check 11.96 puts a stack of six Bandages on key 3 and requires three packed and x3 on the cell, a single item packs one; fails on v11.95.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29885,9 +29886,13 @@ function planPut(slot,key){
   if(!held) return 'That is not in your stash any more.';
   var picked=0; for(var j=0;j<live.length;j++) if(live[j]===key) picked++;
   // Only claim another inventory slot if this item is not already coming.
+  // v11.96, HIS ORDER: half the stack, not one. A key on a stack of six
+  // Bandages packs three; a stack of one packs one; a count he set himself
+  // through the menu is left as it is.
   if(picked<1){
     if(live.length>=DEPLOY_SLOTS) return 'Backpack is full at '+DEPLOY_SLOTS+', so there is no room to carry that.';
-    P.kit.push(key);
+    var _half=Math.max(1,Math.ceil(held/2));
+    for(var _hq=0;_hq<_half&&live.length+_hq<DEPLOY_SLOTS;_hq++) P.kit.push(key);
   }
   P.hotAssign=P.hotAssign||{};
   // One key per item: moving it clears wherever it was.
@@ -29923,6 +29928,9 @@ function hotPlanHTML(where){
       'background:rgba(0,0,0,.3);position:relative">'+
       (it?iconImgHTML(k,22):'<span style="color:var(--ash);font-size:10.5px">'+(i+1)+'</span>')+
       (it?'<span style="position:absolute;right:2px;bottom:0;font-size:10.5px;color:var(--ash)">'+(i+1)+'</span>':'')+
+      // v11.96, HIS ORDER: how many are coming, on the cell, so a key on a stack
+      // reads as a stack. One is silent; the key number already says it is set.
+      ((it&&packedCount(k)>1)?'<span style="position:absolute;left:2px;top:0;font-size:10.5px;color:var(--amber)">x'+packedCount(k)+'</span>':'')+
       '</div>';
   }
   h+='</div>';

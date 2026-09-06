@@ -5,28 +5,32 @@ work in raid"; "i want to be able to drag items even without inventory
 open"; "i have an smg on my hotbar and i can't even move it to the
 backpack".
 
-THREE FAULTS. A belt drag in a raid drew nothing but a highlight on the
-cell under the cursor: no ghost, so with the backpack closed it looked
-like nothing had happened, though the drop worked. The gun in a hand cell
-(keys 1 and 2) could be picked up only with the backpack open (v11.90) and
-dropped only on the backpack panel, so with it closed there was nowhere to
-put it. And a belt key holding a gun, which v11.91 made a working key,
-could not be picked up at all, because the press branch excluded every
+TWO FAULTS. The gun in a hand cell (keys 1 and 2) could be picked up only
+with the backpack open (v11.90) and dropped only on the backpack panel, so
+with the backpack closed the drag never started at all: the cursor ghost
+that has followed every drag since v9.32 had nothing to draw, and the
+gesture looked dead. And a belt key holding a gun, which v11.91 made a
+working key, could not be picked up at all, in the raid or on the
+Undercroft floor, because both copies of the press branch excluded every
 cell of kind gun rather than only the two hand cells.
 
-THE BUILD. The dragged item rides the cursor, open or closed. The hand
-cell drags whether the backpack is open or not, and a release anywhere off
-the belt puts the gun into the backpack; a release on its own cell is
-still a click. A key holding a gun drags to another key or off the belt
-like any other key.
+THE BUILD. The hand cell drags whether the backpack is open or not. The
+press remembers where it began: a release within a few pixels of it is the
+click it always was and only selects; a real drag released anywhere off
+the belt puts the gun into the backpack; a release on another belt cell is
+refused in words, because a silent drop reads as a missing feature. A key
+holding a gun drags to another key or off the belt like any other key, in
+the raid and on the floor.
 
-MEASURED. Check 11.97 deploys with the backpack closed, presses the hand
-cell through the real canvas press, releases well off the belt and
+MEASURED. Check 11.97 deploys with the backpack closed, clicks the hand
+cell through the real canvas press and release on the spot and requires
+the gun still in hand; presses it again and releases well off the belt and
 requires the gun in the backpack and out of the hand; then puts a pistol
 on key 4, presses it and releases on key 6 through the same path and
-requires the pistol on key 6. On the v11.96 fixture the hand cell starts
-no drag with the backpack closed and the pistol key starts none at all.
+requires the pistol on key 6. The profile fields the extraction rewrites
+are put back. On the v11.96 fixture the hand cell starts no drag with the
+backpack closed and the pistol key starts none at all.
 
-Not verified: the ghost itself, which the check does not draw; a release
-over the open backpack panel, which lands off the belt and bags the gun as
-v11.90 did; his own hand on it at 4K.
+Not verified: the floor copy of the gun-key drag, which the check does not
+stage; a release over the open backpack panel, which lands off the belt
+and bags the gun as v11.90 did; his own hand on it at 4K.
