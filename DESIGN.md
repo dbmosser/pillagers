@@ -40024,6 +40024,29 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.81 - HIS ORDER: THE KIA CARD NO LONGER COUNTS THE CUTTING LOST WITH YOU
+
+His note of 2026-09-06, from the run report of his third run this morning:
+"KIA screen '40 seconds of cutting, lost with you.' -- I have no idea what
+the fuck that means, just remove it."
+
+WHAT IT WAS. The seal on a map is cut by standing at it, and the cut banks
+only if you walk out; a death is thirty seconds of nothing, which is the
+seal's whole point, and since the seal shipped the KILLED IN ACTION card has
+said so in one rust-coloured line. He read it cold, with no idea what had
+been cut or why, and the line explained nothing. It is removed. The rule it
+described stands: a death still banks no cut, and an extraction still banks
+every second.
+
+MEASURED. Check 11.81 deploys, stages a cut of forty seconds, ends the raid
+by death and requires the card not to carry the phrase; then deploys again
+with the same cut, ends the raid by extraction and requires the banked line
+still on the card, so the seal path is proven live in the staging and the
+absence on the death card is the fix and not a dead branch. On the v11.80
+fixture the death card carries the line and the check says so.
+
+Not verified: whether he wants the seal explained somewhere else instead,
+which nothing in his note asks for; the seal itself, which is unchanged.
 ## v11.80 - HIS NOTE: A HUM ON THE FLOOR AFTER COMPLETING A RUN
 
 His note of 2026-09-06: "strange humming sound in undercroft after completing

@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.80';
+var VER='11.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.80';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.80';
+var WHATSNEW_VER='11.81';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE KILLED IN ACTION CARD NO LONGER COUNTS THE SEAL-CUTTING LOST WITH YOU. A cut still banks only when you walk out.',
   'THE HUM AFTER AN EXTRACTION IS GONE. The frame that ended the raid was writing the raid ambience back up after it had been cut, and the level held on the floor.',
   'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
   'THE CREDITS AND XP READOUT IN THE CORNER IS TWICE THE SIZE, on the floor and in a raid. The CONDITIONS box starts below it.',
@@ -18395,10 +18396,10 @@ silentExit:T.silentExit||0,
           ' of '+needE+' seconds. Banked.</span>');
       }
       saveProfile();
-    } else {
-      lines.push('<span style="color:var(--rust)">'+Math.round(G.seal.gained)+
-        ' seconds of cutting, lost with you.</span>');
     }
+    // v11.81, HIS ORDER: the KIA card no longer says how much cutting died
+    // with him; it meant nothing to him. The cut still does not bank on a
+    // death, which is the seal's whole point; the card just does not say so.
   }
   if(how==='extract'){
     P.ext++;
@@ -28342,7 +28343,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.80: HIS NOTE of 2026-09-06, a strange hum on the Undercroft floor after completing a run. The extraction hold calls endRaid from inside updatePlayer; endRaid cuts the ambient bed (v10.85) but the frame is already inside the raid block and runs on to tickAmbience with alive = not downed, true after an extraction, so the bed was written back up to its 0.16 floor in the same frame and held there once the raid was dropped. A death ends the raid from the death-beat branch, which never reaches the bed drive, so only extractions hummed. Over an ended raid the bed is driven to silence and the 0.12 s cut is written again last, since two automations at one time resolve to the later one. Check 11.80 wraps tickAmbience and ends the raid from inside a wrapped updatePlayer, exactly where the hold does, and requires every target written from that frame on to be 0, with the bed proven driven above 0 before it; fails on v11.79.',
+  now:'v11.81: HIS ORDER of 2026-09-06, the KIA card line about seconds of cutting lost with you is removed; it meant nothing to him. The seal still banks only on an extraction. Check 11.81 stages a cut of 40 seconds, ends a raid by death and requires the phrase absent from the card, and ends one by extraction and requires the banked line still present as the control; fails on v11.80.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

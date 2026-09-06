@@ -2,15 +2,15 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v11.79 (4498041). The tree has **v11.80 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v11.80 (57467d5). The tree has **v11.81 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "seed".
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1180 cm1180.txt
+    bash tools/handoff/ship.sh commit 1181 cm1181.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1180 1181
-and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
-CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
+    bash tools/handoff/ship.sh start 1181 1182
+and carry on down the list. Cron 6f3e4f3f is armed every minute (the earlier job 35be6fe2 never fired once in three hours: an armed cron is not a running cron); re-arm if
+CronList shows nothing, and END EVERY TURN WITH ScheduleWakeup (the /loop prompt, 90 to 300 s) so a silent cron cannot stop the work; he read two bare waits as stops today. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
 each turned one unrelated check red). If one unrelated check goes red, re-run it
 alone and straight after the new check; a bare profile left by a check is the
