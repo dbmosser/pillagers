@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.98';
+var VER='11.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.98';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.98';
+var WHATSNEW_VER='11.99';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE RIGHT-CLICK MENU IN THE STASH IS DRAWN AT THE SIZE OF THE SCREEN IT OPENS OVER, at 4K and at every text size.',
   'A HOLD YOU STARTED BEFORE THE EXTRACTION WINDOW SHUT FINISHES: keep holding E and the ship waits for you; let go and it is gone.',
   'THE TACTICAL BELT DRAGS WITH THE BACKPACK CLOSED: a gun in your hands dragged off the belt goes into the backpack, and a key holding a gun moves to another key like anything else, in a raid and on the floor.',
   'A BELT KEY TAKES HALF THE STACK: put a stack on a key and half of it comes with you, and the key shows how many; the right-click menu still packs an exact number.',
@@ -28546,7 +28547,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.98: HIS ORDER of 2026-09-06, a hold started before the boarding window shut must still extract. The window held at its last instant while a pull is in progress inside the ring; releasing E shuts it as before. Check 11.98 opens the window with half a second left, starts a pull, steps past zero with E held and requires the raid to end EXTRACTED; and calls the ship from the edge of the ring (70 of 78) to show a call works anywhere inside; fails on v11.97.',
+  now:'v11.99: HIS NOTE of 2026-09-06, the stash right-click menu was far too small at 4K: it is appended to the body, outside everything applyMenuZoom scales. The item menu and the gun menu take the same zoom as the windows now, with the click point scaled to match. Check 11.99 opens the item menu at 3840x2160 and requires the zoom of the windows and a menu on screen; fails on v11.98.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29710,9 +29711,16 @@ function openItemMenu(x,y,key,ctx,count){
     m.appendChild(row);
   });
   document.body.appendChild(m);
+  // v11.99, HIS NOTE: the menu is outside every element applyMenuZoom scales,
+  // so at 4K it was a 1080p menu under a 4K stash. Same factor as the windows;
+  // zoom scales the fixed offsets too, so the click point is divided by it.
+  var _mz=Math.max(1,(P&&P.menuZoom)||1)*titleRes();
+  var _hubEl=document.getElementById('hub');   // the stash runs at 0.92 of the window factor (v9.67); the menu matches the surface it opens over
+  if(_hubEl&&_hubEl.classList.contains('on')&&parseFloat(_hubEl.style.zoom)>0) _mz=parseFloat(_hubEl.style.zoom);
+  m.style.zoom=_mz; x=x/_mz; y=y/_mz;
   var w=m.offsetWidth,h=m.offsetHeight;
-  m.style.left=Math.max(4,Math.min(x,window.innerWidth-w-8))+'px';
-  m.style.top=Math.max(4,Math.min(y,window.innerHeight-h-8))+'px';
+  m.style.left=Math.max(4,Math.min(x,window.innerWidth/_mz-w-8))+'px';
+  m.style.top=Math.max(4,Math.min(y,window.innerHeight/_mz-h-8))+'px';
   IMENU=m;
 }
 // Closing. Anywhere outside, Escape, or the next right-click.
@@ -29772,9 +29780,16 @@ function openGunMenu(x,y,gk){
   row((W.dmg*(W.pellets||1))+' damage a shot', Math.round(W.rng/10)+'m', true, function(){});
   row((W.auto?'Automatic':'Semi automatic'), W.mag+' round magazine', true, function(){});
   document.body.appendChild(m);
+  // v11.99, HIS NOTE: the menu is outside every element applyMenuZoom scales,
+  // so at 4K it was a 1080p menu under a 4K stash. Same factor as the windows;
+  // zoom scales the fixed offsets too, so the click point is divided by it.
+  var _mz=Math.max(1,(P&&P.menuZoom)||1)*titleRes();
+  var _hubEl=document.getElementById('hub');   // the stash runs at 0.92 of the window factor (v9.67); the menu matches the surface it opens over
+  if(_hubEl&&_hubEl.classList.contains('on')&&parseFloat(_hubEl.style.zoom)>0) _mz=parseFloat(_hubEl.style.zoom);
+  m.style.zoom=_mz; x=x/_mz; y=y/_mz;
   var w=m.offsetWidth,h=m.offsetHeight;
-  m.style.left=Math.max(4,Math.min(x,window.innerWidth-w-8))+'px';
-  m.style.top=Math.max(4,Math.min(y,window.innerHeight-h-8))+'px';
+  m.style.left=Math.max(4,Math.min(x,window.innerWidth/_mz-w-8))+'px';
+  m.style.top=Math.max(4,Math.min(y,window.innerHeight/_mz-h-8))+'px';
   IMENU=m;
 }
 // Wired onto every cell in the game, wherever the cell was built.

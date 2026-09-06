@@ -40024,6 +40024,32 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.99 - HIS NOTE: THE RIGHT-CLICK MENU IS THE SIZE OF THE STASH
+
+His message of 2026-09-06, about 14:05: "right click menu in stash is
+wayyy too small -- you know i'm playing at 4k right??"
+
+THE FINDING. applyMenuZoom scales every window, the pause box, the
+outcome card and the station panel by the menu zoom times the screen
+factor, which at 4K is 1.3 times 2. The item menu and the gun menu are
+built on demand and appended to the body, outside all of those, so they
+drew at 1.0: a 1080p-sized menu under a stash drawn at 2.6, on the one
+screen where he reads and drags the most.
+
+THE BUILD. Both menus take the same factor through the CSS zoom the
+windows use. Zoom scales a fixed element's offsets as well as its
+contents, so the click point and the screen clamp are divided by the
+factor and the menu still opens under the cursor and stays on the screen.
+
+MEASURED. Check 11.99 enters the floor, puts the pane at 3840x2160, opens
+the item menu on a stash Bandage through the real opener and requires its
+zoom to equal the windows' zoom, its width at least ninety percent of the
+zoomed minimum, and its box wholly on screen; then puts the pane back at
+1920x1080. On the v11.98 fixture the menu has no zoom.
+
+Not verified: by his eye at 4K; the menu near the right or bottom edge,
+where the clamp now works in zoomed units and is exercised only by the
+opener's own arithmetic.
 ## v11.98 - HIS ORDERS: A HOLD STARTED BEFORE THE WINDOW SHUT FINISHES, AND E WORKS ANYWHERE IN THE RING
 
 His messages of 2026-09-06: "should be able to activate the extract or

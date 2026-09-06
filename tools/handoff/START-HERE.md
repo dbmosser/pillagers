@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v11.97 (d6f983a). The tree has **v11.98 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v11.98 (ea53eb5). The tree has **v11.99 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-2" (the tab named seed hung on 2026-09-06 12:40 and was closed).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1198 cm1198.txt
+    bash tools/handoff/ship.sh commit 1199 cm1199.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1198 1199
+    bash tools/handoff/ship.sh start 1199 1200
 and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -26,7 +26,7 @@ usual cause (see memory dark-raiders-loader-replaces-the-profile).
 - **1202 A PAUSE NOTE SURVIVES ESC** (was 1199).
 - **1203 to 1220** are the former 1201 to 1218 in the same order, every label up two (freebie death keeps the pistol, heal verb, notes line, polish, second down toast, lift freebie clears the plan, ESC closes the floor backpack, controls card, death banks card XP, empty grenade cell, arrows with the bag open).
 - The WHATSNEW_VER chain was repaired by hand where a build does not bump it (1201, 1204 heal verb, 1205 notes line); `tools/handoff/verifychain.ps1 -First 1199 -Last 1220 -Ver 11.98 -Wn 11.98` walks the whole chain and must print "chain verified" before any dry run. Run it after EVERY renumber.
-- **DRY RUN:** `dry.ps1 1199 1220` from the tree at v11.98 (done 14:40 on the OLD order; redo after this reorder between corpora), then dry/mk.ps1, then checks 11.99 to 12.20 on :8801.
+- **DRY RUN DONE 14:52 on the reordered chain:** dry.ps1 1200 1220 from the tree at v11.99 applied every draft cleanly to v12.20, and checks 11.99 and 12.00 to 12.20 all PASS on the dry fixture (:8801, pane tab "tab-3" at 1920x1080). Redo only if a draft is edited.
 
 **CURRENT QUEUE (2026-09-06 14:50, after his afternoon notes; this list outranks every older list below):**
 - **1194 HIS FOUR WORDING NOTES** (Crier alarm, Pillbox death, one per raid, Search resumed). In flight at 14:50.

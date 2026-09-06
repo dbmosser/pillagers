@@ -292,7 +292,7 @@
     color:var(--ash); margin-left:3px; font-weight:400; }
   .modcur i{ font-style:normal; color:var(--bone); font-weight:700; }
   .modal h3{ display:flex; align-items:baseline; gap:12px; }
-  /* v12.09: the heading's own balance sat under the corner readout once that
+  /* v12.11: the heading's own balance sat under the corner readout once that
      grew (v11.78); the corner shows the same two figures at all times, so the
      heading no longer repeats them (the v11.52 rule for the stash screen). */
   .modal h3 .modcur{ display:none; }
@@ -1373,8 +1373,6 @@ var WHATSNEW_VER='12.20';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE HOWLER DOES NOT SHELL THROUGH A ROOF: inside a building you are out of its reach until it comes in after you.',
-  'THE RIGHT-CLICK MENU IN THE STASH IS DRAWN AT THE SIZE OF THE SCREEN IT OPENS OVER, at 4K and at every text size.',
   'THE ARROW KEYS BROWSE THE OPEN BACKPACK WITHOUT WALKING YOU; WASD still walks.',
   'THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL: the press brings your gun up and says so, and it never throws a grenade the cell did not name.',
   'A DEATH BANKS THE XP ITS CARD PRINTS, drink bonus included; it used to pay the run without the bonus after the drink was cleared.',
@@ -1389,6 +1387,8 @@ var WHATSNEW=[
   'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
   'DYING WITH THE FREEBIE KIT NO LONGER DELETES THE SCAV PISTOL YOU OWN, and the loaner is not counted or billed as a gun you lost.',
   'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT, the same as the resume button; it goes out with your run report.',
+  'THE HOWLER DOES NOT SHELL THROUGH A ROOF: inside a building you are out of its reach until it comes in after you.',
+  'THE RIGHT-CLICK MENU IN THE STASH IS DRAWN AT THE SIZE OF THE SCREEN IT OPENS OVER, at 4K and at every text size.',
   'A HOLD YOU STARTED BEFORE THE EXTRACTION WINDOW SHUT FINISHES: keep holding E and the ship waits for you; let go and it is gone.',
   'THE TACTICAL BELT DRAGS WITH THE BACKPACK CLOSED: a gun in your hands dragged off the belt goes into the backpack, and a key holding a gun moves to another key like anything else, in a raid and on the floor.',
   'A BELT KEY TAKES HALF THE STACK: put a stack on a key and half of it comes with you, and the key shows how many; the right-click menu still packs an exact number.',
@@ -1985,7 +1985,7 @@ var REPAIR_PARTS={light:'comp',heavy:'servo'};
 function craftPart(k){
   // v9.43 took the servo out: it was in no recipe and its one use, repairs, had
   // gone with wear at v9.01, so keeping it was hoarding for nothing.
-  // v12.08: it is back, and the optic with it, because the four gun recipes of
+  // v12.10: it is back, and the optic with it, because the four gun recipes of
   // v11.79 eat the servo and one of them the optic; SELL ALL keeps them and
   // the stash says what for.
   return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp'||k==='servo'||k==='optic';
@@ -1998,8 +1998,8 @@ function craftUse(k){
   if(k==='cell')  return 'ammunition, smoke, frags, mainframe racks';
   if(k==='board') return 'armour plates and mainframe racks';
   if(k==='comp')  return 'plates, medkits, smoke, decoys and frags';
-  if(k==='servo') return 'guns on the bench, and contracts';   // v12.08
-  if(k==='optic') return 'the Auto Rifle, and contracts';      // v12.08
+  if(k==='servo') return 'guns on the bench, and contracts';   // v12.10
+  if(k==='optic') return 'the Auto Rifle, and contracts';      // v12.10
   return 'crafting';
 }
 var RECIPES=[
@@ -2445,7 +2445,7 @@ function applyLoadedProfile(r){
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
 if(typeof P.pname!=='string'||!P.pname)P.pname='PILLAGER';   // v7.64: named at the title screen; v7.85: typed
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
-// v12.05: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
+// v12.07: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
 if(P.safe&&ITEMS[P.safe]&&(ITEMS[P.safe].use==='throw'||ITEMS[P.safe].use==='ammo')) P.safe=null;
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
@@ -2669,7 +2669,7 @@ if((P.cfgv>=9&&P.cfgv<=18)&&P.cfg){
             applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; try{ applyGameOpts(); }catch(e){} }
           else P.cfg=null;
         } }
-  // v12.00: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE. Everything above
+  // v12.01: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE. Everything above
   // runs only when a save exists. A friend on his first launch had none, so
   // the Settings rows were never applied (the wording watcher of v9.74 stayed
   // unarmed, so the menus and panels showed none of the reworded sentences
@@ -7924,7 +7924,7 @@ function inWaterDeep(x,y,pad){
 // and then should leave the house when done". These two are how a crier is told
 // where its ground is. Kept free of random draws on purpose: they only ever move
 // a point that has already been chosen, so the seeded stream is unchanged.
-// v12.20, HIS NOTE: no shells through a roof. True when the target point is
+// v12.00, HIS NOTE: no shells through a roof. True when the target point is
 // under a building the Howler is not itself in.
 function mortarRoofed(e,tx,ty){
   var bt=buildingAtPt(G.map,tx,ty); if(!bt) return false;
@@ -10504,14 +10504,14 @@ window.addEventListener('keydown',function(e){
     // v8.16, audit: nothing on the floor answers a key while something is open
     // over it. SPACE used to roll the character behind an open window rather
     // than pressing the control he was looking at.
-    var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v12.04: the character screen counts here too
+    var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v12.06: the character screen counts here too
                     document.getElementById('hub').classList.contains('on'));
     // v6.73, his notes: H shows the controls down here too, and SPACE rolls.
     if(e.code==='KeyH'&&!e.repeat&&HB&&!_hubBusy){ HB.legend=!HB.legend; e.preventDefault(); return; }
     // v8.70, HIS REPORT: ESC and P pause on the floor. The raid owns these keys
     // further down and the hub branch returns long before reaching it. Only when
     // no window is open, so ESC still belongs to whatever panel is in front.
-    // v12.14: NOT OVER AN OPEN BACKPACK. The floor backpack is not a modal, so
+    // v12.16: NOT OVER AN OPEN BACKPACK. The floor backpack is not a modal, so
     // ESC over it raised the pause box here and the backpack's own ESC line
     // further down could never run; a second ESC closed the pause box and the
     // backpack stayed. ESC belongs to whatever is in front, and the backpack is.
@@ -10568,7 +10568,7 @@ window.addEventListener('keydown',function(e){
       // leave the menu floating over the Undercroft, still acting on a screen
       // that could no longer repaint it.
       if(document.querySelector('.imenu')) _anyModal=true;
-      if(_titleUp) _anyModal=true;   // v12.04
+      if(_titleUp) _anyModal=true;   // v12.06
       if(!_anyModal){
         var _hb=document.getElementById('hub');
         // The terminal being open means he is reading it; the key closes it and
@@ -10678,7 +10678,7 @@ function raidKey(code,repeat,ev){
   if(code==='Space'&&G&&!G.over&&!G.paused&&!repeat) tryRoll();
   if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){
     G.bagOpen=!G.bagOpen; G.bagSel=0;
-    // v12.18: an arrow still held when the bag opens stops walking too.
+    // v12.20: an arrow still held when the bag opens stops walking too.
     if(G.bagOpen){ keys['ArrowUp']=false; keys['ArrowDown']=false; keys['ArrowLeft']=false; keys['ArrowRight']=false; }
   }
   // Bag browsing. The arrows double as movement keys, so while the bag is open
@@ -10688,7 +10688,7 @@ function raidKey(code,repeat,ev){
   // belt key the stack count is zero while the bag is not, so an arrow key
   // took the selection to NaN (x % 0). drawBag clamped it back each frame, so
   // nothing threw, but the selection was lost and Z dropped from index -1.
-  // v12.18: AND THEY DO NOT WALK. keys[code] was set true at the top of this
+  // v12.20: AND THEY DO NOT WALK. keys[code] was set true at the top of this
   // function for every key, so an arrow both moved the selection and moved the
   // operator; browsing the bag walked you off the spot you stopped on. Cleared
   // here for the arrows while the bag is open; WASD still walks, as promised.
@@ -11452,7 +11452,7 @@ function togglePauseBox(on){
   // v11.72: a note typed on the floor has no raid to attach to. It used to sit
   // in the box and ride into the NEXT raid's first pause as if written there.
   // The close banks it to the profile; every report prints it under FLOOR NOTES.
-  // v11.99: A RAID NOTE SURVIVES ESC. The resume button banked the note and
+  // v12.02: A RAID NOTE SURVIVES ESC. The resume button banked the note and
   // ESC, the way out the box's own legend names, did not: it closed the box
   // with the text still sitting in it, unseen by the run report. Every close
   // of the box over a live raid banks it now, and the two copies of these
@@ -11656,7 +11656,7 @@ function throwFrom(tk,cookT){
   // That is a fair mistake to make, but only if you are told you made it: the
   // fuse is 1.1s and you can clear the radius, so the call goes out the instant
   // it leaves your hand rather than when it goes off.
-  if(blocked&&rngT<(tk==='frag'?(CFG.fragR===undefined?190:CFG.fragR):110)) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');   // v12.10: the warning covers the whole blast
+  if(blocked&&rngT<(tk==='frag'?(CFG.fragR===undefined?190:CFG.fragR):110)) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');   // v12.12: the warning covers the whole blast
   ping(p.x,p.y,90,false,false,'player','move');
 }
 // The instant path, unchanged in behaviour and still what the gamepad and any
@@ -12237,7 +12237,7 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     // This told a player bleeding out that they needed an item they do not have
     // and do not need, which is a reason not to press the key at all.
     G.tel.downs++;
-    // v12.12: THE SECOND DOWN TELLS THE TRUTH. Once the one self-revive is spent
+    // v12.14: THE SECOND DOWN TELLS THE TRUTH. Once the one self-revive is spent
     // F answers Self-revive spent, so a toast that sent him to F was a lie the
     // HUD contradicted in the same frame. He can still crawl for an extraction,
     // or hold SPACE to give up where that is switched on.
@@ -12629,7 +12629,7 @@ function applyHeal(key){
 // synthesises a keypress any more: both the key and the slot call this.
 function useMedical(){
   var p=G.player;
-  // v12.02: THE VERB TELLS THE TRUTH. Three faults in one function. The
+  // v12.04: THE VERB TELLS THE TRUTH. Three faults in one function. The
   // full-health test came after the picker, so at full health with a Medkit
   // in the bag the picker found nothing usable and the verb said No medical
   // supplies. The sentence for "only Bandages, and you are above their reach"
@@ -12815,7 +12815,7 @@ function findHeal(){
     // so with his ceiling in place it would otherwise reach for a Bandage at 90
     // health, find it useless and report that he has no medical supplies while a
     // Medkit sat in the bag.
-    if(G.player&&Math.min(G.player.hp+(G.player.healQ||0),(G.player.healCap===undefined?G.player.maxhp:G.player.healCap))>=healCeil(it)) continue;   // v12.02: what is inbound counts, up to what the running heal can deliver
+    if(G.player&&Math.min(G.player.hp+(G.player.healQ||0),(G.player.healCap===undefined?G.player.maxhp:G.player.healCap))>=healCeil(it)) continue;   // v12.04: what is inbound counts, up to what the running heal can deliver
     var amt=it.amt||0,val=ival(G.bag[i]);
     if(amt<bestAmt||(amt===bestAmt&&val<bestVal)){ best=i; bestAmt=amt; bestVal=val; }
   }
@@ -13473,7 +13473,7 @@ function useHot(){
       if(_pp.hp+(_pp.healQ||0)>=_pp.maxhp){
         say((_pp.healQ>0)?'Already healing.':'Already at full'); return;
       }
-      // v12.02: and the item's own ceiling, counting what is inbound. The
+      // v12.04: and the item's own ceiling, counting what is inbound. The
       // generic verb has had this since v9.62; a named Bandage above 85 was
       // spent for nothing while the toast said it was healing you.
       if(Math.min(_pp.hp+(_pp.healQ||0),(_pp.healCap===undefined?_pp.maxhp:_pp.healCap))>=healCeil(ait)){ say(ait.name+' will not take you past '+Math.round(healCeil(ait))+'.'); return; }
@@ -13822,7 +13822,7 @@ function raiderThrow(e,foe,fd,dt){
     return true;
   }
   if(e.smkT!==undefined) e.smkT-=dt;
-  // v12.10: the near edge of the band follows the blast radius (it was 180
+  // v12.12: the near edge of the band follows the blast radius (it was 180
   // against a 150 blast; at 190 he stood in his own charge), plus the scatter
   // of the aim point below and his own body; and never above his reach, or a
   // short-ranged pillager could never throw at all.
@@ -14617,7 +14617,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     // keeps the single-shot press behaviour it has always had, because a bandage
     // has nothing to hold down for.
     if(HSC&&HSC.kind==='throw'){
-      // v12.17: AN EMPTY THROWABLE CELL DOES NOT OWN THE TRIGGER. Selected empty
+      // v12.19: AN EMPTY THROWABLE CELL DOES NOT OWN THE TRIGGER. Selected empty
       // (cells 3 to 5 on a first raid), the press started nothing and said
       // nothing, or cooked a different grenade than the cell named. By v2.92's
       // own rule the press selects the gun; the next click fires it, never this
@@ -14643,7 +14643,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       }
     }
   }
-  else if(mouse.down&&!p.trigYield&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v12.17: not on the hold that yielded to the gun
+  else if(mouse.down&&!p.trigYield&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v12.19: not on the hold that yielded to the gun
     var _mw=p.wep;
     if(_mw.mag===0){
       if(_mw.auto||!p.fired){ p.lastShot=now; p.fired=true;
@@ -14690,7 +14690,7 @@ if(!p.fired||p.wep.auto){
     }
   }
   if(!mouse.down){
-    p.trigYield=0;   // v12.17: the latch lives for one hold
+    p.trigYield=0;   // v12.19: the latch lives for one hold
     // Let go of a cooked grenade and it goes. Done before p.fired clears so a
     // release can never be read as a fresh press on the same frame.
     if(p.cooking){
@@ -16536,7 +16536,7 @@ if(e.kind==='howler'&&e.hearT>0){
       // see you keeps its existing accuracy rather than firing twice.
       if(CFG.howlerDeaf!==1&&e.state!=='chase'&&e.cd<=0&&!p.downed){
         var _hd=dist(e,{x:e.heardX,y:e.heardY});
-        if(_hd<e.rng&&_hd>140&&!mortarRoofed(e,e.heardX,e.heardY)){   // v12.20: not through a roof
+        if(_hd<e.rng&&_hd>140&&!mortarRoofed(e,e.heardX,e.heardY)){   // v12.00: not through a roof
           // Wider scatter than the aimed shot: it is shooting at a report, not
           // at you, and the difference should be survivable.
           var _hs2=Math.min(190,_hd*0.20);
@@ -17005,7 +17005,7 @@ var _rdS=G.shells[_rdi];
         if(_hSee){ e.tx=p.x; e.ty=p.y; }
         var _htx=_hSee?p.x:(e.tx===undefined?p.x:e.tx);
         var _hty=_hSee?p.y:(e.ty===undefined?p.y:e.ty);
-        if(e.cd<=0&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)&&!mortarRoofed(e,_htx,_hty)){   // v12.20: not through a roof
+        if(e.cd<=0&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)&&!mortarRoofed(e,_htx,_hty)){   // v12.00: not through a roof
           var _hsc=Math.min(120,d*0.12);
           G.shells.push({mortar:1,x0:e.x,y0:e.y,tx:_htx+rnd(-_hsc,_hsc),ty:_hty+rnd(-_hsc,_hsc),
             t:0,air:(CFG.howlerAir===undefined?2.1:CFG.howlerAir),
@@ -18358,7 +18358,7 @@ function addProgress(rec){
   // v10.06: and a night run pays its multiplier on top.
   // v11.00, his note 16: hard weather pays too, and both apply, so a hard night
   // is 1.2 times 1.1.
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb,(rec.doseMul>0)?rec.doseMul:undefined);   // v12.16: the multiplier the card printed
+  var _xb=xpBaseFor(rec), _xg=addXp(_xb,(rec.doseMul>0)?rec.doseMul:undefined);   // v12.18: the multiplier the card printed
   rec.xpBase=_xb; rec.xpGot=_xg;
   P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
   // v10.27, his note: NET LIFETIME EARNINGS. Everything extracted minus
@@ -18413,7 +18413,7 @@ var DEATH_FEED_HTML='';
 function endRaid(how){
   if(G.over) return;
   G.over=how;
-  // v12.16: THE BONUS THE CARD PRINTS IS THE BONUS THE RUN BANKS. Taken here,
+  // v12.18: THE BONUS THE CARD PRINTS IS THE BONUS THE RUN BANKS. Taken here,
   // before the death branch below clears the drink; the banking at the bottom
   // of this function ran after that clear and paid the run without it.
   if(G.tel) G.tel.doseMul=buzzXpMul();
@@ -18743,7 +18743,7 @@ var _cdone=contractExtract(G.bag,haul);
     // print LOST, so both are counted here, once, before the branch.
     var _gunN=0,_gunVal=0;
     for(j=0;j<gone.length;j++){
-      // v12.01: ONLY A GUN THAT CAME OUT OF THE ARMOURY COMES OFF THE LIST, and
+      // v12.03: ONLY A GUN THAT CAME OUT OF THE ARMOURY COMES OFF THE LIST, and
       // the free kit's loaner is not a gun you lost. The splice went by id
       // alone, so dying with the free kit's Scav Pistol (not flagged issued,
       // because an extraction keeps it) deleted the pistol you own, the only
@@ -18910,7 +18910,7 @@ var _cdone=contractExtract(G.bag,haul);
     wxHard:(typeof wxHardId==='function')?wxHardId((G.wx&&G.wx.id)||'clear'):0,   // v11.00, his note 16
     caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,rounds:T.rounds||0,jams:T.jams||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
-    doseMul:(T.doseMul>0)?T.doseMul:1,   // v12.16: the dose bonus the card printed, banked below
+    doseMul:(T.doseMul>0)?T.doseMul:1,   // v12.18: the dose bonus the card printed, banked below
     dur:Math.round(elapsed()),
     census:G.census||null,
     intel:G.intel?1:0,
@@ -23548,7 +23548,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     // at LH(30), under it. It starts below the readout's real bottom, read from
     // the page in CSS pixels and put into this scaled space; LH(30) still holds
     // if the readout is ever shorter than that.
-    by=Math.max(by,Math.ceil((topRightBottom()+8+((T.notes&&T.notes.length)?LH(20):0))/_cz));   // v12.03: and under the notes-logged line when there is one
+    by=Math.max(by,Math.ceil((topRightBottom()+8+((T.notes&&T.notes.length)?LH(20):0))/_cz));   // v12.05: and under the notes-logged line when there is one
     bx=clamp(bx+HOc.dx/_cz,Math.min(W-16-bw,W-(W-4)/_cz),Math.max(W-(W-4)/_cz,W-bw-4/_cz));
     by=clamp(by+HOc.dy/_cz,LH(10),Math.max(LH(10),H/_cz-LH(30)));
 ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
@@ -24204,7 +24204,7 @@ ctx.restore();
   // string started at x=1904 on a 1920 canvas and ran off the edge. Set locally
   // rather than relying on a caller, which is how it got lost in the first place.
   if(T.notes.length){ ctx.save(); ctx.textAlign='right'; ctx.fillStyle='#6b7783';
-    // v12.03: BELOW THE CORNER READOUT, not through it. y 26 sat inside the
+    // v12.05: BELOW THE CORNER READOUT, not through it. y 26 sat inside the
     // rectangle the v11.78 credits and XP readout now fills, so the line and
     // the readout printed over each other from the first note he left. The
     // CONDITIONS panel, which starts under the readout, starts under this too.
@@ -24716,7 +24716,7 @@ var LEGEND_PAD=[
 // when charges started stopping at walls, which is the behaviour most likely to
 // look like a bug the first time a frag lands short.
 var GEARRULES=[
-  // v12.15: there is no X (or pad Y) swap; the belt is the swap. Pressing the
+  // v12.17: there is no X (or pad Y) swap; the belt is the swap. Pressing the
   // key of the stowed gun brings it up (setHot, the v8.67 rule).
   ['WEAPONS','Keys 1 and 2 bring up'],
   ['','either gun.'],
@@ -26766,7 +26766,7 @@ if(G.trail&&G.trail.length>1){
       ctx.fillText('EXTRACT '+String.fromCharCode(65+_fz),ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-LH(24));
       var _zSub;
       if(!Z.open) _zSub='CLOSED';
-      else if(_zHold) _zSub='EXTRACT NOW!  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v12.11: the banner's words (v11.74); the letter is the line above
+      else if(_zHold) _zSub='EXTRACT NOW!  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v12.13: the banner's words (v11.74); the letter is the line above
       else if(_zAct) _zSub='CALLED  '+Math.max(0,Math.ceil(Z.beaconT))+'s';
       else if(Z.closeAt===undefined) _zSub='STAYS OPEN';
       else _zSub='closes in '+fmtMS(Math.max(0,Math.ceil(G.timeLeft-Z.closeAt)));
@@ -27410,7 +27410,7 @@ function hubModalOpen(){
   var _pbx=document.getElementById('pausebox');
   if(_pbx&&_pbx.classList.contains('on')) return true;
   if(document.getElementById('outcome').classList.contains('on')) return true;
-  // v12.04, from the 2026-09-06 menu audit: and the character screen, which is
+  // v12.06, from the 2026-09-06 menu audit: and the character screen, which is
   // a .screen and not a .modal. Without this the floor took E, R, F and T
   // behind it, and R at the lift started a raid under the title.
   var _ttl=document.getElementById('title');
@@ -27494,14 +27494,14 @@ function askKit(){
     (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current tactical belt and backpack.')
          :'your current tactical belt and backpack.')+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
-  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v12.06: MY LOADOUT gets his packing back too
+  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v12.08: MY LOADOUT gets his packing back too
   ASKALT=function(){
-    // v12.13: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
+    // v12.15: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
     // belt plan (a key pointing at something you are not carrying is the v5.72
     // fault). This one did not, so a friend who took the free kit here landed
     // with keys bound to items left in the stash and, because an assigned heal
     // key replaces the derived Medical cell, two Bandages with no key to use.
-    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button does (v12.06)
+    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button does (v12.08)
     P.hotAssign={}; P._gunSlot=null;
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
     try{ renderStage(); }catch(_e){}
@@ -28678,7 +28678,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.20: HIS NOTE of 2026-09-06, the Howler bombed from outside a building to the inside. Both mortar sites refuse a target under a roof the Howler is not itself under; the machine keeps its clock and fires in the open or once inside. Check 12.20 stages a Howler outside and the player inside a building and requires no shell, then both in the open and requires one; fails on v12.19.',
+  now:'v12.20: from the 2026-09-06 first-ten-minutes audit, the arrow keys moved the backpack selection and walked the operator at the same time, against the comment that promised otherwise. The arrows are cleared from the movement state while the backpack is open. Check 12.20 opens the backpack, presses an arrow through raidKey and one real player update, and requires the selection moved and the operator still; fails on v12.19.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29190,7 +29190,7 @@ function buzzXpMul(){ var d=buzzDoses('drunk')+buzzDoses('lsd'); return 1+Math.m
 // was actually added.
 function addXp(n,mul){
   n=Math.round(n||0); if(n<=0) return 0;
-  var g=Math.round(n*((mul!==undefined)?mul:buzzXpMul()));   // v12.16: a run banks the bonus its card printed
+  var g=Math.round(n*((mul!==undefined)?mul:buzzXpMul()));   // v12.18: a run banks the bonus its card printed
   P.xp=(P.xp||0)+g;
   return g;
 }
@@ -29493,7 +29493,7 @@ function safeUpKey(){
 function setSafe(k){
   if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
   if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
-  // v12.05, from the 2026-09-06 menu audit: a grenade rides in the pouch and
+  // v12.07, from the 2026-09-06 menu audit: a grenade rides in the pouch and
   // ammunition in the reserve, and the death path banks the backpack only,
   // so a pocket naming either came home with nothing while reading 1/1.
   if(k&&ITEMS[k].use==='throw') return 'A throwable rides in the pouch, not a pocket. It cannot come home from there.';
@@ -29792,7 +29792,7 @@ function itemMenuRows(key,ctx,count){
   rows.push({sep:1});
   rows.push({keys:1,label:'Put on key'});
   // v6.01: naming the safe pocket is a menu verb as well as a drop target.
-  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v12.05: the pocket refuses these, so the menu does not offer it
+  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v12.07: the pocket refuses these, so the menu does not offer it
     var _isSafe=(P.safe===key);
     rows.push({label:_isSafe?'Take out of safe pocket':'Put in safe pocket',
       hint:_isSafe?null:'survives death',
@@ -29847,7 +29847,7 @@ function openItemMenu(x,y,key,ctx,count){
     m.appendChild(row);
   });
   document.body.appendChild(m);
-  // v12.19, HIS NOTE: the menu is outside every element applyMenuZoom scales,
+  // v11.99, HIS NOTE: the menu is outside every element applyMenuZoom scales,
   // so at 4K it was a 1080p menu under a 4K stash. Same factor as the windows;
   // zoom scales the fixed offsets too, so the click point is divided by it.
   var _mz=Math.max(1,(P&&P.menuZoom)||1)*titleRes();
@@ -29916,7 +29916,7 @@ function openGunMenu(x,y,gk){
   row((W.dmg*(W.pellets||1))+' damage a shot', Math.round(W.rng/10)+'m', true, function(){});
   row((W.auto?'Automatic':'Semi automatic'), W.mag+' round magazine', true, function(){});
   document.body.appendChild(m);
-  // v12.19, HIS NOTE: the menu is outside every element applyMenuZoom scales,
+  // v11.99, HIS NOTE: the menu is outside every element applyMenuZoom scales,
   // so at 4K it was a 1080p menu under a 4K stash. Same factor as the windows;
   // zoom scales the fixed offsets too, so the click point is divided by it.
   var _mz=Math.max(1,(P&&P.menuZoom)||1)*titleRes();
@@ -31303,7 +31303,7 @@ function renderShopDetail(rows){
        '<b style="color:#c9962c">The Whisper and the Meridian Lance are not stocked by '+
        'anyone down here. Wirt puts one on his counter now and again, and otherwise '+
        'they are found up top or not at all.</b></div>';
-    // v12.08: two of those, plus the SMG and the Auto Rifle, can be built now
+    // v12.10: two of those, plus the SMG and the Auto Rifle, can be built now
     // (v11.79); a separate line, because the sentence above is a key for his
     // own rewording of it.
     h+='<div class="vdesc">The Compact SMG, the Burst Carbine, the Riot Scattergun and the Auto Rifle can all be built at the crafting bench.</div>';
@@ -31367,7 +31367,7 @@ function itemBlurb(k){
   if(it.use==='throw') return 'Thrown. Goes on a tactical belt key.';
   if(it.use==='ammo') return 'Refills a magazine from your backpack.';
   if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
-  if(it.use==='gun') return 'A gun. Equip it from the stash, or sell it at the terminal.';   // v12.08: the bench makes these now
+  if(it.use==='gun') return 'A gun. Equip it from the stash, or sell it at the terminal.';   // v12.10: the bench makes these now
   if(it.use==='key') return 'Opens one locked room.';
   if(craftPart(k)) return craftUse(k)||'Crafting material.';
   return 'Salvage. Sell it at the terminal for credits and XP.';
@@ -31564,7 +31564,7 @@ function craftHoldStep(dt){
   var b=craftHold.b;
   // The panel redraws itself on every change, so a button that has left the
   // page or gone dead takes its hold with it.
-  // v12.07: and a button whose window has been hidden; the trader hides its
+  // v12.09: and a button whose window has been hidden; the trader hides its
   // modal rather than detaching it, so isConnected alone let a hold outlive it.
   if(!b||b.disabled||(b.isConnected===false)||!b.offsetParent){ craftHoldCancel(); return; }
   craftHold.t+=dt;
@@ -31612,7 +31612,7 @@ function renderCraftDetail(rows){
     var oit=ITEMS[outKey];
     h+='<div class="vpills"><span class="vpill">'+
        escHtml((oit&&ICLASS[oit.use])?ICLASS[oit.use].t:'CRAFTED')+'</span>'+
-       '<span class="vpill r">'+escHtml(String(((typeof dispR==='function')&&dispR(outKey))||(oit&&oit.r)||'common').toUpperCase())+'</span></div>'+   // v12.08: the shown rarity
+       '<span class="vpill r">'+escHtml(String(((typeof dispR==='function')&&dispR(outKey))||(oit&&oit.r)||'common').toUpperCase())+'</span></div>'+   // v12.10: the shown rarity
        '<h4>'+escHtml(r.name)+'</h4>'+
        '<div class="vdesc">'+escHtml(oit?(itemBlurb(outKey)||''):'')+
        (outN>1?(' Makes '+outN+'.'):'')+'</div>'+
@@ -31628,7 +31628,7 @@ function renderCraftDetail(rows){
     // v11.75, HIS NOTE: a click no longer spends anything. The hold does.
     b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
     b.onmouseleave=function(){ craftHoldCancel(); };
-    // v12.07: the pad presses a control with a synthetic click and the
+    // v12.09: the pad presses a control with a synthetic click and the
     // keyboard with Enter, both with detail 0; a real mouse click has detail
     // 1 or more and still spends nothing, the hold is its way.
     b.onclick=function(e){ if(e&&e.detail) return; btn.click(); };
@@ -32064,7 +32064,7 @@ document.getElementById('charselbtn').onclick=function(){
 };
 document.getElementById('resumebtn').onclick=function(){
   disarmAbandon();   // v10.96: the same four lines this used to carry itself
-  togglePauseBox(false);   // v11.99: the close banks the note, for this button and for ESC alike
+  togglePauseBox(false);   // v12.02: the close banks the note, for this button and for ESC alike
 };
 // v4.24 HIS ORDER: no accidental abandons. First click arms a YES button on
 // the FAR side of the row (left of Resume, nowhere near the cursor), so a
@@ -32101,7 +32101,7 @@ document.getElementById('confirmabandon').onclick=function(){
     P.xp=Math.max(0,(P.xp||0)-_rc);
     say('Walked out on the job. XP -'+_rc+'.');
   }
-  togglePauseBox(false);   // v11.99: the close banks the note
+  togglePauseBox(false);   // v12.02: the close banks the note
 this.style.display='none';
   var _ab2=document.getElementById('abandonbtn');
   _ab2.textContent='Abandon run'; _ab2.style.borderColor='var(--rust)'; _ab2.style.color='var(--rust)';
@@ -32907,14 +32907,14 @@ function renderFreeKit(){
   for(var bi=0;bi<btns.length;bi++) btns[bi].onclick=function(){
     if(P.freeKit){
       P.freeKit=0;
-      freeKitRestore();   // v12.06: what he had packed comes back
+      freeKitRestore();   // v12.08: what he had packed comes back
       saveProfile(); try{ renderHub(); }catch(_fh0){} renderStage(); return;
     }
     // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
     // stash rather than a move, so emptying it returns those items by itself; the
     // hotbar plan is cleared for the same reason, since a key pointing at something
     // you are not carrying is the exact fault v5.72 fixed.
-    // v12.06: kept aside first, so switching back to his own gear is not a wipe.
+    // v12.08: kept aside first, so switching back to his own gear is not a wipe.
     P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};
     P.kit=[]; P.hotAssign={}; P._gunSlot=null;
     P.freeKit=1;
@@ -32928,7 +32928,7 @@ function renderFreeKit(){
     renderStage();
   };
 }
-// v12.06, from the 2026-09-06 menu audit: the packing and the belt plan he had
+// v12.08, from the 2026-09-06 menu audit: the packing and the belt plan he had
 // before taking the free kit come back, minus anything no longer in the stash,
 // with any key left pointing at nothing pruned. Called by USE MY OWN GEAR and by
 // MY LOADOUT at the lift; commitKit hands the same list to the death restore.
@@ -32947,7 +32947,7 @@ function commitKit(){
   if(P.freeKit){
     // v6.88, his spec: remember what he had packed before the free gear replaced it, so
     // a death puts his own loadout back rather than making him rebuild it.
-    // v12.06: the button already emptied P.kit and kept it aside; that is the list.
+    // v12.08: the button already emptied P.kit and kept it aside; that is the list.
     P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
     P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;   // v8.40: safeUp is armed in buildRaid
   }
@@ -39544,7 +39544,7 @@ window.__REGRESS=[
        __frame(); __frame();
        prof=__P(); prof.credits=4471337; prof.xp=98761; saveProfile();
        shown('in a raid');
-       // CLEAR OF THE CONDITIONS BOX, in screen space. v12.09: HUDBOX.cond is
+       // CLEAR OF THE CONDITIONS BOX, in screen space. v12.11: HUDBOX.cond is
        // already in screen pixels (drawHUD runs it through hudZoomRect), so it is
        // read as it is; multiplying by the zoom again made this too permissive.
        var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
@@ -39591,7 +39591,526 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.20',what:'the Howler does not shell a target under a roof it is not itself under, and still shells one in the open (his note of 2026-09-06)',
+  {v:'12.20',what:'an arrow key with the backpack open moves the selection and does not walk the operator, and still walks with it closed (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof raidKey!=='function'||typeof updatePlayer!=='function') return 'SKIP: no raid keys in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.bag=['bandage','medkit','plate']; g.bagOpen=true; g.bagSel=0; keys={}; mouse.down=false; p.downed=false; p.roll=0;
+       var x0=p.x, y0=p.y;
+       raidKey('ArrowRight',false,null);
+       if(g.bagSel!==1) bad.push('control: the arrow did not move the selection (bagSel '+g.bagSel+')');
+       if(keys['ArrowRight']) bad.push('the arrow is still in the movement state with the backpack open');
+       updatePlayer(0.05);
+       var moved=Math.hypot(p.x-x0,p.y-y0);
+       if(moved>0.01) bad.push('browsing the backpack walked the operator '+moved.toFixed(1)+' units');
+       // CONTROL: with the backpack closed the arrow still walks.
+       keys={}; g.bagOpen=false; x0=p.x; y0=p.y;
+       raidKey('ArrowRight',false,null);
+       if(!keys['ArrowRight']) bad.push('control: the arrow is not in the movement state with the backpack closed');
+       updatePlayer(0.05);
+       if(Math.hypot(p.x-x0,p.y-y0)<0.01) bad.push('control: the arrow with the backpack closed did not walk the operator');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.bagOpen=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.19',what:'the trigger on an empty grenade cell selects the gun and says so, fires nothing on that same hold, and a loaded cell still cooks (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof updatePlayer!=='function'||typeof hotbarSlots!=='function'||typeof setHot!=='function') return 'SKIP: no belt or player update in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.pouch.frag=0; g.pouch.smoke=2; g.pouch.decoy=0;
+       var sl=hotbarSlots(), fi=-1;
+       for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='throw'&&/frag/i.test(String(sl[i].k||sl[i].itemKey||sl[i].icon||''))){ fi=i; break; }
+       if(fi<0) return 'SKIP: no Frag cell on the belt ('+sl.map(function(c){ return c&&(c.k||c.kind); }).join(',')+')';
+       setHot(fi);
+       if(hotSel()!==fi) return 'SKIP: the empty Frag cell could not be selected (selected '+hotSel()+')';
+       p.downed=false; p.cooking=0; p.fired=false; mouse.down=true; window.__lastSay=null;
+       updatePlayer(0.016);
+       if(hotSel()!==0) bad.push('the press on the empty Frag cell left cell '+hotSel()+' selected instead of the gun');
+       // TWO: the same hold, two more frames: the gun it raised must not fire.
+       var _sh0=g.tel.shots||0, _am0=p.ammo;
+       updatePlayer(0.016); updatePlayer(0.016);
+       if((g.tel.shots||0)!==_sh0||p.ammo!==_am0) bad.push('the hold that yielded to the gun fired it on the same hold ('+((g.tel.shots||0)-_sh0)+' shots, ammo '+_am0+' to '+p.ammo+')');
+       mouse.down=false; updatePlayer(0.016);
+       if(p.cooking) bad.push('the press cooked a '+p.cookKind+' the cell did not name');
+       if(g.pouch.smoke!==2) bad.push('the press spent a Smoke from an empty Frag cell (smoke now '+g.pouch.smoke+')');
+       if(!/Nothing in that cell/.test(String(window.__lastSay||''))) bad.push('the press did not say the cell is empty (said "'+String(window.__lastSay||'')+'")');
+       // THREE, CONTROL: a loaded Frag cell still cooks on the press and keeps the selection.
+       g.pouch.frag=2; setHot(fi); p.fired=false; p.cooking=0; p.trigYield=0; mouse.down=true; updatePlayer(0.016);
+       if(!p.cooking||p.cookKind!=='frag') bad.push('control: a loaded Frag cell did not cook on the press (cooking '+p.cooking+', kind '+p.cookKind+')');
+       if(hotSel()!==fi) bad.push('control: a loaded Frag cell lost the selection');
+       mouse.down=false; updatePlayer(0.016);
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ mouse.down=false; var g2=__state(); if(g2&&!g2.over){ g2.player.cooking=0; g2.player.fired=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.18',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
+     if(typeof buzzXpMul!=='function') return 'SKIP: no dose bonus in this build';
+     var bad=[], P2=__P(), keepBuzz=(P2.buzz||[]).slice(), keepXp=P2.xp||0;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.tel.containers=40; g.tel.kills={crawler:12,sentry:4};   // enough base XP for a 5 percent bonus to show
+       P2.buzz=[{id:'liquor',tag:'drunk',t:200,dur:200},{id:'liquor',tag:'drunk',t:200,dur:200}];
+       var mul=buzzXpMul();
+       if(!(mul>1)) return 'SKIP: two doses did not raise the multiplier ('+mul+')';
+       var xp0=P2.xp||0;
+       p.downed=false; __endRaid('dead');
+       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+       var m=/\+([\d,]+) XP/.exec(txt);
+       if(!m) bad.push('control: the card printed no XP line ('+txt.slice(0,80)+')');
+       else {
+         var shown=parseInt(m[1].replace(/,/g,''),10), banked=(P2.xp||0)-xp0;
+         if(!(shown>0)) bad.push('control: the card printed no XP gain');
+         if(banked!==shown) bad.push('the card says +'+shown+' XP and the profile was paid '+banked);
+         var rec=(P2.log||[]).slice(-1)[0];
+         if(!(rec&&rec.doseMul>1)) bad.push('control: the banked record carries no dose multiplier, so nothing was multiplied');
+         else if(shown!==Math.round(rec.xpBase*rec.doseMul)) bad.push('the card printed +'+shown+' against a base of '+rec.xpBase+' times '+rec.doseMul);
+       }
+       if((P2.buzz||[]).length) bad.push('control: the death did not clear the drink');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ P2.buzz=keepBuzz; P2.xp=keepXp; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.17',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(typeof GEARRULES==='undefined'||!GEARRULES.length) return 'SKIP: no controls card rules in this build';
+     var bad=[], row=null;
+     for(var i=0;i<GEARRULES.length;i++) if(GEARRULES[i][0]==='WEAPONS'){ row=GEARRULES[i]; break; }
+     if(!row) return 'SKIP: the card has no WEAPONS rule';
+     var txt=(typeof row[1]==='function')?String(row[1]()):String(row[1]);
+     if(/\bX swaps\b|\bY swaps\b/.test(txt)) bad.push('the WEAPONS rule still teaches a swap key that does not exist: "'+txt+'"');
+     if(!/1 and 2/.test(txt)) bad.push('the WEAPONS rule does not name the belt keys: "'+txt+'"');
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.16',what:'ESC over the open Undercroft backpack closes the backpack instead of raising the pause box, and ESC with it closed still pauses (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__showScreen&&window.__hubEnter)) return 'SKIP: this fixture cannot enter the floor';
+     if(typeof hubBagOpenSet!=='function'||typeof togglePauseBox!=='function') return 'SKIP: no floor backpack or pause box in this build';
+     var bad=[], pb=document.getElementById('pausebox');
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       var t=document.getElementById('title'); if(t) t.classList.remove('on');
+       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
+       hubBagOpenSet(true);
+       if(!hubBagOpen) bad.push('control: the backpack did not open');
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
+       if(hubBagOpen) bad.push('ESC left the backpack open');
+       if(pb&&pb.classList.contains('on')) bad.push('ESC raised the pause box over the open backpack');
+       // CONTROL: with the backpack closed, ESC still pauses.
+       if(hubBagOpen) hubBagOpenSet(false);
+       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
+       if(!(pb&&pb.classList.contains('on'))) bad.push('control: ESC with the backpack closed did not raise the pause box');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ if(pb&&pb.classList.contains('on')) togglePauseBox(false); }catch(_p){} try{ if(hubBagOpen) hubBagOpenSet(false); }catch(_b){} keys={}; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.15',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__state&&window.__endRaid&&window.__P&&window.__showScreen)) return 'SKIP: this fixture cannot drive the lift';
+     if(typeof askKit!=='function') return 'SKIP: no lift question in this build';
+     var bad=[], P2=__P(), keepKit=(P2.kit||[]).slice(), keepHot=P2.hotAssign, keepGun=P2._gunSlot, keepFree=P2.freeKit, keepKBF=P2.kitBeforeFree, keepStash=(P2.stash||[]).slice(), keepChosen=P2.kitChosen, keepEq=P2.equipped, keepSec=P2.equippedSec, keepW=(P2.weapons||[]).slice(), keepKS=P2.kitSaved;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       G=null; keys={}; __showScreen('hub');
+       P2.stash=['medkit','plate']; P2.kit=['medkit']; P2.hotAssign={4:'medkit'}; P2._gunSlot=null; P2.freeKit=0; P2.kitChosen=0; saveProfile();
+       askKit();
+       if(typeof ASKALT!=='function') bad.push('control: the lift question set no freebie answer');
+       else ASKALT();
+       var g=__state();
+       if(!g||!g.freeKit) bad.push('control: the freebie answer did not start a free-kit raid');
+       var ks=Object.keys(P2.hotAssign||{});
+       if(ks.length) bad.push('the belt plan still holds '+ks.length+' key'+(ks.length===1?'':'s')+' ('+ks.map(function(k){ return k+':'+P2.hotAssign[k]; }).join(',')+') after the freebie kit was taken at the lift');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var m=document.getElementById('askmodal'); if(m) m.classList.remove('on'); }catch(_m){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       P2.kit=keepKit; P2.hotAssign=keepHot||{}; P2._gunSlot=keepGun; P2.freeKit=keepFree; P2.kitBeforeFree=keepKBF; P2.stash=keepStash; P2.kitChosen=keepChosen; P2.equipped=keepEq; P2.equippedSec=keepSec; P2.weapons=keepW; P2.kitSaved=keepKS;
+       try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.14',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof damagePlayer!=='function') return 'SKIP: no damagePlayer in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, en=null;
+       for(var i=0;i<g.ents.length&&!en;i++) if(g.ents[i].kind==='crawler'&&!g.ents[i].downed) en=g.ents[i];
+       // ARM ONE: the second down, the revive already spent.
+       p.downed=false; p.revived=true; p.hp=5; p.armor=0; p.iv=0; window.__lastSay=null;
+       damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
+       var s1=String(window.__lastSay||'');
+       if(!p.downed) bad.push('control: the hit did not put him down (hp '+p.hp+')');
+       if(/F to get back up/.test(s1)) bad.push('the second down still says F gets him up: "'+s1+'"');
+       if(!/spent/.test(s1)) bad.push('the second down does not say the revive is spent: "'+s1+'"');
+       // ARM TWO: the first down still points at F.
+       p.downed=false; p.revived=false; p.hp=5; p.armor=0; p.iv=0; window.__lastSay=null;
+       damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
+       var s2=String(window.__lastSay||'');
+       if(!/F to get back up/.test(s2)) bad.push('control: the first down no longer says F gets him up: "'+s2+'"');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.hp=100; g2.player.revived=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.13',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
+     var oldWords='OPEN TO '+'EXTRACT', newWords='EXTRACT '+'NOW';
+     proto.fillText=function(t){ try{ rec.push(String(t)); }catch(_r){} return orig.apply(this,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); if(!g.zones||!g.zones.length) return 'SKIP: no extraction ring';
+       var Z=g.zones[0]; Z.open=true; Z.beaconT=0; Z.hold=12; g.active=Z; g.mapOpen=true;
+       drawMapOverlay();
+       var subs=rec.filter(function(t){ return t.indexOf(oldWords)===0||t.indexOf(newWords)===0; });
+       if(!subs.length) bad.push('control: the map drew no boarding line under the landed ring');
+       if(subs.some(function(t){ return t.indexOf(oldWords)===0; })) bad.push('the map still says '+oldWords+' under a landed ring ("'+subs[0]+'")');
+       if(!subs.some(function(t){ return t.indexOf(newWords)===0&&/12S LEFT/.test(t); })) bad.push('the map does not say '+newWords+' with the seconds left (drew: '+subs.join(' | ').slice(0,80)+')');
+       if(!subs.some(function(t){ return t.indexOf(newWords+'!')===0; })) bad.push('the map line lacks the banner mark');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ proto.fillText=orig; try{ var g2=__state(); if(g2){ g2.mapOpen=false; } }catch(_m){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.12',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 52 (242 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof raiderThrow!=='function'||typeof WHATSNEW==='undefined') return 'SKIP: no pillager throw or card in this build';
+     var bad=[], i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       CFG.fragR=190;
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, e=null;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].downed&&!g.ents[i].finished&&!g.ents[i].merc) e=g.ents[i];
+       if(!e) return 'SKIP: no pillager to hand a frag to';
+       function ask(fd){
+         e.bag=['frag']; e.thrT=0; e.smkT=99; e.hp=e.maxhp||100; e.downed=false; e.rng=Math.max(e.rng||0,520);   // a long-armed pillager, so the reach floor is not what stops him
+         var n0=g.frags.length;
+         var r=raiderThrow(e,p,fd,0.016);
+         return {threw:!!r,frags:g.frags.length-n0};
+       }
+       var near=ask(200);
+       if(near.threw||near.frags) bad.push('a pillager threw from 200 units, inside his own 190 blast');
+       var band=ask(260);
+       if(!band.threw||!band.frags) bad.push('control: a pillager would not throw from 260 units, so the band is not live here');
+       var line=null; for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FRAG CHARGES REACH FURTHER')===0) line=WHATSNEW[i];
+       if(!line) bad.push('control: the card has no frag line to read');
+       else if(line.indexOf('140 at the centre')<0||line.indexOf('98 at the centre')<0) bad.push('the card still prints the coefficients as the centre damage: '+line.slice(0,120));
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.11',what:'a station window no longer repeats the credits and XP in its heading under the corner readout: the heading balance is hidden or clear of the readout (2026-09-06 review of v11.78)',
+   run:function(){
+     if(typeof openTrader!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open a station window';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], tr=document.getElementById('topright');
+     if(!tr) return 'SKIP: no corner readout in this build';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ if(window.__forceSize) __forceSize(1920,1080); }catch(_fs){}   // the modal zoom follows the pane; pinned so the control means the same on every run
+       G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
+       openTrader('buy');
+       var md=document.querySelector('.modal.on'); if(!md) bad.push('control: no station window opened');
+       var mc=md?md.querySelector('h3 .modcur'):null;
+       if(!mc) bad.push('control: the window heading carries no balance to measure');
+       else {
+         var shown=getComputedStyle(mc).display!=='none';
+         var a=mc.getBoundingClientRect(), b=tr.getBoundingClientRect();
+         var hit=shown&&a.width>0&&a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom;
+         if(hit) bad.push('the heading balance ('+Math.round(a.left)+'..'+Math.round(a.right)+' x '+Math.round(a.top)+'..'+Math.round(a.bottom)+') sits under the corner readout ('+Math.round(b.left)+'..'+Math.round(b.right)+' x '+Math.round(b.top)+'..'+Math.round(b.bottom)+')');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.10',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
+   run:function(){
+     if(typeof RECIPES==='undefined'||typeof dispR!=='function'||typeof itemBlurb!=='function'||typeof itemWanted!=='function') return 'SKIP: no bench, rarity or blurb in this build';
+     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open the bench';
+     var bad=[], i, k, green=0, blue=0, carbIx=-1;
+     for(i=0;i<RECIPES.length;i++){
+       var out=null; for(k in RECIPES[i].out){ out=k; break; }
+       var it=ITEMS[out]; if(!it||it.use!=='gun') continue;
+       var rar=dispR(out)||it.r;
+       if(rar==='uncommon') green++; else if(rar==='rare') blue++; else bad.push(RECIPES[i].name+' shows as '+rar);
+       if(out==='gun_carbine') carbIx=i;
+     }
+     if(!(green>=1&&blue>=1)) bad.push('by the shown rarity the bench holds '+green+' green and '+blue+' blue');
+     var line=null; if(typeof WHATSNEW!=='undefined') for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FOUR GUNS ON THE CRAFTING BENCH')===0) line=WHATSNEW[i];
+     if(line&&line.indexOf('Compact SMG and Burst Carbine in green')>=0) bad.push('the card still calls the Burst Carbine green');
+     var bl=itemBlurb('gun_smg')||'';
+     if(bl.indexOf('Salvage')===0||bl.toLowerCase().indexOf('gun')<0) bad.push('the blurb for a crafted gun reads: '+bl);
+     var sv=itemWanted('servo')||'', op=itemWanted('optic')||'';
+     if(sv.indexOf('contracts')<0) bad.push('the stash keeps a servo for "'+sv+'", not for guns and contracts');
+     if(op.indexOf('contracts')<0) bad.push('the stash keeps an optic for "'+op+'", not for the rifle and contracts');
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       __P().stash=['comp','comp','comp','comp','servo','servo','board','board'];
+       openTrader('craft'); renderWork();
+       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1;
+       for(i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:'+carbIx) ix=i;
+       if(ix<0||carbIx<0) bad.push('control: the bench drew no Burst Carbine row');
+       else {
+         __P()._craftSel=ix; renderCraftDetail(rows);
+         var pill=document.querySelector('#craftdetail .vpill.r');
+         var txt=pill?pill.textContent.trim().toUpperCase():'';
+         if(txt!=='RARE') bad.push('the detail panel calls the Burst Carbine '+(txt||'nothing')+' where every other screen says RARE');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.09',what:'the bench detail button crafts on a synthetic click (a pad press) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
+   run:function(){
+     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||typeof craftHoldStep!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the bench';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], P=__P(), md=document.getElementById('tradermodal'), keepStash=(P.stash||[]).slice();
+     function stock(){ P.stash=['scrap','scrap','scrap','wire','wire']; }
+     function select(){
+       renderWork();
+       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1;
+       for(var i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:0') ix=i;
+       if(ix<0) return null;
+       P._craftSel=ix; renderCraftDetail(rows);
+       return document.querySelector('#craftdetail .vbuy');
+     }
+     function crafted(){ return P.stash.indexOf('comp')>=0; }
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       stock(); openTrader('craft');
+       var b=select(); if(!b) return 'SKIP: the bench drew no detail button for the Component Kit';
+       if(b.disabled) bad.push('control: with the parts in the stash the detail button is disabled');
+       // ONE: a synthetic click (what the pad and Enter send) crafts.
+       b.click();
+       if(!crafted()) bad.push('a synthetic click on the detail button crafted nothing (a pad or Enter cannot craft)');
+       // TWO: a real mouse click spends nothing.
+       stock(); b=select();
+       if(b){ b.dispatchEvent(new MouseEvent('click',{detail:1,bubbles:true})); if(crafted()) bad.push('a real mouse click crafted; the hold is meant to be the only mouse way'); }
+       // THREE: the hold still crafts.
+       stock(); b=select();
+       if(b&&b.onmousedown){ b.onmousedown({button:0}); craftHoldStep(0.6); if(crafted()) bad.push('control: the hold crafted before it was full'); craftHoldStep(0.6); if(!crafted()) bad.push('control: a full hold crafted nothing'); }
+       else bad.push('control: the detail button has no hold to drive');
+       // FOUR: a hold dies when the window is hidden.
+       stock(); b=select();
+       if(b&&b.onmousedown&&md){ b.onmousedown({button:0}); craftHoldStep(0.3); md.style.display='none'; craftHoldStep(1.2); md.style.display=''; if(crafted()) bad.push('a hold outlived the trader window being hidden and spent the parts'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(md) md.style.display=''; craftHoldCancel(); try{ openTrader('buy'); }catch(_ob){} var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); P.stash=keepStash; saveProfile(); }catch(_c){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.08',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
+   run:function(){
+     if(typeof renderFreeKit!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the freebie kit';
+     var bad=[];
+     function btn(){ return document.querySelector('.fkbtn'); }
+     function press(){ var b=btn(); if(!b||!b.onclick) return 'no button'; try{ b.onclick(); }catch(e){ return 'threw '+(e&&e.message||e); } return null; }
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       var P=__P();
+       P.stash=['medkit','plate','frag']; P.kit=['medkit','plate']; P.hotAssign={2:'medkit'}; P.freeKit=0; P.kitSaved=null;
+       renderFreeKit();
+       if(!btn()) return 'SKIP: the freebie kit button was not drawn';
+       var e1=press(); if(e1) bad.push('control: the first press failed ('+e1+')');
+       if(!P.freeKit) bad.push('control: the first press did not take the kit');
+       if((P.kit||[]).length) bad.push('control: the kit was not emptied while the free kit is taken (his rule)');
+       var e2=press(); if(e2) bad.push('control: the second press failed ('+e2+')');
+       if(P.freeKit) bad.push('control: the second press did not switch back');
+       if((P.kit||[]).join(',')!=='medkit,plate') bad.push('switching back did not restore the packing (kit '+(P.kit||[]).join(',')+')');
+       if(!P.hotAssign||P.hotAssign[2]!=='medkit') bad.push('switching back did not restore the belt plan');
+       // SOLD IN BETWEEN: only what is still in the stash comes back.
+       press(); P.stash=['medkit','frag']; press();
+       if((P.kit||[]).join(',')!=='medkit') bad.push('with the plate sold in between, switching back restored '+(P.kit||[]).join(',')+' and not medkit alone');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.07',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
+   run:function(){
+     if(typeof setSafe!=='function'||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot reach the pocket or the loader';
+     var bad=[], snap=null;
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.stringify(__P());   // the loader below replaces the profile; it is put back at the end
+       var P=__P(); P.safe=null;
+       var r1=setSafe('frag');
+       if(!r1) bad.push('the pocket took a Frag Charge without a word');
+       if(P.safe==='frag') bad.push('the pocket is saved on a Frag Charge');
+       var r2=setSafe('ammobox');
+       if(!r2) bad.push('the pocket took an Ammo Box without a word');
+       if(P.safe==='ammobox') bad.push('the pocket is saved on an Ammo Box');
+       var r3=setSafe('medkit');
+       if(r3) bad.push('control: the pocket refused a Medkit ('+r3+')');
+       if(P.safe!=='medkit') bad.push('control: the pocket did not keep the Medkit');
+       __applyLoaded({credits:900,safe:'frag'});
+       if(__P().safe==='frag') bad.push('a saved pocket on a Frag Charge survived the load');
+       __applyLoaded({credits:900,safe:'medkit'});
+       if(__P().safe!=='medkit') bad.push('control: a saved pocket on a Medkit did not survive the load ('+__P().safe+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.06',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
+   run:function(){
+     if(typeof hubModalOpen!=='function'||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the floor gate';
+     var ttl=document.getElementById('title'); if(!ttl) return 'SKIP: no character screen element';
+     var bad=[], wasOn=ttl.classList.contains('on');
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       ttl.classList.remove('on');
+       var pb=document.getElementById('pausebox'); if(pb) pb.classList.remove('on');
+       if(hubModalOpen()) bad.push('control: with nothing open the gate already reads open, so it proves nothing');
+       ttl.classList.add('on');
+       if(!hubModalOpen()) bad.push('with the character screen on, the floor gate reads closed, so the stations behind it still take keys');
+       ttl.classList.remove('on');
+       if(hubModalOpen()) bad.push('control: with the character screen off again the gate still reads open');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(wasOn) ttl.classList.add('on'); else ttl.classList.remove('on'); }catch(_t){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.05',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and draw';
+     if(typeof topRightBottom!=='function') return 'SKIP: no corner readout helper in this build';
+     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __forceSize(1920,1080);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       g.tel.notes=[{t:1,txt:'probe note 4242'}];
+       __frame(0.016);
+       var bottom=topRightBottom();
+       if(!(bottom>26)) return 'SKIP: the corner readout is not on screen here (bottom '+Math.round(bottom)+')';
+       proto.fillText=function(t,x,y){ rec.push({t:String(t),y:y}); return o.apply(this,arguments); };
+       __frame(0.016);
+       proto.fillText=o;
+       var ln=null; for(var i=0;i<rec.length;i++) if(/notes? logged/.test(rec[i].t)){ ln=rec[i]; break; }
+       if(!ln) bad.push('control: the notes line was not drawn');
+       else if(ln.y<=bottom) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the corner readout that ends at '+Math.round(bottom));
+       else if(ln.y>H) bad.push('the notes line is drawn off the canvas at y '+Math.round(ln.y));
+       var C=(typeof HUDBOX!=='undefined')&&HUDBOX.cond;
+       if(ln&&C&&ln.y>C.y&&ln.y<C.y+C.h) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the conditions panel at '+Math.round(C.y)+' to '+Math.round(C.y+C.h));
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.tel.notes=[]; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.04',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound, while a Medkit over running Bandages is still taken (2026-09-06 audits)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof useMedical!=='function'||typeof healCeil!=='function') return 'SKIP: no heal verb in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, cap=healCeil(ITEMS.bandage);
+       if(!(cap<p.maxhp)) return 'SKIP: bandages have no ceiling under this profile';
+       p.downed=false; p.prep=null; p.healQ=0;
+       // ONE: two Bandages, health at their ceiling.
+       g.bag=['bandage','bandage']; p.hp=cap; window.__lastSay=null;
+       var r1=useMedical(), s1=String(window.__lastSay||'');
+       if(r1||g.bag.length!==2) bad.push('at '+cap+' health with only Bandages the verb spent one');
+       if(!/Only bandages left/.test(s1)) bad.push('at '+cap+' health with only Bandages the verb said "'+s1+'"');
+       // TWO: a Medkit at full health.
+       g.bag=['medkit']; p.hp=p.maxhp; p.healQ=0; window.__lastSay=null;
+       var r2=useMedical(), s2=String(window.__lastSay||'');
+       if(r2||g.bag.length!==1) bad.push('at full health the verb spent the Medkit');
+       if(!/Already at full/.test(s2)) bad.push('at full health with a Medkit the verb said "'+s2+'"');
+       // THREE: a Bandage already inbound reaches the ceiling; the second is kept.
+       g.bag=['bandage']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
+       var r3=useMedical();
+       if(r3||g.bag.length!==1) bad.push('a second Bandage was spent although the first already reaches '+cap+' (bag now '+g.bag.join(',')+')');
+       // FIVE: a Medkit over running Bandages is still taken; the queue delivers only to their ceiling.
+       g.bag=['medkit']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
+       var r5=useMedical();
+       if(!r5||g.bag.length!==0) bad.push('a Medkit over running Bandages was refused ("'+String(window.__lastSay||'')+'")');
+       p.healQ=0; p.healCap=undefined; p.prep=null;
+       // CONTROL: a Bandage under the ceiling with nothing inbound is used.
+       g.bag=['bandage']; p.hp=cap-30; p.healQ=0; p.prep=null; window.__lastSay=null;
+       var r4=useMedical();
+       if(!r4||g.bag.length!==0) bad.push('control: a Bandage at '+(cap-30)+' health was refused ("'+String(window.__lastSay||'')+'")');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.prep=null; g2.player.healQ=0; g2.player.healCap=undefined; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.03',what:'dying with the free kit does not delete the Scav Pistol you own, and the loaner is not counted as a gun you lost (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P&&typeof commitKit==='function')) return 'SKIP: this fixture cannot start a raid';
+     var bad=[], P2=__P(), keepW=(P2.weapons||[]).slice(), keepEq=P2.equipped, keepFree=P2.freeKit, keepKit=(P2.kit||[]).slice(), keepChosen=P2.kitChosen, keepStash=(P2.stash||[]).slice(), keepSafe=P2.safe, keepKBF=P2.kitBeforeFree;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // Not __deploy: it clears the free kit flag before it builds the raid. The
+       // route the lift takes: the free kit chosen, commitKit stamps it, startRaid reads it.
+       P2.stash=[]; P2.kit=[]; P2.safe=null; P2.weapons=['pistol']; P2.equipped='fists'; P2.freeKit=1; P2.kitChosen=0; saveProfile();
+       commitKit(); __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       if(!g||!g.freeKit) bad.push('control: the raid did not take the free kit');
+       if(!p.wep||p.wep.id!=='pistol') bad.push('control: the free kit did not issue a Scav Pistol (holding '+(p.wep&&p.wep.id)+')');
+       p.downed=false; __endRaid('dead');
+       if(P2.weapons.indexOf('pistol')<0) bad.push('dying with the free kit deleted the Scav Pistol you own');
+       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+       if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: the card did not open on the death');
+       if(/and 1 gun/.test(txt)) bad.push('the card counts the loaner as a gun you lost');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       P2.weapons=keepW; P2.equipped=keepEq; P2.freeKit=keepFree; P2.kit=keepKit; P2.kitChosen=keepChosen; P2.stash=keepStash; P2.safe=keepSafe; P2.kitBeforeFree=keepKBF;
+       try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.02',what:'a note typed into the pause box during a raid is kept when ESC closes the box, the same as the resume button (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     var pb=document.getElementById('pausebox'), ta=document.getElementById('pausenote');
+     if(!pb||!ta||typeof togglePauseBox!=='function') return 'SKIP: no pause box in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       togglePauseBox(true);
+       if(!pb.classList.contains('on')) bad.push('control: the pause box did not open');
+       ta.value='probe note 4242';
+       ta.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));
+       if(pb.classList.contains('on')) bad.push('control: ESC did not close the box');
+       var notes=(g.tel&&g.tel.notes)||[];
+       if(!notes.some(function(x){ return x&&x.txt==='probe note 4242'; })) bad.push('the note typed in the box was thrown away by ESC ('+notes.length+' notes in the record)');
+       if(ta.value) bad.push('the box still holds the note after the close');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ ta.value=''; if(pb.classList.contains('on')){ togglePauseBox(false); pb.classList.remove('on'); } }catch(_c){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.01',what:'a load with no save sets the menu zoom to 1.3 and runs the Settings pass that arms the wording watcher, the same as a load with a save (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(typeof applyLoadedProfile!=='function'||typeof applyGameOpts!=='function') return 'SKIP: no profile loader in this build';
+     if(typeof MutationObserver!=='function') return 'SKIP: no MutationObserver here';
+     var bad=[], keepZ=P.menuZoom, keepObs=TXOBS;
+     try{
+       __topClear(); __runPrep();
+       P.menuZoom=0;
+       if(TXOBS){ try{ TXOBS.disconnect(); }catch(_d){} TXOBS=null; }
+       applyLoadedProfile(null);   // what storeGet resolves to when nothing is saved
+       if(P.menuZoom!==1.3) bad.push('a load with no save left the menu zoom at '+P.menuZoom);
+       if(!TXOBS) bad.push('a load with no save did not arm the wording watcher');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       P.menuZoom=keepZ||1.3;
+       if(!TXOBS&&keepObs){ TXOBS=keepObs; try{ TXOBS.observe(document.getElementById('root'),{childList:true,subtree:true,characterData:true}); }catch(_o){} }
+       try{ applyMenuZoom(); }catch(_z){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.00',what:'the Howler does not shell a target under a roof it is not itself under, and still shells one in the open (his note of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__ents)) return 'SKIP: this fixture cannot deploy and step';
      if(typeof mkHowler!=='function'||typeof buildingAtPt!=='function') return 'SKIP: no Howler or building lookup in this build';
@@ -39629,7 +40148,7 @@ window.__REGRESS=[
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.19',what:'the stash right-click menu takes the menu zoom like every window, so at 4K it is not a 1080p-sized menu under a 4K stash (his note of 2026-09-06)',
+  {v:'11.99',what:'the stash right-click menu takes the menu zoom like every window, so at 4K it is not a 1080p-sized menu under a 4K stash (his note of 2026-09-06)',
    run:function(){
      if(!(window.__forceSize&&window.__hubEnter&&window.__showScreen&&window.__P)) return 'SKIP: this fixture cannot resize';
      if(typeof openItemMenu!=='function'||typeof closeItemMenu!=='function'||typeof titleRes!=='function') return 'SKIP: no item menu in this build';
@@ -39654,525 +40173,6 @@ window.__REGRESS=[
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ try{ closeItemMenu(); }catch(_c){} P2.stash=keepStash; P2.kit=keepKit; try{ saveProfile(); }catch(_s){} try{ __forceSize(1920,1080); }catch(_f){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.18',what:'an arrow key with the backpack open moves the selection and does not walk the operator, and still walks with it closed (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof raidKey!=='function'||typeof updatePlayer!=='function') return 'SKIP: no raid keys in this build';
-     var bad=[];
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player;
-       g.bag=['bandage','medkit','plate']; g.bagOpen=true; g.bagSel=0; keys={}; mouse.down=false; p.downed=false; p.roll=0;
-       var x0=p.x, y0=p.y;
-       raidKey('ArrowRight',false,null);
-       if(g.bagSel!==1) bad.push('control: the arrow did not move the selection (bagSel '+g.bagSel+')');
-       if(keys['ArrowRight']) bad.push('the arrow is still in the movement state with the backpack open');
-       updatePlayer(0.05);
-       var moved=Math.hypot(p.x-x0,p.y-y0);
-       if(moved>0.01) bad.push('browsing the backpack walked the operator '+moved.toFixed(1)+' units');
-       // CONTROL: with the backpack closed the arrow still walks.
-       keys={}; g.bagOpen=false; x0=p.x; y0=p.y;
-       raidKey('ArrowRight',false,null);
-       if(!keys['ArrowRight']) bad.push('control: the arrow is not in the movement state with the backpack closed');
-       updatePlayer(0.05);
-       if(Math.hypot(p.x-x0,p.y-y0)<0.01) bad.push('control: the arrow with the backpack closed did not walk the operator');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.bagOpen=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.17',what:'the trigger on an empty grenade cell selects the gun and says so, fires nothing on that same hold, and a loaded cell still cooks (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof updatePlayer!=='function'||typeof hotbarSlots!=='function'||typeof setHot!=='function') return 'SKIP: no belt or player update in this build';
-     var bad=[];
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player;
-       g.pouch.frag=0; g.pouch.smoke=2; g.pouch.decoy=0;
-       var sl=hotbarSlots(), fi=-1;
-       for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='throw'&&/frag/i.test(String(sl[i].k||sl[i].itemKey||sl[i].icon||''))){ fi=i; break; }
-       if(fi<0) return 'SKIP: no Frag cell on the belt ('+sl.map(function(c){ return c&&(c.k||c.kind); }).join(',')+')';
-       setHot(fi);
-       if(hotSel()!==fi) return 'SKIP: the empty Frag cell could not be selected (selected '+hotSel()+')';
-       p.downed=false; p.cooking=0; p.fired=false; mouse.down=true; window.__lastSay=null;
-       updatePlayer(0.016);
-       if(hotSel()!==0) bad.push('the press on the empty Frag cell left cell '+hotSel()+' selected instead of the gun');
-       // TWO: the same hold, two more frames: the gun it raised must not fire.
-       var _sh0=g.tel.shots||0, _am0=p.ammo;
-       updatePlayer(0.016); updatePlayer(0.016);
-       if((g.tel.shots||0)!==_sh0||p.ammo!==_am0) bad.push('the hold that yielded to the gun fired it on the same hold ('+((g.tel.shots||0)-_sh0)+' shots, ammo '+_am0+' to '+p.ammo+')');
-       mouse.down=false; updatePlayer(0.016);
-       if(p.cooking) bad.push('the press cooked a '+p.cookKind+' the cell did not name');
-       if(g.pouch.smoke!==2) bad.push('the press spent a Smoke from an empty Frag cell (smoke now '+g.pouch.smoke+')');
-       if(!/Nothing in that cell/.test(String(window.__lastSay||''))) bad.push('the press did not say the cell is empty (said "'+String(window.__lastSay||'')+'")');
-       // THREE, CONTROL: a loaded Frag cell still cooks on the press and keeps the selection.
-       g.pouch.frag=2; setHot(fi); p.fired=false; p.cooking=0; p.trigYield=0; mouse.down=true; updatePlayer(0.016);
-       if(!p.cooking||p.cookKind!=='frag') bad.push('control: a loaded Frag cell did not cook on the press (cooking '+p.cooking+', kind '+p.cookKind+')');
-       if(hotSel()!==fi) bad.push('control: a loaded Frag cell lost the selection');
-       mouse.down=false; updatePlayer(0.016);
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ mouse.down=false; var g2=__state(); if(g2&&!g2.over){ g2.player.cooking=0; g2.player.fired=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.16',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
-     if(typeof buzzXpMul!=='function') return 'SKIP: no dose bonus in this build';
-     var bad=[], P2=__P(), keepBuzz=(P2.buzz||[]).slice(), keepXp=P2.xp||0;
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player;
-       g.tel.containers=40; g.tel.kills={crawler:12,sentry:4};   // enough base XP for a 5 percent bonus to show
-       P2.buzz=[{id:'liquor',tag:'drunk',t:200,dur:200},{id:'liquor',tag:'drunk',t:200,dur:200}];
-       var mul=buzzXpMul();
-       if(!(mul>1)) return 'SKIP: two doses did not raise the multiplier ('+mul+')';
-       var xp0=P2.xp||0;
-       p.downed=false; __endRaid('dead');
-       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
-       var m=/\+([\d,]+) XP/.exec(txt);
-       if(!m) bad.push('control: the card printed no XP line ('+txt.slice(0,80)+')');
-       else {
-         var shown=parseInt(m[1].replace(/,/g,''),10), banked=(P2.xp||0)-xp0;
-         if(!(shown>0)) bad.push('control: the card printed no XP gain');
-         if(banked!==shown) bad.push('the card says +'+shown+' XP and the profile was paid '+banked);
-         var rec=(P2.log||[]).slice(-1)[0];
-         if(!(rec&&rec.doseMul>1)) bad.push('control: the banked record carries no dose multiplier, so nothing was multiplied');
-         else if(shown!==Math.round(rec.xpBase*rec.doseMul)) bad.push('the card printed +'+shown+' against a base of '+rec.xpBase+' times '+rec.doseMul);
-       }
-       if((P2.buzz||[]).length) bad.push('control: the death did not clear the drink');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ P2.buzz=keepBuzz; P2.xp=keepXp; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.15',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(typeof GEARRULES==='undefined'||!GEARRULES.length) return 'SKIP: no controls card rules in this build';
-     var bad=[], row=null;
-     for(var i=0;i<GEARRULES.length;i++) if(GEARRULES[i][0]==='WEAPONS'){ row=GEARRULES[i]; break; }
-     if(!row) return 'SKIP: the card has no WEAPONS rule';
-     var txt=(typeof row[1]==='function')?String(row[1]()):String(row[1]);
-     if(/\bX swaps\b|\bY swaps\b/.test(txt)) bad.push('the WEAPONS rule still teaches a swap key that does not exist: "'+txt+'"');
-     if(!/1 and 2/.test(txt)) bad.push('the WEAPONS rule does not name the belt keys: "'+txt+'"');
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.14',what:'ESC over the open Undercroft backpack closes the backpack instead of raising the pause box, and ESC with it closed still pauses (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(!(window.__showScreen&&window.__hubEnter)) return 'SKIP: this fixture cannot enter the floor';
-     if(typeof hubBagOpenSet!=='function'||typeof togglePauseBox!=='function') return 'SKIP: no floor backpack or pause box in this build';
-     var bad=[], pb=document.getElementById('pausebox');
-     try{
-       __topClear(); __runPrep(); __cleanProfile();
-       G=null; keys={}; __showScreen('hub'); __hubEnter();
-       var t=document.getElementById('title'); if(t) t.classList.remove('on');
-       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
-       hubBagOpenSet(true);
-       if(!hubBagOpen) bad.push('control: the backpack did not open');
-       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
-       if(hubBagOpen) bad.push('ESC left the backpack open');
-       if(pb&&pb.classList.contains('on')) bad.push('ESC raised the pause box over the open backpack');
-       // CONTROL: with the backpack closed, ESC still pauses.
-       if(hubBagOpen) hubBagOpenSet(false);
-       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
-       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
-       if(!(pb&&pb.classList.contains('on'))) bad.push('control: ESC with the backpack closed did not raise the pause box');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ if(pb&&pb.classList.contains('on')) togglePauseBox(false); }catch(_p){} try{ if(hubBagOpen) hubBagOpenSet(false); }catch(_b){} keys={}; __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.13',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(!(window.__state&&window.__endRaid&&window.__P&&window.__showScreen)) return 'SKIP: this fixture cannot drive the lift';
-     if(typeof askKit!=='function') return 'SKIP: no lift question in this build';
-     var bad=[], P2=__P(), keepKit=(P2.kit||[]).slice(), keepHot=P2.hotAssign, keepGun=P2._gunSlot, keepFree=P2.freeKit, keepKBF=P2.kitBeforeFree, keepStash=(P2.stash||[]).slice(), keepChosen=P2.kitChosen, keepEq=P2.equipped, keepSec=P2.equippedSec, keepW=(P2.weapons||[]).slice(), keepKS=P2.kitSaved;
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       G=null; keys={}; __showScreen('hub');
-       P2.stash=['medkit','plate']; P2.kit=['medkit']; P2.hotAssign={4:'medkit'}; P2._gunSlot=null; P2.freeKit=0; P2.kitChosen=0; saveProfile();
-       askKit();
-       if(typeof ASKALT!=='function') bad.push('control: the lift question set no freebie answer');
-       else ASKALT();
-       var g=__state();
-       if(!g||!g.freeKit) bad.push('control: the freebie answer did not start a free-kit raid');
-       var ks=Object.keys(P2.hotAssign||{});
-       if(ks.length) bad.push('the belt plan still holds '+ks.length+' key'+(ks.length===1?'':'s')+' ('+ks.map(function(k){ return k+':'+P2.hotAssign[k]; }).join(',')+') after the freebie kit was taken at the lift');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{
-       try{ var m=document.getElementById('askmodal'); if(m) m.classList.remove('on'); }catch(_m){}
-       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
-       P2.kit=keepKit; P2.hotAssign=keepHot||{}; P2._gunSlot=keepGun; P2.freeKit=keepFree; P2.kitBeforeFree=keepKBF; P2.stash=keepStash; P2.kitChosen=keepChosen; P2.equipped=keepEq; P2.equippedSec=keepSec; P2.weapons=keepW; P2.kitSaved=keepKS;
-       try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
-     }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.12',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof damagePlayer!=='function') return 'SKIP: no damagePlayer in this build';
-     var bad=[];
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, en=null;
-       for(var i=0;i<g.ents.length&&!en;i++) if(g.ents[i].kind==='crawler'&&!g.ents[i].downed) en=g.ents[i];
-       // ARM ONE: the second down, the revive already spent.
-       p.downed=false; p.revived=true; p.hp=5; p.armor=0; p.iv=0; window.__lastSay=null;
-       damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
-       var s1=String(window.__lastSay||'');
-       if(!p.downed) bad.push('control: the hit did not put him down (hp '+p.hp+')');
-       if(/F to get back up/.test(s1)) bad.push('the second down still says F gets him up: "'+s1+'"');
-       if(!/spent/.test(s1)) bad.push('the second down does not say the revive is spent: "'+s1+'"');
-       // ARM TWO: the first down still points at F.
-       p.downed=false; p.revived=false; p.hp=5; p.armor=0; p.iv=0; window.__lastSay=null;
-       damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
-       var s2=String(window.__lastSay||'');
-       if(!/F to get back up/.test(s2)) bad.push('control: the first down no longer says F gets him up: "'+s2+'"');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.hp=100; g2.player.revived=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.11',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
-     if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
-     var oldWords='OPEN TO '+'EXTRACT', newWords='EXTRACT '+'NOW';
-     proto.fillText=function(t){ try{ rec.push(String(t)); }catch(_r){} return orig.apply(this,arguments); };
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(); if(!g.zones||!g.zones.length) return 'SKIP: no extraction ring';
-       var Z=g.zones[0]; Z.open=true; Z.beaconT=0; Z.hold=12; g.active=Z; g.mapOpen=true;
-       drawMapOverlay();
-       var subs=rec.filter(function(t){ return t.indexOf(oldWords)===0||t.indexOf(newWords)===0; });
-       if(!subs.length) bad.push('control: the map drew no boarding line under the landed ring');
-       if(subs.some(function(t){ return t.indexOf(oldWords)===0; })) bad.push('the map still says '+oldWords+' under a landed ring ("'+subs[0]+'")');
-       if(!subs.some(function(t){ return t.indexOf(newWords)===0&&/12S LEFT/.test(t); })) bad.push('the map does not say '+newWords+' with the seconds left (drew: '+subs.join(' | ').slice(0,80)+')');
-       if(!subs.some(function(t){ return t.indexOf(newWords+'!')===0; })) bad.push('the map line lacks the banner mark');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ proto.fillText=orig; try{ var g2=__state(); if(g2){ g2.mapOpen=false; } }catch(_m){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.10',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 52 (242 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
-     if(typeof raiderThrow!=='function'||typeof WHATSNEW==='undefined') return 'SKIP: no pillager throw or card in this build';
-     var bad=[], i;
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       CFG.fragR=190;
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, e=null;
-       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].downed&&!g.ents[i].finished&&!g.ents[i].merc) e=g.ents[i];
-       if(!e) return 'SKIP: no pillager to hand a frag to';
-       function ask(fd){
-         e.bag=['frag']; e.thrT=0; e.smkT=99; e.hp=e.maxhp||100; e.downed=false; e.rng=Math.max(e.rng||0,520);   // a long-armed pillager, so the reach floor is not what stops him
-         var n0=g.frags.length;
-         var r=raiderThrow(e,p,fd,0.016);
-         return {threw:!!r,frags:g.frags.length-n0};
-       }
-       var near=ask(200);
-       if(near.threw||near.frags) bad.push('a pillager threw from 200 units, inside his own 190 blast');
-       var band=ask(260);
-       if(!band.threw||!band.frags) bad.push('control: a pillager would not throw from 260 units, so the band is not live here');
-       var line=null; for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FRAG CHARGES REACH FURTHER')===0) line=WHATSNEW[i];
-       if(!line) bad.push('control: the card has no frag line to read');
-       else if(line.indexOf('140 at the centre')<0||line.indexOf('98 at the centre')<0) bad.push('the card still prints the coefficients as the centre damage: '+line.slice(0,120));
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.09',what:'a station window no longer repeats the credits and XP in its heading under the corner readout: the heading balance is hidden or clear of the readout (2026-09-06 review of v11.78)',
-   run:function(){
-     if(typeof openTrader!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open a station window';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], tr=document.getElementById('topright');
-     if(!tr) return 'SKIP: no corner readout in this build';
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       try{ if(window.__forceSize) __forceSize(1920,1080); }catch(_fs){}   // the modal zoom follows the pane; pinned so the control means the same on every run
-       G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
-       openTrader('buy');
-       var md=document.querySelector('.modal.on'); if(!md) bad.push('control: no station window opened');
-       var mc=md?md.querySelector('h3 .modcur'):null;
-       if(!mc) bad.push('control: the window heading carries no balance to measure');
-       else {
-         var shown=getComputedStyle(mc).display!=='none';
-         var a=mc.getBoundingClientRect(), b=tr.getBoundingClientRect();
-         var hit=shown&&a.width>0&&a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom;
-         if(hit) bad.push('the heading balance ('+Math.round(a.left)+'..'+Math.round(a.right)+' x '+Math.round(a.top)+'..'+Math.round(a.bottom)+') sits under the corner readout ('+Math.round(b.left)+'..'+Math.round(b.right)+' x '+Math.round(b.top)+'..'+Math.round(b.bottom)+')');
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.08',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
-   run:function(){
-     if(typeof RECIPES==='undefined'||typeof dispR!=='function'||typeof itemBlurb!=='function'||typeof itemWanted!=='function') return 'SKIP: no bench, rarity or blurb in this build';
-     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open the bench';
-     var bad=[], i, k, green=0, blue=0, carbIx=-1;
-     for(i=0;i<RECIPES.length;i++){
-       var out=null; for(k in RECIPES[i].out){ out=k; break; }
-       var it=ITEMS[out]; if(!it||it.use!=='gun') continue;
-       var rar=dispR(out)||it.r;
-       if(rar==='uncommon') green++; else if(rar==='rare') blue++; else bad.push(RECIPES[i].name+' shows as '+rar);
-       if(out==='gun_carbine') carbIx=i;
-     }
-     if(!(green>=1&&blue>=1)) bad.push('by the shown rarity the bench holds '+green+' green and '+blue+' blue');
-     var line=null; if(typeof WHATSNEW!=='undefined') for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FOUR GUNS ON THE CRAFTING BENCH')===0) line=WHATSNEW[i];
-     if(line&&line.indexOf('Compact SMG and Burst Carbine in green')>=0) bad.push('the card still calls the Burst Carbine green');
-     var bl=itemBlurb('gun_smg')||'';
-     if(bl.indexOf('Salvage')===0||bl.toLowerCase().indexOf('gun')<0) bad.push('the blurb for a crafted gun reads: '+bl);
-     var sv=itemWanted('servo')||'', op=itemWanted('optic')||'';
-     if(sv.indexOf('contracts')<0) bad.push('the stash keeps a servo for "'+sv+'", not for guns and contracts');
-     if(op.indexOf('contracts')<0) bad.push('the stash keeps an optic for "'+op+'", not for the rifle and contracts');
-     try{
-       __topClear(); __cleanProfile();
-       G=null; keys={}; __showScreen('hub'); __hubEnter();
-       __P().stash=['comp','comp','comp','comp','servo','servo','board','board'];
-       openTrader('craft'); renderWork();
-       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1;
-       for(i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:'+carbIx) ix=i;
-       if(ix<0||carbIx<0) bad.push('control: the bench drew no Burst Carbine row');
-       else {
-         __P()._craftSel=ix; renderCraftDetail(rows);
-         var pill=document.querySelector('#craftdetail .vpill.r');
-         var txt=pill?pill.textContent.trim().toUpperCase():'';
-         if(txt!=='RARE') bad.push('the detail panel calls the Burst Carbine '+(txt||'nothing')+' where every other screen says RARE');
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.07',what:'the bench detail button crafts on a synthetic click (a pad press) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
-   run:function(){
-     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||typeof craftHoldStep!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the bench';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], P=__P(), md=document.getElementById('tradermodal'), keepStash=(P.stash||[]).slice();
-     function stock(){ P.stash=['scrap','scrap','scrap','wire','wire']; }
-     function select(){
-       renderWork();
-       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1;
-       for(var i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:0') ix=i;
-       if(ix<0) return null;
-       P._craftSel=ix; renderCraftDetail(rows);
-       return document.querySelector('#craftdetail .vbuy');
-     }
-     function crafted(){ return P.stash.indexOf('comp')>=0; }
-     try{
-       __topClear(); __cleanProfile();
-       G=null; keys={}; __showScreen('hub'); __hubEnter();
-       stock(); openTrader('craft');
-       var b=select(); if(!b) return 'SKIP: the bench drew no detail button for the Component Kit';
-       if(b.disabled) bad.push('control: with the parts in the stash the detail button is disabled');
-       // ONE: a synthetic click (what the pad and Enter send) crafts.
-       b.click();
-       if(!crafted()) bad.push('a synthetic click on the detail button crafted nothing (a pad or Enter cannot craft)');
-       // TWO: a real mouse click spends nothing.
-       stock(); b=select();
-       if(b){ b.dispatchEvent(new MouseEvent('click',{detail:1,bubbles:true})); if(crafted()) bad.push('a real mouse click crafted; the hold is meant to be the only mouse way'); }
-       // THREE: the hold still crafts.
-       stock(); b=select();
-       if(b&&b.onmousedown){ b.onmousedown({button:0}); craftHoldStep(0.6); if(crafted()) bad.push('control: the hold crafted before it was full'); craftHoldStep(0.6); if(!crafted()) bad.push('control: a full hold crafted nothing'); }
-       else bad.push('control: the detail button has no hold to drive');
-       // FOUR: a hold dies when the window is hidden.
-       stock(); b=select();
-       if(b&&b.onmousedown&&md){ b.onmousedown({button:0}); craftHoldStep(0.3); md.style.display='none'; craftHoldStep(1.2); md.style.display=''; if(crafted()) bad.push('a hold outlived the trader window being hidden and spent the parts'); }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(md) md.style.display=''; craftHoldCancel(); try{ openTrader('buy'); }catch(_ob){} var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); P.stash=keepStash; saveProfile(); }catch(_c){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.06',what:'taking the freebie kit keeps what was packed aside and USE MY OWN GEAR puts the packing and the belt plan back, minus anything sold in between (2026-09-06 menu audit)',
-   run:function(){
-     if(typeof renderFreeKit!=='function'||!window.__P||!window.__hubEnter) return 'SKIP: this fixture cannot reach the freebie kit';
-     var bad=[];
-     function btn(){ return document.querySelector('.fkbtn'); }
-     function press(){ var b=btn(); if(!b||!b.onclick) return 'no button'; try{ b.onclick(); }catch(e){ return 'threw '+(e&&e.message||e); } return null; }
-     try{
-       __topClear(); __cleanProfile();
-       G=null; keys={}; __showScreen('hub'); __hubEnter();
-       var P=__P();
-       P.stash=['medkit','plate','frag']; P.kit=['medkit','plate']; P.hotAssign={2:'medkit'}; P.freeKit=0; P.kitSaved=null;
-       renderFreeKit();
-       if(!btn()) return 'SKIP: the freebie kit button was not drawn';
-       var e1=press(); if(e1) bad.push('control: the first press failed ('+e1+')');
-       if(!P.freeKit) bad.push('control: the first press did not take the kit');
-       if((P.kit||[]).length) bad.push('control: the kit was not emptied while the free kit is taken (his rule)');
-       var e2=press(); if(e2) bad.push('control: the second press failed ('+e2+')');
-       if(P.freeKit) bad.push('control: the second press did not switch back');
-       if((P.kit||[]).join(',')!=='medkit,plate') bad.push('switching back did not restore the packing (kit '+(P.kit||[]).join(',')+')');
-       if(!P.hotAssign||P.hotAssign[2]!=='medkit') bad.push('switching back did not restore the belt plan');
-       // SOLD IN BETWEEN: only what is still in the stash comes back.
-       press(); P.stash=['medkit','frag']; press();
-       if((P.kit||[]).join(',')!=='medkit') bad.push('with the plate sold in between, switching back restored '+(P.kit||[]).join(',')+' and not medkit alone');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.05',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
-   run:function(){
-     if(typeof setSafe!=='function'||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot reach the pocket or the loader';
-     var bad=[], snap=null;
-     try{
-       __topClear(); __cleanProfile();
-       snap=JSON.stringify(__P());   // the loader below replaces the profile; it is put back at the end
-       var P=__P(); P.safe=null;
-       var r1=setSafe('frag');
-       if(!r1) bad.push('the pocket took a Frag Charge without a word');
-       if(P.safe==='frag') bad.push('the pocket is saved on a Frag Charge');
-       var r2=setSafe('ammobox');
-       if(!r2) bad.push('the pocket took an Ammo Box without a word');
-       if(P.safe==='ammobox') bad.push('the pocket is saved on an Ammo Box');
-       var r3=setSafe('medkit');
-       if(r3) bad.push('control: the pocket refused a Medkit ('+r3+')');
-       if(P.safe!=='medkit') bad.push('control: the pocket did not keep the Medkit');
-       __applyLoaded({credits:900,safe:'frag'});
-       if(__P().safe==='frag') bad.push('a saved pocket on a Frag Charge survived the load');
-       __applyLoaded({credits:900,safe:'medkit'});
-       if(__P().safe!=='medkit') bad.push('control: a saved pocket on a Medkit did not survive the load ('+__P().safe+')');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.04',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
-   run:function(){
-     if(typeof hubModalOpen!=='function'||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the floor gate';
-     var ttl=document.getElementById('title'); if(!ttl) return 'SKIP: no character screen element';
-     var bad=[], wasOn=ttl.classList.contains('on');
-     try{
-       __topClear(); __cleanProfile();
-       G=null; keys={}; __showScreen('hub'); __hubEnter();
-       ttl.classList.remove('on');
-       var pb=document.getElementById('pausebox'); if(pb) pb.classList.remove('on');
-       if(hubModalOpen()) bad.push('control: with nothing open the gate already reads open, so it proves nothing');
-       ttl.classList.add('on');
-       if(!hubModalOpen()) bad.push('with the character screen on, the floor gate reads closed, so the stations behind it still take keys');
-       ttl.classList.remove('on');
-       if(hubModalOpen()) bad.push('control: with the character screen off again the gate still reads open');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(wasOn) ttl.classList.add('on'); else ttl.classList.remove('on'); }catch(_t){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.03',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and draw';
-     if(typeof topRightBottom!=='function') return 'SKIP: no corner readout helper in this build';
-     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __forceSize(1920,1080);
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state();
-       g.tel.notes=[{t:1,txt:'probe note 4242'}];
-       __frame(0.016);
-       var bottom=topRightBottom();
-       if(!(bottom>26)) return 'SKIP: the corner readout is not on screen here (bottom '+Math.round(bottom)+')';
-       proto.fillText=function(t,x,y){ rec.push({t:String(t),y:y}); return o.apply(this,arguments); };
-       __frame(0.016);
-       proto.fillText=o;
-       var ln=null; for(var i=0;i<rec.length;i++) if(/notes? logged/.test(rec[i].t)){ ln=rec[i]; break; }
-       if(!ln) bad.push('control: the notes line was not drawn');
-       else if(ln.y<=bottom) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the corner readout that ends at '+Math.round(bottom));
-       else if(ln.y>H) bad.push('the notes line is drawn off the canvas at y '+Math.round(ln.y));
-       var C=(typeof HUDBOX!=='undefined')&&HUDBOX.cond;
-       if(ln&&C&&ln.y>C.y&&ln.y<C.y+C.h) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the conditions panel at '+Math.round(C.y)+' to '+Math.round(C.y+C.h));
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.tel.notes=[]; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.02',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound, while a Medkit over running Bandages is still taken (2026-09-06 audits)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof useMedical!=='function'||typeof healCeil!=='function') return 'SKIP: no heal verb in this build';
-     var bad=[];
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, cap=healCeil(ITEMS.bandage);
-       if(!(cap<p.maxhp)) return 'SKIP: bandages have no ceiling under this profile';
-       p.downed=false; p.prep=null; p.healQ=0;
-       // ONE: two Bandages, health at their ceiling.
-       g.bag=['bandage','bandage']; p.hp=cap; window.__lastSay=null;
-       var r1=useMedical(), s1=String(window.__lastSay||'');
-       if(r1||g.bag.length!==2) bad.push('at '+cap+' health with only Bandages the verb spent one');
-       if(!/Only bandages left/.test(s1)) bad.push('at '+cap+' health with only Bandages the verb said "'+s1+'"');
-       // TWO: a Medkit at full health.
-       g.bag=['medkit']; p.hp=p.maxhp; p.healQ=0; window.__lastSay=null;
-       var r2=useMedical(), s2=String(window.__lastSay||'');
-       if(r2||g.bag.length!==1) bad.push('at full health the verb spent the Medkit');
-       if(!/Already at full/.test(s2)) bad.push('at full health with a Medkit the verb said "'+s2+'"');
-       // THREE: a Bandage already inbound reaches the ceiling; the second is kept.
-       g.bag=['bandage']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
-       var r3=useMedical();
-       if(r3||g.bag.length!==1) bad.push('a second Bandage was spent although the first already reaches '+cap+' (bag now '+g.bag.join(',')+')');
-       // FIVE: a Medkit over running Bandages is still taken; the queue delivers only to their ceiling.
-       g.bag=['medkit']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
-       var r5=useMedical();
-       if(!r5||g.bag.length!==0) bad.push('a Medkit over running Bandages was refused ("'+String(window.__lastSay||'')+'")');
-       p.healQ=0; p.healCap=undefined; p.prep=null;
-       // CONTROL: a Bandage under the ceiling with nothing inbound is used.
-       g.bag=['bandage']; p.hp=cap-30; p.healQ=0; p.prep=null; window.__lastSay=null;
-       var r4=useMedical();
-       if(!r4||g.bag.length!==0) bad.push('control: a Bandage at '+(cap-30)+' health was refused ("'+String(window.__lastSay||'')+'")');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.prep=null; g2.player.healQ=0; g2.player.healCap=undefined; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.01',what:'dying with the free kit does not delete the Scav Pistol you own, and the loaner is not counted as a gun you lost (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P&&typeof commitKit==='function')) return 'SKIP: this fixture cannot start a raid';
-     var bad=[], P2=__P(), keepW=(P2.weapons||[]).slice(), keepEq=P2.equipped, keepFree=P2.freeKit, keepKit=(P2.kit||[]).slice(), keepChosen=P2.kitChosen, keepStash=(P2.stash||[]).slice(), keepSafe=P2.safe, keepKBF=P2.kitBeforeFree;
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       // Not __deploy: it clears the free kit flag before it builds the raid. The
-       // route the lift takes: the free kit chosen, commitKit stamps it, startRaid reads it.
-       P2.stash=[]; P2.kit=[]; P2.safe=null; P2.weapons=['pistol']; P2.equipped='fists'; P2.freeKit=1; P2.kitChosen=0; saveProfile();
-       commitKit(); __startRaid({mapIx:0,seed:4242});
-       var g=__state(), p=g.player;
-       if(!g||!g.freeKit) bad.push('control: the raid did not take the free kit');
-       if(!p.wep||p.wep.id!=='pistol') bad.push('control: the free kit did not issue a Scav Pistol (holding '+(p.wep&&p.wep.id)+')');
-       p.downed=false; __endRaid('dead');
-       if(P2.weapons.indexOf('pistol')<0) bad.push('dying with the free kit deleted the Scav Pistol you own');
-       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
-       if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: the card did not open on the death');
-       if(/and 1 gun/.test(txt)) bad.push('the card counts the loaner as a gun you lost');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{
-       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
-       P2.weapons=keepW; P2.equipped=keepEq; P2.freeKit=keepFree; P2.kit=keepKit; P2.kitChosen=keepChosen; P2.stash=keepStash; P2.safe=keepSafe; P2.kitBeforeFree=keepKBF;
-       try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
-     }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.00',what:'a load with no save sets the menu zoom to 1.3 and runs the Settings pass that arms the wording watcher, the same as a load with a save (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(typeof applyLoadedProfile!=='function'||typeof applyGameOpts!=='function') return 'SKIP: no profile loader in this build';
-     if(typeof MutationObserver!=='function') return 'SKIP: no MutationObserver here';
-     var bad=[], keepZ=P.menuZoom, keepObs=TXOBS;
-     try{
-       __topClear(); __runPrep();
-       P.menuZoom=0;
-       if(TXOBS){ try{ TXOBS.disconnect(); }catch(_d){} TXOBS=null; }
-       applyLoadedProfile(null);   // what storeGet resolves to when nothing is saved
-       if(P.menuZoom!==1.3) bad.push('a load with no save left the menu zoom at '+P.menuZoom);
-       if(!TXOBS) bad.push('a load with no save did not arm the wording watcher');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{
-       P.menuZoom=keepZ||1.3;
-       if(!TXOBS&&keepObs){ TXOBS=keepObs; try{ TXOBS.observe(document.getElementById('root'),{childList:true,subtree:true,characterData:true}); }catch(_o){} }
-       try{ applyMenuZoom(); }catch(_z){}
-       __topClear(); __cleanProfile();
-     }
-     return bad.length?bad.join('; '):null; }},
-  {v:'11.99',what:'a note typed into the pause box during a raid is kept when ESC closes the box, the same as the resume button (2026-09-06 first-ten-minutes audit)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     var pb=document.getElementById('pausebox'), ta=document.getElementById('pausenote');
-     if(!pb||!ta||typeof togglePauseBox!=='function') return 'SKIP: no pause box in this build';
-     var bad=[];
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state();
-       togglePauseBox(true);
-       if(!pb.classList.contains('on')) bad.push('control: the pause box did not open');
-       ta.value='probe note 4242';
-       ta.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));
-       if(pb.classList.contains('on')) bad.push('control: ESC did not close the box');
-       var notes=(g.tel&&g.tel.notes)||[];
-       if(!notes.some(function(x){ return x&&x.txt==='probe note 4242'; })) bad.push('the note typed in the box was thrown away by ESC ('+notes.length+' notes in the record)');
-       if(ta.value) bad.push('the box still holds the note after the close');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{
-       try{ ta.value=''; if(pb.classList.contains('on')){ togglePauseBox(false); pb.classList.remove('on'); } }catch(_c){}
-       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
-       __topClear(); __cleanProfile();
-     }
      return bad.length?bad.join('; '):null; }},
   {v:'11.98',what:'a boarding hold that began before the window shut still extracts while E is held, and the ship can be called from the edge of the ring (his orders of 2026-09-06)',
    run:function(){
@@ -40809,16 +40809,16 @@ window.__REGRESS=[
      if(guns.length!==4) bad.push('the bench holds '+guns.length+' gun recipe(s) and not four');
      var green=0, blue=0;
      for(i=0;i<guns.length;i++){
-       var G2=guns[i], rar=((typeof dispR==='function')?dispR(G2.out):null)||G2.it.r;   // v12.08: the rarity every screen shows
+       var G2=guns[i], rar=((typeof dispR==='function')?dispR(G2.out):null)||G2.it.r;   // v12.10: the rarity every screen shows
        if(rar==='uncommon') green++; else if(rar==='rare') blue++; else bad.push(G2.r.name+' is '+rar+', and only green and blue guns belong on the bench');
        // THE PRICE WINDOW: parts worth more than the gun sells for, less than buying it.
        var parts=0; for(k in G2.r.need){ parts+=(ITEMS[k]?ITEMS[k].val:0)*G2.r.need[k]; }
        if(parts<=G2.it.val) bad.push(G2.r.name+' costs '+parts+' in parts and sells for '+G2.it.val+', which prints money');
-       var buy=(typeof replaceCost==='function')?replaceCost(G2.it.gk):null;   // v12.08: the game's own purchase price, which exists for every gun
+       var buy=(typeof replaceCost==='function')?replaceCost(G2.it.gk):null;   // v12.10: the game's own purchase price, which exists for every gun
        if(!buy) bad.push('control: no purchase price could be found for '+G2.r.name);
        else if(parts>=buy) bad.push(G2.r.name+' costs '+parts+' in parts against '+buy+' to buy, which is a trap');
      }
-     if(green<1||blue<1) bad.push('the bench holds '+green+' green and '+blue+' blue gun recipes, not at least one of each');   // v12.08: the Carbine is blue by dispR
+     if(green<1||blue<1) bad.push('the bench holds '+green+' green and '+blue+' blue gun recipes, not at least one of each');   // v12.10: the Carbine is blue by dispR
      // AND ONE CRAFTS THROUGH THE REAL ROW.
      var smg=null; for(i=0;i<guns.length;i++) if(guns[i].out==='gun_smg') smg=guns[i];
      if(smg){
@@ -52168,7 +52168,7 @@ window.__REGRESS=[
            bad.push('the Servo Actuator is still kept for a repair that no longer exists, its reason reads '+_sv);
        } else if(!__stashRules.sellable('servo'))
          bad.push('the Servo Actuator is still withheld from SELL ALL for a repair that no longer exists');
-       // v12.08: four gun recipes eat the servo, so it is a craft part again and
+       // v12.10: four gun recipes eat the servo, so it is a craft part again and
        // the stash must say so; the repair reason above is still forbidden.
        if(!__stashRules.craftPart('servo'))
          bad.push('the Servo Actuator is not classed as a crafting part though four recipes eat it');
@@ -52579,7 +52579,7 @@ loadProfile().then(function(){
   // screen but nothing calls applyMenuZoom at boot, so it stayed at zoom 1 until
   // something else happened to trigger it. The profile exists by here, which is
   // the whole reason this block is at the bottom of the load.
-  try{ applyGameOpts(); }catch(_ag2){}   // v12.00: once more here, where a loader that threw part way cannot skip it
+  try{ applyGameOpts(); }catch(_ag2){}   // v12.01: once more here, where a loader that threw part way cannot skip it
   try{ applyMenuZoom(); }catch(_am){}
   ensureContracts();
   saveProfile();
