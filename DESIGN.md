@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.66 - THE RESTORE CODE LEFT THE ARMOURY BEHIND
+
+From the v11.46 read-only audit, P1. Since v11.03 every run report ends with
+a restore code, a short pasteable line that carries the character so a friend
+who loses a save can be given one back. The card promises "what you have
+unlocked" and the panel that applies it says REPLACES. The maker carried the
+credits, the XP, the runs, the stash, the cosmetics, the junk tags and the
+chosen sector, and not one gun: not the guns owned, not the one in hand, not
+the second slot, not the wear on any of them. A friend restored from his own
+code came back with the fresh profile's Scav Pistol and nothing else, having
+been told he was getting everything.
+
+THE FIX. The code carries the armoury: the guns owned, the one in hand, the
+second slot, and the rounds worn through each, which is what condition is
+made of. Applying it brings them back. A gun this build does not know is
+dropped, the same rule the stash already follows, and the slots fall back to
+fists and none if they name a gun that was dropped. An older code without the
+block leaves the guns as they are rather than stripping them. The line that
+says what a code holds before it is applied now counts the guns too.
+
+MEASURED. Check 11.66 gives the profile three guns no fresh profile owns, the
+marksman rifle in hand, the magnum second, and worn figures nothing rolls;
+makes a code, wipes the armoury back to a Scav Pistol, applies the code, and
+requires all four things back exactly. A control pushes a gun that does not
+exist into the code and requires it dropped with the rest intact. On the
+v11.65 fixture the code carries no armoury and the check fails saying so.
+
+Not verified: his own play; a code from a build before v11.66 applied on this
+one (the guns are left alone by construction, not driven here); any gun field
+beyond ownership, slots and wear, such as a per-gun quality roll, if one
+exists in the profile.
 ## v11.65 - TAGS AND A NOTE CHOSEN AFTER COPY REPORT WERE DROPPED
 
 From the v11.46 read-only audit, P1. Since v10.65 there is one commit for the
