@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.84';
+var VER='11.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.84';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.84';
+var WHATSNEW_VER='11.85';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE MAP NAMES EACH EXTRACTION AND COUNTS DOWN TO ITS CLOSE in a size you can read.',
   'THE MERIDIAN LANCE TRAVELS THROUGH CRAWLERS, hitting every one on the line with its full damage.',
   'THE STIM INJECTOR IS TEN SECONDS OF LEGS: unlimited stamina and a fifth more speed while it runs.',
   'HEALING STACKS AGAIN. The next bandage goes on while the prior one is still healing, and a plate goes on while a bandage is being applied. The one-at-a-time refusal and its countdown are gone.',
@@ -26135,9 +26136,9 @@ function drawMapOverlay(){
   // through the global FS, which knows about the text size dial and nothing
   // about the screen. Measured before this: the drawn world went from 1161x940
   // to 2495x2020 between 1080p and 4K while every label stayed at 18.7px.
-  // Declared here so it shadows the global for this function only. All fourteen
+  // Declared here so it shadows the global for this function only. All fifteen
   // font calls below pick it up, and there is one place to change it rather than
-  // fourteen. hudRes() is exactly 1 at 1920x1080, so that screen is unchanged.
+  // fifteen. hudRes() is exactly 1 at 1920x1080, so that screen is unchanged.
   var _MZ=hudRes();
   function FS(spec){ return FSz(spec,_MZ); }
   mapLabelReset();
@@ -26510,16 +26511,21 @@ if(G.trail&&G.trail.length>1){
       ctx.strokeStyle=Z.open?('rgba(77,227,208,'+((((Z===G.active)?0.95:0.45))*_fl).toFixed(3)+')'):'rgba(127,146,216,.42)';
       ctx.lineWidth=(Z===G.active)?2:1;
       ctx.beginPath(); ctx.arc(ox+Z.x*sc,oy+Z.y*sc,Math.max(4,Z.r*sc),0,6.2832); ctx.stroke();
-      ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+      // v11.85, HIS NOTE: "the map should show when the extracts are going to
+      // close via countdown on each one". It did, since v7.60, in the smallest
+      // face the game has, so he never saw it. Name as a callout, countdown as
+      // a label, each on its own row.
+      ctx.font=FS(TYPE.head); ctx.textAlign='center';
       ctx.fillStyle=Z.open?('rgba(77,227,208,'+(0.9*_fl).toFixed(3)+')'):'rgba(154,168,208,.80)';
-      ctx.fillText('EXTRACT '+String.fromCharCode(65+_fz),ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-14);
+      ctx.fillText('EXTRACT '+String.fromCharCode(65+_fz),ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-LH(24));
       var _zSub;
       if(!Z.open) _zSub='CLOSED';
       else if(_zHold) _zSub='OPEN TO EXTRACT  '+Math.max(0,Math.ceil(Z.hold))+'s';
       else if(_zAct) _zSub='CALLED  '+Math.max(0,Math.ceil(Z.beaconT))+'s';
       else if(Z.closeAt===undefined) _zSub='STAYS OPEN';
       else _zSub='closes in '+fmtMS(Math.max(0,Math.ceil(G.timeLeft-Z.closeAt)));
-      ctx.fillText(_zSub,ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-4);
+      ctx.font=FS(TYPE.label);   // v11.85: the countdown, readable
+      ctx.fillText(_zSub,ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-LH(6));
       ctx.textAlign='left';
     }
   })();
@@ -28391,7 +28397,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.84: HIS NOTE of 2026-09-06, Meridian Lance rounds travel through crawlers. The round is stamped thru at the muzzle when the weapon is the lance; the hit test damages a crawler and lets the round continue, remembering him so he is not hit again next frame; anything else stops it as before. Check 11.84 stands two crawlers on a clear line, fires the real lance through fireWeapon and steps the real bullet update, requires both to have taken one hit each, and fires a rifle the same way requiring only the first hit; fails on v11.83.',
+  now:'v11.85: HIS NOTE of 2026-09-06, the map should count down to each extraction closing. It did since v7.60 in TYPE.micro, the smallest face in the game, so he never saw it; the name is drawn in TYPE.head and the countdown in TYPE.label, each on its own row above the ring. Check 11.85 records every fillText the map overlay makes and requires the EXTRACT names in the callout face and their countdown lines in the label face, measured against the fixture type table, with at least one of each drawn; fails on v11.84, which drew both in the micro face (15.6px at 1080p, 13px at the text floor).',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

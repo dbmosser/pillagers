@@ -5732,6 +5732,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.85',what:'the map names each extraction in the callout face and counts down to its close in the label face, one row each above the ring, instead of both in the smallest face the game has (his note of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
+     proto.fillText=function(t){ try{ rec.push({t:String(t),font:this.font}); }catch(_r){} return orig.apply(this,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.mapOpen=true;
+       drawMapOverlay();
+       function px(f){ var m=/([\d.]+)px/.exec(f||''); return m?parseFloat(m[1]):0; }
+       var names=rec.filter(function(r){ return r.t.indexOf('EXTRACT ')===0&&r.t.length<=10; });
+       var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |OPEN TO EXTRACT)/.test(r.t); });
+       if(!names.length) bad.push('control: the map drew no EXTRACT name');
+       if(!subs.length) bad.push('control: the map drew no countdown or state line under a ring');
+       var _hp=(window.__type&&__type.px('head'))||18, _lp=(window.__type&&__type.px('label'))||15;
+       var smallN=names.filter(function(r){ return px(r.font)<_hp-0.5; }), smallS=subs.filter(function(r){ return px(r.font)<_lp-0.5; });
+       if(smallN.length) bad.push(smallN.length+' extraction name(s) drawn at '+px(smallN[0].font)+'px, under the callout face at '+_hp+'px');
+       if(smallS.length) bad.push(smallS.length+' countdown line(s) drawn at '+px(smallS[0].font)+'px, under the label face at '+_lp+'px ("'+smallS[0].t+'")');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ proto.fillText=orig; try{ var g2=__state(); if(g2) g2.mapOpen=false; }catch(_m){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.84',what:'a Meridian Lance round travels through crawlers, hitting each one on the line once with its full damage, while a rifle round still stops at the first (his note of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
