@@ -1015,6 +1015,8 @@ window.__syncReport=function(){ syncAutoEx(); return document.getElementById('re
 // driven rather than read. __load is loadOf(), a loadout helper, and calling it
 // for this proved nothing at all.
 window.__loadProfile=function(){ return loadProfile(); };
+window.__noteCrash=function(k,m,w){ return noteCrash(k,m,w); };
+window.__ploaded=function(v){ if(typeof PLOADED==='undefined') return null; if(v!==undefined) PLOADED=!!v; return PLOADED; };
 window.__applyLoaded=(typeof applyLoadedProfile==='function')?function(prof){ applyLoadedProfile({key:SKEY,value:JSON.stringify(prof)}); return true; }:undefined;
 window.__wnseen=function(v){ if(v!==undefined) WNSEEN=v; return WNSEEN; };
 window.__see=function(){ return canSee.apply(null,arguments); };
@@ -5435,6 +5437,36 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.47',what:'a crash caught before the profile is read never saves over the real save: it goes to its own key, and a crash after the read still lands in P.crashes',
+   run:function(){
+     if(!(window.__noteCrash&&window.__P)) return 'SKIP: this fixture cannot raise a crash through the catcher';
+     var KEY='salvagerun:profile', PRE='salvagerun:precrash', saved=null, bad=[];
+     try{ saved=localStorage.getItem(KEY); }catch(e){ return 'SKIP: localStorage is not reachable here'; }
+     // A DISTINCTIVE stored save that no default could produce.
+     var real='{"credits":424242,"xp":7,"pname":"ZQXREAL","stash":[],"weapons":["pistol"]}';
+     try{
+       localStorage.setItem(KEY, real); try{ localStorage.removeItem(PRE); }catch(e0){}
+       // BEFORE THE READ. On this build __ploaded closes the gate; on an older
+       // build there is no gate and the catcher saves the live P over the save.
+       var had=(window.__ploaded?window.__ploaded():null);
+       if(window.__ploaded) window.__ploaded(false);
+       window.__noteCrash('error','zqx boot probe','probe:1');
+       var after=null; try{ after=localStorage.getItem(KEY); }catch(e1){}
+       if(after!==real) bad.push('a crash before the profile was read overwrote the real save (the stored profile changed to '+String(after).slice(0,50)+')');
+       var pre=null; try{ pre=JSON.parse(localStorage.getItem(PRE)||'null'); }catch(e2){}
+       if(!(pre&&pre.length&&/zqx boot probe/.test(String(pre[pre.length-1].msg||'')))) bad.push('the boot crash was not written to its own key');
+       // AFTER THE READ (control): the gate is open and a crash is recorded in P.
+       if(window.__ploaded) window.__ploaded(true);
+       var P=window.__P(); var n0=(P.crashes||[]).length;
+       window.__noteCrash('error','zqx after probe','probe:2');
+       if(!((P.crashes||[]).length>n0)) bad.push('control: after the read a crash was not recorded in P.crashes, so the catcher is off');
+       if(window.__ploaded&&had!==null) window.__ploaded(had);
+     } finally {
+       try{ if(saved===null) localStorage.removeItem(KEY); else localStorage.setItem(KEY, saved); }catch(e3){}
+       try{ localStorage.removeItem(PRE); }catch(e4){}
+       try{ if(window.__cleanProfile) __cleanProfile(); }catch(e5){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.46',what:'a hostile pillager standing in the extraction ring who can see you returns fire after ONE beat, instead of having his cooldown floored every frame so he never shoots; and with the acquisition gate pinned shut (raiderReact 99) he fires none, so the rounds pass through the gate',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__sim&&window.__see&&window.__cfg&&window.__keys&&window.__mouse)) return 'SKIP: this fixture cannot stage the ring seat';

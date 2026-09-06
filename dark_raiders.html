@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.46';
+var VER='11.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.46';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.46';
+var WHATSNEW_VER='11.47';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A CRASH WHILE THE GAME IS STILL LOADING CAN NO LONGER WIPE YOUR SAVE. If something broke before your character was read in, the crash catcher used to write a blank starting profile over the real one. It now keeps the note aside and adds it to your report once your character is loaded.',
   'A PILLAGER WHO SEES YOU NOW ACTUALLY SHOOTS. A pillager heading for extraction who had you in clear sight would stand there and never fire: the one-beat pause meant to give you a fair moment was being reapplied every frame, so his trigger never came free. He gets his one beat, then he fires.',
   'THE TITLE SCREEN NO LONGER ANSWERS THE FLOOR KEYS. Pressing P or ESC on the title screen used to open the pause box over it, and ENTER to start could quietly dismiss the NEW IN card before you saw it. The title keeps its own keys now: ENTER or SPACE starts, nothing else.',
   'YOUR SETTINGS SURVIVE A LOAD AGAIN. A one-time cleanup that runs when the game opens an older save was saving the default settings over yours before your own were read back, so a returning player could find the sliders reset. Your saved settings are kept now.',
@@ -27539,11 +27540,25 @@ function onCtxRestored(){
 // An error event with no message and no error object is a resource that failed
 // to load, which this one-file game does not have, and is ignored.
 var CRASH_KEEP=12, CRASH_SAME_MS=5000, crashTold=false;
+// v11.47: the profile is not READ until loadProfile resolves. A crash before
+// that must never call saveProfile, which would write the file-scope default P
+// over a real save. It goes to its own key and is merged in after the read.
+var PLOADED=false, PRECRASH='salvagerun:precrash';
 function noteCrash(kind,msg,where){
   try{
     if(!Array.isArray(P.crashes)) P.crashes=[];
     msg=String(msg||'(no message)').replace(/\s+/g,' ').slice(0,200);
     where=String(where||'').replace(/\s+/g,' ').slice(0,200);
+    if(!PLOADED){
+      try{
+        var _pc=[]; try{ _pc=JSON.parse(localStorage.getItem(PRECRASH)||'[]'); }catch(_p0){ _pc=[]; }
+        if(!Array.isArray(_pc)) _pc=[];
+        _pc.push({v:VER,t:Date.now(),kind:kind,screen:'boot',msg:msg,where:where,n:1});
+        while(_pc.length>CRASH_KEEP) _pc.shift();
+        localStorage.setItem(PRECRASH,JSON.stringify(_pc));
+      }catch(_p1){}
+      return;
+    }
     var now=Date.now(), last=P.crashes[P.crashes.length-1];
     if(last&&last.msg===msg&&last.kind===kind&&(now-last.t)<CRASH_SAME_MS){ last.n=(last.n||1)+1; last.t=now; }
     else{
@@ -28085,7 +28100,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.46: the beat to react was a floor, not a beat. The line giving a pillager one beat before his first shot ran every frame he saw the player outside chase, re-flooring cd to react each time, so a man in extract (a state that persists while he sees you) never reached the cd<=0 the fire gate needs and never fired; measured zero rounds in sixty steps at 200 units in clear view. Now edge-triggered on a per-pillager beat flag, re-armed when sight is lost. Proven with an open-ground line-of-sight harness (both parked off-map, facing, hostile, extract): rounds after one beat, and none when he faces away. His 2026-08-26 note; closes the last STILL OPEN combat line.',
+  now:'v11.47: the crash catcher saved the default profile over the real save. noteCrash ended with saveProfile, and P is the file-scope default until applyLoadedProfile sets P=d when loadProfile resolves near the end of the file; any uncaught error at file scope between the catcher and that call, or during the read, wrote credits 900 over the saved character. A PLOADED flag is set when the read resolves; before it a crash is written to its own key, salvagerun:precrash, and merged into P.crashes after the read. From the v11.46 audit, P0.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33099,6 +33114,19 @@ resize();
   }catch(e){}
 })();
 loadProfile().then(function(){
+  // v11.47: the profile is read; the crash catcher may save from here on, and any
+  // crash caught before the read is merged in now and its own key cleared.
+  PLOADED=true;
+  try{
+    var _pcm=JSON.parse(localStorage.getItem(PRECRASH)||'[]');
+    if(Array.isArray(_pcm)&&_pcm.length){
+      if(!Array.isArray(P.crashes)) P.crashes=[];
+      for(var _pi=0;_pi<_pcm.length;_pi++) P.crashes.push(_pcm[_pi]);
+      while(P.crashes.length>CRASH_KEEP) P.crashes.shift();
+      localStorage.removeItem(PRECRASH);
+      try{ saveProfile(); }catch(_pm){}
+    }
+  }catch(_pc2){}
   // Seed both the target and the eased value from the saved profile, or the
   // first frame after loading eases from 1 to the saved zoom for no reason.
   ZT=ZC=clamp(P.zoom||1,ZMIN,ZMAX);

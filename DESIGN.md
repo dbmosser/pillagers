@@ -40024,6 +40024,40 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.47 - THE CRASH CATCHER SAVED THE DEFAULT PROFILE OVER THE REAL SAVE
+
+From the v11.46 read-only audit (29 agents, every finding skeptic-verified),
+the first of its two P0 data-loss lines. The crash catcher, noteCrash, is the
+alpha's own safety net: an uncaught error is written into P.crashes and saved,
+so it reaches his run report. It ended with saveProfile, and saveProfile writes
+P as it stands. But P is the file-scope default, credits 900, an empty stash and
+a pistol, until applyLoadedProfile sets P=d, and that only happens when
+loadProfile resolves near the very end of the file. So any uncaught error thrown
+at file scope between the catcher's registration and that call, or during the
+read itself, wrote the blank starting profile over the saved character before it
+had ever been read. Exactly the case a new build on a friend's browser is most
+likely to hit, and the one that would cost a friend his character on day one.
+
+THE FIX. A PLOADED flag that becomes true when the read resolves. Before it, a
+crash is written to its own key, salvagerun:precrash, capped at the same twelve
+entries, and noteCrash returns without touching P or the profile key. When the
+read resolves, any crashes on that key are merged into P.crashes, the key is
+cleared, and the profile is saved once. So a boot crash is still recorded and
+still reaches the report, and the save is never written before it is read.
+
+MEASURED. Check 11.47 stores a distinctive save (credits 424242, name ZQXREAL)
+under the profile key, closes the gate through a hook, raises a crash through
+the real noteCrash, and requires the stored save to be byte-identical afterwards
+and the crash to be on the precrash key; then opens the gate, raises another,
+and requires it to land in P.crashes (the control that the catcher still
+records). On the v11.46 fixture there is no gate: the first crash writes the
+live P over the distinctive save, and the check fails on that line.
+
+Not verified: his own play; a crash thrown by the storage shim itself, which
+this path cannot record anywhere; whether a browser that blocks localStorage
+entirely can keep the precrash note (it cannot, and the save is safe either
+way); the other P0 from the same audit, the stash gun lost on right-click
+Equip, which is the next build.
 ## v11.46 - THE BEAT TO REACT WAS A FLOOR, NOT A BEAT
 
 Closes the STILL OPEN line "THE BEAT TO REACT IS A FLOOR, NOT A BEAT", his

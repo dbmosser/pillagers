@@ -1,0 +1,15 @@
+v11.47: the crash catcher saved the default profile over the real save
+
+noteCrash ended with saveProfile, and P is the file-scope default until
+applyLoadedProfile sets P=d when loadProfile resolves near the end of the file,
+so any uncaught error at file scope between the catcher and that call, or
+during the read, wrote credits 900 over the saved character before it was read.
+A PLOADED flag is set when the read resolves; before it a crash is written to
+its own key (salvagerun:precrash, capped at twelve) and never touches the
+profile; after the read those entries are merged into P.crashes and saved once.
+Check 11.47 raises a crash through the real catcher with the gate closed and
+requires a distinctive stored save to be untouched and the crash on its own
+key, then with the gate open requires the crash in P.crashes; fails on v11.46.
+First of the two P0 data-loss lines from the v11.46 audit.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
