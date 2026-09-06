@@ -27,9 +27,15 @@ SubRx @'
        __topClear(); __runPrep();
        t.classList.add('on');
        pin.value='KESTREL 4242'; try{ pin.focus(); }catch(_f){}
+       var focused=(document.activeElement===pin);   // a hidden pane may refuse focus; the blur is measured only when it took
        pin.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));
        if(P2.pname!=='KESTREL 4242') bad.push('ENTER in the box left the name as '+P2.pname);
        if(!t.classList.contains('on')) bad.push('control: ENTER in the box started the game');
+       if(focused&&document.activeElement===pin) bad.push('ENTER committed the name but did not leave the box');
+       // A SECOND ENTER, with the box left, starts the game.
+       t.classList.add('on');
+       window.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));
+       if(t.classList.contains('on')) bad.push('a second ENTER after leaving the box did not start the game');
        t.classList.add('on');
        pin.value='MERLIN 4242';
        st.click();

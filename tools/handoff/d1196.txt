@@ -18,11 +18,14 @@ armoury (the same wepFromArmory and secFromArmory flags the pickup path
 reads, carried through swaps), and only then removes it from the list. A
 field-found gun no longer touches the armoury on a death either. The free
 kit's pistol, not from the armoury and carrying the free kit's gun id in a
-free-kit raid, is neither counted in "and N guns" nor priced; it still
-prints its LOST line, one word, one outcome, as v9.55 asked.
+free-kit raid, is out of the ledger entirely, as an issued loaner already
+is: not counted, not priced, no LOST line, so the count and the lines
+agree, which is the v10.72 rule.
 
 MEASURED. Check 11.96 sets the profile to own one pistol with the free kit
-chosen, deploys, confirms the issued pistol is in hand, ends the raid by
+chosen, starts the raid the way the lift does (commitKit, then startRaid;
+the harness deploy clears the free kit flag before it builds, which the
+review caught), confirms the issued pistol is in hand, ends the raid by
 death, and requires the pistol still owned and the card counting no gun
 lost. On the v11.95 fixture the armoury comes back empty.
 

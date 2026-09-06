@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v11.87 (64f7bd3). The tree has **v11.88 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v11.88 (6bd55b2). The tree has **v11.89 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "seed".
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1188 cm1188.txt
+    bash tools/handoff/ship.sh commit 1189 cm1189.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1188 1189
+    bash tools/handoff/ship.sh start 1189 1190
 and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -26,6 +26,7 @@ usual cause (see memory dark-raiders-loader-replaces-the-profile).
 - **1192 to 1198 FIRST TEN MINUTES** (from the read-only audit wf_e9fb3c4f-c46, 8 agents, 35 findings; the ten highs verified by reading the code): 1192 the NEW IN card fits and a first launch never sees it; 1193 ENTER and the start button commit the typed name; 1194 a pause note survives ESC; 1195 the first session runs the Settings pass and the 1.3 menu zoom; 1196 dying with the freebie kit keeps the pistol you own; 1197 the heal verb tells the truth (both reviews); 1198 the notes-logged line sits below the corner readout.
 - **1199 to 1206 POLISH** (the former 1191 to 1198: character screen keys, safe pocket refuses throwables, freebie kit restore, controller craft, four guns on the bench pill, modal headers drop the balance, pillager throw band, map says EXTRACT NOW!). Their labels were shifted by renum1199.ps1 and renum1189b.ps1; every 11.9x mention in them was an anchor or a control reference.
 - **NOT DRAFTED, from the same audits, in value order:** the DOWN toast says F gets you up on the second down when it cannot; the lift FREEBIE KIT button does not clear the belt plan (the stash one does); ESC with the floor backpack open raises the pause box instead of closing the bag; P cannot close the pause box while its textarea has focus; GEARRULES still teaches X swaps; hub belt may cover the [E] STATION prompt (UNVERIFIED, take a screenshot of the floor with the operator at the lift); the outcome card prints a dose XP bonus the profile is not credited on death or abandon; the second review of v11.84 says only the player's Lance rounds pass through crawlers (stamp `thru` on fromPlayer or copy the two lines into the enemy branch); check 11.80 should also count __ambOff calls rising by 2; check 11.85 should pin __forceSize(1920,1080); check 11.81's control arm should restore P.seals.
+- **LEFTOVERS OF THE DRAFT REVIEW wf_cfc891c0-f2e (47 findings; highs and mediums folded in by fixdrafts5.ps1 + fixdup5.ps1):** check 11.88 should reset and restore P.hud (a collapsed CONDITIONS panel on the saved profile reads as a red for the wrong reason; copy the idiom at mkfixture ~3191); the v11.88 patch left the quiet and swift verdict branches unreachable rather than deleting them, and the v9.70 comment under it still cites "nothing killed yet" as a live example (delete both branches and reword the comment in a polish build); check 11.97 has no arm for the named belt heal slot (stage P.hotAssign the way check ~1468 does, then setHot and useHot); the 1188 check spies fillText by hand where __textTrace exists; the queue drafts still use the DEVNOW idiom `now:'v11\.NN:[^']*'` which cannot carry an apostrophe (never put one in a DEVNOW sentence).
 - **DRY RUN BEFORE SHIPPING 1189:** `powershell -NoProfile -ExecutionPolicy Bypass -File tools/handoff/dry.ps1 1189 1206` from the tree at v11.88, then `dry/mk.ps1`, then run checks 11.89 to 12.06 on :8801 between corpora (tools/serve.ps1 -Root tools/handoff/dry -Port 8801 if the server is down).
 
 

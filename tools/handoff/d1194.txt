@@ -13,10 +13,10 @@ box, was gone.
 
 THE BUILD. The close itself banks the note. togglePauseBox already banked a
 floor note on close (v11.72); it now banks a raid note the same way, into
-the run's notes, whenever the box closes over a live raid. The resume
-button's own copy of those lines is deleted so there is one copy. The
-abandon path keeps its copy, because it ends the raid before it closes the
-box and the close would then see a raid that is over.
+the run's notes, whenever the box closes over a live raid. The resume and
+abandon buttons each carried their own copy of those lines; both are
+deleted so there is one copy. Both buttons close the box before anything
+ends the raid, so the close is what banks.
 
 MEASURED. Check 11.94 deploys, opens the pause box, types a note, and
 presses ESC on the textarea itself, which is the element a real key reaches

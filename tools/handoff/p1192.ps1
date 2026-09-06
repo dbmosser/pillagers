@@ -77,7 +77,7 @@ SubRx @'
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.91:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.91 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.91:[^']*'",{ param($m) "now:'v11.92: from the 2026-09-06 first-ten-minutes audit, the NEW IN card had no gate for a fresh profile (the comment above it promised one since v2.79) and drew every one of its 137 entries, a card near five screens tall with its heading and its dismiss line off the canvas. A profile with no runs stamps itself current and never sees it; what does not fit is cut, newest first, between entries. Check 11.92 draws the floor HUD with runs at 0 and requires no card, then with runs and requires the heading and the dismiss line inside the canvas; fails on v11.91.'" })
+$s=[regex]::Replace($s,"now:'v11\.91:[^']*'",{ param($m) "now:'v11.92: from the 2026-09-06 first-ten-minutes audit, the NEW IN card had no gate for a fresh profile (the comment above it promised one since v2.79) and drew every one of its entries, past a hundred and forty, a card near five screens tall with its heading and its dismiss line off the canvas. A profile with no runs stamps itself current and never sees it; what does not fit is cut, newest first, between entries. Check 11.92 draws the floor HUD with runs at 0 and requires no card, then with runs and requires the heading and the dismiss line inside the canvas; fails on v11.91.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

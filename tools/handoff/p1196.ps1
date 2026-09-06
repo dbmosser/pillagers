@@ -35,7 +35,8 @@ SubRx @'
       // was fixed there; a field-found gun never touches the armoury either.
       var _egp=G.player, _egArm=!!((gone[j]===_egp.wep&&_egp.wepFromArmory)||(gone[j]===_egp.sec&&_egp.secFromArmory));
       var _egFree=!!(G.freeKit&&!_egArm&&gone[j].id===FREEKIT_GUN);
-      if(!_egFree){ _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id); }
+      if(_egFree) continue;   // out of the ledger entirely, as an issued loaner already is: no count, no price, no line
+      _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
       var wi=_egArm?P.weapons.indexOf(gone[j].id):-1;
       if(wi>=0){ P.weapons.splice(wi,1);
 '@

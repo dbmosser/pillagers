@@ -1,7 +1,7 @@
 v11.92: first ten minutes, the NEW IN card fits the screen and a first launch never sees it
 
 The floor card had no gate for a fresh profile despite a comment promising
-one since v2.79, and drew all 137 entries after its size fallback: a card
+one since v2.79, and drew all of its entries, past a hundred and forty, after its size fallback: a card
 near five screens tall at 1080p with the heading and the dismiss line off
 the canvas. A profile with no runs stamps the latch; what does not fit is
 cut, newest first, between entries. Check 11.92 records the canvas text

@@ -21,9 +21,11 @@ SubRx @'
   {v:'11.92',what:'the NEW IN card greets only a player with runs behind him, and for him it fits the screen with its heading and its dismiss line both on the canvas (2026-09-06 first-ten-minutes audit)',
    run:function(){
      if(!(window.__wnseen&&window.__hubEnter&&window.__hubFrame&&window.__forceSize&&window.__showScreen)) return 'SKIP: this fixture cannot drive the floor card';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
      var bad=[], P2=__P(), keepRuns=P2.runs, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
      try{
        __topClear(); __runPrep(); __forceSize(1920,1080);
+       if(!(H>400)) return 'SKIP: the canvas came back '+W+'x'+H+', too small to measure the card';
        G=null; keys={}; __showScreen('hub'); __hubEnter();
        proto.fillText=function(t,x,y){ rec.push({t:String(t),y:y}); return o.apply(this,arguments); };
        // ARM ONE: a profile with no runs never sees the card and stamps itself current.
@@ -38,7 +40,7 @@ SubRx @'
        for(var i=0;i<rec.length;i++){
          if(!hd&&rec[i].t.indexOf('NEW IN v')===0) hd=rec[i];
          if(!dm&&/press ENTER or walk to dismiss/.test(rec[i].t)) dm=rec[i];
-         if(/^1\. /.test(rec[i].t)) first++;
+         if(/^2\. /.test(rec[i].t)) first++;   // the second row: the first is the pinned ALPHA notice, which the cut always keeps
        }
        if(!hd) bad.push('control: a returning player was not shown the card');
        else if(hd.y<0||hd.y>H) bad.push('the heading is drawn at y '+Math.round(hd.y)+' on a canvas '+H+' tall');

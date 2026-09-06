@@ -10,12 +10,15 @@ what the alpha card asks him to do, the two print on top of each other.
 
 THE BUILD. The line is drawn at the readout's bottom edge plus a line
 height, or at 26 when the readout is not on screen, through the same
-topRightBottom helper the gear stack already uses to keep clear of it.
+topRightBottom helper the gear stack already uses to keep clear of it. The
+CONDITIONS panel, which also starts under the readout, starts under the
+line when there is one, so one overlap is not traded for another (the
+review caught the first draft doing exactly that).
 
 MEASURED. Check 11.98 deploys with one note logged at 1920x1080, draws a
 frame, reads the readout's bottom edge (and skips if the readout is not on
 screen), then draws a frame with the canvas text call recorded and
-requires the notes line under that edge and inside the canvas. On the
+requires the notes line under that edge, inside the canvas and outside the CONDITIONS panel's box. On the
 v11.97 fixture the line is at y 26, inside the readout.
 
 Not verified: by eye at 4K, where the readout and the line both scale; a

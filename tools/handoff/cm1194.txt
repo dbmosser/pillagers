@@ -2,7 +2,7 @@ v11.94: first ten minutes, a pause note is kept when ESC closes the box
 
 The resume button banked a raid note and ESC did not, so a note typed and
 closed the way the box's own legend names was thrown away. The close banks
-it now, for the button and for ESC alike; the button's duplicate is gone.
+it now, for the buttons and for ESC alike; both buttons' duplicates are gone.
 Check 11.94 presses ESC on the textarea with a note typed and requires it
 in the run record; fails on v11.93.
 

@@ -55,7 +55,11 @@ function useMedical(){
   // started above the first one's reach was spent for nothing.
   // What is already on its way counts as health you have (v11.82, HIS NOTE: a
   // heal already running no longer refuses the next one).
-  if(p.hp+(p.healQ||0)>=p.maxhp){
+  // What the queue can DELIVER, not what was poured in: a running heal stops
+  // at its own ceiling (healCap), so a Medkit over two Bandages that end at
+  // 85 is not refused as Already healing.
+  var _reach=Math.min(p.hp+(p.healQ||0),(p.healCap===undefined?p.maxhp:p.healCap));
+  if(_reach>=p.maxhp){
     say((p.healQ>0)?'Already healing.':'Already at full');
     return false;
   }
@@ -72,7 +76,7 @@ function useMedical(){
 SubRx @'
     if(G.player&&G.player.hp>=healCeil(it)) continue;
 '@ @'
-    if(G.player&&G.player.hp+(G.player.healQ||0)>=healCeil(it)) continue;   // v11.97: what is inbound counts
+    if(G.player&&Math.min(G.player.hp+(G.player.healQ||0),(G.player.healCap===undefined?G.player.maxhp:G.player.healCap))>=healCeil(it)) continue;   // v11.97: what is inbound counts, up to what the running heal can deliver
 '@
 SubRx @'
       if(_pp.hp+(_pp.healQ||0)>=_pp.maxhp){
@@ -86,7 +90,7 @@ SubRx @'
       // v11.97: and the item's own ceiling, counting what is inbound. The
       // generic verb has had this since v9.62; a named Bandage above 85 was
       // spent for nothing while the toast said it was healing you.
-      if(_pp.hp+(_pp.healQ||0)>=healCeil(ait)){ say(ait.name+' will not take you past '+Math.round(healCeil(ait))+'.'); return; }
+      if(Math.min(_pp.hp+(_pp.healQ||0),(_pp.healCap===undefined?_pp.maxhp:_pp.healCap))>=healCeil(ait)){ say(ait.name+' will not take you past '+Math.round(healCeil(ait))+'.'); return; }
       if(_pp.prep){ say('Already applying '+(ITEMS[_pp.prep.key]?ITEMS[_pp.prep.key].name:'something')+'.'); return; }
 '@
 
@@ -98,7 +102,7 @@ var VER='11.97';
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.96:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.96 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.96:[^']*'",{ param($m) "now:'v11.97: from the two 2026-09-06 reviews, the heal verb said No medical supplies with two Bandages at their ceiling (the sentence for that case sat behind a guard that had already returned) and at full health with a Medkit; and since v11.82 let heals stack, the ceiling tests read health alone, so a second Bandage above the first one''s reach was spent for nothing, and the named belt slot had no ceiling at all. The full-health test comes first, the picker counts what is inbound, and the belt slot has the ceiling. Check 11.97 drives four cases through the real verb; fails on v11.96.'" })
+$s=[regex]::Replace($s,"now:'v11\.96:[^']*'",{ param($m) "now:'v11.97: from the two 2026-09-06 reviews, the heal verb said No medical supplies with two Bandages at their ceiling (the sentence for that case sat behind a guard that had already returned) and at full health with a Medkit; and since v11.82 let heals stack, the ceiling tests read health alone, so a second Bandage above the reach of the first was spent for nothing, and the named belt slot had no ceiling at all. The full-health test comes first, the picker counts what is inbound, and the belt slot has the ceiling. Check 11.97 drives four cases through the real verb; fails on v11.96.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

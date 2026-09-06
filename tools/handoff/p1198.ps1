@@ -20,9 +20,16 @@ SubRx @'
 '@ @'
     // v11.98: BELOW THE CORNER READOUT, not through it. y 26 sat inside the
     // rectangle the v11.78 credits and XP readout now fills, so the line and
-    // the readout printed over each other from the first note he left.
-    var _nly=Math.max(26,Math.ceil(topRightBottom())+LH(16));
+    // the readout printed over each other from the first note he left. The
+    // CONDITIONS panel, which starts under the readout, starts under this too.
+    var _nly=Math.max(26,Math.ceil(topRightBottom())+LH(14));
     ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,_nly); ctx.restore(); }
+'@
+
+SubRx @'
+    by=Math.max(by,Math.ceil((topRightBottom()+8)/_cz));
+'@ @'
+    by=Math.max(by,Math.ceil((topRightBottom()+8+((T.notes&&T.notes.length)?LH(20):0))/_cz));   // v11.98: and under the notes-logged line when there is one
 '@
 
 # STAMPS.
@@ -33,7 +40,7 @@ var VER='11.98';
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.97:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.97 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.97:[^']*'",{ param($m) "now:'v11.98: from the 2026-09-06 first-ten-minutes audit, the notes-logged line in the raid HUD was drawn at y 26 inside the enlarged corner readout of v11.78, so the two printed over each other from the first note. It sits below the readout now. Check 11.98 logs a note, draws a frame with the canvas text call recorded, and requires the line under the readout''s bottom edge; fails on v11.97.'" })
+$s=[regex]::Replace($s,"now:'v11\.97:[^']*'",{ param($m) "now:'v11.98: from the 2026-09-06 first-ten-minutes audit, the notes-logged line in the raid HUD was drawn at y 26 inside the enlarged corner readout of v11.78, so the two printed over each other from the first note. It sits below the readout now. Check 11.98 logs a note, draws a frame with the canvas text call recorded, and requires the line under the bottom edge of the readout; fails on v11.97.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

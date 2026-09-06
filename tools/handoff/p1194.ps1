@@ -22,9 +22,9 @@ SubRx @'
   // v11.94: A RAID NOTE SURVIVES ESC. The resume button banked the note and
   // ESC, the way out the box's own legend names, did not: it closed the box
   // with the text still sitting in it, unseen by the run report. Every close
-  // of the box over a live raid banks it now; the resume button's own copy of
-  // these lines is gone, and the abandon path keeps its copy because it ends
-  // the raid before it closes the box.
+  // of the box over a live raid banks it now, and the two copies of these
+  // lines the resume and abandon buttons carried are gone: both close the box
+  // before anything ends the raid, so this is the one place that banks.
   if(!on&&G&&!G.over){
     var _rn=document.getElementById('pausenote'), _rt=_rn?_rn.value.trim():'';
     if(_rt){ G.tel.notes.push({t:Math.round(elapsed()),txt:_rt}); _rn.value=''; }
@@ -42,6 +42,16 @@ SubRx @'
   disarmAbandon();   // v10.96: the same four lines this used to carry itself
   togglePauseBox(false);   // v11.94: the close banks the note, for this button and for ESC alike
 };
+'@
+
+SubRx @'
+  var note=document.getElementById('pausenote').value.trim();
+  if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
+  togglePauseBox(false);
+this.style.display='none';
+'@ @'
+  togglePauseBox(false);   // v11.94: the close banks the note
+this.style.display='none';
 '@
 
 # STAMPS.
@@ -63,7 +73,7 @@ SubRx @'
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.93:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.93 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.93:[^']*'",{ param($m) "now:'v11.94: from the 2026-09-06 first-ten-minutes audit, a note typed into the pause box during a raid and closed with ESC was thrown away; only the resume button banked it. Every close of the box over a live raid banks the note now, and the resume button lost its own copy of the lines. Check 11.94 pauses a raid, types a note, presses ESC on the box and requires the note in the run record; fails on v11.93.'" })
+$s=[regex]::Replace($s,"now:'v11\.93:[^']*'",{ param($m) "now:'v11.94: from the 2026-09-06 first-ten-minutes audit, a note typed into the pause box during a raid and closed with ESC was thrown away; only the resume button banked it. Every close of the box over a live raid banks the note now, and the resume and abandon buttons lost their own copies of the lines. Check 11.94 pauses a raid, types a note, presses ESC on the box and requires the note in the run record; fails on v11.93.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

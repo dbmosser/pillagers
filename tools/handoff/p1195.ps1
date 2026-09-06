@@ -28,13 +28,27 @@ function loadProfile(){
   // v11.95: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE. Everything above
   // runs only when a save exists. A friend on his first launch had none, so
   // the Settings rows were never applied (the wording watcher of v9.74 stayed
-  // unarmed and every reworded sentence shipped since v11.42 was missing until
-  // his second launch), and the menus drew at zoom 1.0 and grew a third larger
-  // the next day. Both are set here, on every load, save or none.
+  // unarmed, so the menus and panels showed none of the reworded sentences
+  // shipped since v11.42 until his second launch; canvas text had them), and
+  // the menus drew at zoom 1.0 and grew a third larger the next day. Both are
+  // set here, on every load, save or none, and the Settings pass runs again at
+  // the end of the boot, where a loader that threw part way cannot skip it.
   if(!P.menuZoom) P.menuZoom=1.3;
   try{ applyGameOpts(); }catch(_ag){}
 }
 function loadProfile(){
+'@
+
+SubRx @'
+  log:[],pack:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,
+'@ @'
+  log:[],pack:0,contracts:[],cfg:null,menuZoom:1.3,lastSim:null,autoExport:true,autoDownload:false,
+'@
+SubRx @'
+  try{ applyMenuZoom(); }catch(_am){}
+'@ @'
+  try{ applyGameOpts(); }catch(_ag2){}   // v11.95: once more here, where a loader that threw part way cannot skip it
+  try{ applyMenuZoom(); }catch(_am){}
 '@
 
 # STAMPS.

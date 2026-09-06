@@ -3,7 +3,7 @@ v11.96: first ten minutes, dying with the freebie kit keeps the pistol you own
 The death card removed guns from the armoury by id, and the free kit's
 pistol is not flagged issued, so a first-run death deleted the only gun a
 fresh profile owns and billed for it. The splice reads the slot's
-from-armoury flag; the loaner is neither counted nor priced. Check 11.96
+from-armoury flag; the loaner is out of the ledger entirely. Check 11.96
 deploys with the free kit, dies, and requires the pistol kept; fails on
 v11.95.
 

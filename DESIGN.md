@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.89 - HIS NOTE: A STRIKE LEAVES FULGURITE AND NOTHING ELSE
+
+His note of 2026-09-06, from his fifth run this morning: "when Fulgerite is
+searched, it should only return the item 'Fulgerite', which should be like
+$2500 salvagable -- it makes no sense for it to be anything else, given
+that it resulted from a lightning strike."
+
+WHAT IT WAS. A strike that missed him had a chance of fusing the ground
+where it landed into a cache tagged FULGURITE, and that cache held one item
+drawn from a pool of five, a Titanium Cell, a Data Core, a Black Box, a
+Reactor Core or a Warden Core. He opened one and found a Warden Core in the
+dirt, which is exactly as absurd as he says.
+
+THE BUILD. A new item, Fulgurite, worth 2,500, weight two, elite; the
+scorched cache holds one Fulgurite and nothing else. The two draws from the
+seeded stream that chose the old item are kept, consumed and ignored,
+because this block runs in the sim too and a draw removed here would move
+every number after it for the whole raid; the map's own comment on the
+ring below says why. It sells as any salvage sells.
+
+MEASURED. Check 11.89 requires the item and its value, then deploys, sets
+the find chance to one, drops a strike a few hundred units from the player
+through the real strike tick, up to six times until the ground fuses, and
+requires the cache's loot to be exactly one Fulgurite. On the v11.88 fixture
+the cache holds one of the five old items and the check names it.
+
+Not verified: his own play; whether 2,500 is the number he wants, which is
+one line; whether Fulgurite should also count for any contract or seasonal
+kit, which nothing lists it for.
 ## v11.88 - HIS ORDER: TWO LINES OUT OF THE CONDITIONS PANEL
 
 His message of 2026-09-06, with a screenshot of the raid panel: '"left to

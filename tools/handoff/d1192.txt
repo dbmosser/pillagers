@@ -9,7 +9,7 @@ v2.79 that says it is for returning players only and that a profile with no
 runs stamps itself current and never sees it. No line ever did that: the
 only gate was the once-per-load latch, so a friend arriving cold from the
 link pressed ENTER on the title and landed under a list of changes to
-controls he had never used. Worse, the list is 137 entries long and grows
+controls he had never used. Worse, the list is past a hundred and forty entries and grows
 every build. The card's two-pass sizing drops one text size when the block
 will not fit and then draws all of it anyway, so at 1080p the card was near
 five screens tall: its heading and its only dismiss line ("press ENTER or

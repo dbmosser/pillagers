@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.88';
+var VER='11.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.88';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.88';
+var WHATSNEW_VER='11.89';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A LIGHTNING STRIKE THAT MISSES YOU SOMETIMES FUSES THE GROUND. What it leaves is FULGURITE, worth 2,500, and nothing else.',
   'THE RAID CONDITIONS PANEL NO LONGER PRINTS "left to be gone" OR "nothing killed yet", on his order; those two contracts still stand at the Mainframe.',
   'A HELPED SURVIVOR WALKS TO THE NEAREST OPEN EXTRACTION on his own and leaves when he reaches it, instead of following you.',
   'THE SURVIVOR PAYS THREE TIMES AS MUCH and hands you a piece of salvage on the spot when you meet his request.',
@@ -1774,6 +1775,9 @@ var ITEMS={
   // be lucky about.
   reactor:{name:'Meridian Reactor Core',val:2600,wt:4,r:'elite',c:'#e08cff'},
   wcore:{name:'Warden Core',val:3800,wt:5,r:'elite',c:'#ffc04a'},
+  // v11.89, HIS NOTE: what a lightning strike leaves in the ground, and the only
+  // thing the scorched cache holds. Salvage, worth what he said.
+  fulgurite:{name:'Fulgurite',val:2500,wt:2,r:'elite',c:'#e6d3ff'},
   // SPEC 7.6: keys. Single use, they say what they open, sellable if you will
   // never use one, and they can be extracted and brought back for a targeted raid.
   key_dam_turbine:{name:'Turbine Room Key',val:600,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'dam_turbine'},
@@ -5208,8 +5212,11 @@ function strikeTick(dt){
       // MISSED YOU: a small chance it leaves something behind. Scorched ground with
       // something rare in it is the reason to move toward a storm rather than away.
       if(rr()<(CFG.strikeFind===undefined?0.16:CFG.strikeFind)){
-        var pool=['titan','core','blackbox','reactor','wcore'];
-        var key=pool[Math.min(pool.length-1,Math.floor(rr()*pool.length))];
+        // v11.89, HIS NOTE: the strike leaves Fulgurite and nothing else; a
+        // Warden Core in the dirt made no sense to him. The draw is kept so the
+        // seeded stream is unchanged.
+        var _fdraw=rr();
+        var key='fulgurite';
         // v8.55, audit: SOMEWHERE YOU CAN ACTUALLY REACH. The strike point is
         // clamped to the world box and nothing else, so this dropped the rarest
         // item in the game inside walls, inside ruins and inside sealed locked
@@ -5233,7 +5240,7 @@ function strikeTick(dt){
           // flung-out arm - a dead man on the scorched ground, and bodies were
           // removed at v5.28 by his order. A cache is what it is.
           var ct=mkContainer(_fx,_fy,'cache',G.map.districtAt?G.map.districtAt(_fx,_fy):-1);
-          ct.loot=[key]; ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;
+          setLoot(ct,[key]); ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;   // v11.89: setLoot, so best is right
           G.containers.push(ct);
           if(!G.sim) say('Something fused in the ground where that landed.');
         }
@@ -28435,7 +28442,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.88: HIS ORDER of 2026-09-06, with a screenshot: left to be gone and nothing killed yet mean nothing to him in the conditions panel, remove both. They were the live verdicts of the kill-nothing and three-minute conduct contracts, printed without their names; the panel skips those two now and the contracts still stand at the Mainframe. Check 11.88 holds both contracts plus a no-heals one, draws a raid frame with the canvas text recorded, and requires neither verdict drawn and the no-heals one still there; fails on v11.87.',
+  now:'v11.89: HIS NOTE of 2026-09-06, the scorched cache a strike leaves should hold only Fulgurite, worth about 2500 salvage. New item fulgurite (val 2500, elite); the strike cache holds it and nothing else; the seeded draws are kept so the stream is unchanged. Check 11.89 forces a strike to miss and leave a cache and requires its loot to be exactly one Fulgurite worth 2500; fails on v11.88 where the cache holds a core or a Warden Core.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
