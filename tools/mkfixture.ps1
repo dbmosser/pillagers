@@ -5732,6 +5732,41 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.72',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
+   run:function(){
+     if(!window.__P||typeof togglePauseBox!=='function'||typeof buildExport!=='function') return 'SKIP: no pause box in this build';
+     if(!document.getElementById('pausenote')) return 'SKIP: no note box in this document';
+     var bad=[], prof, note='ZQX floor note 8812';
+     try{
+       __topClear(); __cleanProfile(); prof=__P();
+       // v11.72: PUT yourself on the floor rather than declining. A raid left in
+       // memory by an earlier check is not a reason to skip; it is a reason to
+       // end it, which is exactly what leaving a raid does in the game.
+       try{ if(G){ G=null; keys={}; } }catch(_g){}
+       try{ if(window.__showScreen) __showScreen('hub'); }catch(_s){}
+       if(window.__hubEnter){ try{ __hubEnter(); }catch(_h){} }
+       if(G) return 'SKIP: a raid is still running after clearing it, so this is not the floor';
+       if(typeof state!=='undefined'&&state!=='hub') return 'SKIP: not on the floor (state '+state+') even after showing the hub';
+       delete prof.floorNotes;
+       togglePauseBox(true);
+       var ta=document.getElementById('pausenote'); ta.value=note;
+       togglePauseBox(false);
+       var fl=prof.floorNotes||[], last=fl[fl.length-1];
+       if(!last||last.txt!==note) bad.push('the note typed on the floor was not banked (floorNotes: '+JSON.stringify(fl).slice(0,80)+')');
+       if((ta.value||'').trim()===note) bad.push('the note is still sitting in the box, waiting to ride into the next raid');
+       var rep=buildExport(), txt=(rep&&rep.join)?rep.join('\n'):String(rep);
+       if(txt.indexOf(note)<0) bad.push('the run report does not carry the floor note');
+       else if(txt.indexOf('FLOOR NOTES')<0) bad.push('the report carries the note but does not say what it is');
+       // CONTROL: a second close with an empty box banks nothing more.
+       togglePauseBox(true); togglePauseBox(false);
+       if((prof.floorNotes||[]).length!==fl.length) bad.push('control: closing an empty box banked a note');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var ta2=document.getElementById('pausenote'); if(ta2) ta2.value=''; }catch(_t){}
+       try{ togglePauseBox(false); }catch(_c){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.71',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__mouse&&window.__canvases&&window.__P)) return 'SKIP: this fixture cannot click a panel';
