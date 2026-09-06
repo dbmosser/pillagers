@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.72';
+var VER='11.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.72';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.72';
+var WHATSNEW_VER='11.73';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A BRAND NEW CHARACTER HAS A NAME. Before this, someone playing for the first time had none until the game had saved and loaded once, and the character screen read "undefined" beside their first raid.',
   'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
   'THE [+] ON A COLLAPSED PILLAGER BOARD EXPANDS IT AGAIN. The resize grip had grown over the glyph on the folded board, so the click began a resize you could not see and the board stayed shut.',
   'SETTINGS: THE EXTRACTION-HEAT ROW NO LONGER READS CUSTOM WHEN PILLAGERS ARE OFF. It showed CUSTOM in amber, with the tuning-console hint, for a row you had never touched. Nothing about the raid changes.',
@@ -2016,6 +2017,11 @@ function itemWanted(k){
 // still met it undefined on its second load and had NIGHT silently overwritten.
 // Once per profile, which is the shape that reads as a broken button.
 var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,died:0,best:0,dayMigrated:1,
+  // v11.73, from the 2026-09-06 menu audit: BORN SET, like dayMigrated above.
+  // The pname default lives inside applyLoadedProfile, which only runs when a
+  // save exists, so a player who has never saved had no name at all and the
+  // character screen read "undefined" beside his first raid.
+  pname:'PILLAGER',
   log:[],pack:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day',crashes:[]};
 var SLOT=(function(){ try{ return localStorage.getItem('salvagerun:activeSlot')||'1'; }catch(e){ return '1'; } })();
 var SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT);
@@ -28281,7 +28287,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.72: feedback typed in the pause box on the floor was kept silently and attached to the next raid. The buttons attach a note only when a raid runs and nothing on the floor read or cleared the field, so the words rode into the next raid first pause stamped with its clock. The close banks a floor note to P.floorNotes (20 kept), says so, and buildExport prints them under FLOOR NOTES; the character-screen button no longer discards it. From the v11.46 audit, P2.',
+  now:'v11.73: a character who has never saved had no name. The default profile literal carries no pname and the line that fills it in sits inside applyLoadedProfile, which only runs when a save is found, so it could never help a brand new player. After a first raid the character screen read undefined beside the run count, since that line only prints the name once runs is above zero. pname is born set in the literal now, like dayMigrated. From the 2026-09-06 menu audit.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33397,7 +33403,10 @@ loadProfile().then(function(){
     function subSync(){
       var sub=document.getElementById('titlesub');
       if(sub) sub.textContent=(P.runs>0)
-        ? (P.pname+'  \u00b7  '+P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked')
+        // v11.73: the same fallback every other reader of the name already has.
+        // The default is born set now, but this is the line a player SEES, and
+        // a name is not something to print raw.
+        ? ((P.pname||'PILLAGER')+'  \u00b7  '+P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked')
         : 'First time out. The Undercroft will walk you through it.';
     }
     subSync();

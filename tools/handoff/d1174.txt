@@ -1,0 +1,36 @@
+## v11.74 - HIS NOTE: EXTRACTION IN PROGRESS DID NOT SAY WHETHER TO MOVE
+
+His note of 2026-09-06: "at bottom of screen 'EXTRACTION IN PROGRESS' -- not
+sure if this means extraction is coming or its actually available for players
+to extract".
+
+WHAT IT MEANT. The second one, and it is the most urgent line in the game. It
+appears only while the boarding window is running: the extraction has landed,
+and for those seconds he has to be inside the ring holding E or it leaves
+without him. The line beneath it already counts down; the headline was the part
+that was supposed to say what to do.
+
+WHERE THE WORDS CAME FROM. They are his, from v8.68, chosen then over OPEN, and
+the comment beside them still records that choice. He is telling me now that
+they read as something happening somewhere else rather than an instruction, and
+he is right: "in progress" describes a process, not a demand. He had already
+given the better words at v11.54, for the badge on the ring itself: EXTRACT
+NOW.
+
+THE BUILD. One helper owns the line, so the banner above the belt and the
+label on an off-screen ring cannot drift apart, and both now read EXTRACT NOW,
+the ring letter, and the seconds named as what is LEFT. The inbound line, which
+runs while the extraction is still on its way, is untouched: nobody has said it
+is unclear, and it is the state that contrasts with this one.
+
+MEASURED. Check 11.74 reads the helper and requires his words, the ring letter,
+the seconds rounded up, and no trace of the old phrase; it requires a window
+already gone to read zero rather than a negative number; and two controls
+require both draw sites to read the helper and the whole HUD draw, comments
+included, to carry the old phrase nowhere. On the v11.73 fixture there is no
+helper at all and the check says the line is still written inline.
+
+Not verified: his own eye, which is the only test that matters for wording;
+whether EXTRACT NOW at the same size and place reads as urgently as he wants,
+since the colour and position are unchanged; the pad legend, which names the
+button and not this line.

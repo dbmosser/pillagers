@@ -1,0 +1,13 @@
+v11.74: his note, EXTRACTION IN PROGRESS did not say whether to move
+
+He could not tell whether it meant the extraction was coming or was his to
+take. It means the second: the boarding window is running and he has seconds
+to be in the ring holding E. The wording was his own from v8.68, chosen over
+OPEN, and he has now said it reads as something happening elsewhere. One
+helper owns the line and both the banner above the belt and the off-screen
+ring label read it: EXTRACT NOW, the ring letter, and the seconds left, which
+are the words he gave for the ring badge at v11.54. Check 11.74 requires his
+words and the numbers, refuses a negative at zero, and controls that both
+draw sites read the helper; fails on v11.73.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

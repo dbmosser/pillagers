@@ -29,6 +29,19 @@ var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,die
   pname:'PILLAGER',
 '@
 
+# AND THE LINE THAT PRINTS IT. The default is born set above, but the character
+# screen is what a player reads, and every other reader of the name already
+# falls back. This is also the only part of the defect a check can observe,
+# since the harness rebuilds profiles through the loader.
+SubRx @'
+        ? (P.pname+'  \u00b7  '+P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked')
+'@ @'
+        // v11.73: the same fallback every other reader of the name already has.
+        // The default is born set now, but this is the line a player SEES, and
+        // a name is not something to print raw.
+        ? ((P.pname||'PILLAGER')+'  \u00b7  '+P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked')
+'@
+
 # STAMPS.
 SubRx @'
 var VER='11.72';

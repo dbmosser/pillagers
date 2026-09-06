@@ -40024,6 +40024,42 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.73 - A CHARACTER WHO HAS NEVER SAVED HAD NO NAME
+
+From the read-only menu audit of 2026-09-06, and checked again by hand before
+building, which narrowed it.
+
+WHAT WAS WRONG. The default profile literal carries no pname. The line that
+fills one in, "if the name is not a string, call him PILLAGER", sits inside
+applyLoadedProfile, the function that runs when a SAVED profile is found. So
+it can help everybody except the one player it was written for: somebody
+opening the game for the first time, who has nothing saved. It is the same
+shape as the dayMigrated hole closed at v8.44, three fields along in the same
+literal: a default written only for people who already have a save.
+
+WHAT IT ACTUALLY LOOKED LIKE, which is narrower than the audit said. The
+character screen prints the name only once you have a raid behind you; before
+that it says "First time out. The Undercroft will walk you through it." So a
+brand new player does not meet it on the front door. They meet it after their
+first raid, if they go back to the character screen before reloading, which
+the v10.96 button invites: the line reads "undefined, 1 raid logged, $900
+banked". A reload hides it again, because saving and loading once is exactly
+what gives the loader its chance to name him.
+
+THE FIX. pname is born with the profile, in the literal, beside dayMigrated.
+
+MEASURED. Check 11.73 cleans the profile to its defaults and requires a real
+name on it, which is the fix; then gives that profile one raid, refreshes the
+character screen through the game's own function, and requires the line not to
+read undefined. A control requires that same line to actually carry the name,
+so the absence of "undefined" cannot pass by the line being empty. On the
+v11.72 fixture the fresh profile has no name at all and the check fails saying
+the loader is the only thing that could give it one.
+
+Not verified: his own eye; the slot list on that screen, which reads each save
+from storage rather than the live profile and was not driven; whether any
+other field in that literal has the same hole, which is worth one pass of its
+own.
 ## v11.72 - A NOTE TYPED IN THE PAUSE BOX ON THE FLOOR RODE INTO THE NEXT RAID
 
 From the v11.46 read-only audit, P2. The pause box opens on the floor since

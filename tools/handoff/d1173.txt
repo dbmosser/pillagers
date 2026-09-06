@@ -20,15 +20,24 @@ the v10.96 button invites: the line reads "undefined, 1 raid logged, $900
 banked". A reload hides it again, because saving and loading once is exactly
 what gives the loader its chance to name him.
 
-THE FIX. pname is born with the profile, in the literal, beside dayMigrated.
+THE FIX, IN TWO HALVES. pname is born with the profile, in the literal, beside
+dayMigrated. And the line that PRINTS it falls back to PILLAGER, the same
+fallback every other reader of that field already has, because a name is not
+something to print raw.
 
-MEASURED. Check 11.73 cleans the profile to its defaults and requires a real
-name on it, which is the fix; then gives that profile one raid, refreshes the
-character screen through the game's own function, and requires the line not to
-read undefined. A control requires that same line to actually carry the name,
-so the absence of "undefined" cannot pass by the line being empty. On the
-v11.72 fixture the fresh profile has no name at all and the check fails saying
-the loader is the only thing that could give it one.
+The second half is there because of what the harness can see. The first cut of
+this build changed only the literal, and the check could not fail on the old
+build: __cleanProfile rebuilds the profile through the loader, and the loader
+is exactly the thing that hands out a name, so the state being tested was
+unreachable from a check. The fix that can be proven is the one at the point of
+use, and it is the one that protects the player whatever left the field empty.
+
+MEASURED. Check 11.73 takes the name off a live profile, which is the state a
+first-time player is in and the state __cleanProfile cannot produce, gives it
+one raid, refreshes the character screen through the game's own function, and
+requires the line not to read undefined. A control requires that line to be the
+one that names him, so an empty line cannot pass. On the v11.72 fixture it
+reads "undefined, 1 raid logged, $900 banked" and the check quotes it back.
 
 Not verified: his own eye; the slot list on that screen, which reads each save
 from storage rather than the live profile and was not driven; whether any
