@@ -40,9 +40,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'WIRT SELLS YOU THE THING ON THE COUNTER. If the Limited Time Offer rolled over while you were reading it, Buy used to take your money and hand you the next offer instead. You get the one that was named and priced when you clicked.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.51:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.52:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.52 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.51:[^']*'",{ param($m) "now:'v11.53: Wirt Limited Time Offer sold whatever the clock said at click time. The card is drawn from wirtLotKey, which the clock picks in five-minute windows, and the Buy button recomputed wirtLotKey at click time while the card never redraws on the boundary, so a click after the roll took the money and pushed a different lot. Buy now sells the lot the card showed. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.52:[^']*'",{ param($m) "now:'v11.53: Wirt Limited Time Offer sold whatever the clock said at click time. The card is drawn from wirtLotKey, which the clock picks in five-minute windows, and the Buy button recomputed wirtLotKey at click time while the card never redraws on the boundary, so a click after the roll took the money and pushed a different lot. Buy now sells the lot the card showed. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

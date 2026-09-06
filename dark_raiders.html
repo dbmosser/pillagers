@@ -469,6 +469,16 @@
   .toprow{ display:flex; justify-content:space-between; align-items:flex-end; }
   .credits{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:22px; color:var(--amber); text-align:right; }
   .credits small{ font-size:10.5px; color:var(--ash); letter-spacing:.28em; display:block; font-weight:400; }
+  /* v11.52, HIS NOTE: credits and XP in the upper right, at all times. z 9000 puts
+     it above every screen (10), pause box (35), card (40) and window (60), and
+     below the item menu (12000) and the drag ghost (9999). 24px tall at top 4px,
+     inside the band above the raid's CONDITIONS box, which starts at LH(30). */
+  #topright{ position:fixed; top:4px; right:16px; height:24px; line-height:24px; z-index:9000; pointer-events:none;
+    font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:15px; color:var(--amber); white-space:nowrap; text-align:right; }
+  #topright small{ font-size:9.5px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:5px; margin-right:14px; }
+  #topright small:last-child{ margin-right:0; }
+  .toprow{ padding-right:270px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable */
+  #credits{ display:none; }         /* v11.52: the corner readout replaces the stash screen's own credits figure */
   /* The pause and modal overlays were a flat black wash with content floating
      loose on them and no frame at all. Each now gets a proper framed window;
      the outcome screen frames its .ocwin child instead. */
@@ -1145,6 +1155,7 @@
   <div style="margin-top:10px"><button id="closesim" style="padding:8px 22px">CLOSE</button></div>
 </div>
 
+<div id="topright"></div>
 <div class="screen" id="hub">
   <div class="toprow">
     <div>
@@ -1339,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.51';
+var VER='11.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1361,11 @@ var VER='11.51';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.51';
+var WHATSNEW_VER='11.52';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'YOUR CREDITS AND XP ARE IN THE TOP RIGHT CORNER, ALWAYS. In the Undercroft, in a raid, under every window. The stash screen no longer prints its own credits figure; the corner has it.',
   'THE SECTOR PAGE NAMES THE RIGHT MAP AGAIN. The line of facts under each map could end with the other map name, because the two lines share a digit shape and the reworded text was matched by shape. Each map keeps its own line now.',
   'PACKING AT THE STASH WITH YOUR BACKPACK OPEN NO LONGER GETS UNDONE. If you opened your backpack on the Undercroft floor, then walked to THE STASH and packed your loadout there, closing the backpack afterwards put back the old loadout over the new one. The backpack now closes itself when the stash opens.',
   'CLICKING ON YOUR OPEN BACKPACK NO LONGER FIRES YOUR GUN. With the backpack open, a click on the panel itself (the equipped line, the stats, the space between tiles) used to reach the trigger. The panel now catches its own clicks, like every other panel.',
@@ -2296,7 +2308,19 @@ function txClick(cx,cy){
     },true);
   }catch(e){}
 })();
+// v11.52, HIS NOTE: credits and XP shown at all times in the upper right, in
+// the Undercroft and in a raid. One element, rewritten only when a figure
+// changes, so the frame loop can call it for free.
+var _trLast='';
+function syncTopRight(){
+  var el=document.getElementById('topright'); if(!el) return;
+  var c=(P.credits||0).toLocaleString(), x=(P.xp||0).toLocaleString(), s=c+'|'+x;
+  if(s===_trLast) return;
+  _trLast=s;
+  el.innerHTML=c+' <small>CREDITS</small> '+x+' <small>XP</small>';   // spaces, so the text reads right when copied
+}
 function saveProfile(){ P.cfg=CFG; P.cfgv=17; storeSet(JSON.stringify(P));
+  try{ syncTopRight(); }catch(_tr){}   // v11.52: every path that moves credits or XP saves
   var _mOpen=document.querySelector('.modal.on');
   if(_mOpen) stampBalance(_mOpen);
 }
@@ -27599,6 +27623,7 @@ try{
 }catch(e){}
 function loop(ts){
   requestAnimationFrame(loop);
+  try{ syncTopRight(); }catch(_tr2){}   // v11.52: a string compare per frame, a DOM write only on change
   // Nothing is drawable while the context is gone, and the raid clock should not
   // run down behind a blank screen either, so the whole frame is skipped until the
   // browser hands the context back. lastTs is restamped on restore.
@@ -28112,7 +28137,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.51: my v11.42 bake named the wrong map on the sector page. His two sector-facts lines end in Cold Storage and in The Cold Mile and share one digit shape, so the pattern derivation keyed both to one shape, the second overwrote the first, and TX matched any sector line of that shape by digits: one map printed the other map name. The two lines are exact-only now, skipped by the derivation. From the v11.46 audit, P1, mine.',
+  now:'v11.52: HIS NOTE of 2026-09-05, credits and XP shown at all times in the upper right, in the Undercroft and in a raid. One fixed element (#topright, z 9000) in the band above the CONDITIONS box, written from saveProfile and the frame loop only when a figure changes; the stash screen retires its own credits figure and its top row keeps clear of the corner. Check 11.52 reads the element in the Undercroft and in a raid, requires position, size, both figures and both labels, clearance from the CONDITIONS box in screen space, and that a changed credit figure is shown.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

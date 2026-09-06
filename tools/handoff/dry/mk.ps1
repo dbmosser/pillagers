@@ -5443,7 +5443,56 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
-  {v:'11.60',what:'dropping a tactical belt item on the stash says it went to the stash, and it did: it left the backpack and its belt key',
+  {v:'11.52',what:'credits and XP are shown at all times in the upper right corner, in the Undercroft and in a raid, above the screens and clear of the CONDITIONS box, and the readout follows the profile when a figure changes',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__P&&window.__hubEnter)) return 'SKIP: this fixture cannot deploy and read the screen';
+     var el=document.getElementById('topright');
+     if(!el) return 'there is no credits and XP readout in the upper right corner';
+     var bad=[], prof, keepC, keepX;
+     function rect(){ var r=el.getBoundingClientRect(); return {l:r.left,t:r.top,r:r.right,b:r.bottom,w:r.width,h:r.height}; }
+     function shown(where){
+       var cs=getComputedStyle(el), r=rect();
+       if(cs.display==='none'||cs.visibility==='hidden'||parseFloat(cs.opacity)===0) bad.push(where+': the readout is hidden');
+       if(!(r.w>40&&r.h>10)) bad.push(where+': the readout has no size ('+Math.round(r.w)+'x'+Math.round(r.h)+')');
+       if(!(r.r<=innerWidth+1&&r.r>=innerWidth-48)) bad.push(where+': the readout is not at the right edge (right '+Math.round(r.r)+' of '+innerWidth+')');
+       if(!(r.t>=0&&r.t<=40)) bad.push(where+': the readout is not at the top (top '+Math.round(r.t)+')');
+       var t=(el.textContent||'').replace(/\s+/g,' ');
+       var c=(prof.credits||0).toLocaleString(), x=(prof.xp||0).toLocaleString();
+       if(t.indexOf(c)<0) bad.push(where+': the readout does not show the credits '+c+' ("'+t+'")');
+       if(t.indexOf(x)<0) bad.push(where+': the readout does not show the XP '+x+' ("'+t+'")');
+       if(!/CREDITS/i.test(t)||!/\bXP\b/.test(t)) bad.push(where+': the readout does not say which figure is which ("'+t+'")');
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       prof=__P(); keepC=prof.credits; keepX=prof.xp;
+       // DISTINCTIVE figures no fresh profile carries.
+       prof.credits=4471337; prof.xp=98761; saveProfile();
+       try{ __hubEnter(); }catch(_h){}
+       shown('in the Undercroft');
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __frame(); __frame();
+       prof=__P(); prof.credits=4471337; prof.xp=98761; saveProfile();
+       shown('in a raid');
+       // CLEAR OF THE CONDITIONS BOX, in screen space: that box is drawn zoomed
+       // about the top right corner, so its top in pixels is y times its zoom.
+       var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
+       if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
+       else {
+         var cz=1; try{ cz=(HUDZ.cond||1)*hudRes()*hudUserZ('cond'); }catch(_z){ cz=1; }
+         var condTop=HB.y*cz;
+         if(r.b>condTop+1) bad.push('in a raid the readout reaches down to '+Math.round(r.b)+' while the CONDITIONS box starts at '+Math.round(condTop)+', so the two overlap');
+       }
+       // IT FOLLOWS A CHANGE.
+       prof.credits=1234567; saveProfile();
+       var t2=(el.textContent||'').replace(/\s+/g,' ');
+       if(t2.indexOf((1234567).toLocaleString())<0) bad.push('after the credits changed the readout still says "'+t2+'"');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var pf=__P(); pf.credits=keepC; pf.xp=keepX; saveProfile(); }catch(_r){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.61',what:'dropping a tactical belt item on the stash says it went to the stash, and it did: it left the backpack and its belt key',
    run:function(){
      if(!(window.__P&&window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot walk the Undercroft';
      if(typeof say2!=='function') return 'SKIP: no say2 in this build';
@@ -5471,7 +5520,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.63',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
+  {v:'11.64',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
    run:function(){
      if(!window.__P||typeof togglePauseBox!=='function'||typeof buildExport!=='function') return 'SKIP: no pause box in this build';
      if(!document.getElementById('pausenote')) return 'SKIP: no note box in this document';
@@ -5501,7 +5550,7 @@ window.__REGRESS=[
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.62',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+  {v:'11.63',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__mouse&&window.__canvases&&window.__P)) return 'SKIP: this fixture cannot click a panel';
      if(typeof HUDBOX==='undefined'||typeof hudOnGrip!=='function') return 'SKIP: no HUD panels in this build';
@@ -5535,7 +5584,7 @@ window.__REGRESS=[
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.61',what:'with Other pillagers set to None the extraction-heat row still reads its own word rather than CUSTOM, the waves are off, and they come back when pillagers return to Standard',
+  {v:'11.62',what:'with Other pillagers set to None the extraction-heat row still reads its own word rather than CUSTOM, the waves are off, and they come back when pillagers return to Standard',
    run:function(){
      if(!window.__P||typeof applyGameOpts!=='function'||typeof gameOptLive!=='function'||typeof gameOptIx!=='function') return 'SKIP: no settings rows in this build';
      var bad=[], prof=__P(), keepGO=JSON.stringify(prof.gameOpts===undefined?null:prof.gameOpts), keepT=JSON.stringify(prof.tuned||{}), keepRW=CFG.raiderWaves, keepNR=CFG.nRaider;
@@ -5558,7 +5607,7 @@ window.__REGRESS=[
        try{ var go=JSON.parse(keepGO); if(go===null) delete prof.gameOpts; else prof.gameOpts=go; prof.tuned=JSON.parse(keepT); applyGameOpts(); CFG.raiderWaves=keepRW; CFG.nRaider=keepNR; saveProfile(); }catch(_r){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.59',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
+  {v:'11.60',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
    run:function(){
      if(typeof notoBite!=='function'||typeof pedOpen!=='function') return 'SKIP: no notoriety banner in this build';
      if(!pedOpen()) return 'SKIP: the stall shuts in this build, so the old line would be true';
@@ -5568,7 +5617,7 @@ window.__REGRESS=[
      if(b2.indexOf('Hiring')<0) bad.push('at notoriety 2 the banner does not name the hiring cost: "'+b2+'"');
      if(b1.indexOf('Hiring')<0) bad.push('control: at notoriety 1 the banner does not name the hiring cost: "'+b1+'"');
      return bad.length?bad.join('; '):null; }},
-  {v:'11.58',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
+  {v:'11.59',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
    run:function(){
      if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
      if(typeof restoreCode!=='function'||typeof restoreRead!=='function') return 'SKIP: this build has no restore code';
@@ -5594,7 +5643,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ prof.pname=keepN; try{ saveProfile(); }catch(_s){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.57',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
+  {v:'11.58',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
    run:function(){
      if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
      if(typeof restoreCode!=='function'||typeof restoreRead!=='function'||typeof restoreApply!=='function') return 'SKIP: this build has no restore code';
@@ -5626,7 +5675,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.56',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
+  {v:'11.57',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&document.getElementById('tagwrap')&&document.getElementById('oc_copy')&&document.getElementById('oc_btn'))) return 'SKIP: this fixture cannot end a raid and press the card';
      // Force the SYNCHRONOUS copy path, as check 11.32 does, so Copy report has
@@ -5671,7 +5720,7 @@ window.__REGRESS=[
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.55',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
+  {v:'11.56',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__sim&&window.__keys)) return 'SKIP: this fixture cannot revive a man';
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -5691,7 +5740,7 @@ window.__REGRESS=[
      else if(R.byPlayer) bad.push('the revived man still carries byPlayer, so a crawler killing him later would be your kill, your contract tick and a grudge');
      __topClear(); __cleanProfile();
      return bad.length?bad.join('; '):null; }},
-  {v:'11.54',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
+  {v:'11.55',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__wxHard)) return 'SKIP: this fixture cannot end a raid and read the card';
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -5720,7 +5769,7 @@ window.__REGRESS=[
      }
      __topClear(); __cleanProfile();
      return bad.length?bad.join('; '):null; }},
-  {v:'11.53',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+  {v:'11.54',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
    run:function(){
      if(!(window.__identityIds&&window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot hire a merc and end a raid';
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -5747,7 +5796,7 @@ window.__REGRESS=[
      }
      __topClear(); __cleanProfile();
      return bad.length?bad.join('; '):null; }},
-  {v:'11.52',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
+  {v:'11.53',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
    run:function(){
      if(!(window.__wirtLot&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open Wirt';
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();

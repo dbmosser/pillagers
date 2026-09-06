@@ -71,9 +71,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.55:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.56:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.56 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.55:[^']*'",{ param($m) "now:'v11.57: tags and a note chosen after Copy report were dropped. Copy report commits the run first and nulls pendingRun, so Log run and return afterwards hit the early return and the row kept the tags it had at Copy time; the ocCommit comment promised a patch onto the written row that did not exist. The committed row is remembered for the life of the card and a later commit patches tags and note onto it and re-sends the report when they changed. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.56:[^']*'",{ param($m) "now:'v11.57: tags and a note chosen after Copy report were dropped. Copy report commits the run first and nulls pendingRun, so Log run and return afterwards hit the early return and the row kept the tags it had at Copy time; the ocCommit comment promised a patch onto the written row that did not exist. The committed row is remembered for the life of the card and a later commit patches tags and note onto it and re-sends the report when they changed. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

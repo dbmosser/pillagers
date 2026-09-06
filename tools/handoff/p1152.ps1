@@ -64,7 +64,7 @@ function syncTopRight(){
   var c=(P.credits||0).toLocaleString(), x=(P.xp||0).toLocaleString(), s=c+'|'+x;
   if(s===_trLast) return;
   _trLast=s;
-  el.innerHTML=c+'<small>CREDITS</small>'+x+'<small>XP</small>';
+  el.innerHTML=c+' <small>CREDITS</small> '+x+' <small>XP</small>';   // spaces, so the text reads right when copied
 }
 function saveProfile(){ P.cfg=CFG; P.cfgv=17; storeSet(JSON.stringify(P));
   try{ syncTopRight(); }catch(_tr){}   // v11.52: every path that moves credits or XP saves

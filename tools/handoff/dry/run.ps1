@@ -11,11 +11,11 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v11.63 CHECK, inserted before the v11.62 entry.
+# v11.64 CHECK, inserted before the v11.63 entry.
 SubRx @'
-  {v:'11.62',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+  {v:'11.63',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
 '@ @'
-  {v:'11.63',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
+  {v:'11.64',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
    run:function(){
      if(!window.__P||typeof togglePauseBox!=='function'||typeof buildExport!=='function') return 'SKIP: no pause box in this build';
      if(!document.getElementById('pausenote')) return 'SKIP: no note box in this document';
@@ -45,7 +45,7 @@ SubRx @'
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.62',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+  {v:'11.63',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

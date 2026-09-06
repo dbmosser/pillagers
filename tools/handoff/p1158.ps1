@@ -82,9 +82,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'YOUR RESTORE CODE NOW CARRIES YOUR GUNS. The code at the bottom of every run report promised what you had unlocked and left the armoury out: restored from it, you came back with a Scav Pistol. It carries every gun you own, the one in hand, the second slot and their wear now. Copy a fresh one.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.56:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.57:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.57 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.56:[^']*'",{ param($m) "now:'v11.58: the restore code left the armoury behind. restoreMake carried credits, XP, stash, cosmetics and junk and not one gun, while the card promised what you have unlocked and the panel said REPLACES; a friend restored from it came back with the fresh Scav Pistol. The code carries guns owned, the one in hand, the second slot and the wear on each now, applying it brings them back with unknown guns dropped, and an older code without the block leaves the guns as they are. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.57:[^']*'",{ param($m) "now:'v11.58: the restore code left the armoury behind. restoreMake carried credits, XP, stash, cosmetics and junk and not one gun, while the card promised what you have unlocked and the panel said REPLACES; a friend restored from it came back with the fresh Scav Pistol. The code carries guns owned, the one in hand, the second slot and the wear on each now, applying it brings them back with unknown guns dropped, and an older code without the block leaves the guns as they are. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

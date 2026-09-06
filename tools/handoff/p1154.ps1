@@ -56,9 +56,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and boarded an earlier ship, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.52:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.53:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.53 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.52:[^']*'",{ param($m) "now:'v11.54: a merc who boarded an earlier ship was never paid. endRaid settles his cut by finding his roster row and boarding stamps out and val onto that row, but only ordinary raiders were pushed to the roster; the hired merc went to ents alone, so no row was stamped or found and the card said left out there. He gets a roster row at spawn now and the pillager board skips merc rows. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.53:[^']*'",{ param($m) "now:'v11.54: a merc who boarded an earlier ship was never paid. endRaid settles his cut by finding his roster row and boarding stamps out and val onto that row, but only ordinary raiders were pushed to the roster; the hired merc went to ents alone, so no row was stamped or found and the card said left out there. He gets a roster row at spawn now and the pillager board skips merc rows. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

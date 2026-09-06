@@ -1,5 +1,71 @@
 # START HERE (written 2026-09-05, handoff from Fable to Opus)
 
+**HIS TELEMETRY OF 2026-09-05 22:26 and 22:35 (exports/consumed-run-20260905-2226*.txt
+and -2235*.txt; two real runs on v11.51, both DEAD, both lastHit YOUR OWN CHARGE,
+killer other) OUTRANKS THE DRAFTED QUEUE. His notes, verbatim, in the order to
+build them (one thing per build, his words on screen):**
+
+A. "COOKING A GRENADE SHOULD COUNT down, NOT UP!!!" and "cooking grenades should
+   give more warning before exploding in your hand, need a message with 1 sec
+   left like COOKED GRENADE! THROW GRENADE NOW". He died to his own charge in
+   BOTH runs (downs 2, rev 1, lastHit YOUR OWN CHARGE). One build: the cook
+   readout counts down to the burst and at one second shouts his line.
+B. "activating sprint should automatically stop crouching" and "rolling should
+   automatically stop crouching". One build: sprint (hold Shift, v10.87) and the
+   roll both leave the crouch toggle (v10.07).
+C. "'EXTRACTION - OPEN' IS CONFUSING... POSSIBLE STATES FOR AN EXTRACTION POINT
+   SHOULD INSTEAD BE: 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN' /
+   'EXTRACTION POINT - 30S UNTIL EXTRACTION BEGINS' / 'EXTRACTION POINT - EXTRACT
+   NOW! 30S UNTIL EXTRACTION ENDS' / 'EXTRACTION POINT - CLOSED FOR THE REMAINDER
+   OF THIS RAID'". His four strings, with the live seconds where he wrote 30S.
+D. "lightning shouldn't strike inside buildings". The storm strike placement
+   must reject any point inside a building interior.
+E. "when lightning is about to hit, it should say like 'lightning incoming' at
+   the circle." A label on the strike warning ring (v11.35 drew it in screen space).
+F. "how lightning shows red noise, I want ALL noises to do that when they are
+   outside the player's vision but within earshot, eg visualize noises with red
+   circles!" A feature: every heard noise source outside the view cone draws a
+   red ring at its position while audible. Design it small first (gunshots,
+   footsteps, doors), prove it with a check that fires a shot out of view and
+   reads the ring, and keep the CFG dial noiseSee in mind (it exists).
+
+Then the chat note already shipping as v11.52 (credits and XP top right), then
+the drafted queue 1153 to 1164.
+
+READ BEFORE BUILDING A AND B (Fable read the code 2026-09-05 23:20):
+- A. FRAG_FUSE is 1.1 SECONDS (var FRAG_FUSE=1.1, ~line 11367). The in-hand
+  readout (drawHUD ~23312-23340) already prints "COOKING 0.8s" counting DOWN
+  and a shrinking bar; startCook/releaseCook/cookOff are ~11447-11471; the
+  cook clock runs in updatePlayer ~14263-14268 and cookOff fires at 1.1 s.
+  That fuse is why it went off in his hand twice: a beat too long on the
+  button and it is gone. A "one second left" warning on a 1.1 s fuse would
+  appear the instant he presses. The fuse is a balance number and his order
+  is no in-raid balancing before alpha, so DO NOT move it silently: build his
+  shout (at <=1.0 s left, honest even if it is immediate), make the readout
+  bigger and unmistakably a countdown, and put the 1.1 s figure in the report
+  in plain words as the real cause with a request for HIS number. If he gives
+  one, it is a one-line change to FRAG_FUSE. Also check what he saw counting
+  UP: the only cook readout counts down, so it may be the landed grenade or
+  a fill-direction of bar(); look at bar()'s fill argument (1-cf) before
+  claiming it counts down on screen.
+- B. Crouch is a toggle flag G.crouchTog (keydown ~10447, crouchHeld() ~3415).
+  Sprint is computed in updatePlayer ~14057-14059 as
+  `_shHeld && stam>2 && !stamLock && !stamRelease && !crouch && mg>0`, so
+  today holding Shift while crouched simply does not sprint: crouch wins.
+  His rule: sprint wins. Fix: when _shHeld and mg>0 and G.crouchTog, clear
+  G.crouchTog before computing crouch (and say nothing; the stance readout
+  already changes). The roll is tryRoll() ~11311-11331: clear G.crouchTog
+  there too. One build, one check that sets crouchTog, holds Shift with W
+  and requires crouchTog false and sprint true, then sets it again, rolls
+  and requires it false; control fails on the previous fixture.
+
+NUMBERING: his note builds ship FIRST as v11.53, v11.54, ... in A to F order.
+Before shipping the drafted queue, renumber it to follow the last note build
+(renumber1152.ps1 is the template; run its fixdev twin after it, because the
+renumber tool cannot see the escaped "11\.NN" in each p-file's DEVNOW regex),
+then dry-run the whole range again. The old crash line in his report (v10.96, sub
+is not defined) is history, fixed at v10.98.
+
 **HIS NOTE, 2026-09-05 ~22:30, OUTRANKS THE DRAFTED QUEUE:** "credits and xp
 should be shown at all times in the upper right hand corner." Build it as the
 very next build after whatever is mid-flight: a persistent readout of credits
@@ -24,20 +90,28 @@ see which, and carry it through the procedure below from step 3.
 ## What each draft fixes (all from the v11.46 read-only audit in AUDIT.md,
 ## section "STILL OPEN, found 2026-09-05")
 
-- 1150 closing the Undercroft backpack overwrote loadout edits made at the Mainframe (P0)
-- 1151 my v11.42 sector-line pattern regression (wrong map name printed) (P1)
-- 1152 Wirt Buy sold the clock-at-click lot, not the shown lot (P1)
-- 1153 a merc who boards an earlier extraction was never paid (P1)
-- 1154 the outcome card printed base XP while the profile banked more (P1)
-- 1155 byPlayer never cleared on revive: a saved pillager was still your kill (P1)
-- 1156 tags and a note chosen after Copy report were dropped (P1)
-- 1157 the restore code left the armoury behind (P1)
-- 1158 the restore code was blank for a name above U+00FF (P1)
-- 1159 the notoriety banner said the Peddler was done with you (P2)
-- 1160 belt drop on the stash said back in the backpack (P2)
-- 1161 with pillagers None the extraction-heat row read CUSTOM (P2)
-- 1162 [+] on a collapsed pillager board started an invisible resize (P2)
-- 1163 a note typed in the pause box on the floor rode into the next raid (P2)
+(Renumbered 2026-09-05 late: his readout note took 1152 and everything after
+it moved up one. The shift tool renumber1152.ps1 plus fixdev1153.ps1 did it;
+the escaped "11\.NN" inside each p-file's DEVNOW regex needs the second tool.)
+
+- 1150 closing the Undercroft backpack overwrote loadout edits made at the Mainframe (P0) SHIPPED
+- 1151 my v11.42 sector-line pattern regression (wrong map name printed) (P1) SHIPPED
+- 1152 HIS NOTE: credits and XP in the upper right at all times, raids and Undercroft
+- 1153 Wirt Buy sold the clock-at-click lot, not the shown lot (P1)
+- 1154 a merc who boards an earlier extraction was never paid (P1)
+- 1155 the outcome card printed base XP while the profile banked more (P1)
+- 1156 byPlayer never cleared on revive: a saved pillager was still your kill (P1)
+- 1157 tags and a note chosen after Copy report were dropped (P1)
+- 1158 the restore code left the armoury behind (P1)
+- 1159 the restore code was blank for a name above U+00FF (P1)
+- 1160 the notoriety banner said the Peddler was done with you (P2)
+- 1161 belt drop on the stash said back in the backpack (P2)
+- 1162 with pillagers None the extraction-heat row read CUSTOM (P2)
+- 1163 [+] on a collapsed pillager board started an invisible resize (P2)
+- 1164 a note typed in the pause box on the floor rode into the next raid (P2)
+
+The range in every command below is therefore 1150 to 1164, and the dry run
+is `dry.ps1 NEW 1164`.
 
 ## The per-build procedure (one build at a time, never two)
 

@@ -40024,6 +40024,42 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.52 - HIS NOTE: CREDITS AND XP IN THE UPPER RIGHT, AT ALL TIMES
+
+His note, 2026-09-05: "credits and xp should be shown at all times in the
+upper right hand corner ... including in raids and in the undercroft." Until
+now the two figures lived in four places and none of them was that corner:
+credits as a big amber figure on the stash screen's top row, XP as a small
+line at that screen's top left, both in grey micro text at the top LEFT of
+the floor, and nowhere at all in a raid.
+
+THE BUILD. One fixed element in the upper right of the window, "12,345
+CREDITS  4,560 XP" in the same amber-and-ash treatment the stash figure used.
+It sits above every screen, the pause box, the end-of-raid card and every
+window, and below the item menu and the drag ghost, and it takes no clicks.
+It is 24 pixels tall at 4 pixels from the top, inside the band above the
+raid's CONDITIONS box, which starts at LH(30). It is rewritten only when a
+figure changes: saveProfile writes it, because every path that moves credits
+or XP already saves, and the frame loop asks it once per frame for anything
+that does not. The stash screen retires its own credits figure, since the
+corner now has it, and its top row keeps clear of the corner so CLOSE stays
+reachable. The floor's grey status line still names credits and XP at the top
+left; that line also carries the stash count and the run count and was left
+alone.
+
+MEASURED. Check 11.52 gives the profile distinctive figures no fresh save has,
+saves, and in the Undercroft requires the element shown, at the right edge and
+the top, of real size, carrying both figures and both labels; then deploys,
+draws a frame, saves the figures again and requires the same in a raid, plus
+clearance from the CONDITIONS box measured in screen space through the box's
+own zoom; then changes the credits and requires the new figure shown. On the
+v11.51 fixture there is no element and the check fails at the first line.
+
+Not verified: his own eye, on his monitor, at his HUD scale; a CONDITIONS box
+he has dragged up into the band, which is his to place; the ascent screen and
+the title screen, which show it (it is above every screen) but were not
+measured for collisions; 1440p and 2160p, where LH(30) is taller and the band
+wider, not narrower.
 ## v11.51 - MY v11.42 BAKE NAMED THE WRONG MAP ON THE SECTOR PAGE
 
 From the v11.46 read-only audit, P1, and mine. When his 71 wording edits were

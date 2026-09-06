@@ -47,9 +47,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'THE [+] ON A COLLAPSED PILLAGER BOARD EXPANDS IT AGAIN. The resize grip had grown over the glyph on the folded board, so the click began a resize you could not see and the board stayed shut.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.61:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.62:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.62 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.61:[^']*'",{ param($m) "now:'v11.63: [+] on a collapsed CURRENT PILLAGERS board started an invisible resize instead of expanding it. The collapsed box is one line tall and the grip zone is taller, so the grip covered the glyph; mousedown tests the grip first and had no collapsed guard while hudHit and the grip draw both skip collapsed panels. mousedown skips them now. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.62:[^']*'",{ param($m) "now:'v11.63: [+] on a collapsed CURRENT PILLAGERS board started an invisible resize instead of expanding it. The collapsed box is one line tall and the grip zone is taller, so the grip covered the glyph; mousedown tests the grip first and had no collapsed guard while hudHit and the grip draw both skip collapsed panels. mousedown skips them now. From the v11.46 audit, P2.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

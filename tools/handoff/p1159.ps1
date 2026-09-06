@@ -55,9 +55,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'A NAME WITH AN EMOJI OR A CURLY QUOTE GETS A RESTORE CODE. Before this the code at the bottom of the run report came out blank for any such name, and the friend it belonged to could not be restored. Old codes still read.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.57:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.58:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.58 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.57:[^']*'",{ param($m) "now:'v11.59: the restore code was blank for any name above U+00FF. btoa takes Latin-1 only, so an emoji, a CJK character or a curly quote in the name made it throw and the catch returned an empty code, while the name box accepts any sixteen characters. The code is UTF-8 through btoa now and the reader tries the UTF-8 read first and falls back to the plain read, so every code written before this build still reads. From the v11.46 audit, P1.'" })
+$s=[regex]::Replace($s,"now:'v11\.58:[^']*'",{ param($m) "now:'v11.59: the restore code was blank for any name above U+00FF. btoa takes Latin-1 only, so an emoji, a CJK character or a curly quote in the name made it throw and the catch returned an empty code, while the name box accepts any sixteen characters. The code is UTF-8 through btoa now and the reader tries the UTF-8 read first and falls back to the plain read, so every code written before this build still reads. From the v11.46 audit, P1.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

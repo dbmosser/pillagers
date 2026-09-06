@@ -83,9 +83,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.62:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.63:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.63 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.62:[^']*'",{ param($m) "now:'v11.64: feedback typed in the pause box on the floor was kept silently and attached to the next raid. The buttons attach a note only when a raid runs and nothing on the floor read or cleared the field, so the words rode into the next raid first pause stamped with its clock. The close banks a floor note to P.floorNotes (20 kept), says so, and buildExport prints them under FLOOR NOTES; the character-screen button no longer discards it. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.63:[^']*'",{ param($m) "now:'v11.64: feedback typed in the pause box on the floor was kept silently and attached to the next raid. The buttons attach a note only when a raid runs and nothing on the floor read or cleared the field, so the words rode into the next raid first pause stamped with its clock. The close banks a floor note to P.floorNotes (20 kept), says so, and buildExport prints them under FLOOR NOTES; the character-screen button no longer discards it. From the v11.46 audit, P2.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

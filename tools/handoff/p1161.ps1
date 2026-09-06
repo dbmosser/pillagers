@@ -38,9 +38,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'DROPPING A BELT ITEM ON THE STASH NOW SAYS WHERE IT WENT. It said "back in the backpack" while taking it out of the backpack; it went to the stash, and the line says so.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.59:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.60:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.60 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.59:[^']*'",{ param($m) "now:'v11.61: dropping a tactical belt item on the stash said back in the backpack while splicing it out of the backpack (v8.72 drop: clears the belt key, leaves the kit, lands in the stash). The line names the stash now. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.60:[^']*'",{ param($m) "now:'v11.61: dropping a tactical belt item on the stash said back in the backpack while splicing it out of the backpack (v8.72 drop: clears the belt key, leaves the kit, lands in the stash). The line names the stash now. From the v11.46 audit, P2.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

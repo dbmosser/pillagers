@@ -48,9 +48,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'THE NOTORIETY BANNER STOPPED LYING ABOUT THE PEDDLER. At two notoriety it said the Peddler was done with you; he has traded with anyone since the stall stopped shutting. It says what notoriety really costs now.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.58:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.59:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.59 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.58:[^']*'",{ param($m) "now:'v11.60: the in-raid notoriety banner at two or more said the Peddler was done with you, while the stall has never shut since his v8.28 ruling (pedOpen answers true) and the hub card was renamed then. The banner names the real cost at every score now. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.59:[^']*'",{ param($m) "now:'v11.60: the in-raid notoriety banner at two or more said the Peddler was done with you, while the stall has never shut since his v8.28 ruling (pedOpen answers true) and the hub card was renamed then. The banner names the real cost at every score now. From the v11.46 audit, P2.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

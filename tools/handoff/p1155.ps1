@@ -67,9 +67,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'THE XP ON THE OUTCOME CARD IS THE XP YOU GET. A night run, hard weather or a dose in your blood pays more, and the game banked that bonus but the card printed the plain figure, so the XP line, the total and the distance to the next reward were all off. The card now prints exactly what is banked.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.53:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.54:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.54 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.53:[^']*'",{ param($m) "now:'v11.55: the outcome card printed base XP while the profile was credited base x night x weather x dose. The card built its own record without the night and wxHard flags and printed the raw sum, while commitRun ran addProgress (round of base x night x weather) and addXp (round of that x dose); a night run said +100 and banked 120, and the total and the distance to the next reward were wrong with it. One helper, xpBaseFor, now owns the night and weather arithmetic, the bank uses it, and the card prints the same figure times the dose multiplier. From the v11.46 audit, P1, raised by two regions.'" })
+$s=[regex]::Replace($s,"now:'v11\.54:[^']*'",{ param($m) "now:'v11.55: the outcome card printed base XP while the profile was credited base x night x weather x dose. The card built its own record without the night and wxHard flags and printed the raw sum, while commitRun ran addProgress (round of base x night x weather) and addXp (round of that x dose); a night run said +100 and banked 120, and the total and the distance to the next reward were wrong with it. One helper, xpBaseFor, now owns the night and weather arithmetic, the bank uses it, and the card prints the same figure times the dose multiplier. From the v11.46 audit, P1, raised by two regions.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

@@ -58,9 +58,9 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'SETTINGS: THE EXTRACTION-HEAT ROW NO LONGER READS CUSTOM WHEN PILLAGERS ARE OFF. It showed CUSTOM in amber, with the tuning-console hint, for a row you had never touched. Nothing about the raid changes.',
 '@
-$cnt=([regex]::Matches($s,"now:'v11\.60:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v11\.61:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.61 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.60:[^']*'",{ param($m) "now:'v11.62: with Other pillagers set to None the extraction-heat row read CUSTOM in amber with the tuning-console hint. None turns the waves off and applyGameOpts gives the pillager row the last word, but raiderWaves:1 rode along on the heat row so no option matched. The waves are on the pillager row now on every option and the heat row carries siegeVol alone; every combination lands on the same dials as before, and leaving None for Standard with the heat on Light now brings the waves back, which nothing did before. From the v11.46 audit, P2.'" })
+$s=[regex]::Replace($s,"now:'v11\.61:[^']*'",{ param($m) "now:'v11.62: with Other pillagers set to None the extraction-heat row read CUSTOM in amber with the tuning-console hint. None turns the waves off and applyGameOpts gives the pillager row the last word, but raiderWaves:1 rode along on the heat row so no option matched. The waves are on the pillager row now on every option and the heat row carries siegeVol alone; every combination lands on the same dials as before, and leaving None for Standard with the heat on Light now brings the waves back, which nothing did before. From the v11.46 audit, P2.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
