@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.63';
+var VER='11.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,20 @@ var VER='11.63';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.63';
+var WHATSNEW_VER='11.73';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A BRAND NEW CHARACTER HAS A NAME. Before this, someone playing for the first time had none until the game had saved and loaded once, and the character screen read "undefined" beside their first raid.',
+  'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
+  'THE [+] ON A COLLAPSED PILLAGER BOARD EXPANDS IT AGAIN. The resize grip had grown over the glyph on the folded board, so the click began a resize you could not see and the board stayed shut.',
+  'SETTINGS: THE EXTRACTION-HEAT ROW NO LONGER READS CUSTOM WHEN PILLAGERS ARE OFF. It showed CUSTOM in amber, with the tuning-console hint, for a row you had never touched. Nothing about the raid changes.',
+  'DROPPING A BELT ITEM ON THE STASH NOW SAYS WHERE IT WENT. It said "back in the backpack" while taking it out of the backpack; it went to the stash, and the line says so.',
+  'THE NOTORIETY BANNER STOPPED LYING ABOUT THE PEDDLER. At two notoriety it said the Peddler was done with you; he has traded with anyone since the stall stopped shutting. It says what notoriety really costs now.',
+  'A NAME WITH AN EMOJI OR A CURLY QUOTE GETS A RESTORE CODE. Before this the code at the bottom of the run report came out blank for any such name, and the friend it belonged to could not be restored. Old codes still read.',
+  'YOUR RESTORE CODE NOW CARRIES YOUR GUNS. The code at the bottom of every run report promised what you had unlocked and left the armoury out: restored from it, you came back with a Scav Pistol. It carries every gun you own, the one in hand, the second slot and their wear now. Copy a fresh one.',
+  'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
+  'SAVING A MAN YOU SHOT NO LONGER PINS HIS LATER DEATH ON YOU. If you downed a pillager, then picked him up, and a crawler killed him later, the game still called it your kill: a contract tick, a grudge, the lot. Once you have saved him, only you can make his death yours again.',
   'THE XP ON THE OUTCOME CARD IS THE XP YOU GET. A night run, hard weather or a dose in your blood pays more, and the game banked that bonus but the card printed the plain figure, so the XP line, the total and the distance to the next reward were all off. The card now prints exactly what is banked.',
   'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and boarded an earlier ship, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
   'WIRT SELLS YOU THE THING ON THE COUNTER. If the Limited Time Offer rolled over while you were reading it, Buy used to take your money and hand you the next offer instead. You get the one that was named and priced when you clicked.',
@@ -2007,6 +2017,11 @@ function itemWanted(k){
 // still met it undefined on its second load and had NIGHT silently overwritten.
 // Once per profile, which is the shape that reads as a broken button.
 var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,died:0,best:0,dayMigrated:1,
+  // v11.73, from the 2026-09-06 menu audit: BORN SET, like dayMigrated above.
+  // The pname default lives inside applyLoadedProfile, which only runs when a
+  // save exists, so a player who has never saved had no name at all and the
+  // character screen read "undefined" beside his first raid.
+  pname:'PILLAGER',
   log:[],pack:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day',crashes:[]};
 var SLOT=(function(){ try{ return localStorage.getItem('salvagerun:activeSlot')||'1'; }catch(e){ return '1'; } })();
 var SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT);
@@ -8811,7 +8826,8 @@ function pedSellPromise(){
 }
 // v8.27: the word for a number. Used by the stats card and by the banner that
 // fires when it changes, so the two can never call the same score two things.
-// 2 gets its own word because 2 is where the stall actually shuts.
+// 2 gets its own word because 2 is where the stall used to shut (it never shuts
+// since v8.28; the banner caught up at v11.68).
 // THE PLAYER STARTED IT, v8.30, his ruling. Every way he can lay hands on a
 // pillager who was not fighting him comes through here: a bullet, his own
 // charge, or his fists. Once per man however many times he does it, and the
@@ -8841,7 +8857,8 @@ function notoName(n){
 // And what it just cost him, in one clause, for the banner.
 function notoBite(n){
   n=n||0;
-  if(n>=2) return 'The Peddler is done with you.';
+  // v11.68: the stall never shuts (pedOpen, his v8.28 ruling); this said it did.
+  if(n>=2) return 'Hiring costs more and pillagers are slower to trust you. Word has got round.';
   return 'Hiring costs more and pillagers are slower to trust you.';
 }
 function mkPeddler(x,y,map){
@@ -10741,7 +10758,11 @@ cv.addEventListener('mousedown',function(e){
       if(inRect(HB2,mouse.x,mouse.y)){
         // v8.93: the resize corner wins, because it is the smallest target on
         // the panel and anything that beat it would make the grip feel dead.
-        if(HUDZ[hk]!==undefined){
+        // v11.71: never on a collapsed panel. Its box is shorter than the grip
+        // zone, so the grip covered the [+] glyph and the click that should
+        // expand the board started a resize nobody could see. hudHit and the
+        // grip draw already skip collapsed panels; mousedown agrees with them.
+        if(HUDZ[hk]!==undefined&&!hudOff(hk).c){
           if(hudOnGrip(HB2,mouse.x,mouse.y)){
             // The diagonal from the ANCHOR corner to the pointer IS the size, so
             // the panel tracks the corner under his hand rather than a guess.
@@ -11279,6 +11300,20 @@ function togglePauseBox(on){
   if(G&&G.over) return;
   if(!G&&state!=='hub') return;
   pauseOpen=on;
+  // v11.72: a note typed on the floor has no raid to attach to. It used to sit
+  // in the box and ride into the NEXT raid's first pause as if written there.
+  // The close banks it to the profile; every report prints it under FLOOR NOTES.
+  if(!on&&!G){
+    var _fn=document.getElementById('pausenote'), _ft=_fn?_fn.value.trim():'';
+    if(_ft){
+      P.floorNotes=P.floorNotes||[];
+      P.floorNotes.push({run:P.runs||0,t:Date.now(),txt:_ft.slice(0,400)});
+      if(P.floorNotes.length>20) P.floorNotes.shift();
+      _fn.value='';
+      saveProfile();
+      try{ say2('Noted. It goes out with your next run report.'); }catch(_sn){}
+    }
+  }
   // v10.96: every opening starts unarmed. An arm that outlives the box is a run
   // ended by a misclick on a screen he only opened to read the controls.
   if(on) disarmAbandon();
@@ -14506,6 +14541,7 @@ if(!p.fired||p.wep.auto){
       // and still hostile:true.
       downRdr.alert=0; downRdr.goal=null;
       downRdr.hostile=false; downRdr.grudge=false; downRdr.friendlyPC=1;
+      downRdr.byPlayer=false;   // v11.64: his next death is not yours unless you cause it
       G.tel.revives=(G.tel.revives||0)+1;
       G.tel.raiderRevives=(G.tel.raiderRevives||0)+1;
       blip('pick');
@@ -17704,7 +17740,7 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
 }
 
 // ================================================================ end of run
-var pendingRun=null,selTags=[];
+var pendingRun=null,selTags=[],committedRun=null;   // v11.65: the row Copy report wrote, for late tags
 // v8.17, audit: EXACTLY ONCE, WHEREVER HE LEAVES. The XP and the ledger row
 // used to be written by the outcome button alone, so any other way off that
 // screen kept the credits endRaid had already banked and threw the progress
@@ -28251,7 +28287,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.63: the outcome card printed base XP while the profile was credited base x night x weather x dose. The card built its own record without the night and wxHard flags and printed the raw sum, while commitRun ran addProgress (round of base x night x weather) and addXp (round of that x dose); a night run said +100 and banked 120, and the total and the distance to the next reward were wrong with it. One helper, xpBaseFor, now owns the night and weather arithmetic, the bank uses it, and the card prints the same figure times the dose multiplier. From the v11.46 audit, P1, raised by two regions.',
+  now:'v11.73: a character who has never saved had no name. The default profile literal carries no pname and the line that fills it in sits inside applyLoadedProfile, which only runs when a save is found, so it could never help a brand new player. After a first raid the character screen read undefined beside the run count, since that line only prints the name once runs is above zero. pname is born set in the literal now, like dayMigrated. From the 2026-09-06 menu audit.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29752,7 +29788,7 @@ try{ renderFreeKit(); }catch(_fk){}
       var _pi=P.kit.indexOf(key);
       if(_pi>=0) P.kit.splice(_pi,1);
       saveProfile(); try{ sfx('pick'); }catch(e){}
-      say2((ITEMS[key]?ITEMS[key].name:key)+' back in the backpack.');
+      say2((ITEMS[key]?ITEMS[key].name:key)+' back in the stash.');   // v11.69: it left the backpack
       renderHub();
       return;
     }
@@ -30383,10 +30419,15 @@ function restoreMake(){
   // same thing.
   var st=P.stash||[];
   for(var i=0;i<st.length;i++) o.s[st[i]]=(o.s[st[i]]||0)+1;
+  // v11.66: the armoury. Guns owned, the one in hand, the second slot, and the
+  // rounds worn through each, which is what condition is made of.
+  o.g={w:(P.weapons||[]).slice(),e:P.equipped||'fists',e2:P.equippedSec||'none',wr:{}};
+  for(var wk in (P.wear||{})) if(P.wear[wk]) o.g.wr[wk]=P.wear[wk]|0;
   return o;
 }
 function restoreCode(){
-  try{ return 'PIL1'+btoa(JSON.stringify(restoreMake())).replace(/=+$/,''); }
+  // v11.67: UTF-8 through btoa, so a name above U+00FF makes a code at all.
+  try{ return 'PIL1'+btoa(unescape(encodeURIComponent(JSON.stringify(restoreMake())))).replace(/=+$/,''); }
   catch(e){ return ''; }
 }
 // The other direction, written in the same build as the maker so the two can
@@ -30399,7 +30440,11 @@ function restoreRead(code){
     if(b.slice(0,4)!=='PIL1') return null;
     b=b.slice(4);
     while(b.length%4) b+='=';
-    var o=JSON.parse(atob(b));
+    var raw=atob(b), js;
+    // v11.67: the code is UTF-8 from this build on; an older one is plain
+    // Latin-1 and reads as itself when the UTF-8 read refuses it.
+    try{ js=decodeURIComponent(escape(raw)); }catch(_u){ js=raw; }
+    var o=JSON.parse(js);
     if(!o||typeof o.c!=='number'||typeof o.n!=='string') return null;
     return o;
   }catch(e){ return null; }
@@ -30430,6 +30475,18 @@ function restoreApply(o){
     for(i=0;i<c;i++) st.push(id);
   }
   P.stash=st;
+  // v11.66: the armoury, when the code carries one. A gun this build does not
+  // know is dropped, the same rule as the stash; an older code without the
+  // block leaves the guns as they are rather than stripping them.
+  if(o.g){
+    var gw=[], gi, gl=(o.g.w||[]);
+    for(gi=0;gi<gl.length;gi++) if(WEAPONS[gl[gi]]&&gl[gi]!=='fists'&&gw.indexOf(gl[gi])<0) gw.push(gl[gi]);
+    P.weapons=gw;
+    P.equipped=(o.g.e&&gw.indexOf(o.g.e)>=0)?o.g.e:'fists';
+    P.equippedSec=(o.g.e2&&gw.indexOf(o.g.e2)>=0&&o.g.e2!==P.equipped)?o.g.e2:'none';
+    P.wear={};
+    for(var wk in (o.g.wr||{})) if(WEAPONS[wk]) P.wear[wk]=Math.max(0,o.g.wr[wk]|0);
+  }
   saveProfile();
   return true;
 }
@@ -30438,8 +30495,10 @@ function restoreSay(o){
   if(!o) return 'That is not a restore code.';
   var st=0, id;
   for(id in (o.s||{})) st+=(o.s[id]|0);
+  var ng=(o.g&&o.g.w)?o.g.w.length:0;
   return o.n+', '+(o.r|0)+' raid'+((o.r|0)===1?'':'s')+', '+'$'+(o.c|0).toLocaleString()+
-         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash.';
+         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash'+
+         (o.g?', '+ng+' gun'+(ng===1?'':'s'):'')+'.';
 }
 function buildExport(){
   var L=[],i;
@@ -30466,6 +30525,14 @@ function buildExport(){
     if(P.txt&&typeof P.txt==='object'&&Object.keys(P.txt).length) L.push('TEXT EDITS: '+JSON.stringify(P.txt));
     if(P.txp&&typeof P.txp==='object'&&Object.keys(P.txp).length) L.push('TEXT PATTERNS: '+JSON.stringify(P.txp));
   }catch(_te){}
+  // v11.72: notes typed in the pause box on the floor, with no raid to carry them.
+  if(P.floorNotes&&P.floorNotes.length){
+    L.push('FLOOR NOTES ('+P.floorNotes.length+'):');
+    P.floorNotes.forEach(function(fn){
+      var when=''; try{ when=new Date(fn.t).toISOString(); }catch(_w){}
+      L.push('  after run #'+fn.run+' '+when+': '+fn.txt);
+    });
+  }
   L.push('Active config ['+(CFG.preset||'custom')+']: '+JSON.stringify(CFG));
   // HIS PRIORITY ORDER RIDES IN EVERY EXPORT, v3.63. The dev box lets him drag
   // the open roadmap questions into his own order; this line is how that order
@@ -31479,8 +31546,7 @@ document.getElementById('closesim').onclick=function(){ document.getElementById(
 // memory, shows what he has just earned.
 document.getElementById('charselbtn').onclick=function(){
   if(G) return;                       // never from inside a raid
-  var _pn=document.getElementById('pausenote');
-  if(_pn) _pn.value='';               // a note on the floor has no raid to attach to
+  // v11.72: a note typed here is banked by the close below, not thrown away.
   try{ saveProfile(); }catch(_sp){}
   togglePauseBox(false);
   var _t=document.getElementById('title');
@@ -31654,7 +31720,20 @@ function autoExport(){
 // v10.65: the one commit, so the copy button and the way out cannot disagree
 // about whether this raid was logged, and neither can log it twice.
 function ocCommit(){
-  if(!pendingRun) return false;
+  if(!pendingRun){
+    // v11.65: the commit already happened (Copy report does it first). Tags and
+    // a note chosen since then land on the row it wrote, and the report goes
+    // out again with them, instead of being thrown away at the early return.
+    if(committedRun){
+      var _lt=selTags.slice(), _ln=document.getElementById('oc_note');
+      _ln=_ln?_ln.value.trim():'';
+      if(_lt.join('|')!==(committedRun.tags||[]).join('|')||_ln!==(committedRun.note||'')){
+        committedRun.tags=_lt; committedRun.note=_ln;
+        saveProfile(); autoExport();
+      }
+    }
+    return false;
+  }
   // The tags and the note are collected HERE, so they are attached before the
   // commit when the button is the way out, and patched onto the already
   // written row when the commit happened without him.
@@ -31662,6 +31741,7 @@ function ocCommit(){
   var _ocn=document.getElementById('oc_note');
   pendingRun.note=_ocn?_ocn.value.trim():'';
   commitRun(pendingRun);
+  committedRun=pendingRun;
   pendingRun=null;
   saveProfile();
   autoExport();
@@ -32501,9 +32581,11 @@ var GAMEOPTS=[
   {k:'raiders', label:'Other pillagers',
    hint:'Human-shaped rivals looting the same map. They fight each other and the machines as well as you.',
    opts:[
-     {n:'Many',     cfg:{nRaider:15}},
-     {n:'Standard', cfg:{nRaider:10}},
-     {n:'Few',      cfg:{nRaider:5}},
+     // v11.70: the waves live here, with the pillagers, on every option; the
+     // heat row used to carry raiderWaves:1 and read CUSTOM whenever this was None.
+     {n:'Many',     cfg:{nRaider:15, raiderWaves:1}},
+     {n:'Standard', cfg:{nRaider:10, raiderWaves:1}},
+     {n:'Few',      cfg:{nRaider:5,  raiderWaves:1}},
      // v8.42, audit: and the WAVES off with them. nRaider 0 empties the opening
      // roster, but the wave loop treats an empty map as urgent and waives its own
      // ceilings, so None was delivering a steady four pillagers all raid.
@@ -32552,8 +32634,8 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
   {k:'ext', label:'Heat when you call for extraction',
    hint:'How much of the map comes to the extraction ring once the beacon is up.',
    opts:[
-     {n:'Heavy',    cfg:{siegeVol:1.4, raiderWaves:1}},
-     {n:'Standard', cfg:{siegeVol:1,   raiderWaves:1}},
+     {n:'Heavy',    cfg:{siegeVol:1.4}},
+     {n:'Standard', cfg:{siegeVol:1}},
      // v8.74, his order: this row is about the RING. raiderWaves:0 used to ride
      // along here and it is whole-raid pillager reinforcement, ticked every frame
      // from the first second of the raid, so Light silently emptied the map for

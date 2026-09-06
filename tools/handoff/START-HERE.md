@@ -1,5 +1,49 @@
 # START HERE (written 2026-09-05, handoff from Fable to Opus)
 
+## FINAL RUN BEFORE ALPHA (handoff to Fable, 2026-09-06)
+
+**STATE:** HEAD is v11.71 (b0b5377). The tree has **v11.72 APPLIED** (a note
+typed in the pause box on the floor is banked instead of riding into the next
+raid). It passed parse, its own check four times in a row, __verifySafe, and
+its control fails on fx1171. Its FULL CORPUS is running on the Browser pane tab
+"seed". FIRST ACTION: poll `JSON.stringify(window.__PROG)` there; when finished
+is true, pass is true, fail is [] and only the two known skips are listed:
+    bash tools/handoff/ship.sh commit 1172 cm1172.txt
+That commit RETIRES THE WHOLE v11.46 AUDIT QUEUE. Then bump the HEAD line in
+memory dark-raiders-handoff-state.md.
+
+**NEXT, ALREADY DRAFTED:** 1173, a character who has never saved had no name
+(`ship.sh start 1172 1173`). Not yet dry-run: run
+`powershell -File tools/handoff/dry.ps1 1173 1173` first.
+
+**THEN, THE ALPHA-PATH ITEMS STILL OPEN** (all from the 2026-09-06 menu audit,
+recorded in AUDIT.md under its 2026-09-06 heading, none drafted as builds):
+1. TAKE THE FREEBIE KIT wipes a packed backpack and the whole belt plan, with
+   no confirmation and no undo. A new player is likely to press it after
+   packing. Highest value left.
+2. The safe pocket accepts a Frag Charge or an Ammo Box and reads 1/1, but the
+   death path cannot bank either, so it silently spends the only death
+   protection there is. One line in setSafe, plus clearing an already-saved bad
+   P.safe on load.
+3. The Undercroft keeps taking E, R, F and T behind the character screen; at
+   the lift, R starts a raid under the title. One line in hubModalOpen.
+
+**WHAT SHIPPED TONIGHT (20 builds, v11.52 to v11.71, every one with a green
+corpus and a control that fails on the previous build):** all six of his
+2026-09-05 in-run notes; the Undercroft HUD erase; the belt-key grenade; and
+the entire v11.46 audit queue.
+
+**THE HARNESS BIT FOUR TIMES TONIGHT and every repair is in the drafts:** a
+check guarding on a hook from a renumbered build (skipped silently); a control
+that required a blank strip only true while the HUD was erased; a check that
+judged a multi-item lot by the last stash entry; one that renamed a row of the
+shared WEATHER table; one that assumed which button writes the run row; and one
+that skipped on a raid left in memory. THE STANDING RULE THAT CAME OUT OF IT:
+run every new check three to five times in one page before the corpus, and once
+straight after a neighbouring check that ends a raid. A check that is green
+alone and red or skipped in the corpus is order-dependent, and the fault is
+almost always in the check.
+
 **MID-FLIGHT (2026-09-06, handing back to Fable):** HEAD is v11.56 (5afdc0a).
 The tree has v11.57 APPLIED (his note E, LIGHTNING INCOMING at the ring) and
 verified on all four gates: parse PASS, check 11.57 PASS, __verifySafe PASS at

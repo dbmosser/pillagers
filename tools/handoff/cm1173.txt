@@ -1,0 +1,13 @@
+v11.73: a character who has never saved had no name
+
+From the 2026-09-06 menu audit. The default profile literal carries no pname,
+and the fallback that sets one lives inside applyLoadedProfile, which only
+runs when a save is found, so it could help everybody except a first-time
+player. Checked by hand: the character screen prints the name only once you
+have a raid behind you, so the sighting is after a first raid on the way back
+to that screen, where it read "undefined, 1 raid logged". pname is born with
+the profile now, beside dayMigrated. Check 11.73 requires a name on a fresh
+profile and no undefined on the character line, with a control that the line
+carries the name; fails on v11.72.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

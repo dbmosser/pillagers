@@ -5704,6 +5704,288 @@ window.__REGRESS=[
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.69',what:'dropping a tactical belt item on the stash says it went to the stash, and it did: it left the backpack and its belt key',
+   run:function(){
+     if(!(window.__P&&window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot walk the Undercroft';
+     if(typeof say2!=='function') return 'SKIP: no say2 in this build';
+     var zone=document.getElementById('stashgrid');
+     if(!zone) return 'SKIP: no stash grid in this document';
+     var bad=[], prof, got=[], _s2=say2, stale=['back in the ','backpack'].join('');
+     try{
+       __topClear(); __cleanProfile(); prof=__P();
+       try{ __hubEnter(); __station('stash'); }catch(_h){}
+       try{ renderHub(); }catch(_r){}
+       if(typeof zone.__grabDrop!=='function') return 'SKIP: the stash grid is not a drop zone here (no __grabDrop), so the drop cannot be driven';
+       // A medkit in the backpack, on belt key 1.
+       prof.kit=['medkit']; prof.hotAssign={0:'medkit'}; prof.stash=[];
+       say2=function(t){ got.push(String(t)); };
+       zone.__grabDrop('medkit','plan:0');
+       say2=_s2;
+       var line=got.join(' | ');
+       // CONTROL: the item really left the backpack and its key, or the words are not about this drop.
+       if((prof.kit||[]).indexOf('medkit')>=0) bad.push('control: the medkit is still in the backpack after the drop');
+       if(prof.hotAssign&&prof.hotAssign[0]!==undefined) bad.push('control: the belt key still holds the medkit after the drop');
+       if(!got.length) bad.push('control: the drop said nothing at all');
+       // THE FIX: the line names where it went.
+       if(line.indexOf(stale)>=0) bad.push('the drop said "'+line+'" while taking the item out of the backpack');
+       if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.73',what:'a character who has never saved still has a name, and the character screen does not read undefined beside their first raid',
+   run:function(){
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     var bad=[], prof, keepRuns, keepCred;
+     try{
+       __topClear(); __cleanProfile();
+       prof=__P();
+       // THE FIX: the name is born with the profile, not handed out by the loader.
+       if(typeof prof.pname!=='string'||!prof.pname) bad.push('a profile that has never been saved has no name (pname is '+(typeof prof.pname)+'), so the loader is the only thing that can give it one and a brand new player never meets the loader');
+       // AND THE CONSEQUENCE: the line that names him once he has a raid behind him.
+       if(typeof titleRefresh==='function'){
+         keepRuns=prof.runs; keepCred=prof.credits;
+         prof.runs=1; prof.credits=900;
+         try{ titleRefresh(); }catch(_t){}
+         var sub=document.getElementById('titlesub'), txt=sub?String(sub.textContent||''):'';
+         if(txt&&txt.indexOf('undefined')>=0) bad.push('the character screen reads "'+txt.slice(0,60)+'"');
+         // CONTROL: that line really is the one that carries the name, or the
+         // absence of "undefined" above proves nothing.
+         if(txt&&txt.indexOf(String(prof.pname))<0) bad.push('control: the character screen does not carry the name at all, so this line is not the one that shows it: "'+txt.slice(0,60)+'"');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var pf=__P(); if(keepRuns!==undefined) pf.runs=keepRuns; if(keepCred!==undefined) pf.credits=keepCred; }catch(_r){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.72',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
+   run:function(){
+     if(!window.__P||typeof togglePauseBox!=='function'||typeof buildExport!=='function') return 'SKIP: no pause box in this build';
+     if(!document.getElementById('pausenote')) return 'SKIP: no note box in this document';
+     var bad=[], prof, note='ZQX floor note 8812';
+     try{
+       __topClear(); __cleanProfile(); prof=__P();
+       // v11.72: PUT yourself on the floor rather than declining. A raid left in
+       // memory by an earlier check is not a reason to skip; it is a reason to
+       // end it, which is exactly what leaving a raid does in the game.
+       try{ if(G){ G=null; keys={}; } }catch(_g){}
+       try{ if(window.__showScreen) __showScreen('hub'); }catch(_s){}
+       if(window.__hubEnter){ try{ __hubEnter(); }catch(_h){} }
+       if(G) return 'SKIP: a raid is still running after clearing it, so this is not the floor';
+       if(typeof state!=='undefined'&&state!=='hub') return 'SKIP: not on the floor (state '+state+') even after showing the hub';
+       delete prof.floorNotes;
+       togglePauseBox(true);
+       var ta=document.getElementById('pausenote'); ta.value=note;
+       togglePauseBox(false);
+       var fl=prof.floorNotes||[], last=fl[fl.length-1];
+       if(!last||last.txt!==note) bad.push('the note typed on the floor was not banked (floorNotes: '+JSON.stringify(fl).slice(0,80)+')');
+       if((ta.value||'').trim()===note) bad.push('the note is still sitting in the box, waiting to ride into the next raid');
+       var rep=buildExport(), txt=(rep&&rep.join)?rep.join('\n'):String(rep);
+       if(txt.indexOf(note)<0) bad.push('the run report does not carry the floor note');
+       else if(txt.indexOf('FLOOR NOTES')<0) bad.push('the report carries the note but does not say what it is');
+       // CONTROL: a second close with an empty box banks nothing more.
+       togglePauseBox(true); togglePauseBox(false);
+       if((prof.floorNotes||[]).length!==fl.length) bad.push('control: closing an empty box banked a note');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var ta2=document.getElementById('pausenote'); if(ta2) ta2.value=''; }catch(_t){}
+       try{ togglePauseBox(false); }catch(_c){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.71',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__mouse&&window.__canvases&&window.__P)) return 'SKIP: this fixture cannot click a panel';
+     if(typeof HUDBOX==='undefined'||typeof hudOnGrip!=='function') return 'SKIP: no HUD panels in this build';
+     var bad=[], prof, keepHud;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       prof=__P(); keepHud=JSON.stringify(prof.hud===undefined?null:prof.hud);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       if(!g.roster||!g.roster.length) return 'SKIP: no pillager roster, so there is no board to fold';
+       prof.hud=prof.hud||{}; prof.hud.raiders={c:true};
+       __frame(); __frame();
+       var HB=HUDBOX.raiders;
+       if(!HB||!HB.tg) bad.push('control: the folded board drew no box or no glyph');
+       else {
+         var m=__mouse(), cv=__canvases().world;
+         var x=Math.round(HB.tg.x+HB.tg.w/2), y=Math.round(HB.tg.y+HB.tg.h/2);
+         // CONTROL: the glyph centre really sits inside the grip zone, or the click proves nothing.
+         if(!hudOnGrip(HB,x,y)) return 'SKIP: the glyph centre is outside the grip zone at this size, so the clash cannot be driven here';
+         m.x=x; m.y=y; m.down=false;
+         cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true,cancelable:true,clientX:x,clientY:y}));
+         var rz=(typeof HUDRESIZE!=='undefined'&&HUDRESIZE)?HUDRESIZE.id:null;
+         try{ window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true})); }catch(_u){}
+         if(rz) bad.push('the click on [+] of the folded board started a resize of "'+rz+'"');
+         if(prof.hud.raiders&&prof.hud.raiders.c) bad.push('the click on [+] did not expand the board');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var kh=JSON.parse(keepHud); if(kh===null) delete prof.hud; else prof.hud=kh; }catch(_h){}
+       try{ HUDRESIZE=null; }catch(_z){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.70',what:'with Other pillagers set to None the extraction-heat row still reads its own word rather than CUSTOM, the waves are off, and they come back when pillagers return to Standard',
+   run:function(){
+     if(!window.__P||typeof applyGameOpts!=='function'||typeof gameOptLive!=='function'||typeof gameOptIx!=='function') return 'SKIP: no settings rows in this build';
+     var bad=[], prof=__P(), keepGO=JSON.stringify(prof.gameOpts===undefined?null:prof.gameOpts), keepT=JSON.stringify(prof.tuned||{}), keepRW=CFG.raiderWaves, keepNR=CFG.nRaider;
+     try{
+       prof.gameOpts={}; prof.tuned={};
+       prof.gameOpts.raiders=3;              // None
+       applyGameOpts();
+       if(CFG.raiderWaves!==0) bad.push('control: with pillagers None the waves are still on ('+CFG.raiderWaves+')');
+       var lv=gameOptLive('ext');
+       if(lv<0) bad.push('with pillagers None the extraction-heat row reads CUSTOM, no option matching the live dials, though nothing about the ring was changed');
+       else if(lv!==gameOptIx('ext')) bad.push('the extraction-heat row reads option '+lv+' and not the chosen '+gameOptIx('ext'));
+       if(gameOptLive('raiders')!==3) bad.push('control: the pillagers row does not read None after being set to it ('+gameOptLive('raiders')+')');
+       prof.gameOpts.raiders=1;              // back to Standard
+       applyGameOpts();
+       if(CFG.raiderWaves!==1) bad.push('control: with pillagers back on Standard the waves did not return ('+CFG.raiderWaves+')');
+       if(gameOptLive('raiders')!==1) bad.push('control: the pillagers row does not read Standard after being set to it ('+gameOptLive('raiders')+')');
+       if(gameOptLive('ext')<0) bad.push('control: the extraction-heat row reads CUSTOM with pillagers on Standard');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var go=JSON.parse(keepGO); if(go===null) delete prof.gameOpts; else prof.gameOpts=go; prof.tuned=JSON.parse(keepT); applyGameOpts(); CFG.raiderWaves=keepRW; CFG.nRaider=keepNR; saveProfile(); }catch(_r){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.68',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
+   run:function(){
+     if(typeof notoBite!=='function'||typeof pedOpen!=='function') return 'SKIP: no notoriety banner in this build';
+     if(!pedOpen()) return 'SKIP: the stall shuts in this build, so the old line would be true';
+     var bad=[], stale=['done with',' you'].join(''), b1=String(notoBite(1)), b2=String(notoBite(2)), b3=String(notoBite(3));
+     if(b2.indexOf(stale)>=0) bad.push('at notoriety 2 the banner says "'+b2+'" while the stall stays open');
+     if(b3.indexOf(stale)>=0) bad.push('at notoriety 3 the banner says "'+b3+'" while the stall stays open');
+     if(b2.indexOf('Hiring')<0) bad.push('at notoriety 2 the banner does not name the hiring cost: "'+b2+'"');
+     if(b1.indexOf('Hiring')<0) bad.push('control: at notoriety 1 the banner does not name the hiring cost: "'+b1+'"');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.67',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
+   run:function(){
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     if(typeof restoreCode!=='function'||typeof restoreRead!=='function') return 'SKIP: this build has no restore code';
+     var bad=[], prof=__P(), keepN=prof.pname;
+     try{
+       var fancy='ZQX'+String.fromCharCode(0x2019)+'S '+String.fromCharCode(0xD83D,0xDD25);
+       prof.pname=fancy;
+       var code=restoreCode();
+       if(!code) bad.push('a name with a curly quote and an emoji produced no restore code at all, so the friend it belongs to cannot be restored');
+       else {
+         var o=restoreRead(code);
+         if(!o) bad.push('the code for that name cannot be read back');
+         else if(o.n!==fancy) bad.push('the name came back as '+JSON.stringify(o.n)+' and not '+JSON.stringify(fancy));
+       }
+       // CONTROL: a code written the old way, plain btoa of ASCII JSON, still reads.
+       var old='PIL1'+btoa(JSON.stringify({v:1,n:'OLDCODE',c:4471,x:1})).replace(/=+$/,'');
+       var o2=restoreRead(old);
+       if(!o2||o2.n!=='OLDCODE'||o2.c!==4471) bad.push('control: a code written before this build no longer reads ('+(o2?JSON.stringify(o2.n):'null')+')');
+       // CONTROL: the plain-ASCII case is unchanged.
+       prof.pname='PLAINNAME';
+       var o3=restoreRead(restoreCode());
+       if(!o3||o3.n!=='PLAINNAME') bad.push('control: a plain name no longer round-trips ('+(o3?JSON.stringify(o3.n):'null')+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ prof.pname=keepN; try{ saveProfile(); }catch(_s){} }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.66',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
+   run:function(){
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     if(typeof restoreCode!=='function'||typeof restoreRead!=='function'||typeof restoreApply!=='function') return 'SKIP: this build has no restore code';
+     var bad=[], prof;
+     try{
+       __topClear(); __cleanProfile(); prof=__P();
+       // DISTINCTIVE: three guns no fresh profile owns, the marksman rifle in hand,
+       // the magnum second, and worn figures nothing rolls.
+       prof.weapons=['dmr','magnum','sniper']; prof.equipped='dmr'; prof.equippedSec='magnum'; prof.wear={dmr:137,magnum:41};
+       var code=restoreCode();
+       if(!code) bad.push('no restore code was made');
+       var o=code?restoreRead(code):null;
+       if(code&&!o) bad.push('the code cannot be read back');
+       else if(o&&!o.g) bad.push('the code carries no armoury: three owned guns, the one in hand and their wear are not in it, while the card promises what you have unlocked');
+       else if(o){
+         // Wipe to a fresh armoury, then apply the code.
+         prof.weapons=['pistol']; prof.equipped='pistol'; prof.equippedSec='none'; prof.wear={};
+         var ok=restoreApply(o);
+         if(!ok) bad.push('control: the code was refused');
+         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('the guns came back as '+((prof.weapons||[]).join(',')||'nothing')+' and not dmr,magnum,sniper');
+         if(prof.equipped!=='dmr') bad.push('the gun in hand came back as '+prof.equipped+' and not dmr');
+         if((prof.equippedSec||'none')!=='magnum') bad.push('the second slot came back as '+(prof.equippedSec||'none')+' and not magnum');
+         if(((prof.wear||{}).dmr|0)!==137) bad.push('the wear on the marksman rifle came back as '+((prof.wear||{}).dmr|0)+' and not 137');
+         // CONTROL: a gun the build does not know is dropped, not restored.
+         o.g.w.push('zqxgun'); restoreApply(o);
+         if((prof.weapons||[]).indexOf('zqxgun')>=0) bad.push('control: a gun this build does not have was restored into the armoury');
+         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('control: after the unknown gun the armoury reads '+(prof.weapons||[]).join(','));
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.65',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&document.getElementById('tagwrap')&&document.getElementById('oc_copy')&&document.getElementById('oc_btn'))) return 'SKIP: this fixture cannot end a raid and press the card';
+     // Force the SYNCHRONOUS copy path, as check 11.32 does, so Copy report has
+     // committed by the time click() returns.
+     var desc; try{ desc=Object.getOwnPropertyDescriptor(navigator,'clipboard'); }catch(_d){ desc=null; }
+     var redefined=false;
+     try{ Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true}); redefined=(navigator.clipboard===undefined); }catch(_e){ redefined=false; }
+     if(!redefined) return 'SKIP: navigator.clipboard cannot be hidden here, so Copy report cannot be pressed synchronously';
+     var bad=[], origExec=document.execCommand, prof, keepAE, lateNote='ZQX late note 4471';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       prof=__P(); keepAE=prof.autoExport; prof.autoExport=false;   // a check must not start a download
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0;
+       var n0=(prof.log||[]).length;
+       __endRaid('extract');
+       document.execCommand=function(){ return true; };
+       // The row may already be written by the time the card is up; Copy report
+       // writes it when it is not. Either way exactly ONE row must exist, and
+       // that is the row a tag chosen afterwards has to reach.
+       document.getElementById('oc_copy').click();
+       var log=prof.log||[], rec=log[log.length-1];
+       if(log.length!==n0+1||!rec) bad.push('control: ending the raid and pressing Copy report did not log exactly one run ('+(log.length-n0)+' rows added)');
+       else {
+         if((rec.tags||[]).length) bad.push('control: the row Copy wrote already carries tags '+rec.tags.join(', ')+', so a late tag proves nothing');
+         var cells=document.getElementById('tagwrap').querySelectorAll('.tag');
+         if(cells.length<2) bad.push('control: the card drew '+cells.length+' tag buttons');
+         else {
+           var lateTag=String(cells[1].textContent);
+           cells[1].click();                                   // chosen AFTER Copy report
+           document.getElementById('oc_note').value=lateNote;  // typed AFTER Copy report
+           document.getElementById('oc_btn').click();          // Log run and return
+           var log2=prof.log||[], rec2=log2[log2.length-1];
+           if(log2.length!==n0+1) bad.push('control: Log run and return added '+(log2.length-n0-1)+' extra row(s), so the run was logged twice');
+           var got=(rec2&&rec2.tags||[]).map(function(x){ return String(x).toUpperCase(); }).join(' | ');
+           if(got.indexOf(lateTag.toUpperCase())<0) bad.push('the tag '+lateTag+' chosen after Copy report did not reach the run (tags: '+(got||'none')+')');
+           if(((rec2&&rec2.note)||'')!==lateNote) bad.push('the note typed after Copy report did not reach the run (note: "'+((rec2&&rec2.note)||'')+'")');
+         }
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       document.execCommand=origExec;
+       try{ if(desc) Object.defineProperty(navigator,'clipboard',desc); }catch(_r){}
+       try{ if(prof) prof.autoExport=keepAE; }catch(_a){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.64',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__sim&&window.__keys)) return 'SKIP: this fixture cannot revive a man';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, R=null, i, bad=[];
+     for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.merc&&!e.finished){ R=e; break; } }
+     if(!R) return 'SKIP: no pillager to down';
+     // You downed him: the downing shot stamped byPlayer. He lies within reach.
+     R.downed=1; R.byPlayer=true; R.hostile=true; R.friendlyPC=0; R.x=p.x+20; R.y=p.y;
+     g.over=false; p.downed=false; g.revLock=0;
+     var K=__keys(); for(var q in K) delete K[q]; K['KeyE']=true;
+     try{ __sim(0.15); }catch(e2){ bad.push('the step threw: '+String(e2&&e2.message||e2).slice(0,80)); }
+     delete K['KeyE'];
+     // CONTROL: the revive happened at all, or the flag reading proves nothing.
+     if(!(R.downed===0&&R.friendlyPC===1)) bad.push('control: E next to the downed man did not revive him (downed '+R.downed+', friendlyPC '+R.friendlyPC+')');
+     // THE FIX: his next death is no longer yours.
+     else if(R.byPlayer) bad.push('the revived man still carries byPlayer, so a crawler killing him later would be your kill, your contract tick and a grudge');
+     __topClear(); __cleanProfile();
+     return bad.length?bad.join('; '):null; }},
   {v:'11.63',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__wxHard)) return 'SKIP: this fixture cannot end a raid and read the card';
@@ -5712,9 +5994,14 @@ window.__REGRESS=[
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(), p=g.player;
      // A multiplier must be in play or the two figures agree by accident: force hard weather.
-     var hard=null; if(window.__wxHard('storm')) hard='storm'; else if(window.__wxHard('fog')) hard='fog';
-     if(!hard) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
-     if(!g.wx) g.wx={}; g.wx.id=hard;
+     // v11.63: find the hard row and INSTALL it. Writing g.wx.id renamed a row of
+     // the shared WEATHER table for the whole page, which poisoned every later
+     // run of this check; and a weather turn in progress makes wx() blend, so the
+     // turn is cleared too.
+     var hardRow=null;
+     for(var wi=0;wi<WEATHER.length;wi++){ if(window.__wxHard(WEATHER[wi].id)){ hardRow=WEATHER[wi]; break; } }
+     if(!hardRow) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
+     g.wx=hardRow; g.wxNext=null; g.wxT=0;
      // Something to bank: a bag worth carrying out.
      p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
      var n0=(P.log||[]).length;
@@ -5766,6 +6053,7 @@ window.__REGRESS=[
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
      var P=window.__P(), bad=[], realNow=Date.now;
      P.credits=999999; P.stash=[];
+     var gunsBefore=((P.weapons||[]).slice());
      var st=null; try{ st=window.__station('gamble','KeyE'); }catch(e){ st={err:String(e)}; }
      if(st&&st.err) return 'SKIP: '+st.err;
      var shown=window.__wirtLot();
@@ -5780,9 +6068,11 @@ window.__REGRESS=[
      Date.now=function(){ return base+rolled*300000; };
      try{ btn.click(); }catch(e2){}
      Date.now=realNow;
-     var got=(P.stash||[]).length?P.stash[P.stash.length-1]:null;
-     // THE FIX: he receives what the card NAMED AND PRICED.
-     if(got!==shown[0]) bad.push('after the window rolled, Buy delivered '+got+' instead of the shown '+shown[0]);
+     // THE FIX: he receives what the card NAMED AND PRICED. A lot whose headline
+     // is a GUN is delivered into the armoury and only its extras reach the
+     // stash, so ask the shelf the thing actually lands on.
+     var want=shown[0], delivered=((P.stash||[]).indexOf(want)>=0);
+     if(!delivered) bad.push('after the window rolled, Buy did not deliver the shown '+want+' (stash holds '+((P.stash||[]).join(',')||'nothing')+', armoury holds '+((P.weapons||[]).join(',')||'nothing')+')');
      // CONTROL: he was charged, so a buy went through and the comparison is real.
      if(!(P.credits<999999)) bad.push('control: no credits were taken, so nothing was bought and the comparison proves nothing');
      try{ var gm=document.getElementById('gamblemodal'); if(gm) gm.classList.remove('on'); }catch(e3){}
@@ -13457,10 +13747,19 @@ window.__REGRESS=[
      function opaqueIn(r){ var d=hctx.getImageData(Math.max(0,Math.round(r.x)),Math.max(0,Math.round(r.y)),Math.max(1,Math.round(r.w)),Math.max(1,Math.round(r.h))).data, c=0;
        for(var i=3;i<d.length;i+=4) if(d[i]>20) c++; return c; }
      function frames(t0){ for(var f=0;f<8;f++) __loop(t0+f*16.7); }
+     // v11.58: a checksum of the real pixels, so the belt can be told from the
+     // floor HUD that is drawn behind it.
+     function unionOf(cs){ var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+       for(var u=0;u<cs.length;u++){ var r=cs[u];
+         if(r.x<x0)x0=r.x; if(r.y<y0)y0=r.y;
+         if(r.x+r.w>x1)x1=r.x+r.w; if(r.y+r.h>y1)y1=r.y+r.h; }
+       return {x:x0,y:y0,w:Math.max(1,x1-x0),h:Math.max(1,y1-y0)}; }
+     function inkSum(r){ var d=hctx.getImageData(Math.max(0,Math.round(r.x)),Math.max(0,Math.round(r.y)),Math.max(1,Math.round(r.w)),Math.max(1,Math.round(r.h))).data, t=0;
+       for(var i=0;i<d.length;i+=4) t=(t+d[i]*3+d[i+1]*5+d[i+2]*7+d[i+3]*11)|0; return t; }
      // Bag CLOSED, floor: the finding.
      if(__hubBag()) return done('SKIP: the backpack is already open on entry');
      frames(performance.now());
-     var hb=__hubBelt();
+     var hb=__hubBelt(), cellsOn=null, paintedOn=0, sumOn=0;
      // Measured on v9.87: zero cells and zero opaque pixels on the entire HUD
      // canvas with the backpack closed. v8.96 claimed answer 22 and delivered it
      // only inside the opened backpack.
@@ -13471,6 +13770,7 @@ window.__REGRESS=[
          bad.push('the floor belt records '+hb.cells.length+' cells rather than the 9 slots the raid belt has');
        var painted=0;
        for(var c=0;c<hb.cells.length;c++) painted+=opaqueIn(hb.cells[c]);
+       cellsOn=hb.cells.slice(); paintedOn=painted; sumOn=inkSum(unionOf(cellsOn));
        if(painted<hb.cells.length*200)
          bad.push('the floor belt records cells but paints only '+painted+' opaque pixels inside them');
        var cell2=hb.cells[2], cell4=hb.cells[4];
@@ -13482,8 +13782,16 @@ window.__REGRESS=[
      var hb0=__hubBelt();
      if(hb0&&hb0.cells&&hb0.cells.length)
        bad.push('control: with hubBelt off the floor still records '+hb0.cells.length+' cells');
-     if(opaqueIn({x:0,y:H-170,w:W,h:160})>0)
-       bad.push('control: with hubBelt off the bottom of the HUD canvas still holds paint');
+     // v11.58: this used to require the whole bottom band to be blank, which was
+     // only true while the floor HUD was erased every frame; and a plain opaque
+     // count cannot separate the belt from the floor HUD drawn behind it, since
+     // the region is covered either way. The pixels themselves must CHANGE when
+     // the dial goes off, which is what makes them the belt.
+     if(cellsOn&&cellsOn.length){
+       var sumOff=inkSum(unionOf(cellsOn));
+       if(sumOff===sumOn)
+         bad.push('control: turning hubBelt off changed nothing in the belt band, so what was measured is not the belt');
+     }
      __cfg({hubBelt:1});
      // CONTROL TWO: the opened backpack still draws its own belt exactly as before,
      // and the floor belt is not drawn underneath it a second time.

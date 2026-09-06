@@ -22,9 +22,14 @@ SubRx @'
      var bad=[], prof, note='ZQX floor note 8812';
      try{
        __topClear(); __cleanProfile(); prof=__P();
+       // v11.72: PUT yourself on the floor rather than declining. A raid left in
+       // memory by an earlier check is not a reason to skip; it is a reason to
+       // end it, which is exactly what leaving a raid does in the game.
+       try{ if(G){ G=null; keys={}; } }catch(_g){}
+       try{ if(window.__showScreen) __showScreen('hub'); }catch(_s){}
        if(window.__hubEnter){ try{ __hubEnter(); }catch(_h){} }
-       if(G) return 'SKIP: a raid is running, so this is not the floor';
-       if(typeof state!=='undefined'&&state!=='hub') return 'SKIP: not on the floor (state '+state+'), so the box cannot open';
+       if(G) return 'SKIP: a raid is still running after clearing it, so this is not the floor';
+       if(typeof state!=='undefined'&&state!=='hub') return 'SKIP: not on the floor (state '+state+') even after showing the hub';
        delete prof.floorNotes;
        togglePauseBox(true);
        var ta=document.getElementById('pausenote'); ta.value=note;
