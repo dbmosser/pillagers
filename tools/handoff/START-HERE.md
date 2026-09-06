@@ -214,6 +214,12 @@ serves the tools folder: fixture.html, parsecheck.html, fx<PREV>.html.)
 
 ## Standing rules that bit this week
 
+- v11.58 ALSO REPAIRED CHECK 9.88, whose control required the bottom of the HUD
+  canvas to be blank with the belt dial off. That was only true because the
+  floor HUD was being erased, so it fired on correct behaviour. A pixel COUNT
+  cannot separate the belt from the floor HUD behind it (91809 against 91809);
+  the control now compares a CHECKSUM of the real pixels with the dial on and
+  off and requires them to differ. inkSum and unionOf live in that check.
 - AFTER ANY RENUMBER, check hook dependencies. A check that guards on a
   window.__ hook added by a LATER build returns SKIP forever, on the new
   fixture AND on the control, and a skip reads like a pass. Compare

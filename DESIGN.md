@@ -40024,6 +40024,44 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.58 - THE UNDERCROFT HUD WAS PAINTED AND THEN ERASED IN THE SAME FRAME
+
+From the read-only menu audit of 2026-09-06, and it is the largest thing found
+in a long time. The floor has been running with no screen furniture at all.
+
+WHAT WAS WRONG. The Undercroft has two canvases: the world underneath and the
+HUD on top. drawHubWorld ends by calling drawHubHUD, which paints the floor's
+whole HUD onto the top canvas: the heading THE UNDERCROFT, the line under it
+with your stash count and your runs, the "[E] STATION" prompt that appears when
+you stand at a station and the list of that station's keys beneath it, the H
+CONTROLS panel, the NEW IN card, and the bottom line that reads WASD WALK,
+SHIFT JOG, E USE STATION, which since the briefing card was deleted at v10.88
+is the only place the floor controls are taught. Then, four lines later in the
+frame loop, v8.95's clear wiped that canvas and repainted only the belt. Every
+one of those things was drawn and erased inside the same frame, every frame,
+for as long as that clear has been there. H toggled a panel that could never
+appear, so the key was dead. The project's own note recorded "0 opaque pixels
+on the entire HUD canvas" of the Undercroft floor and read it as a description
+of the floor rather than as the bug.
+
+THE FIX. The clear moves above the world draw instead of below it. v8.95's
+reason still holds, the canvas is still wiped of whatever the last raid left
+on it, and now the floor's own HUD is painted after the wipe rather than
+before it. The belt and the opened backpack still draw last, over the top.
+
+MEASURED. Check 11.58 walks into the Undercroft and drives six real frames of
+the actual loop, because the floor HUD is painted by the loop and not by the
+world draw, then reads the HUD canvas itself and counts opaque pixels in the
+top strip where the heading and the stash line are drawn. It requires ink
+there, and a control requires ink along the bottom so the moved clear cannot
+have taken the belt with it. On the v11.57 fixture the top strip is empty and
+the check fails saying the floor paints its screen and erases it.
+
+Not verified: his own eye, which is the real test and the reason this is worth
+shipping tonight; the NEW IN card, which was written to show once per page
+load and has been unreachable, so it will now appear on the floor at boot
+until you move, and whether that is wanted is his call; whether anything else
+was written on the assumption that the floor HUD was invisible.
 ## v11.57 - HIS NOTE: THE STORM WARNING RING SAYS LIGHTNING INCOMING
 
 His in-run note of 2026-09-05, 130 seconds into his first run: "when

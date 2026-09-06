@@ -52,6 +52,53 @@ SubRx @'
   {v:'11.57',what:'the storm warning ring says LIGHTNING INCOMING with the seconds left, and the world draw puts it at the circle (his note of 2026-09-05)',
 '@
 
+# HARNESS REPAIR, same build. Check 9.88's first control required the whole
+# bottom band of the HUD canvas to be blank with the belt dial off, and used
+# that as its proof that the pixels it counted were the belt. That was only
+# true while the floor HUD was being erased every frame, so with this build it
+# fires on correct behaviour: the floor's own teaching line lives in that band.
+# It measures the belt's OWN cells now and requires their paint to collapse.
+SubRx @'
+     function frames(t0){ for(var f=0;f<8;f++) __loop(t0+f*16.7); }
+'@ @'
+     function frames(t0){ for(var f=0;f<8;f++) __loop(t0+f*16.7); }
+     // v11.58: a checksum of the real pixels, so the belt can be told from the
+     // floor HUD that is drawn behind it.
+     function unionOf(cs){ var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+       for(var u=0;u<cs.length;u++){ var r=cs[u];
+         if(r.x<x0)x0=r.x; if(r.y<y0)y0=r.y;
+         if(r.x+r.w>x1)x1=r.x+r.w; if(r.y+r.h>y1)y1=r.y+r.h; }
+       return {x:x0,y:y0,w:Math.max(1,x1-x0),h:Math.max(1,y1-y0)}; }
+     function inkSum(r){ var d=hctx.getImageData(Math.max(0,Math.round(r.x)),Math.max(0,Math.round(r.y)),Math.max(1,Math.round(r.w)),Math.max(1,Math.round(r.h))).data, t=0;
+       for(var i=0;i<d.length;i+=4) t=(t+d[i]*3+d[i+1]*5+d[i+2]*7+d[i+3]*11)|0; return t; }
+'@
+SubRx @'
+     var hb=__hubBelt();
+'@ @'
+     var hb=__hubBelt(), cellsOn=null, paintedOn=0, sumOn=0;
+'@
+SubRx @'
+       for(var c=0;c<hb.cells.length;c++) painted+=opaqueIn(hb.cells[c]);
+'@ @'
+       for(var c=0;c<hb.cells.length;c++) painted+=opaqueIn(hb.cells[c]);
+       cellsOn=hb.cells.slice(); paintedOn=painted; sumOn=inkSum(unionOf(cellsOn));
+'@
+SubRx @'
+     if(opaqueIn({x:0,y:H-170,w:W,h:160})>0)
+       bad.push('control: with hubBelt off the bottom of the HUD canvas still holds paint');
+'@ @'
+     // v11.58: this used to require the whole bottom band to be blank, which was
+     // only true while the floor HUD was erased every frame; and a plain opaque
+     // count cannot separate the belt from the floor HUD drawn behind it, since
+     // the region is covered either way. The pixels themselves must CHANGE when
+     // the dial goes off, which is what makes them the belt.
+     if(cellsOn&&cellsOn.length){
+       var sumOff=inkSum(unionOf(cellsOn));
+       if(sumOff===sumOn)
+         bad.push('control: turning hubBelt off changed nothing in the belt band, so what was measured is not the belt');
+     }
+'@
+
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
 $want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
 if ($n -ne $want) { throw "expected $want edits, made $n" }
