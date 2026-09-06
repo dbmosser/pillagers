@@ -1,5 +1,5 @@
 $ErrorActionPreference = 'Continue'
-$SP = 'C:audecodedark raiders	oolshandoff'
+$SP = 'C:\claudecode\dark raiders\tools\handoff'
 $dry = Join-Path $SP 'dry'
 Copy-Item 'C:\claudecode\dark raiders\dark_raiders.html' (Join-Path $dry 'game.html') -Force
 Copy-Item 'C:\claudecode\dark raiders\tools\mkfixture.ps1' (Join-Path $dry 'mk.ps1') -Force

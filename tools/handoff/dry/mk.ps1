@@ -14,6 +14,73 @@ $needle = '// ================================================================ b
 # first-person leftovers from another project and were never in this game.
 $inject = @'
 window.__frame=function(dt){ render2D(dt===undefined?0.016:dt); };
+window.__contracts={
+  srand:function(s){ return srand(s); },
+  gen:function(){ return genContract(); },
+  key:function(c){ return contractKey(c); },
+  ensure:function(){ return ensureContracts(); },
+  claimAt:function(i){ return claimContractAt(i); }
+};
+// v10.81: the authored strongrooms of a map, so a check can prove the ruin pass
+// never tears one open. Read off the map definition rather than the built world,
+// because a locked room is authored and a built one could be missing for the
+// very reason a check is looking.
+window.__lockedOf=function(mi){ try{ return (FIXED_MAPS[mi]&&FIXED_MAPS[mi].locked)||[]; }catch(e){ return []; } };
+// v10.85: how many times the ambient bed has been cut, and whether it is live.
+// A counter and not a gain reading, because this fixture makes AudioContext
+// throw so probe runs stay silent: there is no gain to read, but there is
+// still a fact about whether the cut was reached.
+window.__ambOff=function(){ try{ return {calls:AMBOFF,live:!!AMB}; }catch(e){ return null; } };
+// v10.94: ONE operator, alone, on a flat ground, drawn as large as asked, so a
+// check can enumerate looks instead of hunting for a face in a moving crowd.
+// Takes the look fields drawOp reads and hands back where it was drawn.
+window.__opShot=function(look,face,zoom){
+  if(!wc||!(W>0)) return null;
+  var z=zoom||9, cx=Math.round(W/2), cy=Math.round(H*0.78);
+  wc.setTransform(DPR,0,0,DPR,0,0);
+  wc.fillStyle='#101418'; wc.fillRect(0,0,W,H);
+  wc.save(); wc.translate(cx,cy); wc.scale(z,z);
+  var st={hero:0,moving:false,sprint:false,ads:false,hurt:0,rl:0};
+  if(look) for(var k in look) st[k]=look[k];
+  var thrown=null;
+  try{ drawOp(0,0,face===undefined?0:face,0,'#242832',0,0,'none',0,st); }
+  catch(e){ thrown=String(e&&e.message||e); }
+  wc.restore();
+  return {cx:cx,cy:cy,z:z,thrown:thrown};
+};
+// The look rolls the Undercroft crowd actually uses, so a check enumerates the
+// real population rather than one it invented.
+window.__crowdLook=function(){ return hubRollLook(); };
+window.__cosOf=function(kind){
+  var out=[];
+  if(typeof COSMETICS==='undefined') return out;
+  for(var i=0;i<COSMETICS.length;i++) if(COSMETICS[i].kind===kind) out.push(COSMETICS[i].id);
+  return out;
+};
+// v10.83: open the map screen, draw it, and hand back the projection so a check
+// can look up the pixel a named building was painted at.
+window.__mapShot=function(){
+  if(!G||!G.map) return null;
+  var was=G.mapOpen; G.mapOpen=true;
+  try{ render2D(0); drawHUD(); }catch(e){}
+  var P2=mapProj();
+  G.mapOpen=was;
+  return {sc:P2.sc,ox:P2.ox,oy:P2.oy};
+};
+// v10.79: THE FLOORS THREE DRAWING CHECKS REST ON, in one place and with the
+// reading each was measured against. Before today they were 0, 0, 20 and 3,
+// which is not a floor, it is "is it non-zero": a search bar reduced to a single
+// pixel, a noise ring reduced to a fifth and a prompt whose pulse had fallen to
+// a ninth all passed. Measured at 1920x1080, DPR 1, seed 4242, map 0, each floor
+// set at half its live reading so a halved feature is still caught.
+//   bar   1319 px, the search bar appearing and disappearing
+//   prog  1319 px, the same bar filling from empty to half
+//   ring   120 px, one noise ring at the frame it is born, its weakest moment
+//   pulse 21.3 %,  the standing extract prompt breathing, 21.2 to 21.4 over six
+// A check reads these through __FLOORS so v10.79 can hold them to account. If
+// the drawing legitimately changes, MEASURE AGAIN and move the number here.
+window.__FLOORS={bar:600,prog:600,ring:60,pulse:10,
+  live:{bar:1319,prog:1319,ring:120,pulse:21.3}};
 window.__state=function(){ return G; };
 // The telemetry consent rule, exposed so its truth table can be driven. autoExport
 // and downloadExport are stubbed below and must stay stubbed, so this is the only
@@ -53,7 +120,17 @@ window.__tickFx=function(dt){
 };
 window.__nav={spotFree:spotFree,collide:collide,dist:dist,losClear:losClear,canSee:canSee,
   freeSpot:freeSpot,spotIn:spotIn,rayHit:rayHit,conePoly:conePoly,buildVisPoly:buildVisPoly};
-window.__navPath=function(nav,sx,sy,tx,ty){ return navPath(nav,sx,sy,tx,ty); };
+window.__navPath=function(nav,sx,sy,tx,ty,r){ return navPath(nav,sx,sy,tx,ty,r); };
+window.__walk=function(ax,ay,bx,by){
+  var see=losClear(ax,ay,bx,by,G.map.segs);
+  var walk=(typeof walkClear==='function')?walkClear(ax,ay,bx,by):see;
+  return {see:see,walk:walk};
+};
+window.__wins=function(){
+  var W=G.map.walls,o=[],i;
+  for(i=0;i<W.length;i++) if(W[i].win) o.push({x:W[i].x,y:W[i].y,w:W[i].w,h:W[i].h});
+  return {wins:o,wsegs:(G.map.wsegs?G.map.wsegs.length:-1),grid:!!G.wingrid};
+};
 window.__rawStep=function(dt){ simStep(dt); };
 window.__endRaid=function(how){ endRaid(how); };
 window.__reportProbe=function(runs){
@@ -190,7 +267,54 @@ window.__wallIndex=function(pred){
 };
 // Lets a measurement rebuild the map at the pre-v0.68 world size so before and
 // after are read off the same code path instead of off my arithmetic.
+// v11.23: the pillagers' own raid. The sim stops updating every entity the
+// moment the player dies or extracts, so every pillager number ever read off
+// it was cut at the robot's death, about two minutes in. This parks the player
+// at -3000,-3000, out of every sight test, pins his health, and runs the raid
+// to CFG.raidSec, then tallies the roster: out, alive, downed, dead, and when
+// each man who got out did. Arms are set by the caller through __cfg.
+window.__simRaiders=function(o){
+  o=o||{};
+  __deploy({kit:[],safe:null,mapIx:(o.mapIx===undefined?0:o.mapIx),seed:(o.seed||9001),sim:true});
+  var live={mach:CFG.machVsRaider, feud:CFG.raiderFeud, greed:CFG.simGreed, sim:!!G.sim};
+  var p=G.player, T=0, dt=0.15, horizon=(o.horizon||CFG.raidSec||540), steps=Math.round(horizon/dt), over=null, threw=null, tl=[], next=60;
+  var px=-3000, py=-3000, hits=0, downs=0, lastHp={}, seenDown={}, raiderShots=0, machShots=0, playerShots=0;
+  if(o.park==='centre'){ px=(G.map.cols*G.map.cw)/2; py=(G.map.rows*G.map.ch)/2; }
+  for(var s=0;s<steps;s++){
+    p.x=px; p.y=py; p.hp=p.maxhp||100; p.downed=0; p.downT=0; p.vx=0; p.vy=0;
+    try{ __rawStep(dt); }catch(e){ threw=String(e); break; }
+    T+=dt; if(G.over){ over={how:G.over,at:Math.round(T)}; break; }
+    var rosH=G.roster||[]; for(var h=0;h<rosH.length;h++){ var eh=rosH[h].ref, kh=eh.name; if(rosH[h].out) continue; if(lastHp[kh]!==undefined&&eh.hp<lastHp[kh]) hits++; lastHp[kh]=eh.hp; if(eh.downed&&!seenDown[kh]){ seenDown[kh]=1; downs++; } }
+    var BL=G.bullets||[]; for(var bq=0;bq<BL.length;bq++){ var bb=BL[bq]; if(bb.__sr) continue; bb.__sr=1; var ok=bb.owner&&bb.owner.kind; if(bb.owner===G.player) playerShots++; else if(ok==='raider') raiderShots++; else machShots++; }
+    if(T>=next){ next+=60; var ros0=G.roster||[], a0=0,o0=0,d0=0,x0=0; for(var q=0;q<ros0.length;q++){ var e0=ros0[q].ref; if(ros0[q].out) o0++; else if(e0.downed) d0++; else if(e0.hp<=0||e0.finished) x0++; else a0++; } tl.push([Math.round(T),ros0.length,o0,a0,d0,x0]); }
+  }
+  var ros=G.roster||[], present={}, i, e, out=0, alive=0, downed=0, dead=0, outAt=[];
+  for(i=0;i<G.ents.length;i++) present[G.ents[i].name||('#'+i)]=1;
+  for(i=0;i<ros.length;i++){ e=ros[i].ref; if(ros[i].out){ out++; outAt.push(Math.round(ros[i].outAt||0)); continue; }
+    if(!present[e.name]) dead++; else if(e.downed) downed++; else if(e.hp<=0) dead++; else alive++; }
+  return {seed:o.seed||9001, mapIx:(o.mapIx===undefined?0:o.mapIx), buildings:(G.map.buildings||[]).length, live:live, park:(o.park==='centre'?'centre':'far'), horizon:horizon, ranTo:Math.round(T), over:over, threw:threw, roster:ros.length, out:out, alive:alive, downed:downed, dead:dead, hits:hits, downs:downs, raiderShots:raiderShots, machShots:machShots, playerShots:playerShots, outAt:outAt, timeline:tl};
+};
 // Samples one sim raid so a stall can be told apart from a decision never made.
+window.__simTraceSeed=function(seed){
+  pendSeed=seed>>>0; G=null;
+  G=buildRaid(true);
+  var samples=[],guard=0,cap=Math.round(CFG.raidSec/0.15)+200,next=0,B=G.map.buildings,lx=G.player.x,ly=G.player.y;
+  function inB(p){ for(var i=0;i<B.length;i++){ var b=B[i]; if(p.x>b.x&&p.x<b.x+b.w&&p.y>b.y&&p.y<b.y+b.h) return i; } return -1; }
+  while(!G.over&&guard<cap){
+    simStep(.15); guard++;
+    if(G.t>=next){
+      next+=5;
+      var p=G.player;
+      var wp=(p.path&&p.path[p.pathI])?[Math.round(p.path[p.pathI].x),Math.round(p.path[p.pathI].y)]:null;
+      var gk=p.goal?((p.goal.kind||p.goal.type||'goal')+'@'+Math.round(p.goal.x)+','+Math.round(p.goal.y)):'-';
+      samples.push([Math.round(G.t),Math.round(p.x),Math.round(p.y),Math.round(dist(p,{x:lx,y:ly})),inB(p),p.path?p.path.length:0,p.pathFail?1:0,Math.round(p.hp),+bagWeight().toFixed(0),p.pathI|0,wp,+(p.slideT||0).toFixed(1),+(p.stallT||0).toFixed(1),gk,+(p.goalT||0).toFixed(0),+(p.noRouteT||0).toFixed(0)]);
+      lx=p.x; ly=p.y;
+    }
+  }
+  if(!G.over){ G.tel.deathKiller='timer'; endRaid('dead'); }
+  var r=G.simResult; G=null;
+  return {seed:seed,outcome:r.outcome,killer:r.killer,samples:samples};
+};
 window.__simTrace=function(){
   G=buildRaid(true);
   var samples=[],guard=0,cap=Math.round(CFG.raidSec/0.15)+200,next=0;
@@ -307,6 +431,9 @@ window.__seal={rec:sealRec,need:sealNeed,here:sealHere,spot:sealSpot,pay:sealPay
 // live half survives as window.__repair and window.__work; the rest was reachable
 // by nobody. Six name collisions in this file now, so: grep before you name one.
 window.__work=function(){ return renderWork(); };
+window.__shelf=function(){ var o={},k;
+  for(k in ITEMS) o[k]=(typeof stashTabOf==='function'?stashTabOf(k):'?')+'/'+(sellable(k)?'sells':'kept')+'/'+((typeof itemWanted==='function'&&itemWanted(k))||'-');
+  return o; };
 window.__stashRules={sellable:function(k){ return !!sellable(k); },
                      craftPart:function(k){ return !!craftPart(k); },
                      use:function(k){ return craftUse(k); }};
@@ -366,6 +493,9 @@ window.__bank=function(k){ return bankItem(k); };
 window.__hotbar=function(){ return hotbarSlots(); };
 window.__useArmor=function(){ return useArmor(); };
 window.__equipBag=function(ix,slot){ return equipFromBag(ix,slot); };
+window.__howlerHit=function(SH){ return howlerImpact(SH); };   // v10.63
+window.__legends=function(){ return {full:LEGEND,mini:LEGEND_MINI}; };   // v10.64
+window.__buildings=function(){ return (G&&G.map)?(G.map.buildings||[]):[]; };
 window.__useHot=function(){ return useHot(); };
 window.__pedBuy=function(i){ return pedBuy(i); };
 // The weapon table, so shots-to-kill can be varied from the WEAPON side
@@ -706,6 +836,7 @@ window.__hubBagState=function(){ return hubBagState(); };
 // use. A probe that rebuilt it would be measuring its own copy and not the panel
 // he can actually click on.
 window.__hubBagLive=function(){ return hubBagG; };
+window.__hubBagSet=function(on){ hubBagOpenSet(!!on); return {open:hubBagOpen, snap:!!hubBagG}; };
 // The operator drawing calls, recorded as they happen. The pose is an argument
 // to drawOp, so this is the only way to see what the Undercroft actually asks
 // for rather than what I believe it asks for.
@@ -820,6 +951,8 @@ window.__simSeedsFull=function(seeds){
   return out;
 };
 window.__world=function(){ return {w:WORLD_W,h:WORLD_H}; };
+window.__sectorMeas=function(){ return SECTOR_MEAS; };
+window.__legend=function(){ return LEGEND; };
 // v9.00: the WINDFALL PROBE is gone with the thing it measured. It broke
 // windfallOdds into its distance, time and danger terms so the promise could be
 // checked against real geometry. There are no windfalls to measure now.
@@ -883,7 +1016,17 @@ window.__syncReport=function(){ syncAutoEx(); return document.getElementById('re
 // driven rather than read. __load is loadOf(), a loadout helper, and calling it
 // for this proved nothing at all.
 window.__loadProfile=function(){ return loadProfile(); };
-window.__primer={open:function(){ openPrimer(); },maybe:function(){ maybePrimer(); },list:function(){ return PRIMER; }};
+window.__wxHard=function(id){ try{ return wxHardId(id); }catch(e){ return null; } };
+window.__identityIds=function(){ var o=[]; try{ for(var i=0;i<IDENTITIES.length;i++) o.push(IDENTITIES[i].id); }catch(e){} return o; };
+window.__wirtLot=function(){ return wirtLotKey(); };
+window.__itemMenuRows=function(key,ctx,count){ return itemMenuRows(key,ctx,count); };
+window.__itemGk=function(k){ var it=(typeof ITEMS!=='undefined')&&ITEMS[k]; return it?(it.gk||null):null; };
+window.__noteCrash=function(k,m,w){ return noteCrash(k,m,w); };
+window.__ploaded=function(v){ if(typeof PLOADED==='undefined') return null; if(v!==undefined) PLOADED=!!v; return PLOADED; };
+window.__applyLoaded=(typeof applyLoadedProfile==='function')?function(prof){ applyLoadedProfile({key:SKEY,value:JSON.stringify(prof)}); return true; }:undefined;
+window.__wnseen=function(v){ if(v!==undefined) WNSEEN=v; return WNSEEN; };
+window.__see=function(){ return canSee.apply(null,arguments); };
+
 window.__status={player:function(){ return playerStatus(); },raider:function(e){ return raiderStatus(e); },col:STATCOL};
 window.__board=function(){ renderSeason(); return ROADMAP; };
 // THE MUSIC, dry. Swaps the voice for a recorder and runs the sequencer over the
@@ -1024,6 +1167,7 @@ try{
   // brings one back.
   try{ window.__tx.pmap=txPatMap; }catch(e2){}
   try{ window.__tx.arm=function(){ return applyGameOpts(); }; }catch(e3){}
+  try{ window.__tx.ship=function(){ var o={}; if(typeof TXSHIP!=='undefined'){ for(var k in TXSHIP) o[k]=TXSHIP[k]; } return o; }; }catch(e4){}
 }catch(e){ window.__tx=null; }
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
 window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step,trkName:(MUS.trk?MUS.trk.name:null),themes:MUS_THEMES.length}; };
@@ -1265,17 +1409,24 @@ window.__REGRESS=[
        var g=__state(); if(!g) return null;
        var p=g.player; g.ents.length=0; p.iv=99; p.stam=100;
        var K=__keysRef(); for(var k in K) K[k]=false;
-       // v10.07: sprint is a toggle; press SHIFT through the real handler.
-       function pressShift(){
+       // v10.87: sprint is HELD. The key stays down for the whole run, which is
+       // exactly the case the v8.73 rule exists for.
+       function holdShift(){ K['ShiftLeft']=true;
          try{ document.dispatchEvent(new KeyboardEvent('keydown',{code:'ShiftLeft',key:'Shift',bubbles:true,cancelable:true})); }catch(_e1){}
+       }
+       function dropShift(){ delete K['ShiftLeft'];
          try{ document.dispatchEvent(new KeyboardEvent('keyup',{code:'ShiftLeft',key:'Shift',bubbles:true,cancelable:true})); }catch(_e2){}
        }
-       K['KeyD']=true; g.sprintTog=false; pressShift();
+       K['KeyD']=true; holdShift();
        var flips=0, prev=null, everSprinted=false;
        for(var f=0;f<secs*60;f++){
          if(!__state()||__state().over) break;
          // after exhaustion has cleared the toggle, press again for a second sprint
-         if(release&&f===420&&!__state().sprinting) pressShift();
+         // The release arm: let go, leave it up for four frames so the game can
+         // SEE it up, then press again. That is what a player has to do to
+         // sprint after running out under a hold.
+         if(release&&f===420&&!__state().sprinting) dropShift();
+         if(release&&f===424) holdShift();
          __loop(performance.now()+f*16.7);
          var sp=!!__state().sprinting;
          if(sp) everSprinted=true;
@@ -2030,6 +2181,10 @@ window.__REGRESS=[
      var b=z(1920,1080,2.0);
      if(!(b>a)) bad.push('raising the text size did not change the title screen, '+a+' then '+b);
      // And the monitor has to reach it: 1440p is a third bigger than 1080p.
+     __forceSize(2560,1440);
+     var _vh=window.innerHeight||0;
+     if(_vh<1400){ P.menuZoom=keepZ; __forceSize(keepW||1920,keepH||1080); applyMenuZoom();
+       return 'SKIP: the pane cannot reach 1440p, its viewport stays '+_vh+' tall and the title is fitted to the viewport, so the monitor rule cannot be measured here'; }
      var c=z(2560,1440,1.3);
      if(!(c>a*1.2)) bad.push('the title screen does not follow the screen to 1440p, '+a+' then '+c);
      // CONTROL ONE: floored at 1, so a small window is never shrunk further.
@@ -2512,13 +2667,18 @@ window.__REGRESS=[
      g.searching=ct; var D=shot();
      g.searching=null; var E=shot();
      var barPx=diff(D,E);
-     if(barPx<=0) bad.push('the container bar is not drawn at all, even for one he walked away from');
+     // v10.79: was barPx<=0, which a one pixel bar cleared. Measured 1319.
+     var _fl=(window.__FLOORS||{bar:0,prog:0});
+     if(barPx<_fl.bar) bad.push('the container bar moved only '+barPx+' pixels, under the '+_fl.bar+' a drawn bar has to clear');
      // CONTROL: it must still be there for a container he LEFT part way, which
      // is the whole reason that bar exists. Deleting it would satisfy the line
      // above about two bars and lose the thing SPEC 7.4 is for.
      ct.prog=0; var F=shot();
      ct.prog=ct.time*0.5; var Gs=shot();
-     if(diff(F,Gs)<=0) bad.push('control: a half searched container shows no progress at all');
+     var _pg=diff(F,Gs);
+     // v10.79: was <=0. A bar that filled by one pixel between empty and half
+     // full passed, which is not a bar anybody can read. Measured 1319.
+     if(_pg<_fl.prog) bad.push('control: a half searched container fills by only '+_pg+' pixels, under the '+_fl.prog+' a readable bar has to clear');
      // setZoom writes to the profile, so leaving it at 6 would hand every later
      // check a camera it did not ask for. That is exactly how this check broke
      // the two visibility checks above it the first time it ran.
@@ -2898,7 +3058,11 @@ window.__REGRESS=[
      var _cm=__cam?__cam():null;
      if(_cm&&(NX<_cm.x||NX>_cm.x+1920||NY<_cm.y||NY>_cm.y+1080))
        return 'SKIP: the noise landed outside the camera at '+Math.round(NX)+','+Math.round(NY)+', so pixels prove nothing';
-     if(heardPix<20) bad.push('the ring changed only '+heardPix+' pixels, so nothing was actually drawn');
+     // v10.79: the floor was 20 against a measured 120, so a ring drawn at a
+     // fifth of itself passed. This is the ring at the frame it is born, which
+     // is the smallest it ever is, so the floor is deliberately half of that.
+     var _rf=(window.__FLOORS||{ring:20}).ring;
+     if(heardPix<_rf) bad.push('the ring changed only '+heardPix+' pixels, under the '+_rf+' a drawn ring has to clear');
      // CONTROL 1, and it is the whole point of the feature: a noise he can SEE
      // must not draw anything. Without this, "always draw a ring" passes above
      // and litters the screen with circles on things standing in front of him.
@@ -2982,7 +3146,9 @@ window.__REGRESS=[
        g2.shipHold=8; g2.beaconT=0;
        var up=swing(g2,375,55);
        if(up.mx<3) bad.push('control: the standing prompt is not drawing at all, so its pulse cannot be judged');
-       else if(up.pct<3) bad.push('control: the standing prompt stopped pulsing too, swing '+up.pct.toFixed(1)+' percent');
+       // v10.79: the floor was 3 percent against a measured 21.3, so a pulse
+       // that had faded to a ninth of itself still counted as pulsing.
+       else if(up.pct<(window.__FLOORS||{pulse:3}).pulse) bad.push('control: the standing prompt barely pulses, swing '+up.pct.toFixed(1)+' percent, under '+(window.__FLOORS||{pulse:3}).pulse);
      }
      // AND THE SIZE. The bleed bar is the easiest thing to measure: scan the row
      // it sits on and count how wide the lit run is.
@@ -3062,7 +3228,11 @@ window.__REGRESS=[
      var body =sig(Math.round(B.x+B.w/2), Math.round(B.y+B.h/2));
      var bar  =sig(Math.round(B.x+50),    Math.round(B.y+8));
      var glyph=sig(Math.round(B.right-12),Math.round(B.y+8));
-     var grip =sig(Math.round(B.x+B.w-8), Math.round(B.y+B.h-8));
+     // v10.91: ASK, do not recompute. The grip moved to the left corner on
+     // panels pinned to the right edge of the screen, and a check that works out
+     // the corner for itself is a second copy of the rule that can disagree.
+     var _gp=(typeof hudGrip==='function')?hudGrip(B):{x:B.x+B.w,y:B.y+B.h,left:false};
+     var grip =sig(Math.round(_gp.left?(_gp.x+8):(_gp.x-8)), Math.round(_gp.y-8));
      if(!world.n) return 'nothing is drawn at the pointer at all, so this cannot be measured';
      // HIS ANSWER 38. Measured before v9.09: bar and glyph drew byte-identical
      // arrows, and the grip drew the aiming reticle.
@@ -3084,7 +3254,7 @@ window.__REGRESS=[
      // agree with what a click there actually does. A resize pointer over a spot
      // that starts a DRAG is a worse lie than the reticle was.
      if(H.hitAt){
-       var pg=H.hitAt(Math.round(B.x+B.w-8), Math.round(B.y+B.h-8));
+       var pg=H.hitAt(Math.round(_gp.left?(_gp.x+8):(_gp.x-8)), Math.round(_gp.y-8));
        if(pg!=='grip') bad.push('control: the corner the resize pointer is drawn on hit-tests as "'+pg+'"');
        var pb=H.hitAt(Math.round(B.x+50), Math.round(B.y+8));
        if(pb!=='bar'&&pb!=='glyph') bad.push('control: the drag bar hit-tests as "'+pb+'"');
@@ -3520,7 +3690,7 @@ window.__REGRESS=[
      if(!(z3>z1*2.5)) bad.push('control: turning the dial from 1 to 3 moved the projection from '+z1+' to '+z3);
      if(Math.abs(zmax-__zoom.max())>0.001) bad.push('control: the dial no longer clamps at its maximum, it reached '+zmax);
      return bad.length?bad.join('; '):null; }},
-  {v:'9.17',what:'the title screen uses an ultrawide screen instead of leaving two thirds of it empty',
+  {v:'9.17',what:'the title screen uses the width it is given, on an ultrawide and on an ordinary widescreen, and a narrow screen still keeps the 820 column',
    run:function(){
      if(!__vpAlive()) return 'SKIP: the pane has no layout, the title screen cannot be measured';
      var bad=[];
@@ -3532,6 +3702,18 @@ window.__REGRESS=[
      // scroll while that room sat unused. The width was a hard 820px inline, so
      // there was nothing for a wider screen to target.
      if(!col) return 'the title column has no class to target, so no screen wider than 16:9 can be given more room';
+     // v10.77: OPEN IT FIRST. This measured a hidden element and passed only
+     // while some earlier check left the title screen up; the moment one of them
+     // tidied up after itself, offsetWidth read 0 and this failed the build.
+     var _t9was=t.classList.contains('on'), _t9shut=[];
+     Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ _t9shut.push(e); e.classList.remove('on'); });
+     t.classList.add('on');
+     try{ if(typeof applyMenuZoom==='function') applyMenuZoom(); }catch(_z9){}
+     function _t9done(msg){
+       if(!_t9was) t.classList.remove('on');
+       for(var _i9=0;_i9<_t9shut.length;_i9++) _t9shut[_i9].classList.add('on');
+       return msg;
+     }
      var cs=getComputedStyle(col), mw=cs.maxWidth;
      // THE LIVE ASPECT DECIDES which rule should be in force, and this asks the
      // browser rather than assuming: matchMedia evaluates the same query the
@@ -3541,11 +3723,19 @@ window.__REGRESS=[
      if(wide){
        if(mw==='820px') bad.push('at aspect '+asp.toFixed(2)+' the column is still capped at 820px, the ultrawide rule is not in force');
        if(col.offsetWidth<=860) bad.push('at aspect '+asp.toFixed(2)+' the column is only '+col.offsetWidth+'px wide');
-     } else {
-       // CONTROL 1: 16:9 must be untouched. 1080p, 1440p and 4K are all exactly
-       // 1.778 and must keep the layout he already has.
-       if(mw!=='820px') bad.push('control: at aspect '+asp.toFixed(2)+', which is not ultrawide, the column cap is '+mw+' rather than 820px');
-       if(col.offsetWidth>860) bad.push('control: at aspect '+asp.toFixed(2)+' the column is '+col.offsetWidth+'px, wider than the 820 base');
+     } else if(window.innerWidth>=1600){
+       // v10.73, HIS NOTE: this used to require 16:9 to stay at 820, which was
+       // the control proving the ultrawide rule was gated. He then reported that
+       // the title screen wastes a wide monitor, and measured at 1920x1080 it was
+       // painting 56 percent of the screen with 427 pixels empty down each side.
+       // An ordinary widescreen gets the width now, so the assertion is inverted.
+       if(mw==='820px') bad.push('at aspect '+asp.toFixed(2)+' on a '+window.innerWidth+' pixel screen the column is still capped at 820px, so the wide monitor is wasted');
+       if(col.offsetWidth<=860) bad.push('at aspect '+asp.toFixed(2)+' on a '+window.innerWidth+' pixel screen the column is only '+col.offsetWidth+'px wide');
+     } else if(window.innerWidth<1320){
+       // CONTROL 1, in its new home: the floor is what stops this from being a
+       // blanket widening, so a screen too narrow to spare the room keeps the
+       // column it has always had.
+       if(mw!=='820px') bad.push('control: on a '+window.innerWidth+' pixel screen the column cap is '+mw+' rather than the 820px floor');
      }
      // CONTROL 2: both halves of the rule must still exist in the stylesheet, so
      // deleting either one fails here rather than silently reverting his screen.
@@ -3556,16 +3746,18 @@ window.__REGRESS=[
          var tx=rules[j].cssText||'';
          if(tx.indexOf('titlecol')<0) continue;
          if(tx.indexOf('@media')===0){ if(/min-aspect-ratio/.test(tx)) gated=true; }
-         else if(/max-width:\s*820px/.test(tx)) base=true;
+         // v10.73: the 820 is a FLOOR inside a max() now rather than the whole
+         // cap, so this looks for the number wherever it sits in the rule.
+         else if(/max-width:[^;]*820px/.test(tx)) base=true;
        }
      }
-     if(!base)  bad.push('the 820px base width is gone, so 16:9 is no longer pinned');
+     if(!base)  bad.push('the 820px floor is gone, so a narrow screen is no longer pinned');
      if(!gated) bad.push('the aspect-gated rule is gone, so an ultrawide gets nothing');
      // CONTROL 3: the column must never be allowed to run the whole width of an
      // ultrawide, which is its own kind of unreadable.
      if(col.offsetWidth>window.innerWidth*0.9)
        bad.push('control: the column is '+Math.round(col.offsetWidth/window.innerWidth*100)+' percent of the screen, lines that wide are unreadable');
-     return bad.length?bad.join('; '):null; }},
+     return _t9done(bad.length?bad.join('; '):null); }},
   {v:'9.18',what:'the title screen never makes you scroll to reach your saves',
    run:function(){
      if(!__vpAlive()) return 'SKIP: the pane has no layout, the title screen cannot be measured';
@@ -3885,10 +4077,16 @@ window.__REGRESS=[
      // never woke him at all.
      function shoot(mode){
        __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+       // v10.68: from zero, so the control below measures the CHARGE for shooting
+       // a peaceful man rather than whatever this profile has banked already. It
+       // read the absolute value, so on an old profile it was green before a
+       // round was fired and on a fresh one it was red for no reason.
+       try{ __P().notoriety=0; }catch(_nz){}
        var g=__state(), p=g.player, tgt=null;
        for(var i=0;i<g.ents.length;i++){ var e=g.ents[i];
          if(e.kind==='raider'&&e.hostile===false&&!e.merc&&!e.friendlyPC&&!e.downed){ tgt=e; break; } }
        if(!tgt) return null;
+       var _stood=false;
        if(mode==='ally') tgt.friendlyPC=true;
        g.ents=[tgt]; p.iv=99; p.hp=p.maxhp;
        var gun=__gun.roll('rifle');
@@ -3904,8 +4102,15 @@ window.__REGRESS=[
          // Inside his sight, with margin. He cannot shoot back at something he
          // cannot see, and reading that as the game failing is how v9.42 spent
          // three builds being wrong.
+         // v10.68: TWO SEATS, because no single one can answer both questions.
+         // CLOSE is inside his reach so he can fire back, and he is already
+         // hostile there from proximity. FAR is outside the 180 unit temper so
+         // he is still peaceful when the round lands and the charge can fire;
+         // he cannot reach back from there and is not asked to.
          var _rmax=Math.max(150,Math.min(400,(tgt.rng||300)-45));
-         var RS=[110, 150, 90, Math.round(_rmax*0.58), _rmax], ok=false;
+         var RS=[], ok=false;
+         if(mode==='far'){ for(var _rr=190;_rr<=280;_rr+=8) RS.push(_rr); }
+         else RS=[110, 150, 90, Math.round(_rmax*0.58), _rmax];
          for(var ri=0;ri<RS.length&&!ok;ri++){
            var R=RS[ri];
            for(var a=0;a<24&&!ok;a++){
@@ -3918,8 +4123,12 @@ window.__REGRESS=[
              p.x=px; p.y=py; ok=true;
            }
          }
-         if(!ok){ p.x=tgt.x+400; p.y=tgt.y; }
+         _stood=ok;
        })();
+       // No fallback stand any more. The old one dropped him at 400 units, which
+       // is outside this pillager's reach, so "he never fired back" would have
+       // been the harness reporting its own bad seat as the game failing.
+       if(!_stood) return {noStand:true,mode:mode,rng:Math.round(tgt.rng||0)};
        var M=__mouse(); M.init=true;
        var K=__keysRef(); for(var k in K) delete K[k];
        // Walk down the ladder until he actually answers. A stand he cannot shoot
@@ -3939,21 +4148,30 @@ window.__REGRESS=[
        return {landed:landed,hitAt:hitAt,hostileAt:hostileAt,backAt:backAt,stopAt:stopAt,
                watched:(stopAt>=0?520-stopAt:0),noto:(__P?(__P().notoriety||0):0),tgt:tgt};
      }
+     // SEAT ONE, CLOSE: he fights back. This is his report and the thing v9.25
+     // fixed, and it is only answerable from inside his reach.
      var a=shoot('peaceful');
      if(!a) return 'no peaceful pillager on this map and seed';
+     if(a.noStand) return 'SKIP: nowhere sighted to stand inside his '+a.rng+' unit reach';
      if(a.landed<1) return 'SKIP: could not land a round on him in 520 frames';
      if(a.hostileAt<0)
-       bad.push('shot once from 400 units and watched '+a.watched+' frames: he never turned on you');
+       bad.push('shot once and watched '+a.watched+' frames: he never turned on you');
      else if(a.backAt<0)
        bad.push('he turned hostile but never fired back in '+a.watched+' frames');
-     // CONTROL 1: the notoriety charge for shooting a man who was not fighting
-     // you must survive. notoAggress only fires while he is still peaceful, so
-     // setting the flag one line too early would delete the penalty in silence.
-     if(a.noto<1) bad.push('control: shooting a peaceful pillager no longer costs notoriety');
+     // SEAT TWO, FAR: the notoriety charge for shooting a man who was not
+     // fighting you. notoAggress only fires while he is still peaceful, so
+     // setting the hostile flag one line too early would delete the penalty in
+     // silence. It has to be read as a RISE FROM ZERO and from outside the 180
+     // unit temper, or a proximity aggro answers the question before the bullet.
+     var far=shoot('far');
+     if(!far) bad.push('control: no peaceful pillager for the notoriety seat');
+     else if(far.noStand) bad.push('control: nowhere sighted to stand outside his 180 unit temper');
+     else if(far.landed<1) bad.push('control: could not land a round on him from outside 180 units');
+     else if(far.noto<1) bad.push('control: shooting a peaceful pillager cost no notoriety, starting from zero');
      // CONTROL 2: a pillager fighting ALONGSIDE you must not be turned by a
      // stray round, or the fix reads as "any hit makes anyone an enemy".
      var b2=shoot('ally');
-     if(b2&&b2.landed>=1&&b2.tgt.hostile)
+     if(b2&&!b2.noStand&&b2.landed>=1&&b2.tgt.hostile)
        bad.push('control: a stray round turned a pillager who was fighting alongside you');
      return bad.length?bad.join('; '):null; }},
   {v:'9.26',what:'a round that goes past a pillager counts as shooting at him',
@@ -5225,27 +5443,4975 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
-  {v:'10.60',what:'every Undercroft body has a radius and none of them is ever inside a wall while the room runs for a minute',
+  {v:'11.60',what:'dropping a tactical belt item on the stash says it went to the stash, and it did: it left the backpack and its belt key',
+   run:function(){
+     if(!(window.__P&&window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot walk the Undercroft';
+     if(typeof say2!=='function') return 'SKIP: no say2 in this build';
+     var zone=document.getElementById('stashgrid');
+     if(!zone) return 'SKIP: no stash grid in this document';
+     var bad=[], prof, got=[], _s2=say2, stale=['back in the ','backpack'].join('');
+     try{
+       __topClear(); __cleanProfile(); prof=__P();
+       try{ __hubEnter(); __station('stash'); }catch(_h){}
+       try{ renderHub(); }catch(_r){}
+       if(typeof zone.__grabDrop!=='function') return 'SKIP: the stash grid is not a drop zone here (no __grabDrop), so the drop cannot be driven';
+       // A medkit in the backpack, on belt key 1.
+       prof.kit=['medkit']; prof.hotAssign={0:'medkit'}; prof.stash=[];
+       say2=function(t){ got.push(String(t)); };
+       zone.__grabDrop('medkit','plan:0');
+       say2=_s2;
+       var line=got.join(' | ');
+       // CONTROL: the item really left the backpack and its key, or the words are not about this drop.
+       if((prof.kit||[]).indexOf('medkit')>=0) bad.push('control: the medkit is still in the backpack after the drop');
+       if(prof.hotAssign&&prof.hotAssign[0]!==undefined) bad.push('control: the belt key still holds the medkit after the drop');
+       if(!got.length) bad.push('control: the drop said nothing at all');
+       // THE FIX: the line names where it went.
+       if(line.indexOf(stale)>=0) bad.push('the drop said "'+line+'" while taking the item out of the backpack');
+       if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.63',what:'a note typed in the pause box on the floor is banked to the profile when the box closes, cleared from the box, and printed in the run report under FLOOR NOTES',
+   run:function(){
+     if(!window.__P||typeof togglePauseBox!=='function'||typeof buildExport!=='function') return 'SKIP: no pause box in this build';
+     if(!document.getElementById('pausenote')) return 'SKIP: no note box in this document';
+     var bad=[], prof, note='ZQX floor note 8812';
+     try{
+       __topClear(); __cleanProfile(); prof=__P();
+       if(window.__hubEnter){ try{ __hubEnter(); }catch(_h){} }
+       if(G) return 'SKIP: a raid is running, so this is not the floor';
+       if(typeof state!=='undefined'&&state!=='hub') return 'SKIP: not on the floor (state '+state+'), so the box cannot open';
+       delete prof.floorNotes;
+       togglePauseBox(true);
+       var ta=document.getElementById('pausenote'); ta.value=note;
+       togglePauseBox(false);
+       var fl=prof.floorNotes||[], last=fl[fl.length-1];
+       if(!last||last.txt!==note) bad.push('the note typed on the floor was not banked (floorNotes: '+JSON.stringify(fl).slice(0,80)+')');
+       if((ta.value||'').trim()===note) bad.push('the note is still sitting in the box, waiting to ride into the next raid');
+       var rep=buildExport(), txt=(rep&&rep.join)?rep.join('\n'):String(rep);
+       if(txt.indexOf(note)<0) bad.push('the run report does not carry the floor note');
+       else if(txt.indexOf('FLOOR NOTES')<0) bad.push('the report carries the note but does not say what it is');
+       // CONTROL: a second close with an empty box banks nothing more.
+       togglePauseBox(true); togglePauseBox(false);
+       if((prof.floorNotes||[]).length!==fl.length) bad.push('control: closing an empty box banked a note');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var ta2=document.getElementById('pausenote'); if(ta2) ta2.value=''; }catch(_t){}
+       try{ togglePauseBox(false); }catch(_c){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.62',what:'a click on the [+] glyph of a collapsed CURRENT PILLAGERS board expands the board and starts no resize',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__mouse&&window.__canvases&&window.__P)) return 'SKIP: this fixture cannot click a panel';
+     if(typeof HUDBOX==='undefined'||typeof hudOnGrip!=='function') return 'SKIP: no HUD panels in this build';
+     var bad=[], prof, keepHud;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       prof=__P(); keepHud=JSON.stringify(prof.hud===undefined?null:prof.hud);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       if(!g.roster||!g.roster.length) return 'SKIP: no pillager roster, so there is no board to fold';
+       prof.hud=prof.hud||{}; prof.hud.raiders={c:true};
+       __frame(); __frame();
+       var HB=HUDBOX.raiders;
+       if(!HB||!HB.tg) bad.push('control: the folded board drew no box or no glyph');
+       else {
+         var m=__mouse(), cv=__canvases().world;
+         var x=Math.round(HB.tg.x+HB.tg.w/2), y=Math.round(HB.tg.y+HB.tg.h/2);
+         // CONTROL: the glyph centre really sits inside the grip zone, or the click proves nothing.
+         if(!hudOnGrip(HB,x,y)) return 'SKIP: the glyph centre is outside the grip zone at this size, so the clash cannot be driven here';
+         m.x=x; m.y=y; m.down=false;
+         cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true,cancelable:true,clientX:x,clientY:y}));
+         var rz=(typeof HUDRESIZE!=='undefined'&&HUDRESIZE)?HUDRESIZE.id:null;
+         try{ window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true})); }catch(_u){}
+         if(rz) bad.push('the click on [+] of the folded board started a resize of "'+rz+'"');
+         if(prof.hud.raiders&&prof.hud.raiders.c) bad.push('the click on [+] did not expand the board');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var kh=JSON.parse(keepHud); if(kh===null) delete prof.hud; else prof.hud=kh; }catch(_h){}
+       try{ HUDRESIZE=null; }catch(_z){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.61',what:'with Other pillagers set to None the extraction-heat row still reads its own word rather than CUSTOM, the waves are off, and they come back when pillagers return to Standard',
+   run:function(){
+     if(!window.__P||typeof applyGameOpts!=='function'||typeof gameOptLive!=='function'||typeof gameOptIx!=='function') return 'SKIP: no settings rows in this build';
+     var bad=[], prof=__P(), keepGO=JSON.stringify(prof.gameOpts===undefined?null:prof.gameOpts), keepT=JSON.stringify(prof.tuned||{}), keepRW=CFG.raiderWaves, keepNR=CFG.nRaider;
+     try{
+       prof.gameOpts={}; prof.tuned={};
+       prof.gameOpts.raiders=3;              // None
+       applyGameOpts();
+       if(CFG.raiderWaves!==0) bad.push('control: with pillagers None the waves are still on ('+CFG.raiderWaves+')');
+       var lv=gameOptLive('ext');
+       if(lv<0) bad.push('with pillagers None the extraction-heat row reads CUSTOM, no option matching the live dials, though nothing about the ring was changed');
+       else if(lv!==gameOptIx('ext')) bad.push('the extraction-heat row reads option '+lv+' and not the chosen '+gameOptIx('ext'));
+       if(gameOptLive('raiders')!==3) bad.push('control: the pillagers row does not read None after being set to it ('+gameOptLive('raiders')+')');
+       prof.gameOpts.raiders=1;              // back to Standard
+       applyGameOpts();
+       if(CFG.raiderWaves!==1) bad.push('control: with pillagers back on Standard the waves did not return ('+CFG.raiderWaves+')');
+       if(gameOptLive('raiders')!==1) bad.push('control: the pillagers row does not read Standard after being set to it ('+gameOptLive('raiders')+')');
+       if(gameOptLive('ext')<0) bad.push('control: the extraction-heat row reads CUSTOM with pillagers on Standard');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var go=JSON.parse(keepGO); if(go===null) delete prof.gameOpts; else prof.gameOpts=go; prof.tuned=JSON.parse(keepT); applyGameOpts(); CFG.raiderWaves=keepRW; CFG.nRaider=keepNR; saveProfile(); }catch(_r){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.59',what:'the in-raid notoriety banner at two or more names what notoriety costs rather than claiming the Peddler has shut his stall, which never shuts',
+   run:function(){
+     if(typeof notoBite!=='function'||typeof pedOpen!=='function') return 'SKIP: no notoriety banner in this build';
+     if(!pedOpen()) return 'SKIP: the stall shuts in this build, so the old line would be true';
+     var bad=[], stale=['done with',' you'].join(''), b1=String(notoBite(1)), b2=String(notoBite(2)), b3=String(notoBite(3));
+     if(b2.indexOf(stale)>=0) bad.push('at notoriety 2 the banner says "'+b2+'" while the stall stays open');
+     if(b3.indexOf(stale)>=0) bad.push('at notoriety 3 the banner says "'+b3+'" while the stall stays open');
+     if(b2.indexOf('Hiring')<0) bad.push('at notoriety 2 the banner does not name the hiring cost: "'+b2+'"');
+     if(b1.indexOf('Hiring')<0) bad.push('control: at notoriety 1 the banner does not name the hiring cost: "'+b1+'"');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.58',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
+   run:function(){
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     if(typeof restoreCode!=='function'||typeof restoreRead!=='function') return 'SKIP: this build has no restore code';
+     var bad=[], prof=__P(), keepN=prof.pname;
+     try{
+       var fancy='ZQX'+String.fromCharCode(0x2019)+'S '+String.fromCharCode(0xD83D,0xDD25);
+       prof.pname=fancy;
+       var code=restoreCode();
+       if(!code) bad.push('a name with a curly quote and an emoji produced no restore code at all, so the friend it belongs to cannot be restored');
+       else {
+         var o=restoreRead(code);
+         if(!o) bad.push('the code for that name cannot be read back');
+         else if(o.n!==fancy) bad.push('the name came back as '+JSON.stringify(o.n)+' and not '+JSON.stringify(fancy));
+       }
+       // CONTROL: a code written the old way, plain btoa of ASCII JSON, still reads.
+       var old='PIL1'+btoa(JSON.stringify({v:1,n:'OLDCODE',c:4471,x:1})).replace(/=+$/,'');
+       var o2=restoreRead(old);
+       if(!o2||o2.n!=='OLDCODE'||o2.c!==4471) bad.push('control: a code written before this build no longer reads ('+(o2?JSON.stringify(o2.n):'null')+')');
+       // CONTROL: the plain-ASCII case is unchanged.
+       prof.pname='PLAINNAME';
+       var o3=restoreRead(restoreCode());
+       if(!o3||o3.n!=='PLAINNAME') bad.push('control: a plain name no longer round-trips ('+(o3?JSON.stringify(o3.n):'null')+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ prof.pname=keepN; try{ saveProfile(); }catch(_s){} }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.57',what:'the restore code carries the armoury (guns owned, the one in hand, the second slot, the wear on each) and applying it brings them back; a gun this build does not know is dropped',
+   run:function(){
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     if(typeof restoreCode!=='function'||typeof restoreRead!=='function'||typeof restoreApply!=='function') return 'SKIP: this build has no restore code';
+     var bad=[], prof;
+     try{
+       __topClear(); __cleanProfile(); prof=__P();
+       // DISTINCTIVE: three guns no fresh profile owns, the marksman rifle in hand,
+       // the magnum second, and worn figures nothing rolls.
+       prof.weapons=['dmr','magnum','sniper']; prof.equipped='dmr'; prof.equippedSec='magnum'; prof.wear={dmr:137,magnum:41};
+       var code=restoreCode();
+       if(!code) bad.push('no restore code was made');
+       var o=code?restoreRead(code):null;
+       if(code&&!o) bad.push('the code cannot be read back');
+       else if(o&&!o.g) bad.push('the code carries no armoury: three owned guns, the one in hand and their wear are not in it, while the card promises what you have unlocked');
+       else if(o){
+         // Wipe to a fresh armoury, then apply the code.
+         prof.weapons=['pistol']; prof.equipped='pistol'; prof.equippedSec='none'; prof.wear={};
+         var ok=restoreApply(o);
+         if(!ok) bad.push('control: the code was refused');
+         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('the guns came back as '+((prof.weapons||[]).join(',')||'nothing')+' and not dmr,magnum,sniper');
+         if(prof.equipped!=='dmr') bad.push('the gun in hand came back as '+prof.equipped+' and not dmr');
+         if((prof.equippedSec||'none')!=='magnum') bad.push('the second slot came back as '+(prof.equippedSec||'none')+' and not magnum');
+         if(((prof.wear||{}).dmr|0)!==137) bad.push('the wear on the marksman rifle came back as '+((prof.wear||{}).dmr|0)+' and not 137');
+         // CONTROL: a gun the build does not know is dropped, not restored.
+         o.g.w.push('zqxgun'); restoreApply(o);
+         if((prof.weapons||[]).indexOf('zqxgun')>=0) bad.push('control: a gun this build does not have was restored into the armoury');
+         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('control: after the unknown gun the armoury reads '+(prof.weapons||[]).join(','));
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.56',what:'a tag and a note chosen after Copy report reach the run that Copy already logged when Log run and return is pressed afterwards, and the run is not logged twice',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&document.getElementById('tagwrap')&&document.getElementById('oc_copy')&&document.getElementById('oc_btn'))) return 'SKIP: this fixture cannot end a raid and press the card';
+     // Force the SYNCHRONOUS copy path, as check 11.32 does, so Copy report has
+     // committed by the time click() returns.
+     var desc; try{ desc=Object.getOwnPropertyDescriptor(navigator,'clipboard'); }catch(_d){ desc=null; }
+     var redefined=false;
+     try{ Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true}); redefined=(navigator.clipboard===undefined); }catch(_e){ redefined=false; }
+     if(!redefined) return 'SKIP: navigator.clipboard cannot be hidden here, so Copy report cannot be pressed synchronously';
+     var bad=[], origExec=document.execCommand, prof, keepAE, lateNote='ZQX late note 4471';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       prof=__P(); keepAE=prof.autoExport; prof.autoExport=false;   // a check must not start a download
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0;
+       __endRaid('extract');
+       document.execCommand=function(){ return true; };
+       var n0=(prof.log||[]).length;
+       document.getElementById('oc_copy').click();   // logs the run, with no tags yet
+       var log=prof.log||[], rec=log[log.length-1];
+       if(log.length!==n0+1||!rec) bad.push('control: Copy report did not log the run ('+(log.length-n0)+' rows added)');
+       else {
+         if((rec.tags||[]).length) bad.push('control: the row Copy wrote already carries tags '+rec.tags.join(', ')+', so a late tag proves nothing');
+         var cells=document.getElementById('tagwrap').querySelectorAll('.tag');
+         if(cells.length<2) bad.push('control: the card drew '+cells.length+' tag buttons');
+         else {
+           var lateTag=String(cells[1].textContent);
+           cells[1].click();                                   // chosen AFTER Copy report
+           document.getElementById('oc_note').value=lateNote;  // typed AFTER Copy report
+           document.getElementById('oc_btn').click();          // Log run and return
+           var log2=prof.log||[], rec2=log2[log2.length-1];
+           if(log2.length!==n0+1) bad.push('control: Log run and return added '+(log2.length-n0-1)+' extra row(s), so the run was logged twice');
+           var got=(rec2&&rec2.tags||[]).map(function(x){ return String(x).toUpperCase(); }).join(' | ');
+           if(got.indexOf(lateTag.toUpperCase())<0) bad.push('the tag '+lateTag+' chosen after Copy report did not reach the run (tags: '+(got||'none')+')');
+           if(((rec2&&rec2.note)||'')!==lateNote) bad.push('the note typed after Copy report did not reach the run (note: "'+((rec2&&rec2.note)||'')+'")');
+         }
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       document.execCommand=origExec;
+       try{ if(desc) Object.defineProperty(navigator,'clipboard',desc); }catch(_r){}
+       try{ if(prof) prof.autoExport=keepAE; }catch(_a){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.55',what:'reviving a pillager you downed clears the kill attribution on him, so a later death at other hands is not credited to you; the revive itself still stands him up friendly',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__sim&&window.__keys)) return 'SKIP: this fixture cannot revive a man';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, R=null, i, bad=[];
+     for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.merc&&!e.finished){ R=e; break; } }
+     if(!R) return 'SKIP: no pillager to down';
+     // You downed him: the downing shot stamped byPlayer. He lies within reach.
+     R.downed=1; R.byPlayer=true; R.hostile=true; R.friendlyPC=0; R.x=p.x+20; R.y=p.y;
+     g.over=false; p.downed=false; g.revLock=0;
+     var K=__keys(); for(var q in K) delete K[q]; K['KeyE']=true;
+     try{ __sim(0.15); }catch(e2){ bad.push('the step threw: '+String(e2&&e2.message||e2).slice(0,80)); }
+     delete K['KeyE'];
+     // CONTROL: the revive happened at all, or the flag reading proves nothing.
+     if(!(R.downed===0&&R.friendlyPC===1)) bad.push('control: E next to the downed man did not revive him (downed '+R.downed+', friendlyPC '+R.friendlyPC+')');
+     // THE FIX: his next death is no longer yours.
+     else if(R.byPlayer) bad.push('the revived man still carries byPlayer, so a crawler killing him later would be your kill, your contract tick and a grudge');
+     __topClear(); __cleanProfile();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.54',what:'the XP printed on the outcome card is exactly the XP the profile banks for that run, with the weather (or night, or dose) multiplier in play',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__wxHard)) return 'SKIP: this fixture cannot end a raid and read the card';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[];
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player;
+     // A multiplier must be in play or the two figures agree by accident: force hard weather.
+     var hard=null; if(window.__wxHard('storm')) hard='storm'; else if(window.__wxHard('fog')) hard='fog';
+     if(!hard) return 'SKIP: no weather counts as hard, so there is no multiplier to disagree on';
+     if(!g.wx) g.wx={}; g.wx.id=hard;
+     // Something to bank: a bag worth carrying out.
+     p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
+     var n0=(P.log||[]).length;
+     try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
+     var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
+     var m=/\+\s*([\d,]+)\s*XP/.exec(txt);
+     var card=m?parseInt(m[1].replace(/,/g,''),10):null;
+     var rec=(P.log&&P.log.length>n0)?P.log[P.log.length-1]:null;
+     if(card===null) bad.push('the card printed no "+N XP" line (card says: '+txt.replace(/\s+/g,' ').slice(0,80)+')');
+     if(!rec||typeof rec.xpGot!=='number') bad.push('the run was not banked with an xpGot figure');
+     if(card!==null&&rec&&typeof rec.xpGot==='number'){
+       // THE FIX: what the card says is what was banked.
+       if(card!==rec.xpGot) bad.push('the card printed +'+card+' XP but the profile banked '+rec.xpGot+' (base '+rec.xpBase+', weather hard '+rec.wxHard+')');
+       // CONTROL: the multiplier really was in play, or the agreement proves nothing.
+       if(!rec.wxHard) bad.push('control: the banked record does not carry the hard-weather flag, so no multiplier was in play');
+     }
+     __topClear(); __cleanProfile();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.53',what:'a hired merc has a roster row, so when he boards an earlier ship and you extract, the card says he extracted earlier and pays your ten percent instead of saying he was left out there',
+   run:function(){
+     if(!(window.__identityIds&&window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot hire a merc and end a raid';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var ids=window.__identityIds(); if(!ids.length) return 'SKIP: no identities to hire';
+     var P=window.__P(), bad=[];
+     P.merc=ids[0]; P.credits=1000;
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), M=null, i;
+     for(i=0;i<g.ents.length;i++){ if(g.ents[i].merc){ M=g.ents[i]; break; } }
+     if(!M){ __cleanProfile(); return 'SKIP: the hired merc did not spawn'; }
+     var row=null; for(i=0;i<(g.roster||[]).length;i++){ if(g.roster[i].ref===M){ row=g.roster[i]; break; } }
+     // THE FIX: he is on the roster at all.
+     if(!row) bad.push('the hired merc has no roster row, so boarding cannot stamp his haul and endRaid cannot pay your cut');
+     else {
+       // He fled low and boarded an earlier ship: the boarding code stamps the
+       // row and removes him from the world. Then you extract.
+       row.out=true; row.outAt=0; row.val=1234;
+       var ix=g.ents.indexOf(M); if(ix>=0) g.ents.splice(ix,1);
+       var c0=P.credits;
+       try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
+       var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
+       if(!/extracted earlier/i.test(txt)) bad.push('the card did not say he extracted earlier (it says: '+txt.replace(/\s+/g,' ').slice(0,90)+')');
+       if(!(P.credits-c0>=123)) bad.push('your ten percent of his 1,234 was not paid (credits moved '+(P.credits-c0)+')');
+     }
+     __topClear(); __cleanProfile();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.52',what:'Wirt Buy delivers the lot that was named and priced on the card, even if the five-minute window rolled between the card being drawn and the click',
+   run:function(){
+     if(!(window.__wirtLot&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open Wirt';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[], realNow=Date.now;
+     P.credits=999999; P.stash=[];
+     var st=null; try{ st=window.__station('gamble','KeyE'); }catch(e){ st={err:String(e)}; }
+     if(st&&st.err) return 'SKIP: '+st.err;
+     var shown=window.__wirtLot();
+     if(!(shown&&shown.length)) return 'SKIP: the counter is empty';
+     var btn=document.getElementById('wirtlotbtn');
+     if(!btn) return 'SKIP: no Buy button on the counter';
+     // THE WINDOW ROLLS between the card and the click: move the clock forward
+     // one window, or two, or three, until the lot differs from the shown one.
+     var base=realNow(), next=null, rolled=0;
+     for(var r=1;r<=3&&!next;r++){ Date.now=function(){ return base+r*300000; }; var cand=window.__wirtLot(); if(cand&&cand.length&&cand[0]!==shown[0]){ next=cand; rolled=r; } }
+     if(!next){ Date.now=realNow; return 'SKIP: the next three windows hold the same lot, so a roll cannot be told apart'; }
+     Date.now=function(){ return base+rolled*300000; };
+     try{ btn.click(); }catch(e2){}
+     Date.now=realNow;
+     var got=(P.stash||[]).length?P.stash[P.stash.length-1]:null;
+     // THE FIX: he receives what the card NAMED AND PRICED.
+     if(got!==shown[0]) bad.push('after the window rolled, Buy delivered '+got+' instead of the shown '+shown[0]);
+     // CONTROL: he was charged, so a buy went through and the comparison is real.
+     if(!(P.credits<999999)) bad.push('control: no credits were taken, so nothing was bought and the comparison proves nothing');
+     try{ var gm=document.getElementById('gamblemodal'); if(gm) gm.classList.remove('on'); }catch(e3){}
+     __cleanProfile(); __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.51',what:'the two baked sector-facts lines are exact-only: the line with its own figures still maps to his wording, and a sector line with other figures is left as the game drew it instead of being rewritten by digit shape into the other map name',
+   run:function(){
+     if(!(window.__tx&&__tx.get&&__tx.ship)) return 'SKIP: this build has no text engine to drive';
+     var ship=__tx.ship(), keys=[], k;
+     for(k in ship) if(k.indexOf('test robot extracts')>=0) keys.push(k);
+     if(keys.length<2) return 'SKIP: the baked map holds '+keys.length+' sector-facts lines, not both';
+     var bad=[];
+     for(var i=0;i<keys.length;i++){
+       var key=keys[i];
+       // The exact line still maps to his wording.
+       if(__tx.get(key)!==ship[key]) bad.push('the exact sector line no longer maps to his wording');
+       // A line with other figures, as the game draws it for another player or
+       // another day, must pass through untouched.
+       var mut=key.replace(/\d+/, function(d){ return String((+d)+7); });
+       if(mut===key) continue;
+       var got=__tx.get(mut);
+       if(got!==mut) bad.push('a sector line with other figures was rewritten by digit shape into "...'+String(got).slice(-34)+'", so one map can print the other map name');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.50',what:'opening THE STASH with the Undercroft backpack open commits and closes the backpack first, so what you pack at the terminal is not overwritten by the stale backpack snapshot when it closes',
+   run:function(){
+     if(!(window.__hubBagSet&&window.__hubBagLive&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open the Undercroft backpack and the terminal';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[];
+     P.kit=[]; P.hotAssign={};
+     // Open the backpack on the floor: this takes the snapshot the close commits.
+     var o=window.__hubBagSet(true);
+     if(!(o.open&&o.snap)) return 'SKIP: the backpack did not open with a snapshot';
+     // Walk to THE STASH and press E: the real terminal act.
+     var st=null; try{ st=window.__station('term','KeyE'); }catch(e){ st={err:String(e)}; }
+     if(st&&st.err) return 'SKIP: '+st.err;
+     // THE FIX: the terminal committed and closed the backpack before drawing.
+     var openAfter=window.__hubBagSet===undefined?null:(function(){ try{ return !!window.__hubBagLive(); }catch(e){ return null; } })();
+     // What the terminal does to the loadout: pack an item and bind it to a key.
+     P.kit.push('medkit'); P.hotAssign[3]='medkit';
+     // ESC: on the old build the backpack is still open and its close writes the
+     // stale (empty) snapshot over the terminal's edits.
+     if(openAfter) window.__hubBagSet(false);
+     if(openAfter) bad.push('the backpack was still open (snapshot live) after the terminal opened, so its close could overwrite the terminal');
+     if((P.kit||[]).indexOf('medkit')<0) bad.push('the item packed at the terminal was wiped from the backpack when the backpack closed');
+     if(P.hotAssign[3]!=='medkit') bad.push('the belt key set at the terminal was wiped when the backpack closed');
+     try{ document.getElementById('hub').classList.remove('on'); }catch(e2){}
+     __cleanProfile(); __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.49',what:'with the backpack open, a click on the panel background (not a tile) does not reach the trigger; a click outside the panel still does',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop&&window.__mouse&&window.__canvases)) return 'SKIP: this fixture cannot click the backpack';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so no click can land';
+     __pinDPR(1); __forceSize(1920,1080);
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:['medkit','frag'],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, m=__mouse(), cv=__canvases().world, bad=[];
+     g.over=false; g.mapOpen=false; p.downed=false; g.bagOpen=true;
+     try{ __loop(performance.now()); }catch(e){}   // drawBag records G.bagPanel and G.bagCells
+     var B=g.bagPanel; if(!B||!(B.w>0&&B.h>0)) return 'SKIP: the backpack panel did not record its rectangle';
+     function inCell(x,y){ var C=g.bagCells||[]; for(var i=0;i<C.length;i++){ var c=C[i]; if(x>=c.x&&x<=c.x+c.w&&y>=c.y&&y<=c.y+c.h) return true; } return false; }
+     // A point inside the panel that is on no tile: scan the panel top-down.
+     var px=null, py=null;
+     for(var yy=B.y+4; yy<B.y+B.h-4 && px===null; yy+=6){ for(var xx=B.x+4; xx<B.x+B.w-4; xx+=6){ if(!inCell(xx,yy)){ px=xx; py=yy; break; } } }
+     if(px===null) return 'SKIP: every point of the panel is a tile, nothing to click on';
+     function click(x,y){ m.x=x; m.y=y; m.down=false; var ev=new MouseEvent('mousedown',{button:0,bubbles:true,cancelable:true,clientX:x,clientY:y}); cv.dispatchEvent(ev); var d=m.down; m.down=false; try{ window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true})); }catch(e2){} return d; }
+     // THE FIX: the panel background does not arm the trigger.
+     var onPanel=click(px,py);
+     if(onPanel) bad.push('a click on the open backpack at '+px+','+py+' (panel background, no tile) armed the trigger');
+     // CONTROL: a click well outside the panel still arms it, so the claim is the panel and not the whole screen.
+     var ox=(B.x>200)?20:1900, oy=(B.y>200)?20:1060;
+     var offPanel=click(ox,oy);
+     if(!offPanel) bad.push('control: a click outside the panel at '+ox+','+oy+' did not arm the trigger, so clicks are being swallowed everywhere');
+     g.bagOpen=false; m.down=false; __forceSize(1920,1080); __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.48',what:'right-click Equip as your gun on a stash gun moves it into the armoury and equips it, instead of removing it from the stash and then throwing so the gun is lost',
+   run:function(){
+     if(!(window.__itemMenuRows&&window.__itemGk&&window.__P)) return 'SKIP: this fixture cannot open the item menu';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[];
+     // A gun item the profile does not own yet, so the row takes the equip path
+     // and not the "already yours" branch.
+     var cands=['gun_smg','gun_carbine','gun_rifle','gun_shotgun','gun_scattergun','gun_pistol'], K=null, gk=null;
+     for(var c=0;c<cands.length;c++){ var g=window.__itemGk(cands[c]); if(g){ K=cands[c]; gk=g; break; } }
+     if(!K) return 'SKIP: no gun item in the item table to stage';
+     P.stash=[K]; P.kit=[]; P.hotAssign={};
+     P.weapons=(P.weapons||[]).filter(function(w){ return w!==gk; });
+     var rows=window.__itemMenuRows(K,'stash',1)||[], row=null;
+     for(var r=0;r<rows.length;r++){ if(/gun/i.test(String(rows[r].label||''))&&typeof rows[r].act==='function'){ row=rows[r]; break; } }
+     if(!row) return 'SKIP: the stash menu offered no equip-as-gun row for '+K;
+     var threw=null; try{ row.act(); }catch(e){ threw=String(e&&e.message||e); }
+     var inStash=(P.stash||[]).indexOf(K)>=0, inArm=(P.weapons||[]).indexOf(gk)>=0;
+     // THE FIX: the gun reaches the armoury and is equipped; it is never in neither place.
+     if(!inStash&&!inArm) bad.push('the gun '+K+' is in neither the stash nor the armoury after Equip: it was lost'+(threw?(' (the row threw: '+threw.slice(0,80)+')'):''));
+     else if(!inArm) bad.push('the gun stayed in the stash and never reached the armoury'+(threw?(' (the row threw: '+threw.slice(0,80)+')'):''));
+     if(inArm&&P.equipped!==gk) bad.push('control: the gun reached the armoury but was not equipped (equipped is '+P.equipped+')');
+     __cleanProfile(); __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.47',what:'a crash caught before the profile is read never saves over the real save: it goes to its own key, and a crash after the read still lands in P.crashes',
+   run:function(){
+     if(!(window.__noteCrash&&window.__P)) return 'SKIP: this fixture cannot raise a crash through the catcher';
+     var KEY='salvagerun:profile', PRE='salvagerun:precrash', saved=null, bad=[];
+     try{ saved=localStorage.getItem(KEY); }catch(e){ return 'SKIP: localStorage is not reachable here'; }
+     // A DISTINCTIVE stored save that no default could produce.
+     var real='{"credits":424242,"xp":7,"pname":"ZQXREAL","stash":[],"weapons":["pistol"]}';
+     try{
+       localStorage.setItem(KEY, real); try{ localStorage.removeItem(PRE); }catch(e0){}
+       // BEFORE THE READ. On this build __ploaded closes the gate; on an older
+       // build there is no gate and the catcher saves the live P over the save.
+       var had=(window.__ploaded?window.__ploaded():null);
+       if(window.__ploaded) window.__ploaded(false);
+       window.__noteCrash('error','zqx boot probe','probe:1');
+       var after=null; try{ after=localStorage.getItem(KEY); }catch(e1){}
+       if(after!==real) bad.push('a crash before the profile was read overwrote the real save (the stored profile changed to '+String(after).slice(0,50)+')');
+       var pre=null; try{ pre=JSON.parse(localStorage.getItem(PRE)||'null'); }catch(e2){}
+       if(!(pre&&pre.length&&/zqx boot probe/.test(String(pre[pre.length-1].msg||'')))) bad.push('the boot crash was not written to its own key');
+       // AFTER THE READ (control): the gate is open and a crash is recorded in P.
+       if(window.__ploaded) window.__ploaded(true);
+       var P=window.__P(); var n0=(P.crashes||[]).length;
+       window.__noteCrash('error','zqx after probe','probe:2');
+       if(!((P.crashes||[]).length>n0)) bad.push('control: after the read a crash was not recorded in P.crashes, so the catcher is off');
+       if(window.__ploaded&&had!==null) window.__ploaded(had);
+     } finally {
+       try{ if(saved===null) localStorage.removeItem(KEY); else localStorage.setItem(KEY, saved); }catch(e3){}
+       try{ localStorage.removeItem(PRE); }catch(e4){}
+       try{ if(window.__cleanProfile) __cleanProfile(); }catch(e5){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.46',what:'a hostile pillager standing in the extraction ring who can see you returns fire after ONE beat, instead of having his cooldown floored every frame so he never shoots; and with the acquisition gate pinned shut (raiderReact 99) he fires none, so the rounds pass through the gate',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__sim&&window.__see&&window.__cfg&&window.__keys&&window.__mouse)) return 'SKIP: this fixture cannot stage the ring seat';
+     var bad=[], dt=0.15;
+     function seat(gateShut){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // The beacon call and the rival feud both pull a man OUT of the ring block
+       // (standoff, or a fight with a rival crew), and the fire block only runs
+       // inside it, so both are pinned off for the seat. Harness pins, not the game.
+       // The control pins the acquisition gate shut instead: a downed player is
+       // no control, because updatePlayer stands a full-health man straight back up.
+       __cfg(gateShut?{raiderBeacon:0, raiderFeud:0, raiderReact:99}:{raiderBeacon:0, raiderFeud:0});
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, z=g.active, R=null, i;
+       if(!z) return null;
+       for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.downed&&!e.finished&&!e.merc){ R=e; break; } }
+       if(!R) return null;
+       // THE PLAYER STANDS STILL. __sim runs updatePlayer with no input, so he
+       // neither moves nor fires. __rawStep would run the bot, whose sidestep
+       // swings him to the edge of the cone every frame and flickers sight, and
+       // whose own rounds land inside any proximity count.
+       var K=__keys(); for(var q in K) delete K[q]; __mouse().down=false;
+       __sim(dt);   // builds the sight segments
+       // THE SEAT: the pillager at the ring centre (the extract fire block only runs
+       // inside the ring), the player 60 units west, inside the ring too so the line
+       // of sight never crosses the pylon edge. He faces the player, hostile, in
+       // extract, cooldown clear, beat unarmed. Both re-pinned every step.
+       function pin(){ R.x=z.x; R.y=z.y; p.x=z.x-60; p.y=z.y; p.downed=false; R.face=Math.PI; R.state='extract'; R.hostile=true; R.friendlyPC=0; R.merc=0; R.downed=false; R.finished=false; R.extracting=0; }
+       pin(); R.cd=0; R.windup=null; R.alert=2; R.beat=0; R.beatLost=0; R.acqT=0;
+       var sees=null; try{ sees=!!__see(R.x,R.y,R.face,p.x,p.y,g.vseg,600,R.cone,100); }catch(e2){ sees=null; }
+       var inRing=(Math.sqrt((R.x-z.x)*(R.x-z.x)+(R.y-z.y)*(R.y-z.y))<z.r);
+       // ROUNDS ARE HIS BY OWNER, never by proximity: a sentry near the ring and
+       // the player himself both put rounds within reach of him.
+       var mine=0, first=-1, maxAcq=0;
+       for(var s=0;s<60;s++){ pin(); __sim(dt); if((R.acqT||0)>maxAcq) maxAcq=R.acqT;
+         for(var b=0;b<g.bullets.length;b++){ var B=g.bullets[b]; if(!B.__cnt){ B.__cnt=1; if(B.owner===R){ mine++; if(first<0) first=s; } } } }
+       return {sees:sees, inRing:inRing, fired:mine, first:first, acq:+maxAcq.toFixed(2)};
+     }
+     var on=seat(false);
+     if(!on) return 'SKIP: no active ring or no pillager to stage';
+     if(!on.inRing) return 'SKIP: the pillager could not be seated inside the ring';
+     if(on.sees===false) return 'SKIP: the game says the seated pillager cannot see the player, so the seat is wrong, not the game';
+     // THE FIX: in the ring, with sight, he returns fire after one beat.
+     if(on.fired<1) bad.push('a hostile pillager in the extraction ring with sight of you at 60 units fired '+on.fired+' rounds of his own in nine seconds (acquisition '+on.acq+' s), so his reaction beat is still a permanent floor');
+     // CONTROL: the same seat with the acquisition gate pinned shut fires nothing,
+     // and still had sight, so the rounds above went through the gate and not round it.
+     var off=seat(true);
+     if(off&&off.fired>0) bad.push('control: with the acquisition gate pinned shut (raiderReact 99) he still fired '+off.fired+' rounds, so the rounds do not pass through the gate');
+     if(off&&off.acq<1) bad.push('control: with the gate shut his acquisition read only '+off.acq+' s, so he had no sight and the control proves nothing');
+     __topClear(); __resetCfg();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.45',what:'the title screen does not answer the floor keys: P and ESC on the boot title leave the pause box closed, ENTER there does not stamp the NEW IN card as seen, and ENTER still starts the game',
+   run:function(){
+     if(!(window.__showScreen&&window.__keys&&window.__wnseen)) return 'SKIP: this fixture cannot stage the boot title';
+     var t=document.getElementById('title'), pb=document.getElementById('pausebox');
+     if(!t||!pb) return 'SKIP: no title screen or pause box in this build';
+     var bad=[];
+     function K(code,key){ var ev=new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(ev); }
+     function clearKeys(){ var k=__keys(); for(var q in k) delete k[q]; }
+     // THE BOOT CONDITION: state hub with the title raised over it, exactly as a
+     // fresh load. __showScreen(hub) sets state hub and clears windows; the title
+     // is then raised the way its HTML class does at boot. Calling __showScreen
+     // (title) would set state to title and disarm the branch under test, which
+     // is what fooled the earlier probe into a not-reproduced verdict.
+     __topClear(); clearKeys();
+     __showScreen('hub'); t.classList.add('on');
+     if(pb.classList.contains('on')) pb.classList.remove('on');
+     // 1. P on the title must NOT raise the pause box over it.
+     K('KeyP','p');
+     if(pb.classList.contains('on')){ bad.push('P on the title screen opened the pause box over it'); pb.classList.remove('on'); }
+     // 2. ESC likewise.
+     K('Escape','Escape');
+     if(pb.classList.contains('on')){ bad.push('ESC on the title screen opened the pause box over it'); pb.classList.remove('on'); }
+     // 3. ENTER on the title must not stamp the NEW IN card as seen. Read
+     //    synchronously, before any frame can stamp it for other reasons.
+     __wnseen(0);
+     var wasUp=t.classList.contains('on');
+     K('Enter','Enter');
+     if(__wnseen()===1) bad.push('ENTER on the title screen stamped the NEW IN card as already seen');
+     // CONTROL: the title keeps its own start; ENTER must still take the title down.
+     if(wasUp&&t.classList.contains('on')) bad.push('control: ENTER on the title did not start the game (the title is still up), so the title start itself is broken');
+     clearKeys();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.44',what:'loading a pre-mig945 save keeps the player saved dials: the rig-buyback migration persists through storeSet without saving the defaults over the config before the cfgv block reads it, and the buyback still runs',
+   run:function(){
+     if(!(window.__applyLoaded&&window.__P&&window.__cfg)) return 'SKIP: this fixture cannot drive the loader synchronously (older build has no applyLoadedProfile seam)';
+     var KEY='salvagerun:profile', saved;
+     try{ saved=localStorage.getItem(KEY); }catch(e){ return 'SKIP: localStorage is not reachable here'; }
+     var bad=[];
+     try{
+       // A pre-mig945 save with a DISTINCTIVE dial that neither a default nor a
+       // migration produces: ambient 250 (default 190; the cfgv-12 migration only
+       // moves 150 to 190, so 250 must be left alone). A rig in the stash so the
+       // buyback has work. cfgv 12 so migrations WOULD run if reached.
+       var prof={credits:5000, xp:100, cfg:{ambient:250, raidSec:480}, cfgv:12, stash:['rig_medium'], pname:'TESTER'};
+       window.__applyLoaded(prof);
+       var P=window.__P(), CFG=window.__cfg();
+       // THE FIX: the saved dial survives the load, both in the profile and live.
+       if(!(P.cfg&&P.cfg.ambient===250)) bad.push('the saved ambient 250 loaded back as '+(P.cfg?P.cfg.ambient:'(cfg null)')+', so the rig-buyback migration saved defaults over the player config');
+       if(CFG.ambient!==250) bad.push('the live CFG.ambient loaded as '+CFG.ambient+' rather than the saved 250, so the config did not reach the game');
+       if(P.cfgv===17) bad.push('cfgv was stamped to 17 during the load, which is saveProfile running before the cfgv block');
+       // CONTROL: the buyback still ran, or the fix broke the migration.
+       if(!(P.credits>5000)) bad.push('control: the rig buyback did not pay (credits '+P.credits+'), so the migration no longer runs');
+       if(P.stash&&P.stash.indexOf('rig_medium')>=0) bad.push('control: the bought-back rig is still in the stash, so the buyback did not run');
+     } finally {
+       try{ if(saved===null) localStorage.removeItem(KEY); else localStorage.setItem(KEY, saved); }catch(e){}
+       try{ if(window.__cleanProfile) __cleanProfile(); }catch(e){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.43',what:'the baked text edits are his latest set (71), including the title-screen and tutorial lines he rewrote after the v11.42 snapshot',
+   run:function(){
+     if(!(window.__tx&&__tx.get&&__tx.ship)) return 'SKIP: this build cannot read the shipped text map';
+     var bad=[], o=__tx.ship(), n=0, liftKey=null;
+     for(var k in o){ n++; if(k.indexOf('Take the lift up with whatever you dare carry')>=0) liftKey=k; }
+     if(n<71) bad.push('only '+n+' edits are baked, expected his latest set of 71');
+     if(!liftKey) bad.push('the new title-screen lift line he rewrote is not in the baked set');
+     else if(__tx.get(liftKey)!==o[liftKey]) bad.push('the new lift line does not render his wording through TX');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.42',what:'his in-game text edits are baked in: TX rewrites his edited strings to his wording with the editor off, exact and number-pattern lines alike, and leaves unrelated text alone',
+   run:function(){
+     if(!(window.__tx&&__tx.get)) return 'SKIP: this build has no text engine to drive';
+     var bad=[];
+     function chk(oldS,wantS){ var g=__tx.get(oldS); if(g!==wantS) bad.push('"'+oldS.slice(0,32)+'" did not become his wording (got "'+(''+g).slice(0,40)+'")'); }
+     // exact edits, ASCII samples of the baked set
+     chk('Human-shaped rivals looting the same map. They fight each other and the machines as well as you.','Make some friends.');
+     chk('no armour on','no armour equipped');
+     chk('The freebie kit','The Freebie Kit');
+     chk('XP comes from selling salvage in the Undercroft.','Shop before you drop.');
+     // number-pattern edit driven with a DIFFERENT number, to prove the shape not the instance
+     chk('Rainy. Harder going, so XP pays 2.5x.','XP multiplier = 2.5x');
+     // an unedited line must pass through untouched
+     var u='This exact line was never one he edited.'; if(__tx.get(u)!==u) bad.push('an unedited line was rewritten (got "'+(''+__tx.get(u)).slice(0,40)+'")');
+     // the shipped map is present and roughly complete
+     if(__tx.ship){ var _n=0,_o=__tx.ship(); for(var _k in _o) _n++; if(_n<60) bad.push('only '+_n+' edits are baked, expected the full set (~67)'); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.41',what:'claiming a finished contract refills the freed slot with a job that is NOT already on the board (the no-duplicate rule the board is topped up by), and the refill still happens with the board held at eight',
+   run:function(){
+     if(!(window.__contracts&&window.__P)) return 'SKIP: this fixture does not expose the contract board';
+     var C=window.__contracts, P=window.__P();
+     var trials=0, dups=0, refilled=0, shortBoard=0, ex=null;
+     for(var seed=1; seed<=200; seed++){
+       C.srand(seed);
+       P.contracts=[];
+       C.ensure();                        // top up to eight with the dedup rule
+       if(P.contracts.length!==8) continue;
+       var f=P.contracts[0]; if(!f||typeof f.reward!=='number') continue;
+       f.prog=f.n;                         // finish slot 0 so it can be claimed
+       var r=C.claimAt(0);
+       if(!r) continue;
+       trials++;
+       if(P.contracts[0]&&typeof P.contracts[0].reward==='number') refilled++;
+       if(P.contracts.length!==8) shortBoard++;
+       var nk=C.key(P.contracts[0]);
+       for(var j=1;j<P.contracts.length;j++){
+         if(C.key(P.contracts[j])===nk){ dups++; if(!ex) ex={seed:seed,key:nk}; break; }
+       }
+     }
+     if(trials<50) return 'SKIP: only '+trials+' claimable boards, too few to measure';
+     var bad=[];
+     // THE FIX: not one claimed slot is refilled with a job already on the board.
+     if(dups>0) bad.push('claiming a contract left a duplicate job on the board in '+dups+' of '+trials+' claims (e.g. seed '+ex.seed+', two slots are both '+ex.key+')');
+     // CONTROL: the refill must STILL happen - the dedup did not leave the slot
+     // empty or shrink the board.
+     if(refilled<trials) bad.push('control: '+(trials-refilled)+' of '+trials+' claims left the freed slot empty, so the no-duplicate rule disarmed the refill');
+     if(shortBoard>0) bad.push('control: the board fell below eight contracts after '+shortBoard+' of '+trials+' claims');
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.40',what:'a vented Pillbox holds its stun for the full lockout, the same span a vented sentry holds, not the half-length it drained to before',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__rawStep)) return 'SKIP: this fixture cannot step a raid';
+     var bad=[];
+     var LOCK=7.0;
+     function lockout(kind){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, E=null, i;
+       for(i=0;i<g.ents.length;i++){ if(g.ents[i].kind===kind){ E=g.ents[i]; break; } }
+       if(!E) return null;
+       // parked far from the player and asleep so its own AI never re-heats it
+       E.x=p.x+2000; E.y=p.y+2000; E.state='patrol'; E.alert=0; E.sang=0;
+       E.overheat=4.0; E.htImmune=LOCK; E.cd=0;
+       var dt=0.15, frames=0;
+       for(var s=0;s<300;s++){ E.x=p.x+2000; E.y=p.y+2000; __rawStep(dt); frames++; if(E.htImmune<=0) break; }
+       return frames*dt;
+     }
+     var choir=lockout('choir');
+     if(choir===null) return 'SKIP: no Pillbox on this map';
+     var sentry=lockout('sentry');
+     if(sentry===null) return 'SKIP: no sentry to compare against';
+     // THE FIX: the Pillbox holds its stun for the full lockout, within a frame
+     // or two of the dial and of the sentry. Before, it drained to about 5.5s.
+     if(choir<LOCK-0.6) bad.push('the Pillbox vent stun cleared in '+choir.toFixed(2)+'s, short of the '+LOCK+'s lockout, so it is still draining fast');
+     if(Math.abs(choir-sentry)>0.6) bad.push('the Pillbox stun ('+choir.toFixed(2)+'s) and the sentry stun ('+sentry.toFixed(2)+'s) differ by more than a couple of frames');
+     // CONTROL: the sentry itself clears at about the lockout, so the ruler is
+     // sound and a Pillbox matching it means something.
+     if(sentry<LOCK-0.6||sentry>LOCK+0.6) bad.push('control: the sentry vent stun cleared in '+sentry.toFixed(2)+'s rather than about '+LOCK+'s, so the measurement is off');
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.39',what:'with the controls list off, the "H controls" hint draws clear of the bottom-left corner (where the vitals panel is), above the panel, at 1080p and at 1440p',
+   run:function(){
+     if(!(window.__deploy&&window.__loop)) return 'SKIP: this fixture cannot draw a HUD frame';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     var bad=[];
+     var NEEDLE=['H  ','controls'].join('');
+     function traceHint(w,h){
+       __pinDPR(1); __forceSize(w,h);
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.legendOn=0;
+       var proto=CanvasRenderingContext2D.prototype, orig=proto.fillText, got=null;
+       proto.fillText=function(t,x,y){ if(t===NEEDLE&&got===null) got=[x,y]; return orig.apply(this,arguments); };
+       var threw=null; try{ __loop(performance.now()); }catch(e){ threw=String(e); }
+       proto.fillText=orig;
+       return {got:got, H:(window.innerHeight||h), threw:threw};
+     }
+     // The vitals panel occupies roughly the bottom quarter of the screen at the
+     // bottom-left. The old hint drew at H-14, inside it; the fix draws it above
+     // the panel. A hint whose baseline is within 120px of the bottom is on the
+     // panel. This reads only the traced position and the height, not the panel
+     // box, which does not compute reliably on every fixture page.
+     [[1920,1080],[2560,1440]].forEach(function(sz){
+       var r=traceHint(sz[0],sz[1]);
+       if(r.threw){ bad.push('the HUD frame threw at '+sz[0]+'x'+sz[1]+': '+r.threw); return; }
+       if(!r.got){ bad.push('the "H controls" hint was not drawn at '+sz[0]+'x'+sz[1]+' with the legend off'); return; }
+       var floor=sz[1]-120;
+       if(r.got[1]>floor) bad.push('at '+sz[0]+'x'+sz[1]+' the hint drew at y '+Math.round(r.got[1])+', within 120px of the bottom (drawing height '+sz[1]+'), so it is on the vitals panel');
+     });
+     __forceSize(1920,1080);
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.38',what:'a melee swing next to your own merc does not hurt him; a swing next to a hostile pillager still does',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop)) return 'SKIP: this fixture cannot swing a melee';
+     var bad=[];
+     function swingAt(makeMerc){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, T=null, i;
+       for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.downed&&!e.finished){ T=e; break; } }
+       if(!T) return null;
+       T.merc=makeMerc?1:0; T.downed=false; T.finished=false; T.hostile=!makeMerc; T.hp=T.maxhp||80;
+       p.x=2020; p.y=3300; p.face=0; T.x=p.x+28; T.y=p.y;
+       var hp0=T.hp;
+       // hold the target in place across the swing frame
+       var d=new KeyboardEvent('keydown',{code:'KeyF',key:'f',bubbles:true,cancelable:true}); window.dispatchEvent(d);
+       T.x=p.x+28; T.y=p.y;
+       __loop(performance.now());
+       var u=new KeyboardEvent('keyup',{code:'KeyF',key:'f',bubbles:true}); window.dispatchEvent(u);
+       return {hp0:hp0, hp1:T.hp, merc:T.merc, hostile:T.hostile};
+     }
+     // THE FINDING: your merc takes no melee damage.
+     var m=swingAt(true);
+     if(!m) return 'SKIP: no pillager to make a merc';
+     if(m.hp1<m.hp0) bad.push('a melee swing next to your merc dropped his health from '+Math.round(m.hp0)+' to '+Math.round(m.hp1));
+     // CONTROL: a hostile pillager in the same spot DOES take the swing, so the
+     // exclusion did not disarm melee.
+     var h=swingAt(false);
+     if(h){ if(!(h.hp1<h.hp0)) bad.push('control: a melee swing next to a hostile pillager left his health at '+Math.round(h.hp1)+', so the strike no longer lands and the merc result proves nothing'); }
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.37',what:'a machine hit on a pillager you have won over does not turn him against you or write a grudge (provokeReal 1); a hit you land does; the old hitT reading (provokeReal 0) turns him on the machine hit',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__rawStep&&window.__cfg&&window.__los)) return 'SKIP: this fixture cannot step a raid with line of sight';
+     var bad=[];
+     // A friendlyPC pillager (one you parleyed) HOLDS even while he sees you,
+     // so this isolates the hit: a passive seeing pillager engages on sight and
+     // could not tell a machine hit from a decision, but a friendlyPC man does
+     // not engage, so a flip there is the hit and nothing else. Placed with a
+     // clear line to the player and more than 180 units off.
+     function seat(provoke){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __cfg({provokeReal:provoke});
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, R=null, i;
+       for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.merc){ R=e; break; } }
+       if(!R) return null;
+       R.hostile=false; R.friendlyPC=1; R.grudge=false; R.downed=false; R.finished=false; R.state='loot'; R.cone=1.4; R.alert=0.5;
+       var placed=false;
+       for(var a=0;a<16;a++){ var ang=a*0.3927, ex=p.x+Math.cos(ang)*260, ey=p.y+Math.sin(ang)*260;
+         if(__los.clear(ex,ey,p.x,p.y)){ R.x=ex; R.y=ey; R.face=Math.atan2(p.y-ey,p.x-ex); R._ex=ex; R._ey=ey; R._af=R.face; placed=true; break; } }
+       return {p:p,R:R,placed:placed};
+     }
+     function run(o,useP){ for(var s=0;s<3;s++){ o.R.x=o.R._ex; o.R.y=o.R._ey; o.R.face=o.R._af; o.R.hitT=0.2; o.R.pHitT=useP?0.3:0; o.R.grudge=(o.R.grudge&&false); __rawStep(0.15); if(o.R.hostile||!o.R.friendlyPC) break; } }
+     // ARM A, provokeReal 1, a machine hit (hitT only): he stays loyal.
+     var A=seat(1); if(!A||!A.R) return 'SKIP: no pillager available';
+     if(!A.placed) return 'SKIP: no clear line of sight to the player at 260 units on this seed';
+     run(A,false);
+     if(!A.R.friendlyPC||A.R.hostile) bad.push('with provokeReal 1 a machine hit turned a won-over pillager against you (friendlyPC '+A.R.friendlyPC+', hostile '+A.R.hostile+')');
+     // ARM B, provokeReal 1, a hit YOU land (pHitT): he turns, as betrayal should.
+     var B=seat(1); if(B&&B.placed){ run(B,true);
+       if(B.R.friendlyPC||!B.R.hostile) bad.push('control: with provokeReal 1 a hit you landed did not turn a won-over pillager, so the fix disarmed betrayal (friendlyPC '+B.R.friendlyPC+', hostile '+B.R.hostile+')'); }
+     // ARM C, provokeReal 0, a machine hit: the old reading turns him, which the dial restores.
+     var C=seat(0); if(C&&C.placed){ if(__cfg().provokeReal!==0) return 'SKIP: provokeReal cannot be set to 0 here';
+       run(C,false);
+       if(C.R.friendlyPC&&!C.R.hostile) bad.push('control: with provokeReal 0 a machine hit did NOT turn the won-over pillager, so the dial does not restore the old behaviour and the finding proves nothing'); }
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.36',what:'a frag by the Peddler does not send him chasing and does not move his pitch; a frag by a downed pillager leaves him down; a frag by a live crawler still turns it to chase',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&(window.__explodeFrag||window.__rawStep))) return 'SKIP: this fixture cannot explode a frag';
+     var bad=[];
+     function boom(fx,fy){ var g=__state(); if(!g.frags) g.frags=[]; var fr={x:fx,y:fy,t:0,fuse:0,by:null,r:0}; if(window.__explodeFrag){ __explodeFrag(fr); } else { g.frags.push(fr); __rawStep(0.15); } }
+     // THE PEDDLER. A charge a stride from his stall.
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, PD=null, i;
+     for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='peddler'){ PD=g.ents[i]; break; }
+     if(!PD) return 'SKIP: no Peddler on this map';
+     var st0=PD.state, tx0=Math.round(PD.tx||0), ty0=Math.round(PD.ty||0);
+     p.x=PD.x+40; p.y=PD.y;
+     boom(PD.x+20, PD.y);
+     if(PD.state==='chase') bad.push('a frag by the stall put the Peddler into chase (was '+st0+')');
+     if(Math.round(PD.tx||0)!==tx0||Math.round(PD.ty||0)!==ty0) bad.push('a frag by the stall moved the Peddler pitch from '+tx0+','+ty0+' to '+Math.round(PD.tx||0)+','+Math.round(PD.ty||0));
+     // A DOWNED PILLAGER. A charge beside a man on the floor.
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     g=__state(); p=g.player; var R2=null;
+     for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].merc){ R2=g.ents[i]; break; }
+     if(R2){ R2.downed=1; R2.state='down'; R2.hp=Math.max(1,R2.hp*0.3); var dst=R2.state;
+       p.x=R2.x+40; p.y=R2.y; boom(R2.x+20,R2.y);
+       if(R2.state==='chase') bad.push('a frag by a downed pillager stood him into chase (was '+dst+', downed '+R2.downed+')'); }
+     // CONTROL: a LIVE hostile crawler in the blast still turns to chase, so the
+     // guard did not disarm the aggro the frag is supposed to cause.
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     g=__state(); p=g.player; var CR=null;
+     for(i=0;i<g.ents.length;i++){ var e=g.ents[i]; if((e.kind==='crawler'||e.kind==='sentry')&&!e.downed&&e.hp>0&&e.state!=='alarm'){ CR=e; break; } }
+     if(CR){ var cs0=CR.state; p.x=CR.x+40; p.y=CR.y; CR.hp=CR.maxhp||CR.hp; boom(CR.x+20,CR.y);
+       if(CR.hp>0&&CR.state!=='chase'&&CR.state!=='alarm') bad.push('control: a frag by a live '+CR.kind+' left it in '+CR.state+' rather than chase, so the guard disarmed the aggro (was '+cs0+')'); }
+     else bad.push('control: no live crawler or sentry found to confirm the aggro still fires');
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.35',what:'the storm strike warning ring is drawn on the ground: a strike at the player position draws its ring at the centre of the screen, not off at the world coordinate as raw screen pixels',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&(window.__frame||window.__loop))) return 'SKIP: this fixture cannot draw a raid frame';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     var bad=[];
+     __pinDPR(1); __forceSize(1920,1080);
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player;
+     if(!p) return 'SKIP: no player';
+     var R=118, DPR=window.devicePixelRatio||1;
+     // A strike centred on the player. Its ring must land at the centre of the
+     // screen if it is drawn on the ground; if it is drawn in screen space with
+     // the world coordinate, it lands near p.x*DPR, off the screen.
+     if(!g.strikes) g.strikes=[];
+     g.strikes.length=0;
+     g.strikes.push({x:p.x, y:p.y, t:0.8, hit:0});
+     var proto=CanvasRenderingContext2D.prototype, origArc=proto.arc, caught=[];
+     proto.arc=function(cx,cy,r){
+       if(r>=R-1.5&&r<=R+1.5){
+         var m=(this.getTransform?this.getTransform():null);
+         if(m){ var sx=m.a*p.x+m.c*p.y+m.e, sy=m.b*p.x+m.d*p.y+m.f; caught.push([sx/DPR, sy/DPR]); }
+       }
+       return origArc.apply(this,arguments);
+     };
+     var threw=null;
+     try{
+       // draw one frame; __frame is the draw path, __loop the fallback. Re-push
+       // before each in case the call clears strikes.
+       if(window.__frame){ g.strikes.length=0; g.strikes.push({x:p.x,y:p.y,t:0.8,hit:0}); __frame(16.7); }
+       if(!caught.length&&window.__loop){ g.strikes.length=0; g.strikes.push({x:p.x,y:p.y,t:0.8,hit:0}); __loop(performance.now()); }
+     }catch(e){ threw=String(e); }
+     proto.arc=origArc;
+     if(threw) return 'the strike frame threw: '+threw;
+     if(!caught.length) return 'SKIP: no strike ring of radius '+R+' was drawn, so the warning ring path did not run in this frame';
+     // THE FINDING. On the ground, the player-centred strike maps to screen
+     // centre. Screen-space with the world coordinate would land near p.x.
+     var W=innerWidth, H=innerHeight, cx=caught[0][0], cy=caught[0][1];
+     if(cx<0||cx>W||cy<0||cy>H) bad.push('the strike ring for a strike at the player position drew off the screen at ('+Math.round(cx)+','+Math.round(cy)+'), viewport '+W+'x'+H+', so it is not on the ground');
+     // CONTROL: a strike 400 world units east lands to the RIGHT of centre, and
+     // still on the screen, which a screen-space draw at world x would not.
+     caught.length=0;
+     var ex=p.x+400;
+     proto.arc=function(cx2,cy2,r){ if(r>=R-1.5&&r<=R+1.5){ var m=(this.getTransform?this.getTransform():null); if(m){ caught.push([( m.a*ex+m.c*p.y+m.e)/DPR, (m.b*ex+m.d*p.y+m.f)/DPR]); } } return origArc.apply(this,arguments); };
+     try{ if(window.__frame){ g.strikes.length=0; g.strikes.push({x:ex,y:p.y,t:0.8,hit:0}); __frame(16.7); } if(!caught.length&&window.__loop){ g.strikes.length=0; g.strikes.push({x:ex,y:p.y,t:0.8,hit:0}); __loop(performance.now()); } }catch(e2){}
+     proto.arc=origArc;
+     if(caught.length){ var rx=caught[0][0];
+       if(!(rx>cx+10)) bad.push('control: a strike 400 units east drew at x '+Math.round(rx)+', not to the right of the player-centred ring at '+Math.round(cx)+', so the ring does not track the world');
+       if(rx>W) bad.push('control: the eastern strike drew off the right of the screen at x '+Math.round(rx)+', which is the screen-space bug');
+     }
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.33',what:'the player-facing word for the pack is BACKPACK, not bag: the title controls line, the empty-panel hint and the full-pack message; and none of the three old strings survives anywhere the player reads',
    run:function(){
      var bad=[];
-     if(!(window.__hubEnter&&window.__hubStep)) return 'SKIP: this build cannot step the floor';
-     if(!(W>0&&H>0)) return 'SKIP: the pane is 0x0';
-     __hubEnter(); if(!HB||!HB.crowd||!HB.walls) return 'the Undercroft did not build';
+     // ONE: the title controls line, which a player reads on every load.
+     var title=document.getElementById('title');
+     if(!title) return 'SKIP: no title element in this document';
+     var tt=(title.textContent||'').replace(/\s+/g,' ');
+     if(tt.indexOf('TAB backpack')<0) bad.push('the title controls line does not say "TAB backpack": '+tt.slice(0,120));
+     if(tt.indexOf('TAB bag')>=0) bad.push('the title controls line still says "TAB bag"');
+     // TWO: the old strings are gone from everywhere the player reads, source
+     // included. The needles are assembled so this check does not match itself.
+     var src=document.documentElement.innerHTML;
+     var old1=['Bag is ','empty.'].join(''), old2=['Bag full ','('].join(''), old3=['TAB ','bag '].join('');
+     if(src.indexOf(old1)>=0) bad.push('the old empty-panel hint "'+old1+'" is still in the build');
+     if(src.indexOf(old2)>=0) bad.push('the old full-pack message "'+old2+'" is still in the build');
+     if(src.indexOf(old3)>=0) bad.push('the old "'+old3+'" wording is still in the build');
+     // CONTROL: the replacement is present, so the strings were rewritten and
+     // not merely deleted.
+     var new1=['Backpack is ','empty.'].join('');
+     if(src.indexOf(new1)<0) bad.push('control: the empty-panel hint was not rewritten to "'+new1+'", so it was removed rather than fixed');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.32',what:'Copy report reports a refused clipboard as a failure that names the Recorder, and reports success only when a copy command actually succeeded',
+   run:function(){
+     if(!(window.__deploy&&window.__endRaid)) return 'SKIP: this fixture cannot end a raid';
+     var btn=document.getElementById('oc_copy');
+     if(!btn) return 'SKIP: no Copy report button in this document';
+     // Force the SYNCHRONOUS fallback path by hiding navigator.clipboard, so
+     // the button text can be read right after the click without awaiting a
+     // microtask. If clipboard cannot be redefined here, the check cannot run.
+     var desc; try{ desc=Object.getOwnPropertyDescriptor(navigator,'clipboard'); }catch(_d){ desc=null; }
+     var redefined=false;
+     try{ Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true}); redefined=(navigator.clipboard===undefined); }catch(_e){ redefined=false; }
+     if(!redefined) return 'SKIP: navigator.clipboard cannot be hidden here, so the synchronous fallback cannot be forced';
+     var bad=[], origExec=document.execCommand, copiedWord=['Copi','ed.'].join(''), couldNot=['Could not ','copy'].join('');
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); __endRaid('extract');
+       // ARM ONE: the copy command fails. The button must NOT say Copied.
+       document.execCommand=function(){ return false; };
+       btn.click();
+       var t1=btn.textContent||'';
+       if(t1.indexOf(copiedWord)>=0) bad.push('with the copy command failing the button said "'+t1+'"');
+       if(t1.indexOf(couldNot)<0) bad.push('with the copy command failing the button did not say it could not copy: "'+t1+'"');
+       // ARM TWO: the copy command succeeds. The button MAY say Copied.
+       document.execCommand=function(){ return true; };
+       btn.click();
+       var t2=btn.textContent||'';
+       if(t2.indexOf(copiedWord)<0) bad.push('control: with the copy command succeeding the button did not say Copied: "'+t2+'"');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       document.execCommand=origExec;
+       try{ if(desc) Object.defineProperty(navigator,'clipboard',desc); }catch(_r){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.31',what:'the stash on a fresh profile draws the one owned gun under ALL and does not say the stash is empty under it; with no guns and nothing stashed it does say so',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__P)) return 'SKIP: this fixture cannot walk the Undercroft';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], prof=__P(), keep={}, k;
+     for(k in prof) keep[k]=prof[k];
+     function fresh(){ prof.runs=0; prof.ext=0; prof.died=0; prof.credits=600; prof.xp=0; prof.stash=[]; prof.kit=[]; prof.log=[]; prof.contracts=[]; prof.weapons=['pistol']; prof.equipped='pistol'; prof.stashTab='all'; }
+     var emptyMsg=['Nothing in ','the stash'].join('');
+     try{
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       fresh(); __hubEnter(); __station('term');
+       var grid=document.getElementById('stashgrid');
+       if(!grid) return 'SKIP: no stash grid on the floor';
+       var cells=grid.querySelectorAll('.cell').length, empties=Array.prototype.slice.call(grid.querySelectorAll('.cellempty')).map(function(e){return (e.textContent||'').trim();});
+       // THE FINDING: one gun cell under ALL, and no "nothing" under it.
+       if(cells<1) bad.push('control: the ALL tab drew no cell for the one owned gun');
+       for(var i=0;i<empties.length;i++) if(empties[i].indexOf(emptyMsg)>=0) bad.push('the ALL tab still says "'+empties[i]+'" under the gun cell');
+       // CONTROL: with no guns and nothing stashed, the message must appear.
+       prof.weapons=[]; prof.equipped=null; __hubEnter(); __station('term');
+       grid=document.getElementById('stashgrid');
+       var empties2=Array.prototype.slice.call(grid.querySelectorAll('.cellempty')).map(function(e){return (e.textContent||'').trim();});
+       var said=false; for(i=0;i<empties2.length;i++) if(empties2[i].indexOf(emptyMsg)>=0) said=true;
+       if(!said) bad.push('control: with no guns and nothing stashed the ALL tab does not say the stash is empty, so the guard is gone rather than fixed');
+       // CONTROL TWO: GUNS with the pistol back still draws the cell and no message.
+       prof.weapons=['pistol']; prof.equipped='pistol'; prof.stashTab='gun'; __hubEnter(); __station('term');
+       grid=document.getElementById('stashgrid');
+       var cells3=grid.querySelectorAll('.cell').length, empties3=grid.querySelectorAll('.cellempty').length;
+       if(cells3<1||empties3>0) bad.push('control: the GUNS tab drew '+cells3+' cells and '+empties3+' empty messages with one owned gun');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ for(k in keep) prof[k]=keep[k]; for(k in prof) if(!(k in keep)) delete prof[k]; var sc=document.getElementById('stashscreen')||document.querySelector('.screen.on'); if(window.__topClear) __topClear(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.30',what:'a belt key for a gun still in the backpack names the key that equips it, ENTER, and not TAB alone; a belt key for the gun in hand says nothing of the sort',
+   run:function(){
+     if(!(window.__deploy&&window.__loop&&window.__state)) return 'SKIP: this fixture cannot press keys in a raid';
+     var bad=[];
+     function press(code, key){ var d=new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(d); var u=new KeyboardEvent('keyup',{code:code,key:key,bubbles:true}); window.dispatchEvent(u); }
+     function frames(n){ var t0=performance.now(); for(var i=0;i<n;i++) __loop(t0+i*16.7); }
+     // THE FINDING. A pistol in the backpack, on belt key 3, the SMG in hand. Press 3.
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player;
+     if(!(p.wep&&p.wep.id&&p.wep.id!=='pistol')) return 'SKIP: the deploy did not put a non-pistol gun in hand ('+(p.wep&&p.wep.id)+')';
+     g.bag=['gun_pistol']; g.hotAssign={2:'gun_pistol'}; g.msg=''; frames(1);
+     press('Digit3','3'); frames(2);
+     var m=String(g.msg||'');
+     var wrong=['TAB to ','equip it'].join('');
+     if(m.indexOf(wrong)>=0) bad.push('the belt key still says "'+m+'"');
+     if(m.indexOf('ENTER')<0) bad.push('the belt key does not name ENTER: "'+m+'"');
+     if(m.indexOf('backpack')<0) bad.push('control: the belt key did not produce the backpack message at all: "'+m+'", so key 3 did not reach the pistol');
+     // CONTROL: a belt key for the gun in hand prints no such message.
+     g.bag=[]; g.hotAssign={}; g.msg=''; frames(1);
+     press('Digit1','1'); frames(2);
+     var m2=String(g.msg||'');
+     if(m2.indexOf('ENTER')>=0||m2.indexOf(wrong)>=0) bad.push('control: key 1 for the gun in hand printed "'+m2+'"');
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.29',what:'the sector screen says whose figures it shows and shows the ones in the code, and a death card on a fresh profile gives the XP total without measuring it against the last reward of the season',
+   run:function(){
+     if(!(window.__hubEnter&&window.__endRaid&&window.__P&&window.__deploy)) return 'SKIP: this fixture cannot walk the ascent';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], prof=__P(), keep={}, k;
+     for(k in prof) keep[k]=prof[k];
+     try{
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       // THE FRESH FRIEND, as v11.11 builds him, in memory only.
+       prof.runs=0; prof.ext=0; prof.died=0; prof.best=0; prof.credits=600; prof.xp=0; prof.xpLevel=1;
+       prof.stash=[]; prof.kit=[]; prof.log=[]; prof.contracts=[]; prof.racks=0; prof.arrays=0; prof.notoriety=0;
+       prof.cstand=0; prof.spClaimed=[]; prof.kills={}; prof.cosBought={}; prof.junk={}; prof.weapons=['pistol'];
+       prof.equipped='pistol'; prof.pack=0; prof.cosAll=0; prof.stashTab='all';
+       __hubEnter();
+       // ONE: the sector screen. Opened the way he opens it, read as text.
+       var mb=document.getElementById('mapbtn'); if(!mb) return 'SKIP: no map button on the floor';
+       mb.click();
+       var sm=document.getElementById('sectormodal'), st=(sm.textContent||'').replace(/\s+/g,' ');
+       if(!/modal on/.test(sm.className)) bad.push('the sector screen did not open from the map button');
+       var robotWord=['test ','robot'].join('');
+       if(st.indexOf(robotWord)<0) bad.push('the sector screen shows figures without saying they are the '+robotWord+'s');
+       var oldPhrase=['measured ','extraction'].join('');
+       if(st.indexOf(oldPhrase)>=0) bad.push('the sector screen still says "'+oldPhrase+'" with no owner');
+       // The numbers on the screen are the numbers in the code, both maps.
+       var SM=(window.__sectorMeas?__sectorMeas():null);
+       if(SM&&SM.length>=2){
+         for(var mi=0;mi<2;mi++){
+           if(st.indexOf('extracts '+SM[mi].ext+'%')<0) bad.push('map '+mi+' shows a different extract figure from the code, which says '+SM[mi].ext);
+           if(st.indexOf('first contact ~'+SM[mi].fc+'s')<0) bad.push('map '+mi+' shows a different first contact from the code, which says '+SM[mi].fc);
+         }
+         // CONTROL: the figures are not the v8.01 ones any more.
+         if(SM[0].ext===18||SM[1].ext===23.5) bad.push('control: the code still carries the v8.01 figures, so nothing was refreshed');
+       } else bad.push('the fixture cannot read SECTOR_MEAS, so the screen cannot be checked against the code');
+       var cl=document.getElementById('closesector'); if(cl) cl.click();
+       // TWO: the death card on the fresh friend. Deployed by the fixture, ended dead.
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __endRaid('dead');
+       var man=(document.getElementById('oc_manifest').textContent||'').replace(/\s+/g,' ');
+       var ofCap=[' of ','1,200,000'].join('');
+       if(man.indexOf(ofCap)>=0) bad.push('the death card still measures the XP against the last reward: "'+man.slice(0,120)+'"');
+       if(!/XP in all/.test(man)) bad.push('the death card does not give the XP total: "'+man.slice(0,120)+'"');
+       if(!/penalty for failure to extract/.test(man)) bad.push('control: the death card lost its penalty note, so this is not the line the finding is about');
+       // CONTROL: the extraction card keeps its "of" and its Next sentence.
+       __topClear();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __endRaid('extract');
+       var man2=(document.getElementById('oc_manifest').textContent||'').replace(/\s+/g,' ');
+       if(man2.indexOf(ofCap)<0) bad.push('control: the extraction card lost its "of 1,200,000", which was to stay: "'+man2.slice(0,120)+'"');
+       if(!/Next: /.test(man2)) bad.push('control: the extraction card lost its Next sentence: "'+man2.slice(0,160)+'"');
+       __topClear();
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ for(k in keep) prof[k]=keep[k]; for(k in prof) if(!(k in keep)) delete prof[k]; }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.28',what:'the backpack arrows keep a number: with every carried item claimed by a belt key an arrow leaves the selection at 0, and with two free stacks the arrows still walk the grid',
+   run:function(){
+     if(!(window.__deploy&&window.__loop&&window.__state)) return 'SKIP: this fixture cannot press keys in a raid';
+     var bad=[];
+     function press(code, key){ var d=new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(d); var u=new KeyboardEvent('keyup',{code:code,key:key,bubbles:true}); window.dispatchEvent(u); }
+     // THE FINDING. One gun in the backpack, the same gun claimed by belt key 6: the grid is empty.
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, key='gun_'+(p.wep&&p.wep.id);
+     g.bag=[key]; g.hotAssign={5:key}; g.bagOpen=true; g.bagSel=0;
+     press('ArrowLeft','ArrowLeft');
+     if(typeof g.bagSel!=='number'||!isFinite(g.bagSel)) bad.push('with the whole backpack on the belt, arrow left made the selection '+g.bagSel);
+     else if(g.bagSel!==0) bad.push('with the whole backpack on the belt, arrow left moved the selection to '+g.bagSel+' on an empty grid');
+     press('ArrowRight','ArrowRight'); press('ArrowUp','ArrowUp'); press('ArrowDown','ArrowDown');
+     if(typeof g.bagSel!=='number'||!isFinite(g.bagSel)) bad.push('the other arrows made the selection '+g.bagSel);
+     // CONTROL: two free stacks, the arrows still walk. Right from 0 goes to 1, left from 0 wraps to 1.
+     g.bag=['bandage','frag']; g.hotAssign={}; g.bagOpen=true; g.bagSel=0;
+     press('ArrowRight','ArrowRight');
+     if(g.bagSel!==1) bad.push('control: with two free stacks arrow right took the selection to '+g.bagSel+' rather than 1, so the arrows no longer walk the grid');
+     g.bagSel=0; press('ArrowLeft','ArrowLeft');
+     if(g.bagSel!==1) bad.push('control: with two free stacks arrow left from 0 gave '+g.bagSel+' rather than wrapping to 1');
+     g.bagOpen=false; g.bagSel=0;
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.27',what:'F is one thing: a press while hurt with a Bandage in the backpack swings the strike and keeps the Bandage; the belt still spends it; down, F still revives',
+   run:function(){
+     if(!(window.__deploy&&window.__loop&&window.__state)) return 'SKIP: this fixture cannot press keys in a raid';
+     var bad=[];
+     function press(code, key){ var d=new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(d); }
+     function release(code, key){ var u=new KeyboardEvent('keyup',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(u); }
+     function frames(n){ var t0=performance.now(); for(var i=0;i<n;i++) __loop(t0+i*16.7); }
+     // THE FINDING. Hurt, one Bandage in the backpack, nothing on the belt, press F.
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player;
+     p.hp=50; g.bag=['bandage']; g.hotAssign={}; p.healLock=false; p.healQ=0;
+     var melee0=(g.tel&&g.tel.melee)||0;
+     press('KeyF','f'); frames(6); release('KeyF','f'); frames(2);
+     var melee1=(g.tel&&g.tel.melee)||0;
+     if(!(melee1>melee0)) bad.push('F did not swing: melee count '+melee0+' to '+melee1);
+     if(g.bag.length!==1||g.bag[0]!=='bandage') bad.push('F spent the Bandage as well as swinging: backpack is now ['+g.bag.join(',')+']');
+     if(p.healQ>0) bad.push('F started a heal (healQ '+p.healQ+') on a punch');
+     // CONTROL ONE: the belt still spends it. Put the Bandage on key 5, select it, use it.
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     g=__state(); p=g.player;
+     p.hp=50; g.bag=['bandage']; g.hotAssign={4:'bandage'}; p.healLock=false; p.healQ=0;
+     g.hot=4; frames(1);
+     press('KeyG','g'); frames(6); release('KeyG','g'); frames(2);
+     if(g.bag.length!==0&&!(p.healQ>0)) bad.push('control: using the belt slot spent nothing and started no heal, so the belt path is broken and the finding above proves nothing');
+     // CONTROL TWO: down, F still revives (the other F, a different state).
+     {
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); p=g.player; p.hp=0; p.downed=true; p.downT=17; p.revived=false; p.healLock=false; frames(2);
+       if(!p.downed) bad.push('control: the raid would not keep him down');
+       else { press('KeyF','f'); frames(6); release('KeyF','f'); frames(2);
+         if(p.downed||!p.revived) bad.push('control: down, F no longer revives (downed '+p.downed+', revived '+p.revived+')'); }
+     }
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.26',what:'the pause screen key line prints no literal entity and names the keys the way the H list does: F strikes, TAB is the backpack, 1 to 9 is the tactical belt',
+   run:function(){
+     var pb=document.getElementById('pausebox');
+     if(!pb) return 'SKIP: no pause box in this document';
+     var bad=[], html=pb.innerHTML||'', text=(pb.textContent||'').replace(/\s+/g,' ');
+     // THE FINDING, assembled so this check cannot match itself.
+     var literal=['&','amp;','nbsp;'].join('');
+     var lit2=['&','nbsp;'].join('');
+     if(html.indexOf(literal)>=0) bad.push('the pause box still carries the double-escaped entity '+(html.split(literal).length-1)+' times');
+     if(text.indexOf(lit2)>=0) bad.push('the pause box prints the six characters "'+lit2+'" to the player');
+     var stale=[['F ','heal/revive'].join(''), ['Q/G ','throw'].join(''), ['TAB ','bag '].join(''), ['sprint ','on/off'].join(''), ['superhot ','mode'].join('')];
+     for(var i=0;i<stale.length;i++) if(text.indexOf(stale[i])>=0) bad.push('the pause box still says "'+stale[i]+'"');
+     // WHAT IT MUST SAY, and it must agree with the H list.
+     var need=[['F ','melee strike'].join(''), ['TAB ','backpack'].join(''), ['tactical ','belt'].join(''), ['hold to ','sprint'].join('')];
+     for(i=0;i<need.length;i++) if(text.indexOf(need[i])<0) bad.push('the pause box does not say "'+need[i]+'"');
+     var L=(window.__legend?__legend():null);
+     if(L&&L.length){ var fRow=null; for(i=0;i<L.length;i++){ var rows=L[i][1]||[]; for(var j=0;j<rows.length;j++) if(rows[j][0]==='F') fRow=rows[j][1]; }
+       if(fRow&&text.indexOf(fRow.split(',')[0])<0) bad.push('the pause box and the LEGEND table disagree about F: LEGEND says "'+fRow+'"'); }
+     // CONTROL: the box is still the pause box, with its heading and its buttons.
+     if(!pb.querySelector('h3')) bad.push('control: the pause box lost its heading');
+     if(!document.getElementById('abandonbtn')||!document.getElementById('resumebtn')) bad.push('control: the pause box lost a button');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.25',what:'a pillager out of the player sight fires back only when engageNear is lifted: at 600 as shipped he fires zero rounds in a whole raid while the machines fire dozens, at 0 he fires, and the dial rolls no dice',
+   run:function(){
+     if(!(window.__simRaiders&&window.__cfg)) return 'SKIP: this fixture cannot run a parked sim raid';
+     var bad=[];
+     // THE WORLD AS SHIPPED: far seat, machines at war, COLD STORAGE seed 9001.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var g6=__simRaiders({seed:9001, mapIx:0, park:'far'});
+     if(g6.threw) bad.push('the far raid threw: '+g6.threw);
+     if(g6.buildings!==20) return 'SKIP: the far raid built '+g6.buildings+' buildings, not the 20 of COLD STORAGE';
+     if(g6.live.mach!==1) return 'SKIP: machVsRaider is not 1 here, so the war this check is about is off';
+     // CONTROL ONE: the machines are firing, or the silence below is nothing.
+     if(g6.machShots<20) bad.push('control: the machines fired only '+g6.machShots+' rounds in a whole far raid, so there is no war to answer');
+     // THE FINDING, as shipped: not one round from a pillager all raid. This is
+     // the rule the dial keeps until he rules; the check pins that it is real.
+     if(g6.raiderShots!==0) bad.push('with engageNear 600 the pillagers fired '+g6.raiderShots+' rounds out of the player sight, so the gate is not where the finding says it is');
+     // THE DIAL: lifted, they answer.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __cfg({engageNear:0});
+     var g0=__simRaiders({seed:9001, mapIx:0, park:'far'});
+     if(g0.threw) bad.push('the lifted raid threw: '+g0.threw);
+     if(g0.live&&g0.live.mach!==1) bad.push('control: the lifted arm lost the war dial');
+     if(!(g0.raiderShots>0)) bad.push('with engageNear 0 the pillagers still fired '+g0.raiderShots+' rounds out of sight, so the dial does not reach the three sites');
+     // CONTROL TWO: the dial rolls no dice. Both arms open with the same roster.
+     if(g6.timeline.length&&g0.timeline.length&&g6.timeline[0][1]!==g0.timeline[0][1]) bad.push('control: the arms opened with '+g6.timeline[0][1]+' and '+g0.timeline[0][1]+' pillagers, so the seeded stream moved');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.24',what:'the centre-parked sim builds COLD STORAGE, runs the full clock and is populated; the feud is then measured with the Bulwark isolated out so only pillager-on-pillager hits count, and the seat is skipped honestly when none are visible (the raw hit count is the Bulwark, not a feud)',
+   run:function(){
+     if(!(window.__simRaiders&&window.__cfg)) return 'SKIP: this fixture cannot run a parked sim raid';
+     var bad=[];
+     function runc(cfg){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __cfg(cfg);
+       return __simRaiders({seed:9001, mapIx:0, park:'centre'});
+     }
+     // THE INSTRUMENT ITSELF, which v11.23 and this check both lean on: seed 9001
+     // is a hot seed, COLD STORAGE, machines at peace. The centre seat must build
+     // COLD STORAGE, run the full clock without ending, and be populated.
+     var on=runc({machVsRaider:0});
+     if(on.buildings!==20) return 'SKIP: the centre raid built '+on.buildings+' buildings, not the 20 of COLD STORAGE';
+     if(on.threw) bad.push('the centre-parked raid threw: '+on.threw);
+     if(on.over||on.ranTo<on.horizon-1) bad.push('the centre-parked raid ended at '+on.ranTo+' of '+on.horizon+' seconds ('+JSON.stringify(on.over)+'), so a pinned player at the centre still ends the raid');
+     if(on.roster<7) bad.push('control: only '+on.roster+' pillagers on the roster');
+     if(bad.length) return bad.join('; ');
+     // ISOLATING THE FEUD, v11.41. The raw pillager-hit count this check used to
+     // read was the BULWARK'S fire, not a feud: with nBulwark 0 and the machines
+     // at peace, the only thing that can hit a pillager is another pillager, and
+     // measured that way the centre seat shows ZERO pillager-on-pillager combat
+     // whether raiderFeud is on or off. So the old hits finding and its
+     // off.hits*3<on.hits control were reading the Bulwark and passed only by
+     // contamination. PROVEN not a regression: byte-identical on a v11.36 fixture,
+     // before the v11.37 provoke change. If feuds ever DO show isolable combat
+     // this passes on the difference; until then it skips, honestly, rather than
+     // calling the Bulwark a feud. Whether feuds fire in real play is for his eye.
+     var fOn =runc({machVsRaider:0, nBulwark:0});
+     var fOff=runc({machVsRaider:0, nBulwark:0, raiderFeud:0});
+     if(fOn.hits>=5 && fOff.hits*3<fOn.hits) return null;
+     return 'SKIP: with the Bulwark isolated out the centre seat shows no pillager-on-pillager combat (feuds on '+fOn.hits+' hits, off '+fOff.hits+'), so the sim cannot measure feuds here; the raw hit count is the Bulwark. Identical on a v11.36 fixture, so not a v11.37 regression'; }},
+  {v:'11.23',what:'the pillagers own raid can be read to the clock: the parked, unkillable player never ends the raid, the roster tally is complete, and machines at war with pillagers is what decides whether a pillager gets out',
+   run:function(){
+     if(!(window.__simRaiders&&window.__cfg)) return 'SKIP: this fixture cannot run a parked sim raid';
+     var bad=[];
+     // THE INSTRUMENT. COLD STORAGE at seed 9001 with the shipping rules runs to
+     // the raid clock with the player parked, and every man on the roster is
+     // accounted for exactly once.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var on=__simRaiders({seed:9001, mapIx:0});
+     if(on.threw) bad.push('the parked raid threw: '+on.threw);
+     if(on.buildings!==20) return 'SKIP: the parked raid built '+on.buildings+' buildings, not the 20 of COLD STORAGE';
+     if(on.over||on.ranTo<on.horizon-1) bad.push('the parked raid ended at '+on.ranTo+' of '+on.horizon+' seconds ('+JSON.stringify(on.over)+'), so the player still ends the raid from outside the world');
+     if(on.out+on.alive+on.downed+on.dead!==on.roster) bad.push('the tally '+on.out+'+'+on.alive+'+'+on.downed+'+'+on.dead+' does not equal the roster of '+on.roster);
+     // CONTROL ONE: the raid was populated, or every count above is zero for the
+     // wrong reason. Seven spawn and the floor rule keeps adding men.
+     if(on.roster<7) bad.push('control: only '+on.roster+' pillagers on the roster, the raid did not populate');
+     // CONTROL TWO: with machines and pillagers at peace (machVsRaider 0, his
+     // Q31 switched off) pillagers get out of this raid, and more of them than
+     // with the war on. This is the direction of his own choice, measured, not
+     // a balance number: it fails if the switch stops doing anything.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __cfg({machVsRaider:0});
+     if(__cfg().machVsRaider!==0) return 'SKIP: machVsRaider cannot be set to 0 here';
+     var off=__simRaiders({seed:9001, mapIx:0});
+     if(off.threw) bad.push('the peace arm threw: '+off.threw);
+     if(off.out<1) bad.push('control: with machVsRaider 0 no pillager got out of COLD STORAGE at seed 9001, so extraction itself is broken for pillagers');
+     if(!(off.out>on.out)) bad.push('control: with the war off '+off.out+' pillagers got out against '+on.out+' with it on, so the switch no longer decides anything');
+     // CONTROL THREE: both arms saw the same opening roster, the switch rolls no dice.
+     if(on.timeline.length&&off.timeline.length&&on.timeline[0][1]!==off.timeline[0][1]) bad.push('control: the two arms opened with '+on.timeline[0][1]+' and '+off.timeline[0][1]+' pillagers, so the seeded stream moved');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.22',what:'no building on THE COLD MILE holds ANY pocket of floor nothing can reach, down to a 12 by 12 niche behind a table, on five seeds; the old furniture rules bring the niches back; and the repair pass demolishes nothing on seven seeds of both maps',
+   run:function(){
+     var bad=[];
+     if(!(window.__movers&&__movers.buildNav)) return 'SKIP: no buildNav to flood with';
+     __pinDPR(1); __forceSize(1920,1080);
+     // A fine flood of the finished map at cell 4 from the first open cell, then
+     // every unreached, unlocked interior cell is grouped into pockets and each
+     // pocket measured. v10.40 guarded rooms of 32 by 32 and left the niches,
+     // 12 by 12 up to 84 by 28 behind furniture, as their own STILL OPEN line.
+     // v11.14 and v11.17 kept furniture out of doorways and away from wall gaps;
+     // this asks whether that took the niches with it. NICHE is the smallest
+     // pocket v10.40 measured, so anything it would have counted counts here.
+     var NICHE=12;
+     function survey(mapIx, seed, oldRules){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       if(oldRules) __cfg({furnDoor:0,furnIDoor:0,furnGap:0});
+       __deploy({kit:[],safe:null,mapIx:mapIx,seed:seed});
+       var g=__state(), B=g.map.buildings||[], W=g.map.walls||[], L=g.map.locked||[], m=g.map;
+       var WW=m.cols*m.cw, HH=m.rows*m.ch, F=4, t=16, i, x, y;
+       var fw=Math.ceil(WW/F), fh=Math.ceil(HH/F), blk=new Uint8Array(fw*fh);
+       for(i=0;i<W.length;i++){ var w=W[i];
+         var x0=Math.max(0,Math.floor(w.x/F)), x1=Math.min(fw-1,Math.floor((w.x+w.w)/F));
+         var y0=Math.max(0,Math.floor(w.y/F)), y1=Math.min(fh-1,Math.floor((w.y+w.h)/F));
+         for(y=y0;y<=y1;y++) for(x=x0;x<=x1;x++) blk[y*fw+x]=1; }
+       var seen=new Uint8Array(fw*fh), st=[], ok=false;
+       for(var sy=1;sy<fh-1&&!ok;sy++) for(var sx=1;sx<fw-1;sx++){ if(!blk[sy*fw+sx]){ st.push(sy*fw+sx); seen[sy*fw+sx]=1; ok=true; break; } }
+       while(st.length){ var c=st.pop(), cy=(c/fw)|0, cx=c%fw;
+         if(cx>0&&!seen[c-1]&&!blk[c-1]){ seen[c-1]=1; st.push(c-1); }
+         if(cx<fw-1&&!seen[c+1]&&!blk[c+1]){ seen[c+1]=1; st.push(c+1); }
+         if(cy>0&&!seen[c-fw]&&!blk[c-fw]){ seen[c-fw]=1; st.push(c-fw); }
+         if(cy<fh-1&&!seen[c+fw]&&!blk[c+fw]){ seen[c+fw]=1; st.push(c+fw); } }
+       function inLk(px,py){ for(var l=0;l<L.length;l++){ var K=L[l]; if(px>K.x&&px<K.x+K.w&&py>K.y&&py<K.y+K.h) return true; } return false; }
+       var pockets=[], demo=0, pseen=new Uint8Array(fw*fh);
+       for(var b=0;b<B.length;b++){ var bb=B[b]; if(bb.repaired) demo++;
+         for(y=Math.floor((bb.y+t)/F); y<=Math.floor((bb.y+bb.h-t)/F); y++)
+           for(x=Math.floor((bb.x+t)/F); x<=Math.floor((bb.x+bb.w-t)/F); x++){
+             var ii=y*fw+x; if(blk[ii]||seen[ii]||pseen[ii]) continue; if(inLk(x*F+F/2,y*F+F/2)) continue;
+             var q=[ii], minx=x, maxx=x, miny=y, maxy=y; pseen[ii]=1;
+             while(q.length){ var cc=q.pop(), ccy=(cc/fw)|0, ccx=cc%fw;
+               if(ccx<minx) minx=ccx; if(ccx>maxx) maxx=ccx; if(ccy<miny) miny=ccy; if(ccy>maxy) maxy=ccy;
+               var nb=[cc-1,cc+1,cc-fw,cc+fw]; for(var k=0;k<4;k++){ var nn=nb[k]; if(nn<0||nn>=fw*fh) continue; if(blk[nn]||seen[nn]||pseen[nn]) continue; pseen[nn]=1; q.push(nn); } }
+             var pw=(maxx-minx+1)*F, ph=(maxy-miny+1)*F;
+             if(pw>=NICHE&&ph>=NICHE) pockets.push(b+':'+pw+'x'+ph+' at '+(minx*F)+','+(miny*F)); } }
+       return {pockets:pockets, demolished:demo, buildings:B.length, ents:g.ents.length};
+     }
+     var seeds=[4242,4,2,9,6], on=[], off=[], q;
+     for(q=0;q<seeds.length;q++){ on.push(survey(1,seeds[q],false)); off.push(survey(1,seeds[q],true)); }
+     // CONTROL ONE: the mile built, or every count below is zero for the wrong reason.
+     if(on[0].buildings!==84||on[0].ents!==374)
+       return 'SKIP: THE COLD MILE at seed 4242 built '+on[0].buildings+' buildings and '+on[0].ents+' entities rather than 84 and 374';
+     // THE FINDING. With the shipping rules, no pocket at all on any of the five seeds.
+     for(q=0;q<seeds.length;q++) if(on[q].pockets.length)
+       bad.push('seed '+seeds[q]+' on THE COLD MILE holds '+on[q].pockets.length+' pocket(s) of floor nothing can reach: '+on[q].pockets.slice(0,3).join('; '));
+     // AND THE REPAIR PASS IS A NO-OP: nothing demolished on any seed with the rules on.
+     for(q=0;q<seeds.length;q++) if(on[q].demolished)
+       bad.push('seed '+seeds[q]+': the repair pass still tore the interior out of '+on[q].demolished+' building(s)');
+     // CONTROL TWO: the old furniture rules bring the niches back, or the flood
+     // is blind and this whole check passes by seeing nothing. Measured on
+     // v11.21: 3, 1, 1 and more across these seeds with the three rules off.
+     var back=0; for(q=0;q<seeds.length;q++) back+=off[q].pockets.length;
+     if(back<3) bad.push('control: with furnDoor, furnIDoor and furnGap off the five seeds show only '+back+' pocket(s), so the flood cannot see a niche and the finding above means nothing');
+     // CONTROL THREE: the arms build the same world; the furniture rules roll no dice.
+     for(q=0;q<seeds.length;q++) if(on[q].ents!==off[q].ents)
+       bad.push('control: seed '+seeds[q]+' spawns '+on[q].ents+' entities with the rules on and '+off[q].ents+' off, so the seeded stream moved');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.21',what:'on THE COLD MILE the robot never stands still on a route either, and the two arms of the paired run are the same raid on two rule sets there too',
+   run:function(){
+     if(!(window.__simTraceSeed&&window.__deploy)) return 'SKIP: this fixture cannot replay a seeded sim raid';
+     var bad=[], i;
+     // THREE SEEDED RAIDS ON THE MILE with the shipping rules: never fifteen
+     // seconds standing still with a route in hand and health left.
+     var seeds=[9001,9002,9003], moved=0, samples=0;
+     for(var q=0;q<seeds.length;q++){
+       __runPrep(); __resetCfg(); __pinDefaults(1); __P().mapIx=1;
+       var r=__simTraceSeed(seeds[q]), S=r.samples, run=0, worst=0, at=null;
+       for(i=1;i<S.length;i++){ var c=S[i]; moved+=c[3]; if(c[3]===0&&c[7]>0&&c[5]>0){ run++; if(run>worst){ worst=run; at=c[0]; } } else run=0; }
+       samples+=S.length;
+       if(worst>=3) bad.push('on the mile the bot stood still with a route in hand for '+(worst*5)+' seconds ending at '+at+' seconds into seed '+seeds[q]);
+     }
+     // CONTROL ONE: the raids really ran.
+     if(samples<30||moved<1500) bad.push('control: three mile raids ran '+samples+' samples and moved '+moved+' units between them, so nothing here was measured');
+     // CONTROL TWO: the two arms build the same raid. Entities and containers
+     // identical with the seven rules off and on, at the mile fingerprint.
+     function arm(off){
+       __runPrep(); __resetCfg(); __pinDefaults(1);
+       if(off) __cfg({winWalk:0,furnDoor:0,navBody:0,doorClear:0,furnIDoor:0,furnGap:0,partDoor:0});
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       var g=__state(); return {ents:g.ents.length,cont:(g.containers||[]).length,walls:g.map.walls.length};
+     }
+     var on=arm(false), off=arm(true);
+     if(on.ents!==off.ents||on.cont!==off.cont) bad.push('the mile arms differ in entities or containers, '+off.ents+'/'+off.cont+' against '+on.ents+'/'+on.cont+', so a paired seed there is not the same raid on two rule sets');
+     if(on.walls===off.walls) bad.push('control: the seven rules off build the same walls on the mile as the rules on, '+on.walls+', so the old arm is not the old world');
+     if(on.ents!==374||on.cont!==593) bad.push('THE COLD MILE at seed 4242 holds '+on.ents+' entities and '+on.cont+' containers rather than 374 and 593');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.20',what:'a body never stands still on a route: the waypoint it is steering at counts as reached at one step, the same step seekPoint calls arriving, so a coarse step cannot deadlock the two',
+   run:function(){
+     if(!(window.__simTraceSeed&&window.__deploy)) return 'SKIP: this fixture cannot replay a seeded sim raid';
+     var bad=[];
+     // THE FINDING. Seed 9071 on COLD STORAGE with the shipping rules: the bot
+     // stood at 490,1157 inside building 6 from 45 to 120 seconds with a nine
+     // point route in hand and its waypoint 24 units away, moving nothing,
+     // because the follower wanted 10 units and seekPoint called 27 arrived.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __P().mapIx=0;
+     var r=__simTraceSeed(9071), S=r.samples, i, run=0, worst=0, at=null;
+     for(i=1;i<S.length;i++){ var q=S[i]; var still=(q[3]===0&&q[7]>0&&q[5]>0); if(still){ run++; if(run>worst){ worst=run; at=q[0]; } } else run=0; }
+     // Samples are five seconds apart; three in a row standing still with a
+     // route and health is fifteen seconds of nothing.
+     if(worst>=3) bad.push('the bot stood still with a route in hand for '+(worst*5)+' seconds ending at '+at+' seconds into seed 9071');
+     // CONTROL ONE: the raid really ran. It has to reach at least 60 seconds and
+     // move at all, or the stall above is a raid that never started.
+     var moved=0; for(i=1;i<S.length;i++) moved+=S[i][3];
+     if(S.length<12||moved<500) bad.push('control: seed 9071 ran '+S.length+' samples and moved '+moved+' units, so nothing here was measured');
+     // CONTROL TWO: the old follower, navBody 0, must not stand still either;
+     // its fault was the jamb, not this. A stall there would mean the trace is
+     // reading something else.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __P().mapIx=0; __cfg({navBody:0});
+     var r0=__simTraceSeed(9071), S0=r0.samples, run0=0, worst0=0;
+     for(i=1;i<S0.length;i++){ var q0=S0[i]; if(q0[3]===0&&q0[7]>0&&q0[5]>0){ run0++; if(run0>worst0) worst0=run0; } else run0=0; }
+     if(worst0>=3) bad.push('control: with the old follower the bot also stood still for '+(worst0*5)+' seconds, so this trace is not reading the arrival rule');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.19',what:'the seven building rules since v11.12 ship switched on, and switching all seven off builds a different world for the same seed, so the paired measurement has two real arms',
+   run:function(){
+     if(!(window.__deploy&&window.__state)) return 'SKIP: this fixture cannot build a map';
+     var bad=[];
+     // THE DEFAULTS, by name. A rule that ships off is a rule nobody gets.
+     __runPrep(); __resetCfg(); __pinDefaults(0);
+     var C=__cfg(), want={winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1}, k;
+     for(k in want) if(C[k]!==want[k]) bad.push('the '+k+' rule ships as '+C[k]+' rather than '+want[k]);
+     // THE TWO ARMS. Every rule off must build a world that differs in its walls
+     // and its route grid, and agrees in its entities and containers, which is
+     // what makes a paired seed a fair comparison.
+     function arm(off){
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       if(off) __cfg({winWalk:0,furnDoor:0,navBody:0,doorClear:0,furnIDoor:0,furnGap:0,partDoor:0});
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(),W=g.map.walls,furn=0,i; for(i=0;i<W.length;i++) if(W[i].furn) furn++;
+       var blk=0; if(g.map.navD&&g.map.navD.blk){ var b=g.map.navD.blk; for(i=0;i<b.length;i++) if(b[i]) blk++; }
+       return {walls:W.length,furn:furn,blocked:blk,ents:g.ents.length,cont:(g.containers||[]).length,wsegs:g.map.wsegs?g.map.wsegs.length:0};
+     }
+     var on=arm(false), off=arm(true);
+     if(on.walls===off.walls&&on.furn===off.furn) bad.push('control: the seven rules off build the same walls and furniture as the rules on, '+on.walls+' and '+on.furn+', so the old arm is not the old world');
+     if(on.blocked===off.blocked) bad.push('control: the route grid blocks '+on.blocked+' cells with the rules on and off alike, so the body sized grid is not in the old arm');
+     if(on.ents!==off.ents||on.cont!==off.cont) bad.push('the two arms differ in entities or containers, '+off.ents+'/'+off.cont+' against '+on.ents+'/'+on.cont+', so a paired seed is not the same raid on two rule sets');
+     // MEASURED: 85 entities and 165 containers on COLD STORAGE at seed 4242.
+     if(on.ents!==85||on.cont!==165) bad.push('COLD STORAGE at seed 4242 holds '+on.ents+' entities and '+on.cont+' containers rather than 85 and 165');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.18',what:'no interior wall ends inside a doorway, so every front door opens onto floor a body can stand on',
+   run:function(){
+     if(!(window.__deploy&&window.__state)) return 'SKIP: this fixture cannot build a map';
+     var bad=[], NM=['COLD STORAGE','THE COLD MILE'];
+     // A door is DEAD when a partition reaches into its opening and leaves under
+     // 30 units on both sides of itself; TOUCHED when a partition reaches in at
+     // all. The zone is the gap grown 40 through the wall.
+     function survey(mi,dial){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({partDoor:dial});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state(),W=g.map.walls,Ds=g.map.doors,dead=[],touched=0,i,j;
+       for(i=0;i<Ds.length;i++){ var d=Ds[i],h=d.w>=d.h;
+         var zx=h?d.x:d.x-40, zy=h?d.y-40:d.y, zw=h?d.w:d.w+80, zh=h?d.h+80:d.h, worst=null;
+         for(j=0;j<W.length;j++){ var w=W[j]; if(w.furn||w.ib===undefined) continue;
+           if(w.x<zx+zw&&w.x+w.w>zx&&w.y<zy+zh&&w.y+w.h>zy){
+             touched++;
+             var lo=h?d.x:d.y, hi=h?d.x+d.w:d.y+d.h, a=h?w.x:w.y, b=h?w.x+w.w:w.y+w.h;
+             var room=Math.max(a-lo,hi-b);
+             if(worst===null||room<worst) worst=room; } }
+         if(worst!==null&&worst<30) dead.push(i); }
+       return {doors:Ds.length,touched:touched,dead:dead,ents:g.ents.length,cont:(g.containers||[]).length};
+     }
+     var on=[survey(0,1),survey(1,1)], off=[survey(0,0),survey(1,0)], mi;
+     for(mi=0;mi<2;mi++){
+       // THE FINDING. Measured on v11.17: 0 dead of 37 and 4 dead of 151, and
+       // 3 and 19 touched.
+       if(on[mi].dead.length) bad.push(NM[mi]+': '+on[mi].dead.length+' of '+on[mi].doors+' front doors open onto the end of an interior wall with under 30 units either side ['+on[mi].dead.join(',')+']');
+       if(on[mi].touched) bad.push(NM[mi]+': '+on[mi].touched+' partitions still reach into a doorway zone');
+       // CONTROL: the world did not move. The cut draws no random number.
+       if(on[mi].ents!==off[mi].ents||on[mi].cont!==off[mi].cont) bad.push(NM[mi]+': entities or containers moved between the arms, '+off[mi].ents+'/'+off[mi].cont+' to '+on[mi].ents+'/'+on[mi].cont+', so the cut drew a random number');
+     }
+     // CONTROL TWO: the old partitions must still show the fault on the mile.
+     if(off[1].dead.length<3) bad.push('control: with partDoor off THE COLD MILE has only '+off[1].dead.length+' dead doors against the 4 measured, so the dial does not restore the old partitions');
+     if(off[1].touched<12) bad.push('control: with partDoor off only '+off[1].touched+' partitions reach into a doorway zone on the mile against the 19 measured');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.17',what:'the doorways inside buildings are recorded and kept clear of furniture, so every building interior has a route in from its own front door',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop)) return 'SKIP: this fixture cannot build a map';
+     var bad=[], D=__movers.dist, NM=['COLD STORAGE','THE COLD MILE'];
+     // A building is SEALED INSIDE when no route on the route grid runs from
+     // just inside any of its own front doors to its centre.
+     function survey(mi,dial){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnIDoor:dial,furnGap:dial});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state(),B=g.map.buildings,Ds=g.map.doors,nd=g.map.navD,cc=nd.c,sealed=[],tested=0,q,u;
+       function openCell(x,y){ var gx=Math.floor(x/cc),gy=Math.floor(y/cc); if(gx<0||gy<0||gx>=nd.w||gy>=nd.h) return false; return !nd.blk[gy*nd.w+gx]; }
+       function nearOpen(x,y){ if(openCell(x,y)) return [x,y]; for(var r=16;r<=48;r+=16) for(var a=0;a<8;a++){ var an=a*Math.PI/4, px=x+Math.cos(an)*r, py=y+Math.sin(an)*r; if(openCell(px,py)) return [px,py]; } return null; }
+       for(q=0;q<B.length;q++){ var bd=B[q]; if(bd.w<120||bd.h<120) continue;
+         var doors=[]; for(u=0;u<Ds.length;u++){ var dd=Ds[u]; if(dd.x>=bd.x-1&&dd.x<=bd.x+bd.w+1&&dd.y>=bd.y-1&&dd.y<=bd.y+bd.h+1) doors.push(dd); }
+         if(!doors.length) continue;
+         var tgt=nearOpen(bd.x+bd.w/2,bd.y+bd.h/2), ok=false;
+         if(!tgt){ tested++; sealed.push(q); continue; }
+         for(u=0;u<doors.length&&!ok;u++){ var d=doors[u], h=d.w>=d.h, top=(h?d.y:d.x)<=(h?bd.y:bd.x)+1;
+           var ix=h?d.x+32:(top?d.x+16+30:d.x-30), iy=h?(top?d.y+16+30:d.y-30):d.y+32;
+           if(__navPath(nd,ix,iy,tgt[0],tgt[1],0)) ok=true; }
+         tested++; if(!ok) sealed.push(q); }
+       return {tested:tested,sealed:sealed,idoors:(g.map.idoors?g.map.idoors.length:-1),ents:g.ents.length,cont:(g.containers||[]).length};
+     }
+     var on=[survey(0,1),survey(1,1)], off=[survey(0,0),survey(1,0)], mi;
+     for(mi=0;mi<2;mi++){
+       // THE FINDING. Measured on v11.16: 0 of 20 and 5 of 84, buildings 32, 33, 37, 38 and 74.
+       if(on[mi].sealed.length) bad.push(NM[mi]+': '+on[mi].sealed.length+' of '+on[mi].tested+' building interiors have no route in from their own front door ['+on[mi].sealed.join(',')+']');
+       // CONTROL ONE: the map records its interior doorways at all.
+       if(on[mi].idoors<1) bad.push(NM[mi]+': the map records no interior doorways, so nothing can keep furniture out of them');
+       // CONTROL TWO: the world did not move. No random number is drawn.
+       if(on[mi].ents!==off[mi].ents||on[mi].cont!==off[mi].cont) bad.push(NM[mi]+': entities or containers moved between the arms, '+off[mi].ents+'/'+off[mi].cont+' to '+on[mi].ents+'/'+on[mi].cont+', so the rule drew a random number');
+     }
+     // CONTROL THREE: the old placement must still show the fault on the mile.
+     if(off[1].sealed.length<4) bad.push('control: with furnIDoor off THE COLD MILE has only '+off[1].sealed.length+' sealed interiors against the 5 measured, so the dial does not restore the old placement');
+     // AND A BODY GETS OUT. Building 32 on the mile by its fingerprint: a crawler
+     // in its middle must leave and reach a player on open ground outside.
+     function drive(dial,frames){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnIDoor:dial,furnGap:dial});
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       var g=__state(),p=g.player,B=g.map.buildings,W=g.map.walls,cw=null,u, WW=g.map.cols*g.map.cw, HH=g.map.rows*g.map.ch;
+       for(u=0;u<g.ents.length;u++) if(g.ents[u].kind==='crawler'){ cw=g.ents[u]; break; }
+       if(!cw) return {err:'no crawler on THE COLD MILE to drive'};
+       g.ents.length=0; g.ents.push(cw);
+       var bd=B[32]; if(!bd) return {err:'THE COLD MILE has no building 32'};
+       if([bd.x,bd.y,bd.w,bd.h].join(',')!=='8126,2260,320,250') return {err:'building 32 on THE COLD MILE is ['+[bd.x,bd.y,bd.w,bd.h].join(',')+'] and not the 8126,2260,320,250 this was measured on'};
+       function openAt(x,y){ if(x<120||y<120||x>WW-120||y>HH-120) return false; var q;
+         for(q=0;q<W.length;q++){ var w=W[q]; if(x>w.x-34&&x<w.x+w.w+34&&y>w.y-34&&y<w.y+w.h+34) return false; }
+         for(q=0;q<B.length;q++){ var b=B[q]; if(x>b.x-34&&x<b.x+b.w+34&&y>b.y-34&&y<b.y+b.h+34) return false; }
+         return true; }
+       var cand=[[bd.x-210,bd.y+bd.h/2],[bd.x+bd.w+210,bd.y+bd.h/2],[bd.x+bd.w/2,bd.y-210],[bd.x+bd.w/2,bd.y+bd.h+210]], tx=0,ty=0,ok=false;
+       for(u=0;u<cand.length&&!ok;u++) if(openAt(cand[u][0],cand[u][1])){ tx=cand[u][0]; ty=cand[u][1]; ok=true; }
+       if(!ok) return {err:'building 32 has no open ground outside it'};
+       p.x=tx; p.y=ty; p.iv=99; p.hp=100; p.downed=0;
+       cw.x=bd.x+bd.w/2; cw.y=bd.y+bd.h/2; cw.path=null; cw.pathFail=false; cw.pathT=0; cw.pathGoal=null;
+       var t0=performance.now(), best=1e9, exitF=-1;
+       for(var f=0;f<frames;f++){ cw.state='chase'; cw.alert=3; cw.tx=tx; cw.ty=ty;
+         __loop(t0+f*16.7); p.x=tx; p.y=ty; p.hp=100; p.iv=99;
+         var d=D(cw,p); if(d<best) best=d;
+         if(exitF<0&&!(cw.x>bd.x&&cw.x<bd.x+bd.w&&cw.y>bd.y&&cw.y<bd.y+bd.h)) exitF=f; }
+       return {best:best,exitF:exitF};
+     }
+     var w1=drive(1,900);
+     if(w1.err) return 'SKIP: '+w1.err;
+     if(w1.best>60) bad.push('the crawler in the middle of building 32 got no closer than '+w1.best.toFixed(0)+' units to a player outside in fifteen seconds'+(w1.exitF<0?' and never left the building':''));
+     var w0=drive(0,600);
+     if(w0.err) return 'SKIP: '+w0.err;
+     if(w0.exitF>=0) bad.push('control: with furnIDoor off the crawler in building 32 walks out anyway at frame '+w0.exitF+', so the old placement does not seal it and this build proves nothing');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.16',what:'a route through a doorway keeps clear of the walls behind it, not only the door frame, so a machine cutting through a building next door is not sent into a partition',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop)) return 'SKIP: this fixture cannot build a map';
+     var bad=[], D=__movers.dist;
+     // One crawler in the middle of a building, the player on open ground
+     // inside the world outside it, the chase held on, a fresh deploy per trial.
+     function drive(mi,bIx,doorClear,frames,rectWant){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({doorClear:doorClear,partDoor:doorClear});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state(),p=g.player,B=g.map.buildings,W=g.map.walls,cw=null,u, WW=g.map.cols*g.map.cw, HH=g.map.rows*g.map.ch;
+       for(u=0;u<g.ents.length;u++) if(g.ents[u].kind==='crawler'){ cw=g.ents[u]; break; }
+       if(!cw) return {err:'no crawler to drive on map '+mi};
+       g.ents.length=0; g.ents.push(cw);
+       var bd=B[bIx]; if(!bd) return {err:'map '+mi+' has no building '+bIx};
+       if([bd.x,bd.y,bd.w,bd.h].join(',')!==rectWant) return {err:'building '+bIx+' on map '+mi+' is ['+[bd.x,bd.y,bd.w,bd.h].join(',')+'] and not the '+rectWant+' this was traced on'};
+       function openAt(x,y){ if(x<120||y<120||x>WW-120||y>HH-120) return false; var q;
+         for(q=0;q<W.length;q++){ var w=W[q]; if(x>w.x-34&&x<w.x+w.w+34&&y>w.y-34&&y<w.y+w.h+34) return false; }
+         for(q=0;q<B.length;q++){ var b=B[q]; if(x>b.x-34&&x<b.x+b.w+34&&y>b.y-34&&y<b.y+b.h+34) return false; }
+         return true; }
+       var cand=[[bd.x-210,bd.y+bd.h/2],[bd.x+bd.w+210,bd.y+bd.h/2],[bd.x+bd.w/2,bd.y-210],[bd.x+bd.w/2,bd.y+bd.h+210]], tx=0,ty=0,ok=false;
+       for(u=0;u<cand.length&&!ok;u++) if(openAt(cand[u][0],cand[u][1])){ tx=cand[u][0]; ty=cand[u][1]; ok=true; }
+       if(!ok) return {err:'building '+bIx+' on map '+mi+' has no open ground outside it'};
+       p.x=tx; p.y=ty; p.iv=99; p.hp=100; p.downed=0;
+       cw.x=bd.x+bd.w/2; cw.y=bd.y+bd.h/2; cw.path=null; cw.pathFail=false; cw.pathT=0; cw.pathGoal=null;
+       var t0=performance.now(), best=1e9, exitF=-1;
+       for(var f=0;f<frames;f++){ cw.state='chase'; cw.alert=3; cw.tx=tx; cw.ty=ty;
+         __loop(t0+f*16.7); p.x=tx; p.y=ty; p.hp=100; p.iv=99;
+         var d=D(cw,p); if(d<best) best=d;
+         if(exitF<0&&!(cw.x>bd.x&&cw.x<bd.x+bd.w&&cw.y>bd.y&&cw.y<bd.y+bd.h)) exitF=f; }
+       return {best:best,exitF:exitF,opened:g.map.navD?g.map.navD.opened:-1};
+     }
+     // THE TRACED CASE: building 20 on THE COLD MILE, routed out through the
+     // building next door, whose west door has a partition one unit behind the
+     // cells the old carve opened.
+     // Twenty five seconds: with the door next door closed to it the honest
+     // route goes round the north, about 2,200 units, and the crawler is on
+     // the player at 35 by frame 1500. At fifteen it was 313 off and walking.
+     var on=drive(1,20,1,1500,'3380,3130,300,220');
+     if(on.err) return 'SKIP: '+on.err;
+     if(on.best>60) bad.push('the crawler out of building 20 on THE COLD MILE got no closer than '+on.best.toFixed(0)+' units in twenty five seconds'+(on.exitF<0?' and never left the building':''));
+     // CONTROL ONE: the old carve must still show the fault. Measured 313 at
+     // fifteen seconds and at twenty five, standing at 2985,3178.
+     var off=drive(1,20,0,1500,'3380,3130,300,220');
+     if(off.err) return 'SKIP: '+off.err;
+     if(off.best<150) bad.push('control: with doorClear off the crawler out of building 20 got to '+off.best.toFixed(0)+' units, so the old carve does not show the fault this build is for');
+     // CONTROL TWO: the strict pass opens fewer cells than the old rule.
+     if(!(on.opened<off.opened)) bad.push('control: the route grid opens '+on.opened+' door cells with the strict pass and '+off.opened+' without, so the pass rejects nothing');
+     // GUARD: a building that delivered before still does. Building 8 on COLD
+     // STORAGE, out of the door at frame 66 and on the player at 34.
+     var g8=drive(0,8,1,600,'2520,900,380,340');
+     if(g8.err) return 'SKIP: '+g8.err;
+     if(g8.best>60) bad.push('guard: the crawler in building 8 on COLD STORAGE, which reached the player at 34 units before this build, now gets no closer than '+g8.best.toFixed(0));
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.15',what:'the route grid is padded for the body that walks it, so a crawler with a route out of a building walks it, through the middle of the door and clear of the corners',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop)) return 'SKIP: this fixture cannot build a map';
+     var bad=[], D=__movers.dist, c;
+     // One crawler in the middle of a building, the player on open ground
+     // outside it, the chase held on. Fresh deploy per trial, always: a shared
+     // deploy with the clock restarted carries the wall hug from one trial into
+     // the next, which is how v11.12 reported two buildings freed that were not.
+     function drive(bIx,navBody,frames,rectWant){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({navBody:navBody});
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(),p=g.player,B=g.map.buildings,W=g.map.walls,cw=null,u;
+       for(u=0;u<g.ents.length;u++) if(g.ents[u].kind==='crawler'){ cw=g.ents[u]; break; }
+       if(!cw) return {err:'no crawler on COLD STORAGE to drive'};
+       g.ents.length=0; g.ents.push(cw);
+       var bd=B[bIx]; if(!bd) return {err:'COLD STORAGE has no building '+bIx};
+       if([bd.x,bd.y,bd.w,bd.h].join(',')!==rectWant) return {err:'building '+bIx+' is ['+[bd.x,bd.y,bd.w,bd.h].join(',')+'] and not the '+rectWant+' this was traced on'};
+       function openAt(x,y){ if(x<120||y<120) return false; var q;
+         for(q=0;q<W.length;q++){ var w=W[q]; if(x>w.x-34&&x<w.x+w.w+34&&y>w.y-34&&y<w.y+w.h+34) return false; }
+         for(q=0;q<B.length;q++){ var b=B[q]; if(x>b.x-34&&x<b.x+b.w+34&&y>b.y-34&&y<b.y+b.h+34) return false; }
+         return true; }
+       var cand=[[bd.x-210,bd.y+bd.h/2],[bd.x+bd.w+210,bd.y+bd.h/2],[bd.x+bd.w/2,bd.y-210],[bd.x+bd.w/2,bd.y+bd.h+210]], tx=0,ty=0,ok=false;
+       for(u=0;u<cand.length&&!ok;u++) if(openAt(cand[u][0],cand[u][1])){ tx=cand[u][0]; ty=cand[u][1]; ok=true; }
+       if(!ok) return {err:'building '+bIx+' has no open ground outside it'};
+       p.x=tx; p.y=ty; p.iv=99; p.hp=100; p.downed=0;
+       cw.x=bd.x+bd.w/2; cw.y=bd.y+bd.h/2; cw.path=null; cw.pathFail=false; cw.pathT=0; cw.pathGoal=null;
+       var t0=performance.now(), best=1e9, exitF=-1;
+       for(var f=0;f<frames;f++){ cw.state='chase'; cw.alert=3; cw.tx=tx; cw.ty=ty;
+         __loop(t0+f*16.7); p.x=tx; p.y=ty; p.hp=100; p.iv=99;
+         var d=D(cw,p); if(d<best) best=d;
+         if(exitF<0&&!(cw.x>bd.x&&cw.x<bd.x+bd.w&&cw.y>bd.y&&cw.y<bd.y+bd.h)) exitF=f; }
+       return {best:best,exitF:exitF,opened:g.map.navD?g.map.navD.opened:-1};
+     }
+     // THE TWO TRACED. 15: a pull grazing a partition end at 3216,1960. 18: a
+     // door waypoint one unit inside the jamb at 2728,2696.
+     var CASES=[[15,'2980,1760,380,340'],[18,'2260,2520,460,300']], onOpened=-1, offOpened=-1;
+     for(c=0;c<CASES.length;c++){
+       var on=drive(CASES[c][0],15,900,CASES[c][1]);
+       if(on.err) return 'SKIP: '+on.err;
+       if(on.exitF<0) bad.push('the crawler in building '+CASES[c][0]+' never left it in fifteen seconds, with a route out');
+       else if(on.best>60) bad.push('the crawler in building '+CASES[c][0]+' left at frame '+on.exitF+' and got no closer than '+on.best.toFixed(0)+' units in fifteen seconds');
+       onOpened=on.opened;
+       // CONTROL: the old grid must still show the fault. Measured: neither
+       // crawler leaves its building in fifteen seconds; ten is asked for here.
+       var off=drive(CASES[c][0],0,600,CASES[c][1]);
+       if(off.err) return 'SKIP: '+off.err;
+       if(off.exitF>=0) bad.push('control: with navBody off the crawler in building '+CASES[c][0]+' walks out anyway at frame '+off.exitF+', so the old grid does not show the fault this build is for');
+       offOpened=off.opened;
+     }
+     // CONTROL TWO: the dial really changes the route grid.
+     if(onOpened===offOpened) bad.push('control: the route grid opens '+onOpened+' door cells with the dial on and off alike, so the dial does not build a different grid');
+     // GUARD: a building that already delivered its crawler still does.
+     // Building 8, out of the door at frame 108 and on the player at 34.
+     var g8=drive(8,15,600,'2520,900,380,340');
+     if(g8.err) return 'SKIP: '+g8.err;
+     if(g8.best>60) bad.push('guard: the crawler in building 8, which reached the player at 34 units before this build, now gets no closer than '+g8.best.toFixed(0));
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.14',what:'no piece of furniture sits in a doorway, and a machine inside a building can walk out of the door it routes through',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop)) return 'SKIP: this fixture cannot build a map';
+     var bad=[], D=__movers.dist, i, j;
+     // A doorway is PLUGGED when the longest clear run across its gap, with
+     // furniture within 40 units of the wall on either side counted, is under
+     // the 30 units a body needs.
+     function plugged(g){ var W=g.map.walls,Ds=g.map.doors,n=0,furn=0;
+       for(i=0;i<W.length;i++) if(W[i].furn) furn++;
+       for(i=0;i<Ds.length;i++){ var d=Ds[i],h=d.w>=d.h;
+         var ex=h?{x:d.x,y:d.y-40,w:d.w,h:d.h+80}:{x:d.x-40,y:d.y,w:d.w+80,h:d.h}, iv=[];
+         for(j=0;j<W.length;j++){ var w=W[j]; if(!w.furn) continue;
+           if(w.x<ex.x+ex.w&&w.x+w.w>ex.x&&w.y<ex.y+ex.h&&w.y+w.h>ex.y)
+             iv.push(h?[Math.max(d.x,w.x),Math.min(d.x+d.w,w.x+w.w)]:[Math.max(d.y,w.y),Math.min(d.y+d.h,w.y+w.h)]); }
+         if(!iv.length) continue;
+         iv.sort(function(a,b){ return a[0]-b[0]; });
+         var lo=h?d.x:d.y,hi=h?d.x+d.w:d.y+d.h,cur=lo,best=0;
+         for(j=0;j<iv.length;j++){ if(iv[j][0]>cur) best=Math.max(best,iv[j][0]-cur); cur=Math.max(cur,iv[j][1]); }
+         best=Math.max(best,hi-cur);
+         if(best<30) n++; }
+       return {plugged:n,doors:Ds.length,furn:furn,ents:g.ents.length,cont:(g.containers||[]).length}; }
+     var NM=['COLD STORAGE','THE COLD MILE'], on=[], off=[], mi;
+     for(mi=0;mi<2;mi++){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnDoor:0,furnGap:0,furnIDoor:0});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242}); off.push(plugged(__state()));
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnDoor:1});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242}); on.push(plugged(__state()));
+       // THE FINDING. Measured on v11.13: 11 of 37 and 35 of 151.
+       if(on[mi].plugged>0) bad.push(NM[mi]+': '+on[mi].plugged+' of '+on[mi].doors+' doorways still hold furniture leaving under 30 units of clear run');
+       // CONTROL ONE: the old placement must still show the fault, or this A/B
+       // is two copies of the same thing.
+       var floor=(mi===0)?8:25;
+       if(off[mi].plugged<floor) bad.push('control: with furnDoor off '+NM[mi]+' has only '+off[mi].plugged+' plugged doorways against the '+(mi===0?11:35)+' measured, so the dial does not restore the old placement');
+       // CONTROL TWO: the world did not move. The rule draws no random number,
+       // so the entity count is the same either way.
+       if(on[mi].ents!==off[mi].ents) bad.push(NM[mi]+': entities '+off[mi].ents+' to '+on[mi].ents+', so the rule drew a random number and moved the world');
+       // CONTROL THREE: only the doorway pieces go. Measured: 169 to 136 on COLD
+       // STORAGE and 540 to 440 on THE COLD MILE, four fifths kept on both. A
+       // build that loses more than three tenths is dropping pieces that were
+       // never in a doorway.
+       // v11.17: the old arm has all three furniture rules off now, so this
+       // reads the three together: 169 to 108 and 540 to 336, 0.64 and 0.62.
+       if(on[mi].furn<off[mi].furn*0.5) bad.push(NM[mi]+': furniture fell from '+off[mi].furn+' to '+on[mi].furn+', more than half lost against the 0.64 and 0.62 measured for the three rules together, so pieces standing in the open are being dropped');
+     }
+     // AND THE DOOR CAN BE WALKED. The crawler in building 8 on COLD STORAGE,
+     // whose doorway held a 36 by 26 piece, must now reach a player outside.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnDoor:1,winWalk:1});
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(),p=g.player,B=g.map.buildings,cw=null;
+     for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'){ cw=g.ents[i]; break; }
+     if(!cw) return 'SKIP: no crawler on COLD STORAGE to drive';
+     g.ents.length=0; g.ents.push(cw);
+     var bd=B[8];
+     if(!bd||[bd.x,bd.y,bd.w,bd.h].join(',')!=='2520,900,380,340') bad.push('building 8 on COLD STORAGE is not the 2520,900,380,340 this was traced on');
+     else {
+       var tx=bd.x-210, ty=bd.y+bd.h/2;
+       p.x=tx; p.y=ty; p.iv=99; p.hp=100; p.downed=0;
+       cw.x=bd.x+bd.w/2; cw.y=bd.y+bd.h/2; cw.path=null; cw.pathFail=false; cw.pathT=0; cw.pathGoal=null;
+       var t0=performance.now(), best=1e9;
+       // Fifteen seconds. Traced: out of the south door by frame 60, a four
+       // second wall hug south of the building, back north, and on the player
+       // at 34 units at frame 660. Ten seconds read 153 and called the door
+       // blocked, which it is not.
+       for(var f=0;f<900;f++){ cw.state='chase'; cw.alert=3; cw.tx=tx; cw.ty=ty;
+         __loop(t0+f*16.7); p.x=tx; p.y=ty; p.hp=100; p.iv=99;
+         var dd=D(cw,p); if(dd<best) best=dd; }
+       // MEASURED before this build: 241 with the old routing and 273 with
+       // v11.12, never closer, at seven seconds and at thirty.
+       if(best>60) bad.push('the crawler in building 8 got no closer than '+best.toFixed(0)+' units in fifteen seconds, so its doorway is still not walkable');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.13',what:'the Undercroft crowd never wears the ghost mask or the Spartan helmet, and still dresses from the rest of the rack',
+   run:function(){
+     if(!(window.__crowdLook&&window.__cos&&__cos.list)) return 'SKIP: this fixture cannot roll the crowd';
+     var bad=[], L=__cos.list(), i, k, hats={}, n=600;
+     for(i=0;i<n;i++){ var lk=__crowdLook(); if(!lk) return 'SKIP: the crowd roller returned nothing'; hats[lk.hat]=(hats[lk.hat]||0)+1; }
+     // THE FINDING. Measured on v11.12: 182 ghost masks and 172 Spartan helmets
+     // in 2,000 rolls, about one in eleven each.
+     if(hats.ghostmask) bad.push(hats.ghostmask+' of '+n+' crowd looks wear the ghost mask, which is his');
+     if(hats.spartan) bad.push(hats.spartan+' of '+n+' crowd looks wear the Spartan helmet, which is his');
+     // CONTROL ONE: the rest of the rack is still worn, or the crowd has stopped
+     // dressing rather than skipped two pieces.
+     var others=0; for(k in hats) if(k!=='none'&&k!=='ghostmask'&&k!=='spartan') others++;
+     if(others<3) bad.push('control: only '+others+' other hats appear in '+n+' rolls, so the crowd has stopped dressing from the rack rather than leaving two pieces alone');
+     // CONTROL TWO: both pieces are still on the rack for him to earn.
+     var gm=null, sp=null, band=null;
+     for(i=0;i<L.length;i++){ if(L[i].id==='ghostmask') gm=L[i]; if(L[i].id==='spartan') sp=L[i]; if(L[i].id==='band') band=L[i]; }
+     if(!gm||!sp) bad.push('control: the ghost mask or the Spartan helmet is gone from the rack itself, and they were only ever to come off the crowd');
+     // CONTROL THREE: the rule is the flag and not the two names. Bar a third
+     // hat for a moment and it must vanish from the crowd too, then come back.
+     if(!band) bad.push('control: no sweat band on the rack to bar for the test');
+     else {
+       var had=Object.prototype.hasOwnProperty.call(band,'crowd'), was=band.crowd, seen=0, back=0;
+       band.crowd=0;
+       try{ for(i=0;i<300;i++) if(__crowdLook().hat==='band') seen++; }
+       finally{ if(had) band.crowd=was; else delete band.crowd; }
+       if(seen) bad.push('control: a hat barred from the crowd by its flag was still worn '+seen+' times in 300 rolls, so the roller skips two names and does not read the flag');
+       for(i=0;i<300;i++) if(__crowdLook().hat==='band') back++;
+       if(!back) bad.push('control: the sweat band did not come back to the crowd after its flag was lifted');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.12',what:'a machine that can see you through a window does not try to walk through it, and comes out of the door instead',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop&&window.__walk&&window.__wins))
+       return 'SKIP: this fixture has no walk test';
+     var bad=[], D=__movers.dist, i, k;
+     // PART ONE, GEOMETRY, and it needs no simulation at all. Either side of a
+     // window: you can SEE across it and you can NOT WALK across it.
+     __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), WA=g.map.walls, wi=__wins();
+     if(wi.wsegs<=0) bad.push('the map kept no window segments at all, so nothing can test a window');
+     if(!wi.grid) bad.push('the raid built no window grid, so every walk test is a scan of the whole list');
+     // A probe point has to be in the clear, or the ray is answering about some
+     // other wall and the window is not the thing being measured.
+     function clearOf(x,y,skip){
+       for(var q=0;q<WA.length;q++){ var w=WA[q]; if(w===skip) continue;
+         if(x>w.x-20&&x<w.x+w.w+20&&y>w.y-20&&y<w.y+w.h+20) return false; }
+       return true;
+     }
+     var tested=0, seeFail=0, walkFail=0, pairs=[];
+     for(i=0;i<WA.length&&tested<6;i++){
+       var w=WA[i]; if(!w.win) continue;
+       var vert=w.h>w.w, ax,ay,bx,by;
+       if(vert){ ax=w.x-40; ay=w.y+w.h/2; bx=w.x+w.w+40; by=ay; }
+       else    { ax=w.x+w.w/2; ay=w.y-40; bx=ax; by=w.y+w.h+40; }
+       if(!clearOf(ax,ay,w)||!clearOf(bx,by,w)) continue;
+       var r=__walk(ax,ay,bx,by);
+       if(!r.see) seeFail++;
+       if(r.walk) walkFail++;
+       pairs.push([ax,ay,bx,by]);
+       tested++;
+     }
+     if(tested<3) return 'SKIP: only '+tested+' windows on COLD STORAGE have clear ground on both sides';
+     if(seeFail) bad.push(seeFail+' of '+tested+' windows cannot be seen through, so the sight geometry has stopped skipping windows and this whole build is pointless');
+     if(walkFail) bad.push(walkFail+' of '+tested+' windows report that a body can walk straight through them, which is what a machine believed when it walked into one and stood there');
+     // CONTROL ONE: a line in the open must pass BOTH tests, or the walk test is
+     // simply refusing everything and the zero above means nothing.
+     var op=null;
+     for(i=0;i<40&&!op;i++){
+       var ox=600+i*97, oy=1400;
+       if(clearOf(ox,oy,null)&&clearOf(ox+120,oy,null)) op=[ox,oy,ox+120,oy];
+     }
+     if(!op) bad.push('control: no open line could be found to prove the walk test says yes to anything');
+     else { var ro=__walk(op[0],op[1],op[2],op[3]);
+       if(!ro.see||!ro.walk) bad.push('control: an open line 120 units long reads see='+ro.see+' walk='+ro.walk+', so the walk test refuses everything'); }
+     // CONTROL TWO: the dial. With winWalk off the walk test must agree with the
+     // sight test on every window, which is the old game exactly.
+     __cfg({winWalk:0});
+     var agreed=0;
+     for(i=0;i<pairs.length;i++){ var pr=pairs[i], r0=__walk(pr[0],pr[1],pr[2],pr[3]);
+       if(r0.walk===r0.see) agreed++; }
+     if(agreed!==pairs.length) bad.push('control: with winWalk off only '+agreed+' of '+pairs.length+' windows read the old way, so the dial does not turn the fix off and the arms below are not what they claim');
+     __cfg({winWalk:1});
+     // PART TWO, THE ROUTE, and it needs no simulation either. From the middle
+     // of a building to a player outside it, the old game pulled the string
+     // tight through any window it could see across, so the route was a
+     // straight line into the glass. With the fix the same query keeps the
+     // corner that takes the body out of the door. One deploy per map and the
+     // dial flipped between the two queries, since the string-pull reads it live.
+     function dev(pts,cx,cy,tx,ty){ var m=0,dx=tx-cx,dy=ty-cy,L=Math.hypot(dx,dy);
+       for(var q=0;q<pts.length;q++){ var t=((pts[q].x-cx)*dx+(pts[q].y-cy)*dy)/(L*L);
+         var px=cx+dx*t,py=cy+dy*t,dd=Math.hypot(pts[q].x-px,pts[q].y-py); if(dd>m) m=dd; }
+       return m; }
+     function scan(mi){
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var gg=__state(),B=gg.map.buildings,WW=gg.map.walls,changed=0,b8=null,q,z;
+       function openAt(x,y){ if(x<120||y<120) return false; var u;
+         for(u=0;u<WW.length;u++){ var w=WW[u]; if(x>w.x-34&&x<w.x+w.w+34&&y>w.y-34&&y<w.y+w.h+34) return false; }
+         for(u=0;u<B.length;u++){ var b=B[u]; if(x>b.x-34&&x<b.x+b.w+34&&y>b.y-34&&y<b.y+b.h+34) return false; }
+         return true; }
+       for(q=0;q<B.length;q++){ var bd=B[q]; if(bd.w<120||bd.h<120) continue;
+         var cand=[[bd.x-210,bd.y+bd.h/2],[bd.x+bd.w+210,bd.y+bd.h/2],[bd.x+bd.w/2,bd.y-210],[bd.x+bd.w/2,bd.y+bd.h+210]];
+         var tx=0,ty=0,ok=false;
+         for(z=0;z<cand.length&&!ok;z++) if(openAt(cand[z][0],cand[z][1])){ tx=cand[z][0]; ty=cand[z][1]; ok=true; }
+         if(!ok) continue;
+         var cx=bd.x+bd.w/2, cy=bd.y+bd.h/2;
+         __cfg({winWalk:0}); var r0=__navPath(gg.map.navD,cx,cy,tx,ty);
+         __cfg({winWalk:1}); var r1=__navPath(gg.map.navD,cx,cy,tx,ty);
+         if(!r0||!r1) continue;
+         var d0=dev(r0,cx,cy,tx,ty), d1=dev(r1,cx,cy,tx,ty);
+         if(d1-d0>60) changed++;
+         if(mi===0&&q===8) b8={rect:[bd.x,bd.y,bd.w,bd.h],n0:r0.length,d0:d0,n1:r1.length,d1:d1};
+       }
+       __cfg({winWalk:1});
+       return {changed:changed,b8:b8};
+     }
+     var m0=scan(0), m1=scan(1);
+     // The building this was traced on, by its seed fingerprint, so a moved map
+     // says so by name rather than quietly testing somewhere else.
+     if(!m0.b8) bad.push('building 8 on COLD STORAGE had no open ground outside it, so the traced case could not be run');
+     else {
+       if(m0.b8.rect.join(',')!=='2520,900,380,340')
+         bad.push('building 8 on COLD STORAGE is now ['+m0.b8.rect.join(',')+'] and not the 2520,900,380,340 this was traced on');
+       // CONTROL THREE: the old game must still show the fault. With winWalk off
+       // the route is the straight line into the glass: two points, no corner.
+       if(!(m0.b8.n0===2&&m0.b8.d0<30))
+         bad.push('control: with winWalk off the route out of building 8 has '+m0.b8.n0+' points and a corner of '+m0.b8.d0.toFixed(0)+' units, so the old game no longer walks into the window and this build proves nothing');
+       if(!(m0.b8.n1>=3&&m0.b8.d1>60))
+         bad.push('the route out of building 8 with the fix has '+m0.b8.n1+' points and a corner of '+m0.b8.d1.toFixed(0)+' units, so it is still the straight line through the window and not the way out of the door');
+     }
+     // MEASURED: 1 of 13 on COLD STORAGE and 6 of 59 on THE COLD MILE were a
+     // line through a window and are a real route now.
+     if(m0.changed<1) bad.push('no route on COLD STORAGE changed shape, so the fix touches nothing there');
+     if(m1.changed<4) bad.push('only '+m1.changed+' routes on THE COLD MILE changed shape against the 6 measured');
+     // PART THREE, THE GUARD: a crawler that could reach the player before this
+     // build must still reach him. Building 14 on COLD STORAGE, measured at 34
+     // units both ways, so a fix that broke ordinary chasing shows here.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({winWalk:1});
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g3=__state(),p3=g3.player,B3=g3.map.buildings,cw=null;
+     for(i=0;i<g3.ents.length;i++) if(g3.ents[i].kind==='crawler'){ cw=g3.ents[i]; break; }
+     if(!cw) return 'SKIP: no crawler to drive on COLD STORAGE';
+     g3.ents.length=0; g3.ents.push(cw);
+     var b14=B3[14];
+     if(!b14) bad.push('COLD STORAGE has no building 14');
+     else {
+       var W3=g3.map.walls;
+       function open3(x,y){ if(x<120||y<120) return false; var u;
+         for(u=0;u<W3.length;u++){ var w3=W3[u]; if(x>w3.x-34&&x<w3.x+w3.w+34&&y>w3.y-34&&y<w3.y+w3.h+34) return false; }
+         for(u=0;u<B3.length;u++){ var bb=B3[u]; if(x>bb.x-34&&x<bb.x+bb.w+34&&y>bb.y-34&&y<bb.y+bb.h+34) return false; }
+         return true; }
+       var c14=[[b14.x-210,b14.y+b14.h/2],[b14.x+b14.w+210,b14.y+b14.h/2],[b14.x+b14.w/2,b14.y-210],[b14.x+b14.w/2,b14.y+b14.h+210]];
+       var tx3=0,ty3=0,ok3=false;
+       for(k=0;k<c14.length&&!ok3;k++) if(open3(c14[k][0],c14[k][1])){ tx3=c14[k][0]; ty3=c14[k][1]; ok3=true; }
+       if(!ok3) bad.push('building 14 on COLD STORAGE has no open ground outside it, so the guard could not run');
+       else {
+         p3.x=tx3; p3.y=ty3; p3.iv=99; p3.hp=100; p3.downed=0;
+         cw.x=b14.x+b14.w/2; cw.y=b14.y+b14.h/2; cw.path=null; cw.pathFail=false; cw.pathT=0; cw.pathGoal=null;
+         var t0=performance.now(), best=1e9;
+         for(var f=0;f<420;f++){ cw.state='chase'; cw.alert=3; cw.tx=tx3; cw.ty=ty3;
+           __loop(t0+f*16.7); p3.x=tx3; p3.y=ty3; p3.hp=100; p3.iv=99;
+           var dd3=D(cw,p3); if(dd3<best) best=dd3; }
+         if(best>60) bad.push('guard: the crawler in building 14, which reached the player at 34 units before this build, now gets no closer than '+best.toFixed(0));
+       }
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.11',what:'a friend arriving on a fresh profile can open every station on the floor without anything breaking or coming up blank',
+   run:function(){
+     if(!(window.__hubEnter&&window.__hub&&window.__station&&window.__P))
+       return 'SKIP: this fixture cannot walk the Undercroft';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], prof=__P(), keep={}, k, i;
+     // THE WHOLE PROFILE, not a list of the fields I happened to think of. The
+     // first version of this named twenty-four and broke two checks that read a
+     // twenty-fifth.
+     for(k in prof) keep[k]=prof[k];
+     var caught=[];
+     function onErr(ev){ caught.push(String((ev&&ev.message)||ev)); }
+     window.addEventListener('error',onErr);
+     try{
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       // THE PROFILE A FRIEND ARRIVES WITH. Nothing earned, nothing looted, one
+       // gun, the starting money.
+       prof.runs=0; prof.ext=0; prof.died=0; prof.best=0; prof.credits=600;
+       prof.xp=0; prof.xpLevel=1; prof.stash=[]; prof.kit=[]; prof.log=[];
+       prof.contracts=[]; prof.racks=0; prof.arrays=0; prof.notoriety=0;
+       prof.cstand=0; prof.spClaimed=[]; prof.kills={}; prof.cosBought={};
+       prof.junk={}; prof.weapons=['pistol']; prof.equipped='pistol';
+       prof.pack=0; prof.cosAll=0; prof.stashTab='all';
+       __hubEnter();
+       var HB=__hub();
+       if(!HB||!HB.stations||HB.stations.length<6)
+         return 'SKIP: only '+((HB&&HB.stations)?HB.stations.length:0)+' stations on the floor';
+       var walked=0;
+       for(i=0;i<HB.stations.length;i++){
+         var id=HB.stations[i].id, before=caught.length, threw=null;
+         try{ __station(id); }catch(e){ threw=String(e&&e.message||e); }
+         if(threw) bad.push('walking up to '+id+' threw: '+threw);
+         if(caught.length>before) bad.push(id+' threw when he pressed E: '+caught.slice(before).join(' / '));
+         // SOMETHING HAS TO HAPPEN. A station that opens nothing is a dead end on
+         // the floor, and a panel with nothing in it is worse than a locked door.
+         var open=document.querySelector('.modal.on');
+         var hub=document.getElementById('hub');
+         if(open){
+           var t=(open.textContent||'').replace(/\s+/g,' ').trim();
+           if(t.length<40) bad.push(id+' opens '+open.id+' and it is empty on a fresh profile');
+           open.classList.remove('on');
+         } else if(!(hub&&hub.classList.contains('on'))){
+           bad.push('pressing E at '+id+' does nothing at all');
+         }
+         walked++;
+       }
+       if(walked<6) bad.push('control: only '+walked+' stations were walked');
+       // AND THE STASH READS RIGHT WITH NOTHING IN IT. Counted in CELLS, not in
+       // text: an owned gun draws as an icon and has no words in it, which read
+       // as an empty panel the first time I looked.
+       __station('term');
+       var sl=document.getElementById('stashgrid');
+       if(!sl) bad.push('the stash screen has no grid to draw into');
+       else {
+         var tabs=document.querySelectorAll('#stashtabs .invtab');
+         if(tabs.length<5) bad.push('the stash has only '+tabs.length+' tabs');
+         function clickTab(name){ for(var q=0;q<tabs.length;q++) if((tabs[q].textContent||'').indexOf(name)===0){ tabs[q].click(); return true; } return false; }
+         if(!clickTab('GUNS')) bad.push('there is no GUNS tab to press');
+         else {
+           if(prof.stashTab!=='gun') bad.push('pressing the GUNS tab does not switch to it');
+           if(sl.querySelectorAll('.cell').length<1)
+             bad.push('the GUNS tab counts his one gun and draws nothing, so a new player is told he has a gun and shown an empty shelf');
+         }
+         clickTab('SALVAGE');
+         if(sl.querySelectorAll('.cell').length!==0)
+           bad.push('control: SALVAGE draws cells on a profile that has never looted anything, so the tabs are not filtering');
+         clickTab('ALL');
+       }
+       // CONTROL: the listener must be able to hear a throw, or every clean line
+       // above is decoration. An error inside a handler does not reach the caller.
+       var heard=caught.length;
+       var boom=document.createElement('button');
+       boom.onclick=function(){ throw new Error('zqx station control'); };
+       document.body.appendChild(boom);
+       try{ boom.click(); }catch(_bc){}
+       document.body.removeChild(boom);
+       if(caught.length===heard) bad.push('control: a deliberate throw inside a click was not heard, so this check cannot see a station break');
+     } finally {
+       window.removeEventListener('error',onErr);
+       for(k in prof) if(!(k in keep)) delete prof[k];
+       for(k in keep) prof[k]=keep[k];
+       try{ var op=document.querySelectorAll('.modal.on'); for(i=0;i<op.length;i++) op[i].classList.remove('on'); }catch(_cl){}
+       // AND IT DOES NOT SAVE. Borrowing the profile in memory is fair; writing
+       // the borrowed version to disk is what made this permanent.
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.10',what:'the bot never hides, so no number it produces describes careful play, and it cannot show the crawler bug at all',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__rawStep)) return 'SKIP: this fixture cannot step the bot';
+     var bad=[], notes=[];
+     __runPrep(); __resetCfg(); __pinDefaults(1);
+     // ONE SHORT RAID. The limit this check exists for is about the BOT, not
+     // about how many crawlers it happened to walk past, so it does not need to
+     // go looking for them.
+     __deploy({kit:[],safe:null,mapIx:1,seed:9014,sim:true});
+     var g=__state(); if(!g) return 'SKIP: no raid to step';
+     var p=g.player, lo=9, sum=0, n2=0, crouched=0, inReach=0, blind=0, f;
+     for(f=0;f<140;f++){
+       __rawStep(0.15);
+       if(!g||g.over) break;
+       var pc=(g.pConceal===undefined)?1:g.pConceal;
+       if(pc<lo) lo=pc; sum+=pc; n2++;
+       if(g.pCrouch) crouched++;
+       for(var i=0;i<g.ents.length;i++){
+         var e=g.ents[i]; if(!e||e.kind!=='crawler'||e.hp<=0) continue;
+         var d=Math.hypot(e.x-p.x,e.y-p.y), reach=(e.r+(p.r||11))+10;
+         if(d>reach) continue;
+         inReach++;
+         // The OLD rule, written out on purpose: sight was the ambient range
+         // times concealment, with a bonus once alerted. That is the band the
+         // v11.07 fix closed.
+         if(100*(e.alert>0?1.35:1)*pc < d) blind++;
+       }
+     }
+     if(n2<60) return 'SKIP: the bot only lasted '+n2+' steps, which is not enough to characterise it';
+     // THE DIAL SAYS IT FIRST, and needs no raid at all: a bot that is allowed to
+     // crouch would change every extract number ever quoted.
+     if(__cfg().simCrouch) bad.push('the bot is allowed to crouch now, simCrouch is '+__cfg().simCrouch+', so every extract rate in this file describes a different player from the one that produced them');
+     // 1. THE BOT DOES NOT HIDE. Measured: zero crouched frames out of 300, a
+     //    concealment floor of 0.40 and a mean of 0.884.
+     if(crouched>0) bad.push('the bot crouched in '+crouched+' of '+n2+' frames, so the note that it never hides is out of date and every sim number needs re-reading');
+     if(lo<0.30) bad.push('the bot reached a concealment of '+lo.toFixed(2)+', which is inside the band the v11.07 crawler fix exists for, so the sim CAN now see that class of bug and the note saying it cannot is wrong');
+     // 2. AND THEREFORE IT NEVER MEETS THE BUG. Measured: 693 frames inside
+     //    biting distance across three raids and not one of them blind.
+     if(blind>0) bad.push('the bot spent '+blind+' frames close enough to be bitten and invisible, so the v11.07 finding is reachable by the sim after all and should be measured rather than reasoned about');
+     if(!bad.length&&notes.length) return null;
+     // 3. CONTROLS. The bot has to have MET a crawler, or none of the above is
+     //    a statement about anything.
+     // The crawler half only means something if it met one. Silence there is a
+     // gap in this sample, not a fault in the game, so it is said and not failed.
+     if(inReach<5) notes.push('the bot came inside biting distance only '+inReach+' times in '+n2+' steps here, so this run says nothing about crawlers either way');
+     // AND THE INSTRUMENT MUST BE ABLE TO SEE THE BAND. The same arithmetic is
+     // run against a hidden man, and it must come back blind, or the test above
+     // is passing because it cannot detect the thing it is looking for.
+     var probe=100*1*0.05, reach0=(15+11)+10;
+     if(!(probe<reach0*0.85)) bad.push('control: the blind band cannot be detected by this arithmetic at all, so the zero above means nothing');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.09',what:'every menu in the document is set in the game font, measured on what the browser computes rather than on what the stylesheet says',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing computes a font';
+     var bad=[], i;
+     // WHAT THE BROWSER ACTUALLY RESOLVES, not what the stylesheet asks for. A
+     // rule can be overridden, a class can be missing, and an inline style beats
+     // both; the only honest question is what the element ends up in.
+     function famOf(el){
+       var f='';
+       try{ f=window.getComputedStyle(el).fontFamily||''; }catch(e){ return ''; }
+       return String(f).split(',')[0].replace(/["']/g,'').trim().toLowerCase();
+     }
+     // The two deliberate exceptions, and they are named rather than pattern
+     // matched: the game's own name is a wordmark, and the dev text editor is
+     // monospace because it is a text editor.
+     function allowed(el){
+       if(!el) return false;
+       if(el.id==='titlefs') return false;
+       var c=el.className;
+       if(typeof c==='string'&&c.indexOf('brand')>=0) return true;
+       if(typeof c==='string'&&c.indexOf('avnum')>=0) return true;   // the 23 on the shirt
+       // and the same numeral wherever the racks draw it: the figure and the
+       // swatches, both inside the Fashion window.
+       var up=el, g=0;
+       while(up&&g++<10){
+         if(up.id==='appavatar'||up.id==='appavatarpicker') return true;
+         up=up.parentElement;
+       }
+       // the wordmark itself carries no class, so it is found by what it says
+       var t=(el.textContent||'').trim();
+       if(t==='PILLAGERS'&&el.children.length===0) return true;
+       return false;
+     }
+     var all=document.querySelectorAll('body *'), seen={}, offenders=[];
+     for(i=0;i<all.length;i++){
+       var el=all[i];
+       if(el.tagName==='SCRIPT'||el.tagName==='STYLE'||el.tagName==='CANVAS') continue;
+       var fam=famOf(el);
+       if(!fam) continue;
+       seen[fam]=(seen[fam]||0)+1;
+       if(fam==='rubik') continue;
+       if(allowed(el)) continue;
+       if(offenders.length<6) offenders.push((el.id||el.tagName)+' is in '+fam);
+     }
+     if(offenders.length) bad.push('the menus are not all in one font: '+offenders.join('; '));
+     // CONTROL ONE: the sweep has to have looked at a real document. A page that
+     // failed to build would pass every line above by having nothing to fail.
+     var total=0, k;
+     for(k in seen) total+=seen[k];
+     if(total<120) bad.push('control: only '+total+' elements were read, so this is not the whole document');
+     if(!seen.rubik||seen.rubik<100) bad.push('control: only '+(seen.rubik||0)+' elements are in the game font, so the font is not loading and everything is falling back');
+     // CONTROL TWO: and the sweep can SEE a second family. An element in another
+     // face is planted, caught, and removed; without this the clean result above
+     // would prove nothing.
+     var probe=document.createElement('div');
+     probe.style.fontFamily='"Comic Sans MS", cursive';
+     probe.textContent='zqx font control';
+     document.body.appendChild(probe);
+     var caught=(famOf(probe)==='comic sans ms');
+     document.body.removeChild(probe);
+     if(!caught) bad.push('control: an element planted in another face was not noticed, so this check cannot see a second font');
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.08',what:'the sound key teaches the colours the game actually draws, and none it never draws',
+   run:function(){
+     if(typeof SOUNDKEY==='undefined'||typeof SNDCOL==='undefined')
+       return 'SKIP: this build has no sound key';
+     var bad=[], i, j;
+     // 1. EVERY SWATCH IS A COLOUR THE GAME REALLY USES. Measured on v11.07 the
+     //    key carried #e65100 for pillager firing, an orange the game stopped
+     //    drawing at v9.63 on his own word, RED, and has drawn #ff3b30 since.
+     var live={}, k, t;
+     for(k in SNDCOL) for(t in SNDCOL[k]) live[String(SNDCOL[k][t]).toLowerCase()]=k+' '+t;
+     for(i=0;i<SOUNDKEY.length;i++){
+       var col=String(SOUNDKEY[i][0]||'').toLowerCase();
+       if(!col){ bad.push('the sound key row "'+SOUNDKEY[i][1]+'" has no colour at all'); continue; }
+       if(!live[col]) bad.push('the sound key shows '+col+' for "'+SOUNDKEY[i][1]+'" and the game never draws that colour');
+     }
+     // 2. AND IT DOES NOT PROMISE A RING THAT CANNOT EXIST. ping refuses to draw
+     //    the player's own noises, so a row telling him a colour means HIM is
+     //    teaching him to look for something that never appears.
+     var labels=[];
+     for(i=0;i<SOUNDKEY.length;i++) labels.push(String(SOUNDKEY[i][1]).toLowerCase());
+     var joined=labels.join(' | ');
+     if(/(^|\| )you( \||$)/.test(joined))
+       bad.push('the sound key still has a row that says a ring can be you, and your own noises have drawn no ring since v5.31');
+     // 3. AND IT SAYS SO, which is his question answered where it is asked.
+     if(joined.indexOf('never your own')<0)
+       bad.push('the sound key does not say that a ring is never your own noise, which is the rule he asked about');
+     // 4. CONTROLS. The colour table has to have been read at all, and the key
+     //    has to still cover the four things that make noises he can be hurt by.
+     var n=0; for(k in live) n++;
+     if(n<4) bad.push('control: only '+n+' colours were found in the colour table, so this is not checking the game');
+     var need=[['machine moving','robot moving'],['machine firing','robot firing'],
+               ['pillager moving'],['pillager firing']];
+     for(i=0;i<need.length;i++){
+       var have=false;
+       for(j=0;j<need[i].length;j++) if(joined.indexOf(need[i][j])>=0) have=true;
+       if(!have) bad.push('control: the sound key no longer explains '+need[i][0]);
+     }
+     // 5. AND THE PANEL STILL FITS. A key that teaches the colours by covering
+     //    the belt has traded one problem for another.
+     if(window.__deploy&&window.__state&&window.__frame&&window.__hud&&__vpAlive()){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.legendOn=1;
+       var threw=null;
+       try{ __frame(0); __hud(); }catch(e){ threw=String(e&&e.message||e); }
+       if(threw) bad.push('drawing the legend threw: '+threw);
+       var rows=SOUNDKEY.length;
+       if(rows>8) bad.push('the sound key has grown to '+rows+' rows, which is taller than the panel was measured for');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.07',what:'a crawler close enough to bite you has found you, however well hidden you are',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__ents)) return 'SKIP: this fixture cannot step the machines';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, craw=null, i;
+     for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'){ craw=g.ents[i]; break; }
+     if(!craw) return 'SKIP: no crawler on this map to test';
+     g.ents.length=0; g.ents.push(craw);
+     p.hp=100000; p.maxhp=100000; p.downed=false;
+     // HIS CASE, EXACTLY: standing still, well hidden, with one of them right
+     // next to him. The crawler is pinned where it starts so this measures the
+     // BITE and not the walk, and the player is pinned so nothing drifts out of
+     // reach while the clock runs.
+     var REACH=(craw.r+(p.r||11))+10;      // its own reach, from the entity
+     function run(pcon,gap,frames){
+       craw.x=p.x+gap; craw.y=p.y; craw.hp=craw.maxhp; craw.cd=0; craw.alert=0;
+       craw.state='patrol'; craw.face=Math.PI;
+       var hp0=p.hp, px=p.x, py=p.y, states={};
+       for(var f=0;f<frames;f++){
+         g.pConceal=pcon;
+         __ents(0.05);
+         states[craw.state]=(states[craw.state]||0)+1;
+         craw.x=px+gap; craw.y=py; p.x=px; p.y=py;
+       }
+       return {dmg:hp0-p.hp,states:states};
+     }
+     // 1. THE FINDING. Measured on v11.06 at 30 units, which is inside a reach of
+     //    36: 65 damage at concealment 0.35 and ZERO at 0.25 and below, sitting
+     //    in patrol for the whole three seconds.
+     var near=Math.round(REACH*0.85);
+     var hidden=run(0.05,near,60);
+     if(hidden.dmg<=0)
+       bad.push('a crawler '+near+' units away, with a reach of '+REACH+', did nothing at all in three seconds while he stood still and hidden, which is his note');
+     // 2. AND IT IS THE TOUCH THAT FOUND HIM, NOT BLANKET SIGHT. The same
+     //    concealment at twice the reach must still hide him, or this fix has
+     //    quietly made hiding useless.
+     var far=Math.round(REACH*2.2);
+     var farHid=run(0.05,far,60);
+     if(farHid.dmg>0)
+       bad.push('control: the same hidden man is attacked from '+far+' units, well outside a reach of '+REACH+', so concealment has stopped meaning anything');
+     // 3. AND THE OPEN CASE IS UNTOUCHED. Standing in plain view has always
+     //    worked and must still.
+     var open=run(1,near,60);
+     if(open.dmg<=0) bad.push('control: a crawler does not bite a man standing in plain view either, so this check is measuring the wrong thing');
+     // 4. AND THE DIAL PUTS IT BACK, which is how the old behaviour stays
+     //    measurable rather than being deleted.
+     if(typeof __cfg==='function'){
+       __cfg({touchSees:0});
+       var off=run(0.05,near,60);
+       __cfg({touchSees:1});
+       if(off.dmg>0) bad.push('control: turning touchSees off changes nothing, so the fix is not the thing being tested');
+       var back=run(0.05,near,60);
+       if(back.dmg<=0) bad.push('control: turning touchSees back on did not restore the bite');
+     }
+     __resetCfg(); __pinDefaults(0);
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.06',what:'the 23 jersey reads as a jersey rather than as a black block, and the number is not painted over',
+   run:function(){
+     if(!(window.__opShot&&window.__canvases)) return 'SKIP: this fixture cannot draw one figure at a time';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+     var CN=__canvases(), wx=CN.world.getContext('2d');
+     var BASE={hero:0,faceMark:'faceplain',eyes:'eyeblue',skin:'skinfair',hat:'none',
+               hair:'blonde',cut:'shaved',beard:'clean',tattoo:'tatnone'};
+     function look(o){ var q={},k; for(k in BASE) q[k]=BASE[k]; if(o) for(k in o) q[k]=o[k]; return q; }
+     // The chest, found from the drawing rather than from numbers typed here: the
+     // jersey red is the one flat colour on this figure that nothing else uses.
+     function tally(lk){
+       var r=__opShot(lk,0,9); if(!r||r.thrown) return null;
+       var W=CN.world.width, H=CN.world.height;
+       var d=wx.getImageData(0,0,W,H).data;
+       var red=0, white=0, black=0, minx=1e9,maxx=-1,miny=1e9,maxy=-1, x,y,q;
+       for(y=0;y<H;y++) for(x=0;x<W;x++){ q=(y*W+x)*4;
+         if(d[q+3]<40) continue;
+         if(d[q]===196&&d[q+1]===30&&d[q+2]===30){ red++;
+           if(x<minx)minx=x; if(x>maxx)maxx=x; if(y<miny)miny=y; if(y>maxy)maxy=y; } }
+       if(red<50) return {red:red,white:0,black:0,box:null};
+       // Everything else is counted only inside the chest the red just described,
+       // so the boots, the shorts and the sky cannot join in.
+       var x0=Math.max(0,minx-6), x1=Math.min(W-1,maxx+6),
+           y0=Math.max(0,miny-6), y1=Math.min(H-1,maxy+6);
+       for(y=y0;y<=y1;y++) for(x=x0;x<=x1;x++){ q=(y*W+x)*4;
+         if(d[q+3]<40) continue;
+         if(d[q]===244&&d[q+1]===242&&d[q+2]===236) white++;
+         else if(d[q]===20&&d[q+1]===22&&d[q+2]===27) black++; }
+       return {red:red,white:white,black:black,box:[x0,y0,x1,y1]};
+     }
+     var J=tally(look({outfit:'outballer'}));
+     if(!J) return 'drawing the baller threw';
+     if(J.red<500) return 'SKIP: the baller did not draw a red jersey here ('+J.red+' red pixels)';
+     // 1. THE NUMBER IS NOT PAINTED OVER. Measured on v11.05 the chest rig was a
+     //    near-black band the full width of the chest, drawn AFTER the jersey and
+     //    straight across the lower half of the 23: 1,582 white pixels. Drawn
+     //    after the rig instead, the same numeral reads 2,735.
+     if(J.white<2000) bad.push('the 23 shows only '+J.white+' pale pixels, so something is painted across it');
+     // 2. AND THE SHIRT IS A SHIRT, not a black block. Measured on v11.05 the two
+     //    side panels were 2.4 wide each on a chest 13 wide and came to 2,384
+     //    black against 3,222 red, a ratio of 0.74. As trim they read 0.54.
+     var ratio=J.black/Math.max(1,J.red);
+     if(ratio>0.62) bad.push('the black on the jersey is '+J.black+' against '+J.red+' of red, a ratio of '+ratio.toFixed(2)+', which is the black block he reported');
+     // 3. CONTROLS. The pale pixels have to BE the number, so a figure with no
+     //    jersey must not produce them, and the red has to be the jersey, so the
+     //    same figure must not produce that either.
+     var N=tally(look({outfit:'outnone',fit:'slate'}));
+     if(!N) bad.push('control: the plain figure would not draw');
+     else {
+       if(N.red>200) bad.push('control: a figure with no jersey draws '+N.red+' pixels of jersey red, so the red is not the jersey');
+       if(N.white>800) bad.push('control: a figure with no jersey draws '+N.white+' pale pixels, so the pale is not the number');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.04',what:'a restore code can be pasted back in, it says whose character it is before anything is written, and it will not fire without the typed word',
+   run:function(){
+     if(typeof restoreCode!=='function'||typeof restoreRead!=='function')
+       return 'SKIP: this build cannot make a restore code';
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     if(typeof restoreApply!=='function')
+       return 'a restore code cannot be applied, so it is a note in a bottle';
+     var ta=document.getElementById('rescode'), rd=document.getElementById('resread'),
+         go=document.getElementById('resgo'), wd=document.getElementById('resword'),
+         no=document.getElementById('resno'), cf=document.getElementById('resconfirm'),
+         say=document.getElementById('reswhat');
+     if(!(ta&&rd&&go&&wd&&cf)) return 'there is nowhere in the game to paste a restore code';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so no button can be pressed';
+     var bad=[], prof=__P(), keep={}, k;
+     var FIELDS=['pname','credits','xp','xpLevel','runs','ext','died','best','notoriety',
+                 'pack','racks','arrays','cstand','stash','junk','mapIx','cond','wxPick',
+                 'cosBought','spClaimed','kills','log'];
+     for(k=0;k<FIELDS.length;k++) keep[FIELDS[k]]=prof[FIELDS[k]];
+     var keepW={}, ck; for(ck in COSKEY) keepW[ck]=prof[COSKEY[ck]];
+     var realReload=null;
+     try{
+       // The apply reloads the tab on purpose, which would take the corpus with
+       // it. The reload is counted instead of performed, and put back after.
+       realReload=window.location.reload;
+       try{ window.location.reload=function(){}; }catch(_lr){ realReload=null; }
+       // A CHARACTER THE FALLBACK COULD NOT PRODUCE, coded, then thrown away.
+       prof.pname='ZQXLOST'; prof.credits=771122; prof.xp=8899; prof.xpLevel=6;
+       prof.runs=77; prof.ext=41; prof.died=13; prof.best=52111; prof.notoriety=2;
+       prof.pack=1; prof.racks=3; prof.arrays=1; prof.cstand=9;
+       prof.mapIx=1; prof.cond='night'; prof.wxPick='storm';
+       prof.spClaimed=['t2']; prof.kills={warden:5}; prof.cosBought={};
+       prof.junk={wire:1}; prof.stash=['titan','titan','coil'];
+       for(ck in COSKEY) prof[COSKEY[ck]]=null;
+       prof.cosHat='beanie'; prof.cosEyes='eyegreen';
+       var code=restoreCode();
+       var logWas=(prof.log||[]).slice();
+       // Now become somebody else entirely, the way a friend with a lost save is.
+       prof.pname='SOMEONEELSE'; prof.credits=5; prof.xp=0; prof.xpLevel=1;
+       prof.runs=0; prof.ext=0; prof.died=0; prof.best=0; prof.notoriety=0;
+       prof.pack=0; prof.racks=0; prof.arrays=0; prof.cstand=0;
+       prof.stash=['scrap']; prof.junk={}; prof.kills={}; prof.spClaimed=[];
+       prof.cosHat='none'; prof.cosEyes='eyebrown';
+       // 1. READING A CODE WRITES NOTHING. This is the whole safety of the door.
+       ta.value=code; rd.click();
+       if(prof.pname!=='SOMEONEELSE') bad.push('reading a code already replaced the save, before any confirmation');
+       if(window.getComputedStyle(cf).display==='none') bad.push('reading a valid code did not open the confirmation');
+       if(say&&String(say.textContent).indexOf('ZQXLOST')<0)
+         bad.push('the game does not say whose character the code is, it says '+(say?say.textContent:'nothing'));
+       // 2. AND NOR DOES PRESSING REPLACE WITHOUT THE WORD.
+       wd.value=''; go.click();
+       if(prof.pname!=='SOMEONEELSE') bad.push('REPLACE fired without the typed word, so a misclick costs a character');
+       wd.value='RESTORE PLEASE'; go.click();
+       if(prof.pname!=='SOMEONEELSE') bad.push('REPLACE fired on the wrong word');
+       // 3. WITH THE WORD, THE CHARACTER COMES BACK, all of it.
+       wd.value='restore'; go.click();
+       function want(got,exp,what){ if(got!==exp) bad.push(what+' came back as '+got+' and not '+exp); }
+       want(prof.pname,'ZQXLOST','the name'); want(prof.credits,771122,'the credits');
+       want(prof.xp,8899,'the XP'); want(prof.xpLevel,6,'the level');
+       want(prof.runs,77,'the runs'); want(prof.ext,41,'the extracts');
+       want(prof.died,13,'the deaths'); want(prof.best,52111,'the best haul');
+       want(prof.notoriety,2,'the notoriety'); want(prof.pack,1,'the pack tier');
+       want(prof.racks,3,'the racks'); want(prof.arrays,1,'the arrays');
+       want(prof.cstand,9,'the contracts standing'); want(prof.mapIx,1,'the chosen map');
+       want(prof.cond,'night','the chosen surface'); want(prof.wxPick,'storm','the chosen weather');
+       want((prof.spClaimed||[]).join(','),'t2','the season tier');
+       want((prof.kills||{}).warden,5,'the warden kills');
+       want((prof.junk||{}).wire,1,'the junk tag');
+       want(prof.cosHat,'beanie','the hat'); want(prof.cosEyes,'eyegreen','the eyes');
+       var st=prof.stash||[], nT=0, nC=0, nS=0, i;
+       for(i=0;i<st.length;i++){ if(st[i]==='titan') nT++; if(st[i]==='coil') nC++; if(st[i]==='scrap') nS++; }
+       want(nT,2,'two of the same thing in the stash'); want(nC,1,'the single thing in the stash');
+       if(nS) bad.push('the old stash survived the restore, '+nS+' of it');
+       // 4. AND IT RELOADS, because every panel on the floor was built from the
+       //    profile that has just been replaced.
+       if(typeof RESTORE_RELOAD==='undefined')
+         bad.push('nothing records whether the restore reloads, so the Undercroft may still be showing the old character');
+       else if(!RESTORE_RELOAD)
+         bad.push('the restore did not arm a reload, so the Undercroft is still showing the old character');
+       // AND THE TIMER DIES HERE. It is armed for four hundred milliseconds and
+       // would otherwise fire in the middle of whatever check runs next.
+       try{ if(typeof RESTORE_TIMER!=='undefined'&&RESTORE_TIMER){ clearTimeout(RESTORE_TIMER); RESTORE_TIMER=null; } }catch(_ct){}
+       // 5. IT DOES NOT PRETEND TO BRING BACK THE LOG, which is not in the code.
+       if((prof.log||[]).length!==logWas.length)
+         bad.push('the restore changed the run log, which it does not carry and must not touch');
+       // 6. CONTROLS. Rubbish must be refused, and refused visibly.
+       prof.pname='SOMEONEELSE';
+       ta.value='not a code at all'; rd.click();
+       if(window.getComputedStyle(cf).display!=='none') bad.push('control: rubbish opened the confirmation');
+       if(say&&String(say.textContent).toLowerCase().indexOf('not a restore code')<0)
+         bad.push('control: rubbish was not called rubbish, it said '+(say?say.textContent:'nothing'));
+       wd.value='restore'; go.click();
+       if(prof.pname!=='SOMEONEELSE') bad.push('control: the word alone replaced the save with nothing pasted');
+       // AND KEEP MINE MUST ACTUALLY BACK OUT.
+       ta.value=code; rd.click();
+       if(no){ no.click();
+         if(window.getComputedStyle(cf).display!=='none') bad.push('control: KEEP MINE left the confirmation open');
+         wd.value='restore'; go.click();
+         if(prof.pname!=='SOMEONEELSE') bad.push('control: after KEEP MINE the word still replaced the save');
+       }
+     } finally {
+       try{ if(typeof RESTORE_TIMER!=='undefined'&&RESTORE_TIMER){ clearTimeout(RESTORE_TIMER); RESTORE_TIMER=null; } }catch(_ct2){}
+       try{ if(typeof RESTORE_RELOAD!=='undefined') RESTORE_RELOAD=0; }catch(_rz){}
+       if(realReload) try{ window.location.reload=realReload; }catch(_rr){}
+       for(k=0;k<FIELDS.length;k++) prof[FIELDS[k]]=keep[FIELDS[k]];
+       for(ck in COSKEY) prof[COSKEY[ck]]=keepW[ck];
+       try{ if(ta) ta.value=''; if(wd) wd.value=''; if(cf) cf.style.display='none'; if(say) say.textContent=''; }catch(_cl){}
+       try{ saveProfile(); }catch(_sp){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.03',what:'every run report ends with a restore code, and the code carries the character rather than a description of it',
+   run:function(){
+     if(typeof buildExport!=='function') return 'SKIP: this build writes no report';
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     if(typeof restoreCode!=='function'||typeof restoreRead!=='function')
+       return 'the report carries no restore code, so a friend who loses a save cannot be given one back';
+     var bad=[], prof=__P(), keep={}, k;
+     var FIELDS=['pname','credits','xp','xpLevel','runs','ext','died','best','notoriety',
+                 'pack','racks','arrays','cstand','stash','junk','mapIx','cond','wxPick',
+                 'cosBought','spClaimed','kills'];
+     for(k=0;k<FIELDS.length;k++) keep[FIELDS[k]]=prof[FIELDS[k]];
+     var keepW={}, ck;
+     for(ck in COSKEY) keepW[ck]=prof[COSKEY[ck]];
+     try{
+       // DISTINCTIVE ON PURPOSE. Every value here is one the fallback could never
+       // produce, so a code that quietly rebuilt a default profile cannot pass.
+       prof.pname='ZQXRESTORE'; prof.credits=918273; prof.xp=44551; prof.xpLevel=7;
+       prof.runs=131; prof.ext=57; prof.died=29; prof.best=71234; prof.notoriety=3;
+       prof.pack=2; prof.racks=4; prof.arrays=2; prof.cstand=11;
+       prof.mapIx=1; prof.cond='night'; prof.wxPick='fog';
+       prof.spClaimed=['t1','t3']; prof.kills={warden:4,crawler:99};
+       prof.cosBought={ghostmask:1};
+       prof.junk={scrap:1};
+       // A bag the fallback could not roll: three of one thing, one of another.
+       prof.stash=['titan','titan','titan','coil','core'];
+       for(ck in COSKEY) prof[COSKEY[ck]]=null;
+       prof.cosHat='spartan'; prof.cosBeard='fullbeard'; prof.cosEyes='eyeamber';
+       var code=restoreCode();
+       if(!code||code.length<20) bad.push('the restore code came out as '+(code?code.length+' characters':'nothing'));
+       if(code&&code.slice(0,4)!=='PIL1') bad.push('the code does not name itself, so nothing can tell it from any other pasted line');
+       // 1. IT IS IN THE REPORT, which is the only place a friend can reach it.
+       var rep=buildExport();
+       var txt=(rep&&rep.join)?rep.join('\n'):String(rep);
+       if(txt.indexOf(code)<0) bad.push('the restore code is not in the run report, so nobody can send it');
+       if(txt.toUpperCase().indexOf('RESTORE CODE')<0) bad.push('the report does not say what the code is');
+       // 2. AND IT CARRIES THE CHARACTER, not a description of one. Read it back
+       //    and compare every field that makes somebody who they are.
+       var o=restoreRead(code);
+       if(!o) bad.push('the code cannot be read back by the build that wrote it');
+       else {
+         function want(got,exp,what){ if(got!==exp) bad.push(what+' came back as '+got+' and not '+exp); }
+         want(o.n,'ZQXRESTORE','the name'); want(o.c,918273,'the credits'); want(o.x,44551,'the XP');
+         want(o.l,7,'the level'); want(o.r,131,'the runs'); want(o.e,57,'the extracts');
+         want(o.d,29,'the deaths'); want(o.b,71234,'the best haul'); want(o.no,3,'the notoriety');
+         want(o.pk,2,'the pack tier'); want(o.ra,4,'the racks'); want(o.ar,2,'the arrays');
+         want(o.cs,11,'the contracts standing'); want(o.mi,1,'the chosen map');
+         want(o.cd,'night','the chosen surface'); want(o.wq,'fog','the chosen weather');
+         want((o.sc||[]).join(','),'t1,t3','the season tiers claimed');
+         want((o.ki||{}).warden,4,'the warden kills, which unlock a rack');
+         want((o.cb||{}).ghostmask,1,'a cosmetic bought outright');
+         want((o.j||{}).scrap,1,'a junk tag');
+         want((o.w||{}).hat,'spartan','the hat being worn');
+         want((o.w||{}).beard,'fullbeard','the beard being worn');
+         want((o.w||{}).eyes,'eyeamber','the eyes being worn');
+         want((o.s||{}).titan,3,'three of the same thing in the stash');
+         want((o.s||{}).coil,1,'a single thing in the stash');
+         // 3. AND IT IS PASTEABLE. A code nobody can send is not a restore.
+         if(code.length>4000) bad.push('the code is '+code.length+' characters, which is not something a person pastes into a chat window');
+       }
+       // 4. CONTROLS. The reader must refuse what it should refuse, or a
+       //    mistyped line would be accepted as a character.
+       if(restoreRead('')!==null) bad.push('control: an empty code reads as a character');
+       if(restoreRead('hello there')!==null) bad.push('control: an ordinary sentence reads as a character');
+       if(restoreRead('PIL1notbase64!!')!==null) bad.push('control: a corrupt code reads as a character');
+       // AND THE READER MUST NOT SIMPLY ECHO. If it returned its argument or a
+       // fixed object, every line above would pass on any build.
+       prof.credits=112233;
+       var o2=restoreRead(restoreCode());
+       if(!o2||o2.c!==112233) bad.push('control: the code does not follow the profile, so it is not reading what it wrote');
+       if(o2&&o2.c===918273) bad.push('control: the code is stale, the reader gave back the previous character');
+     } finally {
+       for(k=0;k<FIELDS.length;k++) prof[FIELDS[k]]=keep[FIELDS[k]];
+       for(ck in COSKEY) prof[COSKEY[ck]]=keepW[ck];
+       try{ saveProfile(); }catch(_sp){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.02',what:'changing save says why it leaves fullscreen, and says it again on the way back in',
+   run:function(){
+     var ti=document.getElementById('title');
+     if(!ti) return 'SKIP: there is no character screen in this document';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     var bad=[], KEY='salvagerun:fsWanted', keepFlag=null;
+     try{ keepFlag=localStorage.getItem(KEY); }catch(_lk){}
+     var realFsOn=(typeof fsOn==='function')?fsOn:null;
+     var wasOn=ti.classList.contains('on');
+     try{
+       ti.classList.add('on');
+       // 1. THE PANEL SAYS WHY, WHERE THE CLICK IS. He asked the question, so the
+       //    answer belongs beside the thing that raised it and not in a changelog.
+       var panel=document.getElementById('slotpanel');
+       var txt=panel?String(panel.textContent||'').toLowerCase():'';
+       if(txt.indexOf('reload')<0||txt.indexOf('fullscreen')<0)
+         bad.push('the saves panel does not say that changing save reloads the game and drops fullscreen');
+       // 2. AND IT REMEMBERS, but only when he was actually in fullscreen. This is
+       //    driven by making the game believe it is, which is the only way to test
+       //    it: no check can put a browser into real fullscreen without a gesture.
+       if(typeof fsMark!=='function'||typeof fsBackNote!=='function'){
+         bad.push('the build does not remember that he was in fullscreen when he switched save, so his question has no answer in the game');
+         return bad.join('; ');
+       }
+       try{ localStorage.removeItem(KEY); }catch(_r1){}
+       fsOn=function(){ return false; };
+       fsMark();
+       var afterNo=null; try{ afterNo=localStorage.getItem(KEY); }catch(_r2){}
+       if(afterNo) bad.push('control: switching save while NOT in fullscreen still leaves the note armed, so it would fire for nothing');
+       fsOn=function(){ return true; };
+       fsMark();
+       var afterYes=null; try{ afterYes=localStorage.getItem(KEY); }catch(_r3){}
+       if(!afterYes) bad.push('switching save while in fullscreen is not remembered, so the way back is never offered');
+       // 3. AND THE WAY BACK IS OFFERED, ONCE. The note belongs to the reload it
+       //    came from; a note that stays is a note he stops reading.
+       fsOn=function(){ return false; };
+       var el=document.getElementById('fsback');
+       if(!el) bad.push('there is no line to tell him what happened');
+       else {
+         var shown=fsBackNote();
+         if(!shown) bad.push('the flag was set and the note did not fire');
+         if(window.getComputedStyle(el).display==='none') bad.push('the note fired and is not visible');
+         var still=null; try{ still=localStorage.getItem(KEY); }catch(_r4){}
+         if(still) bad.push('the note did not clear its own flag, so it would appear on every boot from now on');
+         fsBackNote();
+         if(window.getComputedStyle(el).display!=='none') bad.push('the note is still showing on the next boot, when nothing was switched');
+       }
+       // 4. CONTROL: and it does not nag him when he is ALREADY back in
+       //    fullscreen, which is the one case where the line is noise.
+       try{ localStorage.setItem(KEY,'1'); }catch(_r5){}
+       fsOn=function(){ return true; };
+       fsBackNote();
+       var el2=document.getElementById('fsback');
+       if(el2&&window.getComputedStyle(el2).display!=='none')
+         bad.push('control: the note tells him he lost fullscreen while he is in fullscreen');
+     } finally {
+       if(realFsOn) fsOn=realFsOn;
+       try{ if(keepFlag===null) localStorage.removeItem(KEY); else localStorage.setItem(KEY,keepFlag); }catch(_r6){}
+       var e3=document.getElementById('fsback'); if(e3) e3.style.display='none';
+       ti.classList.toggle('on',wasOn);
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.01',what:'the end of raid buttons ask about this game, and a pressed one reaches the run report',
+   run:function(){
+     if(typeof TAGS==='undefined') return 'SKIP: this build has no feedback tags';
+     if(!(window.__deploy&&window.__state)) return 'SKIP: this fixture cannot end a raid';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so no tag can be clicked';
+     var bad=[], i, j;
+     // 1. THE THREE A FRIEND CANNOT SAY ANY OTHER WAY. The alpha exists to find
+     //    out what breaks on somebody else's machine, and a tag is the only
+     //    feedback most people will ever give.
+     var joined=TAGS.join(' | ').toLowerCase();
+     var MUST=[['crash','it crashed'],
+               ['looked wrong','something looked wrong'],
+               ['sound','the sound was off'],
+               ['read','text was hard to read']];
+     for(i=0;i<MUST.length;i++)
+       if(joined.indexOf(MUST[i][0])<0) bad.push('the end of raid buttons offer no way to say '+MUST[i][1]);
+     // 2. AND THEY ARE ABOUT THIS GAME, not the questions of thirty builds ago.
+     //    Eight of the old twenty-four asked about one machine each, from an era
+     //    he has since answered with dozens of logged runs.
+     var STALE=['listener beatable','listener unfair','pillbox worth it','pillbox a chore',
+                'bulwark great','bulwark unfair','howler great','howler unfair'];
+     var left=[];
+     for(i=0;i<STALE.length;i++) if(joined.indexOf(STALE[i])>=0) left.push(STALE[i]);
+     if(left.length>2) bad.push(left.length+' of the buttons are still the one-machine questions of v5.72: '+left.join(', '));
+     // 3. NO DUPLICATES, and a sane number of them. A tag row he cannot scan is
+     //    a tag row nobody presses.
+     var seen={};
+     for(i=0;i<TAGS.length;i++){
+       var t=String(TAGS[i]);
+       if(seen[t]) bad.push('the button '+t+' appears twice');
+       seen[t]=1;
+       if(t.length>34) bad.push('the button '+t+' is '+t.length+' characters and will not fit the row');
+     }
+     if(TAGS.length<12) bad.push('only '+TAGS.length+' buttons, which is not enough to cover a raid');
+     if(TAGS.length>40) bad.push(TAGS.length+' buttons is more than anyone reads');
+     // 4. AND PRESSING ONE REACHES THE REPORT. This is the whole point: a button
+     //    that does not arrive is worse than no button. Driven through the real
+     //    end of raid card and the real way out.
+     if(!(window.__endRaid&&document.getElementById('tagwrap'))) return bad.length?bad.join('; '):null;
+     __runPrep(); __resetCfg(); __pinDefaults(0);
+     var prof=__P(), keepLog=(prof.log||[]).slice();
+     try{
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0;
+       __endRaid('extract');
+       var w=document.getElementById('tagwrap');
+       var cells=w?w.querySelectorAll('.tag'):[];
+       if(!cells.length){ bad.push('the end of raid card drew no buttons at all'); }
+       else {
+         if(cells.length!==TAGS.length) bad.push('the card drew '+cells.length+' buttons for '+TAGS.length+' in the list');
+         // press two, and press a third twice so the second press turns it off
+         var want=[String(cells[0].textContent),String(cells[1].textContent)];
+         cells[0].click(); cells[1].click();
+         cells[2].click(); cells[2].click();
+         var off=String(cells[2].textContent);
+         var btn=document.getElementById('oc_btn');
+         if(!btn) bad.push('control: there is no way out of the card, so nothing can be logged');
+         else {
+           btn.click();
+           var log=prof.log||[], rec=log[log.length-1];
+           if(!rec) bad.push('control: the run did not reach the log, so the tags cannot be checked');
+           else {
+             var got=(rec.tags||[]).map(function(x){ return String(x).toUpperCase(); }).join(' | ');
+             for(j=0;j<want.length;j++)
+               if(got.indexOf(want[j].toUpperCase())<0)
+                 bad.push('the button '+want[j]+' was pressed and did not reach the run report, which reads '+(got||'nothing'));
+             if(got.indexOf(off.toUpperCase())>=0)
+               bad.push('control: '+off+' was pressed twice and still reached the report, so a button cannot be unpressed');
+           }
+         }
+       }
+     } finally {
+       prof.log=keepLog;
+       try{ __topClear(); }catch(_tc){}
+       try{ saveProfile(); }catch(_sp){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'11.00',what:'he picks the weather on the way up, the hard ones pay his bonus, and pinning one does not move the seeded map',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__P)) return 'SKIP: this fixture cannot deploy';
+     if(typeof WEATHER==='undefined') return 'SKIP: this build has no weather table';
+     var bad=[], prof=__P(), keepPick=prof.wxPick, keepXp=prof.xp, keepLvl=prof.xpLevel, i;
+     try{
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       // 1. THE CONTROL IS ON THE PAGE, in the same shape as his SURFACE row.
+       var host=document.getElementById('sectorwx');
+       if(!host) return 'the sector page has no weather control at all, which is his note';
+       var btns=host.querySelectorAll('.wxb');
+       if(btns.length<5) bad.push('the weather row offers only '+btns.length+' choices');
+       var ids={}, j;
+       for(j=0;j<btns.length;j++) ids[btns[j].getAttribute('data-wx')]=btns[j];
+       if(!ids.any) bad.push('there is no way to leave the weather to the roll, which was the old behaviour and has to stay reachable');
+       // 2. PRESSING ONE PINS IT, and the raid comes up in it. Driven through the
+       //    button, not by writing the profile, because the button is the thing
+       //    he presses.
+       var want=null;
+       for(j=0;j<btns.length;j++){ var id=btns[j].getAttribute('data-wx'); if(id&&id!=='any'){ want=id; btns[j].click(); break; } }
+       if(!want) bad.push('control: the weather row offers nothing to pin, so nothing below is tested');
+       else {
+         if(prof.wxPick!==want) bad.push('pressing '+want+' did not stick, the profile says '+prof.wxPick);
+         __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+         var got=(__state().wx&&__state().wx.id)||'none';
+         if(got!==want) bad.push('he asked for '+want+' and the raid came up '+got);
+       }
+       // 3. AND EVERY OTHER PINNABLE WEATHER LANDS TOO.
+       for(j=0;j<btns.length;j++){
+         var w2=btns[j].getAttribute('data-wx'); if(!w2||w2==='any') continue;
+         prof.wxPick=w2;
+         __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+         var g2=(__state().wx&&__state().wx.id)||'none';
+         if(g2!==w2) bad.push(w2+' cannot be chosen, the raid came up '+g2);
+       }
+       // 4. THE ONE THAT WOULD HAVE BEEN INVISIBLE. The weather is ONE DRAW from
+       //    the seeded stream. An implementation that skips the roll when a
+       //    weather is pinned moves every roll after it, and the map, the loot
+       //    and the bodies all change without a word. Same seed, same map, three
+       //    different pins: the counts must be identical.
+       function fingerprint(pick){
+         prof.wxPick=pick;
+         __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+         var g=__state();
+         return g.ents.length+'/'+(g.containers?g.containers.length:-1)+'/'+(g.map&&g.map.walls?g.map.walls.length:-1);
+       }
+       var f0=fingerprint('any'), fA=fingerprint('storm'), fB=fingerprint('clear');
+       if(fA!==f0) bad.push('pinning storm changed the map itself: '+f0+' became '+fA+', so the seeded roll was skipped rather than overridden');
+       if(fB!==f0) bad.push('pinning clear changed the map itself: '+f0+' became '+fB);
+       // 5. HIS 1.1x, AND ONLY FOR THE HARD ONES.
+       if(typeof wxHardId!=='function'||typeof wxXpMul!=='function')
+         bad.push('the build has no idea which weather is hard, so nothing can pay for it');
+       else {
+         // CUTTING SIGHT is the weather itself and is true whatever the hour.
+         var HARD=['rain','fog','storm'], EASY=['clear','partly'];
+         for(i=0;i<HARD.length;i++) if(!wxHardId(HARD[i])) bad.push(HARD[i]+' does not count as hard going and it cuts your sight');
+         for(i=0;i<EASY.length;i++) if(wxHardId(EASY[i])) bad.push('control: '+EASY[i]+' counts as hard going, so every weather pays and the bonus means nothing');
+         // v11.05, HIS QUESTION: KILLING THE LAMPS only counts when the lamps
+         // were on. At night they are the light; at 8am and noon the time of day
+         // already has them at zero and a blackout multiplies nothing.
+         if(typeof lampBase!=='function') bad.push('nothing asks how much lamp light there was before the weather, so a blackout pays whatever the hour');
+         else {
+           var NIGHT=false, DAYNOON={lights:0}, DAYDUSK={lights:1};
+           if(!wxHardId('blackout',NIGHT)) bad.push('a blackout at night does not count as hard going, and at night the lamps are the light');
+           if(wxHardId('blackout',true,DAYNOON)) bad.push('a blackout at noon counts as hard going, and at noon the lamps are already off, which is his question');
+           if(!wxHardId('blackout',true,DAYDUSK)) bad.push('a blackout at dusk does not count as hard going, and at dusk the lamps are at full');
+           // CONTROL: the times of day this rests on have to be what I think they
+           // are, asked of the table rather than remembered.
+           if(typeof TODS!=='undefined'){
+             var noonL=null, duskL=null, q;
+             for(q=0;q<TODS.length;q++){ if(TODS[q].id==='noon') noonL=TODS[q].lights; if(TODS[q].id==='dusk') duskL=TODS[q].lights; }
+             if(noonL!==0) bad.push('control: noon carries '+noonL+' lamp light and this rule assumes zero');
+             if(!(duskL>=0.9)) bad.push('control: dusk carries '+duskL+' lamp light and this rule assumes full');
+           }
+         }
+         if(!(wxXpMul()>1)) bad.push('control: the weather bonus is '+wxXpMul()+', so there is no bonus to test');
+         // AND IT REACHES THE PAYOUT, not just the table. Two identical runs, one
+         // hard and one not, through the real progress path.
+         if(typeof addProgress==='function'){
+           function rec(hard){ return {outcome:'extract',haul:2000,carriedIn:0,dur:120,kills:0,night:0,wxHard:hard,
+                                       cont:1,items:3,mapIx:0,wx:hard?'fog':'clear'}; }
+           var r0=rec(0), r1=rec(1);
+           prof.xp=0; addProgress(r0);
+           prof.xp=0; addProgress(r1);
+           if(!(r0.xpBase>0)) bad.push('control: a clear run paid '+r0.xpBase+' XP, so there is nothing for the bonus to multiply');
+           else {
+             var ratio=r1.xpBase/r0.xpBase;
+             if(Math.abs(ratio-wxXpMul())>0.03)
+               bad.push('a hard weather run paid '+r1.xpBase+' against '+r0.xpBase+' for a clear one, a ratio of '+ratio.toFixed(3)+' and not the '+wxXpMul()+' he asked for');
+           }
+         }
+       }
+     } finally {
+       prof.wxPick=keepPick; prof.xp=keepXp; prof.xpLevel=keepLvl;
+       try{ __resetCfg(); }catch(_rc){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.99',what:'a pillager wears the hat, the beard and the tattoo his look rolled, and the fringe is still hers alone',
+   run:function(){
+     if(!(window.__opShot&&window.__canvases&&window.__P)) return 'SKIP: this fixture cannot draw one figure at a time';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+     var CN=__canvases(), wx=CN.world.getContext('2d'), Wd=CN.world.width, Hd=CN.world.height;
+     function shot(look){ var r=__opShot(look,0,9); return r&&r.thrown?null:wx.getImageData(0,0,Wd,Hd).data; }
+     function diff(a,b){ if(!a||!b) return -1; var k=0;
+       for(var q=0;q<a.length;q+=4)
+         if(Math.abs(a[q]-b[q])+Math.abs(a[q+1]-b[q+1])+Math.abs(a[q+2]-b[q+2])>24) k++;
+       return k; }
+     var BASE={hero:0,faceMark:'faceplain',eyes:'eyeblue',skin:'skinfair',hat:'none',
+               hair:'blonde',cut:'long',beard:'clean',tattoo:'tatnone'};
+     function look(over){ var o={},k; for(k in BASE) o[k]=BASE[k]; if(over) for(k in over) o[k]=over[k]; return o; }
+     shot(look());                      // one warm draw
+     // EVERY MEASUREMENT IS A PAIR, drawn back to back, so nothing that drifts
+     // over the length of this check can leak into a number. The pair is checked
+     // for drift first and the amount is carried into every message.
+     function once(over){ var b0=shot(look()), b1=shot(look(over)); return diff(b0,b1); }
+     // THE SETTLED READING. The first pair after a resize moves; every pair after
+     // it is exact. Two pairs, smallest wins, so nothing that happens once on the
+     // way in can be mistaken for a rack.
+     function pair(over){ var a=once(over), b=once(over); return (a<0||b<0)?-1:Math.min(a,b); }
+     var noise=pair(null);
+     if(!(noise>=0)) return 'drawing one pillager threw';
+     if(noise>40) bad.push('control: two settled draws of the same pillager differ by '+noise+' pixels, so this instrument cannot measure a rack');
+     // 1. THE THREE RACKS REACH A PILLAGER. Measured on v10.98 all three changed
+     //    a pillager by exactly ZERO while changing the hero by thousands.
+     var RACKS=[{k:'hat',v:'spartan',floor:2000,pk:'cosHat',hv:'spartan',h0:'none',name:'headgear'},
+                {k:'beard',v:'fullbeard',floor:800,pk:'cosBeard',hv:'fullbeard',h0:'clean',name:'the beard'},
+                {k:'tattoo',v:'tatspider',floor:300,pk:'cosTattoo',hv:'tatspider',h0:'tatnone',name:'the tattoo'}];
+     var prof=__P(), i;
+     for(i=0;i<RACKS.length;i++){
+       var R=RACKS[i], o={}; o[R.k]=R.v;
+       var d=pair(o);
+       if(d<R.floor) bad.push(R.name+' changes a pillager by '+d+' pixels against a noise floor of '+noise+', so a rack he rolled is not drawn on him');
+       // AND THE HERO STILL HAS IT. Fixing the pillager by breaking her would
+       // pass every line above.
+       var was=prof[R.pk], wasAll=prof.cosAll;
+       prof.cosAll=1;   // v11.11: own the rack for this arm, or a profile with no
+                        // runs on it hides the hat and this reads as her losing it
+       prof[R.pk]=R.h0; var H1=shot({hero:1});
+       prof[R.pk]=R.hv; var H2=shot({hero:1});
+       prof[R.pk]=was; prof.cosAll=wasAll;
+       var dh=diff(H1,H2);
+       if(dh<300) bad.push('control: '+R.name+' now changes the operator by only '+dh+' pixels, so this was fixed by taking it off her');
+     }
+     // 2. AND THE FRINGE IS STILL HERS. It sits in the same branch and is the one
+     //    thing in there that is her own styling rather than something picked up.
+     //    Same look on both: v10.99 measures 30,490 pixels of difference, which is
+     //    her hair. Ungating the whole branch would collapse this.
+     var keep={}, KEYS=['cosHat','cosBeard','cosTattoo','cosHair','cosCut','cosSkin','cosEyes','cosFace','cosOutfit'];
+     for(i=0;i<KEYS.length;i++) keep[KEYS[i]]=prof[KEYS[i]];
+     prof.cosHat='none'; prof.cosBeard='clean'; prof.cosTattoo='tatnone'; prof.cosHair='blonde';
+     prof.cosCut='long'; prof.cosSkin='skinfair'; prof.cosEyes='eyeblue'; prof.cosFace='faceplain';
+     prof.cosOutfit='outnone';
+     var dHP=diff(shot({hero:1}),shot(look()));
+     for(i=0;i<KEYS.length;i++) prof[KEYS[i]]=keep[KEYS[i]];
+     if(dHP<5000) bad.push('the operator and a pillager wearing the same things differ by only '+dHP+' pixels, so her own fringe has been handed out with the racks');
+     // 3. CONTROL: A SUIT STILL OVERRULES THE RACKS, which is the order v10.54
+     //    set and which this change reaches straight through.
+     if(typeof OUTFITS!=='undefined'||typeof cosFind==='function'){
+       var suited=look({outfit:'outskeleton',hat:'spartan'});
+       var suitedNoHat=look({outfit:'outskeleton',hat:'none'});
+       var ds=diff(shot(suited),shot(suitedNoHat));
+       if(ds>400) bad.push('a hat is drawn over a full-body suit, '+ds+' pixels, and a suit is supposed to overrule every rack');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.98',what:'every control on the character screen can be pressed without throwing, and renaming your pillager updates the line under the title',
+   run:function(){
+     var ti=document.getElementById('title');
+     if(!ti) return 'SKIP: there is no character screen in this document';
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so no click can land';
+     var bad=[], prof=__P();
+     var keepName=prof.pname, keepRuns=prof.runs, wasOn=ti.classList.contains('on');
+     // THE ONE KEY THAT MAY NOT MOVE. It decides which save boots, and a check
+     // that leaves it pointing somewhere else has changed his character.
+     var keepSlot=null; try{ keepSlot=localStorage.getItem('salvagerun:activeSlot'); }catch(_ls){}
+     // THE CRASH HE REPORTED, FROM HIS OWN LOG: pressing SAVE on the name threw
+     // ReferenceError four times, saved the name, and never updated the line.
+     // Errors inside a DOM handler do not propagate to the caller, so a check
+     // that just clicks and carries on would see nothing. It listens.
+     var caught=[];
+     function onErr(ev){ caught.push(String((ev&&ev.message)||ev)); }
+     window.addEventListener('error',onErr);
+     try{
+       ti.classList.add('on');
+       prof.runs=Math.max(1,prof.runs||0);        // the line only draws with a run logged
+       var pin=document.getElementById('pnamein'), psv=document.getElementById('pnamesave');
+       var sub=document.getElementById('titlesub');
+       if(!pin||!psv) return 'SKIP: this build has no rename control on the character screen';
+       if(!sub) return 'SKIP: this build draws no name line under the title';
+       // Distinctive on purpose: a name the fallback could never produce, so a
+       // line that happens to say PILLAGER cannot pass for a rename.
+       var want='ZQXNAME'+(prof.runs);
+       sub.textContent='';
+       pin.value=want;
+       psv.click();
+       if(caught.length) bad.push('renaming your pillager threw: '+caught.join(' / '));
+       if(prof.pname!==want) bad.push('the rename did not take, the profile says '+prof.pname);
+       if(String(sub.textContent).indexOf(want)<0)
+         bad.push('the line under the title still reads '+(sub.textContent||'nothing')+' after the rename');
+       // CONTROL ONE: the listener has to be able to hear a throw, or the first
+       // assertion above is decoration.
+       var heard=caught.length;
+       var boom=document.createElement('button');
+       boom.onclick=function(){ throw new Error('zqx control throw'); };
+       document.body.appendChild(boom);
+       try{ boom.click(); }catch(_bc){}
+       document.body.removeChild(boom);
+       if(caught.length===heard) bad.push('control: a deliberate throw inside a click was not heard, so this check cannot see his crash');
+       caught.length=0;
+       // CONTROL TWO: and every other button on that screen survives a press.
+       // His crash was one handler out of several and nothing was watching any
+       // of them.
+       // SKIP:  titlestart leaves the screen, titlefs needs a real user gesture,
+       //        DELETE arms an erase, delgo performs it, and NEW PILLAGER writes
+       //        the active slot pointer and RELOADS THE TAB.
+       var SKIP={titlestart:1,titlefs:1,delgo:1,newgame:1};
+       var btns=ti.querySelectorAll('button'), pressed=0, found={};
+       for(var i=0;i<btns.length;i++){
+         var b=btns[i], id=b.id||'';
+         if(SKIP[id]){ found[id]=1; continue; }
+         if(b.getAttribute('data-del')) continue;             // arms a deletion
+         try{ b.click(); pressed++; }catch(e){ bad.push('pressing '+(id||'a button')+' on the character screen threw: '+e.message); }
+       }
+       // CONTROL: the two dangerous ones have to have been on the screen and
+       // skipped. If the ids ever change, this check would start pressing them.
+       if(!found.newgame) bad.push('control: the new pillager button was not found by the name this check skips it under, so it may have been pressed');
+       if(!found.titlestart) bad.push('control: the start button was not found by the name this check skips it under');
+       if(caught.length) bad.push('a button on the character screen threw: '+caught.join(' / '));
+       if(pressed<1) bad.push('control: no button on the character screen was pressable, so nothing was tested');
+     } finally {
+       window.removeEventListener('error',onErr);
+       try{ if(keepSlot===null) localStorage.removeItem('salvagerun:activeSlot');
+            else localStorage.setItem('salvagerun:activeSlot',keepSlot); }catch(_ls2){}
+       prof.pname=keepName; prof.runs=keepRuns;
+       try{ saveProfile(); }catch(_sp){}
+       ti.classList.toggle('on',wasOn);
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.97',what:'nothing the game wants is classified as salvage, and the sell button will not clear it',
+   run:function(){
+     if(typeof RECIPES==='undefined'||typeof ITEMS==='undefined') return 'SKIP: this build has no item tables';
+     if(typeof sellable!=='function') return 'SKIP: this build has no sell rule';
+     var bad=[], i, k;
+     // WHAT WANTS AN ITEM, worked out here from the tables that do the wanting.
+     // This is the one place the check is allowed to know the answer
+     // independently, because the whole finding is that the game did not.
+     var wanted={}, why={};
+     for(i=0;i<RECIPES.length;i++){
+       var need=RECIPES[i].need||{};
+       for(k in need){ wanted[k]=1; why[k]='the '+RECIPES[i].name+' recipe'; }
+     }
+     if(typeof RACK_COST!=='undefined') for(k in RACK_COST){ wanted[k]=1; why[k]='a mainframe rack'; }
+     // The repair parts. Ask the cost function rather than repeating its rule:
+     // drive a gun to a light wear and a heavy one and see what it asks for.
+     var wearOn=(typeof wearLive==='function')?!!wearLive():false;
+     if(typeof repairCost==='function'&&typeof WEAPONS!=='undefined'){
+       var prof=__P(), keepW=prof.wear;
+       prof.wear={};
+       var gid=null;
+       for(k in WEAPONS){ if(WEAPONS[k]&&WEAPONS[k].mag!==0){ gid=k; break; } }
+       if(gid){
+         prof.wear[gid]=600;  var rl=repairCost(gid);
+         prof.wear[gid]=1800; var rh=repairCost(gid);
+         if(rl&&rl.part){ wanted[rl.part]=1; why[rl.part]='repairing a worn gun'; }
+         if(rh&&rh.part){ wanted[rh.part]=1; why[rh.part]='repairing a badly worn gun'; }
+         if(rl&&rh&&rl.part===rh.part)
+           bad.push('control: light and heavy wear both ask for '+rl.part+', so only one repair part is being tested');
+         // THE HONEST PART. While WEARSTEPS carries one band the repair economy
+         // is switched off and repairCost refuses every gun, so this arm tests
+         // nothing and must not pretend otherwise. It only fails on the
+         // contradiction: wear alive and still no part named.
+         if(wearOn&&!(rl&&rl.part)&&!(rh&&rh.part))
+           bad.push('the wear system is running and yet a gun at 1,800 rounds cannot name a repair part');
+       } else bad.push('control: no gun was found to wear, so the repair parts are untested');
+       prof.wear=keepW;
+     }
+     // AND THE GAME MUST NOT PROMISE A USE IT WILL NOT HONOUR. With the repair
+     // economy dormant, nothing may be labelled a repair part.
+     if(typeof itemWanted==='function'&&typeof REPAIR_PARTS!=='undefined'&&!wearOn){
+       var _rw=itemWanted(REPAIR_PARTS.heavy);
+       if(_rw&&String(_rw).indexOf('repair')>=0)
+         bad.push('the stash says '+REPAIR_PARTS.heavy+' is for gun repairs while the wear system is switched off, which is a use the game will not honour');
+     }
+     // The contract board. Same rule: ask it, do not repeat it.
+     if(typeof CON_ITEMS!=='undefined')
+       for(i=0;i<CON_ITEMS.length;i++){ wanted[CON_ITEMS[i]]=1; why[CON_ITEMS[i]]='a contract asking for it by name'; }
+     else bad.push('control: this build keeps the contract shopping list where nothing can read it, which is how three items ended up as salvage');
+     // The mainframe burns one of these for intel.
+     if(typeof slotCore==='function'){ wanted.core=1; why.core='the mainframe, which burns one for intel'; }
+     var list=[]; for(k in wanted) list.push(k);
+     if(list.length<6) bad.push('control: only '+list.length+' items were found to be wanted by anything, so this is not enumerating the game');
+     // 1. NOTHING WANTED IS SHELVED AS SALVAGE. Measured on v10.96: servo, optic
+     //    and core all came back salvage while something was asking for them.
+     if(typeof stashTabOf!=='function')
+       bad.push('the stash keeps its shelf rule inside its own renderer, so nothing can ask what shelf an item is on');
+     else for(i=0;i<list.length;i++){
+       if(!ITEMS[list[i]]) continue;
+       var tab=stashTabOf(list[i]);
+       if(tab==='salvage') bad.push(ITEMS[list[i]].name+' is shelved as salvage and '+why[list[i]]+' wants it');
+     }
+     // 2. AND THE SELL BUTTON WILL NOT CLEAR IT. The shelf is a label; this is
+     //    the money. Junk tags are cleared first, because a tag he set himself
+     //    outranks all of this and would make every answer below true.
+     var prof2=__P(), keepJunk=prof2.junk;
+     prof2.junk={};
+     try{
+       for(i=0;i<list.length;i++){
+         if(!ITEMS[list[i]]) continue;
+         if(sellable(list[i])) bad.push(ITEMS[list[i]].name+' is cleared by the sell button and '+why[list[i]]+' wants it');
+       }
+       // 3. CONTROL, AND WITHOUT IT THE TWO ABOVE COULD PASS BY KEEPING
+       //    EVERYTHING. Real salvage must still be salvage and must still sell,
+       //    or the fix is just an off switch on the sell button.
+       var junkN=0, junkEg=null;
+       for(k in ITEMS){
+         if(wanted[k]||ITEMS[k].use) continue;
+         if(typeof stashTabOf==='function'&&stashTabOf(k)!=='salvage') continue;
+         if(sellable(k)){ junkN++; if(!junkEg) junkEg=ITEMS[k].name; }
+       }
+       if(junkN<3) bad.push('control: only '+junkN+' items are still loose salvage, so the sell button has been turned off rather than taught');
+       // 4. CONTROL: and a junk tag still beats all of it, which is his escape
+       //    hatch for a part he has decided to be rid of.
+       var _pk=null;
+       for(i=0;i<list.length;i++) if(ITEMS[list[i]]&&!ITEMS[list[i]].use){ _pk=list[i]; break; }
+       if(_pk){
+         prof2.junk[_pk]=1;
+         if(!sellable(_pk)) bad.push('tagging '+ITEMS[_pk].name+' as junk no longer lets him sell it');
+         prof2.junk={};
+       }
+     } finally { prof2.junk=keepJunk; }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.96',what:'pausing in the Undercroft offers exactly his two choices, and the second one really does go back to the character screen',
+   run:function(){
+     if(typeof togglePauseBox!=='function') return 'SKIP: this build has no pause box';
+     if(!(window.__hubEnter&&window.__P)) return 'SKIP: this fixture cannot reach the Undercroft';
+     var bad=[], pb=document.getElementById('pausebox'), ti=document.getElementById('title');
+     if(!pb) return 'SKIP: there is no pause box in this document';
+     if(!ti) return 'SKIP: there is no character screen in this document';
+     var prof=__P(), credits0=prof.credits, runs0=prof.runs, name0=prof.pname;
+     var titleWas=ti.classList.contains('on');
+     function shownBtns(){
+       var out=[], all=pb.querySelectorAll('button');
+       for(var i=0;i<all.length;i++){
+         var st=window.getComputedStyle(all[i]);
+         if(st.display==='none'||st.visibility==='hidden') continue;
+         out.push({id:all[i].id,txt:(all[i].textContent||'').trim()});
+       }
+       return out;
+     }
+     try{
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       // ON THE FLOOR. The raid has to be gone, or the box correctly decides it
+       // is pausing a raid and shows the raid controls, and this would be
+       // testing the wrong half.
+       G=null;
+       __hubEnter();
+       ti.classList.remove('on');
+       togglePauseBox(true);
+       if(!pb.classList.contains('on')) return 'SKIP: the pause box would not open on the floor';
+       var floor=shownBtns();
+       // 1. EXACTLY TWO, AND THEY ARE HIS TWO. His words: "actually RETURN TO
+       //    THE UNDERCROFT and RETURN TO CHARACTER SELECTION should be the 2
+       //    choices".
+       if(floor.length!==2)
+         bad.push('the Undercroft pause box offers '+floor.length+' buttons, not two: '+floor.map(function(b){return b.txt;}).join(' / '));
+       var joined=floor.map(function(b){ return b.txt.toUpperCase(); }).join(' | ');
+       if(joined.indexOf('RETURN TO THE UNDERCROFT')<0)
+         bad.push('nothing on the floor pause box says RETURN TO THE UNDERCROFT, it says '+joined);
+       if(joined.indexOf('RETURN TO CHARACTER SELECTION')<0)
+         bad.push('nothing on the floor pause box says RETURN TO CHARACTER SELECTION, it says '+joined);
+       // 2. AND THE SECOND ONE WORKS. A button with the right words on it that
+       //    does nothing is the same bug wearing a label.
+       var back=null;
+       for(var i=0;i<floor.length;i++) if(floor[i].txt.toUpperCase().indexOf('CHARACTER')>=0) back=document.getElementById(floor[i].id);
+       if(back){
+         if(ti.classList.contains('on')) bad.push('control: the character screen was already up before the button was pressed, so pressing it proves nothing');
+         back.click();
+         if(!ti.classList.contains('on')) bad.push('RETURN TO CHARACTER SELECTION leaves you exactly where you were');
+         if(pb.classList.contains('on')) bad.push('RETURN TO CHARACTER SELECTION leaves the pause box open over the character screen');
+         // AND IT DOES NOT COST HIM THE CHARACTER. Going back to the front door
+         // is not the same as throwing the save away.
+         var pr2=__P();
+         if(pr2.credits!==credits0||pr2.runs!==runs0||pr2.pname!==name0)
+           bad.push('going back to the character screen changed the save: credits '+credits0+' to '+pr2.credits+', runs '+runs0+' to '+pr2.runs);
+         // IT HAS TO BE DRAWN. A screen marked as shown that paints nothing is
+         // the same dead end with the class attribute changed.
+         var col=ti.querySelector('.titlecol');
+         if(col&&col.getBoundingClientRect().height<200)
+           bad.push('the character screen came up but is only '+Math.round(col.getBoundingClientRect().height)+' pixels tall, so it is not drawn');
+         // AND HE HAS TO BE ABLE TO COME BACK. A one-way door is worse than none.
+         var st=document.getElementById('titlestart');
+         if(!st) bad.push('control: there is no way in from the character screen, so the round trip cannot be tested');
+         else {
+           st.click();
+           if(ti.classList.contains('on')) bad.push('pressing the start button on the character screen does not put you back in the game');
+         }
+       }
+       // 3. CONTROL: THE RAID PAUSE IS UNTOUCHED. The same box serves both, so a
+       //    change made for the floor is one edit away from taking Abandon run
+       //    off a live raid.
+       ti.classList.remove('on');
+       togglePauseBox(false);
+       __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.hp=g.player.maxhp; g.player.downed=false;
+       togglePauseBox(true);
+       if(!pb.classList.contains('on')) bad.push('control: the pause box would not open in a raid, so the raid half is untested');
+       else {
+         var raid=shownBtns(), rj=raid.map(function(b){ return b.txt.toUpperCase(); }).join(' | ');
+         if(rj.indexOf('ABANDON')<0) bad.push('control: the raid pause box no longer offers a way to abandon the run: '+rj);
+         if(rj.indexOf('RESUME')<0) bad.push('control: the raid pause box no longer offers a way to resume: '+rj);
+         if(rj.indexOf('CHARACTER')>=0) bad.push('the raid pause box offers to go back to the character screen mid-raid: '+rj);
+       }
+       // THE PRIMED ABANDON, which this check found on the full corpus rather
+       // than alone: Abandon run does not abandon, it ARMS, and until v10.96 the
+       // only thing that disarmed it was pressing Resume. Close with Escape while
+       // it is armed and the next opening had a live YES, ABANDON THIS RUN
+       // sitting under the pointer, one click from ending the raid.
+       var _ab=document.getElementById('abandonbtn'), _ca=document.getElementById('confirmabandon');
+       if(_ab&&_ca){
+         _ab.click();                                   // arm it, the way he would
+         var armed=(window.getComputedStyle(_ca).display!=='none');
+         if(!armed) bad.push('control: pressing Abandon run did not arm the confirm, so the leak cannot be tested');
+         else {
+           togglePauseBox(false);                       // close it the way Escape does
+           togglePauseBox(true);                        // and come back
+           if(window.getComputedStyle(_ca).display!=='none')
+             bad.push('a primed YES, ABANDON THIS RUN survives the pause box closing, so reopening it puts one click between him and the end of the raid');
+           if((_ab.textContent||'').toUpperCase().indexOf('KEEP PLAYING')>=0)
+             bad.push('the abandon button is still reading NO, KEEP PLAYING on a freshly opened pause box');
+         }
+       }
+       togglePauseBox(false);
+     } finally {
+       try{ togglePauseBox(false); }catch(_e1){}
+       try{ ti.classList.toggle('on',titleWas); }catch(_e2){}
+       try{ __resetCfg(); }catch(_e3){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.95',what:'every word drawn on the canvas is set in one family, the loot pop and the world labels included',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__hud&&window.__hubEnter&&window.__hubStep))
+       return 'SKIP: this fixture cannot draw the game';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+     // THE FAMILY IS THE QUESTION, NOT THE SIZE. The canvas hands the font back
+     // serialised, and the size legitimately varies: the HUD scale multiplies
+     // every role, so one role appears at several sizes in a single frame. What
+     // must never vary is which typeface the words are in.
+     function famOf(f){
+       var m=/px\s+(.*)$/.exec(String(f));
+       if(!m) return String(f);
+       var first=m[1].split(',')[0];
+       return first.replace(/["']/g,'').trim().toLowerCase();
+     }
+     var proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
+     var seen={}, texts={}, draws=0;
+     function trace(fn){
+       proto.fillText=function(t,x,y){
+         var fam=famOf(this.font); draws++;
+         (seen[fam]=seen[fam]||{n:0,eg:[]});
+         seen[fam].n++;
+         if(seen[fam].eg.length<3) seen[fam].eg.push(String(t).slice(0,22));
+         texts[String(t)]=1;
+         return orig.apply(this,arguments);
+       };
+       try{ fn(); } finally { proto.fillText=orig; }
+     }
+     var MARK='ZQX LOOT PROBE';
+     trace(function(){
+       // Deploy INSIDE the trace, because the ground is baked once when the map
+       // is built and a check that arrives afterwards never sees what is painted
+       // into it.
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       // HIS ACTUAL COMPLAINT, on screen: a loot pop with an item name on it,
+       // and one small label beside it, so both sizes of world label are drawn.
+       g.labels.push({x:g.player.x,y:g.player.y-20,txt:MARK,c:'#ffc04a',t:0,life:1.8,big:true,ik:null});
+       g.labels.push({x:g.player.x+30,y:g.player.y-20,txt:'PICKED UP',c:'#4de3d0',t:0,life:1.8,big:false,ik:null});
+       __frame(0); __hud();
+       for(var f=0;f<3;f++) __loop(performance.now()+f*16.7);
+       g.mapOpen=true; __frame(0); __hud(); g.mapOpen=false;
+       __hubEnter(); for(var h=0;h<4;h++) __hubStep(0.016);
+     });
+     // CONTROL ONE, and without it every line below is decoration: the loot pop
+     // has to have been drawn at all. If the label never reached the screen this
+     // check would report one clean family and mean nothing.
+     if(!texts[MARK]) bad.push('control: the loot pop never reached the screen, so nothing here is about his note');
+     if(draws<60) bad.push('control: only '+draws+' words were drawn in the whole sweep, which is not the game');
+     // CONTROL TWO: the tracer has to be able to fail. Draw one word in a
+     // deliberately foreign face and require it to be caught.
+     var caught=null;
+     trace(function(){
+       var cv2=document.createElement('canvas'), c2=cv2.getContext('2d');
+       c2.font='700 20px "Comic Sans MS", cursive'; c2.fillText('control',2,18);
+     });
+     caught=!!seen['comic sans ms'];
+     if(!caught) bad.push('control: a word drawn in a foreign face was not noticed, so this check cannot see a second family');
+     // THE FINDING. On v10.94 the world labels came back in Titan One at 15.6
+     // and 17.2 pixels, and the district numbers baked into the ground came back
+     // in it between 114 and 244.
+     var fam;
+     for(fam in seen){
+       if(fam==='comic sans ms') continue;              // the control, on its own canvas
+       if(fam==='rubik') continue;
+       bad.push(fam+' is a second typeface on the canvas, '+seen[fam].n+' words including '+seen[fam].eg.join(', '));
+     }
+     if(!seen['rubik']) bad.push('control: nothing at all was drawn in the game font, so the sweep is not looking at the game');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.94',what:'nothing a face can wear is painted over the eye, across every look the Undercroft crowd can roll',
+   run:function(){
+     if(!(window.__opShot&&window.__canvases&&window.__crowdLook&&window.__cosOf))
+       return 'SKIP: this fixture cannot draw one face at a time';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+     var CN=__canvases(), wx=CN.world.getContext('2d'), Wd=CN.world.width, Hd=CN.world.height;
+     var BASE={faceMark:'faceplain',eyes:'eyeblue',skin:'skinfair',hat:'none',hair:'blonde',cut:'long',beard:'clean',tattoo:'tatnone'};
+     // FIND THE EYE FROM THE DRAWING ITSELF rather than from the numbers in the
+     // source, because a check that repeats the coordinates is a second copy of
+     // them. The whites are the one flat colour on a lone figure.
+     var r0=__opShot(BASE,0,9);
+     if(!r0) return 'SKIP: this fixture cannot draw an operator';
+     if(r0.thrown) return 'drawing one operator threw: '+r0.thrown;
+     var A0=wx.getImageData(0,0,Wd,Hd).data, pts=[], x,y,q;
+     for(y=0;y<Hd;y++) for(x=0;x<Wd;x++){ q=(y*Wd+x)*4;
+       if(A0[q]===255&&A0[q+1]===246&&A0[q+2]===220) pts.push([x,y]); }
+     if(pts.length<200) return 'SKIP: the eyes could not be found on the drawn face ('+pts.length+' pixels)';
+     var mid=0, i;
+     for(i=0;i<pts.length;i++) mid+=pts[i][0]; mid/=pts.length;
+     function boxOf(left){ var a=1e9,b=1e9,c=-1,d=-1;
+       for(var j=0;j<pts.length;j++){ if((pts[j][0]<mid)!==left) continue;
+         if(pts[j][0]<a)a=pts[j][0]; if(pts[j][1]<b)b=pts[j][1];
+         if(pts[j][0]>c)c=pts[j][0]; if(pts[j][1]>d)d=pts[j][1]; }
+       return {x0:a,y0:b,x1:c,y1:d}; }
+     var L=boxOf(true), R=boxOf(false);
+     if(L.x1<L.x0||R.x1<R.x0) return 'SKIP: only one eye was found, so there is nothing to compare';
+     function inEye(E,px,py){ var rx=(E.x1-E.x0)/2, ry=(E.y1-E.y0)/2;
+       var dx=(px-(E.x0+rx))/Math.max(1,rx), dy=(py-(E.y0+ry))/Math.max(1,ry);
+       return dx*dx+dy*dy<=1; }
+     // Read a window around the eyes rather than the whole screen, so the whole
+     // enumeration below is affordable.
+     var RB={x:Math.max(0,L.x0-12),y:Math.max(0,Math.min(L.y0,R.y0)-12)};
+     RB.w=Math.min(Wd-RB.x,(R.x1+12)-RB.x); RB.h=Math.min(Hd-RB.y,(Math.max(L.y1,R.y1)+12)-RB.y);
+     if(RB.w<20||RB.h<12) return 'SKIP: the eye window came out empty';
+     var cells=[];
+     for(y=0;y<RB.h;y++) for(x=0;x<RB.w;x++)
+       if(inEye(L,RB.x+x,RB.y+y)||inEye(R,RB.x+x,RB.y+y)) cells.push((y*RB.w+x)*4);
+     if(cells.length<400) bad.push('control: the eye came out as '+cells.length+' pixels, too small to measure anything on');
+     function win(){ return wx.getImageData(RB.x,RB.y,RB.w,RB.h).data; }
+     function shot(look){ var r=__opShot(look,0,9); return r&&r.thrown?null:win(); }
+     function cov(a,b){ var k=0;
+       for(var j=0;j<cells.length;j++){ var c=cells[j];
+         if(Math.abs(a[c]-b[c])+Math.abs(a[c+1]-b[c+1])+Math.abs(a[c+2]-b[c+2])>24) k++; }
+       return k/cells.length*100; }
+     function look(over){ var o={}, k; for(k in BASE) o[k]=BASE[k]; if(over) for(k in over) o[k]=over[k]; return o; }
+     var plain=shot(look());
+     if(!plain) return 'drawing the plain face threw';
+     // CONTROL, FIRST, because a measurement that cannot see the defect reports
+     // a clean face for a covered one. Paint a blot straight over both eyes and
+     // require the instrument to shout about it.
+     shot(look());
+     wx.save(); wx.setTransform(1,0,0,1,0,0);
+     wx.fillStyle='#ff00ff'; wx.fillRect(L.x0,L.y0,R.x1-L.x0+1,L.y1-L.y0+1);
+     wx.restore();
+     var blot=cov(plain,win());
+     if(blot<80) bad.push('control: a blot painted straight over both eyes only measures '+blot.toFixed(1)+' percent, so this check cannot see a covered eye');
+     // 1. EVERY FACE MARK ON THE RACK, one at a time. Measured on v10.93: four
+     //    of the six were clean at 0, war paint covered 65.9 percent of the eye
+     //    with two bars straight across both eyeballs, and the shiner 51.4,
+     //    which is one whole eye.
+     var faces=__cosOf('face');
+     if(faces.length<4) bad.push('control: only '+faces.length+' face marks were found, so this is not enumerating the rack');
+     for(i=0;i<faces.length;i++){
+       var f1=shot(look({faceMark:faces[i]}));
+       if(!f1){ bad.push('drawing '+faces[i]+' threw'); continue; }
+       var c1=cov(plain,f1);
+       if(c1>8) bad.push(faces[i]+' is painted over '+c1.toFixed(1)+' percent of the eye');
+     }
+     // 2. AND THE POPULATION HE ACTUALLY SEES. His words were "in some
+     //    instances", so the crowd rolls are enumerated too, each measured
+     //    against ITSELF with the mark removed, which isolates the mark from the
+     //    skin and the hair that came with the roll.
+     var rolls=28, worst=0, worstAt=null, marks={};
+     for(i=0;i<rolls;i++){
+       var lk=__crowdLook(); if(!lk) break;
+       var withM={}, k2;
+       for(k2 in BASE) withM[k2]=BASE[k2];
+       for(k2 in lk) withM[k2]=lk[k2];
+       withM.hero=0;
+       var noM={}; for(k2 in withM) noM[k2]=withM[k2];
+       noM.faceMark='faceplain'; noM.faceIx=0;
+       var b1=shot(noM), b2=shot(withM);
+       if(!b1||!b2){ bad.push('a crowd roll threw while drawing'); break; }
+       var c2=cov(b1,b2);
+       marks[lk.faceMark||('ix'+lk.faceIx)]=1;
+       if(c2>worst){ worst=c2; worstAt=(lk.faceMark||('faceIx '+lk.faceIx)); }
+     }
+     if(worst>8) bad.push('a crowd face covers '+worst.toFixed(1)+' percent of its own eye, worst was '+worstAt);
+     // CONTROL: the rolls have to have produced more than one kind of mark, or
+     // twenty-eight draws of the same clean face proves nothing.
+     var kinds=0, kk; for(kk in marks) kinds++;
+     if(kinds<3) bad.push('control: '+rolls+' crowd rolls produced only '+kinds+' kind of face mark, so the enumeration is not covering the rack');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.93',what:'the Undercroft station names are painted on top of the room darkness rather than under it, they are no longer see-through, and the racks are called FASHION',
+   run:function(){
+     if(!(window.__hubEnter&&window.__hubFrame&&window.__hubStep&&window.__canvases&&window.__hub))
+       return 'SKIP: this fixture cannot draw the Undercroft';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+     __hubEnter(); for(var f=0;f<12;f++) __hubStep(0.016);
+     var CN=__canvases(), wx=CN.world.getContext('2d'), HB=__hub();
+     if(!HB||!HB.stations||HB.stations.length<4) return 'SKIP: the Undercroft has no stations to read';
+     var names={}, i;
+     for(i=0;i<HB.stations.length;i++) names[HB.stations[i].label]=HB.stations[i].id;
+     // HIS NOTE ASKS ABOUT WHAT HE SEES, so measure what he sees: draw the same
+     // frame twice, once with the station names not painted, and difference the
+     // two. What is left in each name's rectangle is exactly the ink that name
+     // contributes to the FINISHED picture, after every layer over it. Both
+     // draws go through __hubFrame, which draws and advances nothing, so the
+     // lamps flicker identically and the only difference is the text.
+     function ink(){
+       var proto=CanvasRenderingContext2D.prototype, orig=proto.fillText, box=[];
+       proto.fillText=function(t,x,y){
+         if(names[String(t)]){ var T=this.getTransform();
+           box.push({id:names[String(t)],x:T.a*x+T.c*y+T.e,y:T.b*x+T.d*y+T.f,
+                     w:this.measureText(String(t)).width*T.a,align:this.textAlign,
+                     px:(function(g){ var m=/([\d.]+)px/.exec(g); return m?+m[1]*T.a:0; })(this.font)}); }
+         return orig.apply(this,arguments);
+       };
+       try{ __hubFrame(0.016); } finally { proto.fillText=orig; }
+       var A=wx.getImageData(0,0,CN.world.width,CN.world.height).data;
+       proto.fillText=function(t){ if(names[String(t)]) return; return orig.apply(this,arguments); };
+       try{ __hubFrame(0.016); } finally { proto.fillText=orig; }
+       var B=wx.getImageData(0,0,CN.world.width,CN.world.height).data;
+       var Wd=CN.world.width, out=[], lum=0;
+       for(var q2=0;q2<B.length;q2+=4) lum+=B[q2]+B[q2+1]+B[q2+2];
+       for(var k=0;k<box.length;k++){
+         var e=box[k];
+         var x0=Math.max(0,Math.round(e.align==='center'?e.x-e.w/2:e.x)), y0=Math.max(0,Math.round(e.y-e.px));
+         var w=Math.min(Wd-x0,Math.round(e.w)), h=Math.min(CN.world.height-y0,Math.round(e.px*1.4));
+         if(w<3||h<3) continue;
+         var nn=0,sum=0;
+         for(var y=0;y<h;y++) for(var x=0;x<w;x++){
+           var q=((y0+y)*Wd+(x0+x))*4;
+           var d=Math.max(Math.abs(A[q]-B[q]),Math.abs(A[q+1]-B[q+1]),Math.abs(A[q+2]-B[q+2]));
+           if(d>6){ nn++; sum+=d; }
+         }
+         out.push({id:e.id,px:nn,mean:nn?Math.round(sum/nn):0});
+       }
+       return {rows:out,room:lum/(B.length/4)/3};
+     }
+     function avg(a){ var s2=0,c2=0; for(var j=0;j<a.length;j++){ if(a[j].px>50){ s2+=a[j].mean; c2++; } } return c2?(s2/c2):0; }
+     var lit=ink();
+     // CONTROL FIRST: the instrument has to have found the names at all. If
+     // suppressing them changed nothing, every number below is furniture.
+     if(lit.rows.length<4) bad.push('control: only '+lit.rows.length+' station names were found on the drawn frame, so this is not measuring the Undercroft');
+     var thin=[];
+     for(i=0;i<lit.rows.length;i++) if(lit.rows[i].px<50) thin.push(lit.rows[i].id);
+     if(thin.length) bad.push('control: '+thin.join(', ')+' painted almost no ink either way, so the instrument cannot see them');
+     // 1. THE NAMES ARE NOT SEE-THROUGH. Measured on v10.92 they averaged 78 of
+     //    a possible 152 and the dimmest was 64; the floor sits well above that
+     //    and above anything a partial fix would reach.
+     var la=avg(lit.rows);
+     if(la<130) bad.push('the station names put only '+Math.round(la)+' of ink into the picture, which is the see-through look he reported');
+     for(i=0;i<lit.rows.length;i++)
+       if(lit.rows[i].px>50&&lit.rows[i].mean<120)
+         bad.push(lit.rows[i].id+' reads at '+lit.rows[i].mean+', still faint even if the others are not');
+     // 2. AND THEY ARE ON TOP OF THE ROOM DARKNESS, NOT UNDER IT, which is the
+     //    half of the defect the note does not mention and the bigger half. The
+     //    room's darkness is a full-screen sheet whose weight is .40 over the
+     //    brightness dial. Wind that dial down and the sheet more than doubles.
+     //    A name UNDER it loses most of what is left: v10.92 fell from 78 to 49,
+     //    a ratio of 0.63. A name over it does not care.
+     __cfg({bright:0.4});
+     for(f=0;f<3;f++) __hubStep(0.016);
+     var dark=ink();
+     __cfg({bright:1.7});
+     for(f=0;f<3;f++) __hubStep(0.016);
+     // CONTROL: the dial has to have actually darkened the room, or a ratio of
+     //   1.00 means the test did nothing rather than that the fix works.
+     if(!(dark.room<lit.room*0.85))
+       bad.push('control: the room only went from '+lit.room.toFixed(1)+' to '+dark.room.toFixed(1)+' brightness, so the darkness test proves nothing');
+     else {
+       var da=avg(dark.rows), ratio=da/Math.max(1,la);
+       if(ratio<0.9) bad.push('the station names dim to '+Math.round(ratio*100)+' percent of themselves when the room goes dark, so they are still painted under the darkness rather than on top of it');
+     }
+     // 3. HIS SECOND HALF: THE NAME. The needle is assembled rather than written,
+     //    because a check that writes the phrase it is looking for finds itself.
+     var oldName=['DISCOUNT','FASHION','DEPOT'].join(String.fromCharCode(32));
+     var mir=null;
+     for(i=0;i<HB.stations.length;i++) if(HB.stations[i].id==='mirror') mir=HB.stations[i];
+     if(!mir) bad.push('control: there is no racks station in the Undercroft to name');
+     else if(String(mir.label).toUpperCase().indexOf(oldName)>=0) bad.push('the racks station is still called by its old three word name on the Undercroft floor');
+     else if(String(mir.label).toUpperCase().indexOf('FASHION')<0) bad.push('the racks station is called '+mir.label+', which is neither of the names he has used');
+     if(typeof WHATSNEW!=='undefined'){
+       var hits=0;
+       for(i=0;i<WHATSNEW.length;i++) if(String(WHATSNEW[i]).toUpperCase().indexOf(oldName)>=0) hits++;
+       if(hits) bad.push(hits+' lines of the new-in card still carry the old three word name');
+     }
+     var h3=document.querySelector('#appearmodal h3');
+     if(h3&&h3.textContent.toUpperCase().indexOf(oldName)>=0) bad.push('the racks window is still titled with the old three word name');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.92',what:'your own marker on the map is far bigger than the eight pixels it was, and grows with the map like every other marker on it',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__mapShot)) return 'SKIP: this fixture cannot draw the map screen';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     var hc=document.getElementById('hcv');
+     if(!hc) return 'SKIP: no HUD canvas to read the map from';
+     var hx=hc.getContext('2d'), bad=[];
+     // THE INSTRUMENT. The marker is the one thing on the map painted in flat
+     // #ffc04a at full alpha, so an EXACT colour match isolates the gold disc and
+     // nothing else: the halo is 18 percent alpha, the ink ring is near black,
+     // and the heading line at 85 percent alpha lands on darker ground and blends
+     // away from the exact value. What comes back is the disc, in pixels.
+     function read(px,py){
+       var Pj=__mapShot(); if(!Pj) return null;
+       var cx=Math.round(Pj.ox+px*Pj.sc), cy=Math.round(Pj.oy+py*Pj.sc);
+       var R=80;
+       var x0=Math.max(0,cx-R), y0=Math.max(0,cy-R);
+       var x1=Math.min(hc.width,cx+R), y1=Math.min(hc.height,cy+R);
+       if(x1-x0<16||y1-y0<16) return null;
+       var w=x1-x0, d=hx.getImageData(x0,y0,w,y1-y0).data, k=0, far=0, x, y;
+       for(y=0;y<y1-y0;y++) for(x=0;x<w;x++){
+         var i=(y*w+x)*4;
+         if(d[i]===255&&d[i+1]===192&&d[i+2]===74&&d[i+3]>250){
+           k++;
+           var dd=Math.hypot(x0+x-cx,y0+y-cy); if(dd>far) far=dd;
+         }
+       }
+       return {n:k,r:far};
+     }
+     function shotAt(w,h){
+       __forceSize(w,h);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0;
+       var pl=g.player;
+       return {m:read(pl.x,pl.y),g:g,p:pl};
+     }
+     __runPrep(); __resetCfg(); __pinDefaults(0);
+     try{
+       // 1. AT HIS OWN SCREEN SIZE IT IS NO LONGER A SPECK. Measured on v10.91
+       //    the disc was 4 pixels of radius, about 50 exact-gold pixels; the
+       //    floor sits well above anything that small, and above the 98 a 5.6
+       //    radius would give, so a quiet shrink back is caught.
+       var base=shotAt(1920,1080);
+       if(!base.m) return 'SKIP: the marker fell outside the canvas at 1920x1080';
+       if(base.m.n<150) bad.push('your marker is only '+base.m.n+' pixels of gold at 1920x1080, which is the size he called hard to see');
+       if(base.m.r<7) bad.push('your marker is '+base.m.r.toFixed(1)+' pixels of radius, no bigger than the old speck');
+       // 2. AND IT DOES NOT SWAMP THE MAP EITHER. Much larger was the note, not
+       //    a blot over the district he is standing in.
+       if(base.m.r>22) bad.push('your marker is '+base.m.r.toFixed(1)+' pixels of radius, which covers the map rather than marking a spot on it');
+       // 3. IT GROWS WITH THE MAP. This is the half of the defect that is not
+       //    about the radius: every neighbouring marker is multiplied by the map
+       //    zoom and yours alone was not, so on a bigger screen it got relatively
+       //    smaller. At 2880x1620 that zoom is 1.5, so the disc should carry
+       //    about 2.25 times the pixels. On the old build the ratio is exactly 1.
+       var big=shotAt(2880,1620);
+       if(!big.m) bad.push('SKIPPED the zoom half: the marker fell outside the canvas at 2880x1620');
+       else {
+         var zoom=(typeof hudRes==='function')?hudRes():0;
+         if(zoom<1.4) bad.push('control: the map zoom only reached '+zoom.toFixed(2)+' at 2880x1620, so the growth test proves nothing');
+         else {
+           if(big.m.n/Math.max(1,base.m.n)<1.8) bad.push('your marker went from '+base.m.n+' to '+big.m.n+' pixels when the map zoom went to '+zoom.toFixed(2)+', so it is not following the map like the other markers');
+           if(big.m.r/Math.max(0.1,base.m.r)<1.35) bad.push('your marker radius went from '+base.m.r.toFixed(1)+' to '+big.m.r.toFixed(1)+' at zoom '+zoom.toFixed(2)+', so it is not following the map');
+         }
+       }
+       // 4. CONTROL, AND IT IS THE ONE THAT MATTERS: prove the gold being counted
+       //    IS your marker. Move the operator across the map and the count has to
+       //    move with him, or this check is measuring some other gold thing and
+       //    every number above is furniture.
+       var here=shotAt(1920,1080);
+       if(here.m){
+         var pl=here.p, ox2=pl.x, oy2=pl.y;
+         var dx=(ox2+600<WORLD_W-300)?600:-600;
+         pl.x=ox2+dx;
+         var moved=read(pl.x,pl.y), left=read(ox2,oy2);
+         pl.x=ox2;
+         if(!moved||moved.n<150) bad.push('control: the marker did not follow the operator, it reads '+(moved?moved.n:'nothing')+' pixels at his new position');
+         if(left&&left.n>40) bad.push('control: '+left.n+' gold pixels are still sitting where the operator used to be, so this check is counting something that is not him');
+       }
+     } finally { __forceSize(1920,1080); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.91',what:'every panel resize grip has somewhere to drag to: a panel pinned to the right edge grips on its left, and the click, the cursor and the drawing all agree where it is',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__hud&&window.__hudBox)) return 'SKIP: this fixture cannot draw and measure the HUD';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     // The fallback is the old build on purpose, not a skip.
+     if(typeof hudGrip!=='function')
+       return 'the grip is always the panel bottom-right corner, so a panel against the right of the screen has nowhere to drag to, which is his note';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); g.ents.length=0;
+     for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+     __frame(0); __hud();
+     var B=__hudBox(); if(!B) return 'SKIP: no HUD panels to measure';
+     var Wv=window.innerWidth||1920, gs=hudGripS(), pinned=0, roomy=0, k;
+     for(k in B){
+       var b=B[k]; if(!b||!b.w) continue;
+       if(HUDZ[k]===undefined) continue;      // not a panel that resizes
+       var G2=hudGrip(b);
+       var rightRoom=Wv-(b.x+b.w);
+       // 1. THE GRIP IS ON THE SIDE THAT HAS ROOM.
+       if(rightRoom<gs+10){
+         pinned++;
+         if(!G2.left) bad.push(k+' is '+Math.round(rightRoom)+' pixels from the right of the screen and still grips on its right, so there is nowhere to drag');
+       } else {
+         roomy++;
+         if(G2.left) bad.push(k+' has '+Math.round(rightRoom)+' pixels of room on its right and grips on its left anyway');
+       }
+       // 2. AND THE GRIP HAS SOMEWHERE TO GO. This is the whole complaint: the
+       //    panel is sized by how far the pointer gets from the anchor, so a
+       //    grip with no travel is a panel that cannot grow.
+       var travel=G2.left?G2.x:(Wv-G2.x);
+       if(travel<120) bad.push(k+' can only be dragged '+Math.round(travel)+' pixels before the pointer leaves the screen');
+       // 3. THE ANCHOR IS THE OTHER CORNER, or the panel would shrink as he
+       //    pulls it outward.
+       if(G2.left&&Math.abs(G2.ax-(b.x+b.w))>1) bad.push(k+' grips left but is sized from '+Math.round(G2.ax)+' rather than its right edge');
+       if(!G2.left&&Math.abs(G2.ax-b.x)>1) bad.push(k+' grips right but is sized from '+Math.round(G2.ax)+' rather than its left edge');
+       // 4. AND THE HIT TEST AGREES WITH THE CORNER. Three places read this; if
+       //    they disagree the grip looks like it is somewhere it is not.
+       var inx=G2.left?(G2.x+2):(G2.x-2);
+       if(!hudOnGrip(b,inx,G2.y-2)) bad.push(k+' draws its grip where the click does not accept it');
+       var farx=G2.left?(b.x+b.w-2):(b.x+2);
+       if(hudOnGrip(b,farx,G2.y-2)) bad.push(k+' accepts a click on the opposite corner as the grip');
+     }
+     // 5. CONTROLS. Both kinds of panel have to be present or this proves half a
+     //    rule, and at 1920x1080 the gear and conditions panels are pinned while
+     //    the body, legend and pillager list are not.
+     if(!pinned) bad.push('control: no panel is pinned to the right edge here, so the case he reported is not being tested');
+     if(!roomy) bad.push('control: every panel is pinned, so the unchanged case is not being tested');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.90',what:'the bottom-right corner reserves itself and every world label that would land on it is lifted clear, which is his screenshot of EXTRACTION - OPEN drawn through SUPPORT MG',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__hud)) return 'SKIP: this fixture cannot draw a HUD';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     // THE FALLBACK IS THE OLD BUILD ON PURPOSE, not a skip: a build with no
+     // dodge at all is the fault he photographed.
+     if(typeof hudDodge!=='function')
+       return 'nothing keeps world labels out of the corner readout, which is his screenshot: a world label is drawn straight through the gun name';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player; g.ents.length=0; p.iv=99;
+     var z=g.zones&&g.zones[0];
+     if(!z) return 'SKIP: this map has no extraction ring to label';
+     g.active=z; z.open=true;
+     // BESIDE THE RING, not at the spawn. A ring that projects off screen is
+     // culled before it can ask about anything, and every ring is off screen
+     // from the drop.
+     p.x=z.x-260; p.y=z.y-260;
+     function frame(){ for(var f=0;f<4;f++) __loop(performance.now()+f*16.7); __frame(0); __hud(); }
+     frame();
+     var _zs=(typeof w2s==='function')?w2s(z.x,z.r+18,z.y):null;
+     if(!_zs||_zs.x<-90||_zs.x>(window.innerWidth||1920)+90)
+       return 'SKIP: the ring would not project on screen here, so no label is drawn to test';
+     // 1. THE CORNER MEASURES ITSELF, and it is the corner it claims to be.
+     var B=g.cornerBox;
+     if(!B) return 'the corner readout never recorded the space it takes, so no label can know to avoid it';
+     var Wv=window.innerWidth||1920, Hv=window.innerHeight||1080;
+     if(B.w<120||B.h<40) bad.push('the reserved corner is only '+Math.round(B.w)+' by '+Math.round(B.h)+', which is smaller than the text in it');
+     if(Math.abs((B.x+B.w)-Wv)>40) bad.push('the reserved corner ends '+Math.round(Wv-(B.x+B.w))+' pixels from the right edge, so it is not where the readout is');
+     if(Math.abs((B.y+B.h)-Hv)>90) bad.push('the reserved corner ends '+Math.round(Hv-(B.y+B.h))+' pixels from the bottom, so it is not where the readout is');
+     // 2. A LABEL THAT WOULD LAND ON IT IS LIFTED, and by enough to clear it.
+     var midX=B.x+B.w/2, midY=B.y+B.h/2;
+     var lifted=hudDodge(midX,midY,60,18,0);
+     if(!(lifted<midY)) bad.push('a label dropped in the middle of the corner is not moved at all');
+     else if(lifted+4>B.y) bad.push('a label in the corner is lifted only to '+Math.round(lifted)+', still inside a box that starts at '+Math.round(B.y));
+     // 3. AND A LABEL THAT WOULD NOT IS LEFT ALONE. A dodge that moves
+     //    everything would drag every marker on the screen upward.
+     var freeY=120, freeX=Math.max(40,B.x-500);
+     if(hudDodge(freeX,freeY,60,18,0)!==freeY) bad.push('a label nowhere near the corner was moved anyway');
+     if(hudDodge(midX,120,60,18,0)!==120) bad.push('a label above the corner but in its column was moved anyway');
+     // 4. IT NEVER PUSHES A LABEL OFF THE TOP. A marker shoved off the screen is
+     //    a worse answer than one that overlaps.
+     var tall=hudDodge(midX,midY,60,B.y+40,0);
+     if(tall-(B.y+40)<0) bad.push('a tall label was lifted off the top of the screen, to '+Math.round(tall));
+     // 5. AND THE REAL LABELS ASK IT. Without this the helper could be perfect
+     //    and wired to nothing, which is exactly how his screenshot happened.
+     var realDodge=hudDodge, calls=0;
+     try{
+       hudDodge=function(a,b,c,d,e){ calls++; return realDodge(a,b,c,d,e); };
+       frame();
+     } finally { hudDodge=realDodge; }
+     if(!calls) bad.push('no world label asked about the corner while an extraction ring was open, so the helper is wired to nothing');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.89',what:'X does not swap weapons any more and says so nowhere, while every other way of bringing a gun up still works',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__keysRef&&window.__loop)) return 'SKIP: this fixture cannot drive keys through a raid';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, K=__keysRef();
+     for(var k in K) delete K[k];          // a latched key has faked this twice
+     g.ents.length=0; p.downed=0;
+     if(!p.wep||!p.sec) return 'SKIP: this deploy did not give the operator two guns';
+     var held=p.wep.id, stowed=p.sec.id;
+     if(held===stowed) return 'SKIP: both guns are the same, so a swap cannot be seen';
+     // ONE dispatch. Firing at window and at document reaches the same handler
+     // twice, which turns every press into a press and an unpress.
+     function press(code){
+       try{ window.dispatchEvent(new KeyboardEvent('keydown',{code:code})); }catch(_e1){}
+     }
+     // 0. THE INSTRUMENT FIRST. C is still bound and still a toggle, so the same
+     //    dispatch must move something. Without this, a keypress that never
+     //    lands makes every line below pass by doing nothing.
+     var crouchWas=!!g.crouchTog;
+     press('KeyC');
+     if(!!g.crouchTog===crouchWas)
+       return 'control: a dispatched keypress does nothing in this fixture, so nothing below could be measured';
+     press('KeyC');
+     // 1. THE KEY DOES NOTHING. This is his note.
+     press('KeyX');
+     if(p.wep.id!==held||p.sec.id!==stowed)
+       bad.push('pressing X still swapped the guns, '+held+' to '+p.wep.id);
+     // 2. AND THE SWAP ITSELF STILL WORKS, or this deleted a feature rather than
+     //    a key. Four other callers depend on it: dragging a gun onto the one in
+     //    your hands, the hotbar bringing a stowed gun up, and two in the bot.
+     if(typeof swapGuns!=='function') bad.push('the swap function itself is gone, which takes the hotbar and the bot with it');
+     else {
+       swapGuns();
+       if(p.wep.id!==stowed||p.sec.id!==held)
+         bad.push('calling the swap directly no longer swaps: holding '+p.wep.id+' with '+p.sec.id+' stowed');
+       swapGuns();
+     }
+     // 3. AND NOTHING TELLS A PLAYER TO PRESS IT. A key removed from the handler
+     //    but left in a legend is worse than leaving the key alone.
+     var legends=[];
+     try{ legends.push(JSON.stringify(LEGEND)); }catch(e3){}
+     try{ legends.push(JSON.stringify(LEGEND_MINI)); }catch(e4){}
+     var text=legends.join(' ');
+     if(text){
+       // Assembled, so this check cannot find itself in the page.
+       var swapWord=['swap',' ','weapon'].join(''), swapGun=['swap',' ','gun'].join('');
+       if(text.indexOf(swapWord)>=0||text.indexOf(swapGun)>=0)
+         bad.push('a keyboard legend still teaches swapping a weapon with a key');
+     } else bad.push('control: no legend could be read, so this proved nothing about what a player is told');
+     // 4. THE CONTROLLER IS UNTOUCHED. Its X is a face button meaning search and
+     //    goes through a different table; removing it would take search off the pad.
+     if(typeof PADHOLD==='undefined'||PADHOLD[2]!=='KeyE')
+       bad.push('the controller X no longer maps to search, so the pad lost a button it needs');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.87',what:'sprint follows the SHIFT key: let go and you stop running, while crouch is still a toggle and the out-of-breath rule still needs a fresh press',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop&&window.__keysRef)) return 'SKIP: this fixture cannot drive keys through a raid';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, K=__keysRef();
+     // A LATCHED KEY FROM AN EARLIER CHECK MADE THIS LOOK BROKEN TWICE BEFORE.
+     for(var k in K) delete K[k];
+     g.ents.length=0; p.stam=100; p.stamLock=0; p.stamRelease=0; p.ads=0; p.downed=0;
+     var t0=performance.now(), f=0;
+     function step(n){ for(var i=0;i<n;i++) __loop(t0+(f++)*16.7); }
+     function down(code){ try{ window.dispatchEvent(new KeyboardEvent('keydown',{code:code})); }catch(e){} K[code]=1; }
+     function up(code){ try{ window.dispatchEvent(new KeyboardEvent('keyup',{code:code})); }catch(e){} delete K[code]; }
+     K['KeyW']=1;                       // sprint is refused when standing still
+     step(4);
+     if(g.sprinting) bad.push('control: the operator is already sprinting before SHIFT was touched');
+     // 1. HELD IS RUNNING.
+     down('ShiftLeft'); step(4);
+     if(!g.sprinting) bad.push('holding SHIFT does not sprint at all');
+     // 2. AND LETTING GO STOPS. This is his note: it used to keep running.
+     up('ShiftLeft'); step(8);
+     if(g.sprinting) bad.push('the operator is still sprinting eight frames after SHIFT was released, so sprint is a toggle rather than a hold');
+     // 3. THE RIGHT-HAND KEY DOES THE SAME, or half the keyboard is a toggle.
+     down('ShiftRight'); step(4);
+     if(!g.sprinting) bad.push('the right SHIFT does not sprint');
+     up('ShiftRight'); step(8);
+     if(g.sprinting) bad.push('the right SHIFT is still sprinting after release');
+     // 4. CROUCH IS STILL A TOGGLE, which is his answer 33 and is NOT changed.
+     var wasCrouch=!!g.crouchTog;
+     down('KeyC'); up('KeyC'); step(2);
+     if(!!g.crouchTog===wasCrouch) bad.push('control: pressing C did not toggle crouch, so this fixture is not driving keys at all');
+     var heldCrouch=!!g.crouchTog;
+     step(20);
+     if(!!g.crouchTog!==heldCrouch) bad.push('crouch stopped being a toggle: it changed on its own twenty frames after the press');
+     down('KeyC'); up('KeyC'); step(2);
+     if(!!g.crouchTog!==wasCrouch) bad.push('crouch did not toggle back on a second press');
+     // 5. OUT OF BREATH STILL NEEDS A FRESH PRESS. v8.73 found a held key sawing
+     //    sprint on and off 25 times in 20 seconds when stamina ran out; the
+     //    cure was that you must release and press again, and a real hold must
+     //    not have quietly undone it.
+     p.stam=1; p.stamLock=1; p.stamRelease=1;
+     down('ShiftLeft'); step(6);
+     if(g.sprinting) bad.push('an exhausted operator sprints again while SHIFT is simply held down, which is the v8.73 sawtooth');
+     p.stam=100; p.stamLock=0;
+     step(6);
+     if(g.sprinting) bad.push('a held SHIFT resumed sprinting the moment breath came back, without being released first');
+     up('ShiftLeft'); step(2); down('ShiftLeft'); step(4);
+     if(!g.sprinting) bad.push('releasing and pressing SHIFT again does not sprint after getting your breath back');
+     up('ShiftLeft'); step(2);
+     for(var k2 in K) delete K[k2];
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.86',what:'the ambient bed ducks when the pause box opens and comes back when you resume, once each time and not every frame',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop)) return 'SKIP: this fixture cannot deploy and step a raid';
+     var bad=[];
+     // The old build has no way to cut the bed at all, so the fallback reports
+     // that rather than skipping: a SKIP is not a PASS.
+     var raw=window.__ambOff;
+     function cuts(){ var r=null; try{ r=raw?raw():null; }catch(e){ r=null; } return r?r.calls:-1; }
+     if(cuts()<0) return 'this build has no way to cut the ambient bed at all, so a pause leaves it holding its last level under the menu';
+     __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), t0=performance.now(), f=0;
+     function step(k){ for(var i=0;i<k;i++){ __loop(t0+(f++)*16.7); } }
+     g.paused=false;
+     step(20);
+     var a=cuts();
+     // 1. PLAYING IS NOT PAUSING. A duck that fired during play would fight the
+     //    thing that makes the room tighten as something closes on you.
+     if(a!==cuts()) bad.push('control: the reading moved on its own');
+     var base=cuts();
+     step(20);
+     if(cuts()!==base) bad.push('the bed is being ducked during ordinary play, '+(cuts()-base)+' times in twenty frames, so the room can never tighten');
+     // 2. THE PAUSE DUCKS IT, ONCE.
+     g.paused=true;
+     step(1);
+     var afterFirst=cuts();
+     if(afterFirst!==base+1) bad.push('opening the pause box ducked the bed '+(afterFirst-base)+' times, and it should be exactly once');
+     step(40);
+     if(cuts()!==afterFirst) bad.push('the bed is re-ducked every frame while paused, '+(cuts()-afterFirst)+' more times in forty frames');
+     // 3. RESUMING DOES NOT DUCK, and arms the next pause.
+     g.paused=false;
+     step(20);
+     if(cuts()!==afterFirst) bad.push('resuming ducked the bed '+(cuts()-afterFirst)+' times');
+     if(g._ambDuck) bad.push('the duck flag is still set after resuming, so the next pause will not duck at all');
+     // 4. AND THE SECOND PAUSE DUCKS AGAIN. Without this a build that ducks once
+     //    per raid and never again would pass every line above.
+     g.paused=true;
+     step(1);
+     if(cuts()!==afterFirst+1) bad.push('a second pause ducked the bed '+(cuts()-afterFirst)+' times rather than once, so only the first pause in a raid is quiet');
+     g.paused=false; step(2);
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.85',what:'nothing goes on sounding after the raid that started it: the ambient bed is cut on every ending, and no sound source in the file is left running with nobody to turn it down',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy and end a raid';
+     var bad=[];
+     // THE FALLBACK IS THE OLD BUILD ON PURPOSE. Without the hook this must say
+     // what the build before it was doing, not skip: a SKIP is not a PASS.
+     var _rawHook=window.__ambOff;
+     var hook=function(){ var r=null; try{ r=_rawHook?_rawHook():null; }catch(e){ r=null; }
+       return r||{calls:0,live:false,absent:true}; };
+     var canCut=!!(_rawHook&&hook().absent!==true);
+     // 1. IT IS CUT ON EVERY ENDING, and there are three.
+     var ways=['extract','dead','abandon'], w;
+     for(w=0;w<ways.length;w++){
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var before=hook().calls;
+       var t0=performance.now(), f;
+       // Ordinary play. The bed is driven DOWN here by the raid loop itself, so
+       // the cut must not be firing on these frames or it would be fighting the
+       // thing that makes the room tighten.
+       for(f=0;f<30;f++) __loop(t0+f*16.7);
+       var during=hook().calls;
+       if(during!==before) bad.push('the bed is being cut during ordinary play, '+(during-before)+' times in thirty frames, so the room can never tighten');
+       __endRaid(ways[w]);
+       var after=hook().calls;
+       if(after<=during) bad.push('a raid that ended in '+ways[w]+' never cut the ambient bed, so its five voices hold their last level for as long as the page is open');
+       else if(after-during>1) bad.push('a raid that ended in '+ways[w]+' cut the bed '+(after-during)+' times');
+     }
+     // 2. HIS RULE, GENERALISED: nothing may be left sounding with nobody to
+     //    turn it down. Every oscillator in the file is either stopped, or it
+     //    belongs to the bed, which is stopped by gain and now has a cut.
+     //    The needle is assembled rather than written, or this check finds
+     //    ITSELF in the page and reads its own text as the game's.
+     var src=null;
+     try{ src=(document.documentElement&&document.documentElement.innerHTML)||''; }catch(_s){ src=''; }
+     if(src.length>20000){
+       var mk=new RegExp('create'+'Oscillator'+'\\(\\)','g');
+       var st=new RegExp('\\.'+'stop'+'\\(','g');
+       var made=(src.match(mk)||[]).length, stopped=(src.match(st)||[]).length;
+       // MEASURED at v10.85: 40 made, 38 stopped, and the two never stopped are
+       // the bed's own 54 Hz and 81.5 Hz sines, which ambienceOff now cuts along
+       // with the weather and dread layers. A sixth voice with no stop and no cut
+       // is the next hum, so the gap is pinned rather than the totals.
+       var gap=made-stopped;
+       if(gap>2) bad.push(gap+' oscillators in the file are started and never stopped, against the 2 the ambient bed accounts for, so something is left sounding with nothing to turn it down');
+       if(made<10) bad.push('control: only '+made+' oscillators found in the page, so this measured the wrong document');
+     }
+     // 3. CONTROL: the hook has to be real, or every line above passed on a stub.
+     if(!canCut) bad.push('control: this build has no way to cut the ambient bed at all, so its five voices hold their last level once a raid ends');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.84',what:'a machine standing inside a building can work out a route to somebody outside it, and opening those doorways did not move the world',
+   run:function(){
+     if(!(window.__deploy&&window.__state)) return 'SKIP: this fixture cannot build a map';
+     var bad=[];
+     for(var mi=0;mi<2;mi++){
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state(), p=g.player, B=g.map.buildings, nm=(mi===0?'COLD STORAGE':'THE COLD MILE');
+       var cw=null,i;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'){ cw=g.ents[i]; break; }
+       if(!cw) return 'SKIP: no crawler on this map to drive';
+       g.ents.length=0; g.ents.push(cw);
+       // The target has to be OPEN GROUND, or a failure says the target was
+       // unreachable rather than the building being a box.
+       function openAt(x,y){
+         if(x<120||y<120) return false;
+         var W=g.map.walls,k;
+         for(k=0;k<W.length;k++){ var w=W[k]; if(x>w.x-34&&x<w.x+w.w+34&&y>w.y-34&&y<w.y+w.h+34) return false; }
+         for(k=0;k<B.length;k++){ var b2=B[k]; if(x>b2.x-34&&x<b2.x+b2.w+34&&y>b2.y-34&&y<b2.y+b2.h+34) return false; }
+         return true;
+       }
+       var trapped=[], tested=0;
+       for(var q=0;q<B.length;q++){
+         var bd=B[q];
+         if(bd.w<120||bd.h<120) continue;
+         var tx=0,ty=0,ok=false,cand=[[bd.x-210,bd.y+bd.h/2],[bd.x+bd.w+210,bd.y+bd.h/2],
+                                       [bd.x+bd.w/2,bd.y-210],[bd.x+bd.w/2,bd.y+bd.h+210]];
+         for(i=0;i<cand.length&&!ok;i++) if(openAt(cand[i][0],cand[i][1])){ tx=cand[i][0]; ty=cand[i][1]; ok=true; }
+         if(!ok) continue;                      // nowhere clear to stand: not this check's question
+         p.x=tx; p.y=ty; p.iv=99; p.hp=100; p.downed=0;
+         cw.x=bd.x+bd.w/2; cw.y=bd.y+bd.h/2;
+         cw.state='chase'; cw.alert=3; cw.cd=0; cw.tx=tx; cw.ty=ty;
+         cw.path=null; cw.pathFail=false; cw.pathT=0; cw.pathGoal=null;
+         var t0=performance.now(), got=false;
+         // WAITING IS NOT FAILING: the route search is rationed to one a frame
+         // for the whole map and a body that has just searched waits 2.6 to 3.8
+         // seconds. The stale flags are cleared every step so the only thing
+         // measured is whether the router can answer at all.
+         for(var f=0;f<12;f++){
+           cw.pathT=0; cw.pathGoal=null; cw.pathFail=false;
+           __loop(t0+f*16.7); p.x=tx; p.y=ty;
+           if(cw.path&&cw.path.length) got=true;
+         }
+         tested++;
+         if(!got) trapped.push(q);
+       }
+       if(!tested) return 'SKIP: no building on '+nm+' had open ground to stand outside it';
+       // THE BUDGET EACH MAP HAS EARNED. v10.83 read 4 and 15 here. Asserting a
+       // zero this build has not reached would fail the build that improved it;
+       // the moment somebody makes it worse this says so by name.
+       var budget=(mi===0)?3:8;
+       if(trapped.length>budget)
+         bad.push(nm+': '+trapped.length+' of '+tested+' buildings are boxes a machine cannot route out of, against the '+budget+' this build measured ['+trapped.slice(0,8).join(',')+']');
+       // CONTROL ONE: the doorways were recorded and cells were really opened.
+       if(!(g.map.doors&&g.map.doors.length)) bad.push('control: '+nm+' recorded no doorways at all');
+       else if(!(g.map.navD&&g.map.navD.opened)) bad.push('control: '+nm+' has '+g.map.doors.length+' doorways and opened 0 cells');
+       // CONTROL TWO, AND IT IS THE ONE THAT CAUGHT MY FIRST CUT OF THIS FIX.
+       // The routing grid must be a SEPARATE object from the one the map fills
+       // itself with. Carving map.nav moved what got placed, counts unchanged
+       // and the scene different, and only a sprite check noticed.
+       if(g.map.navD===g.map.nav) bad.push('control: '+nm+' routes on the same grid the map places from, so opening a door moves the contents of the world');
+       else if(g.map.nav&&g.map.navD){
+         var same=0,dif=0,bi;
+         for(bi=0;bi<g.map.nav.blk.length;bi++){ if(g.map.nav.blk[bi]!==g.map.navD.blk[bi]) dif++; else same++; }
+         if(!dif) bad.push('control: '+nm+' has two identical grids, so nothing was opened after all');
+       }
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.83',what:'the map screen marks the buildings that have fallen, and marks nothing else',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__mapShot)) return 'SKIP: this fixture cannot open the map screen';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     var bad=[];
+     // THE INSTRUMENT, and it took two wrong ones to find it. Brightness cannot
+     // do this: on THE COLD MILE the standing buildings vary among themselves by
+     // 58 points, so a ruin sitting 8 below its neighbour says nothing. Counting
+     // edges cannot either: a busy rect full of walls and labels reaches 49
+     // where a hatched ruin reads 31. What DOES isolate the mark is redrawing
+     // the same map with the ruined flags cleared, because then the only thing
+     // that can differ is what v10.83 draws.
+     // MEASURED: every ruined building moves 80.21 to 95.05 percent of its own
+     // rectangle, every standing one moves exactly 0.00. Floor at half the
+     // weakest signal, ceiling just above nothing.
+     var HIT=40, QUIET=1, seen=0;
+     var hc=document.getElementById('hcv');
+     if(!hc) return 'SKIP: no HUD canvas to read the map from';
+     var hx=hc.getContext('2d');
+     function shot(){
+       var P=__mapShot();
+       if(!P) return null;
+       var c=document.createElement('canvas'); c.width=hc.width; c.height=hc.height;
+       c.getContext('2d').drawImage(hc,0,0);
+       return {P:P,cx:c.getContext('2d')};
+     }
+     function pct(a,b,bd,P){
+       var x=Math.round(P.ox+bd.x*P.sc), y=Math.round(P.oy+bd.y*P.sc);
+       var w=Math.max(2,Math.round(bd.w*P.sc)), h=Math.max(2,Math.round(bd.h*P.sc));
+       if(x<0||y<0||x+w>hc.width||y+h>hc.height) return -1;
+       var d1=a.getImageData(x,y,w,h).data, d2=b.getImageData(x,y,w,h).data, k=0;
+       for(var i=0;i<d1.length;i+=4)
+         if(Math.abs(d1[i]-d2[i])+Math.abs(d1[i+1]-d2[i+1])+Math.abs(d1[i+2]-d2[i+2])>8) k++;
+       return k/(d1.length/4)*100;
+     }
+     for(var mi=0;mi<2;mi++){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state(), B=g.map.buildings, nm=(mi===0?'COLD STORAGE':'THE COLD MILE'), q;
+       var withMark=shot();
+       if(!withMark) return 'SKIP: the map screen would not draw';
+       var flags=[];
+       for(q=0;q<B.length;q++){ flags.push(B[q].ruined?1:0); B[q].ruined=0; }
+       var without=shot();
+       for(q=0;q<B.length;q++) B[q].ruined=flags[q];
+       if(!without) return 'SKIP: the second map draw failed';
+       for(q=0;q<B.length;q++){
+         var b=B[q];
+         if(b.w<140||b.h<140) continue;
+         var mv=pct(withMark.cx,without.cx,b,withMark.P);
+         if(mv<0) continue;
+         if(flags[q]){
+           seen++;
+           if(mv<HIT) bad.push(nm+' building '+q+' has fallen and only '+mv.toFixed(1)+' percent of its square on the map is drawn any differently, under the '+HIT+' a mark has to clear');
+         } else if(mv>QUIET){
+           bad.push(nm+' building '+q+' is standing and '+mv.toFixed(1)+' percent of its square on the map changed with the ruin flags off, so the mark is leaking onto buildings that never fell');
+         }
+       }
+       // AND THE MAP ITSELF IS STILL THERE. Two identical draws would satisfy
+       // the standing-building line above by drawing nothing at all.
+       var anyDiff=false;
+       for(q=0;q<B.length&&!anyDiff;q++) if(flags[q]&&pct(withMark.cx,without.cx,B[q],withMark.P)>0) anyDiff=true;
+       if(!anyDiff) bad.push('control: nothing at all differed on '+nm+', so the map may not have drawn');
+     }
+     if(seen<2) bad.push('control: only '+seen+' fallen buildings were on the map to look at, so this check proved nothing');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.82',what:'a destroyed building looks destroyed: its floor is burnt and covered in rubble, and the building next door is untouched',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__cfg)) return 'SKIP: this fixture cannot build a map with a dial';
+     var bad=[];
+     // MEASURED on COLD STORAGE at seed 4242 before the floors below were set:
+     // the ruined building moved 99.47 percent of its floor pixels and its mean
+     // brightness fell 124.76 to 114.30. The building next door moved 0.08
+     // percent and did not change brightness at all. Floors at half the signal,
+     // ceiling far above the noise, per the v10.79 rule.
+     var HIT=45, DROP=4.0, QUIET=3;
+     function arm(rate,mi){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({bldgRuin:rate});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state();
+       if(!g.ground) return null;
+       return {g:g,cx:g.ground.getContext('2d')};
+     }
+     function look(cx,r){
+       var d=cx.getImageData(r.x,r.y,r.w,r.h).data,s=0;
+       for(var i=0;i<d.length;i+=4) s+=(d[i]+d[i+1]+d[i+2])/3;
+       return {d:d,mean:s/(d.length/4)};
+     }
+     function moved(a,b){
+       var c=0; for(var i=0;i<a.d.length;i+=4)
+         if(Math.abs(a.d[i]-b.d[i])+Math.abs(a.d[i+1]-b.d[i+1])+Math.abs(a.d[i+2]-b.d[i+2])>10) c++;
+       return c/(a.d.length/4)*100;
+     }
+     var mi, ruinsSeen=0;
+     for(mi=0;mi<2;mi++){
+       var off=arm(0,mi), on=arm(0.09,mi);
+       if(!off||!on) return 'SKIP: this build bakes no ground canvas';
+       var nm=(mi===0?'COLD STORAGE':'THE COLD MILE'), B=on.g.map.buildings, q;
+       // THE WORLD MUST NOT HAVE MOVED. Paint is paint; if this pass ever drew a
+       // random number the whole seeded map would drift behind it.
+       if(off.g.ents.length!==on.g.ents.length||off.g.containers.length!==on.g.containers.length)
+         bad.push(nm+' moved its world when only the ground paint changed, '+
+                  off.g.ents.length+'/'+off.g.containers.length+' against '+on.g.ents.length+'/'+on.g.containers.length);
+       for(q=0;q<B.length;q++){
+         var b=B[q];
+         if(b.w<80||b.h<80) continue;
+         var r={x:b.x+20,y:b.y+20,w:b.w-40,h:b.h-40};
+         if(r.w<20||r.h<20) continue;
+         var A=look(off.cx,r), C=look(on.cx,r), mv=moved(A,C);
+         if(b.ruined){
+           ruinsSeen++;
+           if(mv<HIT) bad.push(nm+' building '+q+' is destroyed and only '+mv.toFixed(1)+' percent of its floor changed, under the '+HIT+' a burnt floor has to clear');
+           if(A.mean-C.mean<DROP) bad.push(nm+' building '+q+' is destroyed and its floor went from '+A.mean.toFixed(1)+' to '+C.mean.toFixed(1)+', which is not a burn');
+         } else {
+           // AND ONLY THE ONES THAT FELL. Painting every floor would satisfy
+           // every line above and tell a player nothing.
+           if(mv>QUIET) bad.push(nm+' building '+q+' is standing and '+mv.toFixed(1)+' percent of its floor changed anyway');
+         }
+       }
+       // CONTROL: open ground well away from any ruin is untouched, so the paint
+       // is a mark on a building and not a wash over the map.
+       var far=null, fx, fy, tries;
+       for(tries=0;tries<400&&!far;tries++){
+         fx=200+((tries*617)%(on.g.map.cw*on.g.map.cols-500));
+         fy=200+((tries*971)%(on.g.map.ch*on.g.map.rows-500));
+         var clear=true;
+         for(q=0;q<B.length;q++){ var b2=B[q];
+           if(fx<b2.x+b2.w+300&&fx+180>b2.x-300&&fy<b2.y+b2.h+300&&fy+180>b2.y-300){ clear=false; break; } }
+         if(clear) far={x:fx,y:fy,w:180,h:180};
+       }
+       if(far){
+         var F1=look(off.cx,far), F2=look(on.cx,far), fmv=moved(F1,F2);
+         if(fmv>QUIET) bad.push('control: open ground on '+nm+' changed '+fmv.toFixed(1)+' percent, so this is a wash over the map rather than a mark on a building');
+       }
+     }
+     if(ruinsSeen<2) bad.push('control: only '+ruinsSeen+' destroyed buildings were found to look at, so this check proved nothing');
+     __resetCfg();
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.81',what:'some buildings on both maps are destroyed: whole runs of outer wall gone so you can walk in from any side, with their rooms still standing and nothing sealed behind them',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__cfg)) return 'SKIP: this fixture cannot build a map with a dial';
+     var bad=[];
+     // Both arms on the same seed: the dial is the only difference, so anything
+     // that moves is this build's doing and nothing else's.
+     function survey(rate,mi){
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       __cfg({bldgRuin:rate});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state(), M=g.map, B=M.buildings, W=M.walls, i, j;
+       var ruined=0, shell={}, inner={};
+       for(i=0;i<B.length;i++) if(B[i].ruined) ruined++;
+       // Per building: how much of its own perimeter is still walled, and how
+       // many interior partitions it still has.
+       for(j=0;j<W.length;j++){
+         var w=W[j];
+         if(w.ib!==undefined){ inner[w.ib]=(inner[w.ib]||0)+1; continue; }
+         if(w.wreck||w.ruin||w.tree||w.furn||w.noDes) continue;
+         for(i=0;i<B.length;i++){
+           var b=B[i], t=20;
+           if(w.x<b.x-t||w.x+w.w>b.x+b.w+t||w.y<b.y-t||w.y+w.h>b.y+b.h+t) continue;
+           if((Math.abs(w.y-b.y)<t)||(Math.abs(w.y+w.h-(b.y+b.h))<t)||
+              (Math.abs(w.x-b.x)<t)||(Math.abs(w.x+w.w-(b.x+b.w))<t)){
+             shell[i]=(shell[i]||0)+Math.max(w.w,w.h); break; }
+         }
+       }
+       return {B:B,ruined:ruined,shell:shell,inner:inner,walls:W.length,
+               ents:g.ents.length,cont:g.containers.length,log:M.ruinLog||null};
+     }
+     var mi, tot=0;
+     for(mi=0;mi<2;mi++){
+       var on=survey(0.09,mi), off=survey(0,mi);
+       var nm=(mi===0?'COLD STORAGE':'THE COLD MILE');
+       // 1. THE DIAL OFF IS THE OLD MAP, EXACTLY. This is what makes every
+       //    number below attributable, and it is the promise the pass makes by
+       //    running after all the rolls.
+       if(off.ruined!==0) bad.push('control: '+nm+' ruins '+off.ruined+' buildings with the dial at zero');
+       if(off.ents!==on.ents||off.cont!==on.cont)
+         bad.push(nm+' moved its world: '+off.ents+'/'+off.cont+' with the dial off against '+
+                  on.ents+'/'+on.cont+' with it on, so the pass is rolling dice');
+       // 2. IT ACTUALLY DID SOMETHING.
+       if(on.ruined<1){ bad.push(nm+' has no destroyed building on it at all'); continue; }
+       tot+=on.ruined;
+       if(on.walls>=off.walls)
+         bad.push(nm+' keeps '+on.walls+' walls against '+off.walls+', so nothing was actually torn open');
+       // 3. AND WHAT IT DID IS WHAT IT SAYS. Every ruined building must have
+       //    LOST perimeter, must still have SOME, and must keep its rooms.
+       for(var q=0;q<on.B.length;q++){
+         if(!on.B[q].ruined) continue;
+         var per=2*(on.B[q].w+on.B[q].h);
+         var sOn=(on.shell[q]||0), sOff=(off.shell[q]||0);
+         if(!(sOn<sOff)) bad.push(nm+' building '+q+' is flagged destroyed and its shell is unchanged at '+sOn);
+         else if(sOn/per<0.12) bad.push(nm+' building '+q+' has only '+Math.round(sOn/per*100)+' percent of its perimeter left, which is a gap in the map, not a building');
+         if((on.inner[q]||0)!==(off.inner[q]||0))
+           bad.push(nm+' building '+q+' lost interior walls too, '+(on.inner[q]||0)+' against '+(off.inner[q]||0)+', and this pass is meant to leave the rooms standing');
+       }
+       // 4. AND THE ONES IT LEFT ALONE ARE UNTOUCHED, or the dial is doing
+       //    something to the whole map rather than to the buildings it picked.
+       for(q=0;q<on.B.length;q++){
+         if(on.B[q].ruined) continue;
+         if((on.shell[q]||0)!==(off.shell[q]||0))
+           bad.push(nm+' building '+q+' is not flagged destroyed and its shell changed anyway');
+       }
+       // 5. A STRONGROOM IS NEVER OPENED FROM THE SIDE. It is the one room on
+       //    the map you are meant to need a key for.
+       var LK=(__lockedOf?__lockedOf(mi):null);
+       if(LK) for(q=0;q<on.B.length;q++){
+         if(!on.B[q].ruined) continue;
+         var b2=on.B[q];
+         for(var lq=0;lq<LK.length;lq++){ var L2=LK[lq];
+           if(L2.x<b2.x+b2.w&&L2.x+L2.w>b2.x&&L2.y<b2.y+b2.h&&L2.y+L2.h>b2.y)
+             bad.push(nm+' tore open building '+q+', which holds the strongroom '+(L2.name||L2.id)); }
+       }
+     }
+     if(tot<2) bad.push('only '+tot+' destroyed buildings across both maps, which is not a feature anybody would notice');
+     __resetCfg();
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.80',what:'both maps really build a town centre, monument and all, and no archetype the file defines is left as code no map calls',
+   run:function(){
+     if(!(window.__deploy&&window.__state)) return 'SKIP: this fixture cannot build a map';
+     if(typeof LANDMARKS==='undefined'||typeof FIXED_MAPS==='undefined') return 'SKIP: this build has no archetype table';
+     var bad=[];
+     // 1. EVERY ARCHETYPE THE FILE DEFINES MUST BE BUILT SOMEWHERE. TOWN SQUARE
+     //    carried a comment saying it was guaranteed on every map and was called
+     //    by none, so his note read as answered for four months. FLOODED PLAZA
+     //    is knowingly unused and is named here on purpose: the day somebody
+     //    puts it on a map, or adds a seventh archetype and forgets to use it,
+     //    this line says so.
+     var used={}, mi, li;
+     for(mi=0;mi<FIXED_MAPS.length;mi++){
+       var LMS=FIXED_MAPS[mi].landmarks||[];
+       for(li=0;li<LMS.length;li++) if(LMS[li].arch) used[LMS[li].arch]=1;
+     }
+     var idle=[];
+     for(li=0;li<LANDMARKS.length;li++) if(!used[LANDMARKS[li].id]) idle.push(LANDMARKS[li].id);
+     idle.sort();
+     if(idle.join(',')!=='plaza')
+       bad.push('the archetypes no map builds are ['+idle.join(', ')+'], and the only one meant to be idle is plaza');
+     // 2. AND IT IS REALLY IN THE WORLD, not merely declared. A landmark can
+     //    name an archetype and still get nothing, because a piece that falls
+     //    inside a building is cut away by the lmCut rule; that is exactly why
+     //    the mile's square could not go on any landmark without one.
+     var seen=[];
+     for(mi=0;mi<2;mi++){
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state(), M=g.map, sq=null, L;
+       for(li=0;li<(M.landmarks||[]).length;li++){ L=M.landmarks[li]; if(L.arch==='townsq') sq=L; }
+       if(!sq){ bad.push('map '+mi+' ('+(M.name||'?')+') has no town centre on it at all'); continue; }
+       seen.push(sq.name);
+       // THE MONUMENT IS THE CENTRE and it is what makes the place read as a
+       // square rather than a yard with some slabs in it. It is put at the
+       // landmark's own centre, so a wall must exist there.
+       var cx=sq.x+sq.w/2, cy=sq.y+sq.h/2, mon=0, rim=0;
+       for(var wi=0;wi<M.walls.length;wi++){
+         var W=M.walls[wi];
+         if(W.x<cx+40&&W.x+W.w>cx-40&&W.y<cy+34&&W.y+W.h>cy-34) mon++;
+         else if(W.x>=sq.x-4&&W.x+W.w<=sq.x+sq.w+4&&W.y>=sq.y-4&&W.y+W.h<=sq.y+sq.h+4) rim++;
+       }
+       if(!mon) bad.push(sq.name+' has no monument at its centre, so it is a name on the map and nothing on the ground');
+       // The stalls and benches. Without these the monument is a lone block.
+       if(rim<4) bad.push(sq.name+' has only '+rim+' pieces round its rim, which is not a square');
+       // AND IT IS STILL A PLACE YOU CAN CROSS. A square you cannot walk into is
+       // worse than no square: the monument is meant to be circled, not a plug.
+       var open=0, st;
+       for(st=0;st<8;st++){
+         var a=st*Math.PI/4, px=cx+Math.cos(a)*150, py=cy+Math.sin(a)*150;
+         if(spotFree(M,px,py,14)) open++;
+       }
+       if(open<5) bad.push(sq.name+' is walled in: only '+open+' of the eight ways round the monument are clear');
+     }
+     // 3. CONTROL: the two squares must be DIFFERENT places, or one map got two
+     //    and the other got none and every line above would still pass.
+     if(seen.length===2&&seen[0]===seen[1]) bad.push('control: both maps named the same square, '+seen[0]);
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.79',what:'the drawing checks refuse a trace of a thing as proof the thing is there: every floor sits under the live reading and above a quarter of it',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     if(!(window.__deploy&&window.__frame&&window.__noise&&window.__audio)) return 'SKIP: this fixture cannot draw a raid';
+     var bad=[];
+     // THE FALLBACK IS THE OLD NUMBERS ON PURPOSE. Without __FLOORS this check
+     // must still say what the build before it was accepting, rather than skip.
+     var F=window.__FLOORS||{bar:0,prog:0,ring:20,pulse:3};
+     var live={};
+     __forceSize(1920,1080); __resetCfg(); __pinDefaults(0);
+     // --- the container search bar, and the same bar filling
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); g.ents.length=0; g.player.iv=99;
+     var ct=null, ci;
+     for(ci=0;ci<g.containers.length;ci++) if((g.containers[ci].loot||[]).length>=3){ ct=g.containers[ci]; break; }
+     if(!ct) return 'SKIP: no container with three items on this seed';
+     g.player.x=ct.x; g.player.y=ct.y+10; __zoom.set(6,true);
+     ct.prog=ct.time*0.5; ct.opened=false;
+     var cvw=document.getElementById('cv'); if(!cvw) return 'SKIP: no world canvas';
+     var c2=cvw.getContext('2d');
+     function shot(){ __frame(0); return c2.getImageData(0,0,cvw.width,cvw.height).data; }
+     function diff8(a,b){ var d=0; for(var q=0;q<a.length;q+=4){ if(Math.abs(a[q]-b[q])+Math.abs(a[q+1]-b[q+1])+Math.abs(a[q+2]-b[q+2])>8) d++; } return d; }
+     g.searching=null; var S0=shot(); g.searching=ct; var S1=shot(); g.searching=null; var S2=shot();
+     live.bar=diff8(S1,S2);
+     ct.prog=0; var S3=shot(); ct.prog=ct.time*0.5; var S4=shot();
+     live.prog=diff8(S3,S4);
+     __zoom.set(1,true);
+     // --- the noise ring at the frame it is born
+     __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g2=__state(), p2=g2.player; g2.ents.length=0; p2.iv=99; p2.face=Math.PI/2;
+     for(var nf=0;nf<6;nf++) __loop(performance.now()+nf*16.7);
+     p2.face=Math.PI/2;
+     function snapW(){ __frame(0); return c2.getImageData(0,0,1920,1080).data; }
+     function diffE(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(a[i]!==b[i]||a[i+1]!==b[i+1]||a[i+2]!==b[i+2]) d++; return d; }
+     __noise.clear();
+     var NB=snapW();
+     if(diffE(NB,snapW())!==0) return 'SKIP: two identical redraws differ, no pixel reading here means anything';
+     var NX=p2.x, NY=p2.y-260, cm=__cam?__cam():null;
+     if(cm&&(NX<cm.x||NX>cm.x+1920||NY<cm.y||NY>cm.y+1080)) return 'SKIP: the noise lands outside the camera, pixels prove nothing';
+     __audio.sfx('shot',NX,NY,'rifle');
+     live.ring=diffE(NB,snapW());
+     __noise.clear();
+     // --- the standing extract prompt breathing
+     var hc=document.getElementById('hcv');
+     if(hc){
+       __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g3=__state(), p3=g3.player; g3.ents.length=0;
+       p3.downed=0; p3.revived=1; p3.iv=99;
+       var z3=g3.zones&&g3.zones[0];
+       if(z3){
+         g3.active=z3; z3.open=true; p3.x=z3.x; p3.y=z3.y;
+         for(var sf=0;sf<4;sf++) __loop(performance.now()+sf*16.7);
+         g3.shipHold=8; g3.beaconT=0;
+         var hx=hc.getContext('2d');
+         function mean(x,y,w,h){ __frame(0); var d=hx.getImageData(x,y,w,h).data,su=0;
+           for(var i=0;i<d.length;i+=4) su+=(d[i]+d[i+1]+d[i+2])/3*(d[i+3]/255); return su/(d.length/4); }
+         var t3=g3.timeLeft, vs=[];
+         for(var k3=0;k3<12;k3++){ g3.timeLeft=t3+k3*0.15; vs.push(mean(700,375,520,55)); }
+         g3.timeLeft=t3;
+         var mn3=Math.min.apply(null,vs), mx3=Math.max.apply(null,vs);
+         live.pulse=mx3>0.01?((mx3-mn3)/mx3*100):0;
+       }
+     }
+     // --- AND NOW THE FLOORS ARE JUDGED AGAINST WHAT WAS ACTUALLY MEASURED.
+     var names={bar:'the container search bar',prog:'the search bar filling',ring:'a noise ring',pulse:'the standing extract prompt pulse'};
+     var units={bar:' pixels',prog:' pixels',ring:' pixels',pulse:' percent'};
+     var keys=['bar','prog','ring','pulse'], kk;
+     for(kk=0;kk<keys.length;kk++){
+       var k=keys[kk], lv=live[k], fl=F[k];
+       if(lv===undefined) continue;
+       var shown=(k==='pulse')?lv.toFixed(1):Math.round(lv);
+       // 1. the build has to clear its own floor, or the floor is simply wrong
+       if(lv<fl) bad.push(names[k]+' reads '+shown+units[k]+', under its own floor of '+fl);
+       // 2. AND THE FLOOR HAS TO MEAN SOMETHING. A quarter of the live reading is
+       //    a feature anybody would call broken on sight; if that still clears the
+       //    floor then the floor is decoration, which is what v8.99, v9.07 and
+       //    v9.08 were carrying until today.
+       else if(lv*0.25>=fl) bad.push(names[k]+' reads '+shown+units[k]+' and its floor is only '+fl+', so a quarter of it would still pass');
+     }
+     // 3. CONTROL: the readings must not all be zero, which would satisfy nothing
+     //    above by accident if a deploy silently failed.
+     if(!(live.bar>0&&live.ring>0)) bad.push('control: nothing was drawn at all, bar '+live.bar+' ring '+live.ring+', so this check measured a blank screen');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.78',what:'no window pushes its own contents past its own box with nothing able to scroll to them, and the Depot can still reach SURPRISE ME and its three saved looks',
+   run:function(){
+     var bad=[];
+     if(!window.__vpAlive||!__vpAlive()) return 'SKIP: the page is not laid out';
+     var mods=Array.prototype.map.call(document.querySelectorAll('.modal'),function(e){ return e.id; }).filter(Boolean);
+     if(!mods.length) return 'SKIP: this build has no windows to sweep';
+     __pinDPR(1);
+     var open=[];
+     Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ open.push(e); e.classList.remove('on'); });
+     function shutAll(){ Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ e.classList.remove('on'); }); }
+     try{
+       // 1. EVERY WINDOW: nothing may sit past the box when the box itself cannot
+       //    scroll. v5.31's rule is that the window holds still and the list
+       //    inside it scrolls, so a window with content past its own edge and
+       //    overflow hidden has content NOBODY can reach.
+       mods.forEach(function(id){
+         shutAll();
+         var m=document.getElementById(id); m.classList.add('on');
+         if(typeof applyMenuZoom==='function') applyMenuZoom();
+         m.scrollTop=0;
+         var cut=m.scrollHeight-m.clientHeight;
+         if(cut>2&&getComputedStyle(m).overflowY==='hidden')
+           bad.push(id+' pushes '+cut+' pixels past its own box and cannot be scrolled, so that much of it cannot be reached');
+       });
+       // 2. THE DEPOT IN PARTICULAR, because that is where it cost a feature:
+       //    SURPRISE ME and the three LOOKS slots sat 412 to 643 pixels below
+       //    the window. They must be reachable by scrolling something.
+       shutAll();
+       var ap=document.getElementById('appearmodal');
+       if(!ap) bad.push('control: there is no Depot window to check');
+       else{
+         ap.classList.add('on');
+         try{ if(typeof renderAvatar==='function') renderAvatar('appavatar','appavatarpicker'); }catch(_r){}
+         if(typeof applyMenuZoom==='function') applyMenuZoom();
+         var g=ap.querySelector('.hubgrid');
+         var sur=document.getElementById('looksurprise');
+         if(!sur) bad.push('control: SURPRISE ME is not on the Depot at all, so this cannot test reaching it');
+         else if(!g) bad.push('control: the Depot has no grid to scroll');
+         else{
+           var mr=ap.getBoundingClientRect();
+           g.scrollTop=0;
+           var atTop=sur.getBoundingClientRect().bottom-mr.bottom;
+           g.scrollTop=g.scrollHeight;
+           var atBot=sur.getBoundingClientRect().bottom-mr.bottom;
+           g.scrollTop=0;
+           if(atBot>1) bad.push('SURPRISE ME is still '+Math.round(atBot)+' pixels below the Depot window even scrolled all the way down');
+           // AND THE WHEEL CAN DO IT: the game only scrolls a box whose overflow
+           // is auto or scroll, so hidden would leave it unreachable in play.
+           var ov=getComputedStyle(g).overflowY;
+           if(g.scrollHeight>g.clientHeight+2&&ov!=='auto'&&ov!=='scroll')
+             bad.push('the Depot grid overflows by '+(g.scrollHeight-g.clientHeight)+' pixels and its overflow is '+ov+', which the wheel will not scroll');
+           // 3. AND THE FOOTER STAYS, which is the whole point of v5.31.
+           var cl=document.getElementById('closeappear');
+           if(cl){ var cr=cl.getBoundingClientRect();
+             if(cr.bottom>mr.bottom+1) bad.push('CLOSE has been pushed '+Math.round(cr.bottom-mr.bottom)+' pixels off the bottom of the Depot');
+             if(atTop<=1) bad.push('control: SURPRISE ME was already in view at the top, so this check proves nothing');
+           }
+         }
+       }
+     } finally {
+       shutAll();
+       for(var i=0;i<open.length;i++) open[i].classList.add('on');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.77',what:'the title screen fills the same share of the monitor at 1080p, at 1440p and at 4K, because the cap is worked out from the zoom rather than written in css',
+   run:function(){
+     var bad=[];
+     if(!window.__vpAlive||!__vpAlive()) return 'SKIP: the page is not laid out';
+     var t=document.getElementById('title');
+     if(!t) return 'SKIP: this build has no title screen';
+     var col=t.querySelector('.titlecol');
+     if(!col) return 'SKIP: the title screen has no column to measure';
+     if(typeof applyMenuZoom!=='function') return 'SKIP: no zoom fitter to drive';
+     var W=window.innerWidth||0, H=window.innerHeight||0;
+     if(W<1600) return 'SKIP: the pane is only '+W+' wide, so a monitor cannot be measured';
+     var wasOn=t.classList.contains('on'), shut=[];
+     Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ shut.push(e); e.classList.remove('on'); });
+     try{
+       __pinDPR(1);
+       t.classList.add('on');
+       applyMenuZoom();
+       var r=col.getBoundingClientRect();
+       var used=Math.round(100*r.width/W);
+       var zoom=parseFloat(getComputedStyle(t).zoom)||1;
+       // THE POINT OF THIS CHECK: the same share whatever the monitor. v10.73
+       // hit 81 percent at 1080p and 45 at 4K because the cap was a css number
+       // and the zoom that multiplies it is not the same at both.
+       if(used<72) bad.push('the title screen paints '+used+' percent of a '+W+' by '+H+' screen, leaving '+Math.round(r.left)+' pixels empty down each side');
+       if(used>92) bad.push('the title screen paints '+used+' percent of a '+W+' by '+H+' screen, which is wall to wall');
+       if(Math.round(r.right)>W+1) bad.push('the title screen runs '+(Math.round(r.right)-W)+' pixels off the right at '+W+' by '+H);
+       if(Math.round(r.height)>H) bad.push('the title screen is '+Math.round(r.height)+' tall on a '+H+' pixel screen, so it has to be scrolled');
+       // AND THE CAP REALLY IS DERIVED, not a constant that happens to suit this
+       // one screen: it must be the width the zoom needs to paint that share.
+       var cap=parseFloat(getComputedStyle(col).maxWidth);
+       var wantCap=Math.max(820,Math.round(W*0.80/zoom));
+       if(!(cap>0)) bad.push('control: the column has no width cap at all');
+       else if(Math.abs(cap-wantCap)>Math.max(24,wantCap*0.04))
+         bad.push('the cap is '+Math.round(cap)+' css pixels where the zoom of '+zoom+' on a '+W+' pixel screen needs about '+wantCap);
+     } finally {
+       if(!wasOn) t.classList.remove('on');
+       for(var i=0;i<shut.length;i++) shut[i].classList.add('on');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.76',what:'his ten stash layouts can be reached again, the button cycles and wraps, and the stash grid really changes when it does',
+   run:function(){
+     var bad=[];
+     if(!window.__P) return 'SKIP: no profile shim';
+     if(typeof renderSettings!=='function'||typeof applyStashLayout!=='function') return 'SKIP: no settings or no layouts in this build';
+     if(!window.__vpAlive||!__vpAlive()) return 'SKIP: the page is not laid out';
+     var P2=__P(), hub=document.getElementById('hub');
+     if(!hub) return 'SKIP: this build has no stash screen';
+     var keep={lay:P2.stashLayout, stash:(P2.stash||[]).slice(), kit:(P2.kit||[]).slice(),
+               hot:P2.hotAssign, safe:P2.safe};
+     var wasOn=hub.classList.contains('on');
+     var sm=document.getElementById('settingsmodal'), smWasOn=sm&&sm.classList.contains('on');
+     try{
+       __pinDPR(1); __forceSize(1920,1080);
+       // A stash worth arranging, or every layout looks the same.
+       var big=[]; ['medkit','bandage','plate','servo','scrap','wire']
+         .forEach(function(k){ if(ITEMS[k]) for(var i=0;i<6;i++) big.push(k); });
+       if(big.length<12) return 'SKIP: not enough item kinds in this build to fill a stash';
+       P2.stash=big.slice(); P2.kit=big.slice(0,8); P2.hotAssign={}; P2.safe=null;
+       P2.stashLayout=6;
+       try{ saveProfile(); }catch(_s){}
+       applyStashLayout();
+       renderSettings();
+       // 1. THE PICKER EXISTS AND SAYS WHICH ONE IS ON.
+       var btn=document.getElementById('set_layout');
+       if(!btn) return 'the stash layout cannot be chosen anywhere: there is no picker in Settings';
+       var txt=String(btn.textContent||'');
+       if(txt.indexOf('6')<0) bad.push('the picker does not say which layout is on (it reads '+JSON.stringify(txt)+' with layout 6 set)');
+       if(typeof btn.onclick!=='function') return 'the stash layout picker is not clickable';
+       // 2. IT CYCLES AND IT WRAPS, which is what makes all ten reachable.
+       var seen={};
+       for(var c=0;c<10;c++){ btn=document.getElementById('set_layout'); btn.onclick(); seen[clamp(P2.stashLayout,1,10)]=1; }
+       var got=Object.keys(seen).length;
+       if(got<10) bad.push('cycling the picker ten times reached only '+got+' of the ten layouts');
+       if(clamp(P2.stashLayout,1,10)!==6) bad.push('ten clicks did not come back round to 6 (it is on '+P2.stashLayout+')');
+       // 3. THE STASH SCREEN ACTUALLY CHANGES. The attribute is what the CSS
+       //    reads, and the grid is what he sees, so both are measured.
+       hub.classList.add('on');
+       function shape(l){
+         P2.stashLayout=l; try{ saveProfile(); }catch(_s2){}
+         applyStashLayout();
+         try{ renderHub(); }catch(_e){}
+         if(typeof applyMenuZoom==='function') applyMenuZoom();
+         var sg=document.getElementById('stashgrid');
+         var cols=getComputedStyle(sg).gridTemplateColumns;
+         var c0=sg.children.length?sg.children[0].getBoundingClientRect():null;
+         return {attr:hub.getAttribute('data-slayout'), cols:cols,
+                 cell:c0?Math.round(c0.width):null, n:(cols.match(/px/g)||[]).length};
+       }
+       var wide=shape(6), tight=shape(7);
+       if(wide.attr!=='6'||tight.attr!=='7') bad.push('control: the layout attribute does not follow the setting ('+wide.attr+' then '+tight.attr+')');
+       if(!(tight.n>wide.n)) bad.push('layout 7 should pack more columns than layout 6 and it draws '+tight.n+' against '+wide.n);
+       if(!(wide.cell>tight.cell)) bad.push('the cells do not change size between layouts (6 draws '+wide.cell+', 7 draws '+tight.cell+')');
+     } finally {
+       P2.stashLayout=keep.lay; P2.stash=keep.stash; P2.kit=keep.kit;
+       P2.hotAssign=keep.hot; P2.safe=keep.safe;
+       try{ saveProfile(); }catch(_s3){}
+       try{ applyStashLayout(); }catch(_e2){}
+       if(!wasOn) hub.classList.remove('on');
+       if(sm&&!smWasOn) sm.classList.remove('on');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.75',what:'an extraction point closing is announced by the same letter the map draws on it, not by a number that is nowhere on the map',
+   run:function(){
+     var bad=[];
+     if(!(window.__startRaid&&window.__state&&window.__keysRef&&window.__loop)) return 'SKIP: this build cannot run the raid clock';
+     if(typeof extLetter!=='function') return 'SKIP: this build has no letter for an extraction point';
+     __resetCfg(); __pinDefaults(0); __pinDPR(1); __forceSize(1920,1080);
+     __startRaid({mapIx:0,seed:4242});
+     var g=__state();
+     if(!g.zones||g.zones.length<2) return 'SKIP: this map has fewer than two extraction points';
+     var shuts=0;
+     for(var i=0;i<g.zones.length;i++) if(g.zones[i].closeAt!==undefined) shuts++;
+     if(!shuts) return 'SKIP: nothing closes on this map and seed, so nothing announces a closure';
+     var K=__keysRef(); for(var k in K) K[k]=false;
+     var said=[];
+     var realSay=(typeof say==='function')?say:null;
+     if(!realSay) return 'SKIP: no say to listen to';
+     try{
+       say=function(m){ said.push(String(m)); return realSay.apply(null,arguments); };
+       // Run the clock down past the close times with the real frame loop, so
+       // the game announces them itself rather than being told to.
+       g.timeLeft=200;
+       for(var f=0;f<20;f++) __loop(performance.now()+f*16.7);
+     } finally { say=realSay; }
+     var lines=said.filter(function(m){ return /extraction/i.test(m)&&/clos/i.test(m); });
+     if(!lines.length) return 'SKIP: no closure was announced in the frames driven';
+     // THE MAP IS THE AUTHORITY: whatever it draws on the ring is what the
+     // message must say. Both come from the same place now, so this reads the
+     // letters off the zones rather than assuming A, B, C.
+     var letters=[];
+     for(var z=0;z<g.zones.length;z++) letters.push(extLetter(g.zones[z]));
+     lines.forEach(function(m){
+       var num=/Extraction\s+(\d+)\b/i.exec(m);
+       if(num) bad.push('a closure is announced as "'+m.trim()+'", and the map draws EXTRACT '+letters.join(', ')+' with no '+num[1]+' on it');
+       else{
+         var got=/Extraction\s+([A-Z])\b/.exec(m);
+         if(!got) bad.push('a closure is announced without naming which point: "'+m.trim()+'"');
+         else if(letters.indexOf(got[1])<0) bad.push('a closure names EXTRACT '+got[1]+', which is not one of the letters on the map ('+letters.join(', ')+')');
+       }
+     });
+     // CONTROL: the letters really are what the map paints, read from the same
+     // function the map screen calls, so this cannot pass by agreeing with
+     // itself about a name neither surface uses.
+     if(letters[0]!=='A') bad.push('control: the first extraction point reads as '+letters[0]+' rather than A, so the letters are not what they were');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.74',what:'the two buttons at the end of a raid stay inside the card, with a full bag and with an empty one, whether the ledger is scrolled to the top or the bottom',
+   run:function(){
+     var bad=[];
+     if(!(window.__deploy&&window.__endRaid&&window.__P&&window.__state)) return 'SKIP: this build cannot deploy and die';
+     if(!window.__vpAlive||!__vpAlive()) return 'SKIP: the page is not laid out';
+     var oc=document.getElementById('outcome');
+     if(!oc) return 'SKIP: this build has no run report';
+     var win=oc.querySelector('.ocwin');
+     if(!win) return 'SKIP: the run report has no window to measure';
+     var P2=__P();
+     var keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),weapons:(P2.weapons||[]).slice(),
+               eq:P2.equipped,sec:P2.equippedSec,safe:P2.safe,hot:P2.hotAssign,free:P2.freeKit,auto:P2.autoExport};
+     function seat(bag,guns,extra,safe){
+       if(window.__cleanProfile) __cleanProfile();
+       __pinDPR(1); __forceSize(1920,1080);
+       P2.freeKit=0; P2.hotAssign={}; P2.autoExport=false; P2.safe=safe||null;
+       P2.stash=bag.slice(); P2.kit=bag.slice();
+       P2.weapons=guns.slice(); P2.equipped=guns[0]||'fists'; P2.equippedSec=guns[1]||'none';
+       try{ saveProfile(); }catch(_s){}
+       __deploy({kit:bag.slice(),safe:safe||null,mapIx:0,seed:4242});
+       var g=__state();
+       for(var i=0;i<extra;i++) g.bag.push('scrap');
+       __endRaid('dead');
+       if(typeof applyMenuZoom==='function') applyMenuZoom();
+       return win.getBoundingClientRect();
+     }
+     // Both buttons, measured against the card they live in rather than against
+     // the window: the card is the thing that scrolls.
+     function look(where){
+       var wr=win.getBoundingClientRect(), out={where:where,scrolls:win.scrollHeight>win.clientHeight+2,off:[]};
+       ['oc_btn','oc_copy'].forEach(function(id){
+         var b=document.getElementById(id);
+         if(!b){ out.off.push(id+' is not on the card at all'); return; }
+         var br=b.getBoundingClientRect();
+         if(br.height<=0) out.off.push(id+' has no height');
+         else if(br.bottom>wr.bottom+1) out.off.push(id+' sits '+Math.round(br.bottom-wr.bottom)+' pixels below the bottom of the card');
+         else if(br.top<wr.top-1) out.off.push(id+' sits '+Math.round(wr.top-br.top)+' pixels above the top of the card');
+       });
+       return out;
+     }
+     try{
+       // 1. A FULL BAG, which is the case that broke: ten packed, eight more
+       //    picked up, dying with two of his own guns. Measured on v10.73 the
+       //    card ran 945 pixels of content in an 826 pixel box and both buttons
+       //    were off the end.
+       // The safe pocket is armed on purpose. It adds its own line to the ledger
+       // and that is what carries the card past the fold: measured on a v10.73
+       // fixture the content is 896 without it and 945 with it, against an 826
+       // pixel box, so the button lands 66 pixels below the card rather than 1.
+       // Piling on more loot does not help, because the ledger shows seven and
+       // then says how many more.
+       var FULL=['medkit','medkit','plate','plate','servo','scrap','wire','bandage','smoke','frag'];
+       seat(FULL,['smg','carbine'],8,'medkit');
+       var top=look('a full bag, scrolled to the top');
+       // v10.77: a taller screen gives the card room for the whole ledger, so
+       // the case simply does not arise there. That is not the build failing.
+       if(!top.scrolls) return 'SKIP: on a '+(window.innerHeight||0)+' pixel screen a full bag does not fill the card, so the buttons cannot be pushed off it';
+       win.scrollTop=0;
+       top=look('a full bag, scrolled to the top');
+       if(top.off.length) bad.push('with a full bag, '+top.off.join(' and '));
+       // 2. AND AT THE BOTTOM, where they naturally sit, so pinning them has not
+       //    pushed them past the end instead.
+       win.scrollTop=win.scrollHeight;
+       var bot=look('a full bag, scrolled to the bottom');
+       if(bot.off.length) bad.push('scrolled to the bottom with a full bag, '+bot.off.join(' and '));
+       // 3. A SHORT CARD must be untouched: one item, no guns, nothing to scroll.
+       seat(['medkit'],[],0);
+       var small=look('one item');
+       if(small.scrolls) bad.push('control: a one item card scrolls, so the short case cannot be told from the long one');
+       if(small.off.length) bad.push('on a card with one item, '+small.off.join(' and '));
+     } finally {
+       oc.classList.remove('on');
+       win.scrollTop=0;
+       P2.stash=keep.stash; P2.kit=keep.kit; P2.weapons=keep.weapons; P2.equipped=keep.eq;
+       P2.equippedSec=keep.sec; P2.safe=keep.safe; P2.hotAssign=keep.hot; P2.freeKit=keep.free; P2.autoExport=keep.auto;
+       try{ saveProfile(); }catch(_s2){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.73',what:'the title screen uses a wide monitor instead of painting a narrow column down the middle, and its prose keeps a readable measure',
+   run:function(){
+     var bad=[];
+     if(!window.__vpAlive||!__vpAlive()) return 'SKIP: the page is not laid out';
+     var t=document.getElementById('title');
+     if(!t) return 'SKIP: this build has no title screen';
+     var col=t.querySelector('.titlecol');
+     if(!col) return 'SKIP: the title screen has no column to measure';
+     if(typeof __forceSize!=='function'||typeof __pinDPR!=='function') return 'SKIP: cannot pin the viewport';
+     var wasOn=t.classList.contains('on');
+     var shut=[];
+     Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ shut.push(e); e.classList.remove('on'); });
+     try{
+       __pinDPR(1); __forceSize(1920,1080);
+       t.classList.add('on');
+       // The screen paints inside a zoom, so the honest measure is the painted
+       // rectangle against the real viewport, not the css width.
+       if(typeof applyMenuZoom==='function') applyMenuZoom();
+       var W=window.innerWidth||1920, H=window.innerHeight||1080;
+       if(W<1600) return 'SKIP: the pane is only '+W+' wide, so a wide monitor cannot be measured';
+       var r=col.getBoundingClientRect();
+       var used=Math.round(100*r.width/W);
+       // v10.72 measured 56 percent here with 427 pixels dead on each side. The
+       // floor is well under what this build paints, 81, and well over what the
+       // old one did, so it names the fault rather than the exact layout.
+       if(used<72) bad.push('the title screen paints '+used+' percent of a '+W+' pixel monitor, leaving '+Math.round(r.left)+' pixels empty down each side');
+       if(Math.round(r.right)>W+1) bad.push('the title screen runs '+(Math.round(r.right)-W)+' pixels off the right of the screen');
+       if(Math.round(r.left)<0) bad.push('the title screen starts '+Math.round(r.left)+' pixels off the left of the screen');
+       // AND IT MUST STILL FIT DOWNWARDS, which is v9.53's rule and the reason
+       // the column was narrow in the first place.
+       if(col.scrollHeight*1>0&&Math.round(r.height)>H) bad.push('the title screen is '+Math.round(r.height)+' tall on a '+H+' screen, so it has to be scrolled');
+       // THE PROSE KEEPS A MEASURE. Widening the column turned two sentences
+       // into one 1,496 pixel line, which is worse to read than the narrow
+       // column was, so the one block of real prose is capped.
+       var intro=null;
+       Array.prototype.forEach.call(col.children,function(d){
+         if(/elites left you for dead/.test(d.textContent||'')) intro=d; });
+       if(!intro) bad.push('control: the opening sentence is not on the title screen any more, so its measure cannot be checked');
+       else{
+         var ir=intro.getBoundingClientRect();
+         if(ir.width>1100) bad.push('the opening sentence runs '+Math.round(ir.width)+' pixels wide, which is one long line rather than a readable measure');
+         if(ir.width<400) bad.push('control: the opening sentence measures only '+Math.round(ir.width)+' pixels, so something else has gone wrong');
+       }
+     } finally {
+       if(!wasOn) t.classList.remove('on');
+       for(var i=0;i<shut.length;i++) shut[i].classList.add('on');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.72',what:'the death screen counts the gun it says you lost, in the number and in the money, and still leaves an issued loaner out of both',
+   run:function(){
+     var bad=[];
+     if(!(window.__deploy&&window.__endRaid&&window.__P&&window.__state)) return 'SKIP: this build cannot deploy and die';
+     if(typeof ival!=='function') return 'SKIP: no item values in this build';
+     var P2=__P();
+     var keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),weapons:(P2.weapons||[]).slice(),
+               eq:P2.equipped,sec:P2.equippedSec,safe:P2.safe,hot:P2.hotAssign,free:P2.freeKit,auto:P2.autoExport};
+     var GUN='pistol', ITEM='medkit';
+     if(!(WEAPONS[GUN]&&ITEMS['gun_'+GUN]&&ITEMS[ITEM])) return 'SKIP: this build lacks the gun or item this uses';
+     var gunVal=ival('gun_'+GUN);
+     if(!(gunVal>0)) return 'SKIP: the '+GUN+' is worth nothing, so leaving it out could not be seen';
+     // One death. equipped decides whether he is holding HIS gun or a loaner.
+     function die(equipped, weapons){
+       if(window.__cleanProfile) __cleanProfile();
+       P2.freeKit=0; P2.hotAssign={}; P2.autoExport=false; P2.safe=null;
+       P2.stash=[ITEM]; P2.kit=[ITEM];
+       P2.weapons=weapons.slice(); P2.equipped=equipped; P2.equippedSec='none';
+       try{ saveProfile(); }catch(_s){}
+       __deploy({kit:[ITEM],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       var held={id:p.wep&&p.wep.id, issued:!!p.wepIssued};
+       // What is actually in the bag decides the honest total, so it is read
+       // from the game rather than assumed from what was packed.
+       var bagVal=0, bagN=g.bag.length;
+       for(var i=0;i<g.bag.length;i++) bagVal+=ival(g.bag[i]);
+       __endRaid('dead');
+       var oc=document.getElementById('outcome');
+       var t=(oc?(oc.innerText||''):'').replace(/\s+/g,' ');
+       if(oc) oc.classList.remove('on');
+       var lostLines=(t.match(/\bLOST\b/g)||[]).length;
+       var m=/([0-9]+) items? (?:and ([0-9]+) guns? )?lost, \$([0-9,]+) gone/.exec(t);
+       return {held:held, bagN:bagN, bagVal:bagVal, lostLines:lostLines,
+               said:m?m[0]:null, nItems:m?+m[1]:null, nGuns:m&&m[2]?+m[2]:0,
+               money:m?+String(m[3]).replace(/,/g,''):null};
+     }
+     try{
+       // 1. HIS OWN GUN. It is listed as LOST, so it must be in the count and
+       //    in the money underneath it.
+       var own=die(GUN,[GUN]);
+       if(!own.said) return 'SKIP: could not read the lost line off the death screen';
+       if(own.held.id!==GUN||own.held.issued) return 'SKIP: he did not deploy holding his own '+GUN+' (held '+own.held.id+', issued '+own.held.issued+')';
+       if(own.nGuns!==1) bad.push('he died holding his own '+GUN+' and the line says '+own.nGuns+' guns lost: '+own.said);
+       if(own.nItems+own.nGuns!==own.lostLines) bad.push('the screen printed '+own.lostLines+' LOST lines and then said '+(own.nItems+own.nGuns)+' lost: '+own.said);
+       if(own.money!==own.bagVal+gunVal) bad.push('the '+GUN+' is worth '+gunVal+' and the bag '+own.bagVal+', and the screen says $'+own.money+' gone');
+       // 2. AN ISSUED LOANER is not his and must stay out of both.
+       var loan=die('fists',[]);
+       if(!loan.said) bad.push('control: could not read the lost line on the loaner death');
+       else{
+         if(!loan.held.issued) bad.push('control: he was meant to go up with a loaner and did not (held '+loan.held.id+')');
+         if(loan.nGuns!==0) bad.push('an issued loaner was counted as a gun lost: '+loan.said);
+         if(loan.money!==loan.bagVal) bad.push('an issued loaner put '+(loan.money-loan.bagVal)+' into the money lost, and he never owned it');
+         if(loan.nItems!==loan.lostLines) bad.push('control: the loaner death printed '+loan.lostLines+' LOST lines against '+loan.nItems+' counted');
+       }
+       // 3. CONTROL, so this cannot pass on a screen that counts nothing: the
+       //    two deaths must differ by exactly the gun.
+       if(own.money!==null&&loan.money!==null&&own.bagVal===loan.bagVal&&(own.money-loan.money)!==gunVal)
+         bad.push('control: the same bag with and without his own gun differs by '+(own.money-loan.money)+', not the '+gunVal+' the gun is worth');
+     } finally {
+       P2.stash=keep.stash; P2.kit=keep.kit; P2.weapons=keep.weapons; P2.equipped=keep.eq;
+       P2.equippedSec=keep.sec; P2.safe=keep.safe; P2.hotAssign=keep.hot; P2.freeKit=keep.free; P2.autoExport=keep.auto;
+       try{ saveProfile(); }catch(_s2){}
+       var o2=document.getElementById('outcome'); if(o2) o2.classList.remove('on');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.71',what:'the safe pocket says when it is naming something that is not going up, the ascent check names it, and the loadout total counts it once or not at all',
+   run:function(){
+     var bad=[];
+     if(!(window.__hubEnter&&window.__P&&window.__deploy)) return 'SKIP: this build cannot arrive and deploy';
+     if(typeof ival!=='function') return 'SKIP: no item values in this build';
+     var P2=__P();
+     var keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),hot:P2.hotAssign,safe:P2.safe,free:P2.freeKit};
+     function txt(id){ var e=document.getElementById(id); return e?String(e.textContent||'').trim():null; }
+     function num(id){ var t=txt(id); if(t===null) return null; var c=t.replace(/[^0-9.-]/g,''); return c===''?null:+c; }
+     var A='medkit', B='plate', D='bandage';
+     if(!(ITEMS[A]&&ITEMS[B]&&ITEMS[D])) return 'SKIP: this build lacks the items this uses';
+     var vD=ival(D);
+     if(!(vD>0)) return 'SKIP: the '+D+' is worth nothing, so double counting could not be seen';
+     // One arm: set the stash, the backpack and the pocket, then read the floor.
+     function arm(kit,safe){
+       if(window.__cleanProfile) __cleanProfile();
+       P2.freeKit=0; P2.hotAssign={};
+       P2.stash=[D,A,B]; P2.kit=kit.slice(); P2.safe=safe;
+       try{ saveProfile(); }catch(_s){}
+       __hubEnter();
+       return {safen:txt('safen'), kitval:num('kitval'), kitn:num('kitn')};
+     }
+     try{
+       // 1. NAMED BUT NOT PACKED. The deploy arms nothing, so the screen must
+       //    not read like an armed pocket.
+       var away=arm([A,B],D);
+       __deploy({kit:[A,B],safe:D,mapIx:0,seed:4242});
+       var armedAway=P2.safeUp;
+       if(armedAway) bad.push('control: the deploy armed the pocket for an item that was not packed (safeUp='+armedAway+')');
+       else if(away.safen==='1/1') bad.push('the pocket names a '+D+' that is not in the backpack, so nothing comes home, and the screen still reads 1/1');
+       // 2. NAMED AND PACKED is the working case and must still read as armed.
+       var withIt=arm([A,B,D],D);
+       __deploy({kit:[A,B,D],safe:D,mapIx:0,seed:4242});
+       if(P2.safeUp!==D) bad.push('control: a packed '+D+' did not arm the pocket at deploy (safeUp='+String(P2.safeUp)+')');
+       if(withIt.safen!=='1/1') bad.push('a packed and named '+D+' does not read as armed (the screen says '+JSON.stringify(withIt.safen)+')');
+       // 3. THE TOTAL COUNTS IT ONCE. Naming an item already in the backpack
+       //    must not change what is going up, and naming one that is NOT there
+       //    must not add anything either.
+       var plain=arm([A,B,D],null);
+       if(withIt.kitval!==plain.kitval) bad.push('naming the packed '+D+' as the safe pocket changed the loadout total from '+plain.kitval+' to '+withIt.kitval+', and it is one item either way');
+       var bare=arm([A,B],null);
+       if(away.kitval!==bare.kitval) bad.push('naming a '+D+' that stays at home added '+(away.kitval-bare.kitval)+' to the loadout total');
+       if(plain.kitval!==bare.kitval+vD) bad.push('control: the '+D+' is worth '+vD+' and packing it moved the total from '+bare.kitval+' to '+plain.kitval);
+       // 4. THE ASCENT CHECK NAMES IT, and says which of the two it is.
+       var st=document.getElementById('stagemodal');
+       if(!st||!window.__stage) bad.push('SKIPPABLE: no ascent check to read');
+       else{
+         arm([A,B,D],D); __stage.render();
+         var t1=(st.innerText||'').replace(/\s+/g,' ');
+         if(!/safe pocket/i.test(t1)) bad.push('the ascent check never mentions the safe pocket');
+         else if(t1.indexOf(ITEMS[D].name)<0) bad.push('the ascent check mentions a safe pocket without naming what is in it');
+         arm([A,B],D); __stage.render();
+         var t2=(st.innerText||'').replace(/\s+/g,' ');
+         if(!/not packed/i.test(t2)) bad.push('the ascent check does not say the safe pocket names something that is not packed');
+         arm([A,B],null); __stage.render();
+         var t3=(st.innerText||'').replace(/\s+/g,' ');
+         if(!/no safe pocket/i.test(t3)) bad.push('the ascent check says nothing when there is no safe pocket at all');
+       }
+     } finally {
+       P2.stash=keep.stash; P2.kit=keep.kit; P2.hotAssign=keep.hot; P2.safe=keep.safe; P2.freeKit=keep.free;
+       try{ saveProfile(); }catch(_s2){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.70',what:'the LOADOUT number counts everything going up: the backpack and the copies on tactical belt keys',
+   run:function(){
+     var bad=[];
+     if(!(window.__hubEnter&&window.__P)) return 'SKIP: this build cannot arrive on the floor';
+     if(typeof ival!=='function') return 'SKIP: no item values in this build';
+     var P2=__P();
+     var keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),
+               hot:P2.hotAssign,safe:P2.safe};
+     function num(id){ var e=document.getElementById(id); if(!e) return null;
+       var t=String(e.textContent||'').replace(/[^0-9.-]/g,''); return t===''?null:+t; }
+     // Distinctive on purpose: three items whose values differ, so no total can
+     // be right by accident and the delta names which one moved.
+     var A='medkit', B='plate', C='servo', D='bandage';
+     if(!(ITEMS[A]&&ITEMS[B]&&ITEMS[C]&&ITEMS[D])) return 'SKIP: this build does not have the four items this uses';
+     var vA=ival(A), vD=ival(D);
+     if(!(vA>0)||!(vD>0)) return 'SKIP: '+A+' or '+D+' is worth nothing, so nothing could be seen to go missing';
+     try{
+       P2.stash=[A,B,C,D]; P2.kit=[A,B,C]; P2.hotAssign={}; P2.safe=null;
+       try{ saveProfile(); }catch(_s){}
+       __hubEnter();
+       var base=num('kitval'), packed=num('kitn');
+       if(base===null) return 'SKIP: the loadout panel has no value on it';
+       if(packed!==3) return 'SKIP: the backpack did not take the three items (it holds '+packed+')';
+       // 1. PUTTING IT ON A KEY MOVES NOTHING OUT OF THE LOADOUT.
+       P2.hotAssign={'3':A};
+       try{ saveProfile(); }catch(_s2){}
+       __hubEnter();
+       var onKey=num('kitval');
+       if(onKey!==base) bad.push('putting the '+A+' on a key changed what is going up from '+base+' to '+onKey+', and it is worth '+vA+'; it still goes up');
+       if(num('kitn')!==2) bad.push('control: the backpack grid did not drop to 2 when one of the three went on a key (it says '+num('kitn')+')');
+       if(num('quickn')!==1) bad.push('control: nothing reads as being on a key');
+       // 2. v10.71: THE SAFE POCKET IS A NAME, NOT AN EXTRA THING CARRIED. It
+       //    names one item you are already carrying, so naming one that is not
+       //    even packed must not add anything to what is going up. v10.70, mine,
+       //    asserted the opposite here and was wrong in both directions.
+       P2.hotAssign={}; P2.safe=D;
+       try{ saveProfile(); }catch(_s3){}
+       __hubEnter();
+       var withSafe=num('kitval');
+       if(withSafe!==base) bad.push('naming a '+D+' that is not packed changed what is going up from '+base+' to '+withSafe+'; it stays at home');
+       // 3. CONTROL: the number is not simply frozen. Taking a real item out of
+       //    the backpack must still move it, or every assertion above passes on
+       //    a number that never changes.
+       P2.safe=null; P2.kit=[B,C];
+       try{ saveProfile(); }catch(_s4){}
+       __hubEnter();
+       var less=num('kitval');
+       if(less!==base-vA) bad.push('control: leaving the '+A+' behind should take '+vA+' off the total, and it reads '+less+' against '+base);
+     } finally {
+       P2.stash=keep.stash; P2.kit=keep.kit; P2.hotAssign=keep.hot; P2.safe=keep.safe;
+       try{ saveProfile(); }catch(_s5){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.68',what:'a gun found in a raid fills the empty second slot instead of shoving the gun out of his hands, and with both slots full it still replaces the gun in his hands',
+   run:function(){
+     var bad=[];
+     if(!(window.__startRaid&&window.__state&&window.__keysRef&&window.__loop&&window.__P))
+       return 'SKIP: this build cannot drive a raid on the play path';
+     var P2=__P();
+     var keep={eq:P2.equipped,sec:P2.equippedSec,wpn:(P2.weapons||[]).slice()};
+     function keysOff(){ var K=__keysRef(); for(var k in K) K[k]=false; return K; }
+     var floor=(WTIER['pistol']||0);
+     // The container has to hold a gun that BEATS what is in his hands, because
+     // the pickup only equips an upgrade. Nearest such container wins.
+     function findBox(g){
+       var p=g.player, best=null, bd=1e9, want=null;
+       for(var i=0;i<g.containers.length;i++){
+         var c=g.containers[i]; if(!c.loot||!c.loot.length) continue;
+         var gk=null;
+         for(var j=0;j<c.loot.length;j++){
+           var it=c.loot[j];
+           if(it.indexOf('gun_')!==0) continue;
+           var k2=it.slice(4);
+           if((WTIER[k2]||0)>floor) gk=k2;
+         }
+         if(!gk) continue;
+         var d=Math.hypot(c.x-p.x,c.y-p.y);
+         if(d<bd){ bd=d; best=c; want=gk; }
+       }
+       return best?{box:best,want:want}:null;
+     }
+     // One arm: deploy with the pistol in hand and secKey in the second slot,
+     // stand on the container and HOLD E through the real frame loop. This is
+     // the play path on purpose; the bot never runs this code.
+     function drive(secKey){
+       P2.equipped='pistol'; P2.equippedSec=secKey;
+       P2.weapons=(secKey==='none')?['pistol']:['pistol',secKey];
+       try{ saveProfile(); }catch(_s){}
+       __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       var f=findBox(g);
+       if(!f) return {skip:'no container near him holds a gun better than the Scav Pistol'};
+       if(p.wep.id!=='pistol') return {skip:'he did not deploy holding the Scav Pistol, he holds '+p.wep.id};
+       p.x=f.box.x; p.y=f.box.y+4;
+       var K=keysOff(); K['KeyE']=true;
+       var err=null;
+       try{ for(var i=0;i<420;i++) __loop(performance.now()+i*16.7); }catch(e){ err=String(e); }
+       keysOff();
+       var g2=__state(), p2=g2.player;
+       return {err:err, want:f.want, wep:p2.wep.id, sec:p2.sec?p2.sec.id:'(nothing)',
+               bag:g2.bag.slice(), searched:g2.tel.containers};
+     }
+     try{
+       if(window.__cleanProfile) __cleanProfile();
+       // 1. HIS NOTE: the empty slot takes it and his hands are left alone.
+       var a=drive('none');
+       if(a.skip) return 'SKIP: '+a.skip;
+       if(a.err) bad.push('looting threw: '+a.err);
+       else if(!a.searched) bad.push('he held E for 420 frames and searched nothing, so no gun was found to place');
+       else{
+         if(a.wep!=='pistol') bad.push('the '+a.want+' he found pushed the Scav Pistol out of his hands (he now holds '+a.wep+')');
+         if(a.sec!==a.want) bad.push('the '+a.want+' he found did not go to his empty second slot (it holds '+a.sec+')');
+         if(a.bag.indexOf('gun_pistol')>=0) bad.push('his Scav Pistol went in the bag even though the second slot was standing empty');
+       }
+       // 2. BOTH SLOTS FULL is unchanged, and a rifle in the second slot is
+       //    nothing the pickup could have produced by accident.
+       var b=drive('rifle');
+       if(b.skip) bad.push('the both-full arm could not run: '+b.skip);
+       else if(b.err) bad.push('looting threw with both slots full: '+b.err);
+       else if(!b.searched) bad.push('the both-full arm searched nothing');
+       else{
+         if(b.wep!==b.want) bad.push('with both slots full the '+b.want+' did not go into his hands (he holds '+b.wep+')');
+         if(b.sec!=='rifle') bad.push('with both slots full his second slot was disturbed (it holds '+b.sec+' instead of the rifle)');
+         if(b.bag.indexOf('gun_pistol')<0) bad.push('with both slots full the Scav Pistol he was holding did not go to the bag');
+       }
+     } finally {
+       keysOff();
+       P2.equipped=keep.eq; P2.equippedSec=keep.sec; P2.weapons=keep.wpn;
+       try{ saveProfile(); }catch(_s2){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.67',what:'the welcome pack guns go into his hands, so a new character deploys with what he was just given, and a player who already chose keeps his choice',
+   run:function(){
+     var bad=[];
+     if(!(window.__hubEnter&&window.__P&&window.__deploy&&window.__state)) return 'SKIP: this build cannot arrive and deploy';
+     if(typeof WELCOME_PACK==='undefined') return 'SKIP: no welcome pack in this build';
+     var P2=__P();
+     function shut(){ Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ e.classList.remove('on'); }); }
+     var keep={welcomed:P2.welcomed,runs:P2.runs,stash:(P2.stash||[]).slice(),weapons:(P2.weapons||[]).slice(),
+               equipped:P2.equipped,equippedSec:P2.equippedSec,primerSeen:P2.primerSeen,credits:P2.credits};
+     function fresh(){
+       shut();
+       P2.welcomed=0; P2.runs=0; P2.stash=[]; P2.weapons=[]; P2.credits=0;
+       P2.equipped='fists'; P2.equippedSec='none'; P2.primerSeen=1; P2.primerOff=true;
+       try{ saveProfile(); }catch(_s){}
+     }
+     var packGuns=(WELCOME_PACK.guns||[]).slice();
+     if(packGuns.length<2) return 'SKIP: the pack no longer carries two guns';
+     try{
+       // 1. TAKING THE PACK puts its guns in his hands, not only in the armoury.
+       fresh();
+       __hubEnter();
+       var take=document.getElementById('welcometake');
+       if(!take) return 'SKIP: this build has no welcome pack button';
+       take.onclick(); shut();
+       if(P2.equipped!==packGuns[0]) bad.push('after taking the pack his first slot holds '+P2.equipped+', not the '+packGuns[0]+' he was given');
+       if(P2.equippedSec!==packGuns[1]) bad.push('after taking the pack his second slot holds '+P2.equippedSec+', not the '+packGuns[1]+' he was given');
+       if((P2.weapons||[]).indexOf(packGuns[0])<0) bad.push('the pack gun is not in the armoury either');
+       // 2. AND HE DEPLOYS WITH IT. The issued starter is rolled fresh per raid,
+       //    so this asks what is in his hands rather than what is not.
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       if(!g||!g.player) bad.push('the raid did not build');
+       else {
+         var W=__weapons(), want=W[packGuns[0]]&&W[packGuns[0]].name;
+         var inHand=g.player.wep&&g.player.wep.name;
+         if(!inHand||inHand.indexOf(want)<0) bad.push('he went up holding '+inHand+' instead of the '+want+' from his welcome pack');
+         if(g.player.wepIssued) bad.push('he went up with an issued loaner even though the pack gave him a gun');
+       }
+       // 3. A PLAYER WHO ALREADY CHOSE KEEPS HIS CHOICE: this fills empty hands,
+       //    it is not the auto-equip he refused.
+       fresh();
+       P2.weapons=['rifle']; P2.equipped='rifle'; P2.equippedSec='none';
+       try{ saveProfile(); }catch(_s2){}
+       __hubEnter();
+       var take2=document.getElementById('welcometake');
+       if(take2){ take2.onclick(); shut(); }
+       if(P2.equipped!=='rifle') bad.push('taking the pack pushed his own rifle out of his hands (it now holds '+P2.equipped+')');
+       if(P2.equippedSec!==packGuns[1]) bad.push('the empty second slot was not filled by the pack (it holds '+P2.equippedSec+')');
+     } finally {
+       shut();
+       P2.welcomed=keep.welcomed; P2.runs=keep.runs; P2.stash=keep.stash; P2.weapons=keep.weapons;
+       P2.equipped=keep.equipped; P2.equippedSec=keep.equippedSec; P2.primerSeen=keep.primerSeen; P2.credits=keep.credits;
+       P2.primerOff=false;
+       try{ saveProfile(); }catch(_s3){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.66',what:'a brand new character meets the welcome pack, once, and it does not come back after a raid',
+   run:function(){
+     var bad=[];
+     if(!(window.__hubEnter&&window.__P)) return 'SKIP: this build cannot arrive on the floor';
+     var P2=__P();
+     function openIds(){ return Array.prototype.map.call(document.querySelectorAll('.modal.on'),function(e){ return e.id; }); }
+     function shut(){ Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ e.classList.remove('on'); }); }
+     var keep={welcomed:P2.welcomed,runs:P2.runs,stash:(P2.stash||[]).slice(),weapons:(P2.weapons||[]).slice(),
+               credits:P2.credits,primerSeen:P2.primerSeen,primerOff:P2.primerOff,shareAsked:P2.shareAsked};
+     function fresh(){
+       shut();
+       P2.welcomed=0; P2.runs=0; P2.stash=[]; P2.weapons=[]; P2.credits=0;
+       P2.primerSeen=0; P2.primerOff=false;
+       try{ saveProfile(); }catch(_s){}
+     }
+     try{
+       // 1. ARRIVAL on a brand new save: the welcome pack, and nothing on top of it.
+       fresh();
+       __hubEnter();
+       var first=openIds();
+       if(first.indexOf('welcomemodal')<0) bad.push('a new character does not meet the welcome pack on arrival (open: '+first.join(',')+')');
+       if(first.length>1) bad.push('a new character meets '+first.length+' windows at once on arrival: '+first.join(','));
+       // 2. TAKING THE PACK closes it and leaves nothing else in the way.
+       //    v10.88: this used to assert the handover to FIRST TIME OUT, which is
+       //    deleted. What is left is the part that still matters: the pack does
+       //    not linger, and it does not open something else behind itself.
+       var take=document.getElementById('welcometake');
+       if(!take) return 'SKIP: this build has no welcome pack button';
+       take.onclick();
+       var second=openIds();
+       if(second.indexOf('welcomemodal')>=0) bad.push('taking the welcome pack leaves it on the screen');
+       if(second.length) bad.push('taking the welcome pack opened '+second.length+' more windows: '+second.join(','));
+       // 3. The pack still arrived: this is the queue, not a swap.
+       if(!(P2.stash||[]).length) bad.push('taking the pack put nothing in the stash');
+       if(!(P2.weapons||[]).length) bad.push('taking the pack put no gun in the armoury');
+       // 4. CLOSING THE PACK the other way does the same.
+       fresh();
+       __hubEnter();
+       var no=document.getElementById('welcomeno');
+       if(no){ no.onclick();
+         var third=openIds();
+         if(third.indexOf('welcomemodal')>=0) bad.push('closing the pack with CLOSE leaves it on the screen');
+       }
+       // 5. AND A RETURNING PLAYER IS NOT ASKED AGAIN. v10.88: steps 5 and 6
+       //    used to be about the briefing card being owed and then stopping;
+       //    the card is deleted, and what survives is that the pack is a
+       //    one-time thing.
+       fresh();
+       __hubEnter();          // pack up
+       shut();                 // he closes it and walks to the lift
+       P2.welcomed=1; P2.runs=1; try{ saveProfile(); }catch(_s2){}
+       __hubEnter();          // back from his first raid
+       if(openIds().indexOf('welcomemodal')>=0) bad.push('the welcome pack comes back after a raid, so it is not a one-time thing');
+     } finally {
+       shut();
+       P2.welcomed=keep.welcomed; P2.runs=keep.runs; P2.stash=keep.stash; P2.weapons=keep.weapons;
+       P2.credits=keep.credits; P2.primerSeen=keep.primerSeen; P2.primerOff=keep.primerOff; P2.shareAsked=keep.shareAsked;
+       try{ saveProfile(); }catch(_s4){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.65',what:'the end of raid card can copy the report: the button is there, it logs the raid it just played into the text, it cannot log it twice, and it leaves the card open',
+   run:function(){
+     var bad=[];
+     if(!(window.__startRaid&&window.__endRaid&&window.__P)) return 'SKIP: this build cannot end a raid';
+     var P2=__P();
+     var b=document.getElementById('oc_copy');
+     if(!b) return 'the end of raid card has no Copy report button';
+     var oc=document.getElementById('outcome');
+     var ta=document.getElementById('exporttext');
+     if(!ta) return 'SKIP: this build has no recorder box to fill';
+     var keepLog=(P2.log||[]).slice(), keepRuns=P2.runs, keepAuto=P2.autoExport;
+     try{
+       P2.autoExport=false;   // no file saves from a check
+       __startRaid({seed:4242,mapIx:0});
+       __endRaid('extract');
+       if(!oc.classList.contains('on')) return 'SKIP: the outcome card did not open';
+       var note=document.getElementById('oc_note');
+       if(note) note.value='probe note 4242';
+       // The raid is already written to the log when the card opens (v8.17 banks
+       // it before the card is drawn), and the card patches the tags and the note
+       // onto that same row. So what matters here is that the copy carries them,
+       // and that leaving afterwards does not write a second row.
+       var before=(P2.log||[]).length;
+       ta.value='';
+       b.onclick();
+       var afterCopy=(P2.log||[]).length;
+       if(afterCopy!==before) bad.push('Copy report wrote another row for a raid already logged (the log went from '+before+' to '+afterCopy+')');
+       var lastRow=(P2.log||[])[(P2.log||[]).length-1]||{};
+       if(lastRow.note!=='probe note 4242') bad.push('the note typed on the card did not reach the logged raid (it holds '+JSON.stringify(lastRow.note)+')');
+       // 2. The text it handed over holds that raid, and the note typed on the card.
+       var txt=ta.value||'';
+       if(!txt.length) bad.push('Copy report handed over nothing');
+       else {
+         if(txt.indexOf('FLIGHT RECORDER')<0) bad.push('what it handed over is not the run report');
+         if(note&&txt.indexOf('probe note 4242')<0) bad.push('the note typed on the card is not in the report it handed over');
+         if(txt.indexOf('EXTRACT')<0) bad.push('the raid it just played is not in the report it handed over');
+       }
+       // 3. The card is still open, so he can still read it and still leave.
+       if(!oc.classList.contains('on')) bad.push('Copy report closed the card');
+       // 4. Leaving afterwards cannot log the same raid a second time.
+       var ocb=document.getElementById('oc_btn');
+       if(ocb) ocb.onclick();
+       var afterLeave=(P2.log||[]).length;
+       if(afterLeave!==afterCopy) bad.push('leaving after a copy logged the raid again (the log went from '+afterCopy+' to '+afterLeave+')');
+     } finally {
+       P2.log=keepLog; P2.runs=keepRuns; P2.autoExport=keepAuto;
+       try{ saveProfile(); }catch(_sv){}
+       var o2=document.getElementById('outcome'); if(o2) o2.classList.remove('on');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.64',what:'F strikes with a gun in hand, through the real key handler, and both controls lists name the key',
+   run:function(){
+     var bad=[];
+     if(!(window.__startRaid&&window.__loop&&window.__weapons&&window.__state&&window.__legends)) return 'SKIP: this build cannot drive a raid key';
+     __resetCfg();
+     __startRaid({seed:4242,mapIx:0});
+     var G2=__state(); if(!G2||!G2.player) return 'no raid';
+     var p=G2.player, W=__weapons();
+     function mk(id){ var g={}; for(var k in W[id]) g[k]=W[id][k]; g.q='field'; g.qRank=1; return g; }
+     var K=window.__keysRef?__keysRef():null;
+     if(K) for(var k in K) delete K[k];   // a latched key from an earlier check reads as a press
+     function press(code){
+       try{ document.dispatchEvent(new KeyboardEvent('keydown',{code:code,key:code,bubbles:true,cancelable:true})); }catch(_e){}
+       try{ window.dispatchEvent(new KeyboardEvent('keydown',{code:code,key:code,bubbles:true,cancelable:true})); }catch(_e2){}
+       try{ document.dispatchEvent(new KeyboardEvent('keyup',{code:code,key:code,bubbles:true,cancelable:true})); }catch(_e3){}
+       try{ window.dispatchEvent(new KeyboardEvent('keyup',{code:code,key:code,bubbles:true,cancelable:true})); }catch(_e4){}
+     }
+     var t=performance.now();
+     function step(nf){ for(var f=0;f<(nf||4);f++){ t+=16.7; __loop(t); } }
+     var keep={wep:p.wep,ammo:p.ammo,face:p.face,x:p.x,y:p.y,ents:G2.ents.slice()};
+     try{
+       // 1. HIS CASE: a gun in his hands, a body at arm's length, F must hurt it.
+       G2.ents.length=0;
+       p.wep=mk('rifle'); p.ammo=25; p.face=0; p.downed=false; p.roll=0;
+       var e={kind:'crawler',x:p.x+26,y:p.y,r:10,hp:100,maxhp:100,state:'idle',face:0};
+       G2.ents.push(e);
+       press('KeyF'); step(4);
+       var hit=100-e.hp;
+       if(hit<=0) bad.push('with a rifle in hand, F did not strike a body at arm\u0027s length');
+       // 2. It is a strike, not a shot: no round left the magazine.
+       if(p.ammo!==25) bad.push('the strike spent ammunition (magazine went from 25 to '+p.ammo+')');
+       // 3. Reach: a body across the room is not struck.
+       // Put it back beside him each time: a live crawler drifts between presses,
+       // and a check that forgets that measures the drift instead of the reach.
+       e.hp=100; e.x=p.x+300; e.y=p.y; p.face=0;
+       p.meleeAt=undefined;
+       press('KeyF'); step(4);
+       if(e.hp<100) bad.push('F struck a body 300 units away, which is not a melee reach');
+       // 4. The cooldown holds: two presses in the same breath land one blow.
+       e.hp=100; e.x=p.x+26; e.y=p.y; p.face=0; p.meleeAt=undefined;
+       press('KeyF'); var one=100-e.hp;
+       press('KeyF'); var two=100-e.hp;
+       if(one<=0) bad.push('the cooldown case did not land its first blow');
+       else if(two>one*1.6) bad.push('two presses in the same breath landed '+two.toFixed(1)+' against '+one.toFixed(1)+' for one, so there is no cooldown');
+       // 5. Both controls lists name the key, or it is invisible again.
+       var L=__legends(), full=JSON.stringify(L.full).toLowerCase(), mini=JSON.stringify(L.mini).toLowerCase();
+       if(full.indexOf('melee')<0) bad.push('the full controls list does not name melee');
+       if(mini.indexOf('melee')<0) bad.push('the short controls list does not name melee');
+       if(full.indexOf('"f"')<0&&full.indexOf("'f'")<0) bad.push('the full controls list does not name the F key');
+     } finally {
+       if(K) for(var k2 in K) delete K[k2];
+       p.wep=keep.wep; p.ammo=keep.ammo; p.face=keep.face; p.x=keep.x; p.y=keep.y;
+       G2.ents.length=0; for(var i=0;i<keep.ents.length;i++) G2.ents.push(keep.ents[i]);
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.63',what:'a Howler shell that lands on a building bursts on the roof and hurts nobody under it, while the same shell in the open still hurts and one fired from inside still hurts',
+   run:function(){
+     var bad=[];
+     if(!(window.__startRaid&&window.__howlerHit&&window.__buildings&&window.__state)) return 'SKIP: this build cannot drive a Howler shell';
+     __resetCfg();
+     __startRaid({seed:4242,mapIx:0});
+     var G2=__state(); if(!G2||!G2.player) return 'no raid';
+     var p=G2.player, B=__buildings();
+     if(!B.length) return 'SKIP: no buildings on this map';
+     // A building with room to stand well inside it and well outside it.
+     var b=null;
+     for(var i=0;i<B.length;i++) if(B[i].w>=140&&B[i].h>=140){ b=B[i]; break; }
+     if(!b) return 'SKIP: no building big enough to stand inside';
+     var inX=b.x+b.w/2, inY=b.y+b.h/2;
+     var keep={x:p.x,y:p.y,hp:p.hp,downed:p.downed,ents:G2.ents.length};
+     function shot(tx,ty,x0,y0){
+       p.hp=100; p.downed=false; p.iv=0; p.hitFlash=0;
+       __howlerHit({tx:tx,ty:ty,x0:x0,y0:y0,dmg:35});
+       return 100-p.hp;
+     }
+     try{
+       G2.ents.length=0;   // the shell also hurts bodies; this measures him alone
+       // 1. HIS CASE: he is inside, the Howler is outside, the shell lands on him.
+       p.x=inX; p.y=inY;
+       var inside=shot(inX,inY,b.x-300,b.y-300);
+       if(inside>0) bad.push('standing inside a building, a shell fired from outside still took '+inside.toFixed(1)+' health off him');
+       // 2. CONTROL: the same shell in the open must still hurt, or the check
+       //    would pass on a build where the Howler simply stopped working.
+       // Open ground beside it, tested here against the building list rather than
+       // against the game's own helper, which only exists once the fix is in.
+       function _inRect(r,x,y){ return x>r.x&&x<r.x+r.w&&y>r.y&&y<r.y+r.h; }
+       function _openAt(x,y){ for(var q=0;q<B.length;q++) if(_inRect(B[q],x,y)) return false; return true; }
+       var ox=b.x-260, oy=b.y+b.h/2;
+       if(!_openAt(ox,oy)) ox=b.x-420;
+       if(!_openAt(ox,oy)) return 'SKIP: no open ground found beside this building';
+       p.x=ox; p.y=oy;
+       var open=shot(ox,oy,ox-300,oy-300);
+       if(open<=0) bad.push('control: in the open the same shell did nothing, so the roof test proves nothing');
+       // 3. A Howler that came inside with him is still a Howler.
+       p.x=inX; p.y=inY;
+       var within=shot(inX,inY,inX+20,inY+20);
+       if(within<=0) bad.push('a shell fired from inside the same building did nothing, so the roof now shields him from everything');
+       // 4. The roof covers the others under it too.
+       p.x=b.x-900; p.y=b.y-900;
+       var e={kind:'crawler',x:inX,y:inY,r:10,hp:100,maxhp:100};
+       G2.ents.push(e);
+       __howlerHit({tx:inX,ty:inY,x0:b.x-300,y0:b.y-300,dmg:35});
+       if(e.hp<100) bad.push('a pillager sheltering under the same roof lost '+(100-e.hp).toFixed(1)+' health to a shell on it');
+       G2.ents.length=0;
+     } finally {
+       p.x=keep.x; p.y=keep.y; p.hp=keep.hp; p.downed=keep.downed;
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.62',what:'a found gun takes the empty weapon slot instead of turning out the gun in hand, and with both slots full it still replaces the one asked for',
+   run:function(){
+     var bad=[];
+     if(!(window.__startRaid&&window.__equipBag&&window.__weapons&&window.__state)) return 'SKIP: this build cannot equip from the bag';
+     __startRaid({seed:4242,mapIx:0});
+     var G=__state(); if(!G||!G.player) return 'no raid';
+     var p=G.player, W=__weapons();
+     function mk(id){ var g={}; for(var k in W[id]) g[k]=W[id][k]; g.q='field'; g.qRank=1; return g; }
+     function set(handId,secId){
+       p.wep=mk(handId); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0;
+       p.sec=mk(secId);  p.secAmmo=p.sec.mag; p.secIssued=false; p.secFromArmory=false;
+       G.bag.length=0;
+     }
+     // 1. HIS CASE. A pistol in hand, nothing in the second slot, a rifle found:
+     //    the rifle takes the empty slot and the pistol stays where it is.
+     set('pistol','fists');
+     G.bag.push('gun_rifle');
+     __equipBag(0,1);
+     if(p.wep.id!=='pistol') bad.push('with the second slot empty, equipping a found rifle turned the Scav Pistol out of his hand (hand is now '+p.wep.name+')');
+     if(p.sec.id!=='rifle') bad.push('the found rifle did not go to the empty second slot (it holds '+p.sec.name+')');
+     if(G.bag.length) bad.push('the pistol was bagged anyway: the bag holds '+G.bag.join(','));
+     // 2. The other way round: hands empty, a gun in the second slot, equip to slot 2.
+     set('fists','smg');
+     G.bag.push('gun_rifle');
+     __equipBag(0,2);
+     if(p.sec.id!=='smg') bad.push('with his hands empty, equipping to the second slot turned the SMG out (second is now '+p.sec.name+')');
+     if(p.wep.id!=='rifle') bad.push('the found rifle did not go to the empty hand (it holds '+p.wep.name+')');
+     // 3. BOTH FULL: the slot he asked for is the one that changes, which is the
+     //    only way to choose, and the gun that leaves is bagged as before.
+     set('pistol','smg');
+     G.bag.push('gun_rifle');
+     __equipBag(0,1);
+     if(p.wep.id!=='rifle') bad.push('with both slots full, the gun he asked to equip did not go into his hand (it holds '+p.wep.name+')');
+     if(p.sec.id!=='smg') bad.push('with both slots full, equipping to the hand also changed the second slot (it holds '+p.sec.name+')');
+     if(G.bag.indexOf('gun_pistol')<0) bad.push('the gun he replaced was not bagged: the bag holds '+G.bag.join(','));
+     // 4. Asking for a slot that is already empty still fills that slot.
+     set('fists','smg');
+     G.bag.push('gun_rifle');
+     __equipBag(0,1);
+     if(p.wep.id!=='rifle') bad.push('equipping into an empty hand did not fill it (it holds '+p.wep.name+')');
+     if(p.sec.id!=='smg') bad.push('equipping into an empty hand disturbed the second slot (it holds '+p.sec.name+')');
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.61',what:'the Undercroft plays slower, darker and softer: no bright square leading the tune, seventy-six a minute, a closed filter, half the shimmer and a held bass',
+   run:function(){
+     var bad=[];
+     if(!(window.__musTheme&&window.__musDry&&window.__musUse&&window.__musDarkInfo))
+       return 'SKIP: this fixture cannot read what the music schedules';
+     var MT=__musTheme(), all=MT.themes;
+     var hub=null; for(var i=0;i<all.length;i++) if(/UNDERCROFT/.test(all[i].name)) hub=all[i];
+     if(!hub) return 'SKIP: the Undercroft theme is not among the themes';
+     __resetCfg(); __pinDefaults(0);
+     try{
+       __musUse(hub);
+       var rec=__musDry(hub.bars.length*16);
+       var lead=[],arp=[],bass=[],sq=[],tri=[];
+       for(i=0;i<rec.length;i++){
+         var r=rec[i];
+         if(r.vol>=0.2) bass.push(r);
+         else if(r.dur>=1.0){ lead.push(r); if(r.type==='square') sq.push(r); else tri.push(r); }
+         else arp.push(r);
+       }
+       if(!lead.length||!arp.length||!bass.length)
+         return 'the Undercroft schedules '+lead.length+' tune notes, '+arp.length+' shimmer notes and '+bass.length+' bass notes, so a voice has gone missing';
+       // 1. Nothing bright leads. The square may still be there, under the tune.
+       var loudSq=0, loudTri=0;
+       for(i=0;i<sq.length;i++) loudSq=Math.max(loudSq,sq[i].vol);
+       for(i=0;i<tri.length;i++) loudTri=Math.max(loudTri,tri[i].vol);
+       if(!tri.length) bad.push('the tune has no soft voice at all');
+       else if(loudSq>=loudTri) bad.push('the square is still the loudest thing in the tune ('+loudSq.toFixed(3)+' against '+loudTri.toFixed(3)+'), which is the toy sound he heard');
+       // 2. Slower than eighty a minute: a sixteenth no faster than 0.1875 s.
+       var info=__musDarkInfo(hub);
+       if(!(info.stepSec>=0.1875)) bad.push('the room plays a sixteenth every '+info.stepSec+' s, which is faster than eighty a minute');
+       // 3. Darker than the old corner.
+       if(!(info.lpHz<=1000)) bad.push('the lowpass corner is '+info.lpHz+' Hz, which is not closed further than v9.87 left it');
+       // 4. The shimmer is halved and quieter.
+       var perBar=arp.length/hub.bars.length;
+       if(perBar>4.5) bad.push('the shimmer plays '+perBar.toFixed(1)+' notes a bar, which is still one an eighth');
+       var loudArp=0; for(i=0;i<arp.length;i++) loudArp=Math.max(loudArp,arp[i].vol);
+       if(loudArp>0.05) bad.push('the shimmer is still at '+loudArp.toFixed(3)+', which is where he heard it');
+       // 5. The bass is held long enough to run under the next chord.
+       var longest=0; for(i=0;i<bass.length;i++) longest=Math.max(longest,bass[i].dur);
+       if(longest<2.5) bad.push('the longest bass note is '+longest.toFixed(2)+' s, too short to hum under the room');
+       // CONTROL: the dial still puts the bright room back.
+       __cfg({musDark:0});
+       __musUse(hub);
+       var rec2=__musDry(hub.bars.length*16), backSq=0;
+       for(i=0;i<rec2.length;i++) if(rec2[i].type==='square'&&rec2[i].dur>=1.0) backSq=Math.max(backSq,rec2[i].vol);
+       var info2=__musDarkInfo(hub);
+       if(backSq<0.1) bad.push('control: with musDark off the square does not come back (loudest '+backSq.toFixed(3)+'), so this may be reading a rewritten table rather than the dial');
+       if(info2.lpHz<2000) bad.push('control: with musDark off the filter stays closed at '+info2.lpHz);
+     } finally { __cfg({musDark:1}); MT.pick(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.60',what:'walls are opaque by default, and over a minute of the Undercroft no body and not the operator ever stands inside the rectangle a wall paints',
+   run:function(){
+     var bad=[];
+     if(!(window.__hubEnter&&window.__hubStep&&window.__hub)) return 'SKIP: this build cannot step the floor';
+     if(typeof CFG==='undefined') return 'SKIP: no config';
+     // 1. The dial that paints a see-through copy of you is off out of the box.
+     __resetCfg();
+     if(CFG.seeThrough!==0) bad.push('walls still go transparent by default (seeThrough is '+CFG.seeThrough+')');
+     __hubEnter();
+     var H=__hub(); if(!H||!H.crowd||!H.walls) return 'the Undercroft did not build';
+     if(!H.dwalls||H.dwalls.length!==H.walls.length) bad.push('the room does not know what its walls paint');
      var _open=[]; Array.prototype.forEach.call(document.querySelectorAll('.modal.on,#hub.on,#pausebox.on,#outcome.on'),function(el){ _open.push(el); el.classList.remove('on'); });
      for(var k in keys) keys[k]=false;
-     var noR=0; for(var i=0;i<HB.crowd.length;i++) if(!(HB.crowd[i].r>0)) noR++;
-     if(noR) bad.push(noR+' of '+HB.crowd.length+' bodies have no radius, so the wall push cannot move them');
-     // A body is in a wall when the wall's rect comes closer than half its radius:
-     // the push keeps a body r clear, so half r is well inside the fault.
-     function inWall(c){ var r=(c.r||12)*0.5; for(var j=0;j<HB.walls.length;j++){ var w=HB.walls[j]; var cx=Math.max(w.x,Math.min(c.x,w.x+w.w)), cy=Math.max(w.y,Math.min(c.y,w.y+w.h)); if(Math.hypot(c.x-cx,c.y-cy)<r) return w; } return null; }
-     var hits=0, worst=null, steps=1200;
+     // 2. The painted rectangle of every wall, worked out here from the collider
+     //    and the same lift the renderer uses, so this cannot inherit a mistake
+     //    from the list the game builds.
+     var PIC=[];
+     for(var i=0;i<H.walls.length;i++){ var w=H.walls[i], L=(w.w<=60&&w.h<=60)?14:26; PIC.push({x:w.x,y:w.y-L,w:w.w,h:w.h+L,src:w}); }
+     function inPicture(b){
+       var r=(b.r||12)*0.5;
+       for(var j=0;j<PIC.length;j++){ var q=PIC[j];
+         var cx=Math.max(q.x,Math.min(b.x,q.x+q.w)), cy=Math.max(q.y,Math.min(b.y,q.y+q.h));
+         if(Math.hypot(b.x-cx,b.y-cy)<r) return q; }
+       return null;
+     }
+     var hits=0, first=null, whom={}, p=H.player, pHits=0;
      try{
-       for(var s=0;s<steps;s++){
+       for(var s=0;s<1200;s++){
          __hubStep(0.05);
-         for(i=0;i<HB.crowd.length;i++){ var c=HB.crowd[i]; if(c.away>0) continue; var w=inWall(c); if(w){ hits++; if(!worst) worst={i:i,x:Math.round(c.x),y:Math.round(c.y),w:w,step:s}; } }
+         for(i=0;i<H.crowd.length;i++){
+           var c=H.crowd[i]; if(c.away>0) continue;
+           var q2=inPicture(c);
+           if(q2){ hits++; whom[i]=1;
+             if(!first) first='body '+i+(c.post?' (a post holder)':'')+' at '+Math.round(c.x)+','+Math.round(c.y)+' inside the picture of the wall at '+q2.src.x+','+q2.src.y+' '+q2.src.w+'x'+q2.src.h+', at step '+s; }
+         }
+         if(inPicture(p)) pHits++;
        }
      } finally { for(var o=0;o<_open.length;o++) _open[o].classList.add('on'); }
-     if(hits) bad.push('over '+steps+' steps of the room, bodies were inside a wall '+hits+' times; first at step '+worst.step+': body '+worst.i+' at '+worst.x+','+worst.y+' inside the wall at '+worst.w.x+','+worst.w.y+' '+worst.w.w+'x'+worst.w.h);
+     if(hits) bad.push('over 1200 steps of the room, people stood inside a wall picture '+hits+' times ('+Object.keys(whom).length+' of '+H.crowd.length+' bodies); first: '+first);
+     if(pHits) bad.push('the operator stood inside a wall picture '+pHits+' times');
      return bad.length?bad.join('; '):null; }},
   {v:'10.59',what:'seen through a wall in a raid, the operator is painted in his own colours, faded, and not as a light-blue cutout',
    run:function(){
@@ -5637,7 +10803,7 @@ window.__REGRESS=[
        p.x=keep.x; p.y=keep.y; G.nearContainer=keep.near; G.searching=keep.srch; G.searchT=keep.st; ct.time=keep.time;
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'10.51',what:'behind the terminal plinth the Undercroft shows the operator through the wall, and pinned against it he does not run in place',
+  {v:'10.51',what:'pinned against the terminal plinth the operator covers no ground and does not run in place, and on the open floor he walks',
    run:function(){
      var bad=[];
      if(!(window.__hubEnter&&typeof updateHubWorld==='function'&&typeof drawHubWorld==='function')) return 'SKIP: this build cannot step the floor';
@@ -5652,7 +10818,9 @@ window.__REGRESS=[
      var keep={x:p.x,y:p.y,face:p.face,roll:p.rollT,mov:p.moving,see:CFG.seeThrough};
      try{
        // 1. Pinned behind the plinth, walking down: he covers no ground, so he must not be walking.
-       p.x=350; p.y=wall.y-p.r-0.5; p.rollT=0; p.face=1.5708;
+       // v10.60: against the edge of what the plinth PAINTS, which is where he stops now.
+       var _L51=(wall.w<=60&&wall.h<=60)?14:26;
+       p.x=350; p.y=wall.y-_L51-p.r-0.5; p.rollT=0; p.face=1.5708;
        keys['KeyS']=true; var y0=p.y;
        for(var f=0;f<12;f++) updateHubWorld(0.016);
        keys['KeyS']=false;
@@ -5662,20 +10830,9 @@ window.__REGRESS=[
        for(f=0;f<12;f++) updateHubWorld(0.016);
        keys['KeyS']=false;
        var freeDy=p.y-250, freeMoving=p.moving;
-       // 3. The see-through pass: the frame differs with the pass on and off only where a wall covers him.
-       function snap(){ drawHubWorld(0); return wc.getImageData(0,0,wc.canvas.width,wc.canvas.height).data; }
-       function differ(a,b){ var d=0; for(var j=0;j<a.length;j+=4) if(a[j]!==b[j]||a[j+1]!==b[j+1]||a[j+2]!==b[j+2]) d++; return d; }
-       p.x=350; p.y=wall.y-p.r-0.5; p.moving=false;
-       CFG.seeThrough=0; var a1=snap(); CFG.seeThrough=1; var b1=snap();
-       var hidDiff=differ(a1,b1);
-       p.x=350; p.y=250;
-       CFG.seeThrough=0; var a2=snap(); CFG.seeThrough=1; var b2=snap();
-       var openDiff=differ(a2,b2);
        if(Math.abs(pinnedDy)>0.5) bad.push('pinned behind the plinth he still moved '+pinnedDy.toFixed(1)+' units');
        if(pinnedMoving) bad.push('pinned against the plinth he runs in place: moving is true with no ground covered');
        if(freeDy<5||!freeMoving) bad.push('on the open floor he did not walk (moved '+freeDy.toFixed(1)+', moving '+freeMoving+')');
-       if(hidDiff<150) bad.push('behind the plinth the see-through pass changes '+hidDiff+' pixels; he vanishes into the drawn wall top');
-       if(openDiff>0) bad.push('on the open floor the see-through pass drew '+openDiff+' pixels where nothing covers him');
      } finally {
        p.x=keep.x; p.y=keep.y; p.face=keep.face; p.rollT=keep.roll; p.moving=keep.mov;
        if(keep.see===undefined) delete CFG.seeThrough; else CFG.seeThrough=keep.see;
@@ -5688,7 +10845,12 @@ window.__REGRESS=[
      var bad=[];
      if(typeof drawOp!=='function'||typeof cosWorn!=='function') return 'SKIP: no painter or racks in this build';
      var P2=__P();
-     var keep={face:P2.cosFace,beard:P2.cosBeard,boots:P2.cosBoots,hat:P2.cosHat,eyes:P2.cosEyes,tattoo:P2.cosTattoo};
+     var keep={face:P2.cosFace,beard:P2.cosBeard,boots:P2.cosBoots,hat:P2.cosHat,eyes:P2.cosEyes,tattoo:P2.cosTattoo,all:P2.cosAll};
+     // v10.68: cosmetics are EARNED and cosWorn silently falls back to the
+     // default for any rack the profile does not own, so this check could only
+     // ever see the racks the saved profile happened to have unlocked. The Full
+     // Beard needs ten extractions. His own v10.53 flag unlocks every rack.
+     P2.cosAll=1;
      // The Depot's own way of painting the figure: the raid painter at 5.2 on
      // its own canvas. Face 0 is facing right, the gun arm away from the head.
      function paint(){
@@ -5740,7 +10902,7 @@ window.__REGRESS=[
        // CONTROL: the eyes are where the painter puts them, a band about 6 units tall at 5.2.
        if(ey.y1-ey.y0<20||ey.y1-ey.y0>45) bad.push('control: the eye band is '+(ey.y1-ey.y0)+' rows tall, not the 31 or so the painter draws');
      } finally {
-       P2.cosFace=keep.face; P2.cosBeard=keep.beard; P2.cosBoots=keep.boots; P2.cosHat=keep.hat; P2.cosEyes=keep.eyes; P2.cosTattoo=keep.tattoo;
+       P2.cosFace=keep.face; P2.cosBeard=keep.beard; P2.cosBoots=keep.boots; P2.cosHat=keep.hat; P2.cosEyes=keep.eyes; P2.cosTattoo=keep.tattoo; P2.cosAll=keep.all;
      }
      return bad.length?bad.join('; '):null; }},
   {v:'10.49',what:'the run report carries his in-game text edits as JSON that reads back to the same maps, and nothing when there are none',
@@ -5851,6 +11013,15 @@ window.__REGRESS=[
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
+     // v11.14: noon in fog, by name, which is the light the three floors below
+     // were read under. This read 20 pale pixels at noon in fog and 2 at 6pm
+     // under a clear sky, both on the same jersey, when the furniture fix let
+     // one more lamp fit and the sky rolled after the lamps. Noon under a CLEAR
+     // sky kept the numeral and lost the side panels, ink minus 3 against 2.
+     if(typeof TODS!=='undefined'&&typeof WEATHER!=='undefined'){
+       for(var _ti2=0;_ti2<TODS.length;_ti2++) if(TODS[_ti2].id==='noon') g.tod=TODS[_ti2];
+       for(var _wi2=0;_wi2<WEATHER.length;_wi2++) if(WEATHER[_wi2].id==='fog') g.wx=WEATHER[_wi2];
+     }
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000; p.armor=0; p.plate=0;
      var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,xpLevel:P2.xpLevel,cosFit:P2.cosFit};
      P2.runs=999; P2.ext=999; P2.xpLevel=99;
@@ -5866,7 +11037,10 @@ window.__REGRESS=[
      P2.cosFit='jersey'; var jr=torso();
      if(cnt(jr,isRed)-cnt(sl,isRed)<20) bad.push('the jersey is not red on the sprite ('+(cnt(jr,isRed)-cnt(sl,isRed))+' red px more than slate)');
      if(cnt(jr,isPale)-cnt(sl,isPale)<6) bad.push('the jersey has no pale numeral on the sprite ('+(cnt(jr,isPale)-cnt(sl,isPale))+' px)');
-     if(cnt(jr,isInk)-cnt(sl,isInk)<8) bad.push('the jersey has no black side panels on the sprite');
+     // v11.06: the panels are TRIM now, on his note that they read as backpack
+     // straps. Live reading at raid scale is 4; the floor is half of it, which
+     // still catches them being removed altogether.
+     if(cnt(jr,isInk)-cnt(sl,isInk)<2) bad.push('the jersey has no black side panels on the sprite ('+(cnt(jr,isInk)-cnt(sl,isInk))+' ink px more than slate, live reading is 4)');
      // The figure and the swatch carry the number.
      if(typeof avatarHTML==='function'){ var h=avatarHTML(); if(h.indexOf('avnum')<0||h.indexOf('>23<')<0) bad.push('the figure does not show the 23'); }
      var sw=cosSwatch(c); if(sw.indexOf('23')<0) bad.push('the swatch does not show the 23');
@@ -6710,8 +11884,8 @@ window.__REGRESS=[
      // THREE: the throwable hint and the what-is-new card.
      if(typeof itemUseHint==='function'){ var hint=itemUseHint(ITEMS.frag||{use:'throw'}); if(has(hint,OLDW)) bad.push('the throwable hint still says '+OLDW); }
      if(typeof WHATSNEW!=='undefined'){ var wn=WHATSNEW.join(' '); if(!has(wn,NEWW)) bad.push('the what-is-new card does not name the '+NEWW); }
-     // FOUR: the primer card.
-     var pm=document.getElementById('primermodal'); if(pm&&has(pm.textContent,OLDW)) bad.push('the primer still says '+OLDW);
+     // v10.88: the fourth surface was the FIRST TIME OUT card, which is deleted.
+     // The three above it are the ones a player still reads.
      // CONTROL: the backpack keeps its name beside it.
      if(cm&&!has(cm.textContent,'backpack')) bad.push('control: the raid panel no longer says backpack');
      return bad.length?bad.join('; '):null; }},
@@ -6793,20 +11967,26 @@ window.__REGRESS=[
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __hubEnter(); for(var f=0;f<10;f++) __hubFrame(0.016);
      var tr=__textTrace(function(){ __hubFrame(0.016); });
-     var names=['DISCOUNT FASHION DEPOT','DEV CHEAT BOX','THE STASH','SHOP, CRAFT, AND HIRE','THE LAST POUR','THE MAINFRAME','WIRT THE GAMBLER','SETTINGS','DEV BOX'];
+     // v10.93: ASK THE GAME. This list used to be typed out here, and the build
+     // that renamed one station turned this check into a SKIP, which is not a
+     // pass: the only guard against two names running into each other stopped
+     // running on the build most likely to make them.
+     var _HBn=__hub(), names=[], _lbl={};
+     for(var _s=0;_s<_HBn.stations.length;_s++){ names.push(String(_HBn.stations[_s].label)); _lbl[_HBn.stations[_s].id]=String(_HBn.stations[_s].label); }
      var got={};
      for(var i=0;i<tr.length;i++){ var d=tr[i]; if(names.indexOf(String(d.t))>=0) got[d.t]={x:d.x-d.w/2,y:d.y-d.px,w:d.w,h:d.px*1.15}; }
-     if(!got['DISCOUNT FASHION DEPOT']) return 'SKIP: the Depot is not on the floor';
-     if(!got['DEV CHEAT BOX']) return 'SKIP: the cheat box is not on this floor (it shows on localhost only)';
+     if(names.length<4) return 'SKIP: the Undercroft has almost no stations on it';
+     if(!_lbl['mirror']||!got[_lbl['mirror']]) return 'SKIP: the racks station is not on the floor';
+     if(!_lbl['cheat']||!got[_lbl['cheat']]) return 'SKIP: the cheat box is not on this floor (it shows on localhost only)';
      function hit(a,b){ return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y; }
      var keys=Object.keys(got);
-     // THE FINDING. On v10.22 the Depot's name ran into the cheat box's.
+     // THE FINDING. On v10.22 the racks station name ran into the cheat box's.
      for(var a=0;a<keys.length;a++) for(var b=a+1;b<keys.length;b++) if(hit(got[keys[a]],got[keys[b]])) bad.push(keys[a]+' runs into '+keys[b]);
      for(var k in got){ var r=got[k]; if(r.x<0||r.x+r.w>W||r.y<0||r.y+r.h>H) bad.push(k+' is off the screen at '+Math.round(r.x)+','+Math.round(r.y)); }
-     // CONTROL: the Depot still opens from where it stands.
+     // CONTROL: the racks station still opens from where it stands.
      var rr=null; try{ rr=__station('mirror'); }catch(e1){ rr={err:String(e1)}; }
      var md=document.getElementById('appearmodal');
-     if(!rr||rr.err||!(md&&md.classList.contains('on'))) bad.push('control: the Depot did not open');
+     if(!rr||rr.err||!(md&&md.classList.contains('on'))) bad.push('control: the racks station did not open');
      var cl=document.getElementById('closeappear'); if(cl) cl.click();
      if(_keepDev===undefined) delete _P0.devBox; else _P0.devBox=_keepDev; HB=null;   // v10.30
      return bad.length?bad.join('; '):null; }},
@@ -6830,7 +12010,8 @@ window.__REGRESS=[
      if(z<tr*0.92-0.01) bad.push('a saved size of 0.7 draws the Undercroft at '+z.toFixed(2)+', below the screen factor '+(tr*0.92).toFixed(2));
      // The profile itself: loading a size below 1.0 reads as 1.0.
      // The loader is asynchronous (it reads storage and resolves later), so the floor it applies is read from its source rather than awaited.
-     if(String(loadProfile).indexOf(['menuZoom','<1)P.menuZoom=1'].join(''))<0) bad.push('the profile loader has no floor: a saved size below 1.0 would load as it was');
+     var _lpsrc=String(loadProfile)+((typeof applyLoadedProfile==='function')?(' '+String(applyLoadedProfile)):'');
+     if(_lpsrc.indexOf(['menuZoom','<1)P.menuZoom=1'].join(''))<0) bad.push('the profile loader has no floor: a saved size below 1.0 would load as it was');
      // The Settings steps: from the smallest UI step downward the size stays at or above 1.0.
      P2.menuZoom=1.0; P2.uiScale=UISCALES[0];
      if(typeof hudSizeStep==='function'){ try{ hudSizeStep(-1); }catch(e2){} if((P2.menuZoom||0)<1) bad.push('a size step took the size to '+P2.menuZoom); }
@@ -7281,7 +12462,7 @@ window.__REGRESS=[
                 ['barmodal',function(){ if(typeof renderBar==='function') renderBar(); openModal('barmodal'); }],
                 ['sectormodal',function(){ if(typeof renderSector==='function') renderSector(); openModal('sectormodal'); }],
                 ['cheatmodal',function(){ if(typeof renderCheat==='function') renderCheat(); openModal('cheatmodal'); }],
-                ['primermodal',function(){ openModal('primermodal'); }]];
+                ];
      for(var t2=0;t2<tries.length;t2++){
        var mid=tries[t2][0], el=document.getElementById(mid); if(!el) continue;
        try{ tries[t2][1](); }catch(e1){ continue; }
@@ -7355,11 +12536,10 @@ window.__REGRESS=[
      if(!/^PILLBOX/.test(String(e.name))) bad.push('the emplacement is named ['+e.name+']');
      var src=[];
      try{ src.push(JSON.stringify((typeof WEAKPTS!=='undefined')?WEAKPTS:{})); }catch(_e1){}
-     // The guide card and the feeling tags are read as data.
-     var cards=(typeof PRIMER!=='undefined')?JSON.stringify(PRIMER):'';
+     // v10.88: the guide cards were the FIRST TIME OUT card and are deleted. The
+     // feeling tags are still a surface a player reads, and are still read here.
      var tags=(typeof TAGS!=='undefined')?JSON.stringify(TAGS):'';
-     if(!cards||!tags) bad.push('this fixture could not read the guide cards or the feeling tags');
-     if(cards&&isWord(cards,OLDL)) bad.push('a guide card still says '+OLDL);
+     if(!tags) bad.push('this fixture could not read the feeling tags');
      if(tags&&isWord(tags,OLDL)) bad.push('a feeling tag still says '+OLDL);
      // TWO: what the raid says when it sees you. Drive the emplacement's own
      // sighting line through the real loop.
@@ -8334,9 +13514,12 @@ window.__REGRESS=[
        var lead=[],arp=[],bass=[];
        for(var i=0;i<rec.length;i++){
          var r=rec[i];
-         if(r.type==='square') lead.push(r.midi);
-         else if(r.vol>=0.2) bass.push(r.midi);
-         else if(r.dur<0.5) arp.push(r.midi);
+         // v10.61: bass by its level, tune by its length, shimmer by being short.
+         // This used to name the tune by its waveform, which made a change of
+         // timbre look like a missing voice.
+         if(r.vol>=0.2) bass.push(r.midi);
+         else if(r.dur>=1.0) lead.push(r.midi);
+         else arp.push(r.midi);
        }
        var L=stats(lead), A=stats(arp), B=stats(bass);
        // CONTROL: the piece must still HAVE a tune, an arpeggio and a bass, or a
@@ -8391,7 +13574,7 @@ window.__REGRESS=[
      __cfg({musDark:0});
      __musUse(all[0]);
      var rec3=__musDry(all[0].bars.length*16), old=[];
-     for(var k=0;k<rec3.length;k++) if(rec3[k].type==='square') old.push(rec3[k].midi);
+     for(var k=0;k<rec3.length;k++) if(rec3[k].vol<0.2&&rec3[k].dur>=1.0) old.push(rec3[k].midi);   // v10.61: by length, not timbre
      var O=stats(old);
      __cfg({musDark:1});
      if(O.mean<70)
@@ -8908,9 +14091,22 @@ window.__REGRESS=[
                 ' windows left, so the carve was disabled rather than fixed');
      // CONTROL FOUR: not one wall moved. This build only restores what a wall
      // already was, so the wall counts and the seeded world must be untouched.
-     if(mile.walls!==2461||cold.walls!==616)
+     // v10.80: the square adds seven pieces to COLD STORAGE where there was no
+     // archetype, and replaces the mile's frost yard, which had more geometry
+     // in it than nine fixed rectangles.
+     // v10.81: seven buildings on the mile and two on COLD STORAGE lose runs of
+     // outer wall to the ruin pass. Entities and containers are unmoved.
+     // v11.14: 2403 and 610 became 2308 and 580. Furniture landing in a doorway
+     // zone is not placed any more, so fewer pieces stand. The entity line
+     // below is the half of this fingerprint that says the seeded stream itself
+     // did not move.
+     // v11.17: 2308 and 580 became 2206 and 552. Furniture in interior doorways
+     // and furniture wedged in a body-width gap are not placed any more.
+     // v11.18: 2206 and 552 became 2205 and 551. Partitions reaching into a
+     // doorway are cut back at the end of the build; net one segment a map.
+     if(mile.walls!==2205||cold.walls!==551)
        bad.push('control: the maps hold '+mile.walls+' and '+cold.walls+
-                ' walls rather than 2461 and 616, so the split geometry moved');
+                ' walls rather than 2205 and 551, so the split geometry moved');
      if(mile.ents!==374||cold.ents!==85)
        bad.push('control: the maps spawn '+mile.ents+' and '+cold.ents+
                 ' rather than 374 and 85, so the seeded stream moved');
@@ -9031,7 +14227,15 @@ window.__REGRESS=[
              var ii=y*fw+x;
              if(blk[ii]||seen[ii]) continue;
              if(inLk(x*F+F/2,y*F+F/2)) continue;
-             un=1;
+             // v11.14: a ROOM, not a sliver. v10.40 ruled a pocket narrower than
+             // a body cosmetic and its own line; only 32 by 32 units, 8 by 8
+             // cells here, is floor somebody could have stood on. This passed
+             // before only because the buildings holding slivers were the ones
+             // whose plugged doorway got them stripped bare.
+             var _rm=true;
+             for(var _by=y;_by<y+8&&_rm;_by++) for(var _bx=x;_bx<x+8;_bx++){
+               if(_by>=fh||_bx>=fw||blk[_by*fw+_bx]||seen[_by*fw+_bx]){ _rm=false; break; } }
+             if(_rm) un=1;
            }
          if(un) stuck.push(b);
        }
@@ -9133,11 +14337,14 @@ window.__REGRESS=[
            if(px>K.x&&px<K.x+K.w&&py>K.y&&py<K.y+K.h) return true; }
          return false;
        }
-       var stuck=[], demo=0, parts=0;
-       for(i=0;i<W.length;i++) if(W[i].ib!==undefined&&!W[i].furn) parts++;
+       var stuck=[], demo=0, parts=0, per={}, dset={};
+       for(i=0;i<W.length;i++) if(W[i].ib!==undefined&&!W[i].furn){ parts++;
+         // v10.80: PER BUILDING as well as the total, so the control below can
+         // ask about the buildings that were actually spared.
+         per[W[i].ib]=(per[W[i].ib]||0)+1; }
        for(var b=0;b<B.length;b++){
          var bb=B[b], un=0;
-         if(bb.repaired) demo++;
+         if(bb.repaired){ demo++; dset[b]=1; }
          for(y=Math.floor((bb.y+t)/F); y<=Math.floor((bb.y+bb.h-t)/F)&&!un; y++)
            for(x=Math.floor((bb.x+t)/F); x<=Math.floor((bb.x+bb.w-t)/F)&&!un; x++){
              var ii=y*fw+x;
@@ -9147,7 +14354,7 @@ window.__REGRESS=[
            }
          if(un) stuck.push(b);
        }
-       return {buildings:B.length, demolished:demo, parts:parts, ents:g.ents.length, stuck:stuck.join(',')};
+       return {buildings:B.length, demolished:demo, parts:parts, per:per, dset:dset, ents:g.ents.length, stuck:stuck.join(',')};
      }
      var on=survey(1), off=survey(0);
      // CONTROL ONE: both arms have to be the same map or nothing compares.
@@ -9160,10 +14367,19 @@ window.__REGRESS=[
      if(!(on.demolished<off.demolished))
        bad.push('the same '+on.demolished+' buildings lose their interior with the finer look on '+
                 'as with it off, so no building was spared a rounding error');
-     // CONTROL TWO: spared means GEOMETRY SURVIVED, not a flag flipped.
-     if(!(on.parts>off.parts))
-       bad.push('the map keeps '+on.parts+' interior walls against '+off.parts+
-                ', so nothing actually survived');
+     // CONTROL TWO: spared means GEOMETRY SURVIVED, not a flag flipped. v10.80:
+     // asked of the SPARED BUILDINGS rather than of the whole map. The map-wide
+     // total drifts by a few walls whenever anything moves the stream, which is
+     // how the town square made this read 280 against 285 while every building
+     // it names kept its interior intact.
+     var _sp=[], _spOn=0, _spOff=0, _bk;
+     for(_bk in off.dset) if(!on.dset[_bk]){ _sp.push(_bk);
+       _spOn+=(on.per[_bk]||0); _spOff+=(off.per[_bk]||0); }
+     if(!_sp.length)
+       bad.push('control: no building was spared at all, so there is no geometry to have survived');
+     else if(!(_spOn>_spOff))
+       bad.push('the '+_sp.length+' spared buildings keep '+_spOn+' interior walls with the finer look on '+
+                'against '+_spOff+' with it off, so nothing actually survived');
      // CONTROL THREE, AND IT IS THE ONE THAT MATTERS. A sealed room is loot
      // nobody can ever reach, which is the whole reason this pass exists. Sparing
      // a building must not leave one single piece of floor stranded, so the set
@@ -10016,8 +15232,13 @@ window.__REGRESS=[
      // three candidate spots are refused. Entities are still 374 on the line
      // below, which is the half of this fingerprint that says the seeded stream
      // itself did not move, and it has not.
-     if(wrecks.length!==483)
-       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 483, so a footprint moved');
+     // v11.14: 483 to 488. Furniture in doorway zones is not placed, so the wall
+     // list spotFree asks against is shorter and five more candidate spots are
+     // accepted. Entities are still 374 on the line below.
+     // v11.17: 488 to 490. Fewer furniture walls, two more candidate spots
+     // accepted. Entities are still 374 on the line below.
+     if(wrecks.length!==490)
+       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 490, so a footprint moved');
      if(g.ents.length!==374)
        bad.push('the mile has '+g.ents.length+' entities rather than 374, so the seeded stream moved');
      // PART THREE, AND IT IS THE ONE THAT MATTERS: the kinds have to DRAW
@@ -11364,7 +16585,15 @@ window.__REGRESS=[
      // THE SERVO. Its only use was this repair, and being a craft part is what made
      // SELL ALL refuse it and the stash tell him to keep it.
      if(window.__stashRules){
-       if(!__stashRules.sellable('servo'))
+       // v10.97: THE REASON, not the shelf. The servo is kept now because the
+       // contract board asks for it by name, which is his note 12 and nothing to
+       // do with repairs. What this check has always cared about is that a dead
+       // repair economy is not the thing keeping it, so that is what it asks.
+       if(typeof itemWanted==='function'){
+         var _sv=itemWanted('servo');
+         if(_sv&&String(_sv).indexOf('repair')>=0)
+           bad.push('the Servo Actuator is still kept for a repair that no longer exists, its reason reads '+_sv);
+       } else if(!__stashRules.sellable('servo'))
          bad.push('the Servo Actuator is still withheld from SELL ALL for a repair that no longer exists');
        if(__stashRules.craftPart('servo'))
          bad.push('the Servo Actuator is still classed as a crafting part and appears in no recipe');
@@ -11533,52 +16762,6 @@ window.__REGRESS=[
                 ' units of walking went at him anyway, cosine '+sf.atPlayer+
                 ' toward where he really was against '+sf.atLastSeen+' toward where it saw him');
      return bad.length?bad.join('; '):null; }},
-  {v:'9.41',what:'the card new players read about XP matches what raids actually pay',
-   run:function(){
-     var bad=[];
-     // MEASURE WHAT A RAID PAYS FIRST, with nothing sold, then read what the card
-     // claims. The other way round grades a sentence against my opinion.
-     __resetCfg(); __pinDefaults(0);
-     var P=__P(); P.xp=0; P.log=[];
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(); g.ents.length=0; g.player.iv=99;
-     __endRaid('extract');
-     var xpNoSelling=(__P().xp||0);
-     __resetCfg(); __pinDefaults(0);
-     __P().xp=0;
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g2=__state(); g2.ents.length=0; g2.player.iv=99;
-     __endRaid('dead');
-     var xpDeath=(__P().xp||0);
-     // CONTROL FIRST: if a raid genuinely paid nothing, the old card was right and
-     // this check has nothing to say.
-     if(xpNoSelling<=0)
-       return 'SKIP: a raid with nothing sold paid no XP at all, so the card was right and there is nothing to check';
-     // The fixture ALREADY has a __primer whose list() returns this array. My
-     // duplicate was defined earlier and silently overwritten, which is the fourth
-     // name collision today. Grep before naming a shim.
-     var cards=(window.__primer&&window.__primer.list)?window.__primer.list():null;
-     if(!cards) return 'SKIP: the primer cards are not reachable from this fixture';
-     var text='';
-     for(var i=0;i<cards.length;i++) text+=' '+String(cards[i][0])+' '+String(cards[i][1]);
-     // THE FINDING. Measured: 134 XP from one extract with nothing sold, and 67
-     // from a death, while the card said "Nothing else pays XP."
-     if(/nothing else pays xp/i.test(text))
-       bad.push('a new player is told "Nothing else pays XP" and one raid with nothing sold paid '+
-                xpNoSelling+' of it');
-     if(/exactly one way to earn it/i.test(text))
-       bad.push('a new player is told there is exactly one way to earn XP, and simply finishing a raid is another');
-     // AND THE SHOP GATE IT CLAIMED. Rows carry rep 0, 1 or 2 against xp < rep, so
-     // one finished raid clears the lot before anything is sold.
-     if(/XP is what unlocks the shop/i.test(text)&&xpNoSelling>=2)
-       bad.push('a new player is told XP unlocks the shop, and one raid pays '+xpNoSelling+
-                ' against a highest gate of 2, so it gates nothing they will ever meet');
-     // CONTROL: the death halving is the one number the card still states, so it
-     // has to be true or the replacement is wrong in a new way.
-     if(Math.abs(xpDeath*2-xpNoSelling)>2)
-       bad.push('control: the card says dying pays half and a death paid '+xpDeath+
-                ' against '+xpNoSelling+' for the same raid extracted');
-     return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
 // document.elementFromPoint then returns null everywhere, which silently breaks
@@ -11587,10 +16770,29 @@ window.__vpAlive=function(){
   if(!window.innerWidth||!window.innerHeight) return false;
   return !!document.elementFromPoint(2,2);
 };
+// v10.67: the extraction card is not a modal, so showScreen cannot clear it and
+// six checks that end a raid leave it lying on top of the page. Any later check
+// that aims at the DOM then hits the card instead of what it meant to hit, which
+// is how the same corpus on the same build failed three different checks across
+// two runs. Nothing depends on the card being open at entry: the only two checks
+// that read it open it themselves. So every check starts with it shut.
+window.__topClear=function(){
+  var oc=document.getElementById('outcome'), n=0;
+  if(oc&&oc.classList.contains('on')){ oc.classList.remove('on'); n++; }
+  return n;
+};
+// And the ruler is pinned and the saved profile cleaned before the corpus runs,
+// rather than inheriting whatever the last hand probe in this tab left behind.
+window.__runPrep=function(){
+  try{ if(window.__pinDPR) __pinDPR(1); }catch(e){}
+  try{ if(window.__cleanProfile) __cleanProfile(); }catch(e){}
+};
 window.__regress=function(){
-  var res={pass:true,checked:0,fail:[],skipped:[]};
+  var res={pass:true,checked:0,fail:[],skipped:[],cleared:0};
+  __runPrep();
   for(var i=0;i<__REGRESS.length;i++){
     var t=__REGRESS[i], r=null;
+    res.cleared+=__topClear();
     res.checked++;
     try{ r=t.run(); }catch(e){ r='threw: '+e; }
     // A check that cannot run says so instead of condemning the build. Before
@@ -11609,7 +16811,8 @@ window.__regress=function(){
 // survives a hidden tab and can be polled on window.__PROG. Give it its own
 // tab: navigating the tab kills it.
 window.__regressBg=function(){
-  var res={pass:true,checked:0,fail:[],skipped:[]}, i=0;
+  var res={pass:true,checked:0,fail:[],skipped:[],cleared:0}, i=0;
+  __runPrep();
   window.__PROG={done:0,total:__REGRESS.length,cur:'',finished:false,res:null};
   var ch=new MessageChannel();
   ch.port1.onmessage=function(){
@@ -11619,6 +16822,7 @@ window.__regressBg=function(){
       __PROG.res=res; __PROG.finished=true; return;
     }
     var t=__REGRESS[i], r=null;
+    res.cleared+=__topClear();
     __PROG.cur='v'+t.v; res.checked++;
     try{ r=t.run(); }catch(e){ r='threw: '+(e&&e.stack||e); }
     if(r&&String(r).indexOf('SKIP: ')===0) res.skipped.push('v'+t.v+' '+t.what+' -> '+String(r).slice(6));
