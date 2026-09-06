@@ -1,5 +1,20 @@
 # START HERE (written 2026-09-05, handoff from Fable to Opus)
 
+**MID-FLIGHT AT HANDOFF (2026-09-06 ~00:50):** HEAD is v11.53 (d09a724). The
+tree has v11.54 APPLIED (his note C, extraction point states in his words).
+It has passed parsecheck, its own check 11.54 on fixture.html, __verifySafe,
+and its control fails on fx1153.html. Its FULL CORPUS was started on the
+Browser pane tab "seed" (http://localhost:8800/fixture.html) at about 00:40
+and takes 15 to 20 minutes on the hidden pane. FIRST THING: on that tab run
+`JSON.stringify(window.__PROG)`; when finished is true, pass is true, fail is
+[] and only the two known skips (v8.88, v11.24) are listed:
+    bash tools/handoff/ship.sh commit 1154 cm1154.txt
+then bump the HEAD line in memory dark-raiders-handoff-state.md, then
+    bash tools/handoff/ship.sh start 1154 1155
+and carry on down the list (1155 A, 1156 D, 1157 E, 1158 F, then 1159 to
+1170). If the pane was closed or __PROG is missing, reload fixture.html,
+wait 6 s, call __regressBg(), and poll again. Do not commit on a red corpus.
+
 **HIS TELEMETRY OF 2026-09-05 22:26 and 22:35 (exports/consumed-run-20260905-2226*.txt
 and -2235*.txt; two real runs on v11.51, both DEAD, both lastHit YOUR OWN CHARGE,
 killer other) OUTRANKS THE DRAFTED QUEUE. His notes, verbatim, in the order to
@@ -163,6 +178,11 @@ serves the tools folder: fixture.html, parsecheck.html, fx<PREV>.html.)
    available; a tick that ships nothing is a failed tick.
 
 ## Standing rules that bit this week
+
+- A control that reads a function's SOURCE (fn.toString()) reads its comments
+  too. Check 11.54's "no old badge phrase in drawHUD" control failed on a
+  stale comment; fixcm1154.ps1 reworded it and p1154 carries the edit. Before
+  writing such a control, grep the function body for the phrase in comments.
 
 - No non-ASCII in any .ps1 (PowerShell 5.1 reads them as ANSI).
 - Bash heredocs broke twice on apostrophes, and sed ate backslashes in a

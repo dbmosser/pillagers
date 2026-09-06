@@ -69,6 +69,14 @@ SubRx @'
   }
 '@
 
+# 3. A stale comment inside drawHUD named the old badge; the check's control
+# reads that function's source, so the comment says what is true now.
+SubRx @'
+      // It clears the world's own EXTRACTION - OPEN badge as well, which sits at
+'@ @'
+      // It clears the world's own extraction point badge as well, which sits at
+'@
+
 # STAMPS.
 SubRx @'
 var VER='11.53';
