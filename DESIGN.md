@@ -40024,6 +40024,38 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.50 - CLOSING THE UNDERCROFT BACKPACK OVERWROTE LOADOUT EDITS MADE AT THE TERMINAL
+
+From the v11.46 read-only audit, a P0 wrong-state line. The Undercroft backpack
+(I on the floor, v8.96) is a modal edit session by design: opening it snapshots
+P.kit and P.hotAssign into hubBagG, the panel edits that copy, and closing
+commits the copy back and saves, so a half-finished drag can never write a
+broken bag. The gap: hubModalOpen, which freezes the floor under every window,
+asks the DOM for open modals and never asks hubBagOpen. So with the backpack
+open the floor kept running, you could walk to THE STASH and press E, the
+terminal opened over the open backpack and edited P.kit and P.hotAssign
+directly, and ESC then took the backpack's close path first and wrote the STALE
+snapshot, taken before any of that, over everything the terminal had just done.
+Pack a whole loadout at the stash, press ESC, and it is the old loadout again.
+
+THE FIX. The terminal's own act now commits and closes the open backpack before
+it draws, one call in front of renderHub, so the snapshot can never be older
+than what the terminal changes. Nothing else moves: the floor still runs with
+the backpack open, and the backpack still commits on close as it always did.
+
+MEASURED. Check 11.50 drives the real path through hooks: the backpack is
+opened through hubBagOpenSet (so the snapshot is taken), THE STASH is opened
+through its real station act, the terminal's edit is made (an item packed and
+bound to key 3), and the backpack close path runs if the backpack is still
+open. On this build the terminal closed the backpack first and both edits
+survive. On the v11.49 fixture the backpack is still open after the terminal
+opens, its close writes the empty snapshot back, and the check fails on both
+edits being wiped.
+
+Not verified: his own play; the other stations opened over an open backpack
+(shop, crafting, hire, Wirt, mainframe), which do not touch P.kit or P.hotAssign
+and are left as they were; whether the floor should freeze under the open
+backpack, which is a design question this build does not decide.
 ## v11.49 - WITH THE BACKPACK OPEN, A CLICK ON THE PANEL BACKGROUND FIRED THE GUN
 
 From the v11.46 read-only audit, a P0 wrong-state line: the kind a friend hits

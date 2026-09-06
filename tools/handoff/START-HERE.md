@@ -69,7 +69,18 @@ serves the tools folder: fixture.html, parsecheck.html, fx<prev>.html.)
 
 ## After 1163
 
-The v11.46 audit queue is then fully shipped. Next: the ~93 open mediums and
-lows from the full-file audit (memory dark-raiders-full-file-audit) and the
-34-item RAID audit queue (memory dark-raiders-raid-audit-queue). Check
-AUDIT.md before re-fixing anything; several items were closed later.
+The v11.46 audit queue is then fully shipped. The older audit memories
+(full-file audit, RAID audit queue) are HISTORY, not queues: fourteen of
+their sixteen named items were already shipped when re-checked at v9.43, and
+their task-output files no longer exist on disk. Do not work a line from them
+without checking the live file. The pool for new builds is:
+
+1. AUDIT.md under STILL OPEN (anything not struck through).
+2. DESIGN.md "Not verified:" lines, newest first; drive each one and either
+   close it with a check or leave it as his ruling.
+3. A fresh read-only audit: ONE bounded Workflow of read-only agents (Grep and
+   Read only, never the browser, never Bash or Edit), each finding refuted by
+   a skeptic before it is queued. The v11.46 one found 18 real defects in one
+   pass; that is the highest-yield source there is.
+4. His telemetry in exports/ and Downloads outranks all of the above when it
+   is real (dur:0s or killer:test is a fixture leak, not him).

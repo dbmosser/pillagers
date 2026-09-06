@@ -836,6 +836,7 @@ window.__hubBagState=function(){ return hubBagState(); };
 // use. A probe that rebuilt it would be measuring its own copy and not the panel
 // he can actually click on.
 window.__hubBagLive=function(){ return hubBagG; };
+window.__hubBagSet=function(on){ hubBagOpenSet(!!on); return {open:hubBagOpen, snap:!!hubBagG}; };
 // The operator drawing calls, recorded as they happen. The pose is an argument
 // to drawOp, so this is the only way to see what the Undercroft actually asks
 // for rather than what I believe it asks for.
@@ -5439,6 +5440,31 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.50',what:'opening THE STASH with the Undercroft backpack open commits and closes the backpack first, so what you pack at the terminal is not overwritten by the stale backpack snapshot when it closes',
+   run:function(){
+     if(!(window.__hubBagSet&&window.__hubBagLive&&window.__station&&window.__P)) return 'SKIP: this fixture cannot open the Undercroft backpack and the terminal';
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=window.__P(), bad=[];
+     P.kit=[]; P.hotAssign={};
+     // Open the backpack on the floor: this takes the snapshot the close commits.
+     var o=window.__hubBagSet(true);
+     if(!(o.open&&o.snap)) return 'SKIP: the backpack did not open with a snapshot';
+     // Walk to THE STASH and press E: the real terminal act.
+     var st=null; try{ st=window.__station('term','KeyE'); }catch(e){ st={err:String(e)}; }
+     if(st&&st.err) return 'SKIP: '+st.err;
+     // THE FIX: the terminal committed and closed the backpack before drawing.
+     var openAfter=window.__hubBagSet===undefined?null:(function(){ try{ return !!window.__hubBagLive(); }catch(e){ return null; } })();
+     // What the terminal does to the loadout: pack an item and bind it to a key.
+     P.kit.push('medkit'); P.hotAssign[3]='medkit';
+     // ESC: on the old build the backpack is still open and its close writes the
+     // stale (empty) snapshot over the terminal's edits.
+     if(openAfter) window.__hubBagSet(false);
+     if(openAfter) bad.push('the backpack was still open (snapshot live) after the terminal opened, so its close could overwrite the terminal');
+     if((P.kit||[]).indexOf('medkit')<0) bad.push('the item packed at the terminal was wiped from the backpack when the backpack closed');
+     if(P.hotAssign[3]!=='medkit') bad.push('the belt key set at the terminal was wiped when the backpack closed');
+     try{ document.getElementById('hub').classList.remove('on'); }catch(e2){}
+     __cleanProfile(); __topClear();
+     return bad.length?bad.join('; '):null; }},
   {v:'11.49',what:'with the backpack open, a click on the panel background (not a tile) does not reach the trigger; a click outside the panel still does',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__loop&&window.__mouse&&window.__canvases)) return 'SKIP: this fixture cannot click the backpack';
