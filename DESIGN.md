@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.69 - DROPPING A BELT ITEM ON THE STASH SAID "BACK IN THE BACKPACK"
+
+From the v11.46 read-only audit, P2. Since v8.72 the stash accepts an item
+dragged off the tactical belt: the drop clears its belt key, takes it out of
+the backpack, and it lands in the stash, which is where the pointer let go of
+it. The line the drop said was "back in the backpack", the one place the item
+had just left. The comment beside it says "it stays home", which is true of
+the stash and was read as the backpack when the line was written.
+
+THE FIX. The line says "back in the stash", the word the rest of the room
+already uses for that grid (the welcome pack, the model-already-yours line).
+
+MEASURED. Check 11.69 walks to the stash, puts a medkit in the backpack on belt
+key one, drives the stash grid's drop handler with the belt cell as the source,
+the way the real mouseup reaches it, and captures what was said. Controls: the
+medkit left the backpack and its key. The fix: the line names the stash and
+does not name the backpack. On the v11.68 fixture the drop says "back in the
+backpack" and the check fails quoting it.
+
+Not verified: his own play; the mouseup-to-handler path itself, which is
+unchanged and not driven here (the handler is called directly).
 ## v11.68 - THE NOTORIETY BANNER SAID THE PEDDLER WAS DONE WITH YOU
 
 From the v11.46 read-only audit, P2. His ruling at v8.28 was that the Peddler
