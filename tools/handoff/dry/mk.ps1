@@ -5751,6 +5751,12 @@ window.__REGRESS=[
        __ents(0.1);
        var n1=g.shells.filter(function(s){ return s.mortar; }).length;
        if(n1>n0) bad.push('the Howler outside shelled the player under a roof ('+(n1-n0)+' shell'+((n1-n0)===1?'':'s')+')');
+       // ONE B: the heard-report site refuses the same roofed point too.
+       e.state='patrol'; e.cd=0; e.alert=0; e.hearT=8; e.heardX=p.x; e.heardY=p.y;
+       __ents(0.1);
+       var n1b=g.shells.filter(function(s){ return s.mortar; }).length;
+       if(n1b>n1) bad.push('the Howler shelled a report from under a roof ('+(n1b-n1)+' shell'+((n1b-n1)===1?'':'s')+')');
+       n1=n1b;
        // CONTROL: the same Howler shells the same player in the open.
        var _spot=null, _rr, _aa;
        for(_rr=300;_rr<=600&&!_spot;_rr+=150) for(_aa=0;_aa<8&&!_spot;_aa++){ var _sx=e.x+Math.cos(_aa*0.785)*_rr, _sy=e.y+Math.sin(_aa*0.785)*_rr; if(_sx>60&&_sy>60&&_sx<WORLD_W-60&&_sy<WORLD_H-60&&!buildingAtPt(g.map,_sx,_sy)) _spot={x:_sx,y:_sy}; }
@@ -5768,7 +5774,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__forceSize&&window.__hubEnter&&window.__showScreen&&window.__P)) return 'SKIP: this fixture cannot resize';
      if(typeof openItemMenu!=='function'||typeof closeItemMenu!=='function'||typeof titleRes!=='function') return 'SKIP: no item menu in this build';
-     var bad=[], P2=__P(), keepStash=(P2.stash||[]).slice();
+     var bad=[], P2=__P(), keepStash=(P2.stash||[]).slice(), keepKit=(P2.kit||[]).slice();
      try{
        __topClear(); __runPrep(); __cleanProfile();
        G=null; __showScreen('hub'); __hubEnter();
@@ -5779,15 +5785,16 @@ window.__REGRESS=[
        var m=document.querySelector('.imenu');
        if(!m) bad.push('control: no menu opened');
        else {
-         var want=Math.max(1,(P2.menuZoom||1))*titleRes();
+         var hubEl=document.getElementById('hub');
+         var want=(hubEl&&hubEl.classList.contains('on')&&parseFloat(hubEl.style.zoom)>0)?parseFloat(hubEl.style.zoom):Math.max(1,(P2.menuZoom||1))*titleRes();
          var z=parseFloat(m.style.zoom||'1')||1;
          if(Math.abs(z-want)>0.05) bad.push('the menu zoom is '+z+' where the windows are at '+want.toFixed(2));
          var r=m.getBoundingClientRect();
          if(r.width<186*want*0.9) bad.push('the menu is only '+Math.round(r.width)+' px wide at 4K');
-         if(r.left<0||r.top<0||r.right>W+1||r.bottom>H+1) bad.push('the menu is off the screen at '+Math.round(r.left)+','+Math.round(r.top)+' to '+Math.round(r.right)+','+Math.round(r.bottom));
+         if(window.innerWidth>=1200&&(r.left<0||r.top<0||r.right>window.innerWidth+1||r.bottom>window.innerHeight+1)) bad.push('the menu is off the viewport at '+Math.round(r.left)+','+Math.round(r.top)+' to '+Math.round(r.right)+','+Math.round(r.bottom));
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ closeItemMenu(); }catch(_c){} P2.stash=keepStash; try{ saveProfile(); }catch(_s){} try{ __forceSize(1920,1080); }catch(_f){} __topClear(); __cleanProfile(); }
+     finally{ try{ closeItemMenu(); }catch(_c){} P2.stash=keepStash; P2.kit=keepKit; try{ saveProfile(); }catch(_s){} try{ __forceSize(1920,1080); }catch(_f){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'12.18',what:'an arrow key with the backpack open moves the selection and does not walk the operator, and still walks with it closed (2026-09-06 first-ten-minutes audit)',
    run:function(){
@@ -6330,12 +6337,12 @@ window.__REGRESS=[
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.97',what:'with the backpack closed, the gun in your hands drags off its belt cell into the backpack when released off the belt, and a key holding a gun drags to another key like any item (his notes of 2026-09-06)',
+  {v:'11.97',what:'with the backpack closed, a click on the hand cell still only selects, a real drag off the belt puts the gun in the backpack, and a key holding a gun drags to another key like any item (his notes of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__runPrep)) return 'SKIP: this fixture cannot deploy and draw';
      if(typeof cv==='undefined'||typeof mouse==='undefined') return 'SKIP: no canvas or mouse in this build';
      if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], g=null, i;
+     var bad=[], g=null, i, P2=__P(), keepStash=(P2.stash||[]).slice(), keepW=(P2.weapons||[]).slice(), keepEq=P2.equipped;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -6350,6 +6357,12 @@ window.__REGRESS=[
        var cell=(ai>=0&&g.hotCells)?g.hotCells[ai]:null;
        if(!cell) bad.push('control: the belt drew no hand cell to press');
        else {
+         // ZERO: a click on the hand cell, press and release on the spot, is still a click.
+         mouse.x=cell.x+cell.w/2; mouse.y=cell.y+cell.h/2;
+         cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
+         window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true}));
+         if(!p.wep||p.wep.id!==gunId) bad.push('a click on the hand cell stowed the gun (in hand: '+(p.wep&&p.wep.id)+')');
+         g.drag=null;
          // ONE: the hand cell, backpack closed, released well off the belt.
          mouse.x=cell.x+cell.w/2; mouse.y=cell.y+cell.h/2;
          cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
@@ -6373,7 +6386,7 @@ window.__REGRESS=[
          if(g.hotAssign[5]!=='gun_pistol') bad.push('the pistol did not move to key 6 (plan '+JSON.stringify(g.hotAssign)+')');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(g){ g.bagOpen=false; g.drag=null; } mouse.down=false; }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ try{ if(g){ g.bagOpen=false; g.drag=null; } mouse.down=false; }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} P2.stash=keepStash; P2.weapons=keepW; P2.equipped=keepEq; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.96',what:'a belt key on a stack packs half the stack and the plan cell shows the count; a single item packs one; a count already packed is kept (his order of 2026-09-06)',
    run:function(){

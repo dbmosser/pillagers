@@ -35,6 +35,8 @@ SubRx2 @'
   // so at 4K it was a 1080p menu under a 4K stash. Same factor as the windows;
   // zoom scales the fixed offsets too, so the click point is divided by it.
   var _mz=Math.max(1,(P&&P.menuZoom)||1)*titleRes();
+  var _hubEl=document.getElementById('hub');   // the stash runs at 0.92 of the window factor (v9.67); the menu matches the surface it opens over
+  if(_hubEl&&_hubEl.classList.contains('on')&&parseFloat(_hubEl.style.zoom)>0) _mz=parseFloat(_hubEl.style.zoom);
   m.style.zoom=_mz; x=x/_mz; y=y/_mz;
   var w=m.offsetWidth,h=m.offsetHeight;
   m.style.left=Math.max(4,Math.min(x,window.innerWidth/_mz-w-8))+'px';
@@ -56,7 +58,7 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE RIGHT-CLICK MENU IN THE STASH IS THE SIZE OF THE STASH, at 4K and at every text size.',
+  'THE RIGHT-CLICK MENU IN THE STASH IS DRAWN AT THE SIZE OF THE SCREEN IT OPENS OVER, at 4K and at every text size.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.18:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.18 matched $cnt times" }

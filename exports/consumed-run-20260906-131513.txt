@@ -1,0 +1,74 @@
+﻿=== PILLAGERS v11.92 FLIGHT RECORDER ===
+Profile: 7 runs, 2 extracted, 5 died, best haul 19240c, credits 1234, XP 5683, racks 0, pack T1, notoriety 0, stash 85
+Install: ymbas7uk8epx   Origin: localhost   Shared: no
+CRASHES (1, the newest 12 are kept):
+  v10.96 2026-09-04T16:47:02.792Z error on hub: Uncaught ReferenceError: sub is not defined  @ ReferenceError: sub is not defined at psv.onclick (http://localhost:8802/dark_raiders.html:32475:7)
+FLOOR NOTES (1):
+  after run #4 2026-09-06T10:31:14.949Z: add some decent green and blue guns to crafting, make them moderately expensive to craft.
+Active config [B]: {"coneDeg":130,"viewFar":620,"ambient":190,"raidSec":540,"pSpeed":158,"extractWait":25,"nSentry":20,"nCrawler":34,"nRaider":10,"nSnitch":5,"eDmg":1,"eHp":1,"lootMult":1,"contDens":1,"concealPow":1,"packR":620,"packMax":4,"eAmbient":100,"noiseMult":1,"safeSlots":0,"downTime":17,"regenDelay":10,"regenSec":3,"bright":1.7,"simGreed":52,"simRaids":30,"machAmmo":1,"ammoTell":45,"raiderExtract":14,"greedFull":20000,"simCrouch":0,"crouchParts":7,"crouchHide":170,"crouchBreaksChase":1,"waterDefeatsCrouch":0,"wadeInset":11,"superhot":0,"overheatLock":7,"strikeFind":0.16,"eliteGuns":1,"lootNorm":0,"pedBuy":0.55,"wadeSpd":0.34,"furnDens":1.6,"furnHug":1,"furnRepair":1,"crateMin":1,"simWade":1,"simLootNoise":1,"simSidearm":1,"simSwapBack":1,"listenGain":1.35,"nListen":2,"autoEquip":0,"simSell":0,"simPed":0,"simSellMin":1500,"simSellNear":700,"simJam":1,"navBackoff":1,"cacheReach":1,"campNorm":1,"rigCap":1,"seeStrict":1,"siegePerZone":1,"beaconMirror":1,"hauledAboard":0,"simPip":0,"simReach":1,"simEngage":0,"healOverTime":1,"raiderFeud":1,"raiderCrews":2,"engageNear":600,"provokeReal":1,"windows":1,"simRetreatHeal":0,"destruct":1,"placeCull":1,"raiderWear":1,"penetrate":1,"raiderDown":1,"siegePull":0.5,"siegeVol":1,"siegeEcho":1,"decay":1,"simRig":"std","smokeR":165,"fragR":190,"healSlow":2.4,"healPow":0.7,"extOutside":1,"raiderWaves":1,"raiderWaveCap":8,"raiderWaveMin":12,"raiderWaveGap":60,"raiderFloorN":4,"raiderFloorGap":8,"raiderKit":1,"spawnClear":1500,"raiderHaul":7,"wardenHp":900,"wardenDmg":46,"wardenRng":620,"healPrep":1.5,"armorPrep":2,"lodR":1100,"raiderBeacon":1,"musicVol":1,"eliteRate":0.08,"eliteHp":2.2,"eliteDmg":1.6,"nHowler":2,"howlerDmg":35,"howlerAir":2.1,"howlerR":90,"howlerDeaf":0,"simAim":52,"simPick":0,"simFlee":0,"simFleeSpd":1.3,"simCover":0,"simHoldFire":0,"fogLift":1,"raiderSmart":1,"raiderRoll":1,"raiderRollEar":900,"raiderSteady":1,"raiderCover":1,"listenLive":1,"bushRoadR":1,"machVsRaider":1,"nBulwark":1,"bulwarkArc":1.15,"bulwarkSoak":0.12,"conductCon":1,"gridJitter":1,"condHud":1,"ringsOnTop":1,"cursorLoud":1,"raiderCrouch":1,"raiderSprint":1,"raiderAim":1,"raiderReact":0.34,"simDodgeRing":0,"raiderDodgeRing":1,"dmgNumbers":1,"listenFair":1,"downResetsPull":1,"noiseSee":1,"missWake":40,"seeThrough":0,"crewCall":1,"crewR":620,"crewMax":2,"crewSpread":1,"crawlerPerHouse":2.5,"houseFill":0.72,"chaseGhost":1,"crewSearch":1,"crewSearchR":130,"packSearch":1,"crawlerEyes":1,"listenTell":1,"listenSpd":142,"healCaps":1,"pilFireRing":1,"boardRank":1,"calmFlash":1,"giveUp":1,"partRepair":1,"houseCap":3,"lockedOk":1,"fanFloor":1,"fanEpisode":1,"textEdit":0,"fineSeal":1,"lmCut":1,"musDark":1,"hubBelt":1,"raiderDownHp":50,"buzzXp":0.025,"nightXp":1.2,"wxXp":1.1,"raiderCrawl":1,"nightDens":1.35,"bldgRuin":0.09,"touchSees":1,"winWalk":1,"furnDoor":1,"navBody":15,"doorClear":1,"furnIDoor":1,"furnGap":1,"partDoor":1,"preset":"B"}
+Priorities, his order: 1) DECIDED: MOVE while it lands. The beacon banner now teaches it; deeper coaching to follow if the telemetry does not move.  2) Bodies you could go back for: removed at v5.28 on his order that a death is final
+
+FEELING TAGS (all runs): Inventory fiddly x1, Downed and crawling worked x1, Could not find myself on the map x1, Text hard to read x1
+
+--- RUNS (oldest first) ---
+#1 v11.51 DEAD [B] wep:Scav Pistol(field) dur:331s haul:19695c items:35 cont:18 perCont:1094c shots:53 acc:49% kills:0s/8c/0r/0sn heals:2 downs:2 rev:1 marked:0 beacon:0called/3missed regen:13hp firstContact:105s firstLoot:8s moved:23886 crouch:51s sprint:24s lit:0% closestExt:20m thrown:0sm/0dc/4fr killer:other diedAt:296m aiExtracted:1 wallsDown:6 wildKilled:1 revivedBy:1crew/0merc/0raider ringCrowd:15woken/8siege pillagerCam:6seen/2still/0statue/1shot doing:chase3,down3 lastHit:YOUR OWN CHARGE ents:83(s16/c50/r7/sn3 dials 20/34/10) map:COLD STORAGE wx:partly/noon caches:1 gunsEq:1
+   note: cooking grenades should give more warning before exploding in your hand need a message with 1 sec left like 
+
+"COOKED GRENADE! THROW GRENADE NOW"
+   in-run note @71s: lightning shouldn't strike inside buildings
+   in-run note @130s: when lighting is about to hit, it should say like 'lightning incoming' at the circle.
+
+how lightningh shows red noise, I want ALL noises to do that when they are outside the player's vision but within earshot -- eg visiualize noises with red cirlces!
+   in-run note @266s: activating sprint should automatically stop crouching
+   in-run note @269s: rolling should automatically stop crouching.
+#2 v11.51 DEAD [B] wep:Burst Carbine(field) dur:267s haul:5090c items:18 cont:14 perCont:364c shots:190 acc:57% kills:1s/19c/1r/0sn heals:2 downs:2 rev:1 marked:0 beacon:3called/2missed regen:28hp firstContact:57s firstLoot:7s moved:26911 crouch:0s sprint:38s lit:6% closestExt:1m thrown:0sm/0dc/2fr killer:other diedAt:6m weakHits:7 wallsDown:4 pillagerCam:6seen/1still/0statue/0shot doing:down6 lastHit:YOUR OWN CHARGE ents:80(s16/c47/r7/sn3 dials 20/34/10) map:COLD STORAGE wx:storm/golden caches:2 gunsEq:2 diedInSiege:1
+   in-run note @53s: "EXTRACTION - OPEN' IS CONFUSING... POSSIBLE STATES FOR AN EXTRACTION POINT SHOULD INSTEAD BE
+
+"EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN"
+"EXTRACTION POINT - 30S UNTIL EXTRACTION BEGINS"
+"EXTRACTION POINT - EXTRACT NOW! 30S UNTIL EXTRACTION ENDS"
+"EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID"
+   in-run note @111s: COOKING A GRENADE SHOULD COUNT down, NOT UP!!!
+#3 v11.73 DEAD [B] wep:Meridian Lance(field) dur:427s haul:17800c items:33 cont:26 perCont:685c shots:63 acc:73% kills:3s/20c/0r/0sn/1h elites:1 heals:5 downs:2 rev:1 marked:0 beacon:1called/3missed regen:28hp firstContact:27s firstLoot:59s moved:37770 crouch:0s sprint:43s lit:0% closestExt:1m thrown:0sm/0dc/2fr killer:crawler diedAt:6m wallsDown:1 lastHit:CRAWLER C-17 ents:78(s16/c45/r7/sn3 dials 20/34/10) map:COLD STORAGE wx:fog/morning caches:1 campSafes:3 gunsEq:2 diedInSiege:1
+   note: KIA screen '40 seconds of cutting, lost with you.'  -- I have no idea what the fuck that means, just remove it.
+   in-run note @151s: crawler movement and charging at player is still messed up
+   in-run note @248s: meridian lance bullets should travel through crawlers
+   in-run note @290s: coutbndown on 'still applying prior healing item' isn't accurate -- just get rid of it.
+   in-run note @327s: the map should show when the extracts are going to close via countdown on each one.
+   in-run note @427s: too many enemies converge on extraction point -- maybe some of them should go back to patrol more quickly if they don't find anything?
+#4 v11.73 EXTRACT [B] wep:Magnum(owned) dur:337s haul:12305c items:47 cont:26 perCont:473c shots:127 acc:69% kills:0s/24c/0r/1sn elites:2 heals:8 downs:1 rev:4 marked:2 beacon:1called/2missed regen:38hp firstContact:15s firstLoot:6s moved:33522 crouch:0s sprint:40s lit:7% closestExt:3m thrown:0sm/0dc/2fr contracts:haul wallsDown:5 strays:1helped/1killed/0out revivedBy:1crew/0merc/3raider pillagerCam:125seen/62still/11statue/8shot doing:extract87,down16,chase3,loot6,investigate13 ents:85(s16/c52/r7/sn3 dials 20/34/10) map:COLD STORAGE wx:rain/dusk gunsEq:3 viaHold:1
+   note: survivor should pay more -- don't need to say 'already banked'
+   in-run note @164s: player should be able to equip armor plates while bandage is applying healing; player should be able to use next bandage while prior bandage is healing.
+   in-run note @204s: stim injector should give unlimited stamina and 1.2 speed boost for 10 seconds.
+#5 v11.73 EXTRACT [B] wep:Compact SMG(owned) dur:314s haul:19240c items:30 cont:17 perCont:1132c shots:59 acc:49% kills:0s/7c/0r/0sn heals:7 downs:0 rev:1 marked:3 beacon:1called/1missed regen:41hp firstContact:59s firstLoot:8s moved:20944 crouch:0s sprint:38s lit:11% closestExt:1m thrown:0sm/0dc/1fr contracts:far,district wallsDown:5 strays:1helped/0killed/0out revivedBy:0crew/0merc/1raider pillagerCam:14seen/13still/7statue/0shot doing:down7,investigate7 ents:80(s16/c47/r7/sn3 dials 20/34/10) map:COLD STORAGE wx:storm/dawn caches:3 wardenMet:1 gunsEq:1 viaHold:1 doors:1
+   tags: Inventory fiddly, Downed and crawling worked, Could not find myself on the map, Text hard to read
+   in-run note @112s: survivor should give you something instantly when you meet his request, not just mark a cache
+   in-run note @118s: survivor should move towards closest extract, not follow player
+   in-run note @255s: it says i have support mg but it is firing like a pistol -- hotbar is wonky, why can't i drag items to diff keys??
+   in-run note @264s: not letting me put guns back into backpack -- GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY ITEM!!!!
+   in-run note @293s: when Fulgerite is searched, it should only return the item 'Fulgerite', which should be like $2500 salvagable -- it makes no sense for it to be anything else, given that it resulted from a lightningh strike.
+#6 v11.87 DEAD [B] wep:Compact SMG(field) dur:138s haul:495c items:7 cont:7 perCont:71c shots:27 acc:37% kills:0s/3c/0r/0sn heals:2 downs:2 rev:1 marked:0 beacon:1called/1missed regen:15hp firstContact:15s firstLoot:5s moved:13229 crouch:0s sprint:22s lit:16% closestExt:1m killer:sentry diedAt:1m pillagerCam:11seen/0still/0statue/0shot doing:down11 lastHit:SENTRY T-41 ents:85(s16/c52/r7/sn3 dials 20/34/10) map:COLD STORAGE wx:fog/golden wardenMet:1 diedInSiege:1
+#7 v11.92 DEAD [B] wep:Compact SMG(field) dur:190s haul:3755c items:13 cont:8 perCont:469c shots:90 acc:64% kills:2s/16c/0r/0sn heals:3 downs:2 rev:1 marked:2 beacon:0called/2missed regen:4hp firstContact:20s firstLoot:7s moved:17048 crouch:14s sprint:24s lit:0% closestExt:186m thrown:0sm/0dc/1fr killer:sentry diedAt:430m wallsDown:2 revivedBy:7crew/0merc/0raider pillagerCam:34seen/0still/0statue/1shot doing:chase5,extract19,loot1,investigate9 lastHit:SENTRY R-53 ents:372(s80/c222/r33/sn16 dials 20/34/10) map:THE COLD MILE wx:storm/noon
+
+--- SURVIVAL BY TIME IN RAID (his runs) ---
+  minute 1 (0-60s): 0 of 7 alive at its start did not survive it  (0%)
+  minute 2 (60-120s): 0 of 7 alive at its start did not survive it  (0%)
+  minute 3 (120-180s): 1 of 7 alive at its start did not survive it  (14%)
+  minute 4 (180-240s): 1 of 6 alive at its start did not survive it  (17%)
+  minute 5 (240-300s): 1 of 5 alive at its start did not survive it  (20%)
+  minute 6 (300-360s): 1 of 4 alive at its start did not survive it  (25%)
+  This is the risk curve. Every run is at risk in every minute it reaches,
+  so unlike the value bands below it there is nothing to select for. If these
+  numbers climb, the clock is what is killing you, not the weight of the bag.
+
+--- SURVIVAL BY VALUE CARRIED (his runs) ---
+  carrying 0-1000c: 0% out  (0/1)
+  carrying 3000-6000c: 0% out  (0/2)
+  carrying 12000c+: 50% out  (2/4)
+  too few runs reached 150s to control for time.
+
+--- RESTORE CODE ---
+One line. Paste it into Settings to rebuild this character.
+PIL1eyJ2IjoxLCJuIjoiUFYyIiwiYyI6MTIzNCwieCI6NTY4MywibCI6NiwiciI6NywiZSI6MiwiZCI6NSwiYiI6MTkyNDAsIm5vIjowLCJwayI6MCwicmEiOjAsImFyIjowLCJjcyI6NSwic2MiOltdLCJraSI6eyJzZW50cnkiOjYsImNyYXdsZXIiOjk3LCJyYWlkZXIiOjEsInNuaXRjaCI6MSwid2FyZGVuIjowLCJsaXN0ZW5lciI6MSwiaG93bGVyIjoxLCJidWx3YXJrIjowLCJjaG9pciI6MH0sImNiIjp7fSwiaiI6e30sIm1pIjoxLCJjZCI6ImRheSIsIndxIjoiYW55IiwidyI6eyJoYWlyIjpudWxsLCJoYXQiOm51bGwsImJ1aWxkIjpudWxsLCJza2luIjpudWxsLCJmaXQiOm51bGwsImN1dCI6bnVsbCwiYmVhcmQiOm51bGwsImV5ZXMiOm51bGwsImZhY2UiOm51bGwsImJvb3RzIjpudWxsLCJnbG92ZXMiOm51bGwsInBhY2siOm51bGwsInBhdGNoIjpudWxsLCJ0YXR0b28iOm51bGwsIm91dGZpdCI6bnVsbH0sInMiOnsibWVka2l0Ijo1LCJiYW5kYWdlIjoxLCJwbGF0ZSI6NCwiZnJhZyI6NSwic21va2UiOjEwLCJndW5fcGlzdG9sIjo0LCJjZWxsIjo3LCJrZXlfY3NfZnJlZXplciI6MSwiYm9hcmQiOjYsIm9wdGljIjo2LCJzZXJ2byI6NiwiY29yZSI6NCwic3RpbSI6MSwic2NyYXAiOjUsImd1bl9zbWciOjEsImNvbXAiOjIsImRlY295Ijo0LCJ3aXJlIjo0LCJ0aXRhbiI6MiwicmVsYXkiOjQsImxlZGdlciI6MSwiY29kZXgiOjJ9LCJnIjp7InciOlsic21nIiwiY2FyYmluZSIsIm1hZ251bSIsImxtZyJdLCJlIjoic21nIiwiZTIiOiJjYXJiaW5lIiwid3IiOnt9fX0
+
+=== END RECORDER ===

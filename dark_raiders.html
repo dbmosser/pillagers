@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.96';
+var VER='11.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.96';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.96';
+var WHATSNEW_VER='11.97';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE TACTICAL BELT DRAGS WITH THE BACKPACK CLOSED: a gun in your hands dragged off the belt goes into the backpack, and a key holding a gun moves to another key like anything else, in a raid and on the floor.',
   'A BELT KEY TAKES HALF THE STACK: put a stack on a key and half of it comes with you, and the key shows how many; the right-click menu still packs an exact number.',
   'GUNS DRAG LIKE ANY OTHER ITEM. Drag a gun off the rack onto a tactical belt key or into the backpack and it comes with you; a gun on the figure takes the key and stays in your hands.',
   'FOUR LINES SAY WHAT THEY MEAN: the Crier names itself when its alarm goes out, the Pillbox says destroyed when it dies, the self-revive is one per raid, and a search picked up again says Search resumed.',
@@ -10766,7 +10767,7 @@ cv.addEventListener('mousedown',function(e){
           var _sl=hotbarSlots()[_H.i];
           // v11.91, HIS NOTE: the floor's belt drags derived cells by the item they show too.
           var _sdk=_sl?(_sl.itemKey||((_sl.kind==='heal'||_sl.kind==='armor'||_sl.kind==='throw')&&_sl.icon&&ITEMS[_sl.icon]&&(_sl.kind!=='heal'||_sl.count>0)?_sl.icon:null)):null;
-          if(_sl&&_sl.kind!=='gun'&&_sdk){ G.drag={key:_sdk,fromHot:_H.i}; blip('pick'); }
+          if(_sl&&_sdk&&!(_sl.k==='gunA'||_sl.k==='gunB')){ G.drag={key:_sdk,fromHot:_H.i}; blip('pick'); }   // v11.97: a key holding a gun drags on the floor too
           _hbDone=true; return;
         }
       }
@@ -10808,15 +10809,17 @@ cv.addEventListener('mousedown',function(e){
         // only a cell he had already assigned could be picked up. A derived
         // cell drags by the item it shows.
         var _dk=_hs2?(_hs2.itemKey||((_hs2.kind==='heal'||_hs2.kind==='armor'||_hs2.kind==='throw')&&_hs2.icon&&ITEMS[_hs2.icon]&&(_hs2.kind!=='heal'||_hs2.count>0)?_hs2.icon:null)):null;   // an empty Medical cell shows a bandage it does not hold
-        if(_hs2&&_hs2.kind!=='gun'&&_dk){
+        // v11.97, HIS NOTE: a belt key holding a gun drags like any other key.
+        if(_hs2&&_dk&&!(_hs2.k==='gunA'||_hs2.k==='gunB')){
           G.drag={key:_dk,fromHot:_HC2.i};
           blip('pick');
         }
         // v11.90, HIS NOTE: "GUNS SHOULD FUNCTION LIKE EVERY OTHER INVENTORY
-        // ITEM". With the backpack open, the gun in a hand cell can be picked
-        // up and dropped into the bag. Closed, a click still only selects.
-        else if(_hs2&&_hs2.kind==='gun'&&(_hs2.k==='gunA'||_hs2.k==='gunB')&&!_hs2.vacant&&G.bagOpen&&_hs2.icon&&_hs2.icon!=='fists'){
-          G.drag={key:'gun_'+_hs2.icon,gunSlot:_hs2.k,fromHot:_HC2.i};
+        // ITEM". The gun in a hand cell can be picked up and dropped into the
+        // bag. v11.97, HIS NOTE: open or closed; released anywhere off the
+        // belt it goes into the backpack, and a click still only selects.
+        else if(_hs2&&_hs2.kind==='gun'&&(_hs2.k==='gunA'||_hs2.k==='gunB')&&!_hs2.vacant&&_hs2.icon&&_hs2.icon!=='fists'){
+          G.drag={key:'gun_'+_hs2.icon,gunSlot:_hs2.k,fromHot:_HC2.i,px:mouse.x,py:mouse.y};   // v11.97: the press point, so a click is not a stow
           blip('pick');
         }
         return;
@@ -10908,7 +10911,15 @@ window.addEventListener('mouseup',function(e){
     // v11.90, HIS NOTE: a gun dragged off a hand cell. Released over the open
     // backpack it goes in; released anywhere else it stays where it was.
     if(d.gunSlot){
-      if(G.bagOpen&&G.bagPanel&&inRect(G.bagPanel,mouse.x,mouse.y)) bagHeldGun(d.gunSlot);
+      // v11.97, HIS NOTE: released off the belt after a real drag, it goes into
+      // the backpack, open or closed. A release within a few pixels of the
+      // press is the click it always was; a release on another belt cell is
+      // refused in words, because a silent drop reads as a missing feature.
+      var _onCell=-1;
+      if(G.hotCells) for(var _gc=0;_gc<G.hotCells.length;_gc++){ var _GC=G.hotCells[_gc]; if(mouse.x>=_GC.x&&mouse.x<=_GC.x+_GC.w&&mouse.y>=_GC.y&&mouse.y<=_GC.y+_GC.h){ _onCell=_GC.i; break; } }
+      var _moved=(d.px===undefined)||(Math.hypot(mouse.x-d.px,mouse.y-d.py)>24);
+      if(_onCell<0&&_moved) bagHeldGun(d.gunSlot);
+      else if(_onCell>=0&&_onCell!==d.fromHot) say('Drop it off the belt to stow it in the backpack; its own key brings it up.');
       d={key:null}; dropped=true;
     }
     // v9.31: did the release land on a belt cell at all? `dropped` cannot answer
@@ -28530,7 +28541,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.96: HIS ORDER of 2026-09-06, a belt key should take half the stash stack unless he sets a quantity, and the belt showed no count. planPut packs half the stack (rounded up) when nothing of it is packed yet, and the plan cell shows how many are coming. Check 11.96 puts a stack of six Bandages on key 3 and requires three packed and x3 on the cell, a single item packs one; fails on v11.95.',
+  now:'v11.97: HIS NOTES of 2026-09-06, belt drags looked dead: the gun in a hand cell dragged only with the backpack open and dropped only on its panel, so closed the drag never started, and a key holding a gun could not be picked up at all. A hand gun dragged and released off the belt goes into the backpack open or closed, a click on it still only selects, and a gun key drags like any key in the raid and on the floor. Check 11.97 clicks the hand cell (no stow), drags it off the belt (stowed), and drags a gun key to another key, through the real canvas press and release; fails on v11.96.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

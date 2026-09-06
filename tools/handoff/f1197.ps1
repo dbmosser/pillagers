@@ -19,12 +19,12 @@ function SubRx([string]$old, [string]$new) {
 SubRx @'
   {v:'11.96',what:'a belt key on a stack packs half the stack and the plan cell shows the count; a single item packs one; a count already packed is kept (his order of 2026-09-06)',
 '@ @'
-  {v:'11.97',what:'with the backpack closed, the gun in your hands drags off its belt cell into the backpack when released off the belt, and a key holding a gun drags to another key like any item (his notes of 2026-09-06)',
+  {v:'11.97',what:'with the backpack closed, a click on the hand cell still only selects, a real drag off the belt puts the gun in the backpack, and a key holding a gun drags to another key like any item (his notes of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__runPrep)) return 'SKIP: this fixture cannot deploy and draw';
      if(typeof cv==='undefined'||typeof mouse==='undefined') return 'SKIP: no canvas or mouse in this build';
      if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], g=null, i;
+     var bad=[], g=null, i, P2=__P(), keepStash=(P2.stash||[]).slice(), keepW=(P2.weapons||[]).slice(), keepEq=P2.equipped;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -39,6 +39,12 @@ SubRx @'
        var cell=(ai>=0&&g.hotCells)?g.hotCells[ai]:null;
        if(!cell) bad.push('control: the belt drew no hand cell to press');
        else {
+         // ZERO: a click on the hand cell, press and release on the spot, is still a click.
+         mouse.x=cell.x+cell.w/2; mouse.y=cell.y+cell.h/2;
+         cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
+         window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true}));
+         if(!p.wep||p.wep.id!==gunId) bad.push('a click on the hand cell stowed the gun (in hand: '+(p.wep&&p.wep.id)+')');
+         g.drag=null;
          // ONE: the hand cell, backpack closed, released well off the belt.
          mouse.x=cell.x+cell.w/2; mouse.y=cell.y+cell.h/2;
          cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
@@ -62,7 +68,7 @@ SubRx @'
          if(g.hotAssign[5]!=='gun_pistol') bad.push('the pistol did not move to key 6 (plan '+JSON.stringify(g.hotAssign)+')');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(g){ g.bagOpen=false; g.drag=null; } mouse.down=false; }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ try{ if(g){ g.bagOpen=false; g.drag=null; } mouse.down=false; }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} P2.stash=keepStash; P2.weapons=keepW; P2.equipped=keepEq; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'11.96',what:'a belt key on a stack packs half the stack and the plan cell shows the count; a single item packs one; a count already packed is kept (his order of 2026-09-06)',
 '@

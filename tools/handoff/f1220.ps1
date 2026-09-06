@@ -37,6 +37,12 @@ SubRx @'
        __ents(0.1);
        var n1=g.shells.filter(function(s){ return s.mortar; }).length;
        if(n1>n0) bad.push('the Howler outside shelled the player under a roof ('+(n1-n0)+' shell'+((n1-n0)===1?'':'s')+')');
+       // ONE B: the heard-report site refuses the same roofed point too.
+       e.state='patrol'; e.cd=0; e.alert=0; e.hearT=8; e.heardX=p.x; e.heardY=p.y;
+       __ents(0.1);
+       var n1b=g.shells.filter(function(s){ return s.mortar; }).length;
+       if(n1b>n1) bad.push('the Howler shelled a report from under a roof ('+(n1b-n1)+' shell'+((n1b-n1)===1?'':'s')+')');
+       n1=n1b;
        // CONTROL: the same Howler shells the same player in the open.
        var _spot=null, _rr, _aa;
        for(_rr=300;_rr<=600&&!_spot;_rr+=150) for(_aa=0;_aa<8&&!_spot;_aa++){ var _sx=e.x+Math.cos(_aa*0.785)*_rr, _sy=e.y+Math.sin(_aa*0.785)*_rr; if(_sx>60&&_sy>60&&_sx<WORLD_W-60&&_sy<WORLD_H-60&&!buildingAtPt(g.map,_sx,_sy)) _spot={x:_sx,y:_sy}; }

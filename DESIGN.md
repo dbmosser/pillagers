@@ -40024,6 +40024,42 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.97 - HIS NOTES: THE TACTICAL BELT DRAGS WITH THE BACKPACK CLOSED
+
+His messages of 2026-09-06, about 13:40: "hotbar item dragging doesn't
+work in raid"; "i want to be able to drag items even without inventory
+open"; "i have an smg on my hotbar and i can't even move it to the
+backpack".
+
+TWO FAULTS. The gun in a hand cell (keys 1 and 2) could be picked up only
+with the backpack open (v11.90) and dropped only on the backpack panel, so
+with the backpack closed the drag never started at all: the cursor ghost
+that has followed every drag since v9.32 had nothing to draw, and the
+gesture looked dead. And a belt key holding a gun, which v11.91 made a
+working key, could not be picked up at all, in the raid or on the
+Undercroft floor, because both copies of the press branch excluded every
+cell of kind gun rather than only the two hand cells.
+
+THE BUILD. The hand cell drags whether the backpack is open or not. The
+press remembers where it began: a release within a few pixels of it is the
+click it always was and only selects; a real drag released anywhere off
+the belt puts the gun into the backpack; a release on another belt cell is
+refused in words, because a silent drop reads as a missing feature. A key
+holding a gun drags to another key or off the belt like any other key, in
+the raid and on the floor.
+
+MEASURED. Check 11.97 deploys with the backpack closed, clicks the hand
+cell through the real canvas press and release on the spot and requires
+the gun still in hand; presses it again and releases well off the belt and
+requires the gun in the backpack and out of the hand; then puts a pistol
+on key 4, presses it and releases on key 6 through the same path and
+requires the pistol on key 6. The profile fields the extraction rewrites
+are put back. On the v11.96 fixture the hand cell starts no drag with the
+backpack closed and the pistol key starts none at all.
+
+Not verified: the floor copy of the gun-key drag, which the check does not
+stage; a release over the open backpack panel, which lands off the belt
+and bags the gun as v11.90 did; his own hand on it at 4K.
 ## v11.96 - HIS ORDER: A BELT KEY TAKES HALF THE STACK, AND SAYS HOW MANY
 
 His message of 2026-09-06, about 14:15: "when I hotbar an item it should

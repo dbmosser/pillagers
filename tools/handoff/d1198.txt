@@ -19,8 +19,8 @@ stand in is the one whose centre is within its radius, 78 units, and the
 prompt and the call read the same test. What is not obvious is that the
 first press must be HELD for 1.6 seconds to call the ship, and a tap does
 nothing but start that clock, which reads as "it only works in the
-middle" when the tap happened at the edge. The check below proves a call
-from 70 units out. The wording of the prompt is not changed here.
+middle" when the tap happened at the edge. The check below shows a call accepted
+from 70 units out through the extraction tick itself; that arm is a control (it passes on every build) and the key path is not driven. The wording of the prompt is not changed here.
 
 MEASURED. Check 11.98 deploys, stands 70 of 78 units from the ring centre,
 holds E for two seconds through the real extraction tick and requires the
