@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v11.86 (1677bed). The tree has **v11.87 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v11.87 (64f7bd3). The tree has **v11.88 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "seed".
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1187 cm1187.txt
+    bash tools/handoff/ship.sh commit 1188 cm1188.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1187 1188
+    bash tools/handoff/ship.sh start 1188 1189
 and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -17,6 +17,18 @@ alone and straight after the new check; a bare profile left by a check is the
 usual cause (see memory dark-raiders-loader-replaces-the-profile).
 
 **THE QUEUE, ALL DRAFTED (p/f/d/a/cm in this folder), SHIP IN THIS ORDER:**
+
+**CURRENT QUEUE (2026-09-06 midday, after two renumbers; this list outranks every older list below):**
+- **1188 HIS ORDER: "left to be gone" and "nothing killed yet" out of the CONDITIONS panel** (his message with a screenshot, about 11:40). They were the verdicts of the kill-nothing and three-minute conduct contracts, printed without their names; the panel skips those two.
+- **1189 FULGURITE ONLY FROM A STRIKE CACHE** (his note; was 1188).
+- **1190 GUNS BACK INTO THE BACKPACK** (his order; was 1189).
+- **1191 THE BELT: SUPPORT MG FIRING LIKE A PISTOL, DRAG CELLS TO OTHER KEYS** (his note; was 1190).
+- **1192 to 1198 FIRST TEN MINUTES** (from the read-only audit wf_e9fb3c4f-c46, 8 agents, 35 findings; the ten highs verified by reading the code): 1192 the NEW IN card fits and a first launch never sees it; 1193 ENTER and the start button commit the typed name; 1194 a pause note survives ESC; 1195 the first session runs the Settings pass and the 1.3 menu zoom; 1196 dying with the freebie kit keeps the pistol you own; 1197 the heal verb tells the truth (both reviews); 1198 the notes-logged line sits below the corner readout.
+- **1199 to 1206 POLISH** (the former 1191 to 1198: character screen keys, safe pocket refuses throwables, freebie kit restore, controller craft, four guns on the bench pill, modal headers drop the balance, pillager throw band, map says EXTRACT NOW!). Their labels were shifted by renum1199.ps1 and renum1189b.ps1; every 11.9x mention in them was an anchor or a control reference.
+- **NOT DRAFTED, from the same audits, in value order:** the DOWN toast says F gets you up on the second down when it cannot; the lift FREEBIE KIT button does not clear the belt plan (the stash one does); ESC with the floor backpack open raises the pause box instead of closing the bag; P cannot close the pause box while its textarea has focus; GEARRULES still teaches X swaps; hub belt may cover the [E] STATION prompt (UNVERIFIED, take a screenshot of the floor with the operator at the lift); the outcome card prints a dose XP bonus the profile is not credited on death or abandon; the second review of v11.84 says only the player's Lance rounds pass through crawlers (stamp `thru` on fromPlayer or copy the two lines into the enemy branch); check 11.80 should also count __ambOff calls rising by 2; check 11.85 should pin __forceSize(1920,1080); check 11.81's control arm should restore P.seals.
+- **DRY RUN BEFORE SHIPPING 1189:** `powershell -NoProfile -ExecutionPolicy Bypass -File tools/handoff/dry.ps1 1189 1206` from the tree at v11.88, then `dry/mk.ps1`, then run checks 11.89 to 12.06 on :8801 between corpora (tools/serve.ps1 -Root tools/handoff/dry -Port 8801 if the server is down).
+
+
 1. **1176 SCAV PISTOL 3600 -> 1800** (his order; my number). Trivial.
 2. **1177 FRAG: RADIUS 150 -> 190, ENEMY 85..15 -> 115..25, HIM 60..12 -> 80..18**
    (his order; he overruled his own no-balancing rule). cfgv 17 -> 18 with a

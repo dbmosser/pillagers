@@ -40024,6 +40024,36 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.88 - HIS ORDER: TWO LINES OUT OF THE CONDITIONS PANEL
+
+His message of 2026-09-06, with a screenshot of the raid panel: '"left to
+be gone" -- no idea why this is in the conditions menu or what it means.
+"nothing killed yet" -- same comment. remove both of these from conditions'.
+
+WHAT THEY WERE. The CONDITIONS panel has listed the live verdict of every
+conduct contract he holds since v4.03, on the argument that a rule you
+cannot see is a rule you will break. Two of his current contracts are
+"Extract without killing anything" and "Extract within 3 minutes of
+landing", and their verdicts print as "nothing killed yet" and "160s left
+to be gone": the verdict alone, never the contract's name, which is the
+same fault v9.70 fixed for "still on your feet" by rewording rather than
+by naming. Read cold, under a heading that says CONTRACTS, they mean
+nothing.
+
+THE BUILD. As ordered: the panel skips the kill-nothing and three-minute
+contracts. Every other conduct verdict (no heals yet, no downs yet, weak
+points, distance, the elite) and every counting contract prints as before.
+The two contracts themselves are untouched; they still stand, still pay,
+and still show at the Mainframe.
+
+MEASURED. Check 11.88 gives the profile those two contracts plus a no-heals
+one as the control, deploys, draws a frame with the canvas text call
+recorded, and requires neither verdict drawn and the no-heals verdict still
+there. On the v11.87 fixture both lines are drawn.
+
+Not verified: his reading of the panel after; whether he would rather the
+two lines carried the contract's name than be gone, which is a one-line
+change either way. The alternative is offered in the report.
 ## v11.87 - HIS NOTE: THE SURVIVOR WALKS TO THE NEAREST EXTRACTION
 
 His note of 2026-09-06, from his fifth run this morning: "survivor should

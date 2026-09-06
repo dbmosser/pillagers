@@ -14,7 +14,7 @@ function SubRx([string]$old, [string]$new) {
 # v11.99 CHECK, inserted before the v11.98 entry. The gate the floor asks
 # before firing a station is read with the character screen on and off.
 SubRx @'
-  {v:'11.98',what:'a belt key holding a gun from the backpack equips it into your hands, and a derived belt cell (Medical, plate, grenade) can be dragged to another key (his note of 2026-09-06)',
+  {v:'11.98',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
 '@ @'
   {v:'11.99',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
    run:function(){
@@ -34,7 +34,7 @@ SubRx @'
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ if(wasOn) ttl.classList.add('on'); else ttl.classList.remove('on'); }catch(_t){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.98',what:'a belt key holding a gun from the backpack equips it into your hands, and a derived belt cell (Medical, plate, grenade) can be dragged to another key (his note of 2026-09-06)',
+  {v:'11.98',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

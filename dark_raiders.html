@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.87';
+var VER='11.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.87';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.87';
+var WHATSNEW_VER='11.88';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE RAID CONDITIONS PANEL NO LONGER PRINTS "left to be gone" OR "nothing killed yet", on his order; those two contracts still stand at the Mainframe.',
   'A HELPED SURVIVOR WALKS TO THE NEAREST OPEN EXTRACTION on his own and leaves when he reaches it, instead of following you.',
   'THE SURVIVOR PAYS THREE TIMES AS MUCH and hands you a piece of salvage on the spot when you meet his request.',
   'THE MAP NAMES EACH EXTRACTION AND COUNTS DOWN TO ITS CLOSE in a size you can read.',
@@ -23254,6 +23255,12 @@ _tgt=G.active; _lbl='EXTRACTION';
       for(var _cq=0;_cq<P.contracts.length;_cq++){
         var CC=P.contracts[_cq];
         if(!CC||CC.type!=='conduct'||CC.prog>=CC.n) continue;
+        // v11.88, HIS ORDER: '"left to be gone" -- no idea why this is in the
+        // conditions menu or what it means. "nothing killed yet" -- same
+        // comment. remove both of these from conditions'. The kill-nothing and
+        // three-minute contracts keep their verdicts off this panel; they still
+        // stand and pay at the Mainframe.
+        if(CC.ck==='quiet'||CC.ck==='swift') continue;
         var lost=false,note='';
         if(CC.ck==='clean'){ lost=(T.heals||0)>0; note=lost?'BROKEN, you healed':'no heals yet'; }
         else if(CC.ck==='quiet'){
@@ -28428,7 +28435,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.87: HIS NOTE of 2026-09-06, the survivor should move towards the closest extraction, not follow the player; reverses his earlier follow-me note. A helped survivor walks to the nearest open ring at his old speed, still shooting at machines on the way, and when he reaches it he leaves (parked off the map with a gone flag, not spliced). Check 11.87 stages a helped survivor near a ring with the player far away, steps the real entity update, and requires him to reach the ring and leave while his distance to the player never falls; fails on v11.86 where he walks to the player.',
+  now:'v11.88: HIS ORDER of 2026-09-06, with a screenshot: left to be gone and nothing killed yet mean nothing to him in the conditions panel, remove both. They were the live verdicts of the kill-nothing and three-minute conduct contracts, printed without their names; the panel skips those two now and the contracts still stand at the Mainframe. Check 11.88 holds both contracts plus a no-heals one, draws a raid frame with the canvas text recorded, and requires neither verdict drawn and the no-heals one still there; fails on v11.87.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

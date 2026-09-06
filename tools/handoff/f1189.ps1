@@ -15,7 +15,7 @@ function SubRx([string]$old, [string]$new) {
 # away from the player with the find chance at 1, through the real strike
 # tick, and the scorched cache it leaves is read.
 SubRx @'
-  {v:'11.88',what:'a helped survivor walks to the nearest open extraction on his own instead of following you, and leaves when he reaches the ring (his note of 2026-09-06)',
+  {v:'11.88',what:'the raid conditions panel no longer prints the kill-nothing and three-minute contract verdicts, and still prints the no-heals one (his order of 2026-09-06)',
 '@ @'
   {v:'11.89',what:'the scorched cache a lightning strike leaves holds one Fulgurite worth 2500 and nothing else (his note of 2026-09-06)',
    run:function(){
@@ -50,7 +50,7 @@ SubRx @'
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __topClear(); __cleanProfile(); __resetCfg(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.88',what:'a helped survivor walks to the nearest open extraction on his own instead of following you, and leaves when he reaches the ring (his note of 2026-09-06)',
+  {v:'11.88',what:'the raid conditions panel no longer prints the kill-nothing and three-minute contract verdicts, and still prints the no-heals one (his order of 2026-09-06)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

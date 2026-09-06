@@ -56,7 +56,7 @@ var VER='11.98';
 var VER='11.99';
 '@
 SubRx @'
-var WHATSNEW_VER='11.98';
+var WHATSNEW_VER='11.96';
 '@ @'
 var WHATSNEW_VER='11.99';
 '@
