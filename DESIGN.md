@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.14 - FIRST TEN MINUTES: THE CONTROLS CARD STOPS TEACHING A DEAD KEY
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
+
+THE FINDING. The full controls card behind H opens with "X swaps
+primary/sidearm" (Y on a pad). There is no KeyX handler anywhere in the
+build and no pad swap button: the swap key was deleted when the tactical
+belt took the job, and this one surface was missed. A friend reading the
+card presses X and nothing happens. The swap today is the belt itself:
+pressing the key of the stowed gun brings it up (v8.67).
+
+THE BUILD. The WEAPONS rule says "Belt keys 1 and 2 bring up either gun."
+The pad branch is gone with the key it named; the rule is one string.
+
+MEASURED. Check 12.14 reads the WEAPONS rule the way the card does and
+requires no X or Y swap claim and the belt keys named. On the v12.13
+fixture the rule reads "X swaps primary/sidearm."
+
+Not verified: the pad's own belt selection, which this rule does not name;
+the rest of the card, which the audit did not fault.
 ## v12.13 - FIRST TEN MINUTES: THE LIFT'S FREEBIE KIT CLEARS THE BELT PLAN
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.
