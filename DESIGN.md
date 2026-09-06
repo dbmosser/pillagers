@@ -40024,6 +40024,33 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.56 - HIS NOTE: LIGHTNING DOES NOT STRIKE INSIDE A BUILDING
+
+His in-run note of 2026-09-05, 71 seconds into his first run: "lightning
+shouldn't strike inside buildings". The storm (v6.87) rolls each strike point
+180 to 800 units from the player in a random direction and clamps it to the
+world, and nothing ever asked whether that point was under a roof. So a
+strike could telegraph its ring on the floor of the shed he was looting and
+land there.
+
+THE BUILD. A strike point that falls inside a building is walked out through
+its nearest wall and set forty units outside it, using the crier's own
+deterministic step from v9.04, so no new random draw is made and the seeded
+stream is unchanged. It tries up to three times in case the step lands in a
+neighbouring building. Everything else about the strike (its warning, its
+radius, its damage, the find it can leave) is as it was.
+
+MEASURED. Check 11.56 deploys under a forced storm, stands the player in the
+middle of the largest building so the rolls land indoors often, forces the
+strike clock to zero sixty times so each call spawns a point, and requires at
+least twenty points spawned (the control) and none inside a building. On the
+v11.55 fixture a share of the sixty land indoors and the check fails naming
+the count and the first one.
+
+Not verified: his own eye in a storm; the blast radius, which is unchanged
+and still reaches 118 units, so a strike set just outside a wall can still
+hurt someone stood against the inside of that wall, which is his call to
+change; THE COLD MILE, where the same code runs and was not driven.
 ## v11.55 - HIS NOTES: A COOKED GRENADE SHOUTS FOR ITS LAST SECOND
 
 His notes of 2026-09-05: "cooking grenades should give more warning before

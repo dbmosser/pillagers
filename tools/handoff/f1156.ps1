@@ -19,7 +19,7 @@ SubRx @'
 '@ @'
   {v:'11.56',what:'no storm strike point lands inside a building (his note of 2026-09-05); the storm still strikes',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__wxHard)) return 'SKIP: this fixture cannot deploy under a storm';
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
      if(typeof strikeTick!=='function'||typeof buildingAtPt!=='function') return 'SKIP: no storm strikes in this build';
      var bad=[];
      try{
@@ -27,8 +27,11 @@ SubRx @'
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player, B=(g.map&&g.map.buildings)||[];
        if(!B.length) return 'SKIP: this map has no buildings to stand in';
-       if(!__wxHard('storm')) return 'SKIP: storm is not a weather here';
-       if(!g.wx) g.wx={}; g.wx.id='storm';
+       // wx() hands back G.wx itself, so the storm has to BE the weather.
+       var storm=null;
+       for(var wi=0;wi<WEATHER.length;wi++) if(WEATHER[wi].lightning){ storm=WEATHER[wi]; break; }
+       if(!storm) return 'SKIP: no weather in this build carries lightning';
+       g.wx=storm; g.wxNext=null; g.wxT=0;
        // Stand in the middle of the largest building, so rolls of 180 to 800 units land indoors often.
        var big=B[0]; for(var i=1;i<B.length;i++) if(B[i].w*B[i].h>big.w*big.h) big=B[i];
        p.x=big.x+big.w/2; p.y=big.y+big.h/2; p.downed=false; g.over=false; g.paused=false;

@@ -1,19 +1,29 @@
 # START HERE (written 2026-09-05, handoff from Fable to Opus)
 
-**MID-FLIGHT AT HANDOFF (2026-09-06 ~00:50):** HEAD is v11.53 (d09a724). The
-tree has v11.54 APPLIED (his note C, extraction point states in his words).
-It has passed parsecheck, its own check 11.54 on fixture.html, __verifySafe,
-and its control fails on fx1153.html. Its FULL CORPUS was started on the
-Browser pane tab "seed" (http://localhost:8800/fixture.html) at about 00:40
-and takes 15 to 20 minutes on the hidden pane. FIRST THING: on that tab run
-`JSON.stringify(window.__PROG)`; when finished is true, pass is true, fail is
-[] and only the two known skips (v8.88, v11.24) are listed:
-    bash tools/handoff/ship.sh commit 1154 cm1154.txt
+**MID-FLIGHT (2026-09-06, after a machine shutdown):** HEAD is cf50d00 (v11.55
+plus the audit commit). The tree has v11.56 APPLIED (his note D, no lightning
+inside buildings) and re-verified on all four gates after the restart: parse
+PASS, check 11.56 PASS, __verifySafe PASS at 1920x1080, and the control on
+fx1155.html fails hard, 26 of 60 strike points landing inside a building on
+the previous build. Its FULL CORPUS is running on the Browser pane tab "seed".
+FIRST THING: on that tab run `JSON.stringify(window.__PROG)`; when finished is
+true, pass is true, fail is [] and only the two known skips (v8.88, v11.24)
+are listed:
+    bash tools/handoff/ship.sh commit 1156 cm1156.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1154 1155
-and carry on down the list (1155 A, 1156 D, 1157 E, 1158 F, then 1159 to
-1170). If the pane was closed or __PROG is missing, reload fixture.html,
-wait 6 s, call __regressBg(), and poll again. Do not commit on a red corpus.
+    bash tools/handoff/ship.sh start 1156 1157
+and carry on: 1157 (E, LIGHTNING INCOMING at the ring), 1158 (F, the four
+sounds that bypassed the heard-not-seen ring), 1159 (the belt-key grenade fix
+from the 2026-09-06 audit), then the audit queue 1160 to 1171.
+
+**AFTER ANY MACHINE RESTART, in this order, or every measurement is void:**
+1. `powershell -ExecutionPolicy Bypass -File tools/start-servers.ps1`
+2. CronList; re-arm the build tick if it is gone (it dies with the process).
+3. `preview_start` at http://localhost:8800/parsecheck.html, then
+   `resize_window 1920x1080` on tab "seed". A fresh pane is 0x0 and every DOM
+   measurement skips or lies.
+4. `git status --short` to see what was mid-flight, and `grep "^var VER=" dark_raiders.html`
+   to see which build the tree is carrying.
 
 **HIS TELEMETRY OF 2026-09-05 22:26 and 22:35 (exports/consumed-run-20260905-2226*.txt
 and -2235*.txt; two real runs on v11.51, both DEAD, both lastHit YOUR OWN CHARGE,
@@ -194,6 +204,16 @@ serves the tools folder: fixture.html, parsecheck.html, fx<PREV>.html.)
 
 ## Standing rules that bit this week
 
+- AFTER ANY RENUMBER, check hook dependencies. A check that guards on a
+  window.__ hook added by a LATER build returns SKIP forever, on the new
+  fixture AND on the control, and a skip reads like a pass. Compare
+  `grep -oh "window\.__[a-zA-Z]*=" tools/mkfixture.ps1` (installed) against
+  `grep -oh "window\.__[a-zA-Z]*" tools/handoff/f*.ps1` (used). As of v11.56
+  the only unshipped hooks are __wirtLot, __identityIds and __wxHard, and each
+  is installed by the same f-file that uses it, so the queue is clean.
+- After patching a check, REBUILD fx<prev>.html
+  (`mkfixture.ps1 -Src tools/prev<PREV>.html -Dst tools/fx<PREV>.html`), or the
+  control still runs the old check text and skips instead of failing.
 - A control that reads a function's SOURCE (fn.toString()) reads its comments
   too. Check 11.54's "no old badge phrase in drawHUD" control failed on a
   stale comment; fixcm1154.ps1 reworded it and p1154 carries the edit. Before

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.55';
+var VER='11.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.55';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.55';
+var WHATSNEW_VER='11.56';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'LIGHTNING NO LONGER STRIKES INSIDE A BUILDING. A strike that would have landed under a roof lands just outside its nearest wall instead.',
   'A COOKED GRENADE SHOUTS FOR ITS LAST SECOND: COOKED GRENADE! THROW GRENADE NOW, above the countdown. The fuse is still 1.1 seconds, so that is most of the cook; say the number you want and it changes.',
   'EXTRACTION POINTS SAY WHICH STATE THEY ARE IN. Sound the alarm to begin the countdown; N seconds until extraction begins; extract now, N seconds until it ends; closed for the remainder of this raid. Your four lines, with the live clock.',
   'SPRINT AND ROLL STAND YOU UP. Holding Shift while crouched used to do nothing; now it leaves the crouch and sprints. A roll leaves the crouch too.',
@@ -5108,6 +5109,16 @@ function strikeTick(dt){
     var ang=rr()*6.2832, rad=180+rr()*620;
     var sx=clamp(p.x+Math.cos(ang)*rad,80,WORLD_W-80);
     var sy=clamp(p.y+Math.sin(ang)*rad,80,WORLD_H-80);
+    // v11.56, HIS NOTE: "lightning shouldn't strike inside buildings". A point
+    // under a roof is walked out through its nearest wall (the crier's own
+    // deterministic step, no random draw), up to three times in case it
+    // lands in a neighbour.
+    for(var _sk=0;_sk<3;_sk++){
+      var _sb=buildingAtPt(G.map,sx,sy);
+      if(!_sb) break;
+      var _so=outOfBuilding(_sb,sx,sy,40);
+      sx=clamp(_so.x,80,WORLD_W-80); sy=clamp(_so.y,80,WORLD_H-80);
+    }
     G.strikes.push({x:sx,y:sy,t:STRIKE_WARN,hit:0});
     if(!G.sim) blip('charge',dist(p,{x:sx,y:sy}));
   }
@@ -28174,7 +28185,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.55: HIS NOTES of 2026-09-05, a cooked grenade needs a shout with a second left, and the count must go down. The readout already counted down; nothing shouted. cookShout(p) owns his line for the last second of a frag in hand and drawHUD draws it flashing above the countdown. FRAG_FUSE stays 1.1 s (no balancing before alpha), so the shout covers nearly the whole cook, which is the finding: he died to his own charge twice that night. Check 11.55 reads cookShout at half a second left, controls a smoke and an empty hand, and requires drawHUD to read it.',
+  now:'v11.56: HIS NOTE of 2026-09-05, lightning should not strike inside buildings. The storm rolled a point 180 to 800 units from the player with no roof test. A point inside a building is walked out through its nearest wall by outOfBuilding (deterministic, no new random draw), up to three times. Check 11.56 stands the player in a building under a forced storm, spawns sixty strike points, requires none inside a building and at least twenty spawned; fails on the v11.55 fixture where some land indoors. Not moved: the blast radius, which still reaches through a wall.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
