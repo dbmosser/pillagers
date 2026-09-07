@@ -1,0 +1,44 @@
+## v12.28 - HIS NOTE: NOTHING IS BORN SEALED IN A VAULT
+
+His message of 2026-09-06 20:55, after his tenth run (v12.21, 448 seconds,
+41,570 credits carried, killed two metres from the ring): "it felt really
+good; crawlers still getting stuck when pathfinding / chasing the player
+occasionally."
+
+REPRODUCED before anything was touched. On the dry fixture at v12.26, 105
+crawlers were set chasing a standing player across twelve spots on COLD
+STORAGE and stepped for ten seconds each. One never made a yard of progress:
+CRAWLER A-31, an elite, hugging a wall with every route search failing while
+its target stood in the open a thousand units away. A breadth-first walk of
+the nav grid from its cell reaches 110 cells of the map's 35,592. It stood
+inside the cs_freezer locked room: a 230 by 230 shell of five walls and a
+keyed door drawn as a sixth, which the nav grid rightly treats as solid
+until the key is spent. freeSpot, which places every machine and pillager,
+knows walls but not rooms, so a body can be born inside a vault. Twelve
+seeds across both maps: ten bodies sealed in twelve raids, five of them in
+one raid (seed 555 on THE COLD MILE): crawlers, a sentry, a howler that
+shells from a box nothing can reach, and a pillager that never loots or
+leaves. A sealed crawler that hears you chases the inside of the wall for
+as long as the chase holds, which is the thing he saw.
+
+THE BUILD. After placement, every body inside a locked room shell is walked
+out through its own door to the first clear spot outside: straight out from
+the door in 26 unit steps, then a widening ring, using the same wall test
+freeSpot uses. Its patrol target follows it, or it would walk straight back
+to the wall. No random draw is consumed, so every seed's stream, every
+container and every count is byte-identical to before; only the sealed
+bodies stand somewhere else. A dial, unseal, restores the old placement so
+the two can be run against each other.
+
+MEASURED. Check 12.28 deploys seed 555 on THE COLD MILE with the old
+placement and requires at least one sealed body (the staging can seal), then
+with the new and requires none, the same body and container counts, every
+moved body outside its vault within 400 units of the door and clear of
+walls, and exactly as many moved as were sealed; then seed 4242 on COLD
+STORAGE and requires the 85 bodies and 165 containers the safety sweep has
+counted since v9.30, with nobody sealed. On the v12.27 fixture the new arm
+still seals the same five.
+
+Not verified: whether this is the only stuck he has seen; a chase across
+furniture and doors with the player MOVING was not staged here and is the
+next probe; the howler, which is walked out like the rest and not driven.

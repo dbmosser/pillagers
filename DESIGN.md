@@ -40024,6 +40024,44 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.22 - P RESUMES A PAUSED RAID, AS THE BOX SAYS
+
+From the 2026-09-06 first-ten-minutes audit (the last undrafted item on its
+list).
+
+WHAT IT WAS. The pause box prints its own legend, ending "P / ESC pause",
+and P could open the box but never close it. Since the v0.8 baseline the
+box handed the keyboard to its note 40 ms after it opened, and the key
+handler drops every key whose target is a text field, so a second P typed a
+letter p into the note and the raid stayed paused. A first-time player
+presses P to pause, P to resume, and gets a p in a box he did not know was
+listening; only ESC (v7.68, taken in the capture phase for exactly this
+reason) or the Resume button got him out. Nobody had asked for the focus;
+it came with the baseline.
+
+THE BUILD. The box no longer takes the keyboard on open. The note is a
+click away, its placeholder invites the click, ESC still leaves from inside
+it, and P toggles the box the way its legend promises. Because keys now
+reach the raid with the box up, the raid answers none of them but P and
+ESC while it is paused: M, Q, C and the digits would otherwise act on a
+paused raid, and a note typed out of habit without the click would open the
+map and swap the belt. That is the rule the Undercroft floor has had since
+v8.16, nothing answers a key while something is open over it. The pad's
+Menu button is P by name, so a controller pauses and resumes as before.
+
+MEASURED. Check 12.22 deploys, opens the box by the key with every timer
+the opening schedules caught and run at once (so the old build's delayed
+focus has happened before the next line), sends a second P to whatever
+holds the keyboard, as a real key is sent, and requires the box closed and
+the raid running; then with the box up sends M and requires the map shut,
+and with the box down sends M and requires the map open, so the key path is
+proven live; then focuses the note and sends ESC and requires the box
+closed. On the v12.21 fixture the opening schedules one delayed call and the
+second P does not resume.
+
+Not verified: his own hands; a note typed by habit before the click, which
+now goes nowhere (the placeholder is the only hint); the gamepad path,
+which is the same function by the same key name and is not driven here.
 ## v12.21 - THE MAP SAYS EXTRACT NOW TOO
 
 From the read-only review of this morning's shipped builds, on v11.74.

@@ -11,47 +11,93 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.26 CHECK, inserted before the v12.25 entry. The smoke is selected on the
-# belt with a smoke and a frag in the pouch; Q goes through the real key path
-# and must turn the selector to the frag AND move the highlight to the frag
-# cell, and a cook then produces a frag, so the belt and the trigger agree.
-# Control: with the pouch empty Q says No throwables and moves nothing.
+# v12.27 CHECK, inserted before the v12.26 entry. The kept-aside record the
+# kit button writes is staged, commitKit is driven for real (the free branch),
+# a live raid is ended dead, and the plan and gun slot must be back with the
+# packing, minus the key on an item sold during the run. Control: a clean
+# extraction restores neither, the v6.88 rule.
 SubRx @'
-  {v:'12.25',what:'standing in a second open ring while the ship is inbound to another leaves the called ring active with its own clock, and with no beacon anywhere the ring stood in still wins the pointer (2026-09-06 in-raid audit)',
-'@ @'
   {v:'12.26',what:'Q moves the belt highlight to the throwable it makes ready, so the cell the belt lights is the one the trigger cooks; with an empty pouch it says No throwables and moves nothing (2026-09-06 in-raid audit)',
+'@ @'
+  {v:'12.27',what:'a free-kit run that ends dead gives back the tactical belt plan and the gun slot with the packing, minus a key whose item did not come back; a clean extraction restores neither, as before (the v12.13 not-verified line)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof raidKey!=='function'||typeof hotbarSlots!=='function'||typeof hotSel!=='function'||typeof startCook!=='function'||typeof THROWKEYS==='undefined') return 'SKIP: no belt, key or cook path in this build';
+     if(typeof commitKit!=='function') return 'SKIP: no commitKit in this build';
      var bad=[];
+     function freeRun(how){
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       P.stash=['medkit','plate','frag']; P.kit=[];
+       P.freeKit=1; P.kitSaved={kit:['medkit','plate'],hot:{2:'medkit',5:'plate'},gun:'probe-slot'}; P.hotAssign={}; P._gunSlot=null;
+       if(!commitKit()) bad.push('control: commitKit refused the free kit');
+       if(!P.kitBeforeFree||P.kitBeforeFree.join(',')!=='medkit,plate') bad.push('control: the lift did not keep the packing aside ('+(P.kitBeforeFree||[]).join(',')+')');
+       P.stash=['medkit','frag'];   // the plate is gone by the end of the run, so its key must not come back
+       var g=__state(); if(g&&!g.over){ g.player.downed=false; __endRaid(how); }
+     }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, sl=hotbarSlots(), iS=-1, iF=-1, i;
-       for(i=0;i<sl.length;i++){ if(sl[i]&&sl[i].k==='throw:smoke') iS=i; if(sl[i]&&sl[i].k==='throw:frag') iF=i; }
-       if(iS<0||iF<0) return 'SKIP: the belt has no smoke and frag cells to move between';
-       var pb=document.getElementById('pausebox'); if(pb&&pb.classList.contains('on')&&typeof togglePauseBox==='function') togglePauseBox(false);
-       g.pouch.smoke=1; g.pouch.frag=1; g.pouch.decoy=0;
-       g.tsel=THROWKEYS.indexOf('smoke'); g.hot=iS; g.paused=false; g.over=false;
-       p.downed=false; p.roll=0; p.cooking=0; p.cookT=0; p.cookKind=null; keys={};
-       if(hotSel()!==iS) bad.push('control: the smoke cell could not be lit first (hotSel '+hotSel()+')');
-       raidKey('KeyQ',false,null);
-       if(g.tsel!==THROWKEYS.indexOf('frag')) bad.push('control: Q did not turn the selector to the frag (tsel '+g.tsel+')');
-       if(hotSel()!==iF) bad.push('after Q the belt still lights cell '+hotSel()+' ('+(sl[hotSel()]?sl[hotSel()].k:'?')+') while the selector is on the frag');
-       // The trigger agrees with the lit cell.
-       if(!startCook()) bad.push('control: the pin did not come out');
-       var lit=hotbarSlots()[hotSel()];
-       if(p.cookKind&&lit&&lit.k!=='throw:'+p.cookKind) bad.push('the belt lights '+lit.k+' while the hand cooks a '+p.cookKind);
-       p.cooking=0; p.cookT=0; p.cookKind=null;
-       // CONTROL: nothing in the pouch; Q says so and moves nothing.
-       g.pouch.smoke=0; g.pouch.frag=0; g.pouch.decoy=0; var hotBefore=hotSel(); window.__lastSay=null;
-       raidKey('KeyQ',false,null);
-       if(hotSel()!==hotBefore) bad.push('control: with an empty pouch Q moved the highlight');
-       if(String(window.__lastSay||'').indexOf('No throwables')!==0) bad.push('control: with an empty pouch Q said "'+String(window.__lastSay||'')+'"');
+       freeRun('dead');
+       if((P.kit||[]).join(',')!=='medkit') bad.push('control: the packing did not come back minus the plate (kit '+(P.kit||[]).join(',')+')');
+       if(!P.hotAssign||P.hotAssign[2]!=='medkit') bad.push('the belt key on the Medkit did not come back with the packing (plan '+JSON.stringify(P.hotAssign||{})+')');
+       if(P.hotAssign&&P.hotAssign[5]) bad.push('a key on the plate came back although the plate did not');
+       if(P._gunSlot!=='probe-slot') bad.push('the gun slot did not come back ('+P._gunSlot+')');
+       if(P.planBeforeFree) bad.push('the kept-aside plan was not cleared after the restore');
+       __topClear();
+       // CONTROL: a clean extraction restores neither, the v6.88 rule.
+       freeRun('extract');
+       if(P.hotAssign&&P.hotAssign[2]) bad.push('control: an extraction restored the belt plan');
+       if(P.planBeforeFree) bad.push('the kept-aside plan survived an extraction');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ keys={}; try{ var g2=__state(); if(g2){ var p2=g2.player; p2.cooking=0; p2.cookT=0; p2.cookKind=null; if(!g2.over){ p2.downed=false; __endRaid('extract'); } } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} try{ P.freeKit=0; P.kitSaved=null; P.kitBeforeFree=null; P.planBeforeFree=null; P._gunSlot=null; }catch(_p){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.25',what:'standing in a second open ring while the ship is inbound to another leaves the called ring active with its own clock, and with no beacon anywhere the ring stood in still wins the pointer (2026-09-06 in-raid audit)',
+  {v:'12.26',what:'Q moves the belt highlight to the throwable it makes ready, so the cell the belt lights is the one the trigger cooks; with an empty pouch it says No throwables and moves nothing (2026-09-06 in-raid audit)',
+'@
+
+# HARNESS REPAIRS riding with v12.27 (the leftovers list in START-HERE):
+# 11.88 read the SAVED HUD layout, so a CONDITIONS panel an earlier check had
+# collapsed turned it into a SKIP; it pins an empty layout and restores it.
+# 11.85 measured font sizes without pinning the pane, so a resized pane could
+# change its numbers; it pins 1920x1080 like its neighbours. 11.81 let an
+# extraction bank forty seconds of cutting into the saved profile and left it
+# there for every later check; it restores the seals it found.
+SubRx @'
+     var bad=[], P2=__P(), keepC=P2.contracts, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
+'@ @'
+     var bad=[], P2=__P(), keepC=P2.contracts, keepH=P2.hud, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
+'@
+SubRx @'
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __forceSize(1920,1080);
+       P2.contracts=[
+'@ @'
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __forceSize(1920,1080);
+       P2.hud={};   // v12.27 harness: a CONDITIONS panel an earlier check collapsed in the saved layout would turn this into a SKIP
+       P2.contracts=[
+'@
+SubRx @'
+       proto.fillText=o; P2.contracts=keepC; try{ saveProfile(); }catch(_s){}
+'@ @'
+       proto.fillText=o; P2.contracts=keepC; P2.hud=keepH; try{ saveProfile(); }catch(_s){}
+'@
+SubRx @'
+     proto.fillText=function(t){ try{ rec.push({t:String(t),font:this.font}); }catch(_r){} return orig.apply(this,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+'@ @'
+     proto.fillText=function(t){ try{ rec.push({t:String(t),font:this.font}); }catch(_r){} return orig.apply(this,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); if(window.__forceSize) __forceSize(1920,1080);   // v12.27 harness: the font sizes below are measured at one pane size
+'@
+SubRx @'
+     var bad=[], lost='seconds of '+'cutting, lost', banked='Seal '+'cut ';
+'@ @'
+     var bad=[], lost='seconds of '+'cutting, lost', banked='Seal '+'cut ', keepS=JSON.stringify(__P().seals===undefined?null:__P().seals);   // v12.27 harness: the extraction below banks a seal into the saved profile
+'@
+SubRx @'
+       __endRaid('extract');
+       var t2=card();
+'@ @'
+       __endRaid('extract');
+       var t2=card();
+       try{ var _ks=JSON.parse(keepS); if(_ks===null) delete __P().seals; else __P().seals=_ks; }catch(_kse){}   // v12.27 harness: the banked seal does not outlive the check
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

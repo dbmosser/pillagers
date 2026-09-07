@@ -5732,6 +5732,36 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.27',what:'a free-kit run that ends dead gives back the tactical belt plan and the gun slot with the packing, minus a key whose item did not come back; a clean extraction restores neither, as before (the v12.13 not-verified line)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof commitKit!=='function') return 'SKIP: no commitKit in this build';
+     var bad=[];
+     function freeRun(how){
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       P.stash=['medkit','plate','frag']; P.kit=[];
+       P.freeKit=1; P.kitSaved={kit:['medkit','plate'],hot:{2:'medkit',5:'plate'},gun:'probe-slot'}; P.hotAssign={}; P._gunSlot=null;
+       if(!commitKit()) bad.push('control: commitKit refused the free kit');
+       if(!P.kitBeforeFree||P.kitBeforeFree.join(',')!=='medkit,plate') bad.push('control: the lift did not keep the packing aside ('+(P.kitBeforeFree||[]).join(',')+')');
+       P.stash=['medkit','frag'];   // the plate is gone by the end of the run, so its key must not come back
+       var g=__state(); if(g&&!g.over){ g.player.downed=false; __endRaid(how); }
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       freeRun('dead');
+       if((P.kit||[]).join(',')!=='medkit') bad.push('control: the packing did not come back minus the plate (kit '+(P.kit||[]).join(',')+')');
+       if(!P.hotAssign||P.hotAssign[2]!=='medkit') bad.push('the belt key on the Medkit did not come back with the packing (plan '+JSON.stringify(P.hotAssign||{})+')');
+       if(P.hotAssign&&P.hotAssign[5]) bad.push('a key on the plate came back although the plate did not');
+       if(P._gunSlot!=='probe-slot') bad.push('the gun slot did not come back ('+P._gunSlot+')');
+       if(P.planBeforeFree) bad.push('the kept-aside plan was not cleared after the restore');
+       __topClear();
+       // CONTROL: a clean extraction restores neither, the v6.88 rule.
+       freeRun('extract');
+       if(P.hotAssign&&P.hotAssign[2]) bad.push('control: an extraction restored the belt plan');
+       if(P.planBeforeFree) bad.push('the kept-aside plan survived an extraction');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} try{ P.freeKit=0; P.kitSaved=null; P.kitBeforeFree=null; P.planBeforeFree=null; P._gunSlot=null; }catch(_p){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.26',what:'Q moves the belt highlight to the throwable it makes ready, so the cell the belt lights is the one the trigger cooks; with an empty pouch it says No throwables and moves nothing (2026-09-06 in-raid audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
@@ -6863,9 +6893,10 @@ window.__REGRESS=[
   {v:'11.88',what:'the raid conditions panel no longer prints the kill-nothing and three-minute contract verdicts, and still prints the no-heals one (his order of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and draw';
-     var bad=[], P2=__P(), keepC=P2.contracts, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
+     var bad=[], P2=__P(), keepC=P2.contracts, keepH=P2.hud, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __forceSize(1920,1080);
+       P2.hud={};   // v12.27 harness: a CONDITIONS panel an earlier check collapsed in the saved layout would turn this into a SKIP
        P2.contracts=[
          {type:'conduct',ck:'quiet',n:1,prog:0,reward:1300,desc:'Extract without killing anything',tier:0},
          {type:'conduct',ck:'swift',n:1,prog:0,reward:1000,desc:'Extract within 3 minutes of landing',tier:0},
@@ -6882,7 +6913,7 @@ window.__REGRESS=[
        if(all.indexOf('left to be gone')>=0||all.indexOf('past three minutes')>=0) bad.push('the panel still prints the three-minute verdict');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
-       proto.fillText=o; P2.contracts=keepC; try{ saveProfile(); }catch(_s){}
+       proto.fillText=o; P2.contracts=keepC; P2.hud=keepH; try{ saveProfile(); }catch(_s){}
        try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
        __topClear(); __cleanProfile();
      }
@@ -6954,7 +6985,7 @@ window.__REGRESS=[
      var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
      proto.fillText=function(t){ try{ rec.push({t:String(t),font:this.font}); }catch(_r){} return orig.apply(this,arguments); };
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); if(window.__forceSize) __forceSize(1920,1080);   // v12.27 harness: the font sizes below are measured at one pane size
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(); g.mapOpen=true;
        drawMapOverlay();
@@ -7097,7 +7128,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot end a raid and read the card';
      if(typeof sealHere!=='function') return 'SKIP: no seal in this build';
-     var bad=[], lost='seconds of '+'cutting, lost', banked='Seal '+'cut ';
+     var bad=[], lost='seconds of '+'cutting, lost', banked='Seal '+'cut ', keepS=JSON.stringify(__P().seals===undefined?null:__P().seals);   // v12.27 harness: the extraction below banks a seal into the saved profile
      function card(){ try{ return ((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(e){ return ''; } }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -7112,6 +7143,7 @@ window.__REGRESS=[
        g=__state(); g.seal={gained:40,done:0}; g.bag=[];
        __endRaid('extract');
        var t2=card();
+       try{ var _ks=JSON.parse(keepS); if(_ks===null) delete __P().seals; else __P().seals=_ks; }catch(_kse){}   // v12.27 harness: the banked seal does not outlive the check
        if(t2.indexOf(banked)<0) bad.push('control: an extraction with 40 seconds of cutting did not print the banked line, so the seal path was not live in this staging (card says: '+t2.slice(0,80)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __topClear(); __cleanProfile(); }

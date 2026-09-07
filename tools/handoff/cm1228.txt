@@ -1,0 +1,12 @@
+v12.28: his note, nothing is born sealed in a vault
+
+His note that crawlers still get stuck chasing, reproduced: a body the map
+placed inside a locked room shell has no route until the key is spent, so
+it scrabbled at the wall whenever it heard him. Ten bodies sealed in twelve
+raids across both maps, a howler and a pillager among them. Every sealed
+body is walked out through its own door at birth, no draw consumed, counts
+unchanged. Check 12.28 runs the old placement by a dial and requires sealed
+bodies, then the new and requires none with the same counts; the seed 4242
+fingerprint stands; fails on v12.27.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
