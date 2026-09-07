@@ -5732,6 +5732,65 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.26',what:'Q moves the belt highlight to the throwable it makes ready, so the cell the belt lights is the one the trigger cooks; with an empty pouch it says No throwables and moves nothing (2026-09-06 in-raid audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof raidKey!=='function'||typeof hotbarSlots!=='function'||typeof hotSel!=='function'||typeof startCook!=='function'||typeof THROWKEYS==='undefined') return 'SKIP: no belt, key or cook path in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, sl=hotbarSlots(), iS=-1, iF=-1, i;
+       for(i=0;i<sl.length;i++){ if(sl[i]&&sl[i].k==='throw:smoke') iS=i; if(sl[i]&&sl[i].k==='throw:frag') iF=i; }
+       if(iS<0||iF<0) return 'SKIP: the belt has no smoke and frag cells to move between';
+       var pb=document.getElementById('pausebox'); if(pb&&pb.classList.contains('on')&&typeof togglePauseBox==='function') togglePauseBox(false);
+       g.pouch.smoke=1; g.pouch.frag=1; g.pouch.decoy=0;
+       g.tsel=THROWKEYS.indexOf('smoke'); g.hot=iS; g.paused=false; g.over=false;
+       p.downed=false; p.roll=0; p.cooking=0; p.cookT=0; p.cookKind=null; keys={};
+       if(hotSel()!==iS) bad.push('control: the smoke cell could not be lit first (hotSel '+hotSel()+')');
+       raidKey('KeyQ',false,null);
+       if(g.tsel!==THROWKEYS.indexOf('frag')) bad.push('control: Q did not turn the selector to the frag (tsel '+g.tsel+')');
+       if(hotSel()!==iF) bad.push('after Q the belt still lights cell '+hotSel()+' ('+(sl[hotSel()]?sl[hotSel()].k:'?')+') while the selector is on the frag');
+       // The trigger agrees with the lit cell.
+       if(!startCook()) bad.push('control: the pin did not come out');
+       var lit=hotbarSlots()[hotSel()];
+       if(p.cookKind&&lit&&lit.k!=='throw:'+p.cookKind) bad.push('the belt lights '+lit.k+' while the hand cooks a '+p.cookKind);
+       p.cooking=0; p.cookT=0; p.cookKind=null;
+       // CONTROL: nothing in the pouch; Q says so and moves nothing.
+       g.pouch.smoke=0; g.pouch.frag=0; g.pouch.decoy=0; var hotBefore=hotSel(); window.__lastSay=null;
+       raidKey('KeyQ',false,null);
+       if(hotSel()!==hotBefore) bad.push('control: with an empty pouch Q moved the highlight');
+       if(String(window.__lastSay||'').indexOf('No throwables')!==0) bad.push('control: with an empty pouch Q said "'+String(window.__lastSay||'')+'"');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ keys={}; try{ var g2=__state(); if(g2){ var p2=g2.player; p2.cooking=0; p2.cookT=0; p2.cookKind=null; if(!g2.over){ p2.downed=false; __endRaid('extract'); } } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.25',what:'standing in a second open ring while the ship is inbound to another leaves the called ring active with its own clock, and with no beacon anywhere the ring stood in still wins the pointer (2026-09-06 in-raid audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof tryExtractTick!=='function') return 'SKIP: no extraction tick in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, i;
+       if(!g.zones||g.zones.length<2) return 'SKIP: this map has fewer than two extraction rings';
+       var A=g.zones[0], B=g.zones[1];
+       A.open=true; B.open=true;   // the rule under test is the pointer, not the closing schedule
+       for(i=0;i<g.zones.length;i++){ g.zones[i].beaconT=null; g.zones[i].hold=null; g.zones[i].pullT=null; g.zones[i].callT=0; }
+       keys={}; p.downed=false;
+       // ARM ONE: the ship is inbound to A; he stands in B.
+       A.beaconT=CFG.extractWait; A.hold=null; g.active=A; g.beaconT=A.beaconT;
+       p.x=B.x; p.y=B.y;
+       tryExtractTick(0.1,false);
+       if(g.active!==A) bad.push('standing in a second open ring took the pointer off the ring the ship was called to (active is now '+(g.active===B?'the ring stood in':'another ring')+')');
+       if(g.beaconT===null||g.beaconT===undefined||Math.abs(g.beaconT-A.beaconT)>0.001) bad.push('the clock shown ('+g.beaconT+') is not the called ring\x27s ('+A.beaconT+')');
+       // CONTROL: no beacon anywhere; the ring he stands in wins, as it always has.
+       A.beaconT=null; A.hold=null; g.beaconT=null; g.active=A;
+       tryExtractTick(0.1,false);
+       if(g.active!==B) bad.push('control: with no beacon anywhere the ring stood in did not become the active ring');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.24',what:'with the raid clock switched OFF the boarding window is the full 30 seconds and the call line does not say the clock runs out first; with the clock on at 12 seconds left the window is 11 (2026-09-06 in-raid audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
@@ -5739,12 +5798,13 @@ window.__REGRESS=[
      var bad=[], warn='runs out '+'first';
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // THE CLOCK OFF, as Settings leaves it, BEFORE the raid is built: no seconds, the count at zero, and no ring with a closing time.
+       CFG.raidSec=0;
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player, Z=null, i;
+       if(g.timeLeft!==0) bad.push('control: with the clock off the raid was built with '+g.timeLeft+' seconds on it');
        for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
        if(!Z) return 'SKIP: no open extraction ring';
-       // THE CLOCK OFF, as Settings leaves it: no seconds, and the count at zero.
-       CFG.raidSec=0; g.timeLeft=0; g.raidLen=0;
        p.x=Z.x+70; p.y=Z.y; p.downed=false; keys={}; window.__lastSay=null;
        var line=null;
        for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(Z.beaconT!==null&&Z.beaconT!==undefined) line=String(window.__lastSay||''); }
@@ -5755,12 +5815,12 @@ window.__REGRESS=[
        Z.beaconT=0.001; Z.hold=null; Z.holdMax=null; g.active=Z;
        tickExtractPoints(0.016);
        if(Z.hold===null||Z.hold===undefined) bad.push('control: the landing set no boarding window');
-       else if(Math.abs(Z.hold-30)>0.001) bad.push('with the clock off the boarding window is '+Z.hold+' seconds, not 30');
+       else if(Math.abs(Z.holdMax-30)>0.001) bad.push('with the clock off the boarding window is '+Z.holdMax+' seconds, not 30');
        // CONTROL: with the clock on and 12 seconds left, the window is 11.
        CFG.raidSec=540; g.timeLeft=12; g.raidLen=540;
        Z.beaconT=0.001; Z.hold=null; Z.holdMax=null;
        tickExtractPoints(0.016);
-       if(Z.hold===null||Z.hold===undefined||Math.abs(Z.hold-11)>0.001) bad.push('control: with the clock on at 12 s left the window is '+Z.hold+', not 11');
+       if(Z.hold===null||Z.hold===undefined||Math.abs(Z.holdMax-11)>0.001) bad.push('control: with the clock on at 12 s left the window is '+Z.holdMax+', not 11');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ keys={}; try{ __resetCfg(); }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},

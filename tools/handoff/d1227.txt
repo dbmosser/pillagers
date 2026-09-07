@@ -1,0 +1,43 @@
+## v12.27 - THE BELT PLAN COMES BACK AFTER A FREE RUN
+
+The v12.13 Not-verified line, verified by reading at v12.21.
+
+WHAT IT WAS. Taking the freebie kit keeps what you had packed aside, and
+since v12.16 the belt plan and the gun slot go aside with it, so USE MY OWN
+GEAR puts everything back. The lift did not. commitKit, which runs when you
+go up, took only the packing out of the kept-aside record (P.kitBeforeFree,
+v6.88) and threw the rest away, and the end of a free run that is not a
+clean extraction put only the packing back. So a friend who packs, binds a
+key or two, takes the free kit for a first look and dies, comes home to his
+packing with every key gone and the gun slot cleared. On a first evening
+that is most friends: the free kit is the button a new player presses to
+find out what it is.
+
+THE BUILD. commitKit keeps the plan and the gun slot beside the packing, in
+a field of their own so a save written before this build still reads. The
+end of the run restores them on the same rule as the packing (any end that
+is not a clean extraction), then drops any key whose item did not come
+back, the same as USE MY OWN GEAR does. A clean extraction still restores
+nothing, as v6.88 ruled; that rule is not touched here.
+
+MEASURED. Check 12.27 stages the kept-aside record the kit button writes
+(a Medkit and a plate packed, keys 3 and 6 on them, a gun slot), drives
+commitKit for real, sells the plate out of the stash during the run, ends a
+live raid dead, and requires the packing back minus the plate, the Medkit
+key back, the plate key gone, the gun slot back and the kept-aside plan
+cleared. Then the same run ending in an extraction, and requires no plan
+restored. On the v12.26 fixture the Medkit key and the gun slot do not come
+back.
+
+HARNESS, riding with this build. Three older checks carried hazards the
+leftovers list had named: 11.88 read the saved HUD layout, so a CONDITIONS
+panel an earlier check had collapsed turned it into a SKIP (it pins an empty
+layout and restores it); 11.85 measured font sizes without pinning the pane
+(it pins 1920x1080 like its neighbours); 11.81 let an extraction bank forty
+seconds of cutting into the saved profile for every later check to find
+(it restores the seals it found). None had gone red; each could have.
+
+Not verified: his own eye on the belt after a free run; the lift path's own
+kept-aside write (v12.13), which this drives from the record rather than
+the lift question; whether he wants an extraction to restore the packing
+too, which v6.88 left silent and this leaves as it was.

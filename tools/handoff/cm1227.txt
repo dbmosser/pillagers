@@ -1,0 +1,11 @@
+v12.27: the belt plan comes back after a free run
+
+The freebie kit kept the packing and the belt plan aside, but the lift took
+only the packing into the raid and the end of a free run put only the
+packing back, so a friend who bound keys, took the free kit and died came
+home with every key gone. The plan and the gun slot go aside with the
+packing and come back with it, dead keys dropped. Check 12.27 stages the
+record, commits it, ends the raid dead and requires the keys back; an
+extraction restores nothing, as before; fails on v12.26.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
