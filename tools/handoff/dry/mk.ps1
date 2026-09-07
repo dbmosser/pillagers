@@ -819,7 +819,6 @@ window.__guns={
 };
 // v8.83: STAND ON THE UNDERCROFT FLOOR. showScreen('hub') is the real entry the
 // game uses, so this is the play path and not a rebuilt copy of it.
-window.__craft={open:function(t){ openTrader(t||'craft'); },hold:function(){ return craftHold?{t:craftHold.t,ok:!!(craftHold.b&&craftHold.b.offsetParent)}:null; },recipes:function(){ return RECIPES; },work:function(){ renderWork(); },state:function(){ return state; },hb:function(){ return HB; }};
 window.__hubEnter=function(){ showScreen('hub'); var _t=document.getElementById('title'); if(_t) _t.classList.remove('on'); return !!HB; };   // v12.06: the floor is past the title, and since v12.06 a title left up blocks every floor key
 window.__hubP=function(){ return HB?HB.player:null; };
 window.__hubStep=function(dt){
@@ -5732,6 +5731,142 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.28',what:'a Peddler purchase says where it went: a bought rifle names the belt key autoBelt pinned it to, a medkit with no key set says In your backpack, and a medkit on key 6 says key 6, with the credits falling by the prices (his note of 2026-09-07: purchases did not show up in the inventory)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
+     if(typeof mkPeddler!=='function'||typeof pedBuy!=='function') return 'SKIP: no Peddler in this build';
+     var bad=[], P2=__P(), keepC=P2.credits;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       var pd=mkPeddler(p.x+40,p.y,g.map);
+       pd.stock=[{k:'gun_rifle',price:10,sold:false},{k:'medkit',price:20,sold:false},{k:'medkit',price:30,sold:false}];
+       g.trade=pd; g.hotAssign={}; g.hotAuto={}; g.bag=[];
+       P2.credits=5000;
+       // THE RIFLE: autoBelt pins it to the first free belt cell, so the line must name that key.
+       g.msg=''; pedBuy(0);
+       var m1=g.msg||'';
+       if(m1.indexOf('Bought')<0) bad.push('control: the rifle purchase did not say Bought (said "'+m1+'")');
+       var onBelt=false; for(var bi in (g.hotAssign||{})) if(g.hotAssign[bi]==='gun_rifle') onBelt=true;
+       if(!onBelt) bad.push('staging: autoBelt did not pin the bought rifle to a belt cell, so the line has no key to name');
+       else if(!/tactical belt, key [1-9]/.test(m1)) bad.push('the rifle line said "'+m1+'" and not which belt key it went to');
+       if(g.bag.indexOf('gun_rifle')<0) bad.push('control: the bought rifle is not in the bag');
+       // THE MEDKIT WITH NO KEY SET: the backpack.
+       g.msg=''; pedBuy(1);
+       var m2=g.msg||'';
+       if(!/In your backpack/.test(m2)) bad.push('a medkit bought with no key set said "'+m2+'" and not In your backpack');
+       // THE MEDKIT ON KEY 6.
+       g.hotAssign[5]='medkit'; g.msg=''; pedBuy(2);
+       var m3=g.msg||'';
+       if(!/tactical belt, key 6/.test(m3)) bad.push('a medkit bought with key 6 set to medkit said "'+m3+'" and not key 6');
+       // THE PURCHASE ITSELF, unchanged: the credits fell by the three prices.
+       if(P2.credits!==5000-60) bad.push('control: credits are '+P2.credits+' after three purchases priced 10, 20 and 30 from 5000');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       P2.credits=keepC; try{ saveProfile(); }catch(_s){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.trade=null; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.27',what:'a stash drop onto the backpack for an item bound to a key with nothing packed lands on that key with a count and words, a bound key with nothing packed shows a 0 on the plan, and a spent belt key in a raid says No Bandage left (his note of 2026-09-07: bandages did not come over)',
+   run:function(){
+     if(!(window.__P&&window.__hubEnter&&window.__showScreen&&window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot reach the stash screen and a raid';
+     if(typeof renderHub!=='function'||typeof packedCount!=='function'||typeof useHot!=='function'||typeof hotbarSlots!=='function') return 'SKIP: this build has no belt plan to measure';
+     var bad=[], P2=__P(), keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P2.hotAssign||{})),freeKit:P2.freeKit};
+     function zeroOn(cell){ var sp=cell.querySelectorAll('span'), i; for(i=0;i<sp.length;i++) if((sp[i].textContent||'').trim()==='0') return true; return false; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ var g0=__state(); if(g0&&!g0.over){ g0.player.downed=false; __endRaid('abandon'); } }catch(_0){}
+       keys={}; __showScreen('hub'); __hubEnter();
+       // A key left on Bandage by the last raid (dropDeadKeys keeps it while the stash has one), nothing packed, three in the stash.
+       P2.stash=['bandage','bandage','bandage','wire']; P2.kit=[]; P2.hotAssign={2:'bandage'}; P2.freeKit=0; saveProfile();
+       renderHub();
+       var hub=document.getElementById('hub'); if(hub) hub.classList.add('on');
+       // (B) the plan cell for key 3 says 0.
+       var cell=document.querySelector('#hub [data-plan="2"]');
+       if(!cell) bad.push('staging: no plan cell for key 3 on the stash screen');
+       else if(!zeroOn(cell)) bad.push('the plan cell for key 3, set to Bandage with none packed, shows no 0');
+       // (A) the drop, through the real pointer dropzone handler.
+       var col=document.getElementById('kitcol');
+       if(!col||typeof col.__grabDrop!=='function') return 'SKIP: the backpack column takes no pointer drop';
+       HUBSAY=''; col.__grabDrop('bandage','stash');
+       var nb=packedCount('bandage'), kn=document.getElementById('kitn'), shown=kn?parseInt(kn.textContent,10):-1;
+       if(nb<1) bad.push('the drop packed nothing');
+       if(!(shown>0)) bad.push('after the drop the backpack column shows '+shown+' items: the Bandage vanished into the key');
+       if(!/key 3/.test(HUBSAY||'')) bad.push('the drop said "'+(HUBSAY||'')+'" and not which key took it');
+       var c2=document.querySelector('#hub [data-plan="2"]');
+       if(c2&&nb>1&&(c2.textContent||'').indexOf('x'+nb)<0) bad.push('the plan cell does not show x'+nb+' after the drop (it reads "'+(c2.textContent||'').trim()+'")');
+       // CONTROL: the same drop with no key bound packs one copy, as it always has.
+       P2.kit=[]; P2.hotAssign={}; saveProfile(); renderHub(); col.__grabDrop('wire','stash');
+       if(packedCount('wire')!==1) bad.push('control: a drop with no key bound packed '+packedCount('wire')+' copies, not one');
+       if(hub) hub.classList.remove('on');
+       // (C) in a raid, a key on a Bandage with none in the bag says so.
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       g.hotAssign={2:'bandage'}; g.hotAuto={}; g.bag=[]; g.msg=''; g.hot=2;
+       var sl=hotbarSlots(), s2=sl[2];
+       if(!(s2&&s2.assigned&&s2.itemKey==='bandage')) bad.push('staging: belt cell 3 is not the assigned Bandage cell (kind '+(s2&&s2.kind)+')');
+       useHot();
+       if(!/No Bandage left/.test(g.msg||'')) bad.push('a spent Bandage key said "'+(g.msg||'')+'", not No Bandage left');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       P2.stash=keep.stash; P2.kit=keep.kit; P2.hotAssign=keep.hot; P2.freeKit=keep.freeKit;
+       try{ saveProfile(); }catch(_s){}
+       try{ var hb2=document.getElementById('hub'); if(hb2) hb2.classList.remove('on'); }catch(_h){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.26',what:'taking the freebie kit at the stash and then confirming FREEBIE KIT at the lift keeps the packing kept aside, and a run that ends dead gives it back (his note of 2026-09-07: the whole loadout did not come back)',
+   run:function(){
+     if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P&&window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot start a raid';
+     if(typeof askKit!=='function'||typeof commitKit!=='function'||typeof renderFreeKit!=='function'||typeof ascendNow!=='function') return 'SKIP: this fixture cannot reach the lift question';
+     var bad=[], P2=__P();
+     var keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P2.hotAssign||{})),freeKit:P2.freeKit,kitSaved:P2.kitSaved,kbf:P2.kitBeforeFree,chosen:P2.kitChosen,drop:(P2.dropKit||[]).slice(),weapons:(P2.weapons||[]).slice(),eq:P2.equipped,safe:P2.safe,gun:P2._gunSlot};
+     var _asc=ascendNow, alt=null;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ var g0=__state(); if(g0&&!g0.over){ g0.player.downed=false; __endRaid('abandon'); } }catch(_0){}
+       keys={}; __showScreen('hub'); __hubEnter();
+       // DISTINCTIVE: three items no fallback packs together, one of them on a key.
+       P2.stash=['smoke','decoy','wire','medkit','bandage']; P2.kit=['smoke','decoy','wire']; P2.hotAssign={3:'smoke'}; P2.safe=null;
+       P2.freeKit=0; P2.kitSaved=null; P2.kitBeforeFree=null; P2.kitChosen=0; P2.weapons=['pistol']; P2.equipped='fists'; saveProfile();
+       // STEP ONE: the stash button takes the freebie kit, for real.
+       renderFreeKit(); var fb=document.querySelector('.fkbtn');
+       if(!fb||!fb.onclick) return 'SKIP: the freebie kit button was not drawn';
+       fb.onclick();
+       if(!P2.freeKit) bad.push('staging: the stash button did not take the kit');
+       if(!(P2.kitSaved&&P2.kitSaved.kit&&P2.kitSaved.kit.length===3)) bad.push('staging: the stash button did not keep the three items aside');
+       // STEP TWO: the lift asks, and he answers FREEBIE KIT again.
+       askKit(); alt=ASKALT;
+       if(typeof alt!=='function') return 'SKIP: the lift question offers no FREEBIE KIT answer';
+       ascendNow=function(){ commitKit(); };
+       alt();
+       ascendNow=_asc;
+       // THE FINDING: on v12.25 the answer re-snapshotted the emptied kit, so nothing was kept.
+       var kb=(P2.kitBeforeFree||[]).slice().sort().join(',');
+       if(kb!=='decoy,smoke,wire') bad.push('after FREEBIE KIT at the lift the packing kept for the restore is ['+kb+'], not the three items packed at the stash');
+       // THE RUN ENDS DEAD: the real restore path.
+       __startRaid({mapIx:0,seed:4242});
+       var g=__state();
+       if(!g||!g.freeKit) bad.push('control: the raid did not take the free kit');
+       if(g){ g.player.downed=false; __endRaid('dead'); }
+       var kit=(P2.kit||[]).slice().sort().join(',');
+       if(kit!=='decoy,smoke,wire') bad.push('after the death the backpack holds ['+kit+'], not the three items packed before the freebie kit');
+       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+       if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: the card did not open on the death');
+       if(txt.indexOf('have been restored')<0) bad.push('the card does not say the loadout was restored');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       ascendNow=_asc;
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       P2.stash=keep.stash; P2.kit=keep.kit; P2.hotAssign=keep.hot; P2.freeKit=keep.freeKit; P2.kitSaved=keep.kitSaved; P2.kitBeforeFree=keep.kbf; P2.kitChosen=keep.chosen; P2.dropKit=keep.drop; P2.weapons=keep.weapons; P2.equipped=keep.eq; P2.safe=keep.safe; P2._gunSlot=keep.gun;
+       try{ saveProfile(); }catch(_s){} try{ renderFreeKit(); }catch(_rf){}
+       try{ var am=document.getElementById('askmodal'); if(am) am.classList.remove('on'); }catch(_am){}
+       __topClear(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'12.25',what:'the corner credits and XP readout and the floor answer line carry the window zoom: at 4K and 1440p they follow the monitor and the Text size setting like every window, and at 1080p the readout still clears the stash top row and the raid CONDITIONS box (his note of 2026-09-07)',
    run:function(){

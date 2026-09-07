@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.25';
+var VER='12.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.25';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.25';
+var WHATSNEW_VER='12.26';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'TAKING THE FREEBIE KIT AT THE STASH AND THEN CONFIRMING IT AGAIN AT THE LIFT NO LONGER THROWS AWAY THE PACKING KEPT ASIDE FOR YOU. A run that ends badly gives that packing back, as it was meant to.',
   'THE CREDITS AND XP READOUT NOW SCALES WITH YOUR MONITOR AND THE TEXT SIZE SETTING, like every window. So do the answer line in the Undercroft and the label under the pointer while you drag. They were 1080p pixels on a 4K screen.',
   'WITH THE RAID CLOCK SWITCHED OFF, THE EXTRACTION WINDOW IS THE FULL THIRTY SECONDS. It used to shut after three, and the call said the clock would run out first.',
   'GOING DOWN LETS GO OF THE GRENADE YOU WERE COOKING. It flies where you were aiming with the fuse it has burned; the clock no longer freezes over you, and you do not get up holding a live one.',
@@ -27540,7 +27541,13 @@ function askKit(){
     // fault). This one did not, so a friend who took the free kit here landed
     // with keys bound to items left in the stash and, because an assigned heal
     // key replaces the derived Medical cell, two Bandages with no key to use.
-    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button will at v12.16 (nothing reads it before then)
+    // v12.26, HIS NOTE: "when you gave my loadout back i am not sure i got the
+    // whole thing back including everything in my backpack". The stash button
+    // (v12.16) empties P.kit into P.kitSaved when the kit is taken there, and this
+    // answer, still offered at the lift, re-snapshotted the emptied kit over it, so
+    // commitKit kept an empty list and the death restore gave nothing back. Kept
+    // aside only when the kit is not already taken: the stash button's own rule.
+    if(!P.freeKit) P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button does since v12.16
     P.hotAssign={}; P._gunSlot=null;
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
     try{ renderStage(); }catch(_e){}
@@ -28717,7 +28724,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.25: his note of 2026-09-07: the credits and XP readout in the corner, the answer line on the floor and the label under the pointer while dragging were fixed at the body, outside every element applyMenuZoom scales, so they stayed 1080p pixels under a 4K stash drawn at 2.47 times. They carry the same factor as the windows now, the drag label divides its pointer offsets by it, and the stash top row keeps 560 pixels clear instead of 480. Check 12.25 forces 4K, 1440p and 1080p in turn and requires the readout zoom to equal the windows and its height to follow, presses the real Text size button and requires the readout to move; controls: at 1080p the readout must not cover a stash top-row button, and a raid must start its CONDITIONS box under the readout; fails on v12.24.',
+  now:'v12.26: his note of 2026-09-07 (the loadout did not all come back): the stash button (v12.16) empties the packing into P.kitSaved when the freebie kit is taken there, and the lift question, which still offers FREEBIE KIT, re-snapshotted the emptied kit over it, so commitKit kept an empty list and the death restore gave nothing back and said nothing. The lift answer keeps the packing aside only when the kit is not already taken, the stash button rule. Check 12.26 takes the kit at the stash for real, answers FREEBIE KIT at the lift, requires the three packed items to be the list kept for the restore, then starts the raid, ends it dead, and requires the backpack to hold them again with the card saying so; fails on v12.25. The belt half of his note (keys unbound after the restore) is the parked build 1227.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

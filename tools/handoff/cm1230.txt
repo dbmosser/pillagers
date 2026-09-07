@@ -1,0 +1,14 @@
+v12.30: the trigger never dies on a blank belt cell
+
+Binding the gun in your hands to another belt key blanks the derived cell
+1, and three fall-backs went to cell 1 by number (the empty-grenade yield
+and the two last-consumable fall-backs), so the highlight landed on a blank
+cell and the trigger was dead until another digit was pressed; a raid also
+starts on cell 1, so the first click fired nothing. A helper finds the cell
+that holds the gun in hand, the fall-backs use it, and a click on a blank
+cell selects the gun and yields like a click on an empty grenade cell.
+Check 12.30 binds the held gun to key 5, clicks on the blank cell and on an
+empty throwable cell, and requires the gun cell selected, no shot on that
+hold and a shot on the next click; fails on v12.29.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
