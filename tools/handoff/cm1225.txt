@@ -1,0 +1,14 @@
+v12.25: his note, the corner readout scales with the monitor
+
+"credits and xp in right hand corner way too small -- all menus, words, UI,
+hud etc should scale depending on 1080p vs 1440p vs 4k". The readout, the
+Undercroft answer line and the drag label are fixed at the body, outside
+every element applyMenuZoom scales, so they stayed 1080p pixels under a 4K
+stash drawn at 2.47 times. They carry the same factor as the windows now,
+the drag label divides its pointer offsets by it, and the stash top row
+keeps 560 pixels clear instead of 480. Check 12.25 forces 4K, 1440p and
+1080p, requires the readout zoom to equal the windows and its height to
+follow the monitor, presses the real Text size button, and guards the
+stash top row and the raid CONDITIONS box at 1080p; fails on v12.24.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -1,0 +1,44 @@
+## v12.26 - HIS NOTE: THE FREEBIE KIT AT THE LIFT KEEPS YOUR PACKING ASIDE
+
+His note of 2026-09-07 morning: "when you gave my loadout back i am not sure
+i got the whole thing back including everything in my backpack". Traced by
+the 2026-09-07 read-only notes investigation and verified by reading at
+v12.25.
+
+WHAT IT WAS. Two ways to take the freebie kit, and they did not agree. The
+stash screen's TAKE THE FREEBIE KIT button (v12.16) empties the backpack
+selection into a kept-aside record (P.kitSaved) and marks the kit taken. The
+lift question (v6.67, "What are you taking up?") still offers FREEBIE KIT as
+an answer whether or not the kit is already taken, and that answer (v12.13)
+wrote the kept-aside record again from the backpack selection as it stood,
+with no guard. After the stash button that selection is empty. So a player
+who took the kit at the stash and confirmed it again at the lift went up
+with an empty record kept aside: at ascent commitKit took the empty list as
+what to give back, the death restore (v6.88) had nothing to restore and said
+nothing on the card, and the record itself was cleared. His items were still
+in the stash, because the free kit never takes anything out of it, but the
+packing he had built was gone and the backpack came home empty. That is his
+note, on the backpack half.
+
+THE BUILD. The lift answer keeps the packing aside only when the kit is not
+already taken, the stash button's own rule (it guards on the same flag). One
+condition on one line. When the kit is already taken, the record the stash
+button kept stands, commitKit reads it, and a run that ends dead or
+abandoned puts the packing back. The belt half of his note, keys unbound
+after the restore, is the parked build 1227 (the belt plan kept beside the
+packing and restored with it).
+
+MEASURED. Check 12.26 stages a distinctive packing (Smoke Canister, Decoy
+Beacon, Copper Wire, one of them on a key), presses the stash screen's real
+freebie button, opens the lift question and answers FREEBIE KIT for real
+(ascendNow stood in for by commitKit alone, so the raid can be started the
+way check 12.03 starts it), and requires the list kept for the restore to
+be those three items. It then starts the raid, ends it dead, and requires
+the backpack to hold the three items again and the card to say the loadout
+was restored. On the v12.25 fixture the kept list is empty and the backpack
+stays empty after the death.
+
+Not verified: his own run, whose profile I have not loaded; the belt plan
+(build 1227); a run that ends abandoned, which takes the same restore
+branch; the lift question's wording, which still offers FREEBIE KIT when it
+is already taken and could say so.

@@ -1,0 +1,14 @@
+v12.28: his note, a Peddler purchase says where it went
+
+"I bought stuff from the peddler and it didn't show up in my inventory
+including an auto rifle". The purchase is sound, but autoBelt pins a bought
+gun or stim to the first free tactical belt cell, his own plan claims
+anything he has bound, and the backpack grid keeps a belted item off its
+cells, so the rifle he paid for was on the belt and not in the backpack he
+opened, and the line said only Bought X for Y. The line now says On your
+tactical belt, key N, or In your backpack. Check 12.28 buys a rifle, a
+medkit with no key set and a medkit on key 6 through the real pedBuy with a
+fixed stock and requires each line to name its surface, with the credits
+falling by the prices; fails on v12.27.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

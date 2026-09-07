@@ -1,0 +1,14 @@
+v12.26: his note, the freebie kit at the lift keeps your packing aside
+
+"when you gave my loadout back i am not sure i got the whole thing back
+including everything in my backpack". The stash button empties the packing
+into a kept-aside record when the freebie kit is taken there; the lift
+question still offers FREEBIE KIT and its answer wrote that record again
+from the now-empty backpack, so the ascent kept an empty list and the death
+restore gave nothing back. The lift answer keeps the packing aside only when
+the kit is not already taken, the stash button's own rule. Check 12.26 takes
+the kit at the stash for real, answers FREEBIE KIT at the lift, requires the
+three packed items to be the kept list, then ends the raid dead and requires
+the backpack to hold them again with the card saying so; fails on v12.25.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

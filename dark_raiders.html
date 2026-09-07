@@ -485,7 +485,7 @@
     font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }
   #topright small{ font-size:14px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:7px; margin-right:20px; }
   #topright small:last-child{ margin-right:0; }
-  .toprow{ padding-right:480px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide */
+  .toprow{ padding-right:560px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide; v12.25: the readout carries the window zoom now, up to 1.3 times wider again at 1080p */
   #credits{ display:none; }         /* v11.52: the corner readout replaces the stash screen's own credits figure */
   /* The pause and modal overlays were a flat black wash with content floating
      loose on them and no frame at all. Each now gets a proper framed window;
@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.24';
+var VER='12.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.24';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.24';
+var WHATSNEW_VER='12.25';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE CREDITS AND XP READOUT NOW SCALES WITH YOUR MONITOR AND THE TEXT SIZE SETTING, like every window. So do the answer line in the Undercroft and the label under the pointer while you drag. They were 1080p pixels on a 4K screen.',
   'WITH THE RAID CLOCK SWITCHED OFF, THE EXTRACTION WINDOW IS THE FULL THIRTY SECONDS. It used to shut after three, and the call said the clock would run out first.',
   'GOING DOWN LETS GO OF THE GRENADE YOU WERE COOKING. It flies where you were aiming with the fuse it has burned; the clock no longer freezes over you, and you do not get up holding a live one.',
   'P RESUMES A PAUSED RAID, the way the pause box says. The box used to hand the keyboard to its note the moment it opened, so a second P typed a letter into the note; click the note to write one. While the box is up, no other key touches the raid.',
@@ -28716,7 +28717,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.24: in-raid audit: with the raid clock switched OFF (v9.35) the clock sits at zero, and three readers took zero for one second left: the extraction window came out at 3 seconds instead of 30, every call said the raid clock would run out first, and two rings were given a closing time of minus one, so the two-minute warning fired at the drop. All three ask whether there is a clock before reading it. Check 12.24 calls extraction with the clock off and requires no warning at the drop, no ring with a closing time, the call line without the clock warning and a landed window of 30; with the clock on at 12 seconds left it requires the window of 11 the clock rule gives; fails on v12.23.',
+  now:'v12.25: his note of 2026-09-07: the credits and XP readout in the corner, the answer line on the floor and the label under the pointer while dragging were fixed at the body, outside every element applyMenuZoom scales, so they stayed 1080p pixels under a 4K stash drawn at 2.47 times. They carry the same factor as the windows now, the drag label divides its pointer offsets by it, and the stash top row keeps 560 pixels clear instead of 480. Check 12.25 forces 4K, 1440p and 1080p in turn and requires the readout zoom to equal the windows and its height to follow, presses the real Text size button and requires the readout to move; controls: at 1080p the readout must not cover a stash top-row button, and a raid must start its CONDITIONS box under the readout; fails on v12.24.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31996,6 +31997,14 @@ function applyMenuZoom(){
     // it back without leaving the room now that the wheel reaches it down there.
     m.style.zoom=(m.id==='hub')?(_sf*0.92):_sf;
   });
+  // v12.25, HIS NOTE: "credits and xp in right hand corner way too small; all
+  // menus, words, UI, hud etc should scale depending on 1080p vs 1440p vs 4k".
+  // The corner readout, the floor's answer line and the drag label are fixed at
+  // the body, outside every element in the list above, so they stayed 1080p
+  // pixels under a 4K stash drawn at 2.47. The same factor as the windows. A
+  // zoomed fixed element takes its own offsets in zoomed pixels too, so
+  // right:20px and bottom:38px grow with it and the readout keeps its corner.
+  document.querySelectorAll('#topright,#hubtoast,#grabghost').forEach(function(f){ f.style.zoom=_sf; });
   // v8.88, his note: the title screen was in none of those lists, so the first
   // screen anybody sees was the one screen that ignored the text size setting.
   // It also gets the screen factor, because it is fixed pixels all the way down
@@ -32636,6 +32645,8 @@ function grabGhost(text){
       'background:rgba(6,9,13,.92);border:1px solid var(--amber);border-radius:3px;'+
       'color:var(--bone);font-size:11px;font-family:Rubik,system-ui,sans-serif;white-space:nowrap';
     document.body.appendChild(g);
+    // v12.25: born lazily, after applyMenuZoom has run, so it takes the factor itself.
+    try{ g.style.zoom=Math.max(1,(P&&P.menuZoom)||1)*titleRes(); }catch(_gz){}
   }
   g.textContent=text; g.style.display='block';
   return g;
@@ -32655,7 +32666,9 @@ function grabbable(el,key,from,label){
     ev.preventDefault();
     GRAB={key:key,from:from};
     var g=grabGhost(label||key);
-    g.style.left=(ev.clientX+12)+'px'; g.style.top=(ev.clientY+12)+'px';
+    // v12.25: a zoomed fixed element takes its offsets in its own zoomed pixels.
+    var _gz=parseFloat(g.style.zoom)||1;
+    g.style.left=((ev.clientX+12)/_gz)+'px'; g.style.top=((ev.clientY+12)/_gz)+'px';
   });
 }
 // Mark an element as a target. fn(key,from) runs on release over it.
@@ -32667,7 +32680,7 @@ function dropzone(el,fn){
 document.addEventListener('mousemove',function(ev){
   if(!GRAB) return;
   var g=document.getElementById('grabghost');
-  if(g){ g.style.left=(ev.clientX+12)+'px'; g.style.top=(ev.clientY+12)+'px'; }
+  if(g){ var _gz2=parseFloat(g.style.zoom)||1; g.style.left=((ev.clientX+12)/_gz2)+'px'; g.style.top=((ev.clientY+12)/_gz2)+'px'; }   // v12.25: zoomed pixels
   // light up whatever is under the cursor, so a target reads as a target
   document.querySelectorAll('[data-drop]').forEach(function(z){ z.style.outline=''; });
   var t=document.elementFromPoint(ev.clientX,ev.clientY);

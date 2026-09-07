@@ -5733,143 +5733,69 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.28',what:'no machine or pillager is born inside a locked room: the old placement (dial unseal 0) seals bodies at seed 555 on THE COLD MILE and the new seals none, with the same body and container counts, each moved body outside its vault near its door and clear of walls, and the seed 4242 fingerprint 85 and 165 unchanged (his 2026-09-06 note that crawlers still get stuck chasing)',
+  {v:'12.25',what:'the corner credits and XP readout and the floor answer line carry the window zoom: at 4K and 1440p they follow the monitor and the Text size setting like every window, and at 1080p the readout still clears the stash top row and the raid CONDITIONS box (his note of 2026-09-07)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof wallsNear!=='function') return 'SKIP: no wall grid query in this build';
-     var bad=[];
-     function inside(e,R){ return e.x>R.x&&e.x<R.x+R.w&&e.y>R.y&&e.y<R.y+R.h; }
-     function sealed(g){ var L=g.map.locked||[], n=0; for(var i=0;i<g.ents.length;i++) for(var j=0;j<L.length;j++) if(inside(g.ents[i],L[j])) n++; return n; }
-     function endIt(){ try{ var g=__state(); if(g&&!g.over){ g.player.downed=false; __endRaid('extract'); } }catch(_x){} __topClear(); }
+     if(!(window.__forceSize&&window.__hubEnter&&window.__showScreen&&window.__P&&window.__deploy&&window.__frame&&window.__state&&window.__endRaid&&window.__pinDPR)) return 'SKIP: this fixture cannot resize and deploy';
+     if(typeof applyMenuZoom!=='function'||typeof titleRes!=='function') return 'SKIP: no menu zoom in this build';
+     var el=document.getElementById('topright'), toast=document.getElementById('hubtoast');
+     if(!el||!toast) return 'SKIP: no corner readout or floor answer line in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], P2=__P(), keepZ=P2.menuZoom, keepU=P2.uiScale, keepC=P2.credits, keepX=P2.xp;
+     function rd(){ var r=el.getBoundingClientRect(); return {z:parseFloat(el.style.zoom)||1,h:r.height||0,w:r.width||0,l:r.left,r:r.right,b:r.bottom}; }
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       // CONTROL ARM: the old placement, by the dial.
-       CFG.unseal=0;
-       __deploy({kit:[],safe:null,mapIx:1,seed:555});
-       var g0=__state(), L=g0.map.locked||[];
-       if(!L.length) return 'SKIP: no locked rooms on this map';
-       var n0=sealed(g0), e0=g0.ents.length, c0=g0.containers.length;
-       var P0=g0.ents.map(function(e){ return {x:e.x,y:e.y,kind:e.kind}; });
-       if(n0<1) bad.push('control: the old placement sealed nobody at this seed, so the sweep has nothing to prove here');
-       endIt();
-       // THE BUILD.
-       CFG.unseal=1;
-       __deploy({kit:[],safe:null,mapIx:1,seed:555});
-       var g1=__state(), n1=sealed(g1);
-       if(n1) bad.push(n1+' bodies are still born inside a locked room');
-       if(g1.ents.length!==e0) bad.push('the sweep changed the body count ('+e0+' to '+g1.ents.length+')');
-       if(g1.containers.length!==c0) bad.push('the sweep changed the container count ('+c0+' to '+g1.containers.length+')');
-       var moved=0, i, j;
-       for(i=0;i<Math.min(e0,g1.ents.length);i++){
-         var a=P0[i], b=g1.ents[i];
-         if(a.kind!==b.kind) { bad.push('the bodies came out in a different order at index '+i); break; }
-         if(Math.abs(a.x-b.x)<0.01&&Math.abs(a.y-b.y)<0.01) continue;
-         moved++;
-         var nearDoor=false, inVault=false;
-         for(j=0;j<L.length;j++){ var R=L[j]; if(inside(b,R)) inVault=true; var dx=b.x-R.doorX, dy=b.y-R.doorY; if(Math.sqrt(dx*dx+dy*dy)<400) nearDoor=true; }
-         if(inVault) bad.push(b.kind+' at index '+i+' was moved but is still inside a vault');
-         if(!nearDoor) bad.push(b.kind+' at index '+i+' was moved more than 400 units from any vault door');
-         var pad=(b.r||14)+8, nw=wallsNear(G.wgrid,b.x,b.y,pad);
-         for(var w=0;w<nw.length;w++){ var W=nw[w]; if(b.x>W.x-pad&&b.x<W.x+W.w+pad&&b.y>W.y-pad&&b.y<W.y+W.h+pad){ bad.push(b.kind+' at index '+i+' was moved into a wall'); break; } }
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __pinDPR(1);
+       try{ var g0=__state(); if(g0&&!g0.over) __endRaid('abandon'); }catch(_0){}
+       keys={}; __showScreen('hub'); __hubEnter();
+       P2.credits=1234567; P2.xp=12345; P2.menuZoom=1.3; delete P2.uiScale; saveProfile();   // distinctive and seven figures wide; saveProfile runs syncTopRight
+       __forceSize(1920,1080); applyMenuZoom();
+       var a=rd();
+       if(!(a.h>0&&a.w>0)) return 'SKIP: the readout has no box at 1080p ('+a.w.toFixed(0)+'x'+a.h.toFixed(0)+')';
+       // THE FINDING, 4K: on v12.24 el.style.zoom is empty, so the readout is the same 44 pixels at every size.
+       __forceSize(3840,2160); applyMenuZoom();
+       if(!(W>=3000)) return 'SKIP: the canvas would not go to 4K ('+W+'x'+H+')';
+       var want=Math.max(1,P2.menuZoom)*titleRes(), c=rd();
+       if(Math.abs(c.z-want)>0.05) bad.push('at 4K the readout zoom is '+c.z+' where the windows are at '+want.toFixed(2));
+       if(!(c.h>a.h*1.4)) bad.push('at 4K the readout is '+c.h.toFixed(0)+'px tall against '+a.h.toFixed(0)+' at 1080p: it did not follow the monitor');
+       var tz=parseFloat(toast.style.zoom)||1;
+       if(Math.abs(tz-want)>0.05) bad.push('the floor answer line is at zoom '+tz+', not '+want.toFixed(2));
+       // 1440p sits between the two.
+       __forceSize(2560,1440); applyMenuZoom();
+       var b=rd();
+       if(!(b.h>a.h*1.2&&b.h<c.h)) bad.push('at 1440p the readout is '+b.h.toFixed(0)+'px tall, not between 1080p ('+a.h.toFixed(0)+') and 4K ('+c.h.toFixed(0)+')');
+       // THE TEXT SIZE SETTING REACHES IT: the real Settings button, not the field.
+       __forceSize(1920,1080); P2.menuZoom=1.3; delete P2.uiScale; applyMenuZoom();
+       var h0=rd().h;
+       if(typeof renderSettings==='function'&&document.getElementById('setlist')){
+         renderSettings();
+         var bt=document.getElementById('set_text');
+         if(bt){ bt.click(); var h1=rd().h; if(!(Math.abs(h1-h0)>1)) bad.push('the Text size button did not move the readout, '+h0.toFixed(0)+' then '+h1.toFixed(0)); }
+         else bad.push('staging: no Text size button in Settings');
        }
-       if(moved!==n0) bad.push('the old placement sealed '+n0+' bodies and the new one moved '+moved);
-       endIt();
-       // THE FINGERPRINT: seed 4242 on COLD STORAGE still counts 85 bodies and 165 containers, one of them the elite crawler walked out of the freezer.
+       P2.menuZoom=1.3; delete P2.uiScale; applyMenuZoom();
+       // CONTROL ONE, 1080p: the readout is 1.3 times wider now and must still clear the stash top row (CLOSE).
+       var hub=document.getElementById('hub');
+       if(hub){ try{ renderHub(); }catch(_rh){} hub.classList.add('on'); }
+       var r2=el.getBoundingClientRect(), tr=hub?hub.querySelector('.toprow'):null;
+       if(tr){
+         var bs=tr.querySelectorAll('button'), i;
+         for(i=0;i<bs.length;i++){ var r1=bs[i].getBoundingClientRect(); if(r1.width>0&&r1.right>r2.left&&r1.left<r2.right&&r1.bottom>r2.top&&r1.top<r2.bottom) bad.push('control: at 1080p the readout ('+Math.round(r2.left)+'..'+Math.round(r2.right)+') covers the stash top row button "'+(bs[i].textContent||'').trim()+'" ('+Math.round(r1.left)+'..'+Math.round(r1.right)+')'); }
+       } else bad.push('staging: no stash top row to measure against');
+       if(hub) hub.classList.remove('on');
+       // CONTROL TWO: a raid still starts CONDITIONS under the zoomed readout, the v11.78 rule.
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g2=__state();
-       if(g2.ents.length!==85||g2.containers.length!==165) bad.push('seed 4242 counts '+g2.ents.length+' bodies and '+g2.containers.length+' containers, not 85 and 165');
-       if(sealed(g2)) bad.push('seed 4242 still seals '+sealed(g2)+' body');
+       __frame(0.016); __frame(0.016);
+       var rb=el.getBoundingClientRect().bottom, C=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null;
+       if(!C) bad.push('control: the raid drew no CONDITIONS box');
+       else if(C.y<rb-0.5) bad.push('control: the CONDITIONS box starts at '+C.y.toFixed(0)+', above the readout bottom at '+rb.toFixed(0));
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ __resetCfg(); }catch(_c){} endIt(); __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.27',what:'a free-kit run that ends dead gives back the tactical belt plan and the gun slot with the packing, minus a key whose item did not come back; a clean extraction restores neither, as before (the v12.13 not-verified line)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof commitKit!=='function') return 'SKIP: no commitKit in this build';
-     var bad=[];
-     function freeRun(how){
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       P.stash=['medkit','plate','frag']; P.kit=[];
-       P.freeKit=1; P.kitSaved={kit:['medkit','plate'],hot:{2:'medkit',5:'plate'},gun:'probe-slot'}; P.hotAssign={}; P._gunSlot=null;
-       if(!commitKit()) bad.push('control: commitKit refused the free kit');
-       if(!P.kitBeforeFree||P.kitBeforeFree.join(',')!=='medkit,plate') bad.push('control: the lift did not keep the packing aside ('+(P.kitBeforeFree||[]).join(',')+')');
-       P.stash=['medkit','frag'];   // the plate is gone by the end of the run, so its key must not come back
-       var g=__state(); if(g&&!g.over){ g.player.downed=false; __endRaid(how); }
+     finally{
+       P2.menuZoom=keepZ; if(keepU===undefined) delete P2.uiScale; else P2.uiScale=keepU; P2.credits=keepC; P2.xp=keepX;
+       try{ saveProfile(); }catch(_s){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       try{ var hb2=document.getElementById('hub'); if(hb2) hb2.classList.remove('on'); }catch(_h){}
+       try{ __forceSize(1920,1080); applyMenuZoom(); }catch(_f){}
+       __topClear(); __cleanProfile();
      }
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       freeRun('dead');
-       if((P.kit||[]).join(',')!=='medkit') bad.push('control: the packing did not come back minus the plate (kit '+(P.kit||[]).join(',')+')');
-       if(!P.hotAssign||P.hotAssign[2]!=='medkit') bad.push('the belt key on the Medkit did not come back with the packing (plan '+JSON.stringify(P.hotAssign||{})+')');
-       if(P.hotAssign&&P.hotAssign[5]) bad.push('a key on the plate came back although the plate did not');
-       if(P._gunSlot!=='probe-slot') bad.push('the gun slot did not come back ('+P._gunSlot+')');
-       if(P.planBeforeFree) bad.push('the kept-aside plan was not cleared after the restore');
-       __topClear();
-       // CONTROL: a clean extraction restores neither, the v6.88 rule.
-       freeRun('extract');
-       if(P.hotAssign&&P.hotAssign[2]) bad.push('control: an extraction restored the belt plan');
-       if(P.planBeforeFree) bad.push('the kept-aside plan survived an extraction');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} try{ P.freeKit=0; P.kitSaved=null; P.kitBeforeFree=null; P.planBeforeFree=null; P._gunSlot=null; }catch(_p){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.26',what:'Q moves the belt highlight to the throwable it makes ready, so the cell the belt lights is the one the trigger cooks; with an empty pouch it says No throwables and moves nothing (2026-09-06 in-raid audit)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof raidKey!=='function'||typeof hotbarSlots!=='function'||typeof hotSel!=='function'||typeof startCook!=='function'||typeof THROWKEYS==='undefined') return 'SKIP: no belt, key or cook path in this build';
-     var bad=[];
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, sl=hotbarSlots(), iS=-1, iF=-1, i;
-       for(i=0;i<sl.length;i++){ if(sl[i]&&sl[i].k==='throw:smoke') iS=i; if(sl[i]&&sl[i].k==='throw:frag') iF=i; }
-       if(iS<0||iF<0) return 'SKIP: the belt has no smoke and frag cells to move between';
-       var pb=document.getElementById('pausebox'); if(pb&&pb.classList.contains('on')&&typeof togglePauseBox==='function') togglePauseBox(false);
-       g.pouch.smoke=1; g.pouch.frag=1; g.pouch.decoy=0;
-       g.tsel=THROWKEYS.indexOf('smoke'); g.hot=iS; g.paused=false; g.over=false;
-       p.downed=false; p.roll=0; p.cooking=0; p.cookT=0; p.cookKind=null; keys={};
-       if(hotSel()!==iS) bad.push('control: the smoke cell could not be lit first (hotSel '+hotSel()+')');
-       raidKey('KeyQ',false,null);
-       if(g.tsel!==THROWKEYS.indexOf('frag')) bad.push('control: Q did not turn the selector to the frag (tsel '+g.tsel+')');
-       if(hotSel()!==iF) bad.push('after Q the belt still lights cell '+hotSel()+' ('+(sl[hotSel()]?sl[hotSel()].k:'?')+') while the selector is on the frag');
-       // The trigger agrees with the lit cell.
-       if(!startCook()) bad.push('control: the pin did not come out');
-       var lit=hotbarSlots()[hotSel()];
-       if(p.cookKind&&lit&&lit.k!=='throw:'+p.cookKind) bad.push('the belt lights '+lit.k+' while the hand cooks a '+p.cookKind);
-       p.cooking=0; p.cookT=0; p.cookKind=null;
-       // CONTROL: nothing in the pouch; Q says so and moves nothing.
-       g.pouch.smoke=0; g.pouch.frag=0; g.pouch.decoy=0; var hotBefore=hotSel(); window.__lastSay=null;
-       raidKey('KeyQ',false,null);
-       if(hotSel()!==hotBefore) bad.push('control: with an empty pouch Q moved the highlight');
-       if(String(window.__lastSay||'').indexOf('No throwables')!==0) bad.push('control: with an empty pouch Q said "'+String(window.__lastSay||'')+'"');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ keys={}; try{ var g2=__state(); if(g2){ var p2=g2.player; p2.cooking=0; p2.cookT=0; p2.cookKind=null; if(!g2.over){ p2.downed=false; __endRaid('extract'); } } }catch(_e){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.25',what:'standing in a second open ring while the ship is inbound to another leaves the called ring active with its own clock, and with no beacon anywhere the ring stood in still wins the pointer (2026-09-06 in-raid audit)',
-   run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof tryExtractTick!=='function') return 'SKIP: no extraction tick in this build';
-     var bad=[];
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, i;
-       if(!g.zones||g.zones.length<2) return 'SKIP: this map has fewer than two extraction rings';
-       var A=g.zones[0], B=g.zones[1];
-       A.open=true; B.open=true;   // the rule under test is the pointer, not the closing schedule
-       for(i=0;i<g.zones.length;i++){ g.zones[i].beaconT=null; g.zones[i].hold=null; g.zones[i].pullT=null; g.zones[i].callT=0; }
-       keys={}; p.downed=false;
-       // ARM ONE: the ship is inbound to A; he stands in B.
-       A.beaconT=CFG.extractWait; A.hold=null; g.active=A; g.beaconT=A.beaconT;
-       p.x=B.x; p.y=B.y;
-       tryExtractTick(0.1,false);
-       if(g.active!==A) bad.push('standing in a second open ring took the pointer off the ring the ship was called to (active is now '+(g.active===B?'the ring stood in':'another ring')+')');
-       if(g.beaconT===null||g.beaconT===undefined||Math.abs(g.beaconT-A.beaconT)>0.001) bad.push('the clock shown ('+g.beaconT+') is not the called ring\x27s ('+A.beaconT+')');
-       // CONTROL: no beacon anywhere; the ring he stands in wins, as it always has.
-       A.beaconT=null; A.hold=null; g.beaconT=null; g.active=A;
-       tryExtractTick(0.1,false);
-       if(g.active!==B) bad.push('control: with no beacon anywhere the ring stood in did not become the active ring');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'12.24',what:'with the raid clock switched OFF the boarding window is the full 30 seconds and the call line does not say the clock runs out first; with the clock on at 12 seconds left the window is 11 (2026-09-06 in-raid audit)',
    run:function(){
@@ -5890,7 +5816,7 @@ window.__REGRESS=[
        var line=null, first=null;
        for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(first===null) first=String(window.__lastSay||''); if(Z.beaconT!==null&&Z.beaconT!==undefined) line=String(window.__lastSay||''); }
        if(first&&first.indexOf(warn2)>=0) bad.push('with the clock off the drop warned that a ring '+warn2);
-       if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E two seconds at the ring edge did not call extraction');
+       if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E two seconds at the ring edge did not call for extraction');
        if(line===null||line.indexOf('Pulled')!==0) bad.push('control: the call did not say Pulled (said "'+String(line).slice(0,60)+'")');
        else if(line.indexOf(warn)>=0) bad.push('with the clock off the call still says the raid clock '+warn);
        // EXTRACTION LANDS: one tick past the end of the inbound wait sets the window.
@@ -6945,10 +6871,9 @@ window.__REGRESS=[
   {v:'11.88',what:'the raid conditions panel no longer prints the kill-nothing and three-minute contract verdicts, and still prints the no-heals one (his order of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and draw';
-     var bad=[], P2=__P(), keepC=P2.contracts, keepH=P2.hud, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
+     var bad=[], P2=__P(), keepC=P2.contracts, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __forceSize(1920,1080);
-       P2.hud={};   // v12.27 harness: a CONDITIONS panel an earlier check collapsed in the saved layout would turn this into a SKIP
        P2.contracts=[
          {type:'conduct',ck:'quiet',n:1,prog:0,reward:1300,desc:'Extract without killing anything',tier:0},
          {type:'conduct',ck:'swift',n:1,prog:0,reward:1000,desc:'Extract within 3 minutes of landing',tier:0},
@@ -6965,7 +6890,7 @@ window.__REGRESS=[
        if(all.indexOf('left to be gone')>=0||all.indexOf('past three minutes')>=0) bad.push('the panel still prints the three-minute verdict');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
-       proto.fillText=o; P2.contracts=keepC; P2.hud=keepH; try{ saveProfile(); }catch(_s){}
+       proto.fillText=o; P2.contracts=keepC; try{ saveProfile(); }catch(_s){}
        try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
        __topClear(); __cleanProfile();
      }
@@ -7037,7 +6962,7 @@ window.__REGRESS=[
      var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
      proto.fillText=function(t){ try{ rec.push({t:String(t),font:this.font}); }catch(_r){} return orig.apply(this,arguments); };
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); if(window.__forceSize) __forceSize(1920,1080);   // v12.27 harness: the font sizes below are measured at one pane size
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(); g.mapOpen=true;
        drawMapOverlay();
@@ -7180,7 +7105,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot end a raid and read the card';
      if(typeof sealHere!=='function') return 'SKIP: no seal in this build';
-     var bad=[], lost='seconds of '+'cutting, lost', banked='Seal '+'cut ', keepS=JSON.stringify(__P().seals===undefined?null:__P().seals);   // v12.27 harness: the extraction below banks a seal into the saved profile
+     var bad=[], lost='seconds of '+'cutting, lost', banked='Seal '+'cut ';
      function card(){ try{ return ((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(e){ return ''; } }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -7195,7 +7120,6 @@ window.__REGRESS=[
        g=__state(); g.seal={gained:40,done:0}; g.bag=[];
        __endRaid('extract');
        var t2=card();
-       try{ var _ks=JSON.parse(keepS); if(_ks===null) delete __P().seals; else __P().seals=_ks; }catch(_kse){}   // v12.27 harness: the banked seal does not outlive the check
        if(t2.indexOf(banked)<0) bad.push('control: an extraction with 40 seconds of cutting did not print the banked line, so the seal path was not live in this staging (card says: '+t2.slice(0,80)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __topClear(); __cleanProfile(); }

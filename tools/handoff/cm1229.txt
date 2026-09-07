@@ -1,0 +1,15 @@
+v12.29: a crawler that sees you bites when it reaches you
+
+The audit's top finding, and his standing crawler note. A crawler's wander
+clock and its bite cooldown are one field: on patrol it re-rolls three to
+seven seconds whenever the clock runs out, and nothing on the way into a
+chase reset it, so a crawler that saw you and closed in under a second stood
+next to you for the rest of that clock before its first bite. On the three
+ways into a chase (sighting, pack call, waking from playing dead) a crawler
+now carries no more than 0.3 s of clock. Sentries share the field and are
+left alone, since a faster first shot is a balance call. Check 12.29 parks a
+crawler with 6.5 s of clock 120 units from a still player and requires the
+first bite inside 2 s, with a zero-clock control and a pack-call arm; fails
+on v12.28 at about 6.5 s.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

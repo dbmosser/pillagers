@@ -1,0 +1,15 @@
+v12.27: his note, a drag onto a set key lands on the key and says so
+
+"inventory still wonky; I just tried to drag bandaids and they didn't come
+over". The tactical belt plan outlives the raid but the packing does not, so
+a key can sit on Bandage with none packed; the backpack column hides one
+packed copy per set key, so the single copy a stash drop packed vanished
+with no cell, no count and no words, and the plan cell drew the phantom key
+like a packed one. A drop for an item on an empty key now packs half the
+stack onto that key and says which key took it; a set key with nothing
+packed shows a 0; and a spent belt key in a raid says No Bandage left
+instead of nothing. Check 12.27 drives the real dropzone handler, the plan
+cell and the belt key; a drop with no key set must still pack one; fails on
+v12.26.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

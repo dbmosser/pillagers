@@ -485,7 +485,7 @@
     font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }
   #topright small{ font-size:14px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:7px; margin-right:20px; }
   #topright small:last-child{ margin-right:0; }
-  .toprow{ padding-right:480px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide */
+  .toprow{ padding-right:560px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide; v12.25: the readout carries the window zoom now, up to 1.3 times wider again at 1080p */
   #credits{ display:none; }         /* v11.52: the corner readout replaces the stash screen's own credits figure */
   /* The pause and modal overlays were a flat black wash with content floating
      loose on them and no frame at all. Each now gets a proper framed window;
@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.28';
+var VER='12.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,14 +1369,11 @@ var VER='12.28';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.28';
+var WHATSNEW_VER='12.25';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'NOTHING IS BORN SEALED INSIDE A LOCKED ROOM. A machine or a pillager the map had placed inside a vault could never reach you or leave; it scrabbled at the wall when it heard you. It starts outside the door now.',
-  'A FREE-KIT RUN THAT ENDS BADLY GIVES YOU BACK YOUR TACTICAL BELT KEYS with your packing, not just the packing.',
-  'Q MOVES THE BELT HIGHLIGHT TO THE GRENADE IT MAKES READY, so the belt always shows what the trigger will throw.',
-  'THE RING YOU CALLED KEEPS THE POINTER. Standing in a second open ring while the ship is inbound no longer swings the banner and the arrow to the ring you are in.',
+  'THE CREDITS AND XP READOUT NOW SCALES WITH YOUR MONITOR AND THE TEXT SIZE SETTING, like every window. So do the answer line in the Undercroft and the label under the pointer while you drag. They were 1080p pixels on a 4K screen.',
   'WITH THE RAID CLOCK SWITCHED OFF, THE EXTRACTION WINDOW IS THE FULL THIRTY SECONDS. It used to shut after three, and the call said the clock would run out first.',
   'GOING DOWN LETS GO OF THE GRENADE YOU WERE COOKING. It flies where you were aiming with the fuse it has burned; the clock no longer freezes over you, and you do not get up holding a live one.',
   'P RESUMES A PAUSED RAID, the way the pause box says. The box used to hand the keyboard to its note the moment it opened, so a second P typed a letter into the note; click the note to write one. While the box is up, no other key touches the raid.',
@@ -1582,7 +1579,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1,unseal:1};
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -9565,39 +9562,6 @@ function buildRaid(sim){
     }
   }
   clearOfPads(containers);
-  // v12.28, HIS NOTE: NOTHING IS BORN SEALED IN A VAULT. freeSpot knows walls, not
-  // rooms, so a body could be placed inside a locked room shell, where no route
-  // exists until the key is spent: a crawler that scrabbles at the inside of the
-  // wall for the whole raid when it hears you, a howler shelling from a box
-  // nothing can reach, a pillager that never loots. Measured across twelve seeds
-  // on both maps: ten bodies sealed in twelve raids, five in one. Each is walked
-  // out through its own door to the first clear spot outside; no draw is
-  // consumed, so the stream and every container are byte-identical. unseal 0
-  // restores the old placement.
-  function unsealEnts(map,list){
-    if(CFG.unseal===0) return 0;
-    var L=map.locked||[]; if(!L.length) return 0;
-    var gr=(map._fsGrid&&map._fsGrid.walls===map.walls)?map._fsGrid:(map._fsGrid=buildWallGrid(map.walls,WORLD_W,WORLD_H));
-    function clear(x,y,pad){
-      if(x<pad||y<pad||x>WORLD_W-pad||y>WORLD_H-pad) return false;
-      var nw=wallsNear(gr,x,y,pad);
-      for(var i=0;i<nw.length;i++){ var w=nw[i]; if(x>w.x-pad&&x<w.x+w.w+pad&&y>w.y-pad&&y<w.y+w.h+pad) return false; }
-      return true;
-    }
-    var moved=0;
-    for(var i=0;i<list.length;i++){ var e=list[i];
-      for(var j=0;j<L.length;j++){ var R=L[j];
-        if(!(e.x>R.x&&e.x<R.x+R.w&&e.y>R.y&&e.y<R.y+R.h)) continue;
-        var pad=Math.max(22,(e.r||14)+8), ok=false, s;
-        for(s=0;s<12&&!ok;s++){ var px=R.doorX, py=R.doorY+8+pad+s*26; if(clear(px,py,pad)){ e.x=px; e.y=py; ok=true; } }
-        for(s=1;s<40&&!ok;s++){ for(var a=0;a<8&&!ok;a++){ var ang=a*0.7854, px2=R.doorX+Math.cos(ang)*s*26, py2=R.doorY+8+pad+Math.sin(ang)*s*26;
-          if(px2>R.x-pad&&px2<R.x+R.w+pad&&py2>R.y-pad&&py2<R.y+R.h+pad) continue;
-          if(clear(px2,py2,pad)){ e.x=px2; e.y=py2; ok=true; } } }
-        if(e.tx!==undefined){ e.tx=e.x; e.ty=e.y; }   // a patrol target inside the vault would walk it back to the wall
-        moved++; break;
-      } }
-    return moved;
-  }
   // Meridian caches. His playtest: "I SHOULD FIND TOP TIER LOOT EVERY RUN EVEN IF I
   // MOVE STRAIGHT TO THE EXTRACT." Pure random drop rates cannot promise that,
   // so the promise is made structurally instead: three caches are PLACED every
@@ -10342,7 +10306,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       if(!sim) fogLoad(S,clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1));
       return S;
     })(),
-    containers:(clearOfPads(containers),containers),ents:(unsealEnts(map,ents),ents),bullets:[],pings:[],puffs:[],noiseRings:[],   // v12.28: nothing is born sealed in a vault
+    containers:(clearOfPads(containers),containers),ents:ents,bullets:[],pings:[],puffs:[],noiseRings:[],
     wild:(sim?[]:spawnWild(map)),
     decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],dmgN:[],flashes:[],hitMark:null,
     zones:zones,active:active,camps:camps,beaconT:null,nuking:0,nukeT:0,hotZone:hotZone,searching:null,searchT:0,waypoint:null,dmgWalls:[],roster:roster,
@@ -11571,17 +11535,7 @@ window.addEventListener('keydown',function(ev){
 function cycleThrow(){
   for(var i=1;i<=3;i++){
     var n=(G.tsel+i)%3;
-    if(G.pouch[THROWKEYS[n]]>0){
-      G.tsel=n;
-      // v12.26: THE BELT SHOWS WHAT THE TRIGGER WILL THROW. This turned only the
-      // selector the trigger reads, while every belt cell reads the highlight, so
-      // after a Q the belt lit one throwable and the trigger cooked another. The
-      // highlight moves to the cell holding the one now ready (2026-09-06 in-raid
-      // audit). Set directly: setHot on a throw cell throws it.
-      var _sl=hotbarSlots();
-      for(var _hi=0;_hi<_sl.length;_hi++){ if(_sl[_hi]&&_sl[_hi].k==='throw:'+THROWKEYS[n]){ G.hot=_hi; break; } }
-      say(ITEMS[THROWKEYS[n]].name+' ready'); return;
-    }
+    if(G.pouch[THROWKEYS[n]]>0){ G.tsel=n; say(ITEMS[THROWKEYS[n]].name+' ready'); return; }
   }
   say('No throwables');
 }
@@ -13655,15 +13609,7 @@ function tryExtractTick(dt,wantCall){
   // standing in the ring that just closed pinned the whole game's idea of "the
   // way out" onto a door that does not open. The bot targets G.active, and so
   // does every extracting raider.
-  // v12.25: THE RING YOU CALLED KEEPS THE POINTER. Standing in a second open ring
-  // used to make it the active one: the banner named it, the pointer swung to it,
-  // and the seconds it showed were still the other ring's, because the mirror in
-  // tickExtractPoints hands the clock to the beacon ring and this line ran after
-  // it on the same frame. The ring you stand in wins only when it carries the
-  // beacon, or when no ring does (2026-09-06 in-raid audit).
-  var _zBeacon=!!(z&&z.beaconT!==null&&z.beaconT!==undefined);
-  var _aBeacon=!!(G.active&&G.active.open&&G.active.beaconT!==null&&G.active.beaconT!==undefined);
-  if(z&&z.open&&(_zBeacon||!_aBeacon)) G.active=z;
+  if(z&&z.open) G.active=z;
   else if(!G.active||!G.active.open){
     var _aOpen=null;
     for(var _az=0;_az<G.zones.length;_az++) if(G.zones[_az].open){ _aOpen=G.zones[_az]; break; }
@@ -18921,16 +18867,6 @@ var _cdone=contractExtract(G.bag,haul);
         ' that you had in your loadout before choosing the freebie kit '+(_kb.length===1?'has':'have')+' been restored.</span>');
     }
     P.kitBeforeFree=null;
-  }
-  // v12.27: AND THE BELT PLAN COMES BACK WITH IT, on the same rule (v6.88: any
-  // end that is not a clean extraction), then any key whose item did not come
-  // back is dropped, the same as USE MY OWN GEAR does (v12.16).
-  if(P.planBeforeFree){
-    if(how!=='extract'){
-      P.hotAssign=P.planBeforeFree.hot||{}; P._gunSlot=P.planBeforeFree.gun||null;
-      try{ dropDeadKeys(); }catch(_pk){}
-    }
-    P.planBeforeFree=null;
   }
   if((how==='dead'||how==='abandon')&&P.buzz&&P.buzz.length){
     P.buzz.length=0;
@@ -28781,7 +28717,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.28: his note that crawlers still get stuck chasing, reproduced: a body the map placed inside a locked room shell has no route until the key is spent, so it scrabbled at the wall whenever it heard you; ten bodies sealed in twelve raids across both maps, a howler and a pillager among them. Every sealed body is walked out through its own door at birth, no draw consumed, counts unchanged. Check 12.28 deploys seed 555 on THE COLD MILE with the old placement (dial unseal 0) and requires bodies sealed, then with the new and requires none, same counts, each moved body outside near its door and clear of walls; and the 85 and 165 of seed 4242 stand; fails on v12.27.',
+  now:'v12.25: his note of 2026-09-07: the credits and XP readout in the corner, the answer line on the floor and the label under the pointer while dragging were fixed at the body, outside every element applyMenuZoom scales, so they stayed 1080p pixels under a 4K stash drawn at 2.47 times. They carry the same factor as the windows now, the drag label divides its pointer offsets by it, and the stash top row keeps 560 pixels clear instead of 480. Check 12.25 forces 4K, 1440p and 1080p in turn and requires the readout zoom to equal the windows and its height to follow, presses the real Text size button and requires the readout to move; controls: at 1080p the readout must not cover a stash top-row button, and a raid must start its CONDITIONS box under the readout; fails on v12.24.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32061,6 +31997,14 @@ function applyMenuZoom(){
     // it back without leaving the room now that the wheel reaches it down there.
     m.style.zoom=(m.id==='hub')?(_sf*0.92):_sf;
   });
+  // v12.25, HIS NOTE: "credits and xp in right hand corner way too small; all
+  // menus, words, UI, hud etc should scale depending on 1080p vs 1440p vs 4k".
+  // The corner readout, the floor's answer line and the drag label are fixed at
+  // the body, outside every element in the list above, so they stayed 1080p
+  // pixels under a 4K stash drawn at 2.47. The same factor as the windows. A
+  // zoomed fixed element takes its own offsets in zoomed pixels too, so
+  // right:20px and bottom:38px grow with it and the readout keeps its corner.
+  document.querySelectorAll('#topright,#hubtoast,#grabghost').forEach(function(f){ f.style.zoom=_sf; });
   // v8.88, his note: the title screen was in none of those lists, so the first
   // screen anybody sees was the one screen that ignored the text size setting.
   // It also gets the screen factor, because it is fixed pixels all the way down
@@ -32701,6 +32645,8 @@ function grabGhost(text){
       'background:rgba(6,9,13,.92);border:1px solid var(--amber);border-radius:3px;'+
       'color:var(--bone);font-size:11px;font-family:Rubik,system-ui,sans-serif;white-space:nowrap';
     document.body.appendChild(g);
+    // v12.25: born lazily, after applyMenuZoom has run, so it takes the factor itself.
+    try{ g.style.zoom=Math.max(1,(P&&P.menuZoom)||1)*titleRes(); }catch(_gz){}
   }
   g.textContent=text; g.style.display='block';
   return g;
@@ -32720,7 +32666,9 @@ function grabbable(el,key,from,label){
     ev.preventDefault();
     GRAB={key:key,from:from};
     var g=grabGhost(label||key);
-    g.style.left=(ev.clientX+12)+'px'; g.style.top=(ev.clientY+12)+'px';
+    // v12.25: a zoomed fixed element takes its offsets in its own zoomed pixels.
+    var _gz=parseFloat(g.style.zoom)||1;
+    g.style.left=((ev.clientX+12)/_gz)+'px'; g.style.top=((ev.clientY+12)/_gz)+'px';
   });
 }
 // Mark an element as a target. fn(key,from) runs on release over it.
@@ -32732,7 +32680,7 @@ function dropzone(el,fn){
 document.addEventListener('mousemove',function(ev){
   if(!GRAB) return;
   var g=document.getElementById('grabghost');
-  if(g){ g.style.left=(ev.clientX+12)+'px'; g.style.top=(ev.clientY+12)+'px'; }
+  if(g){ var _gz2=parseFloat(g.style.zoom)||1; g.style.left=((ev.clientX+12)/_gz2)+'px'; g.style.top=((ev.clientY+12)/_gz2)+'px'; }   // v12.25: zoomed pixels
   // light up whatever is under the cursor, so a target reads as a target
   document.querySelectorAll('[data-drop]').forEach(function(z){ z.style.outline=''; });
   var t=document.elementFromPoint(ev.clientX,ev.clientY);
@@ -33051,11 +32999,7 @@ function commitKit(){
     // v6.88, his spec: remember what he had packed before the free gear replaced it, so
     // a death puts his own loadout back rather than making him rebuild it.
     // v12.16: the button already emptied P.kit and kept it aside; that is the list.
-    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice();
-    // v12.27: THE BELT PLAN AND THE GUN SLOT GO ASIDE WITH THE PACKING. The
-    // kept-aside record already held them (v12.16); this took only the list.
-    P.planBeforeFree=P.kitSaved?{hot:JSON.parse(JSON.stringify(P.kitSaved.hot||{})),gun:P.kitSaved.gun||null}:null;
-    P.kitSaved=null;
+    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
     P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;   // v8.40: safeUp is armed in buildRaid
   }
   var kit=stageKitLive();
