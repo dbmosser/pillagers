@@ -1,0 +1,11 @@
+v12.26: the belt shows what the trigger will throw
+
+Q turned only the hidden selector the trigger reads while the belt cells
+read the highlight, so after a Q the belt lit one throwable and the trigger
+cooked another. The highlight now follows the selector to the cell holding
+the throwable made ready. Check 12.26 lights the smoke, presses Q, and
+requires the selector on the frag, the highlight on the frag cell and a
+cook of what the lit cell names; with an empty pouch Q says No throwables
+and moves nothing; fails on v12.25.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

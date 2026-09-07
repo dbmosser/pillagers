@@ -26,12 +26,13 @@ SubRx @'
      var bad=[], warn='runs out '+'first';
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // THE CLOCK OFF, as Settings leaves it, BEFORE the raid is built: no seconds, the count at zero, and no ring with a closing time.
+       CFG.raidSec=0;
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player, Z=null, i;
+       if(g.timeLeft!==0) bad.push('control: with the clock off the raid was built with '+g.timeLeft+' seconds on it');
        for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
        if(!Z) return 'SKIP: no open extraction ring';
-       // THE CLOCK OFF, as Settings leaves it: no seconds, and the count at zero.
-       CFG.raidSec=0; g.timeLeft=0; g.raidLen=0;
        p.x=Z.x+70; p.y=Z.y; p.downed=false; keys={}; window.__lastSay=null;
        var line=null;
        for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(Z.beaconT!==null&&Z.beaconT!==undefined) line=String(window.__lastSay||''); }
@@ -42,12 +43,12 @@ SubRx @'
        Z.beaconT=0.001; Z.hold=null; Z.holdMax=null; g.active=Z;
        tickExtractPoints(0.016);
        if(Z.hold===null||Z.hold===undefined) bad.push('control: the landing set no boarding window');
-       else if(Math.abs(Z.hold-30)>0.001) bad.push('with the clock off the boarding window is '+Z.hold+' seconds, not 30');
+       else if(Math.abs(Z.holdMax-30)>0.001) bad.push('with the clock off the boarding window is '+Z.holdMax+' seconds, not 30');
        // CONTROL: with the clock on and 12 seconds left, the window is 11.
        CFG.raidSec=540; g.timeLeft=12; g.raidLen=540;
        Z.beaconT=0.001; Z.hold=null; Z.holdMax=null;
        tickExtractPoints(0.016);
-       if(Z.hold===null||Z.hold===undefined||Math.abs(Z.hold-11)>0.001) bad.push('control: with the clock on at 12 s left the window is '+Z.hold+', not 11');
+       if(Z.hold===null||Z.hold===undefined||Math.abs(Z.holdMax-11)>0.001) bad.push('control: with the clock on at 12 s left the window is '+Z.holdMax+', not 11');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ keys={}; try{ __resetCfg(); }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},

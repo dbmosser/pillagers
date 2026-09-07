@@ -11,66 +11,47 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.22 CHECK, inserted before the v12.21 entry. The box is opened by the key
-# with every timer the opening schedules caught and run at once, so the 40 ms
-# focus the old build asked for has happened before the next line; the second
-# P is sent to whatever holds the keyboard, as a real key is, and must resume.
-# Three arms: P resumes; M with the box up leaves the map shut while M with it
-# down opens the map (the key path is live); ESC from inside the note still
-# closes the box (v7.68).
+# v12.24 CHECK, inserted before the v12.23 entry. The clock is switched off
+# the way Settings does it (raidSec 0, timeLeft 0), the ship is called by
+# holding E at the ring edge (the 11.98 idiom), and the call line and the
+# landed hold are read. Control: with the clock on and 12 seconds left the
+# hold is 11, so the clock rule still binds when there is a clock.
 SubRx @'
-  {v:'12.21',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
+  {v:'12.23',what:'going down lets go of a cooking grenade: the throw leaves the hand with the fuse it has burned, no COOKING clock is painted over the man on the floor, and the self-revive does not stand him up holding a live cook (2026-09-06 in-raid audit)',
 '@ @'
-  {v:'12.22',what:'P resumes a paused raid as the pause box legend says: opening the box no longer hands the keyboard to its note, and while the box is up no other key reaches the raid (2026-09-06 first-ten-minutes audit)',
+  {v:'12.24',what:'with the raid clock switched OFF the boarding window is the full 30 seconds and the call line does not say the clock runs out first; with the clock on at 12 seconds left the window is 11 (2026-09-06 in-raid audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     var pb=document.getElementById('pausebox'), ta=document.getElementById('pausenote');
-     if(!pb||!ta||typeof togglePauseBox!=='function'||typeof raidKey!=='function') return 'SKIP: no pause box in this build';
-     var bad=[], realST=window.setTimeout, queued=[];
-     function holder(){ var a=document.activeElement; return (a&&a!==document.documentElement)?a:document.body; }
-     function press(code,tgt){ (tgt||document.body).dispatchEvent(new KeyboardEvent('keydown',{code:code,key:(code==='KeyP'?'p':(code==='KeyM'?'m':code)),bubbles:true,cancelable:true})); }
-     // Opens the box by the key, with every timer the opening schedules caught and run at once.
-     function openByKey(){ queued.length=0; window.setTimeout=function(fn){ queued.push(fn); return 0; }; try{ press('KeyP'); for(var i=0;i<queued.length;i++){ try{ queued[i](); }catch(_q){} } }finally{ window.setTimeout=realST; } }
+     if(typeof tryExtractTick!=='function'||typeof tickExtractPoints!=='function') return 'SKIP: no extraction tick in this build';
+     var bad=[], warn='runs out '+'first';
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state();
-       if(pb.classList.contains('on')) togglePauseBox(false);
-       ta.value=''; try{ ta.blur(); }catch(_b){}
-       g.mapOpen=false;
-       // ARM ONE: P opens, P closes, the second press sent to whatever holds the keyboard.
-       openByKey();
-       if(!pb.classList.contains('on')) bad.push('control: P did not open the pause box');
-       if(!g.paused) bad.push('control: the raid is not paused with the box up');
-       var h=holder();
-       if(queued.length) bad.push('opening the box scheduled '+queued.length+' delayed call(s); that is how it used to hand the keyboard to the note');
-       press('KeyP',h);
-       if(pb.classList.contains('on')) bad.push('the second P did not resume the raid ('+(h.id||h.tagName)+' held the keyboard)');
-       else if(g.paused) bad.push('the box closed and the raid stayed paused');
-       // ARM TWO: with the box up, M does not open the map; with it down, the same M does.
-       if(pb.classList.contains('on')) togglePauseBox(false);
-       openByKey();
-       press('KeyM',holder());
-       if(g.mapOpen) bad.push('M opened the map while the pause box was up');
-       if(pb.classList.contains('on')) togglePauseBox(false);
-       g.mapOpen=false;
-       press('KeyM');
-       if(!g.mapOpen) bad.push('control: M with the box down did not open the map');
-       g.mapOpen=false;
-       // ARM THREE: ESC from inside the note still closes the box (v7.68), so a note writer is not trapped.
-       openByKey();
-       try{ ta.focus(); }catch(_f){}
-       press('Escape',ta);
-       if(pb.classList.contains('on')) bad.push('ESC from inside the note no longer closes the box');
+       var g=__state(), p=g.player, Z=null, i;
+       for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
+       if(!Z) return 'SKIP: no open extraction ring';
+       // THE CLOCK OFF, as Settings leaves it: no seconds, and the count at zero.
+       CFG.raidSec=0; g.timeLeft=0; g.raidLen=0;
+       p.x=Z.x+70; p.y=Z.y; p.downed=false; keys={}; window.__lastSay=null;
+       var line=null;
+       for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(Z.beaconT!==null&&Z.beaconT!==undefined) line=String(window.__lastSay||''); }
+       if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E two seconds at the ring edge did not call the ship');
+       if(line===null||line.indexOf('Pulled')!==0) bad.push('control: the call did not say Pulled (said "'+String(line).slice(0,60)+'")');
+       else if(line.indexOf(warn)>=0) bad.push('with the clock off the call still says the raid clock '+warn);
+       // THE SHIP LANDS: one tick past the end of the inbound wait sets the window.
+       Z.beaconT=0.001; Z.hold=null; Z.holdMax=null; g.active=Z;
+       tickExtractPoints(0.016);
+       if(Z.hold===null||Z.hold===undefined) bad.push('control: the landing set no boarding window');
+       else if(Math.abs(Z.hold-30)>0.001) bad.push('with the clock off the boarding window is '+Z.hold+' seconds, not 30');
+       // CONTROL: with the clock on and 12 seconds left, the window is 11.
+       CFG.raidSec=540; g.timeLeft=12; g.raidLen=540;
+       Z.beaconT=0.001; Z.hold=null; Z.holdMax=null;
+       tickExtractPoints(0.016);
+       if(Z.hold===null||Z.hold===undefined||Math.abs(Z.hold-11)>0.001) bad.push('control: with the clock on at 12 s left the window is '+Z.hold+', not 11');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{
-       window.setTimeout=realST;
-       try{ ta.value=''; ta.blur(); if(pb.classList.contains('on')){ togglePauseBox(false); pb.classList.remove('on'); } }catch(_c){}
-       try{ var g2=__state(); if(g2){ g2.mapOpen=false; if(!g2.over){ g2.player.downed=false; __endRaid('extract'); } } }catch(_e){}
-       keys={}; __topClear(); __cleanProfile();
-     }
+     finally{ keys={}; try{ __resetCfg(); }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.21',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
+  {v:'12.23',what:'going down lets go of a cooking grenade: the throw leaves the hand with the fuse it has burned, no COOKING clock is painted over the man on the floor, and the self-revive does not stand him up holding a live cook (2026-09-06 in-raid audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

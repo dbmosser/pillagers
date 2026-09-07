@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.22';
+var VER='12.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,12 @@ var VER='12.22';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.22';
+var WHATSNEW_VER='12.24';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'WITH THE RAID CLOCK SWITCHED OFF, THE SHIP WAITS ITS FULL THIRTY SECONDS. It used to leave after three, and the call said the clock would run out first.',
+  'GOING DOWN LETS GO OF THE GRENADE YOU WERE COOKING. It flies where you were aiming with the fuse it has burned; the clock no longer freezes over you, and you do not get up holding a live one.',
   'P RESUMES A PAUSED RAID, the way the pause box says. The box used to hand the keyboard to its note the moment it opened, so a second P typed a letter into the note; click the note to write one. While the box is up, no other key touches the raid.',
   'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
   'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
@@ -12222,6 +12224,13 @@ function damagePlayer(amt,src,srcName,sx,sy){
   G.shake=Math.max(G.shake,4+7*_sev);
   blip('hit'); decal(p.x+rnd(-10,10),p.y+rnd(-10,10),'#7a1a14',rnd(6,13));
   if(p.hp<=0){
+    // v12.23: A MAN GOING DOWN LETS GO OF WHAT IS IN HIS HAND. The cook clock and
+    // the release both live past the downed return in updatePlayer, so a grenade
+    // cooking at the moment of the hit froze with its fuse on screen for the whole
+    // bleed-out and came back live, fuse half burned, on the self-revive. The pin
+    // is out, so it goes the way a release sends it, with the time it has cooked
+    // (2026-09-06 in-raid audit). killPlayer has dropped a cook on a death all along.
+    if(p.cooking) releaseCook();
 p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null;
   (function(){
     if(G.sim) return;
@@ -13702,7 +13711,7 @@ function tryExtractTick(dt,wantCall){
               :((_g>=0.33)?' That is a heavy bag to be standing still with.'
                           :' A light bag brings the fewest of them.');
       say('Pulled. Inbound '+fmtMS(CFG.extractWait)+
-          (G.timeLeft<CFG.extractWait?'. The raid clock runs out first.':', then hold E to extract.')+
+          ((CFG.raidSec>0&&G.timeLeft<CFG.extractWait)?'. The raid clock runs out first.':', then hold E to extract.')+   // v12.24: not with the clock OFF
           ' THE SIEGE: about '+_sc+' machines are coming to this ring.'+_why);
     }
     return;
@@ -14120,7 +14129,7 @@ var nm=rr()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
     // never promise more than the raid clock has left, since saying thirty and
     // then killing him on the timer at twelve is a lie.
     if(z.hold===null||z.hold===undefined){
-z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
+z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30; z.holdMax=z.hold;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so the ship left after three
       // v4.17: HIS QUESTION TWO reads "the crowd at your extraction is the
       // map you woke on the way there, not the siege" - a claim measured long
       // ago on an older game. The instant the ship touches down, count every
@@ -28707,7 +28716,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.22: first-ten-minutes audit: the pause box handed the keyboard to its note the moment it opened, so the second P, the key its own legend names, typed a letter into the note and the raid stayed paused; only ESC or the button got out. The box no longer takes the keyboard (the note is a click away) and while it is up no key but P and ESC reaches the raid. Check 12.22 opens the box by the key with its timers run at once, sends P to whatever holds the keyboard and requires the raid to resume, and requires M with the box up to leave the map shut; fails on v12.21.',
+  now:'v12.24: in-raid audit: with the raid clock switched OFF (v9.35) the clock sits at zero, and two readers took zero for one second left: the boarding window came out at 3 seconds instead of 30, and every call said the raid clock would run out first. Both ask whether there is a clock before reading it. Check 12.24 calls the ship with the clock off, requires the call line without the warning and a landed hold of 30, and with the clock on at 12 seconds left requires the hold of 11 the clock rule gives; fails on v12.23.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39619,6 +39628,82 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.24',what:'with the raid clock switched OFF the boarding window is the full 30 seconds and the call line does not say the clock runs out first; with the clock on at 12 seconds left the window is 11 (2026-09-06 in-raid audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof tryExtractTick!=='function'||typeof tickExtractPoints!=='function') return 'SKIP: no extraction tick in this build';
+     var bad=[], warn='runs out '+'first';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, Z=null, i;
+       for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
+       if(!Z) return 'SKIP: no open extraction ring';
+       // THE CLOCK OFF, as Settings leaves it: no seconds, and the count at zero.
+       CFG.raidSec=0; g.timeLeft=0; g.raidLen=0;
+       p.x=Z.x+70; p.y=Z.y; p.downed=false; keys={}; window.__lastSay=null;
+       var line=null;
+       for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(Z.beaconT!==null&&Z.beaconT!==undefined) line=String(window.__lastSay||''); }
+       if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E two seconds at the ring edge did not call the ship');
+       if(line===null||line.indexOf('Pulled')!==0) bad.push('control: the call did not say Pulled (said "'+String(line).slice(0,60)+'")');
+       else if(line.indexOf(warn)>=0) bad.push('with the clock off the call still says the raid clock '+warn);
+       // THE SHIP LANDS: one tick past the end of the inbound wait sets the window.
+       Z.beaconT=0.001; Z.hold=null; Z.holdMax=null; g.active=Z;
+       tickExtractPoints(0.016);
+       if(Z.hold===null||Z.hold===undefined) bad.push('control: the landing set no boarding window');
+       else if(Math.abs(Z.hold-30)>0.001) bad.push('with the clock off the boarding window is '+Z.hold+' seconds, not 30');
+       // CONTROL: with the clock on and 12 seconds left, the window is 11.
+       CFG.raidSec=540; g.timeLeft=12; g.raidLen=540;
+       Z.beaconT=0.001; Z.hold=null; Z.holdMax=null;
+       tickExtractPoints(0.016);
+       if(Z.hold===null||Z.hold===undefined||Math.abs(Z.hold-11)>0.001) bad.push('control: with the clock on at 12 s left the window is '+Z.hold+', not 11');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ keys={}; try{ __resetCfg(); }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.23',what:'going down lets go of a cooking grenade: the throw leaves the hand with the fuse it has burned, no COOKING clock is painted over the man on the floor, and the self-revive does not stand him up holding a live cook (2026-09-06 in-raid audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__textTrace&&window.__frame)) return 'SKIP: this fixture cannot deploy and trace';
+     if(typeof damagePlayer!=='function'||typeof startCook!=='function'||typeof selfRevive!=='function'||typeof drawHUD!=='function'||typeof THROWKEYS==='undefined') return 'SKIP: no cook, down or HUD path in this build';
+     var bad=[], word='COOK'+'ING';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, en=null;
+       for(var i=0;i<g.ents.length&&!en;i++) if(g.ents[i].kind==='crawler'&&!g.ents[i].downed) en=g.ents[i];
+       // A frag in the pouch and selected, the aim 200 units east; the pin comes out and half a second burns.
+       g.pouch.frag=(g.pouch.frag||0)+1; g.tsel=THROWKEYS.indexOf('frag');
+       p.downed=false; p.revived=false; p.roll=0; p.iv=0; p.armor=0; p.hp=5; p.cooking=0; p.cookT=0; p.cookKind=null;
+       mouse.x=innerWidth/2+200; mouse.y=innerHeight/2;
+       var before=g.throws.length;
+       if(!startCook()) bad.push('control: the pin did not come out');
+       p.cookT=0.5;
+       if(!p.cooking) bad.push('control: nothing is cooking');
+       damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
+       if(!p.downed) bad.push('control: the hit did not put him down (hp '+p.hp+')');
+       if(p.cooking) bad.push('he went down still holding a live cook (cookT '+p.cookT+')');
+       var th=g.throws.slice(before);
+       if(th.length!==1) bad.push('the grenade did not leave his hand: '+th.length+' throws left it (wanted 1)');
+       else{
+         if(th[0].kind!=='frag') bad.push('what left his hand was a '+th[0].kind);
+         if(Math.abs((th[0].cook||0)-0.5)>0.01) bad.push('the throw forgot the fuse it had burned (cook '+th[0].cook+')');
+       }
+       var tr=__textTrace(function(){ __frame(0.016); drawHUD(); });
+       if(tr.some(function(r){ return r.t.indexOf(word)===0; })) bad.push('a '+word+' clock is still painted over a man on the floor');
+       // The one self-revive brings him up empty-handed.
+       if(!selfRevive()) bad.push('control: the self-revive was refused');
+       if(p.cooking) bad.push('he got up holding the cook he went down with');
+       // CONTROL: the same hit with nothing in hand throws nothing.
+       p.downed=false; p.revived=false; p.hp=5; p.iv=0; p.roll=0; p.cooking=0; p.cookT=0; p.cookKind=null;
+       var before2=g.throws.length;
+       damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
+       if(!p.downed) bad.push('control: the second hit did not put him down');
+       if(g.throws.length!==before2) bad.push('control: a hit with nothing in hand threw something');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var g2=__state(); if(g2){ var p2=g2.player; p2.cooking=0; p2.cookT=0; p2.cookKind=null; p2.downed=false; p2.hp=100; g2.throws.length=0; if(!g2.over) __endRaid('extract'); } }catch(_e){}
+       __topClear(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'12.22',what:'P resumes a paused raid as the pause box legend says: opening the box no longer hands the keyboard to its note, and while the box is up no other key reaches the raid (2026-09-06 first-ten-minutes audit)',
    run:function(){

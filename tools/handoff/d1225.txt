@@ -1,0 +1,37 @@
+## v12.25 - THE RING YOU CALLED KEEPS THE POINTER
+
+From the 2026-09-06 read-only in-raid audit (P2 WRONG STATE: standing in a
+second open extraction ring hijacks the pointer), verified by reading at
+v12.20.
+
+WHAT IT WAS. tryExtractTick runs tickExtractPoints first. Its mirror block
+(v8.25) finds the ring that carries the beacon, points G.active at it and
+copies its seconds into the clock the HUD shows, so the name on the banner
+and the number under it belong to the same ring. Then, on the same frame,
+the standing-ring line ran: if you are inside an open ring, that ring is the
+active one, with no beacon test at all. So while the ship was inbound to
+ring A, walking into open ring B made B the active ring. The banner named
+B, the pointer swung to B, HOLD E TO EXTRACT hung over a circle no ship was
+coming to, and the seconds it showed were still A's, because the mirror had
+just written them. Two rings open at once is the normal state of a map for
+most of a raid, so this is a walk across the map with the wrong arrow.
+
+THE BUILD. The ring you stand in wins the pointer only when it carries the
+beacon, or when no ring does. With nothing called, the ring you are in is
+still the one the game names, as it always has been; that is how you learn
+which letter you are standing at. With a ship inbound, the ring you called
+keeps the pointer and its clock until you call another or it leaves. Four
+lines, all at the one site.
+
+MEASURED. Check 12.25 deploys, takes the first two open rings (trying both
+maps), sets a beacon inbound at the first with the pointer on it, stands
+the player in the second with E up, and runs one tick; it requires the first
+ring to stay active and the clock shown to be that ring's. Then it clears
+every beacon and ticks again, and requires the ring stood in to win, the old
+rule, as the control. On the v12.24 fixture the second ring takes the
+pointer.
+
+Not verified: his own eye on the banner mid-raid; the bot, which targets
+G.active and cannot stand in a second ring by accident in a way I have
+measured; a second beacon called from the second ring, which the code lets
+win because it then carries one.

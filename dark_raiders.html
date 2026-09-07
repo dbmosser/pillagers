@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.19';
+var VER='12.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,7 +1369,7 @@ var VER='12.19';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.19';
+var WHATSNEW_VER='12.20';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,7 +1411,7 @@ var WHATSNEW=[
   'THE HUM AFTER AN EXTRACTION IS GONE. The frame that ended the raid was writing the raid ambience back up after it had been cut, and the level held on the floor.',
   'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG in green, the Burst Carbine, Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
   'THE CREDITS AND XP READOUT IN THE CORNER IS TWICE THE SIZE, on the floor and in a raid. The CONDITIONS box starts below it.',
-  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 115 at the centre, was 85; to you 80 at the centre, was 60. The fuse is still 1.1 seconds.',
+  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 140 at the centre, was 100; to you 98 at the centre, was 72. The fuse is still 1.1 seconds.',
   'THE SCAV PISTOL IS HALF PRICE IN THE SHOP: 1800 credits, down from 3600. Say the number you want and it moves again.',
   'HOLD THE CRAFT BUTTON FOR A SECOND. The button fills as you hold it and the work happens when it is full. Let go early and nothing is spent.',
   'THE BOARDING WINDOW SAYS EXTRACT NOW. It used to say EXTRACTION IN PROGRESS, which reads as something happening without you rather than the one moment you have to be in the ring holding E.',
@@ -2461,9 +2461,9 @@ if(P.rigs!==undefined) delete P.rigs;
 // rigBuyback is declared above loadProfile, not in it, so anything can call it.
 if(!P.mig945){ rigBuyback(P); P.mig945=1;
   // v11.42: persist through storeSet, NOT saveProfile. saveProfile writes
-  // P.cfg=CFG;P.cfgv=17, and here CFG is still the file-scope default because
+  // P.cfg=CFG;P.cfgv=18 (17 when this was written), and here CFG is still the file-scope default because
   // the cfgv block below has not loaded the saved P.cfg yet, so saveProfile wiped
-  // the player's dials and stamped cfgv 17, skipping every cfgv migration. storeSet
+  // the player's dials and stamped the current cfgv, skipping every cfgv migration. storeSet
   // writes P as it stands, saved cfg and cfgv intact, and still locks in the buyback.
   storeSet(JSON.stringify(P)); }
 // v8.38, audit: STAMPED. This is the v7.39 fold-to-one-map migration and it had
@@ -11657,7 +11657,7 @@ function throwFrom(tk,cookT){
   // That is a fair mistake to make, but only if you are told you made it: the
   // fuse is 1.1s and you can clear the radius, so the call goes out the instant
   // it leaves your hand rather than when it goes off.
-  if(blocked&&rngT<110) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');
+  if(blocked&&rngT<(tk==='frag'?(CFG.fragR===undefined?190:CFG.fragR):110)) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');   // v12.20: the warning covers the whole blast
   ping(p.x,p.y,90,false,false,'player','move');
 }
 // The instant path, unchanged in behaviour and still what the gamepad and any
@@ -13823,7 +13823,12 @@ function raiderThrow(e,foe,fd,dt){
     return true;
   }
   if(e.smkT!==undefined) e.smkT-=dt;
-  if(fd<180||fd>520) return false;
+  // v12.20: the near edge of the band follows the blast radius (it was 180
+  // against a 150 blast; at 190 he stood in his own charge), plus the scatter
+  // of the aim point below and his own body; and never above his reach, or a
+  // short-ranged pillager could never throw at all.
+  var _fR=(CFG.fragR===undefined?190:CFG.fragR);
+  if(fd<Math.min(_fR+52,(e.rng||520)-1)||fd>520) return false;
   var ix=-1;
   for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
   if(ix<0) return false;
@@ -28691,7 +28696,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.19: from the read-only review of the shipped v11.78, every station window stamped its own credits and XP into its heading and the enlarged corner readout printed through them. The heading balance is hidden; the corner shows the same two figures at all times (the v11.52 rule for the stash screen). The same build repairs check 11.52, which double-scaled the CONDITIONS box top and could not see an overlap. Check 12.19 opens the shop window and requires the heading balance not to be drawn where the readout is; fails on v12.18 where the two boxes intersect.',
+  now:'v12.20: from the read-only review of the shipped v11.77, three things stayed calibrated to the old 150 blast: the pillager throw band near edge (180, inside a 190 blast) now follows the radius plus 52 (scatter and body), floored at his reach; the It hit cover MOVE warning covered 110, half the blast, and now covers the radius; and the card printed coefficients as centre damage (the centre is 140 and 98, was 100 and 72). The same build repairs check 11.44, whose cfgv sentinel was pinned at 17 and could never fire again. Check 12.20 hands a staged pillager a frag at 200 units and requires no throw, at 260 requires a throw, and reads the card figures; fails on v12.19.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

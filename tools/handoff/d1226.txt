@@ -1,0 +1,37 @@
+## v12.26 - THE BELT SHOWS WHAT THE TRIGGER WILL THROW
+
+From the 2026-09-06 read-only in-raid audit (P2 WRONG STATE: Q cycles a
+hidden selector, so the belt highlights one throwable and the trigger
+throws another), verified by reading at v12.20.
+
+WHAT IT WAS. Two selectors, one act. The trigger (startCook, doThrow) reads
+G.tsel, the throwable selector; every belt cell reads G.hot, the highlight.
+The belt keys point both at the same cell (v11.60), so pressing a grenade
+key has always been honest. Q was not: cycleThrow turned G.tsel to the next
+throwable in the pouch and said its name, and the highlight stayed where it
+was. A player who had the smoke lit, pressed Q, heard "Frag Charge ready",
+and pulled the trigger cooked a frag while the belt lit the smoke; a player
+who pressed Q and looked at the belt saw nothing change and reasonably
+concluded Q was dead. The trigger's own fallback, which calls cycleThrow
+when the selected throwable has run out, disagreed with the belt the same
+way. Q is taught nowhere, which is why nobody had reported it, and why a
+friend mashing keys at alpha will find it.
+
+THE BUILD. cycleThrow moves the highlight to the belt cell holding the
+throwable it just made ready. The belt always carries the three throw
+cells, one per throwable, so the cell is always there. The highlight is set
+directly rather than through setHot, because setHot on a throw cell throws
+it. Nothing else changes: the belt keys, the trigger and G work as before,
+and Q with nothing in the pouch still says No throwables and moves nothing.
+
+MEASURED. Check 12.26 deploys, puts a smoke and a frag in the pouch, lights
+the smoke cell with the selector on the smoke, and presses Q through the
+real key path. It requires the selector on the frag, the highlight on the
+frag cell, and a cook that produces the grenade the lit cell names. Then it
+empties the pouch, presses Q, and requires No throwables with the
+highlight unmoved. On the v12.25 fixture the selector turns to the frag and
+the belt keeps lighting the smoke.
+
+Not verified: his own eye on the belt; the fallback path inside the
+trigger (the selected throwable running out mid-press), which now moves the
+highlight too and is not staged here; the gamepad, which has no Q.
