@@ -1,9 +1,10 @@
 v12.25: the ring you called keeps the pointer
 
-Standing in a second open ring while the ship was inbound to another made
+Standing in a second open ring while the extraction was inbound to another made
 the second ring the active one, so the banner and the arrow named a ring no
-ship was coming to, with the called ring's seconds. The ring you stand in
-wins the pointer only when it carries the beacon or no ring does. Check
+extraction was coming to, with the called ring's seconds. The ring you stand in
+wins the pointer only when it carries the beacon or no ring does, and the
+ring you call takes the pointer as the call lands. Check
 12.25 calls a beacon at one ring, stands in another, ticks and requires the
 called ring to stay active with its clock; with no beacon the ring stood in
 wins; fails on v12.24.

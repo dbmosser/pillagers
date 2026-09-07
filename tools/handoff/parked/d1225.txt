@@ -9,9 +9,9 @@ WHAT IT WAS. tryExtractTick runs tickExtractPoints first. Its mirror block
 copies its seconds into the clock the HUD shows, so the name on the banner
 and the number under it belong to the same ring. Then, on the same frame,
 the standing-ring line ran: if you are inside an open ring, that ring is the
-active one, with no beacon test at all. So while the ship was inbound to
+active one, with no beacon test at all. So while the extraction was inbound to
 ring A, walking into open ring B made B the active ring. The banner named
-B, the pointer swung to B, HOLD E TO EXTRACT hung over a circle no ship was
+B, the pointer swung to B, HOLD E TO EXTRACT hung over a circle no extraction was
 coming to, and the seconds it showed were still A's, because the mirror had
 just written them. Two rings open at once is the normal state of a map for
 most of a raid, so this is a walk across the map with the wrong arrow.
@@ -19,12 +19,15 @@ most of a raid, so this is a walk across the map with the wrong arrow.
 THE BUILD. The ring you stand in wins the pointer only when it carries the
 beacon, or when no ring does. With nothing called, the ring you are in is
 still the one the game names, as it always has been; that is how you learn
-which letter you are standing at. With a ship inbound, the ring you called
+which letter you are standing at. With an extraction inbound, the ring you called
 keeps the pointer and its clock until you call another or it leaves. Four
-lines, all at the one site.
+lines at the one site, and one word at the call site: the ring you call
+takes the pointer as the call lands, so the banner, the arrow and the clock
+agree on the frame a second call goes in (the 2026-09-07 draft review found
+the call writing the new clock under the old ring name for that frame).
 
-MEASURED. Check 12.25 deploys, takes the first two open rings (trying both
-maps), sets a beacon inbound at the first with the pointer on it, stands
+MEASURED. Check 12.25 deploys on map 0, takes its first two rings and holds
+both open, sets a beacon inbound at the first with the pointer on it, stands
 the player in the second with E up, and runs one tick; it requires the first
 ring to stay active and the clock shown to be that ring's. Then it clears
 every beacon and ticks again, and requires the ring stood in to win, the old

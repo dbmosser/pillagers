@@ -40024,6 +40024,53 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.24 - THE CLOCK SWITCHED OFF IS NOT A CLOCK AT ZERO
+
+From the 2026-09-06 read-only in-raid audit (P2 TEXT vs CODE: with the raid
+clock set to OFF the boarding window is 3 seconds, not 30), verified by
+reading at v12.19; the third reader below was found by the 2026-09-07
+read-only review of this draft.
+
+WHAT IT WAS. v9.35 gave the raid clock an OFF position on his order that
+nothing should be meant to end the raid: raidSec 0, and the timer and the
+death on the timer stopped reading the clock. Three readers were missed.
+With the clock off G.timeLeft starts at 0 and never moves, and all three
+took 0 for one second left. The extraction window is min(30, max(3,
+timeLeft - 1)), so extraction touched down and left after three seconds
+instead of thirty, every time, for anyone who had switched the clock off.
+The Pulled line, which warns "The raid clock runs out first." whenever
+timeLeft is under the inbound wait, said it on every call, about a clock
+that did not exist. And the closing schedule gave two rings a closing time
+of minus one, so "Extraction A closes in two minutes" and then B's were
+said on the first frame of every clock-off raid, about rings that never
+close, and the sector map printed a one-second closing countdown under both
+for the whole raid. The HUD already knew the case: v9.35 made the readout
+count up when there is no clock.
+
+THE BUILD. All three readers ask whether there is a clock before reading
+it. With the clock off the window is the full thirty seconds, the call line
+says "then hold E to extract.", and no ring carries a closing time, so
+nothing warns at the drop and the map says STAYS OPEN. With the clock on
+nothing changes: the window is still capped by the seconds left, so
+extraction never promises more than the raid has.
+
+MEASURED. Check 12.24 deploys with the clock switched off the way Settings
+does (raidSec 0 before the raid is built, timeLeft 0), requires no ring
+with a closing time, calls extraction by holding E at the ring edge, reads
+what was said on the first tick and the call line, then lands extraction
+one tick past the inbound wait and reads the window; it requires no closing
+warning at the drop, the call line without the clock warning and a window
+of 30. Then with the clock on and 12 seconds left it lands extraction again
+and requires the window of 11 the clock rule gives. On the v12.23 fixture
+two rings carry a closing time of minus one, the drop warns that a ring
+closes in two minutes, the call says the clock runs out first and the
+window is 3.
+
+Not verified: his own play with the clock off; the bot, which reads the
+clock to decide when to leave and is pinned to a running clock in every
+sim; the map label itself, which is not drawn here (it reads closeAt,
+which is now undefined, and prints STAYS OPEN on that branch); any further
+reader of timeLeft I did not find.
 ## v12.23 - GOING DOWN LETS GO OF THE GRENADE
 
 From the 2026-09-06 read-only in-raid audit (P2 WRONG STATE: going down

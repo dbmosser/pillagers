@@ -18,7 +18,7 @@ function SubRx([string]$old, [string]$new) {
 SubRx @'
   {v:'12.24',what:'with the raid clock switched OFF the boarding window is the full 30 seconds and the call line does not say the clock runs out first; with the clock on at 12 seconds left the window is 11 (2026-09-06 in-raid audit)',
 '@ @'
-  {v:'12.25',what:'standing in a second open ring while the ship is inbound to another leaves the called ring active with its own clock, and with no beacon anywhere the ring stood in still wins the pointer (2026-09-06 in-raid audit)',
+  {v:'12.25',what:'standing in a second open ring while the extraction is inbound to another leaves the called ring active with its own clock, and with no beacon anywhere the ring stood in still wins the pointer (2026-09-06 in-raid audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof tryExtractTick!=='function') return 'SKIP: no extraction tick in this build';
@@ -32,11 +32,11 @@ SubRx @'
        A.open=true; B.open=true;   // the rule under test is the pointer, not the closing schedule
        for(i=0;i<g.zones.length;i++){ g.zones[i].beaconT=null; g.zones[i].hold=null; g.zones[i].pullT=null; g.zones[i].callT=0; }
        keys={}; p.downed=false;
-       // ARM ONE: the ship is inbound to A; he stands in B.
+       // ARM ONE: the extraction is inbound to A; he stands in B.
        A.beaconT=CFG.extractWait; A.hold=null; g.active=A; g.beaconT=A.beaconT;
        p.x=B.x; p.y=B.y;
        tryExtractTick(0.1,false);
-       if(g.active!==A) bad.push('standing in a second open ring took the pointer off the ring the ship was called to (active is now '+(g.active===B?'the ring stood in':'another ring')+')');
+       if(g.active!==A) bad.push('standing in a second open ring took the pointer off the ring the extraction was called to (active is now '+(g.active===B?'the ring stood in':'another ring')+')');
        if(g.beaconT===null||g.beaconT===undefined||Math.abs(g.beaconT-A.beaconT)>0.001) bad.push('the clock shown ('+g.beaconT+') is not the called ring\x27s ('+A.beaconT+')');
        // CONTROL: no beacon anywhere; the ring he stands in wins, as it always has.
        A.beaconT=null; A.hold=null; g.beaconT=null; g.active=A;

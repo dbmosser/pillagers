@@ -23,7 +23,7 @@ SubRx @'
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof tryExtractTick!=='function'||typeof tickExtractPoints!=='function') return 'SKIP: no extraction tick in this build';
-     var bad=[], warn='runs out '+'first';
+     var bad=[], warn='runs out '+'first', warn2='closes in '+'two minutes';
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        // THE CLOCK OFF, as Settings leaves it, BEFORE the raid is built: no seconds, the count at zero, and no ring with a closing time.
@@ -33,13 +33,15 @@ SubRx @'
        if(g.timeLeft!==0) bad.push('control: with the clock off the raid was built with '+g.timeLeft+' seconds on it');
        for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
        if(!Z) return 'SKIP: no open extraction ring';
+       for(i=0;i<g.zones.length;i++) if(g.zones[i].closeAt!==undefined) bad.push('with the clock off ring '+i+' carries a closing time of '+g.zones[i].closeAt);
        p.x=Z.x+70; p.y=Z.y; p.downed=false; keys={}; window.__lastSay=null;
-       var line=null;
-       for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(Z.beaconT!==null&&Z.beaconT!==undefined) line=String(window.__lastSay||''); }
-       if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E two seconds at the ring edge did not call the ship');
+       var line=null, first=null;
+       for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(first===null) first=String(window.__lastSay||''); if(Z.beaconT!==null&&Z.beaconT!==undefined) line=String(window.__lastSay||''); }
+       if(first&&first.indexOf(warn2)>=0) bad.push('with the clock off the drop warned that a ring '+warn2);
+       if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E two seconds at the ring edge did not call for extraction');
        if(line===null||line.indexOf('Pulled')!==0) bad.push('control: the call did not say Pulled (said "'+String(line).slice(0,60)+'")');
        else if(line.indexOf(warn)>=0) bad.push('with the clock off the call still says the raid clock '+warn);
-       // THE SHIP LANDS: one tick past the end of the inbound wait sets the window.
+       // EXTRACTION LANDS: one tick past the end of the inbound wait sets the window.
        Z.beaconT=0.001; Z.hold=null; Z.holdMax=null; g.active=Z;
        tickExtractPoints(0.016);
        if(Z.hold===null||Z.hold===undefined) bad.push('control: the landing set no boarding window');

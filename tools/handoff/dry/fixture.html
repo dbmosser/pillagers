@@ -1377,7 +1377,7 @@ var WHATSNEW=[
   'A FREE-KIT RUN THAT ENDS BADLY GIVES YOU BACK YOUR TACTICAL BELT KEYS with your packing, not just the packing.',
   'Q MOVES THE BELT HIGHLIGHT TO THE GRENADE IT MAKES READY, so the belt always shows what the trigger will throw.',
   'THE RING YOU CALLED KEEPS THE POINTER. Standing in a second open ring while the ship is inbound no longer swings the banner and the arrow to the ring you are in.',
-  'WITH THE RAID CLOCK SWITCHED OFF, THE SHIP WAITS ITS FULL THIRTY SECONDS. It used to leave after three, and the call said the clock would run out first.',
+  'WITH THE RAID CLOCK SWITCHED OFF, THE EXTRACTION WINDOW IS THE FULL THIRTY SECONDS. It used to shut after three, and the call said the clock would run out first.',
   'GOING DOWN LETS GO OF THE GRENADE YOU WERE COOKING. It flies where you were aiming with the fuse it has burned; the clock no longer freezes over you, and you do not get up holding a live one.',
   'P RESUMES A PAUSED RAID, the way the pause box says. The box used to hand the keyboard to its note the moment it opened, so a second P typed a letter into the note; click the note to write one. While the box is up, no other key touches the raid.',
   'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
@@ -9460,7 +9460,7 @@ function buildRaid(sim){
     var _cf=closeSchedule[z]===undefined?null:closeSchedule[z];
     // Never schedule a closure the clock has already passed: a ring that cannot
     // be reached is worse than one that closes early, because nothing tells you.
-    var cl=(_cf===null)?null:Math.min(Math.round(_clockLen*_cf),_clockLen-1);
+    var cl=(_cf===null||_clockLen<=0)?null:Math.min(Math.round(_clockLen*_cf),_clockLen-1);   // v12.24: with the clock OFF no ring carries a closing time, so nothing warns at the drop and the map says STAYS OPEN
     zones.push({x:map.extracts[z].x,y:map.extracts[z].y,r:78,open:true,
       beaconT:null,hold:null,pullT:null,callT:0,warned:0,
       closeAt:(cl===null?undefined:cl),
@@ -14184,7 +14184,7 @@ var nm=rr()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
     // never promise more than the raid clock has left, since saying thirty and
     // then killing him on the timer at twelve is a lie.
     if(z.hold===null||z.hold===undefined){
-z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30; z.holdMax=z.hold;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so the ship left after three
+z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30; z.holdMax=z.hold;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
       // v4.17: HIS QUESTION TWO reads "the crowd at your extraction is the
       // map you woke on the way there, not the siege" - a claim measured long
       // ago on an older game. The instant the ship touches down, count every
@@ -34785,6 +34785,7 @@ window.__guns={
 };
 // v8.83: STAND ON THE UNDERCROFT FLOOR. showScreen('hub') is the real entry the
 // game uses, so this is the play path and not a rebuilt copy of it.
+window.__craft={open:function(t){ openTrader(t||'craft'); },hold:function(){ return craftHold?{t:craftHold.t,ok:!!(craftHold.b&&craftHold.b.offsetParent)}:null; },recipes:function(){ return RECIPES; },work:function(){ renderWork(); },state:function(){ return state; },hb:function(){ return HB; }};
 window.__hubEnter=function(){ showScreen('hub'); var _t=document.getElementById('title'); if(_t) _t.classList.remove('on'); return !!HB; };   // v12.06: the floor is past the title, and since v12.06 a title left up blocks every floor key
 window.__hubP=function(){ return HB?HB.player:null; };
 window.__hubStep=function(dt){
@@ -39840,7 +39841,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof tryExtractTick!=='function'||typeof tickExtractPoints!=='function') return 'SKIP: no extraction tick in this build';
-     var bad=[], warn='runs out '+'first';
+     var bad=[], warn='runs out '+'first', warn2='closes in '+'two minutes';
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        // THE CLOCK OFF, as Settings leaves it, BEFORE the raid is built: no seconds, the count at zero, and no ring with a closing time.
@@ -39850,13 +39851,15 @@ window.__REGRESS=[
        if(g.timeLeft!==0) bad.push('control: with the clock off the raid was built with '+g.timeLeft+' seconds on it');
        for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
        if(!Z) return 'SKIP: no open extraction ring';
+       for(i=0;i<g.zones.length;i++) if(g.zones[i].closeAt!==undefined) bad.push('with the clock off ring '+i+' carries a closing time of '+g.zones[i].closeAt);
        p.x=Z.x+70; p.y=Z.y; p.downed=false; keys={}; window.__lastSay=null;
-       var line=null;
-       for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(Z.beaconT!==null&&Z.beaconT!==undefined) line=String(window.__lastSay||''); }
-       if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E two seconds at the ring edge did not call the ship');
+       var line=null, first=null;
+       for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(first===null) first=String(window.__lastSay||''); if(Z.beaconT!==null&&Z.beaconT!==undefined) line=String(window.__lastSay||''); }
+       if(first&&first.indexOf(warn2)>=0) bad.push('with the clock off the drop warned that a ring '+warn2);
+       if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E two seconds at the ring edge did not call extraction');
        if(line===null||line.indexOf('Pulled')!==0) bad.push('control: the call did not say Pulled (said "'+String(line).slice(0,60)+'")');
        else if(line.indexOf(warn)>=0) bad.push('with the clock off the call still says the raid clock '+warn);
-       // THE SHIP LANDS: one tick past the end of the inbound wait sets the window.
+       // EXTRACTION LANDS: one tick past the end of the inbound wait sets the window.
        Z.beaconT=0.001; Z.hold=null; Z.holdMax=null; g.active=Z;
        tickExtractPoints(0.016);
        if(Z.hold===null||Z.hold===undefined) bad.push('control: the landing set no boarding window');

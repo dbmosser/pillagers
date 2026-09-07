@@ -17,7 +17,7 @@ function SubRx([string]$old, [string]$new) {
 # reading it, but two readers were missed. With the clock off G.timeLeft
 # starts at 0 and never moves, and both of these read 0 as "one second left":
 # the boarding window, min(30, max(3, timeLeft - 1)), came out at 3 seconds
-# instead of 30, so the ship left after three; and the Pulled line, which
+# instead of 30, so extraction left after three; and the Pulled line, which
 # says "The raid clock runs out first." whenever timeLeft is under the
 # inbound wait, said it on every call. The HUD already knows the case
 # (_noClk counts up instead of down). Both readers now ask whether there is
@@ -25,7 +25,7 @@ function SubRx([string]$old, [string]$new) {
 SubRx @'
 z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
 '@ @'
-z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30; z.holdMax=z.hold;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so the ship left after three
+z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30; z.holdMax=z.hold;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
 '@
 SubRx @'
           (G.timeLeft<CFG.extractWait?'. The raid clock runs out first.':', then hold E to extract.')+
@@ -36,7 +36,18 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'WITH THE RAID CLOCK SWITCHED OFF, THE SHIP WAITS ITS FULL THIRTY SECONDS. It used to leave after three, and the call said the clock would run out first.',
+  'WITH THE RAID CLOCK SWITCHED OFF, THE EXTRACTION WINDOW IS THE FULL THIRTY SECONDS. It used to shut after three, and the call said the clock would run out first.',
+'@
+
+# THE THIRD READER, found by the 2026-09-07 draft review: with the clock off
+# buildRaid still gave two rings a closing time of minus one (min(0, -1)),
+# so the two-minute warning fired for both rings on the first frame of every
+# clock-off raid and the map printed a closing countdown under them for the
+# whole raid. No clock means no closing time.
+SubRx @'
+    var cl=(_cf===null)?null:Math.min(Math.round(_clockLen*_cf),_clockLen-1);
+'@ @'
+    var cl=(_cf===null||_clockLen<=0)?null:Math.min(Math.round(_clockLen*_cf),_clockLen-1);   // v12.24: with the clock OFF no ring carries a closing time, so nothing warns at the drop and the map says STAYS OPEN
 '@
 
 # STAMPS.
@@ -52,7 +63,7 @@ var WHATSNEW_VER='12.24';
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.23:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.23 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.23:[^']*'",{ param($m) "now:'v12.24: in-raid audit: with the raid clock switched OFF (v9.35) the clock sits at zero, and two readers took zero for one second left: the boarding window came out at 3 seconds instead of 30, and every call said the raid clock would run out first. Both ask whether there is a clock before reading it. Check 12.24 calls the ship with the clock off, requires the call line without the warning and a landed hold of 30, and with the clock on at 12 seconds left requires the hold of 11 the clock rule gives; fails on v12.23.'" })
+$s=[regex]::Replace($s,"now:'v12\.23:[^']*'",{ param($m) "now:'v12.24: in-raid audit: with the raid clock switched OFF (v9.35) the clock sits at zero, and three readers took zero for one second left: the extraction window came out at 3 seconds instead of 30, every call said the raid clock would run out first, and two rings were given a closing time of minus one, so the two-minute warning fired at the drop. All three ask whether there is a clock before reading it. Check 12.24 calls extraction with the clock off and requires no warning at the drop, no ring with a closing time, the call line without the clock warning and a landed window of 30; with the clock on at 12 seconds left it requires the window of 11 the clock rule gives; fails on v12.23.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

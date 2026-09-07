@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.23';
+var VER='12.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.23';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.23';
+var WHATSNEW_VER='12.24';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'WITH THE RAID CLOCK SWITCHED OFF, THE EXTRACTION WINDOW IS THE FULL THIRTY SECONDS. It used to shut after three, and the call said the clock would run out first.',
   'GOING DOWN LETS GO OF THE GRENADE YOU WERE COOKING. It flies where you were aiming with the fuse it has burned; the clock no longer freezes over you, and you do not get up holding a live one.',
   'P RESUMES A PAUSED RAID, the way the pause box says. The box used to hand the keyboard to its note the moment it opened, so a second P typed a letter into the note; click the note to write one. While the box is up, no other key touches the raid.',
   'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
@@ -9455,7 +9456,7 @@ function buildRaid(sim){
     var _cf=closeSchedule[z]===undefined?null:closeSchedule[z];
     // Never schedule a closure the clock has already passed: a ring that cannot
     // be reached is worse than one that closes early, because nothing tells you.
-    var cl=(_cf===null)?null:Math.min(Math.round(_clockLen*_cf),_clockLen-1);
+    var cl=(_cf===null||_clockLen<=0)?null:Math.min(Math.round(_clockLen*_cf),_clockLen-1);   // v12.24: with the clock OFF no ring carries a closing time, so nothing warns at the drop and the map says STAYS OPEN
     zones.push({x:map.extracts[z].x,y:map.extracts[z].y,r:78,open:true,
       beaconT:null,hold:null,pullT:null,callT:0,warned:0,
       closeAt:(cl===null?undefined:cl),
@@ -13710,7 +13711,7 @@ function tryExtractTick(dt,wantCall){
               :((_g>=0.33)?' That is a heavy bag to be standing still with.'
                           :' A light bag brings the fewest of them.');
       say('Pulled. Inbound '+fmtMS(CFG.extractWait)+
-          (G.timeLeft<CFG.extractWait?'. The raid clock runs out first.':', then hold E to extract.')+
+          ((CFG.raidSec>0&&G.timeLeft<CFG.extractWait)?'. The raid clock runs out first.':', then hold E to extract.')+   // v12.24: not with the clock OFF
           ' THE SIEGE: about '+_sc+' machines are coming to this ring.'+_why);
     }
     return;
@@ -14128,7 +14129,7 @@ var nm=rr()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
     // never promise more than the raid clock has left, since saying thirty and
     // then killing him on the timer at twelve is a lie.
     if(z.hold===null||z.hold===undefined){
-z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
+z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30; z.holdMax=z.hold;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
       // v4.17: HIS QUESTION TWO reads "the crowd at your extraction is the
       // map you woke on the way there, not the siege" - a claim measured long
       // ago on an older game. The instant the ship touches down, count every
@@ -28715,7 +28716,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.23: in-raid audit: a grenade cooking at the moment you went down froze with its clock on screen for the whole bleed-out and came back live on the self-revive, because the down branch cleared the heal in progress and not the cook. Going down lets go of it: the throw leaves the hand with the fuse it has burned, the same as releasing the button. Check 12.23 cooks a frag for half a second, puts him down, and requires one throw carrying that half second, no cook left in hand, no COOKING clock painted, and a self-revive that stands him up empty-handed; fails on v12.22.',
+  now:'v12.24: in-raid audit: with the raid clock switched OFF (v9.35) the clock sits at zero, and three readers took zero for one second left: the extraction window came out at 3 seconds instead of 30, every call said the raid clock would run out first, and two rings were given a closing time of minus one, so the two-minute warning fired at the drop. All three ask whether there is a clock before reading it. Check 12.24 calls extraction with the clock off and requires no warning at the drop, no ring with a closing time, the call line without the clock warning and a landed window of 30; with the clock on at 12 seconds left it requires the window of 11 the clock rule gives; fails on v12.23.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
