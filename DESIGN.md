@@ -40024,6 +40024,54 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.27 - HIS NOTE: A DRAG ONTO A SET KEY LANDS ON THE KEY, AND SAYS SO
+
+His note of 2026-09-07 morning: "inventorry still wonky -- if i run out of
+item, it should disappear from the tsa, right? I just tried to drag bandaids
+and they didn't come over". Traced by the 2026-09-07 read-only notes
+investigation and verified by reading at v12.26.
+
+WHAT IT WAS. Two mechanisms stacked on the Stash screen. The tactical belt
+plan outlives the raid (v8.64: a key is kept while its item is still in the
+stash or the packing), but the packing does not (commitKit empties it at
+ascent), so after a raid a key can sit on Bandage with none packed. The
+backpack column hides one packed copy per set key (v6.60, what is on the
+belt is not in the backpack), so the single copy a stash drop packs vanished
+into that hide: no cell, no count, no words; the stash cell did not move
+either, because packing is a selection out of the stash rather than a move.
+To him the drag did nothing. The plan cell drew that phantom key exactly like
+a packed one (v11.96 made a count of one silent). And in a raid, pressing a
+key whose item the bag has none of returned in silence, so the dark cell
+v9.03 keeps on purpose read as a dead key. That is both halves of his note.
+
+THE BUILD. Three small edits, one per surface. (A) A stash drop onto the
+backpack column for an item that is on a key with nothing packed takes the
+belt-cell route instead of the plain push: planPut packs half the stack
+(his v11.96 order) and a line says "2 Bandages packed, on key 3." The same
+rule on the HTML5 twin of the drop. (B) A set key with nothing packed shows
+a 0 on the plan cell, in the colour the safe pocket uses for a refusal, so
+the cell and the drop tell one story. (C) A spent belt key in a raid says
+"No Bandage left." instead of nothing. The v9.03 dark cell itself is NOT
+changed: his answer 16 asked for it to stay and go darker, and today's note
+asks for it to disappear; that is his call, put to him in the report.
+
+MEASURED. Check 12.27 puts three Bandages and a Copper Wire in the stash,
+nothing packed, and key 3 set to Bandage; it requires the plan cell for key
+3 to show a 0; it drops a Bandage from the stash onto the backpack column
+through the real pointer dropzone handler and requires a visible count in
+the column, the line to name key 3, and the plan cell to show the x-count;
+as the control it clears the plan and drops a Copper Wire, which must pack
+exactly one copy as it always has. It then deploys, sets belt key 3 to
+Bandage with an empty bag, presses the key through useHot, and requires
+"No Bandage left." On the v12.26 fixture the cell shows no 0, the column
+shows 0 items after the drop, the line does not name the key, and the spent
+key says nothing.
+
+Not verified: his own hand on the real mouse (the check drives the dropzone
+handler the pointer route calls, not a pointer); the HTML5 drop twin, which
+no browser reaches while the pointer route preventDefaults the mousedown;
+the raid belt drawing of the dark cell, unchanged; whether he wants the
+spent cell gone rather than dark, which the report asks.
 ## v12.26 - HIS NOTE: THE FREEBIE KIT AT THE LIFT KEEPS YOUR PACKING ASIDE
 
 His note of 2026-09-07 morning: "when you gave my loadout back i am not sure

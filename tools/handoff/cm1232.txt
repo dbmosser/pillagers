@@ -1,0 +1,17 @@
+v12.32: his note, sprinting leaves one trail and not two
+
+"many-footprints glitch is still happening while running vertically".
+Sprinting lays two trails. The boot prints he is meant to see are stamped
+every 56 units of ground covered and rotated to his path. The other is the
+scent list a pillager tracker smells, taken every 34 units while sprinting
+and painted as two small rectangles that are never rotated, so they read as
+a pair of boots walking up the screen: sideways ticks when he runs across,
+and a second set of footprints interleaved with the real ones when he runs
+up or down. His own scent marks are no longer painted. The marks a pillager leaves
+still are, which is his v8.85 feature, and the list itself is untouched, so
+every tracker that smells it behaves exactly as before. Check 12.32 sprints
+him north through the real keys and loop, counts the marks painted in one
+frame and requires zero, with one mark left by a pillager at his feet as the control
+that the counter can see one; fails on v12.31.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

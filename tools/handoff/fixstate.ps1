@@ -10,13 +10,13 @@ $end = $s.IndexOf('**THE QUEUE, ALL DRAFTED')
 if ($start -lt 0 -or $end -lt 0 -or $end -le $start) { throw 'STATE block anchors not found' }
 $nl = if ($s.IndexOf("`r`n") -ge 0) { "`r`n" } else { "`n" }
 $block = '**STATE (kept current by fixstate.ps1):** HEAD is v' + $HeadV + ' (' + $HeadSha + '). The tree has **v' + $FlightV + ' APPLIED** and' + $nl +
-  'verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-2" (the tab named seed hung on 2026-09-06 12:40 and was closed).' + $nl +
+  'verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-1" (the only tab; the pane holds one tab since 2026-09-07 12:44).' + $nl +
   'When `window.__PROG` is finished, pass true, fail [] and only the two known skips' + $nl +
   '(v8.88, v11.24):' + $nl +
   '    bash tools/handoff/ship.sh commit ' + $FlightN + ' cm' + $FlightN + '.txt' + $nl +
   'then bump the HEAD line in memory dark-raiders-handoff-state.md, then' + $nl +
   '    bash tools/handoff/ship.sh start ' + $FlightN + ' ' + $NextN + $nl +
-  'and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if' + $nl +
+  'and carry on down the list. Cron 52d2450b is armed every minute (re-armed 2026-09-07 07:31); re-arm if' + $nl +
   'CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the' + $nl +
   'pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds' + $nl +
   'each turned one unrelated check red). If one unrelated check goes red, re-run it' + $nl +

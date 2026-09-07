@@ -5732,6 +5732,186 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.32',what:'sprinting lays one trail of boot prints and not two: his own scent marks are no longer painted over his real footprints, a pillager marks still paint, and the scent list itself still fills for the trackers that smell it (his note of 2026-09-07: many footprints while running vertically)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__frame&&window.__keys&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and drive the player';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
+     var bad=[], proto=CanvasRenderingContext2D.prototype, oFR=proto.fillRect, marks=0, watch=false;
+     proto.fillRect=function(x,y,w,h){ if(watch&&w===3&&h===5) marks++; return oFR.apply(this,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __pinDPR(1); __forceSize(1920,1080);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, i;
+       g.ents.length=0;                       // nobody to interrupt the run
+       p.downed=false; p.iv=99; p.stam=100; p.stamLock=0; p.stamRelease=0; p.ads=false;
+       g.crouchTog=false; g.decals.length=0; g.prints=[];
+       // SPRINT NORTH, through the real keys and the real loop, which is the only
+       // driver that moves the player and lays either trail.
+       var K=__keys(); for(var k in K) delete K[k];
+       K.KeyW=1; K.ShiftLeft=1;
+       var sx=p.x, sy=p.y, t0=performance.now();
+       for(i=0;i<180;i++) __loop(t0+i*16.7);
+       for(var k2 in K) delete K[k2];
+       var ran=Math.sqrt((p.x-sx)*(p.x-sx)+(p.y-sy)*(p.y-sy));
+       if(ran<200) return 'SKIP: three seconds of W and Shift moved him '+Math.round(ran)+' units, so he is against something and laid no trail here';
+       var mine=0; for(i=0;i<g.prints.length;i++) if(g.prints[i].mine) mine++;
+       if(mine<3) return 'SKIP: a 3 second sprint laid only '+mine+' scent marks, so there is nothing to measure here';
+       var realPrints=0; for(i=0;i<g.decals.length;i++) if(g.decals[i].print&&g.decals[i].mine) realPrints++;
+       if(realPrints<2) bad.push('staging: the sprint laid only '+realPrints+' real boot prints, so the trail under test is not there');
+       // ARM ONE, THE FINDING: his own scent marks must paint nothing.
+       marks=0; watch=true; __frame(0.016); watch=false;
+       if(marks>0) bad.push('a sprint painted '+marks+' scent marks over his own boot prints, which is the second trail he sees');
+       // CONTROL: the counter can see a mark, so the zero above is a real zero.
+       g.prints.push({x:p.x+2,y:p.y+2,t:0});   // no mine flag: a pillager left it, right where he stands
+       marks=0; watch=true; __frame(0.016); watch=false;
+       if(marks<2) bad.push('control: a pillager mark at his feet painted '+marks+' rectangles, so this check cannot see a mark at all and its zero proves nothing');
+       // AND THE LIST ITSELF IS UNTOUCHED, so every tracker that smells it is untouched.
+       var mine2=0; for(i=0;i<g.prints.length;i++) if(g.prints[i].mine) mine2++;
+       if(mine2!==mine) bad.push('the scent list changed size on the draw side ('+mine+' to '+mine2+'), so something that smells it would behave differently');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       watch=false; proto.fillRect=oFR;
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.31',what:'the bench button says to hold it, a real mouse click on it says so and spends nothing, letting go early says so, and a synthetic click and a full hold still craft (his note of 2026-09-07: the crafting bar does not work and nothing can be crafted)',
+   run:function(){
+     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||typeof renderWork!=='function'||typeof craftHoldStep!=='function'||typeof craftHoldCancel!=='function'||!window.__P||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the bench';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], P=__P(), md=document.getElementById('tradermodal'), keepStash=(P.stash||[]).slice(), keepSay=(typeof HUBSAY!=='undefined')?HUBSAY:null;
+     function stock(){ P.stash=['scrap','scrap','scrap','wire','wire']; }
+     function crafted(){ return P.stash.indexOf('comp')>=0; }
+     function select(){
+       renderWork();
+       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1, i;
+       for(i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:0') ix=i;
+       if(ix<0) return null;
+       P._craftSel=ix; renderCraftDetail(rows);
+       return document.querySelector('#craftdetail .vbuy');
+     }
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       stock(); openTrader('craft');
+       var b=select();
+       if(!b) return 'SKIP: the bench drew no detail button for the Component Kit';
+       if(b.disabled) return 'SKIP: with the parts in the stash the detail button is still disabled';
+       // ONE, THE LABEL: it has to say what to do with it.
+       var lab=(b.textContent||'').toUpperCase();
+       if(lab.indexOf('HOLD')<0) bad.push('the bench button reads "'+(b.textContent||'')+'", which does not say it has to be held');
+       // TWO, THE REAL CLICK: spends nothing, his v11.75 rule, and now says why.
+       HUBSAY=''; b.dispatchEvent(new MouseEvent('click',{detail:1,bubbles:true}));
+       if(crafted()) bad.push('control: a real mouse click crafted, which his v11.75 order forbids');
+       if(!/[Hh]old/.test(String(HUBSAY||''))) bad.push('a real mouse click on the bench button said "'+String(HUBSAY||'')+'", which does not tell him to hold it');
+       // THREE, LETTING GO EARLY: through the real window mouseup, which is what his hand does.
+       stock(); b=select();
+       if(b&&b.onmousedown){
+         HUBSAY=''; b.onmousedown({button:0}); craftHoldStep(0.4);
+         window.dispatchEvent(new MouseEvent('mouseup',{bubbles:true}));
+         if(crafted()) bad.push('control: letting go at 0.4 s crafted anyway');
+         if(!/[Ss]oon|[Hh]old/.test(String(HUBSAY||''))) bad.push('letting go before the second was up said "'+String(HUBSAY||'')+'", so an early release is still silent');
+       } else bad.push('control: the bench button has no hold to drive');
+       // FOUR, THE TWO PATHS THAT MUST STILL WORK.
+       stock(); b=select();
+       if(b){ b.click(); if(!crafted()) bad.push('control: a synthetic click (the pad and Enter) no longer crafts'); }
+       stock(); b=select();
+       if(b&&b.onmousedown){ b.onmousedown({button:0}); craftHoldStep(0.6); if(crafted()) bad.push('control: the hold crafted before it was full'); craftHoldStep(0.6); if(!crafted()) bad.push('control: a full hold crafted nothing'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ craftHoldCancel(); }catch(_cc){}
+       try{ if(md) md.style.display=''; }catch(_md){}
+       try{ var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); }catch(_mm){}
+       P.stash=keepStash; if(keepSay!==null){ try{ HUBSAY=keepSay; }catch(_hs){} }
+       try{ saveProfile(); }catch(_sp){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.30',what:'the trigger never dies on a blanked belt cell 1: with the gun in hand bound to key 5 a click on the blank cell selects the gun cell and yields, the next click fires, and the empty-throwable yield lands on the gun cell rather than the blank (2026-09-07 audit P1)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__mouse)) return 'SKIP: this fixture cannot deploy';
+     if(typeof setHot!=='function'||typeof hotbarSlots!=='function'||typeof updatePlayer!=='function'||typeof hotSel!=='function') return 'SKIP: this build has no belt to drive';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, i;
+       g.ents.length=0; p.downed=false; p.iv=99;
+       if(!p.wep||!p.wep.id||p.wep.id==='fists') return 'SKIP: no gun in hand at the drop';
+       var gk='gun_'+p.wep.id; if(!ITEMS[gk]) return 'SKIP: no item for the gun in hand ('+gk+')';
+       // THE ROOM: the gun in his hands bound to key 5, which blanks the derived cell 1.
+       g.hotAssign={4:gk}; g.hotAuto={}; g.pouch.frag=0; g.pouch.smoke=0; g.pouch.decoy=0;
+       p.ammo=Math.max(p.ammo||0,5); p.reloading=0; p.jam=0; p.cooking=0; p.fired=false; p.trigYield=0;
+       p.wep.jam=0;   // the jam roll on the trigger pull would eat the shot this check counts; the raid ends before the gun is seen again
+       var sl=hotbarSlots();
+       if(!(sl[0]&&sl[0].kind==='empty')) return 'SKIP: binding the held gun to key 5 did not blank cell 1 (cell 1 is '+(sl[0]&&sl[0].kind)+')';
+       if(!(sl[4]&&sl[4].kind==='gun')) return 'SKIP: key 5 did not take the held gun (cell 5 is '+(sl[4]&&sl[4].kind)+')';
+       function press(frames){ mouse.down=true; for(var f=0;f<frames;f++) updatePlayer(0.016); }
+       function release(){ mouse.down=false; updatePlayer(0.016); }
+       // ARM A, THE RAID START: the highlight sits on the blank cell 1, as every raid begins.
+       G.hot=0; p.fired=false; p.trigYield=0; p.lastShot=-9999; var sh0=g.tel.shots||0;
+       press(1);
+       var c1=hotbarSlots()[hotSel()];
+       if(!(c1&&c1.kind==='gun')) bad.push('a click on the blank cell 1 left cell '+(hotSel()+1)+' ('+(c1&&c1.kind)+') selected instead of the gun in hand');
+       press(2); release();
+       if((g.tel.shots||0)!==sh0) bad.push('the click that raised the gun fired it on the same hold');
+       p.lastShot=-9999; press(2); release();
+       if(!((g.tel.shots||0)>sh0)) bad.push('the next click after the blank cell did not fire the gun (shots '+sh0+' to '+(g.tel.shots||0)+', cell '+(hotSel()+1)+' '+((hotbarSlots()[hotSel()]||{}).kind)+')');
+       // ARM B, THE v12.08 YIELD: an empty throwable cell selected; the yield must land on the gun cell, not the blank.
+       var fi=-1; sl=hotbarSlots(); for(i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='throw'&&!((sl[i].count|0)>0)){ fi=i; break; }
+       if(fi<0) bad.push('staging: no empty throwable cell on the belt');
+       else {
+         G.hot=fi; p.fired=false; p.trigYield=0; p.cooking=0; var sh1=g.tel.shots||0;
+         press(1);
+         var c2=hotbarSlots()[hotSel()];
+         if(!(c2&&c2.kind==='gun')) bad.push('the empty-throwable yield left cell '+(hotSel()+1)+' ('+(c2&&c2.kind)+') selected instead of the gun in hand');
+         press(2); release(); p.lastShot=-9999; press(2); release();
+         if(!((g.tel.shots||0)>sh1)) bad.push('after the empty-throwable yield the next click did not fire the gun');
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ mouse.down=false; }catch(_m){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.29',what:'a crawler that sees you bites when it reaches you: parked on patrol with 6.5 s of wander clock 120 units from a still, visible player it bites inside 2 s, the same with the clock at zero, and a crawler called in by packCall with 6.5 s of clock bites inside 3 s (2026-09-07 audit P1, his crawler note)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__ents)) return 'SKIP: this fixture cannot deploy and step';
+     if(typeof packCall!=='function'||typeof losClear!=='function'||typeof spotFree!=='function') return 'SKIP: no pack call or sight test in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, i, e=null;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'){ e=g.ents[i]; break; }
+       if(!e) return 'SKIP: no crawler on this map';
+       for(i=g.ents.length-1;i>=0;i--) if(g.ents[i]!==e) g.ents.splice(i,1);   // only the crawler moves in this room
+       p.downed=false; p.crouch=false; p.iv=0; keys={};
+       if(typeof refreshVseg==='function') refreshVseg();
+       // A spot 120 units out, clear of walls, with the sight line to him clear.
+       var spot=null, a;
+       for(a=0;a<16&&!spot;a++){ var ang=a*Math.PI/8, sx=p.x+Math.cos(ang)*120, sy=p.y+Math.sin(ang)*120; if(spotFree(g.map,sx,sy,24)&&losClear(sx,sy,p.x,p.y,g.vseg)) spot={x:sx,y:sy}; }
+       if(!spot) return 'SKIP: no clear spot 120 units from the drop';
+       function park(cd,state){
+         e.x=spot.x; e.y=spot.y; e.cd=cd; e.path=null; e.pathGoal=null; e.chaseHold=0; e.alert=0; e.state=state; e.role=null; e.roleT=0;
+         e.tx=e.x+(e.x-p.x)*4; e.ty=e.y+(e.y-p.y)*4;   // the wander target AWAY from him: within 30 units of it the idle branch zeroes the clock
+         e.face=Math.atan2(p.y-e.y,p.x-e.x);
+         p.hp=100; p.armor=0; p.iv=0; p.downed=false;
+       }
+       function firstBite(maxF){ var hp0=p.hp+(p.armor||0), f; for(f=0;f<maxF;f++){ __ents(1/60); if(p.hp+(p.armor||0)<hp0) return (f+1)/60; } return -1; }
+       // ARM A, THE FINDING: 6.5 s of wander clock, on patrol, in plain sight.
+       park(6.5,'patrol'); var tA=firstBite(600);
+       if(tA<0) bad.push('a patrolling crawler with 6.5 s of clock never bit a still, visible man 120 units away in 10 s (ended '+e.state+' at '+Math.round(dist(e,p))+' units)');
+       else if(tA>2) bad.push('a patrolling crawler with 6.5 s of clock took '+tA.toFixed(1)+' s to its first bite from 120 units, not under 2 s: it stood there serving out its wander clock');
+       // ARM B, CONTROL: the clock at zero, the same room.
+       park(0,'patrol'); var tB=firstBite(600);
+       if(tB<0||tB>2) bad.push('control: with the clock at zero the first bite took '+(tB<0?'more than 10':tB.toFixed(1))+' s, so this room cannot tell a stalled crawler from a slow one');
+       // ARM C: called in by another machine rather than by sight, with 6.5 s of clock.
+       park(6.5,'patrol'); var caller={x:p.x+50,y:p.y,kind:'sentry',state:'chase',alert:2.6}; packCall(caller,p.x,p.y);
+       if(e.state!=='chase') bad.push('staging: packCall did not put the crawler in chase');
+       var tC=firstBite(600);
+       if(tC<0||tC>3) bad.push('a crawler called in by packCall with 6.5 s of clock took '+(tC<0?'more than 10':tC.toFixed(1))+' s to its first bite from 120 units, not under 3 s');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.28',what:'a Peddler purchase says where it went: a bought rifle names the belt key autoBelt pinned it to, a medkit with no key set says In your backpack, and a medkit on key 6 says key 6, with the credits falling by the prices (his note of 2026-09-07: purchases did not show up in the inventory)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';

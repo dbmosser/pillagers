@@ -1,0 +1,15 @@
+v12.31: his note, the bench says to hold the button
+
+"crafting progress bar is not working correctly, can't craft items at all".
+The machinery is sound: a real press starts the hold, the loop fills it, and
+a full second crafts and spends correctly, and the fill does show, because
+the hover rule drops the button under it. What was wrong is that the bench
+said none of it. The button read CRAFT, a real mouse click spends nothing by
+his v11.75 order and said nothing, and letting go early cancelled in
+silence, so every natural reaction to a dead-looking button got silence. The
+label now reads HOLD TO CRAFT, a click says to hold it down, and an early
+release says it was let go too soon. Check 12.31 requires HOLD in the label,
+a spoken line with no craft on a real click and on an early release, and the
+synthetic click and the full hold still crafting; fails on v12.30.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

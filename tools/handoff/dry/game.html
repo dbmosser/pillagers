@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.28';
+var VER='12.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,14 @@ var VER='12.28';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.28';
+var WHATSNEW_VER='12.32';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
+  'THE BENCH SAYS HOLD TO CRAFT ON THE BUTTON, because holding it is what crafts. A click on its own still spends nothing, as you asked, but it now says so instead of doing nothing, and so does letting go too soon.',
+  'THE TRIGGER NO LONGER DIES WHEN THE GUN IN YOUR HANDS IS BOUND TO ANOTHER KEY. Cell 1 goes blank then, and every fall-back to it landed on nothing; the fall-back finds the cell that holds your gun now, and a click on a blank cell raises the gun the way a click on an empty grenade cell does.',
+  'A CRAWLER THAT SEES YOU BITES WHEN IT REACHES YOU. It used to stand next to you for up to seven seconds first, serving out the clock it had rolled for its next wander.',
   'A PEDDLER PURCHASE NOW SAYS WHERE IT WENT: on your tactical belt, key N, or in your backpack. A bought gun is pinned to a free belt key, and the backpack grid keeps a belted item off its cells, which is why a rifle you paid for was not in the backpack.',
   'DRAGGING AN ITEM FROM THE STASH TO THE BACKPACK WHEN ITS TACTICAL BELT KEY IS STILL SET FROM THE LAST RAID NOW LANDS ON THAT KEY, half the stack, and says so. A set key with nothing packed shows a 0. In a raid, pressing a key whose item you have used up says No <item> left.',
   'TAKING THE FREEBIE KIT AT THE STASH AND THEN CONFIRMING IT AGAIN AT THE LIFT NO LONGER THROWS AWAY THE PACKING KEPT ASIDE FOR YOU. A run that ends badly gives that packing back, as it was meant to.',
@@ -8487,6 +8491,7 @@ function packCall(caller,px,py){
     joined++;
     e.tx=px; e.ty=py;
     e.alert=Math.max(e.alert,2.6);
+    if(e.kind==='crawler'&&e.cd>0.3) e.cd=0.3;   // v12.29: the called crawler does not carry its wander clock into the rush
     e.state='chase';
     e.roleT=rnd(ROLE_T[0],ROLE_T[1]);
     if(e.kind==='crawler'){ e.role='rush'; }
@@ -13413,6 +13418,16 @@ function useArmor(){
   blip('pick');
 }
 function hotSel(){ return clamp(G.hot||0,0,hotbarSlots().length-1); }
+// v12.30, audit P1: THE CELL THAT HOLDS THE GUN IN YOUR HANDS. Cell 1 is only
+// that cell while nothing is assigned over it; bind the held gun to key 5 and
+// the dedupe blanks cell 1, so a fall-back to 0 by number landed on an empty
+// cell and the trigger died there. The same loop swapGuns uses; 0 when no
+// cell holds the gun at all (items assigned over both), which is the old answer.
+function gunCell(){
+  var sl=hotbarSlots();
+  for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='gun'&&sl[i].inHand) return i;
+  return 0;
+}
 function setHot(i){
   var sl=hotbarSlots();
   i=clamp(i,0,sl.length-1);
@@ -14650,14 +14665,25 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     // hand; release throws whatever fuse is left. Everything else on the hotbar
     // keeps the single-shot press behaviour it has always had, because a bandage
     // has nothing to hold down for.
-    if(HSC&&HSC.kind==='throw'){
+    // v12.30, audit P1: AN EMPTY CELL DOES NOT OWN THE TRIGGER EITHER. The raid
+    // starts with the highlight on cell 1, and with the held gun bound to a
+    // higher key that cell is blank, so the first click of the raid fired
+    // nothing. The same rule as the empty throwable cell below: the press
+    // selects the gun and yields; the next click fires it.
+    if(HSC&&HSC.kind==='empty'){
+      if(!p.fired){
+        p.fired=true; setHot(gunCell()); p.trigYield=1;
+        if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
+      }
+    }
+    else if(HSC&&HSC.kind==='throw'){
       // v12.08: AN EMPTY THROWABLE CELL DOES NOT OWN THE TRIGGER. Selected empty
       // (cells 3 to 5 on a first raid), the press started nothing and said
       // nothing, or cooked a different grenade than the cell named. By v2.92's
       // own rule the press selects the gun; the next click fires it, never this
       // one, which is the automatic-weapon safety that rule was written for.
       if(!p.cooking&&!p.fired&&!((HSC.count|0)>0)){
-        p.fired=true; setHot(0); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded
+        p.fired=true; setHot(gunCell()); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded; v12.30: the cell that holds it, not cell 1 by number
         if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
       }
       else if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
@@ -14673,7 +14699,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // Emptied by that use? Fall back to the gun for the NEXT click.
       if(_hadCount!==null&&_hadCount!==undefined){
         var _now=hotbarSlots()[hotSel()];
-        if(_now&&_now.count===0) setHot(0);
+        if(_now&&_now.count===0) setHot(gunCell());   // v12.30: the cell that holds the gun, not cell 1 by number
       }
     }
   }
@@ -14730,7 +14756,7 @@ if(!p.fired||p.wep.auto){
     if(p.cooking){
       releaseCook();
       var _ns=hotbarSlots()[hotSel()];
-      if(_ns&&_ns.count===0) setHot(0);
+      if(_ns&&_ns.count===0) setHot(gunCell());   // v12.30: the cell that holds the gun, not cell 1 by number
     }
     p.fired=false;
   }
@@ -16098,6 +16124,7 @@ if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
     if(e.muzzle>0) e.muzzle-=dt;
 if(e.state==='possum'){
       if(!p.downed&&dist(e,p)<95){
+        if(e.kind==='crawler'&&e.cd>0.3) e.cd=0.3;   // v12.29: a crawler that was playing dead bites on waking, not after its old clock
         e.state='chase'; e.alert=4; e.tx=p.x; e.ty=p.y;
         if(!G.sim){ sfx('seen',e.x,e.y); say('It was playing dead.'); }
       // v8.60, audit: unless it is already dead. This skipped straight past the
@@ -16997,6 +17024,11 @@ var _rdS=G.shells[_rdi];
         // rather than on arrival, so a man who reacquires halfway through a sweep
         // gets a fresh one when he next loses him.
         if(e.searchArc!==undefined){ delete e.searchArc; delete e.searchX; delete e.searchY; }
+        // v12.29, audit P1: a crawler's wander clock is the same field as its
+        // bite cooldown, and it came into the chase with up to seven seconds
+        // left on it. The first bite waits no longer than the clock a bite
+        // itself sets. Crawlers only (a sentry's first shot is a balance call).
+        if(e.kind==='crawler'&&e.state!=='chase'&&e.cd>0.3) e.cd=0.3;
         e.state='chase'; e.alert=2.4; e.tx=p.x; e.ty=p.y;
       }
     }
@@ -21060,7 +21092,15 @@ if(G.map.story){
     var _fp=G.prints[i],_fa=clamp(1-_fp.t/6,0,1)*0.35;
     // v8.85, HIS NOTE: not a pillager's trail through a wall. Same gate the
     // pillager himself goes through a few lines above. Yours is always drawn.
-    if(!_fp.mine&&!canSee(p.x,p.y,p.face,_fp.x,_fp.y,G.vseg)) continue;
+    // v12.32, HIS NOTE: "many-footprints glitch is still happening while running
+    // vertically". Sprinting laid two trails: his real boot prints, stamped every
+    // 56 units and rotated to his path (v10.55), and these, taken every 34 and
+    // painted as two rectangles that are never rotated, so they read as a second
+    // set of feet only when his path happens to point the way they are drawn.
+    // His own are not painted any more; the list is untouched, so the trackers
+    // that smell it are untouched. The marks a pillager leaves still draw, which is v8.85.
+    if(_fp.mine) continue;
+    if(!canSee(p.x,p.y,p.face,_fp.x,_fp.y,G.vseg)) continue;
     if(inWater(_fp.x,_fp.y)){
       // v7.59: no boot marks ON water - a brief ring, then nothing. Draw-side
       // only: the list itself still exists for the AI that smells it.
@@ -28735,7 +28775,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.28: his note of 2026-09-07 (Peddler purchases, an Auto Rifle among them, did not show up in the inventory): the purchase is sound, but autoBelt pins a bought gun or stim to the first empty belt cell, his own plan claims anything he has bound, and the backpack grid keeps a belt-claimed copy off its cells, so the rifle he paid for was on the belt and not in the backpack he opened, and the line said only Bought X for Y. The line now says On your tactical belt, key N, or In your backpack. Check 12.28 opens a stall with a fixed stock in a raid, buys a rifle and requires the line to name a belt key, buys a medkit with no key set and requires In your backpack, sets key 6 to medkit and buys another and requires key 6; fails on v12.27. NOT built: the run report line Spent at the stall still does not name what was bought.',
+  now:'v12.32: his note of 2026-09-07 (many footprints while running vertically): sprinting lays two trails. The boot prints he is meant to see are decals, one every 56 units of ground covered, rotated to his path and capped at 70. The other is G.prints, the scent list a tracker smells, one every 34 units while sprinting, painted as two rectangles that are never rotated, so they read as a pair of boots walking up the screen: perpendicular ticks when he runs across, a second set of footprints interleaved with the real ones when he runs up or down. His own scent marks are no longer painted; the marks a pillager leaves still are, which is his v8.85 feature, and the list itself is untouched so nothing that smells it changes. Check 12.32 sprints him north through the real keys and loop, counts the marks painted from each list by watching the canvas, and requires the second trail to be gone with the real prints still there and G.prints still filling; fails on v12.31.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31661,7 +31701,13 @@ function craftHoldStep(dt){
 }
 // Letting go anywhere at all cancels, not only on the button, or a release off
 // the edge would leave it filling to a purchase he did not make.
-try{ window.addEventListener('mouseup',function(){ craftHoldCancel(); }); }catch(_chm){}
+try{ window.addEventListener('mouseup',function(){
+  // v12.31, HIS NOTE: letting go before the second is up cancelled in silence,
+  // which is the same dead press from his side. It says so, once, and only for
+  // a press that had really started; a completed hold has cleared itself above.
+  if(craftHold&&craftHold.t>0.12&&craftHold.t<CRAFT_HOLD){ try{ say2('Let go too soon. Hold it for a full second.'); }catch(_cu){} }
+  craftHoldCancel();
+}); }catch(_chm){}
 function renderCraftDetail(rows){
   var d=document.getElementById('craftdetail'); if(!d) return;
   var row=rows[P._craftSel||0]; if(!row){ d.innerHTML=''; return; }
@@ -31706,7 +31752,9 @@ function renderCraftDetail(rows){
   d.innerHTML=h;
   var b=document.createElement('button');
   b.className='vbuy';
-  b.textContent=(kind==='repair')?'SERVICE':'CRAFT';
+  // v12.31, HIS NOTE: it read CRAFT, which reads like a button you click, and a
+  // click spends nothing by his v11.75 order. The label is the instruction now.
+  b.textContent=(kind==='repair')?'HOLD TO SERVICE':'HOLD TO CRAFT';
   b.disabled=btn?btn.disabled:true;
   if(btn&&!btn.disabled){
     // v11.75, HIS NOTE: a click no longer spends anything. The hold does.
@@ -31715,7 +31763,9 @@ function renderCraftDetail(rows){
     // v12.17: the pad presses a control with a synthetic click and the
     // keyboard with Enter, both with detail 0; a real mouse click has detail
     // 1 or more and still spends nothing, the hold is its way.
-    b.onclick=function(e){ if(e&&e.detail) return; btn.click(); };
+    // v12.31, HIS NOTE: a real mouse click still spends nothing, his v11.75
+    // rule, but it used to return in silence, so the bench looked broken.
+    b.onclick=function(e){ if(e&&e.detail){ try{ say2('Hold it down for a second. A click on its own spends nothing.'); }catch(_cs){} return; } btn.click(); };
     b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' ('+CRAFT_HOLD+' second'+(CRAFT_HOLD===1?'':'s')+')';
   }
   d.appendChild(b);

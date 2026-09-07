@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.26';
+var VER='12.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.26';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.26';
+var WHATSNEW_VER='12.27';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'DRAGGING AN ITEM FROM THE STASH TO THE BACKPACK WHEN ITS TACTICAL BELT KEY IS STILL SET FROM THE LAST RAID NOW LANDS ON THAT KEY, half the stack, and says so. A set key with nothing packed shows a 0. In a raid, pressing a key whose item you have used up says No <item> left.',
   'TAKING THE FREEBIE KIT AT THE STASH AND THEN CONFIRMING IT AGAIN AT THE LIFT NO LONGER THROWS AWAY THE PACKING KEPT ASIDE FOR YOU. A run that ends badly gives that packing back, as it was meant to.',
   'THE CREDITS AND XP READOUT NOW SCALES WITH YOUR MONITOR AND THE TEXT SIZE SETTING, like every window. So do the answer line in the Undercroft and the label under the pointer while you drag. They were 1080p pixels on a 4K screen.',
   'WITH THE RAID CLOCK SWITCHED OFF, THE EXTRACTION WINDOW IS THE FULL THIRTY SECONDS. It used to shut after three, and the call said the clock would run out first.',
@@ -13485,7 +13486,9 @@ function useHot(){
     }
     // v6.70: an equipped gun is not in the bag, and bailing on that made the belt key
     // for a gun you are holding do nothing. Everything else still needs the bag.
-    if(ix<0&&!(ait.use==='gun')) return;
+    // v12.27, HIS NOTE: the dark cell v9.03 keeps for a spent item answered its
+    // key with silence, which read as a dead key. It says what is missing.
+    if(ix<0&&!(ait.use==='gun')){ say('No '+ait.name+' left.'); return; }
     if(ait.use==='heal'){
       // Same inbound-aware guard as useMedical; this path names ONE item so it
       // cannot just delegate, but it must not overfill either.
@@ -28724,7 +28727,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.26: his note of 2026-09-07 (the loadout did not all come back): the stash button (v12.16) empties the packing into P.kitSaved when the freebie kit is taken there, and the lift question, which still offers FREEBIE KIT, re-snapshotted the emptied kit over it, so commitKit kept an empty list and the death restore gave nothing back and said nothing. The lift answer keeps the packing aside only when the kit is not already taken, the stash button rule. Check 12.26 takes the kit at the stash for real, answers FREEBIE KIT at the lift, requires the three packed items to be the list kept for the restore, then starts the raid, ends it dead, and requires the backpack to hold them again with the card saying so; fails on v12.25. The belt half of his note (keys unbound after the restore) is the parked build 1227.',
+  now:'v12.27: his note of 2026-09-07 (bandages did not come over): the belt plan outlives the raid but the packing does not, so a key can sit on an item with none packed; the backpack column hides one packed copy per key, so the single copy a stash drop packed vanished into that hide with no cell, no count and no words, and the plan cell drew the phantom key like a packed one. A drop for an item on an empty key now takes the belt-cell route (half the stack, a line naming the key), a set key with nothing packed shows a 0, and a spent belt key in a raid says No item left instead of nothing. The v9.03 dark cell is unchanged pending his ruling (answer 16 said stay dark; the note says disappear). Check 12.27 binds Bandage to key 3 with none packed, drops one from the stash onto the backpack and requires a visible count, the key named and the plan x-count; a drop with no key bound must still pack one; in a raid a spent Bandage key must say No Bandage left; fails on v12.26.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29702,6 +29705,21 @@ function renderKitCol(){
     var held=0; for(var i=0;i<P.stash.length;i++) if(P.stash[i]===key) held++;
     var picked=0; for(var j=0;j<live.length;j++) if(live[j]===key) picked++;
     if(picked>=held){ say2('You only have '+held+' of those.'); return; }
+    // v12.27, HIS NOTE: "I just tried to drag bandaids and they didn't come over".
+    // The belt plan outlives the raid (v8.64) but the packing does not (commitKit),
+    // so a key can sit on an item with none packed; the backpack column hides one
+    // copy per key (v6.60), and the single copy this drop packed vanished into
+    // that hide: no cell, no count, no words. A drop for an item on an empty key
+    // is putting it on that key, so it takes the belt-cell route: half the stack
+    // (v11.96) and a line that says where it went.
+    var _bk=-1; for(var _bq in (P.hotAssign||{})) if(P.hotAssign[_bq]===key) _bk=+_bq;
+    if(_bk>=0&&packedCount(key)<1){
+      var _bw=planPut(_bk,key);
+      if(_bw){ say2(_bw); try{ sfx('clank'); }catch(e){} return; }
+      var _bn=packedCount(key);
+      say2(_bn+' '+ITEMS[key].name+(_bn>1?'s':'')+' packed, on key '+(_bk+1)+'.');
+      try{ sfx('pick'); }catch(e){} renderHub(); return;
+    }
     P.kit.push(key); saveProfile(); try{ sfx('pick'); }catch(e){} renderHub();
   });
   col.ondrop=function(ev){
@@ -29716,6 +29734,15 @@ function renderKitCol(){
     var held=0; for(var i=0;i<P.stash.length;i++) if(P.stash[i]===key) held++;
     var picked=0; for(var j=0;j<live.length;j++) if(live[j]===key) picked++;
     if(picked>=held){ say2('You only have '+held+' of those.'); return; }
+    // v12.27: the same rule on the HTML5 twin of the drop above.
+    var _bk2=-1; for(var _bq2 in (P.hotAssign||{})) if(P.hotAssign[_bq2]===key) _bk2=+_bq2;
+    if(_bk2>=0&&packedCount(key)<1){
+      var _bw2=planPut(_bk2,key);
+      if(_bw2){ say2(_bw2); return; }
+      var _bn2=packedCount(key);
+      say2(_bn2+' '+ITEMS[key].name+(_bn2>1?'s':'')+' packed, on key '+(_bk2+1)+'.');
+      renderHub(); return;
+    }
     P.kit.push(key); saveProfile(); renderHub();
   };
 }
@@ -30144,6 +30171,9 @@ function hotPlanHTML(where){
       // v11.96, HIS ORDER: how many are coming, on the cell, so a key on a stack
       // reads as a stack. One is silent; the key number already says it is set.
       ((it&&packedCount(k)>1)?'<span style="position:absolute;left:2px;top:0;font-size:10.5px;color:var(--amber)">x'+packedCount(k)+'</span>':'')+
+      // v12.27, HIS NOTE: a key on an item with none packed looked exactly like a
+      // packed one; it says 0 now, so the drop above and this cell tell one story.
+      ((it&&packedCount(k)<1)?'<span style="position:absolute;left:2px;top:0;font-size:10.5px;color:var(--rust)">0</span>':'')+
       '</div>';
   }
   h+='</div>';
