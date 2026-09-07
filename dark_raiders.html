@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.22';
+var VER='12.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.22';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.22';
+var WHATSNEW_VER='12.23';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'GOING DOWN LETS GO OF THE GRENADE YOU WERE COOKING. It flies where you were aiming with the fuse it has burned; the clock no longer freezes over you, and you do not get up holding a live one.',
   'P RESUMES A PAUSED RAID, the way the pause box says. The box used to hand the keyboard to its note the moment it opened, so a second P typed a letter into the note; click the note to write one. While the box is up, no other key touches the raid.',
   'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
   'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
@@ -12222,6 +12223,13 @@ function damagePlayer(amt,src,srcName,sx,sy){
   G.shake=Math.max(G.shake,4+7*_sev);
   blip('hit'); decal(p.x+rnd(-10,10),p.y+rnd(-10,10),'#7a1a14',rnd(6,13));
   if(p.hp<=0){
+    // v12.23: A MAN GOING DOWN LETS GO OF WHAT IS IN HIS HAND. The cook clock and
+    // the release both live past the downed return in updatePlayer, so a grenade
+    // cooking at the moment of the hit froze with its fuse on screen for the whole
+    // bleed-out and came back live, fuse half burned, on the self-revive. The pin
+    // is out, so it goes the way a release sends it, with the time it has cooked
+    // (2026-09-06 in-raid audit). killPlayer has dropped a cook on a death all along.
+    if(p.cooking) releaseCook();
 p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null;
   (function(){
     if(G.sim) return;
@@ -28707,7 +28715,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.22: first-ten-minutes audit: the pause box handed the keyboard to its note the moment it opened, so the second P, the key its own legend names, typed a letter into the note and the raid stayed paused; only ESC or the button got out. The box no longer takes the keyboard (the note is a click away) and while it is up no key but P and ESC reaches the raid. Check 12.22 opens the box by the key with its timers run at once, sends P to whatever holds the keyboard and requires the raid to resume, and requires M with the box up to leave the map shut; fails on v12.21.',
+  now:'v12.23: in-raid audit: a grenade cooking at the moment you went down froze with its clock on screen for the whole bleed-out and came back live on the self-revive, because the down branch cleared the heal in progress and not the cook. Going down lets go of it: the throw leaves the hand with the fuse it has burned, the same as releasing the button. Check 12.23 cooks a frag for half a second, puts him down, and requires one throw carrying that half second, no cook left in hand, no COOKING clock painted, and a self-revive that stands him up empty-handed; fails on v12.22.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
