@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v12.16 (be4ade4). The tree has **v12.17 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v12.17 (8dccc9d). The tree has **v12.18 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-2" (the tab named seed hung on 2026-09-06 12:40 and was closed).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1217 cm1217.txt
+    bash tools/handoff/ship.sh commit 1218 cm1218.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1217 1218
+    bash tools/handoff/ship.sh start 1218 1219
 and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -24,6 +24,7 @@ usual cause (see memory dark-raiders-loader-replaces-the-profile).
 - **1207 HIS NOTE: A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING** (chaseHold overtime while more than 40 units from the last sighting; dial chaseHold, 0 = old clock). Written 16:45, NOT yet dry-run: dry.ps1 1207 1221 + dry/mk.ps1 + checks 12.07 to 12.21 on :8801 (tab "tab-3") BEFORE ship.sh start 1206 1207.
 - **1208 THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL** (was 1219), **1209 BROWSING THE BACKPACK NO LONGER WALKS YOU** (was 1220), **1210 THE SECOND DOWN TELLS THE TRUTH** (was 1214), **1211 ESC CLOSES THE OPEN BACKPACK ON THE FLOOR** (was 1216), **1212 A DEATH BANKS THE XP ITS CARD PRINTS** (was 1218), **1213 THE LIFT FREEBIE KIT CLEARS THE BELT PLAN** (was 1215; it writes P.kitSaved that only 1216 reads, harmless), **1214 THE CONTROLS CARD STOPS TEACHING A DEAD KEY** (was 1217).
 - **1215 to 1221 POLISH** (were 1207 to 1213: safe pocket, freebie kit restore, controller craft, bench guns pill, station heading, bigger blast leftovers, map says EXTRACT NOW).
+- **1222 P RESUMES A PAUSED RAID, AS THE BOX SAYS** (first-ten-minutes audit, the last undrafted item on its list; drafted 2026-09-06 19:58 while the v12.18 corpus ran: the box no longer focuses its note on open, raidKey answers only P and ESC while pauseOpen). verifychain 1219..1222 from v12.18 printed chain verified. NOT yet dry-run: dry.ps1 1219 1222 + dry/mk.ps1 + checks 12.19 to 12.22 on :8801 between corpora.
 - verifychain.ps1 -First 1207 -Last 1221 -Ver 12.06 -Wn 12.06 printed "chain verified" at 16:44.
 
 **CURRENT QUEUE (2026-09-06 14:45, REORDERED by renum1219.ps1 so his two direct afternoon notes ship before alpha; this list outranks every older list below):**

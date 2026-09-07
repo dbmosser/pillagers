@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.17';
+var VER='12.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,7 +1365,7 @@ var VER='12.17';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.17';
+var WHATSNEW_VER='12.18';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1404,7 +1404,7 @@ var WHATSNEW=[
   'HEALING STACKS AGAIN. The next bandage goes on while the prior one is still healing, and a plate goes on while a bandage is being applied. The one-at-a-time refusal and its countdown are gone.',
   'THE KILLED IN ACTION CARD NO LONGER COUNTS THE SEAL-CUTTING LOST WITH YOU. A cut still banks only when you walk out.',
   'THE HUM AFTER AN EXTRACTION IS GONE. The frame that ended the raid was writing the raid ambience back up after it had been cut, and the level held on the floor.',
-  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG and Burst Carbine in green, the Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
+  'FOUR GUNS ON THE CRAFTING BENCH: the Compact SMG in green, the Burst Carbine, Auto Rifle and Riot Scattergun in blue. Moderately expensive in parts. Purple and gold guns are still the Peddler and the surface.',
   'THE CREDITS AND XP READOUT IN THE CORNER IS TWICE THE SIZE, on the floor and in a raid. The CONDITIONS box starts below it.',
   'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 115 at the centre, was 85; to you 80 at the centre, was 60. The fuse is still 1.1 seconds.',
   'THE SCAV PISTOL IS HALF PRICE IN THE SHOP: 1800 credits, down from 3600. Say the number you want and it moves again.',
@@ -1979,12 +1979,12 @@ var TAGS=[
 // that decides what is salvage can ask rather than carry its own copy.
 var REPAIR_PARTS={light:'comp',heavy:'servo'};
 function craftPart(k){
-  // v9.43: the servo is out. It appears in no recipe and in no rack, and the one
-  // thing it was for was repairing guns that have not worn since v9.01. Being a
-  // craft part is what made SELL ALL refuse it and made the stash tell him to KEEP
-  // it, so the item whose entire purpose had been deleted was also the item the
-  // game insisted he hoard. It is salvage now, and salvage sells for 310.
-  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp';
+  // v9.43 took the servo out: it was in no recipe and its one use, repairs, had
+  // gone with wear at v9.01, so keeping it was hoarding for nothing.
+  // v12.18: it is back, and the optic with it, because the four gun recipes of
+  // v11.79 eat the servo and one of them the optic; SELL ALL keeps them and
+  // the stash says what for.
+  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp'||k==='servo'||k==='optic';
 }
 function craftUse(k){
   // v5.87: completed against RECIPES and RACK_COST. Every one of these was true
@@ -1994,6 +1994,8 @@ function craftUse(k){
   if(k==='cell')  return 'ammunition, smoke, frags, mainframe racks';
   if(k==='board') return 'armour plates and mainframe racks';
   if(k==='comp')  return 'plates, medkits, smoke, decoys and frags';
+  if(k==='servo') return 'guns on the bench, and contracts';   // v12.18
+  if(k==='optic') return 'the Auto Rifle, and contracts';      // v12.18
   return 'crafting';
 }
 var RECIPES=[
@@ -28684,7 +28686,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.17: from the read-only review of the shipped v11.75, the hold-to-craft build deleted the only way a controller (a synthetic click from the pad) could press CRAFT. A click handler that answers only synthetic clicks (detail 0) is back; a real mouse click still spends nothing. The hold also dies when the trader window is hidden, the tooltip reads CRAFT_HOLD, and the card no longer describes a SERVICE button the game cannot draw. Check 12.17 crafts through a synthetic click (the pad press), requires a detail-1 click to spend nothing, and requires a hold to die when the window is hidden; fails on v12.16.',
+  now:'v12.18: from the read-only review of the shipped v11.79, the bench guns told truthfully: the Burst Carbine is blue by the rarity every screen shows, so the bench holds one green and three blue and the card says so; the detail panel describes a crafted gun as a gun with its shown rarity; craftPart and craftUse know the servo and the optic again, so the stash keeps them and says for what; the shop panel adds that three of its unstocked guns can be built. The same build repairs check 11.79 (rarity through dispR, purchase price through replaceCost) and the v9.43 check that asserted a servo is in no recipe. Check 12.18 reads the bench through dispR, the blurb, the detail pill and the stash reasons; fails on v12.17.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31309,6 +31311,10 @@ function renderShopDetail(rows){
        '<b style="color:#c9962c">The Whisper and the Meridian Lance are not stocked by '+
        'anyone down here. Wirt puts one on his counter now and again, and otherwise '+
        'they are found up top or not at all.</b></div>';
+    // v12.18: two of those, plus the SMG and the Auto Rifle, can be built now
+    // (v11.79); a separate line, because the sentence above is a key for his
+    // own rewording of it.
+    h+='<div class="vdesc">The Compact SMG, the Burst Carbine, the Riot Scattergun and the Auto Rifle can all be built at the crafting bench.</div>';
   } else {
     var it=ITEMS[o.k];
     h+='<div class="vdesc">'+escHtml(it?(itemBlurb(o.k)||''):'')+'</div>';
@@ -31369,6 +31375,7 @@ function itemBlurb(k){
   if(it.use==='throw') return 'Thrown. Goes on a tactical belt key.';
   if(it.use==='ammo') return 'Refills a magazine from your backpack.';
   if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
+  if(it.use==='gun') return 'A gun. Equip it from the stash, or sell it at the terminal.';   // v12.18: the bench makes these now
   if(it.use==='key') return 'Opens one locked room.';
   if(craftPart(k)) return craftUse(k)||'Crafting material.';
   return 'Salvage. Sell it at the terminal for credits and XP.';
@@ -31613,7 +31620,7 @@ function renderCraftDetail(rows){
     var oit=ITEMS[outKey];
     h+='<div class="vpills"><span class="vpill">'+
        escHtml((oit&&ICLASS[oit.use])?ICLASS[oit.use].t:'CRAFTED')+'</span>'+
-       '<span class="vpill r">'+escHtml(String((oit&&oit.r)||'common').toUpperCase())+'</span></div>'+
+       '<span class="vpill r">'+escHtml(String(((typeof dispR==='function')&&dispR(outKey))||(oit&&oit.r)||'common').toUpperCase())+'</span></div>'+   // v12.18: the shown rarity
        '<h4>'+escHtml(r.name)+'</h4>'+
        '<div class="vdesc">'+escHtml(oit?(itemBlurb(outKey)||''):'')+
        (outN>1?(' Makes '+outN+'.'):'')+'</div>'+
