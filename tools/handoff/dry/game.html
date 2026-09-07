@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.21';
+var VER='12.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.21';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.21';
+var WHATSNEW_VER='12.22';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'P RESUMES A PAUSED RAID, the way the pause box says. The box used to hand the keyboard to its note the moment it opened, so a second P typed a letter into the note; click the note to write one. While the box is up, no other key touches the raid.',
   'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
   'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
   'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear, at the counter or at the lift, and it is all still there.',
@@ -10591,6 +10592,12 @@ window.addEventListener('keydown',function(e){
 // when the caller is not a real key press and there is nothing to preventDefault.
 function raidKey(code,repeat,ev){
   keys[code]=true;
+  // v12.22: NOTHING IN THE RAID ANSWERS A KEY WHILE THE PAUSE BOX IS UP, except
+  // the two keys its legend names. Until v12.22 the box handed the keyboard to
+  // its note on open, so no key reached here; now that it does not, M, Q, C and
+  // the digits would act on a paused raid, and a note typed without clicking
+  // the box first would open the map and swap the belt. The floor rule (v8.16).
+  if(pauseOpen&&code!=='KeyP'&&code!=='Escape'){ if(ev) ev.preventDefault(); return; }
   // The emote bar owns the number row while it is up, same rule as the stall.
   if(G&&!G.over&&!G.trade&&G.emoteBar){
     if(code==='KeyV'||code==='Escape'){ if(ev) ev.preventDefault(); G.emoteBar=false; return; }
@@ -11503,7 +11510,11 @@ function togglePauseBox(on){
     if(_cs) _cs.style.display=(_inRaid||_bleed)?'none':'';
   })();
   syncPause();
-  if(on){ keys={}; mouse.down=false; setTimeout(function(){ document.getElementById('pausenote').focus(); },40); }
+  // v12.22: THE BOX NO LONGER TAKES THE KEYBOARD ON OPEN. It used to focus its
+  // note 40 ms in, and the key handler drops every key aimed at a text field, so
+  // the second P (the key the legend names) typed a p into the note and the raid
+  // stayed paused. The note is a click away; ESC still leaves from inside it.
+  if(on){ keys={}; mouse.down=false; }
 }
 // v7.68: Escape closes the pause box even while the note textarea is focused -
 // capture phase, so the box cannot trap the keyboard.
@@ -28696,7 +28707,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.21: from the read-only review of the shipped v11.74, the sector map still said OPEN TO EXTRACT under a landed ring, and with the map open that is the only boarding line the player can read. It says EXTRACT NOW with the seconds left, the banner wording. Check 12.21 records what the map draws under a ring in the hold and requires the new words and not the old; fails on v12.20.',
+  now:'v12.22: first-ten-minutes audit: the pause box handed the keyboard to its note the moment it opened, so the second P, the key its own legend names, typed a letter into the note and the raid stayed paused; only ESC or the button got out. The box no longer takes the keyboard (the note is a click away) and while it is up no key but P and ESC reaches the raid. Check 12.22 opens the box by the key with its timers run at once, sends P to whatever holds the keyboard and requires the raid to resume, and requires M with the box up to leave the map shut; fails on v12.21.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

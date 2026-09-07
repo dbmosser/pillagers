@@ -1,0 +1,11 @@
+v12.24: the clock switched off is not a clock at zero
+
+With the raid clock OFF (v9.35) timeLeft sits at 0 and two readers took
+that for one second left: the boarding window came out at 3 seconds
+instead of 30 and every call said the clock would run out first. Both ask
+whether there is a clock before reading it. Check 12.24 calls and lands the
+ship with the clock off and requires the full window and the plain call
+line, and with the clock on at 12 s left requires the window of 11; fails
+on v12.23.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

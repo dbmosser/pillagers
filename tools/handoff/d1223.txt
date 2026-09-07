@@ -1,0 +1,39 @@
+## v12.23 - GOING DOWN LETS GO OF THE GRENADE
+
+From the 2026-09-06 read-only in-raid audit (P2 WRONG STATE: going down
+mid-cook freezes the fuse for the whole bleed-out), verified by reading at
+v12.19.
+
+WHAT IT WAS. damagePlayer's down branch cleared the heal in progress, the
+pull on the boarding ring and the thing being prepared (p.prep), and left
+the cook alone: p.cooking, p.cookT and p.cookKind rode into the bleed-out
+untouched. The cook clock and the release both sit past the downed return
+in updatePlayer, so nothing advanced the fuse and nothing let go of it. The
+COOKING clock, drawn over the player whenever something is cooking, stayed
+painted over the man on the floor with the same number for the whole
+bleed-out, and the one self-revive stood him up still holding the grenade,
+fuse half burned, the clock running again from where it froze. killPlayer
+has dropped a cook on a death since the pin-out rule was written; the down
+never did. He has died to his own grenade twice in his exports; this is
+one more way to.
+
+THE BUILD. A man going down lets go of what is in his hand. The pin is out,
+so the grenade goes the way a release sends it, the same verb as letting go
+of the button: toward the aim, stopping at the first wall, carrying the time
+it has cooked. Smoke and decoy have no fuse and leave the hand the same way.
+One line in the down branch, before the fall is recorded, so the throw is
+made by a man still standing.
+
+MEASURED. Check 12.23 deploys, puts a frag in the pouch, selects it, aims
+200 units east, pulls the pin and burns half a second, then lands a real hit
+that takes him to the floor. It requires him down, nothing cooking, exactly
+one throw added and that throw a frag carrying 0.5 s of cook, no text
+beginning COOKING painted by the frame or the HUD over him, and a
+self-revive that stands him up empty-handed. Control: the same hit with
+nothing in hand adds no throw. On the v12.22 fixture he goes down still
+cooking, no throw leaves his hand, the COOKING clock is painted, and he gets
+up holding it.
+
+Not verified: his own eye on the throw leaving a falling man; the flight of
+that throw, which is the ordinary throw path; a death (not a down) while
+cooking, which killPlayer has always dropped silently and still does.

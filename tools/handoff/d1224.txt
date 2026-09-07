@@ -1,0 +1,36 @@
+## v12.24 - THE CLOCK SWITCHED OFF IS NOT A CLOCK AT ZERO
+
+From the 2026-09-06 read-only in-raid audit (P2 TEXT vs CODE: with the raid
+clock set to OFF the boarding window is 3 seconds, not 30), verified by
+reading at v12.19.
+
+WHAT IT WAS. v9.35 gave the raid clock an OFF position on his order that
+nothing should be meant to end the raid: raidSec 0, and the timer, the death
+on the timer and the ring closures all stopped reading the clock. Two
+readers were missed. With the clock off G.timeLeft starts at 0 and never
+moves, and both of them took 0 for one second left. The boarding window is
+min(30, max(3, timeLeft - 1)), so the ship touched down and left after
+three seconds instead of thirty, every time, for anyone who had switched
+the clock off. And the Pulled line, which warns "The raid clock runs out
+first." whenever timeLeft is under the inbound wait, said it on every call,
+about a clock that did not exist. The HUD already knew the case: v9.35
+made the readout count up when there is no clock.
+
+THE BUILD. Both readers ask whether there is a clock before reading it.
+With the clock off the window is the full thirty seconds and the call line
+says "then hold E to extract." With the clock on nothing changes: the
+window is still capped by the seconds left, so the ship never promises more
+than the raid has.
+
+MEASURED. Check 12.24 deploys, switches the clock off the way Settings does
+(raidSec 0, timeLeft 0), calls the ship by holding E at the ring edge and
+reads the call line, then lands the ship one tick past the inbound wait and
+reads the window; it requires the line without the warning and a window of
+30. Then with the clock on and 12 seconds left it lands the ship again and
+requires the window of 11 the clock rule gives. On the v12.23 fixture the
+call says the clock runs out first and the window is 3.
+
+Not verified: his own play with the clock off; the bot, which reads the
+clock to decide when to leave and is pinned to a running clock in every
+sim; any further reader of timeLeft I did not find (the grep found the
+timer, the death, the closures, the HUD, the bot and these two).

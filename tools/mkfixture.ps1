@@ -5685,13 +5685,13 @@ window.__REGRESS=[
        __frame(); __frame();
        prof=__P(); prof.credits=4471337; prof.xp=98761; saveProfile();
        shown('in a raid');
-       // CLEAR OF THE CONDITIONS BOX, in screen space: that box is drawn zoomed
-       // about the top right corner, so its top in pixels is y times its zoom.
+       // CLEAR OF THE CONDITIONS BOX, in screen space. v12.19: HUDBOX.cond is
+       // already in screen pixels (drawHUD runs it through hudZoomRect), so it is
+       // read as it is; multiplying by the zoom again made this too permissive.
        var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
        if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
        else {
-         var cz=1; try{ cz=(HUDZ.cond||1)*hudRes()*hudUserZ('cond'); }catch(_z){ cz=1; }
-         var condTop=HB.y*cz;
+         var condTop=HB.y;
          if(r.b>condTop+1) bad.push('in a raid the readout reaches down to '+Math.round(r.b)+' while the CONDITIONS box starts at '+Math.round(condTop)+', so the two overlap');
        }
        // IT FOLLOWS A CHANGE.
@@ -5731,6 +5731,29 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.19',what:'a station window no longer repeats the credits and XP in its heading under the corner readout: the heading balance is hidden or clear of the readout (2026-09-06 review of v11.78)',
+   run:function(){
+     if(typeof openTrader!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open a station window';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], tr=document.getElementById('topright');
+     if(!tr) return 'SKIP: no corner readout in this build';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ if(window.__forceSize) __forceSize(1920,1080); }catch(_fs){}   // the modal zoom follows the pane; pinned so the control means the same on every run
+       G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
+       openTrader('buy');
+       var md=document.querySelector('.modal.on'); if(!md) bad.push('control: no station window opened');
+       var mc=md?md.querySelector('h3 .modcur'):null;
+       if(!mc) bad.push('control: the window heading carries no balance to measure');
+       else {
+         var shown=getComputedStyle(mc).display!=='none';
+         var a=mc.getBoundingClientRect(), b=tr.getBoundingClientRect();
+         var hit=shown&&a.width>0&&a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom;
+         if(hit) bad.push('the heading balance ('+Math.round(a.left)+'..'+Math.round(a.right)+' x '+Math.round(a.top)+'..'+Math.round(a.bottom)+') sits under the corner readout ('+Math.round(b.left)+'..'+Math.round(b.right)+' x '+Math.round(b.top)+'..'+Math.round(b.bottom)+')');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'12.18',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
    run:function(){

@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.19 - THE STATION HEADING STOPS REPEATING THE BALANCE UNDER THE READOUT
+
+From the read-only review of this morning's shipped builds, on v11.78.
+
+WHAT IT WAS. Every station window (the shop, the bench, the armoury, the
+contracts) stamps the credits and XP into its own heading, pushed to the
+heading's right edge. v11.78 made the corner readout, which shows the same
+two figures at all times, forty-four pixels tall, and it now printed
+through the top of that heading balance. The only clearance v11.78 added
+was for the stash screen's top row. v11.52 had already set the rule for
+this case: the stash screen's own credits figure was hidden, because the
+corner shows it.
+
+THE BUILD. The heading balance follows the same rule and is hidden; the
+corner readout is the one place the two figures live. The same build
+repairs check 11.52, which measured the readout's clearance from the
+CONDITIONS box by multiplying a box top that is already in screen pixels
+by the zoom again, so it was too permissive by the zoom and could never
+have seen the overlap it stands guard over; the v11.78 check read the same
+field the right way, and the two disagreed.
+
+MEASURED. Check 12.19 walks the floor, opens the shop window for real,
+finds the heading balance, and requires it hidden or, if shown, its box
+clear of the corner readout's box. On the v12.18 fixture the two boxes
+intersect and the check prints both.
+
+Not verified: his own eye, and whether he wants the balance in the heading
+at all (it is one line to bring back); the other windows, which share the
+heading rule and are not opened one by one here.
 ## v12.18 - THE BENCH TELLS THE TRUTH ABOUT ITS GUNS
 
 From the read-only review of this morning's shipped builds, on v11.79.

@@ -292,6 +292,10 @@
     color:var(--ash); margin-left:3px; font-weight:400; }
   .modcur i{ font-style:normal; color:var(--bone); font-weight:700; }
   .modal h3{ display:flex; align-items:baseline; gap:12px; }
+  /* v12.19: the heading's own balance sat under the corner readout once that
+     grew (v11.78); the corner shows the same two figures at all times, so the
+     heading no longer repeats them (the v11.52 rule for the stash screen). */
+  .modal h3 .modcur{ display:none; }
   .imenu{ position:fixed; z-index:12000; min-width:186px; max-width:260px;
     background:rgba(9,13,19,.97); border:1px solid var(--steel-hi); border-radius:4px;
     box-shadow:0 10px 34px rgba(0,0,0,.66); padding:4px 0;
@@ -1354,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.18';
+var VER='12.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1369,11 @@ var VER='12.18';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.18';
+var WHATSNEW_VER='12.19';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
   'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
   'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear, at the counter or at the lift, and it is all still there.',
   'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
@@ -28686,7 +28691,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.18: from the read-only review of the shipped v11.79, the bench guns told truthfully: the Burst Carbine is blue by the rarity every screen shows, so the bench holds one green and three blue and the card says so; the detail panel describes a crafted gun as a gun with its shown rarity; craftPart and craftUse know the servo and the optic again, so the stash keeps them and says for what; the shop panel adds that three of its unstocked guns can be built. The same build repairs check 11.79 (rarity through dispR, purchase price through replaceCost) and the v9.43 check that asserted a servo is in no recipe. Check 12.18 reads the bench through dispR, the blurb, the detail pill and the stash reasons; fails on v12.17.',
+  now:'v12.19: from the read-only review of the shipped v11.78, every station window stamped its own credits and XP into its heading and the enlarged corner readout printed through them. The heading balance is hidden; the corner shows the same two figures at all times (the v11.52 rule for the stash screen). The same build repairs check 11.52, which double-scaled the CONDITIONS box top and could not see an overlap. Check 12.19 opens the shop window and requires the heading balance not to be drawn where the readout is; fails on v12.18 where the two boxes intersect.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

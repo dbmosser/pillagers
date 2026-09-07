@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v12.17 (8dccc9d). The tree has **v12.18 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v12.18 (8b3d7cd). The tree has **v12.19 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-2" (the tab named seed hung on 2026-09-06 12:40 and was closed).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1218 cm1218.txt
+    bash tools/handoff/ship.sh commit 1219 cm1219.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1218 1219
+    bash tools/handoff/ship.sh start 1219 1220
 and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -24,7 +24,9 @@ usual cause (see memory dark-raiders-loader-replaces-the-profile).
 - **1207 HIS NOTE: A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING** (chaseHold overtime while more than 40 units from the last sighting; dial chaseHold, 0 = old clock). Written 16:45, NOT yet dry-run: dry.ps1 1207 1221 + dry/mk.ps1 + checks 12.07 to 12.21 on :8801 (tab "tab-3") BEFORE ship.sh start 1206 1207.
 - **1208 THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL** (was 1219), **1209 BROWSING THE BACKPACK NO LONGER WALKS YOU** (was 1220), **1210 THE SECOND DOWN TELLS THE TRUTH** (was 1214), **1211 ESC CLOSES THE OPEN BACKPACK ON THE FLOOR** (was 1216), **1212 A DEATH BANKS THE XP ITS CARD PRINTS** (was 1218), **1213 THE LIFT FREEBIE KIT CLEARS THE BELT PLAN** (was 1215; it writes P.kitSaved that only 1216 reads, harmless), **1214 THE CONTROLS CARD STOPS TEACHING A DEAD KEY** (was 1217).
 - **1215 to 1221 POLISH** (were 1207 to 1213: safe pocket, freebie kit restore, controller craft, bench guns pill, station heading, bigger blast leftovers, map says EXTRACT NOW).
-- **1222 P RESUMES A PAUSED RAID, AS THE BOX SAYS** (first-ten-minutes audit, the last undrafted item on its list; drafted 2026-09-06 19:58 while the v12.18 corpus ran: the box no longer focuses its note on open, raidKey answers only P and ESC while pauseOpen). verifychain 1219..1222 from v12.18 printed chain verified. NOT yet dry-run: dry.ps1 1219 1222 + dry/mk.ps1 + checks 12.19 to 12.22 on :8801 between corpora.
+- **1222 P RESUMES A PAUSED RAID, AS THE BOX SAYS** (first-ten-minutes audit, the last undrafted item on its list; drafted 2026-09-06 19:58 while the v12.18 corpus ran: the box no longer focuses its note on open, raidKey answers only P and ESC while pauseOpen). verifychain 1219..1222 from v12.18 printed chain verified. DRY-RUN GREEN 2026-09-06 20:12 on :8801 (dry.ps1 1220 1222 from the v12.19 tree; 12.22 twice, again after 11.62, and 12.20, 12.21, 12.02, 12.11 alongside). Ship it after 1221 with ship.sh start 1221 1222; the control on fx1221 must fail on "scheduled 1 delayed call" and "the second P did not resume".
+- **1223 GOING DOWN LETS GO OF THE GRENADE** (in-raid audit P2, verified by reading at v12.19: the down branch clears prep and the heal but not the cook, and the cook clock and release sit past the downed return, so the COOKING clock froze over him and the self-revive stood him up holding a half-burned live grenade; one line, if(p.cooking) releaseCook() before the fall is recorded). Drafted 2026-09-06 20:22 while the v12.19 corpus ran; verifychain 1220..1223 from v12.19 printed chain verified. NOT yet dry-run: dry.ps1 from the tree VER+1 to 1223 + dry/mk.ps1 + check 12.23 twice on :8801 between corpora.
+- **1224 THE CLOCK SWITCHED OFF IS NOT A CLOCK AT ZERO** (in-raid audit P2, verified by reading at v12.19: with raidSec 0 timeLeft sits at 0, so the boarding window min(30,max(3,timeLeft-1)) gave 3 s and the Pulled line warned the clock runs out first; both read CFG.raidSec>0 first). Drafted 2026-09-06 20:27 while the v12.19 corpus ran; verifychain 1220..1224 from v12.19 printed chain verified. NOT yet dry-run: dry.ps1 from the tree VER+1 to 1224 + dry/mk.ps1 + checks 12.23 and 12.24 twice on :8801 between corpora. REMAINING in-raid audit items after these: the second open ring hijacking the pointer (P2, rare), Q cycling a selector the belt does not show (P2, Q is taught nowhere), the pinned-weather turn timer (P3, developer-facing); the hub belt over the [E] STATION prompt still needs a floor screenshot at 1920x1080.
 - verifychain.ps1 -First 1207 -Last 1221 -Ver 12.06 -Wn 12.06 printed "chain verified" at 16:44.
 
 **CURRENT QUEUE (2026-09-06 14:45, REORDERED by renum1219.ps1 so his two direct afternoon notes ship before alpha; this list outranks every older list below):**

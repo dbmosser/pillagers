@@ -1,0 +1,11 @@
+v12.23: going down lets go of the grenade
+
+A grenade cooking at the moment you went down froze with its clock on
+screen for the whole bleed-out and came back live on the self-revive: the
+down branch cleared the heal in progress and not the cook. Going down lets
+go of it, the same as releasing the button, with the fuse it has burned.
+Check 12.23 cooks a frag half a second, puts him down and requires one
+throw carrying that half second, no cook in hand, no COOKING clock and an
+empty-handed revive; fails on v12.22.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
