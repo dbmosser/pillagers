@@ -11,70 +11,69 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.32 CHECK, inserted before the v12.31 entry. He is sprinted NORTH through
-# the real keys and the real loop until both trails have filled, and then one
-# frame is drawn with fillRect watched. A scent mark has a signature no other
-# mark shares: two 3 by 5 rectangles. On the shipped build his own marks paint
-# and the count is high; with the fix it is zero. The zero is proved to be a
-# real zero and not a broken ruler by a control arm: one mark belonging to a
-# pillager, right where he is standing, must still paint.
+# v12.32 CHECK, inserted before the v12.31 entry. Staged the way check 12.17
+# stages the bench (recipe:0 is the Component Kit, parts scrap x3 and wire x2,
+# and a craft puts comp in the stash). It reads the button label, sends a REAL
+# mouse click and requires a spoken line with nothing spent, starts a hold and
+# releases it early through the real window mouseup and requires a spoken line,
+# and keeps the two paths that must still work: a synthetic click crafts (the
+# pad rule, v12.17) and a full hold crafts.
 SubRx @'
-  {v:'12.31',what:'the bench button says to hold it, a real mouse click on it says so and spends nothing, letting go early says so, and a synthetic click and a full hold still craft (his note of 2026-09-07: the crafting bar does not work and nothing can be crafted)',
+  {v:'12.31',what:'the trigger never dies on a blanked belt cell 1: with the gun in hand bound to key 5 a click on the blank cell selects the gun cell and yields, the next click fires, and the empty-throwable yield lands on the gun cell rather than the blank (2026-09-07 audit P1)',
 '@ @'
-  {v:'12.32',what:'sprinting lays one trail of boot prints and not two: his own scent marks are no longer painted over his real footprints, a pillager marks still paint, and the scent list itself still fills for the trackers that smell it (his note of 2026-09-07: many footprints while running vertically)',
+  {v:'12.32',what:'the bench button says to hold it, a real mouse click on it says so and spends nothing, letting go early says so, and a synthetic click and a full hold still craft (his note of 2026-09-07: the crafting bar does not work and nothing can be crafted)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__frame&&window.__keys&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and drive the player';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
-     var bad=[], proto=CanvasRenderingContext2D.prototype, oFR=proto.fillRect, marks=0, watch=false;
-     proto.fillRect=function(x,y,w,h){ if(watch&&w===3&&h===5) marks++; return oFR.apply(this,arguments); };
+     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||typeof renderWork!=='function'||typeof craftHoldStep!=='function'||typeof craftHoldCancel!=='function'||!window.__P||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the bench';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], P=__P(), md=document.getElementById('tradermodal'), keepStash=(P.stash||[]).slice(), keepSay=(typeof HUBSAY!=='undefined')?HUBSAY:null;
+     function stock(){ P.stash=['scrap','scrap','scrap','wire','wire']; }
+     function crafted(){ return P.stash.indexOf('comp')>=0; }
+     function select(){
+       renderWork();
+       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1, i;
+       for(i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:0') ix=i;
+       if(ix<0) return null;
+       P._craftSel=ix; renderCraftDetail(rows);
+       return document.querySelector('#craftdetail .vbuy');
+     }
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __pinDPR(1); __forceSize(1920,1080);
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, i;
-       g.ents.length=0;                       // nobody to interrupt the run
-       p.downed=false; p.iv=99; p.stam=100; p.stamLock=0; p.stamRelease=0; p.ads=false;
-       g.crouchTog=false; g.decals.length=0; g.prints=[];
-       // SPRINT NORTH, through the real keys and the real loop, which is the only
-       // driver that moves the player and lays either trail.
-       // NORTH FIRST, because his note is about running up the screen, then the
-       // other three, because the drop may have a wall on that side; the fix is
-       // the same trail whichever way he runs. Stamina is topped up each frame:
-       // the subject is the trail, and a stamina lock half way through would
-       // measure the stamina bar instead.
-       var K=__keys(), dirs=['KeyW','KeyS','KeyD','KeyA'], ran=0, used=null, sx, sy, di, t0;
-       for(di=0;di<dirs.length&&ran<250;di++){
-         for(var k in K) delete K[k];
-         g.prints=[]; g.decals.length=0; p.stamLock=0; p.stamRelease=0;
-         K[dirs[di]]=1; K.ShiftLeft=1;
-         sx=p.x; sy=p.y; t0=performance.now();
-         for(i=0;i<180;i++){ p.stam=100; __loop(t0+i*16.7); }
-         for(var k2 in K) delete K[k2];
-         ran=Math.sqrt((p.x-sx)*(p.x-sx)+(p.y-sy)*(p.y-sy)); used=dirs[di];
-       }
-       if(ran<250) return 'SKIP: three seconds of sprint moved him only '+Math.round(ran)+' units in any of the four directions, so he is boxed in and laid no trail here';
-       var mine=0; for(i=0;i<g.prints.length;i++) if(g.prints[i].mine) mine++;
-       if(mine<3) return 'SKIP: a 3 second sprint '+used+' over '+Math.round(ran)+' units laid only '+mine+' scent marks, so there is nothing to measure here';
-       var realPrints=0; for(i=0;i<g.decals.length;i++) if(g.decals[i].print&&g.decals[i].mine) realPrints++;
-       if(realPrints<2) bad.push('staging: the sprint laid only '+realPrints+' real boot prints, so the trail under test is not there');
-       // ARM ONE, THE FINDING: his own scent marks must paint nothing.
-       marks=0; watch=true; __frame(0.016); watch=false;
-       if(marks>0) bad.push('a sprint painted '+marks+' scent marks over his own boot prints, which is the second trail he sees');
-       // CONTROL: the counter can see a mark, so the zero above is a real zero.
-       g.prints.push({x:p.x+2,y:p.y+2,t:0});   // no mine flag: a pillager left it, right where he stands
-       marks=0; watch=true; __frame(0.016); watch=false;
-       if(marks<2) bad.push('control: a pillager mark at his feet painted '+marks+' rectangles, so this check cannot see a mark at all and its zero proves nothing');
-       // AND THE LIST ITSELF IS UNTOUCHED, so every tracker that smells it is untouched.
-       var mine2=0; for(i=0;i<g.prints.length;i++) if(g.prints[i].mine) mine2++;
-       if(mine2!==mine) bad.push('the scent list changed size on the draw side ('+mine+' to '+mine2+'), so something that smells it would behave differently');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       stock(); openTrader('craft');
+       var b=select();
+       if(!b) return 'SKIP: the bench drew no detail button for the Component Kit';
+       if(b.disabled) return 'SKIP: with the parts in the stash the detail button is still disabled';
+       // ONE, THE LABEL: it has to say what to do with it.
+       var lab=(b.textContent||'').toUpperCase();
+       if(lab.indexOf('HOLD')<0) bad.push('the bench button reads "'+(b.textContent||'')+'", which does not say it has to be held');
+       // TWO, THE REAL CLICK: spends nothing, his v11.75 rule, and now says why.
+       HUBSAY=''; b.dispatchEvent(new MouseEvent('click',{detail:1,bubbles:true}));
+       if(crafted()) bad.push('control: a real mouse click crafted, which his v11.75 order forbids');
+       if(!/[Hh]old/.test(String(HUBSAY||''))) bad.push('a real mouse click on the bench button said "'+String(HUBSAY||'')+'", which does not tell him to hold it');
+       // THREE, LETTING GO EARLY: through the real window mouseup, which is what his hand does.
+       stock(); b=select();
+       if(b&&b.onmousedown){
+         HUBSAY=''; b.onmousedown({button:0}); craftHoldStep(0.4);
+         window.dispatchEvent(new MouseEvent('mouseup',{bubbles:true}));
+         if(crafted()) bad.push('control: letting go at 0.4 s crafted anyway');
+         if(!/[Ss]oon|[Hh]old/.test(String(HUBSAY||''))) bad.push('letting go before the second was up said "'+String(HUBSAY||'')+'", so an early release is still silent');
+       } else bad.push('control: the bench button has no hold to drive');
+       // FOUR, THE TWO PATHS THAT MUST STILL WORK.
+       stock(); b=select();
+       if(b){ b.click(); if(!crafted()) bad.push('control: a synthetic click (the pad and Enter) no longer crafts'); }
+       stock(); b=select();
+       if(b&&b.onmousedown){ b.onmousedown({button:0}); craftHoldStep(0.6); if(crafted()) bad.push('control: the hold crafted before it was full'); craftHoldStep(0.6); if(!crafted()) bad.push('control: a full hold crafted nothing'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       watch=false; proto.fillRect=oFR;
-       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
-       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ craftHoldCancel(); }catch(_cc){}
+       try{ if(md) md.style.display=''; }catch(_md){}
+       try{ var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); }catch(_mm){}
+       P.stash=keepStash; if(keepSay!==null){ try{ HUBSAY=keepSay; }catch(_hs){} }
+       try{ saveProfile(); }catch(_sp){}
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.31',what:'the bench button says to hold it, a real mouse click on it says so and spends nothing, letting go early says so, and a synthetic click and a full hold still craft (his note of 2026-09-07: the crafting bar does not work and nothing can be crafted)',
+  {v:'12.31',what:'the trigger never dies on a blanked belt cell 1: with the gun in hand bound to key 5 a click on the blank cell selects the gun cell and yields, the next click fires, and the empty-throwable yield lands on the gun cell rather than the blank (2026-09-07 audit P1)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

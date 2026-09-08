@@ -220,7 +220,7 @@
   @media (min-height:880px){
     .invgrid{ grid-template-columns:repeat(auto-fill,minmax(112px,1fr)) !important; gap:11px !important; }
 
-    #safegrid{ grid-template-columns:repeat(auto-fill,minmax(66px,1fr)) !important; }
+
   }
   .invgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr));
     gap:9px; padding:12px; overflow-y:auto; align-content:start;
@@ -277,9 +277,7 @@
   #hub[data-slayout="4"] [data-plan] .ic, #hub[data-slayout="9"] [data-plan] .ic{ width:40px !important; height:40px !important; }
   #hub[data-slayout="10"] [data-plan], #hub[data-slayout="6"] [data-plan], #hub[data-slayout="7"] [data-plan]{ width:76px !important; height:76px !important; }
   #hub[data-slayout="10"] [data-plan] .ic, #hub[data-slayout="6"] [data-plan] .ic, #hub[data-slayout="7"] [data-plan] .ic{ width:48px !important; height:48px !important; }
-  #hub[data-slayout="10"] #safegrid, #hub[data-slayout="6"] #safegrid, #hub[data-slayout="7"] #safegrid{ grid-template-columns:repeat(auto-fill,minmax(46px,52px)) !important; max-height:74px; }
-  #hub[data-slayout="10"] #safegrid .ic, #hub[data-slayout="6"] #safegrid .ic, #hub[data-slayout="7"] #safegrid .ic{ width:26px !important; height:26px !important; }
-  #hub[data-slayout="10"] #safegrid .cellempty, #hub[data-slayout="6"] #safegrid .cellempty, #hub[data-slayout="7"] #safegrid .cellempty{ aspect-ratio:auto; height:52px; grid-column:1/-1; }
+
   #kitcol .loslab{ padding-right:28px; }
   #kitcol .lohead{ padding-right:28px; }
   /* ---- THE ITEM CONTEXT MENU, v6.00, his note "all items should be right
@@ -345,13 +343,7 @@
   .loslab{ padding:7px 12px 1px; display:flex; justify-content:space-between; gap:8px;
     font-size:13px; letter-spacing:.17em; color:var(--ash); text-transform:uppercase; }
   .loslab b{ color:var(--bone); font-weight:600; }
-  /* The safe pocket is one cell and must not stretch like a grid. */
-  #safegrid{ flex:none; min-height:0; padding:8px 12px 10px;
-    grid-template-columns:repeat(auto-fill,minmax(52px,1fr)); }
-  #safegrid .cellempty{ border:1px dashed var(--steel-hi); border-radius:3px;
-    aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
-    font-size:10.5px; letter-spacing:.1em; color:var(--ash); text-align:center;
-    padding:4px; grid-column:span 2; }
+
   /* ---- THE VENDOR, v6.04, off his Arc Raiders screenshots. */
   /* v6.90: the counter FILLS the screen it was given. It used to stop 346px down a 1080
      screen and leave 734px of empty blue underneath. */
@@ -1194,8 +1186,7 @@
             <div id="hotplanwrap"></div>
           </div>
           <div class="losec">
-            <div class="loslab">Safe pocket<b><span id="safen">0/1</span></b></div>
-            <div class="invgrid" id="safegrid"></div>
+
           </div>
         </div>
       </div>
@@ -1358,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.32';
+var VER='12.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,14 +1360,17 @@ var VER='12.32';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.32';
+var WHATSNEW_VER='12.35';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
+  'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
   'THE BENCH SAYS HOLD TO CRAFT ON THE BUTTON, because holding it is what crafts. A click on its own still spends nothing, as you asked, but it now says so instead of doing nothing, and so does letting go too soon.',
   'THE TRIGGER NO LONGER DIES WHEN THE GUN IN YOUR HANDS IS BOUND TO ANOTHER KEY. Cell 1 goes blank then, and every fall-back to it landed on nothing; the fall-back finds the cell that holds your gun now, and a click on a blank cell raises the gun the way a click on an empty grenade cell does.',
   'A CRAWLER THAT REACHES YOU BITES. It used to stand next to you for up to seven seconds first, serving out the clock it had rolled for its next wander, whether it came for you on its own or because you shot it.',
+  'A NEW PROFILE NOW STARTS ON FEWER MACHINES AND A LIGHTER EXTRACTION. Both are still in Settings and both still go all the way up; only where they start has moved.',
   'A PEDDLER PURCHASE NOW SAYS WHERE IT WENT: on your tactical belt, key N, or in your backpack. A bought gun is pinned to a free belt key, and the backpack grid keeps a belted item off its cells, which is why a rifle you paid for was not in the backpack.',
   'DRAGGING AN ITEM FROM THE STASH TO THE BACKPACK WHEN ITS TACTICAL BELT KEY IS STILL SET FROM THE LAST RAID NOW LANDS ON THAT KEY, half the stack, and says so. A set key with nothing packed shows a 0. In a raid, pressing a key whose item you have used up says No <item> left.',
   'TAKING THE FREEBIE KIT AT THE STASH AND THEN CONFIRMING IT AGAIN AT THE LIFT NO LONGER THROWS AWAY THE PACKING KEPT ASIDE FOR YOU. A run that ends badly gives that packing back, as it was meant to.',
@@ -1387,7 +1381,7 @@ var WHATSNEW=[
   'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
   'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
   'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear, at the counter or at the lift, and it is all still there.',
-  'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
+
   'THE CONTROLS CARD NO LONGER PROMISES AN X KEY THAT DOES NOT EXIST: belt keys 1 and 2 bring up either gun.',
   'TAKING THE FREEBIE KIT AT THE LIFT CLEARS YOUR TACTICAL BELT PLAN, the same as the stash screen button, so no key points at something you left behind.',
   'A DEATH BANKS THE XP ITS CARD PRINTS, drink bonus included; it used to pay the run without the bonus after the drink was cleared.',
@@ -1518,7 +1512,7 @@ var WHATSNEW=[
   'A GUN YOU FIND GOES INTO YOUR EMPTY SLOT, not over the gun in your hands. You carry two; a find fills the free one and leaves your choice alone. With both slots full the gun you are holding is still the one it replaces.',
   'F IS A MELEE STRIKE, with whatever you are holding, gun or fists. It is in both controls lists.',
 
-  'THE SAFE POCKET TELLS YOU THE TRUTH. It only saves the item it names if you are actually carrying it, and it says NOT PACKED when you are not, on the stash screen and on the ascent check.',
+
   'THE END OF RAID CARD COUNTS THE GUN YOU LOST, in the number and in the money. A loaner is in neither, because you never owned it. The two buttons at the bottom stay on screen however long the ledger runs.',
   'THE TITLE SCREEN USES THE WHOLE MONITOR, and the ten stash layouts have their picker back, in Settings beside the text size.',
   'A NEW CHARACTER GETS A WELCOME PACK: a green gun and a blue one, heals, plates and grenades, offered once, the first time down.',
@@ -1539,7 +1533,7 @@ var WHATSNEW=[
   'A DOWNED PILLAGER CRAWLS FOR COVER, dragging himself to the nearest spot you cannot see, bleeding all the way.',
   'THE MOUSE SAYS WHAT A PANEL WILL DO: a resize arrow at a corner, a move hand on a grip, a pointer on a button.',
   'THE HOTBAR IS THE TACTICAL BELT, everywhere a word names it: the stash, the raid, the legends and the pause screen.',
-  'THE STASH IS FIVE THINGS: the stash, your backpack, your tactical belt, the safe pocket and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
+  'THE STASH IS FOUR THINGS: the stash, your backpack, your tactical belt and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
   'DAY OR NIGHT IS CHOSEN ON THE SECTOR PAGE at the lift, and every ascent starts on day. A night extraction pays twenty percent more XP. The armour warning is on that page too.',
   'FASHION is its own station in the Undercroft. Everything there is how you look, earned by playing and never bought; four new hats, two hair colours and three fits joined the racks.',
   'THE GUNS LOOK LIKE GUNS. Every gun icon is redrawn by family, outlined part by part, so a rifle reads as a rifle and a shotgun as a shotgun at a glance.',
@@ -1585,8 +1579,8 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // scaling exists because a flat count made the small map 46 percent denser by
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
-nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
+nSentry:12,nCrawler:20,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:0.6,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:1.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -2457,8 +2451,11 @@ function applyLoadedProfile(r){
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
 if(typeof P.pname!=='string'||!P.pname)P.pname='PILLAGER';   // v7.64: named at the title screen; v7.85: typed
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
-// v12.15: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
-if(P.safe&&ITEMS[P.safe]&&(ITEMS[P.safe].use==='throw'||ITEMS[P.safe].use==='ammo')) P.safe=null;
+// v12.35, his order: the safe pocket is gone. Both fields are cleared off any
+// save that still carries one, so nothing is left naming a feature that no
+// longer exists. This line can go once no live profile has been near v12.34.
+if(P.safe!==undefined) delete P.safe;
+if(P.safeUp!==undefined) delete P.safeUp;
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
 if(P.sp!==undefined) delete P.sp;   // v7.38: PROGRESS folded into XP; the field is dead
@@ -10403,13 +10400,6 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
 
         else g.bag.push(_dk[_di]);
       }
-      // v8.40, audit: AND HERE IS THE SAFE POCKET, armed against what is actually
-      // going up. _dk is the final kit on every live path - staged, quick ascent,
-      // or auto-packed from the stash a moment ago - so the hub's promise that
-      // the named item "comes home if you die carrying it" is now true whichever
-      // way he deployed. It used to be armed in commitKit, before the auto-pack
-      // had run, and so was null for anyone who never used the staging screen.
-      P.safeUp=(P.safe&&_dk.indexOf(P.safe)>=0)?P.safe:null;
       saveProfile();
     }
     // You never drop in with nothing to patch yourself up. Issued kit, the same
@@ -13417,7 +13407,7 @@ function useArmor(){
   blip('pick');
 }
 function hotSel(){ return clamp(G.hot||0,0,hotbarSlots().length-1); }
-// v12.30, audit P1: THE CELL THAT HOLDS THE GUN IN YOUR HANDS. Cell 1 is only
+// v12.31, audit P1: THE CELL THAT HOLDS THE GUN IN YOUR HANDS. Cell 1 is only
 // that cell while nothing is assigned over it; bind the held gun to key 5 and
 // the dedupe blanks cell 1, so a fall-back to 0 by number landed on an empty
 // cell and the trigger died there. The same loop swapGuns uses; 0 when no
@@ -14664,7 +14654,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     // hand; release throws whatever fuse is left. Everything else on the hotbar
     // keeps the single-shot press behaviour it has always had, because a bandage
     // has nothing to hold down for.
-    // v12.30, audit P1: AN EMPTY CELL DOES NOT OWN THE TRIGGER EITHER. The raid
+    // v12.31, audit P1: AN EMPTY CELL DOES NOT OWN THE TRIGGER EITHER. The raid
     // starts with the highlight on cell 1, and with the held gun bound to a
     // higher key that cell is blank, so the first click of the raid fired
     // nothing. The same rule as the empty throwable cell below: the press
@@ -14682,7 +14672,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // own rule the press selects the gun; the next click fires it, never this
       // one, which is the automatic-weapon safety that rule was written for.
       if(!p.cooking&&!p.fired&&!((HSC.count|0)>0)){
-        p.fired=true; setHot(gunCell()); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded; v12.30: the cell that holds it, not cell 1 by number
+        p.fired=true; setHot(gunCell()); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded; v12.31: the cell that holds it, not cell 1 by number
         if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
       }
       else if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
@@ -14698,7 +14688,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // Emptied by that use? Fall back to the gun for the NEXT click.
       if(_hadCount!==null&&_hadCount!==undefined){
         var _now=hotbarSlots()[hotSel()];
-        if(_now&&_now.count===0) setHot(gunCell());   // v12.30: the cell that holds the gun, not cell 1 by number
+        if(_now&&_now.count===0) setHot(gunCell());   // v12.31: the cell that holds the gun, not cell 1 by number
       }
     }
   }
@@ -14755,7 +14745,7 @@ if(!p.fired||p.wep.auto){
     if(p.cooking){
       releaseCook();
       var _ns=hotbarSlots()[hotSel()];
-      if(_ns&&_ns.count===0) setHot(gunCell());   // v12.30: the cell that holds the gun, not cell 1 by number
+      if(_ns&&_ns.count===0) setHot(gunCell());   // v12.31: the cell that holds the gun, not cell 1 by number
     }
     p.fired=false;
   }
@@ -14956,7 +14946,21 @@ if(!p.fired||p.wep.auto){
     else { G.trade=ped; blip('pick'); }
   }
   if(!keys['KeyE']) G.pedLock=0;
-  if(G.trade){ tickRegen(dt); return; }
+  if(G.trade){
+    tickRegen(dt);
+    // v12.34, 2026-09-07 audit (trade-freeze): THE STALL IS NOT A PAUSE. This
+    // return skips the tail of updatePlayer, and the only real call to
+    // tryExtractTick is down there, so every extraction clock stopped while the
+    // trade window was open: the inbound countdown, the boarding window, the
+    // siege arrivals, the re-ping, the mirrors the HUD reads, the closing of a
+    // point whose time has come, and the raider waves. Nothing else stopped;
+    // loop() gates on none of it and kept the raid clock and the machines
+    // running in the same frames. Same fault and same fix as the two branches
+    // above. No wantCall, as in the roll: E belongs to the panel while it is
+    // open, so the clocks run and no pull of his own does.
+    tryExtractTick(dt);
+    return;
+  }
 // THE WALL-CLIP TRIPWIRE, v4.06. His run #50 at 20 seconds: "i just glitched
   // through a wall". Every wall on all four maps was then probed and every one
   // of 2,970 pushed a test body out correctly, so this was a moment, not a
@@ -17680,7 +17684,7 @@ e.lootT=(e.lootT||0)+dt;
     // Both of his deaths tonight were to a crawler.
     else if(e.state!=='chase'&&e.state!=='investigate'){
       // cd is decremented once per frame below; do not tick it here as well
-      // v12.29, audit P1 and his standing crawler note: e.cd was the wander
+      // v12.30, audit P1 and his standing crawler note: e.cd was the wander
       // timer here AND the bite cooldown in the chase branch, and none of the
       // five ways into a chase cleared it, so a crawler that reached him stood
       // in bite range serving out the rest of a wander of up to seven seconds.
@@ -17715,7 +17719,7 @@ e.lootT=(e.lootT||0)+dt;
       if(dist(e,{x:e.tx,y:e.ty})<30) e[_wf]=0;
     }
     if(e.cd>0) e.cd-=dt;
-    if(e.wanderT>0) e.wanderT-=dt;   // v12.29: the wander clock, its own field on a crawler
+    if(e.wanderT>0) e.wanderT-=dt;   // v12.30: the wander clock, its own field on a crawler
     // Enemies were silent except when firing, so there was nothing for a noise
     // indicator to show. Footsteps are player-facing only (quiet=true).
     if(e.moving&&e.kind!=='snitch'){
@@ -18798,22 +18802,6 @@ var _cdone=contractExtract(G.bag,haul);
     idx.sort(function(a,b){ return ival(G.bag[b])-ival(G.bag[a]); });
     var nSafe=Math.min(Math.round(CFG.safeSlots),idx.length);   // v8.50: 'pockets' left at v5.57
     for(j=0;j<nSafe;j++){ saved.push(G.bag[idx[j]]); bankItem(G.bag[idx[j]]); }
-    // v6.01, his spec "ONE safe-pocket item survives death". Checked against the
-    // BAG, so an item you named and then used or lost is not conjured back.
-    // G.bag is NOT spliced. haul was computed from it and the ledger below reads
-    // it by index, so the item is removed from the INDEX LIST instead: banked,
-    // dropped out of idx, and therefore never listed as GONE. The search starts at
-    // nSafe so an item the automatic rebate already took cannot be banked twice.
-    if(P.safeUp){
-      var _spos=-1,_si2;
-      for(_si2=nSafe;_si2<idx.length;_si2++) if(G.bag[idx[_si2]]===P.safeUp){ _spos=_si2; break; }
-      if(_spos>=0){
-        var _sk=G.bag[idx[_spos]],_sit=ITEMS[_sk];
-        bankItem(_sk); saved.push(_sk); idx.splice(_spos,1);
-        lines.push('<span style="color:var(--gain)">'+(_sit?_sit.name:_sk)+
-          ' was in your safe pocket. It comes home.</span>');
-      }
-    }
     var savedVal=0;
     for(j=0;j<saved.length;j++) savedVal+=ival(saved[j]);
     var lostIdx=idx.slice(nSafe),shown=lostIdx.slice(0,7);
@@ -18861,7 +18849,7 @@ var _cdone=contractExtract(G.bag,haul);
     var _lostWhat=_lostN+' item'+(_lostN===1?'':'s');
     if(_gunN) _lostWhat+=' and '+_gunN+' gun'+(_gunN===1?'':'s');
     lines.push(_lostWhat+' lost, '+'$'+((haul-savedVal)+_gunVal).toLocaleString()+' gone');
-    if(saved.length) lines.push('Safe pocket held '+saved.length+' item'+(saved.length>1?'s':'')+' ('+'$'+savedVal.toLocaleString()+')');
+    if(saved.length) lines.push('Rebate held '+saved.length+' item'+(saved.length>1?'s':'')+' ('+'$'+savedVal.toLocaleString()+')');   // v12.35: the automatic rebate, not the deleted pocket
     // v6.09: metres, like every other distance in the game. This printed raw world
     // units with an 'm' on the end, so it disagreed with the header above it by a
     // factor of ten on the same screen.
@@ -21095,7 +21083,7 @@ if(G.map.story){
     var _fp=G.prints[i],_fa=clamp(1-_fp.t/6,0,1)*0.35;
     // v8.85, HIS NOTE: not a pillager's trail through a wall. Same gate the
     // pillager himself goes through a few lines above. Yours is always drawn.
-    // v12.32, HIS NOTE: "many-footprints glitch is still happening while running
+    // v12.33, HIS NOTE: "many-footprints glitch is still happening while running
     // vertically". Sprinting laid two trails: his real boot prints, stamped every
     // 56 units and rotated to his path (v10.55), and these, taken every 34 and
     // painted as two rectangles that are never rotated, so they read as a second
@@ -28778,7 +28766,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.32: his note of 2026-09-07 (many footprints while running vertically): sprinting lays two trails. The boot prints he is meant to see are decals, one every 56 units of ground covered, rotated to his path and capped at 70. The other is G.prints, the scent list a tracker smells, one every 34 units while sprinting, painted as two rectangles that are never rotated, so they read as a pair of boots walking up the screen: perpendicular ticks when he runs across, a second set of footprints interleaved with the real ones when he runs up or down. His own scent marks are no longer painted; the marks a pillager leaves still are, which is his v8.85 feature, and the list itself is untouched so nothing that smells it changes. Check 12.32 sprints him north through the real keys and loop, counts the marks painted from each list by watching the canvas, and requires the second trail to be gone with the real prints still there and G.prints still filling; fails on v12.31.',
+  now:'v12.35: his order of 2026-09-08, remove the safe pocket and delete the entire concept. He asked what was supposed to go in it and how he was meant to reach it during a raid; the honest answer to the second was that he could not, because the pocket lives on the stash screen only and its choice is frozen at the lift, so it could protect something carried from home and never the thing just pulled out of a vault. Out goes the panel, the styles, the two readers, the setter, the renderer, the menu verb, the line on the ascent page, the arming at the drop, the branch in the death payout and both fields on the profile, which are deleted from any save that still carries them. The world container called a safe is a different thing with the same five letters and is untouched. Check 12.35 requires the panel, the functions and the fields to be gone, requires a death to pay out and list what was lost with no pocket line, and requires the secure cases still to be built and drawn; fails on v12.34.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29567,81 +29555,6 @@ var ICLASS={
 // nothing leaves the stash until the lift goes. stageKitLive is what reconciles
 // the two, so reading it here means a kit entry whose stash copy was sold stops
 // being shown as though it were still coming with you.
-// v6.01: the safe pocket. P.safe names ONE item key; one copy of it comes home if
-// you die carrying it.
-// v8.20, audit: and you have to still own it. The pocket names an item you are
-// carrying up; naming a Medkit and then selling it used to leave the cell and
-// its 1/1 badge standing, promising to bring home something he no longer had.
-// commitKit already quietly dropped it at ascent, so the promise was never kept
-// either - this makes the screen agree with what actually happens.
-function safeKey(){
-  if(!P||!P.safe||!ITEMS[P.safe]) return null;
-  var have=0;
-  for(var i=0;i<P.stash.length;i++) if(P.stash[i]===P.safe) have++;
-  for(var j=0;j<(P.kit||[]).length;j++) if(P.kit[j]===P.safe) have++;
-  return have?P.safe:null;
-}
-// v10.71: the pocket that is ACTUALLY going up. safeKey above answers "is
-// something named", which is true while the item sits in the stash; this answers
-// "will anything come home", which is the question the player is really asking
-// and the one the deploy uses. Same test as buildRaid's P.safeUp line.
-function safeUpKey(){
-  var k=safeKey(); if(!k) return null;
-  var K=(typeof stageKitLive==='function')?stageKitLive():(P.kit||[]);
-  return (K.indexOf(k)>=0)?k:null;
-}
-function setSafe(k){
-  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
-  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
-  // v12.15, from the 2026-09-06 menu audit: a grenade rides in the pouch and
-  // ammunition in the reserve, and the death path banks the backpack only,
-  // so a pocket naming either came home with nothing while reading 1/1.
-  if(k&&ITEMS[k].use==='throw') return 'A throwable rides in the pouch, not a pocket. It cannot come home from there.';
-  if(k&&ITEMS[k].use==='ammo') return 'Ammunition rides in the reserve, not a pocket. It cannot come home from there.';
-  P.safe=k||null; saveProfile(); return null;
-}
-function renderSafe(){
-  var sg=document.getElementById('safegrid'); if(!sg) return;
-  sg.innerHTML='';
-  var k=safeKey();
-  // v10.71: named is not the same as protecting you. The item only comes home if
-  // you are carrying it, so a pocket naming something still sitting in the stash
-  // is doing nothing, and this said 1/1 either way.
-  var live=safeUpKey();
-  var lab=document.getElementById('safen');
-  if(lab) lab.textContent=k?(live?'1/1':'NOT PACKED'):'0/1';
-  if(!k){
-    var em=document.createElement('div'); em.className='cellempty';
-    em.textContent='ONE ITEM SURVIVES YOUR DEATH. DROP IT HERE.';
-    sg.appendChild(em);
-  } else {
-    if(!live){
-      var wr=document.createElement('div'); wr.className='cellempty';
-      wr.style.color='var(--hazard)';
-      wr.textContent='NOT IN YOUR BACKPACK. PACK ONE OR NOTHING COMES HOME.';
-      sg.appendChild(wr);
-    }
-    var cell=invCell(k,1,{from:'safe',verb:'click: empty the pocket',
-      act:function(){ setSafe(null); try{ sfx("pick"); }catch(e){} renderHub(); }});
-    if(cell){ cell.title=ITEMS[k].name+'\nin the safe pocket, comes home if you die carrying it'; sg.appendChild(cell); }
-  }
-  // Dropping anything here names it, which is the same gesture as everywhere else.
-  dropzone(sg,function(key,from){
-    // v8.14, audit: the cell's click handler can never run - this dropzone
-    // fires on the same mouseup and rebuilds the cell before the click is
-    // dispatched, so the pocket had no working exit but the right-click menu.
-    // A release that started ON the pocket is the "take it out" gesture.
-    if(from==='safe'){
-      setSafe(null); try{ sfx("pick"); }catch(e){}
-      say2('Out of the safe pocket.');
-      renderHub(); return;
-    }
-    var why=setSafe(key);
-    if(why){ say2(why); try{ sfx("clank"); }catch(e){} return; }
-    try{ sfx("pick"); }catch(e){}
-    renderHub();
-  });
-}
 function renderKitCol(){
   var kg=document.getElementById('kitgrid'); if(!kg) return;
   var K=stageKitLive();
@@ -29680,7 +29593,6 @@ function renderKitCol(){
   var qn=document.getElementById('quickn');
   if(qn){ var qc=0,_ha=P.hotAssign||{}; for(var _qk in _ha) if(_ha[_qk]) qc++;
     qn.textContent=qc; }
-  renderSafe();
   kg.innerHTML='';
   // v6.60: the gun cells added here one build ago are gone again. A gun that is on the
   // belt is shown on the belt, and this column is what is NOT on it.
@@ -29915,13 +29827,7 @@ function itemMenuRows(key,ctx,count){
   // sit here claimed planPut enforced a rule planPut had already deleted.
   rows.push({sep:1});
   rows.push({keys:1,label:'Put on key'});
-  // v6.01: naming the safe pocket is a menu verb as well as a drop target.
-  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v12.15: the pocket refuses these, so the menu does not offer it
-    var _isSafe=(P.safe===key);
-    rows.push({label:_isSafe?'Take out of safe pocket':'Put in safe pocket',
-      hint:_isSafe?null:'survives death',
-      act:function(){ var why=setSafe(_isSafe?null:key); if(why) say2(why); refreshInv(); }});
-  }
+
   if(ctx!=='kit'){
     rows.push({sep:1});
     var isJ=(P.junk||{})[key]?true:false;
@@ -31705,7 +31611,7 @@ function craftHoldStep(dt){
 // Letting go anywhere at all cancels, not only on the button, or a release off
 // the edge would leave it filling to a purchase he did not make.
 try{ window.addEventListener('mouseup',function(){
-  // v12.31, HIS NOTE: letting go before the second is up cancelled in silence,
+  // v12.32, HIS NOTE: letting go before the second is up cancelled in silence,
   // which is the same dead press from his side. It says so, once, and only for
   // a press that had really started; a completed hold has cleared itself above.
   if(craftHold&&craftHold.t>0.12&&craftHold.t<CRAFT_HOLD){ try{ say2('Let go too soon. Hold it for a full second.'); }catch(_cu){} }
@@ -31755,7 +31661,7 @@ function renderCraftDetail(rows){
   d.innerHTML=h;
   var b=document.createElement('button');
   b.className='vbuy';
-  // v12.31, HIS NOTE: it read CRAFT, which reads like a button you click, and a
+  // v12.32, HIS NOTE: it read CRAFT, which reads like a button you click, and a
   // click spends nothing by his v11.75 order. The label is the instruction now.
   b.textContent=(kind==='repair')?'HOLD TO SERVICE':'HOLD TO CRAFT';
   b.disabled=btn?btn.disabled:true;
@@ -31766,7 +31672,7 @@ function renderCraftDetail(rows){
     // v12.17: the pad presses a control with a synthetic click and the
     // keyboard with Enter, both with detail 0; a real mouse click has detail
     // 1 or more and still spends nothing, the hold is its way.
-    // v12.31, HIS NOTE: a real mouse click still spends nothing, his v11.75
+    // v12.32, HIS NOTE: a real mouse click still spends nothing, his v11.75
     // rule, but it used to return in silence, so the bench looked broken.
     b.onclick=function(e){ if(e&&e.detail){ try{ say2('Hold it down for a second. A click on its own spends nothing.'); }catch(_cs){} return; } btn.click(); };
     b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' ('+CRAFT_HOLD+' second'+(CRAFT_HOLD===1?'':'s')+')';
@@ -32825,13 +32731,6 @@ function renderStage(prefill){
     bits.push('armour cap '+rigCeil(rg2));
     var kn=stageKitLive().length;
     bits.push(kn?(kn+' item'+(kn===1?'':'s')+' packed'):'<span style="color:var(--ash)">nothing packed</span>');
-    // v10.71: and the safe pocket, on the page that calls itself the last stop
-    // before the lift. It is the one thing that survives your death and the one
-    // thing this page never named.
-    var _sfk=safeKey(), _sfl=safeUpKey();
-    if(!_sfk) bits.push('<span style="color:var(--ash)">no safe pocket</span>');
-    else if(_sfl) bits.push('safe pocket: '+escHtml(ITEMS[_sfk].name));
-    else bits.push('<span style="color:var(--hazard)">safe pocket names '+escHtml(ITEMS[_sfk].name)+', not packed</span>');
     sw.innerHTML=bits.join('  &middot;  ');
   })();
 
@@ -33098,7 +32997,7 @@ function commitKit(){
     // a death puts his own loadout back rather than making him rebuild it.
     // v12.16: the button already emptied P.kit and kept it aside; that is the list.
     P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
-    P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;   // v8.40: safeUp is armed in buildRaid
+    P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;
   }
   var kit=stageKitLive();
   P.dropKit=[];
@@ -33285,7 +33184,7 @@ var GAMEOPTS=[
      {n:'Many',     cfg:{nSentry:28, nCrawler:46, crawlerPerHouse:3.4}},
      {n:'Standard', cfg:{nSentry:20, nCrawler:34, crawlerPerHouse:2.5}},
      {n:'Few',      cfg:{nSentry:12, nCrawler:20, crawlerPerHouse:1.5}}
-   ], def:1},
+   ], def:2},
   {k:'hits', label:'How hard they hit',
 hint:'Damage taken from everything on the surface. Standard is how the game has always actually played; Hardened is the old design intent, a fifth harder.',
    opts:[
@@ -33322,7 +33221,7 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
      // from the first second of the raid, so Light silently emptied the map for
      // the entire run. siegeVol is the only key this label describes.
      {n:'Light',    cfg:{siegeVol:0.6}}
-   ], def:1}
+   ], def:2}
 ];
 // v10.28: which option the LIVE dials match, or -1 when a slider has put them
 // somewhere no option names. The rows show this; the stored choice is the
@@ -34632,7 +34531,7 @@ var want={simGreed:14,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
     // player and the bot both wade by; raiderFloorN and raiderFloorGap are the floor
     // under the live pillager count and how fast it refills.
     wadeInset:11,raiderFloorN:4,raiderFloorGap:8,overheatLock:7,superhot:0,strikeFind:0.16,eliteGuns:1,
-    nRaider:10,nSentry:20,nCrawler:34,eDmg:1,raidSec:540};
+    nRaider:10,nSentry:20,nCrawler:34,crawlerPerHouse:2.5,eDmg:1,raidSec:540};
   for(var k in want){ if(C2[k]!==want[k]){ changed[k]=[C2[k],want[k]]; C2[k]=want[k]; } }
   P2.mapIx=(mapIx===undefined)?1:mapIx;
   P2.body=null; P2.equipped='smg'; P2.wear=P2.wear||{}; P2.wear['smg']=0;
@@ -39740,7 +39639,127 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.32',what:'sprinting lays one trail of boot prints and not two: his own scent marks are no longer painted over his real footprints, a pillager marks still paint, and the scent list itself still fills for the trackers that smell it (his note of 2026-09-07: many footprints while running vertically)',
+  {v:'12.35',what:'the safe pocket is gone from the screen, the code and the profile, a death pays out and lists the loss with no pocket line, and the secure cases in the world, which share the word, are untouched (his order of 2026-09-08)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot reach the floor and a raid';
+     var bad=[], P2=__P(), keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice()};
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // ONE: nothing of it is left in the code.
+       if(typeof setSafe!=='undefined') bad.push('setSafe is still defined');
+       if(typeof safeKey!=='undefined') bad.push('safeKey is still defined');
+       if(typeof safeUpKey!=='undefined') bad.push('safeUpKey is still defined');
+       if(typeof renderSafe!=='undefined') bad.push('renderSafe is still defined');
+       // TWO: nothing of it is left on the screen. The floor is opened for real,
+       // because an element can exist in the document and never be drawn.
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       try{ renderHub(); }catch(_rh){}
+       if(document.getElementById('safegrid')) bad.push('the safe pocket grid is still in the stash screen');
+       if(document.getElementById('safen')) bad.push('the safe pocket counter is still in the stash screen');
+       var hub=document.getElementById('hub');
+       if(hub&&/safe pocket/i.test(hub.innerText||'')) bad.push('the stash screen still says safe pocket somewhere');
+       // THREE: A DEATH STILL PAYS OUT, which is the path the pocket branch lived in.
+       // (The profile migration runs at load and this fixture is already loaded,
+       // so it is named in Not verified rather than half-driven here.)
+       __deploy({kit:['medkit','plate'],mapIx:0,seed:4242});
+       var g=__state();
+       if(!g) bad.push('control: the raid did not start');
+       else{
+         g.bag=['comp','servo'];
+         g.player.downed=false; __endRaid('dead');
+         var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+         if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: a death did not open the outcome card, so the payout path is not being measured');
+         if(txt.indexOf('LOST')<0) bad.push('control: the death card lists nothing as lost, so the ledger it shares with the pocket branch is not running');
+         if(/safe pocket/i.test(txt)) bad.push('the death card still says safe pocket');
+       }
+       // FIVE, AND THIS IS THE ONE A CARELESS DELETION BREAKS: the world container
+       // called a safe is a different thing with the same five letters.
+       __topClear();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g2=__state(), i, safes=0;
+       if(!g2||!g2.containers) bad.push('control: the raid built no containers at all');
+       else{
+         for(i=0;i<g2.containers.length;i++) if(g2.containers[i].type==='safe') safes++;
+         if(safes<1) bad.push('the map built no secure cases: the deletion took the world container that shares the word');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       P2.stash=keep.stash; P2.kit=keep.kit;
+       try{ delete P2.safe; delete P2.safeUp; saveProfile(); }catch(_s){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.34',what:'the Peddler stall is not a pause: with the trade window open the inbound extraction still counts down, a landed extraction still spends its boarding window, and a point whose closing time passes while he shops shuts (2026-09-07 audit, trade-freeze)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys&&window.__forceSize&&window.__pinDPR)) return 'SKIP: this fixture cannot deploy and drive the live loop';
+     if(typeof mkPeddler!=='function'||typeof tryExtractTick!=='function'||typeof tickExtractPoints!=='function'||typeof extLetter!=='function') return 'SKIP: no stall or extraction tick in this build';
+     var bad=[], K=null, hid=[], i, f, base=performance.now()+50;
+     function drive(nf){ for(f=0;f<nf;f++){ base+=16.7; __loop(base); } }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __pinDPR(1); __forceSize(1920,1080);
+       CFG.superhot=0;                       // a Settings dial that would zero dt with no key held
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.zones||!g.zones.length) return 'SKIP: no raid with extraction points';
+       var p=g.player, Z=null;
+       for(i=0;i<g.zones.length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
+       if(!Z) return 'SKIP: no open extraction point';
+       K=__keys(); for(var k0 in K) K[k0]=false;
+       p.downed=false; p.hp=p.maxhp; p.iv=999;
+       // The crates by his feet are marked searched so the stall wins E, which is
+       // the resolution the game itself uses. Every one is put back in the finally.
+       for(i=0;i<g.containers.length;i++){ var CU=g.containers[i]; if(!CU.opened&&dist(CU,p)<220){ CU.opened=true; hid.push(CU); } }
+       var pd=mkPeddler(p.x+30,p.y,g.map); g.ents.push(pd);
+       // OPEN THE STALL THE WAY HE DOES: one frame with E down, one with it up.
+       K['KeyE']=true; drive(1); K['KeyE']=false; drive(1);
+       if(g.trade!==pd){ bad.push('staging: E beside the stall did not open the trade window through the real loop, so the arms below ran with it set by hand'); g.trade=pd; }
+       // ARM ONE, THE INBOUND EXTRACTION. 17.5 seconds out on a 411 second clock:
+       // two numbers no default produces (the wait is 25 and the raid is 540).
+       g.timeLeft=411;
+       Z.beaconT=17.5; Z.hold=null; Z.holdMax=null; Z.pullT=null; Z.pinged=0; g.active=Z; g.beaconT=17.5;
+       var tl0=g.timeLeft, b0=Z.beaconT;
+       drive(60);
+       var bNow=(Z.beaconT===null||Z.beaconT===undefined)?0:Z.beaconT;
+       var tlD=tl0-g.timeLeft, bD=b0-bNow;
+       if(g.trade!==pd) bad.push('control: the stall shut during the first arm, so nothing was measured');
+       else if(tlD<0.2) bad.push('control: the raid clock did not run in the frames driven (it fell '+tlD.toFixed(2)+'s), so this ruler cannot see a frozen clock');
+       else if(bD<tlD*0.5) bad.push('with the stall open the raid clock fell '+tlD.toFixed(2)+'s and the inbound extraction fell '+bD.toFixed(2)+'s: the point still reads EXTRACT '+extLetter(Z)+' INBOUND '+Math.ceil(bNow)+'s and nothing is getting any closer');
+       // ARM TWO, THE LANDED EXTRACTION: on the ground with 9.5 s of window left.
+       Z.beaconT=0; Z.hold=9.5; Z.holdMax=30; Z.pullT=null; g.active=Z; g.shipHold=9.5;
+       var tl1=g.timeLeft, h0=Z.hold;
+       drive(60);
+       var hNow=(Z.hold===null||Z.hold===undefined)?0:Z.hold;
+       var tlD1=tl1-g.timeLeft, hD=h0-hNow;
+       if(g.trade===pd&&tlD1>=0.2&&hD<tlD1*0.5) bad.push('with the stall open a landed extraction held its '+h0+'s boarding window through '+tlD1.toFixed(2)+'s of raid clock, so it waits for as long as he shops');
+       // ARM THREE, THE CLOSING POINT, which needs no call at all and is the
+       // commoner case: a point whose closing time passes while he trades shuts.
+       var CZ=null;
+       for(i=0;i<g.zones.length&&!CZ;i++) if(g.zones[i]!==Z&&g.zones[i].open&&g.zones[i].closeAt!==undefined) CZ=g.zones[i];
+       if(CZ){
+         Z.beaconT=null; Z.hold=null; Z.pullT=null; g.beaconT=null; g.shipHold=null;
+         CZ.warned=1; g.timeLeft=CZ.closeAt+0.4;
+         drive(60);
+         if(g.trade===pd&&g.timeLeft<=CZ.closeAt&&CZ.open) bad.push('with the stall open extraction '+extLetter(CZ)+' is still marked open at '+g.timeLeft.toFixed(1)+'s against a closing time of '+CZ.closeAt+', so the map keeps offering a point that has gone');
+       }
+       // THE CONTROL: shut the stall and the same frames move the same clock.
+       g.trade=null;
+       g.timeLeft=411; Z.beaconT=17.5; Z.hold=null; Z.holdMax=null; Z.pullT=null; g.active=Z; g.beaconT=17.5;
+       var tl2=g.timeLeft, b2=Z.beaconT;
+       drive(60);
+       var b2Now=(Z.beaconT===null||Z.beaconT===undefined)?0:Z.beaconT;
+       var tlD2=tl2-g.timeLeft, bD2=b2-b2Now;
+       if(tlD2<0.2) bad.push('control: the raid clock did not run with the stall shut either, so the driver is broken and the arms above prove nothing');
+       else if(bD2<tlD2*0.5) bad.push('control: with the stall SHUT the inbound extraction still did not move (raid clock '+tlD2.toFixed(2)+'s, extraction '+bD2.toFixed(2)+'s), so the arms above prove nothing');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ if(K) for(var k1 in K) K[k1]=false; }catch(_k){}
+       for(i=0;i<hid.length;i++) hid[i].opened=false;
+       try{ var g2=__state(); if(g2){ g2.trade=null; if(!g2.over){ g2.player.downed=false; g2.player.iv=0; __endRaid('abandon'); } } }catch(_e){}
+       try{ __resetCfg(); }catch(_c){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.33',what:'sprinting lays one trail of boot prints and not two: his own scent marks are no longer painted over his real footprints, a pillager marks still paint, and the scent list itself still fills for the trackers that smell it (his note of 2026-09-07: many footprints while running vertically)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__frame&&window.__keys&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and drive the player';
      if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
@@ -39793,7 +39812,7 @@ window.__REGRESS=[
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.31',what:'the bench button says to hold it, a real mouse click on it says so and spends nothing, letting go early says so, and a synthetic click and a full hold still craft (his note of 2026-09-07: the crafting bar does not work and nothing can be crafted)',
+  {v:'12.32',what:'the bench button says to hold it, a real mouse click on it says so and spends nothing, letting go early says so, and a synthetic click and a full hold still craft (his note of 2026-09-07: the crafting bar does not work and nothing can be crafted)',
    run:function(){
      if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||typeof renderWork!=='function'||typeof craftHoldStep!=='function'||typeof craftHoldCancel!=='function'||!window.__P||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the bench';
      if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
@@ -39845,7 +39864,7 @@ window.__REGRESS=[
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.30',what:'the trigger never dies on a blanked belt cell 1: with the gun in hand bound to key 5 a click on the blank cell selects the gun cell and yields, the next click fires, and the empty-throwable yield lands on the gun cell rather than the blank (2026-09-07 audit P1)',
+  {v:'12.31',what:'the trigger never dies on a blanked belt cell 1: with the gun in hand bound to key 5 a click on the blank cell selects the gun cell and yields, the next click fires, and the empty-throwable yield lands on the gun cell rather than the blank (2026-09-07 audit P1)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__mouse)) return 'SKIP: this fixture cannot deploy';
      if(typeof setHot!=='function'||typeof hotbarSlots!=='function'||typeof updatePlayer!=='function'||typeof hotSel!=='function') return 'SKIP: this build has no belt to drive';
@@ -39908,7 +39927,7 @@ window.__REGRESS=[
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ try{ mouse.down=false; }catch(_m){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.29',what:'a crawler that reaches a still player bites inside a second and a half, carrying whatever wander clock the game rolled for it; a crawler already chasing with a clear cooldown bites inside 0.6 s; and a crawler wandering out of sight still wanders with its bite cooldown left clear (2026-09-07 audit P1, his standing crawler note)',
+  {v:'12.30',what:'a crawler that reaches a still player bites inside a second and a half, carrying whatever wander clock the game rolled for it; a crawler already chasing with a clear cooldown bites inside 0.6 s; and a crawler wandering out of sight still wanders with its bite cooldown left clear (2026-09-07 audit P1, his standing crawler note)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__ents)) return 'SKIP: this fixture cannot deploy and step';
      if(typeof losClear!=='function'||typeof spotFree!=='function') return 'SKIP: no sight or placement test in this build';
@@ -39967,6 +39986,44 @@ window.__REGRESS=[
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.29',what:'a fresh profile opens on Few machines and a Light extraction, the two Settings rows draw those words as their own default rather than in the changed colour, and the world the corpus measures is unmoved (his order of 2026-09-08)',
+   run:function(){
+     if(typeof GAMEOPTS==='undefined'||typeof DEF==='undefined'||typeof gameOptLive!=='function') return 'SKIP: this build has no Settings table to read';
+     if(!window.__resetCfg||!window.__pinDefaults) return 'SKIP: this fixture cannot reset the dials';
+     var bad=[], i, row, ix;
+     function rowOf(k){ for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) return GAMEOPTS[i]; return null; }
+     try{
+       __topClear(); __cleanProfile();
+       // A FRESH PROFILE IS WHAT DEF SAYS, so the dials are reset to it and read back.
+       __resetCfg();
+       if(CFG.nSentry!==12) bad.push('a fresh profile starts on '+CFG.nSentry+' sentries, not the 12 that Machines Few carries');
+       if(CFG.nCrawler!==20) bad.push('a fresh profile starts on '+CFG.nCrawler+' crawlers, not the 20 that Machines Few carries');
+       if(CFG.crawlerPerHouse!==1.5) bad.push('a fresh profile floors crawlers at '+CFG.crawlerPerHouse+' a house, not the 1.5 that Machines Few carries, so the row only moves half the machines');
+       if(CFG.siegeVol!==0.6) bad.push('a fresh profile starts on a siege volume of '+CFG.siegeVol+', not the 0.6 that Heat Light carries');
+       // THE ROW HAS TO AGREE: the live dials must land ON the option, and that
+       // option must be the row's own default, or the button draws in the colour
+       // that means he has changed something.
+       row=rowOf('robots'); ix=gameOptLive('robots');
+       if(!row) bad.push('there is no Machines row to read');
+       else{
+         if(ix<0||!row.opts[ix]) bad.push('with a fresh profile the Machines row matches no option at all and would read CUSTOM');
+         else if(row.opts[ix].n!=='Few') bad.push('with a fresh profile the Machines row reads '+row.opts[ix].n+' and not Few');
+         if(ix>=0&&ix!==row.def) bad.push('the Machines row is on '+(row.opts[ix]?row.opts[ix].n:ix)+' but calls option '+row.def+' its default, so the button draws in the changed colour on a profile nobody has touched');
+       }
+       row=rowOf('ext'); ix=gameOptLive('ext');
+       if(!row) bad.push('there is no extraction heat row to read');
+       else{
+         if(ix<0||!row.opts[ix]) bad.push('with a fresh profile the extraction heat row matches no option at all and would read CUSTOM');
+         else if(row.opts[ix].n!=='Light') bad.push('with a fresh profile the extraction heat row reads '+row.opts[ix].n+' and not Light');
+         if(ix>=0&&ix!==row.def) bad.push('the extraction heat row is on '+(row.opts[ix]?row.opts[ix].n:ix)+' but calls option '+row.def+' its default');
+       }
+       // AND THE CORPUS STILL MEASURES THE OLD WORLD, which is what the harness
+       // pin is for: this is the guard on the change I had to make to the harness.
+       __pinDefaults(0);
+       if(CFG.nSentry!==20||CFG.nCrawler!==34||CFG.crawlerPerHouse!==2.5) bad.push('control: after the harness pin the world is '+CFG.nSentry+'/'+CFG.nCrawler+'/'+CFG.crawlerPerHouse+' and not the 20/34/2.5 every fingerprint in this corpus was measured on');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __resetCfg(); }catch(_c){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'12.28',what:'a Peddler purchase says where it went: a bought rifle names the belt key autoBelt pinned it to, a medkit with no key set says In your backpack, and a medkit on key 6 says key 6, with the credits falling by the prices (his note of 2026-09-07: purchases did not show up in the inventory)',
    run:function(){
@@ -40477,30 +40534,6 @@ window.__REGRESS=[
        if((P.kit||[]).join(',')!=='medkit') bad.push('with the plate sold in between, switching back restored '+(P.kit||[]).join(',')+' and not medkit alone');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.15',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
-   run:function(){
-     if(typeof setSafe!=='function'||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot reach the pocket or the loader';
-     var bad=[], snap=null;
-     try{
-       __topClear(); __cleanProfile();
-       snap=JSON.stringify(__P());   // the loader below replaces the profile; it is put back at the end
-       var P=__P(); P.safe=null;
-       var r1=setSafe('frag');
-       if(!r1) bad.push('the pocket took a Frag Charge without a word');
-       if(P.safe==='frag') bad.push('the pocket is saved on a Frag Charge');
-       var r2=setSafe('ammobox');
-       if(!r2) bad.push('the pocket took an Ammo Box without a word');
-       if(P.safe==='ammobox') bad.push('the pocket is saved on an Ammo Box');
-       var r3=setSafe('medkit');
-       if(r3) bad.push('control: the pocket refused a Medkit ('+r3+')');
-       if(P.safe!=='medkit') bad.push('control: the pocket did not keep the Medkit');
-       __applyLoaded({credits:900,safe:'frag'});
-       if(__P().safe==='frag') bad.push('a saved pocket on a Frag Charge survived the load');
-       __applyLoaded({credits:900,safe:'medkit'});
-       if(__P().safe!=='medkit') bad.push('control: a saved pocket on a Medkit did not survive the load ('+__P().safe+')');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'12.14',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
    run:function(){
@@ -49119,7 +49152,7 @@ window.__REGRESS=[
      else { cl.click(); if(md.classList.contains('on')) bad.push('Leave did not close the Appearance screen'); }
      md.classList.remove('on');
      return bad.length?bad.join('; '):null; }},
-  {v:'9.98',what:'the stash screen is five things: stash, backpack, hotbar, safe pocket, freebie kit, with one way out',
+  {v:'9.98',what:'the stash screen is four things: stash, backpack, hotbar, freebie kit, with one way out (the safe pocket was the fifth until v12.35 deleted it)',
    run:function(){
      var bad=[];
      if(!__vpAlive()) return 'SKIP: the pane has no layout';
@@ -49141,7 +49174,7 @@ window.__REGRESS=[
      if(/YOUR OPERATOR/i.test(hub.textContent)) bad.push('the stash screen still says YOUR OPERATOR');
      if(/ascend with/i.test(hub.textContent)) bad.push('the armour line is still on the stash screen');
      // TWO: his five parts are there and drawn.
-     var need={stash:'#stashgrid',backpack:'#kitgrid',hotbar:'#hotplanwrap',safe:'#safegrid',freebie:'#hubfreekit .fkbtn'};
+     var need={stash:'#stashgrid',backpack:'#kitgrid',hotbar:'#hotplanwrap',freebie:'#hubfreekit .fkbtn'};
      for(var k in need){ var el=hub.querySelector(need[k]); if(!vis(el)) bad.push('the '+k+' part is missing or not drawn'); }
      var cells=hub.querySelectorAll('[data-plan]');
      if(cells.length!==9) bad.push('the hotbar has '+cells.length+' cells, not nine');

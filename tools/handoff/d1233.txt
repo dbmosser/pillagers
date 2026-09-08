@@ -1,54 +1,47 @@
-## v12.33 - THE PEDDLER STALL IS NOT A PAUSE
+## v12.33 - HIS NOTE: SPRINTING LEAVES ONE TRAIL, NOT TWO
 
-From the 2026-09-07 read-only audit (trade-freeze, P2), specced from the
-source and then attacked by a skeptic before a line was written. Verified by
-reading at v12.32.
+His note of 2026-09-07 morning: "many-footprints glitch is still happening
+while running vertically". Traced by reading at v12.32; the word "still" is
+his, and it is fair, because v10.55 fixed a different footprint fault and
+this one was underneath it.
 
-WHAT IT WAS. The trade window returns out of updatePlayer, and the only real
-call to the extraction tick lives below that return. So for as long as the
-Peddler panel was open, every extraction clock stopped dead: the inbound
-countdown, the thirty second boarding window, the siege the call bought, the
-two second re-ping that keeps a called ring loud, the mirrors the HUD reads,
-the closing of a point whose time has come, and the raider waves. Nothing
-else stopped. The frame loop gates on none of it: in the same frames it kept
-adding to the raid time, kept taking dt off the raid clock, and ran the
-machines, the bullets and the throwables on the next three lines. So the
-label over the ring held EXTRACT A INBOUND at whatever second the panel
-opened while the raid ran on around him, and an extraction that had landed
-sat on the ground for as long as he shopped.
+WHAT IT WAS. Sprinting lays TWO trails. The first is the one he is meant to
+see: boot prints stamped into the decal list once every 56 units of ground
+actually covered, rotated to the direction he is running, capped at 70, wet
+and dark after water and a faint scuff otherwise. That is v10.55's work and
+it is correct. The second is G.prints, the scent list a pillager tracker
+smells: while sprinting it takes a mark every 34 units, capped at 40, and
+the draw loop paints each one as two rectangles, 3 wide and 5 tall, that are
+never rotated. Unrotated, that pair is a left boot and a right boot walking
+UP the screen. So when he runs across the screen they sit sideways to his
+path and read as ticks nobody calls a footprint, and when he runs up or down
+they line up with his path and read as a second set of footprints, at a
+different spacing, interleaved with the real ones. That is the glitch, and
+that is why it is a vertical one.
 
-THE SHAPE OF THE FIX IS ALREADY IN THIS FUNCTION, TWICE. The downed branch
-and the roll branch both carry the same call past their own early return, and
-the downed one says why in as many words. The stall takes the roll's form,
-with no pull passed in: while the panel is up, E belongs to the panel, so the
-clocks run and no pull of his own does.
+THE BUILD. His own scent marks are not painted any more. One line in the
+draw loop. His real boot prints already draw that same path from the decal
+list, and his own wake on water is already a decal too (v8.89), so nothing
+he is meant to see is lost. A pillager's marks still draw under the same
+sight gate they have had since v8.85, which is his feature: you can read
+where a man went. The list itself is untouched, still filled every 34 units
+while sprinting and still smelled, so no tracker, no pillager and no machine
+behaves any differently and no balance moves.
 
-SAID PLAINLY, BECAUSE IT IS NOT NIL. This has an in-raid effect. Today the
-stall is a free pause on extraction pressure: the extraction waits, the siege
-stops arriving, the ring stops re-pinging and the waves stop. After this they
-all run while he trades. No dial, no default, no table and no number in the
-config moves; one function that is meant to run every frame of a raid now
-runs in the one state that was skipping it. If he wants shopping to be a
-breather, that is a dial to add on purpose, not a return statement to leave
-broken.
+MEASURED. Check 12.33 deploys, empties the map so nothing interrupts, and
+sprints him north for three seconds through the real keys and the real frame
+loop, which is the only driver that moves the player. It requires both trails
+to have filled (at least three scent marks and at least two real boot
+prints), then draws one frame with the canvas watched, counting every
+rectangle of exactly 3 by 5, which is the scent mark and nothing else. That
+count must be zero. Then it drops one mark belonging to a pillager at his
+feet and requires the count to rise, so the zero is a measured zero and not a
+counter that cannot see. Finally it requires the scent list to be the same
+size it was, so the draw side has taken nothing away from what smells it. On
+the v12.32 fixture the first count is high.
 
-MEASURED. Check 12.33 deploys, marks the crates by his feet searched so the
-stall wins the E the game resolves, drops the Peddler beside him and opens
-the panel through the real frame loop with a real key press. It then drives
-sixty frames three times. The inbound countdown must fall with the raid
-clock. A landed extraction must spend its boarding window. A point whose
-closing time passes while he shops must shut. Every assertion is a ratio
-against the raid clock measured in the same frames, so a slow driver cannot
-fake a pass, and two controls stand behind them: the raid clock must have
-fallen at all, and the same extraction clock must move once the stall is
-shut. On the v12.32 fixture the first arm prints the raid clock falling a
-second while the extraction falls nothing.
-
-Not verified: it never presses the pull key with the panel up, so it does not
-prove the patch withholds his own pull; one second an arm is under the siege
-interval and close to the re-ping, so the arrivals and the re-ping this also
-unfreezes are not measured, nor are the raider waves; it reads the fields the
-labels are built from and not the drawn pixels; the identical early return in
-the seal-cut branch freezes the same clocks while he cuts a seal, and that is
-its own finding and its own build; the bot cannot see any of this, because
-the stall exists only on the real path, so no sim number will move.
+Not verified: his own eye on a vertical sprint, which is the report; the
+walk case, where no scent mark is laid at all and there was never a second
+trail; whether the marks a pillager leaves should be rotated to their own path too,
+which is the same drawing and would be a separate build; the 34 unit spacing
+and the 40 cap, both untouched because they belong to the tracker.

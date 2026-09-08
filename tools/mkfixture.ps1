@@ -624,7 +624,7 @@ var want={simGreed:14,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
     // player and the bot both wade by; raiderFloorN and raiderFloorGap are the floor
     // under the live pillager count and how fast it refills.
     wadeInset:11,raiderFloorN:4,raiderFloorGap:8,overheatLock:7,superhot:0,strikeFind:0.16,eliteGuns:1,
-    nRaider:10,nSentry:20,nCrawler:34,eDmg:1,raidSec:540};
+    nRaider:10,nSentry:20,nCrawler:34,crawlerPerHouse:2.5,eDmg:1,raidSec:540};
   for(var k in want){ if(C2[k]!==want[k]){ changed[k]=[C2[k],want[k]]; C2[k]=want[k]; } }
   P2.mapIx=(mapIx===undefined)?1:mapIx;
   P2.body=null; P2.equipped='smg'; P2.wear=P2.wear||{}; P2.wear['smg']=0;
@@ -5731,6 +5731,44 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.29',what:'a fresh profile opens on Few machines and a Light extraction, the two Settings rows draw those words as their own default rather than in the changed colour, and the world the corpus measures is unmoved (his order of 2026-09-08)',
+   run:function(){
+     if(typeof GAMEOPTS==='undefined'||typeof DEF==='undefined'||typeof gameOptLive!=='function') return 'SKIP: this build has no Settings table to read';
+     if(!window.__resetCfg||!window.__pinDefaults) return 'SKIP: this fixture cannot reset the dials';
+     var bad=[], i, row, ix;
+     function rowOf(k){ for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) return GAMEOPTS[i]; return null; }
+     try{
+       __topClear(); __cleanProfile();
+       // A FRESH PROFILE IS WHAT DEF SAYS, so the dials are reset to it and read back.
+       __resetCfg();
+       if(CFG.nSentry!==12) bad.push('a fresh profile starts on '+CFG.nSentry+' sentries, not the 12 that Machines Few carries');
+       if(CFG.nCrawler!==20) bad.push('a fresh profile starts on '+CFG.nCrawler+' crawlers, not the 20 that Machines Few carries');
+       if(CFG.crawlerPerHouse!==1.5) bad.push('a fresh profile floors crawlers at '+CFG.crawlerPerHouse+' a house, not the 1.5 that Machines Few carries, so the row only moves half the machines');
+       if(CFG.siegeVol!==0.6) bad.push('a fresh profile starts on a siege volume of '+CFG.siegeVol+', not the 0.6 that Heat Light carries');
+       // THE ROW HAS TO AGREE: the live dials must land ON the option, and that
+       // option must be the row's own default, or the button draws in the colour
+       // that means he has changed something.
+       row=rowOf('robots'); ix=gameOptLive('robots');
+       if(!row) bad.push('there is no Machines row to read');
+       else{
+         if(ix<0||!row.opts[ix]) bad.push('with a fresh profile the Machines row matches no option at all and would read CUSTOM');
+         else if(row.opts[ix].n!=='Few') bad.push('with a fresh profile the Machines row reads '+row.opts[ix].n+' and not Few');
+         if(ix>=0&&ix!==row.def) bad.push('the Machines row is on '+(row.opts[ix]?row.opts[ix].n:ix)+' but calls option '+row.def+' its default, so the button draws in the changed colour on a profile nobody has touched');
+       }
+       row=rowOf('ext'); ix=gameOptLive('ext');
+       if(!row) bad.push('there is no extraction heat row to read');
+       else{
+         if(ix<0||!row.opts[ix]) bad.push('with a fresh profile the extraction heat row matches no option at all and would read CUSTOM');
+         else if(row.opts[ix].n!=='Light') bad.push('with a fresh profile the extraction heat row reads '+row.opts[ix].n+' and not Light');
+         if(ix>=0&&ix!==row.def) bad.push('the extraction heat row is on '+(row.opts[ix]?row.opts[ix].n:ix)+' but calls option '+row.def+' its default');
+       }
+       // AND THE CORPUS STILL MEASURES THE OLD WORLD, which is what the harness
+       // pin is for: this is the guard on the change I had to make to the harness.
+       __pinDefaults(0);
+       if(CFG.nSentry!==20||CFG.nCrawler!==34||CFG.crawlerPerHouse!==2.5) bad.push('control: after the harness pin the world is '+CFG.nSentry+'/'+CFG.nCrawler+'/'+CFG.crawlerPerHouse+' and not the 20/34/2.5 every fingerprint in this corpus was measured on');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __resetCfg(); }catch(_c){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'12.28',what:'a Peddler purchase says where it went: a bought rifle names the belt key autoBelt pinned it to, a medkit with no key set says In your backpack, and a medkit on key 6 says key 6, with the credits falling by the prices (his note of 2026-09-07: purchases did not show up in the inventory)',
    run:function(){

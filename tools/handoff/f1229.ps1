@@ -11,75 +11,60 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.29 CHECK, inserted before the v12.28 entry. THE CLOCK IS NOT STAGED. The
-# crawler is parked on patrol just outside bite range, facing a still player,
-# and the game rolls its own wander clock on the first idle frame exactly as it
-# does in a raid; the only thing measured is how long the first bite takes. A
-# second arm proves the room can bite at all, so the first arm's deadline is a
-# measurement and not a hope, and a third arm proves the wander itself still
-# runs and no longer leaves anything on the bite cooldown.
+# THE HARNESS PIN COMES FIRST. __pinDefaults pinned the two machine counts and
+# not the per-house rate, and the per-house rate is what the crawler count is
+# floored on, so moving the game default would have moved the world every check
+# measures and turned the map fingerprint red for a reason that is his Settings
+# table and not the build. Pinned explicitly at the old Standard figure, so the
+# corpus keeps measuring the world it measured yesterday while a fresh profile
+# opens on Few.
+SubRx @'
+nSentry:20,nCrawler:34,eDmg:1,raidSec:540}
+'@ @'
+nSentry:20,nCrawler:34,crawlerPerHouse:2.5,eDmg:1,raidSec:540}
+'@
+
+# v12.29 CHECK, inserted before the v12.28 entry.
 SubRx @'
   {v:'12.28',what:'a Peddler purchase says where it went: a bought rifle names the belt key autoBelt pinned it to, a medkit with no key set says In your backpack, and a medkit on key 6 says key 6, with the credits falling by the prices (his note of 2026-09-07: purchases did not show up in the inventory)',
 '@ @'
-  {v:'12.29',what:'a crawler that reaches a still player bites inside a second and a half, carrying whatever wander clock the game rolled for it; a crawler already chasing with a clear cooldown bites inside 0.6 s; and a crawler wandering out of sight still wanders with its bite cooldown left clear (2026-09-07 audit P1, his standing crawler note)',
+  {v:'12.29',what:'a fresh profile opens on Few machines and a Light extraction, the two Settings rows draw those words as their own default rather than in the changed colour, and the world the corpus measures is unmoved (his order of 2026-09-08)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__ents)) return 'SKIP: this fixture cannot deploy and step';
-     if(typeof losClear!=='function'||typeof spotFree!=='function') return 'SKIP: no sight or placement test in this build';
-     var bad=[];
+     if(typeof GAMEOPTS==='undefined'||typeof DEF==='undefined'||typeof gameOptLive!=='function') return 'SKIP: this build has no Settings table to read';
+     if(!window.__resetCfg||!window.__pinDefaults) return 'SKIP: this fixture cannot reset the dials';
+     var bad=[], i, row, ix;
+     function rowOf(k){ for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) return GAMEOPTS[i]; return null; }
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, i, e=null;
-       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'){ e=g.ents[i]; break; }
-       if(!e) return 'SKIP: no crawler on this map';
-       for(i=g.ents.length-1;i>=0;i--) if(g.ents[i]!==e) g.ents.splice(i,1);   // only the crawler moves in this room
-       p.downed=false; p.crouch=false; p.iv=0; g.crouchTog=false; keys={};
-       if(typeof refreshVseg==='function') refreshVseg();
-       function findSpot(r){
-         var a, sx, sy;
-         for(a=0;a<24;a++){ var ang=a*Math.PI/12; sx=p.x+Math.cos(ang)*r; sy=p.y+Math.sin(ang)*r; if(spotFree(g.map,sx,sy,24)&&losClear(sx,sy,p.x,p.y,g.vseg)) return {x:sx,y:sy}; }
-         return null;
+       __topClear(); __cleanProfile();
+       // A FRESH PROFILE IS WHAT DEF SAYS, so the dials are reset to it and read back.
+       __resetCfg();
+       if(CFG.nSentry!==12) bad.push('a fresh profile starts on '+CFG.nSentry+' sentries, not the 12 that Machines Few carries');
+       if(CFG.nCrawler!==20) bad.push('a fresh profile starts on '+CFG.nCrawler+' crawlers, not the 20 that Machines Few carries');
+       if(CFG.crawlerPerHouse!==1.5) bad.push('a fresh profile floors crawlers at '+CFG.crawlerPerHouse+' a house, not the 1.5 that Machines Few carries, so the row only moves half the machines');
+       if(CFG.siegeVol!==0.6) bad.push('a fresh profile starts on a siege volume of '+CFG.siegeVol+', not the 0.6 that Heat Light carries');
+       // THE ROW HAS TO AGREE: the live dials must land ON the option, and that
+       // option must be the row's own default, or the button draws in the colour
+       // that means he has changed something.
+       row=rowOf('robots'); ix=gameOptLive('robots');
+       if(!row) bad.push('there is no Machines row to read');
+       else{
+         if(ix<0||!row.opts[ix]) bad.push('with a fresh profile the Machines row matches no option at all and would read CUSTOM');
+         else if(row.opts[ix].n!=='Few') bad.push('with a fresh profile the Machines row reads '+row.opts[ix].n+' and not Few');
+         if(ix>=0&&ix!==row.def) bad.push('the Machines row is on '+(row.opts[ix]?row.opts[ix].n:ix)+' but calls option '+row.def+' its default, so the button draws in the changed colour on a profile nobody has touched');
        }
-       var near=findSpot(25);
-       if(!near) return 'SKIP: no clear spot 25 units from the drop, so nothing can be parked in bite range';
-       function park(st){
-         e.x=near.x; e.y=near.y; e.path=null; e.pathGoal=null; e.chaseHold=0; e.alert=0;
-         e.state=st; e.role=null; e.roleT=0; e.beat=0; e.cd=0; e.wanderT=0;
-         e.tx=e.x; e.ty=e.y; e.face=Math.atan2(p.y-e.y,p.x-e.x);
-         p.hp=100; p.armor=0; p.iv=0; p.downed=false;
+       row=rowOf('ext'); ix=gameOptLive('ext');
+       if(!row) bad.push('there is no extraction heat row to read');
+       else{
+         if(ix<0||!row.opts[ix]) bad.push('with a fresh profile the extraction heat row matches no option at all and would read CUSTOM');
+         else if(row.opts[ix].n!=='Light') bad.push('with a fresh profile the extraction heat row reads '+row.opts[ix].n+' and not Light');
+         if(ix>=0&&ix!==row.def) bad.push('the extraction heat row is on '+(row.opts[ix]?row.opts[ix].n:ix)+' but calls option '+row.def+' its default');
        }
-       function bite(maxF){
-         var hp0=p.hp+(p.armor||0), f;
-         for(f=0;f<maxF;f++){ __ents(1/60); if(p.hp+(p.armor||0)<hp0) return (f+1)/60; }
-         return -1;
-       }
-       // ARM ONE, THE FINDING. Nothing is staged on the clock: the crawler is put
-       // on patrol in bite range of a still man, and the game rolls its own wander
-       // on the first idle frame, which is the roll he meets in a raid.
-       park('patrol');
-       var tA=bite(300);
-       if(tA<0) bad.push('a crawler on patrol 25 units from a still man never bit him in 5 s (it ended '+e.state+' at '+Math.round(dist(e,p))+' units, cooldown '+(e.cd||0).toFixed(1)+')');
-       else if(tA>1.5) bad.push('a crawler that reached a still man took '+tA.toFixed(1)+' s to bite him, which is the wander clock it was carrying and not the walk');
-       // ARM TWO, THE RULER. Already chasing, cooldown clear: this room must be
-       // able to produce a bite quickly, or the deadline above proves nothing.
-       park('chase'); e.alert=2.4; e.tx=p.x; e.ty=p.y;
-       var tB=bite(300);
-       if(tB<0||tB>0.6) bad.push('control: a crawler already chasing with a clear cooldown took '+(tB<0?'more than 5':tB.toFixed(1))+' s to bite from 25 units, so this room cannot measure a first bite and arm one proves nothing');
-       // ARM THREE: the wander still runs, and it no longer leaves anything on the
-       // bite cooldown. Far away and out of his sight, so nothing chases.
-       var far=findSpot(900)||findSpot(700);
-       if(!far) bad.push('staging: no clear spot far enough out to watch a wander');
-       else {
-         e.x=far.x; e.y=far.y; e.state='patrol'; e.cd=0; e.wanderT=0; e.alert=0;
-         e.tx=e.x; e.ty=e.y; e.path=null; e.pathGoal=null;
-         var wx=e.x, wy=e.y;
-         for(i=0;i<360;i++) __ents(1/60);
-         var moved=Math.sqrt((e.x-wx)*(e.x-wx)+(e.y-wy)*(e.y-wy));
-         if(moved<60) bad.push('a crawler left to wander for 6 s moved '+Math.round(moved)+' units, so the wander itself is broken');
-         if((e.cd||0)>0.05) bad.push('after 6 s of wandering the crawler carries '+(e.cd||0).toFixed(1)+' s on its bite cooldown, which is the wander clock sitting in the field the bite reads');
-       }
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+       // AND THE CORPUS STILL MEASURES THE OLD WORLD, which is what the harness
+       // pin is for: this is the guard on the change I had to make to the harness.
+       __pinDefaults(0);
+       if(CFG.nSentry!==20||CFG.nCrawler!==34||CFG.crawlerPerHouse!==2.5) bad.push('control: after the harness pin the world is '+CFG.nSentry+'/'+CFG.nCrawler+'/'+CFG.crawlerPerHouse+' and not the 20/34/2.5 every fingerprint in this corpus was measured on');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __resetCfg(); }catch(_c){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'12.28',what:'a Peddler purchase says where it went: a bought rifle names the belt key autoBelt pinned it to, a medkit with no key set says In your backpack, and a medkit on key 6 says key 6, with the credits falling by the prices (his note of 2026-09-07: purchases did not show up in the inventory)',
 '@

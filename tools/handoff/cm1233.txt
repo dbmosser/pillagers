@@ -1,22 +1,17 @@
-v12.33: the Peddler stall is not a pause
+v12.33: his note, sprinting leaves one trail and not two
 
-The trade window returns out of the player update above the only real call to
-the extraction tick, so opening the Peddler stopped every extraction clock:
-the inbound countdown, the thirty second boarding window, the siege the call
-bought, the re-ping, the mirrors the HUD reads, the closing of a point whose
-time has come, and the raider waves. Nothing else stopped, because the frame
-loop gates on none of it and kept the raid clock and the machines running in
-the same frames. The downed branch and the roll branch already carry this
-call past their own early return; the stall takes the roll form, with no pull
-passed in, so the clocks run while E belongs to the panel.
-
-Said plainly: this has an in-raid effect. The stall was a free pause on
-extraction pressure and is not one any more. No dial moves.
-
-Check 12.33 opens the stall through the real loop with a real key press, then
-drives sixty frames three times: the inbound countdown must fall with the
-raid clock, a landed boarding window must spend, and a point past its closing
-time must shut, each as a ratio against the raid clock, with two controls;
-fails on v12.32.
+"many-footprints glitch is still happening while running vertically".
+Sprinting lays two trails. The boot prints he is meant to see are stamped
+every 56 units of ground covered and rotated to his path. The other is the
+scent list a pillager tracker smells, taken every 34 units while sprinting
+and painted as two small rectangles that are never rotated, so they read as
+a pair of boots walking up the screen: sideways ticks when he runs across,
+and a second set of footprints interleaved with the real ones when he runs
+up or down. His own scent marks are no longer painted. The marks a pillager leaves
+still are, which is his v8.85 feature, and the list itself is untouched, so
+every tracker that smells it behaves exactly as before. Check 12.33 sprints
+him north through the real keys and loop, counts the marks painted in one
+frame and requires zero, with one mark left by a pillager at his feet as the control
+that the counter can see one; fails on v12.32.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

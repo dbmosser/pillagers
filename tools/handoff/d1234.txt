@@ -1,46 +1,54 @@
-## v12.34 - HIS ORDER: FEWER MACHINES AND A LIGHTER EXTRACTION BY DEFAULT
+## v12.34 - THE PEDDLER STALL IS NOT A PAUSE
 
-His order of 2026-09-08: "Make the default setting for machines 'few' and the
-default setting for 'Heat when you call for extraction' to 'light'".
+From the 2026-09-07 read-only audit (trade-freeze, P2), specced from the
+source and then attacked by a skeptic before a line was written. Verified by
+reading at v12.33.
 
-These are dials, and his own standing rule is that dials do not move before
-alpha. He moved these two himself, so they move, and nothing else in the
-table is touched.
+WHAT IT WAS. The trade window returns out of updatePlayer, and the only real
+call to the extraction tick lives below that return. So for as long as the
+Peddler panel was open, every extraction clock stopped dead: the inbound
+countdown, the thirty second boarding window, the siege the call bought, the
+two second re-ping that keeps a called ring loud, the mirrors the HUD reads,
+the closing of a point whose time has come, and the raider waves. Nothing
+else stopped. The frame loop gates on none of it: in the same frames it kept
+adding to the raid time, kept taking dt off the raid clock, and ran the
+machines, the bullets and the throwables on the next three lines. So the
+label over the ring held EXTRACT A INBOUND at whatever second the panel
+opened while the raid ran on around him, and an extraction that had landed
+sat on the ground for as long as he shopped.
 
-THE BUILD. The numbers are read off the two Settings rows rather than
-invented, so what a fresh profile carries is exactly what those rows mean.
-Machines Few is twelve sentries, twenty crawlers and a floor of one and a
-half crawlers a house; the per-house rate matters because the crawler count
-is floored on it, and a row that moved the counts without it would only move
-half the machines, which is the fault v9.84 fixed in the row itself. Heat
-Light is a siege volume of six tenths. Each row also carries the index of
-its own default and draws its button in amber when the live dials sit
-anywhere else, so both indexes move with the numbers; without that, Few and
-Light would have been drawn in the colour that means "you have changed
-something" on a profile nobody had touched.
+THE SHAPE OF THE FIX IS ALREADY IN THIS FUNCTION, TWICE. The downed branch
+and the roll branch both carry the same call past their own early return, and
+the downed one says why in as many words. The stall takes the roll's form,
+with no pull passed in: while the panel is up, E belongs to the panel, so the
+clocks run and no pull of his own does.
 
-THE HARNESS HAD TO MOVE WITH IT, and this is the part worth reading. The
-test harness pins the two machine counts before every measurement and has
-never pinned the per-house rate, because the rate has never changed. Moving
-the game default would therefore have changed the world every check in the
-corpus measures, and the map fingerprint, the entity counts and the parity
-signature would have gone red for a reason that is his Settings table and
-not the build. The rate is pinned explicitly now at the old Standard figure.
-The corpus measures the world it measured yesterday; a fresh profile opens
-on Few.
+SAID PLAINLY, BECAUSE IT IS NOT NIL. This has an in-raid effect. Today the
+stall is a free pause on extraction pressure: the extraction waits, the siege
+stops arriving, the ring stops re-pinging and the waves stop. After this they
+all run while he trades. No dial, no default, no table and no number in the
+config moves; one function that is meant to run every frame of a raid now
+runs in the one state that was skipping it. If he wants shopping to be a
+breather, that is a dial to add on purpose, not a return statement to leave
+broken.
 
-MEASURED. Check 12.34 resets the dials to what a fresh profile carries and
-requires the four numbers to be the Few and Light numbers. It then reads the
-two Settings rows the way the screen does and requires each to land on an
-option rather than on CUSTOM, to read Few and Light by name, and to call
-that same option its own default so neither button draws as changed. As the
-control it applies the harness pin and requires the world to come back to
-twenty, thirty four and two and a half, which is the guard on the harness
-change this build had to make. On the v12.28 fixture the first four
-assertions fail on the old numbers.
+MEASURED. Check 12.34 deploys, marks the crates by his feet searched so the
+stall wins the E the game resolves, drops the Peddler beside him and opens
+the panel through the real frame loop with a real key press. It then drives
+sixty frames three times. The inbound countdown must fall with the raid
+clock. A landed extraction must spend its boarding window. A point whose
+closing time passes while he shops must shut. Every assertion is a ratio
+against the raid clock measured in the same frames, so a slow driver cannot
+fake a pass, and two controls stand behind them: the raid clock must have
+fallen at all, and the same extraction clock must move once the stall is
+shut. On the v12.33 fixture the first arm prints the raid clock falling a
+second while the extraction falls nothing.
 
-Not verified: how the game plays with them, which is his to judge and the
-reason he moved them; the bot, which is pinned to the old world by the same
-harness pin and so reports nothing about either change; whether Few is far
-enough down for him, since the row still goes no lower and Machines has no
-None the way the pillager row does.
+Not verified: it never presses the pull key with the panel up, so it does not
+prove the patch withholds his own pull; one second an arm is under the siege
+interval and close to the re-ping, so the arrivals and the re-ping this also
+unfreezes are not measured, nor are the raider waves; it reads the fields the
+labels are built from and not the drawn pixels; the identical early return in
+the seal-cut branch freezes the same clocks while he cuts a seal, and that is
+its own finding and its own build; the bot cannot see any of this, because
+the stall exists only on the real path, so no sim number will move.

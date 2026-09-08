@@ -11,64 +11,51 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-07 READ-ONLY AUDIT (P1, confirmed by three refuters) AND HIS
-# STANDING NOTE: "standing still and crawler didn't hurt me even though he was
-# close", "crawler attacks and pathfinding were still kinda messed up".
+# HIS ORDER, 2026-09-08: "Make the default setting for machines 'few' and the
+# default setting for 'Heat when you call for extraction' to 'light'". These are
+# dials, and his own standing rule is that dials do not move before alpha; he
+# moved these two himself, so they move. Nothing else in the table is touched.
 #
-# e.cd is doing two jobs. In the idle branch it is the wander timer: whenever it
-# reaches zero the machine picks a new spot and rolls cd=rnd(3,7). In the chase
-# branch it is the bite cooldown: the bite fires only when cd<=0 and sets cd=0.7
-# after. Nothing on the way into a chase clears it. So a crawler that had just
-# rolled a six second wander, saw him and closed, stood inside bite range
-# serving out the rest of that wander before its first bite, about 2.6 seconds
-# on average and up to seven.
-#
-# THE FIRST DRAFT OF THIS BUILD CLAMPED THE CLOCK AT THREE TRANSITIONS INTO
-# CHASE. The 2026-09-07 draft review killed that: there are FIVE ways in, and
-# the two the clamps missed are the ones he causes himself, a round or a swing
-# landing on a machine that was not yet fighting him (game 17825 and 17927).
-# One of the three, the possum wake, could never fire, because a crawler
-# playing dead has cd 0 already. So the wander gets its own field instead and
-# every way in is covered at once, now and later. Only the crawler is moved off
-# e.cd: the sentry shares the same fault, but its first shot is a balance change
-# he has not asked for (NO BALANCING BEFORE ALPHA), so it is named here and left.
+# The two rows he named carry these values, read straight off the Settings table
+# rather than invented here: Machines / Few is nSentry 12, nCrawler 20 and
+# crawlerPerHouse 1.5, and Heat / Light is siegeVol 0.6. Setting the same three
+# numbers in the defaults is what makes a fresh profile open on Few, and the
+# same one number is what makes it open on Light, so the row he sees ticked is
+# the row he asked for.
 SubRx @'
-      // cd is decremented once per frame below; do not tick it here as well
-      if(e.cd<=0){
+nSentry:20,nCrawler:34
 '@ @'
-      // cd is decremented once per frame below; do not tick it here as well
-      // v12.29, audit P1 and his standing crawler note: e.cd was the wander
-      // timer here AND the bite cooldown in the chase branch, and none of the
-      // five ways into a chase cleared it, so a crawler that reached him stood
-      // in bite range serving out the rest of a wander of up to seven seconds.
-      // The wander gets its own field on a crawler, which covers every way in
-      // at once. The sentry keeps the shared field: same fault, but a faster
-      // first shot from a sentry is a balance call he has not made.
-      var _wf=(e.kind==='crawler')?'wanderT':'cd';
-      if(!(e[_wf]>0)) e[_wf]=0;
-      if(e[_wf]<=0){
+nSentry:12,nCrawler:20
 '@
 SubRx @'
-          e.tx=sp.x; e.ty=sp.y; }
-        e.cd=rnd(3,7);
+crewSpread:1,crawlerPerHouse:2.5
 '@ @'
-          e.tx=sp.x; e.ty=sp.y; }
-        e[_wf]=rnd(3,7);
+crewSpread:1,crawlerPerHouse:1.5
 '@
 SubRx @'
-      want=Math.atan2(e.ty-e.y,e.tx-e.x);
-      if(dist(e,{x:e.tx,y:e.ty})<30) e.cd=0;
+siegePull:0.5,siegeVol:1,siegeEcho:1
 '@ @'
-      want=Math.atan2(e.ty-e.y,e.tx-e.x);
-      if(dist(e,{x:e.tx,y:e.ty})<30) e[_wf]=0;
+siegePull:0.5,siegeVol:0.6,siegeEcho:1
+'@
+
+# AND THE ROW HAS TO AGREE WITH ITSELF. Each Settings row carries the index of
+# its own default, and the button is drawn in amber when the live dials sit
+# anywhere else, which is how he can see at a glance that he has changed
+# something. Moving the numbers without moving these two would have drawn Few
+# and Light in the colour that means "not the default", every time, for ever.
+SubRx @'
+     {n:'Few',      cfg:{nSentry:12, nCrawler:20, crawlerPerHouse:1.5}}
+   ], def:1},
+'@ @'
+     {n:'Few',      cfg:{nSentry:12, nCrawler:20, crawlerPerHouse:1.5}}
+   ], def:2},
 '@
 SubRx @'
-    if(e.cd>0) e.cd-=dt;
-    // Enemies were silent except when firing, so there was nothing for a noise
+     {n:'Light',    cfg:{siegeVol:0.6}}
+   ], def:1}
 '@ @'
-    if(e.cd>0) e.cd-=dt;
-    if(e.wanderT>0) e.wanderT-=dt;   // v12.29: the wander clock, its own field on a crawler
-    // Enemies were silent except when firing, so there was nothing for a noise
+     {n:'Light',    cfg:{siegeVol:0.6}}
+   ], def:2}
 '@
 
 # NEW IN.
@@ -76,7 +63,7 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A CRAWLER THAT REACHES YOU BITES. It used to stand next to you for up to seven seconds first, serving out the clock it had rolled for its next wander, whether it came for you on its own or because you shot it.',
+  'A NEW PROFILE NOW STARTS ON FEWER MACHINES AND A LIGHTER EXTRACTION. Both are still in Settings and both still go all the way up; only where they start has moved.',
 '@
 
 # STAMPS.
@@ -92,7 +79,7 @@ var WHATSNEW_VER='12.29';
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.28:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.28 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.28:[^']*'",{ param($m) "now:'v12.29: 2026-09-07 audit P1 and his standing crawler note. e.cd was two clocks on one field: the wander timer in the idle branch, which rolls 3 to 7 seconds whenever it runs out, and the bite cooldown in the chase branch, which lets a bite through only at zero. Nothing on any of the five ways into a chase cleared it, so a crawler that reached him stood in bite range serving out the rest of its wander, about 2.6 seconds on average and up to seven. My first draft clamped the clock at three of those five transitions; the draft review killed it, because the two it missed are the ones he causes himself by shooting, and one of the three could never fire. The wander has its own field on a crawler now, so every way in is covered at once. The sentry keeps the shared field on purpose: same fault, but a faster first shot from a sentry is a balance call he has not made. Check 12.29 parks a crawler on patrol 25 units from a still player, stages nothing on the clock and lets the game roll its own, and requires the first bite inside 1.5 s; a crawler already in chase with a clear cooldown must bite inside 0.6 s, which proves the room can measure a bite at all; and a crawler wandering out of sight must still wander while its bite cooldown stays clear. Fails on v12.28, where the roll costs three to seven seconds.'" })
+$s=[regex]::Replace($s,"now:'v12\.28:[^']*'",{ param($m) "now:'v12.29: his order of 2026-09-08: the default for Machines is Few and the default for Heat when you call for extraction is Light. The values are read off the Settings rows themselves rather than invented, so the row he sees ticked on a fresh profile is the row he named: Few is 12 sentries, 20 crawlers and 1.5 crawlers a house, Light is a siege volume of 0.6. These are dials, and his own rule is that dials do not move before alpha; he moved these two himself and nothing else in the table is touched. The test harness now pins the crawlers-per-house figure explicitly, because it pinned the two counts and not that one, so the world every check measures is the same world it measured yesterday. Check 12.29 requires a fresh profile to carry the Few and Light numbers and the Settings rows to render those two as the current pick, and requires the pinned world to be unmoved; fails on v12.28.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

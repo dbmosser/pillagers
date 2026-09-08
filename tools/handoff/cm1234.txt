@@ -1,21 +1,22 @@
-v12.34: his order, fewer machines and a lighter extraction by default
+v12.34: the Peddler stall is not a pause
 
-"Make the default setting for machines 'few' and the default setting for
-'Heat when you call for extraction' to 'light'". Dials, moved because he
-moved them; nothing else in the table is touched.
+The trade window returns out of the player update above the only real call to
+the extraction tick, so opening the Peddler stopped every extraction clock:
+the inbound countdown, the thirty second boarding window, the siege the call
+bought, the re-ping, the mirrors the HUD reads, the closing of a point whose
+time has come, and the raider waves. Nothing else stopped, because the frame
+loop gates on none of it and kept the raid clock and the machines running in
+the same frames. The downed branch and the roll branch already carry this
+call past their own early return; the stall takes the roll form, with no pull
+passed in, so the clocks run while E belongs to the panel.
 
-The numbers come off the two Settings rows rather than being invented, so a
-fresh profile carries exactly what those rows mean: twelve sentries, twenty
-crawlers and a floor of one and a half crawlers a house, and a siege volume
-of six tenths. Each row's own default index moves with the numbers, or both
-buttons would have drawn in the colour that means changed on a profile
-nobody had touched.
+Said plainly: this has an in-raid effect. The stall was a free pause on
+extraction pressure and is not one any more. No dial moves.
 
-The harness pinned the two machine counts and never the per-house rate, so
-moving the default would have moved the world every check measures. The rate
-is pinned explicitly at the old figure now, and check 12.34 guards it: a
-fresh profile must carry the Few and Light numbers, both rows must read
-those words and call them their own default, and the pin must bring the old
-world back. Fails on v12.28.
+Check 12.34 opens the stall through the real loop with a real key press, then
+drives sixty frames three times: the inbound countdown must fall with the
+raid clock, a landed boarding window must spend, and a point past its closing
+time must shut, each as a ratio against the raid clock, with two controls;
+fails on v12.33.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

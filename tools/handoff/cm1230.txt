@@ -1,14 +1,22 @@
-v12.30: the trigger never dies on a blank belt cell
+v12.30: a crawler that reaches you bites
 
-Binding the gun in your hands to another belt key blanks the derived cell
-1, and three fall-backs went to cell 1 by number (the empty-grenade yield
-and the two last-consumable fall-backs), so the highlight landed on a blank
-cell and the trigger was dead until another digit was pressed; a raid also
-starts on cell 1, so the first click fired nothing. A helper finds the cell
-that holds the gun in hand, the fall-backs use it, and a click on a blank
-cell selects the gun and yields like a click on an empty grenade cell.
-Check 12.30 binds the held gun to key 5, clicks on the blank cell and on an
-empty throwable cell, and requires the gun cell selected, no shot on that
-hold and a shot on the next click; fails on v12.29.
+The audit's top finding, and his standing crawler note. A crawler's wander
+timer and its bite cooldown were one field: on patrol it rolls three to seven
+seconds whenever the timer runs out, and a bite only fires when that field is
+at zero. Nothing on the way into a chase cleared it, so a crawler that
+reached you stood there serving out the rest of its wander before biting.
+
+My first draft clamped the field at three of the ways into a chase. The
+draft review killed it: there are five, the two it missed are the ones you
+cause by shooting, and one of the three could never fire. The wander has its
+own field on a crawler now, which covers every way in at once. Sentries keep
+the shared field on purpose, since a faster first shot from a sentry is a
+balance call.
+
+Check 12.30 stages nothing on the clock: it parks a crawler on patrol 25
+units from a still player, lets the game roll its own wander, and requires
+the first bite inside a second and a half, with a chasing crawler as the
+ruler that the room can bite at all and a wandering one to show the wander
+still runs and leaves the cooldown clear; fails on v12.29.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

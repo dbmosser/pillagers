@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v12.27 (da4bf38). The tree has **v12.28 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v12.28 (cad53aa). The tree has **v12.29 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-1" (the only tab; the pane holds one tab since 2026-09-07 12:44).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1228 cm1228.txt
+    bash tools/handoff/ship.sh commit 1229 cm1229.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1228 1229
+    bash tools/handoff/ship.sh start 1229 1230
 and carry on down the list. Cron 52d2450b is armed every minute (re-armed 2026-09-07 07:31); re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -17,6 +17,25 @@ alone and straight after the new check; a bare profile left by a check is the
 usual cause (see memory dark-raiders-loader-replaces-the-profile).
 
 **THE QUEUE, ALL DRAFTED (p/f/d/a/cm in this folder), SHIP IN THIS ORDER:**
+
+**2026-09-08 07:20 QUEUE, AFTER TWO STALLS AND THREE DIRECT ORDERS FROM HIM.** The cron died overnight (2026-09-07 17:47 to 2026-09-08 06:47, thirteen hours, v12.28 finished and uncommitted) exactly as memory dark-raiders-cron-dies-with-the-process predicts; it is re-armed as 866ce4db and CronList is now the first call of every tick, no exceptions. Earlier the same day the Fable allowance ran out and took a 12-agent review with it; he switched the session to Opus 5 at 17:30.
+
+**HIS THREE ORDERS OF 2026-09-08, all taken:** (1) machines default Few and extraction heat default Light, shipped as 1229/v12.29; (2) delete the safe pocket entirely, drafted as 1235/v12.35; (3) his question about the alpha date, answered at 06:47 with the seven notes as the blocker list, which is why the notes outrank the audit backlog in the order below.
+
+**THE QUEUE AS IT STANDS (renumbered 07:05 by renum1229.ps1 so his defaults could jump in; verifychain 1230..1235 from 12.29 prints chain verified; dry.ps1 1230 1235 applies every one to the scratch copy, dry game at v12.35):**
+- **1229 HIS ORDER: FEWER MACHINES AND A LIGHTER EXTRACTION BY DEFAULT** (v12.29). Applied, four gates green, control on fx1228 failed on six counts, corpus running from 07:07. The harness now pins crawlerPerHouse at the old 2.5, because it pinned the two counts and not the rate and the rate is what the crawler count is floored on; without that the map fingerprint would have moved for a Settings reason. verifySafe after the change still reads 85/374 ents, 165/593 containers, parity identical.
+- **1230 A CRAWLER THAT REACHES YOU BITES** (audit P1 and his standing note). REWRITTEN from three clamps to a field split (wanderT) after the 2026-09-07 review showed there are FIVE ways into a chase and the two the clamps missed are the ones HE causes by shooting; its check stages nothing on the clock.
+- **1231 THE TRIGGER NEVER DIES ON A BLANK BELT CELL** (audit P1).
+- **1232 HIS NOTE: THE BENCH SAYS TO HOLD THE BUTTON** (crafting; the machinery is sound, the silence was the bug).
+- **1233 HIS NOTE: SPRINTING LEAVES ONE TRAIL, NOT TWO** (footprints).
+- **1234 THE PEDDLER STALL IS NOT A PAUSE** (audit P2; built from a spec that was written from source and then attacked by a skeptic).
+- **1235 HIS ORDER: THE SAFE POCKET IS DELETED** (v12.35). Deliberately LAST despite being his order, because it is the largest surface and the smaller builds should land first. Its patch uses a CutRx helper for three block deletions (16, 75 and 7 lines) that asserts both markers are unique and in order and prints what it removed, and it refuses to write the file if any of safegrid, safeUpKey, renderSafe or setSafe survives.
+
+**THE FIRST PASS AT THE DELETION WAS INCOMPLETE AND THE DRY RUN CAUGHT IT**, which is the whole reason the dry chain exists: it left a six-line orphaned comment above the arming it removed, the live death-card line that printed "Safe pocket held N items" (which is actually fed by the CFG.safeSlots rebate, off since v5.57, and now says Rebate), two WHATSNEW entries describing the pocket as a live feature, and a comment pointing at a function that was gone. All folded in. THE TRAP TO REMEMBER: the world container type "safe", the secure cases in buildings and camps and the contract that searches them, shares five letters with the pocket and is a different thing; check 12.35 deploys and requires at least one secure case to be built, as the guard.
+
+**STILL OPEN FROM HIS SEVEN NOTES:** only the reload countdown (note 7), and it is ALREADY BUILT TWICE, a ring around the cursor with a seconds readout at game 23293 and a bar over the head at 23882, both gated on CFG.cursorLoud which defaults to 1 and is not exposed in Settings. A probe is written at scratchpad probe-reload.js to prove both actually paint during a real reload; run it on the dry fixture between corpora. If both paint, the note is closed by measurement and he is told where to look, not given a third indicator.
+
+**HIS TWO OPEN QUESTIONS, unanswered:** whether a used-up belt cell should stay dark (his answer 16) or disappear (his note of 2026-09-07); and whether he clicked or held the CRAFT button, which would confirm the 1232 diagnosis. 1232 is safe either way because it only adds words.
 
 **QUEUE AT 17:40, MODEL SWITCHED TO OPUS 5.** The Fable weekly allowance ran out at about 13:20 and took a 12-agent draft review with it (every agent failed with a limit message, nothing lost but the run). He switched the session to Opus 5 at 17:30 and the loop resumed. SHIPPED SINCE: v12.25 (readout scale, 4ea4607), v12.26 (freebie kit at the lift, b10d93e). IN FLIGHT: v12.27 (the belt drag, four gates green at 17:32, control on fx1226 failed on all four assertions, corpus running on tab-1 since 17:33).
 

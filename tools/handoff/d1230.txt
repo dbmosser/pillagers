@@ -1,55 +1,50 @@
-## v12.30 - THE TRIGGER NEVER DIES ON A BLANK BELT CELL
+## v12.30 - A CRAWLER THAT REACHES YOU BITES
 
-From the 2026-09-07 read-only audit (P1, confirmed by three refuters),
-verified by reading at v12.29.
+From the 2026-09-07 read-only audit (P1, confirmed by three refuters), and
+his standing crawler note: "crawler attacks and pathfinding were still kinda
+messed up", "standing still and crawler didn't hurt me even though he was
+close". Verified by reading at v12.29.
 
-WHAT IT WAS. The tactical belt is derived: cell 1 shows the gun in your
-hands unless something is assigned over it. Bind the gun in your hands to
-another key (drag a bagged rifle onto key 5 and press it, which equips it
-since v11.91, or bind a figure gun at the rack in the Undercroft) and the
-v6.70 dedupe, which stops one thing showing in two cells, blanks the derived
-cell 1 to an empty cell. Three places then fell back to cell 1 by number:
-the v12.08 rule that an empty grenade cell yields to the gun ("Nothing in
-that cell. Rifle up.", said while cell 1 was blank), and the two fall-backs
-after the last of a consumable is spent. The highlight landed on the blank
-cell, a press there used nothing, the fall-back asked for cell 1 again and
-returned early because it was already selected, and the trigger was dead
-until another digit was pressed. A raid also starts with the highlight on
-cell 1, so with the held gun bound to key 3 or higher the first click of
-the raid fired nothing while the belt caption read "Empty slot".
+WHAT IT WAS. e.cd is two clocks on one field. In the idle branch it is the
+wander timer: whenever it reaches zero the machine picks a new spot and rolls
+three to seven seconds. In the chase branch it is the bite cooldown: a bite
+fires only at zero and sets 0.7 after. Nothing on the way into a chase clears
+it, and it only drains in real time. So a crawler that had just rolled a six
+second wander, saw him and closed, stood inside bite range doing nothing for
+the rest of that wander. About 2.6 seconds on average, up to seven, served
+standing next to a man who is being told the thing is right there.
 
-THE BUILD. One helper, gunCell(), finds the cell that holds the gun in your
-hands, the same loop the X swap has used since v8.31, and answers cell 1
-only when no cell holds it at all (items assigned over both), which is the
-old answer. All three fall-backs use it. And a click on a blank cell now
-does what a click on an empty grenade cell has done since v12.08: it
-selects the gun and yields, so the next click fires. The dedupe and the belt
-drawing are untouched.
+WHAT THE FIRST DRAFT GOT WRONG, and it is worth writing down. It clamped the
+clock at three transitions into chase. The 2026-09-07 draft review killed
+that in two ways. There are FIVE ways a crawler enters a chase, not three,
+and the two the clamps missed are the ones he causes himself: a round or a
+swing landing on a machine that was not yet fighting him. So the fix would
+have worked when the crawler found him and failed when he started it. And one
+of the three clamps, on the wake from playing dead, could never have fired at
+all, because a crawler playing dead already carries a clock of zero: dead code
+sold in the design entry as one of three real fixes.
 
-ONE MORE CASE THE HELPER CHANGES, named because the first draft of this
-entry claimed nothing else moved and the 2026-09-07 draft review caught it.
-After X, with the guns swapped and no assignment on the belt at all, the
-derived cell 1 is the gun in your OTHER hand, not the one you are holding.
-The old fall-back went there and setHot took its equip-from-the-bag branch;
-the helper goes to the cell of the gun actually in your hands instead. That
-is the same rule as everywhere else in this build, and it is better, but it
-is a change and not a no-op.
+THE BUILD. The wander gets its own field. On a crawler the idle branch reads
+and writes wanderT instead of cd, and wanderT drains beside cd every frame.
+Every way into a chase is then correct at once, the two the clamps missed
+included, and so is any way added later. Only the crawler is moved off the
+shared field: the sentry has the same fault, but a sentry's first shot coming
+faster is a balance change he has not asked for, so it is named here and left
+exactly where it is.
 
-MEASURED. Check 12.30 deploys and binds the gun in hand to key 5, and the
-two facts the finding rests on, that cell 1 goes blank and that key 5 takes
-the gun, are FAILURES rather than skips, so this check cannot quietly stop
-running the day the dedupe changes. Arm A, the raid start: the highlight on
-the blank cell, one press through updatePlayer with the mouse down; the
-selected cell must hold the gun, the hold must not fire, and the next click
-must fire. Arm B, the v12.08 empty-throwable yield: the same three
-requirements from an empty grenade cell. Arm C, the second of the three
-fall-backs: one Bandage on key 4, one click spends it, and the fall-back
-must land on the gun rather than the blank, with no shot fired. On the
-v12.29 fixture every arm leaves the blank cell selected and nothing fires.
+MEASURED, WITH NOTHING STAGED ON THE CLOCK. Check 12.30 parks the crawler on
+patrol 25 units from a still player, facing him, and lets the game roll its
+own wander on the first idle frame, which is the roll he meets in a raid; it
+then requires the first bite inside a second and a half. Two arms keep that
+deadline honest. A crawler already chasing with a clear cooldown must bite
+inside 0.6 seconds, so the room is known to be able to produce a bite at all,
+and a crawler left to wander far out of his sight must still move and must
+end with nothing on its bite cooldown. On the v12.29 fixture the first arm
+takes whatever the game rolled, three to seven seconds, and the third arm
+finds that roll sitting in the field the bite reads.
 
-Not verified: the THIRD fall-back, after releasing a cooked grenade, which
-the patch rewrites and no arm drives; the rack route in the Undercroft
-(rackPut binds the figure gun without planPut); a belt with items assigned
-over both gun cells, where gunCell answers 1 as before and the trigger stays
-dead by the old rule; the pad, which reaches the trigger through a different
-press.
+Not verified: the sentry's first shot, deliberately unchanged; his own runs,
+which the bot cannot stand in for; whether a bite that lands the instant a
+crawler arrives reads as fair rather than as a gotcha, which is his call and
+is a dial, not a defect; the four other machines that share the idle branch
+and are untouched.

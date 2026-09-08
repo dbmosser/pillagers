@@ -1,22 +1,21 @@
-v12.29: a crawler that reaches you bites
+v12.29: his order, fewer machines and a lighter extraction by default
 
-The audit's top finding, and his standing crawler note. A crawler's wander
-timer and its bite cooldown were one field: on patrol it rolls three to seven
-seconds whenever the timer runs out, and a bite only fires when that field is
-at zero. Nothing on the way into a chase cleared it, so a crawler that
-reached you stood there serving out the rest of its wander before biting.
+"Make the default setting for machines 'few' and the default setting for
+'Heat when you call for extraction' to 'light'". Dials, moved because he
+moved them; nothing else in the table is touched.
 
-My first draft clamped the field at three of the ways into a chase. The
-draft review killed it: there are five, the two it missed are the ones you
-cause by shooting, and one of the three could never fire. The wander has its
-own field on a crawler now, which covers every way in at once. Sentries keep
-the shared field on purpose, since a faster first shot from a sentry is a
-balance call.
+The numbers come off the two Settings rows rather than being invented, so a
+fresh profile carries exactly what those rows mean: twelve sentries, twenty
+crawlers and a floor of one and a half crawlers a house, and a siege volume
+of six tenths. Each row's own default index moves with the numbers, or both
+buttons would have drawn in the colour that means changed on a profile
+nobody had touched.
 
-Check 12.29 stages nothing on the clock: it parks a crawler on patrol 25
-units from a still player, lets the game roll its own wander, and requires
-the first bite inside a second and a half, with a chasing crawler as the
-ruler that the room can bite at all and a wandering one to show the wander
-still runs and leaves the cooldown clear; fails on v12.28.
+The harness pinned the two machine counts and never the per-house rate, so
+moving the default would have moved the world every check measures. The rate
+is pinned explicitly at the old figure now, and check 12.29 guards it: a
+fresh profile must carry the Few and Light numbers, both rows must read
+those words and call them their own default, and the pin must bring the old
+world back. Fails on v12.28.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

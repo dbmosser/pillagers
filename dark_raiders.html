@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.28';
+var VER='12.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.28';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.28';
+var WHATSNEW_VER='12.29';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A NEW PROFILE NOW STARTS ON FEWER MACHINES AND A LIGHTER EXTRACTION. Both are still in Settings and both still go all the way up; only where they start has moved.',
   'A PEDDLER PURCHASE NOW SAYS WHERE IT WENT: on your tactical belt, key N, or in your backpack. A bought gun is pinned to a free belt key, and the backpack grid keeps a belted item off its cells, which is why a rifle you paid for was not in the backpack.',
   'DRAGGING AN ITEM FROM THE STASH TO THE BACKPACK WHEN ITS TACTICAL BELT KEY IS STILL SET FROM THE LAST RAID NOW LANDS ON THAT KEY, half the stack, and says so. A set key with nothing packed shows a 0. In a raid, pressing a key whose item you have used up says No <item> left.',
   'TAKING THE FREEBIE KIT AT THE STASH AND THEN CONFIRMING IT AGAIN AT THE LIFT NO LONGER THROWS AWAY THE PACKING KEPT ASIDE FOR YOU. A run that ends badly gives that packing back, as it was meant to.',
@@ -1581,8 +1582,8 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // scaling exists because a flat count made the small map 46 percent denser by
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
-nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
+nSentry:12,nCrawler:20,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:0.6,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:190,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:1.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -28735,7 +28736,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.28: his note of 2026-09-07 (Peddler purchases, an Auto Rifle among them, did not show up in the inventory): the purchase is sound, but autoBelt pins a bought gun or stim to the first empty belt cell, his own plan claims anything he has bound, and the backpack grid keeps a belt-claimed copy off its cells, so the rifle he paid for was on the belt and not in the backpack he opened, and the line said only Bought X for Y. The line now says On your tactical belt, key N, or In your backpack. Check 12.28 opens a stall with a fixed stock in a raid, buys a rifle and requires the line to name a belt key, buys a medkit with no key set and requires In your backpack, sets key 6 to medkit and buys another and requires key 6; fails on v12.27. NOT built: the run report line Spent at the stall still does not name what was bought.',
+  now:'v12.29: his order of 2026-09-08: the default for Machines is Few and the default for Heat when you call for extraction is Light. The values are read off the Settings rows themselves rather than invented, so the row he sees ticked on a fresh profile is the row he named: Few is 12 sentries, 20 crawlers and 1.5 crawlers a house, Light is a siege volume of 0.6. These are dials, and his own rule is that dials do not move before alpha; he moved these two himself and nothing else in the table is touched. The test harness now pins the crawlers-per-house figure explicitly, because it pinned the two counts and not that one, so the world every check measures is the same world it measured yesterday. Check 12.29 requires a fresh profile to carry the Few and Light numbers and the Settings rows to render those two as the current pick, and requires the pinned world to be unmoved; fails on v12.28.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33232,7 +33233,7 @@ var GAMEOPTS=[
      {n:'Many',     cfg:{nSentry:28, nCrawler:46, crawlerPerHouse:3.4}},
      {n:'Standard', cfg:{nSentry:20, nCrawler:34, crawlerPerHouse:2.5}},
      {n:'Few',      cfg:{nSentry:12, nCrawler:20, crawlerPerHouse:1.5}}
-   ], def:1},
+   ], def:2},
   {k:'hits', label:'How hard they hit',
 hint:'Damage taken from everything on the surface. Standard is how the game has always actually played; Hardened is the old design intent, a fifth harder.',
    opts:[
@@ -33269,7 +33270,7 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
      // from the first second of the raid, so Light silently emptied the map for
      // the entire run. siegeVol is the only key this label describes.
      {n:'Light',    cfg:{siegeVol:0.6}}
-   ], def:1}
+   ], def:2}
 ];
 // v10.28: which option the LIVE dials match, or -1 when a slider has put them
 // somewhere no option names. The rows show this; the stored choice is the

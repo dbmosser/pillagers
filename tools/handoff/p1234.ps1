@@ -11,51 +11,48 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# HIS ORDER, 2026-09-08: "Make the default setting for machines 'few' and the
-# default setting for 'Heat when you call for extraction' to 'light'". These are
-# dials, and his own standing rule is that dials do not move before alpha; he
-# moved these two himself, so they move. Nothing else in the table is touched.
+# FROM THE 2026-09-07 READ-ONLY AUDIT (P2, trade-freeze), specced and then
+# attacked by a skeptic before it was written. The trade window returns out of
+# updatePlayer, and the only real call to tryExtractTick lives below that
+# return, so every extraction clock stops dead for as long as the stall is
+# open: the inbound countdown, the thirty second boarding window, the siege the
+# call bought, the two second re-ping, the mirrors the HUD reads, the closing
+# of a point whose time has come, and the raider waves. Nothing else stops.
+# The frame loop gates on none of it and keeps adding to the raid time, taking
+# dt off the raid clock and running the machines, the bullets and the
+# throwables on the next three lines of the same frame. So the label over the
+# ring held EXTRACT A INBOUND at whatever second the panel opened while the
+# raid ran on around him, and a landed extraction waited for as long as he
+# shopped.
 #
-# The two rows he named carry these values, read straight off the Settings table
-# rather than invented here: Machines / Few is nSentry 12, nCrawler 20 and
-# crawlerPerHouse 1.5, and Heat / Light is siegeVol 0.6. Setting the same three
-# numbers in the defaults is what makes a fresh profile open on Few, and the
-# same one number is what makes it open on Light, so the row he sees ticked is
-# the row he asked for.
+# THE SHAPE OF THE FIX IS ALREADY IN THIS FUNCTION, TWICE. The downed branch
+# and the roll branch both carry this same call past their own early return,
+# and the downed one says why in as many words. This one takes the roll's form,
+# with no wantCall: while the panel is up, E belongs to the panel, so the
+# clocks run and no pull of his own does.
+#
+# SAID PLAINLY: this has an in-raid effect and it is not nil. Today the stall
+# is a free pause on extraction pressure. After this it is not. No dial, no
+# default, no table and no number moves; one function that is meant to run
+# every frame of a raid now runs in the one state that was skipping it.
 SubRx @'
-nSentry:20,nCrawler:34
+  if(G.trade){ tickRegen(dt); return; }
 '@ @'
-nSentry:12,nCrawler:20
-'@
-SubRx @'
-crewSpread:1,crawlerPerHouse:2.5
-'@ @'
-crewSpread:1,crawlerPerHouse:1.5
-'@
-SubRx @'
-siegePull:0.5,siegeVol:1,siegeEcho:1
-'@ @'
-siegePull:0.5,siegeVol:0.6,siegeEcho:1
-'@
-
-# AND THE ROW HAS TO AGREE WITH ITSELF. Each Settings row carries the index of
-# its own default, and the button is drawn in amber when the live dials sit
-# anywhere else, which is how he can see at a glance that he has changed
-# something. Moving the numbers without moving these two would have drawn Few
-# and Light in the colour that means "not the default", every time, for ever.
-SubRx @'
-     {n:'Few',      cfg:{nSentry:12, nCrawler:20, crawlerPerHouse:1.5}}
-   ], def:1},
-'@ @'
-     {n:'Few',      cfg:{nSentry:12, nCrawler:20, crawlerPerHouse:1.5}}
-   ], def:2},
-'@
-SubRx @'
-     {n:'Light',    cfg:{siegeVol:0.6}}
-   ], def:1}
-'@ @'
-     {n:'Light',    cfg:{siegeVol:0.6}}
-   ], def:2}
+  if(G.trade){
+    tickRegen(dt);
+    // v12.34, 2026-09-07 audit (trade-freeze): THE STALL IS NOT A PAUSE. This
+    // return skips the tail of updatePlayer, and the only real call to
+    // tryExtractTick is down there, so every extraction clock stopped while the
+    // trade window was open: the inbound countdown, the boarding window, the
+    // siege arrivals, the re-ping, the mirrors the HUD reads, the closing of a
+    // point whose time has come, and the raider waves. Nothing else stopped;
+    // loop() gates on none of it and kept the raid clock and the machines
+    // running in the same frames. Same fault and same fix as the two branches
+    // above. No wantCall, as in the roll: E belongs to the panel while it is
+    // open, so the clocks run and no pull of his own does.
+    tryExtractTick(dt);
+    return;
+  }
 '@
 
 # NEW IN.
@@ -63,23 +60,23 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A NEW PROFILE NOW STARTS ON FEWER MACHINES AND A LIGHTER EXTRACTION. Both are still in Settings and both still go all the way up; only where they start has moved.',
+  'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
 '@
 
 # STAMPS.
 SubRx @'
-var VER='12.28';
+var VER='12.33';
 '@ @'
 var VER='12.34';
 '@
 SubRx @'
-var WHATSNEW_VER='12.28';
+var WHATSNEW_VER='12.33';
 '@ @'
 var WHATSNEW_VER='12.34';
 '@
-$cnt=([regex]::Matches($s,"now:'v12\.28:[^']*'")).Count
-if($cnt -ne 1){ throw "DEVNOW v12.28 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.28:[^']*'",{ param($m) "now:'v12.34: his order of 2026-09-08: the default for Machines is Few and the default for Heat when you call for extraction is Light. The values are read off the Settings rows themselves rather than invented, so the row he sees ticked on a fresh profile is the row he named: Few is 12 sentries, 20 crawlers and 1.5 crawlers a house, Light is a siege volume of 0.6. These are dials, and his own rule is that dials do not move before alpha; he moved these two himself and nothing else in the table is touched. The test harness now pins the crawlers-per-house figure explicitly, because it pinned the two counts and not that one, so the world every check measures is the same world it measured yesterday. Check 12.34 requires a fresh profile to carry the Few and Light numbers and the Settings rows to render those two as the current pick, and requires the pinned world to be unmoved; fails on v12.28.'" })
+$cnt=([regex]::Matches($s,"now:'v12\.33:[^']*'")).Count
+if($cnt -ne 1){ throw "DEVNOW v12.33 matched $cnt times" }
+$s=[regex]::Replace($s,"now:'v12\.33:[^']*'",{ param($m) "now:'v12.34: 2026-09-07 audit (trade-freeze). The trade window returns out of updatePlayer above the only real call to tryExtractTick, so opening the Peddler stopped every extraction clock: the inbound countdown, the thirty second boarding window, the siege the call bought, the two second re-ping, the mirrors the HUD reads, the closing of a point whose time has come, and the raider waves. Nothing else stopped, because the frame loop gates on none of it and kept the raid clock, the machines, the bullets and the throwables running in the same frames. The downed branch and the roll branch already carry this call past their own early return; the stall takes the roll form, with no wantCall, so the clocks run while E belongs to the panel. This has a real in-raid effect and it is named rather than hidden: the stall was a free pause on extraction pressure and is not one any more. No dial moves. Check 12.34 opens the stall through the real loop with a real E, then drives sixty frames three times: the inbound countdown must fall with the raid clock, a landed boarding window must spend, and a point whose closing time passes while he shops must shut; two controls require the raid clock to have run at all and the same clocks to move once the stall is shut. Fails on v12.33.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

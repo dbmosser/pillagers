@@ -1,0 +1,24 @@
+v12.35: his order, the safe pocket is deleted
+
+He asked how he was supposed to put anything in the pocket during a raid or
+take it out, and there was no good answer: it lived on the stash screen only
+and its choice froze at the lift, so it could protect something carried up
+from home and never the thing just pulled out of a vault. He said delete the
+concept.
+
+Out goes the panel and its label, the styles, the two readers, the setter,
+the renderer and its drop target, the item-menu verb, the line on the ascent
+page, the arming at the drop and the comment block explaining it, the branch
+in the death payout, two entries in the player-facing history, one stale
+pointer comment, and both fields on the profile, which are cleared from any
+save that still carries them. The death card line naming the pocket is
+actually fed by the automatic rebate dial, off since v5.57, so it names the
+rebate now instead of a feature that no longer exists.
+
+The world container called a safe is a different thing with the same five
+letters and is untouched; the check proves that rather than trusting me.
+Check 12.35 also requires the functions gone, the panel absent from a
+rendered floor, and a real death to open its card and still list its losses;
+fails on v12.34.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

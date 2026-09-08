@@ -40024,6 +40024,52 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.29 - HIS ORDER: FEWER MACHINES AND A LIGHTER EXTRACTION BY DEFAULT
+
+His order of 2026-09-08: "Make the default setting for machines 'few' and the
+default setting for 'Heat when you call for extraction' to 'light'".
+
+These are dials, and his own standing rule is that dials do not move before
+alpha. He moved these two himself, so they move, and nothing else in the
+table is touched.
+
+THE BUILD. The numbers are read off the two Settings rows rather than
+invented, so what a fresh profile carries is exactly what those rows mean.
+Machines Few is twelve sentries, twenty crawlers and a floor of one and a
+half crawlers a house; the per-house rate matters because the crawler count
+is floored on it, and a row that moved the counts without it would only move
+half the machines, which is the fault v9.84 fixed in the row itself. Heat
+Light is a siege volume of six tenths. Each row also carries the index of
+its own default and draws its button in amber when the live dials sit
+anywhere else, so both indexes move with the numbers; without that, Few and
+Light would have been drawn in the colour that means "you have changed
+something" on a profile nobody had touched.
+
+THE HARNESS HAD TO MOVE WITH IT, and this is the part worth reading. The
+test harness pins the two machine counts before every measurement and has
+never pinned the per-house rate, because the rate has never changed. Moving
+the game default would therefore have changed the world every check in the
+corpus measures, and the map fingerprint, the entity counts and the parity
+signature would have gone red for a reason that is his Settings table and
+not the build. The rate is pinned explicitly now at the old Standard figure.
+The corpus measures the world it measured yesterday; a fresh profile opens
+on Few.
+
+MEASURED. Check 12.29 resets the dials to what a fresh profile carries and
+requires the four numbers to be the Few and Light numbers. It then reads the
+two Settings rows the way the screen does and requires each to land on an
+option rather than on CUSTOM, to read Few and Light by name, and to call
+that same option its own default so neither button draws as changed. As the
+control it applies the harness pin and requires the world to come back to
+twenty, thirty four and two and a half, which is the guard on the harness
+change this build had to make. On the v12.28 fixture the first four
+assertions fail on the old numbers.
+
+Not verified: how the game plays with them, which is his to judge and the
+reason he moved them; the bot, which is pinned to the old world by the same
+harness pin and so reports nothing about either change; whether Few is far
+enough down for him, since the row still goes no lower and Machines has no
+None the way the pillager row does.
 ## v12.28 - HIS NOTE: A PEDDLER PURCHASE SAYS WHERE IT WENT
 
 His note of 2026-09-07 morning: "I bought stuff from the peddler and it

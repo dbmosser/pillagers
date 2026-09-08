@@ -11,81 +11,77 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.30 CHECK, inserted before the v12.29 entry. The gun in hand is bound to
-# key 5, which blanks the derived cell 1 (staging, asserted). ARM A, the raid
-# start: the highlight on the blank cell 1, a click must select the cell that
-# holds the gun, fire nothing on that hold, and fire on the next click. ARM B,
-# the v12.08 yield: an empty throwable cell selected, the click must land the
-# highlight on the gun cell, not on the blank, and the next click must fire.
-# The press is driven the way check 12.08 drives it: mouse.down and
-# updatePlayer, with lastShot reset so the shot depends on the trigger alone.
+# v12.30 CHECK, inserted before the v12.29 entry. THE CLOCK IS NOT STAGED. The
+# crawler is parked on patrol just outside bite range, facing a still player,
+# and the game rolls its own wander clock on the first idle frame exactly as it
+# does in a raid; the only thing measured is how long the first bite takes. A
+# second arm proves the room can bite at all, so the first arm's deadline is a
+# measurement and not a hope, and a third arm proves the wander itself still
+# runs and no longer leaves anything on the bite cooldown.
 SubRx @'
-  {v:'12.29',what:'a crawler that reaches a still player bites inside a second and a half, carrying whatever wander clock the game rolled for it; a crawler already chasing with a clear cooldown bites inside 0.6 s; and a crawler wandering out of sight still wanders with its bite cooldown left clear (2026-09-07 audit P1, his standing crawler note)',
+  {v:'12.29',what:'a fresh profile opens on Few machines and a Light extraction, the two Settings rows draw those words as their own default rather than in the changed colour, and the world the corpus measures is unmoved (his order of 2026-09-08)',
 '@ @'
-  {v:'12.30',what:'the trigger never dies on a blanked belt cell 1: with the gun in hand bound to key 5 a click on the blank cell selects the gun cell and yields, the next click fires, and the empty-throwable yield lands on the gun cell rather than the blank (2026-09-07 audit P1)',
+  {v:'12.30',what:'a crawler that reaches a still player bites inside a second and a half, carrying whatever wander clock the game rolled for it; a crawler already chasing with a clear cooldown bites inside 0.6 s; and a crawler wandering out of sight still wanders with its bite cooldown left clear (2026-09-07 audit P1, his standing crawler note)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__mouse)) return 'SKIP: this fixture cannot deploy';
-     if(typeof setHot!=='function'||typeof hotbarSlots!=='function'||typeof updatePlayer!=='function'||typeof hotSel!=='function') return 'SKIP: this build has no belt to drive';
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__ents)) return 'SKIP: this fixture cannot deploy and step';
+     if(typeof losClear!=='function'||typeof spotFree!=='function') return 'SKIP: no sight or placement test in this build';
      var bad=[];
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player, i;
-       g.ents.length=0; p.downed=false; p.iv=99;
-       if(!p.wep||!p.wep.id||p.wep.id==='fists') return 'SKIP: no gun in hand at the drop';
-       var gk='gun_'+p.wep.id; if(!ITEMS[gk]) return 'SKIP: no item for the gun in hand ('+gk+')';
-       // THE ROOM: the gun in his hands bound to key 5, which blanks the derived cell 1.
-       g.hotAssign={4:gk}; g.hotAuto={}; g.pouch.frag=0; g.pouch.smoke=0; g.pouch.decoy=0;
-       p.ammo=Math.max(p.ammo||0,5); p.reloading=0; p.jam=0; p.cooking=0; p.fired=false; p.trigYield=0;
-       p.wep.jam=0;   // the jam roll on the trigger pull would eat the shot this check counts; the raid ends before the gun is seen again
-       var sl=hotbarSlots();
-       // These two ARE the finding, so they fail rather than skip: a skip here
-       // would quietly stop this check running the day the dedupe changed.
-       if(!(sl[0]&&sl[0].kind==='empty')) bad.push('the premise is gone: binding the held gun to key 5 no longer blanks cell 1 (cell 1 is '+(sl[0]&&sl[0].kind)+')');
-       if(!(sl[4]&&sl[4].kind==='gun')) bad.push('the premise is gone: key 5 did not take the held gun (cell 5 is '+(sl[4]&&sl[4].kind)+')');
-       if(bad.length) return bad.join('; ');
-       function press(frames){ mouse.down=true; for(var f=0;f<frames;f++) updatePlayer(0.016); }
-       function release(){ mouse.down=false; updatePlayer(0.016); }
-       // ARM A, THE RAID START: the highlight sits on the blank cell 1, as every raid begins.
-       G.hot=0; p.fired=false; p.trigYield=0; p.lastShot=-9999; var sh0=g.tel.shots||0;
-       press(1);
-       var c1=hotbarSlots()[hotSel()];
-       if(!(c1&&c1.kind==='gun')) bad.push('a click on the blank cell 1 left cell '+(hotSel()+1)+' ('+(c1&&c1.kind)+') selected instead of the gun in hand');
-       press(2); release();
-       if((g.tel.shots||0)!==sh0) bad.push('the click that raised the gun fired it on the same hold');
-       p.lastShot=-9999; press(2); release();
-       if(!((g.tel.shots||0)>sh0)) bad.push('the next click after the blank cell did not fire the gun (shots '+sh0+' to '+(g.tel.shots||0)+', cell '+(hotSel()+1)+' '+((hotbarSlots()[hotSel()]||{}).kind)+')');
-       // ARM B, THE v12.08 YIELD: an empty throwable cell selected; the yield must land on the gun cell, not the blank.
-       var fi=-1; sl=hotbarSlots(); for(i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='throw'&&!((sl[i].count|0)>0)){ fi=i; break; }
-       if(fi<0) bad.push('staging: no empty throwable cell on the belt');
-       else {
-         G.hot=fi; p.fired=false; p.trigYield=0; p.cooking=0; var sh1=g.tel.shots||0;
-         press(1);
-         var c2=hotbarSlots()[hotSel()];
-         if(!(c2&&c2.kind==='gun')) bad.push('the empty-throwable yield left cell '+(hotSel()+1)+' ('+(c2&&c2.kind)+') selected instead of the gun in hand');
-         press(2); release();
-         if((g.tel.shots||0)!==sh1) bad.push('the empty-throwable yield fired the gun on the same hold');
-         p.lastShot=-9999; press(2); release();
-         if(!((g.tel.shots||0)>sh1)) bad.push('after the empty-throwable yield the next click did not fire the gun');
+       var g=__state(), p=g.player, i, e=null;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'){ e=g.ents[i]; break; }
+       if(!e) return 'SKIP: no crawler on this map';
+       for(i=g.ents.length-1;i>=0;i--) if(g.ents[i]!==e) g.ents.splice(i,1);   // only the crawler moves in this room
+       p.downed=false; p.crouch=false; p.iv=0; g.crouchTog=false; keys={};
+       if(typeof refreshVseg==='function') refreshVseg();
+       function findSpot(r){
+         var a, sx, sy;
+         for(a=0;a<24;a++){ var ang=a*Math.PI/12; sx=p.x+Math.cos(ang)*r; sy=p.y+Math.sin(ang)*r; if(spotFree(g.map,sx,sy,24)&&losClear(sx,sy,p.x,p.y,g.vseg)) return {x:sx,y:sy}; }
+         return null;
        }
-       // ARM C, THE SECOND FALL-BACK: spending the LAST of a stack falls back the
-       // same way. One bandage on key 4, selected, one click uses it and empties
-       // the cell, and the fall-back must land on the gun and not on the blank.
-       g.bag=['bandage']; g.hotAssign={3:'bandage',4:gk}; g.hotAuto={};
-       var slc=hotbarSlots();
-       if(!(slc[3]&&slc[3].assigned&&slc[3].itemKey==='bandage'&&(slc[3].count|0)===1)) bad.push('staging: key 4 is not a Bandage cell holding exactly one (kind '+(slc[3]&&slc[3].kind)+', count '+(slc[3]&&slc[3].count)+')');
+       var near=findSpot(25);
+       if(!near) return 'SKIP: no clear spot 25 units from the drop, so nothing can be parked in bite range';
+       function park(st){
+         e.x=near.x; e.y=near.y; e.path=null; e.pathGoal=null; e.chaseHold=0; e.alert=0;
+         e.state=st; e.role=null; e.roleT=0; e.beat=0; e.cd=0; e.wanderT=0;
+         e.tx=e.x; e.ty=e.y; e.face=Math.atan2(p.y-e.y,p.x-e.x);
+         p.hp=100; p.armor=0; p.iv=0; p.downed=false;
+       }
+       function bite(maxF){
+         var hp0=p.hp+(p.armor||0), f;
+         for(f=0;f<maxF;f++){ __ents(1/60); if(p.hp+(p.armor||0)<hp0) return (f+1)/60; }
+         return -1;
+       }
+       // ARM ONE, THE FINDING. Nothing is staged on the clock: the crawler is put
+       // on patrol in bite range of a still man, and the game rolls its own wander
+       // on the first idle frame, which is the roll he meets in a raid.
+       park('patrol');
+       var tA=bite(300);
+       if(tA<0) bad.push('a crawler on patrol 25 units from a still man never bit him in 5 s (it ended '+e.state+' at '+Math.round(dist(e,p))+' units, cooldown '+(e.cd||0).toFixed(1)+')');
+       else if(tA>1.5) bad.push('a crawler that reached a still man took '+tA.toFixed(1)+' s to bite him, which is the wander clock it was carrying and not the walk');
+       // ARM TWO, THE RULER. Already chasing, cooldown clear: this room must be
+       // able to produce a bite quickly, or the deadline above proves nothing.
+       park('chase'); e.alert=2.4; e.tx=p.x; e.ty=p.y;
+       var tB=bite(300);
+       if(tB<0||tB>0.6) bad.push('control: a crawler already chasing with a clear cooldown took '+(tB<0?'more than 5':tB.toFixed(1))+' s to bite from 25 units, so this room cannot measure a first bite and arm one proves nothing');
+       // ARM THREE: the wander still runs, and it no longer leaves anything on the
+       // bite cooldown. Far away and out of his sight, so nothing chases.
+       var far=findSpot(900)||findSpot(700);
+       if(!far) bad.push('staging: no clear spot far enough out to watch a wander');
        else {
-         G.hot=3; p.fired=false; p.trigYield=0; p.hp=40; var sh2=g.tel.shots||0;
-         press(1); release();
-         var c3=hotbarSlots()[hotSel()];
-         if(g.bag.indexOf('bandage')>=0) bad.push('control: the click did not spend the last Bandage, so no fall-back was reached');
-         else if(!(c3&&c3.kind==='gun')) bad.push('spending the last of a stack left cell '+(hotSel()+1)+' ('+(c3&&c3.kind)+') selected instead of the gun in hand');
-         if((g.tel.shots||0)!==sh2) bad.push('control: using the last Bandage fired the gun');
+         e.x=far.x; e.y=far.y; e.state='patrol'; e.cd=0; e.wanderT=0; e.alert=0;
+         e.tx=e.x; e.ty=e.y; e.path=null; e.pathGoal=null;
+         var wx=e.x, wy=e.y;
+         for(i=0;i<360;i++) __ents(1/60);
+         var moved=Math.sqrt((e.x-wx)*(e.x-wx)+(e.y-wy)*(e.y-wy));
+         if(moved<60) bad.push('a crawler left to wander for 6 s moved '+Math.round(moved)+' units, so the wander itself is broken');
+         if((e.cd||0)>0.05) bad.push('after 6 s of wandering the crawler carries '+(e.cd||0).toFixed(1)+' s on its bite cooldown, which is the wander clock sitting in the field the bite reads');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ try{ mouse.down=false; }catch(_m){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.29',what:'a crawler that reaches a still player bites inside a second and a half, carrying whatever wander clock the game rolled for it; a crawler already chasing with a clear cooldown bites inside 0.6 s; and a crawler wandering out of sight still wanders with its bite cooldown left clear (2026-09-07 audit P1, his standing crawler note)',
+  {v:'12.29',what:'a fresh profile opens on Few machines and a Light extraction, the two Settings rows draw those words as their own default rather than in the changed colour, and the world the corpus measures is unmoved (his order of 2026-09-08)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

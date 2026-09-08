@@ -1,0 +1,55 @@
+## v12.35 - HIS ORDER: THE SAFE POCKET IS DELETED
+
+His order of 2026-09-08: "remove the safe pocket from the stash and just
+delete the entire concept."
+
+WHY, IN HIS WORDS AND MINE. He asked two things first: why a gun and a
+throwable were refused, and how he was supposed to put anything in the
+pocket during a raid or take it out. The second question had no good answer.
+The pocket lived on the stash screen only and its choice was frozen at the
+lift, so it could protect something he had carried up from home and never
+the thing he had just pulled out of a vault, which is the only thing anyone
+would want to protect. The feature was six builds of upkeep for a promise it
+could not keep in the case it existed for. He decided it goes.
+
+WHAT WENT. The panel and its label on the stash screen, the styles that only
+ever dressed it, the two functions that read it, the setter, the renderer and
+its drop target, the verb in the item menu, the line on the ascent page, the
+arming at the drop with the six lines of comment that explained it, the
+branch in the death payout, the entry in the player-facing history, and both
+fields on the profile, which are deleted from any save that still carries
+them. The line on the death card that said "Safe pocket held N items" is fed
+by the automatic rebate, a separate developer dial that has sat at zero since
+v5.57, not by the pocket at all; it printed the pocket's name, so with the
+pocket gone it would have been the last place in the game still claiming one.
+It names the rebate now.
+
+WHAT DID NOT GO, and this is the trap in the word. The world container called
+a safe, the secure cases in buildings and camps, the contract that asks you
+to search them and every line that draws them are a different thing with the
+same five letters, and they are untouched. The check proves it rather than
+trusting me.
+
+DATED HISTORY STAYS. Comments that say what the pocket WAS, in the places
+where a past decision is being explained, are left alone; a comment that
+told the reader where to find the live code is not, because that is how the
+next reader learns that a deleted feature is still here.
+
+MEASURED. Check 12.35 requires the four functions to be undefined, the panel
+and its counter to be absent from a floor that has actually been opened and
+rendered, and the words "safe pocket" to appear nowhere on the stash screen.
+It then runs a real death: the outcome card must open on KILLED IN ACTION,
+must still list what was lost, which is the ledger the deleted branch sat
+inside, and must not say safe pocket. Finally it deploys again and requires
+the map to have built at least one secure case, which is the guard on the
+name collision. The corpus loses the check that tested the pocket, because a
+check that can only skip is not a check, and the stash-screen check that
+counted five parts now counts four. On the v12.34 fixture the first six
+assertions fail.
+
+Not verified: the profile migration itself, which runs at load and cannot be
+re-run on a fixture that has already loaded, so an old save carrying a pocket
+is cleaned by a line I have read and not driven; whether he wants anything in
+its place, which is his call and which I have not assumed; the automatic
+rebate dial, still at zero and still untested, which is the only remaining
+way an item can survive a death.

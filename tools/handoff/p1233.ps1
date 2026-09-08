@@ -11,48 +11,37 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-07 READ-ONLY AUDIT (P2, trade-freeze), specced and then
-# attacked by a skeptic before it was written. The trade window returns out of
-# updatePlayer, and the only real call to tryExtractTick lives below that
-# return, so every extraction clock stops dead for as long as the stall is
-# open: the inbound countdown, the thirty second boarding window, the siege the
-# call bought, the two second re-ping, the mirrors the HUD reads, the closing
-# of a point whose time has come, and the raider waves. Nothing else stops.
-# The frame loop gates on none of it and keeps adding to the raid time, taking
-# dt off the raid clock and running the machines, the bullets and the
-# throwables on the next three lines of the same frame. So the label over the
-# ring held EXTRACT A INBOUND at whatever second the panel opened while the
-# raid ran on around him, and a landed extraction waited for as long as he
-# shopped.
+# HIS NOTE (2026-09-07 morning): "many-footprints glitch is still happening
+# while running vertically". Traced by reading at v12.32. SPRINTING LAYS TWO
+# TRAILS, not one. The boot prints he is meant to see are decals, stamped once
+# every 56 units of ground actually covered, rotated to the direction of travel
+# and capped at 70 (the v10.55 fix for his last footprint note). The second
+# trail is G.prints, the scent list a pillager tracker smells: while sprinting
+# it takes a mark every 34 units, capped at 40, and the draw loop paints each
+# one as two axis-aligned rectangles that are never rotated. Unrotated, the
+# pair reads as a left-right pair of boots walking UP the screen. So running
+# horizontally they are perpendicular ticks nobody reads as feet, and running
+# vertically they line up with his path and read as a second set of footprints
+# at a different spacing, interleaved with the real ones. That is the glitch,
+# and it is why it is a vertical one.
 #
-# THE SHAPE OF THE FIX IS ALREADY IN THIS FUNCTION, TWICE. The downed branch
-# and the roll branch both carry this same call past their own early return,
-# and the downed one says why in as many words. This one takes the roll's form,
-# with no wantCall: while the panel is up, E belongs to the panel, so the
-# clocks run and no pull of his own does.
-#
-# SAID PLAINLY: this has an in-raid effect and it is not nil. Today the stall
-# is a free pause on extraction pressure. After this it is not. No dial, no
-# default, no table and no number moves; one function that is meant to run
-# every frame of a raid now runs in the one state that was skipping it.
+# The player's own scent marks are not drawn at all now. His real boot prints
+# already draw the same path from the decal list, his own wake on water is
+# already a decal too (v8.89), and a pillager's marks are untouched, which is
+# his v8.85 feature. Draw side only: G.prints is still filled and still smelled,
+# so no machine and no pillager behaves differently and no balance moves.
 SubRx @'
-  if(G.trade){ tickRegen(dt); return; }
+    if(!_fp.mine&&!canSee(p.x,p.y,p.face,_fp.x,_fp.y,G.vseg)) continue;
 '@ @'
-  if(G.trade){
-    tickRegen(dt);
-    // v12.33, 2026-09-07 audit (trade-freeze): THE STALL IS NOT A PAUSE. This
-    // return skips the tail of updatePlayer, and the only real call to
-    // tryExtractTick is down there, so every extraction clock stopped while the
-    // trade window was open: the inbound countdown, the boarding window, the
-    // siege arrivals, the re-ping, the mirrors the HUD reads, the closing of a
-    // point whose time has come, and the raider waves. Nothing else stopped;
-    // loop() gates on none of it and kept the raid clock and the machines
-    // running in the same frames. Same fault and same fix as the two branches
-    // above. No wantCall, as in the roll: E belongs to the panel while it is
-    // open, so the clocks run and no pull of his own does.
-    tryExtractTick(dt);
-    return;
-  }
+    // v12.33, HIS NOTE: "many-footprints glitch is still happening while running
+    // vertically". Sprinting laid two trails: his real boot prints, stamped every
+    // 56 units and rotated to his path (v10.55), and these, taken every 34 and
+    // painted as two rectangles that are never rotated, so they read as a second
+    // set of feet only when his path happens to point the way they are drawn.
+    // His own are not painted any more; the list is untouched, so the trackers
+    // that smell it are untouched. The marks a pillager leaves still draw, which is v8.85.
+    if(_fp.mine) continue;
+    if(!canSee(p.x,p.y,p.face,_fp.x,_fp.y,G.vseg)) continue;
 '@
 
 # NEW IN.
@@ -60,7 +49,7 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
+  'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
 '@
 
 # STAMPS.
@@ -76,7 +65,7 @@ var WHATSNEW_VER='12.33';
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.32:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.32 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.32:[^']*'",{ param($m) "now:'v12.33: 2026-09-07 audit (trade-freeze). The trade window returns out of updatePlayer above the only real call to tryExtractTick, so opening the Peddler stopped every extraction clock: the inbound countdown, the thirty second boarding window, the siege the call bought, the two second re-ping, the mirrors the HUD reads, the closing of a point whose time has come, and the raider waves. Nothing else stopped, because the frame loop gates on none of it and kept the raid clock, the machines, the bullets and the throwables running in the same frames. The downed branch and the roll branch already carry this call past their own early return; the stall takes the roll form, with no wantCall, so the clocks run while E belongs to the panel. This has a real in-raid effect and it is named rather than hidden: the stall was a free pause on extraction pressure and is not one any more. No dial moves. Check 12.33 opens the stall through the real loop with a real E, then drives sixty frames three times: the inbound countdown must fall with the raid clock, a landed boarding window must spend, and a point whose closing time passes while he shops must shut; two controls require the raid clock to have run at all and the same clocks to move once the stall is shut. Fails on v12.32.'" })
+$s=[regex]::Replace($s,"now:'v12\.32:[^']*'",{ param($m) "now:'v12.33: his note of 2026-09-07 (many footprints while running vertically): sprinting lays two trails. The boot prints he is meant to see are decals, one every 56 units of ground covered, rotated to his path and capped at 70. The other is G.prints, the scent list a tracker smells, one every 34 units while sprinting, painted as two rectangles that are never rotated, so they read as a pair of boots walking up the screen: perpendicular ticks when he runs across, a second set of footprints interleaved with the real ones when he runs up or down. His own scent marks are no longer painted; the marks a pillager leaves still are, which is his v8.85 feature, and the list itself is untouched so nothing that smells it changes. Check 12.33 sprints him north through the real keys and loop, counts the marks painted from each list by watching the canvas, and requires the second trail to be gone with the real prints still there and G.prints still filling; fails on v12.32.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

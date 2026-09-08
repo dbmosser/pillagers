@@ -1,47 +1,50 @@
-## v12.32 - HIS NOTE: SPRINTING LEAVES ONE TRAIL, NOT TWO
+## v12.32 - HIS NOTE: THE BENCH SAYS TO HOLD THE BUTTON
 
-His note of 2026-09-07 morning: "many-footprints glitch is still happening
-while running vertically". Traced by reading at v12.31; the word "still" is
-his, and it is fair, because v10.55 fixed a different footprint fault and
-this one was underneath it.
+His note of 2026-09-07 morning: "crafting progress bar is not working
+correctly, can't craft items at all". Investigated on the dry fixture and by
+reading at v12.31.
 
-WHAT IT WAS. Sprinting lays TWO trails. The first is the one he is meant to
-see: boot prints stamped into the decal list once every 56 units of ground
-actually covered, rotated to the direction he is running, capped at 70, wet
-and dark after water and a faint scuff otherwise. That is v10.55's work and
-it is correct. The second is G.prints, the scent list a pillager tracker
-smells: while sprinting it takes a mark every 34 units, capped at 40, and
-the draw loop paints each one as two rectangles, 3 wide and 5 tall, that are
-never rotated. Unrotated, that pair is a left boot and a right boot walking
-UP the screen. So when he runs across the screen they sit sideways to his
-path and read as ticks nobody calls a footprint, and when he runs up or down
-they line up with his path and read as a second set of footprints, at a
-different spacing, interleaved with the real ones. That is the glitch, and
-that is why it is a vertical one.
+WHAT IT WAS. The machinery is sound, and I want that on the record because
+the first trace of this note said otherwise and was wrong: a real mousedown
+starts the hold, the frame loop fills it every frame while the Undercroft is
+up, and a full second crafts, spends the parts and awards the item. The fill
+is visible too. It is painted at 55 percent amber, and while the pointer is
+on the button the generic hover rule has already dropped the button itself
+to 8 percent amber over the cream panel, so the band reads clearly. I had
+that backwards for an hour and the check now measures the words, not the
+colour.
 
-THE BUILD. His own scent marks are not painted any more. One line in the
-draw loop. His real boot prints already draw that same path from the decal
-list, and his own wake on water is already a decal too (v8.89), so nothing
-he is meant to see is lost. A pillager's marks still draw under the same
-sight gate they have had since v8.85, which is his feature: you can read
-where a man went. The list itself is untouched, still filled every 34 units
-while sprinting and still smelled, so no tracker, no pillager and no machine
-behaves any differently and no balance moves.
+What is wrong is that the bench never says any of it. The button reads
+CRAFT, which reads like a button you click. A real mouse click spends
+nothing, which is his own v11.75 order and exactly right, and v12.17 made it
+exact; but it returned in silence. Letting go before the second is up
+cancels, also in silence. So every natural reaction to a button that looks
+unresponsive, click it, click it again, hold it briefly and let go, is
+answered with nothing at all. From his side that is a bench that cannot
+craft.
 
-MEASURED. Check 12.32 deploys, empties the map so nothing interrupts, and
-sprints him north for three seconds through the real keys and the real frame
-loop, which is the only driver that moves the player. It requires both trails
-to have filled (at least three scent marks and at least two real boot
-prints), then draws one frame with the canvas watched, counting every
-rectangle of exactly 3 by 5, which is the scent mark and nothing else. That
-count must be zero. Then it drops one mark belonging to a pillager at his
-feet and requires the count to rise, so the zero is a measured zero and not a
-counter that cannot see. Finally it requires the scent list to be the same
-size it was, so the draw side has taken nothing away from what smells it. On
-the v12.31 fixture the first count is high.
+THE BUILD. Three lines, all words. The button reads HOLD TO CRAFT, and HOLD
+TO SERVICE at the repair rows. A real mouse click says "Hold it down for a
+second. A click on its own spends nothing." An early release says "Let go
+too soon. Hold it for a full second." The rule underneath is unchanged: a
+click still spends nothing, the hold is still one second, the pad and Enter
+still craft on their synthetic click. The lines go through the Undercroft
+answer line, which draws above the trader window.
 
-Not verified: his own eye on a vertical sprint, which is the report; the
-walk case, where no scent mark is laid at all and there was never a second
-trail; whether the marks a pillager leaves should be rotated to their own path too,
-which is the same drawing and would be a separate build; the 34 unit spacing
-and the 40 cap, both untouched because they belong to the tracker.
+MEASURED. Check 12.32 stages the Component Kit parts the way check 12.17
+does, opens the bench and selects the recipe. It requires the button label
+to contain HOLD. It sends a real mouse click and requires nothing crafted
+and a spoken line telling him to hold it. It starts a hold, steps it to 0.4
+of a second, releases through the real window mouseup, and requires nothing
+crafted and a spoken line. Then it holds the two paths that must not have
+moved: a synthetic click still crafts, and a full hold still crafts and not
+before it is full. On the v12.31 fixture the label has no HOLD in it and
+both silences are silent.
+
+Not verified: his own hand and eye, which is what the note is about; the fill
+colour on a device with no hover state, where the button stays solid amber
+under an amber band and the bar would be invisible (a touch screen; the pad
+never holds, it sends a synthetic click); whether a bench row disabled
+because his parts are in the backpack rather than the stash was part of what
+he hit, since the panel shows the counts but nothing says where the game
+looks.
