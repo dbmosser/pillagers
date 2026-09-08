@@ -1,0 +1,28 @@
+v12.64: the buy button says how short you are
+
+This is my own v8.18 build, and my own check chose the case that works.
+
+The buy button is supposed to say how short you are. The branch that writes
+that sentence is gated on the row behind the panel being enabled, and that row
+disables itself the moment you cannot afford one unit. So the sentence could
+only ever appear when you could already afford some of the order and not all of
+it.
+
+The commonest refusal at that counter is wanting one thing you cannot afford at
+all, and that case showed a greyed BUY with the price above it and no reason
+anywhere, while the sentence explaining it sat one line below in the source,
+unreachable. It is the same fault the crafting bench was rewritten for at
+v12.32.
+
+My v8.18 entry claims the button says exactly how short he is. Its measurement
+was a Bandage at 660 with 2,100 in hand: enough for three, so the row was
+enabled and the branch fired. The case that happens most was never measured.
+
+Money is the reason unless something else is. A row disabled while you can
+afford one is locked for its own reason and keeps its own words.
+
+Check 12.64 reads the drawn panel rather than the source, because the finding is
+that a sentence exists and cannot be reached; controls cover the v8.18 case, an
+affordable order, and an XP lock with money in hand; fails on v12.63.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

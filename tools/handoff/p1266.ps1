@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 trap { Write-Output "FAILED: $_"; exit 1 }
-$p = 'C:\claudecode\dark raiders\tools\handoff\dry\game.html'
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
 $s = [IO.File]::ReadAllText($p)
 $n = 0
 function SubRx([string]$old, [string]$new) {

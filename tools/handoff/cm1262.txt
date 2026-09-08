@@ -1,0 +1,27 @@
+v12.62: the counter says what it did with your money
+
+Two faults on one counter, so one build.
+
+The shop counter in the Undercroft takes your credits and says nothing at all.
+No line, no sound. The only sentence it has ever spoken is a failure, because a
+short order tells you how many it could fill, so the one time it talks is the
+time it went wrong. And everything it sells lands in the stash rather than the
+backpack, which is the confusion behind your note about a purchase not showing
+up.
+
+A gun was worse than silent: buying one took the primary slot outright. Buy a
+cheap pistol as a spare while carrying a Marksman Rifle and the rifle is
+demoted with nothing said.
+
+v12.28 fixed this class for the Peddler and gave that stall a line naming where
+the thing went. The counter twenty feet away was never given one, and the same
+two lines exist twice, here and on the ascent screen.
+
+One named rule used by both: a bought gun goes into an empty hand only, and
+every purchase says what it was, what it cost and where it went.
+
+Check 12.62 clicks the real button, found by the name the row prints; controls
+require an empty hand to still receive a gun and an ordinary item to reach the
+stash and be named; fails on v12.61.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,44 @@
+## v12.65 - A HAUL CONTRACT COUNTS WHAT YOU CAME BACK WITH
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+Verified by reading at v12.64.
+
+WHAT IT WAS. The haul contract asks you to extract with a haul worth some
+amount, and the number it tested was the whole backpack at the end of the raid.
+
+The backpack BEGINS the raid holding whatever you staged. There is no limit on
+what you can stage or how much: the staging screen offers any item with a use,
+which includes field guns worth thousands, and the deploy slot count is
+effectively unlimited.
+
+So the highest-paying card on the board was completable in under a minute. Stage
+one expensive gun out of your own stash, land, walk to the nearest extraction
+point, hold E, leave. The bag is worth more than the card asked, the card goes
+ready, and the gun goes straight back into the stash through the ordinary
+banking, so it costs nothing and can be repeated on every board refill.
+
+The game already draws exactly this line elsewhere. It stamps what the lift
+carried in, and the run earnings line subtracts it, for precisely this reason.
+The haul contract was the one place that ignored it.
+
+THE BUILD. It counts what the run brought back. The threshold printed on the
+card has not moved; what it measures has.
+
+WHAT IT COSTS, HONESTLY. That card is meaningfully harder now, because it asks
+for what it says it asks for. I am calling that a defect fix rather than a
+balance change: the old behaviour let the best-paying contract in the game be
+farmed for nothing, and shipping that at alpha would be shipping an exploit.
+Nothing in the settings moves and no threshold is retuned. If you want the
+threshold lowered now that it means something, that is a dial and it is yours.
+
+MEASURED. Check 12.65 runs the real extraction accounting for the board, with
+the card staged by hand so the threshold is a number the check chose rather than
+one a roll happened to give it. Two arms, the same value arriving two ways:
+carried up from his own stash, which must not satisfy the card, and found in the
+raid, which must. The second arm is what stops the build breaking the contract
+instead of fixing what it counts.
+
+Not verified: it calls the extraction accounting directly rather than staging
+items and riding the lift, which is several screens away; it does not check what
+the card prints on the board; and it does not cover the other contract types,
+none of which were raised.

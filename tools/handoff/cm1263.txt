@@ -1,0 +1,25 @@
+v12.63: a contract that pays a gun you already have pays its value instead
+
+A contract whose whole physical payout is a gun paid nothing at all if you had
+come by that gun since the card was written, and the receipt said it paid.
+
+The gear is rolled once, when the card is made, and that roll refuses a gun you
+already own at that moment. The card then sits on the board for as long as you
+like, and the panel says so itself: they do not expire while you are down here.
+Between the roll and the claim the gun is easy to come by. Claim it, and the
+payout adds the gun only if it is new, then returns the same sentence either
+way. The credits arrive, the gear does not exist, and you are told it did.
+
+You are paid what the gun is worth instead, from the armoury's own value, and
+the line says exactly that.
+
+I considered re-rolling the gear at claim time to keep the payout physical, and
+did not: the card has been sitting on your board naming a specific gun, and
+swapping what it pays at the moment you claim it would be a second lie in place
+of the first.
+
+Check 12.63 pays through the real payout with the gun already owned, taking the
+gun and its value off the game's own tables; the control requires an unowned gun
+to still arrive as a gun; fails on v12.62.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

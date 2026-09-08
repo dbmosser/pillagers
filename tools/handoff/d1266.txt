@@ -1,0 +1,41 @@
+## v12.66 - THE CONTRACT BOARD COUNTS CONTRACTS
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+This one is my own wording. Verified by reading at v12.65.
+
+WHAT IT WAS. The only progress readout the contract board has says "Contracts
+completed N". N is not a count of contracts. It is a weighted number: a STANDARD
+card counts one, a HARD two, an ELITE three. Claim your first ever HARD card and
+the board tells you that you have completed two contracts.
+
+The gate under it is miscounted from his side for the same reason. "ELITE work
+at 6 more" means six more of that weight, which is two ELITE claims or three
+HARD ones, not six contracts. He plans against a ledger that can be wrong by
+three times per card.
+
+THE ENTRY FOR THAT LINE IS MINE, and it records a deliberate vocabulary swap
+with no look at the number behind it. The line used to say "Contract standing",
+which was true; standing is a banned word, so I renamed it to "completed", which
+is false. Renaming is not the same as reading, and I did not read.
+
+THE BUILD. The count and the gate are two different numbers, so both are said,
+each called what it is. A true count of contracts claimed, and a gate that asks
+for credits in its own words and states what a harder card is worth.
+
+IT CHANGES NO ARITHMETIC. The credit that opens harder work is untouched: a
+HARD card is still worth two of it and the thresholds are where they were. The
+only change is what the line says.
+
+MEASURED. Check 12.66 claims one card and reads the DRAWN line, because the
+whole finding is a number printed under the wrong name. It uses a HARD card on
+purpose: that is the smallest claim whose weight and whose count differ, so a
+line printing either one can be told apart. It requires the line to say one
+contract and not two. The control is the gate itself, which must still read two
+credits after that claim and must still name what it is asking for, so this
+build cannot pass by quietly flattening the weighting.
+
+Not verified: it claims through the board's own function rather than clicking
+the card; it does not read the next-unlock line elsewhere on the floor, which
+draws from the shop table and not from this number; and it does not cover a
+profile saved before this build, which simply starts its count at zero and
+climbs from there, so an old save will under-report until the next claim.

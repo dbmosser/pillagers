@@ -1,0 +1,46 @@
+## v12.63 - A CONTRACT THAT PAYS A GUN YOU ALREADY HAVE PAYS ITS VALUE INSTEAD
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+Verified by reading at v12.62.
+
+WHAT IT WAS. A contract whose whole physical payout is a gun paid nothing at all
+if you had come by that gun since the card was written, and the receipt said it
+paid.
+
+The gear is rolled once, at the moment the card is made, and that roll refuses a
+gun you already own at that moment. The card then sits on the board for as long
+as you like, and the panel says so in its own words: they do not expire while you
+are down here. Between the roll and the claim the gun is easy to come by. Extract
+carrying one and it banks to the armoury. Buy one at the counter.
+
+Claim it, and the payout adds the gun only if it is new, then returns the same
+sentence either way. So the line reads "and Marksman Rifle to the armoury" for a
+gun that was already yours, and nothing changed hands. The credits arrive. The
+gear does not exist. And you are told it did.
+
+THE BUILD. He is paid what the gun is worth instead, taken from the armoury's own
+value for it, and the line says exactly that. Nothing on the receipt is a fiction
+any more.
+
+I considered re-rolling the gear at claim time instead, which would keep the
+payout physical. I did not, because the card has been sitting on his board naming
+a specific gun, and quietly swapping what it pays at the moment he claims it
+would be a second lie in place of the first.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. No dial moves, nothing in a raid
+changes, and the bot does not claim contracts. What changes is that a payout that
+was worth nothing is now worth what it said it was.
+
+MEASURED. Check 12.63 pays the gear through the real payout with the gun already
+in the armoury, which is the state the card cannot see because it was written
+before he had it. The gun and its value both come off the game's own tables
+rather than out of the check. It requires the credits to rise by that value, the
+armoury not to change size, and the receipt to name the amount. The control is
+the same payout on a gun he does not own: it must still hand over the gun, add no
+credits, and say the armoury, so the fix cannot pass by turning every gun payout
+into cash.
+
+Not verified: it calls the payout directly rather than claiming a card at the
+board, which is the same function one line down; it does not cover the key or
+the stash payouts, which have their own branches and were not raised; and it
+does not check what the board prints on the card before the claim.

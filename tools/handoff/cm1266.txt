@@ -1,0 +1,22 @@
+v12.66: the contract board counts contracts
+
+The board's only progress line says "Contracts completed N". N is not a count of
+contracts. It is a weighted number: a STANDARD card counts one, a HARD two, an
+ELITE three. Claim your first ever HARD card and the board says you have
+completed two contracts. The gate under it is wrong from your side for the same
+reason: "ELITE work at 6 more" means six more of that weight, not six cards.
+
+The entry for that line is mine. It records a deliberate vocabulary swap with no
+look at the number behind it: the line used to say "Contract standing", which
+was true, and standing is a banned word, so I renamed it to "completed", which
+is false. Renaming is not the same as reading.
+
+The count and the gate are two different numbers, so both are said now, each
+called what it is. No arithmetic changes: the credit that opens harder work is
+untouched and the thresholds are where they were.
+
+Check 12.66 claims one HARD card, which is the smallest claim whose weight and
+count differ, and reads the drawn line; the control requires the credit and the
+gate wording to be unchanged; fails on v12.65.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -40024,6 +40024,54 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.40 - THE MAN YOU HIRED PICKS UP THE MEN SHOOTING AT YOU
+
+From the 2026-09-07 read-only audit (merc-loots-hostiles), specced from the
+source and then attacked by a skeptic before a line was written. Verified by
+reading at v12.39.
+
+WHAT IT WAS. The pickup branch asks two questions before one pillager kneels
+over another: is this man a pillager, and is he in my crew. Neither question
+asks which side either man is on. The merc you hire is built by the same maker
+as every other pillager and rolls a crew number there, out of two, so he shares
+a number with about half the map.
+
+Told to loot on his own he reaches this branch, and a downed HOSTILE inside 760
+units carrying that number read as one of his own. He left your job, walked
+over, knelt over the man who had been shooting at you, and put him back on his
+feet on 40 percent health. You paid for that man.
+
+THE BUILD. One guard, placed between the two existing tests so it reads as the
+side question that has to be answered before the crew question is even asked.
+It is the same test mercEngage already uses to decide who is his business, so
+the rule is now consistent: the pillager he would shoot is the pillager he will
+not pick up. A man who has thrown in with you, or who is passive, is still
+picked up. No other reviver in the game has his crew rule changed, so an
+ordinary crew still looks after its own exactly as before.
+
+WHAT IT COSTS. This one is not free by construction, and I am not claiming it
+is. It removes revives that used to happen, so hostile pillagers stay down more
+often near your hire. It is a defect fix, not a dial: nothing in the settings
+moves, and the behaviour it removes is one nobody designed. The bot never hires
+a merc, so no paired number can measure it either way, and that is a limit of
+the instrument rather than a claim of no effect.
+
+MEASURED. Check 12.40 builds one room and runs it three times. A reviver and a
+downed man twenty units apart, both stamped with a crew number no raid can
+roll, so it can only have come from the check. You are parked a thousand units
+away, which puts the stage outside the crawl-for-cover range and outside the
+engage range, so the downed man does not crawl off and the hire never breaks
+off to shoot. Nobody else is in the roster. The downed man is given a
+distinctive maximum health, so the health he stands up on can only have been
+written by the pickup. Arm one is your hire and a downed hostile. Arm two is an
+ordinary crew picking its own up, which proves the room can produce a pickup at
+all. Arm three is your hire and a man who has thrown in with you, which is what
+separates a side test from a blanket ban on him helping anybody.
+
+Not verified: it runs one map and one seed; it drives the pillager stepper
+rather than the full frame loop; it does not test a merc who is holding a
+position rather than looting; and no sim number can speak to it, because the
+bot never hires anyone.
 ## v12.39 - A GUN YOU DIED WITH IS NOT COMING UP WITH YOU
 
 From the 2026-09-07 read-only audit (dead-slot2), specced from the source and

@@ -1,0 +1,46 @@
+## v12.64 - THE BUY BUTTON SAYS HOW SHORT YOU ARE
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+This is my own v8.18 build, and my own check chose the case that works. Verified
+by reading at v12.63.
+
+WHAT IT WAS. The buy button on the counter is supposed to say how short you are.
+The branch that writes that sentence is gated on the row behind the panel being
+ENABLED, and that row disables itself the moment you cannot afford one unit. So
+the sentence could only ever appear when you could already afford some of the
+order and not all of it.
+
+The commonest refusal at that counter, by a long way, is wanting one thing you
+cannot afford at all. In that case the panel shows a greyed BUY with the price
+above it and no reason anywhere, while the sentence that explains it sits one
+line below in the source, unreachable.
+
+That is exactly the fault the crafting bench was rewritten for at v12.32, on his
+own note about the bench doing nothing and saying nothing.
+
+MY v8.18 ENTRY CLAIMS THE BUTTON "SAYS EXACTLY HOW SHORT HE IS". Its own
+measurement is a Bandage at 660 with 2,100 in hand: enough for three, so the row
+was enabled and the branch did fire. The case that happens most was never
+measured, and the entry has read as true ever since.
+
+THE BUILD. Money is the reason unless something else is. A row disabled while
+you can afford one unit is locked for its own reason and keeps its own words; a
+row you are simply short of the price for now says how short.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. It is a label. Nothing is bought
+that could not be bought before, no dial moves, and the bot never opens a
+counter.
+
+MEASURED. Check 12.64 reads the DRAWN panel rather than the source, because the
+whole finding is that a sentence exists in the source and cannot be reached. The
+finding arm asks for one unit with a penny less than the price and requires the
+shortfall to be named. The first control is the case v8.18 measured, partly
+affordable, which must still say it. The second requires an affordable order not
+to be told it is short. The third takes a row locked for want of XP with money in
+hand and requires it to keep its own words, so the money line has not been made
+to answer for everything.
+
+Not verified: it reads the panel text rather than the pixels, so it cannot say
+the label is legible against the disabled colour; it does not click anything;
+and it does not cover the pack rows, which have their own tier rule and their
+own words.

@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.39';
+var VER='12.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.39';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.39';
+var WHATSNEW_VER='12.40';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1368,6 +1368,7 @@ var WHATSNEW=[
   'A KEY ALREADY DOWN IS NOT A PRESS. F is the melee strike, so a hand resting on it when the hit landed used to spend your one self-revive on the first downed frame, with no decision made. The revive now waits for a release and a real press.',
   'EXTRACTING WITH A GUN IN EACH HAND LEAVES A GUN IN EACH HAND. Banking the better gun into slot 1 used to leave slot 2 naming the same gun, so the next raid came up with an empty second slot and a gun you still owned quietly unslotted.',
   'A GUN YOU DIED WITH IS NOT COMING UP WITH YOU. A death that took your sidearm left gun 2 still naming it, and the last screen before the lift told you it was going up in your hands. The slot is emptied now, and that screen makes the same test the deploy makes.',
+  'THE MAN YOU HIRED STOPS PICKING UP THE MEN SHOOTING AT YOU. A crew number is not a side: your hire shares one with about half the map, so a downed hostile carrying that number used to be worth breaking off your job for. He still picks up anyone who has thrown in with you.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -17417,6 +17418,18 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
         for(var rv=0;rv<G.ents.length;rv++){
           var RD=G.ents[rv];
           if(RD===e||RD.kind!=='raider'||!RD.downed) continue;
+          // v12.40, audit merc-loots-hostiles: A CREW NUMBER IS NOT A SIDE. The man
+          // you hired is built by mkRaider like every other pillager and rolls a
+          // crew there (raiderCrews 2), so he shares a number with about half the
+          // map. Told to loot on his own he reaches this branch, and a downed
+          // HOSTILE inside 760 carrying that number read as one of his own: he
+          // left your job, knelt over the man who had been shooting at you and put
+          // him back on his feet on 40 percent health. The test below is the one
+          // mercEngage already uses to decide who is his business, so the pillager
+          // he would shoot is the pillager he will not pick up. A man who has
+          // thrown in with you, or who is passive, is still picked up, and no
+          // other reviver in the game has his crew rule changed.
+          if(e.merc&&!RD.merc&&RD.hostile!==false&&!RD.friendlyPC) continue;
           if(RD.crew!==e.crew) continue;
           var dd3=dist(e,RD);
           if(dd3<bd){ bd=dd3; best=RD; }
@@ -28830,7 +28843,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.39: 2026-09-07 audit (dead-slot2). A death splices the guns you carried out of the armoury. Since v2.82 the primary has been put back on a gun you still own, and nothing has ever done it for the sidearm, so a death that took the second gun left gun 2 naming a gun the splice thirty lines above had just removed. The deploy refuses it, because it tests the armoury before it bakes a sidearm, so he went up with an empty second slot; but the ascent check, which is the last screen before the lift, read the field raw and told him the dead gun was going up in his hands. Two edits. The sidearm now gets the same repair the primary already gets, going back to the empty slot that has been the default since v5.37. And the ascent check makes the same test the deploy makes, so that screen can never name a gun that will not come up, which also covers a slot 2 that has come to name the gun already in slot 1 and a stale slot arriving from anywhere else. Check 12.39 stages two guns no starter roll, shop or freebie kit can hand out, dies carrying the second, and requires the slot to be empty and that screen to stop naming the lost gun, with a control that puts the gun back and requires the same page to name it again; fails on v12.38.',
+  now:'v12.40: 2026-09-07 audit (merc-loots-hostiles). The pickup branch asks two things, is this man a pillager and is he in my crew, and neither question asks which side either man is on. The merc you hire is built by the same maker as every other pillager and rolls a crew there out of two, so he shares a number with about half the map. Told to loot on his own he reaches this branch, and a downed HOSTILE inside 760 units carrying that number read as one of his own: he left your job, knelt over the man who had been shooting at you, and put him back on his feet on 40 percent health. One guard between the two tests, so it reads as the side question that has to be answered before the crew question is even asked, and it is the same test mercEngage already uses to decide who is his business: the pillager he would shoot is the pillager he will not pick up. A man who has thrown in with you, or who is passive, is still picked up, and no other reviver in the game has his crew rule changed. Check 12.40 stages a reviver and a downed man twenty units apart on a crew number no raid can roll, a thousand units from the player so nothing else can reach them, and runs three arms: the hire and a downed hostile, an ordinary crew picking its own up, and the hire and a man who has thrown in with you; fails on v12.39.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

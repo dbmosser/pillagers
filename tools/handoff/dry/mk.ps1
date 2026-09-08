@@ -5709,6 +5709,211 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.65',what:'a haul contract counts what the run brought back and not what the lift carried up: staging an expensive gun out of his own stash and walking straight out no longer finishes it, while the same value found in the raid still does (2026-09-08 audit)',
+   run:function(){
+     if(!(window.__P&&window.__state&&window.__deploy&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof contractExtract!=='function'||typeof ival!=='function') return 'SKIP: this build has no contract extraction to drive';
+     // A single item worth enough to clear the card on its own, taken off the
+     // item table rather than named here.
+     var ITEM=null, k;
+     for(k in ITEMS){ if(ITEMS[k]&&ITEMS[k].val>=600&&ITEMS[k].use){ ITEM=k; break; } }
+     if(!ITEM){ for(k in ITEMS){ if(ITEMS[k]&&ITEMS[k].val>=600){ ITEM=k; break; } } }
+     if(!ITEM) return 'SKIP: no item in this build is worth enough to stage a haul card against';
+     var VAL=ival(ITEM);
+     if(!(VAL>0)) return 'SKIP: that item values at nothing, so a haul cannot be built from it';
+     var bad=[], P2=__P(), keepC=(P2.contracts||[]).slice();
+     function card(){ return {type:'haul',v:Math.max(1,Math.round(VAL*0.5)),n:1,prog:0,reward:100,desc:'haul card staged by check 12.65'}; }
+     function run(carriedIn){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g) return null;
+       var c=card();
+       P2.contracts=[c];
+       g.carriedIn=carriedIn?VAL:0;
+       contractExtract([ITEM],VAL);
+       return {prog:c.prog,need:c.v};
+     }
+     try{
+       // THE FINDING: the value came up the lift with him, so the run earned none
+       // of it and the card must not be satisfied.
+       var A=run(true);
+       if(!A) return 'SKIP: no live raid to extract from';
+       if(A.prog>0)
+         bad.push('a haul card asking for '+A.need+' was finished by carrying '+VAL+' worth of his own stash up the lift and walking straight back out: the run brought nothing home and the best-paying card on the board went ready anyway');
+       // CONTROL: the same value, found in the raid rather than carried up. This
+       // is what the card asks for and it must still be satisfied, or the build
+       // has broken the card instead of the counting.
+       var B=run(false);
+       if(B&&B.prog<1)
+         bad.push('control: '+VAL+' worth found in the raid no longer finishes a card asking for '+B.need+', so this build has broken the haul contract rather than what it counts');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.contracts=keepC; saveProfile(); }catch(_p){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.64',what:'the buy button says how short he is even when he cannot afford one unit, which is the commonest refusal at the counter and the only one it used to answer with a dead grey button and no words; the partly affordable case still says it, an affordable order does not, and a row locked for a reason that is not money keeps its own words (2026-09-08 audit, my defect from v8.18)',
+   run:function(){
+     if(!(window.__P&&window.__shopPanel&&__shopPanel.detail)) return 'SKIP: this fixture cannot read the drawn counter panel';
+     if(typeof SHOP==='undefined'||!SHOP.length) return 'SKIP: this build has no counter to read';
+     var bad=[], P2=__P();
+     var keep={credits:P2.credits,xp:P2.xp,qty:P2._shopQty,sel:P2._shopSel,pack:P2.pack};
+     // An ordinary row with no XP lock, and separately a row that HAS one, both
+     // found by what the table says rather than named here.
+     var plain=-1, locked=-1, i;
+     for(i=0;i<SHOP.length;i++){
+       var o=SHOP[i];
+       if(o.kind==='pack') continue;                 // its own tier rule, its own words
+       if(!o.rep&&plain<0) plain=i;
+       if(o.rep>0&&locked<0) locked=i;
+     }
+     if(plain<0) return 'SKIP: every row on this counter carries an XP lock, so the money case cannot be isolated';
+     var price=SHOP[plain].price;
+     function panel(ix,credits,xp,qty){
+       P2.credits=credits; P2.xp=xp; P2._shopQty=qty;
+       return String(__shopPanel.detail(ix)||'');
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       // THE FINDING: one unit, and he cannot afford it. The commonest refusal.
+       var t1=panel(plain,Math.max(0,price-1),999999,1);
+       if(t1.indexOf('NEED')<0)
+         bad.push('wanting one thing he cannot afford answered with no words at all: the panel reads ['+t1.slice(0,110)+'] and never says how short he is, which is the commonest refusal at this counter');
+       // CONTROL ONE: the case v8.18 measured, where he can afford some but not
+       // all. It must still say it, or this build has moved the fault rather than
+       // fixing it.
+       var t2=panel(plain,price*3,999999,5);
+       if(t2.indexOf('NEED')<0)
+         bad.push('control: an order he can partly afford no longer says how short he is either, so this build has broken what v8.18 shipped');
+       // CONTROL TWO: an order he CAN afford must not be told he is short.
+       var t3=panel(plain,price*5,999999,1);
+       if(t3.indexOf('NEED')>=0)
+         bad.push('control: an order he can afford tells him he is short: ['+t3.slice(0,110)+']');
+       // CONTROL THREE: a row locked for a reason that is NOT money keeps its own
+       // words, so the money line has not been made to answer for everything.
+       if(locked>=0){
+         var t4=panel(locked,999999,0,1);
+         if(t4.indexOf('NEED $')>=0)
+           bad.push('control: a row he cannot buy for want of XP, with money in hand, says he is short of money: ['+t4.slice(0,110)+']');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.credits=keep.credits; P2.xp=keep.xp; P2._shopQty=keep.qty; P2._shopSel=keep.sel; P2.pack=keep.pack;
+            saveProfile(); }catch(_p){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.63',what:'a contract paying a gun he already owns pays what the gun is worth and says so, instead of handing over nothing and printing a receipt saying it paid; the same payout on a gun he does not own still hands over the gun (2026-09-08 audit)',
+   run:function(){
+     if(!window.__P) return 'SKIP: this fixture cannot read the profile';
+     if(typeof payGear!=='function'||typeof WEAPONS==='undefined'||typeof ITEMS==='undefined') return 'SKIP: this build has no contract payout';
+     // A gun the contract board can actually pay, that also has a value the
+     // armoury knows, taken off the game own tables rather than named here.
+     var GUN=null, k;
+     for(k in WEAPONS){ if(ITEMS['gun_'+k]&&ITEMS['gun_'+k].val>0){ GUN=k; break; } }
+     if(!GUN) return 'SKIP: no gun in this build carries a value the armoury knows';
+     var VAL=ITEMS['gun_'+GUN].val;
+     var bad=[], P2=__P();
+     var keep={credits:P2.credits,weapons:(P2.weapons||[]).slice(),equipped:P2.equipped};
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       // THE FINDING: the card was written before he had this gun, and he has it now.
+       P2.weapons=[GUN]; P2.equipped=GUN; P2.credits=0;
+       var line1=String(payGear({kind:'wep',k:GUN})||'');
+       if((P2.credits|0)!==VAL)
+         bad.push('a contract paying the '+WEAPONS[GUN].name+' he already owns handed over nothing at all: the credits went from 0 to '+(P2.credits|0)+' against a gun worth '+VAL+', and the receipt still names the gun');
+       if(P2.weapons.length!==1)
+         bad.push('the armoury changed size on a payout of a gun he already had, so something was added twice');
+       if(line1.indexOf(String(VAL))<0)
+         bad.push('the receipt for a gun he already owns reads "'+line1+'" and does not say what he was actually paid');
+       // CONTROL: the same payout on a gun he does NOT own must still be the gun.
+       P2.weapons=[]; P2.equipped='fists'; P2.credits=0;
+       var line2=String(payGear({kind:'wep',k:GUN})||'');
+       if(P2.weapons.indexOf(GUN)<0)
+         bad.push('control: a gun he does not own no longer reaches the armoury at all, so this build has turned every gun payout into cash');
+       if((P2.credits|0)!==0)
+         bad.push('control: a gun he does not own paid '+(P2.credits|0)+' credits as well as the gun');
+       if(line2.indexOf('armoury')<0)
+         bad.push('control: the receipt for a gun he did not own reads "'+line2+'" and no longer says where it went');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.credits=keep.credits; P2.weapons=keep.weapons; P2.equipped=keep.equipped; saveProfile(); }catch(_p){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.62',what:'the Undercroft counter says what it did with his money, and a gun bought as a spare goes to the armoury instead of taking the slot off the gun in his hands; with empty hands a bought gun still arrives in them (2026-09-08 audit)',
+   run:function(){
+     if(!(window.__P&&window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot reach the counter';
+     if(typeof openTrader!=='function'||typeof renderShop!=='function'||typeof SHOP==='undefined') return 'SKIP: this build has no counter to buy at';
+     if(!document.getElementById('shop')) return 'SKIP: this build has no shop list to click';
+     var bad=[], P2=__P();
+     var keep={credits:P2.credits,weapons:(P2.weapons||[]).slice(),equipped:P2.equipped,
+               equippedSec:P2.equippedSec,stash:(P2.stash||[]).slice(),xp:P2.xp,pack:P2.pack};
+     // The cheapest gun on the counter and any ordinary item, both found by what
+     // the row prints rather than by where they sit in the table.
+     var gunRow=null, itemRow=null, i;
+     for(i=0;i<SHOP.length;i++){
+       var o=SHOP[i];
+       if(o.kind==='wep'&&(!gunRow||o.price<gunRow.price)) gunRow=o;
+       if(!o.kind&&!itemRow&&ITEMS[o.k]) itemRow=o;
+       if(o.kind==='item'&&!itemRow&&ITEMS[o.k]) itemRow=o;
+     }
+     if(!gunRow) return 'SKIP: the counter sells no guns in this build';
+     function nameOf(o){ return (o.kind==='wep')?WEAPONS[o.k].name:(ITEMS[o.k]?ITEMS[o.k].name:null); }
+     function clickRow(o){
+       __showScreen('hub'); __hubEnter(); openTrader('buy'); renderShop();
+       var host=document.getElementById('shop'); if(!host) return 'no shop list';
+       var want=nameOf(o); if(!want) return 'no name for that row';
+       var kids=host.children, k, r, btn=null;
+       for(k=0;k<kids.length&&!btn;k++){
+         r=kids[k];
+         if(String(r.textContent||'').indexOf(want)<0) continue;
+         btn=r.querySelector('button');
+       }
+       if(!btn) return 'no row on the counter named '+want;
+       if(btn.disabled) return 'the button for '+want+' is disabled';
+       HUBSAY=''; btn.click();
+       return null;
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       // THE FINDING: he already carries a gun, and buys a spare.
+       P2.credits=999999; P2.xp=999999; P2.stash=[];
+       P2.weapons=['sniper']; P2.equipped='sniper'; P2.equippedSec='none';
+       var e1=clickRow(gunRow);
+       if(e1) return 'SKIP: '+e1;
+       if(P2.equipped!=='sniper')
+         bad.push('buying a spare '+nameOf(gunRow)+' at the counter took the primary slot off the gun he was already carrying: gun 1 now reads '+P2.equipped+' and nothing said a word about it');
+       if(P2.weapons.indexOf(gunRow.k)<0) bad.push('control: the bought gun did not reach the armoury at all');
+       if(!String(HUBSAY||'').length)
+         bad.push('the counter took his credits for a '+nameOf(gunRow)+' and said nothing at all');
+       else if(String(HUBSAY).indexOf('Bought')<0)
+         bad.push('the counter said "'+HUBSAY+'" rather than telling him what it did with his money');
+       // CONTROL ONE: with empty hands the same purchase must arrive IN them, or
+       // the build has taken away the convenience instead of fixing the theft.
+       P2.weapons=[]; P2.equipped='fists'; P2.credits=999999;
+       var e2=clickRow(gunRow);
+       if(!e2&&P2.equipped!==gunRow.k)
+         bad.push('control: buying a gun with empty hands no longer puts it in them (gun 1 reads '+P2.equipped+'), so the fix has gone too far');
+       // CONTROL TWO: an ordinary purchase still lands and still says so.
+       if(itemRow){
+         P2.credits=999999; P2.stash=[];
+         var e3=clickRow(itemRow);
+         if(!e3){
+           if(P2.stash.indexOf(itemRow.k)<0) bad.push('control: an ordinary purchase no longer reaches the stash');
+           if(String(HUBSAY||'').indexOf('Bought')<0) bad.push('control: an ordinary purchase says "'+(HUBSAY||'')+'" rather than what it did');
+         }
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var tm=document.getElementById('tradermodal'); if(tm) tm.classList.remove('on'); }catch(_m){}
+       try{ P2.credits=keep.credits; P2.weapons=keep.weapons; P2.equipped=keep.equipped;
+            P2.equippedSec=keep.equippedSec; P2.stash=keep.stash; P2.xp=keep.xp; P2.pack=keep.pack;
+            saveProfile(); }catch(_p){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.61',what:'quick ascent starts at day like the other door does: pressing the ascent key at the lift no longer inherits the surface he chose last raid, the sector page door still resets it, and a night he chooses on the page and ascends from the page is still night (2026-09-08 audit, his answer 24)',
    run:function(){
      if(!(window.__hubEnter&&window.__hb&&window.__keys&&window.__showScreen&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot walk the floor';
