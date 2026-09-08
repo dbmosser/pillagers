@@ -5709,6 +5709,159 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.61',what:'quick ascent starts at day like the other door does: pressing the ascent key at the lift no longer inherits the surface he chose last raid, the sector page door still resets it, and a night he chooses on the page and ascends from the page is still night (2026-09-08 audit, his answer 24)',
+   run:function(){
+     if(!(window.__hubEnter&&window.__hb&&window.__keys&&window.__showScreen&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot walk the floor';
+     if(typeof updateHubWorld!=='function'||typeof isDay!=='function'||typeof startRaid!=='function') return 'SKIP: this build has no floor update, no day test or no raid to start';
+     var bad=[], P2=__P(), keepCond=P2.cond;
+     function press(code){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ var g0=__state(); if(g0&&!g0.over){ g0.player.downed=false; __endRaid('abandon'); } }catch(_0){}
+       __showScreen('hub'); __hubEnter();
+       var HBx=__hb(); if(!HBx||!HBx.stations) return {none:'no floor to stand on'};
+       var lift=null, i;
+       for(i=0;i<HBx.stations.length;i++) if(HBx.stations[i].id==='lift') lift=HBx.stations[i];
+       if(!lift) return {none:'this build has no lift'};
+       var K=__keys(), k;
+       for(k in K) delete K[k];
+       HBx.player.x=lift.x; HBx.player.y=lift.y; HBx.eLock=false;
+       P2.cond='night';                       // what he chose on the last raid
+       K[code]=1;
+       for(i=0;i<6;i++) updateHubWorld(0.05);
+       for(k in K) delete K[k];
+       try{ var sm=document.getElementById('sectormodal'); if(sm) sm.classList.remove('on'); }catch(_m){}
+       return {cond:P2.cond,day:!!isDay()};
+     }
+     try{
+       // THE FINDING: the quick ascent door, which never opened the page.
+       var A=press('KeyR');
+       if(!A) return 'SKIP: no floor to stand on';
+       if(A.none) return 'SKIP: '+A.none;
+       if(!A.day)
+         bad.push('quick ascent took him up into the surface he chose on the last raid: the ascent key started a raid with the surface still reading '+A.cond+', so the ground, the lamps, the night bonus and the run record all followed a choice he made once and was never asked about again');
+       // CONTROL ONE: the page door still resets it, which is what v10.05 shipped
+       // and what this build must not have broken.
+       var B=press('KeyE');
+       if(B&&!B.none&&!B.day)
+         bad.push('control: the sector page door no longer resets the surface to day either, so this build has broken the promise instead of extending it');
+       // CONTROL TWO, THE ONE THAT MATTERS: a night he CHOSE and ascended from the
+       // page must still be night, or the default has become a rule.
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ var g1=__state(); if(g1&&!g1.over){ g1.player.downed=false; __endRaid('abandon'); } }catch(_1){}
+       P2.cond='night';
+       startRaid();
+       if(isDay())
+         bad.push('control: a night he chose on the sector page and ascended from the page came up as day, so this build has taken his choice away rather than giving him the default back');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ var sm2=document.getElementById('sectormodal'); if(sm2) sm2.classList.remove('on'); }catch(_m2){}
+       try{ P2.cond=keepCond; saveProfile(); }catch(_c){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ __showScreen('hub'); }catch(_h){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.60',what:'an Ammo Box bought from the Peddler puts its rounds in the reserve where they can be used, not a brick in the backpack where nothing can touch it, and the line says how many; an ordinary purchase still goes to the backpack and a full backpack no longer refuses ammunition (2026-09-08 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
+     if(typeof mkPeddler!=='function'||typeof pedBuy!=='function') return 'SKIP: no Peddler in this build';
+     if(!(ITEMS&&ITEMS.ammobox&&ITEMS.ammobox.use==='ammo'&&ITEMS.ammobox.amt>0)) return 'SKIP: this build has no Ammo Box to buy';
+     var bad=[], P2=__P(), keepC=P2.credits;
+     var WANT=ITEMS.ammobox.amt;      // the box own count, so a retune moves this check with it
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       var pd=mkPeddler(p.x+40,p.y,g.map);
+       pd.stock=[{k:'ammobox',price:171,sold:false},{k:'medkit',price:20,sold:false},{k:'ammobox',price:171,sold:false}];
+       g.trade=pd; g.hotAssign={}; g.hotAuto={}; g.bag=[];
+       P2.credits=5000; p.reserve=0;
+       // THE FINDING: he is dry, and he buys the box that says it refills a magazine.
+       g.msg=''; pedBuy(0);
+       if((p.reserve|0)!==WANT)
+         bad.push('an Ammo Box bought at the stall put '+(p.reserve|0)+' rounds in the reserve and not the '+WANT+' it carries: he paid at the moment he had nothing to shoot with and the reserve did not move');
+       if(g.bag.indexOf('ammobox')>=0)
+         bad.push('the bought Ammo Box is sitting in the backpack, where the belt use verb falls straight past it without a word, so it is a brick he cannot spend');
+       var m1=String(g.msg||'');
+       if(m1.indexOf('backpack')>=0)
+         bad.push('the purchase line says the ammunition went into the backpack: "'+m1+'"');
+       if(m1.indexOf(String(WANT))<0)
+         bad.push('the purchase line does not say how many rounds he got: "'+m1+'"');
+       // CONTROL ONE: an ordinary item still goes to the backpack, so this build
+       // has not simply stopped the stall delivering anything.
+       g.msg=''; pedBuy(1);
+       if(g.bag.indexOf('medkit')<0) bad.push('control: an ordinary purchase no longer arrives in the backpack at all');
+       // CONTROL TWO: and a backpack with no room left must not refuse him his
+       // ammunition, since rounds in the reserve take no room in a backpack.
+       p.reserve=0;
+       var cap=PACKCAP[P2.pack], guard=0;
+       while(bagWeight()+1<=cap&&guard++<400) g.bag.push('scrap');
+       g.msg=''; pedBuy(2);
+       if((p.reserve|0)!==WANT)
+         bad.push('with the backpack full the stall refused him ammunition: the reserve reads '+(p.reserve|0)+' and the line said "'+(g.msg||'')+'", though rounds take no room in a backpack');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz){ gz.trade=null; if(gz.bag) gz.bag.length=0; gz.hotAssign={};
+         if(gz.player) gz.player.reserve=0; } }catch(_a){}
+       try{ P2.credits=keepC; saveProfile(); }catch(_c){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.59',what:'the open Undercroft backpack stops the floor: standing on the lift with it open, the key that starts a raid does nothing and no station is armed underneath, while with the backpack shut the same key still sends him up (2026-09-08 audit of the unlooked-at regions)',
+   run:function(){
+     if(!(window.__hubEnter&&window.__hb&&window.__keys&&window.__showScreen&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot walk the floor';
+     if(typeof updateHubWorld!=='function'||typeof hubBagOpenSet!=='function') return 'SKIP: this build has no floor update or no Undercroft backpack';
+     var bad=[];
+     function stand(bagOpen){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ var g0=__state(); if(g0&&!g0.over){ g0.player.downed=false; __endRaid('abandon'); } }catch(_0){}
+       __showScreen('hub'); __hubEnter();
+       var HBx=__hb(); if(!HBx||!HBx.stations) return {none:'no floor to stand on'};
+       var lift=null, i;
+       for(i=0;i<HBx.stations.length;i++) if(HBx.stations[i].id==='lift') lift=HBx.stations[i];
+       if(!lift) return {none:'this build has no lift to stand on'};
+       var K=__keys(), k;
+       for(k in K) delete K[k];
+       HBx.player.x=lift.x; HBx.player.y=lift.y; HBx.eLock=false;
+       hubBagOpenSet(!!bagOpen);
+       K.KeyR=1;
+       var started=false, j;
+       for(j=0;j<6&&!started;j++){
+         updateHubWorld(0.05);
+         try{ if(window.__screen&&window.__screen()==='raid') started=true; }catch(_s){}
+         try{ var gg=__state(); if(gg&&gg.player&&!gg.over) started=true; }catch(_g){}
+       }
+       for(k in K) delete K[k];
+       var near=HBx.near?HBx.near.id:null;
+       hubBagOpenSet(false);
+       return {started:started,near:near,lock:!!HBx.eLock};
+     }
+     try{
+       // CONTROL FIRST: backpack shut. The key MUST send him up, or a quiet floor
+       // below would only say this check cannot drive a station at all.
+       var C=stand(false);
+       if(!C) return 'SKIP: no floor to stand on';
+       if(C.none) return 'SKIP: '+C.none;
+       if(!C.started) return 'SKIP: with the backpack shut the key did not start a raid, so this check cannot drive the lift and proves nothing';
+       // THE FINDING: the same key, the same spot, with the backpack open.
+       try{ var g1=__state(); if(g1&&!g1.over){ g1.player.downed=false; __endRaid('abandon'); } }catch(_1){}
+       var A=stand(true);
+       if(A.none) return 'SKIP: '+A.none;
+       if(A.started)
+         bad.push('reading the backpack on the lift and pressing the ascent key started a raid from behind the panel: no sector page, no day reset, no question about what he was taking up, and the prompt that would have warned him is painted over by the panel he is looking at');
+       if(A.near)
+         bad.push('with the backpack open the floor still had him standing on the '+A.near+' station, so every key that station answers is live underneath the panel');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ hubBagOpenSet(false); }catch(_b){}
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ __showScreen('hub'); }catch(_h){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.58',what:'a weather pinned in Settings stops asking to change: with the turn clock expired the picker is not called at all, instead of thirteen seeded draws every frame for the rest of the raid, while an unpinned weather in the same state still asks and still turns (2026-09-06 in-raid audit, developer-facing)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';

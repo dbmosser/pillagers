@@ -1,0 +1,44 @@
+## v12.61 - QUICK ASCENT STARTS AT DAY LIKE THE OTHER DOOR DOES
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+Verified by reading at v12.60.
+
+WHAT IT WAS. His answer 24 is day by default, every ascent. The line that keeps
+that promise lives inside the lift's E act, the one that opens the sector page,
+and nowhere else in the game.
+
+The lift has two doors. E opens the page. R is quick ascent, and the floor's own
+sign advertises it. So pick night on the page, ascend, come back down, and press
+R: the surface is still night, because nothing on that path ever names day. The
+ground palette, the lamps, the night XP multiplier and the night flag on the run
+record all follow it, and nothing on screen says a word before the raid loads. A
+night you chose once follows you up every time until you happen to open the page
+again.
+
+v10.05 shipped that promise and its check drives the E door only, which is why
+this has been true underneath a green check ever since.
+
+THE BUILD. One named reset, used by both doors, so they cannot drift apart
+again. The E act calls it where its two lines used to be, and quick ascent calls
+it before it commits the kit.
+
+WHAT IT DOES NOT DO. It does not take the choice away. A night you pick on the
+page and ascend from the page is still night, because the page's own ascend runs
+after your choice rather than before it. The default coming back is the point;
+overriding you would be a different and worse bug, and the check's third arm is
+there to catch me doing it.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The bot never uses the lift, and
+no dial moves.
+
+MEASURED. Check 12.61 drives both doors through the real floor update rather
+than calling their actions directly. It sets the surface to night, presses the
+quick ascent key, and requires the raid to come up at day. The first control
+presses the page key instead and requires the same, so this build cannot pass by
+breaking what v10.05 fixed. The second control is the one that matters: a night
+chosen and ascended from the page must still be night.
+
+Not verified: the keys are set rather than sent as keyboard events, which the
+floor reads the same way; it does not read the ground palette or the lamps, only
+the flag they all follow; and it does not cover the restore code path, which
+writes the same field from a pasted save.

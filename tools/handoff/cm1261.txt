@@ -1,0 +1,23 @@
+v12.61: quick ascent starts at day like the other door does
+
+Your answer 24 is day by default, every ascent. The line that keeps that
+promise lives inside the lift's E act, the one that opens the sector page, and
+nowhere else in the game.
+
+The lift has two doors. E opens the page, and R is quick ascent, which the
+floor's own sign advertises. So pick night on the page, ascend, come back down
+and press R: the surface is still night, because nothing on that path ever
+names day. The ground, the lamps, the night bonus and the run record all follow
+it, and nothing on screen says a word. A night you chose once follows you up
+every time until you happen to open the page again.
+
+v10.05 shipped that promise and its check drives the E door only, which is why
+this has been true underneath a green check ever since.
+
+One named reset now, used by both doors. It does not take the choice away: a
+night you pick on the page and ascend from the page is still night, and the
+check's third arm is there to catch me if I ever break that.
+
+Check 12.61 drives both doors through the real floor update; fails on v12.60.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

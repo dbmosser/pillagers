@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.58';
+var VER='12.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.58';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.58';
+var WHATSNEW_VER='12.61';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1387,6 +1387,9 @@ var WHATSNEW=[
   'Q MOVES THE BELT AS WELL AS YOUR HAND. Choosing a different grenade used to leave the tactical belt highlighting the cell you were no longer holding, so the caption named one grenade and the trigger threw another.',
   'WALKING THROUGH ANOTHER EXTRACTION POINT NO LONGER ABANDONS YOUR OWN. The game follows one point at a time, and standing in a second open one used to move everything onto it: the banner, the prompt, the approach pings and the last-seconds warning, while the extraction you had already called left without you.',
   'A WEATHER YOU PINNED IN SETTINGS STOPS ASKING TO CHANGE. It could not change, so it asked thirteen times a frame for the rest of the raid. Nothing on screen showed it, and it was quietly spoiling every measurement I took with the weather held still.',
+  'THE OPEN BACKPACK STOPS THE FLOOR. Reading it in the Undercroft used to leave every station live underneath: standing on the lift and pressing R started a raid from behind the panel, with no sector page, no day reset and no question about what you were taking up.',
+  'AN AMMO BOX FROM THE PEDDLER ACTUALLY GIVES YOU ROUNDS. It went into your backpack, where nothing in the game can use it, so you paid at the moment you were dry and got a brick. It goes into your reserve now, like every other box in the game, and the line says how many.',
+  'QUICK ASCENT STARTS AT DAY LIKE THE OTHER DOOR DOES. Pressing R at the lift used to inherit whatever surface you chose last raid, so a night you picked once followed you up every time until you opened the sector page again.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -9182,9 +9185,21 @@ function pedBuy(ix){
   if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+'.'); return; }
 
   var cap=PACKCAP[P.pack],wt=(ITEMS[st.k]?ITEMS[st.k].wt:1);
-  if(bagWeight()+wt>cap){ say('No room in the backpack for that.'); return; }
+  // v12.60, 2026-09-08 audit: AMMUNITION GOES WHERE AMMUNITION GOES. Every other
+  // path that hands him a box puts the rounds into the reserve, which is the one
+  // pool the spec asks for, and the box stops existing. This one pushed the key
+  // into the backpack, where nothing in the game can consume it: the belt use
+  // verb knows a throwable, a heal, a stim, armour and a gun, and falls past an
+  // ammo box without a word. He paid at the exact moment he had nothing to shoot
+  // with and got a brick. The weight test is skipped for it too, because rounds
+  // in the reserve take no room in a backpack, and a full backpack must not stop
+  // a man buying ammunition.
+  var _pAmmo=!!(ITEMS[st.k]&&ITEMS[st.k].use==='ammo');
+  if(!_pAmmo&&bagWeight()+wt>cap){ say('No room in the backpack for that.'); return; }
   P.credits-=st.price; saveProfile();
-  st.sold=true; G.bag.push(st.k); autoBelt(st.k); G.trade.traded=1;
+  st.sold=true; G.trade.traded=1;
+  if(_pAmmo){ var _pp=G.player; _pp.reserve=(_pp.reserve||0)+(ITEMS[st.k].amt||0); }
+  else { G.bag.push(st.k); autoBelt(st.k); }
   G.pedBought=(G.pedBought||0)+st.price;
   // v12.28, HIS NOTE: "I bought stuff from the peddler and it didn't show up in
   // my inventory including an auto rifle". autoBelt above claims a bought gun or
@@ -9193,7 +9208,9 @@ function pedBuy(ix){
   // so the rifle he paid for was on the belt and not in the backpack he opened.
   // The line says which surface it is on, as the found-gun line does.
   var _bk=0; if(G.hotAssign) for(var _bi in G.hotAssign) if(G.hotAssign[_bi]===st.k){ _bk=(+_bi)+1; break; }
-  say('Bought '+ITEMS[st.k].name+' for '+'$'+st.price.toLocaleString()+'. '+(_bk?('On your tactical belt, key '+_bk+'.'):'In your backpack.'));
+  say('Bought '+ITEMS[st.k].name+' for '+'$'+st.price.toLocaleString()+'. '+
+      (_pAmmo?((ITEMS[st.k].amt||0)+' rounds into your reserve.')
+             :(_bk?('On your tactical belt, key '+_bk+'.'):'In your backpack.')));   // v12.60: say where the rounds actually went
   // The purchase gets the same voice the find would have, v2.72. Buying a gun
   // from the Peddler chirped like picking up scrap while pulling the identical
   // gun from a crate rang like metal, and the difference was only which counter
@@ -27673,6 +27690,14 @@ function buildHub(){
   // console. acts maps key codes to the same functions the old stations called,
   // and E always fires the FIRST listed, so the muscle memory of "walk up,
   // press E" still does the most common thing at every station.
+  // v12.61, 2026-09-08 audit: DAY BY DEFAULT ON EVERY ASCENT, and this station
+  // has TWO doors out of it. The reset used to live inside the E act alone, so
+  // quick ascent inherited the surface he chose on the last raid, which is
+  // exactly what his answer 24 forbids. One named thing, used by both, so they
+  // cannot drift apart again.
+  function liftResetDay(){
+    if(P.cond!=='day'){ P.cond='day'; hubGround=null; saveProfile(); }
+  }
   var stations=[
     {id:'lift',x:350,y:105,r:48,label:'ENTER RAID!',sub:'to the surface',c:'#4de3d0',
 acts:{KeyE:['go up',function(){
@@ -27681,14 +27706,14 @@ acts:{KeyE:['go up',function(){
              // opens every time, even when only one map is offered.
              if(!mapOffered(FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)])) P.mapIx=firstOfferedMap();
              // v10.05, his answer 24: day by default, every ascent.
-             if(P.cond!=='day'){ P.cond='day'; hubGround=null; saveProfile(); }
+             liftResetDay();   // v12.61: the same reset the quick ascent below now makes
              renderSector(); openModal('sectormodal');
            }],
            // v6.18: quick ascent means skip the SCREEN, not discard what you packed.
            // This called startRaid directly and never set kitChosen, so the
            // standard-kit fallback fired and the loadout stayed in the vault. The
            // same fault as the ASCEND button at v6.11, in a second place.
-           KeyR:['quick ascent',function(){ commitKit(); ac(); startRaid(); }],
+           KeyR:['quick ascent',function(){ liftResetDay(); commitKit(); ac(); startRaid(); }],   // v12.61: day by default here too, which is his answer 24
            // v6.50: the terms moved here from the shop counter. They are hardship you
            // sign for extra pay on the NEXT RAID, so they belong on the station that
            // sends you up, not beside a counter with prices on it.
@@ -27832,6 +27857,18 @@ function hubModalOpen(){
   // behind it, and R at the lift started a raid under the title.
   var _ttl=document.getElementById('title');
   if(_ttl&&_ttl.classList.contains('on')) return true;
+  // v12.59, 2026-09-08 audit: AND THE BACKPACK, which is painted on the HUD
+  // canvas and is not a window at all, so nothing above could see it. The floor
+  // kept running underneath it: E, R, F and T still reached whatever station he
+  // was standing on and WASD walked him off it while he read. On the lift that
+  // meant R started a raid from behind a full-screen panel, with no sector page,
+  // no day reset and no loadout question, and with the prompt that would have
+  // warned him painted over by the panel itself. v11.50 closed one act and said
+  // in as many words that the others were not checked; v12.06 added the
+  // character screen here for exactly this reason. This is the last surface.
+  // Only the floor freeze asks this question, so nothing else changes: the key
+  // that closes the backpack has its own gate and still works.
+  if(typeof hubBagOpen!=='undefined'&&hubBagOpen) return true;
   return !!document.querySelector('.modal.on');
 }
 function updateHubWorld(dt){
@@ -29111,7 +29148,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.58: the last open line of the 2026-09-06 in-raid audit, and the only one on that list a player never sees. It is on the list because it corrupts MY numbers. The weather turn expires, the picker is asked for something different, and with the weather PINNED it can only ever answer with the pinned one; the guard loop asks it twelve times, gets the same answer twelve times, and returns without putting the clock forward. So the clock stayed expired and the whole thing happened again on the very next frame: thirteen seeded draws every frame from the first expiry to the end of the raid. Nothing on screen shows it, and that is exactly the danger, because it means every paired measurement I have run with a pinned weather was comparing two different seeded streams, which is the one thing a paired measurement exists to rule out. One line, drawing nothing itself and true by definition: a weather that cannot change has no turns to make. Check 12.58 counts the calls to the picker itself over sixty frames with the weather pinned and the clock expired, requiring none at all, with a control that an unpinned weather in the same state still asks and still turns; fails on v12.57.',
+  now:'v12.61: from the 2026-09-08 read-only audit, confirmed by a skeptic against the source. His answer 24 is day by default on every ascent, and the reset that keeps that promise lived inside the lifts E act, the one that opens the sector page, and nowhere else. The lift has TWO doors: E opens the page, and R is quick ascent, advertised on the floors own sign. So pick night on the page, ascend, come back down and press R, and the surface choice is still night, because nothing on that path ever names day: the ground palette, the lamps, the night XP multiplier and the run records night flag all follow it, and nothing on screen says a word before the raid loads. v10.05 shipped the promise and its check drives the E door only, which is why this has been true underneath a green check ever since. One named reset now, used by both doors, so they cannot drift apart again. Check 12.61 sets the surface to night, presses the quick ascent key through the real floor update, and requires the raid to start at day; a control opens the page door and requires the same, and a third arm requires a night deliberately chosen on the page and ascended from the page to still be night, so this build does not take his choice away; fails on v12.60.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

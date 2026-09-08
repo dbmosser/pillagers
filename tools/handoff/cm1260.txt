@@ -1,0 +1,26 @@
+v12.60: an Ammo Box from the Peddler actually gives you rounds
+
+Ammunition never lives in the backpack anywhere else in this game. Every other
+path that hands you a box puts the rounds straight into the reserve and the box
+stops existing. The Peddler was the one path that pushed the key into the
+backpack instead, and nothing in the game can consume it there: the belt use
+verb knows a throwable, a heal, a stim, armour and a gun, then falls past an
+ammo box and returns without a word.
+
+So you run dry, walk to the stall, and buy the thing whose description promises
+it refills a magazine. You pay at the exact moment you have nothing to shoot
+with and the reserve does not move. The toast says "In your backpack", so
+nothing tells you, and you buy it again.
+
+The rounds go into the reserve now and the line says how many. The weight test
+is skipped for ammunition, because rounds take no room in a backpack.
+
+I audited this function myself at v12.28 and wrote that it was sound. I checked
+that what he bought arrived somewhere; I never asked whether he could use it.
+
+Check 12.60 buys through the real purchase at a real stall with the reserve at
+zero, taking the count off the item's own record. Controls require an ordinary
+purchase to still reach the backpack and a full backpack not to refuse
+ammunition; fails on v12.59.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

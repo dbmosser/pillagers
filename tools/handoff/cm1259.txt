@@ -1,0 +1,26 @@
+v12.59: the open backpack stops the floor
+
+From the 2026-09-08 audit of the regions nobody had looked at. It is the worst
+thing on that list and the third time this shape has turned up.
+
+The floor freezes under a panel by asking one question, and the Undercroft
+backpack is not one of the things that question knows about, because it is
+painted onto the HUD canvas rather than being a window. So the floor kept
+running underneath it: E, R, F and T still reached whatever station you were
+standing on, and WASD walked you off it while you read.
+
+On the lift that means standing on the pad, pressing I to check your packing,
+and pressing R starts a raid from behind a full-screen panel. No sector page,
+no day reset, no question about your loadout or the freebie kit, and the prompt
+that would have warned you painted over by the panel you are reading. The
+lift's act calls commitKit, so your stash moves too.
+
+v11.50 closed one act and said the others were unchecked. v12.06 added the
+character screen for the same reason. This is the last surface.
+
+Check 12.59 stands him on the lift and steps the floor with its own update. The
+control runs first with the backpack shut and requires the key to start a raid;
+the finding arm opens it and requires no raid and no station under him; fails
+on v12.58.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
