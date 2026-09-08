@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.40';
+var VER='12.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.40';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.40';
+var WHATSNEW_VER='12.55';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1369,6 +1369,21 @@ var WHATSNEW=[
   'EXTRACTING WITH A GUN IN EACH HAND LEAVES A GUN IN EACH HAND. Banking the better gun into slot 1 used to leave slot 2 naming the same gun, so the next raid came up with an empty second slot and a gun you still owned quietly unslotted.',
   'A GUN YOU DIED WITH IS NOT COMING UP WITH YOU. A death that took your sidearm left gun 2 still naming it, and the last screen before the lift told you it was going up in your hands. The slot is emptied now, and that screen makes the same test the deploy makes.',
   'THE MAN YOU HIRED STOPS PICKING UP THE MEN SHOOTING AT YOU. A crew number is not a side: your hire shares one with about half the map, so a downed hostile carrying that number used to be worth breaking off your job for. He still picks up anyone who has thrown in with you.',
+  'AN EMPTY CELL SPENDS NOTHING FROM ANOTHER CELL. The G key on a cell you had nothing in used to quietly walk to the next grenade you did have and throw that one, while the belt still named the cell you pressed. It names what is missing and puts your gun up. Q still cycles.',
+  'A GUN YOU STOW KEEPS ITS ROUNDS. Putting a gun in your backpack used to throw away the magazine in it, and taking one back out handed you half a magazine that no reserve paid for. A gun you find in the field still comes up on half a magazine.',
+  'AIMING AND WADING NO LONGER LEAVE A SPRINT TRAIL. Shift held while you aimed, or while you waded, laid scent behind a man who was not sprinting, and everything on patrol within 170 units follows that scent. You were being hunted along a trail you never made.',
+  'THE EXTRACTION WINDOW NEVER OUTLIVES THE CLOCK. An extraction arriving in the last seconds of a raid used to announce three seconds on every readout and then let the timer kill you with a second still showing. It now says what the raid actually has left.',
+  'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, an extraction you had already called for stopped arriving, its window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
+  'AUTO-JOG STOPS WHEN YOU GO DOWN. It used to survive the whole time you were on the floor, so the moment you got up again you walked off toward the cursor at 40 health with no key held, which was the character walking off by himself.',
+  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
+  'ONE WORD PER THING, ON THIS CARD TOO. Five older entries here still used words you retired: the extraction called a vehicle in three places, and the tactical belt called by its old name in one. They use your words now, and a check holds the whole card to the list from here on.',
+  'A HOWLER SHELL NO LONGER REACHES THROUGH A WALL. A shell bursting in the street took about twenty health off you standing well inside a building, with the hit ring pointing at something you could not see. Walls stop the blast now, exactly as they stop a frag.',
+  'BREAKING A CRIER LINE OF SIGHT NOW ACTUALLY CANCELS ITS ALARM. The cancel cleared the windup and then fired the alarm on the very same frame, so hiding never once called one off. The three seconds have to be unbroken now, which they always claimed to be.',
+  'A HOWLER NO LONGER SHELLS ITS OWN CRATER. It heard its own impact, took the crater for a fresh report, and mailed another shell to it, and that one wound it up again. One noise from you became a barrage of two to four after you had gone quiet.',
+  'A PILLAGER WHOSE REACH IS INSIDE HIS OWN BLAST NO LONGER THROWS A CHARGE. One gun in nine has a shorter reach than the radius of a frag, and the man carrying it had a throwing window one unit wide, entirely inside his own explosion.',
+  'A MACHINE SEARCHING FOR YOU CAN NO LONGER GET STUCK FOR THE REST OF THE RAID. When one lost you it picked a point to search, never checked that anything could stand there, and had no way out except arriving. A point inside a wall held it against that wall until the raid ended.',
+  'A PILLAGER CALLING EXTRACTION NOW SIZES THE SIEGE ON THE BAG YOU ARE ACTUALLY HOLDING. His call kept whatever figure your own earlier call at that point had left behind, so riding out on him could bring the siege your bag from half an hour ago deserved.',
+  'AN IMPORTED GHOST FIGHTS AT HIS OWN GUN RANGE. He was handed the gun from the report he came out of but kept the engagement range of the body he arrived in, so he opened fire at a distance his rounds could not cross, or refused to open fire at one they could.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -1400,7 +1415,7 @@ var WHATSNEW=[
   'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT, the same as the resume button; it goes out with your run report.',
   'THE HOWLER DOES NOT SHELL THROUGH A ROOF: inside a building you are out of its reach until it comes in after you.',
   'THE RIGHT-CLICK MENU IN THE STASH IS DRAWN AT THE SIZE OF THE SCREEN IT OPENS OVER, at 4K and at every text size.',
-  'A HOLD YOU STARTED BEFORE THE EXTRACTION WINDOW SHUT FINISHES: keep holding E and the ship waits for you; let go and it is gone.',
+  'A HOLD YOU STARTED BEFORE THE EXTRACTION WINDOW SHUT FINISHES: keep holding E and the extraction waits for you; let go and it is gone.',
   'THE TACTICAL BELT DRAGS WITH THE BACKPACK CLOSED: a gun in your hands dragged off the belt goes into the backpack, and a key holding a gun moves to another key like anything else, in a raid and on the floor.',
   'A BELT KEY TAKES HALF THE STACK: put a stack on a key and half of it comes with you, and the key shows how many; the right-click menu still packs an exact number.',
   'GUNS DRAG LIKE ANY OTHER ITEM. Drag a gun off the rack onto a tactical belt key or into the backpack and it comes with you; a gun on the figure takes the key and stays in your hands.',
@@ -1424,7 +1439,7 @@ var WHATSNEW=[
   'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 140 at the centre, was 100; to you 98 at the centre, was 72. The fuse is still 1.1 seconds.',
   'THE SCAV PISTOL IS HALF PRICE IN THE SHOP: 1800 credits, down from 3600. Say the number you want and it moves again.',
   'HOLD THE CRAFT BUTTON FOR A SECOND. The button fills as you hold it and the work happens when it is full. Let go early and nothing is spent.',
-  'THE BOARDING WINDOW SAYS EXTRACT NOW. It used to say EXTRACTION IN PROGRESS, which reads as something happening without you rather than the one moment you have to be in the ring holding E.',
+  'THE EXTRACTION WINDOW SAYS EXTRACT NOW. It used to say EXTRACTION IN PROGRESS, which reads as something happening without you rather than the one moment you have to be in the ring holding E.',
   'A BRAND NEW CHARACTER HAS A NAME. Before this, someone playing for the first time had none until the game had saved and loaded once, and the character screen read "undefined" beside their first raid.',
   'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
   'THE [+] ON A COLLAPSED PILLAGER BOARD EXPANDS IT AGAIN. The resize grip had grown over the glyph on the folded board, so the click began a resize you could not see and the board stayed shut.',
@@ -1436,10 +1451,10 @@ var WHATSNEW=[
   'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
   'SAVING A MAN YOU SHOT NO LONGER PINS HIS LATER DEATH ON YOU. If you downed a pillager, then picked him up, and a crawler killed him later, the game still called it your kill: a contract tick, a grudge, the lot. Once you have saved him, only you can make his death yours again.',
   'THE XP ON THE OUTCOME CARD IS THE XP YOU GET. A night run, hard weather or a dose in your blood pays more, and the game banked that bonus but the card printed the plain figure, so the XP line, the total and the distance to the next reward were all off. The card now prints exactly what is banked.',
-  'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and boarded an earlier ship, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
+  'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and took an earlier extraction, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
   'WIRT SELLS YOU THE THING ON THE COUNTER. If the Limited Time Offer rolled over while you were reading it, Buy used to take your money and hand you the next offer instead. You get the one that was named and priced when you clicked.',
   'A GRENADE ON A BELT KEY WORKS NOW. Putting a Frag Charge, Smoke or Decoy on a tactical belt key gave you a dead key: it read x0, the trigger fired your gun instead, and it deleted the working grenade cell. The key you choose is now the grenade.',
-  'EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. Four never did: the storm telegraph and the extraction pulse, touchdown and last call. They do now.',
+  'EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. Four never did: the storm telegraph and the extraction pulse, the arrival and last call. They do now.',
   'THE UNDERCROFT HAS ITS SCREEN BACK. The floor was painting its heading, its [E] STATION prompt, the key list, the H controls panel and the line that teaches the controls, and then erasing all of it in the same frame. It has been invisible for a long time, and H did nothing. It is all there now.',
   'THE STORM WARNING RING SAYS LIGHTNING INCOMING, with the seconds left, right at the circle.',
   'LIGHTNING NO LONGER STRIKES INSIDE A BUILDING. A strike that would have landed under a roof lands just outside its nearest wall instead.',
@@ -1505,7 +1520,7 @@ var WHATSNEW=[
   'THE UNDERCROFT READS PROPERLY NOW. The station names were painted into the room before the room went dark, so the darkness went over them as well; they are drawn on top of it now and are no longer see-through. The controls line and the line under each station prompt came up with them. THE STATION WITH THE RACKS IS NOW CALLED FASHION, everywhere.',
   'YOU ARE MUCH EASIER TO FIND ON THE MAP. Your marker was eight pixels across and was the only one that did not grow when the map did. It is about twice the size now, with a halo under it and a longer line showing which way you are facing.',
   'THE RESIZE GRIP MOVES TO THE SIDE THAT HAS ROOM. A panel against the right edge of the screen had its drag corner jammed into that edge with eight pixels of travel, so it could not be made bigger. Those panels grip on their left now.',
-  'X NO LONGER SWAPS WEAPONS. The hotbar does that job, so the key is gone along with its legend lines. Your stowed gun and its ammo are still shown, just without a key in front of them. On a controller, X is still search.',
+  'X NO LONGER SWAPS WEAPONS. The tactical belt does that job, so the key is gone along with its legend lines. Your stowed gun and its ammo are still shown, just without a key in front of them. On a controller, X is still search.',
   'AND THE HUM STOPS WHEN YOU PAUSE. Same fault as the one below, met the common way: the room tone is turned down inside the part of the frame that a pause switches off, so it used to hold its level under the pause menu. It ducks now and comes back when you resume.',
   'THE HUM STOPS WHEN THE RAID DOES. The low bed under a raid is five voices that never stop, turned down rather than switched off, and the only thing turning them down ran inside the raid itself. So it froze at its last level when you died and kept going through the card and the Undercroft, loudest of all if something was on top of you at the end.',
   'MACHINES CAN FIND THE DOOR NOW. One inside a building could not work out how to get out to you, so it bumped about indoors while you stood outside untouched. Nineteen buildings across the two maps were traps like that and eleven still are, but if something is in there with you it is far likelier to come.',
@@ -8513,7 +8528,16 @@ function packScatter(){
     if(e.scattered) continue;
     e.scattered=1;
     var a=(n++)*1.05+rnd(-0.3,0.3),r=rnd(90,240);
-    e.tx+=Math.cos(a)*r; e.ty+=Math.sin(a)*r;
+    // v12.53, 2026-09-07 audit: THE SCATTER PICKS SOMEWHERE A BODY CAN STAND.
+    // This offset was never tested for anything, so it could land inside a
+    // locked shell, a ruin block, a wreck or past the world edge, and the state
+    // it belongs to has only one exit, arriving. searchSector already tests its
+    // own points this way; this one never did. If the scattered point is not
+    // open the machine keeps the sighting it actually had, which is always a
+    // place a body was standing.
+    var _sx=e.tx+Math.cos(a)*r, _sy=e.ty+Math.sin(a)*r;
+    var _sw=(G.map.cols*G.map.cw), _sh=(G.map.rows*G.map.ch);
+    if(_sx>44&&_sy>44&&_sx<_sw-44&&_sy<_sh-44&&spotFree(G.map,_sx,_sy,12)){ e.tx=_sx; e.ty=_sy; }
   }
 }
 // ============================================================ THE LISTENER
@@ -11685,11 +11709,22 @@ function throwFrom(tk,cookT){
 }
 // The instant path, unchanged in behaviour and still what the gamepad and any
 // non-held use routes through.
+// v12.41, 2026-09-07 audit: AN EMPTY CELL SPENDS NOTHING FROM ANOTHER CELL.
+// Both use verbs below used to call cycleThrow when the selected cell was
+// empty, which walks the hidden selector on to the next kind you are carrying
+// and throws or cooks THAT one, while the belt highlight and the caption still
+// name the cell you pressed. v12.08 closed this on the mouse trigger and its
+// DESIGN entry recorded the key and the pad as not verified; this is that line.
+// Q still cycles on purpose. A use key never does.
+function emptyThrowCell(tk){
+  setHot(gunCell());
+  if(!G.sim) say('No '+((ITEMS[tk]&&ITEMS[tk].name)||'throwable')+' left. '+((G.player.wep&&G.player.wep.name)||'Your gun')+' up.');
+}
 function doThrow(){
   var p=G.player;
   if(p.downed||p.roll>0) return;
   var tk=THROWKEYS[G.tsel];
-  if(G.pouch[tk]<=0){ cycleThrow(); if(G.pouch[THROWKEYS[G.tsel]]<=0) return; tk=THROWKEYS[G.tsel]; }
+  if(G.pouch[tk]<=0){ emptyThrowCell(tk); return; }
   G.pouch[tk]--; G.tel.thr[tk]++;
   throwFrom(tk,0);
 }
@@ -11700,7 +11735,8 @@ function startCook(){
   var p=G.player;
   if(p.downed||p.roll>0) return false;
   var tk=THROWKEYS[G.tsel];
-  if(G.pouch[tk]<=0){ cycleThrow(); if(G.pouch[THROWKEYS[G.tsel]]<=0) return false; tk=THROWKEYS[G.tsel]; }
+  // v12.41: the cook takes the same rule as the throw. See emptyThrowCell above.
+  if(G.pouch[tk]<=0){ emptyThrowCell(tk); return false; }
   G.pouch[tk]--; G.tel.thr[tk]++;
   p.cooking=1; p.cookT=0; p.cookKind=tk;
   if(!G.sim) blip('clank');
@@ -11841,9 +11877,34 @@ function howlerImpact(SH){
     G.puffs.push({x:SH.tx,y:SH.ty,t:0,life:.5,c:'#ff9a5c',r:40}); }
   G.shake=Math.max(G.shake,6);
   flash(SH.tx,SH.ty,220,'#ff9a5c',.4);
+  // v12.51, 2026-09-07 audit: A HOWLER DOES NOT TAKE ITS OWN CRATER FOR A FRESH
+  // REPORT. This impact is a noise of 480 and every listening machine hears it,
+  // which is right and is what pulls a room to a burst. The machine that FIRED
+  // it heard it too: the bearing it was shooting at was overwritten with the
+  // crater and its eight second clock wound back to full, so when its cooldown
+  // ran out it shelled its own crater, and that impact wound it up again. One
+  // report became a barrage of two to four, every shell after the first landing
+  // on a man who had already gone quiet, which is the counterplay this machine
+  // was built around. Only the three fields the hearing sweep writes are put
+  // back, and only for the machine that fired: everything else on the map hears
+  // this exactly as before, and the firing Howler is still turned toward the
+  // crater by the same ping, which is what used to end the barrage on its own.
+  var _shBy=SH.by, _shT=null, _shX=null, _shY=null;
+  if(_shBy){ _shT=_shBy.hearT; _shX=_shBy.heardX; _shY=_shBy.heardY; }
   ping(SH.tx,SH.ty,480,false,false,'robot','fire');
+  if(_shBy){ _shBy.hearT=_shT; _shBy.heardX=_shX; _shBy.heardY=_shY; }
   var dp=dist(p,{x:SH.tx,y:SH.ty});
-  if(dp<R&&!p.downed&&!(_onRoof&&underSameRoof(_roof,p.x,p.y)))
+  // v12.49, 2026-09-07 audit: A BLAST STOPS AT A WALL, which is the rule the
+  // frag four lines above has always followed. The three gates here were the
+  // distance, being down already, and the v10.63 roof, and that roof gate is
+  // inert whenever the shell lands in the open, so a burst in the street reached
+  // ninety units through masonry: duck inside with a shell already in the air
+  // and it lands where it was aimed, outside, and takes about twenty health off
+  // a man standing forty units behind a solid wall, with the hit ring pointing
+  // at something he cannot see. The roof rule is untouched and still does its
+  // own job, which is a shell landing ON a building sparing the room below.
+  if(dp<R&&!p.downed&&!(_onRoof&&underSameRoof(_roof,p.x,p.y))&&
+     losClear(SH.tx,SH.ty,p.x,p.y,G.map.segs))
     damagePlayer(SH.dmg*(1-dp/R)+6,'howler','HOWLER',SH.tx,SH.ty);
   // v10.63: the roof covers everyone under it, not only him, or a shell on a
   // roof would still clear the room of pillagers sheltering in it.
@@ -11851,7 +11912,10 @@ function howlerImpact(SH){
     var e=G.ents[i]; if(e.kind==='howler') continue;
     if(_onRoof&&underSameRoof(_roof,e.x,e.y)) continue;
     var de=dist(e,{x:SH.tx,y:SH.ty});
-    if(de<R+e.r){
+    // v12.49: and the same rule for everyone else in the street, as the frag
+    // already does for them. A wall that stops it reaching him stops it
+    // reaching a pillager sheltering behind the same wall.
+    if(de<R+e.r&&losClear(SH.tx,SH.ty,e.x,e.y,G.map.segs)){
       e.hp-=Math.max(6,SH.dmg*0.8*(1-Math.max(0,de-e.r)/R)); e.hitT=.2;
       if(e.kind==='raider'&&!e.downed) e.alert=2.5;
     }
@@ -12273,6 +12337,16 @@ function damagePlayer(amt,src,srcName,sx,sy){
     // for, and the clear on the next frame still frees that press.
     p.healLock=!!keys['KeyF'];
 p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null;
+    // v12.46, 2026-09-07 audit: AND THE AUTO-JOG STOPS WHEN HE DOES. It is
+    // cleared in exactly one place, by a movement key, and that line sits below
+    // the early return that runs while he is on the floor, so nothing could
+    // clear it while he was down. This branch already clears the prep, the heal,
+    // the pull and the cook; the flag belonged with them. Without it the first
+    // standing frame after a revive walked him off toward the cursor at 40
+    // health with no key held, which is his v7.94 note in the one state nobody
+    // looked at, and worse with a hired merc: he presses nothing at all, the
+    // merc pulls him up, and he wanders away by himself.
+    if(p.autoJog){ p.autoJog=false; if(!G.sim) say('Auto-jog off.'); }
   (function(){
     if(G.sim) return;
     var near=null,nd=1e9;
@@ -13022,6 +13096,7 @@ function grantLoot(ct,keys,delay0){
         if(p.wep.id!=='fists'&&!p.wepIssued){
           if(ITEMS['gun_'+p.wep.id]){
             G.bag.push('gun_'+p.wep.id);
+            stowRounds(p.wep.id,p.ammo);   // v12.42: the gun a field pickup displaces keeps its load
             if(!G.sim&&p.wepFromArmory){
               var oi=P.weapons.indexOf(p.wep.id);
               if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(p.wep.id); }
@@ -13110,6 +13185,25 @@ function tickRegen(dt){
 // deployed with and gunB the other one, mapped through p.swapped the way
 // hotbarSlots maps them. The gun in hand is always p.wep; if that is the one
 // bagged, the other gun comes up and keeps its own numbered slot.
+// v12.42, 2026-09-07 audit: A STOWED GUN KEEPS ITS ROUNDS. Loaded rounds live
+// only in p.ammo and p.secAmmo, and the backpack holds a bare key string with
+// nowhere for a number, so a gun put in the bag left its magazine nowhere at
+// all and came back with a fresh half magazine that no reserve paid for. Stow a
+// full gun and the load vanished; stow an empty one and half a magazine
+// appeared, as often as you liked. The rounds ride here between the two verbs.
+// Per gun id, because the bag holds keys and not instances: two identical
+// rifles in there are already indistinguishable, so first in first out is the
+// truest answer that exists. A gun FOUND in the field has no entry and still
+// comes back on half a magazine, which is his rule and is untouched.
+function stowRounds(id,n){
+  var m=(G.stowAmmo=G.stowAmmo||{});
+  (m[id]=m[id]||[]).push(Math.max(0,n|0));
+}
+function takeRounds(id,mag){
+  var m=G.stowAmmo, q=m&&m[id];
+  if(q&&q.length) return Math.min(mag,Math.max(0,q.shift()|0));
+  return Math.ceil(mag/2);
+}
 function bagHeldGun(slot){
   var p=G&&G.player; if(!p||p.downed||G.over) return false;
   var sw=!!p.swapped;
@@ -13119,6 +13213,7 @@ function bagHeldGun(slot){
   if(issued){ say(g.name+' is issued kit; it stays in your hands.'); return false; }
   if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in a bag.'); return false; }
   G.bag.push('gun_'+g.id);
+  stowRounds(g.id,isHand?p.ammo:p.secAmmo);   // v12.42: the load goes with it
   if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); } }
   if(isHand){
     p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0;
@@ -13212,10 +13307,13 @@ function equipFromBag(ix,slot){
     // reads your hands only - so the copy dodged the death rule that is meant
     // to pay for carrying a gun at all. It goes back where it lives.
     else if(oldArm&&P.weapons.indexOf(oldW.id)>=0) say(oldW.name+' is yours; it goes back to the armoury.');
-    else G.bag.push('gun_'+oldW.id);
+    else { G.bag.push('gun_'+oldW.id); stowRounds(oldW.id,toSec?p.secAmmo:p.ammo); }   // v12.42: and the displaced gun keeps its load too
   }
-  if(toSec){ p.sec=g; p.secAmmo=Math.ceil(g.mag/2); p.secIssued=false; p.secFromArmory=false; }
-  else { p.wep=g; p.ammo=Math.ceil(g.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; }
+  // v12.42: what it came in with, if this is a gun that was stowed; half a
+  // magazine only for one found in the field, which is the rule in the README.
+  var _rd=takeRounds(gk,g.mag);
+  if(toSec){ p.sec=g; p.secAmmo=_rd; p.secIssued=false; p.secFromArmory=false; }
+  else { p.wep=g; p.ammo=_rd; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; }
   G.tel.weapon=p.wep.name;
   G.tel.gunsEquipped=(G.tel.gunsEquipped||0)+1;
   if(G.bagSel>=G.bag.length) G.bagSel=Math.max(0,G.bag.length-1);
@@ -13898,10 +13996,20 @@ function raiderThrow(e,foe,fd,dt){
   if(e.smkT!==undefined) e.smkT-=dt;
   // v12.20: the near edge of the band follows the blast radius (it was 180
   // against a 150 blast; at 190 he stood in his own charge), plus the scatter
-  // of the aim point below and his own body; and never above his reach, or a
-  // short-ranged pillager could never throw at all.
+  // of the aim point below and his own body.
+  // v12.52, 2026-09-07 audit, and this was my own mistake at v12.20: the cap I
+  // put on that edge so a short-ranged pillager could still throw pulled the
+  // edge back INSIDE the blast for the one gun in nine whose reach is shorter
+  // than it. A Riot Scattergun man reaches 187 against a safe edge of 242, and
+  // since both callers already require him to be inside his reach, the only
+  // distances he could throw from were 186.2 to 187.2: a band one unit wide,
+  // entirely within the radius of the charge he was throwing. Both goals of
+  // that line failed for him at once. The honest answer is the one the cap was
+  // avoiding: a man whose whole reach is inside his own blast does not throw.
   var _fR=(CFG.fragR===undefined?190:CFG.fragR);
-  if(fd<Math.min(_fR+52,(e.rng||520)-1)||fd>520) return false;
+  var _fNear=_fR+52;
+  if(_fNear>=(e.rng||520)) return false;
+  if(fd<_fNear||fd>520) return false;
   var ix=-1;
   for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
   if(ix<0) return false;
@@ -14182,7 +14290,18 @@ var nm=rr()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
     // never promise more than the raid clock has left, since saying thirty and
     // then killing him on the timer at twelve is a lie.
     if(z.hold===null||z.hold===undefined){
-z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30; z.holdMax=z.hold;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
+z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
+    // v12.44, 2026-09-07 audit: AND THE FLOOR OBEYS THE CLOCK. The comment above
+    // promises that the hold can never say more than the raid has left, and the
+    // three second floor broke that promise at the end of a raid: call with 27
+    // seconds left, which draws no warning because the warning only fires under
+    // 25, arrive with 2 on the clock, and all four readouts announced 3 while the
+    // timer ended the raid as a death two seconds later with a second still
+    // showing. Half a second is kept underneath so the window is never a zero
+    // that reads as no window at all; if that is all the raid has left then that
+    // is the truth, and an unwinnable second is better than a promised three.
+    if(CFG.raidSec>0&&z.hold>G.timeLeft) z.hold=Math.max(0.5,G.timeLeft);
+    z.holdMax=z.hold;
       // v4.17: HIS QUESTION TWO reads "the crowd at your extraction is the
       // map you woke on the way there, not the siege" - a claim measured long
       // ago on an older game. The instant the ship touches down, count every
@@ -14295,6 +14414,15 @@ function tickDowned(dt){
 // and a 30 units per second crawl; from the far side of a map that is not a
 // decision, it is a wait with an answer he already knows.
 function GIVEUP_HOLD(){ return 1.5; }
+// v12.47, 2026-09-07 audit: ONE TEST, TWO READERS. The rule below was written
+// into giveUpTick alone, so the overlay that offers the surrender knew nothing
+// about it and printed the prompt anyway: the key did nothing, the bar never
+// appeared, and no line said why. Both read this now.
+function surrenderBlocked(){
+  var p=G&&G.player; if(!p) return false;
+  return !!(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
+    G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r);
+}
 function giveUpTick(dt){
   var p=G.player;
   // HIS CONDITION, and the reason the key is safe to bind at all: while he still
@@ -14303,10 +14431,7 @@ function giveUpTick(dt){
   // The guard he did not ask for. This overlay already tells him that extracting
   // while downed is permitted, so a hand resting on the space bar must not throw
   // away a full bag in the one situation where being down ends well.
-  if(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
-     G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r){
-    p.giveT=0; return false;
-  }
+  if(surrenderBlocked()){ p.giveT=0; return false; }   // v12.47: the same test the overlay reads
   if(!keys['Space']){ p.giveT=0; return false; }
   p.giveT=(p.giveT||0)+dt;
   if(p.giveT<GIVEUP_HOLD()) return false;
@@ -14488,16 +14613,13 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // rule sprint itself has, so a held Shift while standing still changes nothing.
   if(_shHeld&&mg>0&&G.crouchTog&&!p.downed){ G.crouchTog=false; crouch=false; }
 var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
-  if(sprint&&mg>0){
-    G.prints=G.prints||[];
-    var _lpr=G.prints.length?G.prints[G.prints.length-1]:null;
-    if(!_lpr||dist(p,_lpr)>34){
-      // v8.85: mine, so the draw side can tell your own sprint trail from a
-      // pillager's. The AI that smells this list does not care either way.
-      G.prints.push({x:p.x,y:p.y,t:0,mine:1});
-      if(G.prints.length>40) G.prints.shift();
-    }
-  }
+  // v12.43, 2026-09-07 audit: THE SCENT GOES DOWN BELOW THE CANCELS NOW. It was
+  // laid here, above both of them, so Shift held while aiming or while wading
+  // put a sprint trail behind a man who was not sprinting: aiming speed, no
+  // stamina spent, the readout saying AIMING, and a line of scent going down
+  // anyway. Everything on patrol or investigating within 170 units smells that
+  // list, so he was hunted along a trail he never made, at the two moments he is
+  // slowest and least able to leave. Moved below, where sprint is final.
   if(p.ads) sprint=false;
   G.sprinting=sprint;
   // v8.37: RESTORED. v8.34 deleted this line as part of removing the carry
@@ -14511,6 +14633,19 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   var wading=inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset));
   if(wading) sprint=false;
   G.sprinting=sprint;
+  // v12.43: and here is the trail, reading the sprint flag AFTER the aiming and
+  // the deep-water cancels above have had their say. Same 34 units, same 40
+  // mark ceiling, same mine flag; only the moment it is asked has moved.
+  if(sprint&&mg>0){
+    G.prints=G.prints||[];
+    var _lpr=G.prints.length?G.prints[G.prints.length-1]:null;
+    if(!_lpr||dist(p,_lpr)>34){
+      // v8.85: mine, so the draw side can tell your own sprint trail from a
+      // pillager's. The AI that smells this list does not care either way.
+      G.prints.push({x:p.x,y:p.y,t:0,mine:1});
+      if(G.prints.length>40) G.prints.shift();
+    }
+  }
   var spd=CFG.pSpeed*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
   if(p.stimT>0) spd*=STIM_SPD;   // v11.83, HIS SPEC: a fifth more while the stim runs
   // "make character much slower". 0.55 was a shrug; deep water you are wading
@@ -14851,6 +14986,20 @@ if(!p.fired||p.wep.auto){
           spark(G.seal.x,G.seal.y,'#ffc04a',40,420);
         }
       }
+      // v12.45, 2026-09-07 audit: CUTTING OWNS THE KEY, NOT THE CLOCKS. This
+      // return skips the tail of updatePlayer, where the only recovery tick on
+      // the standing path lives and where the only real call to the extraction
+      // clocks lives. So the whole forty to a hundred and fifteen seconds of a
+      // cut ran with the health bar flat and the recovery clock not even
+      // advancing, and with every extraction clock stopped: an extraction already
+      // called for went no further, its window did not run, and no wave
+      // could arrive while he made the loudest noise in the game. The roll and
+      // the trade window carry both calls past their own returns for exactly
+      // this reason; this was the last early return that did not. No wantCall,
+      // as in those two: E belongs to the seal while he is cutting, so the
+      // clocks run and no pull of his own does.
+      tickRegen(dt);
+      tryExtractTick(dt);
       return;                       // cutting owns the key and your attention
     }
     if(!keys['KeyE']) G.sealNoise=0;
@@ -16644,7 +16793,7 @@ if(e.kind==='howler'&&e.hearT>0){
           // Wider scatter than the aimed shot: it is shooting at a report, not
           // at you, and the difference should be survivable.
           var _hs2=Math.min(190,_hd*0.20);
-          G.shells.push({mortar:1,x0:e.x,y0:e.y,
+          G.shells.push({mortar:1,x0:e.x,y0:e.y,by:e,   // v12.51: whose shell this is
             tx:e.heardX+rnd(-_hs2,_hs2),ty:e.heardY+rnd(-_hs2,_hs2),
             t:0,air:(CFG.howlerAir===undefined?2.1:CFG.howlerAir),
             dmg:e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)});
@@ -16861,6 +17010,11 @@ navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x);
 if(e.state==='alarm'){
         var ds=dist(e,p);
         if(sees){ e.markX=p.x; e.markY=p.y; }
+        // v12.50, 2026-09-07 audit: THREE CONTINUOUS SECONDS, not three added up
+        // over a whole alarm. The counter below was zeroed only when the alarm
+        // began, so a man who ducked behind three different walls for a second
+        // each had it cancel as though he had stayed hidden throughout.
+        if(sees) e.lost=0;
         if(!sees){ e.lost+=dt; if(e.lost>3){ e.state='patrol'; e.cd=0; e.wind=null; } }
         // flees, but at a speed a competent player can close or shoot
         // His note on run #14: "snitch too easy to kill". It was, and the reason was not
@@ -16876,11 +17030,17 @@ if(e.state==='alarm'){
         var jk=Math.sin(G.t*5.2+(e.jseed||0))*0.85;
         if(ds<300){ wantS=Math.atan2(e.y-p.y,e.x-p.x)+jk; moveToward(e,e.x+Math.cos(wantS)*80,e.y+Math.sin(wantS)*80,e.spd*.99,dt); }
         else { wantS=Math.atan2(p.y-e.y,p.x-e.x)+1.4+jk*0.6; moveToward(e,e.x+Math.cos(wantS)*60,e.y+Math.sin(wantS)*60,e.spd*.66,dt); }
-        e.wind-=dt;
+        // v12.50: AND THE CANCEL ABOVE ACTUALLY CANCELS. It clears the windup to
+        // null and nothing stopped the rest of this branch running in the same
+        // frame: null minus dt is a negative number, so the test below saw a
+        // windup at or below zero and fired the entire alarm, siren, mark, and
+        // every machine within 900 units, one frame after calling it off. Both
+        // lines now ask whether this is still an alarm at all.
+        if(e.state==='alarm') e.wind-=dt;
         // the windup is audible the whole way, rising
         e.windAcc=(e.windAcc||0)+dt;
         if(e.windAcc>0.45){ e.windAcc=0; sfx('charge',e.x,e.y); }
-        if(e.wind<=0){
+        if(e.state==='alarm'&&e.wind!==null&&e.wind!==undefined&&e.wind<=0){
           e.wind=null; e.state='patrol'; e.cd=rnd(4,7);
           sfx('alarm',e.x,e.y);
           ping(e.markX,e.markY,620,true,false,'robot','fire');
@@ -17111,7 +17271,7 @@ var _rdS=G.shells[_rdi];
         var _hty=_hSee?p.y:(e.ty===undefined?p.y:e.ty);
         if(e.cd<=0&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)&&!mortarRoofed(e,_htx,_hty)){   // v12.00: not through a roof
           var _hsc=Math.min(120,d*0.12);
-          G.shells.push({mortar:1,x0:e.x,y0:e.y,tx:_htx+rnd(-_hsc,_hsc),ty:_hty+rnd(-_hsc,_hsc),
+          G.shells.push({mortar:1,x0:e.x,y0:e.y,by:e,tx:_htx+rnd(-_hsc,_hsc),ty:_hty+rnd(-_hsc,_hsc),   // v12.51: whose shell this is
             t:0,air:(CFG.howlerAir===undefined?2.1:CFG.howlerAir),
             dmg:e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)});
           e.cd=4.2+rnd(0,1.6);
@@ -17306,8 +17466,26 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
     }
     else if(e.state==='investigate'){
       navSeek(e,e.tx,e.ty,e.spd*.75,dt); want=Math.atan2(e.ty-e.y,e.tx-e.x);
+      // v12.53, 2026-09-07 audit: AND IT GIVES UP ON A POINT IT CANNOT REACH.
+      // Arriving was the only way out of this state and there was no clock, so a
+      // point inside a wall or past the world edge held the machine for the rest
+      // of the raid, walking into the nearest face and orbiting it. The wander
+      // that re-rolls a target skips this state on purpose and the noise waker
+      // only re-points patrol and loot, so nothing else could ever free it.
+      // Same rule v12.07 gave the chase, one state along. The clock is per
+      // point, so a machine sent somewhere new starts it again, and twenty
+      // seconds is more than three times the longest honest walk here: the
+      // scatter reaches 240 units and the walk is at three quarters speed.
+      var _ig=Math.round(e.tx)+','+Math.round(e.ty);
+      if(e.invGoal!==_ig){ e.invGoal=_ig; e.invT=0; }
+      e.invT=(e.invT||0)+dt;
       if(dist(e,{x:e.tx,y:e.ty})<34){
         e.state=e.kind==='raider'?'loot':'patrol'; e.cd=rnd(.5,1.6); e.scattered=0;
+        e.invT=0; e.invGoal=null;
+      }
+      else if(e.invT>20){
+        e.state=e.kind==='raider'?'loot':'patrol'; e.cd=rnd(.5,1.6); e.scattered=0;
+        e.invT=0; e.invGoal=null; e.path=null; e.pathFail=false;
       }
     }
     // v8.24b, audit: THE HIRE SHOOTS FIRST, whatever state he is in. mercEngage
@@ -17645,7 +17823,14 @@ e.lootT=(e.lootT||0)+dt;
           e.rcallT=(e.rcallT||0)+dt;
           if(e.rcallT>=1.6){
             e.rcallT=0;
-            z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.pullN=0; z.pinged=0;
+            // v12.54, 2026-09-07 audit: HIS CALL READS THE BAG TOO. The figure the
+            // siege is sized from is read once per CALL, not once per ring, which is
+            // what the comment beside the reader says and what your own call has
+            // always done by clearing it here. This line never did, so the first
+            // call on a ring froze that ring for the rest of the raid: call with a
+            // heavy bag, miss the extraction, sell it, then ride out on his call at
+            // the same point and the siege is sized on a bag you no longer have.
+            z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=null; z.pullN=0; z.pinged=0;
             if(z===G.active){ G.beaconT=z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0; }
             ping(z.x,z.y,700,true,false,'raider','fire');
             if(!G.sim) say(e.name+' called extraction.');
@@ -24510,8 +24695,18 @@ var _slp=w2s(p.x,66,p.y);
     if(p.revived&&CFG.giveUp!==0){
       var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
       _rowY+=Math.round(_hD*1.25);
-      ctx.font=_fD; ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
+      // v12.47, 2026-09-07 audit: AND IT SAYS SO WHEN IT WILL NOT TAKE THE KEY.
+      // The v9.71 guard refuses the surrender while an extraction is waiting on
+      // the point he is lying in, silently: this row printed the prompt anyway,
+      // the key did nothing, the bar never appeared and nothing explained it. It
+      // reads the same test the key reads now, and says what is true, with the
+      // working verb still drawn underneath it in colour.
+      ctx.font=_fD; ctx.fillStyle='#9b8f8c';
+      if(surrenderBlocked()) ctx.fillText('NO SURRENDER WITH AN EXTRACTION WAITING',W/2,_rowY);
+      else{
+      ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
       ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
+      }
       if(_gp>0){
         _rowY+=Math.round(_hD*0.50);
         bar(W/2-100,_rowY,200,6,_gp,'#ff5a4a');
@@ -28694,7 +28889,17 @@ function applyGhost(){
     e.name=P.ghost.tag;
     e.ghost=1;
     e.hostile=false; e.friendlyPC=1; e.grudge=false;
-if(WEAPONS[P.ghost.wep]) e.wep=(WEAPONS[P.ghost.wep].mag===0)?WEAPONS.pistol:WEAPONS[P.ghost.wep];
+    // v12.55, 2026-09-07 audit: THE RANGE COMES WITH THE GUN. A gun, its damage
+    // and its engagement range are one thing in three fields, and both other
+    // re-gun paths move all three with the same 580 cap; this one moved only the
+    // gun. So a ghost whose body rolled a long gun and whose report says he
+    // favoured a short one opened fire at the body range and every round in that
+    // band died short of the target, and the reverse never engaged at all past
+    // the body range. Same two lines the kit path uses, so there is now one rule.
+    if(WEAPONS[P.ghost.wep]){
+      e.wep=(WEAPONS[P.ghost.wep].mag===0)?WEAPONS.pistol:WEAPONS[P.ghost.wep];
+      e.dmg=e.wep.dmg; e.rng=Math.min(e.wep.rng*0.72,580);
+    }
     e.ghostHaul=(P.ghost.rate>=25)?5:9;
     for(var r2=0;r2<(G.roster||[]).length;r2++)
       if(G.roster[r2].ref===e){ G.roster[r2].name=e.name; break; }
@@ -28843,7 +29048,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.40: 2026-09-07 audit (merc-loots-hostiles). The pickup branch asks two things, is this man a pillager and is he in my crew, and neither question asks which side either man is on. The merc you hire is built by the same maker as every other pillager and rolls a crew there out of two, so he shares a number with about half the map. Told to loot on his own he reaches this branch, and a downed HOSTILE inside 760 units carrying that number read as one of his own: he left your job, knelt over the man who had been shooting at you, and put him back on his feet on 40 percent health. One guard between the two tests, so it reads as the side question that has to be answered before the crew question is even asked, and it is the same test mercEngage already uses to decide who is his business: the pillager he would shoot is the pillager he will not pick up. A man who has thrown in with you, or who is passive, is still picked up, and no other reviver in the game has his crew rule changed. Check 12.40 stages a reviver and a downed man twenty units apart on a crew number no raid can roll, a thousand units from the player so nothing else can reach them, and runs three arms: the hire and a downed hostile, an ordinary crew picking its own up, and the hire and a man who has thrown in with you; fails on v12.39.',
+  now:'v12.55: 2026-09-07 audit (P3). A pillagers gun, his damage and his engagement range are one thing held in three fields, and the file says so twice: the elite blessing moves all three, a man who picks a gun out of a kit moves all three, and the comment beside one of them spells out why, that an elite with a Longshot keeping an SMG engagement range would read as broken. The imported ghost is the one re-gun that moved only the gun. So a ghost whose body rolled an Auto Rifle and whose report says he favoured the Riot Scattergun opened fire at 374 units with a gun whose rounds die at 260, and every round fired in that band was thrown away short; the other way round a Longshot ghost on a Compact SMG body never engaged past 259 and the 580 cap never bound. The same two lines the kit path already uses, so there is one rule now. Check 12.55 imports a ghost whose favourite gun is not the gun his body rolled and requires his engagement range and his damage to have moved with it, with a control that a ghost imported onto a body already carrying that same gun is left exactly as he was; fails on v12.54.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39700,6 +39905,905 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.55',what:'an imported ghost carries his engagement range and his damage with the gun he is handed, instead of keeping the range of the body he arrived in; a ghost handed the gun that body already carries is left exactly as he was (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof applyGhost!=='function') return 'SKIP: this build has no ghost to import';
+     if(!(WEAPONS&&WEAPONS.sniper&&WEAPONS.sniper.mag)) return 'SKIP: this build has no Longshot to hand him';
+     var bad=[], P2=__P(), keepGhost=P2.ghost;
+     function body(){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       P2.ghost=null;
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g) return null;
+       var i, e=null;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].merc) e=g.ents[i];
+       if(!e) return {none:'no pillager on this map and seed to import a ghost onto'};
+       return {g:g,e:e,wep:(e.wep&&e.wep.id)||null,rng:e.rng,dmg:e.dmg};
+     }
+     function importAs(st,gun){
+       P2.ghost={tag:'GHOST SEVEN',wep:gun,rate:10};
+       applyGhost();
+       var e=st.e;
+       return {ghost:!!e.ghost,wep:(e.wep&&e.wep.id)||null,rng:e.rng,dmg:e.dmg};
+     }
+     try{
+       // THE FINDING: a gun the body cannot have rolled, so the range it implies
+       // can only have come from the import.
+       var A=body();
+       if(!A) return 'SKIP: no live raid to import into';
+       if(A.none) return 'SKIP: '+A.none;
+       if(A.wep==='sniper') return 'SKIP: the pillager this seed built already carries the Longshot, so the import would change nothing to measure';
+       var R=importAs(A,'sniper');
+       if(!R.ghost) return 'SKIP: the ghost was not imported onto that pillager, so there is nothing here to read';
+       if(R.wep!=='sniper') return 'SKIP: the import did not hand him the Longshot at all, so the range cannot be read against it';
+       var wantR=Math.min(WEAPONS.sniper.rng*0.72,580);
+       if(Math.abs(R.rng-wantR)>0.5)
+         bad.push('the imported ghost was handed a Longshot and kept the engagement range of the body he arrived in: he opens fire at '+Math.round(R.rng)+' units with a gun whose rounds die at '+Math.round(WEAPONS.sniper.rng)+', instead of the '+Math.round(wantR)+' the gun is worth');
+       if(Math.abs(R.dmg-WEAPONS.sniper.dmg)>0.5)
+         bad.push('the imported ghost was handed a Longshot and kept the damage of the body he arrived in ('+R.dmg+' against the gun'+String.fromCharCode(39)+'s '+WEAPONS.sniper.dmg+')');
+       // CONTROL: the same import, with the gun the body ALREADY carries. Nothing
+       // may move, which is what separates carrying the range with the gun from
+       // simply rewriting the range for every ghost.
+       var B=body();
+       if(B&&!B.none&&B.wep){
+         var C=importAs(B,B.wep);
+         if(Math.abs(C.rng-B.rng)>0.5) bad.push('control: importing a ghost carrying the gun the body already had moved his engagement range from '+Math.round(B.rng)+' to '+Math.round(C.rng)+', so the range is being rewritten rather than carried with the gun');
+         if(Math.abs(C.dmg-B.dmg)>0.5) bad.push('control: importing a ghost carrying the gun the body already had moved his damage from '+B.dmg+' to '+C.dmg);
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.ghost=keepGhost; }catch(_p){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.54',what:'a pillager calling extraction throws away the figure the siege is sized from, so it is read again from the bag actually being carried instead of keeping whatever an earlier call at that point left behind (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__ents&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid and step the pillagers';
+     if(typeof greedOf!=='function'||typeof tickExtractPoints!=='function') return 'SKIP: this build has no siege size to read or no ticker to read it with';
+     var bad=[];
+     var STALE=7777;   // a figure no bag in the game can produce
+     function stage(open){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
+       var p=g.player, i, e=null;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].downed&&!g.ents[i].finished&&!g.ents[i].merc) e=g.ents[i];
+       if(!e) return {none:'no pillager on this map and seed to call an extraction'};
+       g.ents.length=0; g.ents.push(e);
+       var z=g.active||g.zones[0];
+       g.active=z; z.open=!!open; z.beaconT=null; z.hold=null; z.pullT=null;
+       z.siegeGreed=STALE;                     // what an earlier call left behind
+       g.beaconT=null; g.shipHold=null;
+       g.bag=[];                               // and the bag he is holding NOW is empty
+       p.downed=false; p.iv=99; p.x=z.x+2200; p.y=z.y+2200;
+       e.state='extract'; e.kind='raider'; e.downed=false; e.finished=false;
+       e.x=z.x; e.y=z.y; e.rcallT=0; e.extracting=0; e.hp=e.maxhp||e.hp;
+       return {g:g,e:e,z:z,p:p};
+     }
+     function run(st,secs){
+       var i, z=st.z;
+       for(i=0;i<Math.round(secs/0.1);i++){
+         __ents(0.1);
+         if(z.beaconT!==null&&z.beaconT!==undefined) return {called:true,secs:i*0.1};
+       }
+       return {called:false,secs:secs};
+     }
+     try{
+       var A=stage(1);
+       if(!A) return 'SKIP: no live raid with an extraction point to call';
+       if(A.none) return 'SKIP: '+A.none;
+       var r=run(A,12);
+       if(!r.called) return 'SKIP: the pillager did not call the extraction in twelve seconds, so the call under test never happened';
+       if(A.z.siegeGreed===STALE)
+         bad.push('the pillager called the extraction and the ring kept the figure your own earlier call left behind: the siege will be sized on a bag you are no longer carrying');
+       // And once the ticker has read it, it must be the bag he is holding now.
+       tickExtractPoints(0.01);
+       var want=greedOf();
+       if(A.z.siegeGreed!==want)
+         bad.push('after the pillager call the ring sizes its siege on '+A.z.siegeGreed+' rather than the '+want+' the bag actually in hand is worth');
+       // CONTROL: the same ring, the same stale figure, and no call at all. It
+       // must SURVIVE, or something else is clearing it and this check would be
+       // crediting a line that did nothing.
+       var B=stage(0);
+       if(B&&!B.none){
+         var r2=run(B,12);
+         if(r2.called) bad.push('control: the pillager called a closed extraction point, so this staging does not isolate the call');
+         else if(B.z.siegeGreed!==STALE) bad.push('control: the stale figure was cleared with no call made at all, so something other than the call is doing it and this check proves nothing');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz){ if(gz.ents) gz.ents.length=0; if(gz.player) gz.player.iv=0; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.53',what:'a machine searching for him gives up on a point it can never reach instead of pushing at the nearest wall for the rest of the raid, and the scatter that chooses that point no longer picks somewhere a body cannot stand; a search of open ground still ends by arriving (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__ents&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid and step the machines';
+     if(typeof spotFree!=='function') return 'SKIP: this build has no open-ground test to hold the scatter to';
+     var bad=[];
+     function stage(){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       var p=g.player, i, e=null;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='crawler'&&!g.ents[i].downed&&!g.ents[i].finished) e=g.ents[i];
+       if(!e) return {none:'no crawler on this map and seed to send searching'};
+       g.ents.length=0; g.ents.push(e);
+       p.downed=false; p.iv=99; p.hp=100;
+       // Parked far away and out of the way, so nothing here is a chase.
+       p.x=e.x+2600; p.y=e.y+2600;
+       e.hp=e.maxhp||e.hp; e.downed=false; e.finished=false; e.alert=0; e.chaseHold=0;
+       e.path=null; e.pathFail=false; e.invT=0; e.invGoal=null;
+       return {g:g,e:e,p:p};
+     }
+     function search(st,tx,ty,secs){
+       var e=st.e, g=st.g, i, x0=e.x, y0=e.y, last={x:e.x,y:e.y}, moved=0;
+       e.state='investigate'; e.tx=tx; e.ty=ty; e.scattered=1;
+       for(i=0;i<Math.round(secs/0.05);i++){
+         __ents(0.05);
+         if(e.state!=='investigate') break;
+       }
+       moved=Math.sqrt((e.x-x0)*(e.x-x0)+(e.y-y0)*(e.y-y0));
+       return {state:e.state,secs:i*0.05,moved:moved,
+               left:Math.sqrt((e.x-tx)*(e.x-tx)+(e.y-ty)*(e.y-ty))};
+     }
+     try{
+       var st=stage();
+       if(!st) return 'SKIP: no live raid to search in';
+       if(st.none) return 'SKIP: '+st.none;
+       // THE FINDING: a point outside the playable edge, which no map and no
+       // seed can ever make reachable, so this arm is the same on every one.
+       var A=search(st,-600,-600,30);
+       if(A.state==='investigate')
+         bad.push('a machine sent to search a point nothing can stand on was still searching it after '+Math.round(A.secs)+' seconds, '+Math.round(A.left)+' units short and unable to close, and nothing else in the game can free it: it pushes at that wall for the rest of the raid');
+       // CONTROL ONE: an open point it CAN reach must still end by arriving, and
+       // well inside the clock, or the fix has turned every search into a timer.
+       var st2=stage();
+       if(st2&&!st2.none){
+         var e2=st2.e, g2=st2.g, ox=0, oy=0, sc;
+         for(sc=1;sc<=14&&!ox;sc++){
+           var cx=e2.x+sc*22, cy=e2.y;
+           if(spotFree(g2.map,cx,cy,12)&&(typeof walkClearR!=='function'||walkClearR(e2.x,e2.y,cx,cy,e2.r))){ ox=cx; oy=cy; }
+         }
+         if(!ox) return 'SKIP: no open ground within 300 units of the crawler on this seed, so the control cannot be staged';
+         var B=search(st2,ox,oy,30);
+         if(B.state==='investigate') bad.push('control: a machine sent to open ground '+Math.round(Math.sqrt((ox-e2.x)*(ox-e2.x)))+' units away never got there in thirty seconds, so this check cannot see a search end at all');
+         else if(B.secs>19) bad.push('control: a search of open ground ended after '+Math.round(B.secs)+' seconds, which is the clock rather than the arrival, so the fix has turned every search into a timer');
+       }
+       // CONTROL TWO: and the scatter itself now picks somewhere a body can
+       // stand, which is the other half of the build.
+       var st3=stage();
+       if(st3&&!st3.none&&typeof packScatter==='function'){
+         var e3=st3.e, g3=st3.g, badPts=0, k;
+         for(k=0;k<40;k++){
+           e3.state='investigate'; e3.scattered=0;
+           e3.tx=e3.x; e3.ty=e3.y;
+           packScatter();
+           if(!spotFree(g3.map,e3.tx,e3.ty,12)) badPts++;
+         }
+         if(badPts) bad.push('the scatter still chose somewhere a body cannot stand on '+badPts+' of 40 tries, and that state has only one way out');
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var gz=__state(); if(gz){ if(gz.ents) gz.ents.length=0; if(gz.player) gz.player.iv=0; } }catch(_a){}
+       try{ var g4=__state(); if(g4&&!g4.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.52',what:'a pillager whose whole reach is inside his own blast does not throw a charge at all, instead of throwing from a band one unit wide inside his own explosion; an ordinary pillager still throws from outside the blast and his charge still lands clear of him (2026-09-07 audit, my defect from v12.20)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof raiderThrow!=='function') return 'SKIP: no pillager throw in this build';
+     if(!(WEAPONS&&WEAPONS.shotgun&&WEAPONS.shotgun.rng)) return 'SKIP: this build has no Riot Scattergun to stage';
+     var bad=[], i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       CFG.fragR=190;
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(), p=g.player, e=null;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].downed&&!g.ents[i].finished&&!g.ents[i].merc) e=g.ents[i];
+       if(!e) return 'SKIP: no pillager to hand a charge to';
+       // The reach comes off the weapon table, not out of this check, so it
+       // follows the dial if the gun is ever retuned.
+       var SHOT=WEAPONS.shotgun.rng*0.72, EDGE=190+52;
+       if(SHOT>=EDGE) return 'SKIP: the Riot Scattergun reach of '+Math.round(SHOT)+' now clears the safe edge of '+EDGE+', so the man this check is about no longer exists';
+       function ask(fd,rng){
+         e.bag=['frag']; e.thrT=0; e.smkT=99; e.hp=e.maxhp||100; e.downed=false; e.finished=false;
+         e.rng=rng;
+         var n0=g.frags.length;
+         var r=raiderThrow(e,p,fd,0.016);
+         var f=(g.frags.length>n0)?g.frags[g.frags.length-1]:null;
+         return {threw:!!r,made:g.frags.length-n0,
+                 own:f?Math.sqrt((f.x-e.x)*(f.x-e.x)+(f.y-e.y)*(f.y-e.y)):null};
+       }
+       // THE FINDING: the whole window the old band left him, which is the last
+       // unit before his own reach and is inside the blast he is throwing.
+       var A=ask(SHOT-0.7,SHOT);
+       if(A.threw||A.made)
+         bad.push('a Riot Scattergun pillager threw a charge from '+Math.round(SHOT-0.7)+' units, which is inside the '+EDGE+' unit edge his own blast needs: his whole reach is '+Math.round(SHOT)+', so every throw he can make lands on himself');
+       // CONTROL ONE: an ordinary pillager still throws from outside the blast,
+       // or a build that simply stopped every throw reads green above.
+       var B=ask(260,520);
+       if(!B.threw||!B.made) bad.push('control: a pillager with an ordinary reach would not throw from 260 units, so the band is not live here and nothing above proves anything');
+       // CONTROL TWO: and what he threw landed clear of him, which is the whole
+       // point v12.20 was written for.
+       else if(!(B.own>190)) bad.push('control: the charge an ordinary pillager threw landed '+Math.round(B.own)+' units from him, inside the 190 blast, so v12.20 is undone');
+       // AND NOT ONLY AT THAT ONE DISTANCE. His whole reach is inside his own
+       // blast, so there must be no distance he can reach from at which he throws.
+       var thrown=[], fd2;
+       for(fd2=20;fd2<SHOT;fd2+=8){ if(ask(fd2,SHOT).made) thrown.push(Math.round(fd2)); }
+       if(thrown.length) bad.push(String("a Riot Scattergun pillager still throws from ")+thrown.length+" distances inside his own reach ("+thrown.slice(0,6).join(", ")+"), and every one of them is inside the blast");
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.51',what:'a Howler does not shell its own crater: its own impact no longer winds its eight second bearing back to full or moves that bearing onto the burst, so one noise from a man who then goes quiet brings the shells the bearing honestly allows and no barrage (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__ents&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid and step the machines';
+     if(typeof mkHowler!=='function'||typeof listenersHear!=='function'||typeof updateThrowables!=='function') return 'SKIP: this build has no Howler, no hearing sweep or no shells to step';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid to be heard in';
+       var p=g.player, i;
+       g.ents.length=0; g.shells.length=0;      // one Howler and nothing else at all
+       p.downed=false; p.iv=99; p.roll=0; p.hp=100; p.moving=false;
+       // THE NOISE MUST BE IN THE OPEN, or the shot is refused for the roof over
+       // it and this check measures nothing. Eight bearings tried, and the man is
+       // moved to the first one where both he and the gun stand under open sky.
+       var _rf=(typeof roofAt==="function")?roofAt:null, _px=p.x, _py=p.y, _b;
+       var _ok=(!_rf)||(!_rf(_px,_py)&&!_rf(_px+400,_py));
+       for(_b=0;_b<8&&!_ok;_b++){
+         var _ang=_b*0.785, _cx=_px+Math.cos(_ang)*260, _cy=_py+Math.sin(_ang)*260;
+         if(!_rf(_cx,_cy)&&!_rf(_cx+400,_cy)){ p.x=_cx; p.y=_cy; _ok=1; }
+       }
+       if(!_ok&&_rf&&(_rf(p.x,p.y)||_rf(p.x+400,p.y))) return "SKIP: no open sky within 260 units of the landing on this seed, so the shot would be refused for a roof and nothing here would be measured";
+       var hw=mkHowler(p.x+400,p.y);
+       if(!hw) return 'SKIP: this build would not build a Howler';
+       // Pointed AWAY from him, so nothing here can come down the sighted path:
+       // that branch needs sight or an alert above 1.2, and the impact noise
+       // only ever lifts an alert to 1.
+       hw.face=Math.atan2(hw.y-p.y,hw.x-p.x);
+       hw.state='patrol'; hw.cd=0; hw.hearT=0; hw.alert=0; hw.elite=0;
+       hw.hp=hw.maxhp||hw.hp; hw.downed=false; hw.finished=false; hw.overheat=0;
+       g.ents.push(hw);
+       // ONE NOISE, at his feet, and then silence for twenty seconds.
+       var NX=p.x, NY=p.y;
+       listenersHear(NX,NY,300,true);
+       if(!(hw.hearT>0)) return 'SKIP: the staged noise was not heard at four hundred units, so there is no bearing here to measure';
+       var fired=0, afterFirst=null, landed=0, T=0, sh;
+       for(i=0;i<400;i++){
+         for(var q=0;q<g.shells.length;q++){ sh=g.shells[q];
+           if(sh.mortar&&!sh.__counted){ sh.__counted=1; fired++; } }
+         var before=0; for(var m0=0;m0<g.shells.length;m0++) if(g.shells[m0].mortar) before++;
+         __ents(0.05); updateThrowables(0.05); T+=0.05;
+         // The frame a shell has just landed: read the bearing straight away,
+         // before the clock has had time to run down and blur the difference.
+         for(var q2=0;q2<g.shells.length;q2++){ sh=g.shells[q2];
+           if(sh.mortar&&!sh.__counted){ sh.__counted=1; fired++; } }
+         var after=0; for(var m1=0;m1<g.shells.length;m1++) if(g.shells[m1].mortar) after++;
+         if(after<before&&landed===0){
+           landed=1; afterFirst={t:T,hearT:hw.hearT,hx:hw.heardX,hy:hw.heardY};
+         }
+       }
+       if(!fired) return 'SKIP: the Howler fired nothing at all in twenty seconds, so this check cannot see a shell';
+       if(!afterFirst) return 'SKIP: no shell landed inside twenty seconds, so the impact under test never happened';
+       // THE FINDING, measured as a DECAY against the clock rather than a level.
+       var want=8-afterFirst.t+0.3;
+       if(afterFirst.hearT>want)
+         bad.push('the Howler heard its own shell land: '+afterFirst.t.toFixed(1)+' seconds after the noise its eight second bearing reads '+afterFirst.hearT.toFixed(1)+' rather than the '+Math.max(0,want-0.3).toFixed(1)+' it should have run down to, so the crater has wound it back up to full');
+       var moved=Math.sqrt((afterFirst.hx-NX)*(afterFirst.hx-NX)+(afterFirst.hy-NY)*(afterFirst.hy-NY));
+       if(moved>1)
+         bad.push('the Howler moved its bearing onto its own crater: it was aiming at the noise and is now aiming '+Math.round(moved)+' units away at the hole it just made');
+       // THE SUPPORTING NUMBER, with an honest ceiling: the bearing lasts eight
+       // seconds and the cooldown is five and a half to seven, so a second shell
+       // at the same bearing is the design and a third is the barrage.
+       if(fired>2)
+         bad.push('a man who made one noise and then went silent for twenty seconds was shelled '+fired+' times, and an eight second bearing against a five to seven second cooldown allows two at the most');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz){ if(gz.ents) gz.ents.length=0; if(gz.shells) gz.shells.length=0;
+         if(gz.player) gz.player.iv=0; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.50',what:'breaking a Crier line of sight for three seconds actually cancels its alarm instead of firing it on the same frame, and the three seconds have to be unbroken; a Crier that keeps eyes on him still raises the alarm exactly as before (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__ents&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid and step the machines';
+     if(typeof mkSnitch!=='function') return 'SKIP: this build has no Crier to stage';
+     var bad=[];
+     // Assembled, never written whole: a check that greps the page for a line it
+     // spells out finds itself, which has cost three builds already.
+     var RAISED='The Crier raised '+'the alarm';
+     function arm(hidden){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       var p=g.player;
+       g.ents.length=0;                      // one Crier and nobody else at all
+       p.downed=!!hidden; p.iv=99; p.roll=0; p.hp=100;
+       var cr=mkSnitch(p.x+240,p.y);
+       if(!cr) return {none:'this build would not build a Crier'};
+       cr.face=Math.atan2(p.y-cr.y,p.x-cr.x);
+       cr.state='alarm'; cr.wind=3.9; cr.lost=hidden?2.99:0; cr.markX=p.x; cr.markY=p.y;
+       cr.hp=cr.maxhp||cr.hp; cr.downed=false; cr.finished=false; cr.overheat=0;
+       if(!hidden) cr.wind=0.01;             // the control is a windup about to end
+       g.ents.push(cr);
+       g.marked=0; if(g.tel) g.tel.marked=0;
+       g.msg='';
+       var m0=g.marked||0, t0=(g.tel&&g.tel.marked)||0;
+       __ents(0.05);
+       return {state:cr.state,wind:cr.wind,lost:cr.lost,
+               marked:(g.marked||0)-m0,tel:((g.tel&&g.tel.marked)||0)-t0,
+               said:String(g.msg||'')};
+     }
+     try{
+       // THE FINDING: he has been out of its sight for three seconds, which is
+       // the one thing the game says calls an alarm off.
+       var A=arm(true);
+       if(!A) return 'SKIP: no live raid to stage a Crier in';
+       if(A.none) return 'SKIP: '+A.none;
+       if(A.state==='alarm') return 'SKIP: three seconds out of sight did not take the Crier out of its alarm at all, so the cancel under test never ran';
+       if(A.said.indexOf(RAISED)>=0)
+         bad.push('the cancel fired the alarm it was cancelling: three seconds out of sight put the Crier back on patrol and it called the alarm in on the very same frame, saying "'+A.said+'"');
+       if(A.marked>0) bad.push('the cancelled alarm still marked him: the marked flag went up by '+A.marked+' on the frame the alarm was called off');
+       if(A.tel>0) bad.push('the cancelled alarm still counted against him: the marked figure in his run report went up by '+A.tel);
+       if(A.wind!==null&&A.wind!==undefined&&A.wind<0)
+         bad.push('the cleared windup came out at '+A.wind+' rather than nothing, which is what let the next test read it as an alarm that had finished');
+       // CONTROL: the same Crier, the same windup, and he is in plain sight. The
+       // alarm MUST still fire, or a build that simply broke the Crier is green.
+       var B=arm(false);
+       if(B&&!B.none){
+         if(B.said.indexOf(RAISED)<0) bad.push('control: a Crier that kept eyes on him no longer raises the alarm at all, it said "'+B.said+'", so the counterplay has been turned into an escape');
+         if(!(B.marked>0)) bad.push('control: a Crier that kept eyes on him no longer marks him, so this check cannot see an alarm and its findings prove nothing');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz){ if(gz.ents) gz.ents.length=0; gz.marked=0;
+         if(gz.player){ gz.player.downed=false; gz.player.iv=0; } } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.49',what:'a Howler shell bursting in the street does not reach through a solid wall: the man forty units inside loses nothing and a pillager behind the same wall loses nothing, while the same shell still hurts anyone standing in the open the same distance away (2026-09-07 audit, the remaining half of his 2026-09-06 note)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__howlerHit&&window.__buildings)) return 'SKIP: this fixture cannot deploy a raid and land a Howler shell';
+     if(typeof losClear!=='function') return 'SKIP: this build has no line of sight test to hold the blast to';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid to stand in';
+       var p=g.player, segs=g.map&&g.map.segs, B=__buildings(), i, j;
+       var e=null;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='raider'){ e=g.ents[i]; break; }
+       if(!segs||!segs.length) return 'SKIP: this map carries no wall segments';
+       if(!B||!B.length) return 'SKIP: this map built no buildings to hide in';
+       // A REAL WALL, FOUND RATHER THAN ASSUMED. Walk the west face of every
+       // building big enough to stand well inside, and take the first row where
+       // the map's own segments block a line from the street to a point forty
+       // units in. That skips doorways and windows without naming them.
+       var b=null, wy=0, OUT=30, IN=40;
+       for(i=0;i<B.length&&!b;i++){
+         var cand=B[i]; if(!(cand.w>=140&&cand.h>=140)) continue;
+         for(j=-3;j<=3;j++){
+           var ty=cand.y+cand.h/2+j*20;
+           if(ty<cand.y+20||ty>cand.y+cand.h-20) continue;
+           if(!losClear(cand.x-OUT,ty,cand.x+IN,ty,segs)){ b=cand; wy=ty; break; }
+         }
+       }
+       if(!b) return 'SKIP: no building on this map and seed has a solid west face to stand behind, so there is no wall here to test';
+       var TX=b.x-OUT, TY=wy;
+       // The one arm that must never be skipped quietly: the burst has to be in
+       // the open, or the v10.63 roof gate would be doing this checks work.
+       if(typeof roofAt==='function'&&roofAt(TX,TY)) return 'SKIP: the burst point is under a roof, so the roof rule would answer this and not the wall';
+       function shell(){ __howlerHit({tx:TX,ty:TY,x0:TX-370,y0:TY,dmg:35}); }
+       function ready(x,y){ p.x=x; p.y=y; p.hp=100; p.maxhp=Math.max(100,p.maxhp||100);
+                            p.armor=0; p.iv=0; p.downed=false; p.roll=0; p.healQ=0; }
+       // CONTROL ONE FIRST: the same shell, the same distance, nothing between.
+       // Without it, a build that simply stopped the Howler hurting anyone reads
+       // green on the finding below.
+       g.ents.length=0;
+       ready(TX-70,TY);
+       if(!losClear(TX,TY,p.x,p.y,segs)) return 'SKIP: the open ground the other side of the burst is not open on this seed, so the control cannot be staged';
+       shell();
+       var openLoss=100-p.hp;
+       if(!(openLoss>0)) return 'SKIP: the shell took nothing off a man standing seventy units away in the open, so this check cannot see the blast at all';
+       // THE FINDING: the same shell, the same seventy units, one wall between.
+       g.ents.length=0;
+       ready(b.x+IN,TY);
+       shell();
+       var wallLoss=100-p.hp;
+       if(wallLoss>0)
+         bad.push('a Howler shell bursting in the street took '+Math.round(wallLoss)+' health off a man standing '+IN+' units inside a solid wall, through masonry, with the hit ring pointing at a burst he cannot see (the same shell takes '+Math.round(openLoss)+' in the open)');
+       // AND THE SAME RULE FOR EVERYONE ELSE, since the entity loop has the same
+       // hole and a pillager sheltering behind that wall is in the same room.
+       if(e){
+         ready(b.x+IN,TY);
+         e.x=b.x+IN; e.y=TY; e.hp=200; e.maxhp=200; e.downed=false; e.finished=false;
+         g.ents.length=0; g.ents.push(e);
+         shell();
+         if(e.hp<200) bad.push('the same shell took '+Math.round(200-e.hp)+' off a pillager sheltering behind that same wall, so the blast reaches through it for everyone and not only for him');
+         // CONTROL TWO: and it must still reach that pillager in the open.
+         e.x=TX-70; e.y=TY; e.hp=200; ready(TX-2000,TY);
+         shell();
+         if(!(e.hp<200)) bad.push('control: the shell took nothing off a pillager standing seventy units away in the open either, so the entity half of this check cannot see the blast and proves nothing');
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.hp=100; gz.player.iv=0; gz.player.downed=false; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.48',what:'the what is new card obeys his vocabulary list: no entry names the extraction as a vehicle or uses the retired arrival word, and the old names for the tactical belt and the backpack appear only inside the entries that announce those renames, which still exist (his order of 2026-09-02, my slip of 2026-09-08)',
+   run:function(){
+     if(!window.__words||!__words.whatsnew) return 'SKIP: this build cannot report its own what is new card';
+     var card=__words.whatsnew(), L=card&&card.lines, bad=[], i;
+     if(!L||!L.length) return 'SKIP: the what is new card has no lines to check';
+     // Assembled, never written whole. A check that greps the page for a word it
+     // spells out finds itself; that has cost three builds already.
+     var VEH='sh'+'ip', ARR='touch'+'down', BOARD='board'+'ing';
+     var OLDBELT='hot'+'bar', NEWBELT='tactical belt';
+     var OLDPACK='b'+'ag', NEWPACK='backpack';
+     function has(s,w){ return s.toLowerCase().indexOf(w)>=0; }
+     function word(s,w){ return new RegExp('\\b'+w+'\\b','i').test(s); }
+     var renameBelt=0, renamePack=0;
+     for(i=0;i<L.length;i++){
+       var line=String(L[i]||''), tag='entry '+(i+1)+' ["'+line.slice(0,60)+'"]';
+       if(word(line,VEH)) bad.push(tag+' names the extraction as a vehicle, which he retired on 2026-09-02');
+       if(has(line,BOARD)) bad.push(tag+' still uses the retired word for the extraction window');
+       if(word(line,ARR)) bad.push(tag+' still uses the retired word for the arrival');
+       if(has(line,OLDBELT)){
+         if(has(line,NEWBELT)) renameBelt++;
+         else bad.push(tag+' calls the tactical belt by the name he retired at v10.26, and is not the entry that announces that rename');
+       }
+       if(word(line,OLDPACK)){
+         if(has(line,NEWPACK)) renamePack++;
+         else bad.push(tag+' calls the backpack by the name he retired at v9.90, and is not the entry that announces that rename');
+       }
+     }
+     // CONTROL: the rename entries must still BE there. Deleting the history
+     // would satisfy every line above and leave the card telling him nothing
+     // about the two renames he asked for by name.
+     if(!renameBelt) bad.push('control: no entry on the card announces the belt rename any more, so the history has been deleted rather than the wording corrected');
+     if(!renamePack) bad.push('control: no entry on the card announces the backpack rename any more, so the history has been deleted rather than the wording corrected');
+     if(L.length<40) bad.push('control: the card is down to '+L.length+' entries, so lines have been removed rather than reworded');
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.47',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys&&window.__frame&&window.__textTrace&&window.__forceSize)) return 'SKIP: this fixture cannot deploy, press keys and read the drawn text';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
+     if(typeof giveUpTick!=='function') return 'SKIP: this build has no surrender';
+     var bad=[];
+     // Assembled, never written whole, so the phrase cannot be found in the
+     // source of the very check that is looking for it.
+     var PROMPT='TO '+'SURRE'+'NDER', REFUSE='NO '+'SURRE'+'NDER';
+     function arm(waiting){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_f){}
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
+       var p=g.player, z=g.active||g.zones[0], K=__keys(), k, i;
+       for(k in K) delete K[k];
+       g.ents.length=0;
+       g.active=z; z.open=true;
+       if(waiting){ z.beaconT=0; g.beaconT=0; g.shipHold=20; z.hold=20; p.x=z.x; p.y=z.y; }
+       else { z.beaconT=null; g.beaconT=null; g.shipHold=null; z.hold=null;
+              p.x=z.x+(z.r+900); p.y=z.y; }
+       p.hp=20; p.armor=0; p.iv=99; p.roll=0; p.cooking=0;
+       p.revived=true; p.downed=true; p.downT=CFG.downTime; p.giveT=0; p.healLock=true;
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       K.Space=1;
+       var peak=0;
+       for(i=0;i<40;i++){ p.iv=99; p.downT=CFG.downTime; clk+=16.7; __loop(clk);
+                          if((p.giveT||0)>peak) peak=p.giveT||0;
+                          if(!p.downed||g.over) break; }
+       var lines=[];
+       try{ lines=__textTrace(function(){ __frame(0.016); }); }catch(_t){ }
+       var txt=''; for(i=0;i<lines.length;i++) txt+=' | '+lines[i].t;
+       var out={peak:peak,down:!!p.downed,over:!!g.over,txt:txt,
+                prompt:txt.indexOf(PROMPT)>=0,refuse:txt.indexOf(REFUSE)>=0,
+                verb:txt.indexOf('TO EXTRACT')>=0};
+       for(k in K) delete K[k];
+       return out;
+     }
+     var keepTs=lastTs;
+     try{
+       // CONTROL FIRST: the same man, downed with his revive spent, nowhere near
+       // a waiting extraction. The prompt must be drawn and the hold must run, or
+       // a missing prompt below would only say the overlay was never drawn.
+       var B=arm(false);
+       if(!B) return 'SKIP: no raid with an extraction point to lie down in';
+       if(!B.down&&!B.over) return 'SKIP: he did not stay on the floor long enough to read the screen';
+       if(!B.prompt) return 'SKIP: with no extraction waiting the downed screen did not draw the surrender row at all, so this check cannot see it and proves nothing';
+       if(!(B.peak>0)) return 'SKIP: with no extraction waiting two seconds on the key started no hold, so this check cannot see a hold and proves nothing';
+       // THE FINDING: downed inside a point with an extraction waiting, which is
+       // the one state the key is refused in, on purpose, since v9.71.
+       var A=arm(true);
+       if(!A) return 'SKIP: no raid with an extraction point to lie down in';
+       if(A.peak>0) bad.push('staging: the hold started inside a waiting extraction, so this is not the refused state the check is about');
+       if(A.prompt) bad.push('with an extraction waiting on the point he is lying in the screen still offers the surrender, and the key does nothing: the row is drawn, the bar never comes, and nothing tells him why');
+       if(!A.refuse) bad.push('with an extraction waiting the screen says nothing at all about the surrender being refused; the drawn text is ['+A.txt.slice(0,200)+']');
+       if(!A.verb) bad.push('control: the working verb is not drawn in this state either, so the screen is not the one this check thinks it is reading');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ lastTs=keepTs; }catch(_t2){}
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.downed=false; gz.player.giveT=0; gz.player.iv=0; gz.player.revived=false; gz.player.healLock=false; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.46',what:'auto-jog stops when he goes down: a man stood back up with no key held stays where he is instead of walking off toward the cursor at 40 health, while an armed auto-jog that never went down still walks him (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
+     if(typeof damagePlayer!=='function'||typeof selfRevive!=='function'||typeof updatePlayer!=='function') return 'SKIP: this build has no down or revive path';
+     var bad=[], keepTs=lastTs;
+     // One staging, three ways through it. down: he is put on the floor by a real
+     // hit and stood back up. armed: whether the auto-jog is on at all.
+     function walk(armed,down){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       var p=g.player, K=__keys(), k, i;
+       for(k in K) delete K[k];
+       g.ents.length=0;                       // nobody to shoot him mid-walk
+       p.downed=false; p.roll=0; p.revived=false; p.healLock=false;
+       p.hp=100; p.armor=0; p.iv=0; p.stam=100; p.stamLock=0; p.stamRelease=0;
+       p.cooking=0; p.cookT=0; p.cookKind=null; p.face=0;   // due east, so a walk is +x
+       p.autoJog=!!armed;
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       if(down){
+         p.hp=30;
+         damagePlayer(240,null,'crawler',p.x-20,p.y);
+         if(!p.downed) return {none:'a 240 hit on 30 health did not put him on the floor'};
+         p.downT=CFG.downTime; p.giveT=0;
+         selfRevive();
+         if(p.downed) return {none:'the revive did not stand him back up'};
+       }
+       p.iv=99; p.face=0;
+       var x0=p.x, y0=p.y;
+       for(i=0;i<10;i++){ p.iv=99; clk+=16.7; __loop(clk); }
+       for(k in K) delete K[k];
+       return {moved:Math.sqrt((p.x-x0)*(p.x-x0)+(p.y-y0)*(p.y-y0)),jog:!!p.autoJog,hp:Math.round(p.hp)};
+     }
+     try{
+       // CONTROL ONE FIRST: armed, never downed. He MUST walk, or nothing below
+       // means anything: a zero would only say this check cannot see a walk.
+       var C=walk(true,false);
+       if(!C) return 'SKIP: no live raid to walk in';
+       if(C.none) return 'SKIP: '+C.none;
+       if(!(C.moved>1)) return 'SKIP: an armed auto-jog with no key held moved him '+Math.round(C.moved)+' units in ten frames, so this check cannot see a walk and proves nothing';
+       // THE FINDING: armed, then put down and stood back up, no key touched.
+       var A=walk(true,true);
+       if(A.none) return 'SKIP: '+A.none;
+       if(A.moved>1)
+         bad.push('the auto-jog survived the down: stood back up on '+A.hp+' health with no key held he walked '+Math.round(A.moved)+' units by himself, toward whatever the cursor was pointing at, which is the character walking off on his own');
+       if(A.jog) bad.push('the auto-jog is still armed after a down, so he will walk off again on the next standing frame');
+       // CONTROL TWO: nothing armed at all, same room, same down. He stands still,
+       // so the zero above is the flag being cleared and not the room being stuck.
+       var B=walk(false,true);
+       if(B.none) return 'SKIP: '+B.none;
+       if(B.moved>1) bad.push('control: with no auto-jog armed at all he still walked '+Math.round(B.moved)+' units after the revive, so something other than the auto-jog is moving him and this check is measuring the wrong thing');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ lastTs=keepTs; }catch(_t){}
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.autoJog=false; gz.player.iv=0; gz.player.downed=false; gz.player.revived=false; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.45',what:'cutting the seal no longer stops the world: through the whole hold his health recovers as it does standing anywhere else and a ship already called keeps coming, while the cut itself still advances at the same rate (2026-09-07 audit, the same fault as v12.34 one door along)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
+     if(typeof tickRegen!=='function'||typeof tryExtractTick!=='function') return 'SKIP: this build has no recovery or extraction tick to carry past the return';
+     var bad=[];
+     // Fifteen seconds of raid at the largest step the frame clock will take,
+     // holding E or not, standing at the seal either way.
+     function hold(cutting){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       if(!g.seal||g.seal.done) return {none:'this map and seed has no uncut seal to stand at'};
+       var p=g.player, K=__keys(), k, i;
+       for(k in K) delete K[k];
+       g.ents.length=0;                          // nobody to interrupt the hold
+       p.downed=false; p.roll=0; p.hp=60; p.maxhp=Math.max(100,p.maxhp||100);
+       p.combatT=20; p.regenAcc=0; p.healQ=0; p.cooking=0;
+       p.x=g.seal.x+30; p.y=g.seal.y;
+       var z=g.active||g.zones[0];
+       if(z){ g.active=z; z.open=true; z.beaconT=25; z.hold=null; g.beaconT=25; }
+       var cut0=(g.seal.gained||0), hp0=p.hp, ct0=p.combatT, bt0=(z?z.beaconT:null);
+       if(cutting) K.KeyE=1;
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       for(i=0;i<300;i++){ p.iv=99; clk+=50; __loop(clk); }
+       for(k in K) delete K[k];
+       return {cut:(g.seal.gained||0)-cut0,hp:p.hp-hp0,ct:p.combatT-ct0,
+               bt:(z&&bt0!==null)?(bt0-z.beaconT):null,near:!!g.nearSeal};
+     }
+     var keepTs=lastTs;
+     try{
+       // THE FINDING: fifteen seconds of a real cut.
+       var A=hold(true);
+       if(!A) return 'SKIP: no live raid to stand in';
+       if(A.none) return 'SKIP: '+A.none;
+       if(!A.near) return 'SKIP: standing 30 units from the seal did not put him at the door, so nothing here is a cut';
+       if(!(A.cut>=12)) return 'SKIP: fifteen seconds of holding the key advanced the cut by only '+Math.round(A.cut)+' seconds, so the hold under test never ran';
+       if(!(A.ct>=12)) bad.push('through '+Math.round(A.cut)+' seconds of cutting, the recovery clock advanced '+Math.round(A.ct)+' seconds, so the clock that decides when he heals does not run while he cuts');
+       if(!(A.hp>=4)) bad.push('through '+Math.round(A.cut)+' seconds of cutting he recovered '+Math.round(A.hp)+' health, so the bar is flat for the whole of a hold that lasts up to two minutes');
+       if(A.bt!==null&&!(A.bt>=12)) bad.push('through '+Math.round(A.cut)+' seconds of cutting, a ship already called came only '+Math.round(A.bt)+' seconds closer, so an extraction he had already paid for stops while he makes the loudest noise in the game');
+       // CONTROL: the same fifteen seconds standing beside the seal, not cutting.
+       // This is what the bar is supposed to do, and it is what the frozen one
+       // did not; without it a zero above could be the room rather than the bug.
+       var B=hold(false);
+       if(B&&!B.none){
+         if(!(B.hp>=4)) bad.push('control: standing beside the seal without cutting he recovered only '+Math.round(B.hp)+' health in fifteen seconds, so this check cannot see recovery at all and its findings prove nothing');
+         if(B.cut>0.5) bad.push('control: the seal advanced '+Math.round(B.cut)+' seconds with the key not held, so the staging cuts by itself');
+         if(B.bt!==null&&!(B.bt>=12)) bad.push('control: a called ship came only '+Math.round(B.bt)+' seconds closer while he stood still, so this check cannot see the extraction clock at all');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ lastTs=keepTs; }catch(_t){}
+       try{ var gz=__state(); if(gz&&!gz.over){ gz.player.downed=false; gz.player.iv=0; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.44',what:'the boarding window never outlives the raid clock: a ship landing with two seconds left announces what the raid actually has and not the three second floor, on the number and on the ring badge alike, while a full clock and a raid with the clock switched off both still give the ordinary thirty seconds (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof tickExtractPoints!=='function'||typeof zoneBadge!=='function') return 'SKIP: this build has no extraction ticker or ring badge to read';
+     var bad=[];
+     // Land a ship on a ring with a chosen amount of raid clock left, by running
+     // the real ticker one step past the end of the beacon. Returns the window
+     // it created and the words the ring badge prints for it.
+     function land(left,clockOn){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
+       var z=g.active||g.zones[0], p=g.player;
+       CFG.raidSec=clockOn?540:0;
+       g.active=z; z.open=true; z.hold=null; z.holdMax=null; z.boardT=0; z.pullT=null;
+       z.beaconT=0.001; g.beaconT=z.beaconT;
+       g.timeLeft=left;
+       p.downed=false; p.iv=99; p.x=z.x; p.y=z.y;
+       tickExtractPoints(0.01);
+       if(z.hold===null||z.hold===undefined) return {none:1};
+       return {hold:z.hold,left:g.timeLeft,badge:String(zoneBadge(z)||'')};
+     }
+     function badgeSeconds(txt){
+       var m=/([0-9]+)S UNTIL EXTRACTION ENDS/.exec(txt);
+       return m?(+m[1]):null;
+     }
+     try{
+       // THE FINDING: the ship lands with two seconds of raid left.
+       var A=land(2.0,true);
+       if(!A) return 'SKIP: no raid with an extraction point to land a ship on';
+       if(A.none) return 'SKIP: one step past the end of the beacon opened no boarding window, so there is nothing to read here';
+       if(A.hold>A.left+0.001)
+         bad.push('the boarding window says '+A.hold+' seconds with only '+A.left+' left on the raid clock, so the timer kills him with the countdown still running');
+       var sec=badgeSeconds(A.badge);
+       if(sec===null) bad.push('control: the ring badge did not print a seconds figure at all ['+A.badge+'], so what he reads cannot be checked here');
+       else if(sec>Math.max(0,Math.ceil(A.left)))
+         bad.push('the ring badge reads "'+A.badge+'" with '+A.left+' seconds of raid left, so every readout he has is promising him time the raid does not have');
+       if(!(A.hold>0)) bad.push('the boarding window came out at '+A.hold+', which reads as no window at all');
+       // CONTROL ONE: a full clock still gives the ordinary thirty seconds.
+       var B=land(540,true);
+       if(B&&!B.none&&B.hold!==30) bad.push('control: with a full raid clock the boarding window is '+B.hold+' and not the ordinary 30, so the clamp has changed a normal extraction');
+       // CONTROL TWO: with the clock switched off it is still thirty, which is
+       // the v12.24 rule and the reason this clamp is guarded at all.
+       var C=land(0,false);
+       if(C&&!C.none&&C.hold!==30) bad.push('control: with the raid clock switched off the boarding window is '+C.hold+' and not 30, so the v12.24 rule has been undone');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz&&!gz.over){ gz.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.43',what:'holding the sprint key while aiming, or while wading, lays no scent behind a man who is not sprinting, so nothing hunts him along a trail he never made; a plain sprint on dry land still lays one (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
+     if(typeof inWaterDeep!=='function') return 'SKIP: this build has no deep water to wade in';
+     var bad=[], noWade=null;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(), p=g.player, i, k;
+       if(!g||!p) return 'SKIP: no live raid to run in';
+       g.ents.length=0;                       // nobody to interrupt the run
+       var K=__keys(), dirs=['KeyW','KeyS','KeyD','KeyA'];
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       var keepTs=lastTs, homeX=p.x, homeY=p.y;
+       var INSET=(CFG.wadeInset===undefined?11:CFG.wadeInset);
+       function wet(x,y){ return !!inWaterDeep(x,y,INSET); }
+       function mineCount(){ var c=0,j; for(j=0;j<g.prints.length;j++) if(g.prints[j].mine) c++; return c; }
+       function reset(){
+         for(k in K) delete K[k];
+         p.downed=false; p.iv=99; p.stam=100; p.stamLock=0; p.stamRelease=0;
+         p.ads=false; p.roll=0; g.crouchTog=false; g.prints=[];
+       }
+       // A RUN IN ONE DIRECTION with the sprint key down. mustWade stops counting
+       // the moment he walks out of the water, so a mark laid on dry land can
+       // never be read as a mark laid while wading.
+       function run(dir,ads,n,mustWade){
+         var sx=p.x, sy=p.y, frames=0, left=false;
+         K[dir]=1; K.ShiftLeft=1;
+         for(i=0;i<n;i++){
+           if(mustWade&&!wet(p.x,p.y)){ left=true; break; }
+           p.stam=100; p.stamLock=0; p.stamRelease=0; if(ads) p.ads=true;
+           clk+=16.7; __loop(clk); frames++;
+         }
+         for(k in K) delete K[k];
+         return {ran:Math.sqrt((p.x-sx)*(p.x-sx)+(p.y-sy)*(p.y-sy)),mine:mineCount(),frames:frames,left:left};
+       }
+       // THE CONTROL FIRST, on dry land with no aim: this is what a sprint is
+       // supposed to do, and without it the zeroes after it prove nothing.
+       var ctl=null, used=null, di;
+       for(di=0;di<dirs.length;di++){
+         p.x=homeX; p.y=homeY; reset();
+         if(wet(p.x,p.y)) continue;
+         ctl=run(dirs[di],false,180,false); used=dirs[di];
+         if(ctl.ran>=250&&ctl.mine>=3) break;
+       }
+       if(!ctl||ctl.ran<250||ctl.mine<3) return 'SKIP: three seconds of plain sprint moved him '+Math.round(ctl?ctl.ran:0)+' units and laid '+((ctl&&ctl.mine)||0)+' marks in every direction, so he is boxed in and there is no trail to measure here';
+       // THE FINDING, AIMING. Same key, same direction, aim held down.
+       p.x=homeX; p.y=homeY; reset();
+       var A=run(used,true,180,false);
+       if(A.ran<20) bad.push('staging: with the aim held he covered only '+Math.round(A.ran)+' units, so this arm never walked anywhere');
+       else if(A.mine>0) bad.push('holding the sprint key while AIMING laid '+A.mine+' scent marks over '+Math.round(A.ran)+' units, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the speed he is slowest');
+       // THE FINDING, WADING. He is PLACED in deep water for this one, which is a
+       // placement and not a walk, and it is said plainly in the design entry.
+       var wx=-1, wy=-1, sc, cx, cy, W=g.map.cols*g.map.cw, H=g.map.rows*g.map.ch;
+       for(sc=0;sc<6000&&wx<0;sc++){
+         cx=60+((sc*137)%Math.max(120,W-120));
+         cy=60+((sc*271)%Math.max(120,H-120));
+         if(wet(cx,cy)) { wx=cx; wy=cy; }
+       }
+       if(wx<0) noWade='no deep water was found anywhere on this map and seed';
+       else{
+         p.x=wx; p.y=wy; reset();
+         if(!wet(p.x,p.y)) noWade='he would not stand in the water that was found';
+         else{
+           var B=run(used,false,180,true);
+           if(B.frames<20) noWade='he was out of the water again after '+B.frames+' frames, which is too few to lay a mark either way';
+           else if(B.mine>0) bad.push('holding the sprint key while WADING laid '+B.mine+' scent marks in '+B.frames+' frames of water, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the slowest he ever moves');
+         }
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ var g2=__state(); if(g2&&g2.player){ g2.player.ads=false; g2.player.iv=0; } }catch(_a){}
+       try{ lastTs=keepTs; }catch(_t){}
+       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     if(bad.length) return bad.join('; ');
+     // HALF A CHECK IS NOT A PASS.
+     if(noWade) return 'SKIP: the aiming half passed, but '+noWade+', so the wading half is not measured here';
+     return null; }},
+  {v:'12.42',what:'a gun that goes through the backpack keeps its magazine: loaded plus reserve is conserved across a stow and an equip, on a full gun and on an empty one, so stowing no longer throws the load away and re-equipping no longer conjures half a magazine, while a gun found in the field still arrives on half a magazine (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof bagHeldGun!=='function'||typeof equipFromBag!=='function') return 'SKIP: this build cannot bag and re-equip a gun';
+     if(!(WEAPONS&&WEAPONS.lmg&&WEAPONS.lmg.mag===60&&ITEMS&&ITEMS.gun_lmg&&ITEMS.gun_dmr&&WEAPONS.dmr)) return 'SKIP: the Support MG is no longer a sixty round gun, so this staging cannot be built';
+     var bad=[];
+     function total(p){ return (p.ammo|0)+(p.secAmmo|0)+(p.reserve|0); }
+     function arm(loaded){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       var p=g.player, w={},k;
+       for(k in WEAPONS.lmg) w[k]=WEAPONS.lmg[k];
+       p.downed=false; p.roll=0; g.over=false; g.paused=false;
+       p.wep=w; p.ammo=loaded; p.wepIssued=false; p.wepFromArmory=false; p.swapped=false;
+       p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
+       p.reserve=0; g.bag=[]; g.stowAmmo=null;
+       var t0=total(p);
+       if(!bagHeldGun('gunA')) return {skip:'the Support MG would not go into the backpack'};
+       var ix=g.bag.indexOf('gun_lmg');
+       if(ix<0) return {skip:'the Support MG did not arrive in the backpack'};
+       var t1=total(p);
+       if(!equipFromBag(ix,1)) return {skip:'the Support MG would not come back out of the backpack'};
+       return {t0:t0,t1:t1,t2:total(p),ammo:(p.ammo|0),res:(p.reserve|0)};
+     }
+     try{
+       // THE FINDING, full: forty seven loaded, nothing in reserve.
+       var A=arm(47);
+       if(!A) return 'SKIP: no live raid to stage a gun in';
+       if(A.skip) return 'SKIP: '+A.skip;
+       if(A.t1!==A.t0) bad.push('putting a gun in the backpack threw its magazine away: loaded plus reserve went from '+A.t0+' to '+A.t1+', so '+(A.t0-A.t1)+' rounds stopped existing');
+       if(A.t2!==A.t0) bad.push('a gun through the backpack came back with a different amount of ammunition than it went in with: loaded plus reserve went from '+A.t0+' to '+A.t2);
+       if(A.ammo!==47) bad.push('the Support MG came back out of the backpack on '+A.ammo+' rounds, not the 47 it went in with');
+       // THE FINDING, the other way: an EMPTY gun, which is the faucet.
+       var B=arm(0);
+       if(B.skip) return 'SKIP: '+B.skip;
+       if(B.t2!==0) bad.push('an empty gun through the backpack came back with '+B.t2+' rounds that no reserve paid for, and the trip can be repeated as often as he likes');
+       // CONTROL: HIS RULE FOR A GUN FOUND IN THE FIELD IS UNTOUCHED. A key that
+       // was never stowed has no load to remember, so it still arrives on half a
+       // magazine; without this a fix that simply handed out nothing reads green.
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g2=__state(), p2=g2.player;
+       p2.downed=false; p2.roll=0; g2.over=false; g2.paused=false;
+       p2.wep=WEAPONS.fists; p2.ammo=0; p2.wepIssued=false; p2.wepFromArmory=false; p2.swapped=false;
+       p2.sec=WEAPONS.fists; p2.secAmmo=0; p2.secIssued=true; p2.secFromArmory=false;
+       p2.reserve=0; g2.bag=['gun_dmr']; g2.stowAmmo=null;
+       var want=Math.ceil(WEAPONS.dmr.mag/2);
+       if(!equipFromBag(0,1)) bad.push('control: a gun found in the field would not come out of the backpack at all');
+       else if((p2.ammo|0)!==want) bad.push('control: a Marksman Rifle found in the field came up on '+(p2.ammo|0)+' rounds, not the half magazine of '+want+' that is his rule for a find');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz){ gz.stowAmmo=null; if(gz.bag) gz.bag.length=0; } }catch(_e){}
+       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; __endRaid('abandon'); } }catch(_e2){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.41',what:'the key on an empty throwable cell spends nothing from another cell: it names what is missing and puts the gun up instead of quietly walking the hidden selector on and throwing the grenade you did have, on the derived cell, the assigned cell and the cook alike, while a cell that does hold one still throws it (closes the not-verified line on v12.08)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__P&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof useHot!=='function'||typeof setHot!=='function'||typeof hotbarSlots!=='function'||typeof doThrow!=='function'||typeof startCook!=='function') return 'SKIP: this build has no belt use path';
+     if(!(THROWKEYS&&THROWKEYS.length===3&&ITEMS&&ITEMS.frag&&ITEMS.smoke)) return 'SKIP: this build does not carry three throwables';
+     var bad=[];
+     function cellOf(k){ var sl=hotbarSlots(); for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].k===k) return i; return -1; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid to throw in';
+       var p=g.player;
+       // TWO SMOKE AND NOTHING ELSE: the cell he presses is empty, and the cell
+       // the old code walked to is not, which is the whole of the finding.
+       g.pouch={smoke:2,decoy:0,frag:0};
+       p.downed=false; p.roll=0; p.cooking=0; p.cookT=0; p.cookKind=null;
+       var fragCell=cellOf('throw:frag'), smokeCell=cellOf('throw:smoke');
+       if(fragCell<0||smokeCell<0) return 'SKIP: this build has no derived Frag and Smoke cells to press';
+       // THE FINDING, the derived cell reached by the key.
+       g.hot=-1; setHot(fragCell);
+       if(g.tsel!==THROWKEYS.indexOf('frag')) return 'staging: pressing the Frag cell did not point the selector at the Frag';
+       var thr0=g.throws.length, sm0=g.pouch.smoke, tsel0=g.tsel;
+       g.msg=''; useHot();
+       if(g.pouch.smoke!==sm0) bad.push('the key on the empty Frag cell spent a Smoke Canister: the pouch went from '+sm0+' to '+g.pouch.smoke);
+       if(g.throws.length!==thr0) bad.push('the key on the empty Frag cell put '+(g.throws.length-thr0)+' throwable(s) in the air from a cell he did not press');
+       if(g.tsel!==tsel0) bad.push('the key on the empty Frag cell walked the hidden selector from '+THROWKEYS[tsel0]+' to '+THROWKEYS[g.tsel]+', so the belt and the hand no longer agree');
+       if(String(g.msg||'').indexOf(ITEMS.frag.name)<0) bad.push('the key on the empty Frag cell did not name what is missing; it said "'+(g.msg||'')+'"');
+       // THE SAME THING BY THE ASSIGNED CELL, which is a second door to doThrow.
+       g.pouch={smoke:2,decoy:0,frag:0}; g.hotAssign={}; g.hotAssign[1]='frag';
+       g.hot=-1; setHot(1);
+       var thr1=g.throws.length, sm1=g.pouch.smoke;
+       g.msg=''; useHot();
+       if(g.pouch.smoke!==sm1||g.throws.length!==thr1) bad.push('the assigned Frag cell spent a Smoke Canister: the pouch went from '+sm1+' to '+g.pouch.smoke+' and '+(g.throws.length-thr1)+' went in the air');
+       g.hotAssign={};
+       // AND THE COOK, which took the same branch.
+       g.pouch={smoke:2,decoy:0,frag:0}; p.cooking=0; p.cookT=0; p.cookKind=null;
+       g.hot=-1; setHot(fragCell);
+       var sm2=g.pouch.smoke;
+       g.msg=''; var ck=startCook();
+       if(ck) bad.push('cooking an empty Frag cell reported that a grenade was in his hand');
+       if(g.pouch.smoke!==sm2) bad.push('cooking the empty Frag cell pulled the pin on a Smoke Canister: the pouch went from '+sm2+' to '+g.pouch.smoke);
+       if(p.cooking) bad.push('cooking the empty Frag cell left a live grenade in his hand, kind '+p.cookKind);
+       p.cooking=0; p.cookT=0; p.cookKind=null;
+       // CONTROL: a cell that DOES hold one still throws it, so a fix that simply
+       // stopped throwing altogether cannot read green here.
+       g.pouch={smoke:2,decoy:0,frag:0};
+       g.hot=-1; setHot(smokeCell);
+       var thr3=g.throws.length, sm3=g.pouch.smoke;
+       useHot();
+       if(g.pouch.smoke!==sm3-1) bad.push('control: the key on a Smoke cell holding two did not spend one (pouch '+sm3+' to '+g.pouch.smoke+')');
+       if(g.throws.length!==thr3+1) bad.push('control: the key on a Smoke cell holding two put nothing in the air');
+       else if(g.throws[g.throws.length-1].kind!=='smoke') bad.push('control: the Smoke cell threw a '+g.throws[g.throws.length-1].kind);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz){ gz.hotAssign={}; if(gz.throws) gz.throws.length=0;
+         if(gz.player){ gz.player.cooking=0; gz.player.cookT=0; gz.player.cookKind=null; } } }catch(_e){}
+       try{ var g4=__state(); if(g4&&!g4.over){ g4.player.downed=false; __endRaid('abandon'); } }catch(_e2){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'12.40',what:'a merc told to loot on his own does not pick up a downed HOSTILE pillager who happens to share his crew number; he still picks up one who has thrown in with you, and an ordinary crew still picks its own up (2026-09-07 audit, merc-loots-hostiles)',
    run:function(){

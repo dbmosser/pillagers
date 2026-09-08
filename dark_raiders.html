@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.35';
+var VER='12.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,10 +1360,11 @@ var VER='12.35';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.35';
+var WHATSNEW_VER='12.36';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'WHOEVER KILLED YOU KILLED YOU. A round landing on your body during the death fade used to throw a second DOWN over the top of it, add another down to your record, and put its own name on the KILLED IN ACTION card in place of the machine that actually did it.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -12131,6 +12132,24 @@ function killPlayer(src){
   }
 }
 function damagePlayer(amt,src,srcName,sx,sy){
+  // v12.36, 2026-09-07 audit (corpse-redown): A DEAD MAN TAKES NO MORE HITS.
+  // killPlayer does not end a live raid; it opens a 1.5 second beat and leaves
+  // the body in the world with p.downed CLEARED and hp at 0, and the beat in
+  // loop() keeps calling updateEnts, updateBullets and updateThrowables
+  // underneath it. So a round that landed on the corpse fell past the downed
+  // branch below, took hp negative and re-downed a man who was already dead:
+  // a second DOWN toast over the death fade, another count on the downs figure
+  // the report and the stats card print, and lastHitName rewritten, which is
+  // the name the KILLED IN ACTION card reads while the ledger beside it still
+  // names the real killer. Whoever killed him killed him.
+  // ABOVE EVERY STAMP IN THIS FUNCTION on purpose: hitFrom, hurtAt and
+  // lastHitName are all written before the invulnerability test, so a guard
+  // any lower still lets the card be renamed by a shot at a body.
+  // It costs nothing anywhere it can be measured: killPlayer ends a sim raid
+  // outright rather than running a beat, so the beat is never set under the
+  // bot and no paired number moves. The round still sparks, still counts as a
+  // hit and is still consumed, so the bullet stream is untouched.
+  if(G&&((G.deathBeat!==undefined&&G.deathBeat!==null)||(G.player&&G.player.dying))) return;
   // v4.28: the direction of the hit, stamped for the ring around the body.
   if(G&&sx!==undefined&&G.player) G.player.hitFrom={ang:Math.atan2(sy-G.player.y,sx-G.player.x),at:G.t};
   // v9.69: when he was last hurt, which nothing recorded. v8.52 deleted the two
@@ -28766,7 +28785,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.35: his order of 2026-09-08, remove the safe pocket and delete the entire concept. He asked what was supposed to go in it and how he was meant to reach it during a raid; the honest answer to the second was that he could not, because the pocket lives on the stash screen only and its choice is frozen at the lift, so it could protect something carried from home and never the thing just pulled out of a vault. Out goes the panel, the styles, the two readers, the setter, the renderer, the menu verb, the line on the ascent page, the arming at the drop, the branch in the death payout and both fields on the profile, which are deleted from any save that still carries them. The world container called a safe is a different thing with the same five letters and is untouched. Check 12.35 requires the panel, the functions and the fields to be gone, requires a death to pay out and list what was lost with no pocket line, and requires the secure cases still to be built and drawn; fails on v12.34.',
+  now:'v12.36: 2026-09-07 audit (corpse-redown). killPlayer does not end a live raid: it zeroes the health, CLEARS the downed flag, opens a one and a half second beat and leaves the body in the world, and the frame loop keeps running the machines, the bullets and the throwables underneath it. damagePlayer had no dead test at all, its only early return being invulnerability, which killPlayer never sets, so a round landing on the corpse walked past the downed branch and fell into the down path: a second DOWN toast over the death fade, another count on the downs figure the report and the stats card print, and the last-hit name rewritten, which is the name the KILLED IN ACTION card reads while the ledger beside it still names the real killer. One guard at the very top of damagePlayer closes all three, and it has to be at the top because the direction stamp, the hurt stamp and the name are all written before the invulnerability test. Nothing measurable moves: the bot ends a sim raid outright rather than running a beat, and the round still sparks, still counts and is still consumed. Check 12.36 puts him down with a real round, kills him with a second, then lands a third on the body inside the beat through the real frame loop and requires the downs figure, the downed flag, the toast and the killer name all to be unchanged, and the card to name the machine that killed him and not the one that shot the body; fails on v12.35.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

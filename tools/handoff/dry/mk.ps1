@@ -5709,6 +5709,194 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.55',what:'an imported ghost carries his engagement range and his damage with the gun he is handed, instead of keeping the range of the body he arrived in; a ghost handed the gun that body already carries is left exactly as he was (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof applyGhost!=='function') return 'SKIP: this build has no ghost to import';
+     if(!(WEAPONS&&WEAPONS.sniper&&WEAPONS.sniper.mag)) return 'SKIP: this build has no Longshot to hand him';
+     var bad=[], P2=__P(), keepGhost=P2.ghost;
+     function body(){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       P2.ghost=null;
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g) return null;
+       var i, e=null;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].merc) e=g.ents[i];
+       if(!e) return {none:'no pillager on this map and seed to import a ghost onto'};
+       return {g:g,e:e,wep:(e.wep&&e.wep.id)||null,rng:e.rng,dmg:e.dmg};
+     }
+     function importAs(st,gun){
+       P2.ghost={tag:'GHOST SEVEN',wep:gun,rate:10};
+       applyGhost();
+       var e=st.e;
+       return {ghost:!!e.ghost,wep:(e.wep&&e.wep.id)||null,rng:e.rng,dmg:e.dmg};
+     }
+     try{
+       // THE FINDING: a gun the body cannot have rolled, so the range it implies
+       // can only have come from the import.
+       var A=body();
+       if(!A) return 'SKIP: no live raid to import into';
+       if(A.none) return 'SKIP: '+A.none;
+       if(A.wep==='sniper') return 'SKIP: the pillager this seed built already carries the Longshot, so the import would change nothing to measure';
+       var R=importAs(A,'sniper');
+       if(!R.ghost) return 'SKIP: the ghost was not imported onto that pillager, so there is nothing here to read';
+       if(R.wep!=='sniper') return 'SKIP: the import did not hand him the Longshot at all, so the range cannot be read against it';
+       var wantR=Math.min(WEAPONS.sniper.rng*0.72,580);
+       if(Math.abs(R.rng-wantR)>0.5)
+         bad.push('the imported ghost was handed a Longshot and kept the engagement range of the body he arrived in: he opens fire at '+Math.round(R.rng)+' units with a gun whose rounds die at '+Math.round(WEAPONS.sniper.rng)+', instead of the '+Math.round(wantR)+' the gun is worth');
+       if(Math.abs(R.dmg-WEAPONS.sniper.dmg)>0.5)
+         bad.push('the imported ghost was handed a Longshot and kept the damage of the body he arrived in ('+R.dmg+' against the gun'+String.fromCharCode(39)+'s '+WEAPONS.sniper.dmg+')');
+       // CONTROL: the same import, with the gun the body ALREADY carries. Nothing
+       // may move, which is what separates carrying the range with the gun from
+       // simply rewriting the range for every ghost.
+       var B=body();
+       if(B&&!B.none&&B.wep){
+         var C=importAs(B,B.wep);
+         if(Math.abs(C.rng-B.rng)>0.5) bad.push('control: importing a ghost carrying the gun the body already had moved his engagement range from '+Math.round(B.rng)+' to '+Math.round(C.rng)+', so the range is being rewritten rather than carried with the gun');
+         if(Math.abs(C.dmg-B.dmg)>0.5) bad.push('control: importing a ghost carrying the gun the body already had moved his damage from '+B.dmg+' to '+C.dmg);
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.ghost=keepGhost; }catch(_p){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.54',what:'a pillager calling extraction throws away the figure the siege is sized from, so it is read again from the bag actually being carried instead of keeping whatever an earlier call at that point left behind (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__ents&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid and step the pillagers';
+     if(typeof greedOf!=='function'||typeof tickExtractPoints!=='function') return 'SKIP: this build has no siege size to read or no ticker to read it with';
+     var bad=[];
+     var STALE=7777;   // a figure no bag in the game can produce
+     function stage(open){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
+       var p=g.player, i, e=null;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].downed&&!g.ents[i].finished&&!g.ents[i].merc) e=g.ents[i];
+       if(!e) return {none:'no pillager on this map and seed to call an extraction'};
+       g.ents.length=0; g.ents.push(e);
+       var z=g.active||g.zones[0];
+       g.active=z; z.open=!!open; z.beaconT=null; z.hold=null; z.pullT=null;
+       z.siegeGreed=STALE;                     // what an earlier call left behind
+       g.beaconT=null; g.shipHold=null;
+       g.bag=[];                               // and the bag he is holding NOW is empty
+       p.downed=false; p.iv=99; p.x=z.x+2200; p.y=z.y+2200;
+       e.state='extract'; e.kind='raider'; e.downed=false; e.finished=false;
+       e.x=z.x; e.y=z.y; e.rcallT=0; e.extracting=0; e.hp=e.maxhp||e.hp;
+       return {g:g,e:e,z:z,p:p};
+     }
+     function run(st,secs){
+       var i, z=st.z;
+       for(i=0;i<Math.round(secs/0.1);i++){
+         __ents(0.1);
+         if(z.beaconT!==null&&z.beaconT!==undefined) return {called:true,secs:i*0.1};
+       }
+       return {called:false,secs:secs};
+     }
+     try{
+       var A=stage(1);
+       if(!A) return 'SKIP: no live raid with an extraction point to call';
+       if(A.none) return 'SKIP: '+A.none;
+       var r=run(A,12);
+       if(!r.called) return 'SKIP: the pillager did not call the extraction in twelve seconds, so the call under test never happened';
+       if(A.z.siegeGreed===STALE)
+         bad.push('the pillager called the extraction and the ring kept the figure your own earlier call left behind: the siege will be sized on a bag you are no longer carrying');
+       // And once the ticker has read it, it must be the bag he is holding now.
+       tickExtractPoints(0.01);
+       var want=greedOf();
+       if(A.z.siegeGreed!==want)
+         bad.push('after the pillager call the ring sizes its siege on '+A.z.siegeGreed+' rather than the '+want+' the bag actually in hand is worth');
+       // CONTROL: the same ring, the same stale figure, and no call at all. It
+       // must SURVIVE, or something else is clearing it and this check would be
+       // crediting a line that did nothing.
+       var B=stage(0);
+       if(B&&!B.none){
+         var r2=run(B,12);
+         if(r2.called) bad.push('control: the pillager called a closed extraction point, so this staging does not isolate the call');
+         else if(B.z.siegeGreed!==STALE) bad.push('control: the stale figure was cleared with no call made at all, so something other than the call is doing it and this check proves nothing');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz){ if(gz.ents) gz.ents.length=0; if(gz.player) gz.player.iv=0; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.53',what:'a machine searching for him gives up on a point it can never reach instead of pushing at the nearest wall for the rest of the raid, and the scatter that chooses that point no longer picks somewhere a body cannot stand; a search of open ground still ends by arriving (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__ents&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid and step the machines';
+     if(typeof spotFree!=='function') return 'SKIP: this build has no open-ground test to hold the scatter to';
+     var bad=[];
+     function stage(){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       var p=g.player, i, e=null;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='crawler'&&!g.ents[i].downed&&!g.ents[i].finished) e=g.ents[i];
+       if(!e) return {none:'no crawler on this map and seed to send searching'};
+       g.ents.length=0; g.ents.push(e);
+       p.downed=false; p.iv=99; p.hp=100;
+       // Parked far away and out of the way, so nothing here is a chase.
+       p.x=e.x+2600; p.y=e.y+2600;
+       e.hp=e.maxhp||e.hp; e.downed=false; e.finished=false; e.alert=0; e.chaseHold=0;
+       e.path=null; e.pathFail=false; e.invT=0; e.invGoal=null;
+       return {g:g,e:e,p:p};
+     }
+     function search(st,tx,ty,secs){
+       var e=st.e, g=st.g, i, x0=e.x, y0=e.y, last={x:e.x,y:e.y}, moved=0;
+       e.state='investigate'; e.tx=tx; e.ty=ty; e.scattered=1;
+       for(i=0;i<Math.round(secs/0.05);i++){
+         __ents(0.05);
+         if(e.state!=='investigate') break;
+       }
+       moved=Math.sqrt((e.x-x0)*(e.x-x0)+(e.y-y0)*(e.y-y0));
+       return {state:e.state,secs:i*0.05,moved:moved,
+               left:Math.sqrt((e.x-tx)*(e.x-tx)+(e.y-ty)*(e.y-ty))};
+     }
+     try{
+       var st=stage();
+       if(!st) return 'SKIP: no live raid to search in';
+       if(st.none) return 'SKIP: '+st.none;
+       // THE FINDING: a point outside the playable edge, which no map and no
+       // seed can ever make reachable, so this arm is the same on every one.
+       var A=search(st,-600,-600,30);
+       if(A.state==='investigate')
+         bad.push('a machine sent to search a point nothing can stand on was still searching it after '+Math.round(A.secs)+' seconds, '+Math.round(A.left)+' units short and unable to close, and nothing else in the game can free it: it pushes at that wall for the rest of the raid');
+       // CONTROL ONE: an open point it CAN reach must still end by arriving, and
+       // well inside the clock, or the fix has turned every search into a timer.
+       var st2=stage();
+       if(st2&&!st2.none){
+         var e2=st2.e, g2=st2.g, ox=0, oy=0, sc;
+         for(sc=1;sc<=14&&!ox;sc++){
+           var cx=e2.x+sc*22, cy=e2.y;
+           if(spotFree(g2.map,cx,cy,12)&&(typeof walkClearR!=='function'||walkClearR(e2.x,e2.y,cx,cy,e2.r))){ ox=cx; oy=cy; }
+         }
+         if(!ox) return 'SKIP: no open ground within 300 units of the crawler on this seed, so the control cannot be staged';
+         var B=search(st2,ox,oy,30);
+         if(B.state==='investigate') bad.push('control: a machine sent to open ground '+Math.round(Math.sqrt((ox-e2.x)*(ox-e2.x)))+' units away never got there in thirty seconds, so this check cannot see a search end at all');
+         else if(B.secs>19) bad.push('control: a search of open ground ended after '+Math.round(B.secs)+' seconds, which is the clock rather than the arrival, so the fix has turned every search into a timer');
+       }
+       // CONTROL TWO: and the scatter itself now picks somewhere a body can
+       // stand, which is the other half of the build.
+       var st3=stage();
+       if(st3&&!st3.none&&typeof packScatter==='function'){
+         var e3=st3.e, g3=st3.g, badPts=0, k;
+         for(k=0;k<40;k++){
+           e3.state='investigate'; e3.scattered=0;
+           e3.tx=e3.x; e3.ty=e3.y;
+           packScatter();
+           if(!spotFree(g3.map,e3.tx,e3.ty,12)) badPts++;
+         }
+         if(badPts) bad.push('the scatter still chose somewhere a body cannot stand on '+badPts+' of 40 tries, and that state has only one way out');
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var gz=__state(); if(gz){ if(gz.ents) gz.ents.length=0; if(gz.player) gz.player.iv=0; } }catch(_a){}
+       try{ var g4=__state(); if(g4&&!g4.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.52',what:'a pillager whose whole reach is inside his own blast does not throw a charge at all, instead of throwing from a band one unit wide inside his own explosion; an ordinary pillager still throws from outside the blast and his charge still lands clear of him (2026-09-07 audit, my defect from v12.20)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
@@ -5767,6 +5955,16 @@ window.__REGRESS=[
        var p=g.player, i;
        g.ents.length=0; g.shells.length=0;      // one Howler and nothing else at all
        p.downed=false; p.iv=99; p.roll=0; p.hp=100; p.moving=false;
+       // THE NOISE MUST BE IN THE OPEN, or the shot is refused for the roof over
+       // it and this check measures nothing. Eight bearings tried, and the man is
+       // moved to the first one where both he and the gun stand under open sky.
+       var _rf=(typeof roofAt==="function")?roofAt:null, _px=p.x, _py=p.y, _b;
+       var _ok=(!_rf)||(!_rf(_px,_py)&&!_rf(_px+400,_py));
+       for(_b=0;_b<8&&!_ok;_b++){
+         var _ang=_b*0.785, _cx=_px+Math.cos(_ang)*260, _cy=_py+Math.sin(_ang)*260;
+         if(!_rf(_cx,_cy)&&!_rf(_cx+400,_cy)){ p.x=_cx; p.y=_cy; _ok=1; }
+       }
+       if(!_ok&&_rf&&(_rf(p.x,p.y)||_rf(p.x+400,p.y))) return "SKIP: no open sky within 260 units of the landing on this seed, so the shot would be refused for a roof and nothing here would be measured";
        var hw=mkHowler(p.x+400,p.y);
        if(!hw) return 'SKIP: this build would not build a Howler';
        // Pointed AWAY from him, so nothing here can come down the sighted path:

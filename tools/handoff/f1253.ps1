@@ -67,7 +67,7 @@ SubRx @'
          var e2=st2.e, g2=st2.g, ox=0, oy=0, sc;
          for(sc=1;sc<=14&&!ox;sc++){
            var cx=e2.x+sc*22, cy=e2.y;
-           if(spotFree(g2.map,cx,cy,12)&&walkClearR&&walkClearR(e2.x,e2.y,cx,cy,e2.r)){ ox=cx; oy=cy; }
+           if(spotFree(g2.map,cx,cy,12)&&(typeof walkClearR!=='function'||walkClearR(e2.x,e2.y,cx,cy,e2.r))){ ox=cx; oy=cy; }
          }
          if(!ox) return 'SKIP: no open ground within 300 units of the crawler on this seed, so the control cannot be staged';
          var B=search(st2,ox,oy,30);

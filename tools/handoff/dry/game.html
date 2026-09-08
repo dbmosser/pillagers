@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.52';
+var VER='12.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.52';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.52';
+var WHATSNEW_VER='12.55';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1381,6 +1381,9 @@ var WHATSNEW=[
   'BREAKING A CRIER LINE OF SIGHT NOW ACTUALLY CANCELS ITS ALARM. The cancel cleared the windup and then fired the alarm on the very same frame, so hiding never once called one off. The three seconds have to be unbroken now, which they always claimed to be.',
   'A HOWLER NO LONGER SHELLS ITS OWN CRATER. It heard its own impact, took the crater for a fresh report, and mailed another shell to it, and that one wound it up again. One noise from you became a barrage of two to four after you had gone quiet.',
   'A PILLAGER WHOSE REACH IS INSIDE HIS OWN BLAST NO LONGER THROWS A CHARGE. One gun in nine has a shorter reach than the radius of a frag, and the man carrying it had a throwing window one unit wide, entirely inside his own explosion.',
+  'A MACHINE SEARCHING FOR YOU CAN NO LONGER GET STUCK FOR THE REST OF THE RAID. When one lost you it picked a point to search, never checked that anything could stand there, and had no way out except arriving. A point inside a wall held it against that wall until the raid ended.',
+  'A PILLAGER CALLING EXTRACTION NOW SIZES THE SIEGE ON THE BAG YOU ARE ACTUALLY HOLDING. His call kept whatever figure your own earlier call at that point had left behind, so riding out on him could bring the siege your bag from half an hour ago deserved.',
+  'AN IMPORTED GHOST FIGHTS AT HIS OWN GUN RANGE. He was handed the gun from the report he came out of but kept the engagement range of the body he arrived in, so he opened fire at a distance his rounds could not cross, or refused to open fire at one they could.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -8525,7 +8528,16 @@ function packScatter(){
     if(e.scattered) continue;
     e.scattered=1;
     var a=(n++)*1.05+rnd(-0.3,0.3),r=rnd(90,240);
-    e.tx+=Math.cos(a)*r; e.ty+=Math.sin(a)*r;
+    // v12.53, 2026-09-07 audit: THE SCATTER PICKS SOMEWHERE A BODY CAN STAND.
+    // This offset was never tested for anything, so it could land inside a
+    // locked shell, a ruin block, a wreck or past the world edge, and the state
+    // it belongs to has only one exit, arriving. searchSector already tests its
+    // own points this way; this one never did. If the scattered point is not
+    // open the machine keeps the sighting it actually had, which is always a
+    // place a body was standing.
+    var _sx=e.tx+Math.cos(a)*r, _sy=e.ty+Math.sin(a)*r;
+    var _sw=(G.map.cols*G.map.cw), _sh=(G.map.rows*G.map.ch);
+    if(_sx>44&&_sy>44&&_sx<_sw-44&&_sy<_sh-44&&spotFree(G.map,_sx,_sy,12)){ e.tx=_sx; e.ty=_sy; }
   }
 }
 // ============================================================ THE LISTENER
@@ -17454,8 +17466,26 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
     }
     else if(e.state==='investigate'){
       navSeek(e,e.tx,e.ty,e.spd*.75,dt); want=Math.atan2(e.ty-e.y,e.tx-e.x);
+      // v12.53, 2026-09-07 audit: AND IT GIVES UP ON A POINT IT CANNOT REACH.
+      // Arriving was the only way out of this state and there was no clock, so a
+      // point inside a wall or past the world edge held the machine for the rest
+      // of the raid, walking into the nearest face and orbiting it. The wander
+      // that re-rolls a target skips this state on purpose and the noise waker
+      // only re-points patrol and loot, so nothing else could ever free it.
+      // Same rule v12.07 gave the chase, one state along. The clock is per
+      // point, so a machine sent somewhere new starts it again, and twenty
+      // seconds is more than three times the longest honest walk here: the
+      // scatter reaches 240 units and the walk is at three quarters speed.
+      var _ig=Math.round(e.tx)+','+Math.round(e.ty);
+      if(e.invGoal!==_ig){ e.invGoal=_ig; e.invT=0; }
+      e.invT=(e.invT||0)+dt;
       if(dist(e,{x:e.tx,y:e.ty})<34){
         e.state=e.kind==='raider'?'loot':'patrol'; e.cd=rnd(.5,1.6); e.scattered=0;
+        e.invT=0; e.invGoal=null;
+      }
+      else if(e.invT>20){
+        e.state=e.kind==='raider'?'loot':'patrol'; e.cd=rnd(.5,1.6); e.scattered=0;
+        e.invT=0; e.invGoal=null; e.path=null; e.pathFail=false;
       }
     }
     // v8.24b, audit: THE HIRE SHOOTS FIRST, whatever state he is in. mercEngage
@@ -17793,7 +17823,14 @@ e.lootT=(e.lootT||0)+dt;
           e.rcallT=(e.rcallT||0)+dt;
           if(e.rcallT>=1.6){
             e.rcallT=0;
-            z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.pullN=0; z.pinged=0;
+            // v12.54, 2026-09-07 audit: HIS CALL READS THE BAG TOO. The figure the
+            // siege is sized from is read once per CALL, not once per ring, which is
+            // what the comment beside the reader says and what your own call has
+            // always done by clearing it here. This line never did, so the first
+            // call on a ring froze that ring for the rest of the raid: call with a
+            // heavy bag, miss the extraction, sell it, then ride out on his call at
+            // the same point and the siege is sized on a bag you no longer have.
+            z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=null; z.pullN=0; z.pinged=0;
             if(z===G.active){ G.beaconT=z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0; }
             ping(z.x,z.y,700,true,false,'raider','fire');
             if(!G.sim) say(e.name+' called extraction.');
@@ -28852,7 +28889,17 @@ function applyGhost(){
     e.name=P.ghost.tag;
     e.ghost=1;
     e.hostile=false; e.friendlyPC=1; e.grudge=false;
-if(WEAPONS[P.ghost.wep]) e.wep=(WEAPONS[P.ghost.wep].mag===0)?WEAPONS.pistol:WEAPONS[P.ghost.wep];
+    // v12.55, 2026-09-07 audit: THE RANGE COMES WITH THE GUN. A gun, its damage
+    // and its engagement range are one thing in three fields, and both other
+    // re-gun paths move all three with the same 580 cap; this one moved only the
+    // gun. So a ghost whose body rolled a long gun and whose report says he
+    // favoured a short one opened fire at the body range and every round in that
+    // band died short of the target, and the reverse never engaged at all past
+    // the body range. Same two lines the kit path uses, so there is now one rule.
+    if(WEAPONS[P.ghost.wep]){
+      e.wep=(WEAPONS[P.ghost.wep].mag===0)?WEAPONS.pistol:WEAPONS[P.ghost.wep];
+      e.dmg=e.wep.dmg; e.rng=Math.min(e.wep.rng*0.72,580);
+    }
     e.ghostHaul=(P.ghost.rate>=25)?5:9;
     for(var r2=0;r2<(G.roster||[]).length;r2++)
       if(G.roster[r2].ref===e){ G.roster[r2].name=e.name; break; }
@@ -29001,7 +29048,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.52: my own defect from v12.20, found by the 2026-09-07 read-only audit. v12.20 moved the near edge of a pillagers throwing band out to the blast radius plus the scatter, so he would stop standing in his own charge, and then capped that edge at his own reach so a short-ranged man could still throw at all. The cap is the bug. For one gun in nine, the Riot Scattergun, the reach is 187 against a safe edge of 242, so the cap pulls the edge back inside the blast; and since both callers already require him to be inside his reach, the only distances he could throw from were 186.2 to 187.2, a band one unit wide and entirely within the radius of the charge he was throwing. Both goals of that line failed for him at once: the edge did not clear his blast, and the cap meant to stop a short-ranged man never throwing gave him a single unit instead of a band. The honest answer is the one the cap was avoiding: a man whose whole reach is inside his own blast does not throw. Check 12.52 pins a pillagers gun to the Riot Scattergun, stands the player inside that one unit window with a charge in the mans bag and every other gate open, and requires no throw at all; a control with the same man given an ordinary reach must still throw from outside the blast, and a third arm requires the thrown charge to land outside his own radius; fails on v12.51.',
+  now:'v12.55: 2026-09-07 audit (P3). A pillagers gun, his damage and his engagement range are one thing held in three fields, and the file says so twice: the elite blessing moves all three, a man who picks a gun out of a kit moves all three, and the comment beside one of them spells out why, that an elite with a Longshot keeping an SMG engagement range would read as broken. The imported ghost is the one re-gun that moved only the gun. So a ghost whose body rolled an Auto Rifle and whose report says he favoured the Riot Scattergun opened fire at 374 units with a gun whose rounds die at 260, and every round fired in that band was thrown away short; the other way round a Longshot ghost on a Compact SMG body never engaged past 259 and the 580 cap never bound. The same two lines the kit path already uses, so there is one rule now. Check 12.55 imports a ghost whose favourite gun is not the gun his body rolled and requires his engagement range and his damage to have moved with it, with a control that a ghost imported onto a body already carrying that same gun is left exactly as he was; fails on v12.54.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

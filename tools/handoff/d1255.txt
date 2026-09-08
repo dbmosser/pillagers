@@ -1,0 +1,43 @@
+## v12.55 - AN IMPORTED GHOST FIGHTS AT HIS OWN GUN RANGE
+
+From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
+reading at v12.54.
+
+WHAT IT WAS. A pillager's gun, his damage and his engagement range are one
+thing held in three fields, and the file says so twice. The elite blessing
+moves all three together. A man who picks a gun out of a kit moves all three
+together. The comment beside one of them spells out the reason: an elite with a
+Longshot that kept an SMG's engagement range would read as broken.
+
+The imported ghost is the one re-gun in the game that moved only the gun. So a
+ghost whose body rolled an Auto Rifle, and whose report says he favoured the
+Riot Scattergun, opened fire at 374 units holding a gun whose rounds die at
+260. Every round he fired in that band was thrown away short of the target. The
+other way round, a Longshot ghost on a Compact SMG body never engaged past 259
+and the cap that exists to stop a man firing from outside your sight never
+bound at all.
+
+You only see it if you shoot your own imported friend, because while he is
+friendly the fights he picks are governed by a fixed window that never reads
+this field. Once you turn him hostile, it is his whole behaviour.
+
+THE BUILD. The same two lines the kit path already uses, with the same cap, so
+there is one rule for all three re-gun paths instead of two rules and an
+exception.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The ghost is not built under the
+bot at all; the import bails out of a sim raid, so no paired number can move.
+No dial changes.
+
+MEASURED. Check 12.55 records what a pillager's body actually rolled, imports a
+ghost carrying the Longshot, which is not in the pool a body can roll, and
+requires his engagement range and his damage to have moved with the gun. The
+control is the same import with the gun that body already carries: nothing may
+move, which is what separates carrying the range with the gun from simply
+rewriting the range for every ghost. It skips honestly if this seed happens to
+build a pillager already holding the Longshot, because then there would be
+nothing to measure.
+
+Not verified: it does not watch him fire, only the field the firing branches
+read; it runs one map and one seed; and it says nothing about the hostile flip
+that makes the mismatch visible, which is its own path.

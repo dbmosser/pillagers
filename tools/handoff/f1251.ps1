@@ -34,6 +34,16 @@ SubRx @'
        var p=g.player, i;
        g.ents.length=0; g.shells.length=0;      // one Howler and nothing else at all
        p.downed=false; p.iv=99; p.roll=0; p.hp=100; p.moving=false;
+       // THE NOISE MUST BE IN THE OPEN, or the shot is refused for the roof over
+       // it and this check measures nothing. Eight bearings tried, and the man is
+       // moved to the first one where both he and the gun stand under open sky.
+       var _rf=(typeof roofAt==="function")?roofAt:null, _px=p.x, _py=p.y, _b;
+       var _ok=(!_rf)||(!_rf(_px,_py)&&!_rf(_px+400,_py));
+       for(_b=0;_b<8&&!_ok;_b++){
+         var _ang=_b*0.785, _cx=_px+Math.cos(_ang)*260, _cy=_py+Math.sin(_ang)*260;
+         if(!_rf(_cx,_cy)&&!_rf(_cx+400,_cy)){ p.x=_cx; p.y=_cy; _ok=1; }
+       }
+       if(!_ok&&_rf&&(_rf(p.x,p.y)||_rf(p.x+400,p.y))) return "SKIP: no open sky within 260 units of the landing on this seed, so the shot would be refused for a roof and nothing here would be measured";
        var hw=mkHowler(p.x+400,p.y);
        if(!hw) return 'SKIP: this build would not build a Howler';
        // Pointed AWAY from him, so nothing here can come down the sighted path:

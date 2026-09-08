@@ -1,0 +1,24 @@
+v12.54: a pillager calling extraction sizes the siege on the bag you hold
+
+The size of the siege a call buys is read from the bag you are carrying, once,
+at the moment the call is made. The code says exactly that beside the reader,
+and your own call clears the stored figure so it is read fresh.
+
+A pillager's call does not. It has carried the same per-zone consequences since
+v3.58, and the design note says you can ride out on his call, but it writes
+every other field on that ring and leaves this one alone.
+
+So the first call on a ring froze that ring for the rest of the raid unless you
+called it again. Call a point with a heavy bag, miss the extraction, sell the
+bag, then ride out on his call at the same point, and the siege is sized on a
+bag you no longer have.
+
+One field added to his call, so both calls read the same way.
+
+Check 12.54 leaves a stale figure of 7777 on a ring, which no bag can produce,
+empties the bag, and lets a pillager make the call himself through the real
+state machine; it then requires the stale figure gone and the re-read figure to
+equal what the bag in hand is worth. The control closes the point so no call
+happens and requires the figure to survive; fails on v12.53.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -40024,6 +40024,53 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.36 - WHOEVER KILLED YOU KILLED YOU
+
+From the 2026-09-07 read-only audit (P2, corpse-redown), specced from the
+source and then attacked by a skeptic before a line was written. Verified by
+reading at v12.35.
+
+WHAT IT WAS. killPlayer does not end a live raid. It zeroes your health,
+CLEARS the downed flag, opens a beat of a second and a half and leaves your
+body lying in the world, and the frame loop keeps running the machines, the
+bullets and the throwables underneath that beat at a quarter speed, which is
+what makes the death read as a death rather than a cut. damagePlayer has no
+dead test at all. Its only early return is invulnerability, and killPlayer
+never sets any. So a round that landed on the corpse walked straight past the
+downed branch, took the health negative and fell into the down path, which
+fires three things at once: a second DOWN toast painted over the death fade,
+another count on the downs figure that both the run report and the stats card
+print, and a rewrite of the last-hit name. That last one is the one that
+matters, because it is the name the KILLED IN ACTION card reads out, while
+the ledger row beside it still names the machine that actually killed you.
+
+THE BUILD. One guard at the very top of damagePlayer. It has to be at the
+very top: the direction stamp, the hurt stamp and the name are all written
+before the invulnerability test, so a guard placed any lower still lets the
+card be renamed by a shot at a body. Both halves of the condition are set
+only by killPlayer and both are rebuilt with the raid, so nothing can leak
+into the next one.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The bot ends a sim raid
+outright rather than running a beat, so the beat never exists under it and no
+paired number moves. The round itself still sparks, still counts as a hit and
+is still consumed, so the bullet stream is unchanged.
+
+MEASURED. Check 12.36 puts him down with a real round on the real bullet
+path, kills him with a second, and then lands a third on the body inside the
+beat through the real frame loop, fired by a machine given a name no map ever
+uses so the check cannot pass by agreeing with a real killer who happened to
+be standing there. It then reads back everything he would see: the downs
+figure, the downed flag, the toast, the last-hit name, and the line on the
+card. Two staging assertions guard the room itself, requiring the death to be
+recorded against the machine that caused it and the name at the moment of
+death to be the right one. On the v12.35 fixture all of them fire.
+
+Not verified: a blade or a blast on the body rather than a round, which take
+the same guard but are not driven; whether the beat should end early when the
+body is hit, which is a feel question and his to answer; the stats card and
+the run report, which read the same downs figure this protects but are not
+opened here; the bot, which cannot reach this code at all.
 ## v12.35 - HIS ORDER: THE SAFE POCKET IS DELETED
 
 His order of 2026-09-08: "remove the safe pocket from the stash and just

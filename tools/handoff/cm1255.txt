@@ -1,0 +1,23 @@
+v12.55: an imported ghost fights at his own gun range
+
+A pillager's gun, his damage and his engagement range are one thing held in
+three fields, and the file says so twice. The elite blessing moves all three
+together, a man who picks a gun out of a kit moves all three together, and the
+comment beside one of them says why: an elite with a Longshot that kept an
+SMG's engagement range would read as broken.
+
+The imported ghost is the one re-gun in the game that moved only the gun. So a
+ghost whose body rolled an Auto Rifle, and whose report says he favoured the
+Riot Scattergun, opened fire at 374 units holding a gun whose rounds die at
+260, and every round he fired in that band was thrown away short. The other way
+round he never engaged past his body's range at all.
+
+The same two lines the kit path already uses, with the same cap, so there is
+one rule for all three re-gun paths.
+
+Check 12.55 records what the body rolled, imports a ghost carrying the
+Longshot, which no body can roll, and requires the range and the damage to have
+moved with the gun. The control imports the gun that body already carries and
+requires nothing to move; fails on v12.54.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
