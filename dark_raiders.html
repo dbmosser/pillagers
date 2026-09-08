@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.41';
+var VER='12.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.41';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.41';
+var WHATSNEW_VER='12.42';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1370,6 +1370,7 @@ var WHATSNEW=[
   'A GUN YOU DIED WITH IS NOT COMING UP WITH YOU. A death that took your sidearm left gun 2 still naming it, and the last screen before the lift told you it was going up in your hands. The slot is emptied now, and that screen makes the same test the deploy makes.',
   'THE MAN YOU HIRED STOPS PICKING UP THE MEN SHOOTING AT YOU. A crew number is not a side: your hire shares one with about half the map, so a downed hostile carrying that number used to be worth breaking off your job for. He still picks up anyone who has thrown in with you.',
   'AN EMPTY CELL SPENDS NOTHING FROM ANOTHER CELL. The G key on a cell you had nothing in used to quietly walk to the next grenade you did have and throw that one, while the belt still named the cell you pressed. It names what is missing and puts your gun up. Q still cycles.',
+  'A GUN YOU STOW KEEPS ITS ROUNDS. Putting a gun in your backpack used to throw away the magazine in it, and taking one back out handed you half a magazine that no reserve paid for. A gun you find in the field still comes up on half a magazine.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -13035,6 +13036,7 @@ function grantLoot(ct,keys,delay0){
         if(p.wep.id!=='fists'&&!p.wepIssued){
           if(ITEMS['gun_'+p.wep.id]){
             G.bag.push('gun_'+p.wep.id);
+            stowRounds(p.wep.id,p.ammo);   // v12.42: the gun a field pickup displaces keeps its load
             if(!G.sim&&p.wepFromArmory){
               var oi=P.weapons.indexOf(p.wep.id);
               if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(p.wep.id); }
@@ -13123,6 +13125,25 @@ function tickRegen(dt){
 // deployed with and gunB the other one, mapped through p.swapped the way
 // hotbarSlots maps them. The gun in hand is always p.wep; if that is the one
 // bagged, the other gun comes up and keeps its own numbered slot.
+// v12.42, 2026-09-07 audit: A STOWED GUN KEEPS ITS ROUNDS. Loaded rounds live
+// only in p.ammo and p.secAmmo, and the backpack holds a bare key string with
+// nowhere for a number, so a gun put in the bag left its magazine nowhere at
+// all and came back with a fresh half magazine that no reserve paid for. Stow a
+// full gun and the load vanished; stow an empty one and half a magazine
+// appeared, as often as you liked. The rounds ride here between the two verbs.
+// Per gun id, because the bag holds keys and not instances: two identical
+// rifles in there are already indistinguishable, so first in first out is the
+// truest answer that exists. A gun FOUND in the field has no entry and still
+// comes back on half a magazine, which is his rule and is untouched.
+function stowRounds(id,n){
+  var m=(G.stowAmmo=G.stowAmmo||{});
+  (m[id]=m[id]||[]).push(Math.max(0,n|0));
+}
+function takeRounds(id,mag){
+  var m=G.stowAmmo, q=m&&m[id];
+  if(q&&q.length) return Math.min(mag,Math.max(0,q.shift()|0));
+  return Math.ceil(mag/2);
+}
 function bagHeldGun(slot){
   var p=G&&G.player; if(!p||p.downed||G.over) return false;
   var sw=!!p.swapped;
@@ -13132,6 +13153,7 @@ function bagHeldGun(slot){
   if(issued){ say(g.name+' is issued kit; it stays in your hands.'); return false; }
   if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in a bag.'); return false; }
   G.bag.push('gun_'+g.id);
+  stowRounds(g.id,isHand?p.ammo:p.secAmmo);   // v12.42: the load goes with it
   if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); } }
   if(isHand){
     p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0;
@@ -13225,10 +13247,13 @@ function equipFromBag(ix,slot){
     // reads your hands only - so the copy dodged the death rule that is meant
     // to pay for carrying a gun at all. It goes back where it lives.
     else if(oldArm&&P.weapons.indexOf(oldW.id)>=0) say(oldW.name+' is yours; it goes back to the armoury.');
-    else G.bag.push('gun_'+oldW.id);
+    else { G.bag.push('gun_'+oldW.id); stowRounds(oldW.id,toSec?p.secAmmo:p.ammo); }   // v12.42: and the displaced gun keeps its load too
   }
-  if(toSec){ p.sec=g; p.secAmmo=Math.ceil(g.mag/2); p.secIssued=false; p.secFromArmory=false; }
-  else { p.wep=g; p.ammo=Math.ceil(g.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; }
+  // v12.42: what it came in with, if this is a gun that was stowed; half a
+  // magazine only for one found in the field, which is the rule in the README.
+  var _rd=takeRounds(gk,g.mag);
+  if(toSec){ p.sec=g; p.secAmmo=_rd; p.secIssued=false; p.secFromArmory=false; }
+  else { p.wep=g; p.ammo=_rd; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; }
   G.tel.weapon=p.wep.name;
   G.tel.gunsEquipped=(G.tel.gunsEquipped||0)+1;
   if(G.bagSel>=G.bag.length) G.bagSel=Math.max(0,G.bag.length-1);
@@ -28856,7 +28881,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.41: closes the not-verified line on v12.08, confirmed by the 2026-09-07 audit. v12.08 stopped an empty throwable cell from owning the MOUSE trigger. The G key and the pad reach the throw through a different door, useHot into doThrow, and that door still cycled: an empty selected cell walked the hidden selector on to the next grenade you did have and threw that one instead, while the belt highlight and the caption still named the cell you pressed. The cook did the same. One shared refusal now serves both use verbs and does exactly what the mouse branch does: it names what is missing, puts the gun in your hands up, and spends nothing. Q, the dedicated cycle key, still cycles, because choosing another grenade on purpose is not the same act as using the one you chose. Check 12.41 deploys with two Smoke and nothing else, points the belt at the Frag cell, presses the key through the real use path, and requires the pouch, the throw list and the selector all unmoved with a toast that names the Frag; it then drives the assigned-cell route and the cook the same way, and a control requires a cell that DOES hold a grenade to still throw it; fails on v12.40.',
+  now:'v12.42: 2026-09-07 audit (P2). Loaded rounds live in exactly two places, the primary count and the secondary count, and the backpack holds a bare key string with nowhere for a number to live. So a gun that went into the backpack left its magazine nowhere at all: thirty loaded rounds stopped existing. Taking it back out handed it half a magazine conjured from nothing, which no reserve paid for. Both halves are wrong and they point opposite ways: stow a full gun and lose the load, stow an empty one and gain half a magazine, as often as you like. The rounds now ride between the two verbs in a queue kept per gun id, which is exactly as precise as the backpack itself, since it holds keys and not instances and two identical rifles in there are already indistinguishable. Three doors put a gun in the backpack and all three now carry its load: the belt drag, the swap that displaces a gun, and the field pickup that stows the gun in your hands. A gun FOUND in the field has no entry and still comes back on half a magazine, which is his rule and does not move. Check 12.42 measures loaded plus reserve as one conserved number across a stow and an equip, on a full gun and on an empty one, and controls that a gun found in the field still arrives on half a magazine; fails on v12.41.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

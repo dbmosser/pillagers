@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v12.40 (9c04010). The tree has **v12.41 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v12.41 (a1a534b). The tree has **v12.42 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "seed" (the only tab; the pane holds one tab since 2026-09-07 12:44).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1241 cm1241.txt
+    bash tools/handoff/ship.sh commit 1242 cm1242.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1241 1242
+    bash tools/handoff/ship.sh start 1242 1243
 and carry on down the list. Cron 866ce4db is armed every minute (re-armed 2026-09-08 07:31); re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -531,3 +531,5 @@ reachable directly, and window.__* hooks are the fixture's instruments.
 d<n>.txt is the DESIGN.md entry (ends with "Not verified:"), a<n>.txt the
 AUDIT.md table row, cm<n>.txt the commit message. Copy any of 1150 to 1163
 as the template. Reproduce the defect in the page BEFORE writing the fix.
+
+**CANDIDATE 1271, FOUND 2026-09-08 WHILE CHECKING f1270's STAGING (not yet drafted).** districtPlaceName at game 2863 ends `return out.slice(0,2).join(' or ')`, so a district with THREE named zones names only two of them. On THE COLD MILE district 2 is BLASTLINE, PUMP ROW and GANTRY YARD, and the card says "in BLASTLINE or PUMP ROW": GANTRY YARD counts for the contract and he is never told it exists. Decide between naming all of them and naming the district itself; the truncation is deliberate for length, so this is a wording call, not a silent bug. Also confirmed while reading: district 2 is THE SUMP on COLD STORAGE and THE SUMPS is district 3 on THE COLD MILE, one letter apart on different districts, which is exactly the v12.70 scenario.
