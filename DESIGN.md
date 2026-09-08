@@ -40024,6 +40024,53 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.33 - HIS NOTE: SPRINTING LEAVES ONE TRAIL, NOT TWO
+
+His note of 2026-09-07 morning: "many-footprints glitch is still happening
+while running vertically". Traced by reading at v12.32; the word "still" is
+his, and it is fair, because v10.55 fixed a different footprint fault and
+this one was underneath it.
+
+WHAT IT WAS. Sprinting lays TWO trails. The first is the one he is meant to
+see: boot prints stamped into the decal list once every 56 units of ground
+actually covered, rotated to the direction he is running, capped at 70, wet
+and dark after water and a faint scuff otherwise. That is v10.55's work and
+it is correct. The second is G.prints, the scent list a pillager tracker
+smells: while sprinting it takes a mark every 34 units, capped at 40, and
+the draw loop paints each one as two rectangles, 3 wide and 5 tall, that are
+never rotated. Unrotated, that pair is a left boot and a right boot walking
+UP the screen. So when he runs across the screen they sit sideways to his
+path and read as ticks nobody calls a footprint, and when he runs up or down
+they line up with his path and read as a second set of footprints, at a
+different spacing, interleaved with the real ones. That is the glitch, and
+that is why it is a vertical one.
+
+THE BUILD. His own scent marks are not painted any more. One line in the
+draw loop. His real boot prints already draw that same path from the decal
+list, and his own wake on water is already a decal too (v8.89), so nothing
+he is meant to see is lost. A pillager's marks still draw under the same
+sight gate they have had since v8.85, which is his feature: you can read
+where a man went. The list itself is untouched, still filled every 34 units
+while sprinting and still smelled, so no tracker, no pillager and no machine
+behaves any differently and no balance moves.
+
+MEASURED. Check 12.33 deploys, empties the map so nothing interrupts, and
+sprints him north for three seconds through the real keys and the real frame
+loop, which is the only driver that moves the player. It requires both trails
+to have filled (at least three scent marks and at least two real boot
+prints), then draws one frame with the canvas watched, counting every
+rectangle of exactly 3 by 5, which is the scent mark and nothing else. That
+count must be zero. Then it drops one mark belonging to a pillager at his
+feet and requires the count to rise, so the zero is a measured zero and not a
+counter that cannot see. Finally it requires the scent list to be the same
+size it was, so the draw side has taken nothing away from what smells it. On
+the v12.32 fixture the first count is high.
+
+Not verified: his own eye on a vertical sprint, which is the report; the
+walk case, where no scent mark is laid at all and there was never a second
+trail; whether the marks a pillager leaves should be rotated to their own path too,
+which is the same drawing and would be a separate build; the 34 unit spacing
+and the 40 cap, both untouched because they belong to the tracker.
 ## v12.32 - HIS NOTE: THE BENCH SAYS TO HOLD THE BUTTON
 
 His note of 2026-09-07 morning: "crafting progress bar is not working

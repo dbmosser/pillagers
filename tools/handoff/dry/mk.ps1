@@ -5709,6 +5709,254 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.46',what:'auto-jog stops when he goes down: a man stood back up with no key held stays where he is instead of walking off toward the cursor at 40 health, while an armed auto-jog that never went down still walks him (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
+     if(typeof damagePlayer!=='function'||typeof selfRevive!=='function'||typeof updatePlayer!=='function') return 'SKIP: this build has no down or revive path';
+     var bad=[], keepTs=lastTs;
+     // One staging, three ways through it. down: he is put on the floor by a real
+     // hit and stood back up. armed: whether the auto-jog is on at all.
+     function walk(armed,down){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       var p=g.player, K=__keys(), k, i;
+       for(k in K) delete K[k];
+       g.ents.length=0;                       // nobody to shoot him mid-walk
+       p.downed=false; p.roll=0; p.revived=false; p.healLock=false;
+       p.hp=100; p.armor=0; p.iv=0; p.stam=100; p.stamLock=0; p.stamRelease=0;
+       p.cooking=0; p.cookT=0; p.cookKind=null; p.face=0;   // due east, so a walk is +x
+       p.autoJog=!!armed;
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       if(down){
+         p.hp=30;
+         damagePlayer(240,null,'crawler',p.x-20,p.y);
+         if(!p.downed) return {none:'a 240 hit on 30 health did not put him on the floor'};
+         p.downT=CFG.downTime; p.giveT=0;
+         selfRevive();
+         if(p.downed) return {none:'the revive did not stand him back up'};
+       }
+       p.iv=99; p.face=0;
+       var x0=p.x, y0=p.y;
+       for(i=0;i<10;i++){ p.iv=99; clk+=16.7; __loop(clk); }
+       for(k in K) delete K[k];
+       return {moved:Math.sqrt((p.x-x0)*(p.x-x0)+(p.y-y0)*(p.y-y0)),jog:!!p.autoJog,hp:Math.round(p.hp)};
+     }
+     try{
+       // CONTROL ONE FIRST: armed, never downed. He MUST walk, or nothing below
+       // means anything: a zero would only say this check cannot see a walk.
+       var C=walk(true,false);
+       if(!C) return 'SKIP: no live raid to walk in';
+       if(C.none) return 'SKIP: '+C.none;
+       if(!(C.moved>1)) return 'SKIP: an armed auto-jog with no key held moved him '+Math.round(C.moved)+' units in ten frames, so this check cannot see a walk and proves nothing';
+       // THE FINDING: armed, then put down and stood back up, no key touched.
+       var A=walk(true,true);
+       if(A.none) return 'SKIP: '+A.none;
+       if(A.moved>1)
+         bad.push('the auto-jog survived the down: stood back up on '+A.hp+' health with no key held he walked '+Math.round(A.moved)+' units by himself, toward whatever the cursor was pointing at, which is the character walking off on his own');
+       if(A.jog) bad.push('the auto-jog is still armed after a down, so he will walk off again on the next standing frame');
+       // CONTROL TWO: nothing armed at all, same room, same down. He stands still,
+       // so the zero above is the flag being cleared and not the room being stuck.
+       var B=walk(false,true);
+       if(B.none) return 'SKIP: '+B.none;
+       if(B.moved>1) bad.push('control: with no auto-jog armed at all he still walked '+Math.round(B.moved)+' units after the revive, so something other than the auto-jog is moving him and this check is measuring the wrong thing');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ lastTs=keepTs; }catch(_t){}
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.autoJog=false; gz.player.iv=0; gz.player.downed=false; gz.player.revived=false; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.45',what:'cutting the seal no longer stops the world: through the whole hold his health recovers as it does standing anywhere else and a ship already called keeps coming, while the cut itself still advances at the same rate (2026-09-07 audit, the same fault as v12.34 one door along)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
+     if(typeof tickRegen!=='function'||typeof tryExtractTick!=='function') return 'SKIP: this build has no recovery or extraction tick to carry past the return';
+     var bad=[];
+     // Fifteen seconds of raid at the largest step the frame clock will take,
+     // holding E or not, standing at the seal either way.
+     function hold(cutting){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       if(!g.seal||g.seal.done) return {none:'this map and seed has no uncut seal to stand at'};
+       var p=g.player, K=__keys(), k, i;
+       for(k in K) delete K[k];
+       g.ents.length=0;                          // nobody to interrupt the hold
+       p.downed=false; p.roll=0; p.hp=60; p.maxhp=Math.max(100,p.maxhp||100);
+       p.combatT=20; p.regenAcc=0; p.healQ=0; p.cooking=0;
+       p.x=g.seal.x+30; p.y=g.seal.y;
+       var z=g.active||g.zones[0];
+       if(z){ g.active=z; z.open=true; z.beaconT=25; z.hold=null; g.beaconT=25; }
+       var cut0=(g.seal.gained||0), hp0=p.hp, ct0=p.combatT, bt0=(z?z.beaconT:null);
+       if(cutting) K.KeyE=1;
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       for(i=0;i<300;i++){ p.iv=99; clk+=50; __loop(clk); }
+       for(k in K) delete K[k];
+       return {cut:(g.seal.gained||0)-cut0,hp:p.hp-hp0,ct:p.combatT-ct0,
+               bt:(z&&bt0!==null)?(bt0-z.beaconT):null,near:!!g.nearSeal};
+     }
+     var keepTs=lastTs;
+     try{
+       // THE FINDING: fifteen seconds of a real cut.
+       var A=hold(true);
+       if(!A) return 'SKIP: no live raid to stand in';
+       if(A.none) return 'SKIP: '+A.none;
+       if(!A.near) return 'SKIP: standing 30 units from the seal did not put him at the door, so nothing here is a cut';
+       if(!(A.cut>=12)) return 'SKIP: fifteen seconds of holding the key advanced the cut by only '+Math.round(A.cut)+' seconds, so the hold under test never ran';
+       if(!(A.ct>=12)) bad.push('through '+Math.round(A.cut)+' seconds of cutting, the recovery clock advanced '+Math.round(A.ct)+' seconds, so the clock that decides when he heals does not run while he cuts');
+       if(!(A.hp>=4)) bad.push('through '+Math.round(A.cut)+' seconds of cutting he recovered '+Math.round(A.hp)+' health, so the bar is flat for the whole of a hold that lasts up to two minutes');
+       if(A.bt!==null&&!(A.bt>=12)) bad.push('through '+Math.round(A.cut)+' seconds of cutting, a ship already called came only '+Math.round(A.bt)+' seconds closer, so an extraction he had already paid for stops while he makes the loudest noise in the game');
+       // CONTROL: the same fifteen seconds standing beside the seal, not cutting.
+       // This is what the bar is supposed to do, and it is what the frozen one
+       // did not; without it a zero above could be the room rather than the bug.
+       var B=hold(false);
+       if(B&&!B.none){
+         if(!(B.hp>=4)) bad.push('control: standing beside the seal without cutting he recovered only '+Math.round(B.hp)+' health in fifteen seconds, so this check cannot see recovery at all and its findings prove nothing');
+         if(B.cut>0.5) bad.push('control: the seal advanced '+Math.round(B.cut)+' seconds with the key not held, so the staging cuts by itself');
+         if(B.bt!==null&&!(B.bt>=12)) bad.push('control: a called ship came only '+Math.round(B.bt)+' seconds closer while he stood still, so this check cannot see the extraction clock at all');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ lastTs=keepTs; }catch(_t){}
+       try{ var gz=__state(); if(gz&&!gz.over){ gz.player.downed=false; gz.player.iv=0; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.44',what:'the boarding window never outlives the raid clock: a ship landing with two seconds left announces what the raid actually has and not the three second floor, on the number and on the ring badge alike, while a full clock and a raid with the clock switched off both still give the ordinary thirty seconds (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof tickExtractPoints!=='function'||typeof zoneBadge!=='function') return 'SKIP: this build has no extraction ticker or ring badge to read';
+     var bad=[];
+     // Land a ship on a ring with a chosen amount of raid clock left, by running
+     // the real ticker one step past the end of the beacon. Returns the window
+     // it created and the words the ring badge prints for it.
+     function land(left,clockOn){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
+       var z=g.active||g.zones[0], p=g.player;
+       CFG.raidSec=clockOn?540:0;
+       g.active=z; z.open=true; z.hold=null; z.holdMax=null; z.boardT=0; z.pullT=null;
+       z.beaconT=0.001; g.beaconT=z.beaconT;
+       g.timeLeft=left;
+       p.downed=false; p.iv=99; p.x=z.x; p.y=z.y;
+       tickExtractPoints(0.01);
+       if(z.hold===null||z.hold===undefined) return {none:1};
+       return {hold:z.hold,left:g.timeLeft,badge:String(zoneBadge(z)||'')};
+     }
+     function badgeSeconds(txt){
+       var m=/([0-9]+)S UNTIL EXTRACTION ENDS/.exec(txt);
+       return m?(+m[1]):null;
+     }
+     try{
+       // THE FINDING: the ship lands with two seconds of raid left.
+       var A=land(2.0,true);
+       if(!A) return 'SKIP: no raid with an extraction point to land a ship on';
+       if(A.none) return 'SKIP: one step past the end of the beacon opened no boarding window, so there is nothing to read here';
+       if(A.hold>A.left+0.001)
+         bad.push('the boarding window says '+A.hold+' seconds with only '+A.left+' left on the raid clock, so the timer kills him with the countdown still running');
+       var sec=badgeSeconds(A.badge);
+       if(sec===null) bad.push('control: the ring badge did not print a seconds figure at all ['+A.badge+'], so what he reads cannot be checked here');
+       else if(sec>Math.max(0,Math.ceil(A.left)))
+         bad.push('the ring badge reads "'+A.badge+'" with '+A.left+' seconds of raid left, so every readout he has is promising him time the raid does not have');
+       if(!(A.hold>0)) bad.push('the boarding window came out at '+A.hold+', which reads as no window at all');
+       // CONTROL ONE: a full clock still gives the ordinary thirty seconds.
+       var B=land(540,true);
+       if(B&&!B.none&&B.hold!==30) bad.push('control: with a full raid clock the boarding window is '+B.hold+' and not the ordinary 30, so the clamp has changed a normal extraction');
+       // CONTROL TWO: with the clock switched off it is still thirty, which is
+       // the v12.24 rule and the reason this clamp is guarded at all.
+       var C=land(0,false);
+       if(C&&!C.none&&C.hold!==30) bad.push('control: with the raid clock switched off the boarding window is '+C.hold+' and not 30, so the v12.24 rule has been undone');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz&&!gz.over){ gz.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.43',what:'holding the sprint key while aiming, or while wading, lays no scent behind a man who is not sprinting, so nothing hunts him along a trail he never made; a plain sprint on dry land still lays one (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
+     if(typeof inWaterDeep!=='function') return 'SKIP: this build has no deep water to wade in';
+     var bad=[], noWade=null;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(), p=g.player, i, k;
+       if(!g||!p) return 'SKIP: no live raid to run in';
+       g.ents.length=0;                       // nobody to interrupt the run
+       var K=__keys(), dirs=['KeyW','KeyS','KeyD','KeyA'];
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       var keepTs=lastTs, homeX=p.x, homeY=p.y;
+       var INSET=(CFG.wadeInset===undefined?11:CFG.wadeInset);
+       function wet(x,y){ return !!inWaterDeep(x,y,INSET); }
+       function mineCount(){ var c=0,j; for(j=0;j<g.prints.length;j++) if(g.prints[j].mine) c++; return c; }
+       function reset(){
+         for(k in K) delete K[k];
+         p.downed=false; p.iv=99; p.stam=100; p.stamLock=0; p.stamRelease=0;
+         p.ads=false; p.roll=0; g.crouchTog=false; g.prints=[];
+       }
+       // A RUN IN ONE DIRECTION with the sprint key down. mustWade stops counting
+       // the moment he walks out of the water, so a mark laid on dry land can
+       // never be read as a mark laid while wading.
+       function run(dir,ads,n,mustWade){
+         var sx=p.x, sy=p.y, frames=0, left=false;
+         K[dir]=1; K.ShiftLeft=1;
+         for(i=0;i<n;i++){
+           if(mustWade&&!wet(p.x,p.y)){ left=true; break; }
+           p.stam=100; p.stamLock=0; p.stamRelease=0; if(ads) p.ads=true;
+           clk+=16.7; __loop(clk); frames++;
+         }
+         for(k in K) delete K[k];
+         return {ran:Math.sqrt((p.x-sx)*(p.x-sx)+(p.y-sy)*(p.y-sy)),mine:mineCount(),frames:frames,left:left};
+       }
+       // THE CONTROL FIRST, on dry land with no aim: this is what a sprint is
+       // supposed to do, and without it the zeroes after it prove nothing.
+       var ctl=null, used=null, di;
+       for(di=0;di<dirs.length;di++){
+         p.x=homeX; p.y=homeY; reset();
+         if(wet(p.x,p.y)) continue;
+         ctl=run(dirs[di],false,180,false); used=dirs[di];
+         if(ctl.ran>=250&&ctl.mine>=3) break;
+       }
+       if(!ctl||ctl.ran<250||ctl.mine<3) return 'SKIP: three seconds of plain sprint moved him '+Math.round(ctl?ctl.ran:0)+' units and laid '+((ctl&&ctl.mine)||0)+' marks in every direction, so he is boxed in and there is no trail to measure here';
+       // THE FINDING, AIMING. Same key, same direction, aim held down.
+       p.x=homeX; p.y=homeY; reset();
+       var A=run(used,true,180,false);
+       if(A.ran<20) bad.push('staging: with the aim held he covered only '+Math.round(A.ran)+' units, so this arm never walked anywhere');
+       else if(A.mine>0) bad.push('holding the sprint key while AIMING laid '+A.mine+' scent marks over '+Math.round(A.ran)+' units, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the speed he is slowest');
+       // THE FINDING, WADING. He is PLACED in deep water for this one, which is a
+       // placement and not a walk, and it is said plainly in the design entry.
+       var wx=-1, wy=-1, sc, cx, cy, W=g.map.cols*g.map.cw, H=g.map.rows*g.map.ch;
+       for(sc=0;sc<6000&&wx<0;sc++){
+         cx=60+((sc*137)%Math.max(120,W-120));
+         cy=60+((sc*271)%Math.max(120,H-120));
+         if(wet(cx,cy)) { wx=cx; wy=cy; }
+       }
+       if(wx<0) noWade='no deep water was found anywhere on this map and seed';
+       else{
+         p.x=wx; p.y=wy; reset();
+         if(!wet(p.x,p.y)) noWade='he would not stand in the water that was found';
+         else{
+           var B=run(used,false,180,true);
+           if(B.frames<20) noWade='he was out of the water again after '+B.frames+' frames, which is too few to lay a mark either way';
+           else if(B.mine>0) bad.push('holding the sprint key while WADING laid '+B.mine+' scent marks in '+B.frames+' frames of water, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the slowest he ever moves');
+         }
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ var g2=__state(); if(g2&&g2.player){ g2.player.ads=false; g2.player.iv=0; } }catch(_a){}
+       try{ lastTs=keepTs; }catch(_t){}
+       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     if(bad.length) return bad.join('; ');
+     // HALF A CHECK IS NOT A PASS.
+     if(noWade) return 'SKIP: the aiming half passed, but '+noWade+', so the wading half is not measured here';
+     return null; }},
   {v:'12.42',what:'a gun that goes through the backpack keeps its magazine: loaded plus reserve is conserved across a stow and an equip, on a full gun and on an empty one, so stowing no longer throws the load away and re-equipping no longer conjures half a magazine, while a gun found in the field still arrives on half a magazine (2026-09-07 audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy a raid';

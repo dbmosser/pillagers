@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.42';
+var VER='12.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.42';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.42';
+var WHATSNEW_VER='12.46';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1371,6 +1371,10 @@ var WHATSNEW=[
   'THE MAN YOU HIRED STOPS PICKING UP THE MEN SHOOTING AT YOU. A crew number is not a side: your hire shares one with about half the map, so a downed hostile carrying that number used to be worth breaking off your job for. He still picks up anyone who has thrown in with you.',
   'AN EMPTY CELL SPENDS NOTHING FROM ANOTHER CELL. The G key on a cell you had nothing in used to quietly walk to the next grenade you did have and throw that one, while the belt still named the cell you pressed. It names what is missing and puts your gun up. Q still cycles.',
   'A GUN YOU STOW KEEPS ITS ROUNDS. Putting a gun in your backpack used to throw away the magazine in it, and taking one back out handed you half a magazine that no reserve paid for. A gun you find in the field still comes up on half a magazine.',
+  'AIMING AND WADING NO LONGER LEAVE A SPRINT TRAIL. Shift held while you aimed, or while you waded, laid scent behind a man who was not sprinting, and everything on patrol within 170 units follows that scent. You were being hunted along a trail you never made.',
+  'THE BOARDING WINDOW NEVER OUTLIVES THE CLOCK. A ship landing in the last seconds of a raid used to announce three seconds on every readout and then let the timer kill you with a second still showing. It now says what the raid actually has left.',
+  'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, a ship you had already called stopped coming, the boarding window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
+  'AUTO-JOG STOPS WHEN YOU GO DOWN. It used to survive the whole time you were on the floor, so the moment you got up again you walked off toward the cursor at 40 health with no key held, which was the character walking off by himself.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -12287,6 +12291,16 @@ function damagePlayer(amt,src,srcName,sx,sy){
     // for, and the clear on the next frame still frees that press.
     p.healLock=!!keys['KeyF'];
 p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null;
+    // v12.46, 2026-09-07 audit: AND THE AUTO-JOG STOPS WHEN HE DOES. It is
+    // cleared in exactly one place, by a movement key, and that line sits below
+    // the early return that runs while he is on the floor, so nothing could
+    // clear it while he was down. This branch already clears the prep, the heal,
+    // the pull and the cook; the flag belonged with them. Without it the first
+    // standing frame after a revive walked him off toward the cursor at 40
+    // health with no key held, which is his v7.94 note in the one state nobody
+    // looked at, and worse with a hired merc: he presses nothing at all, the
+    // merc pulls him up, and he wanders away by himself.
+    if(p.autoJog){ p.autoJog=false; if(!G.sim) say('Auto-jog off.'); }
   (function(){
     if(G.sim) return;
     var near=null,nd=1e9;
@@ -14220,7 +14234,18 @@ var nm=rr()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
     // never promise more than the raid clock has left, since saying thirty and
     // then killing him on the timer at twelve is a lie.
     if(z.hold===null||z.hold===undefined){
-z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30; z.holdMax=z.hold;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
+z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
+    // v12.44, 2026-09-07 audit: AND THE FLOOR OBEYS THE CLOCK. The comment above
+    // promises that the hold can never say more than the raid has left, and the
+    // three second floor broke that promise at the end of a raid: call with 27
+    // seconds left, which draws no warning because the warning only fires under
+    // 25, land with 2 on the clock, and all four readouts announced 3 while the
+    // timer ended the raid as a death two seconds later with a second still
+    // showing. Half a second is kept underneath so the window is never a zero
+    // that reads as no window at all; if that is all the raid has left then that
+    // is the truth, and an unwinnable second is better than a promised three.
+    if(CFG.raidSec>0&&z.hold>G.timeLeft) z.hold=Math.max(0.5,G.timeLeft);
+    z.holdMax=z.hold;
       // v4.17: HIS QUESTION TWO reads "the crowd at your extraction is the
       // map you woke on the way there, not the siege" - a claim measured long
       // ago on an older game. The instant the ship touches down, count every
@@ -14526,16 +14551,13 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // rule sprint itself has, so a held Shift while standing still changes nothing.
   if(_shHeld&&mg>0&&G.crouchTog&&!p.downed){ G.crouchTog=false; crouch=false; }
 var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
-  if(sprint&&mg>0){
-    G.prints=G.prints||[];
-    var _lpr=G.prints.length?G.prints[G.prints.length-1]:null;
-    if(!_lpr||dist(p,_lpr)>34){
-      // v8.85: mine, so the draw side can tell your own sprint trail from a
-      // pillager's. The AI that smells this list does not care either way.
-      G.prints.push({x:p.x,y:p.y,t:0,mine:1});
-      if(G.prints.length>40) G.prints.shift();
-    }
-  }
+  // v12.43, 2026-09-07 audit: THE SCENT GOES DOWN BELOW THE CANCELS NOW. It was
+  // laid here, above both of them, so Shift held while aiming or while wading
+  // put a sprint trail behind a man who was not sprinting: aiming speed, no
+  // stamina spent, the readout saying AIMING, and a line of scent going down
+  // anyway. Everything on patrol or investigating within 170 units smells that
+  // list, so he was hunted along a trail he never made, at the two moments he is
+  // slowest and least able to leave. Moved below, where sprint is final.
   if(p.ads) sprint=false;
   G.sprinting=sprint;
   // v8.37: RESTORED. v8.34 deleted this line as part of removing the carry
@@ -14549,6 +14571,19 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   var wading=inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset));
   if(wading) sprint=false;
   G.sprinting=sprint;
+  // v12.43: and here is the trail, reading the sprint flag AFTER the aiming and
+  // the deep-water cancels above have had their say. Same 34 units, same 40
+  // mark ceiling, same mine flag; only the moment it is asked has moved.
+  if(sprint&&mg>0){
+    G.prints=G.prints||[];
+    var _lpr=G.prints.length?G.prints[G.prints.length-1]:null;
+    if(!_lpr||dist(p,_lpr)>34){
+      // v8.85: mine, so the draw side can tell your own sprint trail from a
+      // pillager's. The AI that smells this list does not care either way.
+      G.prints.push({x:p.x,y:p.y,t:0,mine:1});
+      if(G.prints.length>40) G.prints.shift();
+    }
+  }
   var spd=CFG.pSpeed*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
   if(p.stimT>0) spd*=STIM_SPD;   // v11.83, HIS SPEC: a fifth more while the stim runs
   // "make character much slower". 0.55 was a shrug; deep water you are wading
@@ -14889,6 +14924,20 @@ if(!p.fired||p.wep.auto){
           spark(G.seal.x,G.seal.y,'#ffc04a',40,420);
         }
       }
+      // v12.45, 2026-09-07 audit: CUTTING OWNS THE KEY, NOT THE CLOCKS. This
+      // return skips the tail of updatePlayer, where the only recovery tick on
+      // the standing path lives and where the only real call to the extraction
+      // clocks lives. So the whole forty to a hundred and fifteen seconds of a
+      // cut ran with the health bar flat and the recovery clock not even
+      // advancing, and with every extraction clock stopped: a ship already
+      // called went no further, the boarding window did not run, and no wave
+      // could arrive while he made the loudest noise in the game. The roll and
+      // the trade window carry both calls past their own returns for exactly
+      // this reason; this was the last early return that did not. No wantCall,
+      // as in those two: E belongs to the seal while he is cutting, so the
+      // clocks run and no pull of his own does.
+      tickRegen(dt);
+      tryExtractTick(dt);
       return;                       // cutting owns the key and your attention
     }
     if(!keys['KeyE']) G.sealNoise=0;
@@ -28881,7 +28930,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.42: 2026-09-07 audit (P2). Loaded rounds live in exactly two places, the primary count and the secondary count, and the backpack holds a bare key string with nowhere for a number to live. So a gun that went into the backpack left its magazine nowhere at all: thirty loaded rounds stopped existing. Taking it back out handed it half a magazine conjured from nothing, which no reserve paid for. Both halves are wrong and they point opposite ways: stow a full gun and lose the load, stow an empty one and gain half a magazine, as often as you like. The rounds now ride between the two verbs in a queue kept per gun id, which is exactly as precise as the backpack itself, since it holds keys and not instances and two identical rifles in there are already indistinguishable. Three doors put a gun in the backpack and all three now carry its load: the belt drag, the swap that displaces a gun, and the field pickup that stows the gun in your hands. A gun FOUND in the field has no entry and still comes back on half a magazine, which is his rule and does not move. Check 12.42 measures loaded plus reserve as one conserved number across a stow and an equip, on a full gun and on an empty one, and controls that a gun found in the field still arrives on half a magazine; fails on v12.41.',
+  now:'v12.46: 2026-09-07 audit (P3). Auto-jog is cleared in exactly one place in the whole file, by a movement key, and that line sits below the early return that runs while he is on the floor, so nothing could clear it while he was down. The down branch clears the prep, the heal, the pull and the cook and has never touched this flag, and neither revive path touches it either. So the very first standing frame after a revive, with no key held at all, walked the man off toward the cursor at 40 health: his v7.94 note about the character randomly walking off, in the one state nobody looked at. It is worse with a hired merc, where he presses nothing whatever, the merc pulls him up, and he wanders away by himself. One line in the down branch, beside the four clears that were already there. Check 12.46 arms the auto-jog from a standstill, puts him down with a real hit, stands him back up and runs ten frames with no key touched, requiring him not to have moved, with two controls: an armed auto-jog with no down still walks him, so the check can see the walk at all, and a man with no auto-jog armed still stands still; fails on v12.45.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

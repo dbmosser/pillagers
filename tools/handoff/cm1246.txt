@@ -1,0 +1,23 @@
+v12.46: auto-jog stops when you go down
+
+Auto-jog is cleared in exactly one place in the whole file, by a movement key,
+and that line sits below the early return that runs while you are on the floor.
+So nothing could clear it while you were down. The down branch clears the prep,
+the heal, the pull and the cook, and has never touched this flag; neither
+revive path touches it either.
+
+So the first standing frame after a revive, with no key held at all, walked the
+man off toward the cursor at 40 health. That is your v7.94 note about the
+character walking off by himself, in the one state nobody looked at, and it is
+worse with a hired merc: you press nothing whatever, the merc pulls you up, and
+you wander off on your own.
+
+One line in the down branch, beside the four clears that were already there.
+
+Check 12.46 runs the control first, because an armed auto-jog with no down must
+walk him or a zero proves nothing. It then arms the flag, puts him down with a
+real hit, stands him up and runs ten frames without touching a key, requiring
+no movement and the flag cleared; a second control arms nothing at all; fails
+on v12.45.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

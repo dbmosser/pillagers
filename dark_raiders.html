@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.32';
+var VER='12.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.32';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.32';
+var WHATSNEW_VER='12.33';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
   'THE BENCH SAYS HOLD TO CRAFT ON THE BUTTON, because holding it is what crafts. A click on its own still spends nothing, as you asked, but it now says so instead of doing nothing, and so does letting go too soon.',
   'THE TRIGGER NO LONGER DIES WHEN THE GUN IN YOUR HANDS IS BOUND TO ANOTHER KEY. Cell 1 goes blank then, and every fall-back to it landed on nothing; the fall-back finds the cell that holds your gun now, and a click on a blank cell raises the gun the way a click on an empty grenade cell does.',
   'A CRAWLER THAT REACHES YOU BITES. It used to stand next to you for up to seven seconds first, serving out the clock it had rolled for its next wander, whether it came for you on its own or because you shot it.',
@@ -21095,7 +21096,15 @@ if(G.map.story){
     var _fp=G.prints[i],_fa=clamp(1-_fp.t/6,0,1)*0.35;
     // v8.85, HIS NOTE: not a pillager's trail through a wall. Same gate the
     // pillager himself goes through a few lines above. Yours is always drawn.
-    if(!_fp.mine&&!canSee(p.x,p.y,p.face,_fp.x,_fp.y,G.vseg)) continue;
+    // v12.33, HIS NOTE: "many-footprints glitch is still happening while running
+    // vertically". Sprinting laid two trails: his real boot prints, stamped every
+    // 56 units and rotated to his path (v10.55), and these, taken every 34 and
+    // painted as two rectangles that are never rotated, so they read as a second
+    // set of feet only when his path happens to point the way they are drawn.
+    // His own are not painted any more; the list is untouched, so the trackers
+    // that smell it are untouched. The marks a pillager leaves still draw, which is v8.85.
+    if(_fp.mine) continue;
+    if(!canSee(p.x,p.y,p.face,_fp.x,_fp.y,G.vseg)) continue;
     if(inWater(_fp.x,_fp.y)){
       // v7.59: no boot marks ON water - a brief ring, then nothing. Draw-side
       // only: the list itself still exists for the AI that smells it.
@@ -28770,7 +28779,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.32: his note of 2026-09-07 (the crafting bar does not work and nothing can be crafted): the machinery is sound and a full second of holding does craft, spend and award, and the fill does show while the pointer is on the button, because the hover rule drops the button to 8 percent amber under a fill painted at 55. What was wrong is that the bench never said any of it: the button read CRAFT, a real mouse click spends nothing by his v11.75 order and returned in silence, and letting go early cancelled in silence. The button now reads HOLD TO CRAFT, a click says to hold it, and an early release says it was let go too soon. Check 12.32 stages the Component Kit parts, requires the label to say HOLD, sends a real click and requires a spoken line with nothing crafted, releases early and requires a spoken line, and requires a synthetic click and a full hold still to craft; fails on v12.31.',
+  now:'v12.33: his note of 2026-09-07 (many footprints while running vertically): sprinting lays two trails. The boot prints he is meant to see are decals, one every 56 units of ground covered, rotated to his path and capped at 70. The other is G.prints, the scent list a tracker smells, one every 34 units while sprinting, painted as two rectangles that are never rotated, so they read as a pair of boots walking up the screen: perpendicular ticks when he runs across, a second set of footprints interleaved with the real ones when he runs up or down. His own scent marks are no longer painted; the marks a pillager leaves still are, which is his v8.85 feature, and the list itself is untouched so nothing that smells it changes. Check 12.33 sprints him north through the real keys and loop, counts the marks painted from each list by watching the canvas, and requires the second trail to be gone with the real prints still there and G.prints still filling; fails on v12.32.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

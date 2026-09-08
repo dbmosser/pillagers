@@ -1,0 +1,27 @@
+v12.45: cutting the seal no longer stops the world
+
+Cutting the seal returns out of the player update on every frame of the hold,
+and two things live below that return: the only recovery tick on the standing
+path, and the only real call to the extraction clocks.
+
+So for the forty to a hundred and fifteen seconds a cut takes, the health bar
+was flat and the clock that decides when you start healing did not even
+advance. And every extraction clock was frozen with it: a ship you had already
+called stopped coming, the boarding window stopped running, and no pillager
+wave could arrive, at the exact moment you make the loudest noise in the game
+standing still with your back to the room.
+
+The roll branch and the trade window both carry these two calls past their own
+returns for exactly this reason. The seal was the last early return that did
+not.
+
+Honestly: the recovery half is a pure repair, but the wave half means a wave
+that could never arrive during a cut now can, so cutting is riskier than it
+has been. No dial moves, and the bot never cuts a seal.
+
+Check 12.45 holds the real key at the real seal through the real frame loop for
+fifteen seconds and asserts a rise on the cut, the recovery clock, the health
+and an inbound ship, with a control of the same fifteen seconds standing beside
+the seal not cutting; fails on v12.44.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

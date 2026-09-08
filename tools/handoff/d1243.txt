@@ -1,0 +1,48 @@
+## v12.43 - AIMING AND WADING NO LONGER LEAVE A SPRINT TRAIL
+
+From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
+reading at v12.42.
+
+WHAT IT WAS. The order of three lines. The sprint flag is computed, then the
+scent marks are laid, and only THEN is the flag cancelled for aiming and again
+for deep water. So holding the sprint key while you aimed, or while you waded,
+laid a sprint trail behind a man who was not sprinting. He moved at the aiming
+speed or the wading speed, he paid no stamina for it, the readout said AIMING,
+and a line of scent went down behind him anyway.
+
+That list is not decoration. Everything on patrol or investigating within 170
+units smells it and follows it. So the two moments you are slowest and least
+able to leave are the two moments you were quietly marking your own path.
+
+v12.33 stopped drawing your own marks, which is his note about seeing two
+trails. This is the half that survives that build, and it is the half that gets
+you killed: the marks were still going into the list, and the list is what
+hunts you.
+
+THE BUILD. The block moves below both cancels, so it reads the final answer
+instead of an early one. Same 34 units of spacing, same ceiling of 40 marks,
+same flag on each one. Only the moment the question is asked has moved.
+
+IT CANNOT BE MEASURED BY THE BOT. The sim steps the player through a different
+function entirely; this one is never called there. So no paired number moves,
+and that is a limit of the instrument rather than a claim of no effect. What
+does change for a real player: aiming and wading are now quiet, which they were
+always supposed to be. Nothing in the settings moves.
+
+MEASURED. Check 12.43 drives the real keys through the real frame loop, which
+is the only driver that moves the player and lays a mark. The control runs
+first and on dry land: a plain sprint must cover at least 250 units and lay at
+least three marks, or the check skips rather than passing, because without a
+trail there is nothing to prove. It then repeats the same run in the same
+direction with the aim held and requires zero marks of his own. The wading arm
+places him in deep water found by scanning the map, and counts only the frames
+he is still actually in the water, so a mark laid after he walked out can never
+be read as a mark laid while wading. If the water cannot be staged the whole
+check reports as a skip that names what was and was not measured, because half
+a check is not a pass.
+
+Not verified: the wading arm places him in the water rather than walking him
+into it, which is a placement and not a route; the aim is set on the player
+rather than driven through the mouse button; no frame is drawn, so this reads
+the scent list itself and not the screen; and the machines that follow the list
+are not run, since what is at issue is whether the marks exist at all.

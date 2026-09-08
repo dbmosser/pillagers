@@ -1,0 +1,53 @@
+## v12.45 - CUTTING THE SEAL NO LONGER STOPS THE WORLD
+
+From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
+reading at v12.44. This is the same fault and the same fix as v12.34, one door
+along.
+
+WHAT IT WAS. Cutting the seal returns out of the player update on every frame
+of the hold, and two things live below that return. One is the only recovery
+tick on the standing path. The other is the only real call to the extraction
+clocks.
+
+So for the forty to a hundred and fifteen seconds a cut takes, the health bar
+was flat and the clock that decides when you start healing did not even
+advance. That is thirteen points of recovery forgone on the shortest cut and
+thirty eight on the longest, for a man who has usually just fought his way to
+the door.
+
+And every extraction clock was frozen with it. A ship you had already called
+stopped coming. The boarding window stopped running. The re-ping stopped. No
+pillager wave could arrive, at the exact moment you are making the loudest
+noise in the game, standing still, with your back to the room.
+
+The roll branch and the trade window both carry these two calls past their own
+returns for exactly this reason, and the comment on the roll has said so since
+v8.59. The seal was the last early return that did not.
+
+THE BUILD. The two calls, above the return, in the order the other two branches
+use them. No pull of your own: the key belongs to the seal while you are
+cutting, exactly as it belongs to the panel while the trade window is open.
+
+WHAT IT COSTS, HONESTLY. The recovery half is a pure repair: a bar that was
+supposed to tick now ticks. The wave half is not free. A wave that could never
+arrive during a cut can now arrive, so cutting is riskier than it has been.
+Nothing in the settings moves and no dial is touched, and it is the world
+behaving normally rather than a difficulty being raised, but a player who
+learned the old behaviour will feel the difference. Say the word and I will
+hold that half.
+
+The bot never cuts a seal, so no paired number can measure any of it.
+
+MEASURED. Check 12.45 holds the real key at the real seal through the real
+frame loop for fifteen seconds, with the roster cleared so nothing interrupts
+and a ship already inbound so the extraction clock has something to lose. Every
+assertion is a RISE against a staged starting value rather than a level: the
+cut advances, the recovery clock advances with it, health comes back, and the
+inbound ship keeps closing. The control is the same fifteen seconds standing
+beside the seal without cutting, which is what the bar is supposed to do; if
+that arm cannot see recovery, the check says so rather than passing.
+
+Not verified: it runs one map and one seed; it does not cut a seal to
+completion or read the payout; it does not check that a wave actually arrives
+during a cut, only that the clock which would produce one is running; and the
+bot cannot reach any of it.

@@ -1,0 +1,41 @@
+## v12.46 - AUTO-JOG STOPS WHEN YOU GO DOWN
+
+From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
+reading at v12.45.
+
+WHAT IT WAS. Auto-jog is cleared in exactly one place in the whole file, by a
+movement key, and that line sits below the early return that runs while you are
+on the floor. So nothing could clear it while you were down.
+
+The down branch clears the prep, the heal, the pull and the cook. It has never
+touched this flag. Neither revive path touches it either: the self-revive sets
+the health, the downed state and the invulnerability and nothing else, and the
+merc pick-up does the same.
+
+So the very first standing frame after a revive, with no key held at all, walks
+the man off toward the cursor at 40 health. That is his v7.94 note about the
+character walking off by himself, in the one state nobody looked at. It is
+worse with a hired merc, because he presses nothing whatever: the merc pulls
+him up and he wanders off on his own.
+
+THE BUILD. One line in the down branch, beside the four clears that were
+already there, and it says so out loud the way arming and disarming already do.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. Auto-jog is a player convenience
+armed from a standstill with a key the bot never presses, so no paired number
+moves and no dial changes. What changes for a real player is that a man who has
+just been stood up stays where he was put.
+
+MEASURED. Check 12.46 runs three arms on one staging. The control runs FIRST:
+an armed auto-jog with no down must walk him, or a zero in the finding arm
+would only say that this check cannot see a walk. The finding arm arms the
+flag, puts him down with a real hit through the real damage path, stands him
+back up, and runs ten frames without touching a key: he must not have moved,
+and the flag must not still be armed. The second control arms nothing at all
+and runs the same down and revive, so the zero is the flag being cleared rather
+than the room being stuck.
+
+Not verified: the flag is armed on the player rather than by pressing the key
+that arms it; the merc pick-up path is not driven, though it stands him up
+through the same state the self-revive does; and the cursor is pointed due east
+rather than swept, since what is at issue is whether he moves at all.
