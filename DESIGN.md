@@ -40024,6 +40024,64 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.34 - THE PEDDLER STALL IS NOT A PAUSE
+
+From the 2026-09-07 read-only audit (trade-freeze, P2), specced from the
+source and then attacked by a skeptic before a line was written. Verified by
+reading at v12.33.
+
+WHAT IT WAS. The trade window returns out of updatePlayer, and the only real
+call to the extraction tick lives below that return. So for as long as the
+Peddler panel was open, every extraction clock stopped dead: the inbound
+countdown, the thirty second boarding window, the siege the call bought, the
+two second re-ping that keeps a called ring loud, the mirrors the HUD reads,
+the closing of a point whose time has come, and the raider waves. Nothing
+else stopped. The frame loop gates on none of it: in the same frames it kept
+adding to the raid time, kept taking dt off the raid clock, and ran the
+machines, the bullets and the throwables on the next three lines. So the
+label over the ring held EXTRACT A INBOUND at whatever second the panel
+opened while the raid ran on around him, and an extraction that had landed
+sat on the ground for as long as he shopped.
+
+THE SHAPE OF THE FIX IS ALREADY IN THIS FUNCTION, TWICE. The downed branch
+and the roll branch both carry the same call past their own early return, and
+the downed one says why in as many words. The stall takes the roll's form,
+with no pull passed in: while the panel is up, E belongs to the panel, so the
+clocks run and no pull of his own does.
+
+SAID PLAINLY, BECAUSE IT IS NOT NIL. This has an in-raid effect. Today the
+stall is a free pause on extraction pressure: the extraction waits, the siege
+stops arriving, the ring stops re-pinging and the waves stop. After this they
+all run while he trades. No dial, no default, no table and no number in the
+config moves; one function that is meant to run every frame of a raid now
+runs in the one state that was skipping it. If he wants shopping to be a
+breather, that is a dial to add on purpose, not a return statement to leave
+broken.
+
+MEASURED. Check 12.34 deploys, marks the crates by his feet searched so the
+stall wins the E the game resolves, drops the Peddler beside him and opens
+the panel through the real frame loop with a real key press. It then drives
+sixty frames three times. The inbound countdown must fall with the raid
+clock. A landed extraction must spend its boarding window. A point whose
+closing time passes while he shops must shut. The first two of those are
+ratios against the raid clock measured in the same frames, so a slow driver
+cannot fake either of them; the third is a threshold, reading the open flag
+once the raid clock has passed the closing time, and it is the one arm with
+no ratio and no raid-clock guard of its own, so if a run delivered no time at
+all it would pass with nothing to say. Two controls stand behind them: the
+raid clock must have
+fallen at all, and the same extraction clock must move once the stall is
+shut. On the v12.33 fixture the first arm prints the raid clock falling a
+second while the extraction falls nothing.
+
+Not verified: it never presses the pull key with the panel up, so it does not
+prove the patch withholds his own pull; one second an arm is under the siege
+interval and close to the re-ping, so the arrivals and the re-ping this also
+unfreezes are not measured, nor are the raider waves; it reads the fields the
+labels are built from and not the drawn pixels; the identical early return in
+the seal-cut branch freezes the same clocks while he cuts a seal, and that is
+its own finding and its own build; the bot cannot see any of this, because
+the stall exists only on the real path, so no sim number will move.
 ## v12.33 - HIS NOTE: SPRINTING LEAVES ONE TRAIL, NOT TWO
 
 His note of 2026-09-07 morning: "many-footprints glitch is still happening

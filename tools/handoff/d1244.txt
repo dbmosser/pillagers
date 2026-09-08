@@ -1,16 +1,16 @@
-## v12.44 - THE BOARDING WINDOW NEVER OUTLIVES THE CLOCK
+## v12.44 - THE EXTRACTION WINDOW NEVER OUTLIVES THE CLOCK
 
 From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
 reading at v12.43.
 
-WHAT IT WAS. The comment two lines above the boarding window says the hold "can
+WHAT IT WAS. The comment two lines above the extraction window says the hold "can
 never promise more than the raid clock has left, since saying thirty and then
 killing him on the timer at twelve is a lie". A floor of three seconds sat
 underneath it and broke that promise at the very end of a raid.
 
 Call the extraction with 27 seconds left. No warning is drawn, because the
-warning only fires under 25. The ship takes 25 seconds to arrive and touches
-down with 2 seconds on the clock. The floor sets the window to 3, and then
+warning only fires under 25. The extraction takes 25 seconds to arrive and
+lands with 2 seconds on the clock. The floor sets the window to 3, and then
 every readout he has says so: the banner says EXTRACT NOW, 3S LEFT, the ring
 badge says 3S UNTIL EXTRACTION ENDS, the prompt on the pad says 3s, and the
 voice line says three seconds. Two seconds later the raid ends as a death by
@@ -33,8 +33,8 @@ IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. It changes nothing for any
 extraction called with more than about four seconds of margin, which is every
 extraction the bot has ever run, so no paired number moves. No dial changes.
 
-MEASURED. Check 12.44 lands a ship by running the real extraction ticker one
-step past the end of the beacon, which is the only code that creates a boarding
+MEASURED. Check 12.44 brings an extraction in by running the real ticker one
+step past the end of the countdown, which is the only code that creates a
 window, with two seconds on a live raid clock. It reads both the number the
 window holds and the words the ring badge prints, because the badge is what he
 actually reads. Two controls: a full clock must still give the ordinary thirty

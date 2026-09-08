@@ -40,9 +40,9 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
 
 # NEW IN.
 SubRx @'
-  'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, a ship you had already called stopped coming, the boarding window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
+  'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, an extraction you had already called for stopped arriving, its window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
 '@ @'
-  'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, a ship you had already called stopped coming, the boarding window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
+  'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, an extraction you had already called for stopped arriving, its window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
   'AUTO-JOG STOPS WHEN YOU GO DOWN. It used to survive the whole time you were on the floor, so the moment you got up again you walked off toward the cursor at 40 health with no key held, which was the character walking off by himself.',
 '@
 

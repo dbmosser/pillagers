@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.33';
+var VER='12.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.33';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.33';
+var WHATSNEW_VER='12.34';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
   'THE BENCH SAYS HOLD TO CRAFT ON THE BUTTON, because holding it is what crafts. A click on its own still spends nothing, as you asked, but it now says so instead of doing nothing, and so does letting go too soon.',
   'THE TRIGGER NO LONGER DIES WHEN THE GUN IN YOUR HANDS IS BOUND TO ANOTHER KEY. Cell 1 goes blank then, and every fall-back to it landed on nothing; the fall-back finds the cell that holds your gun now, and a click on a blank cell raises the gun the way a click on an empty grenade cell does.',
@@ -14957,7 +14958,21 @@ if(!p.fired||p.wep.auto){
     else { G.trade=ped; blip('pick'); }
   }
   if(!keys['KeyE']) G.pedLock=0;
-  if(G.trade){ tickRegen(dt); return; }
+  if(G.trade){
+    tickRegen(dt);
+    // v12.34, 2026-09-07 audit (trade-freeze): THE STALL IS NOT A PAUSE. This
+    // return skips the tail of updatePlayer, and the only real call to
+    // tryExtractTick is down there, so every extraction clock stopped while the
+    // trade window was open: the inbound countdown, the boarding window, the
+    // siege arrivals, the re-ping, the mirrors the HUD reads, the closing of a
+    // point whose time has come, and the raider waves. Nothing else stopped;
+    // loop() gates on none of it and kept the raid clock and the machines
+    // running in the same frames. Same fault and same fix as the two branches
+    // above. No wantCall, as in the roll: E belongs to the panel while it is
+    // open, so the clocks run and no pull of his own does.
+    tryExtractTick(dt);
+    return;
+  }
 // THE WALL-CLIP TRIPWIRE, v4.06. His run #50 at 20 seconds: "i just glitched
   // through a wall". Every wall on all four maps was then probed and every one
   // of 2,970 pushed a test body out correctly, so this was a moment, not a
@@ -28779,7 +28794,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.33: his note of 2026-09-07 (many footprints while running vertically): sprinting lays two trails. The boot prints he is meant to see are decals, one every 56 units of ground covered, rotated to his path and capped at 70. The other is G.prints, the scent list a tracker smells, one every 34 units while sprinting, painted as two rectangles that are never rotated, so they read as a pair of boots walking up the screen: perpendicular ticks when he runs across, a second set of footprints interleaved with the real ones when he runs up or down. His own scent marks are no longer painted; the marks a pillager leaves still are, which is his v8.85 feature, and the list itself is untouched so nothing that smells it changes. Check 12.33 sprints him north through the real keys and loop, counts the marks painted from each list by watching the canvas, and requires the second trail to be gone with the real prints still there and G.prints still filling; fails on v12.32.',
+  now:'v12.34: 2026-09-07 audit (trade-freeze). The trade window returns out of updatePlayer above the only real call to tryExtractTick, so opening the Peddler stopped every extraction clock: the inbound countdown, the thirty second boarding window, the siege the call bought, the two second re-ping, the mirrors the HUD reads, the closing of a point whose time has come, and the raider waves. Nothing else stopped, because the frame loop gates on none of it and kept the raid clock, the machines, the bullets and the throwables running in the same frames. The downed branch and the roll branch already carry this call past their own early return; the stall takes the roll form, with no wantCall, so the clocks run while E belongs to the panel. This has a real in-raid effect and it is named rather than hidden: the stall was a free pause on extraction pressure and is not one any more. No dial moves. Check 12.34 opens the stall through the real loop with a real E, then drives sixty frames three times: the inbound countdown must fall with the raid clock, a landed boarding window must spend, and a point whose closing time passes while he shops must shut; two controls require the raid clock to have run at all and the same clocks to move once the stall is shut. Fails on v12.33.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,25 @@
+v12.48: one word per thing, on this card too
+
+Found by my own slip. I wrote a word you retired into a player-facing line in a
+draft, caught it before it shipped, and then swept the card that line would
+have joined.
+
+Your vocabulary order of 2026-09-02 is explicit: extraction for all of it, and
+never the vehicle word, because you never said the extraction was one. Every
+spoken line and every drawn line in the game is already clean; I swept both.
+The what is new card was not, in five places, and it is a card you open: the
+extraction named as a vehicle in three entries, the arrival by a retired word
+in a fourth, and the tactical belt by its old name in a fifth.
+
+The entries that announce a rename have to quote the old word to make sense.
+Those are left exactly as they are.
+
+Five entries reworded, no behaviour changed. The check is the point of the
+build: it holds the whole card to your list from here on, so this cannot rot
+again quietly the way the version stamp did twice.
+
+Check 12.48 reads the card back from the game, assembles every needle so it
+cannot find itself, and controls that the rename entries still exist and the
+card still has its full run of entries; fails on v12.47.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

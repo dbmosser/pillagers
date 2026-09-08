@@ -1,0 +1,27 @@
+v12.49: a Howler shell no longer reaches through a wall
+
+The Howler blast had three gates and none of them was a wall: how far away you
+are, whether you are already down, and whether the shell burst on a roof over
+your head. That third gate does a real job, but it is inert whenever the shell
+lands in the open, because there is no roof on a street. So the blast reached
+ninety units in every direction through anything at all.
+
+The shape is ordinary. You duck into a building. The Howler aimed at where it
+last saw you, thirty units outside the door, and the shell was already two
+seconds in the air, so it lands where it was aimed. Standing forty units inside
+a solid wall you lose about twenty health through masonry, with the hit ring
+pointing at a burst you never saw.
+
+The frag blast four lines above tests the line of sight for exactly this. This
+is the game agreeing with itself, not a new rule. The roof rule is untouched.
+
+Honestly: buildings now protect you from a Howler the way they always looked as
+though they did, so cover is worth more than it was. No dial moves, the damage
+and radius are untouched, and the same shell in the open is unchanged.
+
+Check 12.49 finds a row of a real building wall the map's own segments block,
+confirms the burst is in the open, runs the open-ground control first, then
+requires the man behind the wall to lose nothing and a pillager behind it to
+lose nothing while the same pillager in the open is still hit; fails on v12.48.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

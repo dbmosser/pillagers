@@ -5709,6 +5709,176 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.49',what:'a Howler shell bursting in the street does not reach through a solid wall: the man forty units inside loses nothing and a pillager behind the same wall loses nothing, while the same shell still hurts anyone standing in the open the same distance away (2026-09-07 audit, the remaining half of his 2026-09-06 note)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__howlerHit&&window.__buildings)) return 'SKIP: this fixture cannot deploy a raid and land a Howler shell';
+     if(typeof losClear!=='function') return 'SKIP: this build has no line of sight test to hold the blast to';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid to stand in';
+       var p=g.player, segs=g.map&&g.map.segs, B=__buildings(), i, j;
+       var e=null;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='raider'){ e=g.ents[i]; break; }
+       if(!segs||!segs.length) return 'SKIP: this map carries no wall segments';
+       if(!B||!B.length) return 'SKIP: this map built no buildings to hide in';
+       // A REAL WALL, FOUND RATHER THAN ASSUMED. Walk the west face of every
+       // building big enough to stand well inside, and take the first row where
+       // the map's own segments block a line from the street to a point forty
+       // units in. That skips doorways and windows without naming them.
+       var b=null, wy=0, OUT=30, IN=40;
+       for(i=0;i<B.length&&!b;i++){
+         var cand=B[i]; if(!(cand.w>=140&&cand.h>=140)) continue;
+         for(j=-3;j<=3;j++){
+           var ty=cand.y+cand.h/2+j*20;
+           if(ty<cand.y+20||ty>cand.y+cand.h-20) continue;
+           if(!losClear(cand.x-OUT,ty,cand.x+IN,ty,segs)){ b=cand; wy=ty; break; }
+         }
+       }
+       if(!b) return 'SKIP: no building on this map and seed has a solid west face to stand behind, so there is no wall here to test';
+       var TX=b.x-OUT, TY=wy;
+       // The one arm that must never be skipped quietly: the burst has to be in
+       // the open, or the v10.63 roof gate would be doing this checks work.
+       if(typeof roofAt==='function'&&roofAt(TX,TY)) return 'SKIP: the burst point is under a roof, so the roof rule would answer this and not the wall';
+       function shell(){ __howlerHit({tx:TX,ty:TY,x0:TX-370,y0:TY,dmg:35}); }
+       function ready(x,y){ p.x=x; p.y=y; p.hp=100; p.maxhp=Math.max(100,p.maxhp||100);
+                            p.armor=0; p.iv=0; p.downed=false; p.roll=0; p.healQ=0; }
+       // CONTROL ONE FIRST: the same shell, the same distance, nothing between.
+       // Without it, a build that simply stopped the Howler hurting anyone reads
+       // green on the finding below.
+       g.ents.length=0;
+       ready(TX-70,TY);
+       if(!losClear(TX,TY,p.x,p.y,segs)) return 'SKIP: the open ground the other side of the burst is not open on this seed, so the control cannot be staged';
+       shell();
+       var openLoss=100-p.hp;
+       if(!(openLoss>0)) return 'SKIP: the shell took nothing off a man standing seventy units away in the open, so this check cannot see the blast at all';
+       // THE FINDING: the same shell, the same seventy units, one wall between.
+       g.ents.length=0;
+       ready(b.x+IN,TY);
+       shell();
+       var wallLoss=100-p.hp;
+       if(wallLoss>0)
+         bad.push('a Howler shell bursting in the street took '+Math.round(wallLoss)+' health off a man standing '+IN+' units inside a solid wall, through masonry, with the hit ring pointing at a burst he cannot see (the same shell takes '+Math.round(openLoss)+' in the open)');
+       // AND THE SAME RULE FOR EVERYONE ELSE, since the entity loop has the same
+       // hole and a pillager sheltering behind that wall is in the same room.
+       if(e){
+         ready(b.x+IN,TY);
+         e.x=b.x+IN; e.y=TY; e.hp=200; e.maxhp=200; e.downed=false; e.finished=false;
+         g.ents.length=0; g.ents.push(e);
+         shell();
+         if(e.hp<200) bad.push('the same shell took '+Math.round(200-e.hp)+' off a pillager sheltering behind that same wall, so the blast reaches through it for everyone and not only for him');
+         // CONTROL TWO: and it must still reach that pillager in the open.
+         e.x=TX-70; e.y=TY; e.hp=200; ready(TX-2000,TY);
+         shell();
+         if(!(e.hp<200)) bad.push('control: the shell took nothing off a pillager standing seventy units away in the open either, so the entity half of this check cannot see the blast and proves nothing');
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.hp=100; gz.player.iv=0; gz.player.downed=false; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.48',what:'the what is new card obeys his vocabulary list: no entry names the extraction as a vehicle or uses the retired arrival word, and the old names for the tactical belt and the backpack appear only inside the entries that announce those renames, which still exist (his order of 2026-09-02, my slip of 2026-09-08)',
+   run:function(){
+     if(!window.__words||!__words.whatsnew) return 'SKIP: this build cannot report its own what is new card';
+     var card=__words.whatsnew(), L=card&&card.lines, bad=[], i;
+     if(!L||!L.length) return 'SKIP: the what is new card has no lines to check';
+     // Assembled, never written whole. A check that greps the page for a word it
+     // spells out finds itself; that has cost three builds already.
+     var VEH='sh'+'ip', ARR='touch'+'down', BOARD='board'+'ing';
+     var OLDBELT='hot'+'bar', NEWBELT='tactical belt';
+     var OLDPACK='b'+'ag', NEWPACK='backpack';
+     function has(s,w){ return s.toLowerCase().indexOf(w)>=0; }
+     function word(s,w){ return new RegExp('\\b'+w+'\\b','i').test(s); }
+     var renameBelt=0, renamePack=0;
+     for(i=0;i<L.length;i++){
+       var line=String(L[i]||''), tag='entry '+(i+1)+' ["'+line.slice(0,60)+'"]';
+       if(word(line,VEH)) bad.push(tag+' names the extraction as a vehicle, which he retired on 2026-09-02');
+       if(has(line,BOARD)) bad.push(tag+' still uses the retired word for the extraction window');
+       if(word(line,ARR)) bad.push(tag+' still uses the retired word for the arrival');
+       if(has(line,OLDBELT)){
+         if(has(line,NEWBELT)) renameBelt++;
+         else bad.push(tag+' calls the tactical belt by the name he retired at v10.26, and is not the entry that announces that rename');
+       }
+       if(word(line,OLDPACK)){
+         if(has(line,NEWPACK)) renamePack++;
+         else bad.push(tag+' calls the backpack by the name he retired at v9.90, and is not the entry that announces that rename');
+       }
+     }
+     // CONTROL: the rename entries must still BE there. Deleting the history
+     // would satisfy every line above and leave the card telling him nothing
+     // about the two renames he asked for by name.
+     if(!renameBelt) bad.push('control: no entry on the card announces the belt rename any more, so the history has been deleted rather than the wording corrected');
+     if(!renamePack) bad.push('control: no entry on the card announces the backpack rename any more, so the history has been deleted rather than the wording corrected');
+     if(L.length<40) bad.push('control: the card is down to '+L.length+' entries, so lines have been removed rather than reworded');
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.47',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys&&window.__frame&&window.__textTrace&&window.__forceSize)) return 'SKIP: this fixture cannot deploy, press keys and read the drawn text';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
+     if(typeof giveUpTick!=='function') return 'SKIP: this build has no surrender';
+     var bad=[];
+     // Assembled, never written whole, so the phrase cannot be found in the
+     // source of the very check that is looking for it.
+     var PROMPT='TO '+'SURRE'+'NDER', REFUSE='NO '+'SURRE'+'NDER';
+     function arm(waiting){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_f){}
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
+       var p=g.player, z=g.active||g.zones[0], K=__keys(), k, i;
+       for(k in K) delete K[k];
+       g.ents.length=0;
+       g.active=z; z.open=true;
+       if(waiting){ z.beaconT=0; g.beaconT=0; g.shipHold=20; z.hold=20; p.x=z.x; p.y=z.y; }
+       else { z.beaconT=null; g.beaconT=null; g.shipHold=null; z.hold=null;
+              p.x=z.x+(z.r+900); p.y=z.y; }
+       p.hp=20; p.armor=0; p.iv=99; p.roll=0; p.cooking=0;
+       p.revived=true; p.downed=true; p.downT=CFG.downTime; p.giveT=0; p.healLock=true;
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       K.Space=1;
+       var peak=0;
+       for(i=0;i<40;i++){ p.iv=99; p.downT=CFG.downTime; clk+=16.7; __loop(clk);
+                          if((p.giveT||0)>peak) peak=p.giveT||0;
+                          if(!p.downed||g.over) break; }
+       var lines=[];
+       try{ lines=__textTrace(function(){ __frame(0.016); }); }catch(_t){ }
+       var txt=''; for(i=0;i<lines.length;i++) txt+=' | '+lines[i].t;
+       var out={peak:peak,down:!!p.downed,over:!!g.over,txt:txt,
+                prompt:txt.indexOf(PROMPT)>=0,refuse:txt.indexOf(REFUSE)>=0,
+                verb:txt.indexOf('TO EXTRACT')>=0};
+       for(k in K) delete K[k];
+       return out;
+     }
+     var keepTs=lastTs;
+     try{
+       // CONTROL FIRST: the same man, downed with his revive spent, nowhere near
+       // a waiting extraction. The prompt must be drawn and the hold must run, or
+       // a missing prompt below would only say the overlay was never drawn.
+       var B=arm(false);
+       if(!B) return 'SKIP: no raid with an extraction point to lie down in';
+       if(!B.down&&!B.over) return 'SKIP: he did not stay on the floor long enough to read the screen';
+       if(!B.prompt) return 'SKIP: with no extraction waiting the downed screen did not draw the surrender row at all, so this check cannot see it and proves nothing';
+       if(!(B.peak>0)) return 'SKIP: with no extraction waiting two seconds on the key started no hold, so this check cannot see a hold and proves nothing';
+       // THE FINDING: downed inside a point with an extraction waiting, which is
+       // the one state the key is refused in, on purpose, since v9.71.
+       var A=arm(true);
+       if(!A) return 'SKIP: no raid with an extraction point to lie down in';
+       if(A.peak>0) bad.push('staging: the hold started inside a waiting extraction, so this is not the refused state the check is about');
+       if(A.prompt) bad.push('with an extraction waiting on the point he is lying in the screen still offers the surrender, and the key does nothing: the row is drawn, the bar never comes, and nothing tells him why');
+       if(!A.refuse) bad.push('with an extraction waiting the screen says nothing at all about the surrender being refused; the drawn text is ['+A.txt.slice(0,200)+']');
+       if(!A.verb) bad.push('control: the working verb is not drawn in this state either, so the screen is not the one this check thinks it is reading');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ lastTs=keepTs; }catch(_t2){}
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.downed=false; gz.player.giveT=0; gz.player.iv=0; gz.player.revived=false; gz.player.healLock=false; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.46',what:'auto-jog stops when he goes down: a man stood back up with no key held stays where he is instead of walking off toward the cursor at 40 health, while an armed auto-jog that never went down still walks him (2026-09-07 audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';

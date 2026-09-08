@@ -1,12 +1,12 @@
-v12.44: the boarding window never outlives the clock
+v12.44: the extraction window never outlives the clock
 
-The comment two lines above the boarding window says the hold can never promise
+The comment two lines above the extraction window says the hold can never promise
 more than the raid clock has left, because saying thirty and then killing him on
 the timer at twelve is a lie. A floor of three seconds sat underneath it and
 broke that promise at the very end of a raid.
 
 Call the extraction with 27 seconds left. No warning is drawn, because the
-warning only fires under 25. The ship lands with 2 seconds on the clock, the
+warning only fires under 25. The extraction lands with 2 seconds on the clock,
 floor sets the window to 3, and the banner, the ring badge, the pad prompt and
 the voice line all say three. Two seconds later the raid ends as a death by the
 timer with a second still showing on all four.
@@ -18,7 +18,7 @@ reads as no window at all. If that is all the raid has left, that is the truth.
 The clock-off defect in the same expression was closed at v12.24. This is the
 live-clock sibling.
 
-Check 12.44 lands a ship by running the real extraction ticker one step past
+Check 12.44 brings an extraction in by running the real ticker one step past
 the end of the beacon with two seconds on a live clock, reads the number and
 the words on the ring badge, and controls that a full clock and a clock
 switched off both still give the ordinary thirty; fails on v12.43.

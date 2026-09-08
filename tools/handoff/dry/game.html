@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.46';
+var VER='12.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.46';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.46';
+var WHATSNEW_VER='12.49';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1372,9 +1372,12 @@ var WHATSNEW=[
   'AN EMPTY CELL SPENDS NOTHING FROM ANOTHER CELL. The G key on a cell you had nothing in used to quietly walk to the next grenade you did have and throw that one, while the belt still named the cell you pressed. It names what is missing and puts your gun up. Q still cycles.',
   'A GUN YOU STOW KEEPS ITS ROUNDS. Putting a gun in your backpack used to throw away the magazine in it, and taking one back out handed you half a magazine that no reserve paid for. A gun you find in the field still comes up on half a magazine.',
   'AIMING AND WADING NO LONGER LEAVE A SPRINT TRAIL. Shift held while you aimed, or while you waded, laid scent behind a man who was not sprinting, and everything on patrol within 170 units follows that scent. You were being hunted along a trail you never made.',
-  'THE BOARDING WINDOW NEVER OUTLIVES THE CLOCK. A ship landing in the last seconds of a raid used to announce three seconds on every readout and then let the timer kill you with a second still showing. It now says what the raid actually has left.',
-  'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, a ship you had already called stopped coming, the boarding window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
+  'THE EXTRACTION WINDOW NEVER OUTLIVES THE CLOCK. An extraction arriving in the last seconds of a raid used to announce three seconds on every readout and then let the timer kill you with a second still showing. It now says what the raid actually has left.',
+  'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, an extraction you had already called for stopped arriving, its window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
   'AUTO-JOG STOPS WHEN YOU GO DOWN. It used to survive the whole time you were on the floor, so the moment you got up again you walked off toward the cursor at 40 health with no key held, which was the character walking off by himself.',
+  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
+  'ONE WORD PER THING, ON THIS CARD TOO. Five older entries here still used words you retired: the extraction called a vehicle in three places, and the tactical belt called by its old name in one. They use your words now, and a check holds the whole card to the list from here on.',
+  'A HOWLER SHELL NO LONGER REACHES THROUGH A WALL. A shell bursting in the street took about twenty health off you standing well inside a building, with the hit ring pointing at something you could not see. Walls stop the blast now, exactly as they stop a frag.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -1406,7 +1409,7 @@ var WHATSNEW=[
   'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT, the same as the resume button; it goes out with your run report.',
   'THE HOWLER DOES NOT SHELL THROUGH A ROOF: inside a building you are out of its reach until it comes in after you.',
   'THE RIGHT-CLICK MENU IN THE STASH IS DRAWN AT THE SIZE OF THE SCREEN IT OPENS OVER, at 4K and at every text size.',
-  'A HOLD YOU STARTED BEFORE THE EXTRACTION WINDOW SHUT FINISHES: keep holding E and the ship waits for you; let go and it is gone.',
+  'A HOLD YOU STARTED BEFORE THE EXTRACTION WINDOW SHUT FINISHES: keep holding E and the extraction waits for you; let go and it is gone.',
   'THE TACTICAL BELT DRAGS WITH THE BACKPACK CLOSED: a gun in your hands dragged off the belt goes into the backpack, and a key holding a gun moves to another key like anything else, in a raid and on the floor.',
   'A BELT KEY TAKES HALF THE STACK: put a stack on a key and half of it comes with you, and the key shows how many; the right-click menu still packs an exact number.',
   'GUNS DRAG LIKE ANY OTHER ITEM. Drag a gun off the rack onto a tactical belt key or into the backpack and it comes with you; a gun on the figure takes the key and stays in your hands.',
@@ -1430,7 +1433,7 @@ var WHATSNEW=[
   'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 140 at the centre, was 100; to you 98 at the centre, was 72. The fuse is still 1.1 seconds.',
   'THE SCAV PISTOL IS HALF PRICE IN THE SHOP: 1800 credits, down from 3600. Say the number you want and it moves again.',
   'HOLD THE CRAFT BUTTON FOR A SECOND. The button fills as you hold it and the work happens when it is full. Let go early and nothing is spent.',
-  'THE BOARDING WINDOW SAYS EXTRACT NOW. It used to say EXTRACTION IN PROGRESS, which reads as something happening without you rather than the one moment you have to be in the ring holding E.',
+  'THE EXTRACTION WINDOW SAYS EXTRACT NOW. It used to say EXTRACTION IN PROGRESS, which reads as something happening without you rather than the one moment you have to be in the ring holding E.',
   'A BRAND NEW CHARACTER HAS A NAME. Before this, someone playing for the first time had none until the game had saved and loaded once, and the character screen read "undefined" beside their first raid.',
   'A NOTE TYPED IN THE PAUSE BOX IN THE UNDERCROFT IS KEPT AND SENT. It used to sit in the box and get pinned to your next raid as if you wrote it there. Now it is banked when the box closes, the game says so, and it goes out at the top of your next run report.',
   'THE [+] ON A COLLAPSED PILLAGER BOARD EXPANDS IT AGAIN. The resize grip had grown over the glyph on the folded board, so the click began a resize you could not see and the board stayed shut.',
@@ -1442,10 +1445,10 @@ var WHATSNEW=[
   'TAGS AND NOTES ADDED AFTER COPY REPORT ARE KEPT. Copy report logs the run first so the paste holds it, and anything you tagged or typed after that was thrown away when you pressed Log run and return. It lands on the run now, and the report goes out again with it.',
   'SAVING A MAN YOU SHOT NO LONGER PINS HIS LATER DEATH ON YOU. If you downed a pillager, then picked him up, and a crawler killed him later, the game still called it your kill: a contract tick, a grudge, the lot. Once you have saved him, only you can make his death yours again.',
   'THE XP ON THE OUTCOME CARD IS THE XP YOU GET. A night run, hard weather or a dose in your blood pays more, and the game banked that bonus but the card printed the plain figure, so the XP line, the total and the distance to the next reward were all off. The card now prints exactly what is banked.',
-  'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and boarded an earlier ship, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
+  'A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. If the man you hired ran low, fled and took an earlier extraction, the card used to say he was left out there and paid nothing. He is remembered now, and if you both get out you take your ten percent.',
   'WIRT SELLS YOU THE THING ON THE COUNTER. If the Limited Time Offer rolled over while you were reading it, Buy used to take your money and hand you the next offer instead. You get the one that was named and priced when you clicked.',
   'A GRENADE ON A BELT KEY WORKS NOW. Putting a Frag Charge, Smoke or Decoy on a tactical belt key gave you a dead key: it read x0, the trigger fired your gun instead, and it deleted the working grenade cell. The key you choose is now the grenade.',
-  'EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. Four never did: the storm telegraph and the extraction pulse, touchdown and last call. They do now.',
+  'EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. Four never did: the storm telegraph and the extraction pulse, the arrival and last call. They do now.',
   'THE UNDERCROFT HAS ITS SCREEN BACK. The floor was painting its heading, its [E] STATION prompt, the key list, the H controls panel and the line that teaches the controls, and then erasing all of it in the same frame. It has been invisible for a long time, and H did nothing. It is all there now.',
   'THE STORM WARNING RING SAYS LIGHTNING INCOMING, with the seconds left, right at the circle.',
   'LIGHTNING NO LONGER STRIKES INSIDE A BUILDING. A strike that would have landed under a roof lands just outside its nearest wall instead.',
@@ -1511,7 +1514,7 @@ var WHATSNEW=[
   'THE UNDERCROFT READS PROPERLY NOW. The station names were painted into the room before the room went dark, so the darkness went over them as well; they are drawn on top of it now and are no longer see-through. The controls line and the line under each station prompt came up with them. THE STATION WITH THE RACKS IS NOW CALLED FASHION, everywhere.',
   'YOU ARE MUCH EASIER TO FIND ON THE MAP. Your marker was eight pixels across and was the only one that did not grow when the map did. It is about twice the size now, with a halo under it and a longer line showing which way you are facing.',
   'THE RESIZE GRIP MOVES TO THE SIDE THAT HAS ROOM. A panel against the right edge of the screen had its drag corner jammed into that edge with eight pixels of travel, so it could not be made bigger. Those panels grip on their left now.',
-  'X NO LONGER SWAPS WEAPONS. The hotbar does that job, so the key is gone along with its legend lines. Your stowed gun and its ammo are still shown, just without a key in front of them. On a controller, X is still search.',
+  'X NO LONGER SWAPS WEAPONS. The tactical belt does that job, so the key is gone along with its legend lines. Your stowed gun and its ammo are still shown, just without a key in front of them. On a controller, X is still search.',
   'AND THE HUM STOPS WHEN YOU PAUSE. Same fault as the one below, met the common way: the room tone is turned down inside the part of the frame that a pause switches off, so it used to hold its level under the pause menu. It ducks now and comes back when you resume.',
   'THE HUM STOPS WHEN THE RAID DOES. The low bed under a raid is five voices that never stop, turned down rather than switched off, and the only thing turning them down ran inside the raid itself. So it froze at its last level when you died and kept going through the card and the Undercroft, loudest of all if something was on top of you at the end.',
   'MACHINES CAN FIND THE DOOR NOW. One inside a building could not work out how to get out to you, so it bumped about indoors while you stood outside untouched. Nineteen buildings across the two maps were traps like that and eleven still are, but if something is in there with you it is far likelier to come.',
@@ -11861,7 +11864,17 @@ function howlerImpact(SH){
   flash(SH.tx,SH.ty,220,'#ff9a5c',.4);
   ping(SH.tx,SH.ty,480,false,false,'robot','fire');
   var dp=dist(p,{x:SH.tx,y:SH.ty});
-  if(dp<R&&!p.downed&&!(_onRoof&&underSameRoof(_roof,p.x,p.y)))
+  // v12.49, 2026-09-07 audit: A BLAST STOPS AT A WALL, which is the rule the
+  // frag four lines above has always followed. The three gates here were the
+  // distance, being down already, and the v10.63 roof, and that roof gate is
+  // inert whenever the shell lands in the open, so a burst in the street reached
+  // ninety units through masonry: duck inside with a shell already in the air
+  // and it lands where it was aimed, outside, and takes about twenty health off
+  // a man standing forty units behind a solid wall, with the hit ring pointing
+  // at something he cannot see. The roof rule is untouched and still does its
+  // own job, which is a shell landing ON a building sparing the room below.
+  if(dp<R&&!p.downed&&!(_onRoof&&underSameRoof(_roof,p.x,p.y))&&
+     losClear(SH.tx,SH.ty,p.x,p.y,G.map.segs))
     damagePlayer(SH.dmg*(1-dp/R)+6,'howler','HOWLER',SH.tx,SH.ty);
   // v10.63: the roof covers everyone under it, not only him, or a shell on a
   // roof would still clear the room of pillagers sheltering in it.
@@ -11869,7 +11882,10 @@ function howlerImpact(SH){
     var e=G.ents[i]; if(e.kind==='howler') continue;
     if(_onRoof&&underSameRoof(_roof,e.x,e.y)) continue;
     var de=dist(e,{x:SH.tx,y:SH.ty});
-    if(de<R+e.r){
+    // v12.49: and the same rule for everyone else in the street, as the frag
+    // already does for them. A wall that stops it reaching him stops it
+    // reaching a pillager sheltering behind the same wall.
+    if(de<R+e.r&&losClear(SH.tx,SH.ty,e.x,e.y,G.map.segs)){
       e.hp-=Math.max(6,SH.dmg*0.8*(1-Math.max(0,de-e.r)/R)); e.hitT=.2;
       if(e.kind==='raider'&&!e.downed) e.alert=2.5;
     }
@@ -14239,7 +14255,7 @@ z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
     // promises that the hold can never say more than the raid has left, and the
     // three second floor broke that promise at the end of a raid: call with 27
     // seconds left, which draws no warning because the warning only fires under
-    // 25, land with 2 on the clock, and all four readouts announced 3 while the
+    // 25, arrive with 2 on the clock, and all four readouts announced 3 while the
     // timer ended the raid as a death two seconds later with a second still
     // showing. Half a second is kept underneath so the window is never a zero
     // that reads as no window at all; if that is all the raid has left then that
@@ -14358,6 +14374,15 @@ function tickDowned(dt){
 // and a 30 units per second crawl; from the far side of a map that is not a
 // decision, it is a wait with an answer he already knows.
 function GIVEUP_HOLD(){ return 1.5; }
+// v12.47, 2026-09-07 audit: ONE TEST, TWO READERS. The rule below was written
+// into giveUpTick alone, so the overlay that offers the surrender knew nothing
+// about it and printed the prompt anyway: the key did nothing, the bar never
+// appeared, and no line said why. Both read this now.
+function surrenderBlocked(){
+  var p=G&&G.player; if(!p) return false;
+  return !!(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
+    G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r);
+}
 function giveUpTick(dt){
   var p=G.player;
   // HIS CONDITION, and the reason the key is safe to bind at all: while he still
@@ -14366,10 +14391,7 @@ function giveUpTick(dt){
   // The guard he did not ask for. This overlay already tells him that extracting
   // while downed is permitted, so a hand resting on the space bar must not throw
   // away a full bag in the one situation where being down ends well.
-  if(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
-     G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r){
-    p.giveT=0; return false;
-  }
+  if(surrenderBlocked()){ p.giveT=0; return false; }   // v12.47: the same test the overlay reads
   if(!keys['Space']){ p.giveT=0; return false; }
   p.giveT=(p.giveT||0)+dt;
   if(p.giveT<GIVEUP_HOLD()) return false;
@@ -14929,8 +14951,8 @@ if(!p.fired||p.wep.auto){
       // the standing path lives and where the only real call to the extraction
       // clocks lives. So the whole forty to a hundred and fifteen seconds of a
       // cut ran with the health bar flat and the recovery clock not even
-      // advancing, and with every extraction clock stopped: a ship already
-      // called went no further, the boarding window did not run, and no wave
+      // advancing, and with every extraction clock stopped: an extraction already
+      // called for went no further, its window did not run, and no wave
       // could arrive while he made the loudest noise in the game. The roll and
       // the trade window carry both calls past their own returns for exactly
       // this reason; this was the last early return that did not. No wantCall,
@@ -24597,8 +24619,18 @@ var _slp=w2s(p.x,66,p.y);
     if(p.revived&&CFG.giveUp!==0){
       var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
       _rowY+=Math.round(_hD*1.25);
-      ctx.font=_fD; ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
+      // v12.47, 2026-09-07 audit: AND IT SAYS SO WHEN IT WILL NOT TAKE THE KEY.
+      // The v9.71 guard refuses the surrender while an extraction is waiting on
+      // the point he is lying in, silently: this row printed the prompt anyway,
+      // the key did nothing, the bar never appeared and nothing explained it. It
+      // reads the same test the key reads now, and says what is true, with the
+      // working verb still drawn underneath it in colour.
+      ctx.font=_fD; ctx.fillStyle='#9b8f8c';
+      if(surrenderBlocked()) ctx.fillText('NO SURRENDER WITH AN EXTRACTION WAITING',W/2,_rowY);
+      else{
+      ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
       ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
+      }
       if(_gp>0){
         _rowY+=Math.round(_hD*0.50);
         bar(W/2-100,_rowY,200,6,_gp,'#ff5a4a');
@@ -28930,7 +28962,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.46: 2026-09-07 audit (P3). Auto-jog is cleared in exactly one place in the whole file, by a movement key, and that line sits below the early return that runs while he is on the floor, so nothing could clear it while he was down. The down branch clears the prep, the heal, the pull and the cook and has never touched this flag, and neither revive path touches it either. So the very first standing frame after a revive, with no key held at all, walked the man off toward the cursor at 40 health: his v7.94 note about the character randomly walking off, in the one state nobody looked at. It is worse with a hired merc, where he presses nothing whatever, the merc pulls him up, and he wanders away by himself. One line in the down branch, beside the four clears that were already there. Check 12.46 arms the auto-jog from a standstill, puts him down with a real hit, stands him back up and runs ten frames with no key touched, requiring him not to have moved, with two controls: an armed auto-jog with no down still walks him, so the check can see the walk at all, and a man with no auto-jog armed still stands still; fails on v12.45.',
+  now:'v12.49: 2026-09-07 audit (P2), the remaining half of his 2026-09-06 note, and my own v12.00 entry named it as not verified. The Howler blast had three gates and none of them was a wall: how far away you are, whether you are already down, and whether the shell burst on a roof over your head. A shell landing in the STREET has no roof, so that gate is inert, and the blast then reached ninety units in every direction through anything at all. Duck into a building with a shell already in the air and it lands where it was aimed, outside; standing forty units inside a solid wall you lost about twenty health through masonry, with the hit ring pointing at a burst you could not see. The frag blast four lines above tests the line of sight for exactly this, for the player and for every entity, so this is the game agreeing with itself rather than a new rule. The roof rule is untouched and still does its own job. Honestly: buildings now protect you from a Howler the way they always looked as though they did, which makes cover worth more than it was. Check 12.49 finds a solid stretch of a real building wall, bursts a shell seventy units outside it and requires the man forty units inside to lose nothing, with two controls: the same shell with him standing in the open the other side must hurt, and a pillager behind the same wall must be spared too; fails on v12.48.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
