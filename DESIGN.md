@@ -40024,6 +40024,54 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.44 - THE EXTRACTION WINDOW NEVER OUTLIVES THE CLOCK
+
+From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
+reading at v12.43.
+
+WHAT IT WAS. The comment two lines above the extraction window says the hold "can
+never promise more than the raid clock has left, since saying thirty and then
+killing him on the timer at twelve is a lie". A floor of three seconds sat
+underneath it and broke that promise at the very end of a raid.
+
+Call the extraction with 27 seconds left. No warning is drawn, because the
+warning only fires under 25. The extraction takes 25 seconds to arrive and
+lands with 2 seconds on the clock. The floor sets the window to 3, and then
+every readout he has says so: the banner says EXTRACT NOW, 3S LEFT, the ring
+badge says 3S UNTIL EXTRACTION ENDS, the prompt on the pad says 3s, and the
+voice line says three seconds. Two seconds later the raid ends as a death by
+the timer with a second still showing on all four.
+
+The window is narrow, a band of call times near the end of a long raid, but
+every input in it is ordinary play, and the pull itself takes 1.4 seconds, so
+inside that band the promise is unkeepable however fast he moves.
+
+The same expression had a second defect with the raid clock switched off, which
+was closed at v12.24. This is the live-clock sibling.
+
+THE BUILD. One clamp under the floor: if the window would outlive the clock, it
+is cut to the clock. Half a second is kept underneath, so the window is never a
+zero that reads as no window at all. If half a second is all the raid has left,
+that is the truth, and an unwinnable second told honestly is better than a
+promised three.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. It changes nothing for any
+extraction called with more than about four seconds of margin, which is every
+extraction the bot has ever run, so no paired number moves. No dial changes.
+
+MEASURED. Check 12.44 brings an extraction in by running the real ticker one
+step past the end of the countdown, which is the only code that creates a
+window, with two seconds on a live raid clock. It reads both the number the
+window holds and the words the ring badge prints, because the badge is what he
+actually reads. Two controls: a full clock must still give the ordinary thirty
+seconds, and a raid with the clock switched off must still give thirty, which
+is the v12.24 rule and exactly what the guard on this clamp protects.
+
+Not verified: it does not drive a real call and a real 25 second wait, staging
+the landing directly instead; it reads the ring badge but not the banner, the
+pad prompt or the voice line, which take the same number from the same field;
+and it does not follow the raid to the timer death, since what is at issue is
+the number that is promised.
 ## v12.43 - A NEW CHARACTER KEEPS WHAT THEIR FIRST SESSION EARNED
 
 From the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me

@@ -5709,6 +5709,57 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.44',what:'the extraction window never outlives the raid clock: an extraction arriving with two seconds left announces what the raid actually has and not the three second floor, on the number and on the ring badge alike, while a full clock and a raid with the clock switched off both still give the ordinary thirty seconds (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof tickExtractPoints!=='function'||typeof zoneBadge!=='function') return 'SKIP: this build has no extraction ticker or ring badge to read';
+     var bad=[];
+     // Land a ship on a ring with a chosen amount of raid clock left, by running
+     // the real ticker one step past the end of the beacon. Returns the window
+     // it created and the words the ring badge prints for it.
+     function land(left,clockOn){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
+       var z=g.active||g.zones[0], p=g.player;
+       CFG.raidSec=clockOn?540:0;
+       g.active=z; z.open=true; z.hold=null; z.holdMax=null; z.boardT=0; z.pullT=null;
+       z.beaconT=0.001; g.beaconT=z.beaconT;
+       g.timeLeft=left;
+       p.downed=false; p.iv=99; p.x=z.x; p.y=z.y;
+       tickExtractPoints(0.01);
+       if(z.hold===null||z.hold===undefined) return {none:1};
+       return {hold:z.hold,left:g.timeLeft,badge:String(zoneBadge(z)||'')};
+     }
+     function badgeSeconds(txt){
+       var m=/([0-9]+)S UNTIL EXTRACTION ENDS/.exec(txt);
+       return m?(+m[1]):null;
+     }
+     try{
+       // THE FINDING: the ship lands with two seconds of raid left.
+       var A=land(2.0,true);
+       if(!A) return 'SKIP: no raid with an extraction point to land an extraction on';
+       if(A.none) return 'SKIP: one step past the end of the countdown opened no extraction window, so there is nothing to read here';
+       if(A.hold>A.left+0.001)
+         bad.push('the extraction window says '+A.hold+' seconds with only '+A.left+' left on the raid clock, so the timer kills him with the countdown still running');
+       var sec=badgeSeconds(A.badge);
+       if(sec===null) bad.push('control: the ring badge did not print a seconds figure at all ['+A.badge+'], so what he reads cannot be checked here');
+       else if(sec>Math.max(0,Math.ceil(A.left)))
+         bad.push('the ring badge reads "'+A.badge+'" with '+A.left+' seconds of raid left, so every readout he has is promising him time the raid does not have');
+       if(!(A.hold>0)) bad.push('the extraction window came out at '+A.hold+', which reads as no window at all');
+       // CONTROL ONE: a full clock still gives the ordinary thirty seconds.
+       var B=land(540,true);
+       if(B&&!B.none&&Math.abs(B.hold-30)>0.2) bad.push('control: with a full raid clock the extraction window is '+B.hold+' and not the ordinary 30, so the clamp has changed a normal extraction');
+       // CONTROL TWO: with the clock switched off it is still thirty, which is
+       // the v12.24 rule and the reason this clamp is guarded at all.
+       var C=land(0,false);
+       if(C&&!C.none&&Math.abs(C.hold-30)>0.2) bad.push('control: with the raid clock switched off the extraction window is '+C.hold+' and not 30, so the v12.24 rule has been undone');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz&&!gz.over){ gz.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.43',what:'a profile this build creates is born already migrated: the save a brand new player writes after one session on the second sector comes back from his own second load with the seal record and the explored map still on it, while a save that genuinely predates the one-map fold is still folded exactly as it was (2026-09-08 first-hour audit)',
    run:function(){
      if(!(window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot drive the loader synchronously';

@@ -1,0 +1,40 @@
+## v12.73 - THE GAME TELLS YOU WHEN A FOUND GUN CHANGES YOUR HANDS
+
+From the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me
+reading the loot grant and the message function end to end.
+
+WHAT IT WAS. The message line holds exactly one string. It writes the text and a
+3.2 second clock, so the last thing written in a frame is the only thing anybody
+sees. The loot grant writes two lines inside its per-item loop, and both of them
+are about the thing that matters most in a pull, which gun is now in which hand:
+
+  "<gun> to your empty slot. <held> stays in hand, X swaps."
+  "<gun> equipped, +N% damage."
+
+Then, once the loop is done, it writes "Found: <names>" straight over the top.
+That last line is guarded on the list of things taken being non-empty, which is
+true whenever the loop ran at all. So this was never an occasional collision. It
+happened on every pull, and neither line has ever been readable by anybody.
+
+WHY IT IS NOT DECORATION. A brand new character deploys with an empty second gun
+slot. So the first decent gun a first-time player pulls out of a crate arms slot
+2, puts a live number key under his finger, and the only thing the game tells him
+is the name of the item he found. He finds out the slot exists by pressing 2 by
+accident, if he ever does.
+
+THE BUILD. The per-item line is kept rather than spoken, and the single line that
+does get spoken carries both facts. A pull of one gun on its own says the gun
+line by itself, because the summary would only repeat the name that line already
+contains. A gun pulled alongside other things says the gun line and then the list.
+
+MEASURED. Check 12.73 deploys a real raid, empties the second slot the way a new
+character has it, and drives the real loot grant. It reads the one line the
+player is left holding: pulling a gun must leave the line that names the swap
+key, pulling that gun beside another item must leave both the gun line and the
+list, and a pull with no gun in it must still say exactly the plain found line it
+always said.
+
+Not verified: it reads the message string the game stores rather than pixels on
+the screen; two guns in one pull still leave only the second gun's line, which is
+the same last-one-wins rule as before and is not new; and how long that longer
+line takes to read is a judgement I cannot make from here.

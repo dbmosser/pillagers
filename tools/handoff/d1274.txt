@@ -1,0 +1,39 @@
+## v12.74 - THE PEDDLER STALL KNOWS WHAT IT JUST PAID YOU
+
+From the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me
+reading the sale, the panel and the purchase.
+
+WHAT IS NOT WRONG, AND IS NOT CHANGED. Selling at the stall does not pay in
+Credits. The money rides on the run, is banked only if he walks out, and dies
+where he falls. That is a deliberate decision with a comment saying so, and it
+stays. Whether stall money ought to be spendable at the stall is his call, not
+mine, and nothing here changes what he can buy with.
+
+WHAT IS WRONG. The panel does not know any of that. The balance line on the stall
+reads his BANKED Credits, and so does the affordability of every row of the
+stock. So a first-time player standing at zero sells seven things for four
+thousand, is told exactly that by the game, and one line further down the same
+panel, in the same frame, reads that he holds nothing, with every item on the
+shelf greyed out. Two numbers about the same pocket, disagreeing, six pixels
+apart.
+
+Then he presses a key to buy a plate and is told he cannot cover it, which reads
+as being broke one second after being paid.
+
+THE BUILD. The panel names both pockets: what is banked, and what is on him and
+not banked yet. The refusal says which one it means. That is all. The arithmetic,
+the rate, what he can afford and what the stall will sell him are untouched.
+
+AND ONE WORD. The sale line said cash. This game says Credits.
+
+MEASURED. Check 12.74 opens the stall in a real raid, makes a real sale through
+the real function, and then reads the panel the way he does, by watching what the
+frame actually writes to the canvas: the money it just paid him has to appear
+there. It presses buy and reads the refusal off the message line. Then it runs
+the whole thing again carrying nothing and requires the plain wording back, so a
+build that simply always printed the longer sentence would fail.
+
+Not verified: it reads the strings the frame writes rather than pixels, so it
+proves the line is drawn and not that it fits the panel; it does not check the
+greyed colour of the stock rows, only the words; and it does not decide whether
+carried money should be spendable, which is his to answer.

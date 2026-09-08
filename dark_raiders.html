@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.43';
+var VER='12.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.43';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.43';
+var WHATSNEW_VER='12.44';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1372,6 +1372,7 @@ var WHATSNEW=[
   'AN EMPTY CELL SPENDS NOTHING FROM ANOTHER CELL. The G key on a cell you had nothing in used to quietly walk to the next grenade you did have and throw that one, while the belt still named the cell you pressed. It names what is missing and puts your gun up. Q still cycles.',
   'A GUN YOU STOW KEEPS ITS ROUNDS. Putting a gun in your backpack used to throw away the magazine in it, and taking one back out handed you half a magazine that no reserve paid for. A gun you find in the field still comes up on half a magazine.',
   'A NEW CHARACTER KEEPS WHAT THEIR FIRST SESSION EARNED. A repair meant for saves from old builds ran once on brand new ones as well, so cutting at the great door on THE COLD MILE, being told it was banked, and then reloading the page lost the cutting and the explored map. It happened once per character, which is why it read as random.',
+  'THE EXTRACTION WINDOW NEVER OUTLIVES THE CLOCK. An extraction arriving in the last seconds of a raid used to announce three seconds on every readout and then let the timer kill you with a second still showing. It now says what the raid actually has left.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -14231,7 +14232,18 @@ var nm=rr()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
     // never promise more than the raid clock has left, since saying thirty and
     // then killing him on the timer at twelve is a lie.
     if(z.hold===null||z.hold===undefined){
-z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30; z.holdMax=z.hold;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
+z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
+    // v12.44, 2026-09-07 audit: AND THE FLOOR OBEYS THE CLOCK. The comment above
+    // promises that the hold can never say more than the raid has left, and the
+    // three second floor broke that promise at the end of a raid: call with 27
+    // seconds left, which draws no warning because the warning only fires under
+    // 25, arrive with 2 on the clock, and all four readouts announced 3 while the
+    // timer ended the raid as a death two seconds later with a second still
+    // showing. Half a second is kept underneath so the window is never a zero
+    // that reads as no window at all; if that is all the raid has left then that
+    // is the truth, and an unwinnable second is better than a promised three.
+    if(CFG.raidSec>0&&z.hold>G.timeLeft) z.hold=Math.max(0.5,G.timeLeft);
+    z.holdMax=z.hold;
       // v4.17: HIS QUESTION TWO reads "the crowd at your extraction is the
       // map you woke on the way there, not the siege" - a claim measured long
       // ago on an older game. The instant the ship touches down, count every
@@ -28892,7 +28904,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.43: from the 2026-09-08 first-hour audit, and the third time I have made the same mistake. A migration exists to repair a save written by an older build, so a profile created by THIS build has nothing to repair and meeting one is always wrong. The file already knows that: dayMigrated was put into the born profile at v8.44 for exactly this reason and pname at v11.73, each with a comment saying so. mig739 never was. mig739 is the v7.39 fold to one map, and what it does is delete the seal record and the explored bitmap for sector index 1, which is a sector a brand new player is offered on day one. So he picks THE COLD MILE, cuts at the great door, extracts, is told Banked by the run report and by the Undercroft, and then reloads the page: on that second load the fold fires for the first and only time and takes the cutting and the explored map with it. The fog goes on any outcome, because it is banked at the end of every raid whether he got out or not. Then the stamp is set and it never happens again, which is the shape that reads as random loss rather than as a rule, and it is guaranteed to happen to every single new player exactly once. The comment directly above that block describes this loss and says it was fixed; it was, for saves already on disk, and never for the profiles created since. mig945, the rig buyback, is harmless on an empty stash but is the same class and is stamped as well so the rule is a rule. Old saves are untouched: they carry no stamp and are still folded exactly as they were. Check 12.43 reads the born profile out of the running page and requires a stamp in it for EVERY one-shot migration the loader guards on, not just this one; it then drives the real loader with the save a player of this build would have written, carrying progress on the second sector, and requires the progress to survive, with a control that a save carrying no stamp is still migrated; fails on v12.42.',
+  now:'v12.44: 2026-09-07 audit (P3). The comment two lines above the extraction window says the hold can never promise more than the raid clock has left, because saying thirty and then killing him on the timer at twelve is a lie. A three second floor under it broke that promise at the very end of a raid. Call the extraction with 27 seconds left, which draws no warning at all because the warning only fires under 25, and the extraction arrives with 2 seconds on the clock: the floor sets the window to 3, the banner says EXTRACT NOW 3S LEFT, the ring badge says 3S UNTIL EXTRACTION ENDS, the prompt on the pad says 3s and the voice line says three seconds. Two seconds later the raid ends as a death by the timer with a second still showing on every one of them. The clock-OFF half of the same expression was closed at v12.24; this is the live-clock sibling. One clamp, with half a second kept underneath so the window is never a zero that reads as no window at all: if that is all the raid has left then that is the truth, and an unwinnable second is better than a promised three. Check 12.44 brings an extraction in on a live clock with two seconds left and requires the hold and every readout that prints it to agree with the clock, with a control at full clock requiring the ordinary thirty second window to be untouched; fails on v12.43.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

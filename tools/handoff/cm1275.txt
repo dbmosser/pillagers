@@ -1,0 +1,24 @@
+v12.75: the last box before the lift tells the truth
+
+The last thing you read before going up is one box saying what you are taking
+with you. Both halves of it were wrong, every ascent, and one contradicted the
+line printed directly beneath it.
+
+It said you were going up with an issued sidearm. With nothing equipped, which is
+what a brand new character has, the deploy issues a primary out of the starter
+list into gun one and leaves gun two empty on purpose. So it named the wrong slot
+and promised a second gun that was never coming.
+
+It also listed your rig by name, and that has been the same constant for everyone
+since v5.77, its name the bare word Armour. That sat directly above the amber
+line saying you ascend with no armour on.
+
+The gun half now says what happens. The armour half is deleted, because the amber
+line under it is already the true version.
+
+Check 12.75 renders the real box and reads the real text, asserts the armour rule
+against whatever the rig calls itself rather than against a word, refuses to pass
+if the warning is missing, and controls that a real gun is still named. Fails on
+v12.74.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

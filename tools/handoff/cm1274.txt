@@ -1,0 +1,22 @@
+v12.74: the Peddler stall knows what it just paid you
+
+Selling at the stall does not pay in Credits. That money rides on the run, banks
+only if you walk out, and dies where you fall. That is deliberate and it stays.
+
+The panel did not know it. The balance line read your banked Credits, and so did
+the affordability of every row of stock. So a first-time player at zero sells
+seven things for four thousand, is told exactly that, and one line down the same
+panel in the same frame reads that he holds nothing, with the whole shelf greyed
+out. Pressing buy then said he could not cover it.
+
+The panel names both pockets now, and the refusal says which one it means. The
+rate, the arithmetic and what the stall will sell are untouched. Whether carried
+money should be spendable at the stall is his call, not mine.
+
+The sale line also said cash. This game says Credits.
+
+Check 12.74 sells at a real stall, reads the panel off the canvas and the refusal
+off the message line, then runs it again carrying nothing and requires the plain
+wording back. Fails on v12.73.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,21 @@
+v12.73: the game tells you when a found gun changes your hands
+
+The message line holds one string, so the last thing written in a frame is the
+only thing seen. The loot grant writes two lines inside its loop, both about
+which gun is now in which hand, and then writes Found over the top of them. That
+last line fires whenever the loop ran at all, so it happened on every pull and
+neither line has ever been readable.
+
+It matters because a new character deploys with an empty second slot, so the
+first decent gun a first-time player finds arms slot 2 and puts a live number key
+under his finger while the game tells him only the name of the item.
+
+The per-item line is kept rather than spoken, and the one line spoken carries
+both facts. A single gun says the gun line alone; a gun with company says the gun
+line and the list.
+
+Check 12.73 deploys a raid, empties the second slot, drives the real grant and
+reads the line he is left with; the control requires a gunless pull to say
+exactly what it always said. Fails on v12.72.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
