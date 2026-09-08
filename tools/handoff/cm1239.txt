@@ -1,0 +1,24 @@
+v12.39: a gun you died with is not coming up with you
+
+A death splices the guns you were carrying out of the armoury. The primary has
+been put back on a gun you still own since v2.82; nothing has ever done the
+same for the sidearm. So a death that took your second gun left gun 2 still
+naming a gun the splice thirty lines above had just removed.
+
+The deploy itself was not fooled, because it tests the armoury before it bakes
+a sidearm, so you went up with an empty second slot. What lied was the ascent
+check, the last screen before the lift, which read the field raw and printed
+the gun you had just lost with your body as the gun going up in your hands.
+
+Two edits. The sidearm now gets the same repair the primary already gets,
+back to the empty slot that has been the default since v5.37. And the ascent
+check makes the same test the deploy makes, so that screen can never name a
+gun that will not come up; that also covers a slot 2 that has come to name the
+gun already in slot 1.
+
+Check 12.39 stages two guns no starter roll, shop or freebie kit can hand out,
+dies carrying the second, and requires the slot empty and that screen to stop
+naming the lost gun; a control puts the gun back and requires the same page to
+name it again; fails on v12.38.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,27 @@
+v12.40: the man you hired picks up the men shooting at you
+
+The pickup branch asks two questions before one pillager kneels over another:
+is this man a pillager, and is he in my crew. Neither asks which side either
+man is on. The merc you hire is built by the same maker as every other
+pillager and rolls a crew number there, out of two, so he shares a number with
+about half the map. Told to loot on his own he reached this branch, and a
+downed hostile inside 760 units carrying that number read as one of his own.
+He left the job you paid for, knelt over the man who had been shooting at you,
+and put him back on his feet on 40 percent health.
+
+One guard between the two existing tests, so it reads as the side question that
+has to be answered before the crew question is asked. It is the same test the
+engage path already uses, so the pillager he would shoot is the pillager he
+will not pick up. A man who has thrown in with you is still picked up, and no
+other reviver has his crew rule changed.
+
+This one is not free: it removes revives that used to happen. Nothing in the
+settings moves, and the bot never hires anyone, so no paired number can
+measure it either way.
+
+Check 12.40 stages a reviver and a downed man twenty units apart on a crew
+number no raid can roll, with the player parked a thousand units away, and runs
+three arms: the hire and a downed hostile, an ordinary crew picking its own up,
+and the hire and a man who has thrown in with you; fails on v12.39.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

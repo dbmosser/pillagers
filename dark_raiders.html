@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.31';
+var VER='12.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.31';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.31';
+var WHATSNEW_VER='12.32';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE BENCH SAYS HOLD TO CRAFT ON THE BUTTON, because holding it is what crafts. A click on its own still spends nothing, as you asked, but it now says so instead of doing nothing, and so does letting go too soon.',
   'THE TRIGGER NO LONGER DIES WHEN THE GUN IN YOUR HANDS IS BOUND TO ANOTHER KEY. Cell 1 goes blank then, and every fall-back to it landed on nothing; the fall-back finds the cell that holds your gun now, and a click on a blank cell raises the gun the way a click on an empty grenade cell does.',
   'A CRAWLER THAT REACHES YOU BITES. It used to stand next to you for up to seven seconds first, serving out the clock it had rolled for its next wander, whether it came for you on its own or because you shot it.',
   'A NEW PROFILE NOW STARTS ON FEWER MACHINES AND A LIGHTER EXTRACTION. Both are still in Settings and both still go all the way up; only where they start has moved.',
@@ -28769,7 +28770,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.31: 2026-09-07 audit P1: binding the gun in hand to another belt key blanks the derived cell 1 (the v6.70 dedupe), and the three fall-backs to setHot(0) by number (the v12.08 empty-throwable yield and the two last-consumable fall-backs) landed on that blank cell, where useHot did nothing and the next setHot(0) returned early, so the trigger was dead until another digit; a raid also starts with the highlight on cell 1, so the first click fired nothing. gunCell() finds the cell that holds the gun in hand (the loop swapGuns uses), the three fall-backs use it, and a click on an empty cell selects the gun and yields like the empty-throwable rule. Check 12.31 binds the held gun to key 5, confirms cell 1 is blank, clicks on it and requires the gun cell selected with no shot on that hold and a shot on the next click, then selects an empty throwable cell and requires the same; fails on v12.30.',
+  now:'v12.32: his note of 2026-09-07 (the crafting bar does not work and nothing can be crafted): the machinery is sound and a full second of holding does craft, spend and award, and the fill does show while the pointer is on the button, because the hover rule drops the button to 8 percent amber under a fill painted at 55. What was wrong is that the bench never said any of it: the button read CRAFT, a real mouse click spends nothing by his v11.75 order and returned in silence, and letting go early cancelled in silence. The button now reads HOLD TO CRAFT, a click says to hold it, and an early release says it was let go too soon. Check 12.32 stages the Component Kit parts, requires the label to say HOLD, sends a real click and requires a spoken line with nothing crafted, releases early and requires a spoken line, and requires a synthetic click and a full hold still to craft; fails on v12.31.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31695,7 +31696,13 @@ function craftHoldStep(dt){
 }
 // Letting go anywhere at all cancels, not only on the button, or a release off
 // the edge would leave it filling to a purchase he did not make.
-try{ window.addEventListener('mouseup',function(){ craftHoldCancel(); }); }catch(_chm){}
+try{ window.addEventListener('mouseup',function(){
+  // v12.32, HIS NOTE: letting go before the second is up cancelled in silence,
+  // which is the same dead press from his side. It says so, once, and only for
+  // a press that had really started; a completed hold has cleared itself above.
+  if(craftHold&&craftHold.t>0.12&&craftHold.t<CRAFT_HOLD){ try{ say2('Let go too soon. Hold it for a full second.'); }catch(_cu){} }
+  craftHoldCancel();
+}); }catch(_chm){}
 function renderCraftDetail(rows){
   var d=document.getElementById('craftdetail'); if(!d) return;
   var row=rows[P._craftSel||0]; if(!row){ d.innerHTML=''; return; }
@@ -31740,7 +31747,9 @@ function renderCraftDetail(rows){
   d.innerHTML=h;
   var b=document.createElement('button');
   b.className='vbuy';
-  b.textContent=(kind==='repair')?'SERVICE':'CRAFT';
+  // v12.32, HIS NOTE: it read CRAFT, which reads like a button you click, and a
+  // click spends nothing by his v11.75 order. The label is the instruction now.
+  b.textContent=(kind==='repair')?'HOLD TO SERVICE':'HOLD TO CRAFT';
   b.disabled=btn?btn.disabled:true;
   if(btn&&!btn.disabled){
     // v11.75, HIS NOTE: a click no longer spends anything. The hold does.
@@ -31749,7 +31758,9 @@ function renderCraftDetail(rows){
     // v12.17: the pad presses a control with a synthetic click and the
     // keyboard with Enter, both with detail 0; a real mouse click has detail
     // 1 or more and still spends nothing, the hold is its way.
-    b.onclick=function(e){ if(e&&e.detail) return; btn.click(); };
+    // v12.32, HIS NOTE: a real mouse click still spends nothing, his v11.75
+    // rule, but it used to return in silence, so the bench looked broken.
+    b.onclick=function(e){ if(e&&e.detail){ try{ say2('Hold it down for a second. A click on its own spends nothing.'); }catch(_cs){} return; } btn.click(); };
     b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' ('+CRAFT_HOLD+' second'+(CRAFT_HOLD===1?'':'s')+')';
   }
   d.appendChild(b);

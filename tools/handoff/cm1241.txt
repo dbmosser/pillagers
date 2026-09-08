@@ -1,0 +1,22 @@
+v12.41: an empty cell spends nothing from another cell
+
+v12.08 stopped an empty throwable cell from owning the mouse trigger. The key
+and the pad reach a throw by a different door, and that door still cycled.
+Selecting a cell you had nothing in and pressing the key walked the hidden
+selector on to the next grenade you did have and threw that one at the cursor,
+while the belt highlight and the caption still named the cell you pressed. The
+cook did the same, so pulling the pin on an empty cell pulled it on a different
+grenade. Both the derived cell and a cell you dragged a grenade onto did it.
+
+One shared refusal, used by both verbs, doing exactly what the mouse branch has
+done since v12.08: name what is missing, put your gun up, spend nothing. Q, the
+dedicated cycle key, still cycles. Choosing another grenade on purpose is not
+the same act as using the one you already chose.
+
+Check 12.41 deploys with two Smoke and nothing else, presses the Frag cell and
+requires the pouch, the throw list and the hidden selector all unmoved with a
+toast that names the Frag; it drives the assigned cell and the cook the same
+way, and controls that a cell holding a grenade still throws the right one;
+fails on v12.40.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

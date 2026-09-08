@@ -1,0 +1,28 @@
+v12.42: a gun you stow keeps its rounds
+
+Loaded rounds live in exactly two places, the gun in your hands and the gun on
+your back, and the backpack holds a bare key string with nowhere for a number.
+So a gun that went into the backpack left its magazine nowhere at all: the
+loaded rounds simply stopped existing. Taking it back out handed it half a
+magazine conjured from nothing, which no reserve paid for. The same trip is a
+loss one way and a gift the other, and it repeats as often as you like.
+
+Three doors stow a gun and all three did it: dragging one off the belt,
+equipping a second so the first is displaced, and picking a gun up in the
+field.
+
+The rounds now ride with the gun in a queue kept per gun id, which is exactly
+as precise as the backpack itself, since it holds keys and not instances. A
+gun found in the field has no entry and still comes back on half a magazine.
+That is his rule and it does not move.
+
+This one is not free: it closes a faucet and it stops a loss. Both are
+corrections of a conservation error rather than a dial, no settings number
+changes, and the bot never bags a gun.
+
+Check 12.42 measures loaded plus reserve as one conserved number across a stow
+and an equip, staging 47 rounds in a 60 round magazine with an empty reserve,
+runs an empty gun as the faucet arm, and controls that a gun never stowed still
+arrives on half a magazine; fails on v12.41.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

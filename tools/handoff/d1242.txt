@@ -1,0 +1,56 @@
+## v12.42 - A GUN YOU STOW KEEPS ITS ROUNDS
+
+From the 2026-09-07 read-only audit (P2), specced from the source. Verified by
+reading at v12.41.
+
+WHAT IT WAS. Loaded rounds live in exactly two places in the whole game: the
+count for the gun in your hands and the count for the gun on your back. The
+backpack holds a bare key string, and a string has nowhere for a number to
+live. So a gun that went into the backpack left its magazine nowhere at all.
+Thirty loaded rounds simply stopped existing, and nothing downstream put them
+back.
+
+Taking the gun out again handed it half a magazine, conjured from nothing: no
+reserve was charged for it. So the same trip is a loss one way and a gift the
+other. Stow a full gun and you lose the load. Stow an empty one and you get
+half a magazine, and you can do it again, and again.
+
+Three doors put a gun into the backpack and all three did it: dragging a gun
+off the belt, equipping a second gun so the first is displaced, and picking a
+gun up in the field, which stows the one in your hands.
+
+THE BUILD. The rounds now ride with the gun, in a queue kept per gun id. That
+is exactly as precise as the backpack itself, because the backpack holds keys
+and not instances: two identical rifles in there are already indistinguishable,
+so first in, first out is the truest answer that exists. All three doors carry
+the load in, and the equip takes it back out.
+
+A gun FOUND in the field has no entry in that queue, so it still comes back on
+half a magazine. That is his rule, written in the README, and it does not move.
+
+WHAT IT COSTS. This one is not free by construction, and I am not claiming it
+is. It closes a faucet, so a player who was riding the drag-and-re-equip loop
+for free ammunition can no longer do that, and it also stops the loss, so a
+player who stowed a full gun keeps rounds he used to lose. Both are corrections
+of a conservation error rather than a dial being moved: no number in the
+settings changes, and the half-magazine rule for a find is untouched. The bot
+never bags a gun, so no paired number can measure it either way.
+
+MEASURED. Check 12.42 measures a conserved quantity, loaded plus reserve,
+rather than a level, because a level could be calibrated on the bug itself. It
+stages forty seven rounds in a sixty round magazine with an empty reserve:
+forty seven is a number no roll, no pickup and no half magazine can produce,
+and half of sixty is thirty, so a conjured magazine can never be mistaken for
+the real load. It requires that total to survive the stow and to survive the
+equip, and the gun to come back on the same forty seven. The second arm runs an
+empty gun, which is the faucet, and requires it to come back empty. The control
+puts a gun that was never stowed into the backpack and requires it to arrive on
+half a magazine, so a fix that simply handed out nothing could not read green.
+
+Not verified: it calls the two verbs directly rather than dragging the gun with
+the mouse, which the shipped v11.90 and v11.97 checks already stage; it does
+not test two identical guns stowed with different loads, where the queue is
+first in first out by construction and there is nothing in the bag to tell them
+apart anyway; it does not cover a raid ending with a gun in the bag, since the
+queue lives and dies with the raid exactly as the bag does; and the bot cannot
+reach any of it.

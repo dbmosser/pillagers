@@ -40024,6 +40024,56 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.32 - HIS NOTE: THE BENCH SAYS TO HOLD THE BUTTON
+
+His note of 2026-09-07 morning: "crafting progress bar is not working
+correctly, can't craft items at all". Investigated on the dry fixture and by
+reading at v12.31.
+
+WHAT IT WAS. The machinery is sound, and I want that on the record because
+the first trace of this note said otherwise and was wrong: a real mousedown
+starts the hold, the frame loop fills it every frame while the Undercroft is
+up, and a full second crafts, spends the parts and awards the item. The fill
+is visible too. It is painted at 55 percent amber, and while the pointer is
+on the button the generic hover rule has already dropped the button itself
+to 8 percent amber over the cream panel, so the band reads clearly. I had
+that backwards for an hour and the check now measures the words, not the
+colour.
+
+What is wrong is that the bench never says any of it. The button reads
+CRAFT, which reads like a button you click. A real mouse click spends
+nothing, which is his own v11.75 order and exactly right, and v12.17 made it
+exact; but it returned in silence. Letting go before the second is up
+cancels, also in silence. So every natural reaction to a button that looks
+unresponsive, click it, click it again, hold it briefly and let go, is
+answered with nothing at all. From his side that is a bench that cannot
+craft.
+
+THE BUILD. Three lines, all words. The button reads HOLD TO CRAFT, and HOLD
+TO SERVICE at the repair rows. A real mouse click says "Hold it down for a
+second. A click on its own spends nothing." An early release says "Let go
+too soon. Hold it for a full second." The rule underneath is unchanged: a
+click still spends nothing, the hold is still one second, the pad and Enter
+still craft on their synthetic click. The lines go through the Undercroft
+answer line, which draws above the trader window.
+
+MEASURED. Check 12.32 stages the Component Kit parts the way check 12.17
+does, opens the bench and selects the recipe. It requires the button label
+to contain HOLD. It sends a real mouse click and requires nothing crafted
+and a spoken line telling him to hold it. It starts a hold, steps it to 0.4
+of a second, releases through the real window mouseup, and requires nothing
+crafted and a spoken line. Then it holds the two paths that must not have
+moved: a synthetic click still crafts, and a full hold still crafts and not
+before it is full. On the v12.31 fixture the label has no HOLD in it and
+both silences are silent.
+
+Not verified: his own hand and eye, which is what the note is about; the fill
+colour on a device with no hover state, where the button stays solid amber
+under an amber band and the bar would be invisible (a touch screen; the pad
+never holds, it sends a synthetic click); whether a bench row disabled
+because his parts are in the backpack rather than the stash was part of what
+he hit, since the panel shows the counts but nothing says where the game
+looks.
 ## v12.31 - THE TRIGGER NEVER DIES ON A BLANK BELT CELL
 
 From the 2026-09-07 read-only audit (P1, confirmed by three refuters),

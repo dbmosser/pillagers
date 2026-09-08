@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.37';
+var VER='12.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,12 +1360,15 @@ var VER='12.37';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.37';
+var WHATSNEW_VER='12.40';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'WHOEVER KILLED YOU KILLED YOU. A round landing on your body during the death fade used to throw a second DOWN over the top of it, add another down to your record, and put its own name on the KILLED IN ACTION card in place of the machine that actually did it.',
   'A KEY ALREADY DOWN IS NOT A PRESS. F is the melee strike, so a hand resting on it when the hit landed used to spend your one self-revive on the first downed frame, with no decision made. The revive now waits for a release and a real press.',
+  'EXTRACTING WITH A GUN IN EACH HAND LEAVES A GUN IN EACH HAND. Banking the better gun into slot 1 used to leave slot 2 naming the same gun, so the next raid came up with an empty second slot and a gun you still owned quietly unslotted.',
+  'A GUN YOU DIED WITH IS NOT COMING UP WITH YOU. A death that took your sidearm left gun 2 still naming it, and the last screen before the lift told you it was going up in your hands. The slot is emptied now, and that screen makes the same test the deploy makes.',
+  'THE MAN YOU HIRED STOPS PICKING UP THE MEN SHOOTING AT YOU. A crew number is not a side: your hire shares one with about half the map, so a downed hostile carrying that number used to be worth breaking off your job for. He still picks up anyone who has thrown in with you.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -17415,6 +17418,18 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
         for(var rv=0;rv<G.ents.length;rv++){
           var RD=G.ents[rv];
           if(RD===e||RD.kind!=='raider'||!RD.downed) continue;
+          // v12.40, audit merc-loots-hostiles: A CREW NUMBER IS NOT A SIDE. The man
+          // you hired is built by mkRaider like every other pillager and rolls a
+          // crew there (raiderCrews 2), so he shares a number with about half the
+          // map. Told to loot on his own he reaches this branch, and a downed
+          // HOSTILE inside 760 carrying that number read as one of his own: he
+          // left your job, knelt over the man who had been shooting at you and put
+          // him back on his feet on 40 percent health. The test below is the one
+          // mercEngage already uses to decide who is his business, so the pillager
+          // he would shoot is the pillager he will not pick up. A man who has
+          // thrown in with you, or who is passive, is still picked up, and no
+          // other reviver in the game has his crew rule changed.
+          if(e.merc&&!RD.merc&&RD.hostile!==false&&!RD.friendlyPC) continue;
           if(RD.crew!==e.crew) continue;
           var dd3=dist(e,RD);
           if(dd3<bd){ bd=dd3; best=RD; }
@@ -18820,6 +18835,20 @@ var _cdone=contractExtract(G.bag,haul);
       if(P.weapons.indexOf(kept[i].id)<0) P.weapons.push(kept[i].id);
     }
     if(kept.length) P.equipped=kept[0].id;
+    // v12.38, audit gun-slot-reconcile: SLOT TWO IS RECONCILED WITH SLOT ONE.
+    // The line above rewrites gun 1 from the tier sort, so a run where the
+    // better gun rode in slot 2 leaves BOTH slots naming it. The ascent check
+    // then prints the same gun name twice, and the deploy guard refuses a
+    // sidearm equal to the primary, so the next raid comes up with fists in
+    // gun 2 and a gun he still owns quietly unslotted, out of a run in which
+    // he lost nothing. The welcome pack hands out smg then carbine, which is
+    // exactly the losing order, so this is the first extraction of a new
+    // player. Only the collision is repaired: the other gun he actually
+    // carried takes slot 2, and where there is no other gun the slot is
+    // honestly empty. Two distinct slots are left untouched. Same rule the
+    // armoury menu applies when a gun is put into a slot it already sits in.
+    if(kept.length&&(P.equippedSec||'none')===P.equipped)
+      P.equippedSec=(kept.length>1&&kept[1].id!==P.equipped)?kept[1].id:'none';
     for(i=0;i<THROWKEYS.length;i++){
       var tk=THROWKEYS[i];
       for(var q=0;q<G.pouch[tk];q++) P.stash.push(tk);
@@ -18903,6 +18932,16 @@ var _cdone=contractExtract(G.bag,haul);
     // onward, undoing v2.80 the first time a fresh player died, which is to say
     // in their first raid. Found by driving the death and redeploying.
     if(P.equipped!=='fists'&&P.weapons.indexOf(P.equipped)<0) P.equipped=P.weapons.length?P.weapons[0]:'fists';
+    // v12.39, audit dead-slot2: AND GUN 2 GETS THE SAME REPAIR. The line above has
+    // put the primary back on a gun you still own since v2.82, and nothing has ever
+    // done it for the sidearm, so a death that took the second gun left P.equippedSec
+    // naming a gun the splice thirty lines up had just removed from the armoury.
+    // buildRaid refuses it - it tests P.weapons before it bakes a sidearm - and sends
+    // you up with an empty second slot, but the ascent check reads the field raw and
+    // told him the dead gun was going up in his hands. An empty gun 2 is the v5.37
+    // default, so that is what the slot goes back to.
+    if(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists'&&
+       P.weapons.indexOf(P.equippedSec)<0) P.equippedSec='none';
     // Everything the ledger just called GONE is not gone. It is lying where you
     // fell, and the map you died on will show it to you next time you deploy
     // there. One body at a time, so this replaces any older one.
@@ -28804,7 +28843,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.37: 2026-09-07 audit (f-held-revive). healLock is the edge latch on the one self-revive, and the whole file SETS it in exactly one place, inside the downed branch of updatePlayer; the two other lines that name it only clear it. So a hand already resting on F when the hit landed arrived on the floor with the latch clear, and the very first downed frame read that held key as a fresh press and spent the one self-revive with no decision made. F has been the melee strike since v10.64, so holding it through a fight is ordinary play, and the man then paid for it on his second down with the v12.10 line telling him a revive he never chose was already gone. One assignment at the down moment latches the flag to whatever F is doing at that instant, so the revive waits for a release and a real press, which is what the DOWN overlay asks for on screen; with F not held the latch is cleared and the first real press still revives, bit for bit as before. Nothing measurable moves: the bot auto-revives on a branch that never reads the latch. Check 12.37 puts him down with the strike key held and requires him to stay on the floor with the revive unspent, then proves in two controls that a real press still stands him up and that letting go and pressing again after a held down still revives; fails on v12.36.',
+  now:'v12.40: 2026-09-07 audit (merc-loots-hostiles). The pickup branch asks two things, is this man a pillager and is he in my crew, and neither question asks which side either man is on. The merc you hire is built by the same maker as every other pillager and rolls a crew there out of two, so he shares a number with about half the map. Told to loot on his own he reaches this branch, and a downed HOSTILE inside 760 units carrying that number read as one of his own: he left your job, knelt over the man who had been shooting at you, and put him back on his feet on 40 percent health. One guard between the two tests, so it reads as the side question that has to be answered before the crew question is even asked, and it is the same test mercEngage already uses to decide who is his business: the pillager he would shoot is the pillager he will not pick up. A man who has thrown in with you, or who is passive, is still picked up, and no other reviver in the game has his crew rule changed. Check 12.40 stages a reviver and a downed man twenty units apart on a crew number no raid can roll, a thousand units from the player so nothing else can reach them, and runs three arms: the hire and a downed hostile, an ordinary crew picking its own up, and the hire and a man who has thrown in with you; fails on v12.39.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32761,7 +32800,15 @@ function renderStage(prefill){
       return;
     }
     var g1=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
-    var g2=(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists')?WEAPONS[P.equippedSec]:null;
+    // v12.39, audit dead-slot2: THE SAME TEST buildRaid MAKES, so this page can
+    // never name a gun that will not come up. It read the slot raw, so after a death
+    // that took the sidearm it printed the lost gun as your second gun, and it would
+    // do the same for a slot 2 that had come to name the gun already in slot 1. Both
+    // are cases buildRaid throws away. This is the last screen before the lift, so it
+    // is the one screen that has to agree with the deploy.
+    var _s2=P.equippedSec;
+    var g2=(_s2&&_s2!=='none'&&_s2!=='fists'&&WEAPONS[_s2]&&
+            (P.weapons||[]).indexOf(_s2)>=0&&_s2!==P.equipped)?WEAPONS[_s2]:null;
     var rg2=myRig();
     var bits=[];
     bits.push(g1?escHtml(g1.name):'<span style="color:var(--hazard)">no gun of your own, a loaner</span>');
@@ -39653,6 +39700,214 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.40',what:'a merc told to loot on his own does not pick up a downed HOSTILE pillager who happens to share his crew number; he still picks up one who has thrown in with you, and an ordinary crew still picks its own up (2026-09-07 audit, merc-loots-hostiles)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__ents&&window.__P&&window.__identityIds))
+       return 'SKIP: this fixture cannot hire a merc and step the pillagers';
+     var P=window.__P(), ids=window.__identityIds(), bad=[];
+     if(!ids.length) return 'SKIP: no identity to hire';
+     var svMerc=P.merc, svCred=P.credits;
+     // THE STAGE, three arms on one room. A reviver and a downed pillager twenty
+     // units apart on the ground the hired man spawned on, both stamped crew 7 -
+     // raiderCrews is 2, so 7 is a number no raid can roll and can only have come
+     // from here. You are parked a thousand units away, which puts the stage
+     // outside the crawl-for-cover branch (700) and outside engageNear (600), so
+     // the downed man does not crawl out of reach and mercEngage never fires.
+     // Nobody else is in G.ents. The order is LOOT, the order the finding names.
+     // His bag is emptied because raiderUseKit heals a hurt pillager from his own
+     // bag and would blur the 311 the pickup writes. Five seconds at 0.1 against
+     // the 3.2 second pickup.
+     function arm(mode){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       P.merc=ids[0]; P.credits=1000;
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(), p=g.player, i, e, M=null, pool=[];
+       for(i=0;i<g.ents.length;i++){
+         e=g.ents[i];
+         if(e.kind!=='raider') continue;
+         if(e.merc){ if(!M) M=e; }
+         else if(!e.downed&&!e.finished) pool.push(e);
+       }
+       if(!M) return {skip:'the hired merc did not spawn'};
+       if(pool.length<2) return {skip:'fewer than two ordinary pillagers on this map and seed'};
+       var E=(mode==='crew')?pool[0]:M, D=pool[1];
+       var keepEnts=g.ents, keepOrder=g.mercOrder, keepHold=g.mercHold,
+           keepRev=(g.tel?(g.tel.crewRevives||0):null), out=null;
+       try{
+         g.mercOrder='loot'; g.mercHold=null;
+         p.downed=false; p.hp=p.maxhp; p.iv=99;
+         p.x=(M.x+1000<WORLD_W-60)?(M.x+1000):(M.x-1000); p.y=M.y;
+         E.x=M.x; E.y=M.y; E.crew=7; E.state='loot'; E.downed=false; E.finished=false;
+         E.reviving=null; E.revProg=0; E.hp=E.maxhp; E.hostile=E.merc?false:true; E.friendlyPC=0;
+         D.x=M.x+20; D.y=M.y; D.crew=7; D.downed=1; D.downT=16; D.state='down';
+         D.finished=false; D.reviveT=0; D.maxhp=777; D.hp=50; D.bag=[]; D.healQ=0;
+         D.hostile=(mode==='side')?false:true; D.friendlyPC=(mode==='side')?1:0;
+         g.ents=[E,D];
+         for(var f=0;f<50;f++) __ents(0.1);
+         out={up:(!D.downed&&!D.finished), hp:Math.round(D.hp),
+              latched:(E.reviving===D), gone:!!D.finished};
+       } finally {
+         // The raid itself is this check own deploy and the next check deploys
+         // its own, but the roster array, the order, the hold point and the revive
+         // counter are read by anything that runs after this one.
+         g.ents=keepEnts; g.mercOrder=keepOrder; g.mercHold=keepHold;
+         if(g.tel&&keepRev!==null) g.tel.crewRevives=keepRev;
+       }
+       return out;
+     }
+     try{
+       // THE FINDING: your hire, told to loot on his own, and a downed HOSTILE
+       // pillager who happens to carry his crew number.
+       var A=arm('hostile');
+       if(A.skip) return 'SKIP: '+A.skip;
+       if(A.gone) bad.push('control: the downed man bled out inside the five seconds, so this arm never asked the question');
+       else if(A.up) bad.push('the man you hired left your job and picked up a downed HOSTILE pillager because they share a crew number: he is on his feet with '+A.hp+' health and shooting at you again');
+       else if(A.latched) bad.push('the man you hired broke off and knelt over a downed HOSTILE pillager of his crew number; the pickup was still running at five seconds');
+       // CONTROL 1: AN ORDINARY CREW STILL PICKS ITS OWN UP, in this same room.
+       // Without it, a fix that stopped every pickup everywhere would read green.
+       var B=arm('crew');
+       if(B.skip) return 'SKIP: '+B.skip;
+       if(!B.up) bad.push('control: an ordinary pillager did not pick his own downed crewmate up in the same room (health '+B.hp+', bled out '+B.gone+'), so the stage produces no pickup at all and the merc arm proves nothing');
+       else if(B.hp!==311) bad.push('control: the crewmate stood up on '+B.hp+' health, not the 311 the pickup writes (40 percent of the 777 this stage gave him), so something other than the pickup stood him up');
+       // CONTROL 2: AND YOUR HIRE STILL PICKS UP A MAN ON YOUR SIDE who shares the
+       // number, which is what separates a side test from a blanket ban on the man
+       // you paid for helping anybody at all.
+       var C=arm('side');
+       if(C.skip) return 'SKIP: '+C.skip;
+       if(!C.up) bad.push('control: the man you hired no longer picks up a downed pillager who has thrown in with you and shares his crew number (health '+C.hp+', bled out '+C.gone+'), so the fix bans him from helping anyone instead of telling the two sides apart');
+     } finally {
+       P.merc=svMerc; P.credits=svCred;
+       __resetCfg(); __cleanProfile(); __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.39',what:'a death that takes the sidearm empties gun slot 2, and the ascent check stops naming a gun that is no longer in the armoury (2026-09-07 audit, dead-slot2)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__runPrep&&window.__topClear&&window.__cleanProfile&&window.__resetCfg&&window.__pinDefaults)) return 'SKIP: this fixture cannot deploy and end a raid';
+     if(!window.__renderStage) return 'SKIP: this fixture cannot render the ascent check';
+     if(!document.getElementById('stagemodal')||!document.getElementById('stagesum')) return 'SKIP: this build has no ascent check summary line';
+     if(!(WEAPONS&&WEAPONS.sniper&&WEAPONS.lance)) return 'SKIP: this build has no Longshot and no Meridian Lance to stage';
+     var bad=[], P2=__P();
+     // Assembled, never written whole, so a check that greps the page for the
+     // empty-slot line cannot find it in this checks own source.
+     var NONE2='no second '+'gun';
+     var keep={weapons:(P2.weapons||[]).slice(),eq:P2.equipped,eq2:P2.equippedSec,
+       stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),drop:(P2.dropKit||[]).slice(),
+       hot:JSON.parse(JSON.stringify(P2.hotAssign||{})),wear:JSON.parse(JSON.stringify(P2.wear||{})),
+       kills:JSON.parse(JSON.stringify(P2.kills||{})),chosen:P2.kitChosen,freeKit:P2.freeKit,
+       kbf:P2.kitBeforeFree,kitSaved:P2.kitSaved,gunSlot:P2._gunSlot,
+       merc:P2.merc,mapIx:P2.mapIx,runs:P2.runs,died:P2.died,ext:P2.ext,credits:P2.credits,
+       xp:P2.xp,best:P2.best,notExt:P2.notExt};
+     function sumText(){ var e=document.getElementById('stagesum'); return ((e&&e.textContent)||'').replace(/\s+/g,' '); }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ var g0=__state(); if(g0&&!g0.over){ g0.player.downed=false; __endRaid('abandon'); } }catch(_0){}
+       P2=__P();
+       // DISTINCTIVE: two guns no starter roll, no shop stock and no freebie kit can hand you.
+       P2.weapons=['sniper','lance']; P2.equipped='sniper'; P2.equippedSec='lance';
+       P2.wear={}; P2.merc=null;
+       P2.kitBeforeFree=null; P2.kitSaved=null; P2._gunSlot=null;
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g) return 'staging: no raid to die in';
+       var p=g.player;
+       if(!p.sec||p.sec.id!=='lance') return 'staging: gun 2 went up as '+((p.sec&&p.sec.id)||'nothing')+' and not the Meridian Lance';
+       if(!p.secFromArmory) return 'staging: gun 2 is not flagged as out of the armoury, so a death would not take it';
+       g.bag.length=0; p.downed=false; g.over=false;
+       __endRaid('dead');
+       __topClear();
+       P2=__P();
+       var own=P2.weapons||[];
+       if(own.indexOf('lance')>=0) return 'staging: the Meridian Lance survived the death, so there is nothing here to measure';
+       if(P2.freeKit) return 'staging: the profile came out of the death on the freebie kit, which prints its own line';
+       // THE FINDING, part one: the slot still points at the gun that died with him.
+       var s2=P2.equippedSec;
+       if(s2&&s2!=='none'&&s2!=='fists'&&own.indexOf(s2)<0)
+         bad.push('after dying with it, gun slot 2 still names the '+((WEAPONS[s2]&&WEAPONS[s2].name)||s2)+', which is no longer in the armoury');
+       // THE FINDING, part two: and the last screen before the lift tells him it is coming up.
+       try{ __renderStage(); }catch(_r){ bad.push('the ascent check threw after the death: '+_r); }
+       var txt=sumText();
+       if(txt.indexOf('Meridian Lance')>=0)
+         bad.push('the ascent check sends him up with a Meridian Lance he lost with his body ['+txt+']');
+       if(txt.indexOf(NONE2)<0)
+         bad.push('the ascent check does not say '+NONE2+' after the sidearm was lost ['+txt+']');
+       // CONTROL: put the gun back in the armoury and the same page must name it again.
+       P2.weapons=['sniper','lance']; P2.equipped='sniper'; P2.equippedSec='lance';
+       try{ __renderStage(); }catch(_r2){ bad.push('control: the ascent check threw: '+_r2); }
+       var ctl=sumText();
+       if(ctl.indexOf('Meridian Lance')<0)
+         bad.push('control: with the Meridian Lance back in the armoury the ascent check no longer names it as gun 2 ['+ctl+']');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz&&!gz.over){ gz.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ var sm=document.getElementById('stagemodal'); if(sm) sm.classList.remove('on');
+            var sp=document.getElementById('stageplan'); if(sp) sp.innerHTML='';
+            var sv=document.getElementById('stagesum'); if(sv) sv.innerHTML=''; }catch(_s){}
+       try{ var Pz=__P();
+         Pz.weapons=keep.weapons; Pz.equipped=keep.eq; Pz.equippedSec=keep.eq2;
+         Pz.stash=keep.stash; Pz.kit=keep.kit; Pz.dropKit=keep.drop; Pz.hotAssign=keep.hot;
+         Pz.wear=keep.wear; Pz.kills=keep.kills; Pz.kitChosen=keep.chosen; Pz.freeKit=keep.freeKit;
+         Pz.kitBeforeFree=keep.kbf; Pz.kitSaved=keep.kitSaved; Pz._gunSlot=keep.gunSlot;
+         Pz.merc=keep.merc; Pz.mapIx=keep.mapIx;
+         Pz.runs=keep.runs; Pz.died=keep.died; Pz.ext=keep.ext; Pz.credits=keep.credits;
+         Pz.xp=keep.xp; Pz.best=keep.best; Pz.notExt=keep.notExt;
+         saveProfile(); }catch(_p){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.38',what:'extracting with a gun in each hand leaves a gun in each hand: banking the better one into gun 1 no longer leaves gun 2 naming the same gun, so the ascent check does not print it twice and the next raid still comes up with a second gun (2026-09-07 audit, gun-slot-reconcile)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy and end a raid';
+     if(typeof carriedGuns!=='function'||typeof saveProfile!=='function') return 'SKIP: this build does not bank carried guns';
+     if(!(WEAPONS&&WEAPONS.pistol&&WEAPONS.sniper&&WTIER&&WTIER.sniper>WTIER.pistol)) return 'SKIP: the Longshot no longer outranks the Scav Pistol, so the tier sort cannot be staged';
+     var bad=[], P2=__P(), i;
+     var KEYS=['weapons','equipped','equippedSec','wear','stash','kit','kitChosen','dropKit','freeKit','kitBeforeFree','kitSaved','runs','ext','best','credits','kills','log','notExt','notoriety','mapIx'];
+     function snap(v){ var o,k; if(v&&v.slice) return v.slice(); if(v&&typeof v==='object'){ o={}; for(k in v) o[k]=v[k]; return o; } return v; }
+     var keep={}; for(i=0;i<KEYS.length;i++) keep[KEYS[i]]=snap(P2[KEYS[i]]);
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // DISTINCTIVE ON PURPOSE: the weakest gun in the file in slot 1 and the
+       // strongest in slot 2. No starter roll, no free kit and no fallback can
+       // produce a Longshot, and the tier sort must reverse this exact pair.
+       P2.weapons=['pistol','sniper']; P2.equipped='pistol'; P2.equippedSec='sniper';
+       P2.wear={}; P2.freeKit=0; P2.kitSaved=null; P2.kitBeforeFree=null;
+       saveProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       if(!p.wep||p.wep.id!=='pistol') bad.push('control: the raid did not start with the Scav Pistol in gun 1 (it holds '+(p.wep&&p.wep.id)+')');
+       if(!p.sec||p.sec.id!=='sniper') bad.push('control: the raid did not start with the Longshot in gun 2 (it holds '+(p.sec&&p.sec.id)+')');
+       if(p.wepIssued||p.secIssued) bad.push('control: a slot was filled with issued kit, so that gun would never be banked and the sort would not run');
+       g.bag=[]; p.downed=false; p.hp=100;
+       __endRaid('extract');
+       if(P2.weapons.indexOf('pistol')<0||P2.weapons.indexOf('sniper')<0) bad.push('control: the extraction did not leave both guns in the armoury (it holds '+P2.weapons.join(',')+')');
+       if(P2.equipped!=='sniper') bad.push('control: the extraction did not promote the Longshot into gun 1 (gun 1 reads '+P2.equipped+'), so the tier sort this check is about did not run');
+       if(P2.equippedSec===P2.equipped) bad.push('after extracting with both guns, gun 1 and gun 2 both read '+P2.equipped+', so one gun is in two hands and the Scav Pistol he still owns has been unslotted by a run in which he lost nothing');
+       else if(P2.equippedSec!=='pistol') bad.push('gun 2 reads '+P2.equippedSec+' after the extraction, not the Scav Pistol he carried out');
+       // WHAT THE LAST SCREEN BEFORE THE LIFT PRINTS.
+       if(window.__renderStage&&document.getElementById('stagesum')){
+         __topClear();
+         try{ __renderStage(); }catch(_rs){ bad.push('the ascent check threw: '+(_rs&&_rs.message||_rs)); }
+         var sum=(document.getElementById('stagesum').textContent||'').replace(/\s+/g,' ');
+         var nm=WEAPONS.sniper.name, none2='no second '+'gun';
+         if(!sum) bad.push('control: the ascent check summary is empty, so what the last screen names cannot be read here');
+         else{
+           if(sum.split(nm).length-1>1) bad.push('the ascent check names the '+nm+' twice as his loadout ('+sum.slice(0,90)+')');
+           if(sum.indexOf(WEAPONS.pistol.name)<0) bad.push('the ascent check does not name the Scav Pistol he carried out ('+sum.slice(0,90)+')');
+           if(sum.indexOf(none2)>=0) bad.push('the ascent check says '+none2+' after a run in which he lost no gun ('+sum.slice(0,90)+')');
+         }
+       }
+       // AND THE RAID HE ACTUALLY DEPLOYS INTO NEXT.
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g2=__state(), p2=g2.player;
+       if(!p2.sec||p2.sec.id==='fists') bad.push('the next raid comes up with nothing in gun 2 after an extraction that lost no gun');
+       else if(p2.wep&&p2.sec.id===p2.wep.id) bad.push('the next raid comes up holding two copies of the '+p2.sec.id);
+       else if(p2.sec.id!=='pistol') bad.push('the next raid comes up with '+p2.sec.id+' in gun 2, not the Scav Pistol he carried out');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; g3.bag=[]; __endRaid('extract'); } }catch(_e){}
+       for(i=0;i<KEYS.length;i++) P2[KEYS[i]]=keep[KEYS[i]];
+       try{ saveProfile(); }catch(_s2){}
+       __topClear(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'12.37',what:'F already held when the hit lands does not spend the one self-revive: put down with the strike key held he stays on the floor with the revive unspent, letting go and pressing F still stands him up, and a down with nothing held still revives on the first real press (2026-09-07 audit, f-held-revive)',
    run:function(){

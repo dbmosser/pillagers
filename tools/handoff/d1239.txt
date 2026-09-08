@@ -1,0 +1,43 @@
+## v12.39 - A GUN YOU DIED WITH IS NOT COMING UP WITH YOU
+
+From the 2026-09-07 read-only audit (dead-slot2), specced from the source and
+then attacked by a skeptic before a line was written. Verified by reading at
+v12.38.
+
+WHAT IT WAS. A death splices the guns you were carrying out of the armoury.
+Since v2.82 the primary has been put back on a gun you still own, so the first
+slot always comes out of a death pointing at something real. Nothing has ever
+done the same for the sidearm. So a death that took your second gun left gun
+slot 2 still naming a gun that the splice thirty lines above had just removed.
+
+The deploy itself is not fooled: it tests the armoury before it bakes a
+sidearm, so he went up with an empty second slot. What lied to him was the
+ascent check, the last screen before the lift, which read the field raw and
+printed the gun he had just lost with his body as the gun going up in his
+hands. So the one screen whose whole job is to tell him what he is taking up
+disagreed with what he actually got.
+
+THE BUILD. Two edits. The sidearm now gets the same repair the primary already
+gets, going back to the empty slot that has been the default since v5.37. And
+the ascent check makes the same test the deploy makes, so that screen can never
+name a gun that will not come up. The second edit is belt and braces on top of
+the first, and it earns its place: it also covers a slot 2 that has come to
+name the gun already in slot 1, and a stale slot arriving from anywhere else,
+which the first edit cannot see.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. Both edits run outside a raid,
+one in the payout and one on a menu screen. No dial moves. The bot never reads
+a second gun slot and never opens the ascent check, so no paired number moves.
+
+MEASURED. Check 12.39 stages two guns no starter roll, no shop stock and no
+freebie kit can hand out, which is what makes the staging unmistakable. It
+confirms the raid really came up with the second gun and that the gun is
+flagged as out of the armoury, so a death will actually take it. It dies, then
+reads the profile slot and the ascent check summary text. The control puts the
+gun back into the armoury and requires that same screen to name it again, so a
+pass can never come from a page that names nothing at all.
+
+Not verified: it runs one map and one seed; it does not test three or more
+guns; it does not open the armoury menu, only the payout and the ascent check;
+and it says nothing about the extract branch, which had its own collision and
+its own build at v12.38.

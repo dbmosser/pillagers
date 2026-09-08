@@ -1,0 +1,44 @@
+## v12.41 - AN EMPTY CELL SPENDS NOTHING FROM ANOTHER CELL
+
+This closes the "Not verified:" line on v12.08, and the 2026-09-07 read-only
+audit confirmed it independently. Verified by reading at v12.40.
+
+WHAT IT WAS. v12.08 stopped an empty throwable cell from owning the mouse
+trigger. The key and the pad reach a throw by a different door: the belt use
+verb calls doThrow, and doThrow still cycled. Selecting a cell you had nothing
+in and pressing the key walked the hidden selector on to the next grenade you
+DID have and threw that one, at the cursor, while the belt highlight and the
+caption underneath it still named the cell you pressed. The cook took the same
+branch, so pulling the pin on an empty cell pulled it on a different grenade.
+
+Two cells reach that door: the derived throwable cell and a cell you dragged a
+grenade onto yourself. Both did it.
+
+The cost is one wrong grenade spent, and a toast that names the swap after the
+fact, which is why the audit called it P2 rather than worse. It is still the
+belt disagreeing with your hand, which is the thing the whole cell system is
+supposed to prevent.
+
+THE BUILD. One shared refusal, used by both verbs, doing exactly what the mouse
+branch has done since v12.08: name what is missing, put the gun in your hands
+up, and spend nothing. Q, the dedicated cycle key, still cycles. That is the
+line the fix draws: choosing a different grenade on purpose is not the same act
+as using the one you already chose, and only the use verbs are changed.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The bot never reaches either
+verb; both are only called from the belt use path and from the mouse branch
+that already guards itself, so no paired number moves and no dial is touched.
+
+MEASURED. Check 12.41 deploys with two Smoke and nothing else, which is the
+pouch the finding names: the cell he presses is empty and the cell the old code
+walked to is not. It presses the Frag cell and requires the pouch, the throw
+list and the hidden selector all unmoved and a toast that names the Frag. It
+then drives the assigned-cell route and the cook the same way. The control
+requires a cell that DOES hold a grenade to still throw one, and to throw the
+right kind, so a fix that simply stopped throwing could not read green.
+
+Not verified: the pad is not driven, though it routes through the same key
+name so the fix covers it by construction; no frame is drawn, so the belt
+highlight and the caption are read as state rather than as pixels; and the
+throw is not followed to its landing, since what is at issue is which grenade
+leaves the hand.
