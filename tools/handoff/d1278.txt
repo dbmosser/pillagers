@@ -1,0 +1,37 @@
+## v12.78 - THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY
+
+From the 2026-09-08 first-hour audit. Most of what that finding claimed was
+wrong, the skeptic threw it out, and I am not building the refuted part. What
+survives is small and true, and I confirmed it by reading.
+
+WHAT I AM NOT BUILDING. The reader said the abandon fine is invisible to the
+outcome card's accounting, so the card and the corner readout disagree. They do
+not. The fine lands before the raid ends, and the card's total is built from the
+profile afterwards, so the two agree. Thrown out.
+
+WHAT IS REAL. The fine for walking out is at least a hundred XP, and it is taken
+with a floor at zero so it can never push him negative. That floor is right and
+it is not moving. But the button quoted the fine from BEFORE the floor, and the
+line afterwards announced that same unfloored number.
+
+So a first-time player, who has almost no XP, gets lost on his second run, opens
+the pause box, and reads YES, ABANDON THIS RUN (costs 106 XP) with nothing like
+that to his name. He presses it, is told XP -106, and loses nothing at all,
+because there was nothing there to take. The one number the game shows him about
+the consequences of quitting is fiction in both places it appears, and it is
+exactly the kind of fiction that keeps a new player inside a run he wanted to
+leave.
+
+THE BUILD. Both places use the figure that will actually be charged. At zero the
+button says there is no XP to lose and the line afterwards says the same. Nothing
+about the fine itself moves: the amount, the sixty second grace, and the floor
+are all exactly as they were.
+
+MEASURED. Check 12.78 presses the real two-stage button in a real raid aged past
+the grace, and reads the words he is shown and the line he is told. The control
+is a character who HAS the XP: he must still read the full price and must still
+pay exactly it, so a build that had simply stopped charging would fail there.
+
+Not verified: it ages the raid by moving the clock rather than playing three
+minutes; it reads the button's text and the message string rather than pixels;
+and it does not change what the fine is worth, which is a dial and his to set.

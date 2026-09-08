@@ -546,3 +546,64 @@ as the template. Reproduce the defect in the page BEFORE writing the fix.
 **MY OWN VOCABULARY CHECK IS TOO NARROW.** Drafted f1248 asserts three banned words only (the vehicle word, the arrival word, the boarding word) and does not assert cash, hotbar, hub, standing or tier, so it will ship green over the cash at game 9147. Widen it AFTER the queue drains, as its own build, because widening it now would very likely turn v12.48 red on text that predates it and stall twenty eight builds behind it.
 
 **I READ FINDING 2 MYSELF AND HALF OF IT IS WRONG, which is what the re-read is for.** The retired name IS real: game line 32359 is the only occurrence of it in the whole file and it is the name of the file dropped into the player's Downloads. But the audit also said the Settings row promises a drop every second raid while the code drops after raid one; it does not. The dropping gate at 32385 carries a comment explaining that the first raid of a session is dropped deliberately, because measuring the path with the drop unreachable showed six raids played, one file saved and five silently lost, so the one copy he ever hands over held his first raid and nothing after it. The Settings words at game 1532 say only that CLOSE keeps the reports in his Downloads. So the build is the filename alone, one line, and renaming it is safe because the importer identifies a report by its contents and not by its name.
+
+## STOPPED 2026-09-08 BY HIS ORDER, TO SAVE USAGE. READ THIS FIRST WHEN RESUMING.
+
+**HEAD is v12.45 (5249ed5). v12.46 is APPLIED TO THE TREE AND NOT COMMITTED.** Both
+dark_raiders.html and tools/mkfixture.ps1 are modified in the working tree and that is
+correct, not damage. Do NOT run `ship.sh start 1245 1246` again on resume: it would
+apply v12.46 a second time and the SubRx asserts would fail on a doubled edit.
+
+**v12.46 has already passed all four gates**: parsecheck PASS on v12.46, check 12.46
+passed three times with 11.62 between, the control on fx1245 failed (the auto-jog
+survived the down: stood back up on 40 health with no key held he walked 32 units by
+himself and the jog was still armed), and __verifySafe was green at 85/374 ents,
+165/593 containers, parity identical on both sectors, LOOT on both, all three endings
+and the Undercroft.
+
+**THE ONLY THING v12.46 STILL NEEDS is a full corpus.** It was at about 220 of 375 with
+no failures when the session was stopped, and the fixture tab was navigated away from,
+so that run is gone. TO RESUME: load http://localhost:8800/fixture.html on tab seed at
+1920x1080, run `__regressBg()`, poll `__PROG` until finished, require PASS with only the
+two known skips (v8.88 pane height, v11.24 feud unmeasurable), then
+`bash tools/handoff/ship.sh commit 1246 cm1246.txt`, bump the HEAD line in the memory
+file dark-raiders-handoff-state.md to v12.46, and carry on with `ship.sh start 1246 1247`.
+
+**THE DRAFTED QUEUE IS THIRTY THREE BUILDS, v12.46 THROUGH v12.78**, chain verified from
+12.45 (`verifychain.ps1 -First 1246 -Last 1278 -Ver 12.45 -Wn 12.45` prints chain
+verified). 1246 to 1271 were dry-run green as a chain. **1272 TO 1278 HAVE NOT BEEN
+DRY-RUN YET**: before shipping any of them run `dry.ps1 1246 1278` from a clean v12.45
+tree and expect it to reach v12.78, then rebuild the dry fixture and run checks 12.72 to
+12.78 twice each with 11.62 between on :8801 at 1920x1080. That pass has caught a broken
+check or a missed defect every single time it has been run, so do not skip it.
+
+**THE SEVEN NOTES ARE ALL CLOSED.** Note 7, the reload countdown, was closed by
+MEASUREMENT rather than by a build: a probe on the live fixture watched a real reload and
+both indicators paint. Mid-reload the cursor prints the seconds left (0.9s on an SMG half
+way through its 1850 ms reload) and two extra bar rectangles appear over the head; with
+the reload cleared the seconds text is gone and the bar count drops back. If he still
+cannot see it in play the next step is to make it bigger, and that is HIS call, not a
+third indicator.
+
+**THE TWO AUDITS.** tools/handoff/audit-0908-firsthour.md holds the fourteen findings of
+the first-hour audit; four were already queued, seven became v12.72 to v12.78, and my own
+reading killed one outright and half of another. A SECOND audit (Settings driven to world
+consequences, settings that do not survive a reload, the run report and recorder, backup
+and restore and import a friend, the three-phase extraction, the pause box and mid-raid
+menus, dying and coming back, edit-the-words mode, and every Undercroft station) was
+launched and then STOPPED PART WAY when the session was stopped, so it produced nothing.
+Its script is saved and can be re-run: workflows/scripts/pillagers-second-hour-audit-
+wf_c9a93067-aee.js. Its skeptics are the strict version, told that a third of what they
+are handed is wrong and made to walk six named refutation routes; use that shape from now
+on, because the first audit's skeptics refuted nothing at all and were worthless.
+
+**STILL OPEN AND DELIBERATELY LEFT FOR HIM:** the XP ladder calibration against a real
+run, the bar's dose cap (twenty doses sold, bonus caps at ten), the Wirt showpiece
+pricing, whether contract gear should re-roll at claim time instead of paying its value
+(v12.63), whether to hold the wave-clock half of v12.45, whether a used-up belt cell
+stays dark or disappears, and whether stall money should be spendable at the stall.
+
+**AND ONE OF MINE:** the drafted vocabulary check f1248 asserts three banned words only
+and will ship green over the word cash at game 9147, which v12.74 fixes by hand. Widen
+that check AFTER the queue drains, as its own build, because widening it now would very
+likely turn v12.48 red on older text and stall thirty builds behind it.
