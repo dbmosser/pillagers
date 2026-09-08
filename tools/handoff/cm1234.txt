@@ -1,0 +1,21 @@
+v12.34: his order, fewer machines and a lighter extraction by default
+
+"Make the default setting for machines 'few' and the default setting for
+'Heat when you call for extraction' to 'light'". Dials, moved because he
+moved them; nothing else in the table is touched.
+
+The numbers come off the two Settings rows rather than being invented, so a
+fresh profile carries exactly what those rows mean: twelve sentries, twenty
+crawlers and a floor of one and a half crawlers a house, and a siege volume
+of six tenths. Each row's own default index moves with the numbers, or both
+buttons would have drawn in the colour that means changed on a profile
+nobody had touched.
+
+The harness pinned the two machine counts and never the per-house rate, so
+moving the default would have moved the world every check measures. The rate
+is pinned explicitly at the old figure now, and check 12.34 guards it: a
+fresh profile must carry the Few and Light numbers, both rows must read
+those words and call them their own default, and the pin must bring the old
+world back. Fails on v12.28.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

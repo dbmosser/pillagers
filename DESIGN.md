@@ -40024,6 +40024,55 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.28 - HIS NOTE: A PEDDLER PURCHASE SAYS WHERE IT WENT
+
+His note of 2026-09-07 morning: "I bought stuff from the peddler and it
+didn't show up in my inventory including an auto rifle". Traced by the
+2026-09-07 read-only notes investigation and verified by reading at v12.27.
+
+WHAT IT WAS. The purchase itself is sound: pedBuy refuses on credits and on
+backpack weight before it spends, and the spend, the stock mark, the bag
+push and the line sit on one straight line, so the credits and the bag can
+never disagree. What went wrong is where the bought thing lands and that
+nothing said so. The purchase hands every item to autoBelt (game line 9141
+at v12.27), which pins a bought gun or stim to the first empty tactical belt
+cell; his own belt plan claims anything he has bound, so a medkit on key 6
+stays on key 6; and the backpack grid then keeps every belt-claimed copy off
+its cells, his v8.78 rule that a thing is in one place or the other and
+never both. So the rifle he paid for never appeared in the backpack he
+opened with I. Its only home was a belt cell with a small green corner mark,
+and the line said only "Bought Auto Rifle (field) for $2,850.", unlike the
+found-gun line, which says "to your empty slot". His run #11 (export of
+07:59) then ended dead, and a death discards the bag by design, so by the
+time he looked in the Undercroft the rifle was gone for that reason too.
+
+THE BUILD. One line. The purchase line names the surface: "Bought Auto Rifle
+(field) for $2,850. On your tactical belt, key 3." or "... In your
+backpack." The key is read off the belt plan after autoBelt has run, so a
+gun pinned by autoBelt and a medkit claimed by his own plan both name their
+key. Nothing about the purchase, the belt or the grid changes.
+
+MEASURED. Check 12.28 deploys, makes the Peddler the game makes and replaces
+its stock with a fixed one (a rifle, two medkits, priced 10, 20 and 30), and
+buys through the real pedBuy: the rifle must be pinned to a belt cell by
+autoBelt and the line must name that key; a medkit with no key set must say
+In your backpack; with key 6 set to medkit the second medkit must say key 6;
+and the credits must fall by exactly 60 (the purchase itself, unchanged). On
+the v12.27 fixture the three lines end at the price. The check pins the
+SECOND hand as well as the first before it deploys, and puts both back
+afterwards: the harness pins the primary weapon and has never named the
+sidearm, and autoBelt refuses to pin a bought gun that is already in either
+hand (its v8.04 dedupe), so a profile carrying the Auto Rifle as its sidearm
+would have turned this check red for a reason that is his loadout and not
+the build. Found by the 2026-09-07 draft review, which is the third time
+this class has bitten (see the standing notes on pinning the guns and on
+checks leaning on the profile).
+
+Not verified: his own eye, and whether a line is enough or the belt cell
+needs a flash; the run report line "Spent $X at the stall", which still does
+not name what was bought and would be the next step if he asks; a purchase
+while the belt is full, which says In your backpack and is right.
+
 ## v12.27 - HIS NOTE: A DRAG ONTO A SET KEY LANDS ON THE KEY, AND SAYS SO
 
 His note of 2026-09-07 morning: "inventorry still wonky -- if i run out of

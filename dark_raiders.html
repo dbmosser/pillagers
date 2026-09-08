@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.27';
+var VER='12.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.27';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.27';
+var WHATSNEW_VER='12.28';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A PEDDLER PURCHASE NOW SAYS WHERE IT WENT: on your tactical belt, key N, or in your backpack. A bought gun is pinned to a free belt key, and the backpack grid keeps a belted item off its cells, which is why a rifle you paid for was not in the backpack.',
   'DRAGGING AN ITEM FROM THE STASH TO THE BACKPACK WHEN ITS TACTICAL BELT KEY IS STILL SET FROM THE LAST RAID NOW LANDS ON THAT KEY, half the stack, and says so. A set key with nothing packed shows a 0. In a raid, pressing a key whose item you have used up says No <item> left.',
   'TAKING THE FREEBIE KIT AT THE STASH AND THEN CONFIRMING IT AGAIN AT THE LIFT NO LONGER THROWS AWAY THE PACKING KEPT ASIDE FOR YOU. A run that ends badly gives that packing back, as it was meant to.',
   'THE CREDITS AND XP READOUT NOW SCALES WITH YOUR MONITOR AND THE TEXT SIZE SETTING, like every window. So do the answer line in the Undercroft and the label under the pointer while you drag. They were 1080p pixels on a 4K screen.',
@@ -9140,7 +9141,14 @@ function pedBuy(ix){
   P.credits-=st.price; saveProfile();
   st.sold=true; G.bag.push(st.k); autoBelt(st.k); G.trade.traded=1;
   G.pedBought=(G.pedBought||0)+st.price;
-  say('Bought '+ITEMS[st.k].name+' for '+'$'+st.price.toLocaleString()+'.');
+  // v12.28, HIS NOTE: "I bought stuff from the peddler and it didn't show up in
+  // my inventory including an auto rifle". autoBelt above claims a bought gun or
+  // stim for the first empty belt cell, his own plan claims anything he has
+  // bound, and the backpack grid keeps a belt-claimed copy off its cells (v8.78),
+  // so the rifle he paid for was on the belt and not in the backpack he opened.
+  // The line says which surface it is on, as the found-gun line does.
+  var _bk=0; if(G.hotAssign) for(var _bi in G.hotAssign) if(G.hotAssign[_bi]===st.k){ _bk=(+_bi)+1; break; }
+  say('Bought '+ITEMS[st.k].name+' for '+'$'+st.price.toLocaleString()+'. '+(_bk?('On your tactical belt, key '+_bk+'.'):'In your backpack.'));
   // The purchase gets the same voice the find would have, v2.72. Buying a gun
   // from the Peddler chirped like picking up scrap while pulling the identical
   // gun from a crate rang like metal, and the difference was only which counter
@@ -28727,7 +28735,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.27: his note of 2026-09-07 (bandages did not come over): the belt plan outlives the raid but the packing does not, so a key can sit on an item with none packed; the backpack column hides one packed copy per key, so the single copy a stash drop packed vanished into that hide with no cell, no count and no words, and the plan cell drew the phantom key like a packed one. A drop for an item on an empty key now takes the belt-cell route (half the stack, a line naming the key), a set key with nothing packed shows a 0, and a spent belt key in a raid says No item left instead of nothing. The v9.03 dark cell is unchanged pending his ruling (answer 16 said stay dark; the note says disappear). Check 12.27 binds Bandage to key 3 with none packed, drops one from the stash onto the backpack and requires a visible count, the key named and the plan x-count; a drop with no key bound must still pack one; in a raid a spent Bandage key must say No Bandage left; fails on v12.26.',
+  now:'v12.28: his note of 2026-09-07 (Peddler purchases, an Auto Rifle among them, did not show up in the inventory): the purchase is sound, but autoBelt pins a bought gun or stim to the first empty belt cell, his own plan claims anything he has bound, and the backpack grid keeps a belt-claimed copy off its cells, so the rifle he paid for was on the belt and not in the backpack he opened, and the line said only Bought X for Y. The line now says On your tactical belt, key N, or In your backpack. Check 12.28 opens a stall with a fixed stock in a raid, buys a rifle and requires the line to name a belt key, buys a medkit with no key set and requires In your backpack, sets key 6 to medkit and buys another and requires key 6; fails on v12.27. NOT built: the run report line Spent at the stall still does not name what was bought.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

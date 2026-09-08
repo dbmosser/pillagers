@@ -36,15 +36,24 @@ SubRx @'
        g.crouchTog=false; g.decals.length=0; g.prints=[];
        // SPRINT NORTH, through the real keys and the real loop, which is the only
        // driver that moves the player and lays either trail.
-       var K=__keys(); for(var k in K) delete K[k];
-       K.KeyW=1; K.ShiftLeft=1;
-       var sx=p.x, sy=p.y, t0=performance.now();
-       for(i=0;i<180;i++) __loop(t0+i*16.7);
-       for(var k2 in K) delete K[k2];
-       var ran=Math.sqrt((p.x-sx)*(p.x-sx)+(p.y-sy)*(p.y-sy));
-       if(ran<200) return 'SKIP: three seconds of W and Shift moved him '+Math.round(ran)+' units, so he is against something and laid no trail here';
+       // NORTH FIRST, because his note is about running up the screen, then the
+       // other three, because the drop may have a wall on that side; the fix is
+       // the same trail whichever way he runs. Stamina is topped up each frame:
+       // the subject is the trail, and a stamina lock half way through would
+       // measure the stamina bar instead.
+       var K=__keys(), dirs=['KeyW','KeyS','KeyD','KeyA'], ran=0, used=null, sx, sy, di, t0;
+       for(di=0;di<dirs.length&&ran<250;di++){
+         for(var k in K) delete K[k];
+         g.prints=[]; g.decals.length=0; p.stamLock=0; p.stamRelease=0;
+         K[dirs[di]]=1; K.ShiftLeft=1;
+         sx=p.x; sy=p.y; t0=performance.now();
+         for(i=0;i<180;i++){ p.stam=100; __loop(t0+i*16.7); }
+         for(var k2 in K) delete K[k2];
+         ran=Math.sqrt((p.x-sx)*(p.x-sx)+(p.y-sy)*(p.y-sy)); used=dirs[di];
+       }
+       if(ran<250) return 'SKIP: three seconds of sprint moved him only '+Math.round(ran)+' units in any of the four directions, so he is boxed in and laid no trail here';
        var mine=0; for(i=0;i<g.prints.length;i++) if(g.prints[i].mine) mine++;
-       if(mine<3) return 'SKIP: a 3 second sprint laid only '+mine+' scent marks, so there is nothing to measure here';
+       if(mine<3) return 'SKIP: a 3 second sprint '+used+' over '+Math.round(ran)+' units laid only '+mine+' scent marks, so there is nothing to measure here';
        var realPrints=0; for(i=0;i<g.decals.length;i++) if(g.decals[i].print&&g.decals[i].mine) realPrints++;
        if(realPrints<2) bad.push('staging: the sprint laid only '+realPrints+' real boot prints, so the trail under test is not there');
        // ARM ONE, THE FINDING: his own scent marks must paint nothing.

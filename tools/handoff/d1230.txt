@@ -21,22 +21,35 @@ the raid fired nothing while the belt caption read "Empty slot".
 THE BUILD. One helper, gunCell(), finds the cell that holds the gun in your
 hands, the same loop the X swap has used since v8.31, and answers cell 1
 only when no cell holds it at all (items assigned over both), which is the
-old answer. The three fall-backs use it. And a click on a blank cell now
+old answer. All three fall-backs use it. And a click on a blank cell now
 does what a click on an empty grenade cell has done since v12.08: it
-selects the gun and yields, so the next click fires. Nothing about which
-gun is up, the dedupe, or the belt drawing changes.
+selects the gun and yields, so the next click fires. The dedupe and the belt
+drawing are untouched.
 
-MEASURED. Check 12.30 deploys, binds the gun in hand to key 5 and asserts
-that cell 1 is blank and cell 5 holds the gun (staging). Arm A, the raid
-start: the highlight on the blank cell, one press through updatePlayer with
-the mouse down; the selected cell must hold the gun, the hold must not fire,
-and the next click must fire (the shot counter rises). Arm B, the v12.08
-yield: an empty throwable cell selected, one press; the highlight must land
-on the gun cell and the next click must fire. On the v12.29 fixture arm A
-leaves the blank cell selected and never fires, and arm B leaves the blank
-cell selected after the yield.
+ONE MORE CASE THE HELPER CHANGES, named because the first draft of this
+entry claimed nothing else moved and the 2026-09-07 draft review caught it.
+After X, with the guns swapped and no assignment on the belt at all, the
+derived cell 1 is the gun in your OTHER hand, not the one you are holding.
+The old fall-back went there and setHot took its equip-from-the-bag branch;
+the helper goes to the cell of the gun actually in your hands instead. That
+is the same rule as everywhere else in this build, and it is better, but it
+is a change and not a no-op.
 
-Not verified: the rack route in the Undercroft (rackPut binds the figure
-gun without planPut); a belt with items assigned over both gun cells, where
-gunCell answers 1 as before and the trigger stays dead by design of the old
-rule; the pad, which reaches the trigger through a different press.
+MEASURED. Check 12.30 deploys and binds the gun in hand to key 5, and the
+two facts the finding rests on, that cell 1 goes blank and that key 5 takes
+the gun, are FAILURES rather than skips, so this check cannot quietly stop
+running the day the dedupe changes. Arm A, the raid start: the highlight on
+the blank cell, one press through updatePlayer with the mouse down; the
+selected cell must hold the gun, the hold must not fire, and the next click
+must fire. Arm B, the v12.08 empty-throwable yield: the same three
+requirements from an empty grenade cell. Arm C, the second of the three
+fall-backs: one Bandage on key 4, one click spends it, and the fall-back
+must land on the gun rather than the blank, with no shot fired. On the
+v12.29 fixture every arm leaves the blank cell selected and nothing fires.
+
+Not verified: the THIRD fall-back, after releasing a cooked grenade, which
+the patch rewrites and no arm drives; the rack route in the Undercroft
+(rackPut binds the figure gun without planPut); a belt with items assigned
+over both gun cells, where gunCell answers 1 as before and the trigger stays
+dead by the old rule; the pad, which reaches the trigger through a different
+press.

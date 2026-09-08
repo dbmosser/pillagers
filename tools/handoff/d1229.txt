@@ -1,43 +1,50 @@
-## v12.29 - A CRAWLER THAT SEES YOU BITES WHEN IT REACHES YOU
+## v12.29 - A CRAWLER THAT REACHES YOU BITES
 
 From the 2026-09-07 read-only audit (P1, confirmed by three refuters), and
-his standing crawler note ("crawler attacks and pathfinding were still kinda
+his standing crawler note: "crawler attacks and pathfinding were still kinda
 messed up", "standing still and crawler didn't hurt me even though he was
-close"). Verified by reading at v12.28.
+close". Verified by reading at v12.28.
 
-WHAT IT WAS. e.cd is two clocks on one field. On patrol the idle branch
-re-rolls the wander target whenever cd reaches zero and writes cd=rnd(3,7),
-so a patrolling crawler carries a residual clock of up to seven seconds at
-every moment (about 2.6 s on average, the way a bus you did not time
-arrives). The sighting transition into chase sets the state, the alert and
-the target and never touches cd for a machine; the only cd write there is
-the raider's beat to react. packCall, which sends the neighbourhood into the
-rush, does not touch it either, nor does the possum wake. In chase the bite
-requires cd<=0, and cd only drains by dt. So a crawler that had just rolled
-a six-second wander, saw him from a hundred units and closed in under a
-second stood inside bite reach for five seconds doing nothing before its
-first bite. That is his note: a crawler next to a man standing still, not
-hurting him.
+WHAT IT WAS. e.cd is two clocks on one field. In the idle branch it is the
+wander timer: whenever it reaches zero the machine picks a new spot and rolls
+three to seven seconds. In the chase branch it is the bite cooldown: a bite
+fires only at zero and sets 0.7 after. Nothing on the way into a chase clears
+it, and it only drains in real time. So a crawler that had just rolled a six
+second wander, saw him and closed, stood inside bite range doing nothing for
+the rest of that wander. About 2.6 seconds on average, up to seven, served
+standing next to a man who is being told the thing is right there.
 
-THE BUILD. Three transitions into chase, one clamp each, crawlers only: on
-the sighting, on the pack call and on the possum wake, a crawler carries no
-more than 0.3 s of clock into the chase, so its first bite waits no longer
-than the clock a bite itself sets (0.7 s between bites). The sentry shares
-the field and the same residual delays its first shot; a faster first shot
-is a balance call he has not made (NO BALANCING BEFORE ALPHA), so it is
-named here and left alone.
+WHAT THE FIRST DRAFT GOT WRONG, and it is worth writing down. It clamped the
+clock at three transitions into chase. The 2026-09-07 draft review killed
+that in two ways. There are FIVE ways a crawler enters a chase, not three,
+and the two the clamps missed are the ones he causes himself: a round or a
+swing landing on a machine that was not yet fighting him. So the fix would
+have worked when the crawler found him and failed when he started it. And one
+of the three clamps, on the wake from playing dead, could never have fired at
+all, because a crawler playing dead already carries a clock of zero: dead code
+sold in the design entry as one of three real fixes.
 
-MEASURED. Check 12.29 deploys, keeps one crawler, parks it on patrol 120
-units from a still, visible player with a clear sight line, its wander
-target away from him and 6.5 s on its clock, and steps the entities at 60
-frames a second; it requires the first bite inside 2 s. As the control the
-same crawler with its clock at zero must also bite inside 2 s, so the room
-can tell a stalled crawler from a slow one. Then the crawler is parked again
-with 6.5 s and sent in by packCall from a fake caller, and must bite inside
-3 s. On the v12.28 fixture the first arm bites at about 6.5 s and the third
-the same.
+THE BUILD. The wander gets its own field. On a crawler the idle branch reads
+and writes wanderT instead of cd, and wanderT drains beside cd every frame.
+Every way into a chase is then correct at once, the two the clamps missed
+included, and so is any way added later. Only the crawler is moved off the
+shared field: the sentry has the same fault, but a sentry's first shot coming
+faster is a balance change he has not asked for, so it is named here and left
+exactly where it is.
 
-Not verified: the sentry's first shot, deliberately unchanged; a crawler
-that enters chase from investigate by the same sighting line (the clamp
-covers it, the check does not drive it); his own runs, which the bot
-cannot stand in for; whether 0.3 s reads as fair at the moment of contact.
+MEASURED, WITH NOTHING STAGED ON THE CLOCK. Check 12.29 parks the crawler on
+patrol 25 units from a still player, facing him, and lets the game roll its
+own wander on the first idle frame, which is the roll he meets in a raid; it
+then requires the first bite inside a second and a half. Two arms keep that
+deadline honest. A crawler already chasing with a clear cooldown must bite
+inside 0.6 seconds, so the room is known to be able to produce a bite at all,
+and a crawler left to wander far out of his sight must still move and must
+end with nothing on its bite cooldown. On the v12.28 fixture the first arm
+takes whatever the game rolled, three to seven seconds, and the third arm
+finds that roll sitting in the field the bite reads.
+
+Not verified: the sentry's first shot, deliberately unchanged; his own runs,
+which the bot cannot stand in for; whether a bite that lands the instant a
+crawler arrives reads as fair rather than as a gotcha, which is his call and
+is a dial, not a defect; the four other machines that share the idle branch
+and are untouched.

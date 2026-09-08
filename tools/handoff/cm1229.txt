@@ -1,15 +1,22 @@
-v12.29: a crawler that sees you bites when it reaches you
+v12.29: a crawler that reaches you bites
 
 The audit's top finding, and his standing crawler note. A crawler's wander
-clock and its bite cooldown are one field: on patrol it re-rolls three to
-seven seconds whenever the clock runs out, and nothing on the way into a
-chase reset it, so a crawler that saw you and closed in under a second stood
-next to you for the rest of that clock before its first bite. On the three
-ways into a chase (sighting, pack call, waking from playing dead) a crawler
-now carries no more than 0.3 s of clock. Sentries share the field and are
-left alone, since a faster first shot is a balance call. Check 12.29 parks a
-crawler with 6.5 s of clock 120 units from a still player and requires the
-first bite inside 2 s, with a zero-clock control and a pack-call arm; fails
-on v12.28 at about 6.5 s.
+timer and its bite cooldown were one field: on patrol it rolls three to seven
+seconds whenever the timer runs out, and a bite only fires when that field is
+at zero. Nothing on the way into a chase cleared it, so a crawler that
+reached you stood there serving out the rest of its wander before biting.
+
+My first draft clamped the field at three of the ways into a chase. The
+draft review killed it: there are five, the two it missed are the ones you
+cause by shooting, and one of the three could never fire. The wander has its
+own field on a crawler now, which covers every way in at once. Sentries keep
+the shared field on purpose, since a faster first shot from a sentry is a
+balance call.
+
+Check 12.29 stages nothing on the clock: it parks a crawler on patrol 25
+units from a still player, lets the game roll its own wander, and requires
+the first bite inside a second and a half, with a chasing crawler as the
+ruler that the room can bite at all and a wandering one to show the wander
+still runs and leaves the cooldown clear; fails on v12.28.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

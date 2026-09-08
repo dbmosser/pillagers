@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v12.26 (b10d93e). The tree has **v12.27 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v12.27 (da4bf38). The tree has **v12.28 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-1" (the only tab; the pane holds one tab since 2026-09-07 12:44).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1227 cm1227.txt
+    bash tools/handoff/ship.sh commit 1228 cm1228.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1227 1228
+    bash tools/handoff/ship.sh start 1228 1229
 and carry on down the list. Cron 52d2450b is armed every minute (re-armed 2026-09-07 07:31); re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -26,11 +26,15 @@ usual cause (see memory dark-raiders-loader-replaces-the-profile).
 - **1230 THE TRIGGER NEVER DIES ON A BLANK BELT CELL** (audit P1; binding the held gun to another key blanks derived cell 1 and every setHot(0) fall-back landed on it, so the first click of a raid could fire nothing). NOT yet dry-run on :8801.
 - **1231 HIS NOTE: THE BENCH SAYS TO HOLD THE BUTTON** (note 3, crafting; drafted 17:37). The machinery is SOUND and the fill IS visible: the generic hover rule at CSS 459 has specificity (0,2,1) against .vbuy (0,1,0), so a held button is 8 percent amber under a 55 percent fill. What was wrong is silence: the button read CRAFT, a real click spends nothing by his v11.75 order and said nothing, an early release cancelled and said nothing. Label reads HOLD TO CRAFT, a click says to hold it, an early release says it was let go too soon. NOT yet dry-run on :8801.
 
+**DRY RUN 17:52, ALL FIVE QUEUED BUILDS ARE DRY-RUN GREEN** on :8801 at 1920x1080 from a scratch copy at v12.32 (checks 12.29, 12.30, 12.31 and 12.32 each twice with 11.62 between). The first pass caught two of my own broken checks and both are repaired: 12.29 parked the crawler with its wander target pointing AWAY from the player, so it faced away, never sighted him and wandered off, and it is now a PAIRED measurement (the same walk in, run once with 6.5 s of clock and once with none, requiring the two times to the first bite to agree within a second) because a single deadline measured the walk in as much as the clock; 12.32 sprinted him into something and skipped, and now tries all four directions and tops up stamina so a stamina lock cannot end the run. Repairing 12.29 changed its header line, which verifychain caught in f1230 (it quotes that header) and in the d, a and cm files; all fixed, chain verified 1228..1232 from 12.27.
+
 BETWEEN CORPORA, before shipping 1229, 1230 and 1231: rebuild the dry fixture (dry/mk.ps1 -Src dry/game.html -Dst dry/fixture.html) and run checks 12.29, 12.30 and 12.31 twice each with 11.62 between on :8801 at 1920x1080. Each control on the previous fixture must fail: fx1228 on the crawler biting at about 6.5 s, fx1229 on the blank cell keeping the highlight and never firing, fx1230 on the label having no HOLD in it and both silences being silent.
 
 **HIS TWO OPEN QUESTIONS, both in the 13:07 report and not yet answered:** (1) a used-up belt cell, his answer 16 said it stays and goes darker, his note of 2026-09-07 says it should disappear; 1227 left the dark cell alone and gave it words, so this is his ruling to make. (2) whether he clicked or held the CRAFT button, which would confirm the 1231 diagnosis; 1231 is safe either way because it only adds words.
 
 **STILL UNTRACED from his morning notes:** the many-footprints glitch when running vertically (note 6; the fixture stubs tickPlayerSteps and swallows blip, so restore both before measuring, see memory dark-raiders-fixture-silences-footsteps) and the reload countdown near the player (note 7, a build not a bug).
+
+**REVIEW OF 17:34 (workflow wf_80109af7-d74, 53 agents, read-only) FOUND 17 CONFIRMED DEFECTS IN THE QUEUE AND ALL ARE FIXED.** The two that mattered: f1228 could go RED for a profile reason, because the harness pins the primary weapon and has never pinned the sidearm, and autoBelt refuses to pin a bought gun already in either hand, so a saved sidearm of rifle would have failed the check and blamed the build; and it restored the profile BEFORE ending the raid, so the payout and the gun-slot re-sort overwrote the restore (measured: it handed back equipped smg with sidearm carbine and endRaid left BOTH slots on carbine for every check after it). Both fixed in mkfixture.ps1 and in the draft, the fixture and fx1227 rebuilt, gates re-run, corpus restarted 17:50. 1229 was REWRITTEN from three clamps to a field split (wanderT) because the review showed there are FIVE ways a crawler enters a chase and the two the clamps missed are the ones HE causes by shooting, and one of the three could never fire; its check now stages nothing on the clock. 1230 got its two staging skips turned into failures, a third arm for the second fall-back, and its design entry corrected (the helper is not a no-op after X). Six more findings came back as full build specs with verbatim anchors and check bodies: **tools/handoff/specs-0907.md** (the stall freezing every extraction clock, a hit on the corpse re-downing a dead man, F held spending the self-revive, the two gun-slot faults, the merc looting hostiles). RE-COUNT every anchor before drafting from it.
 
 **AUDIT BACKLOG:** tools/handoff/audit-0907-confirmed.md holds all 24 confirmed findings from the 07:35 read-only audit with scenarios, fix sketches and check sketches. 1229 and 1230 are its two P1s. A workflow running from 17:34 (run wf_80109af7-d74) is turning ten of the P2s into verbatim-anchor build specs with refuters; read its result before drafting any of them by hand.
 

@@ -1376,7 +1376,7 @@ var WHATSNEW=[
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
   'THE BENCH SAYS HOLD TO CRAFT ON THE BUTTON, because holding it is what crafts. A click on its own still spends nothing, as you asked, but it now says so instead of doing nothing, and so does letting go too soon.',
   'THE TRIGGER NO LONGER DIES WHEN THE GUN IN YOUR HANDS IS BOUND TO ANOTHER KEY. Cell 1 goes blank then, and every fall-back to it landed on nothing; the fall-back finds the cell that holds your gun now, and a click on a blank cell raises the gun the way a click on an empty grenade cell does.',
-  'A CRAWLER THAT SEES YOU BITES WHEN IT REACHES YOU. It used to stand next to you for up to seven seconds first, serving out the clock it had rolled for its next wander.',
+  'A CRAWLER THAT REACHES YOU BITES. It used to stand next to you for up to seven seconds first, serving out the clock it had rolled for its next wander, whether it came for you on its own or because you shot it.',
   'A PEDDLER PURCHASE NOW SAYS WHERE IT WENT: on your tactical belt, key N, or in your backpack. A bought gun is pinned to a free belt key, and the backpack grid keeps a belted item off its cells, which is why a rifle you paid for was not in the backpack.',
   'DRAGGING AN ITEM FROM THE STASH TO THE BACKPACK WHEN ITS TACTICAL BELT KEY IS STILL SET FROM THE LAST RAID NOW LANDS ON THAT KEY, half the stack, and says so. A set key with nothing packed shows a 0. In a raid, pressing a key whose item you have used up says No <item> left.',
   'TAKING THE FREEBIE KIT AT THE STASH AND THEN CONFIRMING IT AGAIN AT THE LIFT NO LONGER THROWS AWAY THE PACKING KEPT ASIDE FOR YOU. A run that ends badly gives that packing back, as it was meant to.',
@@ -8491,7 +8491,6 @@ function packCall(caller,px,py){
     joined++;
     e.tx=px; e.ty=py;
     e.alert=Math.max(e.alert,2.6);
-    if(e.kind==='crawler'&&e.cd>0.3) e.cd=0.3;   // v12.29: the called crawler does not carry its wander clock into the rush
     e.state='chase';
     e.roleT=rnd(ROLE_T[0],ROLE_T[1]);
     if(e.kind==='crawler'){ e.role='rush'; }
@@ -16124,7 +16123,6 @@ if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
     if(e.muzzle>0) e.muzzle-=dt;
 if(e.state==='possum'){
       if(!p.downed&&dist(e,p)<95){
-        if(e.kind==='crawler'&&e.cd>0.3) e.cd=0.3;   // v12.29: a crawler that was playing dead bites on waking, not after its old clock
         e.state='chase'; e.alert=4; e.tx=p.x; e.ty=p.y;
         if(!G.sim){ sfx('seen',e.x,e.y); say('It was playing dead.'); }
       // v8.60, audit: unless it is already dead. This skipped straight past the
@@ -17024,11 +17022,6 @@ var _rdS=G.shells[_rdi];
         // rather than on arrival, so a man who reacquires halfway through a sweep
         // gets a fresh one when he next loses him.
         if(e.searchArc!==undefined){ delete e.searchArc; delete e.searchX; delete e.searchY; }
-        // v12.29, audit P1: a crawler's wander clock is the same field as its
-        // bite cooldown, and it came into the chase with up to seven seconds
-        // left on it. The first bite waits no longer than the clock a bite
-        // itself sets. Crawlers only (a sentry's first shot is a balance call).
-        if(e.kind==='crawler'&&e.state!=='chase'&&e.cd>0.3) e.cd=0.3;
         e.state='chase'; e.alert=2.4; e.tx=p.x; e.ty=p.y;
       }
     }
@@ -17687,7 +17680,16 @@ e.lootT=(e.lootT||0)+dt;
     // Both of his deaths tonight were to a crawler.
     else if(e.state!=='chase'&&e.state!=='investigate'){
       // cd is decremented once per frame below; do not tick it here as well
-      if(e.cd<=0){
+      // v12.29, audit P1 and his standing crawler note: e.cd was the wander
+      // timer here AND the bite cooldown in the chase branch, and none of the
+      // five ways into a chase cleared it, so a crawler that reached him stood
+      // in bite range serving out the rest of a wander of up to seven seconds.
+      // The wander gets its own field on a crawler, which covers every way in
+      // at once. The sentry keeps the shared field: same fault, but a faster
+      // first shot from a sentry is a balance call he has not made.
+      var _wf=(e.kind==='crawler')?'wanderT':'cd';
+      if(!(e[_wf]>0)) e[_wf]=0;
+      if(e[_wf]<=0){
         // Camp guards patrol their post, not the map. Their whole job is to be
         // between you and the safes when you arrive.
         if(e.camp){ var ga2=rnd(0,6.2832),gr2=rnd(40,240); e.tx=e.camp.x+Math.cos(ga2)*gr2; e.ty=e.camp.y+Math.sin(ga2)*gr2; }
@@ -17700,7 +17702,7 @@ e.lootT=(e.lootT||0)+dt;
             if(_wb) sp=outOfBuilding(_wb,sp.x,sp.y,26);
           }
           e.tx=sp.x; e.ty=sp.y; }
-        e.cd=rnd(3,7);
+        e[_wf]=rnd(3,7);
       }
       // v9.04: a crier walking OUT of a building needs the router, not a
       // straight line. Measured before this: two criers that began indoors
@@ -17710,9 +17712,10 @@ e.lootT=(e.lootT||0)+dt;
       if(e.kind==='snitch'&&e.state==='patrol'&&buildingAtPt(G.map,e.x,e.y)) navSeek(e,e.tx,e.ty,e.spd*.45,dt);
       else moveToward(e,e.tx,e.ty,e.spd*.45,dt);
       want=Math.atan2(e.ty-e.y,e.tx-e.x);
-      if(dist(e,{x:e.tx,y:e.ty})<30) e.cd=0;
+      if(dist(e,{x:e.tx,y:e.ty})<30) e[_wf]=0;
     }
     if(e.cd>0) e.cd-=dt;
+    if(e.wanderT>0) e.wanderT-=dt;   // v12.29: the wander clock, its own field on a crawler
     // Enemies were silent except when firing, so there was nothing for a noise
     // indicator to show. Footsteps are player-facing only (quiet=true).
     if(e.moving&&e.kind!=='snitch'){

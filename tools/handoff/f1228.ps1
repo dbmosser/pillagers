@@ -25,9 +25,15 @@ SubRx @'
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
      if(typeof mkPeddler!=='function'||typeof pedBuy!=='function') return 'SKIP: no Peddler in this build';
-     var bad=[], P2=__P(), keepC=P2.credits;
+     var bad=[], P2=__P(), keepC=P2.credits, keepSec=P2.equippedSec, keepEq=P2.equipped, keepW=(P2.weapons||[]).slice();
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // PIN THE SECOND HAND TOO. __pinDefaults pins the primary to the SMG and
+       // never names the sidearm, and autoBelt refuses to pin a bought gun that
+       // is already in either hand (the v8.04 dedupe). A profile carrying the
+       // Auto Rifle as its sidearm would therefore make this check go red for a
+       // reason that is his loadout and not the build.
+       P2.equippedSec='none'; saveProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player;
        var pd=mkPeddler(p.x+40,p.y,g.map);
@@ -54,8 +60,11 @@ SubRx @'
        if(P2.credits!==5000-60) bad.push('control: credits are '+P2.credits+' after three purchases priced 10, 20 and 30 from 5000');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
-       P2.credits=keepC; try{ saveProfile(); }catch(_s){}
+       // The raid ends FIRST: endRaid pays the credits out and re-sorts the two
+       // gun slots, so anything put back before it runs is overwritten by it.
        try{ var g2=__state(); if(g2&&!g2.over){ g2.trade=null; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       P2.credits=keepC; P2.equippedSec=keepSec; P2.equipped=keepEq; P2.weapons=keepW;
+       try{ saveProfile(); }catch(_s){}
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
