@@ -1,0 +1,24 @@
+v12.72: your run report is named after this game
+
+The game was renamed and every screen followed: the tab, the Undercroft brand,
+the report header, the importer that refuses a file by saying it is not a
+Pillagers run report. One string was missed, and it was the only one that ever
+leaves the browser: the name of the file saved into your Downloads. It was the
+last occurrence of the retired name in the whole file.
+
+That is the file an alpha player is asked to send back, so a friend would finish
+their first raid, find a file named for a game they had never heard of, and mail
+it to me under that name.
+
+The name comes from a function now: one place to be wrong, and something a check
+can call, since the harness replaces the whole download. Files already saved
+still load, because a report is identified by its contents and not its name.
+
+Half of the finding this came from was wrong and is not built: Settings does not
+promise a report every second raid, and the first drop of a session is deliberate.
+
+Check 12.72 asks the naming function for a name and requires this game's name and
+not the retired one, with controls that the run number is still there and still
+follows the run count. Fails on v12.71.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

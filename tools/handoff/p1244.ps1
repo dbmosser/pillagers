@@ -45,9 +45,9 @@ z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
 
 # NEW IN.
 SubRx @'
-  'AIMING AND WADING NO LONGER LEAVE A SPRINT TRAIL. Shift held while you aimed, or while you waded, laid scent behind a man who was not sprinting, and everything on patrol within 170 units follows that scent. You were being hunted along a trail you never made.',
+  'A NEW CHARACTER KEEPS WHAT THEIR FIRST SESSION EARNED. A repair meant for saves from old builds ran once on brand new ones as well, so cutting at the great door on THE COLD MILE, being told it was banked, and then reloading the page lost the cutting and the explored map. It happened once per character, which is why it read as random.',
 '@ @'
-  'AIMING AND WADING NO LONGER LEAVE A SPRINT TRAIL. Shift held while you aimed, or while you waded, laid scent behind a man who was not sprinting, and everything on patrol within 170 units follows that scent. You were being hunted along a trail you never made.',
+  'A NEW CHARACTER KEEPS WHAT THEIR FIRST SESSION EARNED. A repair meant for saves from old builds ran once on brand new ones as well, so cutting at the great door on THE COLD MILE, being told it was banked, and then reloading the page lost the cutting and the explored map. It happened once per character, which is why it read as random.',
   'THE EXTRACTION WINDOW NEVER OUTLIVES THE CLOCK. An extraction arriving in the last seconds of a raid used to announce three seconds on every readout and then let the timer kill you with a second still showing. It now says what the raid actually has left.',
 '@
 

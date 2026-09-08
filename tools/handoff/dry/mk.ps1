@@ -5709,6 +5709,129 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.71',what:'holding the sprint key while aiming, or while wading, lays no scent behind a man who is not sprinting, so nothing hunts him along a trail he never made; a plain sprint on dry land still lays one (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
+     if(typeof inWaterDeep!=='function') return 'SKIP: this build has no deep water to wade in';
+     var bad=[], noWade=null;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(), p=g.player, i, k;
+       if(!g||!p) return 'SKIP: no live raid to run in';
+       g.ents.length=0;                       // nobody to interrupt the run
+       var K=__keys(), dirs=['KeyW','KeyS','KeyD','KeyA'];
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       var keepTs=lastTs, homeX=p.x, homeY=p.y;
+       var INSET=(CFG.wadeInset===undefined?11:CFG.wadeInset);
+       function wet(x,y){ return !!inWaterDeep(x,y,INSET); }
+       function mineCount(){ var c=0,j; for(j=0;j<g.prints.length;j++) if(g.prints[j].mine) c++; return c; }
+       function reset(){
+         for(k in K) delete K[k];
+         p.downed=false; p.iv=99; p.stam=100; p.stamLock=0; p.stamRelease=0;
+         p.ads=false; p.roll=0; g.crouchTog=false; g.prints=[];
+       }
+       // A RUN IN ONE DIRECTION with the sprint key down. mustWade stops counting
+       // the moment he walks out of the water, so a mark laid on dry land can
+       // never be read as a mark laid while wading.
+       function run(dir,ads,n,mustWade){
+         var sx=p.x, sy=p.y, frames=0, left=false;
+         K[dir]=1; K.ShiftLeft=1;
+         for(i=0;i<n;i++){
+           if(mustWade&&!wet(p.x,p.y)){ left=true; break; }
+           p.stam=100; p.stamLock=0; p.stamRelease=0; if(ads) p.ads=true;
+           clk+=16.7; __loop(clk); frames++;
+         }
+         for(k in K) delete K[k];
+         return {ran:Math.sqrt((p.x-sx)*(p.x-sx)+(p.y-sy)*(p.y-sy)),mine:mineCount(),frames:frames,left:left};
+       }
+       // THE CONTROL FIRST, on dry land with no aim: this is what a sprint is
+       // supposed to do, and without it the zeroes after it prove nothing.
+       var ctl=null, used=null, di;
+       for(di=0;di<dirs.length;di++){
+         p.x=homeX; p.y=homeY; reset();
+         if(wet(p.x,p.y)) continue;
+         ctl=run(dirs[di],false,180,false); used=dirs[di];
+         if(ctl.ran>=250&&ctl.mine>=3) break;
+       }
+       if(!ctl||ctl.ran<250||ctl.mine<3) return 'SKIP: three seconds of plain sprint moved him '+Math.round(ctl?ctl.ran:0)+' units and laid '+((ctl&&ctl.mine)||0)+' marks in every direction, so he is boxed in and there is no trail to measure here';
+       // THE FINDING, AIMING. Same key, same direction, aim held down.
+       p.x=homeX; p.y=homeY; reset();
+       var A=run(used,true,180,false);
+       if(A.ran<20) bad.push('staging: with the aim held he covered only '+Math.round(A.ran)+' units, so this arm never walked anywhere');
+       else if(A.mine>0) bad.push('holding the sprint key while AIMING laid '+A.mine+' scent marks over '+Math.round(A.ran)+' units, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the speed he is slowest');
+       // THE FINDING, WADING. He is PLACED in deep water for this one, which is a
+       // placement and not a walk, and it is said plainly in the design entry.
+       var wx=-1, wy=-1, sc, cx, cy, W=g.map.cols*g.map.cw, H=g.map.rows*g.map.ch;
+       for(sc=0;sc<6000&&wx<0;sc++){
+         cx=60+((sc*137)%Math.max(120,W-120));
+         cy=60+((sc*271)%Math.max(120,H-120));
+         if(wet(cx,cy)) { wx=cx; wy=cy; }
+       }
+       if(wx<0) noWade='no deep water was found anywhere on this map and seed';
+       else{
+         p.x=wx; p.y=wy; reset();
+         if(!wet(p.x,p.y)) noWade='he would not stand in the water that was found';
+         else{
+           var B=run(used,false,180,true);
+           if(B.frames<20) noWade='he was out of the water again after '+B.frames+' frames, which is too few to lay a mark either way';
+           else if(B.mine>0) bad.push('holding the sprint key while WADING laid '+B.mine+' scent marks in '+B.frames+' frames of water, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the slowest he ever moves');
+         }
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ var g2=__state(); if(g2&&g2.player){ g2.player.ads=false; g2.player.iv=0; } }catch(_a){}
+       try{ lastTs=keepTs; }catch(_t){}
+       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     if(bad.length) return bad.join('; ');
+     // HALF A CHECK IS NOT A PASS.
+     if(noWade) return 'SKIP: the aiming half passed, but '+noWade+', so the wading half is not measured here';
+     return null; }},
+  {v:'12.70',what:'a search contract names a place on the sector he is playing: a card written on one sector and read on another names a place that exists there, instead of the frozen name of a place on the sector it was rolled on, while a card of any other type still reads what it was written with (2026-09-08 audit)',
+   run:function(){
+     if(!window.__P) return 'SKIP: this fixture cannot read the profile';
+     if(typeof districtPlaceName!=='function'||typeof FIXED_MAPS==='undefined') return 'SKIP: this build has no districts to name';
+     if(FIXED_MAPS.length<2) return 'SKIP: this build offers one sector, so there is nothing to switch to';
+     if(typeof contractDesc!=='function') return 'SKIP: this build has no live contract sentence to read';
+     var bad=[], P2=__P(), keepMap=P2.mapIx, keepC=(P2.contracts||[]).slice();
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       // The same district, named on each sector. If the two sectors happen to
+       // give it the same name there is nothing here to tell apart.
+       var D=2, i, names=[];
+       for(i=0;i<FIXED_MAPS.length;i++){ P2.mapIx=i; names.push(String(districtPlaceName(D)||'')); }
+       if(!names[0]||!names[1]) return 'SKIP: that district has no name on one of the sectors';
+       if(names[0]===names[1]) return 'SKIP: both sectors call that district the same thing, so a stale name could not be told from a live one';
+       // THE FINDING: the card was written on sector 0 and is being read on 1.
+       P2.mapIx=0;
+       var card={type:'district',d:D,n:3,prog:0,reward:480,desc:'Search 3 containers in '+names[0]};
+       P2.contracts=[card];
+       P2.mapIx=1;
+       var said=String(contractDesc(card)||'');
+       if(said.indexOf(names[0])>=0)
+         bad.push('the card still names '+names[0]+', which is on the other sector: he was rolled that errand before he changed sector and the board is sending him to a place that is not on the map he is playing');
+       if(said.indexOf(names[1])<0)
+         bad.push('the card does not name '+names[1]+', which is what that district is called on the sector he is playing; it reads ['+said+']');
+       // CONTROL ONE: switch back, and it must follow again rather than sticking
+       // to whatever it said last.
+       P2.mapIx=0;
+       var back=String(contractDesc(card)||'');
+       if(back.indexOf(names[0])<0)
+         bad.push('control: back on the first sector the card no longer names '+names[0]+' either, so the sentence is not following the sector at all ['+back+']');
+       // CONTROL TWO: a card of any other type must read exactly what it was
+       // written with, so this build has not started rewriting every card.
+       var kill={type:'kill',tgt:'sentry',n:4,prog:0,reward:600,desc:'Destroy 4 Sentries'};
+       if(String(contractDesc(kill)||'')!=='Destroy 4 Sentries')
+         bad.push('control: a card that is not a search card now reads ['+contractDesc(kill)+'] rather than what it was written with');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.mapIx=keepMap; P2.contracts=keepC; saveProfile(); }catch(_p){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.69',what:'the XP a run pays for its haul counts what it brought back and not what the lift carried up, and the career best does the same, while a haul actually found in the raid pays exactly what it always did (2026-09-08 audit, the other side of v12.65)',
    run:function(){
      if(!(window.__P&&window.__state&&window.__deploy&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid';
@@ -7116,87 +7239,62 @@ window.__REGRESS=[
        __topClear(); __resetCfg(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.43',what:'holding the sprint key while aiming, or while wading, lays no scent behind a man who is not sprinting, so nothing hunts him along a trail he never made; a plain sprint on dry land still lays one (2026-09-07 audit)',
+  {v:'12.43',what:'a profile this build creates is born already migrated: the save a brand new player writes after one session on the second sector comes back from his own second load with the seal record and the explored map still on it, while a save that genuinely predates the one-map fold is still folded exactly as it was (2026-09-08 first-hour audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
-     if(typeof inWaterDeep!=='function') return 'SKIP: this build has no deep water to wade in';
-     var bad=[], noWade=null;
+     if(!(window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot drive the loader synchronously';
+     var bad=[], keep=null;
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],mapIx:0,seed:4242});
-       var g=__state(), p=g.player, i, k;
-       if(!g||!p) return 'SKIP: no live raid to run in';
-       g.ents.length=0;                       // nobody to interrupt the run
-       var K=__keys(), dirs=['KeyW','KeyS','KeyD','KeyA'];
-       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
-       var keepTs=lastTs, homeX=p.x, homeY=p.y;
-       var INSET=(CFG.wadeInset===undefined?11:CFG.wadeInset);
-       function wet(x,y){ return !!inWaterDeep(x,y,INSET); }
-       function mineCount(){ var c=0,j; for(j=0;j<g.prints.length;j++) if(g.prints[j].mine) c++; return c; }
-       function reset(){
-         for(k in K) delete K[k];
-         p.downed=false; p.iv=99; p.stam=100; p.stamLock=0; p.stamRelease=0;
-         p.ads=false; p.roll=0; g.crouchTog=false; g.prints=[];
-       }
-       // A RUN IN ONE DIRECTION with the sprint key down. mustWade stops counting
-       // the moment he walks out of the water, so a mark laid on dry land can
-       // never be read as a mark laid while wading.
-       function run(dir,ads,n,mustWade){
-         var sx=p.x, sy=p.y, frames=0, left=false;
-         K[dir]=1; K.ShiftLeft=1;
-         for(i=0;i<n;i++){
-           if(mustWade&&!wet(p.x,p.y)){ left=true; break; }
-           p.stam=100; p.stamLock=0; p.stamRelease=0; if(ads) p.ads=true;
-           clk+=16.7; __loop(clk); frames++;
-         }
-         for(k in K) delete K[k];
-         return {ran:Math.sqrt((p.x-sx)*(p.x-sx)+(p.y-sy)*(p.y-sy)),mine:mineCount(),frames:frames,left:left};
-       }
-       // THE CONTROL FIRST, on dry land with no aim: this is what a sprint is
-       // supposed to do, and without it the zeroes after it prove nothing.
-       var ctl=null, used=null, di;
-       for(di=0;di<dirs.length;di++){
-         p.x=homeX; p.y=homeY; reset();
-         if(wet(p.x,p.y)) continue;
-         ctl=run(dirs[di],false,180,false); used=dirs[di];
-         if(ctl.ran>=250&&ctl.mine>=3) break;
-       }
-       if(!ctl||ctl.ran<250||ctl.mine<3) return 'SKIP: three seconds of plain sprint moved him '+Math.round(ctl?ctl.ran:0)+' units and laid '+((ctl&&ctl.mine)||0)+' marks in every direction, so he is boxed in and there is no trail to measure here';
-       // THE FINDING, AIMING. Same key, same direction, aim held down.
-       p.x=homeX; p.y=homeY; reset();
-       var A=run(used,true,180,false);
-       if(A.ran<20) bad.push('staging: with the aim held he covered only '+Math.round(A.ran)+' units, so this arm never walked anywhere');
-       else if(A.mine>0) bad.push('holding the sprint key while AIMING laid '+A.mine+' scent marks over '+Math.round(A.ran)+' units, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the speed he is slowest');
-       // THE FINDING, WADING. He is PLACED in deep water for this one, which is a
-       // placement and not a walk, and it is said plainly in the design entry.
-       var wx=-1, wy=-1, sc, cx, cy, W=g.map.cols*g.map.cw, H=g.map.rows*g.map.ch;
-       for(sc=0;sc<6000&&wx<0;sc++){
-         cx=60+((sc*137)%Math.max(120,W-120));
-         cy=60+((sc*271)%Math.max(120,H-120));
-         if(wet(cx,cy)) { wx=cx; wy=cy; }
-       }
-       if(wx<0) noWade='no deep water was found anywhere on this map and seed';
-       else{
-         p.x=wx; p.y=wy; reset();
-         if(!wet(p.x,p.y)) noWade='he would not stand in the water that was found';
-         else{
-           var B=run(used,false,180,true);
-           if(B.frames<20) noWade='he was out of the water again after '+B.frames+' frames, which is too few to lay a mark either way';
-           else if(B.mine>0) bad.push('holding the sprint key while WADING laid '+B.mine+' scent marks in '+B.frames+' frames of water, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the slowest he ever moves');
-         }
-       }
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+       __topClear(); __runPrep();
+       keep=JSON.parse(JSON.stringify(__P()));
+       // The literal a new profile is born from lives at file scope and nothing
+       // returns it, so it is read out of the page and evaluated. The needle is
+       // built here rather than written, or it would match this check.
+       var SRC='', sc=document.getElementsByTagName('script'), i;
+       for(i=0;i<sc.length;i++) SRC+=(sc[i].textContent||'');
+       var NEED='var '+'P='+'{'+'cre'+'dits:';
+       var a=SRC.indexOf(NEED);
+       if(a<0) return 'SKIP: the born profile is not in this page';
+       var lo=a+NEED.indexOf('{');
+       var hi=SRC.indexOf('}'+';',lo);
+       if(hi<0) return 'SKIP: the born profile has no end in this page';
+       var born=null;
+       try{ born=(new Function('return '+SRC.slice(lo,hi+1)))(); }catch(_b){ born=null; }
+       if(!born||typeof born.credits!=='number') return 'SKIP: the born profile did not read back as a profile';
+       // ONE SESSION ON THE SECOND SECTOR. The seal record and the explored
+       // bitmap are both stored under the sector index, and the fog is banked at
+       // the end of every raid whatever the outcome, so this is what his profile
+       // holds when he closes the tab on day one.
+       born.seals={}; born.seals['1']={cut:25,tot:40};
+       born.mapSeen={}; born.mapSeen['1']='what he walked on the mile';
+       if(!(born.seals['1']&&born.mapSeen['1'])) return 'SKIP: the first session could not be staged';
+       var hadStamp=!!born.mig739;
+       // HIS SECOND LOAD, through the real loader.
+       __applyLoaded(born);
+       var P2=__P();
+       if(!(P2.seals&&P2.seals['1']))
+         bad.push('the cutting he did at the great door on the second sector was deleted by his own second load, and the run report had told him it was banked'+(hadStamp?'':': the profile he was born with carries no stamp for the one-map fold, so a repair meant for old saves ran once on his brand new one'));
+       if(!(P2.mapSeen&&P2.mapSeen['1']))
+         bad.push('the map he explored on the second sector was deleted by his own second load, which happens on any outcome because the fog is banked at the end of every raid');
+       // CONTROL: a save that really is older than the fold must still be folded,
+       // or a green arm above would only mean the migration had been removed.
+       var old=(new Function('return '+SRC.slice(lo,hi+1)))();
+       delete old.mig739;
+       old.seals={}; old.seals['2']={cut:11,tot:40};
+       old.mapSeen={}; old.mapSeen['2']='an old two-map save';
+       __applyLoaded(old);
+       var P3=__P();
+       if(!(P3.seals&&P3.seals['0']&&P3.seals['0'].cut===11))
+         bad.push('control: a save from before the one-map fold was not folded, so its cutting did not move down to the sector that survived');
+       if(P3.seals&&P3.seals['2'])
+         bad.push('control: a save from before the one-map fold kept its third sector record, so the fold did not run at all');
+       if(!P3.mig739)
+         bad.push('control: a save from before the one-map fold was not stamped afterwards, so it would be folded again on every load');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
-       try{ var g2=__state(); if(g2&&g2.player){ g2.player.ads=false; g2.player.iv=0; } }catch(_a){}
-       try{ lastTs=keepTs; }catch(_t){}
-       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; __endRaid('abandon'); } }catch(_e){}
-       __topClear(); __resetCfg(); __cleanProfile();
+       try{ if(keep) __applyLoaded(keep); saveProfile(); }catch(_p){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
      }
-     if(bad.length) return bad.join('; ');
-     // HALF A CHECK IS NOT A PASS.
-     if(noWade) return 'SKIP: the aiming half passed, but '+noWade+', so the wading half is not measured here';
-     return null; }},
+     return bad.length?bad.join('; '):null; }},
   {v:'12.42',what:'a gun that goes through the backpack keeps its magazine: loaded plus reserve is conserved across a stow and an equip, on a full gun and on an empty one, so stowing no longer throws the load away and re-equipping no longer conjures half a magazine, while a gun found in the field still arrives on half a magazine (2026-09-07 audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy a raid';

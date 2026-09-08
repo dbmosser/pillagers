@@ -40024,6 +40024,50 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.43 - A NEW CHARACTER KEEPS WHAT THEIR FIRST SESSION EARNED
+
+From the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me
+reading both sites. It is the third time I have made the same mistake, and the
+file says so in two places above the line that makes it.
+
+WHAT IT WAS. A migration exists to repair a save written by an older build. A
+profile created by THIS build has nothing to repair, so meeting one is always
+wrong. That is not a new idea here: dayMigrated was put into the born profile at
+v8.44 for exactly this reason, and pname at v11.73, each with a comment saying
+why. The one-map fold never was.
+
+What that fold does is delete the seal record and the explored bitmap for sector
+index 1. Both sectors are offered to a brand new player on day one. So: he picks
+THE COLD MILE, cuts twenty five of the forty seconds at the great door, extracts,
+is told "Banked" by the run report and again by the Undercroft, and then reloads
+the page. On that second load, and only that once, the fold fires and takes the
+cutting and the explored map with it. Then the stamp is set and it never happens
+again. Once per character, silently, on work the game just told him it had kept.
+
+THE EXPLORED MAP GOES WHATEVER HAPPENED. The fog is banked at the end of every
+raid, extraction or death or abandonment alike, so this reaches a first-time
+player who never touches a seal: any first session on the second sector loses its
+whole explored map.
+
+THE BUILD. The profile a new player is born with now carries the stamps, so the
+repairs skip it. The rig buyback stamp goes in beside it: it is harmless on an
+empty stash, but it is the same class, and stamping only the one that bit would
+be the fourth instance of this mistake waiting to happen.
+
+OLD SAVES ARE UNTOUCHED. A save that genuinely predates the fold still carries no
+stamp and is still folded exactly as it was.
+
+MEASURED. Check 12.43 reads the literal a new profile is born from out of the
+running page, because nothing returns it, gives it the seal record and the
+explored map one session on the second sector leaves behind, and drives the REAL
+loader with it. It requires both to survive. Then it loads a save that genuinely
+predates the fold and requires the fold to still happen and to still stamp, so a
+green first arm cannot mean the migration was simply removed.
+
+Not verified: it drives the loader rather than closing and reopening a browser
+tab; it stages the seal record and the fog as the fields the game writes rather
+than by cutting a real door and walking a real map; and it does not repair the
+characters this has already happened to, whose loss is gone and unrecoverable.
 ## v12.42 - A GUN YOU STOW KEEPS ITS ROUNDS
 
 From the 2026-09-07 read-only audit (P2), specced from the source. Verified by

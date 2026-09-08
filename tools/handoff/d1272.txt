@@ -1,0 +1,42 @@
+## v12.72 - YOUR RUN REPORT IS NAMED AFTER THIS GAME
+
+From the 2026-09-08 first-hour audit, and only half of what that finding claimed.
+I read it before building it, and the other half was wrong.
+
+WHAT WAS REAL. The game was renamed. Every screen carries the new name: the
+browser tab, the Undercroft brand, the header at the top of a run report, and the
+importer, which refuses a file by telling him it is not a Pillagers run report.
+One string was missed, and it is the worst one to miss, because it is the only
+one that ever leaves the browser: the name of the file the game saves into his
+Downloads. It was the only occurrence of the retired name left in the whole file.
+
+WHY IT MATTERS MORE THAN IT LOOKS. That file is the one an alpha player is asked
+to send back. So a friend finishes their first raid, finds a file on their disk
+named after a game they have never heard of, and mails it to me under that name.
+
+THE BUILD. The name is built by a function now instead of being written where it
+is used. That gives one place to be wrong, and it gives a check something to
+call, which matters because the harness replaces the whole download function and
+no check could otherwise see the name at all.
+
+NOTHING ALREADY SAVED BREAKS. The importer identifies a run report by reading its
+contents, not by its name, so every file already on disk still loads.
+
+WHAT I DID NOT BUILD. The same finding said the Settings words promise a report
+every second raid while the code drops one after the first. They do not: the
+Settings words say only that closing the question keeps the reports in his
+Downloads. And the first drop of a session is deliberate, with a comment beside it
+recording that when the drop was unreachable, six raids played produced one saved
+file and five silently lost, so the only copy he ever handed over held his first
+raid and nothing after it.
+
+MEASURED. Check 12.72 asks the naming function for a name and requires it to
+carry the name of this game and not the retired one. Two controls keep it honest:
+the run number must still be in the name, or every report would land on top of
+the one before it, and the name must follow the run count rather than being a
+fixed string.
+
+Not verified: it reads the name from the function rather than from a file that
+actually appeared in Downloads, which no automated check on this machine can do;
+it does not rename files already saved; and it does not change what is inside a
+report, so a collector sorting by name will see the changeover mid-stream.

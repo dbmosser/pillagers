@@ -20,7 +20,7 @@ function SubRx([string]$old, [string]$new) {
 # switched off must still give thirty, which is the v12.24 rule and is what the
 # guard on this clamp protects.
 SubRx @'
-  {v:'12.43',what:'holding the sprint key while aiming, or while wading, lays no scent behind a man who is not sprinting, so nothing hunts him along a trail he never made; a plain sprint on dry land still lays one (2026-09-07 audit)',
+  {v:'12.43',what:'a profile this build creates is born already migrated: the save a brand new player writes after one session on the second sector comes back from his own second load with the seal record and the explored map still on it, while a save that genuinely predates the one-map fold is still folded exactly as it was (2026-09-08 first-hour audit)',
 '@ @'
   {v:'12.44',what:'the extraction window never outlives the raid clock: an extraction arriving with two seconds left announces what the raid actually has and not the three second floor, on the number and on the ring badge alike, while a full clock and a raid with the clock switched off both still give the ordinary thirty seconds (2026-09-07 audit)',
    run:function(){
@@ -73,7 +73,7 @@ SubRx @'
        __topClear(); __resetCfg(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.43',what:'holding the sprint key while aiming, or while wading, lays no scent behind a man who is not sprinting, so nothing hunts him along a trail he never made; a plain sprint on dry land still lays one (2026-09-07 audit)',
+  {v:'12.43',what:'a profile this build creates is born already migrated: the save a brand new player writes after one session on the second sector comes back from his own second load with the seal record and the explored map still on it, while a save that genuinely predates the one-map fold is still folded exactly as it was (2026-09-08 first-hour audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
