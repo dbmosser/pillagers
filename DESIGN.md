@@ -40024,6 +40024,61 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.31 - THE TRIGGER NEVER DIES ON A BLANK BELT CELL
+
+From the 2026-09-07 read-only audit (P1, confirmed by three refuters),
+verified by reading at v12.30.
+
+WHAT IT WAS. The tactical belt is derived: cell 1 shows the gun in your
+hands unless something is assigned over it. Bind the gun in your hands to
+another key (drag a bagged rifle onto key 5 and press it, which equips it
+since v11.91, or bind a figure gun at the rack in the Undercroft) and the
+v6.70 dedupe, which stops one thing showing in two cells, blanks the derived
+cell 1 to an empty cell. Three places then fell back to cell 1 by number:
+the v12.08 rule that an empty grenade cell yields to the gun ("Nothing in
+that cell. Rifle up.", said while cell 1 was blank), and the two fall-backs
+after the last of a consumable is spent. The highlight landed on the blank
+cell, a press there used nothing, the fall-back asked for cell 1 again and
+returned early because it was already selected, and the trigger was dead
+until another digit was pressed. A raid also starts with the highlight on
+cell 1, so with the held gun bound to key 3 or higher the first click of
+the raid fired nothing while the belt caption read "Empty slot".
+
+THE BUILD. One helper, gunCell(), finds the cell that holds the gun in your
+hands, the same loop the X swap has used since v8.31, and answers cell 1
+only when no cell holds it at all (items assigned over both), which is the
+old answer. All three fall-backs use it. And a click on a blank cell now
+does what a click on an empty grenade cell has done since v12.08: it
+selects the gun and yields, so the next click fires. The dedupe and the belt
+drawing are untouched.
+
+ONE MORE CASE THE HELPER CHANGES, named because the first draft of this
+entry claimed nothing else moved and the 2026-09-07 draft review caught it.
+After X, with the guns swapped and no assignment on the belt at all, the
+derived cell 1 is the gun in your OTHER hand, not the one you are holding.
+The old fall-back went there and setHot took its equip-from-the-bag branch;
+the helper goes to the cell of the gun actually in your hands instead. That
+is the same rule as everywhere else in this build, and it is better, but it
+is a change and not a no-op.
+
+MEASURED. Check 12.31 deploys and binds the gun in hand to key 5, and the
+two facts the finding rests on, that cell 1 goes blank and that key 5 takes
+the gun, are FAILURES rather than skips, so this check cannot quietly stop
+running the day the dedupe changes. Arm A, the raid start: the highlight on
+the blank cell, one press through updatePlayer with the mouse down; the
+selected cell must hold the gun, the hold must not fire, and the next click
+must fire. Arm B, the v12.08 empty-throwable yield: the same three
+requirements from an empty grenade cell. Arm C, the second of the three
+fall-backs: one Bandage on key 4, one click spends it, and the fall-back
+must land on the gun rather than the blank, with no shot fired. On the
+v12.30 fixture every arm leaves the blank cell selected and nothing fires.
+
+Not verified: the THIRD fall-back, after releasing a cooked grenade, which
+the patch rewrites and no arm drives; the rack route in the Undercroft
+(rackPut binds the figure gun without planPut); a belt with items assigned
+over both gun cells, where gunCell answers 1 as before and the trigger stays
+dead by the old rule; the pad, which reaches the trigger through a different
+press.
 ## v12.30 - A CRAWLER THAT REACHES YOU BITES
 
 From the 2026-09-07 read-only audit (P1, confirmed by three refuters), and

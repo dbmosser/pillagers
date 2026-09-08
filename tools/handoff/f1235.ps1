@@ -41,6 +41,29 @@ SubRx @'
      var need={stash:'#stashgrid',backpack:'#kitgrid',hotbar:'#hotplanwrap',freebie:'#hubfreekit .fkbtn'};
 '@
 
+# AND THE OTHER TWO CHECKS THAT EXERCISE IT. Neither has a guard on the pocket
+# existing, so with the concept gone both would FAIL rather than skip: 8.63
+# reads the armed field off the deploy result, which nothing writes any more,
+# and 10.71 reads the counter element and three lines of the ascent check, all
+# of which the patch removes. Found by the 2026-09-08 draft review; my own dry
+# run had only driven the checks I named, never the whole corpus, which is how
+# it missed them.
+CutRx "  {v:'8.63',what:'the safe pocket keeps exactly one named item through a death'," "  {v:'8.61',what:'the boarding hold cannot be done in instalments'," 23
+CutRx "  {v:'10.71',what:'the safe pocket says when it is naming something that is not going up, the ascent check names it, and the loadout total counts it once or not at all'," "  {v:'10.70',what:'the LOADOUT number counts everything going up: the backpack and the copies on tactical belt keys'," 63
+
+# THE DEPLOY HOOK carried the pocket in and handed it back out. Both go; the
+# safe: argument itself stays harmlessly accepted and ignored, because a hundred
+# call sites pass it and rewriting them would be a bigger change than this one.
+SubRx @'
+  if(o.safe!==undefined) P.safe=o.safe;
+'@ @'
+'@
+SubRx @'
+  return {committed:ok,dropKit:(P.dropKit||[]).slice(),safeUp:P.safeUp===undefined?null:P.safeUp,
+'@ @'
+  return {committed:ok,dropKit:(P.dropKit||[]).slice(),
+'@
+
 # v12.35 CHECK, inserted before the v12.34 entry. A deletion is proved by what
 # is gone AND by what is untouched, so this asks for both: nothing of the pocket
 # survives anywhere it used to live, a death still pays out and lists what it
@@ -82,7 +105,7 @@ SubRx @'
          if(txt.indexOf('LOST')<0) bad.push('control: the death card lists nothing as lost, so the ledger it shares with the pocket branch is not running');
          if(/safe pocket/i.test(txt)) bad.push('the death card still says safe pocket');
        }
-       // FIVE, AND THIS IS THE ONE A CARELESS DELETION BREAKS: the world container
+       // FOUR, AND THIS IS THE ONE A CARELESS DELETION BREAKS: the world container
        // called a safe is a different thing with the same five letters.
        __topClear();
        __deploy({kit:[],mapIx:0,seed:4242});

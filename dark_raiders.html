@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.30';
+var VER='12.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.30';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.30';
+var WHATSNEW_VER='12.31';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE TRIGGER NO LONGER DIES WHEN THE GUN IN YOUR HANDS IS BOUND TO ANOTHER KEY. Cell 1 goes blank then, and every fall-back to it landed on nothing; the fall-back finds the cell that holds your gun now, and a click on a blank cell raises the gun the way a click on an empty grenade cell does.',
   'A CRAWLER THAT REACHES YOU BITES. It used to stand next to you for up to seven seconds first, serving out the clock it had rolled for its next wander, whether it came for you on its own or because you shot it.',
   'A NEW PROFILE NOW STARTS ON FEWER MACHINES AND A LIGHTER EXTRACTION. Both are still in Settings and both still go all the way up; only where they start has moved.',
   'A PEDDLER PURCHASE NOW SAYS WHERE IT WENT: on your tactical belt, key N, or in your backpack. A bought gun is pinned to a free belt key, and the backpack grid keeps a belted item off its cells, which is why a rifle you paid for was not in the backpack.',
@@ -13415,6 +13416,16 @@ function useArmor(){
   blip('pick');
 }
 function hotSel(){ return clamp(G.hot||0,0,hotbarSlots().length-1); }
+// v12.31, audit P1: THE CELL THAT HOLDS THE GUN IN YOUR HANDS. Cell 1 is only
+// that cell while nothing is assigned over it; bind the held gun to key 5 and
+// the dedupe blanks cell 1, so a fall-back to 0 by number landed on an empty
+// cell and the trigger died there. The same loop swapGuns uses; 0 when no
+// cell holds the gun at all (items assigned over both), which is the old answer.
+function gunCell(){
+  var sl=hotbarSlots();
+  for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='gun'&&sl[i].inHand) return i;
+  return 0;
+}
 function setHot(i){
   var sl=hotbarSlots();
   i=clamp(i,0,sl.length-1);
@@ -14652,14 +14663,25 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     // hand; release throws whatever fuse is left. Everything else on the hotbar
     // keeps the single-shot press behaviour it has always had, because a bandage
     // has nothing to hold down for.
-    if(HSC&&HSC.kind==='throw'){
+    // v12.31, audit P1: AN EMPTY CELL DOES NOT OWN THE TRIGGER EITHER. The raid
+    // starts with the highlight on cell 1, and with the held gun bound to a
+    // higher key that cell is blank, so the first click of the raid fired
+    // nothing. The same rule as the empty throwable cell below: the press
+    // selects the gun and yields; the next click fires it.
+    if(HSC&&HSC.kind==='empty'){
+      if(!p.fired){
+        p.fired=true; setHot(gunCell()); p.trigYield=1;
+        if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
+      }
+    }
+    else if(HSC&&HSC.kind==='throw'){
       // v12.08: AN EMPTY THROWABLE CELL DOES NOT OWN THE TRIGGER. Selected empty
       // (cells 3 to 5 on a first raid), the press started nothing and said
       // nothing, or cooked a different grenade than the cell named. By v2.92's
       // own rule the press selects the gun; the next click fires it, never this
       // one, which is the automatic-weapon safety that rule was written for.
       if(!p.cooking&&!p.fired&&!((HSC.count|0)>0)){
-        p.fired=true; setHot(0); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded
+        p.fired=true; setHot(gunCell()); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded; v12.31: the cell that holds it, not cell 1 by number
         if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
       }
       else if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
@@ -14675,7 +14697,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // Emptied by that use? Fall back to the gun for the NEXT click.
       if(_hadCount!==null&&_hadCount!==undefined){
         var _now=hotbarSlots()[hotSel()];
-        if(_now&&_now.count===0) setHot(0);
+        if(_now&&_now.count===0) setHot(gunCell());   // v12.31: the cell that holds the gun, not cell 1 by number
       }
     }
   }
@@ -14732,7 +14754,7 @@ if(!p.fired||p.wep.auto){
     if(p.cooking){
       releaseCook();
       var _ns=hotbarSlots()[hotSel()];
-      if(_ns&&_ns.count===0) setHot(0);
+      if(_ns&&_ns.count===0) setHot(gunCell());   // v12.31: the cell that holds the gun, not cell 1 by number
     }
     p.fired=false;
   }
@@ -28747,7 +28769,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.30: 2026-09-07 audit P1 and his standing crawler note. e.cd was two clocks on one field: the wander timer in the idle branch, which rolls 3 to 7 seconds whenever it runs out, and the bite cooldown in the chase branch, which lets a bite through only at zero. Nothing on any of the five ways into a chase cleared it, so a crawler that reached him stood in bite range serving out the rest of its wander, about 2.6 seconds on average and up to seven. My first draft clamped the clock at three of those five transitions; the draft review killed it, because the two it missed are the ones he causes himself by shooting, and one of the three could never fire. The wander has its own field on a crawler now, so every way in is covered at once. The sentry keeps the shared field on purpose: same fault, but a faster first shot from a sentry is a balance call he has not made. Check 12.30 parks a crawler on patrol 25 units from a still player, stages nothing on the clock and lets the game roll its own, and requires the first bite inside 1.5 s; a crawler already in chase with a clear cooldown must bite inside 0.6 s, which proves the room can measure a bite at all; and a crawler wandering out of sight must still wander while its bite cooldown stays clear. Fails on v12.29, where the roll costs three to seven seconds.',
+  now:'v12.31: 2026-09-07 audit P1: binding the gun in hand to another belt key blanks the derived cell 1 (the v6.70 dedupe), and the three fall-backs to setHot(0) by number (the v12.08 empty-throwable yield and the two last-consumable fall-backs) landed on that blank cell, where useHot did nothing and the next setHot(0) returned early, so the trigger was dead until another digit; a raid also starts with the highlight on cell 1, so the first click fired nothing. gunCell() finds the cell that holds the gun in hand (the loop swapGuns uses), the three fall-backs use it, and a click on an empty cell selects the gun and yields like the empty-throwable rule. Check 12.31 binds the held gun to key 5, confirms cell 1 is blank, clicks on it and requires the gun cell selected with no shot on that hold and a shot on the next click, then selects an empty throwable cell and requires the same; fails on v12.30.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

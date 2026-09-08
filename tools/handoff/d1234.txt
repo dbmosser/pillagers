@@ -37,9 +37,13 @@ stall wins the E the game resolves, drops the Peddler beside him and opens
 the panel through the real frame loop with a real key press. It then drives
 sixty frames three times. The inbound countdown must fall with the raid
 clock. A landed extraction must spend its boarding window. A point whose
-closing time passes while he shops must shut. Every assertion is a ratio
-against the raid clock measured in the same frames, so a slow driver cannot
-fake a pass, and two controls stand behind them: the raid clock must have
+closing time passes while he shops must shut. The first two of those are
+ratios against the raid clock measured in the same frames, so a slow driver
+cannot fake either of them; the third is a threshold, reading the open flag
+once the raid clock has passed the closing time, and it is the one arm with
+no ratio and no raid-clock guard of its own, so if a run delivered no time at
+all it would pass with nothing to say. Two controls stand behind them: the
+raid clock must have
 fallen at all, and the same extraction clock must move once the stall is
 shut. On the v12.33 fixture the first arm prints the raid clock falling a
 second while the extraction falls nothing.

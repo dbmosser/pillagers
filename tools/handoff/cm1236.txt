@@ -1,0 +1,24 @@
+v12.36: whoever killed you killed you
+
+Dying does not end a raid at once. It zeroes your health, clears the downed
+flag, opens a beat of a second and a half and leaves your body in the world,
+and the frame loop keeps running the machines and the bullets underneath it.
+The damage path had no dead test at all, so a round landing on the corpse
+walked past the downed branch and fell into the down path: a second DOWN
+toast over the death fade, another down added to your record, and the killer
+renamed, which is the name the KILLED IN ACTION card reads out while the
+ledger beside it still names the machine that actually did it.
+
+One guard at the very top of the damage path, which is where it has to be,
+because the direction stamp, the hurt stamp and the name are all written
+before the invulnerability test. Nothing measurable moves: the bot ends a sim
+raid outright so the beat never exists there, and the round still sparks,
+still counts and is still consumed.
+
+Check 12.36 downs him with a real round, kills him with a second, then lands
+a third on the body inside the beat through the real frame loop, fired by a
+machine with a name no map uses, and requires the downs figure, the downed
+flag, the toast and the killer name to be unchanged and the card to name the
+real killer; fails on v12.35.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -16,7 +16,9 @@ extraction pressure and is not one any more. No dial moves.
 Check 12.34 opens the stall through the real loop with a real key press, then
 drives sixty frames three times: the inbound countdown must fall with the
 raid clock, a landed boarding window must spend, and a point past its closing
-time must shut, each as a ratio against the raid clock, with two controls;
+time must shut; the first two are ratios against the raid clock measured in
+the same frames and the third is a threshold on the open flag, with two
+controls;
 fails on v12.33.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

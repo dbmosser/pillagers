@@ -1,0 +1,24 @@
+v12.37: a key already down is not a press
+
+The one self-revive is an edge trigger, and the whole file sets its latch in
+exactly one place: the line inside the downed branch that reads the F key and
+the latch together. The two other lines that name it only clear it. So the
+latch is false while you are standing, and a man who already had F down when
+the hit landed reached the floor with it false. The very first downed frame
+read that held key as a fresh press and spent his one self-revive with no
+decision made. F is the melee strike, so a hand resting on it through a fight
+is ordinary play, and he paid a second time later with the line telling him a
+revive he never chose was already gone.
+
+One assignment at the moment he goes down latches the flag to whatever F is
+doing at that instant. The revive now waits for a release and a real press,
+which is what the DOWN overlay asks for. With F not held nothing changes at
+all: the latch is cleared and the first real press still revives.
+
+Check 12.37 holds F for three real frames, proves the key reached the game by
+the strike it swings, puts him down with a real hit from a live crawler and
+requires him still on the floor with the revive unspent. Two controls prove a
+real press still stands him up with the ledger moving by one, and that a hand
+that let go after the down and pressed again still revives; fails on v12.36.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

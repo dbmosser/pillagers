@@ -1,0 +1,24 @@
+v12.38: extracting with a gun in each hand leaves a gun in each hand
+
+An extraction banks the guns you carried and then rewrites gun 1 from the tier
+sort, and nothing has ever reconciled gun 2 with that rewrite. So a run in
+which the better gun happened to ride in slot 2 came back with both slots
+naming the same gun. The last screen before the lift printed that gun name
+twice as your loadout, the deploy refuses a sidearm equal to the primary so
+the next raid came up with fists in gun 2, and the gun you actually carried
+out and still own was quietly unslotted, out of a run in which you lost
+nothing. The welcome pack hands out the smg and then the carbine, which is
+exactly the losing order, so this is a brand new player's first extraction.
+
+One line under the rewrite that causes it, repairing the collision only: the
+other gun he carried takes slot 2, and where there is no other gun the slot is
+honestly empty. Two distinct slots are untouched, which is the rule the
+armoury menu already applies.
+
+Check 12.38 stages the weakest gun in slot 1 and the strongest in slot 2, a
+pair no starter roll or free kit can produce, confirms the raid came up with
+it, extracts, and reads all three places the loss shows: the two profile
+slots, the ascent check text, and the raid he deploys into next; fails on
+v12.37.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

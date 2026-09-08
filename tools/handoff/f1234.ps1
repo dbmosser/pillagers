@@ -13,7 +13,9 @@ function SubRx([string]$old, [string]$new) {
 
 # v12.34 CHECK, inserted before the v12.33 entry. The stall is opened the way
 # he opens it, with a real E through the real frame loop, and then sixty frames
-# are driven three times. Every assertion is a RATIO against the raid clock
+# are driven three times. The first two assertions are RATIOS against the raid
+# clock measured in the same frames; the third reads the open flag, gated on the
+# raid clock having passed the closing time, so it is a threshold and not a ratio
 # measured in the same frames, so a slow driver cannot fake a pass, and two
 # controls stand behind it: the raid clock must have run at all, and the same
 # extraction clock must move once the stall is shut.

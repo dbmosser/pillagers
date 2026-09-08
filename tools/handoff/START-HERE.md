@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v12.29 (876449d). The tree has **v12.30 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v12.30 (41141a2). The tree has **v12.31 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-1" (the only tab; the pane holds one tab since 2026-09-07 12:44).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1230 cm1230.txt
+    bash tools/handoff/ship.sh commit 1231 cm1231.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1230 1231
+    bash tools/handoff/ship.sh start 1231 1232
 and carry on down the list. Cron 52d2450b is armed every minute (re-armed 2026-09-07 07:31); re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds

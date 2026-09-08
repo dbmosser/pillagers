@@ -1622,29 +1622,6 @@ window.__REGRESS=[
      if(ex.owns.indexOf('servo')<0) return 'the probe never got the kit home, so it is testing nothing';
      if(ex.kept!==2) return 'extracting stripped keys for gear that came home ('+ex.kept+' of 2 left)';
      return null; }},
-  {v:'8.63',what:'the safe pocket keeps exactly one named item through a death',
-   run:function(){
-     function die(safeItem){
-       __resetCfg(); __pinDefaults(0);
-       var d=__deploy({kit:['servo','scrap','wire'],safe:safeItem,mapIx:0,seed:4242});
-       if(d.error) return {err:d.error};
-       var g=__state(); if(!g) return {err:'no raid'};
-       g.ents.length=0;
-       var carried=g.bag.slice();
-       __endRaid('dead');
-       return {armed:d.safeUp,carried:carried,stash:(__P().stash||[]).slice()};
-     }
-     var a=die('servo');
-     if(a.err) return a.err;
-     // The probe must actually have carried the item up, or it tests nothing.
-     if(a.carried.indexOf('servo')<0) return 'the kit never reached the bag, so this check is testing nothing';
-     if(a.armed!=='servo') return 'the pocket did not arm at deploy (safeUp='+String(a.armed)+')';
-     if(a.stash.indexOf('servo')<0) return 'the named item did NOT survive the death';
-     if(a.stash.length!==1) return 'more than the one named item came home: '+a.stash.join(',');
-     var b=die(null);
-     if(b.err) return b.err;
-     if(b.stash.length) return 'items came home with nothing named as safe: '+b.stash.join(',');
-     return null; }},
   {v:'8.61',what:'the boarding hold cannot be done in instalments',
    run:function(){
      function pull(leave){
@@ -5732,6 +5709,208 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.38',what:'extracting with a gun in each hand leaves a gun in each hand: banking the better one into gun 1 no longer leaves gun 2 naming the same gun, so the ascent check does not print it twice and the next raid still comes up with a second gun (2026-09-07 audit, gun-slot-reconcile)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy and end a raid';
+     if(typeof carriedGuns!=='function'||typeof saveProfile!=='function') return 'SKIP: this build does not bank carried guns';
+     if(!(WEAPONS&&WEAPONS.pistol&&WEAPONS.sniper&&WTIER&&WTIER.sniper>WTIER.pistol)) return 'SKIP: the Longshot no longer outranks the Scav Pistol, so the tier sort cannot be staged';
+     var bad=[], P2=__P(), i;
+     var KEYS=['weapons','equipped','equippedSec','wear','stash','kit','kitChosen','dropKit','freeKit','kitBeforeFree','kitSaved','runs','ext','best','credits','kills','log','notExt','notoriety','mapIx'];
+     function snap(v){ var o,k; if(v&&v.slice) return v.slice(); if(v&&typeof v==='object'){ o={}; for(k in v) o[k]=v[k]; return o; } return v; }
+     var keep={}; for(i=0;i<KEYS.length;i++) keep[KEYS[i]]=snap(P2[KEYS[i]]);
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // DISTINCTIVE ON PURPOSE: the weakest gun in the file in slot 1 and the
+       // strongest in slot 2. No starter roll, no free kit and no fallback can
+       // produce a Longshot, and the tier sort must reverse this exact pair.
+       P2.weapons=['pistol','sniper']; P2.equipped='pistol'; P2.equippedSec='sniper';
+       P2.wear={}; P2.freeKit=0; P2.kitSaved=null; P2.kitBeforeFree=null;
+       saveProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       if(!p.wep||p.wep.id!=='pistol') bad.push('control: the raid did not start with the Scav Pistol in gun 1 (it holds '+(p.wep&&p.wep.id)+')');
+       if(!p.sec||p.sec.id!=='sniper') bad.push('control: the raid did not start with the Longshot in gun 2 (it holds '+(p.sec&&p.sec.id)+')');
+       if(p.wepIssued||p.secIssued) bad.push('control: a slot was filled with issued kit, so that gun would never be banked and the sort would not run');
+       g.bag=[]; p.downed=false; p.hp=100;
+       __endRaid('extract');
+       if(P2.weapons.indexOf('pistol')<0||P2.weapons.indexOf('sniper')<0) bad.push('control: the extraction did not leave both guns in the armoury (it holds '+P2.weapons.join(',')+')');
+       if(P2.equipped!=='sniper') bad.push('control: the extraction did not promote the Longshot into gun 1 (gun 1 reads '+P2.equipped+'), so the tier sort this check is about did not run');
+       if(P2.equippedSec===P2.equipped) bad.push('after extracting with both guns, gun 1 and gun 2 both read '+P2.equipped+', so one gun is in two hands and the Scav Pistol he still owns has been unslotted by a run in which he lost nothing');
+       else if(P2.equippedSec!=='pistol') bad.push('gun 2 reads '+P2.equippedSec+' after the extraction, not the Scav Pistol he carried out');
+       // WHAT THE LAST SCREEN BEFORE THE LIFT PRINTS.
+       if(window.__renderStage&&document.getElementById('stagesum')){
+         __topClear();
+         try{ __renderStage(); }catch(_rs){ bad.push('the ascent check threw: '+(_rs&&_rs.message||_rs)); }
+         var sum=(document.getElementById('stagesum').textContent||'').replace(/\s+/g,' ');
+         var nm=WEAPONS.sniper.name, none2='no second '+'gun';
+         if(!sum) bad.push('control: the ascent check summary is empty, so what the last screen names cannot be read here');
+         else{
+           if(sum.split(nm).length-1>1) bad.push('the ascent check names the '+nm+' twice as his loadout ('+sum.slice(0,90)+')');
+           if(sum.indexOf(WEAPONS.pistol.name)<0) bad.push('the ascent check does not name the Scav Pistol he carried out ('+sum.slice(0,90)+')');
+           if(sum.indexOf(none2)>=0) bad.push('the ascent check says '+none2+' after a run in which he lost no gun ('+sum.slice(0,90)+')');
+         }
+       }
+       // AND THE RAID HE ACTUALLY DEPLOYS INTO NEXT.
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g2=__state(), p2=g2.player;
+       if(!p2.sec||p2.sec.id==='fists') bad.push('the next raid comes up with nothing in gun 2 after an extraction that lost no gun');
+       else if(p2.wep&&p2.sec.id===p2.wep.id) bad.push('the next raid comes up holding two copies of the '+p2.sec.id);
+       else if(p2.sec.id!=='pistol') bad.push('the next raid comes up with '+p2.sec.id+' in gun 2, not the Scav Pistol he carried out');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; g3.bag=[]; __endRaid('extract'); } }catch(_e){}
+       for(i=0;i<KEYS.length;i++) P2[KEYS[i]]=keep[KEYS[i]];
+       try{ saveProfile(); }catch(_s2){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.37',what:'F already held when the hit lands does not spend the one self-revive: put down with the strike key held he stays on the floor with the revive unspent, letting go and pressing F still stands him up, and a down with nothing held still revives on the first real press (2026-09-07 audit, f-held-revive)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop&&window.__endRaid)) return 'SKIP: this fixture cannot deploy and press keys in a raid';
+     if(typeof damagePlayer!=='function'||typeof updatePlayer!=='function'||typeof selfRevive!=='function') return 'SKIP: no down or revive path in this build';
+     var bad=[];
+     function press(code,key){ window.dispatchEvent(new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true})); }
+     function release(code,key){ window.dispatchEvent(new KeyboardEvent('keyup',{code:code,key:key,bubbles:true,cancelable:true})); }
+     // The frame clock starts AHEAD of whatever the last check left in lastTs, so
+     // a stamp lower than the last one cannot clamp every dt in here to zero.
+     var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+     function frames(n){ for(var i=0;i<n;i++){ clk+=16.7; __loop(clk); } }
+     var keepTs=lastTs;
+     // One staged down, distinctive on purpose: 88 health, no plate, the latch
+     // explicitly CLEAR before the hit, so a pass can never come from a stale latch.
+     function putDown(g,p){
+       var en=null; for(var i=0;i<g.ents.length&&!en;i++) if(g.ents[i].kind==='crawler'&&!g.ents[i].downed) en=g.ents[i];
+       p.hp=88; p.armor=0; p.iv=0; p.roll=0; p.downed=false; p.revived=false; p.healLock=false;
+       p.cooking=0; p.cookT=0; p.cookKind=null; p.giveT=0;
+       damagePlayer(240,en,en?en.kind:'crawler',p.x+20,p.y);
+       return en;
+     }
+     try{
+       // THE FINDING. F is the melee strike, so a hand on it when the hit lands is ordinary play.
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       keys={}; p.hp=88; p.armor=0; p.iv=0; p.roll=0; p.downed=false; p.revived=false; p.healLock=false;
+       var mel0=(g.tel&&g.tel.melee)||0, rev0=(g.tel&&g.tel.revives)||0;
+       press('KeyF','f'); frames(3);
+       // Without these two the whole check is a silent probe: a synthetic key that
+       // never reached the game would make the finding arm pass for nothing.
+       if(!keys['KeyF']) bad.push('setup: the held F never reached the game, so nothing below proves anything');
+       if(!(((g.tel&&g.tel.melee)||0)>mel0)) bad.push('setup: the held F swung no strike (melee '+mel0+' to '+((g.tel&&g.tel.melee)||0)+'), so the key is not really down');
+       if(p.downed) bad.push('setup: the strike put him on the floor by itself');
+       putDown(g,p);
+       if(!p.downed) bad.push('setup: a 240 hit on 88 health did not put him down (health '+Math.round(p.hp)+')');
+       frames(2);
+       if(!p.downed||p.revived)
+         bad.push('F already held when the hit landed spent the one self-revive with no press meant for it: on the first downed frame he is '+(p.downed?'down but':'back on his feet on '+Math.round(p.hp)+' health and')+' revived '+p.revived+', the revive ledger went '+rev0+' to '+((g.tel&&g.tel.revives)||0)+', and the toast reads "'+(g.msg||'')+'"');
+       release('KeyF','f'); frames(1);
+       // CONTROL ONE: nothing held at all. He stays on the floor, and a REAL press
+       // still stands him up on the revive health, so the fix has not killed F.
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],mapIx:0,seed:4242});
+       g=__state(); p=g.player; keys={};
+       var rev1=(g.tel&&g.tel.revives)||0;
+       putDown(g,p);
+       if(!p.downed) bad.push('control one: the hit did not put him down');
+       frames(6);
+       if(!p.downed||p.revived) bad.push('control one: he came off the floor with no key held at all (downed '+p.downed+', revived '+p.revived+')');
+       press('KeyF','f'); frames(2); release('KeyF','f'); frames(1);
+       if(p.downed||!p.revived||!(p.hp>0&&p.hp<=40)) bad.push('control one: a real press of F no longer revives (downed '+p.downed+', revived '+p.revived+', health '+Math.round(p.hp)+', wanted up on 40)');
+       if(((g.tel&&g.tel.revives)||0)!==rev1+1) bad.push('control one: the revive ledger did not move on the real press ('+rev1+' to '+((g.tel&&g.tel.revives)||0)+')');
+       // CONTROL TWO: held through the down, then let go and press again. The one
+       // revive is still there, so the latch delays the press, it does not eat it.
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],mapIx:0,seed:4242});
+       g=__state(); p=g.player; keys={};
+       press('KeyF','f'); frames(2);
+       putDown(g,p); frames(2);
+       release('KeyF','f'); frames(2);
+       press('KeyF','f'); frames(2);
+       if(p.downed||!p.revived) bad.push('control two: after the hand let go and pressed F again the revive did not fire (downed '+p.downed+', revived '+p.revived+', health '+Math.round(p.hp)+')');
+       release('KeyF','f'); frames(1);
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ release('KeyF','f'); release('Space',' '); }catch(_k){}
+       try{ keys={}; mouse.down=false; }catch(_k2){}
+       try{ var g2=__state(); if(g2&&g2.player){ var p2=g2.player;
+         p2.downed=false; p2.revived=false; p2.healLock=false; p2.hp=100; p2.armor=0;
+         p2.downT=0; p2.giveT=0; p2.pendKiller=null; p2.iv=0;
+         p2.cooking=0; p2.cookT=0; p2.cookKind=null;
+         if(!g2.over) __endRaid('extract'); } }catch(_e){}
+       lastTs=keepTs;
+       try{ saveProfile(); }catch(_p){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.36',what:'a round landing on the body during the death fade does not re-down a dead man, does not add another down, does not throw a second toast, and does not put its own name on the KILLED IN ACTION card in place of the machine that actually killed him (2026-09-07 audit, corpse-redown)',
+   run:function(){
+     var bad=[];
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__loop)) return 'SKIP: this fixture cannot deploy and drive a live raid';
+     if(typeof updateBullets!=='function'||typeof damagePlayer!=='function'||typeof killPlayer!=='function') return 'SKIP: this build has no bullet or player damage path';
+     var sub=document.getElementById('oc_sub');
+     if(!sub) return 'SKIP: this build has no run report subtitle to read';
+     var realSay=(typeof say==='function')?say:null;
+     if(!realSay) return 'SKIP: no say to listen to';
+     var P2=__P(), ck;
+     var keepCfg={}; for(ck in CFG) keepCfg[ck]=CFG[ck];
+     var keepTs=lastTs, said=[];
+     // Two names no machine on any map is ever called.
+     var KILLER='DUSTMAN ALPHA NINE', ROBBER='CORPSE ROBBER SEVEN';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_fs){}
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state();
+       if(!g||!g.player) return 'SKIP: no live raid to kill anyone in';
+       if(g.sim) return 'SKIP: the death beat never runs under the bot';
+       var p=g.player;
+       say=function(m){ said.push(String(m)); return realSay.apply(null,arguments); };
+       function shoot(kind,name,dmg){
+         var b={x:p.x-2,y:p.y,vx:60,vy:0,dmg:dmg,life:2,player:false,owner:{kind:kind,name:name}};
+         g.bullets.push(b); return b;
+       }
+       // ONE: he goes down, on the real bullet path.
+       p.iv=0; p.armor=0; p.hp=30; p.downed=false; p.downT=0; p.revived=false; p.cooking=0;
+       shoot('sentry',KILLER,999); updateBullets(0.016);
+       if(!p.downed) return 'SKIP: the staged round did not put him on the floor';
+       // TWO: and then he dies, which is what opens the beat.
+       p.downT=1;
+       shoot('sentry',KILLER,9); updateBullets(0.016);
+       if(!(g.deathBeat>0)) return 'SKIP: the second round did not open the death beat';
+       var downs0=g.tel.downs, killer0=g.tel.deathKiller, name0=g.tel.lastHitName, said0=said.length;
+       if(killer0!=='sentry') bad.push('control: the death is recorded against '+killer0+' rather than sentry, so this is not the death it staged');
+       if(name0!==KILLER) bad.push('control: at the moment of death the last hit names '+name0+' rather than '+KILLER);
+       // THREE: a round lands on the body inside the beat, through the real frame.
+       // The first loop call is a warm-up so the frame clock cannot come out zero
+       // or negative from whatever the previous check left behind.
+       var t0=(lastTs||0)+1000;
+       __loop(t0);
+       var cb=shoot('howler',ROBBER,12);
+       __loop(t0+16.7);
+       if(g.bullets.indexOf(cb)>=0) return 'SKIP: the round aimed at the body never reached it';
+       if(!(g.deathBeat>0)) return 'SKIP: the death beat ran out before the body was hit';
+       // WHAT HE WOULD SEE.
+       if(g.tel.downs!==downs0) bad.push('a hit on the body during the death fade counts another DOWN: the report goes from '+downs0+' to '+g.tel.downs+' on a man who is already dead');
+       if(p.downed) bad.push('a hit on the body during the death fade puts the dead man back into the downed state');
+       var newSaid=said.slice(said0).join(' | ');
+       if(newSaid.indexOf('DOWN. ')>=0) bad.push('a hit on the body during the death fade throws a toast over the death fade: '+newSaid);
+       if(g.tel.lastHitName!==name0) bad.push('a hit on the body during the death fade renames the killer: it was '+name0+' and is now '+g.tel.lastHitName);
+       // FOUR: and the card itself, which is where he reads the name.
+       __endRaid('dead');
+       var line=String(sub.textContent||'');
+       if(line.indexOf(ROBBER)>=0) bad.push('the KILLED IN ACTION card reads "'+line+'", naming the machine that shot the corpse');
+       if(line.indexOf(KILLER)<0) bad.push('the KILLED IN ACTION card reads "'+line+'", and does not name '+KILLER+', who actually killed him');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ say=realSay; }catch(_s){}
+       try{ var gg=__state(); if(gg&&gg.bullets) gg.bullets.length=0; }catch(_b){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       for(ck in keepCfg) CFG[ck]=keepCfg[ck];
+       lastTs=keepTs;
+       try{ saveProfile(); }catch(_p){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.35',what:'the safe pocket is gone from the screen, the code and the profile, a death pays out and lists the loss with no pocket line, and the secure cases in the world, which share the word, are untouched (his order of 2026-09-08)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot reach the floor and a raid';
@@ -5765,7 +5944,7 @@ window.__REGRESS=[
          if(txt.indexOf('LOST')<0) bad.push('control: the death card lists nothing as lost, so the ledger it shares with the pocket branch is not running');
          if(/safe pocket/i.test(txt)) bad.push('the death card still says safe pocket');
        }
-       // FIVE, AND THIS IS THE ONE A CARELESS DELETION BREAKS: the world container
+       // FOUR, AND THIS IS THE ONE A CARELESS DELETION BREAKS: the world container
        // called a safe is a different thing with the same five letters.
        __topClear();
        __deploy({kit:[],mapIx:0,seed:4242});
@@ -12231,69 +12410,6 @@ window.__REGRESS=[
        P2.equippedSec=keep.sec; P2.safe=keep.safe; P2.hotAssign=keep.hot; P2.freeKit=keep.free; P2.autoExport=keep.auto;
        try{ saveProfile(); }catch(_s2){}
        var o2=document.getElementById('outcome'); if(o2) o2.classList.remove('on');
-     }
-     return bad.length?bad.join('; '):null; }},
-  {v:'10.71',what:'the safe pocket says when it is naming something that is not going up, the ascent check names it, and the loadout total counts it once or not at all',
-   run:function(){
-     var bad=[];
-     if(!(window.__hubEnter&&window.__P&&window.__deploy)) return 'SKIP: this build cannot arrive and deploy';
-     if(typeof ival!=='function') return 'SKIP: no item values in this build';
-     var P2=__P();
-     var keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),hot:P2.hotAssign,safe:P2.safe,free:P2.freeKit};
-     function txt(id){ var e=document.getElementById(id); return e?String(e.textContent||'').trim():null; }
-     function num(id){ var t=txt(id); if(t===null) return null; var c=t.replace(/[^0-9.-]/g,''); return c===''?null:+c; }
-     var A='medkit', B='plate', D='bandage';
-     if(!(ITEMS[A]&&ITEMS[B]&&ITEMS[D])) return 'SKIP: this build lacks the items this uses';
-     var vD=ival(D);
-     if(!(vD>0)) return 'SKIP: the '+D+' is worth nothing, so double counting could not be seen';
-     // One arm: set the stash, the backpack and the pocket, then read the floor.
-     function arm(kit,safe){
-       if(window.__cleanProfile) __cleanProfile();
-       P2.freeKit=0; P2.hotAssign={};
-       P2.stash=[D,A,B]; P2.kit=kit.slice(); P2.safe=safe;
-       try{ saveProfile(); }catch(_s){}
-       __hubEnter();
-       return {safen:txt('safen'), kitval:num('kitval'), kitn:num('kitn')};
-     }
-     try{
-       // 1. NAMED BUT NOT PACKED. The deploy arms nothing, so the screen must
-       //    not read like an armed pocket.
-       var away=arm([A,B],D);
-       __deploy({kit:[A,B],safe:D,mapIx:0,seed:4242});
-       var armedAway=P2.safeUp;
-       if(armedAway) bad.push('control: the deploy armed the pocket for an item that was not packed (safeUp='+armedAway+')');
-       else if(away.safen==='1/1') bad.push('the pocket names a '+D+' that is not in the backpack, so nothing comes home, and the screen still reads 1/1');
-       // 2. NAMED AND PACKED is the working case and must still read as armed.
-       var withIt=arm([A,B,D],D);
-       __deploy({kit:[A,B,D],safe:D,mapIx:0,seed:4242});
-       if(P2.safeUp!==D) bad.push('control: a packed '+D+' did not arm the pocket at deploy (safeUp='+String(P2.safeUp)+')');
-       if(withIt.safen!=='1/1') bad.push('a packed and named '+D+' does not read as armed (the screen says '+JSON.stringify(withIt.safen)+')');
-       // 3. THE TOTAL COUNTS IT ONCE. Naming an item already in the backpack
-       //    must not change what is going up, and naming one that is NOT there
-       //    must not add anything either.
-       var plain=arm([A,B,D],null);
-       if(withIt.kitval!==plain.kitval) bad.push('naming the packed '+D+' as the safe pocket changed the loadout total from '+plain.kitval+' to '+withIt.kitval+', and it is one item either way');
-       var bare=arm([A,B],null);
-       if(away.kitval!==bare.kitval) bad.push('naming a '+D+' that stays at home added '+(away.kitval-bare.kitval)+' to the loadout total');
-       if(plain.kitval!==bare.kitval+vD) bad.push('control: the '+D+' is worth '+vD+' and packing it moved the total from '+bare.kitval+' to '+plain.kitval);
-       // 4. THE ASCENT CHECK NAMES IT, and says which of the two it is.
-       var st=document.getElementById('stagemodal');
-       if(!st||!window.__stage) bad.push('SKIPPABLE: no ascent check to read');
-       else{
-         arm([A,B,D],D); __stage.render();
-         var t1=(st.innerText||'').replace(/\s+/g,' ');
-         if(!/safe pocket/i.test(t1)) bad.push('the ascent check never mentions the safe pocket');
-         else if(t1.indexOf(ITEMS[D].name)<0) bad.push('the ascent check mentions a safe pocket without naming what is in it');
-         arm([A,B],D); __stage.render();
-         var t2=(st.innerText||'').replace(/\s+/g,' ');
-         if(!/not packed/i.test(t2)) bad.push('the ascent check does not say the safe pocket names something that is not packed');
-         arm([A,B],null); __stage.render();
-         var t3=(st.innerText||'').replace(/\s+/g,' ');
-         if(!/no safe pocket/i.test(t3)) bad.push('the ascent check says nothing when there is no safe pocket at all');
-       }
-     } finally {
-       P2.stash=keep.stash; P2.kit=keep.kit; P2.hotAssign=keep.hot; P2.safe=keep.safe; P2.freeKit=keep.free;
-       try{ saveProfile(); }catch(_s2){}
      }
      return bad.length?bad.join('; '):null; }},
   {v:'10.70',what:'the LOADOUT number counts everything going up: the backpack and the copies on tactical belt keys',
@@ -19339,11 +19455,11 @@ window.__deploy=function(o){
   P.stash=(o.stash||kit).slice();
   P.kit=kit.slice();
   P.kitChosen=0; P.dropKit=[]; P.freeKit=0;
-  if(o.safe!==undefined) P.safe=o.safe;
+
   var ok=false;
   try{ ok=commitKit(); }catch(e){ return {error:'commitKit threw: '+e}; }
   __startRaid({mapIx:o.mapIx===undefined?0:o.mapIx,seed:o.seed===undefined?4242:o.seed,sim:!!o.sim});
-  return {committed:ok,dropKit:(P.dropKit||[]).slice(),safeUp:P.safeUp===undefined?null:P.safeUp,
+  return {committed:ok,dropKit:(P.dropKit||[]).slice(),
           stashLeft:(P.stash||[]).slice(),bag:G?G.bag.slice():null};
 };
 // v8.65: the belt, readable. slots() is what the hotbar actually holds, sel() is

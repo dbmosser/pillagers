@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.35';
+var VER='12.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,10 +1360,13 @@ var VER='12.35';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.35';
+var WHATSNEW_VER='12.38';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'WHOEVER KILLED YOU KILLED YOU. A round landing on your body during the death fade used to throw a second DOWN over the top of it, add another down to your record, and put its own name on the KILLED IN ACTION card in place of the machine that actually did it.',
+  'A KEY ALREADY DOWN IS NOT A PRESS. F is the melee strike, so a hand resting on it when the hit landed used to spend your one self-revive on the first downed frame, with no decision made. The revive now waits for a release and a real press.',
+  'EXTRACTING WITH A GUN IN EACH HAND LEAVES A GUN IN EACH HAND. Banking the better gun into slot 1 used to leave slot 2 naming the same gun, so the next raid came up with an empty second slot and a gun you still owned quietly unslotted.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -12131,6 +12134,24 @@ function killPlayer(src){
   }
 }
 function damagePlayer(amt,src,srcName,sx,sy){
+  // v12.36, 2026-09-07 audit (corpse-redown): A DEAD MAN TAKES NO MORE HITS.
+  // killPlayer does not end a live raid; it opens a 1.5 second beat and leaves
+  // the body in the world with p.downed CLEARED and hp at 0, and the beat in
+  // loop() keeps calling updateEnts, updateBullets and updateThrowables
+  // underneath it. So a round that landed on the corpse fell past the downed
+  // branch below, took hp negative and re-downed a man who was already dead:
+  // a second DOWN toast over the death fade, another count on the downs figure
+  // the report and the stats card print, and lastHitName rewritten, which is
+  // the name the KILLED IN ACTION card reads while the ledger beside it still
+  // names the real killer. Whoever killed him killed him.
+  // ABOVE EVERY STAMP IN THIS FUNCTION on purpose: hitFrom, hurtAt and
+  // lastHitName are all written before the invulnerability test, so a guard
+  // any lower still lets the card be renamed by a shot at a body.
+  // It costs nothing anywhere it can be measured: killPlayer ends a sim raid
+  // outright rather than running a beat, so the beat is never set under the
+  // bot and no paired number moves. The round still sparks, still counts as a
+  // hit and is still consumed, so the bullet stream is untouched.
+  if(G&&((G.deathBeat!==undefined&&G.deathBeat!==null)||(G.player&&G.player.dying))) return;
   // v4.28: the direction of the hit, stamped for the ring around the body.
   if(G&&sx!==undefined&&G.player) G.player.hitFrom={ang:Math.atan2(sy-G.player.y,sx-G.player.x),at:G.t};
   // v9.69: when he was last hurt, which nothing recorded. v8.52 deleted the two
@@ -12236,6 +12257,19 @@ function damagePlayer(amt,src,srcName,sx,sy){
     // is out, so it goes the way a release sends it, with the time it has cooked
     // (2026-09-06 in-raid audit). killPlayer has dropped a cook on a death all along.
     if(p.cooking) releaseCook();
+    // v12.37, 2026-09-07 read-only audit (f-held-revive): A KEY ALREADY DOWN IS
+    // NOT A PRESS. healLock is the edge latch for the self-revive and it is SET
+    // in exactly one place, inside the downed branch of updatePlayer; the two
+    // other lines that name it only CLEAR it. So a hand already resting on F
+    // when the hit landed arrived on the floor with the latch clear, and the
+    // first downed frame read that held key as a fresh press and spent the one
+    // self-revive with no decision made. F is the melee strike since v10.64, so
+    // holding it through a fight is ordinary play, and the man then paid for it
+    // on his second down with the v12.10 line telling him a revive he never
+    // chose was gone. Latched here, at the instant he goes down: the revive now
+    // waits for a release and a real press, which is what the DOWN overlay asks
+    // for, and the clear on the next frame still frees that press.
+    p.healLock=!!keys['KeyF'];
 p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null;
   (function(){
     if(G.sim) return;
@@ -14337,6 +14371,11 @@ function updatePlayer(dt){
     // from, so they have to count the crawl.
     T.distance+=dist({x:dox,y:doy},p);
     T.closestExtract=Math.min(T.closestExtract,closestRingDist(p));   // v8.58: the nearest OPEN ring, not the targeted one
+    // v12.37, audit (f-held-revive): THE OTHER HALF OF THE EDGE. The latch below
+    // is set only in here, so this line used to read a key that was already down
+    // before he went down as a press, and the one self-revive was spent on the
+    // first downed frame. damagePlayer latches it at the moment he goes down now;
+    // the clear on the line after still frees the real press that follows.
     if(keys['KeyF']&&!p.healLock){ p.healLock=true; selfRevive(); }
     if(!keys['KeyF']) p.healLock=false;
     // The beacon countdown lives in here, so going down used to freeze the
@@ -18782,6 +18821,20 @@ var _cdone=contractExtract(G.bag,haul);
       if(P.weapons.indexOf(kept[i].id)<0) P.weapons.push(kept[i].id);
     }
     if(kept.length) P.equipped=kept[0].id;
+    // v12.38, audit gun-slot-reconcile: SLOT TWO IS RECONCILED WITH SLOT ONE.
+    // The line above rewrites gun 1 from the tier sort, so a run where the
+    // better gun rode in slot 2 leaves BOTH slots naming it. The ascent check
+    // then prints the same gun name twice, and the deploy guard refuses a
+    // sidearm equal to the primary, so the next raid comes up with fists in
+    // gun 2 and a gun he still owns quietly unslotted, out of a run in which
+    // he lost nothing. The welcome pack hands out smg then carbine, which is
+    // exactly the losing order, so this is the first extraction of a new
+    // player. Only the collision is repaired: the other gun he actually
+    // carried takes slot 2, and where there is no other gun the slot is
+    // honestly empty. Two distinct slots are left untouched. Same rule the
+    // armoury menu applies when a gun is put into a slot it already sits in.
+    if(kept.length&&(P.equippedSec||'none')===P.equipped)
+      P.equippedSec=(kept.length>1&&kept[1].id!==P.equipped)?kept[1].id:'none';
     for(i=0;i<THROWKEYS.length;i++){
       var tk=THROWKEYS[i];
       for(var q=0;q<G.pouch[tk];q++) P.stash.push(tk);
@@ -28766,7 +28819,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.35: his order of 2026-09-08, remove the safe pocket and delete the entire concept. He asked what was supposed to go in it and how he was meant to reach it during a raid; the honest answer to the second was that he could not, because the pocket lives on the stash screen only and its choice is frozen at the lift, so it could protect something carried from home and never the thing just pulled out of a vault. Out goes the panel, the styles, the two readers, the setter, the renderer, the menu verb, the line on the ascent page, the arming at the drop, the branch in the death payout and both fields on the profile, which are deleted from any save that still carries them. The world container called a safe is a different thing with the same five letters and is untouched. Check 12.35 requires the panel, the functions and the fields to be gone, requires a death to pay out and list what was lost with no pocket line, and requires the secure cases still to be built and drawn; fails on v12.34.',
+  now:'v12.38: 2026-09-07 audit (gun-slot-reconcile). An extraction banks the guns you carried and then rewrites gun 1 from the tier sort, and nothing has ever reconciled gun 2 with that rewrite. So a run in which the better gun rode in slot 2 came back with BOTH slots naming it: the ascent check printed the same gun name twice, and buildRaid refuses a sidearm equal to the primary, so the next raid came up with fists in gun 2 and a gun he still owned quietly unslotted, out of a run in which he lost nothing. The welcome pack hands out the smg and then the carbine, which is exactly the losing order, so this is the first extraction of a brand new player. One line repairs the collision only: where the two slots have come to name the same gun, the other gun he actually carried takes slot 2, and where there is no other gun the slot is honestly empty. Two distinct slots are untouched, which is the same rule the armoury menu already applies. Check 12.38 stages the weakest gun in slot 1 and the strongest in slot 2, extracts with both, and requires the tier sort to have promoted the strong one while slot 2 still holds the other, the ascent check to name each gun once, and the next raid to deploy with a gun in each hand; fails on v12.37.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
