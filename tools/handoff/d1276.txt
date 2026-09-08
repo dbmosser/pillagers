@@ -1,0 +1,38 @@
+## v12.76 - HOW FAR YOU DIED FROM EXTRACTION IS MEASURED TO THE NEAREST WAY OUT
+
+From the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me
+reading both sites. It is my own half-done fix from v8.58, found again.
+
+WHAT IT WAS. The death card says KILLED BY X, N METRES FROM EXTRACTION. That N
+was measured to the ring the raid had nominated, and that is not the nearest way
+out. It is a ring the dice picked when the raid was built, and it is only ever
+re-pointed when he physically stands inside a ring, or when the one it points at
+closes. A player who dies without ever reaching a ring, which is exactly how a
+first raid ends, was therefore measured against a ring chosen for him at random.
+
+AND IT CONTRADICTED TWO THINGS AT ONCE. The compass over his head spends the
+whole raid pointing at the nearest OPEN ring. And the line printed directly
+underneath this one, on the same card, the closest he ever came to extraction, is
+measured to the nearest open ring as well. So the card disagreed with the compass
+he had been following, and with itself, six pixels apart.
+
+THIS IS MY MISTAKE, MADE THE SAME WAY AS BEFORE. The helper that measures the
+nearest open ring already exists. I wrote it at v8.58 for the closest-approach
+figure, and all four of its call sites carry a comment saying "the nearest OPEN
+ring, not the targeted one". I did not apply it to the death distance, which sits
+twenty feet away in the same file. That is the same shape as the Peddler and the
+counter, and as the lift and quick ascent: fix one instance, leave its twin.
+
+MEASURED. Check 12.76 kills him for real, standing beside one open ring with the
+nomination pointed at the farthest other one, and reads the number the card is
+built from off the banked run record. It asserts its own staging rather than
+assuming it: the two rings must be far enough apart that the right answer and the
+wrong one cannot be confused, and it says so and skips if the seed does not offer
+that. The control kills him beside the nominated ring itself, where the old
+answer and the new one agree, so a build that had simply started reporting some
+other number would fail there rather than pass.
+
+Not verified: it reads the banked number rather than the drawn card, though the
+card prints exactly that field; it uses one seed on one sector; and it does not
+change the flight recorder line, which has always carried the same field and now
+carries the corrected one.

@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.44';
+var VER='12.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.44';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.44';
+var WHATSNEW_VER='12.45';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1373,6 +1373,7 @@ var WHATSNEW=[
   'A GUN YOU STOW KEEPS ITS ROUNDS. Putting a gun in your backpack used to throw away the magazine in it, and taking one back out handed you half a magazine that no reserve paid for. A gun you find in the field still comes up on half a magazine.',
   'A NEW CHARACTER KEEPS WHAT THEIR FIRST SESSION EARNED. A repair meant for saves from old builds ran once on brand new ones as well, so cutting at the great door on THE COLD MILE, being told it was banked, and then reloading the page lost the cutting and the explored map. It happened once per character, which is why it read as random.',
   'THE EXTRACTION WINDOW NEVER OUTLIVES THE CLOCK. An extraction arriving in the last seconds of a raid used to announce three seconds on every readout and then let the timer kill you with a second still showing. It now says what the raid actually has left.',
+  'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, an extraction you had already called for stopped arriving, its window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -14912,6 +14913,20 @@ if(!p.fired||p.wep.auto){
           spark(G.seal.x,G.seal.y,'#ffc04a',40,420);
         }
       }
+      // v12.45, 2026-09-07 audit: CUTTING OWNS THE KEY, NOT THE CLOCKS. This
+      // return skips the tail of updatePlayer, where the only recovery tick on
+      // the standing path lives and where the only real call to the extraction
+      // clocks lives. So the whole forty to a hundred and fifteen seconds of a
+      // cut ran with the health bar flat and the recovery clock not even
+      // advancing, and with every extraction clock stopped: an extraction already
+      // called for went no further, its window did not run, and no wave
+      // could arrive while he made the loudest noise in the game. The roll and
+      // the trade window carry both calls past their own returns for exactly
+      // this reason; this was the last early return that did not. No wantCall,
+      // as in those two: E belongs to the seal while he is cutting, so the
+      // clocks run and no pull of his own does.
+      tickRegen(dt);
+      tryExtractTick(dt);
       return;                       // cutting owns the key and your attention
     }
     if(!keys['KeyE']) G.sealNoise=0;
@@ -28904,7 +28919,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.44: 2026-09-07 audit (P3). The comment two lines above the extraction window says the hold can never promise more than the raid clock has left, because saying thirty and then killing him on the timer at twelve is a lie. A three second floor under it broke that promise at the very end of a raid. Call the extraction with 27 seconds left, which draws no warning at all because the warning only fires under 25, and the extraction arrives with 2 seconds on the clock: the floor sets the window to 3, the banner says EXTRACT NOW 3S LEFT, the ring badge says 3S UNTIL EXTRACTION ENDS, the prompt on the pad says 3s and the voice line says three seconds. Two seconds later the raid ends as a death by the timer with a second still showing on every one of them. The clock-OFF half of the same expression was closed at v12.24; this is the live-clock sibling. One clamp, with half a second kept underneath so the window is never a zero that reads as no window at all: if that is all the raid has left then that is the truth, and an unwinnable second is better than a promised three. Check 12.44 brings an extraction in on a live clock with two seconds left and requires the hold and every readout that prints it to agree with the clock, with a control at full clock requiring the ordinary thirty second window to be untouched; fails on v12.43.',
+  now:'v12.45: 2026-09-07 audit (P3), the same fault and the same fix as v12.34 one door along. Cutting the seal returns out of updatePlayer on every frame of the hold, and two things live below that return: the only recovery tick on the standing path, and the only real call to the extraction clocks. So for the forty to a hundred and fifteen seconds of a cut the health bar was flat and the recovery clock did not even advance, which costs thirteen points on a tier zero cut and thirty eight at tier three, and every extraction clock was frozen with it: an extraction already called for stopped closing, its window stopped running, the re-ping stopped, and no pillager wave could arrive while he made the loudest noise in the game. The roll branch and the trade window both carry these calls past their own returns for exactly this reason and this was the last early return that did not. No wantCall, as in those two: E belongs to the seal while he is cutting, so the clocks run and no pull of his own does. Honestly: the wave half makes cutting riskier than it has been, because a wave that could never arrive now can. Check 12.45 holds E at a real seal through the real frame loop and requires the cut to advance, the recovery clock to advance with it, health to come back, and an extraction already called for to keep counting down, with a control that a man standing beside the seal and not cutting recovers exactly as before; fails on v12.44.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

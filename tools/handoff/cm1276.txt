@@ -1,0 +1,20 @@
+v12.76: how far you died from extraction is the nearest way out
+
+The death card says how many metres from extraction you died. That was measured
+to the ring the raid nominated, which is a ring the dice picked when the raid was
+built and is only re-pointed if you stand in a ring or the one it points at
+closes. So a player who dies without ever reaching a ring, which is how a first
+raid ends, was measured against a ring chosen at random for them.
+
+It contradicted the compass over your head, which points at the nearest open ring
+all raid, and the closest-approach line printed directly underneath it, which is
+measured the same way.
+
+The helper already existed: I wrote it at v8.58 for the closest-approach figure
+and did not apply it here, twenty feet away in the same file.
+
+Check 12.76 kills him beside one ring with the nomination on a far one and reads
+the banked number, asserts its own staging, and controls that a death beside the
+nominated ring reports what it always did. Fails on v12.75.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
