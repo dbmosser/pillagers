@@ -1,0 +1,27 @@
+v12.58: a weather you pinned stops asking to change
+
+The last open line of the 2026-09-06 in-raid audit, and the only one on it a
+player never sees. It is here because it corrupts my numbers rather than your
+game.
+
+The weather turn clock expires and the picker is asked for something different
+from what is up. With the weather pinned in Settings it can only ever answer
+with the pinned one, so the guard loop asks twelve times, gets the same answer
+twelve times, and returns without putting the clock forward. The clock stays
+expired and it all happens again on the next frame: thirteen seeded draws every
+frame for the rest of the raid.
+
+Nothing on screen shows it, which is exactly why it matters. The seeded stream
+is what makes two runs of the same seed comparable, and this advances it by
+hundreds of draws a second, so every paired measurement taken with the weather
+held still was comparing two different streams.
+
+One line, before the loop, drawing nothing itself: a weather that cannot change
+has no turns left to make. With the weather unpinned nothing runs differently.
+
+Check 12.58 counts the calls to the picker itself, because nothing downstream
+shows the waste. The control runs first on an unpinned weather and requires the
+picker to be asked; the finding arm pins it and requires no calls at all across
+sixty frames; fails on v12.57.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

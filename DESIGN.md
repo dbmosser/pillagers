@@ -40024,6 +40024,52 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.38 - EXTRACTING WITH A GUN IN EACH HAND LEAVES A GUN IN EACH HAND
+
+From the 2026-09-07 read-only audit (gun-slot-reconcile), specced from the
+source and then attacked by a skeptic before a line was written. Verified by
+reading at v12.37.
+
+WHAT IT WAS. An extraction banks the guns you carried out and then rewrites
+gun 1 from the tier sort, so the best gun you own ends up in your primary hand.
+Nothing has ever reconciled gun 2 with that rewrite. So a run in which the
+better gun happened to ride in slot 2 came back with BOTH slots naming the same
+gun. Three things follow from that one collision. The ascent check, which is
+the last screen before the lift, prints the same gun name twice as your
+loadout. The deploy refuses a sidearm equal to the primary, so the next raid
+comes up with fists in gun 2. And the gun you actually carried out, which you
+still own and which is still sitting in the armoury, has been quietly
+unslotted, out of a run in which you lost nothing at all.
+
+The welcome pack hands out the smg and then the carbine, which is exactly the
+losing order, so this is the first extraction of a brand new player.
+
+THE BUILD. One line, immediately under the rewrite that causes it. It repairs
+the collision only: where the two slots have come to name the same gun, the
+other gun he actually carried takes slot 2, and where there was no other gun
+the slot goes honestly empty rather than pretending. Two distinct slots are
+never touched. This is the same rule the armoury menu already applies when a
+gun is put into a slot it already sits in, so the profile now reaches the lift
+in a state the deploy will accept.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. Nothing in the raid changes; the
+line runs in the payout, after the raid is over. No dial moves. The bot never
+reads a second gun slot, so no paired number moves.
+
+MEASURED. Check 12.38 stages the weakest gun in the file in slot 1 and the
+strongest in slot 2, a pair no starter roll, free kit or fallback can produce
+and the exact pair the tier sort has to reverse. It deploys, confirms the raid
+really came up with that pair and that neither slot was filled with issued kit
+that would never be banked, extracts, and then reads all three places he would
+see the loss: the two profile slots, the ascent check summary text, and the
+raid he actually deploys into next. On the v12.37 fixture the slot assertion,
+the ascent-check assertions and the next-raid assertion all fire together.
+
+Not verified: it runs one map and one seed; it does not test three or more
+guns in the armoury, where the promotion has more candidates to choose from;
+it does not exercise the armoury menu itself, only the payout path; and it
+says nothing about the death branch, which has its own separate stale-slot
+finding and its own draft.
 ## v12.37 - A KEY ALREADY DOWN IS NOT A PRESS
 
 From the 2026-09-07 read-only audit (f-held-revive), specced from the source

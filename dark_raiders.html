@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.37';
+var VER='12.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,12 +1360,13 @@ var VER='12.37';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.37';
+var WHATSNEW_VER='12.38';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'WHOEVER KILLED YOU KILLED YOU. A round landing on your body during the death fade used to throw a second DOWN over the top of it, add another down to your record, and put its own name on the KILLED IN ACTION card in place of the machine that actually did it.',
   'A KEY ALREADY DOWN IS NOT A PRESS. F is the melee strike, so a hand resting on it when the hit landed used to spend your one self-revive on the first downed frame, with no decision made. The revive now waits for a release and a real press.',
+  'EXTRACTING WITH A GUN IN EACH HAND LEAVES A GUN IN EACH HAND. Banking the better gun into slot 1 used to leave slot 2 naming the same gun, so the next raid came up with an empty second slot and a gun you still owned quietly unslotted.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -18820,6 +18821,20 @@ var _cdone=contractExtract(G.bag,haul);
       if(P.weapons.indexOf(kept[i].id)<0) P.weapons.push(kept[i].id);
     }
     if(kept.length) P.equipped=kept[0].id;
+    // v12.38, audit gun-slot-reconcile: SLOT TWO IS RECONCILED WITH SLOT ONE.
+    // The line above rewrites gun 1 from the tier sort, so a run where the
+    // better gun rode in slot 2 leaves BOTH slots naming it. The ascent check
+    // then prints the same gun name twice, and the deploy guard refuses a
+    // sidearm equal to the primary, so the next raid comes up with fists in
+    // gun 2 and a gun he still owns quietly unslotted, out of a run in which
+    // he lost nothing. The welcome pack hands out smg then carbine, which is
+    // exactly the losing order, so this is the first extraction of a new
+    // player. Only the collision is repaired: the other gun he actually
+    // carried takes slot 2, and where there is no other gun the slot is
+    // honestly empty. Two distinct slots are left untouched. Same rule the
+    // armoury menu applies when a gun is put into a slot it already sits in.
+    if(kept.length&&(P.equippedSec||'none')===P.equipped)
+      P.equippedSec=(kept.length>1&&kept[1].id!==P.equipped)?kept[1].id:'none';
     for(i=0;i<THROWKEYS.length;i++){
       var tk=THROWKEYS[i];
       for(var q=0;q<G.pouch[tk];q++) P.stash.push(tk);
@@ -28804,7 +28819,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.37: 2026-09-07 audit (f-held-revive). healLock is the edge latch on the one self-revive, and the whole file SETS it in exactly one place, inside the downed branch of updatePlayer; the two other lines that name it only clear it. So a hand already resting on F when the hit landed arrived on the floor with the latch clear, and the very first downed frame read that held key as a fresh press and spent the one self-revive with no decision made. F has been the melee strike since v10.64, so holding it through a fight is ordinary play, and the man then paid for it on his second down with the v12.10 line telling him a revive he never chose was already gone. One assignment at the down moment latches the flag to whatever F is doing at that instant, so the revive waits for a release and a real press, which is what the DOWN overlay asks for on screen; with F not held the latch is cleared and the first real press still revives, bit for bit as before. Nothing measurable moves: the bot auto-revives on a branch that never reads the latch. Check 12.37 puts him down with the strike key held and requires him to stay on the floor with the revive unspent, then proves in two controls that a real press still stands him up and that letting go and pressing again after a held down still revives; fails on v12.36.',
+  now:'v12.38: 2026-09-07 audit (gun-slot-reconcile). An extraction banks the guns you carried and then rewrites gun 1 from the tier sort, and nothing has ever reconciled gun 2 with that rewrite. So a run in which the better gun rode in slot 2 came back with BOTH slots naming it: the ascent check printed the same gun name twice, and buildRaid refuses a sidearm equal to the primary, so the next raid came up with fists in gun 2 and a gun he still owned quietly unslotted, out of a run in which he lost nothing. The welcome pack hands out the smg and then the carbine, which is exactly the losing order, so this is the first extraction of a brand new player. One line repairs the collision only: where the two slots have come to name the same gun, the other gun he actually carried takes slot 2, and where there is no other gun the slot is honestly empty. Two distinct slots are untouched, which is the same rule the armoury menu already applies. Check 12.38 stages the weakest gun in slot 1 and the strongest in slot 2, extracts with both, and requires the tier sort to have promoted the strong one while slot 2 still holds the other, the ascent check to name each gun once, and the next raid to deploy with a gun in each hand; fails on v12.37.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

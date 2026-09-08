@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.57';
+var VER='12.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.57';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.57';
+var WHATSNEW_VER='12.58';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1386,6 +1386,7 @@ var WHATSNEW=[
   'AN IMPORTED GHOST FIGHTS AT HIS OWN GUN RANGE. He was handed the gun from the report he came out of but kept the engagement range of the body he arrived in, so he opened fire at a distance his rounds could not cross, or refused to open fire at one they could.',
   'Q MOVES THE BELT AS WELL AS YOUR HAND. Choosing a different grenade used to leave the tactical belt highlighting the cell you were no longer holding, so the caption named one grenade and the trigger threw another.',
   'WALKING THROUGH ANOTHER EXTRACTION POINT NO LONGER ABANDONS YOUR OWN. The game follows one point at a time, and standing in a second open one used to move everything onto it: the banner, the prompt, the approach pings and the last-seconds warning, while the extraction you had already called left without you.',
+  'A WEATHER YOU PINNED IN SETTINGS STOPS ASKING TO CHANGE. It could not change, so it asked thirteen times a frame for the rest of the raid. Nothing on screen showed it, and it was quietly spoiling every measurement I took with the weather held still.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -5214,6 +5215,18 @@ function wxTick(dt){
   if(G.wxTurnsLeft<=0) return;
   G.wxAt-=dt;
   if(G.wxAt>0) return;
+  // v12.58, 2026-09-06 in-raid audit: A PINNED WEATHER HAS NO TURNS LEFT, so say
+  // so once rather than asking a question that cannot have a different answer.
+  // The loop below asked the picker twelve times, got the pinned weather every
+  // time, and returned WITHOUT putting the clock forward, so the clock stayed
+  // expired and it all happened again on the next frame: thirteen seeded draws
+  // every frame for the rest of the raid. Nothing on screen shows it, and that
+  // is the danger, because it means every paired measurement run with a pinned
+  // weather was comparing two different seeded streams. This line draws nothing
+  // itself and is the truth by definition: a weather that cannot change has no
+  // turns to make.
+  var _wxPin=(typeof wxPicked==='function')?wxPicked():null;
+  if(_wxPin&&_wxPin!=='any'){ G.wxTurnsLeft=0; return; }
   var nw=pickWeather(),guard=0;
   while(nw.id===G.wx.id&&guard++<12) nw=pickWeather();
   // v6.67, his definition of partly cloudy. The sky it breaks into is rain or storm
@@ -29098,7 +29111,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.57: the last live finding of the 2026-09-06 read-only in-raid audit (P2). The game keeps ONE pointer at the extraction that matters, and it was set by standing in a ring. Walk into any other open ring while your own extraction is inbound and the pointer moved to the one under your feet, which has nothing coming: from that moment the banner named the wrong ring, the middle of the screen offered a hold over a ring with nothing arriving, the approach pings and the last-seconds warning went quiet because they were watching the ring he was standing in, and holding E there started a FRESH call while the one he had already paid for landed somewhere else and left without him. A man on the floor had his surrender refused against the wrong ring too, which is the guard v12.47 gave words to. It needs no deliberate double call, because a pillager can open a second ring himself. A ring with a live countdown or a window still running now keeps the pointer, and CALLING moves it, which is a choice he made rather than a place he walked through. Check 12.57 calls one point, walks him into a second open one, and requires the pointer, the countdown and the ring the warning watches to all still be the one he called; a control with nothing running requires the pointer to follow him as it always has, and a third arm requires a deliberate call at the second point to move it; fails on v12.56.',
+  now:'v12.58: the last open line of the 2026-09-06 in-raid audit, and the only one on that list a player never sees. It is on the list because it corrupts MY numbers. The weather turn expires, the picker is asked for something different, and with the weather PINNED it can only ever answer with the pinned one; the guard loop asks it twelve times, gets the same answer twelve times, and returns without putting the clock forward. So the clock stayed expired and the whole thing happened again on the very next frame: thirteen seeded draws every frame from the first expiry to the end of the raid. Nothing on screen shows it, and that is exactly the danger, because it means every paired measurement I have run with a pinned weather was comparing two different seeded streams, which is the one thing a paired measurement exists to rule out. One line, drawing nothing itself and true by definition: a weather that cannot change has no turns to make. Check 12.58 counts the calls to the picker itself over sixty frames with the weather pinned and the clock expired, requiring none at all, with a control that an unpinned weather in the same state still asks and still turns; fails on v12.57.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39955,6 +39968,50 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.58',what:'a weather pinned in Settings stops asking to change: with the turn clock expired the picker is not called at all, instead of thirteen seeded draws every frame for the rest of the raid, while an unpinned weather in the same state still asks and still turns (2026-09-06 in-raid audit, developer-facing)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof wxTick!=='function'||typeof pickWeather!=='function'||typeof WEATHER==='undefined') return 'SKIP: this build has no weather turn to drive';
+     var bad=[], P2=__P(), keepPick=P2.wxPick, realPick=pickWeather;
+     // The weather is named outright, so the pin is unmistakable and the control
+     // arm has the whole table to choose from instead.
+     var PIN='fog', i, wI=-1;
+     for(i=0;i<WEATHER.length;i++) if(WEATHER[i].id===PIN) wI=i;
+     if(wI<0) return 'SKIP: this build has no fog to pin';
+     function run(pin,frames){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g) return null;
+       P2.wxPick=pin;
+       g.over=false; g.wx=WEATHER[wI]; g.wxNext=null; g.wxT=0;
+       g.wxTurnsLeft=3; g.wxAt=0;             // the clock is expired, which is the state
+       var calls=0;
+       pickWeather=function(){ calls++; return realPick.apply(null,arguments); };
+       try{ for(var f=0;f<frames;f++) wxTick(0.05); }
+       finally{ pickWeather=realPick; }
+       return {calls:calls,left:g.wxTurnsLeft,next:!!g.wxNext,at:g.wxAt};
+     }
+     try{
+       // CONTROL FIRST: nothing pinned, the same expired clock. The picker MUST
+       // be asked, or a zero in the finding arm would only say this check cannot
+       // see a call at all.
+       var C=run('any',1);
+       if(!C) return 'SKIP: no live raid to turn the weather in';
+       if(!(C.calls>0)) return 'SKIP: with nothing pinned the picker was not asked even once on an expired clock, so this check cannot see a call and proves nothing';
+       // THE FINDING: pinned, and sixty frames of an expired clock.
+       var A=run(PIN,60);
+       if(A.calls>0)
+         bad.push('a weather pinned in Settings asked the picker '+A.calls+' times in sixty frames of an expired turn clock, about '+Math.round(A.calls/60)+' seeded draws every frame, for a question that can only have one answer: nothing on screen shows it and it moves the seeded stream, so a paired measurement taken with the weather held still is comparing two different streams');
+       // AND IT MUST NOT HAVE TURNED INTO ANYTHING, since it cannot.
+       if(A.next) bad.push('the pinned weather turned into something else, so the pin is not holding');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ pickWeather=realPick; }catch(_r){}
+       try{ P2.wxPick=keepPick; }catch(_p){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'12.57',what:'walking into a second open extraction point does not move the pointer off the one he called: the countdown, the banner and the warning all stay with his own extraction, while with nothing running the pointer still follows him and a deliberate call at the second point still moves it (2026-09-06 in-raid audit)',
    run:function(){

@@ -1,0 +1,45 @@
+## v12.58 - A WEATHER YOU PINNED STOPS ASKING TO CHANGE
+
+The last open line of the 2026-09-06 read-only in-raid audit, and the only one
+on that list a player never sees. It is here because it corrupts my numbers
+rather than your game. Verified by reading at v12.57.
+
+WHAT IT WAS. The weather turn clock runs down, expires, and the picker is asked
+for something different from what is up. With the weather pinned in Settings
+the picker can only ever answer with the pinned one. The guard loop asks it
+twelve times, gets the same answer twelve times, and then returns WITHOUT
+putting the clock forward.
+
+So the clock stays expired, and the whole thing happens again on the very next
+frame. Thirteen seeded draws every frame, from the first expiry to the end of
+the raid.
+
+Nothing on screen shows it, and that is exactly why it matters. The seeded
+stream is what makes two runs of the same seed comparable, and this quietly
+advances it by hundreds of draws a second. Every paired measurement I have run
+with the weather held still was comparing two different seeded streams, which
+is the one thing a paired measurement exists to rule out.
+
+THE BUILD. One line, before the loop, and it draws nothing itself: a weather
+that cannot change has no turns left to make, so say so once. It reads the same
+pin the picker reads, so the two can never disagree.
+
+IT CHANGES NOTHING A PLAYER CAN SEE. With the weather unpinned, which is the
+default and every ordinary raid, not one line of this runs differently. The
+weather still turns on the same clock, into the same things, with the same
+draws. What changes is that a pinned raid stops burning the stream.
+
+MEASURED. Check 12.58 counts the calls to the picker itself rather than
+inferring waste from something downstream, because the whole finding is that
+nothing downstream shows it. It wraps the picker for the length of the run and
+puts it back afterwards. The control runs FIRST and on an unpinned weather with
+the same expired clock: the picker must be asked, or a zero in the finding arm
+would only mean this check cannot see a call at all. The finding arm then pins
+the weather, runs sixty frames of an expired clock, and requires no calls
+whatsoever.
+
+Not verified: it drives the weather tick directly rather than through a whole
+raid; it does not measure the seeded stream position itself, only the calls
+that move it; and it does not re-run any of the historical paired measurements
+that were taken with a pinned weather, which are simply suspect now and would
+have to be redone if any of them ever mattered again.
