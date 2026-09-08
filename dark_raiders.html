@@ -1358,7 +1358,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.29';
+var VER='12.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1369,11 @@ var VER='12.29';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.29';
+var WHATSNEW_VER='12.30';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A CRAWLER THAT REACHES YOU BITES. It used to stand next to you for up to seven seconds first, serving out the clock it had rolled for its next wander, whether it came for you on its own or because you shot it.',
   'A NEW PROFILE NOW STARTS ON FEWER MACHINES AND A LIGHTER EXTRACTION. Both are still in Settings and both still go all the way up; only where they start has moved.',
   'A PEDDLER PURCHASE NOW SAYS WHERE IT WENT: on your tactical belt, key N, or in your backpack. A bought gun is pinned to a free belt key, and the backpack grid keeps a belted item off its cells, which is why a rifle you paid for was not in the backpack.',
   'DRAGGING AN ITEM FROM THE STASH TO THE BACKPACK WHEN ITS TACTICAL BELT KEY IS STILL SET FROM THE LAST RAID NOW LANDS ON THAT KEY, half the stack, and says so. A set key with nothing packed shows a 0. In a raid, pressing a key whose item you have used up says No <item> left.',
@@ -17656,7 +17657,16 @@ e.lootT=(e.lootT||0)+dt;
     // Both of his deaths tonight were to a crawler.
     else if(e.state!=='chase'&&e.state!=='investigate'){
       // cd is decremented once per frame below; do not tick it here as well
-      if(e.cd<=0){
+      // v12.30, audit P1 and his standing crawler note: e.cd was the wander
+      // timer here AND the bite cooldown in the chase branch, and none of the
+      // five ways into a chase cleared it, so a crawler that reached him stood
+      // in bite range serving out the rest of a wander of up to seven seconds.
+      // The wander gets its own field on a crawler, which covers every way in
+      // at once. The sentry keeps the shared field: same fault, but a faster
+      // first shot from a sentry is a balance call he has not made.
+      var _wf=(e.kind==='crawler')?'wanderT':'cd';
+      if(!(e[_wf]>0)) e[_wf]=0;
+      if(e[_wf]<=0){
         // Camp guards patrol their post, not the map. Their whole job is to be
         // between you and the safes when you arrive.
         if(e.camp){ var ga2=rnd(0,6.2832),gr2=rnd(40,240); e.tx=e.camp.x+Math.cos(ga2)*gr2; e.ty=e.camp.y+Math.sin(ga2)*gr2; }
@@ -17669,7 +17679,7 @@ e.lootT=(e.lootT||0)+dt;
             if(_wb) sp=outOfBuilding(_wb,sp.x,sp.y,26);
           }
           e.tx=sp.x; e.ty=sp.y; }
-        e.cd=rnd(3,7);
+        e[_wf]=rnd(3,7);
       }
       // v9.04: a crier walking OUT of a building needs the router, not a
       // straight line. Measured before this: two criers that began indoors
@@ -17679,9 +17689,10 @@ e.lootT=(e.lootT||0)+dt;
       if(e.kind==='snitch'&&e.state==='patrol'&&buildingAtPt(G.map,e.x,e.y)) navSeek(e,e.tx,e.ty,e.spd*.45,dt);
       else moveToward(e,e.tx,e.ty,e.spd*.45,dt);
       want=Math.atan2(e.ty-e.y,e.tx-e.x);
-      if(dist(e,{x:e.tx,y:e.ty})<30) e.cd=0;
+      if(dist(e,{x:e.tx,y:e.ty})<30) e[_wf]=0;
     }
     if(e.cd>0) e.cd-=dt;
+    if(e.wanderT>0) e.wanderT-=dt;   // v12.30: the wander clock, its own field on a crawler
     // Enemies were silent except when firing, so there was nothing for a noise
     // indicator to show. Footsteps are player-facing only (quiet=true).
     if(e.moving&&e.kind!=='snitch'){
@@ -28736,7 +28747,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.29: his order of 2026-09-08: the default for Machines is Few and the default for Heat when you call for extraction is Light. The values are read off the Settings rows themselves rather than invented, so the row he sees ticked on a fresh profile is the row he named: Few is 12 sentries, 20 crawlers and 1.5 crawlers a house, Light is a siege volume of 0.6. These are dials, and his own rule is that dials do not move before alpha; he moved these two himself and nothing else in the table is touched. The test harness now pins the crawlers-per-house figure explicitly, because it pinned the two counts and not that one, so the world every check measures is the same world it measured yesterday. Check 12.29 requires a fresh profile to carry the Few and Light numbers and the Settings rows to render those two as the current pick, and requires the pinned world to be unmoved; fails on v12.28.',
+  now:'v12.30: 2026-09-07 audit P1 and his standing crawler note. e.cd was two clocks on one field: the wander timer in the idle branch, which rolls 3 to 7 seconds whenever it runs out, and the bite cooldown in the chase branch, which lets a bite through only at zero. Nothing on any of the five ways into a chase cleared it, so a crawler that reached him stood in bite range serving out the rest of its wander, about 2.6 seconds on average and up to seven. My first draft clamped the clock at three of those five transitions; the draft review killed it, because the two it missed are the ones he causes himself by shooting, and one of the three could never fire. The wander has its own field on a crawler now, so every way in is covered at once. The sentry keeps the shared field on purpose: same fault, but a faster first shot from a sentry is a balance call he has not made. Check 12.30 parks a crawler on patrol 25 units from a still player, stages nothing on the clock and lets the game roll its own, and requires the first bite inside 1.5 s; a crawler already in chase with a clear cooldown must bite inside 0.6 s, which proves the room can measure a bite at all; and a crawler wandering out of sight must still wander while its bite cooldown stays clear. Fails on v12.29, where the roll costs three to seven seconds.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

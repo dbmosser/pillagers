@@ -40024,6 +40024,66 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.30 - A CRAWLER THAT REACHES YOU BITES
+
+From the 2026-09-07 read-only audit (P1, confirmed by three refuters), and
+his standing crawler note: "crawler attacks and pathfinding were still kinda
+messed up", "standing still and crawler didn't hurt me even though he was
+close". Verified by reading at v12.29.
+
+WHAT IT WAS. e.cd is two clocks on one field. In the idle branch it is the
+wander timer: whenever it reaches zero the machine picks a new spot and rolls
+three to seven seconds. In the chase branch it is the bite cooldown: a bite
+fires only at zero and sets 0.7 after. Nothing on the way into a chase clears
+it, and it only drains in real time. So a crawler that had just rolled a six
+second wander, saw him and closed, stood inside bite range doing nothing for
+the rest of that wander. About 2.6 seconds on average, up to seven, served
+standing next to a man who is being told the thing is right there.
+
+WHAT THE FIRST DRAFT GOT WRONG, and it is worth writing down. It clamped the
+clock at three transitions into chase. The 2026-09-07 draft review killed
+that in two ways. There are FIVE ways a crawler enters a chase, not three,
+and the two the clamps missed are the ones he causes himself: a round or a
+swing landing on a machine that was not yet fighting him. So the fix would
+have worked when the crawler found him and failed when he started it. And one
+of the three clamps, on the wake from playing dead, could never have fired at
+all, because a crawler playing dead already carries a clock of zero: dead code
+sold in the design entry as one of three real fixes.
+
+THE BUILD. The wander gets its own field. On a crawler the idle branch reads
+and writes wanderT instead of cd, and wanderT drains beside cd every frame.
+Every way into a chase is then correct at once, the two the clamps missed
+included, and so is any way added later. Only the crawler is moved off the
+shared field: the sentry has the same fault, but a sentry's first shot coming
+faster is a balance change he has not asked for, so it is named here and left
+exactly where it is.
+
+MEASURED, WITH NOTHING STAGED ON THE CLOCK. Check 12.30 parks the crawler on
+patrol 25 units from a still player, facing him, and lets the game roll its
+own wander on the first idle frame, which is the roll he meets in a raid; it
+then requires the first bite inside a second and a half. Two arms keep that
+deadline honest. A crawler already chasing with a clear cooldown must bite
+inside 0.6 seconds, so the room is known to be able to produce a bite at all,
+and a crawler left to wander far out of his sight must still move and must
+end with nothing on its bite cooldown.
+
+WHAT THE CONTROL ACTUALLY PRINTED, which is not what I first wrote here. On
+the v12.29 fixture the arm that fails is the third: after six seconds of
+wandering the crawler carries 3.7 seconds on the field the bite reads. The
+first arm PASSES on the old build, and the reason is worth keeping: parked
+already inside bite range, the sighting fires on the first frame and the bite
+lands before the idle branch has rolled a wander at all. So the first arm is
+the guard that the fix does not slow the bite down, and the third arm is the
+one that catches the defect. The distance he actually covers walking in is
+where the wander clock gets its chance, and no fixed-distance arm can hold
+that still, which is why the measurement is the field itself.
+
+Not verified: the sentry's first shot, deliberately unchanged; his own runs,
+which the bot cannot stand in for; whether a bite that lands the instant a
+crawler arrives reads as fair rather than as a gotcha, which is his call and
+is a dial, not a defect; the four other machines that share the idle branch
+and are untouched.
+
 ## v12.29 - HIS ORDER: FEWER MACHINES AND A LIGHTER EXTRACTION BY DEFAULT
 
 His order of 2026-09-08: "Make the default setting for machines 'few' and the
