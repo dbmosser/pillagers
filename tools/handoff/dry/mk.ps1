@@ -5709,6 +5709,172 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.52',what:'a pillager whose whole reach is inside his own blast does not throw a charge at all, instead of throwing from a band one unit wide inside his own explosion; an ordinary pillager still throws from outside the blast and his charge still lands clear of him (2026-09-07 audit, my defect from v12.20)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof raiderThrow!=='function') return 'SKIP: no pillager throw in this build';
+     if(!(WEAPONS&&WEAPONS.shotgun&&WEAPONS.shotgun.rng)) return 'SKIP: this build has no Riot Scattergun to stage';
+     var bad=[], i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       CFG.fragR=190;
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(), p=g.player, e=null;
+       for(i=0;i<g.ents.length&&!e;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].downed&&!g.ents[i].finished&&!g.ents[i].merc) e=g.ents[i];
+       if(!e) return 'SKIP: no pillager to hand a charge to';
+       // The reach comes off the weapon table, not out of this check, so it
+       // follows the dial if the gun is ever retuned.
+       var SHOT=WEAPONS.shotgun.rng*0.72, EDGE=190+52;
+       if(SHOT>=EDGE) return 'SKIP: the Riot Scattergun reach of '+Math.round(SHOT)+' now clears the safe edge of '+EDGE+', so the man this check is about no longer exists';
+       function ask(fd,rng){
+         e.bag=['frag']; e.thrT=0; e.smkT=99; e.hp=e.maxhp||100; e.downed=false; e.finished=false;
+         e.rng=rng;
+         var n0=g.frags.length;
+         var r=raiderThrow(e,p,fd,0.016);
+         var f=(g.frags.length>n0)?g.frags[g.frags.length-1]:null;
+         return {threw:!!r,made:g.frags.length-n0,
+                 own:f?Math.sqrt((f.x-e.x)*(f.x-e.x)+(f.y-e.y)*(f.y-e.y)):null};
+       }
+       // THE FINDING: the whole window the old band left him, which is the last
+       // unit before his own reach and is inside the blast he is throwing.
+       var A=ask(SHOT-0.7,SHOT);
+       if(A.threw||A.made)
+         bad.push('a Riot Scattergun pillager threw a charge from '+Math.round(SHOT-0.7)+' units, which is inside the '+EDGE+' unit edge his own blast needs: his whole reach is '+Math.round(SHOT)+', so every throw he can make lands on himself');
+       // CONTROL ONE: an ordinary pillager still throws from outside the blast,
+       // or a build that simply stopped every throw reads green above.
+       var B=ask(260,520);
+       if(!B.threw||!B.made) bad.push('control: a pillager with an ordinary reach would not throw from 260 units, so the band is not live here and nothing above proves anything');
+       // CONTROL TWO: and what he threw landed clear of him, which is the whole
+       // point v12.20 was written for.
+       else if(!(B.own>190)) bad.push('control: the charge an ordinary pillager threw landed '+Math.round(B.own)+' units from him, inside the 190 blast, so v12.20 is undone');
+       // AND NOT ONLY AT THAT ONE DISTANCE. His whole reach is inside his own
+       // blast, so there must be no distance he can reach from at which he throws.
+       var thrown=[], fd2;
+       for(fd2=20;fd2<SHOT;fd2+=8){ if(ask(fd2,SHOT).made) thrown.push(Math.round(fd2)); }
+       if(thrown.length) bad.push(String("a Riot Scattergun pillager still throws from ")+thrown.length+" distances inside his own reach ("+thrown.slice(0,6).join(", ")+"), and every one of them is inside the blast");
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ __topClear(); __cleanProfile(); __resetCfg(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.51',what:'a Howler does not shell its own crater: its own impact no longer winds its eight second bearing back to full or moves that bearing onto the burst, so one noise from a man who then goes quiet brings the shells the bearing honestly allows and no barrage (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__ents&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid and step the machines';
+     if(typeof mkHowler!=='function'||typeof listenersHear!=='function'||typeof updateThrowables!=='function') return 'SKIP: this build has no Howler, no hearing sweep or no shells to step';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid to be heard in';
+       var p=g.player, i;
+       g.ents.length=0; g.shells.length=0;      // one Howler and nothing else at all
+       p.downed=false; p.iv=99; p.roll=0; p.hp=100; p.moving=false;
+       var hw=mkHowler(p.x+400,p.y);
+       if(!hw) return 'SKIP: this build would not build a Howler';
+       // Pointed AWAY from him, so nothing here can come down the sighted path:
+       // that branch needs sight or an alert above 1.2, and the impact noise
+       // only ever lifts an alert to 1.
+       hw.face=Math.atan2(hw.y-p.y,hw.x-p.x);
+       hw.state='patrol'; hw.cd=0; hw.hearT=0; hw.alert=0; hw.elite=0;
+       hw.hp=hw.maxhp||hw.hp; hw.downed=false; hw.finished=false; hw.overheat=0;
+       g.ents.push(hw);
+       // ONE NOISE, at his feet, and then silence for twenty seconds.
+       var NX=p.x, NY=p.y;
+       listenersHear(NX,NY,300,true);
+       if(!(hw.hearT>0)) return 'SKIP: the staged noise was not heard at four hundred units, so there is no bearing here to measure';
+       var fired=0, afterFirst=null, landed=0, T=0, sh;
+       for(i=0;i<400;i++){
+         for(var q=0;q<g.shells.length;q++){ sh=g.shells[q];
+           if(sh.mortar&&!sh.__counted){ sh.__counted=1; fired++; } }
+         var before=0; for(var m0=0;m0<g.shells.length;m0++) if(g.shells[m0].mortar) before++;
+         __ents(0.05); updateThrowables(0.05); T+=0.05;
+         // The frame a shell has just landed: read the bearing straight away,
+         // before the clock has had time to run down and blur the difference.
+         for(var q2=0;q2<g.shells.length;q2++){ sh=g.shells[q2];
+           if(sh.mortar&&!sh.__counted){ sh.__counted=1; fired++; } }
+         var after=0; for(var m1=0;m1<g.shells.length;m1++) if(g.shells[m1].mortar) after++;
+         if(after<before&&landed===0){
+           landed=1; afterFirst={t:T,hearT:hw.hearT,hx:hw.heardX,hy:hw.heardY};
+         }
+       }
+       if(!fired) return 'SKIP: the Howler fired nothing at all in twenty seconds, so this check cannot see a shell';
+       if(!afterFirst) return 'SKIP: no shell landed inside twenty seconds, so the impact under test never happened';
+       // THE FINDING, measured as a DECAY against the clock rather than a level.
+       var want=8-afterFirst.t+0.3;
+       if(afterFirst.hearT>want)
+         bad.push('the Howler heard its own shell land: '+afterFirst.t.toFixed(1)+' seconds after the noise its eight second bearing reads '+afterFirst.hearT.toFixed(1)+' rather than the '+Math.max(0,want-0.3).toFixed(1)+' it should have run down to, so the crater has wound it back up to full');
+       var moved=Math.sqrt((afterFirst.hx-NX)*(afterFirst.hx-NX)+(afterFirst.hy-NY)*(afterFirst.hy-NY));
+       if(moved>1)
+         bad.push('the Howler moved its bearing onto its own crater: it was aiming at the noise and is now aiming '+Math.round(moved)+' units away at the hole it just made');
+       // THE SUPPORTING NUMBER, with an honest ceiling: the bearing lasts eight
+       // seconds and the cooldown is five and a half to seven, so a second shell
+       // at the same bearing is the design and a third is the barrage.
+       if(fired>2)
+         bad.push('a man who made one noise and then went silent for twenty seconds was shelled '+fired+' times, and an eight second bearing against a five to seven second cooldown allows two at the most');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz){ if(gz.ents) gz.ents.length=0; if(gz.shells) gz.shells.length=0;
+         if(gz.player) gz.player.iv=0; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.50',what:'breaking a Crier line of sight for three seconds actually cancels its alarm instead of firing it on the same frame, and the three seconds have to be unbroken; a Crier that keeps eyes on him still raises the alarm exactly as before (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__ents&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid and step the machines';
+     if(typeof mkSnitch!=='function') return 'SKIP: this build has no Crier to stage';
+     var bad=[];
+     // Assembled, never written whole: a check that greps the page for a line it
+     // spells out finds itself, which has cost three builds already.
+     var RAISED='The Crier raised '+'the alarm';
+     function arm(hidden){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       var p=g.player;
+       g.ents.length=0;                      // one Crier and nobody else at all
+       p.downed=!!hidden; p.iv=99; p.roll=0; p.hp=100;
+       var cr=mkSnitch(p.x+240,p.y);
+       if(!cr) return {none:'this build would not build a Crier'};
+       cr.face=Math.atan2(p.y-cr.y,p.x-cr.x);
+       cr.state='alarm'; cr.wind=3.9; cr.lost=hidden?2.99:0; cr.markX=p.x; cr.markY=p.y;
+       cr.hp=cr.maxhp||cr.hp; cr.downed=false; cr.finished=false; cr.overheat=0;
+       if(!hidden) cr.wind=0.01;             // the control is a windup about to end
+       g.ents.push(cr);
+       g.marked=0; if(g.tel) g.tel.marked=0;
+       g.msg='';
+       var m0=g.marked||0, t0=(g.tel&&g.tel.marked)||0;
+       __ents(0.05);
+       return {state:cr.state,wind:cr.wind,lost:cr.lost,
+               marked:(g.marked||0)-m0,tel:((g.tel&&g.tel.marked)||0)-t0,
+               said:String(g.msg||'')};
+     }
+     try{
+       // THE FINDING: he has been out of its sight for three seconds, which is
+       // the one thing the game says calls an alarm off.
+       var A=arm(true);
+       if(!A) return 'SKIP: no live raid to stage a Crier in';
+       if(A.none) return 'SKIP: '+A.none;
+       if(A.state==='alarm') return 'SKIP: three seconds out of sight did not take the Crier out of its alarm at all, so the cancel under test never ran';
+       if(A.said.indexOf(RAISED)>=0)
+         bad.push('the cancel fired the alarm it was cancelling: three seconds out of sight put the Crier back on patrol and it called the alarm in on the very same frame, saying "'+A.said+'"');
+       if(A.marked>0) bad.push('the cancelled alarm still marked him: the marked flag went up by '+A.marked+' on the frame the alarm was called off');
+       if(A.tel>0) bad.push('the cancelled alarm still counted against him: the marked figure in his run report went up by '+A.tel);
+       if(A.wind!==null&&A.wind!==undefined&&A.wind<0)
+         bad.push('the cleared windup came out at '+A.wind+' rather than nothing, which is what let the next test read it as an alarm that had finished');
+       // CONTROL: the same Crier, the same windup, and he is in plain sight. The
+       // alarm MUST still fire, or a build that simply broke the Crier is green.
+       var B=arm(false);
+       if(B&&!B.none){
+         if(B.said.indexOf(RAISED)<0) bad.push('control: a Crier that kept eyes on him no longer raises the alarm at all, it said "'+B.said+'", so the counterplay has been turned into an escape');
+         if(!(B.marked>0)) bad.push('control: a Crier that kept eyes on him no longer marks him, so this check cannot see an alarm and its findings prove nothing');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz){ if(gz.ents) gz.ents.length=0; gz.marked=0;
+         if(gz.player){ gz.player.downed=false; gz.player.iv=0; } } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.49',what:'a Howler shell bursting in the street does not reach through a solid wall: the man forty units inside loses nothing and a pillager behind the same wall loses nothing, while the same shell still hurts anyone standing in the open the same distance away (2026-09-07 audit, the remaining half of his 2026-09-06 note)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__howlerHit&&window.__buildings)) return 'SKIP: this fixture cannot deploy a raid and land a Howler shell';

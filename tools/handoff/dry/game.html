@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.49';
+var VER='12.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.49';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.49';
+var WHATSNEW_VER='12.52';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1378,6 +1378,9 @@ var WHATSNEW=[
   'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
   'ONE WORD PER THING, ON THIS CARD TOO. Five older entries here still used words you retired: the extraction called a vehicle in three places, and the tactical belt called by its old name in one. They use your words now, and a check holds the whole card to the list from here on.',
   'A HOWLER SHELL NO LONGER REACHES THROUGH A WALL. A shell bursting in the street took about twenty health off you standing well inside a building, with the hit ring pointing at something you could not see. Walls stop the blast now, exactly as they stop a frag.',
+  'BREAKING A CRIER LINE OF SIGHT NOW ACTUALLY CANCELS ITS ALARM. The cancel cleared the windup and then fired the alarm on the very same frame, so hiding never once called one off. The three seconds have to be unbroken now, which they always claimed to be.',
+  'A HOWLER NO LONGER SHELLS ITS OWN CRATER. It heard its own impact, took the crater for a fresh report, and mailed another shell to it, and that one wound it up again. One noise from you became a barrage of two to four after you had gone quiet.',
+  'A PILLAGER WHOSE REACH IS INSIDE HIS OWN BLAST NO LONGER THROWS A CHARGE. One gun in nine has a shorter reach than the radius of a frag, and the man carrying it had a throwing window one unit wide, entirely inside his own explosion.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -11862,7 +11865,22 @@ function howlerImpact(SH){
     G.puffs.push({x:SH.tx,y:SH.ty,t:0,life:.5,c:'#ff9a5c',r:40}); }
   G.shake=Math.max(G.shake,6);
   flash(SH.tx,SH.ty,220,'#ff9a5c',.4);
+  // v12.51, 2026-09-07 audit: A HOWLER DOES NOT TAKE ITS OWN CRATER FOR A FRESH
+  // REPORT. This impact is a noise of 480 and every listening machine hears it,
+  // which is right and is what pulls a room to a burst. The machine that FIRED
+  // it heard it too: the bearing it was shooting at was overwritten with the
+  // crater and its eight second clock wound back to full, so when its cooldown
+  // ran out it shelled its own crater, and that impact wound it up again. One
+  // report became a barrage of two to four, every shell after the first landing
+  // on a man who had already gone quiet, which is the counterplay this machine
+  // was built around. Only the three fields the hearing sweep writes are put
+  // back, and only for the machine that fired: everything else on the map hears
+  // this exactly as before, and the firing Howler is still turned toward the
+  // crater by the same ping, which is what used to end the barrage on its own.
+  var _shBy=SH.by, _shT=null, _shX=null, _shY=null;
+  if(_shBy){ _shT=_shBy.hearT; _shX=_shBy.heardX; _shY=_shBy.heardY; }
   ping(SH.tx,SH.ty,480,false,false,'robot','fire');
+  if(_shBy){ _shBy.hearT=_shT; _shBy.heardX=_shX; _shBy.heardY=_shY; }
   var dp=dist(p,{x:SH.tx,y:SH.ty});
   // v12.49, 2026-09-07 audit: A BLAST STOPS AT A WALL, which is the rule the
   // frag four lines above has always followed. The three gates here were the
@@ -13966,10 +13984,20 @@ function raiderThrow(e,foe,fd,dt){
   if(e.smkT!==undefined) e.smkT-=dt;
   // v12.20: the near edge of the band follows the blast radius (it was 180
   // against a 150 blast; at 190 he stood in his own charge), plus the scatter
-  // of the aim point below and his own body; and never above his reach, or a
-  // short-ranged pillager could never throw at all.
+  // of the aim point below and his own body.
+  // v12.52, 2026-09-07 audit, and this was my own mistake at v12.20: the cap I
+  // put on that edge so a short-ranged pillager could still throw pulled the
+  // edge back INSIDE the blast for the one gun in nine whose reach is shorter
+  // than it. A Riot Scattergun man reaches 187 against a safe edge of 242, and
+  // since both callers already require him to be inside his reach, the only
+  // distances he could throw from were 186.2 to 187.2: a band one unit wide,
+  // entirely within the radius of the charge he was throwing. Both goals of
+  // that line failed for him at once. The honest answer is the one the cap was
+  // avoiding: a man whose whole reach is inside his own blast does not throw.
   var _fR=(CFG.fragR===undefined?190:CFG.fragR);
-  if(fd<Math.min(_fR+52,(e.rng||520)-1)||fd>520) return false;
+  var _fNear=_fR+52;
+  if(_fNear>=(e.rng||520)) return false;
+  if(fd<_fNear||fd>520) return false;
   var ix=-1;
   for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
   if(ix<0) return false;
@@ -16753,7 +16781,7 @@ if(e.kind==='howler'&&e.hearT>0){
           // Wider scatter than the aimed shot: it is shooting at a report, not
           // at you, and the difference should be survivable.
           var _hs2=Math.min(190,_hd*0.20);
-          G.shells.push({mortar:1,x0:e.x,y0:e.y,
+          G.shells.push({mortar:1,x0:e.x,y0:e.y,by:e,   // v12.51: whose shell this is
             tx:e.heardX+rnd(-_hs2,_hs2),ty:e.heardY+rnd(-_hs2,_hs2),
             t:0,air:(CFG.howlerAir===undefined?2.1:CFG.howlerAir),
             dmg:e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)});
@@ -16970,6 +16998,11 @@ navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x);
 if(e.state==='alarm'){
         var ds=dist(e,p);
         if(sees){ e.markX=p.x; e.markY=p.y; }
+        // v12.50, 2026-09-07 audit: THREE CONTINUOUS SECONDS, not three added up
+        // over a whole alarm. The counter below was zeroed only when the alarm
+        // began, so a man who ducked behind three different walls for a second
+        // each had it cancel as though he had stayed hidden throughout.
+        if(sees) e.lost=0;
         if(!sees){ e.lost+=dt; if(e.lost>3){ e.state='patrol'; e.cd=0; e.wind=null; } }
         // flees, but at a speed a competent player can close or shoot
         // His note on run #14: "snitch too easy to kill". It was, and the reason was not
@@ -16985,11 +17018,17 @@ if(e.state==='alarm'){
         var jk=Math.sin(G.t*5.2+(e.jseed||0))*0.85;
         if(ds<300){ wantS=Math.atan2(e.y-p.y,e.x-p.x)+jk; moveToward(e,e.x+Math.cos(wantS)*80,e.y+Math.sin(wantS)*80,e.spd*.99,dt); }
         else { wantS=Math.atan2(p.y-e.y,p.x-e.x)+1.4+jk*0.6; moveToward(e,e.x+Math.cos(wantS)*60,e.y+Math.sin(wantS)*60,e.spd*.66,dt); }
-        e.wind-=dt;
+        // v12.50: AND THE CANCEL ABOVE ACTUALLY CANCELS. It clears the windup to
+        // null and nothing stopped the rest of this branch running in the same
+        // frame: null minus dt is a negative number, so the test below saw a
+        // windup at or below zero and fired the entire alarm, siren, mark, and
+        // every machine within 900 units, one frame after calling it off. Both
+        // lines now ask whether this is still an alarm at all.
+        if(e.state==='alarm') e.wind-=dt;
         // the windup is audible the whole way, rising
         e.windAcc=(e.windAcc||0)+dt;
         if(e.windAcc>0.45){ e.windAcc=0; sfx('charge',e.x,e.y); }
-        if(e.wind<=0){
+        if(e.state==='alarm'&&e.wind!==null&&e.wind!==undefined&&e.wind<=0){
           e.wind=null; e.state='patrol'; e.cd=rnd(4,7);
           sfx('alarm',e.x,e.y);
           ping(e.markX,e.markY,620,true,false,'robot','fire');
@@ -17220,7 +17259,7 @@ var _rdS=G.shells[_rdi];
         var _hty=_hSee?p.y:(e.ty===undefined?p.y:e.ty);
         if(e.cd<=0&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)&&!mortarRoofed(e,_htx,_hty)){   // v12.00: not through a roof
           var _hsc=Math.min(120,d*0.12);
-          G.shells.push({mortar:1,x0:e.x,y0:e.y,tx:_htx+rnd(-_hsc,_hsc),ty:_hty+rnd(-_hsc,_hsc),
+          G.shells.push({mortar:1,x0:e.x,y0:e.y,by:e,tx:_htx+rnd(-_hsc,_hsc),ty:_hty+rnd(-_hsc,_hsc),   // v12.51: whose shell this is
             t:0,air:(CFG.howlerAir===undefined?2.1:CFG.howlerAir),
             dmg:e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)});
           e.cd=4.2+rnd(0,1.6);
@@ -28962,7 +29001,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.49: 2026-09-07 audit (P2), the remaining half of his 2026-09-06 note, and my own v12.00 entry named it as not verified. The Howler blast had three gates and none of them was a wall: how far away you are, whether you are already down, and whether the shell burst on a roof over your head. A shell landing in the STREET has no roof, so that gate is inert, and the blast then reached ninety units in every direction through anything at all. Duck into a building with a shell already in the air and it lands where it was aimed, outside; standing forty units inside a solid wall you lost about twenty health through masonry, with the hit ring pointing at a burst you could not see. The frag blast four lines above tests the line of sight for exactly this, for the player and for every entity, so this is the game agreeing with itself rather than a new rule. The roof rule is untouched and still does its own job. Honestly: buildings now protect you from a Howler the way they always looked as though they did, which makes cover worth more than it was. Check 12.49 finds a solid stretch of a real building wall, bursts a shell seventy units outside it and requires the man forty units inside to lose nothing, with two controls: the same shell with him standing in the open the other side must hurt, and a pillager behind the same wall must be spared too; fails on v12.48.',
+  now:'v12.52: my own defect from v12.20, found by the 2026-09-07 read-only audit. v12.20 moved the near edge of a pillagers throwing band out to the blast radius plus the scatter, so he would stop standing in his own charge, and then capped that edge at his own reach so a short-ranged man could still throw at all. The cap is the bug. For one gun in nine, the Riot Scattergun, the reach is 187 against a safe edge of 242, so the cap pulls the edge back inside the blast; and since both callers already require him to be inside his reach, the only distances he could throw from were 186.2 to 187.2, a band one unit wide and entirely within the radius of the charge he was throwing. Both goals of that line failed for him at once: the edge did not clear his blast, and the cap meant to stop a short-ranged man never throwing gave him a single unit instead of a band. The honest answer is the one the cap was avoiding: a man whose whole reach is inside his own blast does not throw. Check 12.52 pins a pillagers gun to the Riot Scattergun, stands the player inside that one unit window with a charge in the mans bag and every other gate open, and requires no throw at all; a control with the same man given an ordinary reach must still throw from outside the blast, and a third arm requires the thrown charge to land outside his own radius; fails on v12.51.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,28 @@
+v12.51: a Howler no longer shells its own crater
+
+One report became a barrage.
+
+A Howler that hears a noise writes the bearing down, keeps it for eight seconds
+and mails a shell to it. The counterplay is to go quiet: the bearing goes stale
+and nothing else comes.
+
+The shell lands two seconds later and its own impact is a noise of 480 that
+every listening machine hears. That is right, and it is what pulls a room to a
+burst. But the Howler that fired it heard it too: the bearing was overwritten
+with the crater and the eight second clock wound back to full. Its cooldown ran
+out with the clock still going, so it shelled its own crater, and that impact
+wound it up again. A man who made one sound and then went silent was shelled
+two to four more times at the spot he was heard.
+
+Each shell now carries the machine that fired it, and that machine does not
+take its own crater for a fresh report. Only the three fields the hearing sweep
+writes are put back, and only for the shooter, so everything else on the map
+still hears the impact exactly as before.
+
+Check 12.51 puts one Howler alone on an empty map four hundred units from a
+single staged noise and runs twenty seconds with the man silent. The eight
+second bearing must have decayed by the time the first shell lands rather than
+been wound back, the bearing must still be the noise and not the crater, and
+the count must be at most the two the bearing honestly allows; fails on v12.50.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

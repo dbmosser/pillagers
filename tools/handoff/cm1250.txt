@@ -1,0 +1,30 @@
+v12.50: breaking a Crier line of sight now actually cancels its alarm
+
+The cancel fired the thing it was cancelling.
+
+Breaking a Crier's line of sight for three seconds is supposed to call the
+alarm off, and the branch does the right things: back to patrol, cooldown
+cleared, windup cleared to nothing. Nothing stopped the rest of that branch
+running in the same frame. Four lines later the windup is decremented, and
+nothing minus a number is a negative number, so the very next test saw a windup
+at or below zero and fired the whole alarm: the siren, the mark, the counter,
+the line saying they are coming to where it last saw you, every machine within
+900 units sent to the mark and every Listener sent hunting.
+
+So hiding from a Crier has never once cancelled an alarm. At best it brought it
+forward by under a second.
+
+The three seconds were also cumulative rather than continuous, because the
+counter is zeroed only when the alarm begins. Two guards on the countdown and
+one reset fix both.
+
+Honestly, the halves pull opposite ways: the cancel now works, which favours
+you, and the three seconds must be unbroken, which does not. Unbroken is what
+the counterplay always claimed to be.
+
+Check 12.50 puts one Crier alone on the map in its alarm with the counter a
+hundredth of a second short of three, steps the machines once, and requires no
+siren, no mark and no count; the control is the same Crier with you in plain
+sight and requires the alarm to fire; fails on v12.49.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

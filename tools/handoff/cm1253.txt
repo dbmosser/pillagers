@@ -1,0 +1,29 @@
+v12.53: a machine searching for you can no longer get stuck for the raid
+
+Two of the audit findings are one defect seen from two ends, so this is one
+build.
+
+When a machine loses you it goes to investigate, and the scatter pushes its
+last sighting of you 90 to 240 units in a random direction so a pack fans out
+rather than all walking to the same spot. That point was never tested for
+anything: it can land inside a locked shell, a ruin block, a wreck, or past the
+world edge.
+
+And investigate has exactly one way out, getting within 34 units of the point,
+with no clock at all. So a point nothing can reach held the machine for the
+rest of the raid, pushing at the nearest wall. Nothing else could free it
+either, because the wander that re-rolls a target skips this state on purpose
+and the noise that wakes a machine only re-points patrol and loot.
+
+v12.07 met the same shape in the chase and capped it. This is that rule one
+state along, plus a scatter that no longer chooses a point inside a wall.
+Twenty seconds is more than three times the longest honest walk this state can
+ask for, and the clock is per point.
+
+Check 12.53 sends a crawler to a point outside the playable edge, which is
+unreachable on every map and seed, and requires it off that search. One control
+requires a search of open ground to end by arriving and well inside the clock;
+another runs the scatter forty times and requires every point to be ground a
+body can stand on; fails on v12.52.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

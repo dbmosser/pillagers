@@ -220,7 +220,7 @@
   @media (min-height:880px){
     .invgrid{ grid-template-columns:repeat(auto-fill,minmax(112px,1fr)) !important; gap:11px !important; }
 
-    #safegrid{ grid-template-columns:repeat(auto-fill,minmax(66px,1fr)) !important; }
+
   }
   .invgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr));
     gap:9px; padding:12px; overflow-y:auto; align-content:start;
@@ -277,9 +277,7 @@
   #hub[data-slayout="4"] [data-plan] .ic, #hub[data-slayout="9"] [data-plan] .ic{ width:40px !important; height:40px !important; }
   #hub[data-slayout="10"] [data-plan], #hub[data-slayout="6"] [data-plan], #hub[data-slayout="7"] [data-plan]{ width:76px !important; height:76px !important; }
   #hub[data-slayout="10"] [data-plan] .ic, #hub[data-slayout="6"] [data-plan] .ic, #hub[data-slayout="7"] [data-plan] .ic{ width:48px !important; height:48px !important; }
-  #hub[data-slayout="10"] #safegrid, #hub[data-slayout="6"] #safegrid, #hub[data-slayout="7"] #safegrid{ grid-template-columns:repeat(auto-fill,minmax(46px,52px)) !important; max-height:74px; }
-  #hub[data-slayout="10"] #safegrid .ic, #hub[data-slayout="6"] #safegrid .ic, #hub[data-slayout="7"] #safegrid .ic{ width:26px !important; height:26px !important; }
-  #hub[data-slayout="10"] #safegrid .cellempty, #hub[data-slayout="6"] #safegrid .cellempty, #hub[data-slayout="7"] #safegrid .cellempty{ aspect-ratio:auto; height:52px; grid-column:1/-1; }
+
   #kitcol .loslab{ padding-right:28px; }
   #kitcol .lohead{ padding-right:28px; }
   /* ---- THE ITEM CONTEXT MENU, v6.00, his note "all items should be right
@@ -345,13 +343,7 @@
   .loslab{ padding:7px 12px 1px; display:flex; justify-content:space-between; gap:8px;
     font-size:13px; letter-spacing:.17em; color:var(--ash); text-transform:uppercase; }
   .loslab b{ color:var(--bone); font-weight:600; }
-  /* The safe pocket is one cell and must not stretch like a grid. */
-  #safegrid{ flex:none; min-height:0; padding:8px 12px 10px;
-    grid-template-columns:repeat(auto-fill,minmax(52px,1fr)); }
-  #safegrid .cellempty{ border:1px dashed var(--steel-hi); border-radius:3px;
-    aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
-    font-size:10.5px; letter-spacing:.1em; color:var(--ash); text-align:center;
-    padding:4px; grid-column:span 2; }
+
   /* ---- THE VENDOR, v6.04, off his Arc Raiders screenshots. */
   /* v6.90: the counter FILLS the screen it was given. It used to stop 346px down a 1080
      screen and leave 734px of empty blue underneath. */
@@ -1194,8 +1186,7 @@
             <div id="hotplanwrap"></div>
           </div>
           <div class="losec">
-            <div class="loslab">Safe pocket<b><span id="safen">0/1</span></b></div>
-            <div class="invgrid" id="safegrid"></div>
+
           </div>
         </div>
       </div>
@@ -1358,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.34';
+var VER='12.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1369,10 +1360,11 @@ var VER='12.34';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.34';
+var WHATSNEW_VER='12.35';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
   'THE BENCH SAYS HOLD TO CRAFT ON THE BUTTON, because holding it is what crafts. A click on its own still spends nothing, as you asked, but it now says so instead of doing nothing, and so does letting go too soon.',
@@ -1389,7 +1381,7 @@ var WHATSNEW=[
   'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
   'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
   'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear, at the counter or at the lift, and it is all still there.',
-  'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
+
   'THE CONTROLS CARD NO LONGER PROMISES AN X KEY THAT DOES NOT EXIST: belt keys 1 and 2 bring up either gun.',
   'TAKING THE FREEBIE KIT AT THE LIFT CLEARS YOUR TACTICAL BELT PLAN, the same as the stash screen button, so no key points at something you left behind.',
   'A DEATH BANKS THE XP ITS CARD PRINTS, drink bonus included; it used to pay the run without the bonus after the drink was cleared.',
@@ -1520,7 +1512,7 @@ var WHATSNEW=[
   'A GUN YOU FIND GOES INTO YOUR EMPTY SLOT, not over the gun in your hands. You carry two; a find fills the free one and leaves your choice alone. With both slots full the gun you are holding is still the one it replaces.',
   'F IS A MELEE STRIKE, with whatever you are holding, gun or fists. It is in both controls lists.',
 
-  'THE SAFE POCKET TELLS YOU THE TRUTH. It only saves the item it names if you are actually carrying it, and it says NOT PACKED when you are not, on the stash screen and on the ascent check.',
+
   'THE END OF RAID CARD COUNTS THE GUN YOU LOST, in the number and in the money. A loaner is in neither, because you never owned it. The two buttons at the bottom stay on screen however long the ledger runs.',
   'THE TITLE SCREEN USES THE WHOLE MONITOR, and the ten stash layouts have their picker back, in Settings beside the text size.',
   'A NEW CHARACTER GETS A WELCOME PACK: a green gun and a blue one, heals, plates and grenades, offered once, the first time down.',
@@ -1541,7 +1533,7 @@ var WHATSNEW=[
   'A DOWNED PILLAGER CRAWLS FOR COVER, dragging himself to the nearest spot you cannot see, bleeding all the way.',
   'THE MOUSE SAYS WHAT A PANEL WILL DO: a resize arrow at a corner, a move hand on a grip, a pointer on a button.',
   'THE HOTBAR IS THE TACTICAL BELT, everywhere a word names it: the stash, the raid, the legends and the pause screen.',
-  'THE STASH IS FIVE THINGS: the stash, your backpack, your tactical belt, the safe pocket and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
+  'THE STASH IS FOUR THINGS: the stash, your backpack, your tactical belt and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
   'DAY OR NIGHT IS CHOSEN ON THE SECTOR PAGE at the lift, and every ascent starts on day. A night extraction pays twenty percent more XP. The armour warning is on that page too.',
   'FASHION is its own station in the Undercroft. Everything there is how you look, earned by playing and never bought; four new hats, two hair colours and three fits joined the racks.',
   'THE GUNS LOOK LIKE GUNS. Every gun icon is redrawn by family, outlined part by part, so a rifle reads as a rifle and a shotgun as a shotgun at a glance.',
@@ -2459,8 +2451,11 @@ function applyLoadedProfile(r){
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
 if(typeof P.pname!=='string'||!P.pname)P.pname='PILLAGER';   // v7.64: named at the title screen; v7.85: typed
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
-// v12.15: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
-if(P.safe&&ITEMS[P.safe]&&(ITEMS[P.safe].use==='throw'||ITEMS[P.safe].use==='ammo')) P.safe=null;
+// v12.35, his order: the safe pocket is gone. Both fields are cleared off any
+// save that still carries one, so nothing is left naming a feature that no
+// longer exists. This line can go once no live profile has been near v12.34.
+if(P.safe!==undefined) delete P.safe;
+if(P.safeUp!==undefined) delete P.safeUp;
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
 if(P.sp!==undefined) delete P.sp;   // v7.38: PROGRESS folded into XP; the field is dead
@@ -10405,13 +10400,6 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
 
         else g.bag.push(_dk[_di]);
       }
-      // v8.40, audit: AND HERE IS THE SAFE POCKET, armed against what is actually
-      // going up. _dk is the final kit on every live path - staged, quick ascent,
-      // or auto-packed from the stash a moment ago - so the hub's promise that
-      // the named item "comes home if you die carrying it" is now true whichever
-      // way he deployed. It used to be armed in commitKit, before the auto-pack
-      // had run, and so was null for anyone who never used the staging screen.
-      P.safeUp=(P.safe&&_dk.indexOf(P.safe)>=0)?P.safe:null;
       saveProfile();
     }
     // You never drop in with nothing to patch yourself up. Issued kit, the same
@@ -18814,22 +18802,6 @@ var _cdone=contractExtract(G.bag,haul);
     idx.sort(function(a,b){ return ival(G.bag[b])-ival(G.bag[a]); });
     var nSafe=Math.min(Math.round(CFG.safeSlots),idx.length);   // v8.50: 'pockets' left at v5.57
     for(j=0;j<nSafe;j++){ saved.push(G.bag[idx[j]]); bankItem(G.bag[idx[j]]); }
-    // v6.01, his spec "ONE safe-pocket item survives death". Checked against the
-    // BAG, so an item you named and then used or lost is not conjured back.
-    // G.bag is NOT spliced. haul was computed from it and the ledger below reads
-    // it by index, so the item is removed from the INDEX LIST instead: banked,
-    // dropped out of idx, and therefore never listed as GONE. The search starts at
-    // nSafe so an item the automatic rebate already took cannot be banked twice.
-    if(P.safeUp){
-      var _spos=-1,_si2;
-      for(_si2=nSafe;_si2<idx.length;_si2++) if(G.bag[idx[_si2]]===P.safeUp){ _spos=_si2; break; }
-      if(_spos>=0){
-        var _sk=G.bag[idx[_spos]],_sit=ITEMS[_sk];
-        bankItem(_sk); saved.push(_sk); idx.splice(_spos,1);
-        lines.push('<span style="color:var(--gain)">'+(_sit?_sit.name:_sk)+
-          ' was in your safe pocket. It comes home.</span>');
-      }
-    }
     var savedVal=0;
     for(j=0;j<saved.length;j++) savedVal+=ival(saved[j]);
     var lostIdx=idx.slice(nSafe),shown=lostIdx.slice(0,7);
@@ -18877,7 +18849,7 @@ var _cdone=contractExtract(G.bag,haul);
     var _lostWhat=_lostN+' item'+(_lostN===1?'':'s');
     if(_gunN) _lostWhat+=' and '+_gunN+' gun'+(_gunN===1?'':'s');
     lines.push(_lostWhat+' lost, '+'$'+((haul-savedVal)+_gunVal).toLocaleString()+' gone');
-    if(saved.length) lines.push('Safe pocket held '+saved.length+' item'+(saved.length>1?'s':'')+' ('+'$'+savedVal.toLocaleString()+')');
+    if(saved.length) lines.push('Rebate held '+saved.length+' item'+(saved.length>1?'s':'')+' ('+'$'+savedVal.toLocaleString()+')');   // v12.35: the automatic rebate, not the deleted pocket
     // v6.09: metres, like every other distance in the game. This printed raw world
     // units with an 'm' on the end, so it disagreed with the header above it by a
     // factor of ten on the same screen.
@@ -28794,7 +28766,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.34: 2026-09-07 audit (trade-freeze). The trade window returns out of updatePlayer above the only real call to tryExtractTick, so opening the Peddler stopped every extraction clock: the inbound countdown, the thirty second boarding window, the siege the call bought, the two second re-ping, the mirrors the HUD reads, the closing of a point whose time has come, and the raider waves. Nothing else stopped, because the frame loop gates on none of it and kept the raid clock, the machines, the bullets and the throwables running in the same frames. The downed branch and the roll branch already carry this call past their own early return; the stall takes the roll form, with no wantCall, so the clocks run while E belongs to the panel. This has a real in-raid effect and it is named rather than hidden: the stall was a free pause on extraction pressure and is not one any more. No dial moves. Check 12.34 opens the stall through the real loop with a real E, then drives sixty frames three times: the inbound countdown must fall with the raid clock, a landed boarding window must spend, and a point whose closing time passes while he shops must shut; two controls require the raid clock to have run at all and the same clocks to move once the stall is shut. Fails on v12.33.',
+  now:'v12.35: his order of 2026-09-08, remove the safe pocket and delete the entire concept. He asked what was supposed to go in it and how he was meant to reach it during a raid; the honest answer to the second was that he could not, because the pocket lives on the stash screen only and its choice is frozen at the lift, so it could protect something carried from home and never the thing just pulled out of a vault. Out goes the panel, the styles, the two readers, the setter, the renderer, the menu verb, the line on the ascent page, the arming at the drop, the branch in the death payout and both fields on the profile, which are deleted from any save that still carries them. The world container called a safe is a different thing with the same five letters and is untouched. Check 12.35 requires the panel, the functions and the fields to be gone, requires a death to pay out and list what was lost with no pocket line, and requires the secure cases still to be built and drawn; fails on v12.34.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29583,81 +29555,6 @@ var ICLASS={
 // nothing leaves the stash until the lift goes. stageKitLive is what reconciles
 // the two, so reading it here means a kit entry whose stash copy was sold stops
 // being shown as though it were still coming with you.
-// v6.01: the safe pocket. P.safe names ONE item key; one copy of it comes home if
-// you die carrying it.
-// v8.20, audit: and you have to still own it. The pocket names an item you are
-// carrying up; naming a Medkit and then selling it used to leave the cell and
-// its 1/1 badge standing, promising to bring home something he no longer had.
-// commitKit already quietly dropped it at ascent, so the promise was never kept
-// either - this makes the screen agree with what actually happens.
-function safeKey(){
-  if(!P||!P.safe||!ITEMS[P.safe]) return null;
-  var have=0;
-  for(var i=0;i<P.stash.length;i++) if(P.stash[i]===P.safe) have++;
-  for(var j=0;j<(P.kit||[]).length;j++) if(P.kit[j]===P.safe) have++;
-  return have?P.safe:null;
-}
-// v10.71: the pocket that is ACTUALLY going up. safeKey above answers "is
-// something named", which is true while the item sits in the stash; this answers
-// "will anything come home", which is the question the player is really asking
-// and the one the deploy uses. Same test as buildRaid's P.safeUp line.
-function safeUpKey(){
-  var k=safeKey(); if(!k) return null;
-  var K=(typeof stageKitLive==='function')?stageKitLive():(P.kit||[]);
-  return (K.indexOf(k)>=0)?k:null;
-}
-function setSafe(k){
-  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
-  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
-  // v12.15, from the 2026-09-06 menu audit: a grenade rides in the pouch and
-  // ammunition in the reserve, and the death path banks the backpack only,
-  // so a pocket naming either came home with nothing while reading 1/1.
-  if(k&&ITEMS[k].use==='throw') return 'A throwable rides in the pouch, not a pocket. It cannot come home from there.';
-  if(k&&ITEMS[k].use==='ammo') return 'Ammunition rides in the reserve, not a pocket. It cannot come home from there.';
-  P.safe=k||null; saveProfile(); return null;
-}
-function renderSafe(){
-  var sg=document.getElementById('safegrid'); if(!sg) return;
-  sg.innerHTML='';
-  var k=safeKey();
-  // v10.71: named is not the same as protecting you. The item only comes home if
-  // you are carrying it, so a pocket naming something still sitting in the stash
-  // is doing nothing, and this said 1/1 either way.
-  var live=safeUpKey();
-  var lab=document.getElementById('safen');
-  if(lab) lab.textContent=k?(live?'1/1':'NOT PACKED'):'0/1';
-  if(!k){
-    var em=document.createElement('div'); em.className='cellempty';
-    em.textContent='ONE ITEM SURVIVES YOUR DEATH. DROP IT HERE.';
-    sg.appendChild(em);
-  } else {
-    if(!live){
-      var wr=document.createElement('div'); wr.className='cellempty';
-      wr.style.color='var(--hazard)';
-      wr.textContent='NOT IN YOUR BACKPACK. PACK ONE OR NOTHING COMES HOME.';
-      sg.appendChild(wr);
-    }
-    var cell=invCell(k,1,{from:'safe',verb:'click: empty the pocket',
-      act:function(){ setSafe(null); try{ sfx("pick"); }catch(e){} renderHub(); }});
-    if(cell){ cell.title=ITEMS[k].name+'\nin the safe pocket, comes home if you die carrying it'; sg.appendChild(cell); }
-  }
-  // Dropping anything here names it, which is the same gesture as everywhere else.
-  dropzone(sg,function(key,from){
-    // v8.14, audit: the cell's click handler can never run - this dropzone
-    // fires on the same mouseup and rebuilds the cell before the click is
-    // dispatched, so the pocket had no working exit but the right-click menu.
-    // A release that started ON the pocket is the "take it out" gesture.
-    if(from==='safe'){
-      setSafe(null); try{ sfx("pick"); }catch(e){}
-      say2('Out of the safe pocket.');
-      renderHub(); return;
-    }
-    var why=setSafe(key);
-    if(why){ say2(why); try{ sfx("clank"); }catch(e){} return; }
-    try{ sfx("pick"); }catch(e){}
-    renderHub();
-  });
-}
 function renderKitCol(){
   var kg=document.getElementById('kitgrid'); if(!kg) return;
   var K=stageKitLive();
@@ -29696,7 +29593,6 @@ function renderKitCol(){
   var qn=document.getElementById('quickn');
   if(qn){ var qc=0,_ha=P.hotAssign||{}; for(var _qk in _ha) if(_ha[_qk]) qc++;
     qn.textContent=qc; }
-  renderSafe();
   kg.innerHTML='';
   // v6.60: the gun cells added here one build ago are gone again. A gun that is on the
   // belt is shown on the belt, and this column is what is NOT on it.
@@ -29931,13 +29827,7 @@ function itemMenuRows(key,ctx,count){
   // sit here claimed planPut enforced a rule planPut had already deleted.
   rows.push({sep:1});
   rows.push({keys:1,label:'Put on key'});
-  // v6.01: naming the safe pocket is a menu verb as well as a drop target.
-  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v12.15: the pocket refuses these, so the menu does not offer it
-    var _isSafe=(P.safe===key);
-    rows.push({label:_isSafe?'Take out of safe pocket':'Put in safe pocket',
-      hint:_isSafe?null:'survives death',
-      act:function(){ var why=setSafe(_isSafe?null:key); if(why) say2(why); refreshInv(); }});
-  }
+
   if(ctx!=='kit'){
     rows.push({sep:1});
     var isJ=(P.junk||{})[key]?true:false;
@@ -32841,13 +32731,6 @@ function renderStage(prefill){
     bits.push('armour cap '+rigCeil(rg2));
     var kn=stageKitLive().length;
     bits.push(kn?(kn+' item'+(kn===1?'':'s')+' packed'):'<span style="color:var(--ash)">nothing packed</span>');
-    // v10.71: and the safe pocket, on the page that calls itself the last stop
-    // before the lift. It is the one thing that survives your death and the one
-    // thing this page never named.
-    var _sfk=safeKey(), _sfl=safeUpKey();
-    if(!_sfk) bits.push('<span style="color:var(--ash)">no safe pocket</span>');
-    else if(_sfl) bits.push('safe pocket: '+escHtml(ITEMS[_sfk].name));
-    else bits.push('<span style="color:var(--hazard)">safe pocket names '+escHtml(ITEMS[_sfk].name)+', not packed</span>');
     sw.innerHTML=bits.join('  &middot;  ');
   })();
 
@@ -33114,7 +32997,7 @@ function commitKit(){
     // a death puts his own loadout back rather than making him rebuild it.
     // v12.16: the button already emptied P.kit and kept it aside; that is the list.
     P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
-    P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;   // v8.40: safeUp is armed in buildRaid
+    P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;
   }
   var kit=stageKitLive();
   P.dropKit=[];

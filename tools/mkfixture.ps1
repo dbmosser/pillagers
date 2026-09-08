@@ -1622,29 +1622,6 @@ window.__REGRESS=[
      if(ex.owns.indexOf('servo')<0) return 'the probe never got the kit home, so it is testing nothing';
      if(ex.kept!==2) return 'extracting stripped keys for gear that came home ('+ex.kept+' of 2 left)';
      return null; }},
-  {v:'8.63',what:'the safe pocket keeps exactly one named item through a death',
-   run:function(){
-     function die(safeItem){
-       __resetCfg(); __pinDefaults(0);
-       var d=__deploy({kit:['servo','scrap','wire'],safe:safeItem,mapIx:0,seed:4242});
-       if(d.error) return {err:d.error};
-       var g=__state(); if(!g) return {err:'no raid'};
-       g.ents.length=0;
-       var carried=g.bag.slice();
-       __endRaid('dead');
-       return {armed:d.safeUp,carried:carried,stash:(__P().stash||[]).slice()};
-     }
-     var a=die('servo');
-     if(a.err) return a.err;
-     // The probe must actually have carried the item up, or it tests nothing.
-     if(a.carried.indexOf('servo')<0) return 'the kit never reached the bag, so this check is testing nothing';
-     if(a.armed!=='servo') return 'the pocket did not arm at deploy (safeUp='+String(a.armed)+')';
-     if(a.stash.indexOf('servo')<0) return 'the named item did NOT survive the death';
-     if(a.stash.length!==1) return 'more than the one named item came home: '+a.stash.join(',');
-     var b=die(null);
-     if(b.err) return b.err;
-     if(b.stash.length) return 'items came home with nothing named as safe: '+b.stash.join(',');
-     return null; }},
   {v:'8.61',what:'the boarding hold cannot be done in instalments',
    run:function(){
      function pull(leave){
@@ -5732,6 +5709,57 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.35',what:'the safe pocket is gone from the screen, the code and the profile, a death pays out and lists the loss with no pocket line, and the secure cases in the world, which share the word, are untouched (his order of 2026-09-08)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot reach the floor and a raid';
+     var bad=[], P2=__P(), keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice()};
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // ONE: nothing of it is left in the code.
+       if(typeof setSafe!=='undefined') bad.push('setSafe is still defined');
+       if(typeof safeKey!=='undefined') bad.push('safeKey is still defined');
+       if(typeof safeUpKey!=='undefined') bad.push('safeUpKey is still defined');
+       if(typeof renderSafe!=='undefined') bad.push('renderSafe is still defined');
+       // TWO: nothing of it is left on the screen. The floor is opened for real,
+       // because an element can exist in the document and never be drawn.
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       try{ renderHub(); }catch(_rh){}
+       if(document.getElementById('safegrid')) bad.push('the safe pocket grid is still in the stash screen');
+       if(document.getElementById('safen')) bad.push('the safe pocket counter is still in the stash screen');
+       var hub=document.getElementById('hub');
+       if(hub&&/safe pocket/i.test(hub.innerText||'')) bad.push('the stash screen still says safe pocket somewhere');
+       // THREE: A DEATH STILL PAYS OUT, which is the path the pocket branch lived in.
+       // (The profile migration runs at load and this fixture is already loaded,
+       // so it is named in Not verified rather than half-driven here.)
+       __deploy({kit:['medkit','plate'],mapIx:0,seed:4242});
+       var g=__state();
+       if(!g) bad.push('control: the raid did not start');
+       else{
+         g.bag=['comp','servo'];
+         g.player.downed=false; __endRaid('dead');
+         var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
+         if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: a death did not open the outcome card, so the payout path is not being measured');
+         if(txt.indexOf('LOST')<0) bad.push('control: the death card lists nothing as lost, so the ledger it shares with the pocket branch is not running');
+         if(/safe pocket/i.test(txt)) bad.push('the death card still says safe pocket');
+       }
+       // FOUR, AND THIS IS THE ONE A CARELESS DELETION BREAKS: the world container
+       // called a safe is a different thing with the same five letters.
+       __topClear();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g2=__state(), i, safes=0;
+       if(!g2||!g2.containers) bad.push('control: the raid built no containers at all');
+       else{
+         for(i=0;i<g2.containers.length;i++) if(g2.containers[i].type==='safe') safes++;
+         if(safes<1) bad.push('the map built no secure cases: the deletion took the world container that shares the word');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       P2.stash=keep.stash; P2.kit=keep.kit;
+       try{ delete P2.safe; delete P2.safeUp; saveProfile(); }catch(_s){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.34',what:'the Peddler stall is not a pause: with the trade window open the inbound extraction still counts down, a landed extraction still spends its boarding window, and a point whose closing time passes while he shops shuts (2026-09-07 audit, trade-freeze)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys&&window.__forceSize&&window.__pinDPR)) return 'SKIP: this fixture cannot deploy and drive the live loop';
@@ -6576,30 +6604,6 @@ window.__REGRESS=[
        if((P.kit||[]).join(',')!=='medkit') bad.push('with the plate sold in between, switching back restored '+(P.kit||[]).join(',')+' and not medkit alone');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
-  {v:'12.15',what:'the safe pocket refuses a grenade and an ammo box, which cannot come home from it, still takes a medkit, and a saved pocket on a grenade is cleared on load (2026-09-06 menu audit)',
-   run:function(){
-     if(typeof setSafe!=='function'||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot reach the pocket or the loader';
-     var bad=[], snap=null;
-     try{
-       __topClear(); __cleanProfile();
-       snap=JSON.stringify(__P());   // the loader below replaces the profile; it is put back at the end
-       var P=__P(); P.safe=null;
-       var r1=setSafe('frag');
-       if(!r1) bad.push('the pocket took a Frag Charge without a word');
-       if(P.safe==='frag') bad.push('the pocket is saved on a Frag Charge');
-       var r2=setSafe('ammobox');
-       if(!r2) bad.push('the pocket took an Ammo Box without a word');
-       if(P.safe==='ammobox') bad.push('the pocket is saved on an Ammo Box');
-       var r3=setSafe('medkit');
-       if(r3) bad.push('control: the pocket refused a Medkit ('+r3+')');
-       if(P.safe!=='medkit') bad.push('control: the pocket did not keep the Medkit');
-       __applyLoaded({credits:900,safe:'frag'});
-       if(__P().safe==='frag') bad.push('a saved pocket on a Frag Charge survived the load');
-       __applyLoaded({credits:900,safe:'medkit'});
-       if(__P().safe!=='medkit') bad.push('control: a saved pocket on a Medkit did not survive the load ('+__P().safe+')');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(snap) __applyLoaded(JSON.parse(snap)); }catch(_rs){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'12.14',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
    run:function(){
@@ -12206,69 +12210,6 @@ window.__REGRESS=[
        var o2=document.getElementById('outcome'); if(o2) o2.classList.remove('on');
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'10.71',what:'the safe pocket says when it is naming something that is not going up, the ascent check names it, and the loadout total counts it once or not at all',
-   run:function(){
-     var bad=[];
-     if(!(window.__hubEnter&&window.__P&&window.__deploy)) return 'SKIP: this build cannot arrive and deploy';
-     if(typeof ival!=='function') return 'SKIP: no item values in this build';
-     var P2=__P();
-     var keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),hot:P2.hotAssign,safe:P2.safe,free:P2.freeKit};
-     function txt(id){ var e=document.getElementById(id); return e?String(e.textContent||'').trim():null; }
-     function num(id){ var t=txt(id); if(t===null) return null; var c=t.replace(/[^0-9.-]/g,''); return c===''?null:+c; }
-     var A='medkit', B='plate', D='bandage';
-     if(!(ITEMS[A]&&ITEMS[B]&&ITEMS[D])) return 'SKIP: this build lacks the items this uses';
-     var vD=ival(D);
-     if(!(vD>0)) return 'SKIP: the '+D+' is worth nothing, so double counting could not be seen';
-     // One arm: set the stash, the backpack and the pocket, then read the floor.
-     function arm(kit,safe){
-       if(window.__cleanProfile) __cleanProfile();
-       P2.freeKit=0; P2.hotAssign={};
-       P2.stash=[D,A,B]; P2.kit=kit.slice(); P2.safe=safe;
-       try{ saveProfile(); }catch(_s){}
-       __hubEnter();
-       return {safen:txt('safen'), kitval:num('kitval'), kitn:num('kitn')};
-     }
-     try{
-       // 1. NAMED BUT NOT PACKED. The deploy arms nothing, so the screen must
-       //    not read like an armed pocket.
-       var away=arm([A,B],D);
-       __deploy({kit:[A,B],safe:D,mapIx:0,seed:4242});
-       var armedAway=P2.safeUp;
-       if(armedAway) bad.push('control: the deploy armed the pocket for an item that was not packed (safeUp='+armedAway+')');
-       else if(away.safen==='1/1') bad.push('the pocket names a '+D+' that is not in the backpack, so nothing comes home, and the screen still reads 1/1');
-       // 2. NAMED AND PACKED is the working case and must still read as armed.
-       var withIt=arm([A,B,D],D);
-       __deploy({kit:[A,B,D],safe:D,mapIx:0,seed:4242});
-       if(P2.safeUp!==D) bad.push('control: a packed '+D+' did not arm the pocket at deploy (safeUp='+String(P2.safeUp)+')');
-       if(withIt.safen!=='1/1') bad.push('a packed and named '+D+' does not read as armed (the screen says '+JSON.stringify(withIt.safen)+')');
-       // 3. THE TOTAL COUNTS IT ONCE. Naming an item already in the backpack
-       //    must not change what is going up, and naming one that is NOT there
-       //    must not add anything either.
-       var plain=arm([A,B,D],null);
-       if(withIt.kitval!==plain.kitval) bad.push('naming the packed '+D+' as the safe pocket changed the loadout total from '+plain.kitval+' to '+withIt.kitval+', and it is one item either way');
-       var bare=arm([A,B],null);
-       if(away.kitval!==bare.kitval) bad.push('naming a '+D+' that stays at home added '+(away.kitval-bare.kitval)+' to the loadout total');
-       if(plain.kitval!==bare.kitval+vD) bad.push('control: the '+D+' is worth '+vD+' and packing it moved the total from '+bare.kitval+' to '+plain.kitval);
-       // 4. THE ASCENT CHECK NAMES IT, and says which of the two it is.
-       var st=document.getElementById('stagemodal');
-       if(!st||!window.__stage) bad.push('SKIPPABLE: no ascent check to read');
-       else{
-         arm([A,B,D],D); __stage.render();
-         var t1=(st.innerText||'').replace(/\s+/g,' ');
-         if(!/safe pocket/i.test(t1)) bad.push('the ascent check never mentions the safe pocket');
-         else if(t1.indexOf(ITEMS[D].name)<0) bad.push('the ascent check mentions a safe pocket without naming what is in it');
-         arm([A,B],D); __stage.render();
-         var t2=(st.innerText||'').replace(/\s+/g,' ');
-         if(!/not packed/i.test(t2)) bad.push('the ascent check does not say the safe pocket names something that is not packed');
-         arm([A,B],null); __stage.render();
-         var t3=(st.innerText||'').replace(/\s+/g,' ');
-         if(!/no safe pocket/i.test(t3)) bad.push('the ascent check says nothing when there is no safe pocket at all');
-       }
-     } finally {
-       P2.stash=keep.stash; P2.kit=keep.kit; P2.hotAssign=keep.hot; P2.safe=keep.safe; P2.freeKit=keep.free;
-       try{ saveProfile(); }catch(_s2){}
-     }
-     return bad.length?bad.join('; '):null; }},
   {v:'10.70',what:'the LOADOUT number counts everything going up: the backpack and the copies on tactical belt keys',
    run:function(){
      var bad=[];
@@ -15218,7 +15159,7 @@ window.__REGRESS=[
      else { cl.click(); if(md.classList.contains('on')) bad.push('Leave did not close the Appearance screen'); }
      md.classList.remove('on');
      return bad.length?bad.join('; '):null; }},
-  {v:'9.98',what:'the stash screen is five things: stash, backpack, hotbar, safe pocket, freebie kit, with one way out',
+  {v:'9.98',what:'the stash screen is four things: stash, backpack, hotbar, freebie kit, with one way out (the safe pocket was the fifth until v12.35 deleted it)',
    run:function(){
      var bad=[];
      if(!__vpAlive()) return 'SKIP: the pane has no layout';
@@ -15240,7 +15181,7 @@ window.__REGRESS=[
      if(/YOUR OPERATOR/i.test(hub.textContent)) bad.push('the stash screen still says YOUR OPERATOR');
      if(/ascend with/i.test(hub.textContent)) bad.push('the armour line is still on the stash screen');
      // TWO: his five parts are there and drawn.
-     var need={stash:'#stashgrid',backpack:'#kitgrid',hotbar:'#hotplanwrap',safe:'#safegrid',freebie:'#hubfreekit .fkbtn'};
+     var need={stash:'#stashgrid',backpack:'#kitgrid',hotbar:'#hotplanwrap',freebie:'#hubfreekit .fkbtn'};
      for(var k in need){ var el=hub.querySelector(need[k]); if(!vis(el)) bad.push('the '+k+' part is missing or not drawn'); }
      var cells=hub.querySelectorAll('[data-plan]');
      if(cells.length!==9) bad.push('the hotbar has '+cells.length+' cells, not nine');
@@ -19312,11 +19253,11 @@ window.__deploy=function(o){
   P.stash=(o.stash||kit).slice();
   P.kit=kit.slice();
   P.kitChosen=0; P.dropKit=[]; P.freeKit=0;
-  if(o.safe!==undefined) P.safe=o.safe;
+
   var ok=false;
   try{ ok=commitKit(); }catch(e){ return {error:'commitKit threw: '+e}; }
   __startRaid({mapIx:o.mapIx===undefined?0:o.mapIx,seed:o.seed===undefined?4242:o.seed,sim:!!o.sim});
-  return {committed:ok,dropKit:(P.dropKit||[]).slice(),safeUp:P.safeUp===undefined?null:P.safeUp,
+  return {committed:ok,dropKit:(P.dropKit||[]).slice(),
           stashLeft:(P.stash||[]).slice(),bag:G?G.bag.slice():null};
 };
 // v8.65: the belt, readable. slots() is what the hotbar actually holds, sel() is

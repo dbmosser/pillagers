@@ -1,0 +1,24 @@
+v12.52: a pillager whose reach is inside his own blast no longer throws
+
+My own defect from v12.20.
+
+v12.20 moved the near edge of a pillager's throwing band out to the blast
+radius plus the scatter, so he would stop standing in his own charge, and then
+capped that edge at his own reach so a short-ranged man could still throw at
+all. The cap is the bug.
+
+One gun in nine is the Riot Scattergun, and the man carrying it reaches 187
+against a safe edge of 242, so the cap pulls the edge back inside the blast.
+Both callers already require him to be inside his reach, so the only distances
+he could throw from were 186.2 to 187.2: a band one unit wide, entirely inside
+the radius of the charge he was throwing. Every throw he could make landed on
+him.
+
+The cap goes. A man whose whole reach is inside his own blast does not throw.
+
+Check 12.52 works the reach out of the weapon table rather than writing 187
+down, requires no throw in the one unit window the old band left, and sweeps
+every distance inside his whole reach requiring no throw from any of them; two
+controls keep the v12.20 promises; fails on v12.51.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

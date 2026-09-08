@@ -1,0 +1,52 @@
+## v12.50 - BREAKING A CRIER LINE OF SIGHT NOW ACTUALLY CANCELS ITS ALARM
+
+From the 2026-09-07 read-only audit, specced from the source. Verified by
+reading at v12.49.
+
+WHAT IT WAS. The cancel fired the thing it was cancelling.
+
+Breaking a Crier's line of sight for three seconds is supposed to call the
+alarm off. The branch does the right things: it puts the machine back on
+patrol, clears its cooldown and clears the windup. It clears the windup to
+nothing, and nothing stops the rest of that branch running in the same frame.
+Four lines later the windup is decremented, and nothing minus a number is a
+negative number, so the very next test saw a windup at or below zero and fired
+the entire alarm: the siren, the ping on the mark, the marked flag, the counter
+in his run report, the line telling him they are coming to where it LAST saw
+him, every machine within 900 units sent to the mark and every Listener sent
+hunting.
+
+So hiding from a Crier has never once cancelled an alarm. At best it brought
+the alarm forward by under a second.
+
+There was a second half. The three seconds were cumulative rather than
+continuous, because the counter is zeroed only when the alarm begins and never
+when the Crier sees him again. A man who ducked behind three different walls
+for a second each had it cancel as though he had stayed hidden the whole time.
+
+THE BUILD. Two guards on the countdown, so both lines ask whether this is still
+an alarm at all, and one reset so the three seconds are unbroken.
+
+WHAT IT COSTS, HONESTLY. The two halves pull in opposite directions. The cancel
+now works, which favours him and is the counterplay the machine was designed
+around. The three seconds must now be unbroken, which does not favour him, and
+unbroken is what that counterplay always claimed to be. Nothing in the settings
+moves. The window in which any of this can happen is small by design, because
+the windup is three to four seconds and the counter has to pass three, so he has
+to break sight almost immediately and stay hidden.
+
+MEASURED. Check 12.50 puts one Crier alone on the map, already in its alarm,
+with the windup still running and the counter one hundredth of a second short
+of three. One step of the machines takes it over, which is the exact frame the
+cancel is meant to happen and the exact frame the old code fired the alarm
+instead. It requires the machine off its alarm with no siren line, no mark, no
+count against him, and the windup cleared to nothing rather than to a negative
+number. The control is the same Crier with the same windup and the player in
+plain sight: the alarm must still fire and still mark him, or a build that
+simply broke the Crier would read green.
+
+Not verified: sight is broken by putting him on the floor, which the machine
+code treats as unseen for everything that is not a pillager, rather than by
+walking him behind a wall; the machines that the alarm summons are not present,
+so what they would have done is inferred from the alarm not firing rather than
+watched; and it runs one map and one seed.
