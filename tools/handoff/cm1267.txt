@@ -1,0 +1,21 @@
+v12.67: selling salvage moves your level, not just your XP
+
+The level is a function of XP, and the file worked it out in exactly one place:
+at the end of a raid. Selling salvage is the other way XP is earned, and both
+sale paths add the XP and never touch the level.
+
+So the Undercroft card shows two numbers that contradict each other. Sell a bag
+of cores for four thousand, watch the XP figure on that card jump by four
+thousand, and the Level printed directly above it does not move. Nine cosmetics
+gate on that level, so the racks you just earned stay locked until you go up and
+come back. On a fresh profile the very first sell-all is the moment four of those
+nine gates are earned, and the one moment the game will not honour them.
+
+The formula does not change. Only where it is worked out does: it lives in one
+named place now, called wherever XP moves.
+
+Check 12.67 sells through the real button with the profile one XP short of a
+boundary, and asks the cosmetic gate the same question the racks ask; the
+control probes the formula at three known figures; fails on v12.66.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

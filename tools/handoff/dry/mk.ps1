@@ -5709,6 +5709,185 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.69',what:'the XP a run pays for its haul counts what it brought back and not what the lift carried up, and the career best does the same, while a haul actually found in the raid pays exactly what it always did (2026-09-08 audit, the other side of v12.65)',
+   run:function(){
+     if(!(window.__P&&window.__state&&window.__deploy&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof spForRun!=='function') return 'SKIP: this build has no run XP to read';
+     var bad=[], P2=__P(), keepBest=P2.best, keepXp=P2.xp, keepLog=(P2.log||[]).slice();
+     var BIG=100000, WANT=Math.round((BIG/1000)*35);
+     function rec(carried){
+       return {outcome:'extract',haul:BIG,carriedIn:carried,kills:{},containers:0,termPay:0,
+               secs:100,downs:0,revives:0,spotted:0,notExt:0};
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       // THE FINDING, as a difference: two runs identical but for where the value
+       // came from. Only the found one may pay for it.
+       var carriedUp=spForRun(rec(BIG)), foundThere=spForRun(rec(0));
+       if(typeof carriedUp!=='number'||typeof foundThere!=='number') return 'SKIP: the run XP did not come back as a number';
+       if(foundThere-carriedUp!==WANT)
+         bad.push('a run that carried '+BIG+' up the lift and brought the same '+BIG+' back was paid within '+(foundThere-carriedUp)+' XP of one that actually found it, against the '+WANT+' that value is worth: the whole reward track can be walked by riding his own stash up and down');
+       // AND THE CAREER BEST, through a real extraction.
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid to extract from';
+       var pick=null, k;
+       for(k in ITEMS){ if(ITEMS[k]&&ival(k)>=200){ pick=k; break; } }
+       if(pick){
+         P2.best=0;
+         g.bag=[pick]; g.carriedIn=ival(pick);
+         g.player.downed=false; g.player.hp=100;
+         __endRaid('extract');
+         if((P2.best||0)>0)
+           bad.push('the career best recorded '+(P2.best||0)+' for a raid whose entire bag came up the lift with him, so the best haul figure and every measurement I read off the run log count value that was never looted');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.best=keepBest; P2.xp=keepXp; P2.log=keepLog; saveProfile(); }catch(_p){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.68',what:'answering the hire bench question leaves him at the bench: pressing Hire nobody and then either answer puts the bench back on screen, and the HIRED pill is cleared where it can be seen, while a card raised by nothing still closes onto the floor (2026-09-08 audit, my defect from v8.17)',
+   run:function(){
+     if(!(window.__P&&window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot reach the bench';
+     if(typeof openTrader!=='function'||typeof IDENTITIES==='undefined'||!IDENTITIES.length) return 'SKIP: this build has no hire bench';
+     var tm=document.getElementById('tradermodal'), am=document.getElementById('askmodal');
+     var mc=document.getElementById('mercclear'), ay=document.getElementById('askyes'), an=document.getElementById('askno');
+     if(!tm||!am||!mc||!ay||!an) return 'SKIP: this build has no confirm card on the bench';
+     var bad=[], P2=__P(), keepMerc=P2.merc;
+     function on(el){ return !!(el&&el.classList.contains('on')); }
+     function ask(){
+       __showScreen('hub'); __hubEnter();
+       P2.merc=IDENTITIES[0].id;
+       openTrader('hire');
+       if(!on(tm)) return 'the bench would not open';
+       mc.click();
+       if(!on(am)) return 'the footer button raised no question';
+       return null;
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       // THE FINDING, DECLINING: a question he said no to must not cost him the
+       // window he asked it from.
+       var e1=ask();
+       if(e1) return 'SKIP: '+e1;
+       if(on(tm)) bad.push('staging: the bench stayed open behind the question, so this check is not reading the state the finding is about');
+       an.click();
+       if(!on(tm))
+         bad.push('saying no to the hire question left him on the bare floor: the bench, the tab and the man he was reading about are all gone for a question he declined, and he has to walk back to the station');
+       if(on(am)) bad.push('the question is still up after he answered it');
+       // THE FINDING, ACCEPTING: the result of the one irreversible action on
+       // that bench has to be visible where the action was taken.
+       var e2=ask();
+       if(e2) return 'SKIP: '+e2;
+       ay.click();
+       if(!on(tm))
+         bad.push('letting the hire go closed the bench, so the pill clearing is drawn where nobody can see it and the only word he gets is a toast that fades');
+       if(P2.merc) bad.push('control: letting the hire go did not actually clear the hire');
+       // CONTROL: a card raised by nothing to go back to must still close onto
+       // the floor, so this build has not made every question sticky.
+       __showScreen('hub'); __hubEnter();
+       am.classList.add('on');
+       an.click();
+       if(on(tm)) bad.push('control: a question raised with no window behind it put the bench up anyway, so the restore is firing on cards that never asked for it');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(am) am.classList.remove('on'); if(tm) tm.classList.remove('on'); }catch(_m){}
+       try{ P2.merc=keepMerc; saveProfile(); }catch(_p){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.67',what:'selling salvage moves the level and the racks it gates, at the counter, instead of leaving the card showing a level that disagrees with the XP printed under it until the next raid ends (2026-09-08 audit)',
+   run:function(){
+     if(!window.__P) return 'SKIP: this fixture cannot read the profile';
+     if(typeof cosOwned!=='function'||typeof ival!=='function') return 'SKIP: this build has no cosmetic gate or no salvage value';
+     var sb=document.getElementById('sellall');
+     if(!sb) return 'SKIP: this build has no sell button to press';
+     var bad=[], P2=__P();
+     var keep={xp:P2.xp,xpLevel:P2.xpLevel,credits:P2.credits,stash:(P2.stash||[]).slice(),junk:P2.junk};
+     // Something worth enough to cross a boundary on its own, taken off the item
+     // table rather than named here, and tagged junk so the button will take it.
+     var SELL=null, k;
+     for(k in ITEMS){ if(ITEMS[k]&&ival(k)>=60){ SELL=k; break; } }
+     if(!SELL) return 'SKIP: nothing in this build is worth enough to cross a level on one sale';
+     var GAIN=ival(SELL);
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       // ONE XP SHORT OF LEVEL TWO, which is 220 by the formula this build does
+       // not change, so a single sale has to cross it.
+       P2.xp=219; P2.xpLevel=1; P2.credits=0;
+       P2.stash=[SELL]; P2.junk={}; P2.junk[SELL]=1;
+       if((P2.xpLevel||1)!==1) return 'staging: the profile did not start at level one';
+       if(cosOwned({how:'level:2'})) return 'staging: a level two rack is already open at level one, so the gate cannot be read here';
+       sb.click();
+       if((P2.xp||0)!==219+GAIN)
+         return 'SKIP: the sell button did not take the '+SELL+' ('+(P2.xp||0)+' XP against an expected '+(219+GAIN)+'), so nothing was sold here';
+       // THE FINDING: the XP moved past the boundary, so the level must have too.
+       if((P2.xpLevel||1)<2)
+         bad.push('selling salvage moved his XP to '+(P2.xp||0)+' and left the level at '+(P2.xpLevel||1)+': the card shows a level that disagrees with the XP printed under it, and he has to go up and come back before it catches up');
+       if(!cosOwned({how:'level:2'}))
+         bad.push('the racks gated on level two are still locked after he earned level two at the counter, so an unlock he has paid for is being withheld until the next raid ends');
+       // CONTROL: the formula itself must be exactly what it was.
+       var probe=[[0,1],[220,2],[880,3]], i;
+       for(i=0;i<probe.length;i++){
+         P2.xp=probe[i][0];
+         if(typeof syncXpLevel==='function') syncXpLevel();
+         if((P2.xpLevel||1)!==probe[i][1])
+           bad.push('control: at '+probe[i][0]+' XP the level reads '+(P2.xpLevel||1)+' and not '+probe[i][1]+', so this build has changed what the level IS rather than when it is worked out');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.xp=keep.xp; P2.xpLevel=keep.xpLevel; P2.credits=keep.credits;
+            P2.stash=keep.stash; P2.junk=keep.junk; saveProfile(); }catch(_p){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.66',what:'the contract board counts contracts: after one HARD claim the line reads one contract completed rather than the weighted two, and the gate under it asks for credits in its own words while the credit itself is unchanged (2026-09-08 audit, my own wording)',
+   run:function(){
+     if(!window.__P) return 'SKIP: this fixture cannot read the profile';
+     if(typeof claimContractAt!=='function'||typeof cstand!=='function'||typeof renderHub!=='function') return 'SKIP: this build has no contract board to claim at';
+     if(typeof CTIER==='undefined'||!CTIER.hard||CTIER.hard.w!==2) return 'SKIP: a HARD card no longer counts two, so the two numbers cannot be told apart here';
+     if(!document.getElementById('contracts')) return 'SKIP: this build has no contract list to draw';
+     var bad=[], P2=__P();
+     var keep={contracts:(P2.contracts||[]).slice(),cstand:P2.cstand,cdone:P2.cdone,credits:P2.credits,stash:(P2.stash||[]).slice()};
+     function hintText(){
+       renderHub();
+       var cl=document.getElementById('contracts'), kids=cl?cl.querySelectorAll('.hint'):[], i;
+       for(i=0;i<kids.length;i++){ var t=String(kids[i].textContent||'');
+         if(t.indexOf('ontracts completed')>=0) return t; }
+       return '';
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       P2.cstand=0; P2.cdone=0; P2.credits=0; P2.stash=[];
+       // One HARD card, finished, and nothing else on the board.
+       P2.contracts=[{type:'kill',tgt:'sentry',n:1,prog:1,reward:100,tier:'hard',desc:'card staged by check 12.66'}];
+       var before=hintText();
+       if(before.indexOf('0')<0) bad.push('staging: a clean profile does not read zero on the board line ['+before+']');
+       var got=claimContractAt(0);
+       if(!got) return 'SKIP: the staged card would not claim, so there is nothing here to count';
+       // THE FINDING: one card claimed, so the line must say one contract.
+       var after=hintText();
+       if(!after) return 'SKIP: the board drew no completed line, so what he reads cannot be checked here';
+       if((P2.cdone||0)!==1)
+         bad.push('claiming one contract left the count at '+(P2.cdone||0)+', so the board has no true count to print');
+       if(/completed\s*2\b/.test(after.replace(/\s+/g,' ')))
+         bad.push('the board says two contracts completed after one HARD card was claimed: it is printing the credit, which a HARD card is worth two of, under the word completed ['+after+']');
+       if(!/completed\s*1\b/.test(after.replace(/\s+/g,' ')))
+         bad.push('the board does not say one contract completed after one claim ['+after+']');
+       // CONTROL: the gate itself must be untouched. A HARD card is still worth
+       // two credits and the line must still say what harder work needs.
+       if(cstand()!==2)
+         bad.push('control: the credit that opens harder work moved to '+cstand()+' on one HARD claim, so this build has changed the gate rather than what is said about it');
+       if(after.indexOf('credit')<0)
+         bad.push('control: the gate line no longer names what it is asking for ['+after+']');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.contracts=keep.contracts; P2.cstand=keep.cstand; P2.cdone=keep.cdone;
+            P2.credits=keep.credits; P2.stash=keep.stash; saveProfile(); }catch(_p){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.65',what:'a haul contract counts what the run brought back and not what the lift carried up: staging an expensive gun out of his own stash and walking straight out no longer finishes it, while the same value found in the raid still does (2026-09-08 audit)',
    run:function(){
      if(!(window.__P&&window.__state&&window.__deploy&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid';

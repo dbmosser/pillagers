@@ -1,0 +1,44 @@
+## v12.69 - THE XP A RUN PAYS IS FOR WHAT YOU BROUGHT BACK
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+The same fault as v12.65, on the other side of the same number. Verified by
+reading at v12.68.
+
+WHAT IT WAS. The XP a run pays for its haul was worked out from the whole
+backpack, and the backpack lands already holding whatever was staged. There is
+no limit on what can be staged, and every one of those items is handed straight
+back to the stash on extraction.
+
+So put a hundred thousand of your own stash into the backpack, ride up, walk to
+the nearest extraction point, hold E. That pays about three and a half thousand
+XP for the haul, multiplied up by night and by weather and by a dose to
+something near six thousand, and the stash comes back untouched. Repeat. The
+whole reward track can be walked in a few hundred risk-free round trips with
+nothing found and nothing lost.
+
+IT ALSO POISONS MY OWN NUMBERS. The haul on the run record and the career best
+both counted value that was never looted, so every haul figure I have quoted off
+that log is inflated by whatever he happened to be carrying up.
+
+The game already knows how to correct it. The run earnings line subtracts what
+the lift carried in, and the banked record carries that figure. These two sites
+never subtracted it.
+
+WHAT IT COSTS, HONESTLY. This removes an XP faucet, so the reward track is
+longer today than it was yesterday for anyone who had found that trip. It is a
+defect fix rather than a retune: no rate changes, the haul XP per thousand is
+exactly what it was, and a haul actually found in the raid pays what it always
+did.
+
+MEASURED. Check 12.69 measures the XP as a DIFFERENCE between two records that
+are identical but for where the value came from, so whatever else that function
+pays can neither flatter nor spoil the answer. It then drives a real extraction
+whose entire bag came up the lift and requires the career best not to record it.
+A hundred thousand is used because it is far larger than anything a raid
+produces by accident, so a number that moves can only have come from the
+staging.
+
+Not verified: it does not re-derive the historical run log, which still carries
+inflated haul figures for past runs and will keep them; it does not check the
+credits side, which was already netted; and it does not cover the abandon
+outcome, which pays no haul XP at all.

@@ -1,0 +1,23 @@
+v12.68: answering the hire bench question leaves you at the bench
+
+This is my own v8.17 build again: I added the confirm card and never noticed
+what raising it does to the window underneath.
+
+Raising a window closes every other one. That is right for windows and wrong for
+a card asking a question about the window you are standing in. Press "Hire
+nobody" at the bench and the bench closes behind the question. Answer "Not yet"
+and the card closes onto the bare floor, for a question you declined, and you
+have to walk back to the station.
+
+Answer LET THEM GO and it is worse quietly: the callback redraws the bench to
+clear the HIRED pill and draws into a window nobody is looking at, so the one
+irreversible action on that bench shows its result nowhere except a toast.
+
+Whoever raises the card can now name the window to come back to, and all three
+answers put it back before anything else runs. Only the hire question names one.
+
+Check 12.68 presses the real footer button and both real answers and reads
+whether the bench is on screen after each; the control raises the card with
+nothing behind it and requires it to close onto the floor; fails on v12.67.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.66';
+var VER='12.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.66';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.66';
+var WHATSNEW_VER='12.70';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1395,6 +1395,10 @@ var WHATSNEW=[
   'THE BUY BUTTON SAYS HOW SHORT YOU ARE, including when you cannot afford even one. That was the commonest refusal at the counter and the only one it answered with a dead grey button and no reason at all.',
   'A HAUL CONTRACT COUNTS WHAT YOU CAME BACK WITH, not what you took up. Staging one expensive gun out of your own stash and walking straight to an extraction point used to finish the best-paying card on the board, and the gun went back in the stash afterwards.',
   'THE CONTRACT BOARD COUNTS CONTRACTS. Its one progress line said Contracts completed and printed a weighted number instead, so your first ever HARD card made it read two, and the line under it asked for credits while sounding like cards.',
+  'SELLING SALVAGE MOVES YOUR LEVEL, not just your XP. The level was only worked out at the end of a raid, so the card showed a level that disagreed with the XP printed under it and the racks you had just earned stayed locked until you went up and came back.',
+  'ANSWERING THE HIRE BENCH QUESTION LEAVES YOU AT THE BENCH. Pressing Hire nobody closed the bench behind its own confirm card, so saying no put you on the bare floor and saying yes redrew the bench where you could not see it.',
+  'THE XP A RUN PAYS IS FOR WHAT YOU BROUGHT BACK. Carrying your own stash up the lift and straight back down paid full haul XP for loot you already owned, and handed the stash back untouched, so the whole reward track could be walked without finding anything.',
+  'A SEARCH CONTRACT NAMES A PLACE ON THE SECTOR YOU ARE PLAYING. It wrote the name down when the card was made, so changing sector afterwards left it pointing at a place with almost the right name in the wrong part of the map, and searching it moved nothing.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -2862,6 +2866,29 @@ var CTIER={std:{n:1,r:1,name:'STANDARD',c:'#9aa6b2',w:1},
 // Contract standing is its own ledger. Finish work and the board starts
 // offering you work worth taking.
 function cstand(){ return P.cstand||0; }
+// v12.70, 2026-09-08 audit: A DISTRICT CARD NAMES THE PLACE ON THE SECTOR HE IS
+// PLAYING. The sentence used to be written once, at roll time, against whichever
+// sector was selected then, and the sector can be changed afterwards with one
+// click. The two sectors have places whose names are one letter apart, so a card
+// rolled on one and read on the other sent him to almost the right name at the
+// far corner from the district it wanted, and the counter never moved. The
+// district number on the card was always right; only the sentence was stale. It
+// is worked out on the way to the screen now, so it follows the sector.
+function contractDesc(c){
+  if(c&&c.type==='district'&&c.d!==undefined&&typeof districtPlaceName==='function')
+    return 'Search '+(c.n||0)+' containers in '+districtPlaceName(c.d);
+  return (c&&c.desc)||'contract';
+}
+// v12.67, 2026-09-08 audit: THE LEVEL IS A FUNCTION OF XP, so it is worked out
+// wherever XP moves rather than only at the end of a raid. Selling is the other
+// way XP is earned and both sale paths added the XP without touching the level,
+// so the Undercroft card showed two numbers that contradicted each other and the
+// nine cosmetics gated on the level stayed locked until he had been up and come
+// back. The formula is unchanged, and it lives here once so it cannot drift.
+function syncXpLevel(){
+  P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
+  return P.xpLevel;
+}
 // Which districts the map you are about to play actually contains, and how many buildings
 // each one has. Containers are only ever placed inside buildings and landmarks, so a
 // district with no buildings has no containers, and a contract naming it can never be
@@ -18669,7 +18696,12 @@ function spForRun(rec){
   var sp=0,K=rec.kills||{};
   var tmul=1+(rec.termPay||0);
   sp+=90;
-  sp+=Math.round(((rec.haul||0)/1000)*35);
+  // v12.69, 2026-09-08 audit: THE HAUL IS WHAT THE RUN BROUGHT BACK. This paid
+  // on the whole backpack, and the backpack lands holding whatever was staged,
+  // so a walk up and straight back down with his own stash in it paid XP for
+  // loot he already owned and handed the stash back untouched. The run earnings
+  // line has always subtracted what the lift carried in; this did not.
+  sp+=Math.round((Math.max(0,(rec.haul||0)-(rec.carriedIn||0))/1000)*35);
   sp+=(rec.containers||0)*3;
   // v8.42, audit: a TABLE, not a hand-written sum. The old line scored five of
   // the nine kinds tel.kills tracks, so a Howler or a Bulwark - the two elites,
@@ -18793,7 +18825,7 @@ function addProgress(rec){
   // is 1.2 times 1.1.
   var _xb=xpBaseFor(rec), _xg=addXp(_xb,(rec.doseMul>0)?rec.doseMul:undefined);   // v12.12: the multiplier the card printed
   rec.xpBase=_xb; rec.xpGot=_xg;
-  P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
+  syncXpLevel();   // v12.67: the same formula, in one named place
   // v10.27, his note: NET LIFETIME EARNINGS. Everything extracted minus
   // everything carried in, over every run; a run that died or was abandoned
   // lost what it carried. Negative is allowed, because that is the truth of
@@ -19143,7 +19175,11 @@ var _cdone=contractExtract(G.bag,haul);
       var tk=THROWKEYS[i];
       for(var q=0;q<G.pouch[tk];q++) P.stash.push(tk);
     }
-    if(haul>P.best) P.best=haul;
+    // v12.69: and the career best is the best haul he has BROUGHT BACK, not the
+    // most he has ever carried up and down again. This is also the number my own
+    // measurements read off the run log.
+    var _netHaul=Math.max(0,haul-(G.carriedIn||0));
+    if(_netHaul>P.best) P.best=_netHaul;
     // v8.56, audit: "1 items secured". One item out is an ordinary result of a
     // bad raid, which is exactly the run where you read this line closely.
     lines.push(G.bag.length+' item'+(G.bag.length===1?'':'s')+' secured for '+'$'+haul.toLocaleString()+'');
@@ -23948,7 +23984,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
         if(!CD||CD.type==='conduct'||CD.prog>=CD.n) continue;
         // Work for another site cannot progress here, so it is not a decision you
         // can act on during this raid. It stays on the Mainframe.
-        var _cdTxt=(CD.desc||'contract');
+        var _cdTxt=contractDesc(CD);   // v12.70: and the same sentence in the raid
         _live.push({left:Math.max(0,CD.n-CD.prog),txt:_cdTxt+'  '+CD.prog+'/'+CD.n});
       }
       // Nearest to finishing first: "you are on five of six" is the fact that
@@ -27999,7 +28035,18 @@ function askKit(){
 }
 // ASK BEFORE THE DOOR CLOSES, v6.67, his note on the lift. One box for the whole
 // game. onYes runs on YES; anything else just closes, so declining is always safe.
-var ASKYES=null, ASKALT=null;
+// v12.68, 2026-09-08 audit: AND WHAT TO PUT BACK. A card that asks about the
+// window he is standing in closes that window to raise itself, so answering it
+// either way used to leave him on the bare floor. Whoever raises the card can
+// name the window to restore, and all three answers put it back before anything
+// else runs, so a callback that redraws that window draws where he is looking.
+var ASKYES=null, ASKALT=null, ASKBACK=null;
+function askRestore(){
+  if(!ASKBACK) return;
+  var _b=ASKBACK; ASKBACK=null;
+  var _e=document.getElementById(_b);
+  if(_e) _e.classList.add('on');
+}
 // askConfirm deleted at v7.90: defined at v6.67 and never called - every ask
 // card user sets the fields itself.
 // v6.86: WHERE THE WAY OUT IS, in words. His run 79 died to the clock twenty five metres
@@ -29173,7 +29220,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.66: from the 2026-09-08 read-only audit, and this is my own wording. The only progress readout the contract board has says Contracts completed N, and N is not a count of contracts: it is a weighted number, a STANDARD card counting one, a HARD two and an ELITE three. Claim a first ever HARD card and the board says two contracts completed. The gate under it is miscounted from his side for the same reason, because ELITE work at 6 more means six more of that weight, which is two ELITE claims or three HARD ones and not six contracts, so he plans against a ledger that can be wrong by three times per card. The changelog entry for that line is mine and records a deliberate vocabulary swap with no look at the number behind it: the line used to say Contract standing, which was true, and standing is a banned word, so I renamed it to completed, which is false. Renaming is not the same as reading. The count and the gate are two different numbers and both are said now, each called what it is: a true count of contracts claimed, and a gate that asks for credits and says what a harder card is worth. Check 12.66 claims one HARD card on a clean profile and requires the board to read one contract completed with the gate still naming what it needs, and a control requires the gate itself to be unchanged, since the credit is what opens harder work and this build must not move it; fails on v12.65.',
+  now:'v12.70: from the 2026-09-08 read-only audit, and the last defect on that list. A district contract names a place and it worked that name out ONCE, when the card was written, against whatever sector was selected at that moment; the sentence was then frozen on the card, and the sector can be changed afterwards with one click and no effect on the board. The two sectors have places whose names are one letter apart, so a card rolled on one and read on the other sent him to a place with almost the right name at the far corner from the district it actually wanted: he searched it out and the counter never moved, because the containers there carry a different district number, and the panel in the raid repeated the same wrong place because it printed the stored sentence verbatim. The card itself was never broken, only its label, since the district number on it is right and it still ticks on the right containers wherever they are. So the sentence is no longer frozen: the district is what the card holds, and the place it names is worked out on the way to the screen, on the sector he is actually playing. Check 12.70 writes a district card on one sector, switches to the other, and requires the board and the in-raid panel to name a place that exists on the sector he is now playing, with a control that a card of any other type still reads exactly what it was written with; fails on v12.69.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30843,7 +30890,7 @@ try{ renderFreeKit(); }catch(_fk){}
         // v8.51, audit: and the key that pointed at it. This is a route OUT of the
         // backpack and clearKeysFor is the one rule for those; it was not called.
         // v10.02, his answer 42: a sale pays its plain price in XP; only a raid takes the bar's bonus.
-        if(ix>=0){ P.stash.splice(ix,1); clearKeysFor(k); P.credits+=ival(k); P.xp=(P.xp||0)+ival(k); saveProfile(); renderHub(); }
+        if(ix>=0){ P.stash.splice(ix,1); clearKeysFor(k); P.credits+=ival(k); P.xp=(P.xp||0)+ival(k); syncXpLevel(); saveProfile(); renderHub(); }   // v12.67: XP moved, so the level does
       });
     };
     // v6.58, his note: no click handler at all. Junk is J while hovering, which is the
@@ -31040,7 +31087,7 @@ P.contracts.forEach(function(c,ci){
       if(!c) return;
     }
     var row=document.createElement('div'); row.className='crow';
-    var cd=document.createElement('div'); cd.className='cd'; cd.textContent=c.desc;
+    var cd=document.createElement('div'); cd.className='cd'; cd.textContent=contractDesc(c);   // v12.70: the place on the sector he is playing
     var TT=CTIER[c.tier]||CTIER.std;
     var tb=document.createElement('span');
     tb.textContent=TT.name;
@@ -32181,6 +32228,7 @@ document.getElementById('sellall').onclick=function(){
     if(sellable(k)){ gained+=ival(k); sold++; _soldKeys.push(k); } else kept.push(k);
   });
   P.credits+=gained; P.xp=(P.xp||0)+gained; P.stash=kept;   // v10.02, his answer 42: no bar bonus on a sale
+  syncXpLevel();   // v12.67: XP moved, so the level and the racks it gates move with it
   // v8.51, audit: everything sold here left the backpack, so every key bound to
   // one of them goes with it. AFTER the new stash is written, because clearKeysFor
   // asks stageKitLive whether the item is still carried and would otherwise still
@@ -32290,6 +32338,7 @@ document.getElementById('mercclear').onclick=function(){
   var _y=document.getElementById('askyes'), _a=document.getElementById('askalt');
   if(_y) _y.textContent='LET THEM GO';
   if(_a) _a.style.display='none';
+  ASKBACK='tradermodal';   // v12.68: this question is about the bench, so come back to it
   openModal('askmodal');
 };
 document.getElementById('closeterms').onclick=function(){
@@ -33493,15 +33542,18 @@ document.getElementById('closeappear').onclick=function(){
 document.getElementById('askyes').onclick=function(){
   var f=ASKYES; ASKYES=null;
   document.getElementById('askmodal').classList.remove('on');
+  askRestore();   // v12.68: BEFORE the callback, so a redraw of that window is seen
   if(f) f();
 };
 document.getElementById('askno').onclick=function(){
   ASKYES=null; ASKALT=null;
   document.getElementById('askmodal').classList.remove('on');
+  askRestore();   // v12.68: a question he declined does not cost him the window
 };
 document.getElementById('askalt').onclick=function(){
   var f=ASKALT; ASKYES=null; ASKALT=null;
   document.getElementById('askmodal').classList.remove('on');
+  askRestore();
   if(f) f();
 };
 

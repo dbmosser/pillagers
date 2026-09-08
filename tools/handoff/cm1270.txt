@@ -1,0 +1,24 @@
+v12.70: a search contract names a place on the sector you are playing
+
+A district contract names a place, and it worked that name out once, when the
+card was written, against whichever sector was selected at that moment. The
+sentence was then frozen. The sector can be changed afterwards with one click,
+and nothing on the board notices.
+
+The two sectors have places whose names are one letter apart. Roll the card on
+one and read it on the other, and it sends you to almost the right name in the
+far corner from the district it actually wants. You search it out and the
+counter does not move, because the containers there carry a different district
+number. The panel in the raid repeats the same wrong place.
+
+The card itself was never broken: the district number on it is right and it
+still ticks on the right containers. Only the label was stale. So the fix is not
+to store a sector on the card, since contracts deliberately stopped carrying
+one; the sentence is simply worked out on the way to the screen, and follows the
+sector you are playing.
+
+Check 12.70 writes a card naming a place that does not exist on the sector it
+will be read on, taking the names off the maps themselves; controls require the
+sentence to follow back and other card types to be untouched; fails on v12.69.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

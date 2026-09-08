@@ -1,0 +1,45 @@
+## v12.70 - A SEARCH CONTRACT NAMES A PLACE ON THE SECTOR YOU ARE PLAYING
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+The last defect on that list. Verified by reading at v12.69.
+
+WHAT IT WAS. A district contract names a place, and it worked that name out
+once, when the card was written, against whichever sector was selected at that
+moment. The sentence was then frozen on the card. The sector can be changed
+afterwards with one click, and nothing on the board notices.
+
+The two sectors have places whose names are one letter apart. Roll the card on
+one and read it on the other, and it sends him to a place with almost the right
+name, in the far corner from the district it actually wants. He searches it out
+and the counter does not move, because the containers there carry a different
+district number. The panel during the raid repeats the same wrong place, because
+it prints the stored sentence verbatim.
+
+THE CARD ITSELF WAS NEVER BROKEN. The district number on it is right, and it
+still ticks on the right containers wherever they are on whichever map. Only the
+label was stale. That is why the fix is not to store a sector on the card:
+contracts deliberately stopped carrying one, and reversing that would undo a
+decision rather than repair a fault.
+
+THE BUILD. The sentence is no longer frozen. The district is what the card
+holds, and the place it names is worked out on the way to the screen, so it
+follows the sector he is actually playing. Both readers, the board and the panel
+in the raid, ask the same question.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. No card changes what it asks for,
+no reward moves, and the progress test is untouched.
+
+MEASURED. Check 12.70 writes a district card whose sentence names a place that
+does not exist on the sector it will be read on, which is exactly the state a
+sector change leaves behind, and then asks what the card says. The place names
+come off the maps themselves rather than out of the check, so a renamed zone
+moves the check with it, and it skips honestly if both sectors happen to call
+that district the same thing. One control switches back and requires the
+sentence to follow again rather than sticking; another requires a card of any
+other type to read exactly what it was written with.
+
+Not verified: it reads the sentence through the one function both screens now
+use rather than opening the board and the raid panel; it does not walk a raid to
+confirm the counter moves in the right district, which the progress test already
+covers; and it does not re-word cards already saved on a profile, which now
+simply have their stale sentence ignored.
