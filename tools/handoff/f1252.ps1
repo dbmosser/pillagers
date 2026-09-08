@@ -19,7 +19,7 @@ function SubRx([string]$old, [string]$new) {
 # keep: an ordinary pillager still throws from outside the blast, and the charge
 # he throws lands outside his own radius.
 SubRx @'
-  {v:'12.51',what:'a Howler does not shell its own crater: its own impact no longer winds its eight second bearing back to full or moves that bearing onto the burst, so one noise from a man who then goes quiet brings the shells the bearing honestly allows and no barrage (2026-09-07 audit)',
+  {v:'12.51',what:'a Howler does not shell its own crater: its own gun no longer winds its eight second bearing back to full or moves that bearing onto the burst, and its cooling is its own clock rather than the wander timer, so one noise from a man who then goes quiet brings the shells the bearing honestly allows and no barrage (2026-09-07 audit)',
 '@ @'
   {v:'12.52',what:'a pillager whose whole reach is inside his own blast does not throw a charge at all, instead of throwing from a band one unit wide inside his own explosion; an ordinary pillager still throws from outside the blast and his charge still lands clear of him (2026-09-07 audit, my defect from v12.20)',
    run:function(){
@@ -67,7 +67,7 @@ SubRx @'
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ __topClear(); __cleanProfile(); __resetCfg(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.51',what:'a Howler does not shell its own crater: its own impact no longer winds its eight second bearing back to full or moves that bearing onto the burst, so one noise from a man who then goes quiet brings the shells the bearing honestly allows and no barrage (2026-09-07 audit)',
+  {v:'12.51',what:'a Howler does not shell its own crater: its own gun no longer winds its eight second bearing back to full or moves that bearing onto the burst, and its cooling is its own clock rather than the wander timer, so one noise from a man who then goes quiet brings the shells the bearing honestly allows and no barrage (2026-09-07 audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

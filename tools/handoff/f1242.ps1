@@ -27,7 +27,14 @@ SubRx @'
      if(typeof bagHeldGun!=='function'||typeof equipFromBag!=='function') return 'SKIP: this build cannot bag and re-equip a gun';
      if(!(WEAPONS&&WEAPONS.lmg&&WEAPONS.lmg.mag===60&&ITEMS&&ITEMS.gun_lmg&&ITEMS.gun_dmr&&WEAPONS.dmr)) return 'SKIP: the Support MG is no longer a sixty round gun, so this staging cannot be built';
      var bad=[];
-     function total(p){ return (p.ammo|0)+(p.secAmmo|0)+(p.reserve|0); }
+     // The rounds are conserved across four places, not three: loaded, stowed on
+     // the other gun, in the reserve, and riding with a gun in the backpack.
+     function total(p){
+       var t=(p.ammo|0)+(p.secAmmo|0)+(p.reserve|0), g=__state(), k, q, j;
+       if(g&&g.stowAmmo) for(k in g.stowAmmo){ q=g.stowAmmo[k];
+         if(q&&q.length) for(j=0;j<q.length;j++) t+=(q[j]|0); }
+       return t;
+     }
      function arm(loaded){
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],mapIx:0,seed:4242});
@@ -51,7 +58,7 @@ SubRx @'
        var A=arm(47);
        if(!A) return 'SKIP: no live raid to stage a gun in';
        if(A.skip) return 'SKIP: '+A.skip;
-       if(A.t1!==A.t0) bad.push('putting a gun in the backpack threw its magazine away: loaded plus reserve went from '+A.t0+' to '+A.t1+', so '+(A.t0-A.t1)+' rounds stopped existing');
+       if(A.t1!==A.t0) bad.push('putting a gun in the backpack threw its magazine away: the rounds he owns went from '+A.t0+' to '+A.t1+', so '+(A.t0-A.t1)+' of them stopped existing while the gun sat in the backpack');
        if(A.t2!==A.t0) bad.push('a gun through the backpack came back with a different amount of ammunition than it went in with: loaded plus reserve went from '+A.t0+' to '+A.t2);
        if(A.ammo!==47) bad.push('the Support MG came back out of the backpack on '+A.ammo+' rounds, not the 47 it went in with');
        // THE FINDING, the other way: an EMPTY gun, which is the faucet.

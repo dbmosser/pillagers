@@ -5709,6 +5709,122 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.57',what:'walking into a second open extraction point does not move the pointer off the one he called: the countdown, the banner and the warning all stay with his own extraction, while with nothing running the pointer still follows him and a deliberate call at the second point still moves it (2026-09-06 in-raid audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof tryExtractTick!=='function') return 'SKIP: this build has no extraction tick to drive';
+     var bad=[];
+     function stage(){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player||!g.zones) return null;
+       if(g.zones.length<2) return {none:'this map and seed builds fewer than two extraction points, so there is no second one to walk into'};
+       var p=g.player, A=g.zones[0], B=g.zones[1], i;
+       for(i=0;i<g.zones.length;i++){ var Z=g.zones[i];
+         Z.open=true; Z.beaconT=null; Z.hold=null; Z.pullT=null; Z.boardT=0; Z.callT=0; }
+       g.beaconT=null; g.shipHold=null; g.active=A;
+       p.downed=false; p.iv=99; p.hp=100;
+       return {g:g,p:p,A:A,B:B};
+     }
+     try{
+       // THE FINDING: his own extraction is inbound at A, and he walks into B.
+       var st=stage();
+       if(!st) return 'SKIP: no live raid with extraction points';
+       if(st.none) return 'SKIP: '+st.none;
+       var g=st.g, p=st.p, A=st.A, B=st.B;
+       A.beaconT=18; g.beaconT=18; g.active=A;
+       p.x=B.x; p.y=B.y;                       // standing in the other one
+       tryExtractTick(0.05);
+       if(g.active===B)
+         bad.push('walking into a second open extraction point moved the pointer onto it while his own was still eighteen seconds out: the banner, the prompt, the approach pings and the last-seconds warning all follow that pointer, so his own extraction lands somewhere else and leaves without him');
+       else if(g.active!==A)
+         bad.push('walking into a second open extraction point left the pointer on neither the point he called nor the one he is standing in');
+       if(!(A.beaconT>0)) bad.push('the countdown he paid for stopped running once he stood somewhere else');
+       // CONTROL ONE: with nothing running anywhere, the pointer must still
+       // follow him, which is what this line is for and must not be broken.
+       var s2=stage();
+       if(s2&&!s2.none){
+         var g2=s2.g, B2=s2.B;
+         s2.p.x=B2.x; s2.p.y=B2.y;
+         tryExtractTick(0.05);
+         if(g2.active!==B2) bad.push('control: with nothing running anywhere the pointer no longer follows him into an open point, so this build has broken the line it was meant to guard');
+       }
+       // CONTROL TWO: and a deliberate CALL at the second point moves it, because
+       // that is a choice he made rather than a place he walked through.
+       var s3=stage();
+       if(s3&&!s3.none){
+         var g3=s3.g, A3=s3.A, B3=s3.B, k;
+         A3.beaconT=18; g3.beaconT=18; g3.active=A3;
+         s3.p.x=B3.x; s3.p.y=B3.y;
+         for(k=0;k<80&&(B3.beaconT===null||B3.beaconT===undefined);k++) tryExtractTick(0.05,true);
+         if(B3.beaconT===null||B3.beaconT===undefined) bad.push('control: holding the key in the second point never called it, so this arm cannot say whether a call moves the pointer');
+         else if(g3.active!==B3) bad.push('control: he called the second point himself and the pointer stayed on the first, so a call he actually made is being ignored');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var gz=__state(); if(gz&&gz.player) gz.player.iv=0; }catch(_a){}
+       try{ var g4=__state(); if(g4&&!g4.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.56',what:'Q moves the tactical belt as well as the hand: after choosing a different grenade the highlight, the caption and the hidden selector all name the same one, and a man carrying only one kind is left exactly where he was (2026-09-06 in-raid audit, the half v12.41 left)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__keys)) return 'SKIP: this fixture cannot deploy a raid and press a key';
+     if(typeof hotbarSlots!=='function'||typeof hotSel!=='function'||typeof cycleThrow!=='function') return 'SKIP: this build has no tactical belt or no cycle to press';
+     if(!(THROWKEYS&&THROWKEYS.length===3&&ITEMS&&ITEMS.smoke&&ITEMS.frag)) return 'SKIP: this build does not carry three throwables';
+     var bad=[];
+     function press(code,key){ window.dispatchEvent(new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true})); }
+     function release(code,key){ window.dispatchEvent(new KeyboardEvent('keyup',{code:code,key:key,bubbles:true,cancelable:true})); }
+     function cellOf(k){ var sl=hotbarSlots(), i; for(i=0;i<sl.length;i++) if(sl[i]&&sl[i].k===k) return i; return -1; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid to press a key in';
+       var p=g.player, K=__keys(), k;
+       for(k in K) delete K[k];
+       p.downed=false; p.roll=0; p.iv=99;
+       // TWO KINDS AND NO THIRD, so the cycle has exactly one place to go.
+       g.pouch={smoke:2,decoy:0,frag:2}; g.hotAssign={};
+       var smokeCell=cellOf('throw:smoke'), fragCell=cellOf('throw:frag');
+       if(smokeCell<0||fragCell<0) return 'SKIP: this build has no derived Smoke and Frag cells to point at';
+       g.hot=-1; setHot(smokeCell);
+       if(g.tsel!==THROWKEYS.indexOf('smoke')) return 'staging: pointing the belt at the Smoke cell did not point the selector at the Smoke';
+       g.msg='';
+       press('KeyQ','q'); release('KeyQ','q');
+       var want=THROWKEYS.indexOf('frag');
+       if(g.tsel!==want) return 'SKIP: the key did not move the selector at all, so there is no choice here to follow';
+       // THE FINDING: everything he can see must now name the same grenade.
+       var sl=hotbarSlots(), hi=hotSel(), cell=sl[hi];
+       if(hi!==fragCell)
+         bad.push('choosing the Frag left the belt highlighting cell '+(hi+1)+' and not the Frag cell '+(fragCell+1)+', so the highlight is on a grenade he is no longer holding while the trigger throws the one he chose');
+       if(cell&&cell.k!=='throw:frag')
+         bad.push('the highlighted cell is '+cell.k+' after choosing the Frag, so the belt and the hand name different things');
+       if(String(g.msg||'').indexOf(ITEMS.frag.name)<0)
+         bad.push('choosing the Frag did not say so; the line reads "'+(g.msg||'')+'"');
+       // CONTROL ONE: with only one kind carried there is nowhere to go, and the
+       // highlight must be left exactly where it was.
+       g.pouch={smoke:2,decoy:0,frag:0};
+       g.hot=-1; setHot(smokeCell);
+       var hot0=hotSel(), tsel0=g.tsel;
+       press('KeyQ','q'); release('KeyQ','q');
+       if(hotSel()!==hot0) bad.push('control: with only one kind of grenade carried the key still moved the highlight, from cell '+(hot0+1)+' to cell '+(hotSel()+1)+', so it is moving on nothing');
+       if(g.tsel!==tsel0) bad.push('control: with only one kind carried the key still moved the selector');
+       // CONTROL TWO: the highlight lands on the cell that HOLDS it, even when
+       // that cell is one he dragged the grenade onto himself.
+       g.pouch={smoke:2,decoy:0,frag:2}; g.hotAssign={}; g.hotAssign[1]='frag';
+       g.hot=-1; setHot(smokeCell);
+       press('KeyQ','q'); release('KeyQ','q');
+       var sl2=hotbarSlots(), hi2=hotSel(), c2=sl2[hi2];
+       if(!(c2&&(c2.k==='throw:frag'||c2.itemKey==='frag')))
+         bad.push('with the Frag dragged onto a key of his own, choosing it highlighted '+((c2&&c2.k)||'nothing')+' instead of the cell that holds it');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ release('KeyQ','q'); var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ var gz=__state(); if(gz){ gz.hotAssign={}; if(gz.player) gz.player.iv=0; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.55',what:'an imported ghost carries his engagement range and his damage with the gun he is handed, instead of keeping the range of the body he arrived in; a ghost handed the gun that body already carries is left exactly as he was (2026-09-07 audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
@@ -5943,70 +6059,72 @@ window.__REGRESS=[
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ __topClear(); __cleanProfile(); __resetCfg(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.51',what:'a Howler does not shell its own crater: its own impact no longer winds its eight second bearing back to full or moves that bearing onto the burst, so one noise from a man who then goes quiet brings the shells the bearing honestly allows and no barrage (2026-09-07 audit)',
+  {v:'12.51',what:'a Howler does not shell its own crater: its own gun no longer winds its eight second bearing back to full or moves that bearing onto the burst, and its cooling is its own clock rather than the wander timer, so one noise from a man who then goes quiet brings the shells the bearing honestly allows and no barrage (2026-09-07 audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__ents&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid and step the machines';
-     if(typeof mkHowler!=='function'||typeof listenersHear!=='function'||typeof updateThrowables!=='function') return 'SKIP: this build has no Howler, no hearing sweep or no shells to step';
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop)) return 'SKIP: this fixture cannot deploy a raid and drive a frame';
+     if(typeof mkHowler!=='function'||typeof listenersHear!=='function') return 'SKIP: this build has no Howler or no hearing sweep';
      var bad=[];
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],mapIx:0,seed:4242});
        var g=__state(); if(!g||!g.player) return 'SKIP: no live raid to be heard in';
-       var p=g.player, i;
+       var p=g.player, i, q, sh;
        g.ents.length=0; g.shells.length=0;      // one Howler and nothing else at all
        p.downed=false; p.iv=99; p.roll=0; p.hp=100; p.moving=false;
-       // THE NOISE MUST BE IN THE OPEN, or the shot is refused for the roof over
-       // it and this check measures nothing. Eight bearings tried, and the man is
-       // moved to the first one where both he and the gun stand under open sky.
-       var _rf=(typeof roofAt==="function")?roofAt:null, _px=p.x, _py=p.y, _b;
-       var _ok=(!_rf)||(!_rf(_px,_py)&&!_rf(_px+400,_py));
-       for(_b=0;_b<8&&!_ok;_b++){
-         var _ang=_b*0.785, _cx=_px+Math.cos(_ang)*260, _cy=_py+Math.sin(_ang)*260;
-         if(!_rf(_cx,_cy)&&!_rf(_cx+400,_cy)){ p.x=_cx; p.y=_cy; _ok=1; }
-       }
-       if(!_ok&&_rf&&(_rf(p.x,p.y)||_rf(p.x+400,p.y))) return "SKIP: no open sky within 260 units of the landing on this seed, so the shot would be refused for a roof and nothing here would be measured";
        var hw=mkHowler(p.x+400,p.y);
        if(!hw) return 'SKIP: this build would not build a Howler';
-       // Pointed AWAY from him, so nothing here can come down the sighted path:
-       // that branch needs sight or an alert above 1.2, and the impact noise
-       // only ever lifts an alert to 1.
-       hw.face=Math.atan2(hw.y-p.y,hw.x-p.x);
-       hw.state='patrol'; hw.cd=0; hw.hearT=0; hw.alert=0; hw.elite=0;
+       hw.state='patrol'; hw.cd=0; hw.mortT=0; hw.hearT=0; hw.alert=0; hw.elite=0;
        hw.hp=hw.maxhp||hw.hp; hw.downed=false; hw.finished=false; hw.overheat=0;
        g.ents.push(hw);
-       // ONE NOISE, at his feet, and then silence for twenty seconds.
-       var NX=p.x, NY=p.y;
+       // THE MAN IS GONE, WHICH IS THE WHOLE POINT. He is parked far outside the
+       // gun reach, so the branch that shells a man it can SEE cannot fire at all
+       // and the only door left is the report he left behind. Anything less than
+       // this measures an ordinary shelling of a man it is looking at.
+       var W=g.map.cols*g.map.cw, H=g.map.rows*g.map.ch;
+       p.x=Math.min(W-60,Math.max(60,hw.x+2400)); p.y=Math.min(H-60,Math.max(60,hw.y+2400));
+       if(Math.sqrt((p.x-hw.x)*(p.x-hw.x)+(p.y-hw.y)*(p.y-hw.y))<(hw.rng||900)+200)
+         return 'SKIP: this map is too small to park him outside the gun reach, so a shelling of a man it can see could not be told from a shelling of his report';
+       // THE NOISE, four hundred units off the gun and under open sky, because a
+       // report under a roof is refused and this check would measure nothing.
+       var _rf=(typeof roofAt==='function')?roofAt:null, NX=0, NY=0, _b;
+       for(_b=0;_b<12&&!NX;_b++){
+         var _a=_b*0.523, _cx=hw.x+Math.cos(_a)*400, _cy=hw.y+Math.sin(_a)*400;
+         if(_cx<60||_cy<60||_cx>W-60||_cy>H-60) continue;
+         if(!_rf||(!_rf(_cx,_cy)&&!_rf(hw.x,hw.y))){ NX=_cx; NY=_cy; }
+       }
+       if(!NX) return 'SKIP: no open sky four hundred units from the gun on this seed, so the shot would be refused for a roof and nothing here would be measured';
+       // ONE NOISE, and then twenty seconds of silence.
        listenersHear(NX,NY,300,true);
        if(!(hw.hearT>0)) return 'SKIP: the staged noise was not heard at four hundred units, so there is no bearing here to measure';
-       var fired=0, afterFirst=null, landed=0, T=0, sh;
+       var fired=0, afterFirst=null, landed=0, T=0, keepTs=lastTs;
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
        for(i=0;i<400;i++){
-         for(var q=0;q<g.shells.length;q++){ sh=g.shells[q];
-           if(sh.mortar&&!sh.__counted){ sh.__counted=1; fired++; } }
-         var before=0; for(var m0=0;m0<g.shells.length;m0++) if(g.shells[m0].mortar) before++;
-         __ents(0.05); updateThrowables(0.05); T+=0.05;
+         var before=0; for(q=0;q<g.shells.length;q++) if(g.shells[q].mortar) before++;
+         p.iv=99; clk+=50; __loop(clk); T+=0.05;
+         var after=0;
+         for(q=0;q<g.shells.length;q++){ sh=g.shells[q];
+           if(sh.mortar){ after++; if(!sh.__counted){ sh.__counted=1; fired++; } } }
          // The frame a shell has just landed: read the bearing straight away,
          // before the clock has had time to run down and blur the difference.
-         for(var q2=0;q2<g.shells.length;q2++){ sh=g.shells[q2];
-           if(sh.mortar&&!sh.__counted){ sh.__counted=1; fired++; } }
-         var after=0; for(var m1=0;m1<g.shells.length;m1++) if(g.shells[m1].mortar) after++;
          if(after<before&&landed===0){
            landed=1; afterFirst={t:T,hearT:hw.hearT,hx:hw.heardX,hy:hw.heardY};
          }
        }
+       try{ lastTs=keepTs; }catch(_t){}
        if(!fired) return 'SKIP: the Howler fired nothing at all in twenty seconds, so this check cannot see a shell';
        if(!afterFirst) return 'SKIP: no shell landed inside twenty seconds, so the impact under test never happened';
        // THE FINDING, measured as a DECAY against the clock rather than a level.
        var want=8-afterFirst.t+0.3;
        if(afterFirst.hearT>want)
-         bad.push('the Howler heard its own shell land: '+afterFirst.t.toFixed(1)+' seconds after the noise its eight second bearing reads '+afterFirst.hearT.toFixed(1)+' rather than the '+Math.max(0,want-0.3).toFixed(1)+' it should have run down to, so the crater has wound it back up to full');
+         bad.push('the Howler heard its own gun: '+afterFirst.t.toFixed(1)+' seconds after the noise its eight second bearing reads '+afterFirst.hearT.toFixed(1)+' rather than the '+Math.max(0,want-0.3).toFixed(1)+' it should have run down to, so its own shell has wound it back up to full');
        var moved=Math.sqrt((afterFirst.hx-NX)*(afterFirst.hx-NX)+(afterFirst.hy-NY)*(afterFirst.hy-NY));
        if(moved>1)
-         bad.push('the Howler moved its bearing onto its own crater: it was aiming at the noise and is now aiming '+Math.round(moved)+' units away at the hole it just made');
+         bad.push('the Howler moved its bearing onto its own noise: it was aiming at the report and is now aiming '+Math.round(moved)+' units away, at the hole it made or the spot it fired from');
        // THE SUPPORTING NUMBER, with an honest ceiling: the bearing lasts eight
-       // seconds and the cooldown is five and a half to seven, so a second shell
+       // seconds and the cooling is five and a half to seven, so a second shell
        // at the same bearing is the design and a third is the barrage.
        if(fired>2)
-         bad.push('a man who made one noise and then went silent for twenty seconds was shelled '+fired+' times, and an eight second bearing against a five to seven second cooldown allows two at the most');
+         bad.push('a man who made one noise and then went silent for twenty seconds, out of sight the whole time, was shelled '+fired+' times, and an eight second bearing against a five to seven second cooling allows two at the most');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ var gz=__state(); if(gz){ if(gz.ents) gz.ents.length=0; if(gz.shells) gz.shells.length=0;
@@ -6303,17 +6421,23 @@ window.__REGRESS=[
        __topClear(); __resetCfg(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.45',what:'cutting the seal no longer stops the world: through the whole hold his health recovers as it does standing anywhere else and a ship already called keeps coming, while the cut itself still advances at the same rate (2026-09-07 audit, the same fault as v12.34 one door along)',
+  {v:'12.45',what:'cutting the seal no longer stops the world: through the whole hold his health recovers as it does standing anywhere else and an extraction already called for keeps closing, while the cut itself still advances at the same rate (2026-09-07 audit, the same fault as v12.34 one door along)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
      if(typeof tickRegen!=='function'||typeof tryExtractTick!=='function') return 'SKIP: this build has no recovery or extraction tick to carry past the return';
-     var bad=[];
+     var bad=[], _P=(window.__P?__P():null), keepSeals=(_P&&_P.seals)?JSON.stringify(_P.seals):null;
      // Fifteen seconds of raid at the largest step the frame clock will take,
      // holding E or not, standing at the seal either way.
      function hold(cutting){
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],mapIx:0,seed:4242});
        var g=__state(); if(!g||!g.player) return null;
+       // THE SEAL RECORD IS PROFILE STATE AND A CHECK BEFORE THIS ONE MAY HAVE
+       // CUT IT. Cleared here for the map being deployed, and put back in full at
+       // the end, or this check would silently skip on a profile that has already
+       // been through a seal.
+       if(_P){ _P.seals=_P.seals||{}; _P.seals[(_P.mapIx===undefined)?0:_P.mapIx]={cut:0,tier:0,done:0}; }
+       if(g.seal){ g.seal.done=0; g.seal.gained=0; }
        if(!g.seal||g.seal.done) return {none:'this map and seed has no uncut seal to stand at'};
        var p=g.player, K=__keys(), k, i;
        for(k in K) delete K[k];
@@ -6341,7 +6465,7 @@ window.__REGRESS=[
        if(!(A.cut>=12)) return 'SKIP: fifteen seconds of holding the key advanced the cut by only '+Math.round(A.cut)+' seconds, so the hold under test never ran';
        if(!(A.ct>=12)) bad.push('through '+Math.round(A.cut)+' seconds of cutting, the recovery clock advanced '+Math.round(A.ct)+' seconds, so the clock that decides when he heals does not run while he cuts');
        if(!(A.hp>=4)) bad.push('through '+Math.round(A.cut)+' seconds of cutting he recovered '+Math.round(A.hp)+' health, so the bar is flat for the whole of a hold that lasts up to two minutes');
-       if(A.bt!==null&&!(A.bt>=12)) bad.push('through '+Math.round(A.cut)+' seconds of cutting, a ship already called came only '+Math.round(A.bt)+' seconds closer, so an extraction he had already paid for stops while he makes the loudest noise in the game');
+       if(A.bt!==null&&!(A.bt>=12)) bad.push('through '+Math.round(A.cut)+' seconds of cutting, an extraction already called for came only '+Math.round(A.bt)+' seconds closer, so an extraction he had already paid for stops while he makes the loudest noise in the game');
        // CONTROL: the same fifteen seconds standing beside the seal, not cutting.
        // This is what the bar is supposed to do, and it is what the frozen one
        // did not; without it a zero above could be the room rather than the bug.
@@ -6349,17 +6473,18 @@ window.__REGRESS=[
        if(B&&!B.none){
          if(!(B.hp>=4)) bad.push('control: standing beside the seal without cutting he recovered only '+Math.round(B.hp)+' health in fifteen seconds, so this check cannot see recovery at all and its findings prove nothing');
          if(B.cut>0.5) bad.push('control: the seal advanced '+Math.round(B.cut)+' seconds with the key not held, so the staging cuts by itself');
-         if(B.bt!==null&&!(B.bt>=12)) bad.push('control: a called ship came only '+Math.round(B.bt)+' seconds closer while he stood still, so this check cannot see the extraction clock at all');
+         if(B.bt!==null&&!(B.bt>=12)) bad.push('control: an extraction already called for came only '+Math.round(B.bt)+' seconds closer while he stood still, so this check cannot see the extraction clock at all');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
        try{ lastTs=keepTs; }catch(_t){}
+       try{ if(_P&&keepSeals!==null) _P.seals=JSON.parse(keepSeals); }catch(_s){}
        try{ var gz=__state(); if(gz&&!gz.over){ gz.player.downed=false; gz.player.iv=0; __endRaid('abandon'); } }catch(_e){}
        __topClear(); __resetCfg(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.44',what:'the boarding window never outlives the raid clock: a ship landing with two seconds left announces what the raid actually has and not the three second floor, on the number and on the ring badge alike, while a full clock and a raid with the clock switched off both still give the ordinary thirty seconds (2026-09-07 audit)',
+  {v:'12.44',what:'the extraction window never outlives the raid clock: an extraction arriving with two seconds left announces what the raid actually has and not the three second floor, on the number and on the ring badge alike, while a full clock and a raid with the clock switched off both still give the ordinary thirty seconds (2026-09-07 audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof tickExtractPoints!=='function'||typeof zoneBadge!=='function') return 'SKIP: this build has no extraction ticker or ring badge to read';
@@ -6388,22 +6513,22 @@ window.__REGRESS=[
      try{
        // THE FINDING: the ship lands with two seconds of raid left.
        var A=land(2.0,true);
-       if(!A) return 'SKIP: no raid with an extraction point to land a ship on';
-       if(A.none) return 'SKIP: one step past the end of the beacon opened no boarding window, so there is nothing to read here';
+       if(!A) return 'SKIP: no raid with an extraction point to land an extraction on';
+       if(A.none) return 'SKIP: one step past the end of the countdown opened no extraction window, so there is nothing to read here';
        if(A.hold>A.left+0.001)
-         bad.push('the boarding window says '+A.hold+' seconds with only '+A.left+' left on the raid clock, so the timer kills him with the countdown still running');
+         bad.push('the extraction window says '+A.hold+' seconds with only '+A.left+' left on the raid clock, so the timer kills him with the countdown still running');
        var sec=badgeSeconds(A.badge);
        if(sec===null) bad.push('control: the ring badge did not print a seconds figure at all ['+A.badge+'], so what he reads cannot be checked here');
        else if(sec>Math.max(0,Math.ceil(A.left)))
          bad.push('the ring badge reads "'+A.badge+'" with '+A.left+' seconds of raid left, so every readout he has is promising him time the raid does not have');
-       if(!(A.hold>0)) bad.push('the boarding window came out at '+A.hold+', which reads as no window at all');
+       if(!(A.hold>0)) bad.push('the extraction window came out at '+A.hold+', which reads as no window at all');
        // CONTROL ONE: a full clock still gives the ordinary thirty seconds.
        var B=land(540,true);
-       if(B&&!B.none&&B.hold!==30) bad.push('control: with a full raid clock the boarding window is '+B.hold+' and not the ordinary 30, so the clamp has changed a normal extraction');
+       if(B&&!B.none&&Math.abs(B.hold-30)>0.2) bad.push('control: with a full raid clock the extraction window is '+B.hold+' and not the ordinary 30, so the clamp has changed a normal extraction');
        // CONTROL TWO: with the clock switched off it is still thirty, which is
        // the v12.24 rule and the reason this clamp is guarded at all.
        var C=land(0,false);
-       if(C&&!C.none&&C.hold!==30) bad.push('control: with the raid clock switched off the boarding window is '+C.hold+' and not 30, so the v12.24 rule has been undone');
+       if(C&&!C.none&&Math.abs(C.hold-30)>0.2) bad.push('control: with the raid clock switched off the extraction window is '+C.hold+' and not 30, so the v12.24 rule has been undone');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ var gz=__state(); if(gz&&!gz.over){ gz.player.downed=false; __endRaid('abandon'); } }catch(_e){}
@@ -6497,7 +6622,14 @@ window.__REGRESS=[
      if(typeof bagHeldGun!=='function'||typeof equipFromBag!=='function') return 'SKIP: this build cannot bag and re-equip a gun';
      if(!(WEAPONS&&WEAPONS.lmg&&WEAPONS.lmg.mag===60&&ITEMS&&ITEMS.gun_lmg&&ITEMS.gun_dmr&&WEAPONS.dmr)) return 'SKIP: the Support MG is no longer a sixty round gun, so this staging cannot be built';
      var bad=[];
-     function total(p){ return (p.ammo|0)+(p.secAmmo|0)+(p.reserve|0); }
+     // The rounds are conserved across four places, not three: loaded, stowed on
+     // the other gun, in the reserve, and riding with a gun in the backpack.
+     function total(p){
+       var t=(p.ammo|0)+(p.secAmmo|0)+(p.reserve|0), g=__state(), k, q, j;
+       if(g&&g.stowAmmo) for(k in g.stowAmmo){ q=g.stowAmmo[k];
+         if(q&&q.length) for(j=0;j<q.length;j++) t+=(q[j]|0); }
+       return t;
+     }
      function arm(loaded){
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],mapIx:0,seed:4242});
@@ -6521,7 +6653,7 @@ window.__REGRESS=[
        var A=arm(47);
        if(!A) return 'SKIP: no live raid to stage a gun in';
        if(A.skip) return 'SKIP: '+A.skip;
-       if(A.t1!==A.t0) bad.push('putting a gun in the backpack threw its magazine away: loaded plus reserve went from '+A.t0+' to '+A.t1+', so '+(A.t0-A.t1)+' rounds stopped existing');
+       if(A.t1!==A.t0) bad.push('putting a gun in the backpack threw its magazine away: the rounds he owns went from '+A.t0+' to '+A.t1+', so '+(A.t0-A.t1)+' of them stopped existing while the gun sat in the backpack');
        if(A.t2!==A.t0) bad.push('a gun through the backpack came back with a different amount of ammunition than it went in with: loaded plus reserve went from '+A.t0+' to '+A.t2);
        if(A.ammo!==47) bad.push('the Support MG came back out of the backpack on '+A.ammo+' rounds, not the 47 it went in with');
        // THE FINDING, the other way: an EMPTY gun, which is the faucet.

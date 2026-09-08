@@ -18,7 +18,7 @@ function SubRx([string]$old, [string]$new) {
 # with no down must still walk him, or a zero in the finding arm proves nothing
 # more than a check that cannot see walking.
 SubRx @'
-  {v:'12.45',what:'cutting the seal no longer stops the world: through the whole hold his health recovers as it does standing anywhere else and a ship already called keeps coming, while the cut itself still advances at the same rate (2026-09-07 audit, the same fault as v12.34 one door along)',
+  {v:'12.45',what:'cutting the seal no longer stops the world: through the whole hold his health recovers as it does standing anywhere else and an extraction already called for keeps closing, while the cut itself still advances at the same rate (2026-09-07 audit, the same fault as v12.34 one door along)',
 '@ @'
   {v:'12.46',what:'auto-jog stops when he goes down: a man stood back up with no key held stays where he is instead of walking off toward the cursor at 40 health, while an armed auto-jog that never went down still walks him (2026-09-07 audit)',
    run:function(){
@@ -80,7 +80,7 @@ SubRx @'
        __topClear(); __resetCfg(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.45',what:'cutting the seal no longer stops the world: through the whole hold his health recovers as it does standing anywhere else and a ship already called keeps coming, while the cut itself still advances at the same rate (2026-09-07 audit, the same fault as v12.34 one door along)',
+  {v:'12.45',what:'cutting the seal no longer stops the world: through the whole hold his health recovers as it does standing anywhere else and an extraction already called for keeps closing, while the cut itself still advances at the same rate (2026-09-07 audit, the same fault as v12.34 one door along)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

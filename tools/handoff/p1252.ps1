@@ -53,9 +53,9 @@ SubRx @'
 
 # NEW IN.
 SubRx @'
-  'A HOWLER NO LONGER SHELLS ITS OWN CRATER. It heard its own impact, took the crater for a fresh report, and mailed another shell to it, and that one wound it up again. One noise from you became a barrage of two to four after you had gone quiet.',
+  'A HOWLER IS DEAF TO ITS OWN GUN. It heard the round leave its own tube and the hole that round made, took both for fresh reports about you, and shelled where it had been standing or the crater it had just dug. One noise from you became a barrage after you had gone quiet.',
 '@ @'
-  'A HOWLER NO LONGER SHELLS ITS OWN CRATER. It heard its own impact, took the crater for a fresh report, and mailed another shell to it, and that one wound it up again. One noise from you became a barrage of two to four after you had gone quiet.',
+  'A HOWLER IS DEAF TO ITS OWN GUN. It heard the round leave its own tube and the hole that round made, took both for fresh reports about you, and shelled where it had been standing or the crater it had just dug. One noise from you became a barrage after you had gone quiet.',
   'A PILLAGER WHOSE REACH IS INSIDE HIS OWN BLAST NO LONGER THROWS A CHARGE. One gun in nine has a shorter reach than the radius of a frag, and the man carrying it had a throwing window one unit wide, entirely inside his own explosion.',
 '@
 

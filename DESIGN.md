@@ -40024,6 +40024,61 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.37 - A KEY ALREADY DOWN IS NOT A PRESS
+
+From the 2026-09-07 read-only audit (f-held-revive), specced from the source
+and then attacked by a skeptic before a line was written. Verified by reading
+at v12.36.
+
+WHAT IT WAS. The one self-revive is an edge trigger. It fires on the line in
+the downed branch of updatePlayer that reads the F key and the healLock latch
+together, and the whole file SETS that latch in exactly one place: that same
+line. The two other lines that name it only clear it. So the latch is false
+while you are standing, no matter what your hand is doing, and a man who
+already had F down when the hit landed arrived on the floor with it still
+false. The very first downed frame read that held key as a fresh press and
+spent the one self-revive with no decision made.
+
+F is the melee strike, and has been since v10.64, so a hand resting on it
+through a fight is ordinary play, not a mistake. The man then paid for it a
+second time later in the raid, on his real down, with the v12.10 line telling
+him the revive he never chose to spend was already gone.
+
+THE BUILD. One assignment, at the moment he goes down, latching the flag to
+whatever F is doing at that instant. If F is held, the latch is set, the first
+downed frame sees no edge, and the revive waits for a release and a real press,
+which is exactly what the DOWN overlay on screen asks for. If F is not held,
+the latch is cleared, and the first real press still revives, bit for bit as
+before. The clear on the very next line of the downed branch still frees that
+press. The second edit is a comment on the trigger itself, at the site a future
+reader reaches first.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The bot's downed branch revives
+on a test that never reads the latch, so no paired number moves and no
+extract-rate figure is touched. No dial moves either: the down timer, the
+damage multiplier, the 40 health the revive grants, the one-per-raid rule, the
+crawl speed and the give-up hold are all untouched. The honest caveat is that
+a player who used to lose the revive to a press he never made now keeps it, so
+his survival improves in that one case. That is the removal of an input he did
+not give, not a difficulty dial being moved, and it is the same class as v12.23,
+which took a cook off a man as he went down.
+
+MEASURED. Check 12.37 deploys, holds F for three real frames and proves the
+key actually reached the game by the strike it swings, then puts him down with
+a real damagePlayer hit from a live crawler and requires him to still be on the
+floor with the revive unspent two frames later. Two controls carry the other
+half: with nothing held at all he stays down through six frames and then stands
+up on a real press with the revive ledger moving by one, and a hand that held F
+through the down, let go, and pressed again also stands him up. On the v12.36
+fixture the finding arm fires and both controls pass, so the single red line is
+the behaviour this removes and nothing else.
+
+Not verified: it never draws a frame, so the DOWN overlay, the bleed bar and
+the self-revive prompt are not read off the screen; the gamepad is not driven,
+though the D-pad writes the same key slot so the fix covers it by construction;
+the nuke ending, which downs and kills on the same frame, is not exercised; the
+hit is a direct damage call rather than a round through the bullet path; and
+the bot cannot reach this state at all.
 ## v12.36 - WHOEVER KILLED YOU KILLED YOU
 
 From the 2026-09-07 read-only audit (P2, corpse-redown), specced from the

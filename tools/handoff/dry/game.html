@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.55';
+var VER='12.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.55';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.55';
+var WHATSNEW_VER='12.57';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1379,11 +1379,13 @@ var WHATSNEW=[
   'ONE WORD PER THING, ON THIS CARD TOO. Five older entries here still used words you retired: the extraction called a vehicle in three places, and the tactical belt called by its old name in one. They use your words now, and a check holds the whole card to the list from here on.',
   'A HOWLER SHELL NO LONGER REACHES THROUGH A WALL. A shell bursting in the street took about twenty health off you standing well inside a building, with the hit ring pointing at something you could not see. Walls stop the blast now, exactly as they stop a frag.',
   'BREAKING A CRIER LINE OF SIGHT NOW ACTUALLY CANCELS ITS ALARM. The cancel cleared the windup and then fired the alarm on the very same frame, so hiding never once called one off. The three seconds have to be unbroken now, which they always claimed to be.',
-  'A HOWLER NO LONGER SHELLS ITS OWN CRATER. It heard its own impact, took the crater for a fresh report, and mailed another shell to it, and that one wound it up again. One noise from you became a barrage of two to four after you had gone quiet.',
+  'A HOWLER IS DEAF TO ITS OWN GUN. It heard the round leave its own tube and the hole that round made, took both for fresh reports about you, and shelled where it had been standing or the crater it had just dug. One noise from you became a barrage after you had gone quiet.',
   'A PILLAGER WHOSE REACH IS INSIDE HIS OWN BLAST NO LONGER THROWS A CHARGE. One gun in nine has a shorter reach than the radius of a frag, and the man carrying it had a throwing window one unit wide, entirely inside his own explosion.',
   'A MACHINE SEARCHING FOR YOU CAN NO LONGER GET STUCK FOR THE REST OF THE RAID. When one lost you it picked a point to search, never checked that anything could stand there, and had no way out except arriving. A point inside a wall held it against that wall until the raid ended.',
-  'A PILLAGER CALLING EXTRACTION NOW SIZES THE SIEGE ON THE BAG YOU ARE ACTUALLY HOLDING. His call kept whatever figure your own earlier call at that point had left behind, so riding out on him could bring the siege your bag from half an hour ago deserved.',
+  'A PILLAGER CALLING EXTRACTION NOW SIZES THE SIEGE ON THE BACKPACK YOU ARE ACTUALLY CARRYING. His call kept whatever figure your own earlier call at that point had left behind, so riding out on him could bring the siege the backpack you had half an hour ago deserved.',
   'AN IMPORTED GHOST FIGHTS AT HIS OWN GUN RANGE. He was handed the gun from the report he came out of but kept the engagement range of the body he arrived in, so he opened fire at a distance his rounds could not cross, or refused to open fire at one they could.',
+  'Q MOVES THE BELT AS WELL AS YOUR HAND. Choosing a different grenade used to leave the tactical belt highlighting the cell you were no longer holding, so the caption named one grenade and the trigger threw another.',
+  'WALKING THROUGH ANOTHER EXTRACTION POINT NO LONGER ABANDONS YOUR OWN. The game follows one point at a time, and standing in a second open one used to move everything onto it: the banner, the prompt, the approach pings and the last-seconds warning, while the extraction you had already called left without you.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -11568,7 +11570,27 @@ window.addEventListener('keydown',function(ev){
 function cycleThrow(){
   for(var i=1;i<=3;i++){
     var n=(G.tsel+i)%3;
-    if(G.pouch[THROWKEYS[n]]>0){ G.tsel=n; say(ITEMS[THROWKEYS[n]].name+' ready'); return; }
+    if(G.pouch[THROWKEYS[n]]>0){
+      G.tsel=n;
+      // v12.56, 2026-09-06 in-raid audit: AND THE BELT FOLLOWS THE HAND. Which
+      // grenade is in your hand and which cell the belt highlights are two
+      // different fields, and this key wrote only the first, so choosing a
+      // different grenade left the highlight and the caption on the cell you
+      // were no longer holding while the trigger threw the new one. The
+      // highlight now moves to the cell that actually holds what you chose,
+      // whether that is the derived cell or one you dragged the grenade onto
+      // yourself. Nothing else changes: Q still cycles, which is its job, and
+      // v12.41 already stopped the USE keys doing it behind your back.
+      var _cs=hotbarSlots(), _ck='throw:'+THROWKEYS[n], _ci, _cf=-1;
+      for(_ci=0;_ci<_cs.length;_ci++){
+        var _cc=_cs[_ci];
+        if(!_cc) continue;
+        if(_cc.k===_ck||_cc.itemKey===THROWKEYS[n]){ _cf=_ci; break; }
+      }
+      if(_cf>=0) G.hot=_cf;
+      say(ITEMS[THROWKEYS[n]].name+' ready');
+      return;
+    }
   }
   say('No throwables');
 }
@@ -11865,6 +11887,21 @@ function roofAt(x,y){
   return null;
 }
 function underSameRoof(b,x,y){ return !!b&&x>b.x&&x<b.x+b.w&&y>b.y&&y<b.y+b.h; }
+// v12.51, 2026-09-07 audit: DEAF TO ITS OWN GUN. A Howler writes down the
+// bearing of any noise it hears and keeps it for eight seconds. Both the noises
+// it makes itself reached it through that same door: the round leaving the tube,
+// and the hole the round makes. So it wrote down its own position, walked, and
+// then shelled where it had been standing; or wrote down its own crater and
+// shelled that. Either way one report from the man became a barrage after he had
+// gone quiet. Everything else on the map still hears all of it, which is the
+// point of those noises; the machine that made one simply does not take it as a
+// fresh report about somebody else.
+function howlerDeaf(e,fn){
+  if(!e||e.kind!=='howler'){ fn(); return; }
+  var _t=e.hearT, _x=e.heardX, _y=e.heardY;
+  fn();
+  e.hearT=_t; e.heardX=_x; e.heardY=_y;
+}
 function howlerImpact(SH){
   var p=G.player,R=(CFG.howlerR===undefined?90:CFG.howlerR);
   // v10.63, his note. A shell that lands on a building bursts on the ROOF, so
@@ -11877,22 +11914,20 @@ function howlerImpact(SH){
     G.puffs.push({x:SH.tx,y:SH.ty,t:0,life:.5,c:'#ff9a5c',r:40}); }
   G.shake=Math.max(G.shake,6);
   flash(SH.tx,SH.ty,220,'#ff9a5c',.4);
-  // v12.51, 2026-09-07 audit: A HOWLER DOES NOT TAKE ITS OWN CRATER FOR A FRESH
-  // REPORT. This impact is a noise of 480 and every listening machine hears it,
-  // which is right and is what pulls a room to a burst. The machine that FIRED
-  // it heard it too: the bearing it was shooting at was overwritten with the
-  // crater and its eight second clock wound back to full, so when its cooldown
-  // ran out it shelled its own crater, and that impact wound it up again. One
-  // report became a barrage of two to four, every shell after the first landing
-  // on a man who had already gone quiet, which is the counterplay this machine
-  // was built around. Only the three fields the hearing sweep writes are put
-  // back, and only for the machine that fired: everything else on the map hears
-  // this exactly as before, and the firing Howler is still turned toward the
-  // crater by the same ping, which is what used to end the barrage on its own.
-  var _shBy=SH.by, _shT=null, _shX=null, _shY=null;
-  if(_shBy){ _shT=_shBy.hearT; _shX=_shBy.heardX; _shY=_shBy.heardY; }
-  ping(SH.tx,SH.ty,480,false,false,'robot','fire');
-  if(_shBy){ _shBy.hearT=_shT; _shBy.heardX=_shX; _shBy.heardY=_shY; }
+  // v12.51, 2026-09-07 audit: A HOWLER IS DEAF TO ITS OWN GUN. Everything it
+  // does is a noise every listening machine hears, which is right and is what
+  // pulls a room to a burst; but the machine that made the noise heard it too.
+  // The round leaving the tube wrote its own position down as the bearing, and
+  // the hole the round made overwrote that with the crater and wound its eight
+  // second clock back to full, so when the cooldown ran out it shelled its own
+  // last position or its own crater, and that shot did it again. One report
+  // became a barrage, every shell after the first landing on a man who had gone
+  // quiet, which is the counterplay this machine is built around. Only the three
+  // fields the hearing sweep writes are put back, and only for the machine that
+  // made the noise: everything else on the map hears all of it exactly as
+  // before, and the firing Howler is still turned toward the crater by the same
+  // noise, which is what used to end the barrage on its own.
+  howlerDeaf(SH.by,function(){ ping(SH.tx,SH.ty,480,false,false,'robot','fire'); });
   var dp=dist(p,{x:SH.tx,y:SH.ty});
   // v12.49, 2026-09-07 audit: A BLAST STOPS AT A WALL, which is the rule the
   // frag four lines above has always followed. The three gates here were the
@@ -13759,7 +13794,20 @@ function tryExtractTick(dt,wantCall){
   // standing in the ring that just closed pinned the whole game's idea of "the
   // way out" onto a door that does not open. The bot targets G.active, and so
   // does every extracting raider.
-  if(z&&z.open) G.active=z;
+  // v12.57, 2026-09-06 in-raid audit: STANDING SOMEWHERE DOES NOT STEAL THE
+  // POINTER FROM AN EXTRACTION THAT IS ALREADY RUNNING. This line adopts the
+  // ring under his feet, which is right when nothing is happening and wrong the
+  // moment something is: walking through another open ring while his own
+  // extraction was inbound moved the pointer to a ring with nothing coming, and
+  // then the banner, the middle of the screen, the approach pings, the
+  // last-seconds warning and the surrender guard were all watching the wrong
+  // door while the one he paid for left without him. A ring with a live
+  // countdown or a window still running keeps the pointer; CALLING moves it,
+  // which is below, because that is a choice he made rather than a place he
+  // walked through.
+  var _aLive=(G.active&&((G.active.beaconT!==null&&G.active.beaconT!==undefined)||
+              (G.active.hold!==undefined&&G.active.hold!==null&&G.active.hold>0)));
+  if(z&&z.open&&(!_aLive||z===G.active)) G.active=z;
   else if(!G.active||!G.active.open){
     var _aOpen=null;
     for(var _az=0;_az<G.zones.length;_az++) if(G.zones[_az].open){ _aOpen=G.zones[_az]; break; }
@@ -13806,6 +13854,7 @@ function tryExtractTick(dt,wantCall){
     z.callT=0;
     {
       z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=null; z.pullN=0; z.pinged=0;
+      G.active=z;   // v12.57: calling it MOVES the pointer, which standing in it no longer does
       G.beaconT=z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0;
       T.beaconCalls=(T.beaconCalls||0)+1;
       blip('beacon');
@@ -16789,7 +16838,7 @@ if(e.kind==='howler'&&e.hearT>0){
       // see you keeps its existing accuracy rather than firing twice.
       if(CFG.howlerDeaf!==1&&e.state!=='chase'&&e.cd<=0&&!p.downed){
         var _hd=dist(e,{x:e.heardX,y:e.heardY});
-        if(_hd<e.rng&&_hd>140&&!mortarRoofed(e,e.heardX,e.heardY)){   // v12.00: not through a roof
+        if(_hd<e.rng&&_hd>140&&!mortarRoofed(e,e.heardX,e.heardY)&&!(e.mortT>0)){   // v12.00: not through a roof. v12.51: and its own cooldown, not the wander clock
           // Wider scatter than the aimed shot: it is shooting at a report, not
           // at you, and the difference should be survivable.
           var _hs2=Math.min(190,_hd*0.20);
@@ -16797,9 +16846,9 @@ if(e.kind==='howler'&&e.hearT>0){
             tx:e.heardX+rnd(-_hs2,_hs2),ty:e.heardY+rnd(-_hs2,_hs2),
             t:0,air:(CFG.howlerAir===undefined?2.1:CFG.howlerAir),
             dmg:e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)});
-          e.cd=5.4+rnd(0,1.8);
+          e.mortT=5.4+rnd(0,1.8);   // v12.51: the gun cooling, in a field the wander cannot wipe
           e.alert=3;
-          ping(e.x,e.y,620,false,false,'robot','fire',e);
+          howlerDeaf(e,function(){ ping(e.x,e.y,620,false,false,'robot','fire',e); });   // v12.51: it does not hear its own gun
           if(!G.sim) sfx('alarm',e.x,e.y);
         }
       }
@@ -17269,12 +17318,12 @@ var _rdS=G.shells[_rdi];
         if(_hSee){ e.tx=p.x; e.ty=p.y; }
         var _htx=_hSee?p.x:(e.tx===undefined?p.x:e.tx);
         var _hty=_hSee?p.y:(e.ty===undefined?p.y:e.ty);
-        if(e.cd<=0&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)&&!mortarRoofed(e,_htx,_hty)){   // v12.00: not through a roof
+        if(!(e.mortT>0)&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)&&!mortarRoofed(e,_htx,_hty)){   // v12.00: not through a roof. v12.51: its own cooldown, not the wander clock
           var _hsc=Math.min(120,d*0.12);
           G.shells.push({mortar:1,x0:e.x,y0:e.y,by:e,tx:_htx+rnd(-_hsc,_hsc),ty:_hty+rnd(-_hsc,_hsc),   // v12.51: whose shell this is
             t:0,air:(CFG.howlerAir===undefined?2.1:CFG.howlerAir),
             dmg:e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)});
-          e.cd=4.2+rnd(0,1.6);
+          e.mortT=4.2+rnd(0,1.6);   // v12.51: the gun cooling, in a field the wander cannot wipe
           // v3.87: shelling IS engagement. The Howler never uses sight, so its
           // alert never rose and a fight-picking bot would loot through a
           // barrage. Hot for ~6s past each shell; feeds the threat music too.
@@ -17282,7 +17331,7 @@ var _rdS=G.shells[_rdi];
           // against a 4.2-5.8s cooldown, so a Howler that has genuinely lost
           // sight of him falls quiet between shells instead of self-feeding.
           e.alert=2.0;
-          ping(e.x,e.y,620,false,false,'robot','fire',e);
+          howlerDeaf(e,function(){ ping(e.x,e.y,620,false,false,'robot','fire',e); });   // v12.51: it does not hear its own gun
           if(!G.sim) sfx('alarm',e.x,e.y);
         }
 } else if(e.kind==='crawler'){
@@ -17958,6 +18007,7 @@ e.lootT=(e.lootT||0)+dt;
     }
     if(e.cd>0) e.cd-=dt;
     if(e.wanderT>0) e.wanderT-=dt;   // v12.30: the wander clock, its own field on a crawler
+    if(e.mortT>0) e.mortT-=dt;       // v12.51: the mortar cooling, its own field on a Howler
     // Enemies were silent except when firing, so there was nothing for a noise
     // indicator to show. Footsteps are player-facing only (quiet=true).
     if(e.moving&&e.kind!=='snitch'){
@@ -29048,7 +29098,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.55: 2026-09-07 audit (P3). A pillagers gun, his damage and his engagement range are one thing held in three fields, and the file says so twice: the elite blessing moves all three, a man who picks a gun out of a kit moves all three, and the comment beside one of them spells out why, that an elite with a Longshot keeping an SMG engagement range would read as broken. The imported ghost is the one re-gun that moved only the gun. So a ghost whose body rolled an Auto Rifle and whose report says he favoured the Riot Scattergun opened fire at 374 units with a gun whose rounds die at 260, and every round fired in that band was thrown away short; the other way round a Longshot ghost on a Compact SMG body never engaged past 259 and the 580 cap never bound. The same two lines the kit path already uses, so there is one rule now. Check 12.55 imports a ghost whose favourite gun is not the gun his body rolled and requires his engagement range and his damage to have moved with it, with a control that a ghost imported onto a body already carrying that same gun is left exactly as he was; fails on v12.54.',
+  now:'v12.57: the last live finding of the 2026-09-06 read-only in-raid audit (P2). The game keeps ONE pointer at the extraction that matters, and it was set by standing in a ring. Walk into any other open ring while your own extraction is inbound and the pointer moved to the one under your feet, which has nothing coming: from that moment the banner named the wrong ring, the middle of the screen offered a hold over a ring with nothing arriving, the approach pings and the last-seconds warning went quiet because they were watching the ring he was standing in, and holding E there started a FRESH call while the one he had already paid for landed somewhere else and left without him. A man on the floor had his surrender refused against the wrong ring too, which is the guard v12.47 gave words to. It needs no deliberate double call, because a pillager can open a second ring himself. A ring with a live countdown or a window still running now keeps the pointer, and CALLING moves it, which is a choice he made rather than a place he walked through. Check 12.57 calls one point, walks him into a second open one, and requires the pointer, the countdown and the ring the warning watches to all still be the one he called; a control with nothing running requires the pointer to follow him as it always has, and a third arm requires a deliberate call at the second point to move it; fails on v12.56.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -43,9 +43,9 @@ if(WEAPONS[P.ghost.wep]) e.wep=(WEAPONS[P.ghost.wep].mag===0)?WEAPONS.pistol:WEA
 
 # NEW IN.
 SubRx @'
-  'A PILLAGER CALLING EXTRACTION NOW SIZES THE SIEGE ON THE BAG YOU ARE ACTUALLY HOLDING. His call kept whatever figure your own earlier call at that point had left behind, so riding out on him could bring the siege your bag from half an hour ago deserved.',
+  'A PILLAGER CALLING EXTRACTION NOW SIZES THE SIEGE ON THE BACKPACK YOU ARE ACTUALLY CARRYING. His call kept whatever figure your own earlier call at that point had left behind, so riding out on him could bring the siege the backpack you had half an hour ago deserved.',
 '@ @'
-  'A PILLAGER CALLING EXTRACTION NOW SIZES THE SIEGE ON THE BAG YOU ARE ACTUALLY HOLDING. His call kept whatever figure your own earlier call at that point had left behind, so riding out on him could bring the siege your bag from half an hour ago deserved.',
+  'A PILLAGER CALLING EXTRACTION NOW SIZES THE SIEGE ON THE BACKPACK YOU ARE ACTUALLY CARRYING. His call kept whatever figure your own earlier call at that point had left behind, so riding out on him could bring the siege the backpack you had half an hour ago deserved.',
   'AN IMPORTED GHOST FIGHTS AT HIS OWN GUN RANGE. He was handed the gun from the report he came out of but kept the engagement range of the body he arrived in, so he opened fire at a distance his rounds could not cross, or refused to open fire at one they could.',
 '@
 

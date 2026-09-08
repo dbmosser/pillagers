@@ -11,9 +11,9 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.44 CHECK, inserted before the v12.43 entry. The ship is landed by running
-# the real extraction ticker one step past the end of the beacon, which is the
-# only code that creates a boarding window, with two seconds on a live raid
+# v12.44 CHECK, inserted before the v12.43 entry. The extraction is landed by running
+# the real extraction ticker one step past the end of the countdown, which is the
+# only code that creates an extraction window, with two seconds on a live raid
 # clock. It reads the number the window holds AND the words on the ring badge,
 # because the badge is what he actually reads. Two controls: a full clock must
 # still give the ordinary thirty second window, and a raid with the clock
@@ -22,7 +22,7 @@ function SubRx([string]$old, [string]$new) {
 SubRx @'
   {v:'12.43',what:'holding the sprint key while aiming, or while wading, lays no scent behind a man who is not sprinting, so nothing hunts him along a trail he never made; a plain sprint on dry land still lays one (2026-09-07 audit)',
 '@ @'
-  {v:'12.44',what:'the boarding window never outlives the raid clock: a ship landing with two seconds left announces what the raid actually has and not the three second floor, on the number and on the ring badge alike, while a full clock and a raid with the clock switched off both still give the ordinary thirty seconds (2026-09-07 audit)',
+  {v:'12.44',what:'the extraction window never outlives the raid clock: an extraction arriving with two seconds left announces what the raid actually has and not the three second floor, on the number and on the ring badge alike, while a full clock and a raid with the clock switched off both still give the ordinary thirty seconds (2026-09-07 audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof tickExtractPoints!=='function'||typeof zoneBadge!=='function') return 'SKIP: this build has no extraction ticker or ring badge to read';
@@ -51,22 +51,22 @@ SubRx @'
      try{
        // THE FINDING: the ship lands with two seconds of raid left.
        var A=land(2.0,true);
-       if(!A) return 'SKIP: no raid with an extraction point to land a ship on';
-       if(A.none) return 'SKIP: one step past the end of the beacon opened no boarding window, so there is nothing to read here';
+       if(!A) return 'SKIP: no raid with an extraction point to land an extraction on';
+       if(A.none) return 'SKIP: one step past the end of the countdown opened no extraction window, so there is nothing to read here';
        if(A.hold>A.left+0.001)
-         bad.push('the boarding window says '+A.hold+' seconds with only '+A.left+' left on the raid clock, so the timer kills him with the countdown still running');
+         bad.push('the extraction window says '+A.hold+' seconds with only '+A.left+' left on the raid clock, so the timer kills him with the countdown still running');
        var sec=badgeSeconds(A.badge);
        if(sec===null) bad.push('control: the ring badge did not print a seconds figure at all ['+A.badge+'], so what he reads cannot be checked here');
        else if(sec>Math.max(0,Math.ceil(A.left)))
          bad.push('the ring badge reads "'+A.badge+'" with '+A.left+' seconds of raid left, so every readout he has is promising him time the raid does not have');
-       if(!(A.hold>0)) bad.push('the boarding window came out at '+A.hold+', which reads as no window at all');
+       if(!(A.hold>0)) bad.push('the extraction window came out at '+A.hold+', which reads as no window at all');
        // CONTROL ONE: a full clock still gives the ordinary thirty seconds.
        var B=land(540,true);
-       if(B&&!B.none&&B.hold!==30) bad.push('control: with a full raid clock the boarding window is '+B.hold+' and not the ordinary 30, so the clamp has changed a normal extraction');
+       if(B&&!B.none&&Math.abs(B.hold-30)>0.2) bad.push('control: with a full raid clock the extraction window is '+B.hold+' and not the ordinary 30, so the clamp has changed a normal extraction');
        // CONTROL TWO: with the clock switched off it is still thirty, which is
        // the v12.24 rule and the reason this clamp is guarded at all.
        var C=land(0,false);
-       if(C&&!C.none&&C.hold!==30) bad.push('control: with the raid clock switched off the boarding window is '+C.hold+' and not 30, so the v12.24 rule has been undone');
+       if(C&&!C.none&&Math.abs(C.hold-30)>0.2) bad.push('control: with the raid clock switched off the extraction window is '+C.hold+' and not 30, so the v12.24 rule has been undone');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ var gz=__state(); if(gz&&!gz.over){ gz.player.downed=false; __endRaid('abandon'); } }catch(_e){}

@@ -1,0 +1,25 @@
+v12.56: Q moves the belt as well as your hand
+
+The last open line of the 2026-09-06 in-raid audit, and the piece v12.41
+deliberately left behind because it is a different act.
+
+Two fields say which grenade is in your hand and they are not the same field:
+the cell the tactical belt highlights, and the selector the throw reads. Q is
+the key whose whole job is to choose a different grenade, and it wrote only the
+second. So pressing Q moved what you would throw and left the belt highlighting
+the cell you were no longer holding: the caption named one grenade, the
+highlight sat on its cell, and the trigger threw another.
+
+v12.41 closed the other half, where a use key walked that selector on behind
+your back. This is the deliberate half: choosing is the point, and the belt
+simply has to follow the choice.
+
+The highlight now moves to the cell that actually holds what you chose, derived
+or dragged. Q still cycles, the toast is the same, the throw is untouched.
+
+Check 12.56 gives him two kinds of grenade and no third, presses the real key,
+and requires the highlight, the cell, the caption and the selector all to name
+the same grenade; controls cover a man with one kind only and a grenade dragged
+onto a key of his own; fails on v12.55.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

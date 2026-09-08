@@ -42,7 +42,7 @@ SubRx @'
   'A MACHINE SEARCHING FOR YOU CAN NO LONGER GET STUCK FOR THE REST OF THE RAID. When one lost you it picked a point to search, never checked that anything could stand there, and had no way out except arriving. A point inside a wall held it against that wall until the raid ended.',
 '@ @'
   'A MACHINE SEARCHING FOR YOU CAN NO LONGER GET STUCK FOR THE REST OF THE RAID. When one lost you it picked a point to search, never checked that anything could stand there, and had no way out except arriving. A point inside a wall held it against that wall until the raid ended.',
-  'A PILLAGER CALLING EXTRACTION NOW SIZES THE SIEGE ON THE BAG YOU ARE ACTUALLY HOLDING. His call kept whatever figure your own earlier call at that point had left behind, so riding out on him could bring the siege your bag from half an hour ago deserved.',
+  'A PILLAGER CALLING EXTRACTION NOW SIZES THE SIEGE ON THE BACKPACK YOU ARE ACTUALLY CARRYING. His call kept whatever figure your own earlier call at that point had left behind, so riding out on him could bring the siege the backpack you had half an hour ago deserved.',
 '@
 
 # STAMPS.

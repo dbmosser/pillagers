@@ -1,0 +1,44 @@
+## v12.57 - WALKING THROUGH ANOTHER EXTRACTION POINT NO LONGER ABANDONS YOUR OWN
+
+From the 2026-09-06 read-only in-raid audit (P2). This is the last finding of
+that run still live. Verified by reading at v12.56.
+
+WHAT IT WAS. The game keeps one pointer at "the extraction that matters", and
+that pointer was set by standing in a ring. So walking into any other open ring
+while your own extraction was inbound moved the pointer onto the one under your
+feet, which had nothing coming.
+
+From that moment everything followed the wrong door. The banner named the ring
+you were standing in. The middle of the screen offered you a hold over a ring
+with nothing arriving. The approach pings and the last-seconds warning went
+quiet, because both watch the pointer. Holding E there started a fresh call,
+with its own twenty five second wait, while the extraction you had already paid
+for landed somewhere else and left without you. And a man on the floor had his
+surrender refused against the wrong ring, which is the guard v12.47 gave words
+to.
+
+It needs no deliberate double call to happen. A pillager can open a second ring
+himself, and you only have to walk across it.
+
+THE BUILD. A ring with a live countdown or a window still running keeps the
+pointer. Calling moves it, and that is a new line at the call itself, because
+calling is a choice you made rather than a place you walked through. With
+nothing running anywhere, the pointer still follows you into an open ring
+exactly as it always has, which is what that line is for.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The bot calls one ring and walks
+to it, so it never has two live at once and no paired number can move. No dial
+changes.
+
+MEASURED. Check 12.57 needs two open points and skips honestly on a map that
+builds only one. It puts a countdown on the first, stands the man in the
+second, which is the exact shape of walking across a ring on the way somewhere,
+and requires the pointer and his own countdown both to be untouched. The first
+control has nothing running anywhere and requires the pointer to follow him, so
+the build cannot pass by simply freezing that line. The second control has him
+hold the key in the second point until it actually calls, and requires the
+pointer to move, so a choice he made is not ignored.
+
+Not verified: it drives the extraction tick directly rather than walking him
+across the map; it reads the pointer and the countdown rather than the banner
+and the warning that follow them; and it runs one map and one seed.

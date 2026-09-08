@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.36';
+var VER='12.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,11 +1360,12 @@ var VER='12.36';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.36';
+var WHATSNEW_VER='12.37';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'WHOEVER KILLED YOU KILLED YOU. A round landing on your body during the death fade used to throw a second DOWN over the top of it, add another down to your record, and put its own name on the KILLED IN ACTION card in place of the machine that actually did it.',
+  'A KEY ALREADY DOWN IS NOT A PRESS. F is the melee strike, so a hand resting on it when the hit landed used to spend your one self-revive on the first downed frame, with no decision made. The revive now waits for a release and a real press.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -12255,6 +12256,19 @@ function damagePlayer(amt,src,srcName,sx,sy){
     // is out, so it goes the way a release sends it, with the time it has cooked
     // (2026-09-06 in-raid audit). killPlayer has dropped a cook on a death all along.
     if(p.cooking) releaseCook();
+    // v12.37, 2026-09-07 read-only audit (f-held-revive): A KEY ALREADY DOWN IS
+    // NOT A PRESS. healLock is the edge latch for the self-revive and it is SET
+    // in exactly one place, inside the downed branch of updatePlayer; the two
+    // other lines that name it only CLEAR it. So a hand already resting on F
+    // when the hit landed arrived on the floor with the latch clear, and the
+    // first downed frame read that held key as a fresh press and spent the one
+    // self-revive with no decision made. F is the melee strike since v10.64, so
+    // holding it through a fight is ordinary play, and the man then paid for it
+    // on his second down with the v12.10 line telling him a revive he never
+    // chose was gone. Latched here, at the instant he goes down: the revive now
+    // waits for a release and a real press, which is what the DOWN overlay asks
+    // for, and the clear on the next frame still frees that press.
+    p.healLock=!!keys['KeyF'];
 p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null;
   (function(){
     if(G.sim) return;
@@ -14356,6 +14370,11 @@ function updatePlayer(dt){
     // from, so they have to count the crawl.
     T.distance+=dist({x:dox,y:doy},p);
     T.closestExtract=Math.min(T.closestExtract,closestRingDist(p));   // v8.58: the nearest OPEN ring, not the targeted one
+    // v12.37, audit (f-held-revive): THE OTHER HALF OF THE EDGE. The latch below
+    // is set only in here, so this line used to read a key that was already down
+    // before he went down as a press, and the one self-revive was spent on the
+    // first downed frame. damagePlayer latches it at the moment he goes down now;
+    // the clear on the line after still frees the real press that follows.
     if(keys['KeyF']&&!p.healLock){ p.healLock=true; selfRevive(); }
     if(!keys['KeyF']) p.healLock=false;
     // The beacon countdown lives in here, so going down used to freeze the
@@ -28785,7 +28804,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.36: 2026-09-07 audit (corpse-redown). killPlayer does not end a live raid: it zeroes the health, CLEARS the downed flag, opens a one and a half second beat and leaves the body in the world, and the frame loop keeps running the machines, the bullets and the throwables underneath it. damagePlayer had no dead test at all, its only early return being invulnerability, which killPlayer never sets, so a round landing on the corpse walked past the downed branch and fell into the down path: a second DOWN toast over the death fade, another count on the downs figure the report and the stats card print, and the last-hit name rewritten, which is the name the KILLED IN ACTION card reads while the ledger beside it still names the real killer. One guard at the very top of damagePlayer closes all three, and it has to be at the top because the direction stamp, the hurt stamp and the name are all written before the invulnerability test. Nothing measurable moves: the bot ends a sim raid outright rather than running a beat, and the round still sparks, still counts and is still consumed. Check 12.36 puts him down with a real round, kills him with a second, then lands a third on the body inside the beat through the real frame loop and requires the downs figure, the downed flag, the toast and the killer name all to be unchanged, and the card to name the machine that killed him and not the one that shot the body; fails on v12.35.',
+  now:'v12.37: 2026-09-07 audit (f-held-revive). healLock is the edge latch on the one self-revive, and the whole file SETS it in exactly one place, inside the downed branch of updatePlayer; the two other lines that name it only clear it. So a hand already resting on F when the hit landed arrived on the floor with the latch clear, and the very first downed frame read that held key as a fresh press and spent the one self-revive with no decision made. F has been the melee strike since v10.64, so holding it through a fight is ordinary play, and the man then paid for it on his second down with the v12.10 line telling him a revive he never chose was already gone. One assignment at the down moment latches the flag to whatever F is doing at that instant, so the revive waits for a release and a real press, which is what the DOWN overlay asks for on screen; with F not held the latch is cleared and the first real press still revives, bit for bit as before. Nothing measurable moves: the bot auto-revives on a branch that never reads the latch. Check 12.37 puts him down with the strike key held and requires him to stay on the floor with the revive unspent, then proves in two controls that a real press still stands him up and that letting go and pressing again after a held down still revives; fails on v12.36.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

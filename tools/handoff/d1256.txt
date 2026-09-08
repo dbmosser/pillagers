@@ -1,0 +1,42 @@
+## v12.56 - Q MOVES THE BELT AS WELL AS YOUR HAND
+
+The last open line of the 2026-09-06 in-raid audit, and the piece v12.41
+deliberately left behind because it is a different act. Verified by reading at
+v12.55.
+
+WHAT IT WAS. There are two fields that say which grenade is in your hand, and
+they are not the same field. One is the cell the tactical belt highlights. The
+other is the throwable selector the throw itself reads.
+
+Q is the key whose whole job is to choose a different grenade, and it wrote
+only the second one. So pressing Q moved what you would throw and left the belt
+highlighting the cell you were no longer holding: the caption named one
+grenade, the highlight sat on its cell, and the trigger threw a different one.
+
+v12.41 closed the other half of the same split, where a USE key on an empty
+cell walked that selector on behind your back. This is the deliberate half.
+Choosing is fine and is the point of the key. The belt simply has to follow the
+choice.
+
+THE BUILD. The highlight moves to the cell that actually holds what you chose,
+whether that is the derived cell or one you dragged the grenade onto yourself.
+Nothing else changes: Q still cycles, the toast is the same, and the throw is
+untouched.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The bot never presses Q. No dial
+moves and nothing in a raid behaves differently; what changes is that the
+screen stops disagreeing with itself.
+
+MEASURED. Check 12.56 gives him two kinds of grenade and no third, so the cycle
+has exactly one place to go and the answer cannot be a coincidence. It points
+the belt at one, presses the real key on the real window, and requires the
+highlight, the highlighted cell's identity, the caption and the hidden selector
+all to name the same grenade afterwards. Two controls cover the ways a fix
+could cheat: a man carrying only one kind must be left exactly where he was,
+with neither the highlight nor the selector moving; and when the grenade has
+been dragged onto a key of his own, the highlight must land on THAT cell rather
+than on any cell at all.
+
+Not verified: no frame is drawn, so the highlight is read as state rather than
+as pixels; the gamepad is not driven; and it does not follow the throw itself,
+since v12.41 already covers which grenade leaves the hand.
