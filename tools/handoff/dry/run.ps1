@@ -11,99 +11,81 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.71 CHECK, inserted before the v12.70 entry. It drives the real keys and
-# the real frame loop, the only driver that moves the player and lays a mark,
-# using the same four-direction harness as the shipped v12.33 check so a wall on
-# one side cannot decide the answer. The control runs FIRST: a plain sprint on
-# dry land must lay marks, or the two zeroes after it prove nothing at all. The
-# wading arm counts only the frames he is actually still in the water, and if it
-# cannot be staged the whole check reports as a SKIP naming what was and was not
-# measured, because half a check is not a pass.
+# v12.79 CHECK, inserted before the v12.78 entry. Two arms on one staging, and
+# the needle is assembled rather than written, so a check that greps the page
+# cannot find this row in its own source. The control arm is the same man in the
+# same place with no extraction waiting: the prompt must be drawn and the hold
+# must run, or a missing prompt in the finding arm would only mean the overlay
+# was never drawn at all.
 SubRx @'
-  {v:'12.70',what:'a search contract names a place on the sector he is playing: a card written on one sector and read on another names a place that exists there, instead of the frozen name of a place on the sector it was rolled on, while a card of any other type still reads what it was written with (2026-09-08 audit)',
+  {v:'12.78',what:'the price of walking out is the price he actually pays: with nothing banked the confirm button quotes no fine and the line afterwards announces none, while a character who has the XP still reads the full price and still pays exactly it (2026-09-08 first-hour audit)',
 '@ @'
-  {v:'12.71',what:'holding the sprint key while aiming, or while wading, lays no scent behind a man who is not sprinting, so nothing hunts him along a trail he never made; a plain sprint on dry land still lays one (2026-09-07 audit)',
+  {v:'12.79',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
-     if(typeof inWaterDeep!=='function') return 'SKIP: this build has no deep water to wade in';
-     var bad=[], noWade=null;
-     try{
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys&&window.__frame&&window.__textTrace&&window.__forceSize)) return 'SKIP: this fixture cannot deploy, press keys and read the drawn text';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
+     if(typeof giveUpTick!=='function') return 'SKIP: this build has no surrender';
+     var bad=[];
+     // Assembled, never written whole, so the phrase cannot be found in the
+     // source of the very check that is looking for it.
+     var PROMPT='TO '+'SURRE'+'NDER', REFUSE='NO '+'SURRE'+'NDER';
+     function arm(waiting){
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_f){}
        __deploy({kit:[],mapIx:0,seed:4242});
-       var g=__state(), p=g.player, i, k;
-       if(!g||!p) return 'SKIP: no live raid to run in';
-       g.ents.length=0;                       // nobody to interrupt the run
-       var K=__keys(), dirs=['KeyW','KeyS','KeyD','KeyA'];
+       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
+       var p=g.player, z=g.active||g.zones[0], K=__keys(), k, i;
+       for(k in K) delete K[k];
+       g.ents.length=0;
+       g.active=z; z.open=true;
+       if(waiting){ z.beaconT=0; g.beaconT=0; g.shipHold=20; z.hold=20; p.x=z.x; p.y=z.y; }
+       else { z.beaconT=null; g.beaconT=null; g.shipHold=null; z.hold=null;
+              p.x=z.x+(z.r+900); p.y=z.y; }
+       p.hp=20; p.armor=0; p.iv=99; p.roll=0; p.cooking=0;
+       p.revived=true; p.downed=true; p.downT=CFG.downTime; p.giveT=0; p.healLock=true;
        var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
-       var keepTs=lastTs, homeX=p.x, homeY=p.y;
-       var INSET=(CFG.wadeInset===undefined?11:CFG.wadeInset);
-       function wet(x,y){ return !!inWaterDeep(x,y,INSET); }
-       function mineCount(){ var c=0,j; for(j=0;j<g.prints.length;j++) if(g.prints[j].mine) c++; return c; }
-       function reset(){
-         for(k in K) delete K[k];
-         p.downed=false; p.iv=99; p.stam=100; p.stamLock=0; p.stamRelease=0;
-         p.ads=false; p.roll=0; g.crouchTog=false; g.prints=[];
-       }
-       // A RUN IN ONE DIRECTION with the sprint key down. mustWade stops counting
-       // the moment he walks out of the water, so a mark laid on dry land can
-       // never be read as a mark laid while wading.
-       function run(dir,ads,n,mustWade){
-         var sx=p.x, sy=p.y, frames=0, left=false;
-         K[dir]=1; K.ShiftLeft=1;
-         for(i=0;i<n;i++){
-           if(mustWade&&!wet(p.x,p.y)){ left=true; break; }
-           p.stam=100; p.stamLock=0; p.stamRelease=0; if(ads) p.ads=true;
-           clk+=16.7; __loop(clk); frames++;
-         }
-         for(k in K) delete K[k];
-         return {ran:Math.sqrt((p.x-sx)*(p.x-sx)+(p.y-sy)*(p.y-sy)),mine:mineCount(),frames:frames,left:left};
-       }
-       // THE CONTROL FIRST, on dry land with no aim: this is what a sprint is
-       // supposed to do, and without it the zeroes after it prove nothing.
-       var ctl=null, used=null, di;
-       for(di=0;di<dirs.length;di++){
-         p.x=homeX; p.y=homeY; reset();
-         if(wet(p.x,p.y)) continue;
-         ctl=run(dirs[di],false,180,false); used=dirs[di];
-         if(ctl.ran>=250&&ctl.mine>=3) break;
-       }
-       if(!ctl||ctl.ran<250||ctl.mine<3) return 'SKIP: three seconds of plain sprint moved him '+Math.round(ctl?ctl.ran:0)+' units and laid '+((ctl&&ctl.mine)||0)+' marks in every direction, so he is boxed in and there is no trail to measure here';
-       // THE FINDING, AIMING. Same key, same direction, aim held down.
-       p.x=homeX; p.y=homeY; reset();
-       var A=run(used,true,180,false);
-       if(A.ran<20) bad.push('staging: with the aim held he covered only '+Math.round(A.ran)+' units, so this arm never walked anywhere');
-       else if(A.mine>0) bad.push('holding the sprint key while AIMING laid '+A.mine+' scent marks over '+Math.round(A.ran)+' units, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the speed he is slowest');
-       // THE FINDING, WADING. He is PLACED in deep water for this one, which is a
-       // placement and not a walk, and it is said plainly in the design entry.
-       var wx=-1, wy=-1, sc, cx, cy, W=g.map.cols*g.map.cw, H=g.map.rows*g.map.ch;
-       for(sc=0;sc<6000&&wx<0;sc++){
-         cx=60+((sc*137)%Math.max(120,W-120));
-         cy=60+((sc*271)%Math.max(120,H-120));
-         if(wet(cx,cy)) { wx=cx; wy=cy; }
-       }
-       if(wx<0) noWade='no deep water was found anywhere on this map and seed';
-       else{
-         p.x=wx; p.y=wy; reset();
-         if(!wet(p.x,p.y)) noWade='he would not stand in the water that was found';
-         else{
-           var B=run(used,false,180,true);
-           if(B.frames<20) noWade='he was out of the water again after '+B.frames+' frames, which is too few to lay a mark either way';
-           else if(B.mine>0) bad.push('holding the sprint key while WADING laid '+B.mine+' scent marks in '+B.frames+' frames of water, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the slowest he ever moves');
-         }
-       }
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+       K.Space=1;
+       var peak=0;
+       for(i=0;i<40;i++){ p.iv=99; p.downT=CFG.downTime; clk+=16.7; __loop(clk);
+                          if((p.giveT||0)>peak) peak=p.giveT||0;
+                          if(!p.downed||g.over) break; }
+       var lines=[];
+       try{ lines=__textTrace(function(){ __frame(0.016); }); }catch(_t){ }
+       var txt=''; for(i=0;i<lines.length;i++) txt+=' | '+lines[i].t;
+       var out={peak:peak,down:!!p.downed,over:!!g.over,txt:txt,
+                prompt:txt.indexOf(PROMPT)>=0,refuse:txt.indexOf(REFUSE)>=0,
+                verb:txt.indexOf('TO EXTRACT')>=0};
+       for(k in K) delete K[k];
+       return out;
+     }
+     var keepTs=lastTs;
+     try{
+       // CONTROL FIRST: the same man, downed with his revive spent, nowhere near
+       // a waiting extraction. The prompt must be drawn and the hold must run, or
+       // a missing prompt below would only say the overlay was never drawn.
+       var B=arm(false);
+       if(!B) return 'SKIP: no raid with an extraction point to lie down in';
+       if(!B.down&&!B.over) return 'SKIP: he did not stay on the floor long enough to read the screen';
+       if(!B.prompt) return 'SKIP: with no extraction waiting the downed screen did not draw the surrender row at all, so this check cannot see it and proves nothing';
+       if(!(B.peak>0)) return 'SKIP: with no extraction waiting two seconds on the key started no hold, so this check cannot see a hold and proves nothing';
+       // THE FINDING: downed inside a point with an extraction waiting, which is
+       // the one state the key is refused in, on purpose, since v9.71.
+       var A=arm(true);
+       if(!A) return 'SKIP: no raid with an extraction point to lie down in';
+       if(A.peak>0) bad.push('staging: the hold started inside a waiting extraction, so this is not the refused state the check is about');
+       if(A.prompt) bad.push('with an extraction waiting on the point he is lying in the screen still offers the surrender, and the key does nothing: the row is drawn, the bar never comes, and nothing tells him why');
+       if(!A.refuse) bad.push('with an extraction waiting the screen says nothing at all about the surrender being refused; the drawn text is ['+A.txt.slice(0,200)+']');
+       if(!A.verb) bad.push('control: the working verb is not drawn in this state either, so the screen is not the one this check thinks it is reading');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
-       try{ var g2=__state(); if(g2&&g2.player){ g2.player.ads=false; g2.player.iv=0; } }catch(_a){}
-       try{ lastTs=keepTs; }catch(_t){}
-       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ lastTs=keepTs; }catch(_t2){}
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.downed=false; gz.player.giveT=0; gz.player.iv=0; gz.player.revived=false; gz.player.healLock=false; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
        __topClear(); __resetCfg(); __cleanProfile();
      }
-     if(bad.length) return bad.join('; ');
-     // HALF A CHECK IS NOT A PASS.
-     if(noWade) return 'SKIP: the aiming half passed, but '+noWade+', so the wading half is not measured here';
-     return null; }},
-  {v:'12.70',what:'a search contract names a place on the sector he is playing: a card written on one sector and read on another names a place that exists there, instead of the frozen name of a place on the sector it was rolled on, while a card of any other type still reads what it was written with (2026-09-08 audit)',
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.78',what:'the price of walking out is the price he actually pays: with nothing banked the confirm button quotes no fine and the line afterwards announces none, while a character who has the XP still reads the full price and still pays exactly it (2026-09-08 first-hour audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

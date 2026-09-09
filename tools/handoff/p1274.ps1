@@ -43,11 +43,11 @@ SubRx @'
 '@
 
 SubRx @'
-    if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+'.'); return; }
+  if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+'.'); return; }
 '@ @'
-    // v12.74: the refusal says WHICH money it means, so a man carrying stall
-    // money is told it is not banked yet rather than that he has nothing.
-    if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+' from banked Credits.'+((G.pedCarry||0)>0?(' The '+'$'+(G.pedCarry||0).toLocaleString()+' on you is not banked until you walk out.'):'')); return; }
+  // v12.74: the refusal says WHICH money it means, so a man carrying stall
+  // money is told it is not banked yet rather than that he has nothing.
+  if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+' from banked Credits.'+((G.pedCarry||0)>0?(' The '+'$'+(G.pedCarry||0).toLocaleString()+' on you is not banked until you walk out.'):'')); return; }
 '@
 
 SubRx @'

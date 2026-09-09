@@ -607,3 +607,34 @@ stays dark or disappears, and whether stall money should be spendable at the sta
 and will ship green over the word cash at game 9147, which v12.74 fixes by hand. Widen
 that check AFTER the queue drains, as its own build, because widening it now would very
 likely turn v12.48 red on older text and stall thirty builds behind it.
+
+## 2026-09-09: A LINT, AND WHAT IT FOUND
+
+**tools/lint.ps1 now hunts the defect classes I kept finding by hand.** It prints counts
+only and writes tools/lint-report.txt, so a run costs almost nothing to read. Run it
+after every build. The four classes are: A, a Settings dial defined and never read; B,
+his banned vocabulary in prose the player can read; C, a one-shot migration a brand new
+profile still meets (the v12.43 class); D, a message written inside a loop and written
+over after it (the v12.73 class).
+
+**FIRST RUN, 2026-09-09, on v12.47:**
+- **A = 36 dials defined and never read.** Each one is potentially a Settings row that
+  does nothing, which is the "a floor outranks the menu" memory. Needs reading one at a
+  time: some will be read through CFG[k] and are false positives.
+- **B = 24 banned words in prose he can read**: standing 6, bag 6, touchdown 4, cash 3,
+  tier 2, hotbar 2, boarding 1. THIS CONFIRMS THE HOLE I FLAGGED: drafted f1248 asserts
+  three words and would ship green over nineteen of these twenty four. Widen f1248 to
+  the full list AND fix the strings, as one build, after the queue drains.
+- **C = 0** after excluding freeKit, which stamps itself the same way but is a game
+  action rather than a repair: a new player has correctly not taken the kit.
+- **D = 6 functions**: doEmote, raidKey, cycleThrow, useMedical, equipFromBag and
+  grantLoot. grantLoot is already fixed as drafted v12.73. The other five are LEADS, not
+  findings: read each one before believing it, because an after-loop say() that is
+  mutually exclusive with the in-loop one is fine.
+
+**THE DRY RUN CAUGHT A FIVE BUILD CASCADE and it is fixed.** p1274's Peddler refusal
+anchor was written with four spaces of indentation where the game has two, so it matched
+nothing, and every build after it lost the WHATSNEW line it anchors on: 1274 through
+1279 all failed and the dry game stopped at v12.73. Indentation, not conflict, which is
+why the earlier grep for overlapping anchors found nothing. After the fix, dry.ps1 1248
+1279 applies all thirty two with zero failures and ends at v12.79.

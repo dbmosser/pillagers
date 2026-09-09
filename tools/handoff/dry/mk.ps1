@@ -5709,6 +5709,418 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.79',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys&&window.__frame&&window.__textTrace&&window.__forceSize)) return 'SKIP: this fixture cannot deploy, press keys and read the drawn text';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
+     if(typeof giveUpTick!=='function') return 'SKIP: this build has no surrender';
+     var bad=[];
+     // Assembled, never written whole, so the phrase cannot be found in the
+     // source of the very check that is looking for it.
+     var PROMPT='TO '+'SURRE'+'NDER', REFUSE='NO '+'SURRE'+'NDER';
+     function arm(waiting){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_f){}
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
+       var p=g.player, z=g.active||g.zones[0], K=__keys(), k, i;
+       for(k in K) delete K[k];
+       g.ents.length=0;
+       g.active=z; z.open=true;
+       if(waiting){ z.beaconT=0; g.beaconT=0; g.shipHold=20; z.hold=20; p.x=z.x; p.y=z.y; }
+       else { z.beaconT=null; g.beaconT=null; g.shipHold=null; z.hold=null;
+              p.x=z.x+(z.r+900); p.y=z.y; }
+       p.hp=20; p.armor=0; p.iv=99; p.roll=0; p.cooking=0;
+       p.revived=true; p.downed=true; p.downT=CFG.downTime; p.giveT=0; p.healLock=true;
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       K.Space=1;
+       var peak=0;
+       for(i=0;i<40;i++){ p.iv=99; p.downT=CFG.downTime; clk+=16.7; __loop(clk);
+                          if((p.giveT||0)>peak) peak=p.giveT||0;
+                          if(!p.downed||g.over) break; }
+       var lines=[];
+       try{ lines=__textTrace(function(){ __frame(0.016); }); }catch(_t){ }
+       var txt=''; for(i=0;i<lines.length;i++) txt+=' | '+lines[i].t;
+       var out={peak:peak,down:!!p.downed,over:!!g.over,txt:txt,
+                prompt:txt.indexOf(PROMPT)>=0,refuse:txt.indexOf(REFUSE)>=0,
+                verb:txt.indexOf('TO EXTRACT')>=0};
+       for(k in K) delete K[k];
+       return out;
+     }
+     var keepTs=lastTs;
+     try{
+       // CONTROL FIRST: the same man, downed with his revive spent, nowhere near
+       // a waiting extraction. The prompt must be drawn and the hold must run, or
+       // a missing prompt below would only say the overlay was never drawn.
+       var B=arm(false);
+       if(!B) return 'SKIP: no raid with an extraction point to lie down in';
+       if(!B.down&&!B.over) return 'SKIP: he did not stay on the floor long enough to read the screen';
+       if(!B.prompt) return 'SKIP: with no extraction waiting the downed screen did not draw the surrender row at all, so this check cannot see it and proves nothing';
+       if(!(B.peak>0)) return 'SKIP: with no extraction waiting two seconds on the key started no hold, so this check cannot see a hold and proves nothing';
+       // THE FINDING: downed inside a point with an extraction waiting, which is
+       // the one state the key is refused in, on purpose, since v9.71.
+       var A=arm(true);
+       if(!A) return 'SKIP: no raid with an extraction point to lie down in';
+       if(A.peak>0) bad.push('staging: the hold started inside a waiting extraction, so this is not the refused state the check is about');
+       if(A.prompt) bad.push('with an extraction waiting on the point he is lying in the screen still offers the surrender, and the key does nothing: the row is drawn, the bar never comes, and nothing tells him why');
+       if(!A.refuse) bad.push('with an extraction waiting the screen says nothing at all about the surrender being refused; the drawn text is ['+A.txt.slice(0,200)+']');
+       if(!A.verb) bad.push('control: the working verb is not drawn in this state either, so the screen is not the one this check thinks it is reading');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ lastTs=keepTs; }catch(_t2){}
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.downed=false; gz.player.giveT=0; gz.player.iv=0; gz.player.revived=false; gz.player.healLock=false; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.78',what:'the price of walking out is the price he actually pays: with nothing banked the confirm button quotes no fine and the line afterwards announces none, while a character who has the XP still reads the full price and still pays exactly it (2026-09-08 first-hour audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof abandonRepCost!=='function'||typeof elapsed!=='function') return 'SKIP: this build has no walk-out fine';
+     var ab=document.getElementById('abandonbtn'), cb=document.getElementById('confirmabandon');
+     if(!ab||!cb) return 'SKIP: this build has no abandon buttons in the page';
+     var bad=[], P2=__P(), keepXp=P2.xp, keepLog=(P2.log||[]).slice();
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       function armed(xp){
+         __deploy({kit:[],mapIx:0,seed:4242});
+         var g=__state(); if(!g||!g.player) return null;
+         // Past the grace, so the fine is live. elapsed() is the raid length
+         // minus what is left, so this is the honest way to age a raid.
+         if(g.raidLen!==undefined&&g.timeLeft!==undefined) g.timeLeft=g.raidLen-180;
+         else g.t=180;
+         if(elapsed()<=60) return {early:1};
+         P2.xp=xp; saveProfile();
+         ab.textContent='Abandon run';
+         try{ ab.onclick.call(ab); }catch(_a){ return {threw:1}; }
+         return {label:String(cb.textContent||''), cost:abandonRepCost(elapsed()), g:g};
+       }
+       // THE FINDING: nothing banked, so nothing can be taken.
+       var a1=armed(0);
+       if(!a1) return 'SKIP: no live raid to abandon';
+       if(a1.early) return 'SKIP: this raid cannot be aged past the grace period here';
+       if(a1.threw) return 'SKIP: arming the confirm threw';
+       if(String(a1.label).indexOf(String(a1.cost))>=0)
+         bad.push('with nothing banked the button still offers to charge him '+a1.cost+' XP ['+a1.label+']: the fine stops at zero and would take nothing, so the one number the game shows him about quitting is a price he cannot be charged, and it is the number that keeps a new player in a run he wanted to leave');
+       var g1=a1.g; g1.msg='';
+       try{ cb.onclick.call(cb); }catch(_c1){}
+       var said=String(g1.msg||'');
+       if(said.indexOf(String(a1.cost))>=0)
+         bad.push('after walking out with nothing banked he is told ['+said+'], which announces a fine that was never taken');
+       if((P2.xp||0)!==0)
+         bad.push('control: walking out with nothing banked moved his XP to '+(P2.xp||0)+', so the floor is not holding');
+       // CONTROL: a character who HAS it reads the full price and pays it.
+       var rich=5000;
+       var a2=armed(rich);
+       if(a2&&!a2.early&&!a2.threw){
+         if(String(a2.label).indexOf(String(a2.cost))<0)
+           bad.push('control: a character with '+rich+' XP is no longer told the fine is '+a2.cost+' ['+a2.label+']');
+         var g2=a2.g; g2.msg='';
+         try{ cb.onclick.call(cb); }catch(_c2){}
+         if((P2.xp||0)!==rich-a2.cost)
+           bad.push('control: a character with '+rich+' XP walked out and was left on '+(P2.xp||0)+' rather than '+(rich-a2.cost)+', so this build has changed what the fine costs');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(cb) cb.style.display='none'; if(ab) ab.textContent='Abandon run'; }catch(_b){}
+       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ P2.xp=keepXp; P2.log=keepLog; saveProfile(); }catch(_p){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.77',what:'dying with the freebie kit gives back the tactical belt plan and the gun slot along with the items, since all three were kept aside when he took the kit, while a key bound to something he no longer owns is still dropped and a clean extraction still restores nothing (2026-09-08 first-hour audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy and end a raid';
+     if(typeof commitKit!=='function') return 'SKIP: this build has no kit handoff to drive';
+     var fk=document.querySelector('.fkbtn');
+     if(!fk) return 'SKIP: this build has no freebie kit button to press';
+     var bad=[], P2=__P();
+     var keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),hot:P2.hotAssign,gun:P2._gunSlot,free:P2.freeKit,log:(P2.log||[]).slice()};
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // Two things he owns and one he does not, so the filter has something to
+       // bite on that could not have come from the staging by accident.
+       var owned=[], notOwned=null, k;
+       for(k in ITEMS){ if(!ITEMS[k]||ITEMS[k].use==='gun') continue;
+         if(owned.length<2) owned.push(k); else { notOwned=k; break; } }
+       if(owned.length<2||!notOwned) return 'SKIP: this build has too few plain items to stage a belt plan';
+       var gunId=null;
+       for(k in WEAPONS){ if(WEAPONS[k]&&k!=='fists'&&WEAPONS[k].mag){ gunId=k; break; } }
+       function stage(planSecond){
+         P2.freeKit=0;
+         P2.stash=owned.slice();
+         P2.kit=owned.slice();
+         P2.hotAssign={}; P2.hotAssign['0']=owned[0]; P2.hotAssign['1']=planSecond;
+         P2._gunSlot=gunId;
+         saveProfile();
+         try{ fk.onclick(); }catch(_c){ return 'the freebie kit button threw'; }
+         if(!P2.freeKit) return 'the freebie kit button did not take the kit';
+         if(!commitKit()) return 'the kit handoff refused to run';
+         return null;
+       }
+       function dieAndRead(){
+         __deploy({kit:[],mapIx:0,seed:4242});
+         var g=__state(); if(!g||!g.player) return null;
+         g.player.downed=false; g.player.hp=1;
+         __endRaid('dead');
+         return {hot:P2.hotAssign||{}, gun:P2._gunSlot||null, kit:(P2.kit||[]).slice()};
+       }
+       // THE FINDING: everything he had bound comes back with the items.
+       var e1=stage(owned[1]);
+       if(e1) return 'SKIP: '+e1;
+       if(P2.hotAssign&&P2.hotAssign['0']) return 'SKIP: taking the kit did not clear the belt plan, so there is nothing here to lose';
+       var r1=dieAndRead();
+       if(!r1) return 'SKIP: no raid to die in';
+       if(r1.kit.length<2) return 'SKIP: the items themselves did not come back, so this build restores nothing at all';
+       if(r1.hot['0']!==owned[0]||r1.hot['1']!==owned[1])
+         bad.push('he bound two tactical belt keys, took the freebie kit and died, and the game told him his loadout had been restored: the items came back and the keys did not, so a first-time player who used the gesture the game teaches him gets his gear back in a backpack with every key he had set now blank and nothing saying so');
+       if(gunId&&r1.gun!==gunId)
+         bad.push('the gun slot he had chosen before taking the kit did not come back either, and it was kept aside at the same moment the items were');
+       // CONTROL ONE: a key pointing at something he no longer owns is a dead
+       // key, and the item list has always dropped those.
+       var e2=stage(notOwned);
+       if(e2) return 'SKIP: '+e2;
+       var r2=dieAndRead();
+       if(r2&&r2.hot&&r2.hot['1']===notOwned)
+         bad.push('control: a belt key bound to something he does not own came back anyway, so the plan now points at an item he is not carrying');
+       // CONTROL TWO: walking out is not a death, and restores nothing.
+       var e3=stage(owned[1]);
+       if(e3) return 'SKIP: '+e3;
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g3=__state(); if(g3&&g3.player){ g3.player.downed=false; g3.player.hp=100; __endRaid('extract'); }
+       if(P2.hotAssign&&P2.hotAssign['0']===owned[0])
+         bad.push('control: a clean extraction put the pre-kit belt plan back as well, so the restore is firing on every raid rather than on the death it was written for');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ P2.stash=keep.stash; P2.kit=keep.kit; P2.hotAssign=keep.hot; P2._gunSlot=keep.gun;
+            P2.freeKit=keep.free; P2.log=keep.log; P2.kitSaved=null; P2.kitBeforeFree=null; saveProfile(); }catch(_p){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.76',what:'how far he died from extraction is measured to the nearest way out and not to the ring the raid nominated, so the death card agrees with the compass he followed all raid and with the closest-approach line printed under it, while a death beside the nominated ring itself still reports exactly what it always did (2026-09-08 first-hour audit, my own half-done fix from v8.58)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy and end a raid';
+     var bad=[], P2=__P(), keepLog=(P2.log||[]).slice(), keepBest=P2.best;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       function lastRec(){ var L=P2.log||[]; return L.length?L[L.length-1]:null; }
+       // ONE DEATH, staged: standing beside one open ring with the nomination
+       // pointed at a far one. Returns what the card was built from.
+       function dieBeside(nearIx,activeIx){
+         __deploy({kit:[],mapIx:0,seed:4242});
+         var g=__state(); if(!g||!g.player||!g.zones) return null;
+         var open=[], i;
+         for(i=0;i<g.zones.length;i++) if(g.zones[i]&&g.zones[i].open) open.push(g.zones[i]);
+         if(open.length<2) return {few:1};
+         // Farthest pair, so the two answers cannot be mistaken for each other.
+         var A=open[0], B=open[0], bd=-1, a2, b2;
+         for(a2=0;a2<open.length;a2++) for(b2=a2+1;b2<open.length;b2++){
+           var d2=dist(open[a2],open[b2]); if(d2>bd){ bd=d2; A=open[a2]; B=open[b2]; }
+         }
+         var nearRing=(nearIx===0)?A:B, farRing=(nearIx===0)?B:A;
+         g.player.x=nearRing.x+40; g.player.y=nearRing.y+40;
+         g.active=(activeIx==='near')?nearRing:farRing;
+         var dNear=dist(g.player,nearRing), dFar=dist(g.player,farRing);
+         g.player.downed=false; g.player.hp=1;
+         __endRaid('dead');
+         var r=lastRec();
+         return {dNear:dNear,dFar:dFar,got:(r?r.deathDistExtract:null)};
+       }
+       var one=dieBeside(0,'far');
+       if(!one) return 'SKIP: no live raid to die in';
+       if(one.few) return 'SKIP: this raid built fewer than two open ways out, so there is no nearest to tell from a nominated one';
+       if(one.got===null||one.got===undefined) return 'SKIP: the run record carries no death distance to read';
+       if(one.dFar-one.dNear<400) return 'SKIP: the two ways out on this seed are '+Math.round(one.dFar-one.dNear)+' units apart, too close to tell the right answer from the wrong one';
+       if(Math.abs(one.got-one.dNear)>25)
+         bad.push('he died '+Math.round(one.dNear)+' units from the nearest way out and the card was built from '+one.got+', which is the ring the raid nominated at random '+Math.round(one.dFar)+' units away: the compass over his head pointed at the near one all raid, and the closest-approach line printed directly under this one on the same card measures the near one too, so the card disagrees with the compass and with itself');
+       // CONTROL: killed beside the nominated ring, where both answers agree.
+       var two=dieBeside(0,'near');
+       if(two&&two.got!==null&&Math.abs(two.got-two.dNear)>25)
+         bad.push('control: a death beside the nominated ring itself now reports '+two.got+' rather than the '+Math.round(two.dNear)+' it always did, so this build has changed the ordinary case as well');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ P2.log=keepLog; P2.best=keepBest; saveProfile(); }catch(_p){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.75',what:'the last box before the lift says what actually happens: with nothing equipped it does not promise a sidearm, because the deploy issues a primary and leaves the second slot empty, and it does not list the rig on the line above the warning that he ascends with no armour on, while a character who has a gun equipped still sees that gun named (2026-09-08 first-hour audit)',
+   run:function(){
+     if(!window.__P) return 'SKIP: this fixture cannot read the profile';
+     if(typeof syncSectorKit!=='function') return 'SKIP: this build has no sector kit box to render';
+     var el=document.getElementById('sectorkit');
+     if(!el) return 'SKIP: this build has no sector kit box in the page';
+     var bad=[], P2=__P(), keepEq=P2.equipped, keepW=(P2.weapons||[]).slice();
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       // WHAT A BRAND NEW CHARACTER HAS: nothing in his hands.
+       P2.equipped='fists';
+       syncSectorKit();
+       var html=String(el.innerHTML||'');
+       if(!html) return 'SKIP: the box rendered nothing';
+       // The warning is the thing the line above it has to agree with. No
+       // warning, nothing to contradict, and this check would be decoration.
+       if(html.toLowerCase().indexOf('no armour')<0) return 'SKIP: this build does not print the armour warning, so there is nothing for the line above it to contradict';
+       var head=html.split('<div')[0];
+       var SIDE='side'+'arm';
+       if(head.toLowerCase().indexOf(SIDE)>=0)
+         bad.push('with nothing equipped the last box before the lift still promises him a sidearm ['+head+']: the deploy rolls a PRIMARY out of the starter list into gun one and leaves gun two deliberately empty, so it names the wrong slot and promises a second gun that is not coming');
+       var rigName='';
+       try{ var RG=myRig(); rigName=(RG&&RG.name)||''; }catch(_r){ rigName=''; }
+       if(rigName&&head.indexOf(rigName)>=0)
+         bad.push('the box says he is going up with '+rigName+' on the line directly above the amber warning that he ascends with no armour on, and that rig is the same constant for everybody, so the two halves of one box contradict each other on every ascent');
+       // CONTROL: a character who HAS a gun must still be told which one, or
+       // this check would pass on a box that had simply been emptied.
+       var gid=null, k;
+       for(k in WEAPONS){ if(WEAPONS[k]&&WEAPONS[k].name&&k!=='fists'&&WEAPONS[k].mag){ gid=k; break; } }
+       if(gid){
+         P2.equipped=gid; if((P2.weapons||[]).indexOf(gid)<0) P2.weapons=(P2.weapons||[]).concat([gid]);
+         syncSectorKit();
+         var html2=String(el.innerHTML||'');
+         if(html2.indexOf(WEAPONS[gid].name)<0)
+           bad.push('control: a character with '+WEAPONS[gid].name+' in his hands is no longer told so by the box ['+html2.split('<div')[0]+']');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.equipped=keepEq; P2.weapons=keepW; saveProfile(); syncSectorKit(); }catch(_p){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.74',what:'the Peddler stall knows what it just paid him: the balance line and the refusal both name the money riding on him that the stall pays into, instead of reading only the banked Credits and telling a man who has just been paid thousands that he holds nothing, while a man carrying nothing still reads the plain banked figure and gets the plain refusal, and the sale line no longer uses a word this game does not use (2026-09-08 first-hour audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__P&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw a raid';
+     if(typeof pedSellAll!=='function'||typeof pedBuy!=='function') return 'SKIP: this build has no stall to sell at';
+     var bad=[], P2=__P(), keepCr=P2.credits;
+     var proto=CanvasRenderingContext2D.prototype, oFT=proto.fillText, seen=[], watch=false;
+     proto.fillText=function(t){ if(watch) seen.push(String(t)); return oFT.apply(this,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __pinDPR(1); __forceSize(1920,1080);
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
+       if(g.sim) return 'SKIP: this raid is a sim, which has no panel to read';
+       // The stall is whatever entity carries stock. Duck-typed rather than
+       // named, so a renamed kind does not turn this red for the wrong reason.
+       var ped=null, i;
+       for(i=0;i<g.ents.length;i++){ if(g.ents[i]&&g.ents[i].stock&&g.ents[i].stock.length){ ped=g.ents[i]; break; } }
+       if(!ped) return 'SKIP: this raid built no stall to sell at';
+       function panelLines(){ seen=[]; watch=true; try{ __frame(0.016); } finally { watch=false; } return seen.join(' | '); }
+       function sellSomething(){
+         var k=null, kk;
+         for(kk in ITEMS){ if(ITEMS[kk]&&ival(kk)>=400&&ITEMS[kk].use!=='gun'){ k=kk; break; } }
+         if(!k) return false;
+         g.bag=[k,k,k]; g.trade=ped; g.pedCarry=0; P2.credits=0;
+         g.player.downed=false;
+         pedSellAll();
+         return (g.pedCarry||0)>0;
+       }
+       if(!sellSomething()) return 'SKIP: nothing in this build could be sold at the stall';
+       var sold=String(g.msg||'');
+       var CASH='c'+'ash';
+       if(sold.toLowerCase().indexOf(CASH)>=0)
+         bad.push('the line telling him what the stall paid uses a word this game does not use ['+sold+']');
+       // THE FINDING, ON THE PANEL HE IS LOOKING AT.
+       var carried='$'+(g.pedCarry||0).toLocaleString();
+       var lines=panelLines();
+       if(lines.indexOf(carried)<0)
+         bad.push('the stall panel never shows the '+carried+' it has just paid him: it prints his banked Credits, which the stall does not pay into, so one line under the message saying he was paid thousands the panel tells him what he holds and it is not that money');
+       // AND THE REFUSAL HE GETS WHEN HE TRIES TO SPEND IT.
+       g.msg=''; pedBuy(0);
+       var ref=String(g.msg||'');
+       if(ref&&ref.indexOf(carried)<0&&ref.toLowerCase().indexOf('bank')<0)
+         bad.push('the stall refused him with ['+ref+'], which names neither the money on him nor the fact that it is not banked yet, so the refusal reads as being broke one second after being paid');
+       // CONTROL: carrying nothing, the plain wording must come back, or this
+       // check would pass on a build that always prints the longer sentence.
+       g.pedCarry=0; P2.credits=0; g.trade=ped;
+       var plain=panelLines();
+       if(plain.indexOf('not banked')>=0)
+         bad.push('control: a man carrying no stall money is still told about money on him, so the panel now says it whether it is true or not');
+       g.msg=''; pedBuy(0);
+       var ref2=String(g.msg||'');
+       if(ref2.indexOf('not banked')>=0)
+         bad.push('control: a man carrying no stall money is still refused with a sentence about money on him ['+ref2+']');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       watch=false; proto.fillText=oFT;
+       try{ var g2=__state(); if(g2){ g2.trade=null; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){}
+       try{ P2.credits=keepCr; saveProfile(); }catch(_p){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.73',what:'a found gun that changes what is in his hands still says so after the pull is summarised: the line naming the slot it armed and the key that swaps to it survives the Found line instead of being overwritten in the same frame, a gun pulled beside other items keeps both facts, and a pull with no gun in it says exactly what it always said (2026-09-08 first-hour audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
+     if(typeof grantLoot!=='function'||typeof WTIER==='undefined'||typeof WEAPONS==='undefined') return 'SKIP: this build has no loot grant to drive';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid to pull in';
+       if(g.sim) return 'SKIP: this raid is a sim, where the grant says nothing at all';
+       var p=g.player, k, it;
+       // A gun better than what he is holding, and something that is not a gun.
+       var gunK=null, plainK=null;
+       for(k in ITEMS){ it=ITEMS[k]; if(!it||!it.name) continue;
+         if(it.gk&&WEAPONS[it.gk]&&gunK===null&&(WTIER[it.gk]||0)>(WTIER[p.wep.id]||0)) gunK=k;
+         if(!it.gk&&plainK===null&&it.use!=='gun') plainK=k;
+       }
+       if(!gunK||!plainK) return 'SKIP: this build has no better gun or no plain item to pull';
+       function pull(list){
+         // The second slot is empty, which is what a new profile deploys with.
+         p.sec=WEAPONS.fists; p.secAmmo=0; p.downed=false;
+         g.msg=''; g.msgT=0;
+         grantLoot({x:p.x+20,y:p.y+20,c:'#ffffff',loot:list.slice()},list.slice());
+         return String(g.msg||'');
+       }
+       // THE FINDING: one gun, into the empty slot.
+       var m1=pull([gunK]);
+       if(!m1) return 'SKIP: the grant said nothing at all, so there is no line to read';
+       if(m1.indexOf('swaps')<0)
+         bad.push('after pulling a gun into his empty second slot the only line left on screen was ['+m1+']: the line telling him the slot is armed and which key swaps to it was written and then written over in the same frame, so a number key went live under his finger and nothing ever said so');
+       // AND WITH COMPANY: both facts have to survive, the gun and the list.
+       var m2=pull([gunK,plainK]);
+       if(m2.indexOf('swaps')<0)
+         bad.push('pulling that gun alongside another item lost the gun line again ['+m2+']');
+       if(m2.indexOf(ITEMS[plainK].name)<0)
+         bad.push('pulling that gun alongside another item lost the list of what he took ['+m2+']');
+       // CONTROL: a pull with no gun in it must be untouched.
+       var m3=pull([plainK]);
+       if(m3!=='Found: '+ITEMS[plainK].name)
+         bad.push('control: a pull with no gun in it no longer says what it always said, it says ['+m3+'] instead of the plain found line');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.72',what:'the run report the game saves to his Downloads is named after the game he is playing and not after the retired project, and the run number still rides in the name so one report does not overwrite the last (2026-09-08 first-hour audit)',
+   run:function(){
+     if(typeof reportFileName!=='function') return 'SKIP: this build writes the report name where it is used, and the fixture replaces the whole download, so the name cannot be read here';
+     if(!window.__P) return 'SKIP: this fixture cannot read the profile';
+     var bad=[], P2=__P(), keep=P2.runs;
+     try{
+       var GONE='dark'+'_rai'+'ders', HERE='pill'+'agers';
+       P2.runs=7;
+       var nm=String(reportFileName()||'').toLowerCase();
+       if(!nm) return 'SKIP: the naming function returned nothing';
+       if(nm.indexOf(GONE)>=0)
+         bad.push('the file the game drops into his Downloads is called ['+nm+'], which carries the retired project name: it is the one place the rename was missed and the only one that leaves the browser, so a friend opening the alpha finds a file named for a game he has never heard of, and it is the same file he is asked to send back');
+       if(nm.indexOf(HERE)<0)
+         bad.push('the report file name ['+nm+'] does not carry the name of this game at all');
+       // CONTROL: the run number has to stay in the name, or every report
+       // written would land on top of the one before it.
+       if(nm.indexOf('7')<0)
+         bad.push('control: the run number is not in the name ['+nm+'], so each report would overwrite the last one in his Downloads');
+       P2.runs=8;
+       if(String(reportFileName()||'').indexOf('8')<0)
+         bad.push('control: the name does not follow the run count, so it is a fixed string rather than a name per run');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.runs=keep; saveProfile(); }catch(_p){}
+       try{ __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.71',what:'holding the sprint key while aiming, or while wading, lays no scent behind a man who is not sprinting, so nothing hunts him along a trail he never made; a plain sprint on dry land still lays one (2026-09-07 audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
@@ -7000,69 +7412,68 @@ window.__REGRESS=[
      if(!renamePack) bad.push('control: no entry on the card announces the backpack rename any more, so the history has been deleted rather than the wording corrected');
      if(L.length<40) bad.push('control: the card is down to '+L.length+' entries, so lines have been removed rather than reworded');
      return bad.length?bad.join('; '):null; }},
-  {v:'12.47',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
+  {v:'12.47',what:'a raised deck edge is painted where it is: no kerb on any deck on either sector is painted above the edge he collides with, so no part of the deck he can stand on is covered by a wall he can walk through, while ordinary building walls still stand proud of their colliders (his report of 2026-09-08, the long thin building)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys&&window.__frame&&window.__textTrace&&window.__forceSize)) return 'SKIP: this fixture cannot deploy, press keys and read the drawn text';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
-     if(typeof giveUpTick!=='function') return 'SKIP: this build has no surrender';
-     var bad=[];
-     // Assembled, never written whole, so the phrase cannot be found in the
-     // source of the very check that is looking for it.
-     var PROMPT='TO '+'SURRE'+'NDER', REFUSE='NO '+'SURRE'+'NDER';
-     function arm(waiting){
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_f){}
-       __deploy({kit:[],mapIx:0,seed:4242});
-       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
-       var p=g.player, z=g.active||g.zones[0], K=__keys(), k, i;
-       for(k in K) delete K[k];
-       g.ents.length=0;
-       g.active=z; z.open=true;
-       if(waiting){ z.beaconT=0; g.beaconT=0; g.shipHold=20; z.hold=20; p.x=z.x; p.y=z.y; }
-       else { z.beaconT=null; g.beaconT=null; g.shipHold=null; z.hold=null;
-              p.x=z.x+(z.r+900); p.y=z.y; }
-       p.hp=20; p.armor=0; p.iv=99; p.roll=0; p.cooking=0;
-       p.revived=true; p.downed=true; p.downT=CFG.downTime; p.giveT=0; p.healLock=true;
-       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
-       K.Space=1;
-       var peak=0;
-       for(i=0;i<40;i++){ p.iv=99; p.downT=CFG.downTime; clk+=16.7; __loop(clk);
-                          if((p.giveT||0)>peak) peak=p.giveT||0;
-                          if(!p.downed||g.over) break; }
-       var lines=[];
-       try{ lines=__textTrace(function(){ __frame(0.016); }); }catch(_t){ }
-       var txt=''; for(i=0;i<lines.length;i++) txt+=' | '+lines[i].t;
-       var out={peak:peak,down:!!p.downed,over:!!g.over,txt:txt,
-                prompt:txt.indexOf(PROMPT)>=0,refuse:txt.indexOf(REFUSE)>=0,
-                verb:txt.indexOf('TO EXTRACT')>=0};
-       for(k in K) delete K[k];
-       return out;
-     }
-     var keepTs=lastTs;
+     if(!(window.__deploy&&window.__state&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw a raid';
+     var bad=[], proto=CanvasRenderingContext2D.prototype, oFR=proto.fillRect;
+     var rects=[], watch=false, decksSeen=0, kerbsRead=0, plainRead=0;
+     proto.fillRect=function(x,y,w,h){ if(watch) rects.push([x,y,w,h]); return oFR.apply(this,arguments); };
      try{
-       // CONTROL FIRST: the same man, downed with his revive spent, nowhere near
-       // a waiting extraction. The prompt must be drawn and the hold must run, or
-       // a missing prompt below would only say the overlay was never drawn.
-       var B=arm(false);
-       if(!B) return 'SKIP: no raid with an extraction point to lie down in';
-       if(!B.down&&!B.over) return 'SKIP: he did not stay on the floor long enough to read the screen';
-       if(!B.prompt) return 'SKIP: with no extraction waiting the downed screen did not draw the surrender row at all, so this check cannot see it and proves nothing';
-       if(!(B.peak>0)) return 'SKIP: with no extraction waiting two seconds on the key started no hold, so this check cannot see a hold and proves nothing';
-       // THE FINDING: downed inside a point with an extraction waiting, which is
-       // the one state the key is refused in, on purpose, since v9.71.
-       var A=arm(true);
-       if(!A) return 'SKIP: no raid with an extraction point to lie down in';
-       if(A.peak>0) bad.push('staging: the hold started inside a waiting extraction, so this is not the refused state the check is about');
-       if(A.prompt) bad.push('with an extraction waiting on the point he is lying in the screen still offers the surrender, and the key does nothing: the row is drawn, the bar never comes, and nothing tells him why');
-       if(!A.refuse) bad.push('with an extraction waiting the screen says nothing at all about the surrender being refused; the drawn text is ['+A.txt.slice(0,200)+']');
-       if(!A.verb) bad.push('control: the working verb is not drawn in this state either, so the screen is not the one this check thinks it is reading');
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __pinDPR(1); __forceSize(1920,1080);
+       // Where a wall was ACTUALLY painted this frame: its own x and width, and a
+       // y near enough to be its own paint rather than another wall's.
+       function paintedTop(W){
+         var best=null;
+         for(var r=0;r<rects.length;r++){ var R=rects[r];
+           if(Math.abs(R[0]-W.x)>0.6||Math.abs(R[2]-W.w)>0.6) continue;
+           if(R[1]<W.y-60||R[1]>W.y+W.h+2) continue;
+           if(best===null||R[1]<best) best=R[1];
+         }
+         return best;
+       }
+       for(var mi=0;mi<2;mi++){
+         __deploy({kit:[],mapIx:mi,seed:4242});
+         var g=__state(); if(!g||!g.player||!g.map) continue;
+         g.ents.length=0; g.player.downed=false; g.player.hp=100;
+         var M=g.map, plats=(M.plats||[]), i;
+         if(!plats.length) continue;
+         var PL=plats[0];
+         for(i=1;i<plats.length;i++) if(plats[i].w*plats[i].h>PL.w*PL.h) PL=plats[i];
+         g.player.x=PL.x+PL.w/2; g.player.y=PL.y+PL.h/2;
+         rects=[]; watch=true; __frame(0.016); watch=false;
+         decksSeen++;
+         for(i=0;i<M.walls.length;i++){
+           var W=M.walls[i];
+           if(!W.ledge) continue;
+           if(W.x>PL.x+PL.w+60||W.x+W.w<PL.x-60||W.y>PL.y+PL.h+60||W.y+W.h<PL.y-60) continue;
+           var t=paintedTop(W);
+           if(t===null) continue;
+           kerbsRead++;
+           var over=W.y-t;
+           if(over>0.6)
+             bad.push('sector '+mi+': the deck edge at '+Math.round(W.x)+','+Math.round(W.y)+' is painted '+Math.round(over)+' units above the edge he actually collides with, so that much of the deck he is standing on is covered by a wall he can walk straight through, and walking at it he stops '+Math.round(over)+' units short of where it looks like he should');
+         }
+         // CONTROL: an ordinary wall in the same frame must still stand proud,
+         // or this check would pass on a build that flattened everything.
+         for(i=0;i<M.walls.length;i++){
+           var B=M.walls[i];
+           if(B.ledge||B.w<100||B.h>60) continue;
+           var bt=paintedTop(B);
+           if(bt===null) continue;
+           plainRead++;
+           if(B.y-bt<10)
+             bad.push('control: an ordinary wall at '+Math.round(B.x)+','+Math.round(B.y)+' on sector '+mi+' is painted only '+Math.round(B.y-bt)+' units above its collider, so walls no longer read as having any height at all');
+           break;
+         }
+       }
+       if(!decksSeen) return 'SKIP: neither sector built a raised deck to read';
+       if(!kerbsRead) return 'SKIP: no deck edge was painted in the frame, so there was nothing to measure';
+       if(!plainRead) return 'SKIP: no ordinary wall was painted in the same frame, so the control could not run';
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
-       try{ lastTs=keepTs; }catch(_t2){}
-       try{ var gz=__state(); if(gz&&gz.player){ gz.player.downed=false; gz.player.giveT=0; gz.player.iv=0; gz.player.revived=false; gz.player.healLock=false; } }catch(_a){}
-       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
-       __topClear(); __resetCfg(); __cleanProfile();
+       watch=false; proto.fillRect=oFR;
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
   {v:'12.46',what:'auto-jog stops when he goes down: a man stood back up with no key held stays where he is instead of walking off toward the cursor at 40 health, while an armed auto-jog that never went down still walks him (2026-09-07 audit)',

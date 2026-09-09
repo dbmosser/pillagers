@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.71';
+var VER='12.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.71';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.71';
+var WHATSNEW_VER='12.79';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1375,7 +1375,7 @@ var WHATSNEW=[
   'THE EXTRACTION WINDOW NEVER OUTLIVES THE CLOCK. An extraction arriving in the last seconds of a raid used to announce three seconds on every readout and then let the timer kill you with a second still showing. It now says what the raid actually has left.',
   'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, an extraction you had already called for stopped arriving, its window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
   'AUTO-JOG STOPS WHEN YOU GO DOWN. It used to survive the whole time you were on the floor, so the moment you got up again you walked off toward the cursor at 40 health with no key held, which was the character walking off by himself.',
-  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
+  'THE EDGE OF A RAISED DECK IS WHERE IT LOOKS. Catwalk and gantry edges were painted like building walls, 26 units taller than the thing you actually collide with, so a third of the deck you were standing on was covered by a wall you could walk through, you stopped short of the edge you could see, and standing at the near side hid you behind it.',
   'ONE WORD PER THING, ON THIS CARD TOO. Five older entries here still used words you retired: the extraction called a vehicle in three places, and the tactical belt called by its old name in one. They use your words now, and a check holds the whole card to the list from here on.',
   'A HOWLER SHELL NO LONGER REACHES THROUGH A WALL. A shell bursting in the street took about twenty health off you standing well inside a building, with the hit ring pointing at something you could not see. Walls stop the blast now, exactly as they stop a frag.',
   'BREAKING A CRIER LINE OF SIGHT NOW ACTUALLY CANCELS ITS ALARM. The cancel cleared the windup and then fired the alarm on the very same frame, so hiding never once called one off. The three seconds have to be unbroken now, which they always claimed to be.',
@@ -1400,6 +1400,14 @@ var WHATSNEW=[
   'THE XP A RUN PAYS IS FOR WHAT YOU BROUGHT BACK. Carrying your own stash up the lift and straight back down paid full haul XP for loot you already owned, and handed the stash back untouched, so the whole reward track could be walked without finding anything.',
   'A SEARCH CONTRACT NAMES A PLACE ON THE SECTOR YOU ARE PLAYING. It wrote the name down when the card was made, so changing sector afterwards left it pointing at a place with almost the right name in the wrong part of the map, and searching it moved nothing.',
   'AIMING AND WADING NO LONGER LEAVE A SPRINT TRAIL. Shift held while you aimed, or while you waded, laid scent behind a man who was not sprinting, and everything on patrol within 170 units follows that scent. You were being hunted along a trail you never made.',
+  'YOUR RUN REPORT IS NAMED AFTER THIS GAME. The file the game saves to your Downloads still carried the old project name, which is the one place the rename was missed and the only one that leaves the browser. Reports you already have still load: they are read by their contents, not their name.',
+  'THE GAME TELLS YOU WHEN A FOUND GUN CHANGES YOUR HANDS. A gun going into your empty second slot, or replacing the one you were holding, wrote you a line saying so and then wrote Found over the top of it in the same frame, every time. Both facts now arrive in the one line you can actually read.',
+  'THE PEDDLER STALL KNOWS WHAT IT JUST PAID YOU. Selling at the stall pays into money that rides with you until you extract, but the panel read your banked Credits, so it said you hold nothing one line under the message telling you it had paid you thousands, and greyed its own stock. It now names both, and says which one it cannot spend.',
+  'THE LAST BOX BEFORE THE LIFT TELLS THE TRUTH. It said you were going up with an issued sidearm, when nothing equipped means a primary is issued and the second slot is left empty on purpose, and it listed Armour on the same line as the warning that you ascend with no armour on.',
+  'HOW FAR YOU DIED FROM EXTRACTION IS MEASURED TO THE NEAREST WAY OUT. It was measured to a ring chosen at random when the raid was built, so the number disagreed with the compass you had been following all raid and with the closest-approach line printed right under it.',
+  'DYING WITH THE FREEBIE KIT GIVES YOUR TACTICAL BELT BACK TOO. It restored the items you had packed and quietly kept the belt keys you had bound, and the gun slot, which were thrown away the moment you took the kit. Keys pointing at something you no longer own are still dropped.',
+  'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
+  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -9236,7 +9244,7 @@ function pedSellAll(){
     // reason. It is just no longer a blind one.
     var _full=full;
     say('Sold '+n+' for '+'$'+tot.toLocaleString()+', his '+Math.round(pedBuyRate()*100)+
-      ' percent. The cash rides with you now - walk it out or lose it. Carried '+
+      ' percent. The Credits ride with you now - walk them out or lose them. Carried '+
       'home whole it was worth '+'$'+_full.toLocaleString()+'.');
     blip('pick'); ping(G.trade.x,G.trade.y,190,false,false,'player','move');
   }
@@ -9245,7 +9253,9 @@ function pedBuy(ix){
   if(!G||!G.trade) return;
   var st=G.trade.stock[ix];
   if(!st||st.sold) return;
-  if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+'.'); return; }
+  // v12.74: the refusal says WHICH money it means, so a man carrying stall
+  // money is told it is not banked yet rather than that he has nothing.
+  if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+' from banked Credits.'+((G.pedCarry||0)>0?(' The '+'$'+(G.pedCarry||0).toLocaleString()+' on you is not banked until you walk out.'):'')); return; }
 
   var cap=PACKCAP[P.pack],wt=(ITEMS[st.k]?ITEMS[st.k].wt:1);
   // v12.60, 2026-09-08 audit: AMMUNITION GOES WHERE AMMUNITION GOES. Every other
@@ -13149,6 +13159,13 @@ function openContainer(ct,onlyKeys){
   grantLoot(ct,ct.loot,_wnDelay);
 }
 function grantLoot(ct,keys,delay0){
+  // v12.73, 2026-09-08 first-hour audit: WHAT HAPPENED TO HIS GUNS SURVIVES THE
+  // SUMMARY. say() holds one line and the last call in a frame wins, so the two
+  // lines written inside the loop below, both of them about which gun is now in
+  // which hand, were overwritten by the Found line every time the loop ran. On
+  // a new profile the second slot holds Bare Hands, so the first good gun of a
+  // first raid arms a number key and he was told only the name of the item.
+  var _gunLine='';
   var p=G.player,T=G.tel;
   for(var l=0;l<keys.length;l++){
     var key=keys[l],itm=ITEMS[key];
@@ -13206,7 +13223,9 @@ function grantLoot(ct,keys,delay0){
         // there is nothing to bag and nothing to splice. G.tel.weapon names what
         // he is HOLDING and that is unchanged, so it is left alone too.
         if(!G.sim){
-          say(found.name+' to your empty slot. '+p.wep.name+' stays in hand, X swaps.');
+          // v12.73: KEPT, not spoken. The summary below used to overwrite this
+          // in the same frame, so it has never been readable.
+          _gunLine=found.name+' to your empty slot. '+p.wep.name+' stays in hand, X swaps.';
           if(found.qRank>=2) blip('pickGun');
         }
       }
@@ -13246,7 +13265,8 @@ function grantLoot(ct,keys,delay0){
         G.tel.weapon=p.wep.name;
         if(!G.sim){
           var cmp=oldDmg>0?Math.round((found.dmg*(found.pellets||1)/Math.max(1,oldDmg*(1))-1)*100):0;
-          say(found.name+' equipped'+(cmp>0?', +'+cmp+'% damage':'')+'.');
+          // v12.73: KEPT, not spoken, for the same reason as the empty slot line.
+          _gunLine=found.name+' equipped'+(cmp>0?', +'+cmp+'% damage':'')+'.';
           // A gun worth auto-equipping is a gun, so it sounds like one, v2.72.
           if(found.qRank>=2) blip('pickGun');
         }
@@ -13267,7 +13287,10 @@ function grantLoot(ct,keys,delay0){
     // The full open is unchanged: it passes ct.loot in as keys, so this prints
     // exactly the string it always printed on that path.
     if(keys.length){
-      say('Found: '+keys.map(function(k){return ITEMS[k].name;}).join(', '));
+      // v12.73: one line, both facts. A single gun says the gun line alone,
+      // because the summary would only repeat the name it already carries.
+      var _sum='Found: '+keys.map(function(k){return ITEMS[k].name;}).join(', ');
+      say(_gunLine?((keys.length>1)?(_gunLine+' '+_sum):_gunLine):_sum);
       blip(lootVoice(keys),undefined,undefined);
     } else blip('pick');
     ping(p.x,p.y,90,false,false,'player','move');
@@ -14556,7 +14579,7 @@ function tickDowned(dt){
 // and a 30 units per second crawl; from the far side of a map that is not a
 // decision, it is a wait with an answer he already knows.
 function GIVEUP_HOLD(){ return 1.5; }
-// v12.47, 2026-09-07 audit: ONE TEST, TWO READERS. The rule below was written
+// v12.79, 2026-09-07 audit: ONE TEST, TWO READERS. The rule below was written
 // into giveUpTick alone, so the overlay that offers the surrender knew nothing
 // about it and printed the prompt anyway: the key did nothing, the bar never
 // appeared, and no line said why. Both read this now.
@@ -14573,7 +14596,7 @@ function giveUpTick(dt){
   // The guard he did not ask for. This overlay already tells him that extracting
   // while downed is permitted, so a hand resting on the space bar must not throw
   // away a full bag in the one situation where being down ends well.
-  if(surrenderBlocked()){ p.giveT=0; return false; }   // v12.47: the same test the overlay reads
+  if(surrenderBlocked()){ p.giveT=0; return false; }   // v12.79: the same test the overlay reads
   if(!keys['Space']){ p.giveT=0; return false; }
   p.giveT=(p.giveT||0)+dt;
   if(p.giveT<GIVEUP_HOLD()) return false;
@@ -19197,7 +19220,14 @@ var _cdone=contractExtract(G.bag,haul);
     lines.push('You extracted with '+Math.round(G.player.hp)+' of 100 health');
   } else if(how==='dead'){
     P.died++;
-    T.deathDistExtract=Math.round(dist(G.player,G.active));
+    // v12.76: THE NEAREST OPEN RING, not the one the dice nominated at raid
+    // build. This is the v8.58 rule, and the helper is the same one the closest
+    // approach line on this very card already uses; I applied it there and not
+    // here. A man who dies without ever reaching a ring, which is how a first
+    // raid ends, was measured against a ring picked for him at random, so the
+    // card disagreed with the compass he had been following all raid and with
+    // the line printed under it.
+    T.deathDistExtract=Math.round(closestRingDist(G.player));
     // The ledger: what you were carrying, by name, in rarity colour, marked
     // GONE. Reading the list one line at a time is the gut punch; a count
     // never was.
@@ -19312,10 +19342,26 @@ var _cdone=contractExtract(G.bag,haul);
         if((_have[_kk]||0)>0){ _have[_kk]--; _kb.push(_kk); }
       }
       P.kit=_kb;
+      // v12.77: the tactical belt plan and the gun slot come back with the
+      // items. The plan is filtered to what he still owns, the same rule the
+      // list above follows, because a key pointing at something he no longer has
+      // is a dead key rather than a restore.
+      var _hk=0;
+      if(P.hotBeforeFree){
+        var _pool={},_q,_hi,_hv,_hb={};
+        for(_q=0;_q<_kb.length;_q++) _pool[_kb[_q]]=(_pool[_kb[_q]]||0)+1;
+        for(_hi in P.hotBeforeFree){
+          _hv=P.hotBeforeFree[_hi];
+          if(_hv&&(_pool[_hv]||0)>0){ _hb[_hi]=_hv; _pool[_hv]--; _hk++; }
+        }
+        P.hotAssign=_hb;
+      }
+      if(P.gunBeforeFree) P._gunSlot=P.gunBeforeFree;
       if(_kb.length) lines.push('<span style="color:var(--coolant)">'+_kb.length+' item'+(_kb.length===1?'':'s')+
-        ' that you had in your loadout before choosing the freebie kit '+(_kb.length===1?'has':'have')+' been restored.</span>');
+        ' that you had in your loadout before choosing the freebie kit '+(_kb.length===1?'has':'have')+' been restored'+
+        (_hk?(', and '+_hk+' tactical belt key'+(_hk===1?'':'s')+' with '+(_hk===1?'it':'them')):'')+'.</span>');
     }
-    P.kitBeforeFree=null;
+    P.kitBeforeFree=null; P.hotBeforeFree=null; P.gunBeforeFree=null;
   }
   if((how==='dead'||how==='abandon')&&P.buzz&&P.buzz.length){
     P.buzz.length=0;
@@ -22214,7 +22260,18 @@ var SHD=G.shells[i];
       var wl2=it.w,d3=wl2.d===undefined?3:wl2.d;
       // v5.96: the run''s height, not the piece''s. The fallback is what the hub
       // and anything else outside the map builder still uses.
-      var LIFT=wl2.lift||((wl2.w<=60&&wl2.h<=60)?14:26);
+      // v12.47, HIS REPORT: A DECK KERB IS PAINTED ON ITS COLLIDER AND NOWHERE
+      // ELSE. Every wall body is lifted 26 units above its collider so buildings
+      // read as having height. A deck edge is not a building: it is a 14 unit
+      // kerb laid INSIDE the deck's own footprint, so lifting it painted 26
+      // units of solid wall over the deck he is standing on, and 26 units of
+      // solid wall over the ground on the other side. Measured on COLD STORAGE:
+      // the deck is walkable from 634 to 716 and its south kerb was painted from
+      // 690, so a third of the deck looked like wall. He walked into it and
+      // stopped 26 units short of where it looked like he should, and standing
+      // on the south of the deck he was painted over by the kerb, because a wall
+      // sorts by the bottom of its collider and he sorts by his lifted feet.
+      var LIFT=wl2.ledge?0:(wl2.lift||((wl2.w<=60&&wl2.h<=60)?14:26));
       // A WINDOW HAS TO LOOK LIKE A WINDOW or the hole in the wall reads as a
       // doorway and someone walks into it. Drawn as a low sill in the wall's own
       // colours with a pale glass band above it, so it reads as part of the same
@@ -24847,7 +24904,7 @@ var _slp=w2s(p.x,66,p.y);
     if(p.revived&&CFG.giveUp!==0){
       var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
       _rowY+=Math.round(_hD*1.25);
-      // v12.47, 2026-09-07 audit: AND IT SAYS SO WHEN IT WILL NOT TAKE THE KEY.
+      // v12.79, 2026-09-07 audit: AND IT SAYS SO WHEN IT WILL NOT TAKE THE KEY.
       // The v9.71 guard refuses the surrender while an extraction is waiting on
       // the point he is lying in, silently: this row printed the prompt anyway,
       // the key did nothing, the bar never appeared and nothing explained it. It
@@ -26017,7 +26074,11 @@ function drawTrade(){
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('HIS STOCK',x+14,cy);
   ctx.textAlign='right'; ctx.fillStyle='#cdd6dd';
-  ctx.fillText('you hold '+'$'+(P.credits||0).toLocaleString()+'',x+PW-14,cy); ctx.textAlign='left';
+  // v12.74, 2026-09-08 first-hour audit: BOTH POCKETS, because the stall pays
+  // into neither the one this line used to read. A sale banks on the run and is
+  // only his if he walks out, so a man who has just been paid four thousand read
+  // "you hold $0" one line under the message saying so.
+  ctx.fillText('banked '+'$'+(P.credits||0).toLocaleString()+((G.pedCarry||0)>0?('   +   on you '+'$'+(G.pedCarry||0).toLocaleString()+', not banked'):''),x+PW-14,cy); ctx.textAlign='left';
   for(i=0;i<T.stock.length;i++){
     var S=T.stock[i],IT=ITEMS[S.k]||{name:'?',c:'#888'};
     cy+=LH(20);
@@ -29231,7 +29292,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.71: 2026-09-07 audit (P3). The sprint flag is computed, then the scent marks are laid, and only then is the flag cancelled for aiming and for deep water. So Shift held while aiming, or while wading, laid a sprint trail behind a man who was not sprinting: he moved at the aiming speed, paid no stamina, the readout said AIMING, and a line of scent went down behind him anyway. Everything on patrol or investigating within 170 units smells that list, so he was hunted along a trail he never made, at the two moments he is slowest and least able to leave. v12.33 stopped drawing his own marks, which was his note; this is the half that survives it, and it is the half that gets him killed. The block moves below both cancels so it reads the final answer, with the same 34 unit spacing, the same 40 mark ceiling and the same flag; only the moment it is asked has moved. The bot never runs this function at all, so no paired number can move. Check 12.71 walks him with the aim held and requires no mark of his own to be laid, walks him wading and requires the same, and controls that a plain sprint on dry land still lays them; fails on v12.70.',
+  now:'v12.79: 2026-09-07 audit (P3). v9.71 gave the surrender a guard it did not have: while an extraction is waiting on the point he is lying in, the space bar cannot end his raid, because the same overlay is telling him that extracting while downed is permitted and a hand resting on that key must not throw away a full backpack. The guard is right and nothing told him about it. The surrender row is drawn on one test, that he has spent his revive, so in that state the screen printed HOLD SPACE TO SURRENDER, the key did nothing, the progress bar never appeared because it is drawn only once the hold has started, and no line explained the refusal: a dead control and a prompt that lies, at three health with the point swarmed. The guard is now one named test with two readers, so the key and the screen can never disagree about it again, and the row says what is true instead, with the working verb still drawn underneath it in colour. Check 12.79 puts him down with his revive spent inside a point with an extraction waiting, holds the real key for two seconds through the real frame loop, and requires the hold never to start and the drawn text to carry the refusal and not the prompt, with a control outside that state requiring the prompt to be drawn and the hold to run; fails on v12.78.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32640,7 +32701,13 @@ document.getElementById('abandonbtn').onclick=function(){
     this.style.borderColor=''; this.style.color='';
     var _el=(G&&!G.over)?elapsed():0;
     // v10.41, his words: the same line the markup carries, with the cost kept.
-    cb.textContent=(_el>60)?('YES, ABANDON THIS RUN (costs '+abandonRepCost(_el)+' XP)')
+    // v12.78, 2026-09-08 first-hour audit: THE PRICE ON THE BUTTON IS THE PRICE
+    // HE WILL PAY. The fine is taken with a floor at zero so it can never push
+    // him negative, which is right, but this quoted the figure from before that
+    // floor: a first-time player with almost no XP read a hundred-odd XP on a
+    // button that was about to take nothing from him.
+    var _ac=Math.min(abandonRepCost(_el),(P.xp||0));
+    cb.textContent=(_el>60)?('YES, ABANDON THIS RUN ('+(_ac>0?('costs '+_ac+' XP'):'no XP to lose')+')')
                            :'YES, ABANDON THIS RUN (free this early)';
     return;
   }
@@ -32652,9 +32719,12 @@ document.getElementById('abandonbtn').onclick=function(){
 function abandonRepCost(el){ return Math.min(400,100+Math.round(el/10)); }
 document.getElementById('confirmabandon').onclick=function(){
   if(G&&!G.over&&elapsed()>60){
-    var _rc=abandonRepCost(elapsed());
+    // v12.78: and the line afterwards reports what was actually taken, not the
+    // figure before the floor. It used to say XP -106 to a man who had lost
+    // nothing, because he had nothing to lose.
+    var _rc=Math.min(abandonRepCost(elapsed()),(P.xp||0));
     P.xp=Math.max(0,(P.xp||0)-_rc);
-    say('Walked out on the job. XP -'+_rc+'.');
+    say(_rc>0?('Walked out on the job. XP -'+_rc+'.'):'Walked out on the job. No XP to lose.');
   }
   togglePauseBox(false);   // v12.02: the close banks the note
 this.style.display='none';
@@ -32729,12 +32799,23 @@ function installId(){
   }
   return P.iid;
 }
+// v12.72, 2026-09-08 first-hour audit: THE FILE HE IS HANDED CARRIES THE NAME OF
+// THE GAME HE JUST PLAYED. The rename reached every screen and missed the one
+// string that leaves the browser, so the run report landed in his Downloads
+// under the retired project name. It is also the file he is asked to send back,
+// so the collector was receiving reports named for a game that no longer exists.
+// The name lives in a function now: one place to be wrong, and something a check
+// can call, since the fixture replaces downloadExport itself. Files already on
+// disk are unaffected, because the importer identifies a report by its contents.
+function reportFileName(){
+  return 'pillagers_run'+(P.runs||0)+'.txt';
+}
 function downloadExport(){
   try{
     var blob=new Blob([buildExport()],{type:'text/plain'});
     var url=URL.createObjectURL(blob);
     var a=document.createElement('a');
-    a.href=url; a.download='dark_raiders_run'+P.runs+'.txt';
+    a.href=url; a.download=reportFileName();   // v12.72: named for the game he is playing
     document.body.appendChild(a); a.click();
     setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },800);
     P.lastReport='downloaded';
@@ -33046,10 +33127,17 @@ function syncSectorKit(){
   if(!el) return;
   var w=null;
   try{ w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null; }catch(_gw){ w=null; }
-  var rig=null;
-  try{ rig=myRig(); }catch(_gr){ rig=null; }
-  var line='<b>Going up with:</b> '+(w?escHtml(w.name):'an issued sidearm')+
-           ' &middot; '+escHtml((rig&&rig.name)||'Armour');
+  // v12.75, 2026-09-08 first-hour audit: THIS BOX NOW SAYS WHAT ACTUALLY
+  // HAPPENS. It used to say "an issued sidearm" when nothing is equipped, which
+  // is what a brand new character has, and the deploy does not issue a sidearm:
+  // it rolls a PRIMARY out of the starter list into gun one and leaves gun two
+  // deliberately empty, so the line named the wrong slot and promised a second
+  // gun that was not coming. And it printed the name of his rig, which has been
+  // the same constant for everybody since v5.77 and whose name is the bare word
+  // Armour, directly above an amber line saying he ascends with no armour on.
+  // That half is gone rather than reworded: the amber line under this one is
+  // already the true and useful version of it.
+  var line='<b>Going up with:</b> '+(w?escHtml(w.name):'a gun issued at the lift');
   // v10.13, his answer 7: the armour warning lives here, on the way up. It
   // used to be copied off the stash screen's readiness line, which v9.98
   // removed, so it had been nowhere since. Same numbers as the line had.
@@ -33512,7 +33600,16 @@ function commitKit(){
     // v6.88, his spec: remember what he had packed before the free gear replaced it, so
     // a death puts his own loadout back rather than making him rebuild it.
     // v12.16: the button already emptied P.kit and kept it aside; that is the list.
-    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
+    // v12.77, 2026-09-08 first-hour audit: ALL THREE PARTS OF THE LOADOUT, not
+    // just the items. The snapshot above holds the belt plan and the gun slot as
+    // well, and the button that gives him his own gear back restores all three;
+    // this handoff dropped two of them on the floor and then threw the snapshot
+    // away, so a death restored his items into a backpack with every belt key he
+    // had bound now blank, and told him he had been restored.
+    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice();
+    P.hotBeforeFree=(P.kitSaved&&P.kitSaved.hot)?P.kitSaved.hot:null;
+    P.gunBeforeFree=(P.kitSaved&&P.kitSaved.gun)?P.kitSaved.gun:null;
+    P.kitSaved=null;
     P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;
   }
   var kit=stageKitLive();
