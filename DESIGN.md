@@ -40024,6 +40024,57 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.49 - A HOWLER SHELL NO LONGER REACHES THROUGH A WALL
+
+From the 2026-09-07 read-only audit (P2), specced from the source. This is the
+remaining half of his note of 2026-09-06, and my own v12.00 entry named it as
+not verified. Verified by reading at v12.48.
+
+WHAT IT WAS. The Howler blast had three gates and none of them was a wall. It
+asked how far away you were, whether you were already down, and whether the
+shell had burst on a roof over your head. That third gate is the v10.63 rule
+and it does a real job, but it is inert whenever the shell lands in the open:
+there is no roof on a street, so the blast then reached ninety units in every
+direction through anything at all.
+
+The shape a player meets is ordinary. He ducks into a building. The Howler
+aimed at where it last saw him, thirty units outside the door, and the shell was
+already two seconds in the air, so it lands where it was aimed. Standing forty
+units inside a solid wall he loses about twenty health through masonry, and the
+hit ring points at a burst he never saw.
+
+The frag blast four lines above tests the line of sight for exactly this, for
+the player and for every entity. So this is the game agreeing with itself
+rather than a new rule being invented.
+
+THE BUILD. The same test the frag uses, on both halves of the function: the
+player and every entity. The roof rule is untouched and still does its own job,
+which is a shell landing ON a building sparing the room underneath.
+
+WHAT IT COSTS, HONESTLY. Buildings now protect you from a Howler the way they
+always looked as though they did, so cover is worth more than it was. That is a
+real change to how a fight with a Howler goes. It is a defect fix rather than a
+dial: nothing in the settings moves, the damage numbers and the radius are
+untouched, and the same shell in the open does exactly what it always did. The
+bot is not measured against Howlers in the paired runs, so no extract-rate
+number moves.
+
+MEASURED. Check 12.49 does not assume where a wall is. It walks the west face
+of every building big enough to stand well inside, and takes the first row that
+the map's own segments actually block, which skips doorways and windows without
+having to name them; if no such row exists on this map and seed it skips and
+says so. It then confirms the burst point is genuinely in the open, so the roof
+rule cannot be doing the work, and fires the shell. The control runs first: the
+same shell must still take health off a man standing the same seventy units
+away with nothing between, or a build that simply stopped the Howler hurting
+anybody would read green. The finding arm requires the man behind the wall to
+lose nothing. Two further arms carry the entity half: a pillager behind that
+same wall must be spared, and the same pillager in the open must still be hit.
+
+Not verified: it lands the shell directly rather than flying one in from a live
+Howler; it tests one building face on one map and one seed; it says nothing
+about the frag, the lightning or the Warden, which have their own rules; and no
+paired number can speak to it.
 ## v12.48 - ONE WORD PER THING, ON THIS CARD TOO
 
 Found by my own slip on 2026-09-08. I wrote a word he retired into a

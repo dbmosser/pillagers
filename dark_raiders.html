@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.48';
+var VER='12.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.48';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.48';
+var WHATSNEW_VER='12.49';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1377,6 +1377,7 @@ var WHATSNEW=[
   'AUTO-JOG STOPS WHEN YOU GO DOWN. It used to survive the whole time you were on the floor, so the moment you got up again you walked off toward the cursor at 40 health with no key held, which was the character walking off by himself.',
   'THE EDGE OF A RAISED DECK IS WHERE IT LOOKS. Catwalk and gantry edges were painted like building walls, 26 units taller than the thing you actually collide with, so a third of the deck you were standing on was covered by a wall you could walk through, you stopped short of the edge you could see, and standing at the near side hid you behind it.',
   'ONE WORD PER THING, ON THIS CARD TOO. Five older entries here still used words you retired: the extraction called a vehicle in three places, and the tactical belt called by its old name in one. They use your words now, and a check holds the whole card to the list from here on.',
+  'A HOWLER SHELL NO LONGER REACHES THROUGH A WALL. A shell bursting in the street took about twenty health off you standing well inside a building, with the hit ring pointing at something you could not see. Walls stop the blast now, exactly as they stop a frag.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -11873,7 +11874,17 @@ function howlerImpact(SH){
   flash(SH.tx,SH.ty,220,'#ff9a5c',.4);
   ping(SH.tx,SH.ty,480,false,false,'robot','fire');
   var dp=dist(p,{x:SH.tx,y:SH.ty});
-  if(dp<R&&!p.downed&&!(_onRoof&&underSameRoof(_roof,p.x,p.y)))
+  // v12.49, 2026-09-07 audit: A BLAST STOPS AT A WALL, which is the rule the
+  // frag four lines above has always followed. The three gates here were the
+  // distance, being down already, and the v10.63 roof, and that roof gate is
+  // inert whenever the shell lands in the open, so a burst in the street reached
+  // ninety units through masonry: duck inside with a shell already in the air
+  // and it lands where it was aimed, outside, and takes about twenty health off
+  // a man standing forty units behind a solid wall, with the hit ring pointing
+  // at something he cannot see. The roof rule is untouched and still does its
+  // own job, which is a shell landing ON a building sparing the room below.
+  if(dp<R&&!p.downed&&!(_onRoof&&underSameRoof(_roof,p.x,p.y))&&
+     losClear(SH.tx,SH.ty,p.x,p.y,G.map.segs))
     damagePlayer(SH.dmg*(1-dp/R)+6,'howler','HOWLER',SH.tx,SH.ty);
   // v10.63: the roof covers everyone under it, not only him, or a shell on a
   // roof would still clear the room of pillagers sheltering in it.
@@ -11881,7 +11892,10 @@ function howlerImpact(SH){
     var e=G.ents[i]; if(e.kind==='howler') continue;
     if(_onRoof&&underSameRoof(_roof,e.x,e.y)) continue;
     var de=dist(e,{x:SH.tx,y:SH.ty});
-    if(de<R+e.r){
+    // v12.49: and the same rule for everyone else in the street, as the frag
+    // already does for them. A wall that stops it reaching him stops it
+    // reaching a pillager sheltering behind the same wall.
+    if(de<R+e.r&&losClear(SH.tx,SH.ty,e.x,e.y,G.map.segs)){
       e.hp-=Math.max(6,SH.dmg*0.8*(1-Math.max(0,de-e.r)/R)); e.hitT=.2;
       if(e.kind==='raider'&&!e.downed) e.alert=2.5;
     }
@@ -28943,7 +28957,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.48: found by my own slip on 2026-09-08. I wrote a retired word into a player-facing line in a draft, caught it, and then swept the card it would have joined. His vocabulary order of 2026-09-02 is explicit and I have broken it in five places on the what is new card, which is a card he reads: the extraction is named as a vehicle in three entries, the arrival by a word he retired in a fourth, and the tactical belt by its old name in a fifth. Every spoken line and every drawn line in the game is already clean, both swept for this build; the card was not. The entries that ANNOUNCE a rename quote the old word on purpose and are left exactly as they are. Check 12.48 reads the card back from the game and holds every line to the list: none may name the extraction as a vehicle or use the retired arrival word, a line may only use the old name for the belt if it is the entry announcing that rename, and the same for the backpack, with a control requiring the rename entries themselves to still be present so deleting them cannot pass; fails on v12.47.',
+  now:'v12.49: 2026-09-07 audit (P2), the remaining half of his 2026-09-06 note, and my own v12.00 entry named it as not verified. The Howler blast had three gates and none of them was a wall: how far away you are, whether you are already down, and whether the shell burst on a roof over your head. A shell landing in the STREET has no roof, so that gate is inert, and the blast then reached ninety units in every direction through anything at all. Duck into a building with a shell already in the air and it lands where it was aimed, outside; standing forty units inside a solid wall you lost about twenty health through masonry, with the hit ring pointing at a burst you could not see. The frag blast four lines above tests the line of sight for exactly this, for the player and for every entity, so this is the game agreeing with itself rather than a new rule. The roof rule is untouched and still does its own job. Honestly: buildings now protect you from a Howler the way they always looked as though they did, which makes cover worth more than it was. Check 12.49 finds a solid stretch of a real building wall, bursts a shell seventy units outside it and requires the man forty units inside to lose nothing, with two controls: the same shell with him standing in the open the other side must hurt, and a pillager behind the same wall must be spared too; fails on v12.48.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
