@@ -40024,6 +40024,45 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.48 - ONE WORD PER THING, ON THIS CARD TOO
+
+Found by my own slip on 2026-09-08. I wrote a word he retired into a
+player-facing line in a draft, caught it before it shipped, and then swept the
+card that line would have joined.
+
+WHAT IT WAS. His vocabulary order of 2026-09-02 is explicit. Extraction for all
+of it, and never the vehicle word, because he wrote at the time that he never
+said the extraction was one. The belt has been the tactical belt since v10.26
+and the backpack has been the backpack since v9.90.
+
+Every spoken line and every drawn line in the game is already clean. I swept
+both for this build and found nothing. The what is new card is not clean, in
+five places, and it is a card he opens and reads: the extraction is named as a
+vehicle in three entries, the arrival by a retired word in a fourth, and the
+tactical belt by its old name in a fifth.
+
+The entries that ANNOUNCE a rename are a different case. They have to quote the
+old word to make any sense, and they are left exactly as they are.
+
+THE BUILD. Five entries reworded and nothing else touched. No behaviour
+changes. The check is the point of the build: it holds the whole card to the
+list from here on, so this cannot rot again quietly the way the version stamp
+did twice.
+
+MEASURED. Check 12.48 reads the card back from the game rather than from the
+source, and assembles every needle from pieces so that it cannot find itself,
+which has cost three builds in the past. It bans the retired words outright,
+allows the old name for the belt or the backpack only inside the entry that
+announces that rename, and then runs three controls: an entry announcing each
+of the two renames must still exist, and the card must still have its full run
+of entries, so deleting the history can never be the way this check goes green.
+
+Not verified: two rows in the dev box roadmap still use the retired arrival
+word. I left them deliberately: your saved roadmap order is keyed on the row
+text, so rewording a row would silently drop it out of the order you set, and
+that trade is yours to make rather than mine. The check covers the what is new
+card only, not the roadmap rows, the settings labels or the hub headings, all
+of which I swept by hand for this build and found clean.
 ## v12.47 - THE EDGE OF A RAISED DECK IS WHERE IT LOOKS
 
 His report of 2026-09-08, live, with a screenshot: the player gets stuck in the
