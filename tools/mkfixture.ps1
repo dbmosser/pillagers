@@ -5709,6 +5709,130 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.47',what:'a raised deck edge is painted where it is: no kerb on any deck on either sector is painted above the edge he collides with, so no part of the deck he can stand on is covered by a wall he can walk through, while ordinary building walls still stand proud of their colliders (his report of 2026-09-08, the long thin building)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw a raid';
+     var bad=[], proto=CanvasRenderingContext2D.prototype, oFR=proto.fillRect;
+     var rects=[], watch=false, decksSeen=0, kerbsRead=0, plainRead=0;
+     proto.fillRect=function(x,y,w,h){ if(watch) rects.push([x,y,w,h]); return oFR.apply(this,arguments); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __pinDPR(1); __forceSize(1920,1080);
+       // Where a wall was ACTUALLY painted this frame: its own x and width, and a
+       // y near enough to be its own paint rather than another wall's.
+       function paintedTop(W){
+         var best=null;
+         for(var r=0;r<rects.length;r++){ var R=rects[r];
+           if(Math.abs(R[0]-W.x)>0.6||Math.abs(R[2]-W.w)>0.6) continue;
+           if(R[1]<W.y-60||R[1]>W.y+W.h+2) continue;
+           if(best===null||R[1]<best) best=R[1];
+         }
+         return best;
+       }
+       for(var mi=0;mi<2;mi++){
+         __deploy({kit:[],mapIx:mi,seed:4242});
+         var g=__state(); if(!g||!g.player||!g.map) continue;
+         g.ents.length=0; g.player.downed=false; g.player.hp=100;
+         var M=g.map, plats=(M.plats||[]), i;
+         if(!plats.length) continue;
+         var PL=plats[0];
+         for(i=1;i<plats.length;i++) if(plats[i].w*plats[i].h>PL.w*PL.h) PL=plats[i];
+         g.player.x=PL.x+PL.w/2; g.player.y=PL.y+PL.h/2;
+         rects=[]; watch=true; __frame(0.016); watch=false;
+         decksSeen++;
+         for(i=0;i<M.walls.length;i++){
+           var W=M.walls[i];
+           if(!W.ledge) continue;
+           if(W.x>PL.x+PL.w+60||W.x+W.w<PL.x-60||W.y>PL.y+PL.h+60||W.y+W.h<PL.y-60) continue;
+           var t=paintedTop(W);
+           if(t===null) continue;
+           kerbsRead++;
+           var over=W.y-t;
+           if(over>0.6)
+             bad.push('sector '+mi+': the deck edge at '+Math.round(W.x)+','+Math.round(W.y)+' is painted '+Math.round(over)+' units above the edge he actually collides with, so that much of the deck he is standing on is covered by a wall he can walk straight through, and walking at it he stops '+Math.round(over)+' units short of where it looks like he should');
+         }
+         // CONTROL: an ordinary wall in the same frame must still stand proud,
+         // or this check would pass on a build that flattened everything.
+         for(i=0;i<M.walls.length;i++){
+           var B=M.walls[i];
+           if(B.ledge||B.w<100||B.h>60) continue;
+           var bt=paintedTop(B);
+           if(bt===null) continue;
+           plainRead++;
+           if(B.y-bt<10)
+             bad.push('control: an ordinary wall at '+Math.round(B.x)+','+Math.round(B.y)+' on sector '+mi+' is painted only '+Math.round(B.y-bt)+' units above its collider, so walls no longer read as having any height at all');
+           break;
+         }
+       }
+       if(!decksSeen) return 'SKIP: neither sector built a raised deck to read';
+       if(!kerbsRead) return 'SKIP: no deck edge was painted in the frame, so there was nothing to measure';
+       if(!plainRead) return 'SKIP: no ordinary wall was painted in the same frame, so the control could not run';
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       watch=false; proto.fillRect=oFR;
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.46',what:'auto-jog stops when he goes down: a man stood back up with no key held stays where he is instead of walking off toward the cursor at 40 health, while an armed auto-jog that never went down still walks him (2026-09-07 audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
+     if(typeof damagePlayer!=='function'||typeof selfRevive!=='function'||typeof updatePlayer!=='function') return 'SKIP: this build has no down or revive path';
+     var bad=[], keepTs=lastTs;
+     // One staging, three ways through it. down: he is put on the floor by a real
+     // hit and stood back up. armed: whether the auto-jog is on at all.
+     function walk(armed,down){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       var p=g.player, K=__keys(), k, i;
+       for(k in K) delete K[k];
+       g.ents.length=0;                       // nobody to shoot him mid-walk
+       p.downed=false; p.roll=0; p.revived=false; p.healLock=false;
+       p.hp=100; p.armor=0; p.iv=0; p.stam=100; p.stamLock=0; p.stamRelease=0;
+       p.cooking=0; p.cookT=0; p.cookKind=null; p.face=0;   // due east, so a walk is +x
+       p.autoJog=!!armed;
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       if(down){
+         p.hp=30;
+         damagePlayer(240,null,'crawler',p.x-20,p.y);
+         if(!p.downed) return {none:'a 240 hit on 30 health did not put him on the floor'};
+         p.downT=CFG.downTime; p.giveT=0;
+         selfRevive();
+         if(p.downed) return {none:'the revive did not stand him back up'};
+       }
+       p.iv=99; p.face=0;
+       var x0=p.x, y0=p.y;
+       for(i=0;i<10;i++){ p.iv=99; clk+=16.7; __loop(clk); }
+       for(k in K) delete K[k];
+       return {moved:Math.sqrt((p.x-x0)*(p.x-x0)+(p.y-y0)*(p.y-y0)),jog:!!p.autoJog,hp:Math.round(p.hp)};
+     }
+     try{
+       // CONTROL ONE FIRST: armed, never downed. He MUST walk, or nothing below
+       // means anything: a zero would only say this check cannot see a walk.
+       var C=walk(true,false);
+       if(!C) return 'SKIP: no live raid to walk in';
+       if(C.none) return 'SKIP: '+C.none;
+       if(!(C.moved>1)) return 'SKIP: an armed auto-jog with no key held moved him '+Math.round(C.moved)+' units in ten frames, so this check cannot see a walk and proves nothing';
+       // THE FINDING: armed, then put down and stood back up, no key touched.
+       var A=walk(true,true);
+       if(A.none) return 'SKIP: '+A.none;
+       if(A.moved>1)
+         bad.push('the auto-jog survived the down: stood back up on '+A.hp+' health with no key held he walked '+Math.round(A.moved)+' units by himself, toward whatever the cursor was pointing at, which is the character walking off on his own');
+       if(A.jog) bad.push('the auto-jog is still armed after a down, so he will walk off again on the next standing frame');
+       // CONTROL TWO: nothing armed at all, same room, same down. He stands still,
+       // so the zero above is the flag being cleared and not the room being stuck.
+       var B=walk(false,true);
+       if(B.none) return 'SKIP: '+B.none;
+       if(B.moved>1) bad.push('control: with no auto-jog armed at all he still walked '+Math.round(B.moved)+' units after the revive, so something other than the auto-jog is moving him and this check is measuring the wrong thing');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ lastTs=keepTs; }catch(_t){}
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.autoJog=false; gz.player.iv=0; gz.player.downed=false; gz.player.revived=false; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.45',what:'cutting the seal no longer stops the world: through the whole hold his health recovers as it does standing anywhere else and an extraction already called for keeps closing, while the cut itself still advances at the same rate (2026-09-07 audit, the same fault as v12.34 one door along)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';

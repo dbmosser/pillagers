@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.45';
+var VER='12.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.45';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.45';
+var WHATSNEW_VER='12.47';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1374,6 +1374,8 @@ var WHATSNEW=[
   'A NEW CHARACTER KEEPS WHAT THEIR FIRST SESSION EARNED. A repair meant for saves from old builds ran once on brand new ones as well, so cutting at the great door on THE COLD MILE, being told it was banked, and then reloading the page lost the cutting and the explored map. It happened once per character, which is why it read as random.',
   'THE EXTRACTION WINDOW NEVER OUTLIVES THE CLOCK. An extraction arriving in the last seconds of a raid used to announce three seconds on every readout and then let the timer kill you with a second still showing. It now says what the raid actually has left.',
   'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, an extraction you had already called for stopped arriving, its window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
+  'AUTO-JOG STOPS WHEN YOU GO DOWN. It used to survive the whole time you were on the floor, so the moment you got up again you walked off toward the cursor at 40 health with no key held, which was the character walking off by himself.',
+  'THE EDGE OF A RAISED DECK IS WHERE IT LOOKS. Catwalk and gantry edges were painted like building walls, 26 units taller than the thing you actually collide with, so a third of the deck you were standing on was covered by a wall you could walk through, you stopped short of the edge you could see, and standing at the near side hid you behind it.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -12300,6 +12302,16 @@ function damagePlayer(amt,src,srcName,sx,sy){
     // for, and the clear on the next frame still frees that press.
     p.healLock=!!keys['KeyF'];
 p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null;
+    // v12.46, 2026-09-07 audit: AND THE AUTO-JOG STOPS WHEN HE DOES. It is
+    // cleared in exactly one place, by a movement key, and that line sits below
+    // the early return that runs while he is on the floor, so nothing could
+    // clear it while he was down. This branch already clears the prep, the heal,
+    // the pull and the cook; the flag belonged with them. Without it the first
+    // standing frame after a revive walked him off toward the cursor at 40
+    // health with no key held, which is his v7.94 note in the one state nobody
+    // looked at, and worse with a hired merc: he presses nothing at all, the
+    // merc pulls him up, and he wanders away by himself.
+    if(p.autoJog){ p.autoJog=false; if(!G.sim) say('Auto-jog off.'); }
   (function(){
     if(G.sim) return;
     var near=null,nd=1e9;
@@ -21953,7 +21965,18 @@ var SHD=G.shells[i];
       var wl2=it.w,d3=wl2.d===undefined?3:wl2.d;
       // v5.96: the run''s height, not the piece''s. The fallback is what the hub
       // and anything else outside the map builder still uses.
-      var LIFT=wl2.lift||((wl2.w<=60&&wl2.h<=60)?14:26);
+      // v12.47, HIS REPORT: A DECK KERB IS PAINTED ON ITS COLLIDER AND NOWHERE
+      // ELSE. Every wall body is lifted 26 units above its collider so buildings
+      // read as having height. A deck edge is not a building: it is a 14 unit
+      // kerb laid INSIDE the deck's own footprint, so lifting it painted 26
+      // units of solid wall over the deck he is standing on, and 26 units of
+      // solid wall over the ground on the other side. Measured on COLD STORAGE:
+      // the deck is walkable from 634 to 716 and its south kerb was painted from
+      // 690, so a third of the deck looked like wall. He walked into it and
+      // stopped 26 units short of where it looked like he should, and standing
+      // on the south of the deck he was painted over by the kerb, because a wall
+      // sorts by the bottom of its collider and he sorts by his lifted feet.
+      var LIFT=wl2.ledge?0:(wl2.lift||((wl2.w<=60&&wl2.h<=60)?14:26));
       // A WINDOW HAS TO LOOK LIKE A WINDOW or the hole in the wall reads as a
       // doorway and someone walks into it. Drawn as a low sill in the wall's own
       // colours with a pale glass band above it, so it reads as part of the same
@@ -28919,7 +28942,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.45: 2026-09-07 audit (P3), the same fault and the same fix as v12.34 one door along. Cutting the seal returns out of updatePlayer on every frame of the hold, and two things live below that return: the only recovery tick on the standing path, and the only real call to the extraction clocks. So for the forty to a hundred and fifteen seconds of a cut the health bar was flat and the recovery clock did not even advance, which costs thirteen points on a tier zero cut and thirty eight at tier three, and every extraction clock was frozen with it: an extraction already called for stopped closing, its window stopped running, the re-ping stopped, and no pillager wave could arrive while he made the loudest noise in the game. The roll branch and the trade window both carry these calls past their own returns for exactly this reason and this was the last early return that did not. No wantCall, as in those two: E belongs to the seal while he is cutting, so the clocks run and no pull of his own does. Honestly: the wave half makes cutting riskier than it has been, because a wave that could never arrive now can. Check 12.45 holds E at a real seal through the real frame loop and requires the cut to advance, the recovery clock to advance with it, health to come back, and an extraction already called for to keep counting down, with a control that a man standing beside the seal and not cutting recovers exactly as before; fails on v12.44.',
+  now:'v12.47: HIS REPORT of 2026-09-08, with a screenshot: he gets stuck in the horizontal wall, and weird graphic and player location glitches always happen right there in the long thin building. The long thin building is not a building. It is a raised deck, the DOCK CATWALK on COLD STORAGE, 900 by 110 with a lift of 26, sitting under the dock bays, and the vertical stripes he can see on it are its plank lines laid every 26 units by the ground bake. A deck is walkable floor plus a lift, and its edges are collision: four walls 14 units thick laid inside the deck footprint and tagged as ledges. They were then painted by the ordinary wall painter, which lifts every wall body 26 units above its collider so that a building reads as having height. Measured on the live fixture at seed 4242: the deck is walkable from 634 to 716, its south kerb collides from 716 to 730 but was PAINTED from 690, and its north kerb collides from 620 to 634 but was PAINTED from 594. So twenty six of the eighty two units of deck he is allowed to stand on were painted over as solid wall, and twenty six units of ordinary ground on the other side were painted as solid wall too. Walking onto the catwalk he walked twenty six units into what looked like a wall before anything stopped him, which is being stuck in the horizontal wall, and standing on the near third of the deck, which is legal, he was painted over by the kerb, because a wall sorts by the bottom of its collider at 730 while a man standing at 700 and lifted by the deck sorts at about 674. Both symptoms are that one thing. A kerb is not a building, so a wall tagged as a ledge is now painted on its collider and nowhere else, which makes what looks solid solid on every deck on both sectors; the height still reads, because the ground bake already lays a contact shadow under every deck, a bright lip along its top edge and a dark near edge, and the kerb keeps its warm top lip and ink creases. Nothing moves but paint: no wall is added, removed or resized, no collider changes, and the painter has never touched the seeded stream, so the map fingerprint is untouched. Check 12.47 walks both sectors, hooks the canvas and reads where every deck kerb is ACTUALLY painted rather than recomputing it, and requires no kerb to be painted above the edge he collides with, with a control that ordinary building walls still stand 26 units proud so the game has not been flattened; fails on v12.46.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

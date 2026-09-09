@@ -49,9 +49,9 @@ SubRx @'
 
 # NEW IN.
 SubRx @'
-  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
+  'THE EDGE OF A RAISED DECK IS WHERE IT LOOKS. Catwalk and gantry edges were painted like building walls, 26 units taller than the thing you actually collide with, so a third of the deck you were standing on was covered by a wall you could walk through, you stopped short of the edge you could see, and standing at the near side hid you behind it.',
 '@ @'
-  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
+  'THE EDGE OF A RAISED DECK IS WHERE IT LOOKS. Catwalk and gantry edges were painted like building walls, 26 units taller than the thing you actually collide with, so a third of the deck you were standing on was covered by a wall you could walk through, you stopped short of the edge you could see, and standing at the near side hid you behind it.',
   'ONE WORD PER THING, ON THIS CARD TOO. Five older entries here still used words you retired: the extraction called a vehicle in three places, and the tactical belt called by its old name in one. They use your words now, and a check holds the whole card to the list from here on.',
 '@
 

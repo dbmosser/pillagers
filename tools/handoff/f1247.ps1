@@ -11,78 +11,80 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.47 CHECK, inserted before the v12.46 entry. Two arms on one staging, and
-# the needle is assembled rather than written, so a check that greps the page
-# cannot find this row in its own source. The control arm is the same man in the
-# same place with no extraction waiting: the prompt must be drawn and the hold
-# must run, or a missing prompt in the finding arm would only mean the overlay
-# was never drawn at all.
+# v12.47 CHECK, inserted before the v12.46 entry. It does NOT recompute the lift
+# and grade itself against its own arithmetic. It hooks the canvas, draws a real
+# frame with him standing on a real deck, and reads back WHERE THE KERB WAS
+# ACTUALLY PAINTED, then compares that to the edge he actually collides with.
+# It runs on both sectors and on every deck it finds. The control is an ordinary
+# building wall in the same frame: it must still stand proud of its collider, so
+# a build that had flattened every wall in the game would fail here rather than
+# pass. If no ordinary wall was drawn there is nothing to control against and it
+# says so instead of passing on one arm.
 SubRx @'
   {v:'12.46',what:'auto-jog stops when he goes down: a man stood back up with no key held stays where he is instead of walking off toward the cursor at 40 health, while an armed auto-jog that never went down still walks him (2026-09-07 audit)',
 '@ @'
-  {v:'12.47',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
+  {v:'12.47',what:'a raised deck edge is painted where it is: no kerb on any deck on either sector is painted above the edge he collides with, so no part of the deck he can stand on is covered by a wall he can walk through, while ordinary building walls still stand proud of their colliders (his report of 2026-09-08, the long thin building)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys&&window.__frame&&window.__textTrace&&window.__forceSize)) return 'SKIP: this fixture cannot deploy, press keys and read the drawn text';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
-     if(typeof giveUpTick!=='function') return 'SKIP: this build has no surrender';
-     var bad=[];
-     // Assembled, never written whole, so the phrase cannot be found in the
-     // source of the very check that is looking for it.
-     var PROMPT='TO '+'SURRE'+'NDER', REFUSE='NO '+'SURRE'+'NDER';
-     function arm(waiting){
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_f){}
-       __deploy({kit:[],mapIx:0,seed:4242});
-       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
-       var p=g.player, z=g.active||g.zones[0], K=__keys(), k, i;
-       for(k in K) delete K[k];
-       g.ents.length=0;
-       g.active=z; z.open=true;
-       if(waiting){ z.beaconT=0; g.beaconT=0; g.shipHold=20; z.hold=20; p.x=z.x; p.y=z.y; }
-       else { z.beaconT=null; g.beaconT=null; g.shipHold=null; z.hold=null;
-              p.x=z.x+(z.r+900); p.y=z.y; }
-       p.hp=20; p.armor=0; p.iv=99; p.roll=0; p.cooking=0;
-       p.revived=true; p.downed=true; p.downT=CFG.downTime; p.giveT=0; p.healLock=true;
-       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
-       K.Space=1;
-       var peak=0;
-       for(i=0;i<40;i++){ p.iv=99; p.downT=CFG.downTime; clk+=16.7; __loop(clk);
-                          if((p.giveT||0)>peak) peak=p.giveT||0;
-                          if(!p.downed||g.over) break; }
-       var lines=[];
-       try{ lines=__textTrace(function(){ __frame(0.016); }); }catch(_t){ }
-       var txt=''; for(i=0;i<lines.length;i++) txt+=' | '+lines[i].t;
-       var out={peak:peak,down:!!p.downed,over:!!g.over,txt:txt,
-                prompt:txt.indexOf(PROMPT)>=0,refuse:txt.indexOf(REFUSE)>=0,
-                verb:txt.indexOf('TO EXTRACT')>=0};
-       for(k in K) delete K[k];
-       return out;
-     }
-     var keepTs=lastTs;
+     if(!(window.__deploy&&window.__state&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw a raid';
+     var bad=[], proto=CanvasRenderingContext2D.prototype, oFR=proto.fillRect;
+     var rects=[], watch=false, decksSeen=0, kerbsRead=0, plainRead=0;
+     proto.fillRect=function(x,y,w,h){ if(watch) rects.push([x,y,w,h]); return oFR.apply(this,arguments); };
      try{
-       // CONTROL FIRST: the same man, downed with his revive spent, nowhere near
-       // a waiting extraction. The prompt must be drawn and the hold must run, or
-       // a missing prompt below would only say the overlay was never drawn.
-       var B=arm(false);
-       if(!B) return 'SKIP: no raid with an extraction point to lie down in';
-       if(!B.down&&!B.over) return 'SKIP: he did not stay on the floor long enough to read the screen';
-       if(!B.prompt) return 'SKIP: with no extraction waiting the downed screen did not draw the surrender row at all, so this check cannot see it and proves nothing';
-       if(!(B.peak>0)) return 'SKIP: with no extraction waiting two seconds on the key started no hold, so this check cannot see a hold and proves nothing';
-       // THE FINDING: downed inside a point with an extraction waiting, which is
-       // the one state the key is refused in, on purpose, since v9.71.
-       var A=arm(true);
-       if(!A) return 'SKIP: no raid with an extraction point to lie down in';
-       if(A.peak>0) bad.push('staging: the hold started inside a waiting extraction, so this is not the refused state the check is about');
-       if(A.prompt) bad.push('with an extraction waiting on the point he is lying in the screen still offers the surrender, and the key does nothing: the row is drawn, the bar never comes, and nothing tells him why');
-       if(!A.refuse) bad.push('with an extraction waiting the screen says nothing at all about the surrender being refused; the drawn text is ['+A.txt.slice(0,200)+']');
-       if(!A.verb) bad.push('control: the working verb is not drawn in this state either, so the screen is not the one this check thinks it is reading');
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __pinDPR(1); __forceSize(1920,1080);
+       // Where a wall was ACTUALLY painted this frame: its own x and width, and a
+       // y near enough to be its own paint rather than another wall's.
+       function paintedTop(W){
+         var best=null;
+         for(var r=0;r<rects.length;r++){ var R=rects[r];
+           if(Math.abs(R[0]-W.x)>0.6||Math.abs(R[2]-W.w)>0.6) continue;
+           if(R[1]<W.y-60||R[1]>W.y+W.h+2) continue;
+           if(best===null||R[1]<best) best=R[1];
+         }
+         return best;
+       }
+       for(var mi=0;mi<2;mi++){
+         __deploy({kit:[],mapIx:mi,seed:4242});
+         var g=__state(); if(!g||!g.player||!g.map) continue;
+         g.ents.length=0; g.player.downed=false; g.player.hp=100;
+         var M=g.map, plats=(M.plats||[]), i;
+         if(!plats.length) continue;
+         var PL=plats[0];
+         for(i=1;i<plats.length;i++) if(plats[i].w*plats[i].h>PL.w*PL.h) PL=plats[i];
+         g.player.x=PL.x+PL.w/2; g.player.y=PL.y+PL.h/2;
+         rects=[]; watch=true; __frame(0.016); watch=false;
+         decksSeen++;
+         for(i=0;i<M.walls.length;i++){
+           var W=M.walls[i];
+           if(!W.ledge) continue;
+           if(W.x>PL.x+PL.w+60||W.x+W.w<PL.x-60||W.y>PL.y+PL.h+60||W.y+W.h<PL.y-60) continue;
+           var t=paintedTop(W);
+           if(t===null) continue;
+           kerbsRead++;
+           var over=W.y-t;
+           if(over>0.6)
+             bad.push('sector '+mi+': the deck edge at '+Math.round(W.x)+','+Math.round(W.y)+' is painted '+Math.round(over)+' units above the edge he actually collides with, so that much of the deck he is standing on is covered by a wall he can walk straight through, and walking at it he stops '+Math.round(over)+' units short of where it looks like he should');
+         }
+         // CONTROL: an ordinary wall in the same frame must still stand proud,
+         // or this check would pass on a build that flattened everything.
+         for(i=0;i<M.walls.length;i++){
+           var B=M.walls[i];
+           if(B.ledge||B.w<100||B.h>60) continue;
+           var bt=paintedTop(B);
+           if(bt===null) continue;
+           plainRead++;
+           if(B.y-bt<10)
+             bad.push('control: an ordinary wall at '+Math.round(B.x)+','+Math.round(B.y)+' on sector '+mi+' is painted only '+Math.round(B.y-bt)+' units above its collider, so walls no longer read as having any height at all');
+           break;
+         }
+       }
+       if(!decksSeen) return 'SKIP: neither sector built a raised deck to read';
+       if(!kerbsRead) return 'SKIP: no deck edge was painted in the frame, so there was nothing to measure';
+       if(!plainRead) return 'SKIP: no ordinary wall was painted in the same frame, so the control could not run';
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
-       try{ lastTs=keepTs; }catch(_t2){}
-       try{ var gz=__state(); if(gz&&gz.player){ gz.player.downed=false; gz.player.giveT=0; gz.player.iv=0; gz.player.revived=false; gz.player.healLock=false; } }catch(_a){}
-       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
-       __topClear(); __resetCfg(); __cleanProfile();
+       watch=false; proto.fillRect=oFR;
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
   {v:'12.46',what:'auto-jog stops when he goes down: a man stood back up with no key held stays where he is instead of walking off toward the cursor at 40 health, while an armed auto-jog that never went down still walks him (2026-09-07 audit)',

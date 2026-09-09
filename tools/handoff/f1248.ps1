@@ -20,7 +20,7 @@ function SubRx([string]$old, [string]$new) {
 # have lines at all, and the rename entries must still be present, so deleting
 # them can never be the way this check goes green.
 SubRx @'
-  {v:'12.47',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
+  {v:'12.47',what:'a raised deck edge is painted where it is: no kerb on any deck on either sector is painted above the edge he collides with, so no part of the deck he can stand on is covered by a wall he can walk through, while ordinary building walls still stand proud of their colliders (his report of 2026-09-08, the long thin building)',
 '@ @'
   {v:'12.48',what:'the what is new card obeys his vocabulary list: no entry names the extraction as a vehicle or uses the retired arrival word, and the old names for the tactical belt and the backpack appear only inside the entries that announce those renames, which still exist (his order of 2026-09-02, my slip of 2026-09-08)',
    run:function(){
@@ -56,7 +56,7 @@ SubRx @'
      if(!renamePack) bad.push('control: no entry on the card announces the backpack rename any more, so the history has been deleted rather than the wording corrected');
      if(L.length<40) bad.push('control: the card is down to '+L.length+' entries, so lines have been removed rather than reworded');
      return bad.length?bad.join('; '):null; }},
-  {v:'12.47',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
+  {v:'12.47',what:'a raised deck edge is painted where it is: no kerb on any deck on either sector is painted above the edge he collides with, so no part of the deck he can stand on is covered by a wall he can walk through, while ordinary building walls still stand proud of their colliders (his report of 2026-09-08, the long thin building)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

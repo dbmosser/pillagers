@@ -40024,6 +40024,113 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.47 - THE EDGE OF A RAISED DECK IS WHERE IT LOOKS
+
+His report of 2026-09-08, live, with a screenshot: the player gets stuck in the
+horizontal wall, and weird graphic and player location glitches always happen
+right there in the long thin building.
+
+IT IS NOT A BUILDING. It is a raised deck: the DOCK CATWALK on COLD STORAGE, 900
+by 110 with a lift of 26, sitting under the dock bays. The vertical stripes he
+can see along it are its plank lines, laid every 26 units by the ground bake.
+
+A deck is walkable floor plus a lift. Its EDGES are collision, built as four
+walls 14 units thick laid inside the deck's own footprint and tagged as ledges.
+They were then painted by the ordinary wall painter, which lifts every wall body
+26 units above its collider so that a building reads as having height.
+
+MEASURED ON THE LIVE FIXTURE, COLD STORAGE, seed 4242:
+
+  deck walkable band     y 634 to 716    (82 units)
+  south kerb collider    y 716 to 730
+  south kerb PAINTED     y 690 to 730
+  north kerb collider    y 620 to 634
+  north kerb PAINTED     y 594 to 634
+
+So twenty six of the eighty two units of deck he is allowed to stand on were
+painted over as solid wall, and twenty six units of ordinary ground on the far
+side were painted as solid wall as well.
+
+BOTH OF HIS SYMPTOMS ARE THAT ONE THING. Walking onto the catwalk he walks twenty
+six units into what looks like a wall before anything stops him, which is being
+stuck in the horizontal wall. And standing on the near third of the deck, which
+is perfectly legal, he is painted over by the kerb: a wall sorts by the bottom of
+its collider, 730, while a man standing at 700 and lifted by the deck sorts at
+about 674, so the kerb draws on top of him. That is the position glitch.
+
+THE BUILD. A kerb is not a building. A wall tagged as a ledge is painted on its
+collider and nowhere else, so what looks solid is solid, on every deck on both
+sectors. The height still reads: the ground bake already lays a contact shadow
+under every deck, a bright lip along its top edge and a dark near edge, and the
+kerb keeps its own warm top lip and ink creases.
+
+NOTHING MOVES BUT PAINT. No wall is added, removed or resized, no collider
+changes, no deck changes, and the wall painter has never been allowed to touch
+the seeded stream, so the map fingerprint is untouched.
+
+MEASURED. Check 12.47 does not recompute the lift and grade itself against its
+own arithmetic. It hooks the canvas, draws a real frame with him standing on a
+real deck, reads back where the kerb was ACTUALLY painted, and compares that to
+the edge he collides with. It does this on both sectors and on every deck it
+finds. The control is an ordinary building wall in the same frame, which must
+still stand proud of its collider, so a build that had flattened every wall in
+the game would fail rather than pass; if no ordinary wall was drawn there is
+nothing to control against and it says so instead of passing on one arm.
+
+Not verified: it reads the rectangles the frame draws rather than pixels, so it
+proves where the kerb is painted and not how the kerb looks; it does not walk him
+into the edge and measure where he stops, because the painted-versus-collider gap
+IS that distance; and it leaves the twenty unit notch in the north and south
+kerbs at the ramp mouth alone, which is a separate hole and is written up here.
+
+ALSO FOUND AND NOT BUILT: the ramp-mouth test is padded by twenty units, so the
+first twenty units of the north and south kerbs are cut away as well as the ramp
+edge itself. On the DOCK CATWALK that leaves two twenty unit gaps at the left end
+through which he can walk off the side of the deck. It is small, it is the same
+padding that stops decks sealing themselves shut, and narrowing it risks sealing
+a deck, which has happened before and cost every route onto it. Left for its own
+build with its own measurement.
+## v12.46 - AUTO-JOG STOPS WHEN YOU GO DOWN
+
+From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
+reading at v12.45.
+
+WHAT IT WAS. Auto-jog is cleared in exactly one place in the whole file, by a
+movement key, and that line sits below the early return that runs while you are
+on the floor. So nothing could clear it while you were down.
+
+The down branch clears the prep, the heal, the pull and the cook. It has never
+touched this flag. Neither revive path touches it either: the self-revive sets
+the health, the downed state and the invulnerability and nothing else, and the
+merc pick-up does the same.
+
+So the very first standing frame after a revive, with no key held at all, walks
+the man off toward the cursor at 40 health. That is his v7.94 note about the
+character walking off by himself, in the one state nobody looked at. It is
+worse with a hired merc, because he presses nothing whatever: the merc pulls
+him up and he wanders off on his own.
+
+THE BUILD. One line in the down branch, beside the four clears that were
+already there, and it says so out loud the way arming and disarming already do.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. Auto-jog is a player convenience
+armed from a standstill with a key the bot never presses, so no paired number
+moves and no dial changes. What changes for a real player is that a man who has
+just been stood up stays where he was put.
+
+MEASURED. Check 12.46 runs three arms on one staging. The control runs FIRST:
+an armed auto-jog with no down must walk him, or a zero in the finding arm
+would only say that this check cannot see a walk. The finding arm arms the
+flag, puts him down with a real hit through the real damage path, stands him
+back up, and runs ten frames without touching a key: he must not have moved,
+and the flag must not still be armed. The second control arms nothing at all
+and runs the same down and revive, so the zero is the flag being cleared rather
+than the room being stuck.
+
+Not verified: the flag is armed on the player rather than by pressing the key
+that arms it; the merc pick-up path is not driven, though it stands him up
+through the same state the self-revive does; and the cursor is pointed due east
+rather than swept, since what is at issue is whether he moves at all.
 ## v12.45 - CUTTING THE SEAL NO LONGER STOPS THE WORLD
 
 From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
