@@ -40024,6 +40024,51 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.59 - THE OPEN BACKPACK STOPS THE FLOOR
+
+From the 2026-09-08 read-only audit of the five regions nobody had looked at,
+confirmed by a skeptic against the source. It is the worst thing on that list,
+and it is the third time this exact shape has turned up.
+
+WHAT IT WAS. The floor freezes under a panel by asking one question, and the
+Undercroft backpack is not one of the things that question knows about. The
+backpack is painted onto the HUD canvas rather than being a window, so nothing
+in that question could see it, and the floor kept running underneath it.
+
+E, R, F and T still reached whatever station you were standing on. WASD walked
+you off it while you read. On the lift that means: stand on the pad, press I to
+check your packing, press R, and a raid starts from behind a full-screen panel.
+No sector page. No day reset. No question about your loadout or the freebie
+kit. And the prompt that would have warned you is painted over by the panel you
+are looking at. The lift's own act calls commitKit, so your stash moves too.
+
+v11.50 closed one act, the stash terminal, and its own not-verified line says in
+as many words that the other stations were not checked. v12.06 added the
+character screen to this same question for the same reason. This is the last
+surface that was missing.
+
+THE BUILD. One line in that question. Only the floor freeze asks it, so nothing
+else in the game changes: the key that closes the backpack has its own gate and
+still works, the drag and drop inside the panel is on the mouse and untouched,
+and the panel is drawn by the draw pass rather than the update, so it still
+paints.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. None of this exists under the
+bot, which never opens a backpack in the Undercroft. No dial moves.
+
+MEASURED. Check 12.59 stands him on the lift, which is the station whose key
+starts a raid, and steps the floor with its own update rather than anything the
+check invents. The control runs FIRST and with the backpack shut: the key must
+start a raid, or a quiet floor in the finding arm would only mean the check
+cannot drive a station at all. The finding arm then opens the backpack and
+requires both that no raid started and that the floor no longer has him standing
+on a station, which is the general form of it rather than the lift alone.
+
+Not verified: it presses the key by setting it rather than through a real
+keyboard event, which the floor reads the same way; it tests the lift and reads
+the general station state rather than driving all four keys at every station;
+and no frame is drawn, so the panel covering the prompt is reasoned from the
+draw order rather than measured in pixels.
 ## v12.58 - A WEATHER YOU PINNED STOPS ASKING TO CHANGE
 
 The last open line of the 2026-09-06 read-only in-raid audit, and the only one
