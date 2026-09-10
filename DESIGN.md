@@ -40024,6 +40024,49 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.62 - THE COUNTER SAYS WHAT IT DID WITH YOUR MONEY
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+Verified by reading at v12.61. Two faults on one counter, so one build.
+
+WHAT IT WAS. The shop counter in the Undercroft takes your credits and says
+nothing at all. No line, no sound. The only sentence that counter has ever
+spoken is a failure: a short order tells you how many it could fill. So the one
+time it talks is the time it went wrong, and everything it sells lands in the
+stash rather than the backpack, which is exactly the confusion behind his note
+of 2026-09-07 about a purchase not showing up.
+
+And a gun was worse than silent. Buying one took the primary slot outright. Buy
+a cheap pistol as a spare while carrying a Marksman Rifle and the rifle is
+demoted with nothing said, and you ascend holding the pistol unless you happen
+to read the ascent panel on the way out.
+
+v12.28 fixed exactly this class of complaint for the Peddler and gave that stall
+a line that names where the thing went. The counter twenty feet away was never
+given one. The same two lines exist twice, at the counter and on the ascent
+screen, and both behaved the same way.
+
+THE BUILD. One named rule used by both. A bought gun goes into an empty hand
+only, and otherwise says it is in the armoury and where to pick it up. Every
+purchase says what it was, what it cost and where it went.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The bot never buys, no dial moves
+and no raid behaves differently. What changes is that a counter that takes money
+now answers.
+
+MEASURED. Check 12.62 buys by clicking the real button on the real counter,
+found by the name the row prints rather than by where it sits in the table, so a
+reordered shop does not move the check. The finding arm buys a spare while
+already holding a gun and requires the gun in hand to be untouched, the purchase
+to be in the armoury, and a line to have been said. The first control buys the
+same gun with empty hands and requires it to arrive in them, so the fix has not
+taken the convenience away with the theft. The second buys an ordinary item and
+requires it to reach the stash and to be named.
+
+Not verified: it does not read the pixels of the counter, only what the game
+says it said; it does not exercise the crafting bench or the hire bench, which
+are different counters on the same station; and it does not cover Wirt, who has
+his own handler.
 ## v12.61 - QUICK ASCENT STARTS AT DAY LIKE THE OTHER DOOR DOES
 
 From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.

@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.61';
+var VER='12.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.61';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.61';
+var WHATSNEW_VER='12.62';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1390,6 +1390,7 @@ var WHATSNEW=[
   'THE OPEN BACKPACK STOPS THE FLOOR. Reading it in the Undercroft used to leave every station live underneath: standing on the lift and pressing R started a raid from behind the panel, with no sector page, no day reset and no question about what you were taking up.',
   'AN AMMO BOX FROM THE PEDDLER ACTUALLY GIVES YOU ROUNDS. It went into your backpack, where nothing in the game can use it, so you paid at the moment you were dry and got a brick. It goes into your reserve now, like every other box in the game, and the line says how many.',
   'QUICK ASCENT STARTS AT DAY LIKE THE OTHER DOOR DOES. Pressing R at the lift used to inherit whatever surface you chose last raid, so a night you picked once followed you up every time until you opened the sector page again.',
+  'THE COUNTER SAYS WHAT IT DID WITH YOUR MONEY, and buying a spare gun no longer takes the slot off the gun in your hands. It said nothing at all on a successful sale, and a cheap pistol bought as a spare quietly demoted your best gun.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -29143,7 +29144,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.61: from the 2026-09-08 read-only audit, confirmed by a skeptic against the source. His answer 24 is day by default on every ascent, and the reset that keeps that promise lived inside the lifts E act, the one that opens the sector page, and nowhere else. The lift has TWO doors: E opens the page, and R is quick ascent, advertised on the floors own sign. So pick night on the page, ascend, come back down and press R, and the surface choice is still night, because nothing on that path ever names day: the ground palette, the lamps, the night XP multiplier and the run records night flag all follow it, and nothing on screen says a word before the raid loads. v10.05 shipped the promise and its check drives the E door only, which is why this has been true underneath a green check ever since. One named reset now, used by both doors, so they cannot drift apart again. Check 12.61 sets the surface to night, presses the quick ascent key through the real floor update, and requires the raid to start at day; a control opens the page door and requires the same, and a third arm requires a night deliberately chosen on the page and ascended from the page to still be night, so this build does not take his choice away; fails on v12.60.',
+  now:'v12.62: from the 2026-09-08 read-only audit, confirmed by a skeptic against the source. The counter in the Undercroft took his credits and said nothing at all, no line and no sound; the only sentence it has ever spoken is a failure, because a short order says how many it could fill, so the one time it talks is the time it went wrong. Goods go to the stash rather than the backpack, which is exactly the confusion behind his note of 2026-09-07 about a purchase not showing up. A gun was worse than silent: buying one took the primary slot outright, so a cheap spare pistol bought while carrying a Marksman Rifle demoted the rifle with no word said and he ascended holding the pistol unless he happened to read the ascent panel on the way out. v12.28 fixed exactly this class for the Peddler and gave that stall a line naming where the thing went; the Undercroft counter was never given one, and the same two lines exist twice, at the counter and on the ascent screen. One named rule used by both now: a bought gun goes into an empty hand only, and every purchase says what it was, what it cost and where it went. Check 12.62 buys a gun while already carrying one and requires the gun in hand to be untouched with the purchase in the armoury and a line saying so, buys one with empty hands and requires it to arrive in them, and buys an ordinary item and requires a line naming the stash; fails on v12.61.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29221,6 +29222,23 @@ var HUBSAY='',HUBSAY_T=0;
 // v8.13b: the same one writer say() uses, so a vendor line and a station
 // refusal can never end up on two different surfaces.
 function say2(t){ HUBSAY=t; HUBSAY_T=5; hubToast(t); }
+// v12.62, 2026-09-08 audit: A COUNTER THAT TAKES MONEY SAYS WHAT IT DID, and
+// buying a spare does not quietly demote the gun in your hands. The buy handler
+// set the primary slot to whatever was bought, so a cheap pistol bought as a
+// spare took the slot from a better gun with nothing said; and the whole
+// purchase was silent, so the only sentence that counter ever spoke was a
+// failure. Both live in two places, the counter and the ascent screen, so the
+// rule is one named thing used by both.
+function shopTakeGun(k){
+  P.weapons.push(k);
+  // Into an empty hand only. A gun you already carry is not replaced by a
+  // purchase you never said was a replacement.
+  if(!P.equipped||P.equipped==='fists'){ P.equipped=k; return 'It is in your hands.'; }
+  return 'It is in the armoury; put it in a hand on the character screen when you want it.';
+}
+function shopBought(label,price,where){
+  say2('Bought '+label+' for '+'$'+(price||0).toLocaleString()+'. '+where);
+}
 var GAMBLE_PRICE=2500;   // v6.64, his note: $2,500 a pull.
 // v9.11, HIS ANSWER 48: "Wirt sells one special 10k item that changes hourly."
 // The top of the table only. A 2,500 pull is a lottery ticket; this is the
@@ -31560,9 +31578,11 @@ function renderShop(){
         if(o.kind==='wep'&&P.weapons.indexOf(o.k)>=0) return;
 
         P.credits-=o.price;
-        if(o.kind==='wep'){ P.weapons.push(o.k); P.equipped=o.k; }
-        else if(o.kind==='pack'){ P.pack=o.lvl; }
-        else P.stash.push(o.k);
+        var _sw,_sn;   // v12.62: where it went, and what to call it
+        if(o.kind==='wep'){ _sn=WEAPONS[o.k].name; _sw=shopTakeGun(o.k); }
+        else if(o.kind==='pack'){ _sn='Backpack Tier '+(o.lvl+1); P.pack=o.lvl; _sw='You can carry more.'; }
+        else { _sn=ITEMS[o.k].name; P.stash.push(o.k); _sw='It is in the stash.'; }
+        shopBought(_sn,o.price,_sw);
         saveProfile(); renderShop(); renderHub();
       };
     }
@@ -33275,9 +33295,13 @@ function renderStage(prefill){
         if(owned) return;
         if(need||P.credits<o.price) return;
         P.credits-=o.price;
-        if(o.kind==='wep'){ P.weapons.push(o.k); P.equipped=o.k; }
-        else if(o.kind==='pack'){ P.pack=o.lvl; }
-        else { P.stash.push(o.k); if(stageKit().length<DEPLOY_SLOTS) P.kit.push(o.k); }
+        var _aw,_an;   // v12.62: the same rule and the same line as the counter below
+        if(o.kind==='wep'){ _an=WEAPONS[o.k].name; _aw=shopTakeGun(o.k); }
+        else if(o.kind==='pack'){ _an='Backpack Tier '+(o.lvl+1); P.pack=o.lvl; _aw='You can carry more.'; }
+        else { _an=ITEMS[o.k].name; P.stash.push(o.k);
+               if(stageKit().length<DEPLOY_SLOTS){ P.kit.push(o.k); _aw='It is packed for this raid.'; }
+               else _aw='It is in the stash; there is no room left in the pack for this raid.'; }
+        shopBought(_an,o.price,_aw);
         saveProfile(); renderStage();
       },owned?'var(--gain)':'var(--amber)'));
   });
