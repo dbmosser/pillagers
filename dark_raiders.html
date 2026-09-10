@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.60';
+var VER='12.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.60';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.60';
+var WHATSNEW_VER='12.61';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1389,6 +1389,7 @@ var WHATSNEW=[
   'A WEATHER YOU PINNED IN SETTINGS STOPS ASKING TO CHANGE. It could not change, so it asked thirteen times a frame for the rest of the raid. Nothing on screen showed it, and it was quietly spoiling every measurement I took with the weather held still.',
   'THE OPEN BACKPACK STOPS THE FLOOR. Reading it in the Undercroft used to leave every station live underneath: standing on the lift and pressing R started a raid from behind the panel, with no sector page, no day reset and no question about what you were taking up.',
   'AN AMMO BOX FROM THE PEDDLER ACTUALLY GIVES YOU ROUNDS. It went into your backpack, where nothing in the game can use it, so you paid at the moment you were dry and got a brick. It goes into your reserve now, like every other box in the game, and the line says how many.',
+  'QUICK ASCENT STARTS AT DAY LIKE THE OTHER DOOR DOES. Pressing R at the lift used to inherit whatever surface you chose last raid, so a night you picked once followed you up every time until you opened the sector page again.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -27684,6 +27685,14 @@ function buildHub(){
   // console. acts maps key codes to the same functions the old stations called,
   // and E always fires the FIRST listed, so the muscle memory of "walk up,
   // press E" still does the most common thing at every station.
+  // v12.61, 2026-09-08 audit: DAY BY DEFAULT ON EVERY ASCENT, and this station
+  // has TWO doors out of it. The reset used to live inside the E act alone, so
+  // quick ascent inherited the surface he chose on the last raid, which is
+  // exactly what his answer 24 forbids. One named thing, used by both, so they
+  // cannot drift apart again.
+  function liftResetDay(){
+    if(P.cond!=='day'){ P.cond='day'; hubGround=null; saveProfile(); }
+  }
   var stations=[
     {id:'lift',x:350,y:105,r:48,label:'ENTER RAID!',sub:'to the surface',c:'#4de3d0',
 acts:{KeyE:['go up',function(){
@@ -27692,14 +27701,14 @@ acts:{KeyE:['go up',function(){
              // opens every time, even when only one map is offered.
              if(!mapOffered(FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)])) P.mapIx=firstOfferedMap();
              // v10.05, his answer 24: day by default, every ascent.
-             if(P.cond!=='day'){ P.cond='day'; hubGround=null; saveProfile(); }
+             liftResetDay();   // v12.61: the same reset the quick ascent below now makes
              renderSector(); openModal('sectormodal');
            }],
            // v6.18: quick ascent means skip the SCREEN, not discard what you packed.
            // This called startRaid directly and never set kitChosen, so the
            // standard-kit fallback fired and the loadout stayed in the vault. The
            // same fault as the ASCEND button at v6.11, in a second place.
-           KeyR:['quick ascent',function(){ commitKit(); ac(); startRaid(); }],
+           KeyR:['quick ascent',function(){ liftResetDay(); commitKit(); ac(); startRaid(); }],   // v12.61: day by default here too, which is his answer 24
            // v6.50: the terms moved here from the shop counter. They are hardship you
            // sign for extra pay on the NEXT RAID, so they belong on the station that
            // sends you up, not beside a counter with prices on it.
@@ -29134,7 +29143,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.60: from the 2026-09-08 read-only audit, confirmed by a skeptic against the source. Ammunition never lives in the backpack anywhere else in the game: every other path that hands him a box puts the rounds straight into the reserve, which is the single pool the spec calls for, and the box itself stops existing. The Peddler is the one path that pushed the key into the backpack instead, and nothing in the game consumes it there, because the belt use verb knows a throwable, a heal, a stim, armour and a gun and then falls past an ammo box without a word. So he ran dry mid-raid, walked to the stall, paid 171 credits at the exact moment he had nothing to shoot with, and the reserve did not move: he had bought a one weight brick worth 90 back if he lived, while the toast said In your backpack and the item description promised it refills a magazine, so he would buy it again. The rounds go into the reserve now, the line says how many, and the weight test is skipped for ammunition because rounds take no room in a backpack and a full backpack must not stop a man buying them. I audited pedBuy myself at v12.28 and wrote that it was sound: I checked that what he bought arrived somewhere and never asked whether he could use it. Check 12.60 stands him at the stall with an empty reserve, buys the Ammo Box through the real purchase, and requires the reserve to rise by the boxs own count with nothing left in the backpack, with a control that an ordinary item still lands in the backpack and one that a full backpack no longer refuses ammunition; fails on v12.59.',
+  now:'v12.61: from the 2026-09-08 read-only audit, confirmed by a skeptic against the source. His answer 24 is day by default on every ascent, and the reset that keeps that promise lived inside the lifts E act, the one that opens the sector page, and nowhere else. The lift has TWO doors: E opens the page, and R is quick ascent, advertised on the floors own sign. So pick night on the page, ascend, come back down and press R, and the surface choice is still night, because nothing on that path ever names day: the ground palette, the lamps, the night XP multiplier and the run records night flag all follow it, and nothing on screen says a word before the raid loads. v10.05 shipped the promise and its check drives the E door only, which is why this has been true underneath a green check ever since. One named reset now, used by both doors, so they cannot drift apart again. Check 12.61 sets the surface to night, presses the quick ascent key through the real floor update, and requires the raid to start at day; a control opens the page door and requires the same, and a third arm requires a night deliberately chosen on the page and ascended from the page to still be night, so this build does not take his choice away; fails on v12.60.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
