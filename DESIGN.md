@@ -40024,6 +40024,49 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.54 - A PILLAGER CALLING EXTRACTION SIZES THE SIEGE ON THE BAG YOU HOLD
+
+From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
+reading at v12.53.
+
+WHAT IT WAS. The size of the siege a call buys is read from the bag you are
+carrying, once, at the moment the call is made. The code says exactly that in
+the comment beside the reader, and your own call clears the stored figure so
+that it is read fresh.
+
+A pillager's call does not. It has carried the same per-zone consequences since
+v3.58, and the design note says in as many words that you can ride out on his
+call, but it writes every other field on that ring and leaves this one alone.
+
+So the first call on a ring freezes that ring's figure for the rest of the raid
+unless YOU call it again. Call a point with a heavy bag, miss the extraction,
+sell the bag to the Peddler, and then ride out on a pillager's call at the same
+point: the siege is sized on a bag you were carrying half an hour ago. The
+other order under-sizes it just as wrongly.
+
+THE BUILD. One field added to his call, so both calls read the same way. The
+figure itself, how it is worked out, and everything the siege does with it are
+untouched.
+
+WHAT IT COSTS. It changes the siege you meet when you ride out on a pillager's
+call at a ring you had already called yourself, in whichever direction the
+truth points. Nothing in the settings moves. The bot never rides out on a
+pillager's call, so no paired number moves.
+
+MEASURED. Check 12.54 leaves a stale figure of 7777 on a ring, which no bag in
+the game can produce, so a pass can never come from the two numbers happening
+to agree. It empties the bag, puts a pillager in the ring, and lets him make
+the call himself through the real state machine rather than calling the line
+for him. It then requires the stale figure to be gone and, once the ticker has
+read it again, to equal what the bag actually in hand is worth. The control is
+the same ring with the same stale figure and the point closed so no call can
+happen: the figure must SURVIVE, or something else is clearing it and this
+check would be crediting a line that did nothing.
+
+Not verified: it does not run a siege and count what arrives, only the figure
+the siege is sized from; it runs one map and one seed; and it does not exercise
+the reverse order, an empty-bag call followed by a heavy-bag ride-out, which
+takes the same one line.
 ## v12.53 - A MACHINE SEARCHING FOR YOU CAN NO LONGER GET STUCK FOR THE RAID
 
 From the 2026-09-07 read-only audit (P2). Two of the findings are one defect
