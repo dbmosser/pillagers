@@ -40024,6 +40024,60 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.51 - A HOWLER NO LONGER SHELLS ITS OWN CRATER
+
+From the 2026-09-07 read-only audit (P2), specced from the source. Verified by
+reading at v12.50.
+
+WHAT IT WAS. One report became a barrage.
+
+A Howler that hears a noise does not walk to it. It writes the bearing down,
+keeps it for eight seconds, and mails a shell to it. That is the machine
+working as designed, and the counterplay is to go quiet: the bearing goes stale
+and nothing else comes.
+
+The shell lands two seconds later, and its own impact is a noise of 480 that
+every listening machine on the map hears. That is also right, and it is what
+pulls a room toward a burst. But the Howler that fired it heard it too. The
+bearing it had been shooting at was overwritten with the crater, and the eight
+second clock was wound back to full. Its cooldown of five and a half to seven
+seconds then ran out with the clock still going, so it shelled its own crater,
+and that impact wound it up again.
+
+So a man who made one sound and then went silent, which is the whole
+counterplay, was shelled two to four more times at the spot he was heard. The
+loop only stopped because the same impact turns a patrolling Howler toward the
+crater, so it eventually walked inside its own minimum range.
+
+THE BUILD. Each shell now carries the machine that fired it, and that machine
+does not take its own crater for a fresh report. Only the three fields the
+hearing sweep writes are put back, and only for the shooter, so everything else
+on the map still hears the impact exactly as before, and the firing Howler is
+still turned toward the crater by that same noise.
+
+WHAT IT COSTS. Fewer shells land on a man who has gone quiet, so going quiet is
+worth what it was always supposed to be worth. Nothing in the settings moves,
+no damage or radius changes, and a Howler that can see you or that keeps
+hearing you fires exactly as often as before. The bot does not go quiet and is
+not measured against Howlers in the paired runs, so no extract-rate number
+moves.
+
+MEASURED. Check 12.51 puts one Howler alone on an otherwise empty map, four
+hundred units from a single staged noise, pointed away from him so nothing can
+come down the sighted path, and then runs twenty seconds of raid with the man
+making no sound at all. The finding is measured as a DECAY rather than a level,
+which is the only honest way to read it: by the time the first shell lands, the
+eight second bearing must have run down by as much time as has passed, and on
+the old build the impact winds it straight back up to eight. It also requires
+the bearing to still be the noise and not the crater. The shell count is the
+supporting number and its ceiling is stated honestly rather than calibrated on
+the bug: an eight second bearing against a five to seven second cooldown allows
+a second shell at the same bearing, and a third is the barrage.
+
+Not verified: it stages the noise directly rather than making it by walking or
+cutting; it runs one map and one seed; it does not check what the other
+machines do with the impact, only that the shooter no longer re-arms on it; and
+the bot cannot reach any of this.
 ## v12.50 - BREAKING A CRIER LINE OF SIGHT NOW ACTUALLY CANCELS ITS ALARM
 
 From the 2026-09-07 read-only audit, specced from the source. Verified by
