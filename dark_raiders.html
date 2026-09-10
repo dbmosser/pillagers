@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.51';
+var VER='12.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.51';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.51';
+var WHATSNEW_VER='12.52';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1380,6 +1380,7 @@ var WHATSNEW=[
   'A HOWLER SHELL NO LONGER REACHES THROUGH A WALL. A shell bursting in the street took about twenty health off you standing well inside a building, with the hit ring pointing at something you could not see. Walls stop the blast now, exactly as they stop a frag.',
   'BREAKING A CRIER LINE OF SIGHT NOW ACTUALLY CANCELS ITS ALARM. The cancel cleared the windup and then fired the alarm on the very same frame, so hiding never once called one off. The three seconds have to be unbroken now, which they always claimed to be.',
   'A HOWLER IS DEAF TO ITS OWN GUN. It heard the round leave its own tube and the hole that round made, took both for fresh reports about you, and shelled where it had been standing or the crater it had just dug. One noise from you became a barrage after you had gone quiet.',
+  'A PILLAGER WHOSE REACH IS INSIDE HIS OWN BLAST NO LONGER THROWS A CHARGE. One gun in nine has a shorter reach than the radius of a frag, and the man carrying it had a throwing window one unit wide, entirely inside his own explosion.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -14006,10 +14007,20 @@ function raiderThrow(e,foe,fd,dt){
   if(e.smkT!==undefined) e.smkT-=dt;
   // v12.20: the near edge of the band follows the blast radius (it was 180
   // against a 150 blast; at 190 he stood in his own charge), plus the scatter
-  // of the aim point below and his own body; and never above his reach, or a
-  // short-ranged pillager could never throw at all.
+  // of the aim point below and his own body.
+  // v12.52, 2026-09-07 audit, and this was my own mistake at v12.20: the cap I
+  // put on that edge so a short-ranged pillager could still throw pulled the
+  // edge back INSIDE the blast for the one gun in nine whose reach is shorter
+  // than it. A Riot Scattergun man reaches 187 against a safe edge of 242, and
+  // since both callers already require him to be inside his reach, the only
+  // distances he could throw from were 186.2 to 187.2: a band one unit wide,
+  // entirely within the radius of the charge he was throwing. Both goals of
+  // that line failed for him at once. The honest answer is the one the cap was
+  // avoiding: a man whose whole reach is inside his own blast does not throw.
   var _fR=(CFG.fragR===undefined?190:CFG.fragR);
-  if(fd<Math.min(_fR+52,(e.rng||520)-1)||fd>520) return false;
+  var _fNear=_fR+52;
+  if(_fNear>=(e.rng||520)) return false;
+  if(fd<_fNear||fd>520) return false;
   var ix=-1;
   for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
   if(ix<0) return false;
@@ -28999,7 +29010,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.51: 2026-09-07 audit (P2). One report became a barrage. A Howler that hears a noise writes the bearing down, keeps it for eight seconds and mails a shell to it. The shell lands two seconds later and its own impact is a noise of 480 that every listening machine on the map hears, including the Howler that fired it: the bearing was overwritten with the crater and the eight seconds wound back to full, so when its cooldown ran out it shelled its own crater, and that impact wound it up again. The man made ONE sound and went quiet, which is the whole counterplay the Listener and the Howler are built around, and was shelled two to four more times at the spot he was heard. Both noises it makes itself reached it through the same door, the round leaving the tube and the hole the round makes, so it wrote down its own position, walked, and shelled where it had been standing, or wrote down its own crater and shelled that. Each shell now carries the machine that fired it and a Howler is deaf to its own gun: only the three fields the hearing sweep writes are put back, and only for the machine that made the noise, so everything else on the map still hears all of it exactly as before and the firing Howler is still turned toward the crater by the same noise. Check 12.51 puts one Howler alone on an empty map four hundred units from a single staged noise, points it away so it cannot see him, and steps twenty seconds of raid with the man silent: after the first impact the eight second clock must have DECAYED rather than been wound back, the bearing must still be the noise and not the crater, and the shell count must be at most the two that the eight second bearing and the five to seven second cooldown honestly allow; fails on v12.50.',
+  now:'v12.52: my own defect from v12.20, found by the 2026-09-07 read-only audit. v12.20 moved the near edge of a pillagers throwing band out to the blast radius plus the scatter, so he would stop standing in his own charge, and then capped that edge at his own reach so a short-ranged man could still throw at all. The cap is the bug. For one gun in nine, the Riot Scattergun, the reach is 187 against a safe edge of 242, so the cap pulls the edge back inside the blast; and since both callers already require him to be inside his reach, the only distances he could throw from were 186.2 to 187.2, a band one unit wide and entirely within the radius of the charge he was throwing. Both goals of that line failed for him at once: the edge did not clear his blast, and the cap meant to stop a short-ranged man never throwing gave him a single unit instead of a band. The honest answer is the one the cap was avoiding: a man whose whole reach is inside his own blast does not throw. Check 12.52 pins a pillagers gun to the Riot Scattergun, stands the player inside that one unit window with a charge in the mans bag and every other gate open, and requires no throw at all; a control with the same man given an ordinary reach must still throw from outside the blast, and a third arm requires the thrown charge to land outside his own radius; fails on v12.51.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

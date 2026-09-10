@@ -40024,6 +40024,49 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.52 - A PILLAGER WHOSE REACH IS INSIDE HIS OWN BLAST NO LONGER THROWS
+
+My own defect from v12.20, found by the 2026-09-07 read-only audit. Verified by
+reading at v12.51.
+
+WHAT IT WAS. v12.20 moved the near edge of a pillager's throwing band out to
+the blast radius plus the scatter, so he would stop standing in his own charge.
+Then it capped that edge at his own reach, so that a short-ranged man could
+still throw at all. The cap is the bug.
+
+One gun in nine is the Riot Scattergun, and the man carrying it reaches 187
+units against a safe edge of 242. The cap pulls the edge back inside the blast.
+Both callers already require him to be inside his reach before they ask, so the
+only distances he could throw from were 186.2 to 187.2: a band one unit wide,
+entirely inside the radius of the charge he was throwing. Every throw he could
+make landed on him.
+
+So both of the things that line was written to do failed for that one gun at
+once. The edge did not clear his blast, and the cap that was supposed to stop a
+short-ranged man from never throwing gave him a single unit instead of a band.
+
+THE BUILD. The honest answer is the one the cap was avoiding. A man whose whole
+reach is inside his own blast does not throw. The cap goes, and a reach that
+cannot clear the radius refuses the throw outright.
+
+WHAT IT COSTS. One pillager in nine stops throwing charges. He still shoots,
+still smokes when hurt, and every other pillager throws exactly as before, from
+the same band and at the same distances. Nothing in the settings moves. The bot
+does not fight pillagers, so no paired number can measure it.
+
+MEASURED. Check 12.52 works out that reach from the weapon table rather than
+writing 187 into the check, so it follows the dial if the gun is ever retuned,
+and it skips honestly if that reach ever grows past the safe edge, because then
+there is nothing left to find. The finding arm stands the player in the one
+unit window the old band left and requires no throw. It then sweeps every
+distance inside that man's whole reach and requires no throw from any of them,
+which is the real statement of the fix rather than one lucky distance. Two
+controls keep v12.20's promises: an ordinary pillager still throws from 260
+units, and the charge he throws lands outside his own 190 radius.
+
+Not verified: it calls the throw directly rather than letting a live pillager
+reach that distance in a fight; it runs one map and one seed; and it does not
+follow the charge to its blast, only to where it lands.
 ## v12.51 - A HOWLER NO LONGER SHELLS ITS OWN CRATER
 
 From the 2026-09-07 read-only audit (P2), specced from the source. Verified by
