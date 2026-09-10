@@ -40024,6 +40024,51 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.60 - AN AMMO BOX FROM THE PEDDLER ACTUALLY GIVES YOU ROUNDS
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+Verified by reading at v12.59.
+
+WHAT IT WAS. Ammunition never lives in the backpack anywhere else in this game.
+Every other path that hands you a box puts the rounds straight into the reserve,
+which is the single pool the spec calls for, and the box itself stops existing.
+The loot path does it, the deploy kit does it, the freebie kit does it.
+
+The Peddler is the one path that pushed the key into the backpack instead. And
+nothing in the game can consume it there: the belt use verb knows a throwable, a
+heal, a stim, armour and a gun, and then falls past an ammo box and returns
+without a word.
+
+So you run dry mid-raid, walk to the stall, and buy the thing whose own
+description promises it refills a magazine. You pay 171 credits at the exact
+moment you have nothing to shoot with, and the reserve does not move. What you
+bought is a one weight brick worth 90 back if you live. The toast says "In your
+backpack", so nothing tells you it went wrong, and you will buy it again.
+
+THE BUILD. The rounds go into the reserve, and the line says how many. The
+weight test is skipped for ammunition, because rounds in the reserve take no
+room in a backpack and a full backpack must not stop a man buying them.
+
+I AUDITED THIS FUNCTION MYSELF AT v12.28 AND WROTE THAT IT WAS SOUND. I checked
+that what he bought arrived somewhere. I never asked whether he could use it.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The bot does not buy from the
+Peddler, so no paired number moves. No dial changes. What changes for a real
+player is that a purchase he was already making now does the thing it says.
+
+MEASURED. Check 12.60 buys through the real purchase at a real stall, the same
+staging the shipped v12.28 check uses. The reserve starts at zero and the count
+comes off the item's own record rather than out of the check, so a retune of the
+box moves the check with it. It requires the reserve to rise by that count, the
+backpack to be empty of the box, and the line to say the number and not the
+backpack. Two controls: an ordinary purchase must still land in the backpack, so
+the build has not simply stopped the stall delivering; and a backpack filled to
+its cap must still let him buy ammunition.
+
+Not verified: it calls the purchase directly rather than pressing the digit at
+the stall, which the shipped v12.28 check already stages; it does not fire the
+gun afterwards to watch the rounds spend; and it does not cover the same item
+arriving from the shop in the Undercroft, which is a different counter.
 ## v12.59 - THE OPEN BACKPACK STOPS THE FLOOR
 
 From the 2026-09-08 read-only audit of the five regions nobody had looked at,

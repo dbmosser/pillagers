@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.59';
+var VER='12.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.59';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.59';
+var WHATSNEW_VER='12.60';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1388,6 +1388,7 @@ var WHATSNEW=[
   'WALKING THROUGH ANOTHER EXTRACTION POINT NO LONGER ABANDONS YOUR OWN. The game follows one point at a time, and standing in a second open one used to move everything onto it: the banner, the prompt, the approach pings and the last-seconds warning, while the extraction you had already called left without you.',
   'A WEATHER YOU PINNED IN SETTINGS STOPS ASKING TO CHANGE. It could not change, so it asked thirteen times a frame for the rest of the raid. Nothing on screen showed it, and it was quietly spoiling every measurement I took with the weather held still.',
   'THE OPEN BACKPACK STOPS THE FLOOR. Reading it in the Undercroft used to leave every station live underneath: standing on the lift and pressing R started a raid from behind the panel, with no sector page, no day reset and no question about what you were taking up.',
+  'AN AMMO BOX FROM THE PEDDLER ACTUALLY GIVES YOU ROUNDS. It went into your backpack, where nothing in the game can use it, so you paid at the moment you were dry and got a brick. It goes into your reserve now, like every other box in the game, and the line says how many.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -9193,9 +9194,21 @@ function pedBuy(ix){
   if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+'.'); return; }
 
   var cap=PACKCAP[P.pack],wt=(ITEMS[st.k]?ITEMS[st.k].wt:1);
-  if(bagWeight()+wt>cap){ say('No room in the backpack for that.'); return; }
+  // v12.60, 2026-09-08 audit: AMMUNITION GOES WHERE AMMUNITION GOES. Every other
+  // path that hands him a box puts the rounds into the reserve, which is the one
+  // pool the spec asks for, and the box stops existing. This one pushed the key
+  // into the backpack, where nothing in the game can consume it: the belt use
+  // verb knows a throwable, a heal, a stim, armour and a gun, and falls past an
+  // ammo box without a word. He paid at the exact moment he had nothing to shoot
+  // with and got a brick. The weight test is skipped for it too, because rounds
+  // in the reserve take no room in a backpack, and a full backpack must not stop
+  // a man buying ammunition.
+  var _pAmmo=!!(ITEMS[st.k]&&ITEMS[st.k].use==='ammo');
+  if(!_pAmmo&&bagWeight()+wt>cap){ say('No room in the backpack for that.'); return; }
   P.credits-=st.price; saveProfile();
-  st.sold=true; G.bag.push(st.k); autoBelt(st.k); G.trade.traded=1;
+  st.sold=true; G.trade.traded=1;
+  if(_pAmmo){ var _pp=G.player; _pp.reserve=(_pp.reserve||0)+(ITEMS[st.k].amt||0); }
+  else { G.bag.push(st.k); autoBelt(st.k); }
   G.pedBought=(G.pedBought||0)+st.price;
   // v12.28, HIS NOTE: "I bought stuff from the peddler and it didn't show up in
   // my inventory including an auto rifle". autoBelt above claims a bought gun or
@@ -9204,7 +9217,9 @@ function pedBuy(ix){
   // so the rifle he paid for was on the belt and not in the backpack he opened.
   // The line says which surface it is on, as the found-gun line does.
   var _bk=0; if(G.hotAssign) for(var _bi in G.hotAssign) if(G.hotAssign[_bi]===st.k){ _bk=(+_bi)+1; break; }
-  say('Bought '+ITEMS[st.k].name+' for '+'$'+st.price.toLocaleString()+'. '+(_bk?('On your tactical belt, key '+_bk+'.'):'In your backpack.'));
+  say('Bought '+ITEMS[st.k].name+' for '+'$'+st.price.toLocaleString()+'. '+
+      (_pAmmo?((ITEMS[st.k].amt||0)+' rounds into your reserve.')
+             :(_bk?('On your tactical belt, key '+_bk+'.'):'In your backpack.')));   // v12.60: say where the rounds actually went
   // The purchase gets the same voice the find would have, v2.72. Buying a gun
   // from the Peddler chirped like picking up scrap while pulling the identical
   // gun from a crate rang like metal, and the difference was only which counter
@@ -29119,7 +29134,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.59: from the 2026-09-08 read-only audit of the five regions nobody had looked at, confirmed by a skeptic against the source, and the worst thing on that list. The floor freezes under a panel by asking one question, and the Undercroft backpack is not one of the things that question knows about: it is painted on the HUD canvas rather than being a window, so the floor kept running underneath it. E, R, F and T still reached whatever station he was standing on and WASD walked him off it while he read. Stand on the lift, press I to check the packing, press R, and a raid started from behind a full-screen panel: no sector page, no day reset, no question about the loadout or the freebie kit, and the prompt that would have warned him painted over by the panel he was looking at. The lifts own act calls commitKit, so the stash moved too. v11.50 fixed one act, the stash, and its own not-verified line says the other stations were not checked; v12.06 added the character screen to this same question for the same reason; this is the last surface that was missing. Only the floor freeze asks this question, so nothing else changes and the key that closes the backpack has its own gate. Check 12.59 stands him on the lift with the backpack open, presses R through the real floor update, and requires no raid to have started and the station under him to be unarmed, with a control that the same key with the backpack shut still starts one; fails on v12.58.',
+  now:'v12.60: from the 2026-09-08 read-only audit, confirmed by a skeptic against the source. Ammunition never lives in the backpack anywhere else in the game: every other path that hands him a box puts the rounds straight into the reserve, which is the single pool the spec calls for, and the box itself stops existing. The Peddler is the one path that pushed the key into the backpack instead, and nothing in the game consumes it there, because the belt use verb knows a throwable, a heal, a stim, armour and a gun and then falls past an ammo box without a word. So he ran dry mid-raid, walked to the stall, paid 171 credits at the exact moment he had nothing to shoot with, and the reserve did not move: he had bought a one weight brick worth 90 back if he lived, while the toast said In your backpack and the item description promised it refills a magazine, so he would buy it again. The rounds go into the reserve now, the line says how many, and the weight test is skipped for ammunition because rounds take no room in a backpack and a full backpack must not stop a man buying them. I audited pedBuy myself at v12.28 and wrote that it was sound: I checked that what he bought arrived somewhere and never asked whether he could use it. Check 12.60 stands him at the stall with an empty reserve, buys the Ammo Box through the real purchase, and requires the reserve to rise by the boxs own count with nothing left in the backpack, with a control that an ordinary item still lands in the backpack and one that a full backpack no longer refuses ammunition; fails on v12.59.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
