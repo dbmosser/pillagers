@@ -40024,6 +40024,60 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.53 - A MACHINE SEARCHING FOR YOU CAN NO LONGER GET STUCK FOR THE RAID
+
+From the 2026-09-07 read-only audit (P2). Two of the findings are one defect
+seen from two ends, so this is one build. Verified by reading at v12.52.
+
+WHAT IT WAS. When a machine loses you it goes to investigate, and the scatter
+pushes its last sighting of you 90 to 240 units in a random direction so a pack
+fans out to search rather than all walking to the same spot. That point was
+never tested for anything. It can land inside a locked shell, inside a ruin
+block, inside a wreck, or past the world edge. The one search-point picker the
+game already had which does test for open ground is used only inside a chase;
+this one never did.
+
+And investigate has exactly one way out: get within 34 units of the point.
+There is no clock. So a point nothing can reach holds the machine for the rest
+of the raid. It walks to the nearest face, pushes at it, hugs and orbits, and
+never stops, because nothing else can free it either: the wander that re-rolls
+a target skips this state on purpose, and the noise that wakes a machine only
+re-points patrol and loot.
+
+v12.07 met exactly this shape in the chase and gave it an overtime cap, with
+the comment that a point nothing can reach must not hold it forever. This is
+that rule applied one state along, plus a scatter that no longer chooses a
+point inside a wall in the first place.
+
+THE BUILD. Two halves. The scatter keeps its offset only if it lands inside the
+world and on ground a body can stand on, and otherwise falls back to the
+sighting it actually had, which is always somewhere a body was standing. And
+investigate gets a clock: twenty seconds on one point, then back to patrol.
+
+The clock is per point, so a machine sent somewhere new starts it again. Twenty
+seconds is more than three times the longest honest walk this state can ask
+for, because the scatter reaches 240 units and the walk is at three quarters
+speed, so nothing that was going to arrive is cut short.
+
+WHAT IT COSTS. Machines that used to be stuck against a wall are back on patrol
+instead, so the world has fewer permanently frozen bodies in it and slightly
+more moving ones. Nothing in the settings moves and no dial is touched. The bot
+does not see any of this, because a stuck machine is a machine that has stopped
+threatening it.
+
+MEASURED. Check 12.53 sends a crawler to a point outside the playable edge,
+which is unreachable by construction on every map and every seed rather than by
+choosing a building this seed happens to have. It requires the machine to be
+off that search within thirty seconds. The first control sends it to open
+ground found by asking the map itself, and requires the search to end by
+ARRIVING and well inside the clock, or the fix would have quietly turned every
+search into a timer. The second control runs the scatter forty times and
+requires every point it chooses to be ground a body can stand on.
+
+Not verified: it does not reproduce the locked shell case specifically, only
+the class of unreachable point; it runs one map and one seed; it does not watch
+what the freed machine does next beyond leaving the state; and no paired number
+can speak to it.
 ## v12.52 - A PILLAGER WHOSE REACH IS INSIDE HIS OWN BLAST NO LONGER THROWS
 
 My own defect from v12.20, found by the 2026-09-07 read-only audit. Verified by
