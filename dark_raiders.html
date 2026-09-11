@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.63';
+var VER='12.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.63';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.63';
+var WHATSNEW_VER='12.64';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1392,6 +1392,7 @@ var WHATSNEW=[
   'QUICK ASCENT STARTS AT DAY LIKE THE OTHER DOOR DOES. Pressing R at the lift used to inherit whatever surface you chose last raid, so a night you picked once followed you up every time until you opened the sector page again.',
   'THE COUNTER SAYS WHAT IT DID WITH YOUR MONEY, and buying a spare gun no longer takes the slot off the gun in your hands. It said nothing at all on a successful sale, and a cheap pistol bought as a spare quietly demoted your best gun.',
   'A CONTRACT THAT PAYS A GUN YOU ALREADY HAVE PAYS ITS VALUE INSTEAD. The card is written long before you claim it, so the gun it promised can be one you picked up in the meantime; it used to hand over nothing and print a receipt saying it had.',
+  'THE BUY BUTTON SAYS HOW SHORT YOU ARE, including when you cannot afford even one. That was the commonest refusal at the counter and the only one it answered with a dead grey button and no reason at all.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -29155,7 +29156,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.63: from the 2026-09-08 read-only audit, confirmed by a skeptic against the source. A contract whose whole physical payout is a gun paid nothing at all if he had acquired that gun since the card was written, and the receipt said it paid. The gear is rolled ONCE, when the card is made, and that roll refuses a gun he already owns at that moment; the card then sits on the board indefinitely, and the panel says so in its own words, that they do not expire while he is down here. Between the roll and the claim the gun is easy to come by: extract carrying one and it banks to the armoury, or buy one at the counter. Claim the contract and the payout added the gun only if it was new, then returned the same sentence either way, so the line read and Marksman Rifle to the armoury for a gun that was already his while nothing changed hands. The credits arrived, the gear did not exist, and he was told it did. He is paid what the gun is worth instead, and the line says exactly that, so nothing on the receipt is a fiction. Check 12.63 claims a gun payout he already owns and requires the credits to rise by the guns own value with the armoury unchanged and the line saying so, with a control that the same payout on a gun he does not own still hands over the gun and says the armoury; fails on v12.62.',
+  now:'v12.64: from the 2026-09-08 read-only audit, and this is my own v8.18 build with my own check having chosen the case that works. The buy button is supposed to say how short he is, and the branch that writes that sentence was gated on the row behind the panel being ENABLED; that row disables itself the moment he cannot afford ONE unit. So the sentence could only ever appear when he could already afford some of the order and not all of it, and the commonest refusal at that counter by a long way, wanting one thing he cannot afford at all, showed a greyed BUY with the price above it and no reason anywhere, while the sentence that explains it sat one line below in the source, unreachable. That is exactly the fault the crafting bench was rewritten for at v12.32 on his own note. My v8.18 entry claims the button says exactly how short he is, measured with a Bandage at 660 and 2,100 in hand: enough for three, so the row was enabled and the branch did fire; the case that happens most was never measured. Money is the reason unless something else is: a row disabled while he CAN afford one is locked for its own reason and keeps its own words, and everything else short of the price now says how short. Check 12.64 opens the counter with less money than one unit costs and requires the button to name the shortfall, with controls for the case v8.18 measured, for an affordable order, and for a row locked for a reason that is not money; fails on v12.63.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31777,7 +31778,17 @@ function renderShopDetail(rows){
   // lock, being sold out - and the price shown is the price checked.
   var _canAll=(P.credits>=o.price*qty);
   b.disabled=(btn?btn.disabled:true)||!_canAll;
-  if(btn&&!btn.disabled&&!_canAll){
+  // v12.64, 2026-09-08 audit: THE SHORTFALL IS ABOUT MONEY, so it must not be
+  // gated on the row being otherwise buyable. This test used to require the row
+  // behind the panel to be ENABLED, and that row disables itself the moment he
+  // cannot afford ONE unit, which is the commonest refusal at this counter by a
+  // long way: so the only time the sentence could appear was when he could
+  // already afford some of the order. The rest of the time he got a dead button
+  // and no reason. Money is the reason unless something else is: a row disabled
+  // while he CAN afford one is locked for its own reason and keeps its own
+  // words, and everything else short of the price now says how short.
+  var _otherLock=!!(btn&&btn.disabled&&(P.credits>=o.price));
+  if(!_canAll&&!_otherLock){
     var _short=(o.price*qty)-P.credits;
     b.textContent='NEED $'+_short.toLocaleString()+' MORE';
   }
