@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.81';
+var VER='12.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.81';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.81';
+var WHATSNEW_VER='12.82';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1407,6 +1407,7 @@ var WHATSNEW=[
   'HOW FAR YOU DIED FROM EXTRACTION IS MEASURED TO THE NEAREST WAY OUT. It was measured to a ring chosen at random when the raid was built, so the number disagreed with the compass you had been following all raid and with the closest-approach line printed right under it.',
   'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
   'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
+  'DYING WITH THE FREEBIE KIT GIVES YOUR TACTICAL BELT BACK TOO. It restored the items you had packed and quietly kept the belt keys you had bound, and the gun slot, which were thrown away the moment you took the kit. Keys pointing at something you no longer own are still dropped.',
   'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
   'H IS THE KEY LIST AND NOTHING ELSE. It used to open with a second column of gear rules and a sound colour key beside the keys, taller than the keys themselves, so the tips were setting the size of the panel you opened to read the bindings.',
   'THE COVER GROUND CONTRACT STOPS QUOTING A NUMBER YOU CANNOT READ. It said 2k of 14k covered, in raw world units, which nothing else in the game uses. The line is gone at your word; the contract itself still tracks, completes and pays exactly as it did.',
@@ -19352,10 +19353,26 @@ var _cdone=contractExtract(G.bag,haul);
         if((_have[_kk]||0)>0){ _have[_kk]--; _kb.push(_kk); }
       }
       P.kit=_kb;
+      // v12.82: the tactical belt plan and the gun slot come back with the
+      // items. The plan is filtered to what he still owns, the same rule the
+      // list above follows, because a key pointing at something he no longer has
+      // is a dead key rather than a restore.
+      var _hk=0;
+      if(P.hotBeforeFree){
+        var _pool={},_q,_hi,_hv,_hb={};
+        for(_q=0;_q<_kb.length;_q++) _pool[_kb[_q]]=(_pool[_kb[_q]]||0)+1;
+        for(_hi in P.hotBeforeFree){
+          _hv=P.hotBeforeFree[_hi];
+          if(_hv&&(_pool[_hv]||0)>0){ _hb[_hi]=_hv; _pool[_hv]--; _hk++; }
+        }
+        P.hotAssign=_hb;
+      }
+      if(P.gunBeforeFree) P._gunSlot=P.gunBeforeFree;
       if(_kb.length) lines.push('<span style="color:var(--coolant)">'+_kb.length+' item'+(_kb.length===1?'':'s')+
-        ' that you had in your loadout before choosing the freebie kit '+(_kb.length===1?'has':'have')+' been restored.</span>');
+        ' that you had in your loadout before choosing the freebie kit '+(_kb.length===1?'has':'have')+' been restored'+
+        (_hk?(', and '+_hk+' tactical belt key'+(_hk===1?'':'s')+' with '+(_hk===1?'it':'them')):'')+'.</span>');
     }
-    P.kitBeforeFree=null;
+    P.kitBeforeFree=null; P.hotBeforeFree=null; P.gunBeforeFree=null;
   }
   if((how==='dead'||how==='abandon')&&P.buzz&&P.buzz.length){
     P.buzz.length=0;
@@ -29278,7 +29295,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.81: 2026-09-07 audit (P3). v9.71 gave the surrender a guard it did not have: while an extraction is waiting on the point he is lying in, the space bar cannot end his raid, because the same overlay is telling him that extracting while downed is permitted and a hand resting on that key must not throw away a full backpack. The guard is right and nothing told him about it. The surrender row is drawn on one test, that he has spent his revive, so in that state the screen printed HOLD SPACE TO SURRENDER, the key did nothing, the progress bar never appeared because it is drawn only once the hold has started, and no line explained the refusal: a dead control and a prompt that lies, at three health with the point swarmed. The guard is now one named test with two readers, so the key and the screen can never disagree about it again, and the row says what is true instead, with the working verb still drawn underneath it in colour. Check 12.81 puts him down with his revive spent inside a point with an extraction waiting, holds the real key for two seconds through the real frame loop, and requires the hold never to start and the drawn text to carry the refusal and not the prompt, with a control outside that state requiring the prompt to be drawn and the hold to run; fails on v12.80.',
+  now:'v12.82: from the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me reading all four sites: both places that hand him the freebie kit, the handoff in the middle, and the restore at the end of a raid. His spec at v6.88 was that dying with the freebie kit puts his own loadout back rather than making him rebuild it. Both places that hand him the kit do the right thing and keep a snapshot of ALL THREE parts of a loadout, the items, the tactical belt plan and the gun slot, and the button that gives him his own gear back restores all three, which is why that button works. The handoff in the middle took only the items out of that snapshot and then threw the snapshot away, so the belt plan and the gun slot were gone from the moment he pressed TAKE THE FREEBIE KIT and the restore at the end of a raid had nothing left to put back but the item list. What that looks like: a new player takes the welcome pack, drags a Medkit onto key 1 and a Frag onto key 2, which is the gesture the game teaches him, takes the freebie kit, dies in his first raid, and reads that two items from the loadout he had before choosing the kit have been restored. The items are back. The two keys he bound are blank, and nothing said so. The belt plan is filtered to what he still owns, the same rule the item list already follows, because a key pointing at something he no longer has is a dead key and not a restore, and the line now says how many keys came back with the items. Check 12.82 binds two keys and a gun slot, takes the kit, dies, and requires the keys and the slot back with the items, with one control that a key bound to something he no longer owns is still dropped and another that a clean extraction restores nothing at all; fails on v12.81.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33586,7 +33603,23 @@ function commitKit(){
     // v6.88, his spec: remember what he had packed before the free gear replaced it, so
     // a death puts his own loadout back rather than making him rebuild it.
     // v12.16: the button already emptied P.kit and kept it aside; that is the list.
-    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
+    // v12.82, 2026-09-08 first-hour audit: ALL THREE PARTS OF THE LOADOUT, not
+    // just the items. The snapshot above holds the belt plan and the gun slot as
+    // well, and the button that gives him his own gear back restores all three;
+    // this handoff dropped two of them on the floor and then threw the snapshot
+    // away, so a death restored his items into a backpack with every belt key he
+    // had bound now blank, and told him he had been restored.
+    // v12.82: AND COMMITTING TWICE NO LONGER WIPES IT. The first commit moves the
+    // snapshot here and clears it, so a second commit found an empty snapshot and
+    // an empty kit and overwrote the lot with nothing. Quick ascent commits and so
+    // does the staging path, so taking the kit at the stash and then going up left
+    // the death restore with no items, no belt keys and no gun slot at all.
+    if(!(P.kitBeforeFree&&P.kitBeforeFree.length)){
+      P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice();
+      P.hotBeforeFree=(P.kitSaved&&P.kitSaved.hot)?P.kitSaved.hot:null;
+      P.gunBeforeFree=(P.kitSaved&&P.kitSaved.gun)?P.kitSaved.gun:null;
+    }
+    P.kitSaved=null;
     P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;
   }
   var kit=stageKitLive();
