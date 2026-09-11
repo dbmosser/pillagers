@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.70';
+var VER='12.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.70';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.70';
+var WHATSNEW_VER='12.71';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1399,6 +1399,7 @@ var WHATSNEW=[
   'ANSWERING THE HIRE BENCH QUESTION LEAVES YOU AT THE BENCH. Pressing Hire nobody closed the bench behind its own confirm card, so saying no put you on the bare floor and saying yes redrew the bench where you could not see it.',
   'THE XP A RUN PAYS IS FOR WHAT YOU BROUGHT BACK. Carrying your own stash up the lift and straight back down paid full haul XP for loot you already owned, and handed the stash back untouched, so the whole reward track could be walked without finding anything.',
   'A SEARCH CONTRACT NAMES A PLACE ON THE SECTOR YOU ARE PLAYING. It wrote the name down when the card was made, so changing sector afterwards left it pointing at a place with almost the right name in the wrong part of the map, and searching it moved nothing.',
+  'AIMING AND WADING NO LONGER LEAVE A SPRINT TRAIL. Shift held while you aimed, or while you waded, laid scent behind a man who was not sprinting, and everything on patrol within 170 units follows that scent. You were being hunted along a trail you never made.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -14748,16 +14749,13 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // rule sprint itself has, so a held Shift while standing still changes nothing.
   if(_shHeld&&mg>0&&G.crouchTog&&!p.downed){ G.crouchTog=false; crouch=false; }
 var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
-  if(sprint&&mg>0){
-    G.prints=G.prints||[];
-    var _lpr=G.prints.length?G.prints[G.prints.length-1]:null;
-    if(!_lpr||dist(p,_lpr)>34){
-      // v8.85: mine, so the draw side can tell your own sprint trail from a
-      // pillager's. The AI that smells this list does not care either way.
-      G.prints.push({x:p.x,y:p.y,t:0,mine:1});
-      if(G.prints.length>40) G.prints.shift();
-    }
-  }
+  // v12.71, 2026-09-07 audit: THE SCENT GOES DOWN BELOW THE CANCELS NOW. It was
+  // laid here, above both of them, so Shift held while aiming or while wading
+  // put a sprint trail behind a man who was not sprinting: aiming speed, no
+  // stamina spent, the readout saying AIMING, and a line of scent going down
+  // anyway. Everything on patrol or investigating within 170 units smells that
+  // list, so he was hunted along a trail he never made, at the two moments he is
+  // slowest and least able to leave. Moved below, where sprint is final.
   if(p.ads) sprint=false;
   G.sprinting=sprint;
   // v8.37: RESTORED. v8.34 deleted this line as part of removing the carry
@@ -14771,6 +14769,19 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   var wading=inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset));
   if(wading) sprint=false;
   G.sprinting=sprint;
+  // v12.71: and here is the trail, reading the sprint flag AFTER the aiming and
+  // the deep-water cancels above have had their say. Same 34 units, same 40
+  // mark ceiling, same mine flag; only the moment it is asked has moved.
+  if(sprint&&mg>0){
+    G.prints=G.prints||[];
+    var _lpr=G.prints.length?G.prints[G.prints.length-1]:null;
+    if(!_lpr||dist(p,_lpr)>34){
+      // v8.85: mine, so the draw side can tell your own sprint trail from a
+      // pillager's. The AI that smells this list does not care either way.
+      G.prints.push({x:p.x,y:p.y,t:0,mine:1});
+      if(G.prints.length>40) G.prints.shift();
+    }
+  }
   var spd=CFG.pSpeed*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
   if(p.stimT>0) spd*=STIM_SPD;   // v11.83, HIS SPEC: a fifth more while the stim runs
   // "make character much slower". 0.55 was a shrug; deep water you are wading
@@ -29215,7 +29226,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.70: from the 2026-09-08 read-only audit, and the last defect on that list. A district contract names a place and it worked that name out ONCE, when the card was written, against whatever sector was selected at that moment; the sentence was then frozen on the card, and the sector can be changed afterwards with one click and no effect on the board. The two sectors have places whose names are one letter apart, so a card rolled on one and read on the other sent him to a place with almost the right name at the far corner from the district it actually wanted: he searched it out and the counter never moved, because the containers there carry a different district number, and the panel in the raid repeated the same wrong place because it printed the stored sentence verbatim. The card itself was never broken, only its label, since the district number on it is right and it still ticks on the right containers wherever they are. So the sentence is no longer frozen: the district is what the card holds, and the place it names is worked out on the way to the screen, on the sector he is actually playing. Check 12.70 writes a district card on one sector, switches to the other, and requires the board and the in-raid panel to name a place that exists on the sector he is now playing, with a control that a card of any other type still reads exactly what it was written with; fails on v12.69.',
+  now:'v12.71: 2026-09-07 audit (P3). The sprint flag is computed, then the scent marks are laid, and only then is the flag cancelled for aiming and for deep water. So Shift held while aiming, or while wading, laid a sprint trail behind a man who was not sprinting: he moved at the aiming speed, paid no stamina, the readout said AIMING, and a line of scent went down behind him anyway. Everything on patrol or investigating within 170 units smells that list, so he was hunted along a trail he never made, at the two moments he is slowest and least able to leave. v12.33 stopped drawing his own marks, which was his note; this is the half that survives it, and it is the half that gets him killed. The block moves below both cancels so it reads the final answer, with the same 34 unit spacing, the same 40 mark ceiling and the same flag; only the moment it is asked has moved. The bot never runs this function at all, so no paired number can move. Check 12.71 walks him with the aim held and requires no mark of his own to be laid, walks him wading and requires the same, and controls that a plain sprint on dry land still lays them; fails on v12.70.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
