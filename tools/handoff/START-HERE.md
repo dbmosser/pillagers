@@ -640,3 +640,16 @@ why the earlier grep for overlapping anchors found nothing. After the fix, dry.p
 1279 applies all thirty two with zero failures and ends at v12.79.
 
 **CHECK 12.67 IS ORDER DEPENDENT AND NEEDS REPAIR.** It sells a junk-tagged item to cross a level boundary, and it only works the FIRST time it runs: on a repeat the sale takes nothing (219 XP against an expected 289) and it reports SKIP, so the corpus now shows THREE could-not-run rather than two. The fix it guards is sound and its control failed correctly on the v12.66 fixture. Re-staging the stash and junk tag does not help and re-rendering does not either, so the cause is inside the closure (sellable() or the junk tag) and needs a probe added to mkfixture to see. Repair it before trusting a green count of two skips again.
+
+**1269 IS PARKED, NOT SHIPPED: IT BREAKS THE CARD-EQUALS-BANK RULE.** Applied on top of
+v12.68 it passed its own four gates, and then the full corpus went red on two shipped
+checks: v11.63 (the XP printed on the outcome card is exactly the XP the profile banks,
+multiplier in play) and v12.12 (a death banks the XP its card printed, dose bonus
+included). That is correct of them. 1269 subtracts what the lift carried in from the haul
+XP inside spForRun, but the outcome card's figure does not go through the same
+subtraction, so the card and the bank disagree the moment anything is carried up. THE
+DEFECT IT FIXES IS REAL AND WORTH FIXING: riding your own stash up and straight back down
+pays full haul XP for loot you already owned, so the whole reward track is walkable
+without finding anything. THE REWORK: the card must print the same net figure the bank
+pays, so find where the card computes its haul XP and route it through the same net-haul
+value, then re-run 11.63 and 12.12 as controls. The tree was reverted to v12.68 clean.
