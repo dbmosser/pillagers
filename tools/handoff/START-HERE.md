@@ -638,3 +638,5 @@ nothing, and every build after it lost the WHATSNEW line it anchors on: 1274 thr
 1279 all failed and the dry game stopped at v12.73. Indentation, not conflict, which is
 why the earlier grep for overlapping anchors found nothing. After the fix, dry.ps1 1248
 1279 applies all thirty two with zero failures and ends at v12.79.
+
+**CHECK 12.67 IS ORDER DEPENDENT AND NEEDS REPAIR.** It sells a junk-tagged item to cross a level boundary, and it only works the FIRST time it runs: on a repeat the sale takes nothing (219 XP against an expected 289) and it reports SKIP, so the corpus now shows THREE could-not-run rather than two. The fix it guards is sound and its control failed correctly on the v12.66 fixture. Re-staging the stash and junk tag does not help and re-rendering does not either, so the cause is inside the closure (sellable() or the junk tag) and needs a probe added to mkfixture to see. Repair it before trusting a green count of two skips again.

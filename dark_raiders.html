@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.67';
+var VER='12.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.67';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.67';
+var WHATSNEW_VER='12.68';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1396,6 +1396,7 @@ var WHATSNEW=[
   'A HAUL CONTRACT COUNTS WHAT YOU CAME BACK WITH, not what you took up. Staging one expensive gun out of your own stash and walking straight to an extraction point used to finish the best-paying card on the board, and the gun went back in the stash afterwards.',
   'THE CONTRACT BOARD COUNTS CONTRACTS. Its one progress line said Contracts completed and printed a weighted number instead, so your first ever HARD card made it read two, and the line under it asked for credits while sounding like cards.',
   'SELLING SALVAGE MOVES YOUR LEVEL, not just your XP. The level was only worked out at the end of a raid, so the card showed a level that disagreed with the XP printed under it and the racks you had just earned stayed locked until you went up and came back.',
+  'ANSWERING THE HIRE BENCH QUESTION LEAVES YOU AT THE BENCH. Pressing Hire nobody closed the bench behind its own confirm card, so saying no put you on the bare floor and saying yes redrew the bench where you could not see it.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -28005,7 +28006,18 @@ function askKit(){
 }
 // ASK BEFORE THE DOOR CLOSES, v6.67, his note on the lift. One box for the whole
 // game. onYes runs on YES; anything else just closes, so declining is always safe.
-var ASKYES=null, ASKALT=null;
+// v12.68, 2026-09-08 audit: AND WHAT TO PUT BACK. A card that asks about the
+// window he is standing in closes that window to raise itself, so answering it
+// either way used to leave him on the bare floor. Whoever raises the card can
+// name the window to restore, and all three answers put it back before anything
+// else runs, so a callback that redraws that window draws where he is looking.
+var ASKYES=null, ASKALT=null, ASKBACK=null;
+function askRestore(){
+  if(!ASKBACK) return;
+  var _b=ASKBACK; ASKBACK=null;
+  var _e=document.getElementById(_b);
+  if(_e) _e.classList.add('on');
+}
 // askConfirm deleted at v7.90: defined at v6.67 and never called - every ask
 // card user sets the fields itself.
 // v6.86: WHERE THE WAY OUT IS, in words. His run 79 died to the clock twenty five metres
@@ -29179,7 +29191,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.67: from the 2026-09-08 read-only audit, confirmed by a skeptic against the source. The level is a function of XP and the file worked it out in exactly one place, at the end of a raid; selling salvage is the other way XP is earned and both sale paths added the XP and never touched the level. So the Undercroft card showed two numbers that contradicted each other: sell a bag for four thousand, watch the XP figure on that card jump by four thousand, and the Level printed directly above it did not move. Nine cosmetics gate on that level, so the racks he had just earned stayed locked until he went up and came back, and on a fresh profile the very first sell-all is the moment four of those nine gates are actually earned and the one moment the game would not honour them. The formula does not change; only where it is worked out does, and it now lives in one named place called wherever XP moves. Check 12.67 sells enough salvage in one go to cross a level boundary and requires the level and the cosmetic gate it opens to move at the counter rather than after the next raid, with a control that the formula itself is unchanged at a known XP figure; fails on v12.66.',
+  now:'v12.68: from the 2026-09-08 read-only audit, and this is my own v8.17 build again: I added the confirm card and never noticed what raising it does to the window underneath. Raising a window closes every other one, which is right for windows and wrong for a card asking a question ABOUT the window he is standing in. Press Hire nobody at the bench and the bench closes behind the question; answer Not yet and the card closes onto the bare floor, with the tab, the grid and the man he was reading about all gone for a question he declined, and he has to walk back to the station. Answer LET THEM GO and it is worse in a quieter way, because the callback redraws the bench to clear the HIRED pill and draws into a window nobody is looking at, so the one irreversible action on that bench, a hire that is not refunded, shows its result nowhere except a toast that fades in five seconds. Whoever raises the card can now name the window to restore, and all three answers put it back BEFORE anything else runs, so a callback that redraws that window draws where he is looking. Check 12.68 presses the footer button, answers both ways, and requires the bench to be open again each time and the HIRED pill to be cleared where it can be seen, with a control that a card raised by something that is not a window still closes onto the floor as it always did; fails on v12.67.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32297,6 +32309,7 @@ document.getElementById('mercclear').onclick=function(){
   var _y=document.getElementById('askyes'), _a=document.getElementById('askalt');
   if(_y) _y.textContent='LET THEM GO';
   if(_a) _a.style.display='none';
+  ASKBACK='tradermodal';   // v12.68: this question is about the bench, so come back to it
   openModal('askmodal');
 };
 document.getElementById('closeterms').onclick=function(){
@@ -33500,15 +33513,18 @@ document.getElementById('closeappear').onclick=function(){
 document.getElementById('askyes').onclick=function(){
   var f=ASKYES; ASKYES=null;
   document.getElementById('askmodal').classList.remove('on');
+  askRestore();   // v12.68: BEFORE the callback, so a redraw of that window is seen
   if(f) f();
 };
 document.getElementById('askno').onclick=function(){
   ASKYES=null; ASKALT=null;
   document.getElementById('askmodal').classList.remove('on');
+  askRestore();   // v12.68: a question he declined does not cost him the window
 };
 document.getElementById('askalt').onclick=function(){
   var f=ASKALT; ASKYES=null; ASKALT=null;
   document.getElementById('askmodal').classList.remove('on');
+  askRestore();
   if(f) f();
 };
 

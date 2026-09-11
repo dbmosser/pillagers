@@ -40024,6 +40024,45 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.68 - ANSWERING THE HIRE BENCH QUESTION LEAVES YOU AT THE BENCH
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+This is my own v8.17 build again: I added the confirm card and never noticed
+what raising it does to the window underneath. Verified by reading at v12.67.
+
+WHAT IT WAS. Raising a window closes every other one. That is right for windows
+and wrong for a card asking a question ABOUT the window you are standing in.
+
+Press "Hire nobody" at the bench and the bench closes behind the question.
+Answer "Not yet" and the card closes onto the bare Undercroft floor: the tab,
+the grid and the man you were reading about are all gone, for a question you
+declined, and you have to walk back to the station.
+
+Answer LET THEM GO and it is worse in a quieter way. The callback redraws the
+bench to clear the HIRED pill, and it draws into a window nobody is looking at.
+So the one irreversible action on that bench, a hire that is not refunded, shows
+its result nowhere except a toast that fades in five seconds.
+
+THE BUILD. Whoever raises the card can name the window to come back to, and all
+three answers put it back BEFORE anything else runs, so a callback that redraws
+that window draws where you are looking. Only the hire question names one, so no
+other card in the game behaves differently.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. It is a window. Nothing in a raid
+changes, no dial moves, and the bot never opens a bench.
+
+MEASURED. Check 12.68 presses the real footer button and the real answers, and
+reads whether the bench is on screen after each, because the whole finding is
+about which window he is left looking at. Both answers are driven, since the
+fault is different on each: declining costs him the window, and accepting
+redraws it where he cannot see it. The control raises the card with nothing
+behind it and requires it to close onto the floor as it always did, so the
+restore cannot fire on cards that never asked for it.
+
+Not verified: it does not press ESC, which reaches the same decline button
+through the top-modal closer and therefore takes the same path; it does not
+read the pill itself, only that the bench is up to draw it on; and it does not
+cover the other confirm cards, none of which name a window to return to.
 ## v12.67 - SELLING SALVAGE MOVES YOUR LEVEL, NOT JUST YOUR XP
 
 From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
