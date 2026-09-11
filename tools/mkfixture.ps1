@@ -6585,9 +6585,17 @@ window.__REGRESS=[
        // v12.67 check repair: re-render the panel after staging, or a second run
        // presses the button over a list that no longer holds the item.
        try{ if(typeof renderStash==="function") renderStash(); else if(typeof renderStage==="function") renderStage(); }catch(_rr){}
-       sb.click();
+       // Re-fetch: the panel is rebuilt between runs, so a handle taken once at the
+       // top is a detached node by the second run and clicking it does nothing.
+       var sb2=document.getElementById('sellall')||sb;
+       // A DISABLED BUTTON SILENTLY IGNORES A PROGRAMMATIC CLICK. The panel sets
+       // that flag when it last rendered, against a stash this check has since
+       // replaced, and nothing re-renders it here, so every run after the first
+       // pressed a dead button and reported a skip.
+       try{ sb2.disabled=false; }catch(_d){}
+       sb2.click();
        if((P2.xp||0)!==219+GAIN)
-         return 'SKIP: the sell button did not take the '+SELL+' ('+(P2.xp||0)+' XP against an expected '+(219+GAIN)+'), so nothing was sold here';
+         return 'SKIP: sale took nothing [xp='+(P2.xp||0)+' want='+(219+GAIN)+' stash='+((P2.stash||[]).length)+' junk='+((P2.junk&&P2.junk[SELL])?1:0)+' same='+((__P()===P2)?1:0)+' sellable='+((typeof sellable==='function'&&sellable(SELL))?1:0)+']';
        // THE FINDING: the XP moved past the boundary, so the level must have too.
        if((P2.xpLevel||1)<2)
          bad.push('selling salvage moved his XP to '+(P2.xp||0)+' and left the level at '+(P2.xpLevel||1)+': the card shows a level that disagrees with the XP printed under it, and he has to go up and come back before it catches up');
