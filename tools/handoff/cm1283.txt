@@ -1,0 +1,18 @@
+v12.83: seven more lines use the words you chose
+
+Found by tools/lint.ps1, written yesterday to hunt exactly this. It flagged
+twenty four lines; I read all of them first. Fourteen are the word "standing"
+used as an ordinary verb, which no English sentence avoids, so the lint was
+narrowed instead of the game. Three are release notes describing the renames.
+
+Seven are real, and each is a line you read in play: two shop lines said cash,
+three seal lines said tier, and three more called the backpack a bag.
+
+Nothing else moves: no number, no behaviour, no layout.
+
+Check 12.83 sweeps every long prose string for the whole banned list rather than
+the three the older check knows, exempts only the release notes, and plants a
+banned word as a control so a green run cannot mean it stopped looking. Fails on
+v12.82.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

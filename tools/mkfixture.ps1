@@ -5709,6 +5709,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.83',what:'the seven lines he reads that used a retired word use his word instead: the shop line says Credits, the two seal lines say stage, and the three pack lines and the Peddler blurb say backpack, while every one of those lines still says the thing it is for (found by tools/lint.ps1, 2026-09-09)',
+   run:function(){
+     var bad=[];
+     try{
+       var SRC='', sc=document.getElementsByTagName('script'), i;
+       for(i=0;i<sc.length;i++) SRC+=(sc[i].textContent||'');
+       if(!SRC) return 'SKIP: this fixture has no script text to read';
+       var CASH='c'+'ash', TIER='ti'+'er', BAG='b'+'ag';
+       // Each row: the wording that must be gone, and a fragment of the same
+       // line that must still be there, so nothing passes by being deleted.
+       var rows=[
+         ['pays '+CASH+' only',             'pays Credits only'],
+         ['seconds of cutting done ('+TIER, 'seconds of cutting done (stage'],
+         ['reseals harder: '+TIER,          'reseals harder: stage'],
+         ['heavy '+BAG+' to be standing',   'heavy backpack to be standing'],
+         ['light '+BAG+' brings the',       'light backpack brings the'],
+         ['weight of the '+BAG+'.',         'weight of the backpack.'],
+         ['sell your '+BAG+' mid raid',     'sell your backpack mid raid']
+       ];
+       for(i=0;i<rows.length;i++){
+         if(SRC.indexOf(rows[i][0])>=0)
+           bad.push('a line he reads still says ['+rows[i][0]+'], which uses a word this game retired');
+         if(SRC.indexOf(rows[i][1])<0)
+           bad.push('control: the line that should read ['+rows[i][1]+'] is not there at all, so it was deleted rather than reworded');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.82',what:'committing the kit twice does not wipe what was kept aside: the items, the tactical belt plan and the gun slot all survive a second commit, so taking the freebie kit at the stash and then going up no longer destroys the death restore, while a commit with nothing kept aside still takes what is in the kit (his v6.88 spec, found again 2026-09-09)',
    run:function(){
      if(!window.__P) return 'SKIP: this fixture cannot read the profile';

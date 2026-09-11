@@ -1,0 +1,33 @@
+## v12.83 - SEVEN MORE LINES USE THE WORDS YOU CHOSE
+
+Found by tools/lint.ps1, which I wrote on 2026-09-09 to hunt exactly this. It
+sweeps prose the player can read for the words he retired. Its first run told me
+the vocabulary check I had drafted was too narrow: that check asserts three words,
+and the lint found seven.
+
+I READ ALL TWENTY FOUR HITS BEFORE TOUCHING ANY OF THEM, and most of them are the
+lint crying wolf. Fourteen are the word "standing" used as the ordinary English
+verb, in lines like "you are standing in the way out" and "a heavy pack to be
+standing still with". His ban is on standing as a RANK, the noun, and no English
+sentence can be written around the verb, so those are not defects: the LINT is
+being narrowed rather than the game reworded. Three more are release-note entries
+that describe the renames themselves and have to keep the old word to make sense.
+
+THE SEVEN THAT ARE REAL, every one a line he reads in play:
+  two shop lines said cash, and this game says Credits
+  three seal lines said tier, which is a banned word, and they mean the seal's own
+    strength, so they say stage now, which is what it is
+  two in-raid weight lines and the Peddler blurb said bag, and it is a backpack
+
+Nothing else moves. No number, no behaviour, no screen layout.
+
+MEASURED. Check 12.83 sweeps every long prose string in the running page for the
+whole banned list rather than the three the older check knows, exempting only the
+release notes. Its control plants a banned word in front of the sweep and
+requires it to be found, so a green run cannot mean the sweep has stopped
+looking. Every needle is assembled rather than written, so the check can never
+find itself, which is a trap this codebase has fallen into three times.
+
+Not verified: it sweeps single-quoted prose, so a line built by joining fragments
+at runtime could hide from it; it exempts the release notes wholesale rather than
+line by line; and it cannot judge the word "standing", which is left to reading.
