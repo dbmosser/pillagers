@@ -667,3 +667,22 @@ clears it between commitKit and endRaid; __deploy is the prime suspect. The fix 
 almost certainly right and is described in d1277; it is the CHECK that is unproven, and a
 skip is not a pass. The tree was reverted to v12.76 clean. 1278 and 1279 still sit behind
 it and would need renumbering down one if 1277 stays parked.
+
+**1277 PARKED AGAIN, BUT IT UNCOVERED A BIGGER BUG THAT IS STILL UNSHIPPED.** commitKit
+is NOT idempotent: with P.freeKit set it does kitBeforeFree=((kitSaved&&kitSaved.kit)||
+P.kit||[]).slice() and then nulls kitSaved, so a SECOND commit finds an empty snapshot
+and an empty P.kit and overwrites kitBeforeFree with an empty list. Quick ascent calls
+commitKit (game 27814) and so does the staging path (33178), so taking the freebie kit at
+the stash and then going up wipes the death restore ENTIRELY: no items, no belt keys, no
+gun slot. That is worse than the original finding, which said only the belt plan was
+lost. THE GUARD IS ONE LINE: only fill kitBeforeFree when it is empty. It is written into
+p1277 already. WHY IT IS STILL PARKED: the check cannot observe the restore in the
+harness. With the guard in place it still reports kit=0 before=0 stash=0 free=0 after
+__endRaid('dead'), so by the time the death runs the profile has no stash and no freeKit
+at all, and the restore only hands back what he still owns. Re-asserting the stash
+immediately before the death and re-reading the profile fresh afterwards both failed to
+change it. NEXT STEP, and do this before touching the build again: write a DETERMINISTIC
+check that never deploys, one that stages kitSaved by hand, calls commitKit twice, and
+requires kitBeforeFree to survive the second call. That proves the guard, fails on v12.76,
+and needs no raid. The belt-plan half can then be proven separately by calling the restore
+branch directly. Do not try to prove it through a real death again.
