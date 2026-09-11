@@ -18,7 +18,7 @@ function SubRx([string]$old, [string]$new) {
 # must run, or a missing prompt in the finding arm would only mean the overlay
 # was never drawn at all.
 SubRx @'
-  {v:'12.80',what:'the price of walking out is the price he actually pays: with nothing banked the confirm button quotes no fine and the line afterwards announces none, while a character who has the XP still reads the full price and still pays exactly it (2026-09-08 first-hour audit)',
+  {v:'12.80',what:'the cover ground contract prints no line of its own on the in-raid panel, since its number was raw world units nothing else in the game uses, while another conduct contract in the same state still prints its note and the contract itself still completes on the same distance (his note, after a live round)',
 '@ @'
   {v:'12.81',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
    run:function(){
@@ -85,7 +85,7 @@ SubRx @'
        __topClear(); __resetCfg(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.80',what:'the price of walking out is the price he actually pays: with nothing banked the confirm button quotes no fine and the line afterwards announces none, while a character who has the XP still reads the full price and still pays exactly it (2026-09-08 first-hour audit)',
+  {v:'12.80',what:'the cover ground contract prints no line of its own on the in-raid panel, since its number was raw world units nothing else in the game uses, while another conduct contract in the same state still prints its note and the contract itself still completes on the same distance (his note, after a live round)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

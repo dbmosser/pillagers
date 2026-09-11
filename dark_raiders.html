@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.80';
+var VER='12.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.80';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.80';
+var WHATSNEW_VER='12.81';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1406,6 +1406,7 @@ var WHATSNEW=[
   'THE LAST BOX BEFORE THE LIFT TELLS THE TRUTH. It said you were going up with an issued sidearm, when nothing equipped means a primary is issued and the second slot is left empty on purpose, and it listed Armour on the same line as the warning that you ascend with no armour on.',
   'HOW FAR YOU DIED FROM EXTRACTION IS MEASURED TO THE NEAREST WAY OUT. It was measured to a ring chosen at random when the raid was built, so the number disagreed with the compass you had been following all raid and with the closest-approach line printed right under it.',
   'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
+  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
   'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
   'H IS THE KEY LIST AND NOTHING ELSE. It used to open with a second column of gear rules and a sound colour key beside the keys, taller than the keys themselves, so the tips were setting the size of the panel you opened to read the bindings.',
   'THE COVER GROUND CONTRACT STOPS QUOTING A NUMBER YOU CANNOT READ. It said 2k of 14k covered, in raw world units, which nothing else in the game uses. The line is gone at your word; the contract itself still tracks, completes and pays exactly as it did.',
@@ -14588,6 +14589,15 @@ function tickDowned(dt){
 // and a 30 units per second crawl; from the far side of a map that is not a
 // decision, it is a wait with an answer he already knows.
 function GIVEUP_HOLD(){ return 1.5; }
+// v12.81, 2026-09-07 audit: ONE TEST, TWO READERS. The rule below was written
+// into giveUpTick alone, so the overlay that offers the surrender knew nothing
+// about it and printed the prompt anyway: the key did nothing, the bar never
+// appeared, and no line said why. Both read this now.
+function surrenderBlocked(){
+  var p=G&&G.player; if(!p) return false;
+  return !!(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
+    G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r);
+}
 function giveUpTick(dt){
   var p=G.player;
   // HIS CONDITION, and the reason the key is safe to bind at all: while he still
@@ -14596,10 +14606,7 @@ function giveUpTick(dt){
   // The guard he did not ask for. This overlay already tells him that extracting
   // while downed is permitted, so a hand resting on the space bar must not throw
   // away a full bag in the one situation where being down ends well.
-  if(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
-     G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r){
-    p.giveT=0; return false;
-  }
+  if(surrenderBlocked()){ p.giveT=0; return false; }   // v12.81: the same test the overlay reads
   if(!keys['Space']){ p.giveT=0; return false; }
   p.giveT=(p.giveT||0)+dt;
   if(p.giveT<GIVEUP_HOLD()) return false;
@@ -24898,8 +24905,18 @@ var _slp=w2s(p.x,66,p.y);
     if(p.revived&&CFG.giveUp!==0){
       var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
       _rowY+=Math.round(_hD*1.25);
-      ctx.font=_fD; ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
+      // v12.81, 2026-09-07 audit: AND IT SAYS SO WHEN IT WILL NOT TAKE THE KEY.
+      // The v9.71 guard refuses the surrender while an extraction is waiting on
+      // the point he is lying in, silently: this row printed the prompt anyway,
+      // the key did nothing, the bar never appeared and nothing explained it. It
+      // reads the same test the key reads now, and says what is true, with the
+      // working verb still drawn underneath it in colour.
+      ctx.font=_fD; ctx.fillStyle='#9b8f8c';
+      if(surrenderBlocked()) ctx.fillText('NO SURRENDER WITH AN EXTRACTION WAITING',W/2,_rowY);
+      else{
+      ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
       ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
+      }
       if(_gp>0){
         _rowY+=Math.round(_hD*0.50);
         bar(W/2-100,_rowY,200,6,_gp,'#ff5a4a');
@@ -29261,7 +29278,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.80: HIS NOTE after a live round, that the contracts panel says 2k of 14k completed, he has no idea what it means, and it should just be deleted. It is the cover-ground contract, and the number is raw world units divided by a thousand against a hardcoded fourteen thousand. Nothing else on any screen is ever quoted in those units: every distance he is shown goes through metres(), the same one the compass and the death card use. So this was the only line in the game speaking a unit he had no way to read, on a panel he checks mid raid to see whether he is on track. He asked for it to go, so it goes, and the row is not left blank: the push is guarded now so a conduct note with nothing to say prints nothing at all rather than an empty line with a bullet on it. Every other conduct note is untouched, and the contract itself is unchanged, still tracking, still completing and still paying exactly as it did; only the line describing it in unreadable units has been taken out. Check 12.80 stages that contract with distance on the clock and requires no line of its own on the panel, with two controls: another conduct contract in the same state still prints its note, so the guard has not silenced the panel, and the contract still completes on the same distance it always did; fails on v12.79.',
+  now:'v12.81: 2026-09-07 audit (P3). v9.71 gave the surrender a guard it did not have: while an extraction is waiting on the point he is lying in, the space bar cannot end his raid, because the same overlay is telling him that extracting while downed is permitted and a hand resting on that key must not throw away a full backpack. The guard is right and nothing told him about it. The surrender row is drawn on one test, that he has spent his revive, so in that state the screen printed HOLD SPACE TO SURRENDER, the key did nothing, the progress bar never appeared because it is drawn only once the hold has started, and no line explained the refusal: a dead control and a prompt that lies, at three health with the point swarmed. The guard is now one named test with two readers, so the key and the screen can never disagree about it again, and the row says what is true instead, with the working verb still drawn underneath it in colour. Check 12.81 puts him down with his revive spent inside a point with an extraction waiting, holds the real key for two seconds through the real frame loop, and requires the hold never to start and the drawn text to carry the refusal and not the prompt, with a control outside that state requiring the prompt to be drawn and the hold to run; fails on v12.80.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

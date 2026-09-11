@@ -74,9 +74,9 @@ SubRx @'
 
 # NEW IN.
 SubRx @'
-  'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
+  'THE COVER GROUND CONTRACT STOPS QUOTING A NUMBER YOU CANNOT READ. It said 2k of 14k covered, in raw world units, which nothing else in the game uses. The line is gone at your word; the contract itself still tracks, completes and pays exactly as it did.',
 '@ @'
-  'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
+  'THE COVER GROUND CONTRACT STOPS QUOTING A NUMBER YOU CANNOT READ. It said 2k of 14k covered, in raw world units, which nothing else in the game uses. The line is gone at your word; the contract itself still tracks, completes and pays exactly as it did.',
   'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
 '@
 
