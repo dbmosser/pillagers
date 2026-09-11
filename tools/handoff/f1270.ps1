@@ -25,7 +25,10 @@ SubRx @'
      if(!window.__P) return 'SKIP: this fixture cannot read the profile';
      if(typeof districtPlaceName!=='function'||typeof FIXED_MAPS==='undefined') return 'SKIP: this build has no districts to name';
      if(FIXED_MAPS.length<2) return 'SKIP: this build offers one sector, so there is nothing to switch to';
-     if(typeof contractDesc!=='function') return 'SKIP: this build has no live contract sentence to read';
+     // Read the sentence the way the board does. On a build with no live reader the
+     // stored sentence IS what the board prints, so the old build FAILS here
+     // rather than excusing itself with a skip, which is what a control is for.
+     function __cdRead(c){ return (typeof contractDesc==='function')?contractDesc(c):((c&&c.desc)||''); }
      var bad=[], P2=__P(), keepMap=P2.mapIx, keepC=(P2.contracts||[]).slice();
      try{
        __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
@@ -40,7 +43,7 @@ SubRx @'
        var card={type:'district',d:D,n:3,prog:0,reward:480,desc:'Search 3 containers in '+names[0]};
        P2.contracts=[card];
        P2.mapIx=1;
-       var said=String(contractDesc(card)||'');
+       var said=String(__cdRead(card)||'');
        if(said.indexOf(names[0])>=0)
          bad.push('the card still names '+names[0]+', which is on the other sector: he was rolled that errand before he changed sector and the board is sending him to a place that is not on the map he is playing');
        if(said.indexOf(names[1])<0)
@@ -48,14 +51,14 @@ SubRx @'
        // CONTROL ONE: switch back, and it must follow again rather than sticking
        // to whatever it said last.
        P2.mapIx=0;
-       var back=String(contractDesc(card)||'');
+       var back=String(__cdRead(card)||'');
        if(back.indexOf(names[0])<0)
          bad.push('control: back on the first sector the card no longer names '+names[0]+' either, so the sentence is not following the sector at all ['+back+']');
        // CONTROL TWO: a card of any other type must read exactly what it was
        // written with, so this build has not started rewriting every card.
        var kill={type:'kill',tgt:'sentry',n:4,prog:0,reward:600,desc:'Destroy 4 Sentries'};
-       if(String(contractDesc(kill)||'')!=='Destroy 4 Sentries')
-         bad.push('control: a card that is not a search card now reads ['+contractDesc(kill)+'] rather than what it was written with');
+       if(String(__cdRead(kill)||'')!=='Destroy 4 Sentries')
+         bad.push('control: a card that is not a search card now reads ['+__cdRead(kill)+'] rather than what it was written with');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ P2.mapIx=keepMap; P2.contracts=keepC; saveProfile(); }catch(_p){}

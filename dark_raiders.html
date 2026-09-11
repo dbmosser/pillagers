@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.69';
+var VER='12.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.69';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.69';
+var WHATSNEW_VER='12.70';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1398,6 +1398,7 @@ var WHATSNEW=[
   'SELLING SALVAGE MOVES YOUR LEVEL, not just your XP. The level was only worked out at the end of a raid, so the card showed a level that disagreed with the XP printed under it and the racks you had just earned stayed locked until you went up and came back.',
   'ANSWERING THE HIRE BENCH QUESTION LEAVES YOU AT THE BENCH. Pressing Hire nobody closed the bench behind its own confirm card, so saying no put you on the bare floor and saying yes redrew the bench where you could not see it.',
   'THE XP A RUN PAYS IS FOR WHAT YOU BROUGHT BACK. Carrying your own stash up the lift and straight back down paid full haul XP for loot you already owned, and handed the stash back untouched, so the whole reward track could be walked without finding anything.',
+  'A SEARCH CONTRACT NAMES A PLACE ON THE SECTOR YOU ARE PLAYING. It wrote the name down when the card was made, so changing sector afterwards left it pointing at a place with almost the right name in the wrong part of the map, and searching it moved nothing.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -2875,6 +2876,19 @@ var CTIER={std:{n:1,r:1,name:'STANDARD',c:'#9aa6b2',w:1},
 // Contract standing is its own ledger. Finish work and the board starts
 // offering you work worth taking.
 function cstand(){ return P.cstand||0; }
+// v12.70, 2026-09-08 audit: A DISTRICT CARD NAMES THE PLACE ON THE SECTOR HE IS
+// PLAYING. The sentence used to be written once, at roll time, against whichever
+// sector was selected then, and the sector can be changed afterwards with one
+// click. The two sectors have places whose names are one letter apart, so a card
+// rolled on one and read on the other sent him to almost the right name at the
+// far corner from the district it wanted, and the counter never moved. The
+// district number on the card was always right; only the sentence was stale. It
+// is worked out on the way to the screen now, so it follows the sector.
+function contractDesc(c){
+  if(c&&c.type==='district'&&c.d!==undefined&&typeof districtPlaceName==='function')
+    return 'Search '+(c.n||0)+' containers in '+districtPlaceName(c.d);
+  return (c&&c.desc)||'contract';
+}
 // v12.67, 2026-09-08 audit: THE LEVEL IS A FUNCTION OF XP, so it is worked out
 // wherever XP moves rather than only at the end of a raid. Selling is the other
 // way XP is earned and both sale paths added the XP without touching the level,
@@ -23975,7 +23989,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
         if(!CD||CD.type==='conduct'||CD.prog>=CD.n) continue;
         // Work for another site cannot progress here, so it is not a decision you
         // can act on during this raid. It stays on the Mainframe.
-        var _cdTxt=(CD.desc||'contract');
+        var _cdTxt=contractDesc(CD);   // v12.70: and the same sentence in the raid
         _live.push({left:Math.max(0,CD.n-CD.prog),txt:_cdTxt+'  '+CD.prog+'/'+CD.n});
       }
       // Nearest to finishing first: "you are on five of six" is the fact that
@@ -29201,7 +29215,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.69: from the 2026-09-08 read-only audit, the same fault as v12.65 on the other side of the same number. The XP a run pays for its haul was worked out from the whole backpack, and the backpack lands already holding whatever was staged, with no limit on what can be staged and every one of those items handed straight back to the stash on extraction. So a hundred thousand of his own stash in the backpack, a ride up, a walk to the nearest extraction point and a hold of E paid about thirty five hundred XP for the haul, multiplied up by night and weather and a dose to something near six thousand, with the stash coming back untouched, and it repeats: the whole reward track is walkable in a few hundred risk-free round trips with nothing found and nothing lost. It also poisons my own numbers, because the haul on the run record and the career best both included value that was never looted, so every haul figure and comparison I have taken off that log is inflated by whatever he happened to be carrying up. The game already knows how to correct it, since the run earnings line subtracts what the lift carried in and the banked record carries that figure; these two sites never subtracted it. Honestly, this removes an XP faucet, so the track is longer than it was yesterday for anyone who was using it. Check 12.69 pays a run whose whole haul was carried up and requires no haul XP and no career best from it, with a control that the same value looted in the raid pays exactly what it always did; fails on v12.68.',
+  now:'v12.70: from the 2026-09-08 read-only audit, and the last defect on that list. A district contract names a place and it worked that name out ONCE, when the card was written, against whatever sector was selected at that moment; the sentence was then frozen on the card, and the sector can be changed afterwards with one click and no effect on the board. The two sectors have places whose names are one letter apart, so a card rolled on one and read on the other sent him to a place with almost the right name at the far corner from the district it actually wanted: he searched it out and the counter never moved, because the containers there carry a different district number, and the panel in the raid repeated the same wrong place because it printed the stored sentence verbatim. The card itself was never broken, only its label, since the district number on it is right and it still ticks on the right containers wherever they are. So the sentence is no longer frozen: the district is what the card holds, and the place it names is worked out on the way to the screen, on the sector he is actually playing. Check 12.70 writes a district card on one sector, switches to the other, and requires the board and the in-raid panel to name a place that exists on the sector he is now playing, with a control that a card of any other type still reads exactly what it was written with; fails on v12.69.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31068,7 +31082,7 @@ P.contracts.forEach(function(c,ci){
       if(!c) return;
     }
     var row=document.createElement('div'); row.className='crow';
-    var cd=document.createElement('div'); cd.className='cd'; cd.textContent=c.desc;
+    var cd=document.createElement('div'); cd.className='cd'; cd.textContent=contractDesc(c);   // v12.70: the place on the sector he is playing
     var TT=CTIER[c.tier]||CTIER.std;
     var tb=document.createElement('span');
     tb.textContent=TT.name;
