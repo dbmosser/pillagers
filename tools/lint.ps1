@@ -19,12 +19,25 @@ Say ''
 # A SETTINGS DIAL THAT NOTHING READS. Memory: a floor outranks the menu, and a
 # dial written but never read is a row in Settings that does nothing at all.
 $aHits = 0
-$cfgM = [regex]::Match($s, '(?s)var CFG=\{(.*?)\n\};')
-if (-not $cfgM.Success) { $cfgM = [regex]::Match($s, '(?s)var CFG=\{(.*?)\};') }
+# BRACE MATCHING, NOT A LAZY REGEX. The lazy one ran straight past the end of the
+# defaults object and into the weapon table, and reported fields like dmg, mag
+# and reload as dials: thirty six hits on the first run and every one of them
+# noise. Walk the braces and stop where the object actually closes.
+$cfgStart = $s.IndexOf('var CFG={')
+$body = ''
+if ($cfgStart -ge 0) {
+  $i = $cfgStart + 8; $depth = 0
+  while ($i -lt $s.Length) {
+    $ch = $s[$i]
+    if ($ch -eq '{') { $depth++ }
+    elseif ($ch -eq '}') { $depth--; if ($depth -eq 0) { break } }
+    $i++
+  }
+  if ($i -lt $s.Length) { $body = $s.Substring($cfgStart + 9, $i - $cfgStart - 9) }
+}
 Say '## A. dials defined but never read'
 Say ''
-if ($cfgM.Success) {
-  $body = $cfgM.Groups[1].Value
+if ($body) {
   $keys = [regex]::Matches($body, '([A-Za-z_][A-Za-z0-9_]*)\s*:') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique
   foreach ($k in $keys) {
     $reads = ([regex]::Matches($s, 'CFG\.' + [regex]::Escape($k) + '(?![A-Za-z0-9_])')).Count
@@ -40,11 +53,37 @@ Say ''
 # the general version of the check I drafted too narrowly at v12.48, which
 # asserts three words and would have shipped green over the word cash.
 $bHits = 0
-$banned = @('cash','hotbar','touchdown','boarding','bag','standing','tier')
+# STANDING IS NOT IN THIS LIST and it is deliberate. His ban is on standing as a
+# RANK, the noun. The verb is unavoidable English: "you are standing in the way
+# out", "a heavy pack to be standing still with". Sweeping for it gave fourteen
+# hits on the first run and every one was the verb, so it was drowning the six
+# that were real. A rank would be caught by "your standing" anyway.
+$banned = @('cash','hotbar','touchdown','boarding','bag','tier')
 Say '## B. banned vocabulary in prose the player can read'
 Say ''
+# THE RELEASE NOTES ARE EXEMPT, by range rather than by guesswork. They describe
+# the renames themselves and have to keep the old word to make sense: an entry
+# saying THE HOTBAR IS THE TACTICAL BELT cannot be written without the old word
+# in it. Four of the first run's hits were these.
+$wnStart = $s.IndexOf('var WHATSNEW=[')
+$wnEnd = -1
+if ($wnStart -ge 0) {
+  $i = $wnStart + 13; $depth = 0
+  while ($i -lt $s.Length) {
+    $ch = $s[$i]
+    if ($ch -eq '[') { $depth++ }
+    elseif ($ch -eq ']') { $depth--; if ($depth -eq 0) { $wnEnd = $i; break } }
+    $i++
+  }
+}
 foreach ($m in [regex]::Matches($s, "'([^'\\\r\n]{30,400})'")) {
   $t = $m.Groups[1].Value
+  # An apostrophe inside a word opens a false string ("don't"), and a string used
+  # as an object key is a lookup rather than a line anybody reads. Both were
+  # giving hits on quotations of his own notes and on text-replacement keys.
+  if ($m.Index -gt 0 -and $s[$m.Index - 1] -match '[A-Za-z]') { continue }
+  if (($m.Index + $m.Length) -lt $s.Length -and $s[$m.Index + $m.Length] -eq ':') { continue }
+  if ($wnStart -ge 0 -and $wnEnd -gt $wnStart -and $m.Index -gt $wnStart -and $m.Index -lt $wnEnd) { continue }
   if (($t -split ' ').Count -lt 5) { continue }
   if ($t -notmatch '[a-z]{3} [a-z]{3}') { continue }
   foreach ($w in $banned) {

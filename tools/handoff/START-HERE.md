@@ -686,3 +686,32 @@ check that never deploys, one that stages kitSaved by hand, calls commitKit twic
 requires kitBeforeFree to survive the second call. That proves the guard, fails on v12.76,
 and needs no raid. The belt-plan half can then be proven separately by calling the restore
 branch directly. Do not try to prove it through a real death again.
+
+## 2026-09-11: THE LINT IS NOW HONEST, AND HERE IS WHAT IT ACTUALLY SAYS
+
+tools/lint.ps1 was written on 2026-09-09 and its first run was mostly noise. It has
+been repaired against its own output and now reads: **dials-never-read 0, banned-words 2,
+unstamped-migrations 0, overwritten-lines 4.**
+
+**A WAS 36 AND IS NOW 0, and the 36 were all my fault.** The defaults object was
+captured with a lazy regex that ran straight past its end into the weapon table, so it
+reported fields like dmg, mag and reload as Settings dials. It walks the braces now.
+THE REAL ANSWER IS GOOD NEWS: there is no Settings row in this game that nothing reads.
+
+**B WAS 24 AND IS NOW 2.** Seven were real and shipped as v12.83. Fourteen were the word
+standing used as the ordinary English verb, which no sentence avoids, so standing is out
+of the sweep: his ban is on standing as a RANK and "your standing" would still be caught.
+The rest were the release notes describing the renames themselves, which cannot be
+written without the old word, and they are exempt BY RANGE now rather than by guesswork.
+Two hits remain and both are deliberate: quotations of his own measurements inside the
+text-replacement map, where rewording would falsify a record.
+
+**D IS 4 AND THREE OF THEM ARE FALSE.** useMedical, cycleThrow and doEmote put their
+calls in mutually exclusive branches with early returns, so nothing is overwritten. The
+one that was real shipped as v12.84, and it was the v12.73 defect in a second place. The
+class stays in the lint: a lead it cannot resolve is worth more than a lead it never
+raises, as long as whoever reads it reads the source before believing it.
+
+**TWO RULES WERE ADDED TO BOTH THE LINT AND CHECK 12.83** after they both cried wolf on
+the same things: an apostrophe inside a word opens a false string, and a string used as
+an object key is a lookup rather than a line anybody reads.

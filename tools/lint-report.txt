@@ -2,79 +2,21 @@
 
 ## A. dials defined but never read
 
-  meaningless : defined in the defaults and read nowhere
-  o : defined in the defaults and read nowhere
-  val : defined in the defaults and read nowhere
-  fists : defined in the defaults and read nowhere
-  id : defined in the defaults and read nowhere
-  name : defined in the defaults and read nowhere
-  dmg : defined in the defaults and read nowhere
-  rof : defined in the defaults and read nowhere
-  spread : defined in the defaults and read nowhere
-  mag : defined in the defaults and read nowhere
-  reload : defined in the defaults and read nowhere
-  rng : defined in the defaults and read nowhere
-  auto : defined in the defaults and read nowhere
-  noise : defined in the defaults and read nowhere
-  tint : defined in the defaults and read nowhere
-  pistol : defined in the defaults and read nowhere
-  smg : defined in the defaults and read nowhere
-  rifle : defined in the defaults and read nowhere
-  optic : defined in the defaults and read nowhere
-  dmr : defined in the defaults and read nowhere
-  note : defined in the defaults and read nowhere
-  magnum : defined in the defaults and read nowhere
-  sniper : defined in the defaults and read nowhere
-  tacker : defined in the defaults and read nowhere
-  starter : defined in the defaults and read nowhere
-  sputter : defined in the defaults and read nowhere
-  chatter : defined in the defaults and read nowhere
-  scuttle : defined in the defaults and read nowhere
-  pellets : defined in the defaults and read nowhere
-  carbine : defined in the defaults and read nowhere
-  burst : defined in the defaults and read nowhere
-  shotgun : defined in the defaults and read nowhere
-  lmg : defined in the defaults and read nowhere
-  added : defined in the defaults and read nowhere
-  whisper : defined in the defaults and read nowhere
-  lance : defined in the defaults and read nowhere
+  (could not find the CFG defaults object)
 
 ## B. banned vocabulary in prose the player can read
 
-  line 1378 [standing] THE EDGE OF A RAISED DECK IS WHERE IT LOOKS. Catwalk and gantry edges were painted like building walls, 26 units taller than the thing you actually co
-  line 1380 [standing] A HOWLER SHELL NO LONGER REACHES THROUGH A WALL. A shell bursting in the street took about twenty health off you standing well inside a building, with
-  line 1382 [standing] A HOWLER IS DEAF TO ITS OWN GUN. It heard the round leave its own tube and the hole that round made, took both for fresh reports about you, and shelle
-  line 1388 [standing] WALKING THROUGH ANOTHER EXTRACTION POINT NO LONGER ABANDONS YOUR OWN. The game follows one point at a time, and standing in a second open one used to 
-  line 1390 [standing] THE OPEN BACKPACK STOPS THE FLOOR. Reading it in the Undercroft used to leave every station live underneath: standing on the lift and pressing R start
-  line 1439 [standing] A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING. It no longer gives up on the way to the last place it saw you; standing still does not switch it off.
-  line 1509 [bag] ONE WORD FOR THE PACK: BACKPACK. The title controls line, the empty-panel hint and the full-pack message called it the "bag"; they say backpack now, a
-  line 1516 [bag] THE PAUSE SCREEN KEY LIST IS RIGHT AGAIN. It printed a stray "&nbsp;" between every key and still said F heals, TAB opens the bag and Q throws. It now
-  line 1530 [standing] MACHINES NO LONGER WALK INTO WINDOWS. One standing inside a building could see you through the glass, decide the way was clear, walk at the window and
-  line 1556 [standing] SOME BUILDINGS ARE DESTROYED NOW. Whole runs of their outer wall are gone, so you can see straight into them and walk in from any side. No cover on th
-  line 1582 [hotbar] THE HOTBAR IS THE TACTICAL BELT, everywhere a word names it: the stash, the raid, the legends and the pause screen.
-  line 2611 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
-  line 2614 [touchdown] Measured at your ring: 7 of 8 enemies at touchdown are ones your walk woke. One word: QUIETER movement, SHORTER beacon, or MOVE while it lands?
-  line 2614 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
-  line 2763 [tier]  seconds of cutting done (tier 
-  line 14038 [bag]  That is a heavy bag to be standing still with.
-  line 14039 [bag]  A light bag brings the fewest of them.
-  line 19170 [tier]  is broken. It reseals harder: tier 
-  line 19731 [bag]   numbers climb, the clock is what is killing you, not the weight of the bag.
-  line 28157 [standing] You are standing in the way out. Hold E to call it.
-  line 29245 [standing] THE HOWLER: artillery that mails the fight to where you were standing
-  line 29285 [bag] The Peddler: sell your bag mid raid at half price, banked instantly
-  line 31072 [cash] Selling salvage here pays XP equal to the price. Finishing a raid pays XP too. The Peddler in the field pays cash only.
-  line 31073 [cash] Selling salvage here pays XP equal to the price. Finishing a raid pays XP too. The Peddler in the field pays cash only.
+  line 2613 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
+  line 2616 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
 
 ## C. one-shot migrations missing from the born profile
 
 
 ## D. a message written inside a loop and overwritten after it
 
-  line 7750 : doEmote says something inside a loop and says something else after it
-  line 10736 : raidKey says something inside a loop and says something else after it
-  line 11675 : cycleThrow says something inside a loop and says something else after it
-  line 12906 : useMedical says something inside a loop and says something else after it
-  line 13438 : equipFromBag says something inside a loop and says something else after it
+  line 7752 : doEmote says something inside a loop and says something else after it
+  line 10738 : raidKey says something inside a loop and says something else after it
+  line 11677 : cycleThrow says something inside a loop and says something else after it
+  line 12908 : useMedical says something inside a loop and says something else after it
 
-TOTALS  A=36  B=24  C=0  D=5
+TOTALS  A=0  B=2  C=0  D=4
