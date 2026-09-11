@@ -55,6 +55,12 @@ SubRx @'
     if(_netHaul>P.best) P.best=_netHaul;
 '@
 
+SubRx @'
+    var _grec={outcome:how,haul:haul,containers:T.containers,kills:T.kills,termPay:tPay,
+'@ @'
+    var _grec={outcome:how,haul:haul,carriedIn:G.carriedIn||0,containers:T.containers,kills:T.kills,termPay:tPay,
+'@
+
 # NEW IN.
 SubRx @'
   'ANSWERING THE HIRE BENCH QUESTION LEAVES YOU AT THE BENCH. Pressing Hire nobody closed the bench behind its own confirm card, so saying no put you on the bare floor and saying yes redrew the bench where you could not see it.',
