@@ -1,49 +1,31 @@
-## v12.80 - THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE
+## v12.80 - THE COVER GROUND CONTRACT STOPS QUOTING A NUMBER YOU CANNOT READ
 
-From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
-reading at v12.79.
+His note, after a live round: contracts says "2k of 14k completed", he has no
+idea what it means, just delete it.
 
-WHAT IT WAS. v9.71 gave the surrender a guard it did not have at first: while
-an extraction is waiting on the point you are lying in, the space bar cannot
-end your raid. The reasoning is written into the code and it is right. That
-same overlay is telling you that extracting while downed is permitted, so a
-hand resting on the space bar must not throw away a full backpack in the one
-situation where being down ends well.
+WHAT IT WAS. It is the cover-ground contract, and the number is raw world units
+divided by a thousand, against a hardcoded fourteen thousand. Nothing else on any
+screen is ever quoted in those units. Every distance he is shown goes through the
+same metres() the compass and the death card use. So this was the only line in
+the game speaking a unit he had no way to read, and it sat on a panel he checks
+mid raid to see whether he is on track.
 
-Nothing ever told the player about the guard. The surrender row is drawn on a
-single test, that he has spent his self-revive, with no question asked about
-where he is lying. So in that state the screen printed HOLD SPACE TO SURRENDER,
-he held it, and nothing happened: the row never lit, the progress bar never
-appeared because it is only drawn once the hold has started, and no line
-explained the refusal. A dead control and a prompt that lies, at three health
-with the point swarmed.
+THE BUILD. It goes, at his word. The row is not left blank either: the panel's
+push is guarded now, so a conduct note with nothing to say prints nothing at all
+rather than an empty line with a bullet on it.
 
-He does lose nothing by it, which is why the audit called it P3: the working
-verb, HOLD E TO EXTRACT, is drawn in the same stack right underneath, larger
-and in colour, and it works. But a screen that offers a control it will not
-take is the same fault as the crafting button, and it is the fault I have spent
-this week removing.
+WHAT IS NOT TOUCHED. Every other conduct note is unchanged, and the contract
+itself is unchanged: it still tracks, still completes on the same distance and
+still pays the same. Only the line describing it in unreadable units is gone.
 
-THE BUILD. The guard becomes one named test with two readers, so the key and
-the screen can never disagree about it again. The row then says what is true
-instead of what is not on offer, with the working verb still underneath it in
-colour. Nothing about the refusal itself changes: the key is refused in exactly
-the same state, for exactly the same reason.
+MEASURED. Check 12.80 puts that contract on the profile with distance on the
+clock and reads the panel the way he does, off the canvas, requiring no line of
+its own. Two controls: another conduct contract in the same state must still
+print its note, so the guard has silenced one line and not the panel, and the
+contract must still complete on the distance it always did and still refuse a
+short one, so deleting a line has not quietly deleted the work.
 
-IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The behaviour of the key is
-unchanged, the bot never surrenders, and no dial moves.
-
-MEASURED. Check 12.80 runs two arms on one staging. The control runs FIRST: the
-same man, downed with his revive spent, nowhere near a waiting extraction. The
-prompt must be drawn and the hold must start, or a missing prompt in the other
-arm would only say the overlay was never drawn at all. The finding arm lays him
-down inside a point with an extraction waiting, holds the real key for two
-thirds of a second through the real frame loop, and requires the hold never to
-start, the prompt never to be drawn, and the refusal line to be there in its
-place. The needle is assembled from pieces rather than written out, so a check
-that greps the page cannot find this row in its own source.
-
-Not verified: it does not read where the row sits on screen or what colour it
-is, only that the words are drawn; it does not run the hold to completion in
-the control arm, since that would end the raid; and it does not exercise the
-gamepad, which reaches the same key slot.
+Not verified: it reads the strings the frame writes rather than pixels; it does
+not walk fourteen thousand units to complete the contract for real, it sets the
+distance and asks the same test the game asks; and it does not change what the
+contract is worth or how far it asks him to go, which are dials and his to set.

@@ -11,73 +11,48 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-07 READ-ONLY AUDIT (P3), specced from the source.
+# HIS NOTE, after a live round: "contracts says 2k of 14k completed. No idea what
+# this means, just delete it."
 #
-# v9.71 added a guard the surrender did not have: while an extraction is waiting
-# on the point you are lying in, the space bar cannot end your raid, because the
-# same overlay is telling you that extracting while downed is permitted and a
-# hand resting on that key must not throw away a full backpack. The guard is
-# right. Nothing told him about it. The surrender row is drawn on one test, that
-# he has spent his revive, so in that state the screen printed HOLD SPACE TO
-# SURRENDER, the key did nothing, the bar never appeared, and no line explained
-# why. A dead control and a prompt that lies.
+# It is the cover-ground contract, and the number is raw world units divided by a
+# thousand against a hardcoded fourteen thousand. Nothing else on any screen is
+# ever quoted in those units: distances he is shown are in metres, through the
+# same metres() the compass and the death card use. So the line was the only
+# place in the game speaking a unit he has no way to read, on a panel he checks
+# mid raid to see whether he is on track.
 #
-# The guard becomes one named test with two readers, so the key and the screen
-# can never disagree about it again, and the row says what is true instead.
+# He asked for it to go, so it goes. The row is not left blank: the push below is
+# guarded so a conduct note with nothing to say prints nothing at all, rather than
+# an empty line with a bullet on it.
+#
+# EVERY OTHER CONDUCT NOTE IS UNTOUCHED, and the contract itself is unchanged: it
+# still tracks, still completes and still pays exactly as it did. Only the line
+# that described it in units he could not read is gone.
 SubRx @'
-function giveUpTick(dt){
+        else if(CC.ck==='far'){ note=Math.round((T.distance||0)/1000)+'k of 14k covered'; }
 '@ @'
-// v12.80, 2026-09-07 audit: ONE TEST, TWO READERS. The rule below was written
-// into giveUpTick alone, so the overlay that offers the surrender knew nothing
-// about it and printed the prompt anyway: the key did nothing, the bar never
-// appeared, and no line said why. Both read this now.
-function surrenderBlocked(){
-  var p=G&&G.player; if(!p) return false;
-  return !!(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
-    G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r);
-}
-function giveUpTick(dt){
+        // v12.80, HIS NOTE: gone, at his word. This printed raw world units over
+        // a thousand against a hardcoded fourteen thousand, and nothing else in
+        // the game is ever quoted that way; every distance he is shown goes
+        // through metres(). The contract still tracks, completes and pays; only
+        // the line nobody could read has been taken out.
+        else if(CC.ck==='far'){ note=''; }
 '@
 
 SubRx @'
-  if(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
-     G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r){
-    p.giveT=0; return false;
-  }
+        _clines.push({v:(lost?'LOST   ':'')+note,vc:lost?'#c0503a':'#7fc4a0'});
 '@ @'
-  if(surrenderBlocked()){ p.giveT=0; return false; }   // v12.80: the same test the overlay reads
-'@
-
-SubRx @'
-    if(p.revived&&CFG.giveUp!==0){
-      var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
-      _rowY+=Math.round(_hD*1.25);
-      ctx.font=_fD; ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
-      ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
-'@ @'
-    if(p.revived&&CFG.giveUp!==0){
-      var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
-      _rowY+=Math.round(_hD*1.25);
-      // v12.80, 2026-09-07 audit: AND IT SAYS SO WHEN IT WILL NOT TAKE THE KEY.
-      // The v9.71 guard refuses the surrender while an extraction is waiting on
-      // the point he is lying in, silently: this row printed the prompt anyway,
-      // the key did nothing, the bar never appeared and nothing explained it. It
-      // reads the same test the key reads now, and says what is true, with the
-      // working verb still drawn underneath it in colour.
-      ctx.font=_fD; ctx.fillStyle='#9b8f8c';
-      if(surrenderBlocked()) ctx.fillText('NO SURRENDER WITH AN EXTRACTION WAITING',W/2,_rowY);
-      else{
-      ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
-      ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
-      }
+        // v12.80: a conduct note with nothing to say prints nothing, instead of
+        // an empty row with a bullet on it.
+        if(note) _clines.push({v:(lost?'LOST   ':'')+note,vc:lost?'#c0503a':'#7fc4a0'});
 '@
 
 # NEW IN.
 SubRx @'
-  'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
+  'H IS THE KEY LIST AND NOTHING ELSE. It used to open with a second column of gear rules and a sound colour key beside the keys, taller than the keys themselves, so the tips were setting the size of the panel you opened to read the bindings.',
 '@ @'
-  'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
-  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
+  'H IS THE KEY LIST AND NOTHING ELSE. It used to open with a second column of gear rules and a sound colour key beside the keys, taller than the keys themselves, so the tips were setting the size of the panel you opened to read the bindings.',
+  'THE COVER GROUND CONTRACT STOPS QUOTING A NUMBER YOU CANNOT READ. It said 2k of 14k covered, in raw world units, which nothing else in the game uses. The line is gone at your word; the contract itself still tracks, completes and pays exactly as it did.',
 '@
 
 # STAMPS.
@@ -91,9 +66,9 @@ var WHATSNEW_VER='12.79';
 '@ @'
 var WHATSNEW_VER='12.80';
 '@
-$cnt=([regex]::Matches($s,"now:'v12.79:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v12\.79:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.79 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12.79:[^']*'",{ param($m) "now:'v12.80: 2026-09-07 audit (P3). v9.71 gave the surrender a guard it did not have: while an extraction is waiting on the point he is lying in, the space bar cannot end his raid, because the same overlay is telling him that extracting while downed is permitted and a hand resting on that key must not throw away a full backpack. The guard is right and nothing told him about it. The surrender row is drawn on one test, that he has spent his revive, so in that state the screen printed HOLD SPACE TO SURRENDER, the key did nothing, the progress bar never appeared because it is drawn only once the hold has started, and no line explained the refusal: a dead control and a prompt that lies, at three health with the point swarmed. The guard is now one named test with two readers, so the key and the screen can never disagree about it again, and the row says what is true instead, with the working verb still drawn underneath it in colour. Check 12.80 puts him down with his revive spent inside a point with an extraction waiting, holds the real key for two seconds through the real frame loop, and requires the hold never to start and the drawn text to carry the refusal and not the prompt, with a control outside that state requiring the prompt to be drawn and the hold to run; fails on v12.79.'" })
+$s=[regex]::Replace($s,"now:'v12\.79:[^']*'",{ param($m) "now:'v12.80: HIS NOTE after a live round, that the contracts panel says 2k of 14k completed, he has no idea what it means, and it should just be deleted. It is the cover-ground contract, and the number is raw world units divided by a thousand against a hardcoded fourteen thousand. Nothing else on any screen is ever quoted in those units: every distance he is shown goes through metres(), the same one the compass and the death card use. So this was the only line in the game speaking a unit he had no way to read, on a panel he checks mid raid to see whether he is on track. He asked for it to go, so it goes, and the row is not left blank: the push is guarded now so a conduct note with nothing to say prints nothing at all rather than an empty line with a bullet on it. Every other conduct note is untouched, and the contract itself is unchanged, still tracking, still completing and still paying exactly as it did; only the line describing it in unreadable units has been taken out. Check 12.80 stages that contract with distance on the clock and requires no line of its own on the panel, with two controls: another conduct contract in the same state still prints its note, so the guard has not silenced the panel, and the contract still completes on the same distance it always did; fails on v12.79.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

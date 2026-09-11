@@ -11,81 +11,61 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.80 CHECK, inserted before the v12.79 entry. Two arms on one staging, and
-# the needle is assembled rather than written, so a check that greps the page
-# cannot find this row in its own source. The control arm is the same man in the
-# same place with no extraction waiting: the prompt must be drawn and the hold
-# must run, or a missing prompt in the finding arm would only mean the overlay
-# was never drawn at all.
+# v12.80 CHECK, inserted before the v12.79 entry. It puts the cover-ground
+# contract on the profile with distance on the clock and reads the panel the way
+# he does, off the canvas. Two controls: another conduct contract in the same
+# state must still print its note, so the guard has not silenced the whole panel,
+# and the contract must still complete on the distance it always did, so deleting
+# a line has not quietly deleted the work.
 SubRx @'
-  {v:'12.79',what:'the price of walking out is the price he actually pays: with nothing banked the confirm button quotes no fine and the line afterwards announces none, while a character who has the XP still reads the full price and still pays exactly it (2026-09-08 first-hour audit)',
+  {v:'12.79',what:'the full key panel is keys: every binding in the key table is still drawn and not one gear rule or sound colour label is, while the compact corner legend still draws its keys (his note, after a live round)',
 '@ @'
-  {v:'12.80',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
+  {v:'12.80',what:'the cover ground contract prints no line of its own on the in-raid panel, since its number was raw world units nothing else in the game uses, while another conduct contract in the same state still prints its note and the contract itself still completes on the same distance (his note, after a live round)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys&&window.__frame&&window.__textTrace&&window.__forceSize)) return 'SKIP: this fixture cannot deploy, press keys and read the drawn text';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
-     if(typeof giveUpTick!=='function') return 'SKIP: this build has no surrender';
-     var bad=[];
-     // Assembled, never written whole, so the phrase cannot be found in the
-     // source of the very check that is looking for it.
-     var PROMPT='TO '+'SURRE'+'NDER', REFUSE='NO '+'SURRE'+'NDER';
-     function arm(waiting){
+     if(!(window.__deploy&&window.__state&&window.__P&&window.__frame&&window.__textTrace&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and read the drawn text';
+     var bad=[], P2=__P(), keepC=(P2.contracts||[]).slice();
+     try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        try{ __pinDPR(1); __forceSize(1920,1080); }catch(_f){}
+       if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
        __deploy({kit:[],mapIx:0,seed:4242});
-       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
-       var p=g.player, z=g.active||g.zones[0], K=__keys(), k, i;
-       for(k in K) delete K[k];
-       g.ents.length=0;
-       g.active=z; z.open=true;
-       if(waiting){ z.beaconT=0; g.beaconT=0; g.shipHold=20; z.hold=20; p.x=z.x; p.y=z.y; }
-       else { z.beaconT=null; g.beaconT=null; g.shipHold=null; z.hold=null;
-              p.x=z.x+(z.r+900); p.y=z.y; }
-       p.hp=20; p.armor=0; p.iv=99; p.roll=0; p.cooking=0;
-       p.revived=true; p.downed=true; p.downT=CFG.downTime; p.giveT=0; p.healLock=true;
-       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
-       K.Space=1;
-       var peak=0;
-       for(i=0;i<40;i++){ p.iv=99; p.downT=CFG.downTime; clk+=16.7; __loop(clk);
-                          if((p.giveT||0)>peak) peak=p.giveT||0;
-                          if(!p.downed||g.over) break; }
-       var lines=[];
-       try{ lines=__textTrace(function(){ __frame(0.016); }); }catch(_t){ }
-       var txt=''; for(i=0;i<lines.length;i++) txt+=' | '+lines[i].t;
-       var out={peak:peak,down:!!p.downed,over:!!g.over,txt:txt,
-                prompt:txt.indexOf(PROMPT)>=0,refuse:txt.indexOf(REFUSE)>=0,
-                verb:txt.indexOf('TO EXTRACT')>=0};
-       for(k in K) delete K[k];
-       return out;
-     }
-     var keepTs=lastTs;
-     try{
-       // CONTROL FIRST: the same man, downed with his revive spent, nowhere near
-       // a waiting extraction. The prompt must be drawn and the hold must run, or
-       // a missing prompt below would only say the overlay was never drawn.
-       var B=arm(false);
-       if(!B) return 'SKIP: no raid with an extraction point to lie down in';
-       if(!B.down&&!B.over) return 'SKIP: he did not stay on the floor long enough to read the screen';
-       if(!B.prompt) return 'SKIP: with no extraction waiting the downed screen did not draw the surrender row at all, so this check cannot see it and proves nothing';
-       if(!(B.peak>0)) return 'SKIP: with no extraction waiting two seconds on the key started no hold, so this check cannot see a hold and proves nothing';
-       // THE FINDING: downed inside a point with an extraction waiting, which is
-       // the one state the key is refused in, on purpose, since v9.71.
-       var A=arm(true);
-       if(!A) return 'SKIP: no raid with an extraction point to lie down in';
-       if(A.peak>0) bad.push('staging: the hold started inside a waiting extraction, so this is not the refused state the check is about');
-       if(A.prompt) bad.push('with an extraction waiting on the point he is lying in the screen still offers the surrender, and the key does nothing: the row is drawn, the bar never comes, and nothing tells him why');
-       if(!A.refuse) bad.push('with an extraction waiting the screen says nothing at all about the surrender being refused; the drawn text is ['+A.txt.slice(0,200)+']');
-       if(!A.verb) bad.push('control: the working verb is not drawn in this state either, so the screen is not the one this check thinks it is reading');
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
+       g.ents.length=0; g.player.downed=false;
+       function shown(card,dist){
+         P2.contracts=[card];
+         try{ if(g.tel) g.tel.distance=dist; }catch(_d){}   // T is G.tel, no hook needed
+         var lines=[]; try{ lines=__textTrace(function(){ __frame(0.016); }); }catch(_t){ return ''; }
+         var t=''; for(var i=0;i<lines.length;i++) t+=' | '+lines[i].t;
+         return t;
+       }
+       // THE FINDING: the cover-ground card, part way along, says nothing that
+       // quotes a number he cannot read.
+       var far={type:'conduct',ck:'far',n:1,prog:0,reward:900,desc:'Cover ground'};
+       var tFar=shown(far,2000);
+       if(!tFar) return 'SKIP: the panel drew no text at all, so there is nothing here to read';
+       if(tFar.indexOf('14k')>=0||/\dk of /.test(tFar))
+         bad.push('the in-raid panel still quotes the cover ground contract in raw world units, which is the one unit nothing else in the game uses and he has no way to read');
+       // CONTROL ONE: another conduct card in the same place must still speak, or
+       // the guard has silenced the panel rather than one line.
+       var steady={type:'conduct',ck:'steady',n:1,prog:0,reward:900,desc:'Stay up'};
+       var tSteady=shown(steady,2000);
+       if(tSteady.toLowerCase().indexOf('down')<0)
+         bad.push('control: another conduct contract in the same state now prints nothing either, so this build has silenced the panel and not one line');
+       // CONTROL TWO: the work itself is untouched.
+       if(typeof conductMet==='function'&&g.tel){
+         g.tel.distance=14000;
+         if(!conductMet('far')) bad.push('control: the cover ground contract no longer completes on the distance it always completed on, so deleting its line deleted the work');
+         g.tel.distance=100;
+         if(conductMet('far')) bad.push('control: the cover ground contract now completes on any distance at all');
+       }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
-       try{ lastTs=keepTs; }catch(_t2){}
-       try{ var gz=__state(); if(gz&&gz.player){ gz.player.downed=false; gz.player.giveT=0; gz.player.iv=0; gz.player.revived=false; gz.player.healLock=false; } }catch(_a){}
-       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
-       __topClear(); __resetCfg(); __cleanProfile();
+       try{ P2.contracts=keepC; saveProfile(); }catch(_p){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.79',what:'the price of walking out is the price he actually pays: with nothing banked the confirm button quotes no fine and the line afterwards announces none, while a character who has the XP still reads the full price and still pays exactly it (2026-09-08 first-hour audit)',
+  {v:'12.79',what:'the full key panel is keys: every binding in the key table is still drawn and not one gear rule or sound colour label is, while the compact corner legend still draws its keys (his note, after a live round)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
