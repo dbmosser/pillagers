@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.66';
+var VER='12.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.66';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.66';
+var WHATSNEW_VER='12.67';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1395,6 +1395,7 @@ var WHATSNEW=[
   'THE BUY BUTTON SAYS HOW SHORT YOU ARE, including when you cannot afford even one. That was the commonest refusal at the counter and the only one it answered with a dead grey button and no reason at all.',
   'A HAUL CONTRACT COUNTS WHAT YOU CAME BACK WITH, not what you took up. Staging one expensive gun out of your own stash and walking straight to an extraction point used to finish the best-paying card on the board, and the gun went back in the stash afterwards.',
   'THE CONTRACT BOARD COUNTS CONTRACTS. Its one progress line said Contracts completed and printed a weighted number instead, so your first ever HARD card made it read two, and the line under it asked for credits while sounding like cards.',
+  'SELLING SALVAGE MOVES YOUR LEVEL, not just your XP. The level was only worked out at the end of a raid, so the card showed a level that disagreed with the XP printed under it and the racks you had just earned stayed locked until you went up and came back.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -2872,6 +2873,16 @@ var CTIER={std:{n:1,r:1,name:'STANDARD',c:'#9aa6b2',w:1},
 // Contract standing is its own ledger. Finish work and the board starts
 // offering you work worth taking.
 function cstand(){ return P.cstand||0; }
+// v12.67, 2026-09-08 audit: THE LEVEL IS A FUNCTION OF XP, so it is worked out
+// wherever XP moves rather than only at the end of a raid. Selling is the other
+// way XP is earned and both sale paths added the XP without touching the level,
+// so the Undercroft card showed two numbers that contradicted each other and the
+// nine cosmetics gated on the level stayed locked until he had been up and come
+// back. The formula is unchanged, and it lives here once so it cannot drift.
+function syncXpLevel(){
+  P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
+  return P.xpLevel;
+}
 // Which districts the map you are about to play actually contains, and how many buildings
 // each one has. Containers are only ever placed inside buildings and landmarks, so a
 // district with no buildings has no containers, and a contract naming it can never be
@@ -18787,7 +18798,7 @@ function addProgress(rec){
   // is 1.2 times 1.1.
   var _xb=xpBaseFor(rec), _xg=addXp(_xb,(rec.doseMul>0)?rec.doseMul:undefined);   // v12.12: the multiplier the card printed
   rec.xpBase=_xb; rec.xpGot=_xg;
-  P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
+  syncXpLevel();   // v12.67: the same formula, in one named place
   // v10.27, his note: NET LIFETIME EARNINGS. Everything extracted minus
   // everything carried in, over every run; a run that died or was abandoned
   // lost what it carried. Negative is allowed, because that is the truth of
@@ -29168,7 +29179,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.66: from the 2026-09-08 read-only audit, and this is my own wording. The only progress readout the contract board has says Contracts completed N, and N is not a count of contracts: it is a weighted number, a STANDARD card counting one, a HARD two and an ELITE three. Claim a first ever HARD card and the board says two contracts completed. The gate under it is miscounted from his side for the same reason, because ELITE work at 6 more means six more of that weight, which is two ELITE claims or three HARD ones and not six contracts, so he plans against a ledger that can be wrong by three times per card. The changelog entry for that line is mine and records a deliberate vocabulary swap with no look at the number behind it: the line used to say Contract standing, which was true, and standing is a banned word, so I renamed it to completed, which is false. Renaming is not the same as reading. The count and the gate are two different numbers and both are said now, each called what it is: a true count of contracts claimed, and a gate that asks for credits and says what a harder card is worth. Check 12.66 claims one HARD card on a clean profile and requires the board to read one contract completed with the gate still naming what it needs, and a control requires the gate itself to be unchanged, since the credit is what opens harder work and this build must not move it; fails on v12.65.',
+  now:'v12.67: from the 2026-09-08 read-only audit, confirmed by a skeptic against the source. The level is a function of XP and the file worked it out in exactly one place, at the end of a raid; selling salvage is the other way XP is earned and both sale paths added the XP and never touched the level. So the Undercroft card showed two numbers that contradicted each other: sell a bag for four thousand, watch the XP figure on that card jump by four thousand, and the Level printed directly above it did not move. Nine cosmetics gate on that level, so the racks he had just earned stayed locked until he went up and came back, and on a fresh profile the very first sell-all is the moment four of those nine gates are actually earned and the one moment the game would not honour them. The formula does not change; only where it is worked out does, and it now lives in one named place called wherever XP moves. Check 12.67 sells enough salvage in one go to cross a level boundary and requires the level and the cosmetic gate it opens to move at the counter rather than after the next raid, with a control that the formula itself is unchanged at a known XP figure; fails on v12.66.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30838,7 +30849,7 @@ try{ renderFreeKit(); }catch(_fk){}
         // v8.51, audit: and the key that pointed at it. This is a route OUT of the
         // backpack and clearKeysFor is the one rule for those; it was not called.
         // v10.02, his answer 42: a sale pays its plain price in XP; only a raid takes the bar's bonus.
-        if(ix>=0){ P.stash.splice(ix,1); clearKeysFor(k); P.credits+=ival(k); P.xp=(P.xp||0)+ival(k); saveProfile(); renderHub(); }
+        if(ix>=0){ P.stash.splice(ix,1); clearKeysFor(k); P.credits+=ival(k); P.xp=(P.xp||0)+ival(k); syncXpLevel(); saveProfile(); renderHub(); }   // v12.67: XP moved, so the level does
       });
     };
     // v6.58, his note: no click handler at all. Junk is J while hovering, which is the
@@ -32176,6 +32187,7 @@ document.getElementById('sellall').onclick=function(){
     if(sellable(k)){ gained+=ival(k); sold++; _soldKeys.push(k); } else kept.push(k);
   });
   P.credits+=gained; P.xp=(P.xp||0)+gained; P.stash=kept;   // v10.02, his answer 42: no bar bonus on a sale
+  syncXpLevel();   // v12.67: XP moved, so the level and the racks it gates move with it
   // v8.51, audit: everything sold here left the backpack, so every key bound to
   // one of them goes with it. AFTER the new stash is written, because clearKeysFor
   // asks stageKitLive whether the item is still carried and would otherwise still

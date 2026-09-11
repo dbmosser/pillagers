@@ -40024,6 +40024,44 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.67 - SELLING SALVAGE MOVES YOUR LEVEL, NOT JUST YOUR XP
+
+From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.
+Verified by reading at v12.66.
+
+WHAT IT WAS. The level is a function of XP, and the file worked it out in
+exactly one place: at the end of a raid. Selling salvage is the other way XP is
+earned, and both sale paths add the XP and never touch the level.
+
+So the Undercroft card shows two numbers that contradict each other. Sell a bag
+of cores for four thousand, watch the XP figure on that card jump by four
+thousand, and the Level printed directly above it does not move.
+
+Nine cosmetics gate on that level, so the racks he has just earned stay locked
+until he goes up and comes back. On a fresh profile the very first sell-all is
+the moment four of those nine gates are actually earned, and it is the one
+moment the game will not honour them.
+
+THE BUILD. The formula does not change. Only where it is worked out does: it
+lives in one named place now and is called wherever XP moves. The end-of-raid
+site calls the same thing it always computed inline.
+
+IT MOVES NO NUMBER. The level at any given XP is exactly what it was, the
+thresholds are untouched, and no dial changes. What changes is when the game
+notices.
+
+MEASURED. Check 12.67 sells through the real button, with the profile parked one
+XP short of a level boundary so a single sale has to cross it. It asks the
+cosmetic gate the same question the racks ask, so what is tested is the thing
+that actually locks a rack rather than a number beside it. The control probes
+the formula at three known figures, because this build must move where the level
+is worked out and not what it works out.
+
+Not verified: it presses the sell-all button rather than the single-item sale in
+the stash list, which takes the same one line; it does not open the FASHION
+racks to look at them, asking the gate directly instead; and it does not cover a
+profile restored from a pasted code, which carries a stored level and is a
+separate path.
 ## v12.66 - THE CONTRACT BOARD COUNTS CONTRACTS
 
 From the 2026-09-08 read-only audit, confirmed by a skeptic against the source.

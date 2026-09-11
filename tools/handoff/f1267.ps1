@@ -42,6 +42,9 @@ SubRx @'
        P2.stash=[SELL]; P2.junk={}; P2.junk[SELL]=1;
        if((P2.xpLevel||1)!==1) return 'staging: the profile did not start at level one';
        if(cosOwned({how:'level:2'})) return 'staging: a level two rack is already open at level one, so the gate cannot be read here';
+       // v12.67 check repair: re-render the panel after staging, or a second run
+       // presses the button over a list that no longer holds the item.
+       try{ if(typeof renderStash==="function") renderStash(); else if(typeof renderStage==="function") renderStage(); }catch(_rr){}
        sb.click();
        if((P2.xp||0)!==219+GAIN)
          return 'SKIP: the sell button did not take the '+SELL+' ('+(P2.xp||0)+' XP against an expected '+(219+GAIN)+'), so nothing was sold here';
