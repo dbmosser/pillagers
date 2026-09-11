@@ -40024,6 +40024,39 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.79 - H IS THE KEY LIST AND NOTHING ELSE
+
+His note, after a live round: pressing H to look at the full keys is a mess, he
+does not need all the tips, just the keys.
+
+WHAT IT WAS. The panel is two columns. The left one is the key list, which is
+what he pressed H for. The right one is a column of gear rules and a colour key
+for the sound visualiser, neither of which is a key binding. Together those two
+blocks were TALLER than the key list, and the panel is sized on whichever column
+is bigger, so the tips were deciding how large the thing he opened to read his
+keys would be, and how much of the screen it covered.
+
+THE BUILD. Both tip blocks are gone from this panel. The key list is untouched,
+the panel is sized on the keys alone, and it is narrower with the right column
+removed.
+
+NOTHING IS DELETED FROM THE GAME. The gear rules and the sound colours are still
+declared and still read by the Undercroft legend, so neither is lost. They are
+simply no longer in front of him when he presses H in a raid.
+
+MEASURED. Check 12.79 opens the real panel in a real raid and reads the text the
+frame actually writes. Nothing is named in the check: the rows it requires come
+out of the key table and the rows it forbids come out of the two tip tables, so
+editing any of those three moves the check with them rather than leaving it
+asserting a phrase that no longer exists. Every binding must still be drawn, not
+one gear rule or sound label may be, and the control requires the compact corner
+legend to still draw its keys, so a build that had simply emptied both panels
+would fail rather than pass.
+
+Not verified: it reads the strings the frame writes rather than pixels, so it
+proves what is drawn and not how the panel now looks; it does not measure the new
+width or height; and it does not touch the Undercroft legend, which still carries
+the rules and the sound key.
 ## v12.78 - A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK
 
 His note, after a live round: weapon replacement is broken, the Scav Pistol should

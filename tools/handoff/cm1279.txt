@@ -1,23 +1,18 @@
-v12.79: the downed screen stops offering a surrender it will not take
+v12.79: H is the key list and nothing else
 
-v9.71 gave the surrender a guard it did not have at first: while an extraction
-is waiting on the point you are lying in, the space bar cannot end your raid.
-The reasoning is right. That same overlay is telling you that extracting while
-downed is permitted, so a hand resting on the space bar must not throw away a
-full backpack in the one situation where being down ends well.
+His note after a live round. The panel is two columns: the keys on the left, and
+on the right a column of gear rules plus a sound colour key, neither of them a
+binding. Those two blocks were taller than the key list, and the panel is sized
+on the bigger column, so the tips were setting the size of the thing he opened to
+read his keys.
 
-Nothing ever told the player. The surrender row is drawn on a single test, that
-he has spent his self-revive, and asks nothing about where he is lying. So the
-screen printed HOLD SPACE TO SURRENDER, he held it, and nothing happened: the
-row never lit, the bar never appeared, and no line explained why.
+Both tip blocks are gone from this panel. The keys are untouched and the panel is
+sized on them alone. Nothing is deleted from the game: the rules and the sound
+colours are still read by the Undercroft legend.
 
-The guard is now one named test with two readers, so the key and the screen can
-never disagree again, and the row says what is true instead. The refusal itself
-is unchanged.
-
-Check 12.79 runs the control first, the same man downed nowhere near a waiting
-extraction, requiring the prompt drawn and the hold started. The finding arm
-lays him inside a point with an extraction waiting and requires no hold, no
-prompt, and the refusal in its place; fails on v12.78.
+Check 12.79 opens the real panel in a real raid and reads the drawn text, naming
+nothing itself: required rows come from the key table, forbidden rows from the
+tip tables. Control requires the corner legend to still draw its keys. Fails on
+v12.78.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -11,73 +11,74 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-07 READ-ONLY AUDIT (P3), specced from the source.
+# HIS NOTE, after a live round: "if I press H to look at the full keys, it is a
+# mess. Do not need all the tips, just give the keys only."
 #
-# v9.71 added a guard the surrender did not have: while an extraction is waiting
-# on the point you are lying in, the space bar cannot end your raid, because the
-# same overlay is telling you that extracting while downed is permitted and a
-# hand resting on that key must not throw away a full backpack. The guard is
-# right. Nothing told him about it. The surrender row is drawn on one test, that
-# he has spent his revive, so in that state the screen printed HOLD SPACE TO
-# SURRENDER, the key did nothing, the bar never appeared, and no line explained
-# why. A dead control and a prompt that lies.
+# The panel is two columns. The left one is the key list, which is what he
+# pressed H for. The right one is a column of gear rules and a colour key for the
+# sound visualiser, neither of which is a key binding, and together they are
+# taller than the keys are: the panel was sized on whichever column was bigger,
+# so the tips were setting the size of the thing he opened to read the keys.
 #
-# The guard becomes one named test with two readers, so the key and the screen
-# can never disagree about it again, and the row says what is true instead.
+# Both tip blocks go. The key list stays exactly as it is, the panel is sized on
+# the keys alone, and it gets narrower with the right column gone.
+#
+# NOTHING IS DELETED FROM THE GAME, only from this panel: GEARRULES and SOUNDKEY
+# are still declared and still read by the hub legend, so the rules and the sound
+# colours have not been lost, they are simply not in the way of his key list.
 SubRx @'
-function giveUpTick(dt){
+  var _hR=GEARRULES.length*LH(11)+SOUNDKEY.length*LH(10)+LH(30);
 '@ @'
-// v12.79, 2026-09-07 audit: ONE TEST, TWO READERS. The rule below was written
-// into giveUpTick alone, so the overlay that offers the surrender knew nothing
-// about it and printed the prompt anyway: the key did nothing, the bar never
-// appeared, and no line said why. Both read this now.
-function surrenderBlocked(){
-  var p=G&&G.player; if(!p) return false;
-  return !!(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
-    G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r);
-}
-function giveUpTick(dt){
+  // v12.79, HIS NOTE: THE KEY PANEL IS KEYS. The right column held gear rules
+  // and a sound colour key, neither of them a key binding, and it was taller
+  // than the key list, so the tips decided how big the panel he opened to read
+  // the keys would be. The column is gone and the panel is sized on the keys.
+  var _hR=0;
 '@
 
 SubRx @'
-  if(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
-     G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r){
-    p.giveT=0; return false;
+cy=_cy2;
+  for(i=0;i<GEARRULES.length;i++){
+    var gr=GEARRULES[i];
+    if(gr[0]){
+      ctx.font=FS(TYPE.micro); ctx.fillStyle='#7fc4a0';
+      ctx.fillText(typeof gr[0]==='function'?gr[0]():gr[0],_cx2,cy);
+    }
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
+    // a rule may be a function when its wording depends on the input device
+    ctx.fillText(typeof gr[1]==='function'?gr[1]():gr[1],_cx2+(gr[0]?LH(68):LH(6)),cy);
+    cy+=LH(11);
+  }
+  // sound key: the visualizer's colour language, stated so it can be learned
+  cy+=LH(4);
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#7fc4a0';
+  ctx.fillText('SOUND',_cx2,cy); cy+=LH(11);
+  for(i=0;i<SOUNDKEY.length;i++){
+    ctx.fillStyle=SOUNDKEY[i][0];
+    ctx.fillRect(_cx2+LH(4),cy-LH(6),LH(8),LH(6));
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
+    ctx.fillText(SOUNDKEY[i][1],_cx2+LH(18),cy);
+    cy+=LH(10);
   }
 '@ @'
-  if(surrenderBlocked()){ p.giveT=0; return false; }   // v12.79: the same test the overlay reads
+  // v12.79, HIS NOTE: the gear rules and the sound colour key used to be drawn
+  // here, in a second column beside the keys. He opened this to read the keys
+  // and got a wall of prose instead. Both are still declared and still read
+  // elsewhere; they are simply no longer in front of him when he presses H.
 '@
 
 SubRx @'
-    if(p.revived&&CFG.giveUp!==0){
-      var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
-      _rowY+=Math.round(_hD*1.25);
-      ctx.font=_fD; ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
-      ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
+      var _fBox=Math.max(_fRows*LH(12),GEARRULES.length*LH(11)+SOUNDKEY.length*LH(10)+LH(30))+LH(26);
 '@ @'
-    if(p.revived&&CFG.giveUp!==0){
-      var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
-      _rowY+=Math.round(_hD*1.25);
-      // v12.79, 2026-09-07 audit: AND IT SAYS SO WHEN IT WILL NOT TAKE THE KEY.
-      // The v9.71 guard refuses the surrender while an extraction is waiting on
-      // the point he is lying in, silently: this row printed the prompt anyway,
-      // the key did nothing, the bar never appeared and nothing explained it. It
-      // reads the same test the key reads now, and says what is true, with the
-      // working verb still drawn underneath it in colour.
-      ctx.font=_fD; ctx.fillStyle='#9b8f8c';
-      if(surrenderBlocked()) ctx.fillText('NO SURRENDER WITH AN EXTRACTION WAITING',W/2,_rowY);
-      else{
-      ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
-      ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
-      }
+      var _fBox=_fRows*LH(12)+LH(26);   // v12.79: sized on the keys, nothing else
 '@
 
 # NEW IN.
 SubRx @'
-  'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
+  'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
 '@ @'
-  'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
-  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
+  'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
+  'H IS THE KEY LIST AND NOTHING ELSE. It used to open with a second column of gear rules and a sound colour key beside the keys, taller than the keys themselves, so the tips were setting the size of the panel you opened to read the bindings.',
 '@
 
 # STAMPS.
@@ -91,9 +92,9 @@ var WHATSNEW_VER='12.78';
 '@ @'
 var WHATSNEW_VER='12.79';
 '@
-$cnt=([regex]::Matches($s,"now:'v12.78:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v12\.78:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.78 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12.78:[^']*'",{ param($m) "now:'v12.79: 2026-09-07 audit (P3). v9.71 gave the surrender a guard it did not have: while an extraction is waiting on the point he is lying in, the space bar cannot end his raid, because the same overlay is telling him that extracting while downed is permitted and a hand resting on that key must not throw away a full backpack. The guard is right and nothing told him about it. The surrender row is drawn on one test, that he has spent his revive, so in that state the screen printed HOLD SPACE TO SURRENDER, the key did nothing, the progress bar never appeared because it is drawn only once the hold has started, and no line explained the refusal: a dead control and a prompt that lies, at three health with the point swarmed. The guard is now one named test with two readers, so the key and the screen can never disagree about it again, and the row says what is true instead, with the working verb still drawn underneath it in colour. Check 12.79 puts him down with his revive spent inside a point with an extraction waiting, holds the real key for two seconds through the real frame loop, and requires the hold never to start and the drawn text to carry the refusal and not the prompt, with a control outside that state requiring the prompt to be drawn and the hold to run; fails on v12.78.'" })
+$s=[regex]::Replace($s,"now:'v12\.78:[^']*'",{ param($m) "now:'v12.79: HIS NOTE after a live round, that pressing H to look at the full keys is a mess and he does not need all the tips, just the keys. The panel is two columns: the left one is the key list, which is what he pressed H for, and the right one is a column of gear rules plus a colour key for the sound visualiser, neither of them a key binding. Together they were TALLER than the key list, and the panel was sized on whichever column was bigger, so the tips were deciding how large the thing he opened to read his keys would be. Both tip blocks are gone from this panel. The key list is untouched, the panel is sized on the keys alone, and it is narrower with the right column removed. Nothing is deleted from the game: GEARRULES and SOUNDKEY are still declared and still read by the hub legend, so the rules and the sound colours are not lost, they are simply no longer in the way. Check 12.79 opens the full panel in a real raid and reads the text the frame actually writes: every key row must still be drawn, and no gear rule and no sound colour label may be, with a control that the compact corner legend is unchanged; fails on v12.78.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

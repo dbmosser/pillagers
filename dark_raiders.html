@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.78';
+var VER='12.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.78';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.78';
+var WHATSNEW_VER='12.79';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1407,6 +1407,7 @@ var WHATSNEW=[
   'HOW FAR YOU DIED FROM EXTRACTION IS MEASURED TO THE NEAREST WAY OUT. It was measured to a ring chosen at random when the raid was built, so the number disagreed with the compass you had been following all raid and with the closest-approach line printed right under it.',
   'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
   'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
+  'H IS THE KEY LIST AND NOTHING ELSE. It used to open with a second column of gear rules and a sound colour key beside the keys, taller than the keys themselves, so the tips were setting the size of the panel you opened to read the bindings.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -25041,7 +25042,7 @@ var _slp=w2s(p.x,66,p.y);
       var _fz=hudRes()*hudUserZ('legend');
       var _fRows=0, _fLEG=(PAD&&PAD.on)?LEGEND_PAD:LEGEND;
       for(var _fi=0;_fi<_fLEG.length;_fi++) _fRows+=1+_fLEG[_fi][1].length;
-      var _fBox=Math.max(_fRows*LH(12),GEARRULES.length*LH(11)+SOUNDKEY.length*LH(10)+LH(30))+LH(26);
+      var _fBox=_fRows*LH(12)+LH(26);   // v12.79: sized on the keys, nothing else
       _fz=Math.min(_fz,Math.max(0.5,(H-LH(12))/(_fBox+LH(96))));
       ctx.translate(W/2,H); ctx.scale(_fz,_fz); ctx.translate(-W/2,-H);
     } else {
@@ -25941,7 +25942,11 @@ function drawLegend(){
   var LEG=(PAD&&PAD.on)?LEGEND_PAD:LEGEND;
   for(i=0;i<LEG.length;i++) rows+=1+LEG[i][1].length;
 var _hL=rows*LH(12);
-  var _hR=GEARRULES.length*LH(11)+SOUNDKEY.length*LH(10)+LH(30);
+  // v12.79, HIS NOTE: THE KEY PANEL IS KEYS. The right column held gear rules
+  // and a sound colour key, neither of them a key binding, and it was taller
+  // than the key list, so the tips decided how big the panel he opened to read
+  // the keys would be. The column is gone and the panel is sized on the keys.
+  var _hR=0;
   var boxH=Math.max(_hL,_hR)+LH(26);
   // Stop above the meters instead of on top of them. This box bottomed out 12px
   // from the screen edge while the armour, health and stamina bars occupy from
@@ -25980,29 +25985,10 @@ var cy=top+LH(6), _cx2=x+LH(206), _cy2=top+LH(6);
       cy+=LH(12);
     }
   }
-cy=_cy2;
-  for(i=0;i<GEARRULES.length;i++){
-    var gr=GEARRULES[i];
-    if(gr[0]){
-      ctx.font=FS(TYPE.micro); ctx.fillStyle='#7fc4a0';
-      ctx.fillText(typeof gr[0]==='function'?gr[0]():gr[0],_cx2,cy);
-    }
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-    // a rule may be a function when its wording depends on the input device
-    ctx.fillText(typeof gr[1]==='function'?gr[1]():gr[1],_cx2+(gr[0]?LH(68):LH(6)),cy);
-    cy+=LH(11);
-  }
-  // sound key: the visualizer's colour language, stated so it can be learned
-  cy+=LH(4);
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='#7fc4a0';
-  ctx.fillText('SOUND',_cx2,cy); cy+=LH(11);
-  for(i=0;i<SOUNDKEY.length;i++){
-    ctx.fillStyle=SOUNDKEY[i][0];
-    ctx.fillRect(_cx2+LH(4),cy-LH(6),LH(8),LH(6));
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-    ctx.fillText(SOUNDKEY[i][1],_cx2+LH(18),cy);
-    cy+=LH(10);
-  }
+  // v12.79, HIS NOTE: the gear rules and the sound colour key used to be drawn
+  // here, in a second column beside the keys. He opened this to read the keys
+  // and got a wall of prose instead. Both are still declared and still read
+  // elsewhere; they are simply no longer in front of him when he presses H.
 ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.6)';
   ctx.fillText('H  hide',x,top+boxH-LH(2));
 }
@@ -29267,7 +29253,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.78: HIS NOTE after a live round, and it is a better rule than the one that was there. A found gun took the second slot if that slot was empty, which is right. If it was not empty, the pickup replaced THE GUN IN HIS HANDS on nothing more than a tier or condition comparison and pushed the gun he was holding into the backpack, so a rifle he had chosen could be knocked out of his hands by the next thing he pulled out of a crate, mid raid, because the game judged it a step up. He never asked for that trade and was never asked about it. His rule: the Scav Pistol is the starter and should ALWAYS be booted for something better, other weapons should never auto-replace each other, and a third gun goes into the backpack. So a slot YIELDS if it is empty, if it is Bare Hands, or if it holds the Scav Pistol; a slot holding anything else is his and is left alone, and with both slots holding real weapons the find goes to the backpack where equipping it is his decision. The empty-magazine test is kept, because a gun with no rounds and nothing to feed it is not a weapon he is relying on and that rule predates this note. Check 12.78 pulls a better gun with a real weapon in each hand and requires both hands untouched and the gun in the backpack, pulls the same gun with the Scav Pistol in hand and requires the pistol booted, and controls that an empty second slot still takes it; fails on v12.77.',
+  now:'v12.79: HIS NOTE after a live round, that pressing H to look at the full keys is a mess and he does not need all the tips, just the keys. The panel is two columns: the left one is the key list, which is what he pressed H for, and the right one is a column of gear rules plus a colour key for the sound visualiser, neither of them a key binding. Together they were TALLER than the key list, and the panel was sized on whichever column was bigger, so the tips were deciding how large the thing he opened to read his keys would be. Both tip blocks are gone from this panel. The key list is untouched, the panel is sized on the keys alone, and it is narrower with the right column removed. Nothing is deleted from the game: GEARRULES and SOUNDKEY are still declared and still read by the hub legend, so the rules and the sound colours are not lost, they are simply no longer in the way. Check 12.79 opens the full panel in a real raid and reads the text the frame actually writes: every key row must still be drawn, and no gear rule and no sound colour label may be, with a control that the compact corner legend is unchanged; fails on v12.78.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

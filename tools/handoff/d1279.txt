@@ -1,49 +1,33 @@
-## v12.79 - THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE
+## v12.79 - H IS THE KEY LIST AND NOTHING ELSE
 
-From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
-reading at v12.78.
+His note, after a live round: pressing H to look at the full keys is a mess, he
+does not need all the tips, just the keys.
 
-WHAT IT WAS. v9.71 gave the surrender a guard it did not have at first: while
-an extraction is waiting on the point you are lying in, the space bar cannot
-end your raid. The reasoning is written into the code and it is right. That
-same overlay is telling you that extracting while downed is permitted, so a
-hand resting on the space bar must not throw away a full backpack in the one
-situation where being down ends well.
+WHAT IT WAS. The panel is two columns. The left one is the key list, which is
+what he pressed H for. The right one is a column of gear rules and a colour key
+for the sound visualiser, neither of which is a key binding. Together those two
+blocks were TALLER than the key list, and the panel is sized on whichever column
+is bigger, so the tips were deciding how large the thing he opened to read his
+keys would be, and how much of the screen it covered.
 
-Nothing ever told the player about the guard. The surrender row is drawn on a
-single test, that he has spent his self-revive, with no question asked about
-where he is lying. So in that state the screen printed HOLD SPACE TO SURRENDER,
-he held it, and nothing happened: the row never lit, the progress bar never
-appeared because it is only drawn once the hold has started, and no line
-explained the refusal. A dead control and a prompt that lies, at three health
-with the point swarmed.
+THE BUILD. Both tip blocks are gone from this panel. The key list is untouched,
+the panel is sized on the keys alone, and it is narrower with the right column
+removed.
 
-He does lose nothing by it, which is why the audit called it P3: the working
-verb, HOLD E TO EXTRACT, is drawn in the same stack right underneath, larger
-and in colour, and it works. But a screen that offers a control it will not
-take is the same fault as the crafting button, and it is the fault I have spent
-this week removing.
+NOTHING IS DELETED FROM THE GAME. The gear rules and the sound colours are still
+declared and still read by the Undercroft legend, so neither is lost. They are
+simply no longer in front of him when he presses H in a raid.
 
-THE BUILD. The guard becomes one named test with two readers, so the key and
-the screen can never disagree about it again. The row then says what is true
-instead of what is not on offer, with the working verb still underneath it in
-colour. Nothing about the refusal itself changes: the key is refused in exactly
-the same state, for exactly the same reason.
+MEASURED. Check 12.79 opens the real panel in a real raid and reads the text the
+frame actually writes. Nothing is named in the check: the rows it requires come
+out of the key table and the rows it forbids come out of the two tip tables, so
+editing any of those three moves the check with them rather than leaving it
+asserting a phrase that no longer exists. Every binding must still be drawn, not
+one gear rule or sound label may be, and the control requires the compact corner
+legend to still draw its keys, so a build that had simply emptied both panels
+would fail rather than pass.
 
-IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The behaviour of the key is
-unchanged, the bot never surrenders, and no dial moves.
-
-MEASURED. Check 12.79 runs two arms on one staging. The control runs FIRST: the
-same man, downed with his revive spent, nowhere near a waiting extraction. The
-prompt must be drawn and the hold must start, or a missing prompt in the other
-arm would only say the overlay was never drawn at all. The finding arm lays him
-down inside a point with an extraction waiting, holds the real key for two
-thirds of a second through the real frame loop, and requires the hold never to
-start, the prompt never to be drawn, and the refusal line to be there in its
-place. The needle is assembled from pieces rather than written out, so a check
-that greps the page cannot find this row in its own source.
-
-Not verified: it does not read where the row sits on screen or what colour it
-is, only that the words are drawn; it does not run the hold to completion in
-the control arm, since that would end the raid; and it does not exercise the
-gamepad, which reaches the same key slot.
+Not verified: it reads the strings the frame writes rather than pixels, so it
+proves what is drawn and not how the panel now looks; it does not measure the new
+width or height; and it does not touch the Undercroft legend, which still carries
+the rules and the sound key.
