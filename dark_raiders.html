@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.72';
+var VER='12.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.72';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.72';
+var WHATSNEW_VER='12.73';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1401,6 +1401,7 @@ var WHATSNEW=[
   'A SEARCH CONTRACT NAMES A PLACE ON THE SECTOR YOU ARE PLAYING. It wrote the name down when the card was made, so changing sector afterwards left it pointing at a place with almost the right name in the wrong part of the map, and searching it moved nothing.',
   'AIMING AND WADING NO LONGER LEAVE A SPRINT TRAIL. Shift held while you aimed, or while you waded, laid scent behind a man who was not sprinting, and everything on patrol within 170 units follows that scent. You were being hunted along a trail you never made.',
   'YOUR RUN REPORT IS NAMED AFTER THIS GAME. The file the game saves to your Downloads still carried the old project name, which is the one place the rename was missed and the only one that leaves the browser. Reports you already have still load: they are read by their contents, not their name.',
+  'THE GAME TELLS YOU WHEN A FOUND GUN CHANGES YOUR HANDS. A gun going into your empty second slot, or replacing the one you were holding, wrote you a line saying so and then wrote Found over the top of it in the same frame, every time. Both facts now arrive in the one line you can actually read.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -13150,6 +13151,13 @@ function openContainer(ct,onlyKeys){
   grantLoot(ct,ct.loot,_wnDelay);
 }
 function grantLoot(ct,keys,delay0){
+  // v12.73, 2026-09-08 first-hour audit: WHAT HAPPENED TO HIS GUNS SURVIVES THE
+  // SUMMARY. say() holds one line and the last call in a frame wins, so the two
+  // lines written inside the loop below, both of them about which gun is now in
+  // which hand, were overwritten by the Found line every time the loop ran. On
+  // a new profile the second slot holds Bare Hands, so the first good gun of a
+  // first raid arms a number key and he was told only the name of the item.
+  var _gunLine='';
   var p=G.player,T=G.tel;
   for(var l=0;l<keys.length;l++){
     var key=keys[l],itm=ITEMS[key];
@@ -13207,7 +13215,9 @@ function grantLoot(ct,keys,delay0){
         // there is nothing to bag and nothing to splice. G.tel.weapon names what
         // he is HOLDING and that is unchanged, so it is left alone too.
         if(!G.sim){
-          say(found.name+' to your empty slot. '+p.wep.name+' stays in hand, X swaps.');
+          // v12.73: KEPT, not spoken. The summary below used to overwrite this
+          // in the same frame, so it has never been readable.
+          _gunLine=found.name+' to your empty slot. '+p.wep.name+' stays in hand, X swaps.';
           if(found.qRank>=2) blip('pickGun');
         }
       }
@@ -13247,7 +13257,8 @@ function grantLoot(ct,keys,delay0){
         G.tel.weapon=p.wep.name;
         if(!G.sim){
           var cmp=oldDmg>0?Math.round((found.dmg*(found.pellets||1)/Math.max(1,oldDmg*(1))-1)*100):0;
-          say(found.name+' equipped'+(cmp>0?', +'+cmp+'% damage':'')+'.');
+          // v12.73: KEPT, not spoken, for the same reason as the empty slot line.
+          _gunLine=found.name+' equipped'+(cmp>0?', +'+cmp+'% damage':'')+'.';
           // A gun worth auto-equipping is a gun, so it sounds like one, v2.72.
           if(found.qRank>=2) blip('pickGun');
         }
@@ -13268,7 +13279,10 @@ function grantLoot(ct,keys,delay0){
     // The full open is unchanged: it passes ct.loot in as keys, so this prints
     // exactly the string it always printed on that path.
     if(keys.length){
-      say('Found: '+keys.map(function(k){return ITEMS[k].name;}).join(', '));
+      // v12.73: one line, both facts. A single gun says the gun line alone,
+      // because the summary would only repeat the name it already carries.
+      var _sum='Found: '+keys.map(function(k){return ITEMS[k].name;}).join(', ');
+      say(_gunLine?((keys.length>1)?(_gunLine+' '+_sum):_gunLine):_sum);
       blip(lootVoice(keys),undefined,undefined);
     } else blip('pick');
     ping(p.x,p.y,90,false,false,'player','move');
@@ -29227,7 +29241,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.72: from the 2026-09-08 first-hour audit, and only half of what that finding claimed. The half I confirmed by reading: the game was renamed, every screen says PILLAGERS, the tab and the Undercroft brand and the report header and the importer that refuses a file by saying it is not a Pillagers run report, and one string was missed. It is the worst one to miss, because it is the only one that leaves the browser: the name of the file dropped into his Downloads. A friend opening the alpha finishes a raid and finds a file on their disk named after a game they have never heard of, and that is the same file they are asked to send back, so the collector has been receiving reports named for a project that no longer exists. It was the only occurrence of that name left in the whole file. The name is built by a function now rather than written at the point of use, so there is one place to be wrong and something a check can call, which matters because the fixture replaces the download itself and no check could otherwise see it. Nothing already on disk stops working, because the importer identifies a report by its contents. The half of the finding I did NOT build: it said the Settings words promise a report every second raid while the code drops one after the first. The Settings words say only that closing the question keeps the reports in his Downloads, and the first drop of a session is deliberate, with a comment beside it recording that when the drop was unreachable six raids produced one saved file and five silently lost. Check 12.72 asks the naming function for a name and requires it to carry the name of this game and not the retired one, which it can do without reading the page at all because the name now comes from a function, with a control that the number in the name still follows the run count so every report does not overwrite the last; fails on v12.71.',
+  now:'v12.73: from the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me reading grantLoot and say end to end. say holds exactly one line, writing a message and a 3.2 second clock, so the last call in a frame is the only one anybody sees. grantLoot writes two lines inside its per-item loop and both are about the thing that matters most in a pull, which gun is now in which hand: one for a gun going into an empty slot, naming the key that swaps, and one for a gun that replaced what he was holding, with the damage difference. Then, after the loop, it writes Found over the top of them. That branch is guarded on the key list being non-empty, which is true whenever the loop ran at all, so this is not a rare collision, it happens every single time and neither line has ever been readable. The cost is not decoration: on a brand new profile the second gun slot holds Bare Hands, so the first better gun a first-time player pulls out of a crate arms slot 2 and puts a live number key under his finger, and the only thing he is told is the name of the item he found. He learns the slot exists by pressing 2 by accident. The per-item line is kept rather than spoken now, and the one line that is spoken carries both facts; a single pull of one gun says the gun line by itself, because the summary would only repeat the name it already contains. Check 12.73 pulls a gun that arms the empty slot and requires the line he is left with to name the swap key, pulls a gun alongside other items and requires the line to carry both the gun and the list, and controls that a pull with no gun in it still says exactly what it always said; fails on v12.72.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
