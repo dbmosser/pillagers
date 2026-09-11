@@ -715,3 +715,20 @@ raises, as long as whoever reads it reads the source before believing it.
 **TWO RULES WERE ADDED TO BOTH THE LINT AND CHECK 12.83** after they both cried wolf on
 the same things: an apostrophe inside a word opens a false string, and a string used as
 an object key is a lookup rather than a line anybody reads.
+
+**1285 IS BUILT, MEASURED AND PARKED FOR HIS RULING: IT MOVES THE MAP FINGERPRINT.**
+The defect is real and was written up at v12.47: the test that cuts the ramp mouth out of
+a deck's kerb inflates the ramp by 20 in ALL FOUR directions, so on a deck whose ramp
+arrives from the west it also cuts 20 units out of the north and south kerbs, leaving two
+holes at that end you can walk off the side of a raised deck through. The fix is in
+tools/handoff/p1285.ps1 and it is the right fix: a kerb is opened only if the ramp lies
+BEYOND it, which is a positional fact and works for a ramp arriving at the end as well as
+one arriving at the side, where an aspect-ratio test would have sealed the gantry.
+IT APPLIES CLEANLY AND PARSES. What stops it is the side effect, measured on the live
+fixture: closing those notches adds kerb segments, which moves the seeded stream, and the
+map fingerprint goes from 85/374 machines and 165/593 containers to 85/369 and 165/583.
+Sector 1 loses five machines and ten containers. That is a re-roll of what the whole
+sector generates in exchange for closing a twenty unit gap, and re-baselining the
+fingerprint is HIS call, not mine, so the tree was reverted to v12.84 clean. If he wants
+it: apply p1285, re-measure, write the new numbers into __verifySafe and into every check
+that asserts the old ones, and say plainly in the notes that the map contents moved.
