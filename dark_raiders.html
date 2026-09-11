@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.83';
+var VER='12.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.83';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.83';
+var WHATSNEW_VER='12.84';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1409,6 +1409,7 @@ var WHATSNEW=[
   'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
   'DYING WITH THE FREEBIE KIT GIVES YOUR TACTICAL BELT BACK TOO. It restored the items you had packed and quietly kept the belt keys you had bound, and the gun slot, which were thrown away the moment you took the kit. Keys pointing at something you no longer own are still dropped.',
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
+  'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
   'H IS THE KEY LIST AND NOTHING ELSE. It used to open with a second column of gear rules and a sound colour key beside the keys, taller than the keys themselves, so the tips were setting the size of the panel you opened to read the bindings.',
   'THE COVER GROUND CONTRACT STOPS QUOTING A NUMBER YOU CANNOT READ. It said 2k of 14k covered, in raw world units, which nothing else in the game uses. The line is gone at your word; the contract itself still tracks, completes and pays exactly as it did.',
@@ -13463,13 +13464,16 @@ function equipFromBag(ix,slot){
   var oldIssued=toSec?p.secIssued:p.wepIssued;
   var oldArm=toSec?p.secFromArmory:p.wepFromArmory;
   G.bag.splice(ix,1);
+  var _oldLine='';   // v12.84: what happened to the gun this one displaces
   if(oldW&&oldW.id!=='fists'){
-    if(oldIssued) say(oldW.name+' was issued kit, left behind.');
+    // v12.84: KEPT, not spoken. The line below about what he is now holding used
+    // to overwrite this in the same frame, so he was never told.
+    if(oldIssued) _oldLine=oldW.name+' was issued kit, left behind.';
     // v8.32, audit: a gun from your OWN armoury is not loot. Bagging it made a
     // second sellable copy of something P.weapons still lists, and carriedGuns
     // reads your hands only - so the copy dodged the death rule that is meant
     // to pay for carrying a gun at all. It goes back where it lives.
-    else if(oldArm&&P.weapons.indexOf(oldW.id)>=0) say(oldW.name+' is yours; it goes back to the armoury.');
+    else if(oldArm&&P.weapons.indexOf(oldW.id)>=0) _oldLine=oldW.name+' is yours; it goes back to the armoury.';
     else { G.bag.push('gun_'+oldW.id); stowRounds(oldW.id,toSec?p.secAmmo:p.ammo); }   // v12.42: and the displaced gun keeps its load too
   }
   // v12.42: what it came in with, if this is a gun that was stowed; half a
@@ -13482,8 +13486,11 @@ function equipFromBag(ix,slot){
   if(G.bagSel>=G.bag.length) G.bagSel=Math.max(0,G.bag.length-1);
   // v10.62: when it was routed to the free slot, say so and name what he kept,
   // or the gun appears to have gone somewhere he did not ask for.
-  if(_kept) say(g.name+' to your empty slot. '+_kept.name+' stays in hand.');
-  else say(g.name+(toSec?' to secondary':' equipped'));
+  // v12.84: one line, both facts. What happened to the gun he displaced is the
+  // half he cannot work out for himself, and it was the half being destroyed.
+  var _newLine=_kept?(g.name+' to your empty slot. '+_kept.name+' stays in hand.')
+                    :(g.name+(toSec?' to secondary':' equipped'));
+  say(_oldLine?(_oldLine+' '+_newLine):_newLine);
   blip('pick');
   return true;
 }
@@ -29296,7 +29303,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.83: found by tools/lint.ps1, which I wrote on 2026-09-09 to hunt exactly this. It sweeps prose the player can read for the words he retired, and its first run said the vocabulary check I had drafted was too narrow: that check asserts three words and the lint found seven. I read all twenty four hits before touching any of them, and most of them are the lint crying wolf. Fourteen are the word standing used as the ordinary English verb, in lines like you are standing in the way out, and a heavy pack to be standing still with. His ban is on standing as a RANK, the noun, and no English sentence can be written around the verb, so those are not defects and the LINT is being narrowed rather than the game reworded. Three more are WHATSNEW entries that describe the renames themselves and have to keep the old word to make sense. Seven are real, and every one is a line he reads in play: the two shop lines said cash and this game says Credits; three seal lines said tier, which is banned, and they mean the seal own strength, so they say stage now, which is what it is; and two in-raid weight lines plus the Peddler blurb said bag when it is a backpack. Nothing else moves: no number, no behaviour, no screen layout. Check 12.83 sweeps every long prose string in the running page for the whole banned list, not the three the older check knows, and requires none of them outside the WHATSNEW entries that describe the renames; the control is that the sweep still finds a banned word when one is planted, so a green run cannot mean the sweep stopped looking; fails on v12.82.',
+  now:'v12.84: found by tools/lint.ps1, and it is the same defect as v12.73 in a second place. The lint class is a message written and then written over in the same breath, and it named five functions; I read all five, three are false alarms where the calls sit in branches that cannot both run, and this one is real. Equipping a gun out of the backpack has to tell him two things, what happened to the gun it displaced and what he is now holding, and it says both one after the other into a message line that holds exactly one string, so the first is destroyed by the second every single time. The line he loses is the one he cannot work out for himself: left behind means an issued loaner is gone for good, and it goes back to the armoury means a gun he owns has left his hands and is waiting at base rather than sitting in his backpack. He was told neither. He was told the name of the thing he had just equipped, which he already knew, because he chose it. Same shape as the fix at v12.73: the first line is kept rather than spoken, and the one line that is spoken carries both facts. Check 12.84 equips a gun over an issued loaner and requires the line he is left with to say what became of the loaner, does the same over a gun he owns and requires the armoury to be named, and controls that equipping over an empty hand still says exactly what it always said; fails on v12.83.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

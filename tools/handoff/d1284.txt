@@ -1,0 +1,35 @@
+## v12.84 - EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED
+
+Found by tools/lint.ps1, and it is the SAME DEFECT AS v12.73 in a second place.
+The lint class is "a message written and then written over in the same breath",
+and it named five functions. I read all five: three are false alarms, where the
+calls sit in branches that cannot both run. This one is real.
+
+WHAT IT IS. Equipping a gun out of the backpack has to tell him two things: what
+happened to the gun it displaced, and what he is now holding. It says both, one
+after the other, into a message line that holds exactly one string. So the first
+is destroyed by the second, every single time.
+
+THE LINE HE LOSES IS THE ONE HE CANNOT WORK OUT FOR HIMSELF. "Left behind" means
+an issued loaner is gone for good. "It goes back to the armoury" means a gun he
+owns has left his hands and is waiting at base rather than sitting in his
+backpack. He was told neither. He was told the name of the thing he had just
+equipped, which he already knew, because he chose it.
+
+THE BUILD. The same shape as v12.73: the first line is kept rather than spoken,
+and the one line that is spoken carries both facts.
+
+MEASURED. Check 12.84 equips a gun out of the backpack three ways and reads the
+one line he is left holding: over an issued loaner it must say the loaner was
+left behind, over a gun he owns it must name the armoury, and the control equips
+over an empty hand and requires neither, so a build that simply printed the line
+always would fail rather than pass. No clock and no death, so it repeats.
+
+Not verified: it reads the stored message rather than pixels; it does not check
+where the displaced gun physically ends up, which v8.32 and v12.42 already cover;
+and it does not judge how long the joined line takes to read, which is his call.
+
+ALSO CHECKED AND NOT BUILT: the lint named useMedical, cycleThrow and doEmote in
+the same class. In all three the calls sit in mutually exclusive branches with
+early returns, so nothing is overwritten. The lint stays as it is: a lead it
+cannot resolve is worth more than a lead it does not raise.

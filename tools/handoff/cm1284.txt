@@ -1,0 +1,18 @@
+v12.84: equipping a gun tells you what happened to the one it replaced
+
+Found by tools/lint.ps1, the same defect as v12.73 in a second place. The lint
+named five functions; I read all five and three are false alarms.
+
+Equipping a gun from the backpack says two things into a message line that holds
+one string: what happened to the gun it displaced, then what you are holding. The
+first is destroyed by the second every time.
+
+The lost line is the one you cannot work out yourself. "Left behind" means a
+loaner is gone for good; "it goes back to the armoury" means a gun you own is
+waiting at base rather than in your backpack. You were told neither, only the
+name of the gun you had just chosen.
+
+Check 12.84 equips three ways and reads the line you are left with; the control
+equips over an empty hand and requires no displaced-gun line. Fails on v12.83.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
