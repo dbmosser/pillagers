@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.65';
+var VER='12.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.65';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.65';
+var WHATSNEW_VER='12.66';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1394,6 +1394,7 @@ var WHATSNEW=[
   'A CONTRACT THAT PAYS A GUN YOU ALREADY HAVE PAYS ITS VALUE INSTEAD. The card is written long before you claim it, so the gun it promised can be one you picked up in the meantime; it used to hand over nothing and print a receipt saying it had.',
   'THE BUY BUTTON SAYS HOW SHORT YOU ARE, including when you cannot afford even one. That was the commonest refusal at the counter and the only one it answered with a dead grey button and no reason at all.',
   'A HAUL CONTRACT COUNTS WHAT YOU CAME BACK WITH, not what you took up. Staging one expensive gun out of your own stash and walking straight to an extraction point used to finish the best-paying card on the board, and the gun went back in the stash afterwards.',
+  'THE CONTRACT BOARD COUNTS CONTRACTS. Its one progress line said Contracts completed and printed a weighted number instead, so your first ever HARD card made it read two, and the line under it asked for credits while sounding like cards.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -29167,7 +29168,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.65: from the 2026-09-08 read-only audit, confirmed by a skeptic against the source. The haul contract asks him to extract with a haul worth some amount, and the number it tested was the whole backpack at the end of the raid. The backpack BEGINS the raid holding whatever he staged, and there is no limit on what he can stage or how much of it: the stage screen offers any item with a use, which includes field guns worth thousands, and the deploy slot count is effectively unlimited. So the highest-paying card on the board was completable in under a minute: stage one expensive gun out of his own stash, land, walk to the nearest extraction point, hold E and leave. The bag is worth more than the card asked, the card goes ready, and the gun goes straight back to the stash by the ordinary banking, so it cost nothing and could be done again on every refill; the board stopped being a set of errands worth choosing between. The game already draws this line: it stamps what the lift carried in and the run earnings line subtracts it, and the haul contract was the one place that ignored it. The threshold on the card has not moved; what it measures has. Honestly, this makes that card meaningfully harder, because it now asks for what it says it asks for. Check 12.65 stages a gun worth more than the card wants, extracts with nothing else, and requires the card NOT to be ready, with a control that the same value looted in the raid does finish it; fails on v12.64.',
+  now:'v12.66: from the 2026-09-08 read-only audit, and this is my own wording. The only progress readout the contract board has says Contracts completed N, and N is not a count of contracts: it is a weighted number, a STANDARD card counting one, a HARD two and an ELITE three. Claim a first ever HARD card and the board says two contracts completed. The gate under it is miscounted from his side for the same reason, because ELITE work at 6 more means six more of that weight, which is two ELITE claims or three HARD ones and not six contracts, so he plans against a ledger that can be wrong by three times per card. The changelog entry for that line is mine and records a deliberate vocabulary swap with no look at the number behind it: the line used to say Contract standing, which was true, and standing is a banned word, so I renamed it to completed, which is false. Renaming is not the same as reading. The count and the gate are two different numbers and both are said now, each called what it is: a true count of contracts claimed, and a gate that asks for credits and says what a harder card is worth. Check 12.66 claims one HARD card on a clean profile and requires the board to read one contract completed with the gate still naming what it needs, and a control requires the gate itself to be unchanged, since the credit is what opens harder work and this build must not move it; fails on v12.65.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31008,9 +31009,16 @@ try{ renderFreeKit(); }catch(_fk){}
     cl.appendChild(bh);
   })();
   (function(){
-    var cs=cstand(),nx=cs<3?('HARD work at '+(3-cs)+' more'):(cs<8?('ELITE work at '+(8-cs)+' more'):'all work open');
+    // v12.66, 2026-09-08 audit: THE COUNT AND THE GATE ARE TWO DIFFERENT
+    // NUMBERS, and this line printed one of them under the other one's name. The
+    // gate is weighted, because harder work is worth more of it; the count is a
+    // count. Both are said now, each called what it is.
+    var cs=cstand(), cdn=(P.cdone||0);
+    var nx=cs<3?('HARD work needs '+(3-cs)+' more credit'+(((3-cs)===1)?'':'s'))
+              :(cs<8?('ELITE work needs '+(8-cs)+' more credit'+(((8-cs)===1)?'':'s')):'all work open');
+    if(cs<8) nx+=' (a HARD card is worth 2, an ELITE 3)';
     var h=document.createElement('div'); h.className='hint';
-    h.innerHTML='Contracts completed <b>'+cs+'</b> &middot; '+nx;
+    h.innerHTML='Contracts completed <b>'+cdn+'</b> &middot; '+nx;   // v12.66: the count, not the credit
     cl.appendChild(h);
   })();
   // loadProfile guarantees this is an array on a saved profile, but nothing guarantees it
@@ -31846,6 +31854,7 @@ function claimContractAt(ci){
   var got=payGear(c.gear);
   var TT2=CTIER[c.tier]||CTIER.std;
   P.cstand=cstand()+TT2.w;
+  P.cdone=(P.cdone||0)+1;   // v12.66: and one contract, which is what the board says it counts
   P.contracts[ci]=freshContract(ci);
   return {pay:c.reward, gear:got};
 }
