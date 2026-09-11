@@ -653,3 +653,17 @@ pays full haul XP for loot you already owned, so the whole reward track is walka
 without finding anything. THE REWORK: the card must print the same net figure the bank
 pays, so find where the card computes its haul XP and route it through the same net-haul
 value, then re-run 11.63 and 12.12 as controls. The tree was reverted to v12.68 clean.
+
+**1277 IS PARKED: ITS CHECK CANNOT PROVE THE FIX.** The belt-plan restore build applied
+cleanly and parsed, but its check never actually runs. First it could not find the
+freebie kit button, because that button is RENDERED by renderFreeKit rather than being
+static markup; calling renderFreeKit first fixes that. Then it skips one step later at
+"the items themselves did not come back", on BOTH the new and the old fixture, which
+means P.kitBeforeFree is empty or the restore branch is not reached by the time
+__endRaid('dead') runs in the harness. Re-asserting P.stash at the moment of death does
+not help. NEXT STEP: instrument the restore (print P.kitBeforeFree and P.stash length
+just inside the `if(P.kitBeforeFree&&P.kitBeforeFree.length)` branch) and find what
+clears it between commitKit and endRaid; __deploy is the prime suspect. The fix itself is
+almost certainly right and is described in d1277; it is the CHECK that is unproven, and a
+skip is not a pass. The tree was reverted to v12.76 clean. 1278 and 1279 still sit behind
+it and would need renumbering down one if 1277 stays parked.
