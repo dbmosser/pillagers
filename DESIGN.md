@@ -40024,6 +40024,46 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.75 - THE LAST BOX BEFORE THE LIFT TELLS THE TRUTH
+
+From the 2026-09-08 first-hour audit. Two findings that turn out to be one line
+of text, confirmed by a skeptic and then by me reading the panel and the deploy.
+
+The last thing he reads before he goes up is one box saying what he is taking
+with him. Its own comment says it states what he is actually taking up there, at
+the last moment he can change it. Both halves of that sentence were wrong, on
+every ascent, and one of them contradicted the line printed directly beneath it.
+
+THE GUN HALF. With nothing equipped, which is exactly what a brand new character
+has, it said "an issued sidearm". The deploy does not issue a sidearm. It rolls a
+PRIMARY out of the starter list into gun one, and gun two is left empty on
+purpose, by a decision from v5.37 whose comment says there is no free pistol and
+that an empty second slot is a real choice rather than an oversight. So the one
+line telling a first-time player what he will be holding named the wrong slot and
+promised him a second gun that was never coming.
+
+THE ARMOUR HALF. It printed the name of his rig. That function has returned the
+same constant for everybody since v5.77, and the name it carries is the bare word
+Armour, left over from when rigs could be chosen. So the box read "Going up with:
+something, Armour" and then, in amber, directly underneath, "You ascend with no
+armour on". Two halves of one box saying opposite things, every single time.
+
+THE BUILD. The gun half says a gun is issued at the lift, which is what happens.
+The armour half is deleted rather than reworded, because the amber line under it
+is already the true and useful version of that fact.
+
+MEASURED. Check 12.75 renders the real box for a character with nothing equipped
+and reads the real text. It asserts the armour half as a rule rather than against
+a word: whatever the rig calls itself, the line must not name it, because the
+warning underneath says he has none of it, so renaming the rig moves the check
+instead of leaving a hole. It refuses to pass if the warning is missing, since
+then there would be nothing to contradict. The control equips a real gun and
+requires the box to still name it, so an emptied box would fail rather than pass.
+
+Not verified: it reads the text the box renders rather than pixels, so it proves
+the words and not the layout; it does not open the lift and walk through an
+ascent; and it does not check the rest of that page, only the one line and the
+warning it sits above.
 ## v12.74 - THE PEDDLER STALL KNOWS WHAT IT JUST PAID YOU
 
 From the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me

@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.74';
+var VER='12.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.74';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.74';
+var WHATSNEW_VER='12.75';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1403,6 +1403,7 @@ var WHATSNEW=[
   'YOUR RUN REPORT IS NAMED AFTER THIS GAME. The file the game saves to your Downloads still carried the old project name, which is the one place the rename was missed and the only one that leaves the browser. Reports you already have still load: they are read by their contents, not their name.',
   'THE GAME TELLS YOU WHEN A FOUND GUN CHANGES YOUR HANDS. A gun going into your empty second slot, or replacing the one you were holding, wrote you a line saying so and then wrote Found over the top of it in the same frame, every time. Both facts now arrive in the one line you can actually read.',
   'THE PEDDLER STALL KNOWS WHAT IT JUST PAID YOU. Selling at the stall pays into money that rides with you until you extract, but the panel read your banked Credits, so it said you hold nothing one line under the message telling you it had paid you thousands, and greyed its own stock. It now names both, and says which one it cannot spend.',
+  'THE LAST BOX BEFORE THE LIFT TELLS THE TRUTH. It said you were going up with an issued sidearm, when nothing equipped means a primary is issued and the second slot is left empty on purpose, and it listed Armour on the same line as the warning that you ascend with no armour on.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -29248,7 +29249,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.74: from the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me reading the stall panel, the sale and the purchase. Selling at the stall does not pay him in Credits and deliberately does not: the money rides on the run, is banked only if he walks out, and dies where he falls. That decision stays. What is wrong is that the panel does not know it. The balance line on the stall reads the BANKED Credits, and so does the affordability of every row of the stock, so a first-time player at zero sells seven things for four thousand, is told so by the game in the same breath, and one line below reads that he holds nothing with every item on the shelf greyed out: two numbers about the same pocket, in the same panel, in the same frame, disagreeing. Whether stall money should be spendable at the stall is HIS call and nothing here changes it, so what he can buy with is exactly what it was; the panel simply stops lying about it. It names both pockets now, and the refusal says which one it means, so the answer is that the money is not banked yet rather than that he has nothing one second after being paid. The same sale line said cash, which is not a word this game uses, and it now says Credits. Check 12.74 sells a bag at the stall, then requires the panel line to carry the money that is riding on him and the refusal to name it too, with a control that a man carrying nothing still reads the plain banked figure and still gets the plain refusal; fails on v12.73.',
+  now:'v12.75: from the 2026-09-08 first-hour audit, two findings that turn out to be one line of text, confirmed by a skeptic and then by me reading the panel and the deploy. The last thing he reads before the lift is one box saying what he is taking up, and its own comment says it states what he is actually taking up at the last moment he can change it. Both halves of that sentence were wrong on every ascent, and one of them contradicted the line printed directly beneath it. THE GUN HALF: with nothing equipped, which is exactly what a brand new character has, it said an issued sidearm. The deploy does not issue a sidearm. It rolls a PRIMARY out of the starter list into gun one and leaves gun two deliberately empty, by a decision from v5.37 with a comment saying no free pistol and that an empty second slot is a real choice. So the one line telling a first-time player what he will be holding named the wrong slot and promised a second gun that was never coming. THE ARMOUR HALF: it printed the name of his rig, and the rig function has returned the same constant for everybody since v5.77, with the bare word Armour as its name, left over from when rigs could be chosen. So the box read Going up with, something, Armour, and then in amber directly underneath, you ascend with no armour on. Two halves of one box stating opposite things, every single time. The armour half is deleted rather than reworded, because the amber line under it is already the true and useful version of that fact. Check 12.75 renders the box on a character with nothing equipped and requires it not to promise a sidearm and not to list armour against the warning under it, with a control that a character who HAS a gun equipped still sees that gun named; fails on v12.74.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33074,10 +33075,17 @@ function syncSectorKit(){
   if(!el) return;
   var w=null;
   try{ w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null; }catch(_gw){ w=null; }
-  var rig=null;
-  try{ rig=myRig(); }catch(_gr){ rig=null; }
-  var line='<b>Going up with:</b> '+(w?escHtml(w.name):'an issued sidearm')+
-           ' &middot; '+escHtml((rig&&rig.name)||'Armour');
+  // v12.75, 2026-09-08 first-hour audit: THIS BOX NOW SAYS WHAT ACTUALLY
+  // HAPPENS. It used to say "an issued sidearm" when nothing is equipped, which
+  // is what a brand new character has, and the deploy does not issue a sidearm:
+  // it rolls a PRIMARY out of the starter list into gun one and leaves gun two
+  // deliberately empty, so the line named the wrong slot and promised a second
+  // gun that was not coming. And it printed the name of his rig, which has been
+  // the same constant for everybody since v5.77 and whose name is the bare word
+  // Armour, directly above an amber line saying he ascends with no armour on.
+  // That half is gone rather than reworded: the amber line under this one is
+  // already the true and useful version of it.
+  var line='<b>Going up with:</b> '+(w?escHtml(w.name):'a gun issued at the lift');
   // v10.13, his answer 7: the armour warning lives here, on the way up. It
   // used to be copied off the stash screen's readiness line, which v9.98
   // removed, so it had been nowhere since. Same numbers as the line had.
