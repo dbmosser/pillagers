@@ -23,9 +23,16 @@ SubRx @'
 '@ @'
   {v:'12.72',what:'the run report the game saves to his Downloads is named after the game he is playing and not after the retired project, and the run number still rides in the name so one report does not overwrite the last (2026-09-08 first-hour audit)',
    run:function(){
-     if(typeof reportFileName!=='function') return 'SKIP: this build writes the report name where it is used, and the fixture replaces the whole download, so the name cannot be read here';
      if(!window.__P) return 'SKIP: this fixture cannot read the profile';
      var bad=[], P2=__P(), keep=P2.runs;
+     // The old build writes the name inline, where the fixture's stub hides it, so
+     // the function cannot be asked. The name is still IN the page, so the control
+     // reads the page: the retired name must not appear at all.
+     var _src='',_sc=document.getElementsByTagName('script');
+     for(var _i=0;_i<_sc.length;_i++) _src+=(_sc[_i].textContent||'');
+     if(_src.indexOf(('dark'+'_rai'+'ders')+'_run')>=0)
+       bad.push('the file the game drops into his Downloads is still named with the retired project name, the one place the rename was missed and the only one that leaves the browser');
+     if(typeof reportFileName!=='function') return bad.length?bad.join('; '):'SKIP: this build has no naming function and no retired name in the page either';
      try{
        var GONE='dark'+'_rai'+'ders', HERE='pill'+'agers';
        P2.runs=7;
