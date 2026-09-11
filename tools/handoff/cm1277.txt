@@ -1,22 +1,23 @@
-v12.77: dying with the freebie kit gives your tactical belt back too
+v12.77: the price of walking out is the price you actually pay
 
-Both places that hand you the freebie kit keep a snapshot of all three parts of a
-loadout: the items, the tactical belt plan and the gun slot. The button that
-gives you your own gear back reads all three, which is why it works.
+The fine for walking out is at least a hundred XP, taken with a floor at zero so
+it can never push you negative. That floor is right. But the button quoted the
+fine from before the floor, and the line afterwards announced the same unfloored
+number.
 
-The handoff in the middle took only the items and threw the snapshot away. So the
-belt plan and the gun slot were gone the moment you took the kit, and the restore
-at the end of a raid had nothing left but a list of items.
+So a first-time player with almost no XP opens the pause box, reads that
+abandoning costs a hundred and six XP, presses it, is told XP minus a hundred and
+six, and loses nothing, because there was nothing to take. That is the kind of
+fiction that keeps a new player inside a run he wanted to leave.
 
-A new player takes the welcome pack, drags a Medkit onto key 1 and a Frag onto
-key 2, takes the kit, dies, and is told his loadout has been restored. The items
-are back. Both keys are blank.
+Both places now use the figure that will actually be charged. The amount, the
+sixty second grace and the floor are unchanged.
 
-All three travel together now, with the plan filtered to what he still owns, and
-the line says how many keys came back.
+Most of the finding this came from was wrong and is not built: the fine is not
+invisible to the outcome card, because it lands before the raid ends.
 
-Check 12.77 presses the real button, runs the real handoff and kills him in a
-real raid; controls require a key bound to something he no longer owns to be
-dropped, and a clean extraction to restore nothing. Fails on v12.76.
+Check 12.77 presses the real two-stage button in a real raid past the grace and
+reads what he is shown and told; the control requires a character who has the XP
+to still read the full price and still pay exactly it. Fails on v12.76.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -11,70 +11,81 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.78 CHECK, inserted before the v12.77 entry. It presses the real two-stage
-# button in a real raid, past the sixty second grace, and reads the words he is
-# actually shown and the line he is actually told. The control is a character who
-# HAS the XP: he must still read the full price and must still pay it, so a build
-# that had simply stopped charging would fail rather than pass.
+# v12.78 CHECK, inserted before the v12.77 entry. Two arms on one staging, and
+# the needle is assembled rather than written, so a check that greps the page
+# cannot find this row in its own source. The control arm is the same man in the
+# same place with no extraction waiting: the prompt must be drawn and the hold
+# must run, or a missing prompt in the finding arm would only mean the overlay
+# was never drawn at all.
 SubRx @'
-  {v:'12.77',what:'dying with the freebie kit gives back the tactical belt plan and the gun slot along with the items, since all three were kept aside when he took the kit, while a key bound to something he no longer owns is still dropped and a clean extraction still restores nothing (2026-09-08 first-hour audit)',
+  {v:'12.77',what:'the price of walking out is the price he actually pays: with nothing banked the confirm button quotes no fine and the line afterwards announces none, while a character who has the XP still reads the full price and still pays exactly it (2026-09-08 first-hour audit)',
 '@ @'
-  {v:'12.78',what:'the price of walking out is the price he actually pays: with nothing banked the confirm button quotes no fine and the line afterwards announces none, while a character who has the XP still reads the full price and still pays exactly it (2026-09-08 first-hour audit)',
+  {v:'12.78',what:'the downed screen stops offering a surrender it will not take: with an extraction waiting on the point he is lying in, the row says so and the key is refused as it always was, while in every other downed state the prompt is drawn and the hold runs (2026-09-07 audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
-     if(typeof abandonRepCost!=='function'||typeof elapsed!=='function') return 'SKIP: this build has no walk-out fine';
-     var ab=document.getElementById('abandonbtn'), cb=document.getElementById('confirmabandon');
-     if(!ab||!cb) return 'SKIP: this build has no abandon buttons in the page';
-     var bad=[], P2=__P(), keepXp=P2.xp, keepLog=(P2.log||[]).slice();
-     try{
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys&&window.__frame&&window.__textTrace&&window.__forceSize)) return 'SKIP: this fixture cannot deploy, press keys and read the drawn text';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
+     if(typeof giveUpTick!=='function') return 'SKIP: this build has no surrender';
+     var bad=[];
+     // Assembled, never written whole, so the phrase cannot be found in the
+     // source of the very check that is looking for it.
+     var PROMPT='TO '+'SURRE'+'NDER', REFUSE='NO '+'SURRE'+'NDER';
+     function arm(waiting){
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       function armed(xp){
-         __deploy({kit:[],mapIx:0,seed:4242});
-         var g=__state(); if(!g||!g.player) return null;
-         // Past the grace, so the fine is live. elapsed() is the raid length
-         // minus what is left, so this is the honest way to age a raid.
-         if(g.raidLen!==undefined&&g.timeLeft!==undefined) g.timeLeft=g.raidLen-180;
-         else g.t=180;
-         if(elapsed()<=60) return {early:1};
-         P2.xp=xp; saveProfile();
-         ab.textContent='Abandon run';
-         try{ ab.onclick.call(ab); }catch(_a){ return {threw:1}; }
-         return {label:String(cb.textContent||''), cost:abandonRepCost(elapsed()), g:g};
-       }
-       // THE FINDING: nothing banked, so nothing can be taken.
-       var a1=armed(0);
-       if(!a1) return 'SKIP: no live raid to abandon';
-       if(a1.early) return 'SKIP: this raid cannot be aged past the grace period here';
-       if(a1.threw) return 'SKIP: arming the confirm threw';
-       if(String(a1.label).indexOf(String(a1.cost))>=0)
-         bad.push('with nothing banked the button still offers to charge him '+a1.cost+' XP ['+a1.label+']: the fine stops at zero and would take nothing, so the one number the game shows him about quitting is a price he cannot be charged, and it is the number that keeps a new player in a run he wanted to leave');
-       var g1=a1.g; g1.msg='';
-       try{ cb.onclick.call(cb); }catch(_c1){}
-       var said=String(g1.msg||'');
-       if(said.indexOf(String(a1.cost))>=0)
-         bad.push('after walking out with nothing banked he is told ['+said+'], which announces a fine that was never taken');
-       if((P2.xp||0)!==0)
-         bad.push('control: walking out with nothing banked moved his XP to '+(P2.xp||0)+', so the floor is not holding');
-       // CONTROL: a character who HAS it reads the full price and pays it.
-       var rich=5000;
-       var a2=armed(rich);
-       if(a2&&!a2.early&&!a2.threw){
-         if(String(a2.label).indexOf(String(a2.cost))<0)
-           bad.push('control: a character with '+rich+' XP is no longer told the fine is '+a2.cost+' ['+a2.label+']');
-         var g2=a2.g; g2.msg='';
-         try{ cb.onclick.call(cb); }catch(_c2){}
-         if((P2.xp||0)!==rich-a2.cost)
-           bad.push('control: a character with '+rich+' XP walked out and was left on '+(P2.xp||0)+' rather than '+(rich-a2.cost)+', so this build has changed what the fine costs');
-       }
+       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_f){}
+       __deploy({kit:[],mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player||!g.zones||!g.zones.length) return null;
+       var p=g.player, z=g.active||g.zones[0], K=__keys(), k, i;
+       for(k in K) delete K[k];
+       g.ents.length=0;
+       g.active=z; z.open=true;
+       if(waiting){ z.beaconT=0; g.beaconT=0; g.shipHold=20; z.hold=20; p.x=z.x; p.y=z.y; }
+       else { z.beaconT=null; g.beaconT=null; g.shipHold=null; z.hold=null;
+              p.x=z.x+(z.r+900); p.y=z.y; }
+       p.hp=20; p.armor=0; p.iv=99; p.roll=0; p.cooking=0;
+       p.revived=true; p.downed=true; p.downT=CFG.downTime; p.giveT=0; p.healLock=true;
+       var clk=Math.max((typeof performance!=='undefined'&&performance.now)?performance.now():0,(lastTs||0)+100);
+       K.Space=1;
+       var peak=0;
+       for(i=0;i<40;i++){ p.iv=99; p.downT=CFG.downTime; clk+=16.7; __loop(clk);
+                          if((p.giveT||0)>peak) peak=p.giveT||0;
+                          if(!p.downed||g.over) break; }
+       var lines=[];
+       try{ lines=__textTrace(function(){ __frame(0.016); }); }catch(_t){ }
+       var txt=''; for(i=0;i<lines.length;i++) txt+=' | '+lines[i].t;
+       var out={peak:peak,down:!!p.downed,over:!!g.over,txt:txt,
+                prompt:txt.indexOf(PROMPT)>=0,refuse:txt.indexOf(REFUSE)>=0,
+                verb:txt.indexOf('TO EXTRACT')>=0};
+       for(k in K) delete K[k];
+       return out;
+     }
+     var keepTs=lastTs;
+     try{
+       // CONTROL FIRST: the same man, downed with his revive spent, nowhere near
+       // a waiting extraction. The prompt must be drawn and the hold must run, or
+       // a missing prompt below would only say the overlay was never drawn.
+       var B=arm(false);
+       if(!B) return 'SKIP: no raid with an extraction point to lie down in';
+       if(!B.down&&!B.over) return 'SKIP: he did not stay on the floor long enough to read the screen';
+       if(!B.prompt) return 'SKIP: with no extraction waiting the downed screen did not draw the surrender row at all, so this check cannot see it and proves nothing';
+       if(!(B.peak>0)) return 'SKIP: with no extraction waiting two seconds on the key started no hold, so this check cannot see a hold and proves nothing';
+       // THE FINDING: downed inside a point with an extraction waiting, which is
+       // the one state the key is refused in, on purpose, since v9.71.
+       var A=arm(true);
+       if(!A) return 'SKIP: no raid with an extraction point to lie down in';
+       if(A.peak>0) bad.push('staging: the hold started inside a waiting extraction, so this is not the refused state the check is about');
+       if(A.prompt) bad.push('with an extraction waiting on the point he is lying in the screen still offers the surrender, and the key does nothing: the row is drawn, the bar never comes, and nothing tells him why');
+       if(!A.refuse) bad.push('with an extraction waiting the screen says nothing at all about the surrender being refused; the drawn text is ['+A.txt.slice(0,200)+']');
+       if(!A.verb) bad.push('control: the working verb is not drawn in this state either, so the screen is not the one this check thinks it is reading');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       try{ if(cb) cb.style.display='none'; if(ab) ab.textContent='Abandon run'; }catch(_b){}
-       try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; __endRaid('abandon'); } }catch(_e){}
-       try{ P2.xp=keepXp; P2.log=keepLog; saveProfile(); }catch(_p){}
-       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ lastTs=keepTs; }catch(_t2){}
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.downed=false; gz.player.giveT=0; gz.player.iv=0; gz.player.revived=false; gz.player.healLock=false; } }catch(_a){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.77',what:'dying with the freebie kit gives back the tactical belt plan and the gun slot along with the items, since all three were kept aside when he took the kit, while a key bound to something he no longer owns is still dropped and a clean extraction still restores nothing (2026-09-08 first-hour audit)',
+  {v:'12.77',what:'the price of walking out is the price he actually pays: with nothing banked the confirm button quotes no fine and the line afterwards announces none, while a character who has the XP still reads the full price and still pays exactly it (2026-09-08 first-hour audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

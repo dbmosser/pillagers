@@ -1,37 +1,49 @@
-## v12.78 - THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY
+## v12.78 - THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE
 
-From the 2026-09-08 first-hour audit. Most of what that finding claimed was
-wrong, the skeptic threw it out, and I am not building the refuted part. What
-survives is small and true, and I confirmed it by reading.
+From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
+reading at v12.77.
 
-WHAT I AM NOT BUILDING. The reader said the abandon fine is invisible to the
-outcome card's accounting, so the card and the corner readout disagree. They do
-not. The fine lands before the raid ends, and the card's total is built from the
-profile afterwards, so the two agree. Thrown out.
+WHAT IT WAS. v9.71 gave the surrender a guard it did not have at first: while
+an extraction is waiting on the point you are lying in, the space bar cannot
+end your raid. The reasoning is written into the code and it is right. That
+same overlay is telling you that extracting while downed is permitted, so a
+hand resting on the space bar must not throw away a full backpack in the one
+situation where being down ends well.
 
-WHAT IS REAL. The fine for walking out is at least a hundred XP, and it is taken
-with a floor at zero so it can never push him negative. That floor is right and
-it is not moving. But the button quoted the fine from BEFORE the floor, and the
-line afterwards announced that same unfloored number.
+Nothing ever told the player about the guard. The surrender row is drawn on a
+single test, that he has spent his self-revive, with no question asked about
+where he is lying. So in that state the screen printed HOLD SPACE TO SURRENDER,
+he held it, and nothing happened: the row never lit, the progress bar never
+appeared because it is only drawn once the hold has started, and no line
+explained the refusal. A dead control and a prompt that lies, at three health
+with the point swarmed.
 
-So a first-time player, who has almost no XP, gets lost on his second run, opens
-the pause box, and reads YES, ABANDON THIS RUN (costs 106 XP) with nothing like
-that to his name. He presses it, is told XP -106, and loses nothing at all,
-because there was nothing there to take. The one number the game shows him about
-the consequences of quitting is fiction in both places it appears, and it is
-exactly the kind of fiction that keeps a new player inside a run he wanted to
-leave.
+He does lose nothing by it, which is why the audit called it P3: the working
+verb, HOLD E TO EXTRACT, is drawn in the same stack right underneath, larger
+and in colour, and it works. But a screen that offers a control it will not
+take is the same fault as the crafting button, and it is the fault I have spent
+this week removing.
 
-THE BUILD. Both places use the figure that will actually be charged. At zero the
-button says there is no XP to lose and the line afterwards says the same. Nothing
-about the fine itself moves: the amount, the sixty second grace, and the floor
-are all exactly as they were.
+THE BUILD. The guard becomes one named test with two readers, so the key and
+the screen can never disagree about it again. The row then says what is true
+instead of what is not on offer, with the working verb still underneath it in
+colour. Nothing about the refusal itself changes: the key is refused in exactly
+the same state, for exactly the same reason.
 
-MEASURED. Check 12.78 presses the real two-stage button in a real raid aged past
-the grace, and reads the words he is shown and the line he is told. The control
-is a character who HAS the XP: he must still read the full price and must still
-pay exactly it, so a build that had simply stopped charging would fail there.
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The behaviour of the key is
+unchanged, the bot never surrenders, and no dial moves.
 
-Not verified: it ages the raid by moving the clock rather than playing three
-minutes; it reads the button's text and the message string rather than pixels;
-and it does not change what the fine is worth, which is a dial and his to set.
+MEASURED. Check 12.78 runs two arms on one staging. The control runs FIRST: the
+same man, downed with his revive spent, nowhere near a waiting extraction. The
+prompt must be drawn and the hold must start, or a missing prompt in the other
+arm would only say the overlay was never drawn at all. The finding arm lays him
+down inside a point with an extraction waiting, holds the real key for two
+thirds of a second through the real frame loop, and requires the hold never to
+start, the prompt never to be drawn, and the refusal line to be there in its
+place. The needle is assembled from pieces rather than written out, so a check
+that greps the page cannot find this row in its own source.
+
+Not verified: it does not read where the row sits on screen or what colour it
+is, only that the words are drawn; it does not run the hold to completion in
+the control arm, since that would end the raid; and it does not exercise the
+gamepad, which reaches the same key slot.

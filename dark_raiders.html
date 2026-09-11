@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.76';
+var VER='12.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.76';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.76';
+var WHATSNEW_VER='12.77';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1405,6 +1405,7 @@ var WHATSNEW=[
   'THE PEDDLER STALL KNOWS WHAT IT JUST PAID YOU. Selling at the stall pays into money that rides with you until you extract, but the panel read your banked Credits, so it said you hold nothing one line under the message telling you it had paid you thousands, and greyed its own stock. It now names both, and says which one it cannot spend.',
   'THE LAST BOX BEFORE THE LIFT TELLS THE TRUTH. It said you were going up with an issued sidearm, when nothing equipped means a primary is issued and the second slot is left empty on purpose, and it listed Armour on the same line as the warning that you ascend with no armour on.',
   'HOW FAR YOU DIED FROM EXTRACTION IS MEASURED TO THE NEAREST WAY OUT. It was measured to a ring chosen at random when the raid was built, so the number disagreed with the compass you had been following all raid and with the closest-approach line printed right under it.',
+  'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -29257,7 +29258,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.76: from the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me reading both sites, and it is my own half-done fix from v8.58 found again. The death card says KILLED BY X, N metres FROM EXTRACTION, and that N was measured to the ring the raid nominated, which is not the nearest way out: it is a ring the dice picked when the raid was built, and it is only ever re-pointed when he physically stands inside a ring or when the one it points at closes. So a player who dies without ever reaching a ring, which is exactly how a first raid ends, was measured against a ring chosen at random for him. Meanwhile the compass over his head had spent the whole raid pointing at the NEAREST OPEN ring, and the line printed directly under this one on the same card, the closest he came to extraction, is measured the same way, so the card disagreed with the compass he had been following and with itself. The helper that measures the nearest open ring already exists: I wrote it at v8.58 for the closest approach figure, and all four of its call sites carry a comment saying the nearest OPEN ring and not the targeted one. I did not apply it to the death distance, twenty feet away in the same file. That is the same mistake as the Peddler and the counter, and as the lift and quick ascent: fix one instance, leave its twin. Check 12.76 kills him standing beside one open ring with the nomination pointed at a far one and requires the card to report the near one, with a control that a death beside the nominated ring itself still reports exactly what it always did; fails on v12.75.',
+  now:'v12.77: from the 2026-09-08 first-hour audit, and most of what that finding claimed was wrong. The skeptic threw out the part that said the fine is invisible to the outcome card, and it was right to: the fine lands before the raid ends and the card total is built from the profile afterwards, so the card and the corner readout agree. What survives is small and true. The fine for walking out is at least a hundred XP, and it is taken with a floor at zero so it can never push him negative, which is right. But the button quoted the fine from BEFORE that floor, and the line afterwards announced the same unfloored number. So a first-time player, who has almost no XP, opens the pause box on his second run and reads that abandoning costs a hundred and six XP when he has nothing like that to his name, presses it, is told XP minus a hundred and six, and loses nothing at all because there was nothing to take. The one number the game shows him about the consequences of quitting was fiction in both places it appeared, and it is the kind of fiction that makes a new player keep playing a run he wanted to leave. Both places now use the figure that will actually be charged, and at zero the button says there is no XP to lose and the line afterwards says the same. Nothing about the fine itself moves: the amount, the sixty second grace and the floor are all exactly as they were. Check 12.77 arms the confirm on a character with nothing banked and requires the button not to quote a fine, presses it and requires the line afterwards not to announce one, and controls that a character who HAS the XP still reads the full price and still pays it; fails on v12.76.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32666,7 +32667,13 @@ document.getElementById('abandonbtn').onclick=function(){
     this.style.borderColor=''; this.style.color='';
     var _el=(G&&!G.over)?elapsed():0;
     // v10.41, his words: the same line the markup carries, with the cost kept.
-    cb.textContent=(_el>60)?('YES, ABANDON THIS RUN (costs '+abandonRepCost(_el)+' XP)')
+    // v12.77, 2026-09-08 first-hour audit: THE PRICE ON THE BUTTON IS THE PRICE
+    // HE WILL PAY. The fine is taken with a floor at zero so it can never push
+    // him negative, which is right, but this quoted the figure from before that
+    // floor: a first-time player with almost no XP read a hundred-odd XP on a
+    // button that was about to take nothing from him.
+    var _ac=Math.min(abandonRepCost(_el),(P.xp||0));
+    cb.textContent=(_el>60)?('YES, ABANDON THIS RUN ('+(_ac>0?('costs '+_ac+' XP'):'no XP to lose')+')')
                            :'YES, ABANDON THIS RUN (free this early)';
     return;
   }
@@ -32678,9 +32685,12 @@ document.getElementById('abandonbtn').onclick=function(){
 function abandonRepCost(el){ return Math.min(400,100+Math.round(el/10)); }
 document.getElementById('confirmabandon').onclick=function(){
   if(G&&!G.over&&elapsed()>60){
-    var _rc=abandonRepCost(elapsed());
+    // v12.77: and the line afterwards reports what was actually taken, not the
+    // figure before the floor. It used to say XP -106 to a man who had lost
+    // nothing, because he had nothing to lose.
+    var _rc=Math.min(abandonRepCost(elapsed()),(P.xp||0));
     P.xp=Math.max(0,(P.xp||0)-_rc);
-    say('Walked out on the job. XP -'+_rc+'.');
+    say(_rc>0?('Walked out on the job. XP -'+_rc+'.'):'Walked out on the job. No XP to lose.');
   }
   togglePauseBox(false);   // v12.02: the close banks the note
 this.style.display='none';

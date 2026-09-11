@@ -11,73 +11,50 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-08 FIRST-HOUR AUDIT, confirmed by a skeptic and then by me
-# reading all four sites: both places that take the freebie kit, the handoff in
-# commitKit, and the restore at the end of a raid.
+# FROM THE 2026-09-08 FIRST-HOUR AUDIT. The reader's version of this was mostly
+# wrong and the skeptic threw it out; what is left, and what I confirmed by
+# reading, is small and true.
 #
-# His spec at v6.88 was that dying with the freebie kit puts his own loadout back
-# rather than making him rebuild it. Both places that hand him the kit do the
-# right thing: they keep a snapshot of ALL THREE parts of a loadout, the items,
-# the tactical belt plan, and the gun slot. And the button that gives him his own
-# gear back puts all three back, which is why that button works.
+# The fine for walking out is at least a hundred XP. It is taken with a floor at
+# zero, so it can never push him negative, which is right. But the button quotes
+# the fine before that floor is applied, and the message afterwards announces the
+# same unfloored number.
 #
-# The handoff in the middle takes only the items out of that snapshot and then
-# throws the snapshot away. So the belt plan and the gun slot are gone from the
-# moment he presses TAKE THE FREEBIE KIT, and the restore at the end of a raid
-# has nothing left to put back but the item list.
+# So a first-time player, who has almost no XP, opens the pause box on his second
+# run and reads YES, ABANDON THIS RUN (costs 106 XP) with nothing like 106 XP to
+# his name. He presses it, is told XP -106, and loses nothing at all, because
+# there was nothing there to take. The one number the game shows him about the
+# consequences of quitting is fiction in both places it appears.
 #
-# What that looks like: a new player takes the welcome pack, drags a Medkit onto
-# key 1 and a Frag onto key 2, which is the gesture the game teaches, takes the
-# freebie kit, dies in his first raid, and reads "2 items that you had in your
-# loadout before choosing the freebie kit have been restored". The items are
-# back. The two keys he bound are blank, and nothing said so.
-#
-# THE BELT PLAN IS FILTERED TO WHAT HE STILL OWNS, the same rule the item list
-# already follows, because a key pointing at something he no longer has is not a
-# restore, it is a dead key.
+# What the audit ALSO claimed, and I am not building, because the skeptic showed
+# it is not true: that the fine is invisible to the outcome card's accounting. It
+# is not. The fine lands before the raid ends, and the card's total is built from
+# the profile afterwards, so the card and the corner readout agree.
 SubRx @'
-    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
+    cb.textContent=(_el>60)?('YES, ABANDON THIS RUN (costs '+abandonRepCost(_el)+' XP)')
+                           :'YES, ABANDON THIS RUN (free this early)';
 '@ @'
-    // v12.77, 2026-09-08 first-hour audit: ALL THREE PARTS OF THE LOADOUT, not
-    // just the items. The snapshot above holds the belt plan and the gun slot as
-    // well, and the button that gives him his own gear back restores all three;
-    // this handoff dropped two of them on the floor and then threw the snapshot
-    // away, so a death restored his items into a backpack with every belt key he
-    // had bound now blank, and told him he had been restored.
-    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice();
-    P.hotBeforeFree=(P.kitSaved&&P.kitSaved.hot)?P.kitSaved.hot:null;
-    P.gunBeforeFree=(P.kitSaved&&P.kitSaved.gun)?P.kitSaved.gun:null;
-    P.kitSaved=null;
+    // v12.77, 2026-09-08 first-hour audit: THE PRICE ON THE BUTTON IS THE PRICE
+    // HE WILL PAY. The fine is taken with a floor at zero so it can never push
+    // him negative, which is right, but this quoted the figure from before that
+    // floor: a first-time player with almost no XP read a hundred-odd XP on a
+    // button that was about to take nothing from him.
+    var _ac=Math.min(abandonRepCost(_el),(P.xp||0));
+    cb.textContent=(_el>60)?('YES, ABANDON THIS RUN ('+(_ac>0?('costs '+_ac+' XP'):'no XP to lose')+')')
+                           :'YES, ABANDON THIS RUN (free this early)';
 '@
 
 SubRx @'
-      P.kit=_kb;
-      if(_kb.length) lines.push('<span style="color:var(--coolant)">'+_kb.length+' item'+(_kb.length===1?'':'s')+
-        ' that you had in your loadout before choosing the freebie kit '+(_kb.length===1?'has':'have')+' been restored.</span>');
-    }
-    P.kitBeforeFree=null;
+    var _rc=abandonRepCost(elapsed());
+    P.xp=Math.max(0,(P.xp||0)-_rc);
+    say('Walked out on the job. XP -'+_rc+'.');
 '@ @'
-      P.kit=_kb;
-      // v12.77: the tactical belt plan and the gun slot come back with the
-      // items. The plan is filtered to what he still owns, the same rule the
-      // list above follows, because a key pointing at something he no longer has
-      // is a dead key rather than a restore.
-      var _hk=0;
-      if(P.hotBeforeFree){
-        var _pool={},_q,_hi,_hv,_hb={};
-        for(_q=0;_q<_kb.length;_q++) _pool[_kb[_q]]=(_pool[_kb[_q]]||0)+1;
-        for(_hi in P.hotBeforeFree){
-          _hv=P.hotBeforeFree[_hi];
-          if(_hv&&(_pool[_hv]||0)>0){ _hb[_hi]=_hv; _pool[_hv]--; _hk++; }
-        }
-        P.hotAssign=_hb;
-      }
-      if(P.gunBeforeFree) P._gunSlot=P.gunBeforeFree;
-      if(_kb.length) lines.push('<span style="color:var(--coolant)">'+_kb.length+' item'+(_kb.length===1?'':'s')+
-        ' that you had in your loadout before choosing the freebie kit '+(_kb.length===1?'has':'have')+' been restored'+
-        (_hk?(', and '+_hk+' tactical belt key'+(_hk===1?'':'s')+' with '+(_hk===1?'it':'them')):'')+'.</span>');
-    }
-    P.kitBeforeFree=null; P.hotBeforeFree=null; P.gunBeforeFree=null;
+    // v12.77: and the line afterwards reports what was actually taken, not the
+    // figure before the floor. It used to say XP -106 to a man who had lost
+    // nothing, because he had nothing to lose.
+    var _rc=Math.min(abandonRepCost(elapsed()),(P.xp||0));
+    P.xp=Math.max(0,(P.xp||0)-_rc);
+    say(_rc>0?('Walked out on the job. XP -'+_rc+'.'):'Walked out on the job. No XP to lose.');
 '@
 
 # NEW IN.
@@ -85,7 +62,7 @@ SubRx @'
   'HOW FAR YOU DIED FROM EXTRACTION IS MEASURED TO THE NEAREST WAY OUT. It was measured to a ring chosen at random when the raid was built, so the number disagreed with the compass you had been following all raid and with the closest-approach line printed right under it.',
 '@ @'
   'HOW FAR YOU DIED FROM EXTRACTION IS MEASURED TO THE NEAREST WAY OUT. It was measured to a ring chosen at random when the raid was built, so the number disagreed with the compass you had been following all raid and with the closest-approach line printed right under it.',
-  'DYING WITH THE FREEBIE KIT GIVES YOUR TACTICAL BELT BACK TOO. It restored the items you had packed and quietly kept the belt keys you had bound, and the gun slot, which were thrown away the moment you took the kit. Keys pointing at something you no longer own are still dropped.',
+  'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
 '@
 
 # STAMPS.
@@ -99,9 +76,9 @@ var WHATSNEW_VER='12.76';
 '@ @'
 var WHATSNEW_VER='12.77';
 '@
-$cnt=([regex]::Matches($s,"now:'v12\.76:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v12.76:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.76 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.76:[^']*'",{ param($m) "now:'v12.77: from the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me reading all four sites: both places that hand him the freebie kit, the handoff in the middle, and the restore at the end of a raid. His spec at v6.88 was that dying with the freebie kit puts his own loadout back rather than making him rebuild it. Both places that hand him the kit do the right thing and keep a snapshot of ALL THREE parts of a loadout, the items, the tactical belt plan and the gun slot, and the button that gives him his own gear back restores all three, which is why that button works. The handoff in the middle took only the items out of that snapshot and then threw the snapshot away, so the belt plan and the gun slot were gone from the moment he pressed TAKE THE FREEBIE KIT and the restore at the end of a raid had nothing left to put back but the item list. What that looks like: a new player takes the welcome pack, drags a Medkit onto key 1 and a Frag onto key 2, which is the gesture the game teaches him, takes the freebie kit, dies in his first raid, and reads that two items from the loadout he had before choosing the kit have been restored. The items are back. The two keys he bound are blank, and nothing said so. The belt plan is filtered to what he still owns, the same rule the item list already follows, because a key pointing at something he no longer has is a dead key and not a restore, and the line now says how many keys came back with the items. Check 12.77 binds two keys and a gun slot, takes the kit, dies, and requires the keys and the slot back with the items, with one control that a key bound to something he no longer owns is still dropped and another that a clean extraction restores nothing at all; fails on v12.76.'" })
+$s=[regex]::Replace($s,"now:'v12.76:[^']*'",{ param($m) "now:'v12.77: from the 2026-09-08 first-hour audit, and most of what that finding claimed was wrong. The skeptic threw out the part that said the fine is invisible to the outcome card, and it was right to: the fine lands before the raid ends and the card total is built from the profile afterwards, so the card and the corner readout agree. What survives is small and true. The fine for walking out is at least a hundred XP, and it is taken with a floor at zero so it can never push him negative, which is right. But the button quoted the fine from BEFORE that floor, and the line afterwards announced the same unfloored number. So a first-time player, who has almost no XP, opens the pause box on his second run and reads that abandoning costs a hundred and six XP when he has nothing like that to his name, presses it, is told XP minus a hundred and six, and loses nothing at all because there was nothing to take. The one number the game shows him about the consequences of quitting was fiction in both places it appeared, and it is the kind of fiction that makes a new player keep playing a run he wanted to leave. Both places now use the figure that will actually be charged, and at zero the button says there is no XP to lose and the line afterwards says the same. Nothing about the fine itself moves: the amount, the sixty second grace and the floor are all exactly as they were. Check 12.77 arms the confirm on a character with nothing banked and requires the button not to quote a fine, presses it and requires the line afterwards not to announce one, and controls that a character who HAS the XP still reads the full price and still pays it; fails on v12.76.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

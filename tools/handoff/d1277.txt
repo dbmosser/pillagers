@@ -1,40 +1,37 @@
-## v12.77 - DYING WITH THE FREEBIE KIT GIVES YOUR TACTICAL BELT BACK TOO
+## v12.77 - THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY
 
-From the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me
-reading all four sites: both places that hand him the kit, the handoff between
-them, and the restore at the end of a raid.
+From the 2026-09-08 first-hour audit. Most of what that finding claimed was
+wrong, the skeptic threw it out, and I am not building the refuted part. What
+survives is small and true, and I confirmed it by reading.
 
-WHAT WAS ALREADY RIGHT. His spec at v6.88 was that dying with the freebie kit
-puts his own loadout back rather than making him rebuild it. Both places that
-hand him the kit keep a snapshot of all three parts of a loadout: the items he
-had packed, the tactical belt plan, and the gun slot. The button that gives him
-his own gear back reads all three out of that snapshot, which is why that button
-works.
+WHAT I AM NOT BUILDING. The reader said the abandon fine is invisible to the
+outcome card's accounting, so the card and the corner readout disagree. They do
+not. The fine lands before the raid ends, and the card's total is built from the
+profile afterwards, so the two agree. Thrown out.
 
-WHAT WAS WRONG. The handoff in the middle took only the items out of the snapshot
-and then threw the snapshot away. So the belt plan and the gun slot were gone
-from the moment he pressed TAKE THE FREEBIE KIT, and the restore at the end of a
-raid had nothing left to give back but a list of items.
+WHAT IS REAL. The fine for walking out is at least a hundred XP, and it is taken
+with a floor at zero so it can never push him negative. That floor is right and
+it is not moving. But the button quoted the fine from BEFORE the floor, and the
+line afterwards announced that same unfloored number.
 
-WHAT THAT LOOKS LIKE. A new player takes the welcome pack, drags a Medkit onto
-key 1 and a Frag Charge onto key 2, which is the gesture the game teaches him,
-takes the freebie kit, ascends, and dies. The report tells him that two items
-from the loadout he had before choosing the kit have been restored. The items are
-back. Both keys he bound are blank. Nothing said so, and he has no way to know
-the game ever had them.
+So a first-time player, who has almost no XP, gets lost on his second run, opens
+the pause box, and reads YES, ABANDON THIS RUN (costs 106 XP) with nothing like
+that to his name. He presses it, is told XP -106, and loses nothing at all,
+because there was nothing there to take. The one number the game shows him about
+the consequences of quitting is fiction in both places it appears, and it is
+exactly the kind of fiction that keeps a new player inside a run he wanted to
+leave.
 
-THE BUILD. All three parts travel together now. The belt plan is filtered to what
-he still owns, which is the rule the item list has always followed, because a key
-pointing at something he no longer has is a dead key rather than a restore. The
-line says how many keys came back with the items.
+THE BUILD. Both places use the figure that will actually be charged. At zero the
+button says there is no XP to lose and the line afterwards says the same. Nothing
+about the fine itself moves: the amount, the sixty second grace, and the floor
+are all exactly as they were.
 
-MEASURED. Check 12.77 presses the real button, runs the real handoff and kills
-him in a real raid, because the whole defect lives in what one function hands to
-another. Two controls: a key bound to something he no longer owns must still be
-dropped, and a clean extraction must restore nothing, so the restore stays tied
-to dying rather than firing on every raid.
+MEASURED. Check 12.77 presses the real two-stage button in a real raid aged past
+the grace, and reads the words he is shown and the line he is told. The control
+is a character who HAS the XP: he must still read the full price and must still
+pay exactly it, so a build that had simply stopped charging would fail there.
 
-Not verified: it presses the button and calls the handoff rather than dragging an
-item onto a key with the mouse; it does not check what the belt looks like drawn;
-and it cannot give the plan back to anyone who already lost one, because that was
-never written down.
+Not verified: it ages the raid by moving the clock rather than playing three
+minutes; it reads the button's text and the message string rather than pixels;
+and it does not change what the fine is worth, which is a dial and his to set.

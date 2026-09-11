@@ -11,58 +11,73 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-08 FIRST-HOUR AUDIT. The reader's version of this was mostly
-# wrong and the skeptic threw it out; what is left, and what I confirmed by
-# reading, is small and true.
+# FROM THE 2026-09-07 READ-ONLY AUDIT (P3), specced from the source.
 #
-# The fine for walking out is at least a hundred XP. It is taken with a floor at
-# zero, so it can never push him negative, which is right. But the button quotes
-# the fine before that floor is applied, and the message afterwards announces the
-# same unfloored number.
+# v9.71 added a guard the surrender did not have: while an extraction is waiting
+# on the point you are lying in, the space bar cannot end your raid, because the
+# same overlay is telling you that extracting while downed is permitted and a
+# hand resting on that key must not throw away a full backpack. The guard is
+# right. Nothing told him about it. The surrender row is drawn on one test, that
+# he has spent his revive, so in that state the screen printed HOLD SPACE TO
+# SURRENDER, the key did nothing, the bar never appeared, and no line explained
+# why. A dead control and a prompt that lies.
 #
-# So a first-time player, who has almost no XP, opens the pause box on his second
-# run and reads YES, ABANDON THIS RUN (costs 106 XP) with nothing like 106 XP to
-# his name. He presses it, is told XP -106, and loses nothing at all, because
-# there was nothing there to take. The one number the game shows him about the
-# consequences of quitting is fiction in both places it appears.
-#
-# What the audit ALSO claimed, and I am not building, because the skeptic showed
-# it is not true: that the fine is invisible to the outcome card's accounting. It
-# is not. The fine lands before the raid ends, and the card's total is built from
-# the profile afterwards, so the card and the corner readout agree.
+# The guard becomes one named test with two readers, so the key and the screen
+# can never disagree about it again, and the row says what is true instead.
 SubRx @'
-    cb.textContent=(_el>60)?('YES, ABANDON THIS RUN (costs '+abandonRepCost(_el)+' XP)')
-                           :'YES, ABANDON THIS RUN (free this early)';
+function giveUpTick(dt){
 '@ @'
-    // v12.78, 2026-09-08 first-hour audit: THE PRICE ON THE BUTTON IS THE PRICE
-    // HE WILL PAY. The fine is taken with a floor at zero so it can never push
-    // him negative, which is right, but this quoted the figure from before that
-    // floor: a first-time player with almost no XP read a hundred-odd XP on a
-    // button that was about to take nothing from him.
-    var _ac=Math.min(abandonRepCost(_el),(P.xp||0));
-    cb.textContent=(_el>60)?('YES, ABANDON THIS RUN ('+(_ac>0?('costs '+_ac+' XP'):'no XP to lose')+')')
-                           :'YES, ABANDON THIS RUN (free this early)';
+// v12.78, 2026-09-07 audit: ONE TEST, TWO READERS. The rule below was written
+// into giveUpTick alone, so the overlay that offers the surrender knew nothing
+// about it and printed the prompt anyway: the key did nothing, the bar never
+// appeared, and no line said why. Both read this now.
+function surrenderBlocked(){
+  var p=G&&G.player; if(!p) return false;
+  return !!(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
+    G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r);
+}
+function giveUpTick(dt){
 '@
 
 SubRx @'
-    var _rc=abandonRepCost(elapsed());
-    P.xp=Math.max(0,(P.xp||0)-_rc);
-    say('Walked out on the job. XP -'+_rc+'.');
+  if(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
+     G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r){
+    p.giveT=0; return false;
+  }
 '@ @'
-    // v12.78: and the line afterwards reports what was actually taken, not the
-    // figure before the floor. It used to say XP -106 to a man who had lost
-    // nothing, because he had nothing to lose.
-    var _rc=Math.min(abandonRepCost(elapsed()),(P.xp||0));
-    P.xp=Math.max(0,(P.xp||0)-_rc);
-    say(_rc>0?('Walked out on the job. XP -'+_rc+'.'):'Walked out on the job. No XP to lose.');
+  if(surrenderBlocked()){ p.giveT=0; return false; }   // v12.78: the same test the overlay reads
+'@
+
+SubRx @'
+    if(p.revived&&CFG.giveUp!==0){
+      var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
+      _rowY+=Math.round(_hD*1.25);
+      ctx.font=_fD; ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
+      ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
+'@ @'
+    if(p.revived&&CFG.giveUp!==0){
+      var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
+      _rowY+=Math.round(_hD*1.25);
+      // v12.78, 2026-09-07 audit: AND IT SAYS SO WHEN IT WILL NOT TAKE THE KEY.
+      // The v9.71 guard refuses the surrender while an extraction is waiting on
+      // the point he is lying in, silently: this row printed the prompt anyway,
+      // the key did nothing, the bar never appeared and nothing explained it. It
+      // reads the same test the key reads now, and says what is true, with the
+      // working verb still drawn underneath it in colour.
+      ctx.font=_fD; ctx.fillStyle='#9b8f8c';
+      if(surrenderBlocked()) ctx.fillText('NO SURRENDER WITH AN EXTRACTION WAITING',W/2,_rowY);
+      else{
+      ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
+      ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
+      }
 '@
 
 # NEW IN.
 SubRx @'
-  'DYING WITH THE FREEBIE KIT GIVES YOUR TACTICAL BELT BACK TOO. It restored the items you had packed and quietly kept the belt keys you had bound, and the gun slot, which were thrown away the moment you took the kit. Keys pointing at something you no longer own are still dropped.',
-'@ @'
-  'DYING WITH THE FREEBIE KIT GIVES YOUR TACTICAL BELT BACK TOO. It restored the items you had packed and quietly kept the belt keys you had bound, and the gun slot, which were thrown away the moment you took the kit. Keys pointing at something you no longer own are still dropped.',
   'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
+'@ @'
+  'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
+  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
 '@
 
 # STAMPS.
@@ -76,9 +91,9 @@ var WHATSNEW_VER='12.77';
 '@ @'
 var WHATSNEW_VER='12.78';
 '@
-$cnt=([regex]::Matches($s,"now:'v12\.77:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v12.77:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.77 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.77:[^']*'",{ param($m) "now:'v12.78: from the 2026-09-08 first-hour audit, and most of what that finding claimed was wrong. The skeptic threw out the part that said the fine is invisible to the outcome card, and it was right to: the fine lands before the raid ends and the card total is built from the profile afterwards, so the card and the corner readout agree. What survives is small and true. The fine for walking out is at least a hundred XP, and it is taken with a floor at zero so it can never push him negative, which is right. But the button quoted the fine from BEFORE that floor, and the line afterwards announced the same unfloored number. So a first-time player, who has almost no XP, opens the pause box on his second run and reads that abandoning costs a hundred and six XP when he has nothing like that to his name, presses it, is told XP minus a hundred and six, and loses nothing at all because there was nothing to take. The one number the game shows him about the consequences of quitting was fiction in both places it appeared, and it is the kind of fiction that makes a new player keep playing a run he wanted to leave. Both places now use the figure that will actually be charged, and at zero the button says there is no XP to lose and the line afterwards says the same. Nothing about the fine itself moves: the amount, the sixty second grace and the floor are all exactly as they were. Check 12.78 arms the confirm on a character with nothing banked and requires the button not to quote a fine, presses it and requires the line afterwards not to announce one, and controls that a character who HAS the XP still reads the full price and still pays it; fails on v12.77.'" })
+$s=[regex]::Replace($s,"now:'v12.77:[^']*'",{ param($m) "now:'v12.78: 2026-09-07 audit (P3). v9.71 gave the surrender a guard it did not have: while an extraction is waiting on the point he is lying in, the space bar cannot end his raid, because the same overlay is telling him that extracting while downed is permitted and a hand resting on that key must not throw away a full backpack. The guard is right and nothing told him about it. The surrender row is drawn on one test, that he has spent his revive, so in that state the screen printed HOLD SPACE TO SURRENDER, the key did nothing, the progress bar never appeared because it is drawn only once the hold has started, and no line explained the refusal: a dead control and a prompt that lies, at three health with the point swarmed. The guard is now one named test with two readers, so the key and the screen can never disagree about it again, and the row says what is true instead, with the working verb still drawn underneath it in colour. Check 12.78 puts him down with his revive spent inside a point with an extraction waiting, holds the real key for two seconds through the real frame loop, and requires the hold never to start and the drawn text to carry the refusal and not the prompt, with a control outside that state requiring the prompt to be drawn and the hold to run; fails on v12.77.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

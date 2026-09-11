@@ -1,0 +1,22 @@
+v12.77: dying with the freebie kit gives your tactical belt back too
+
+Both places that hand you the freebie kit keep a snapshot of all three parts of a
+loadout: the items, the tactical belt plan and the gun slot. The button that
+gives you your own gear back reads all three, which is why it works.
+
+The handoff in the middle took only the items and threw the snapshot away. So the
+belt plan and the gun slot were gone the moment you took the kit, and the restore
+at the end of a raid had nothing left but a list of items.
+
+A new player takes the welcome pack, drags a Medkit onto key 1 and a Frag onto
+key 2, takes the kit, dies, and is told his loadout has been restored. The items
+are back. Both keys are blank.
+
+All three travel together now, with the plan filtered to what he still owns, and
+the line says how many keys came back.
+
+Check 12.77 presses the real button, runs the real handoff and kills him in a
+real raid; controls require a key bound to something he no longer owns to be
+dropped, and a clean extraction to restore nothing. Fails on v12.76.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

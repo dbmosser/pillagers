@@ -1,23 +1,23 @@
-v12.78: the price of walking out is the price you actually pay
+v12.78: the downed screen stops offering a surrender it will not take
 
-The fine for walking out is at least a hundred XP, taken with a floor at zero so
-it can never push you negative. That floor is right. But the button quoted the
-fine from before the floor, and the line afterwards announced the same unfloored
-number.
+v9.71 gave the surrender a guard it did not have at first: while an extraction
+is waiting on the point you are lying in, the space bar cannot end your raid.
+The reasoning is right. That same overlay is telling you that extracting while
+downed is permitted, so a hand resting on the space bar must not throw away a
+full backpack in the one situation where being down ends well.
 
-So a first-time player with almost no XP opens the pause box, reads that
-abandoning costs a hundred and six XP, presses it, is told XP minus a hundred and
-six, and loses nothing, because there was nothing to take. That is the kind of
-fiction that keeps a new player inside a run he wanted to leave.
+Nothing ever told the player. The surrender row is drawn on a single test, that
+he has spent his self-revive, and asks nothing about where he is lying. So the
+screen printed HOLD SPACE TO SURRENDER, he held it, and nothing happened: the
+row never lit, the bar never appeared, and no line explained why.
 
-Both places now use the figure that will actually be charged. The amount, the
-sixty second grace and the floor are unchanged.
+The guard is now one named test with two readers, so the key and the screen can
+never disagree again, and the row says what is true instead. The refusal itself
+is unchanged.
 
-Most of the finding this came from was wrong and is not built: the fine is not
-invisible to the outcome card, because it lands before the raid ends.
-
-Check 12.78 presses the real two-stage button in a real raid past the grace and
-reads what he is shown and told; the control requires a character who has the XP
-to still read the full price and still pay exactly it. Fails on v12.77.
+Check 12.78 runs the control first, the same man downed nowhere near a waiting
+extraction, requiring the prompt drawn and the hold started. The finding arm
+lays him inside a point with an extraction waiting and requires no hold, no
+prompt, and the refusal in its place; fails on v12.77.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
