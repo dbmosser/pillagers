@@ -11,65 +11,44 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-07 READ-ONLY AUDIT (P3), specced from the source.
+# HIS NOTE, after a live round: "weapon replacement is broken. scav pistol should
+# ALWAYS get booted in favor of a better weapon. Other weapons should never
+# auto-replace each other, e.g. weapon 3 (not including scav pistol) should go
+# into the backpack."
 #
-# v9.71 added a guard the surrender did not have: while an extraction is waiting
-# on the point you are lying in, the space bar cannot end your raid, because the
-# same overlay is telling you that extracting while downed is permitted and a
-# hand resting on that key must not throw away a full backpack. The guard is
-# right. Nothing told him about it. The surrender row is drawn on one test, that
-# he has spent his revive, so in that state the screen printed HOLD SPACE TO
-# SURRENDER, the key did nothing, the bar never appeared, and no line explained
-# why. A dead control and a prompt that lies.
+# WHAT IT WAS. A found gun took the second slot if that slot was empty, which is
+# right. If it was not empty, the pickup replaced THE GUN IN HIS HANDS on nothing
+# more than a tier or a condition comparison, and pushed the gun he was holding
+# into the backpack. So a good rifle he had chosen could be knocked out of his
+# hands by the next thing he pulled out of a crate, mid raid, because the game
+# judged it a step up. He never asked for that trade and was never asked.
 #
-# The guard becomes one named test with two readers, so the key and the screen
-# can never disagree about it again, and the row says what is true instead.
+# THE RULE HE WANTS, and it is a better rule. A slot YIELDS if it is empty, if it
+# is Bare Hands, or if it holds the Scav Pistol, which is the starter and is meant
+# to be replaced by the first real thing he finds. A slot holding anything else is
+# his and is left alone. A third gun, with both slots holding real weapons, goes
+# into the backpack, where he can equip it himself if he wants it.
+#
+# The empty-magazine case is kept: a gun with no rounds and none to feed it is not
+# a weapon he is relying on, and that test predates this note.
 SubRx @'
-function giveUpTick(dt){
+      var _secFree=(!p.sec||p.sec.id==='fists'||p.sec.mag===0);
 '@ @'
-// v12.78, 2026-09-07 audit: ONE TEST, TWO READERS. The rule below was written
-// into giveUpTick alone, so the overlay that offers the surrender knew nothing
-// about it and printed the prompt anyway: the key did nothing, the bar never
-// appeared, and no line said why. Both read this now.
-function surrenderBlocked(){
-  var p=G&&G.player; if(!p) return false;
-  return !!(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
-    G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r);
-}
-function giveUpTick(dt){
+      // v12.78, HIS NOTE after a live round: A SLOT YIELDS, OR IT IS LEFT ALONE.
+      // The Scav Pistol is the starter and is always booted for something better,
+      // and so are Bare Hands and an empty slot. Any other gun is one he chose,
+      // and a pickup no longer knocks it out of his hands: with both slots
+      // holding real weapons the find goes to the backpack, where equipping it is
+      // his decision to make.
+      function _yields(w){ return !w||w.id==='fists'||w.id==='pistol'||w.mag===0; }
+      var _secFree=_yields(p.sec);
+      var _handFree=_yields(p.wep);
 '@
 
 SubRx @'
-  if(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
-     G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r){
-    p.giveT=0; return false;
-  }
+      else if(autoEquipOn()&&(tierUp||condUp)){
 '@ @'
-  if(surrenderBlocked()){ p.giveT=0; return false; }   // v12.78: the same test the overlay reads
-'@
-
-SubRx @'
-    if(p.revived&&CFG.giveUp!==0){
-      var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
-      _rowY+=Math.round(_hD*1.25);
-      ctx.font=_fD; ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
-      ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
-'@ @'
-    if(p.revived&&CFG.giveUp!==0){
-      var _gp=Math.min(1,(p.giveT||0)/GIVEUP_HOLD());
-      _rowY+=Math.round(_hD*1.25);
-      // v12.78, 2026-09-07 audit: AND IT SAYS SO WHEN IT WILL NOT TAKE THE KEY.
-      // The v9.71 guard refuses the surrender while an extraction is waiting on
-      // the point he is lying in, silently: this row printed the prompt anyway,
-      // the key did nothing, the bar never appeared and nothing explained it. It
-      // reads the same test the key reads now, and says what is true, with the
-      // working verb still drawn underneath it in colour.
-      ctx.font=_fD; ctx.fillStyle='#9b8f8c';
-      if(surrenderBlocked()) ctx.fillText('NO SURRENDER WITH AN EXTRACTION WAITING',W/2,_rowY);
-      else{
-      ctx.fillStyle=_gp>0?'#ff8a76':'#9b8f8c';
-      ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);
-      }
+      else if(autoEquipOn()&&(tierUp||condUp)&&_handFree){
 '@
 
 # NEW IN.
@@ -77,7 +56,7 @@ SubRx @'
   'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
 '@ @'
   'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
-  'THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE. With an extraction waiting on the point you are lying in, the space bar is refused on purpose so a resting hand cannot throw away a full backpack. It now says so instead of printing a dead prompt.',
+  'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
 '@
 
 # STAMPS.
@@ -91,9 +70,9 @@ var WHATSNEW_VER='12.77';
 '@ @'
 var WHATSNEW_VER='12.78';
 '@
-$cnt=([regex]::Matches($s,"now:'v12.77:[^']*'")).Count
+$cnt=([regex]::Matches($s,"now:'v12\.77:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.77 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12.77:[^']*'",{ param($m) "now:'v12.78: 2026-09-07 audit (P3). v9.71 gave the surrender a guard it did not have: while an extraction is waiting on the point he is lying in, the space bar cannot end his raid, because the same overlay is telling him that extracting while downed is permitted and a hand resting on that key must not throw away a full backpack. The guard is right and nothing told him about it. The surrender row is drawn on one test, that he has spent his revive, so in that state the screen printed HOLD SPACE TO SURRENDER, the key did nothing, the progress bar never appeared because it is drawn only once the hold has started, and no line explained the refusal: a dead control and a prompt that lies, at three health with the point swarmed. The guard is now one named test with two readers, so the key and the screen can never disagree about it again, and the row says what is true instead, with the working verb still drawn underneath it in colour. Check 12.78 puts him down with his revive spent inside a point with an extraction waiting, holds the real key for two seconds through the real frame loop, and requires the hold never to start and the drawn text to carry the refusal and not the prompt, with a control outside that state requiring the prompt to be drawn and the hold to run; fails on v12.77.'" })
+$s=[regex]::Replace($s,"now:'v12\.77:[^']*'",{ param($m) "now:'v12.78: HIS NOTE after a live round, and it is a better rule than the one that was there. A found gun took the second slot if that slot was empty, which is right. If it was not empty, the pickup replaced THE GUN IN HIS HANDS on nothing more than a tier or condition comparison and pushed the gun he was holding into the backpack, so a rifle he had chosen could be knocked out of his hands by the next thing he pulled out of a crate, mid raid, because the game judged it a step up. He never asked for that trade and was never asked about it. His rule: the Scav Pistol is the starter and should ALWAYS be booted for something better, other weapons should never auto-replace each other, and a third gun goes into the backpack. So a slot YIELDS if it is empty, if it is Bare Hands, or if it holds the Scav Pistol; a slot holding anything else is his and is left alone, and with both slots holding real weapons the find goes to the backpack where equipping it is his decision. The empty-magazine test is kept, because a gun with no rounds and nothing to feed it is not a weapon he is relying on and that rule predates this note. Check 12.78 pulls a better gun with a real weapon in each hand and requires both hands untouched and the gun in the backpack, pulls the same gun with the Scav Pistol in hand and requires the pistol booted, and controls that an empty second slot still takes it; fails on v12.77.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

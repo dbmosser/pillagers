@@ -1,23 +1,17 @@
-v12.78: the downed screen stops offering a surrender it will not take
+v12.78: a gun you chose is not swapped out behind your back
 
-v9.71 gave the surrender a guard it did not have at first: while an extraction
-is waiting on the point you are lying in, the space bar cannot end your raid.
-The reasoning is right. That same overlay is telling you that extracting while
-downed is permitted, so a hand resting on the space bar must not throw away a
-full backpack in the one situation where being down ends well.
+His note after a live round. A found gun took the second slot when it was empty,
+which is right. When it was not empty, the pickup replaced the gun in your hands
+on a tier comparison and bagged the one you were holding, so a rifle you had
+chosen could be knocked out of your hands by the next thing out of a crate.
 
-Nothing ever told the player. The surrender row is drawn on a single test, that
-he has spent his self-revive, and asks nothing about where he is lying. So the
-screen printed HOLD SPACE TO SURRENDER, he held it, and nothing happened: the
-row never lit, the bar never appeared, and no line explained why.
+A slot yields now if it is empty, holds Bare Hands, or holds the Scav Pistol,
+which is the starter and is meant to be replaced by the first real find. Any
+other gun is yours. With two real weapons on you the find goes to the backpack
+and equipping it is your call.
 
-The guard is now one named test with two readers, so the key and the screen can
-never disagree again, and the row says what is true instead. The refusal itself
-is unchanged.
-
-Check 12.78 runs the control first, the same man downed nowhere near a waiting
-extraction, requiring the prompt drawn and the hold started. The finding arm
-lays him inside a point with an extraction waiting and requires no hold, no
-prompt, and the refusal in its place; fails on v12.77.
+Check 12.78 drives the real grant three times on one raid: two real guns must
+both stay put with the find bagged, the Scav Pistol must still be booted, and an
+empty second slot must still take it. Fails on v12.77.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

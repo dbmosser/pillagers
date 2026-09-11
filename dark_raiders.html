@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.77';
+var VER='12.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.77';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.77';
+var WHATSNEW_VER='12.78';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1406,6 +1406,7 @@ var WHATSNEW=[
   'THE LAST BOX BEFORE THE LIFT TELLS THE TRUTH. It said you were going up with an issued sidearm, when nothing equipped means a primary is issued and the second slot is left empty on purpose, and it listed Armour on the same line as the warning that you ascend with no armour on.',
   'HOW FAR YOU DIED FROM EXTRACTION IS MEASURED TO THE NEAREST WAY OUT. It was measured to a ring chosen at random when the raid was built, so the number disagreed with the compass you had been following all raid and with the closest-approach line printed right under it.',
   'THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY. The confirm button quoted a fine of a hundred or more XP to players who did not have it, and the line afterwards announced taking it, when the fine has always stopped at zero and took nothing.',
+  'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
   'THE SAFE POCKET IS GONE. It could only ever protect something you carried up from home, never the thing you found, because it was chosen at the lift and there was no way to reach it in a raid. Dying costs you the whole backpack now, with no exception.',
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
@@ -13211,7 +13212,15 @@ function grantLoot(ct,keys,delay0){
       // what an empty gun slot holds, the same test v10.62 uses. Both slots full
       // is unchanged: the gun in hand is the one replaced, and whether a found
       // gun should equip itself at all is his call, not mine.
-      var _secFree=(!p.sec||p.sec.id==='fists'||p.sec.mag===0);
+      // v12.78, HIS NOTE after a live round: A SLOT YIELDS, OR IT IS LEFT ALONE.
+      // The Scav Pistol is the starter and is always booted for something better,
+      // and so are Bare Hands and an empty slot. Any other gun is one he chose,
+      // and a pickup no longer knocks it out of his hands: with both slots
+      // holding real weapons the find goes to the backpack, where equipping it is
+      // his decision to make.
+      function _yields(w){ return !w||w.id==='fists'||w.id==='pistol'||w.mag===0; }
+      var _secFree=_yields(p.sec);
+      var _handFree=_yields(p.wep);
       if(autoEquipOn()&&(tierUp||condUp)&&_secFree){
         p.sec=found; p.secAmmo=Math.ceil(found.mag/2); p.secIssued=false; p.secFromArmory=false;
         T.gunsEquipped=(T.gunsEquipped||0)+1;
@@ -13227,7 +13236,7 @@ function grantLoot(ct,keys,delay0){
           if(found.qRank>=2) blip('pickGun');
         }
       }
-      else if(autoEquipOn()&&(tierUp||condUp)){
+      else if(autoEquipOn()&&(tierUp||condUp)&&_handFree){
         // Audit findings, both breaking. First: this guard used to be "does an
         // item exist for this gun", which is true for the ISSUED sidearm, so an
         // X-swapped loaner pistol got banked as sellable loot and the splice
@@ -29258,7 +29267,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.77: from the 2026-09-08 first-hour audit, and most of what that finding claimed was wrong. The skeptic threw out the part that said the fine is invisible to the outcome card, and it was right to: the fine lands before the raid ends and the card total is built from the profile afterwards, so the card and the corner readout agree. What survives is small and true. The fine for walking out is at least a hundred XP, and it is taken with a floor at zero so it can never push him negative, which is right. But the button quoted the fine from BEFORE that floor, and the line afterwards announced the same unfloored number. So a first-time player, who has almost no XP, opens the pause box on his second run and reads that abandoning costs a hundred and six XP when he has nothing like that to his name, presses it, is told XP minus a hundred and six, and loses nothing at all because there was nothing to take. The one number the game shows him about the consequences of quitting was fiction in both places it appeared, and it is the kind of fiction that makes a new player keep playing a run he wanted to leave. Both places now use the figure that will actually be charged, and at zero the button says there is no XP to lose and the line afterwards says the same. Nothing about the fine itself moves: the amount, the sixty second grace and the floor are all exactly as they were. Check 12.77 arms the confirm on a character with nothing banked and requires the button not to quote a fine, presses it and requires the line afterwards not to announce one, and controls that a character who HAS the XP still reads the full price and still pays it; fails on v12.76.',
+  now:'v12.78: HIS NOTE after a live round, and it is a better rule than the one that was there. A found gun took the second slot if that slot was empty, which is right. If it was not empty, the pickup replaced THE GUN IN HIS HANDS on nothing more than a tier or condition comparison and pushed the gun he was holding into the backpack, so a rifle he had chosen could be knocked out of his hands by the next thing he pulled out of a crate, mid raid, because the game judged it a step up. He never asked for that trade and was never asked about it. His rule: the Scav Pistol is the starter and should ALWAYS be booted for something better, other weapons should never auto-replace each other, and a third gun goes into the backpack. So a slot YIELDS if it is empty, if it is Bare Hands, or if it holds the Scav Pistol; a slot holding anything else is his and is left alone, and with both slots holding real weapons the find goes to the backpack where equipping it is his decision. The empty-magazine test is kept, because a gun with no rounds and nothing to feed it is not a weapon he is relying on and that rule predates this note. Check 12.78 pulls a better gun with a real weapon in each hand and requires both hands untouched and the gun in the backpack, pulls the same gun with the Scav Pistol in hand and requires the pistol booted, and controls that an empty second slot still takes it; fails on v12.77.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

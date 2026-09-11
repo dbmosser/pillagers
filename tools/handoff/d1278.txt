@@ -1,49 +1,33 @@
-## v12.78 - THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE
+## v12.78 - A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK
 
-From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
-reading at v12.77.
+His note, after a live round: weapon replacement is broken, the Scav Pistol should
+ALWAYS be booted in favour of a better weapon, other weapons should never
+auto-replace each other, and a third weapon should go into the backpack.
 
-WHAT IT WAS. v9.71 gave the surrender a guard it did not have at first: while
-an extraction is waiting on the point you are lying in, the space bar cannot
-end your raid. The reasoning is written into the code and it is right. That
-same overlay is telling you that extracting while downed is permitted, so a
-hand resting on the space bar must not throw away a full backpack in the one
-situation where being down ends well.
+WHAT IT WAS. A found gun took the second slot if that slot was empty, which is
+right. If it was not empty, the pickup replaced THE GUN IN HIS HANDS on nothing
+more than a tier or condition comparison, and pushed the one he was holding into
+the backpack. So a rifle he had chosen could be knocked out of his hands by the
+next thing he pulled out of a crate, mid raid, because the game judged it a step
+up. He never asked for that trade and was never asked about it.
 
-Nothing ever told the player about the guard. The surrender row is drawn on a
-single test, that he has spent his self-revive, with no question asked about
-where he is lying. So in that state the screen printed HOLD SPACE TO SURRENDER,
-he held it, and nothing happened: the row never lit, the progress bar never
-appeared because it is only drawn once the hold has started, and no line
-explained the refusal. A dead control and a prompt that lies, at three health
-with the point swarmed.
+THE RULE HE WANTS, and it is a better rule. A slot YIELDS if it is empty, if it
+holds Bare Hands, or if it holds the Scav Pistol, which is the starter and is
+meant to be replaced by the first real thing he finds. A slot holding anything
+else is his and is left alone. With both slots holding real weapons the find goes
+to the backpack, where equipping it is his decision to make.
 
-He does lose nothing by it, which is why the audit called it P3: the working
-verb, HOLD E TO EXTRACT, is drawn in the same stack right underneath, larger
-and in colour, and it works. But a screen that offers a control it will not
-take is the same fault as the crafting button, and it is the fault I have spent
-this week removing.
+The empty-magazine case is kept: a gun with no rounds and nothing to feed it is
+not a weapon he is relying on, and that test predates this note.
 
-THE BUILD. The guard becomes one named test with two readers, so the key and
-the screen can never disagree about it again. The row then says what is true
-instead of what is not on offer, with the working verb still underneath it in
-colour. Nothing about the refusal itself changes: the key is refused in exactly
-the same state, for exactly the same reason.
+MEASURED. Check 12.78 drives the real loot grant three times on one raid, with no
+death and no clock, so it repeats. A real gun in each hand: both hands must be
+untouched and the find must be in the backpack. The Scav Pistol in his hands: it
+must still be booted. An empty second slot: it must still take the gun, so a
+build that had simply stopped equipping anything would fail rather than pass. The
+guns are chosen off the weapon table by tier rather than named, so renaming one
+moves the check with it.
 
-IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The behaviour of the key is
-unchanged, the bot never surrenders, and no dial moves.
-
-MEASURED. Check 12.78 runs two arms on one staging. The control runs FIRST: the
-same man, downed with his revive spent, nowhere near a waiting extraction. The
-prompt must be drawn and the hold must start, or a missing prompt in the other
-arm would only say the overlay was never drawn at all. The finding arm lays him
-down inside a point with an extraction waiting, holds the real key for two
-thirds of a second through the real frame loop, and requires the hold never to
-start, the prompt never to be drawn, and the refusal line to be there in its
-place. The needle is assembled from pieces rather than written out, so a check
-that greps the page cannot find this row in its own source.
-
-Not verified: it does not read where the row sits on screen or what colour it
-is, only that the words are drawn; it does not run the hold to completion in
-the control arm, since that would end the raid; and it does not exercise the
-gamepad, which reaches the same key slot.
+Not verified: it drives the grant directly rather than walking him onto a crate;
+it does not check what the message line says about the swap, which v12.73 covers;
+and it does not change what happens to a gun he equips by hand from the backpack.

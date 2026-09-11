@@ -40024,6 +40024,39 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.78 - A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK
+
+His note, after a live round: weapon replacement is broken, the Scav Pistol should
+ALWAYS be booted in favour of a better weapon, other weapons should never
+auto-replace each other, and a third weapon should go into the backpack.
+
+WHAT IT WAS. A found gun took the second slot if that slot was empty, which is
+right. If it was not empty, the pickup replaced THE GUN IN HIS HANDS on nothing
+more than a tier or condition comparison, and pushed the one he was holding into
+the backpack. So a rifle he had chosen could be knocked out of his hands by the
+next thing he pulled out of a crate, mid raid, because the game judged it a step
+up. He never asked for that trade and was never asked about it.
+
+THE RULE HE WANTS, and it is a better rule. A slot YIELDS if it is empty, if it
+holds Bare Hands, or if it holds the Scav Pistol, which is the starter and is
+meant to be replaced by the first real thing he finds. A slot holding anything
+else is his and is left alone. With both slots holding real weapons the find goes
+to the backpack, where equipping it is his decision to make.
+
+The empty-magazine case is kept: a gun with no rounds and nothing to feed it is
+not a weapon he is relying on, and that test predates this note.
+
+MEASURED. Check 12.78 drives the real loot grant three times on one raid, with no
+death and no clock, so it repeats. A real gun in each hand: both hands must be
+untouched and the find must be in the backpack. The Scav Pistol in his hands: it
+must still be booted. An empty second slot: it must still take the gun, so a
+build that had simply stopped equipping anything would fail rather than pass. The
+guns are chosen off the weapon table by tier rather than named, so renaming one
+moves the check with it.
+
+Not verified: it drives the grant directly rather than walking him onto a crate;
+it does not check what the message line says about the swap, which v12.73 covers;
+and it does not change what happens to a gun he equips by hand from the backpack.
 ## v12.77 - THE PRICE OF WALKING OUT IS THE PRICE YOU ACTUALLY PAY
 
 From the 2026-09-08 first-hour audit. Most of what that finding claimed was
