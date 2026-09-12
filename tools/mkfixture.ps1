@@ -5709,6 +5709,48 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.05',what:'the Undercroft floor and the raid HUD paint his wording too: every string those two surfaces draw is compared against his own baked edits, so a line he has rewritten can no longer be repainted in the game words on the screens he spends the most time looking at (closes the canvas gap named in the v13.02 entry)',
+   run:function(){
+     if(!(window.__tx&&window.__tx.record&&window.__tx.ship)) return 'SKIP: this fixture cannot record what is painted';
+     if(!(window.__hubFrame&&window.__showScreen&&window.__hubEnter)) return 'SKIP: this fixture cannot draw the Undercroft floor';
+     var M=null; try{ M=__tx.ship(); }catch(_m){}
+     if(!M) return 'SKIP: his baked edits are not readable here';
+     var bad=[], drew=0;
+     function sweep(label,fn){
+       var H=[];
+       try{ H=__tx.record(fn)||[]; }catch(_r){ bad.push(label+' threw while drawing: '+(_r&&_r.message||_r)); return; }
+       if(!H.length) return;
+       drew++;
+       for(var i=0;i<H.length;i++){
+         var h=H[i], raw=String(h.o);
+         if(!Object.prototype.hasOwnProperty.call(M,raw)) continue;
+         var want=String(M[raw]);
+         if(String(h.t)!==want)
+           bad.push('the '+label+' paints ['+raw.slice(0,50)+'] where he rewrote that line to say ['+want.slice(0,50)+']: his wording is matched on the whole string, so whatever is drawn there is no longer the sentence his edit was written against and his version has gone off the screen without a sound');
+       }
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       __showScreen('hub'); __hubEnter();
+       sweep('Undercroft floor',function(){ __hubFrame(0.016); });
+       if(window.__deploy&&window.__frame&&window.__state){
+         try{
+           __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+           sweep('raid HUD',function(){ __frame(0.016); });
+         }catch(_d){}
+         // A finished raid blocks the floor pause box, so this check leaves none:
+         // the game's own return path drops the raid rather than leaving it over.
+         try{ var g=__state(); if(g&&!g.over){ g.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+         try{ G=null; keys={}; showScreen('hub'); }catch(_q){}
+       }
+       if(!drew)
+         bad.push('control: neither surface painted a single string, so this sweep would report nothing on a build that had lost every one of his edits');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ G=null; keys={}; showScreen('hub'); }catch(_q2){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.04',what:'the outcome card carries his wording too: an abandoned run with a haul prints the line as he rewrote it, and the card is checked by shape rather than by exact text because its lines carry numbers that change every run (widens the v13.02 guard)',
    run:function(){
      if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P&&window.__loop&&window.__keysRef))
