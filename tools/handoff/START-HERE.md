@@ -799,3 +799,31 @@ and P.equippedSec. So "the gun slot comes back" is a promise about a field nothi
 uses, and the v12.82 entry claiming it restores the gun slot is describing a no-op.
 Removing it is dead-code deletion with the v8.34 deletion risk and no player-visible
 gain, so it is written down rather than done.
+
+## PARKED 2026-09-12: f1303, widening the his-edits guard to the OUTCOME CARD
+
+WHY IT IS WORTH FINISHING. v13.02 guards six panels that need no raid. Four of his
+baked edits live on the outcome card instead, which is the screen he reads after every
+raid, and they are PATTERN edits (the lines carry a haul and an XP figure), so the
+v13.02 rule of "is the raw sentence visible" cannot reach them. The drafted check
+compares SHAPES with the numbers stripped, which is the same reduction the game makes.
+
+WHY IT IS PARKED. I could not stage an abandoned card from a check. Five attempts.
+What was learned, so the next attempt starts further along:
+
+- endRaid returns immediately if G.over is already set, and __topClear hides the card
+  without clearing that.
+- __deploy then __endRaid('abandon') does not raise the card. Nor does __startRaid then
+  __endRaid('abandon').
+- Running __loop frames after __endRaid makes it WORSE: __state().over reads undefined
+  afterwards, so the loop has moved on and the card's dynamic content is gone. The
+  "EXTRACTED" headline seen in every attempt is the static markup default, not a result.
+- The card is populated by endRaid and drawn by the loop, and his wording is applied by
+  a MutationObserver, which is a microtask: a synchronous read after any of those three
+  sees something that has not happened yet.
+- __verifySafe DOES stage all three endings and gets ABANDONED. Its abandon arm loots
+  first, with 420 __loop frames holding KeyE, and only then ends the raid. That is the
+  path to copy, and copying it is the next step rather than inventing another.
+
+The draft is tools/handoff/parked/f1303-cardsweep.ps1 and it applies cleanly; only the
+staging is wrong. The assertion and the shape comparison are worth keeping.
