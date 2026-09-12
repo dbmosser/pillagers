@@ -40024,6 +40024,54 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.89 - ESC CLOSES THE BACKPACK AND THE MAP IN A RAID
+
+Finding 9 of the 2026-09-11 read-only audit, and the raid twin of the v12.11 fix on
+the Undercroft floor. HIS 2026-09-03 ANSWER: CLOSE and ESC on every menu.
+
+WHAT HAPPENS. Mid-raid he presses TAB to look in the backpack, or M for the map,
+then presses ESC to back out of it, which is what every other window in this game
+has taught him. The pause box rises OVER the open panel and the raid freezes. A
+second ESC closes the pause box and the backpack is still sitting there
+underneath; only TAB, I or M will actually shut it. ESC closed the wrong window
+twice and the panel he was looking at neither time. And while the box was up the
+v12.22 lockout blocked TAB, I and M as well, so the one key that would have shut
+the panel was the one key he could not use.
+
+IT WAS ALREADY INCONSISTENT INSIDE ONE RAID. ESC does close the emote bar and it
+does close the Peddler stall, because both are handled above that line. The same
+key answered two in-raid panels and paused over the other two.
+
+THE BUILD. ESC gets its own branch above the pause toggle, closing the front-most
+panel and returning. The map is in front of the backpack, because drawMapOverlay
+runs after drawBag, so one press takes the map and the next takes the bag. The
+pause box is in front of both, which is what pauseOpen is doing in the guard:
+without it, ESC would shut the panel behind the box. A held drag goes with the
+bag, the way the focus-loss rescue already drops it.
+
+MEASURED. Check 12.89 deploys, opens each panel with its OWN key so a build where
+TAB stopped opening the backpack cannot pass by having nothing to close, and
+requires ESC to shut it with the pause box staying down. With both open it requires
+one press to take the map and not the bag, and the next to take the bag. It then
+drives the three layers: with the backpack open, P must still raise the box; ESC
+must close the BOX and leave the backpack; and the next ESC must close the
+backpack. That last press is what fails on the v12.88 fixture, along with four
+other arms.
+
+ONE THING IS NOT MEASURABLE HERE AND THE CHECK SAYS SO RATHER THAN GUESSING. ESC
+with nothing open cannot be read from a synthetic press. The v11.04 Escape listener
+is registered on window AFTER the main one, so an event dispatched AT window is
+at-target for both and they run in registration order, raidKey first; that listener
+then sees the box raidKey has just opened and closes it again in the same press. In
+real play it runs in the capture phase, before raidKey, and does nothing. Measured
+directly: P raises the box, ESC with the box up closes it, ESC with the box down
+leaves it down. The last of those is the instrument, not the build, so the controls
+are built on P instead.
+
+Not verified: it presses synthetic keys on window, which is the only honest
+instrument while the pane is hidden, so the real capture-phase ordering above is
+reasoned from the registration order rather than observed; and it does not check
+that the panel visually disappears, only that the flag the renderer reads is off.
 ## v12.88 - A FRIEND YOU IMPORT CARRIES THE GUN THEY ACTUALLY CARRIED
 
 Finding 3 of the 2026-09-11 read-only audit, and the only finding in that file

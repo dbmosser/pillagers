@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.88';
+var VER='12.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.88';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.88';
+var WHATSNEW_VER='12.89';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'ESC CLOSES THE BACKPACK AND THE MAP IN A RAID. It raised the pause box over whatever you had open instead, and a second press closed the box and left the panel sitting there, so ESC shut the wrong window twice. The map is in front of the backpack, and the pause box is in front of both.',
   'A FRIEND YOU IMPORT CARRIES THE GUN THEY ACTUALLY CARRIED. Their weapon name was cut at the first space, so anyone whose favourite had two words in it came back as an Auto Rifle, which is nine of the sixteen guns. If their report still cannot be read, the game no longer claims a favourite it cannot support.',
   'YOU COME BACK DOWN WITH AN EMPTY BACKPACK AND BELT. Die or walk out and your backpack, your tactical belt and your gun slot are all empty by the time you reach the Undercroft, so the next raid is packed on purpose rather than carried over. If you took the freebie kit, the gear you had packed before it is waiting in your stash, not back on your back.',
   'RESTORING FROM A FILE REBUILDS THE SCREEN INSTEAD OF HALF OF IT. The stash grid, the saved zoom, the game options and the contracts were all still the ones belonging to the profile you had just replaced, so the Settings rows and the screen disagreed until you happened to reload. Every way of replacing your whole profile now ends the same way.',
@@ -10788,6 +10789,15 @@ function raidKey(code,repeat,ev){
     if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC') return;
   }
   if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyV','KeyC','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
+  // v12.89, audit finding 9: ESC BELONGS TO WHATEVER IS IN FRONT, which in a raid
+  // is the map, then the backpack, then the pause box behind neither. A held drag
+  // goes with the bag, the way the focus-loss rescue already drops it.
+  if(code==='Escape'&&G&&!G.over&&!pauseOpen&&(G.mapOpen||G.bagOpen)&&!repeat){
+    if(ev) ev.preventDefault();
+    if(G.mapOpen) G.mapOpen=false;
+    else { G.bagOpen=false; G.drag=null; }
+    return;
+  }
   if((code==='Escape'||code==='KeyP')&&G&&!G.over)
     togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
   // H CYCLES, v2.94. His note: "update the key legend, make it smaller if
@@ -29325,7 +29335,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.88: finding 3 of the 2026-09-11 audit, and the only one in that file where the game states a fact about a real person and the fact is false. A friend plays the alpha, exports their run report and sends him the file; he names them at the Mainframe, picks the file, and the game says NAME imported, 17 runs, 29 percent extract, favours the Auto Rifle, and the Mainframe hint repeats it for as long as that ghost is installed. The friend never touched an Auto Rifle: their report said Scav Pistol on every line. The export writes the weapon as its DISPLAY name, wep colon Scav Pistol bracket owned, and the capture group is lazy and terminates on whitespace or the bracket, so it stops at the first SPACE and yields Scav; the lookup against the weapon table then finds nothing and favKey is left sitting on its initialiser rifle, whose display name is Auto Rifle. Nine of the sixteen weapons have a space in the name, so nine of sixteen break, and by coincidence Auto Rifle itself truncates to Auto, fails the lookup and lands on rifle, so it reports correctly by accident. Two things were wrong and both are fixed: the parse stops at the bracket or at the next field rather than the first space, so the whole display name reaches the lookup, and a lookup that still fails no longer states a favourite at all, because an unreadable report should get a ghost with no favourite-gun sentence rather than a confident wrong one. The gun the ghost is armed with is unchanged in that case, so nothing about the raid moves; only the claim goes away. Check 12.88 parses a report whose every run says a two-word gun and requires the ghost to come back carrying that gun and naming it, parses one naming a gun this build does not have and requires no favourite to be claimed, and controls that a one-word gun still reads correctly; fails on v12.87 where the two-word report comes back as an Auto Rifle.',
+  now:'v12.89: finding 9 of the 2026-09-11 audit, and the raid twin of the v12.11 fix on the Undercroft floor; his 2026-09-03 answer is CLOSE and ESC on every menu. Mid-raid he presses TAB to look in the backpack, or M for the map, then presses ESC to back out of it, which is what every other window in this game has taught him, and the pause box rises OVER the open panel and the raid freezes; a second ESC closes the box and the backpack is still sitting there underneath, and only TAB, I or M will actually shut it, so ESC closed the wrong window twice and the panel he was looking at neither time. Worse, while the box was up the v12.22 lockout blocked TAB, I and M as well, so the one key that would have shut the panel was the one key he could not use. It was already inconsistent inside one raid: ESC does close the emote bar and the Peddler stall, because both are handled above that line, so the same key answered two in-raid panels and paused over the other two. The map is in front of the backpack, because drawMapOverlay runs after drawBag, so one press takes the map and the next takes the bag; the pause box is in front of both, which is what pauseOpen is doing in the guard, because without it ESC would shut the panel behind the box. A held drag goes with the bag, the way the focus-loss rescue already drops it. Check 12.89 deploys, opens the backpack and presses the real key, requiring the backpack shut and the box down, does the same for the map, requires one press each when both are open with the map going first, and controls that ESC with nothing open still raises the box and that ESC with the box up closes the box and not the panel behind it; fails on v12.88 where the first press raises the box over the panel.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

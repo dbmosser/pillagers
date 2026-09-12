@@ -5709,6 +5709,83 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.89',what:'in a raid ESC closes what is in front: the map first, then the backpack, and only with neither open does it raise the pause box, while ESC with the box already up closes the box and leaves the panel behind it alone (audit finding 9, 2026-09-11, the raid twin of v12.11)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__keysRef)) return 'SKIP: this fixture cannot deploy a raid';
+     var pb=document.getElementById('pausebox');
+     if(!pb) return 'SKIP: this build has no pause box';
+     var bad=[];
+     function tap(c){
+       window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:(c==='Escape'?'Escape':c),bubbles:true,cancelable:true}));
+       window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:(c==='Escape'?'Escape':c),bubbles:true,cancelable:true}));
+     }
+     function boxUp(){ return pb.classList.contains('on'); }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       if(!g) return 'SKIP: the raid did not start';
+       var K=__keysRef(); for(var k in K) K[k]=false;
+       // THE BACKPACK, opened with its own key.
+       tap('Tab');
+       if(!g.bagOpen){ bad.push('control: TAB did not open the backpack, so there is nothing here for ESC to close'); }
+       else {
+         tap('Escape');
+         if(g.bagOpen) bad.push('ESC over the open backpack did not close it, so the gesture every other window in this game teaches him does nothing to the one panel he has open');
+         if(boxUp()) bad.push('ESC over the open backpack raised the pause box instead, so the raid froze under the panel he was trying to back out of and a second press would close the box and leave the panel sitting there');
+       }
+       if(boxUp()){ tap('Escape'); }
+       g.bagOpen=false; g.mapOpen=false;
+       // THE MAP, opened with its own key.
+       tap('KeyM');
+       if(!g.mapOpen){ bad.push('control: M did not open the map'); }
+       else {
+         tap('Escape');
+         if(g.mapOpen) bad.push('ESC over the open map did not close it');
+         if(boxUp()) bad.push('ESC over the open map raised the pause box instead');
+       }
+       if(boxUp()){ tap('Escape'); }
+       g.bagOpen=false; g.mapOpen=false;
+       // BOTH OPEN: the map is drawn in front, so it goes first and one press
+       // must not take them both.
+       tap('Tab'); tap('KeyM');
+       if(g.bagOpen&&g.mapOpen){
+         tap('Escape');
+         if(g.mapOpen) bad.push('with both open ESC did not close the map, which is the one drawn in front');
+         if(!g.bagOpen) bad.push('one press of ESC closed the map and the backpack together, so he loses the panel he was not backing out of');
+         if(boxUp()) bad.push('with both open ESC raised the pause box');
+         tap('Escape');
+         if(g.bagOpen) bad.push('the second press of ESC did not close the backpack behind the map');
+       }
+       if(boxUp()){ tap('Escape'); }
+       g.bagOpen=false; g.mapOpen=false;
+       // THE THREE LAYERS, DRIVEN BY P BECAUSE ESC WITH NOTHING OPEN IS NOT
+       // READABLE FROM A SYNTHETIC PRESS. The v11.04 Escape listener is registered
+       // on window after the main one, so an event dispatched AT window reaches
+       // raidKey first and that listener second, where it closes the box raidKey
+       // just opened. In real play it runs in the capture phase, before raidKey,
+       // and does nothing. What IS readable is the order of the three layers.
+       tap('Tab');
+       if(!g.bagOpen){ bad.push('control: TAB did not re-open the backpack'); }
+       else {
+         tap('KeyP');
+         if(!boxUp()) bad.push('control: with the backpack open P no longer raises the pause box, so the pause key has been taken away rather than the panel given its own');
+         if(!g.bagOpen) bad.push('control: raising the pause box closed the backpack behind it');
+         tap('Escape');
+         if(boxUp()) bad.push('control: ESC did not close the pause box, which is in front of everything');
+         if(!g.bagOpen) bad.push('ESC with the box up closed the backpack behind it rather than the box in front, so the panels answer the key out of order');
+         tap('Escape');
+         if(g.bagOpen) bad.push('once the box is down ESC still does not reach the backpack: it raises the box again instead, which is the whole defect');
+         if(boxUp()) bad.push('the press that should have closed the backpack raised the pause box over it again');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(pb.classList.contains('on')){ if(typeof togglePauseBox==='function') togglePauseBox(false); pb.classList.remove('on'); } }catch(_b){}
+       try{ var g2=__state(); if(g2){ g2.bagOpen=false; g2.mapOpen=false; g2.drag=null; if(!g2.over){ g2.player.downed=false; __endRaid('extract'); } } }catch(_e){}
+       try{ var K2=__keysRef(); for(var k2 in K2) K2[k2]=false; }catch(_k){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.88',what:'a friend imported from a run report carries the gun they actually carried, even when its name has a space in it, and a report naming a gun this build does not have gets a ghost with no favourite claimed rather than a confident wrong one (audit finding 3, 2026-09-11)',
    run:function(){
      if(!(window.__ghost&&window.__ghost.parse)) return 'SKIP: this fixture cannot reach the run-report reader';

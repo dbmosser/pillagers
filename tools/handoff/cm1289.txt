@@ -1,0 +1,28 @@
+v12.89: ESC closes the backpack and the map in a raid
+
+Finding 9 of the 2026-09-11 audit, and the raid twin of the v12.11 fix on the
+Undercroft floor. His 2026-09-03 answer: CLOSE and ESC on every menu.
+
+Mid-raid, TAB opens the backpack and ESC is what every other window in this game
+teaches you. The pause box rose OVER the panel and froze the raid; a second ESC
+closed the box and the panel was still there. Only TAB, I or M shut it, and while
+the box was up the v12.22 lockout blocked all three.
+
+It was already inconsistent inside one raid: ESC closes the emote bar and the
+Peddler stall, because both are handled above that line.
+
+ESC now has its own branch above the pause toggle. The map is in front of the
+backpack, since drawMapOverlay runs after drawBag; the pause box is in front of
+both, which is what pauseOpen is doing in the guard. A held drag goes with the bag.
+
+Check 12.89 opens each panel with its own key and requires ESC to shut it with the
+box staying down, requires one press to take the map and not the bag when both are
+open, and drives the three layers with P. Five arms fail on v12.88.
+
+ESC with nothing open is not readable from a synthetic press: the v11.04 Escape
+listener is registered on window after the main one, so a dispatch AT window runs
+raidKey first and that listener second, closing the box raidKey just opened. In
+real play it runs in the capture phase and does nothing. That is the instrument,
+not the build, so the controls use P and the check says so.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
