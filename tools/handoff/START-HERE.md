@@ -800,7 +800,9 @@ uses, and the v12.82 entry claiming it restores the gun slot is describing a no-
 Removing it is dead-code deletion with the v8.34 deletion risk and no player-visible
 gain, so it is written down rather than done.
 
-## PARKED 2026-09-12: f1303, widening the his-edits guard to the OUTCOME CARD
+## UNPARKED AND SHIPPED 2026-09-12 as check 13.04. Kept for the lesson.
+
+## (was) PARKED: f1303, widening the his-edits guard to the OUTCOME CARD
 
 WHY IT IS WORTH FINISHING. v13.02 guards six panels that need no raid. Four of his
 baked edits live on the outcome card instead, which is the screen he reads after every
@@ -827,3 +829,30 @@ What was learned, so the next attempt starts further along:
 
 The draft is tools/handoff/parked/f1303-cardsweep.ps1 and it applies cleanly; only the
 staging is wrong. The assertion and the shape comparison are worth keeping.
+
+### WHAT ACTUALLY FIXED IT (check 13.04, same day)
+
+TWO THINGS, and one of them was not the staging at all.
+
+1. THE ABANDON NEEDS A REAL RUN BEHIND IT. The verify chain says so in its own
+   comment: without one, endRaid takes the empty-run discard path and never draws a
+   card. Setting G.bag by hand is not a real run. Walk the player to the nearest
+   container that has loot in it, hold KeyE for 420 frames, then end the raid and run
+   30 more frames. That is verifySafe's own recipe and it works first time.
+
+2. THE PANE WAS 0x0. Two of the five failed attempts were that and nothing else: a
+   zero-size canvas makes the loop throw, the throw is caught, so no looting happens
+   and the run is empty again. The symptom is identical to bad staging, which is what
+   made this take five tries. RESIZE 1920x1080 BEFORE BLAMING THE STAGING.
+
+### AND ONE MORE THING IT TAUGHT: A FINISHED RAID BLOCKS THE FLOOR PAUSE BOX
+
+togglePauseBox opens with `if(G&&G.over) return;`. So ANY check that ends a raid and
+leaves the finished G in place silently breaks every later check that pauses on the
+floor. The corpus runs newest first, so a new check at the top can break an old one
+hundreds of rows down, and the failure reads as "the pause box would not open", which
+looks like the pause box.
+
+Check 13.04 did exactly that to 12.95 on its first corpus run. The teardown now does
+what the game's own return path does: `G=null; keys={}; showScreen('hub');`. Any check
+that ends a raid should do the same unless it has a reason not to.

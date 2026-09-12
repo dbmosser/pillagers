@@ -25,11 +25,11 @@ function SubRx([string]$old, [string]$new) {
 # exists on that outcome. A clean extraction never prints it, which is why three
 # attempts at this from outside the closure read a card that could not have carried it.
 SubRx @'
-  {v:'13.02',what:'no screen shows the original of a line he has rewritten
+  {v:'13.03',what:'the experimental warning on the Undercroft floor
 '@ @'
-  {v:'13.03',what:'the outcome card carries his wording too: an abandoned run with a haul prints the line as he rewrote it, and the card is checked by shape rather than by exact text because its lines carry numbers that change every run (widens the v13.02 guard)',
+  {v:'13.04',what:'the outcome card carries his wording too: an abandoned run with a haul prints the line as he rewrote it, and the card is checked by shape rather than by exact text because its lines carry numbers that change every run (widens the v13.02 guard)',
    run:function(){
-     if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P&&window.__loop))
+     if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P&&window.__loop&&window.__keysRef))
        return 'SKIP: this fixture cannot finish a raid';
      if(!(window.__tx&&window.__tx.ship&&window.__tx.dom)) return 'SKIP: this fixture cannot read his baked edits';
      var M=null; try{ M=__tx.ship(); }catch(_m){}
@@ -52,8 +52,21 @@ SubRx @'
        __startRaid({mapIx:0,seed:4242});
        var g=__state();
        if(!g||!g.player) return 'SKIP: the raid did not start';
-       // A HAUL, or the line he rewrote is never printed at all.
-       g.bag=['scrap','scrap','wire'];
+       // A REAL RUN BEHIND IT, or the abandon takes the empty-run discard path and
+       // never draws a card at all. That sentence is written into the verify chain and
+       // it is the whole reason five hand-staged attempts read a blank panel: walk to
+       // the nearest container that has something in it and hold the use key.
+       var best=null,bd=1e9,ci;
+       for(ci=0;ci<(g.containers||[]).length;ci++){
+         var c=g.containers[ci], d=Math.sqrt((c.x-g.player.x)*(c.x-g.player.x)+(c.y-g.player.y)*(c.y-g.player.y));
+         if(d<bd&&c.loot&&c.loot.length){ bd=d; best=c; }
+       }
+       if(!best) return 'SKIP: this landing has no container with anything in it, so no real run can be staged here';
+       g.player.x=best.x; g.player.y=best.y+4;
+       var K=__keysRef(); for(var kk in K) K[kk]=false; K['KeyE']=true;
+       var _t1=performance.now();
+       try{ for(var _lf2=0;_lf2<420;_lf2++) __loop(_t1+_lf2*16.7); }catch(_pe){}
+       K['KeyE']=false;
        g.player.downed=false;
        __endRaid('abandon');
        // THE CARD IS DRAWN BY THE LOOP, NOT BY endRaid. Reading it in the same
@@ -66,7 +79,7 @@ SubRx @'
        var oc=document.getElementById('outcome');
        var txt=((oc&&oc.textContent)||'').replace(/\s+/g,' ');
        if(txt.indexOf('ABANDONED')<0)
-         return 'SKIP: the card did not open on an abandoned run (over='+String((__state()||{}).over)+' card='+JSON.stringify(txt.slice(0,90))+')';
+         return 'SKIP: the card did not open on an abandoned run, so there is no card here to read';
        if(txt.indexOf('Run abandoned')<0)
          return 'SKIP: the abandoned card printed no haul line, so the line he rewrote was not on it to check';
        var lineShape=shape(txt);
@@ -78,12 +91,16 @@ SubRx @'
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       // THE RAID MUST NOT SURVIVE THIS CHECK. A finished raid blocks the floor pause
+       // box outright, so leaving one here breaks 12.95 three checks later; the game
+       // own return path drops the raid rather than leaving it over, and this is that.
        try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       try{ G=null; keys={}; showScreen('hub'); }catch(_q){}
        try{ P2.log=keepLog; saveProfile(); }catch(_p){}
        try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'13.02',what:'no screen shows the original of a line he has rewritten
+  {v:'13.03',what:'the experimental warning on the Undercroft floor
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
