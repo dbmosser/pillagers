@@ -1,0 +1,44 @@
+## v12.98 - THE LAST POUR SHOWS THE ONE BONUS IT ACTUALLY PAYS
+
+Finding 16 of the 2026-09-11 read-only audit. Three places disagreed about one rule,
+and the bar sold him Credits' worth of a bonus it then did not pay.
+
+WHAT HAPPENS. He reads "the bar cuts you off at ten", buys six Liquor and six Blotter
+for $4,920, and the two rows read RAID XP +15% and RAID XP +15%. The in-raid
+conditions panel prints the same two. Every screen he can see says +30%. The raid pays
++25%, because the bonus counts both kinds TOGETHER and stops at ten.
+
+AND THE GATE IS ON A THIRD BASIS AGAIN. It locks each drink at ten of ITS OWN kind, so
+the station will sell twenty doses under a line promising ten.
+
+NO NUMBER MOVES HERE. The cap is still ten, the rate is still 2.5 percent a dose. This
+is drift: the "cuts you off at ten" copy was written at v7.49 to describe the
+per-drink lock, before the combined-cap bonus existed, and the per-row percentage was
+never revisited when it did.
+
+THE BUILD. One number, in one place, computed from the function that pays it. Two rows
+each printing a share of a capped total can always be read as a sum the game will not
+honour, so the rows keep the honest per-drink count and the bonus is printed once,
+live, on the bar line and once on the conditions panel. The gate counts the same total
+the bonus does.
+
+MEASURED, AND THE CHECK ASSERTS NO PERCENTAGE OF ITS OWN. It reads what the payout
+function returns and requires every screen to show that and nothing else, so the dial
+can move without the row going stale, and a build that changed the rate in one place
+and not the others still fails. The mixed case is the finding: six of each. With one
+drink every basis agrees and nothing is measurable, which is why the old check was
+green over this. Three controls: a single drink must still show its own dose count, or
+the rows have been gutted rather than corrected; and the payout itself must be
+untouched at five doses and at twelve, because no number moves in this build. Three
+arms fail on the v12.97 fixture, reporting +15% and +15% against a paid +25% and the
+bar still selling a second kind at ten doses.
+
+THE v9.96 CHECK WAS RE-POINTED, NOT DROPPED. Its bar-text arm read the per-drink
+percentage off the row, which this build moves to the bar line. It still requires the
+bar to say what two doses are worth, and it is still two doses of one kind, where the
+old basis and the new one agree.
+
+Not verified: it reads the rendered bar and the payout function rather than running a
+raid and banking the XP, which the v9.96 and v12.12 work already cover; and it does
+not check the acid warp, which those doses still drive and which was never the part
+that was wrong.

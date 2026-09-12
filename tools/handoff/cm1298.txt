@@ -1,0 +1,25 @@
+v12.98: THE LAST POUR shows the one bonus it actually pays
+
+Finding 16 of the 2026-09-11 audit. Three places disagreed about one rule.
+
+Six Liquor and six Blotter for $4,920 read RAID XP +15% and +15% on the bar, and the
+in-raid conditions panel printed the same two. The raid paid +25%: the bonus counts
+both kinds together and stops at ten. The purchase gate used a third basis again,
+locking each drink at ten of its own kind, so the bar would sell twenty under a line
+promising ten.
+
+No number moves. The cap is ten and the rate is 2.5% a dose. This is drift: the "cuts
+you off at ten" copy was written at v7.49 for the per-drink lock, before the combined
+cap existed.
+
+One number now, in one place, from the function that pays it. The rows keep the honest
+per-drink count; the bonus prints once on the bar line and once on the conditions
+panel; the gate counts the same total the bonus does.
+
+Check 12.98 asserts no percentage of its own: it reads the payout and requires every
+screen to show that and nothing else. Controls: a single drink still shows its count,
+and five doses and twelve pay exactly what they paid. Three arms fail on v12.97.
+
+Check 9.96's bar-text arm was re-pointed to the bar line, not dropped.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

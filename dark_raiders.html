@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.97';
+var VER='12.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.97';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.97';
+var WHATSNEW_VER='12.98';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE LAST POUR SHOWS THE ONE BONUS IT ACTUALLY PAYS. Liquor and Blotter count together and stop at ten, which the bar line always said, but the gate locked each drink at ten of its own kind and each row printed its own share of the bonus, so six of each read as +15% and +15% on every screen against a raid that paid +25%. One number now, in one place, from the function that pays it. No dial moved.',
   'A RESTORE CODE CARRIES NET LIFETIME EARNINGS. Everything else was replaced when you pasted one, so a character restored over your save wore YOUR lifetime earnings as its own, and one restored onto a fresh install read $0 beside a best haul of tens of thousands. Codes made before today set it to zero rather than leaving somebody else figure standing.',
   'THE CAREER CARD STOPS COUNTING PILLAGERS YOU PICKED UP AS TIMES YOU GOT BACK UP. A clean run where you revived three of them read Went down 0 with 3 times you got back up underneath it. The same number went into the report you send. Runs already in your log read right too, without anything stored being changed.',
   'THE PAUSE BOX IN THE UNDERCROFT OWNS THE KEYBOARD NOW. Pressing SPACE while it was up stored a roll your character spent the moment you closed it, TAB opened the backpack invisibly underneath, H flipped the controls panel behind it, and ENTER threw away the update card you had not read. Only P and ESC answer while it is up, which are the two keys it names.',
@@ -24084,8 +24085,11 @@ _tgt=G.active; _lbl='EXTRACTION';
       if(!_bn) continue;
       var _bt=0,_bB=P.buzz||[];
       for(var _bw=0;_bw<_bB.length;_bw++) if(_bB[_bw].tag===_bzTags[_bq][0]) _bt=Math.max(_bt,_bB[_bw].t);
-      rows.push({k:_bzTags[_bq][1]+(_bn>1?(' \u00d7'+_bn):''),v:fmtMS(_bt)+' left, XP +'+(Math.round(_bn*buzzXpPer()*1000)/10)+'%',c:'#d98aff'});
+      // v12.98: what is in him and how long it has, per drink, which is true. The
+      // bonus is one number for both and is printed once, below.
+      rows.push({k:_bzTags[_bq][1]+(_bn>1?(' \u00d7'+_bn):''),v:fmtMS(_bt)+' left',c:'#d98aff'});
     }
+    if(buzzTotal()) rows.push({k:'RAID XP',v:'+'+buzzXpPct()+'%',c:'#d98aff'});
     var wv=[];
     if(MW.view!==1) wv.push('sight '+(MW.view<1?'-':'+')+Math.round(Math.abs(1-MW.view)*100)+'%');
     // HIS NOTE, v3.57: "shouldn't it be 'all characters are 40% quieter'
@@ -29429,7 +29433,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.97: finding 6 of the 2026-09-11 audit, and the same class as the armoury omission that shipped at v11.66, a profile field surviving a REPLACE. The indefensible half: a player who already has runs of his own pastes a friend restore code over his save, and the panel says in those words that it REPLACES the save he is playing; everything else is replaced, name, credits, XP, runs, extracts, deaths, best haul, notoriety, the stash and the armoury, but Net lifetime earnings is not, because nothing writes it, so his own figure stays and the career card prints it as a fact about the character he has just restored. The other half: on a fresh install the restored character lands with that card reading zero beside a restored best haul of tens of thousands, while the neighbouring cards honestly say nothing because they are summed from the run log and the panel discloses that the log does not come back; this one states a figure instead. Recomputing is not the answer: the only repair site fires when the field is ABSENT and on an existing save it is present, and the log cannot answer the question anyway because it keeps the last sixty runs while the counter is maintained for the life of the profile, so summing the log is a migration approximation and not the number. The fix carries it in the code beside the other counters and writes it in the same place, and a code made before today has no key for it and then it is set to zero rather than left showing the previous character figure, because an honest zero for a character whose maker never recorded it beats somebody else lifetime. Check 12.97 makes a code from a profile with a known lifetime figure, applies it over a profile carrying a different one, and requires the restored figure rather than the old one to survive, requires a code with no key for it to zero the field rather than leave the previous character number standing, and controls that every counter the restore already carried is still carried; fails on v12.96.',
+  now:'v12.98: finding 16 of the 2026-09-11 audit. Three places disagreed about one rule, and the bar sold him Credits worth of a bonus it then did not pay. He reads that the bar cuts you off at ten, buys six Liquor and six Blotter for 4920, and the two rows read RAID XP plus 15 percent and RAID XP plus 15 percent; the in-raid conditions panel prints the same two, so every screen he can see says plus 30 percent, and the raid pays plus 25 because the bonus counts both kinds TOGETHER and stops at ten. The gate is on a third basis again: it locks each drink at ten of its OWN kind, so the station will happily sell twenty doses under a line promising ten. No number moves here, the cap is still ten and the rate is still 2.5 percent a dose; this is drift, because the cuts you off at ten copy was written at v7.49 to describe the per-drink lock, before the combined-cap bonus existed, and the per-row percentage was never revisited when it did. The fix is that one number is shown in one place, computed from the function that pays it: two rows each printing a share of a capped total can always be read as a sum the game will not honour, so the rows keep the honest per-drink count and the bonus is printed once, live, on the bar line and once on the conditions panel, while the gate now counts the same total the bonus does. Check 12.98 stages six of each and requires no screen to show a figure other than the one the payout function returns, requires the gate to stop selling at ten of anything rather than ten of each, and controls that a single drink still shows its own dose count and that the payout itself is unchanged at both five and twelve doses; fails on v12.97.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29953,7 +29957,15 @@ function sayAny(m){
 // together, ten doses at most. Dial: buzzXp.
 // v10.02, his answer 41: two and a half percent a dose, not five.
 function buzzXpPer(){ return (CFG.buzzXp===undefined)?0.025:CFG.buzzXp; }
-function buzzXpMul(){ var d=buzzDoses('drunk')+buzzDoses('lsd'); return 1+Math.min(d,10)*buzzXpPer(); }
+function buzzXpMul(){ var d=buzzTotal(); return 1+Math.min(d,10)*buzzXpPer(); }
+// v12.98, audit finding 16: ONE BASIS FOR EVERYTHING THAT COUNTS OR SHOWS A DOSE.
+// The bonus has always counted both kinds together and stopped at ten; the bar gate
+// counted each drink separately, and the bar and the conditions panel each printed a
+// per-drink share of it, so two rows added up to a number no raid ever paid. These
+// two are read by the gate and by every figure shown, so they cannot drift apart
+// from the function that pays.
+function buzzTotal(){ return buzzDoses('drunk')+buzzDoses('lsd'); }
+function buzzXpPct(){ return Math.round((buzzXpMul()-1)*1000)/10; }
 // ONE WRITER for earned XP, so every grant takes the bar's bonus. Returns what
 // was actually added.
 function addXp(n,mul){
@@ -30032,12 +30044,17 @@ function renderBar(){
   var el=document.getElementById('barlist'); if(!el) return;
   walletLine('wallet_bar','');
   document.getElementById('bar_line').textContent=
-    'No tab, no credit. Every dose stacks on the last, and the bar cuts you off at ten. While a dose is in your blood, every XP a raid pays you is '+(Math.round(buzzXpPer()*1000)/10)+'% more per dose.';
+    'No tab, no credit. Every dose stacks on the last, and the bar cuts you off at ten of anything. While a dose is in your blood, every XP a raid pays you is '+(Math.round(buzzXpPer()*1000)/10)+'% more per dose.'+
+    // v12.98: the live total, once, from the function that pays it. It used to be
+    // printed per drink on each row, where two rows read as a sum nothing honours.
+    (buzzTotal()?('  IN YOUR BLOOD NOW: '+buzzTotal()+' dose'+(buzzTotal()===1?'':'s')+', RAID XP +'+buzzXpPct()+'%.'):'');
   var h='';
   for(var i=0;i<BOOZE.length;i++){
-    var B=BOOZE[i],nB=buzzDoses(B.tag),atCap=nB>=10;
+    // v12.98: the limit is ten of ANYTHING, which is what the line above the rows has
+    // always said and what the bonus has always counted. Per drink, it sold twenty.
+    var B=BOOZE[i],nB=buzzDoses(B.tag),atCap=buzzTotal()>=10;
     h+='<div class="row"><div style="flex:1"><b>'+B.name+'</b>'+
-       (nB?' <span style="color:#d98aff">IN YOUR BLOOD \u00d7'+nB+'  \u00b7  RAID XP +'+(Math.round(nB*buzzXpPer()*1000)/10)+'%</span>':'')+
+       (nB?' <span style="color:#d98aff">IN YOUR BLOOD \u00d7'+nB+'</span>':'')+
        '<div class="hint">'+B.desc+'  Each lasts '+fmtMS(B.dur)+'.</div></div>'+
        '<span class="vl">$'+B.price.toLocaleString()+'</span>'+
        '<button data-bz="'+B.id+'" '+((atCap||P.credits<B.price)?'disabled':'')+' style="padding:6px 14px;min-width:120px">'+(atCap?'AT YOUR LIMIT':'INGEST')+'</button></div>';
@@ -30047,7 +30064,7 @@ function renderBar(){
   for(var q=0;q<bs.length;q++){
     bs[q].onclick=function(){
       var B2=boozeById(this.getAttribute('data-bz')); if(!B2) return;
-      if(P.credits<B2.price||buzzDoses(B2.tag)>=10) return;
+      if(P.credits<B2.price||buzzTotal()>=10) return;
       P.credits-=B2.price;
       P.buzz=P.buzz||[];
       P.buzz.push({id:B2.id,tag:B2.tag,t:B2.dur,dur:B2.dur});
