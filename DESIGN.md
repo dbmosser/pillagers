@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.03 - THE EXPERIMENTAL WARNING IS SPELLED ONE WAY
+
+Found while sweeping his edits for v13.02. Two features carry the same warning and the
+game writes it two different ways, so his edit of it reaches one of them.
+
+WHAT HE SEES. The HIRE tab is headed with the warning in capitals, and he rewrote that
+one: his version says what the warning is actually for, that the feature may glitch.
+THE LAST POUR carries the same warning on the Undercroft floor, written in mixed case.
+His wording is matched on the whole string, so the floor sign is a different string and
+his edit never touches it. He walks past the game's version of a warning he has already
+rewritten.
+
+IT IS ALSO HIS OWN RULE BROKEN. One word per thing. Two spellings of one warning is the
+same defect as two words for one object, and it is the reason the edit split.
+
+THE ASTERISKS ARE HIS, from v7.74, and they stay. Only the spelling is made one.
+
+MEASURED. Check 13.03 reads the floor as drawn, through the recorder that keeps both
+halves of every canvas string: what the code asked for, and what was painted after his
+wording was applied. That pairing is the only way to see an edit that is not landing,
+because the raw string and the finished one are otherwise indistinguishable from
+outside. The warning is not written into the check: it is found as the entry in his own
+baked map whose key is asterisks around one word, so if he rewords it again the check
+follows him. The control is that the sign is still there, because making two spellings
+into one could have been done by deleting one of them, which would pass any test that
+only asked whether the wrong spelling was gone. It fails on the v13.02 fixture,
+reporting the game's spelling on the floor against his wording.
+
+Not verified: it reads the string the floor paints rather than its pixels, so it does
+not check that his longer wording fits where the old sign sat; the sign is drawn in the
+micro type above a station label and his version is nineteen characters longer.
 ## v13.02 - THE GAME NOW CHECKS THAT THE WORDS HE WROTE STILL APPEAR
 
 The guard for what v13.01 caught by hand. Nothing in this build changes the game; it

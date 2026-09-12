@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.02';
+var VER='13.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,7 +1361,7 @@ var VER='13.02';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.02';
+var WHATSNEW_VER='13.03';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1412,6 +1412,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE EXPERIMENTAL WARNING IS SPELLED ONE WAY. Two features carry it and the game wrote it two ways, so the wording you gave it reached the hire tab and never the sign on the floor by the bar. One spelling, so one edit covers both.',
   'THE GAME NOW CHECKS THAT THE WORDS YOU WROTE STILL APPEAR. Your wording is matched against a whole sentence, so rewording that sentence anywhere used to delete your version with no warning at all. Six screens are now swept every build, and any screen showing the original of a line you rewrote is a failure.',
   'THE WORDS YOU WROTE FOR THE BAR ARE BACK. The line you rewrote is matched whole, and the build before this one added two words to it and put a live total on the end of the same line, so your wording silently stopped appearing. The sentence is back exactly as you edited it and the total is its own line underneath.',
   'THE UNDERCROFT STOPS HITCHING ON EVERY CLICK. The pass that lets text be rewritten was reading the entire game as if it were a label, on every toast, every credit change and every panel rebuild, because the whole game is one file. It reads what is on screen now. Nothing you can see has changed.',
@@ -28587,7 +28588,11 @@ function hubStationNames(S,ox,oy){
       // v7.74, his order, his asterisks.
       wc.font=FS(TYPE.micro);
       wc.fillStyle=on?'#d98aff':'#c3cdd8';
-      wc.fillText('***Experimental***',_lx2,s3.y-35);
+      // v13.03: THE SAME WARNING, SPELLED THE SAME WAY. The hire tab carries this
+      // warning in capitals and he has rewritten that one; his wording is matched on
+      // the whole string, so this sign being mixed case meant his version reached one
+      // of the two features it warns about and not the other. His asterisks, v7.74.
+      wc.fillText('***EXPERIMENTAL***',_lx2,s3.y-35);
       wc.font=FS(TYPE.label);
     }
     if(s3.season){
@@ -29465,7 +29470,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.02: the guard for what v13.01 caught by hand, and nothing in this build changes the game. His wording is applied by exact match on a whole rendered sentence, so rewording that sentence anywhere stops his version appearing, silently: no error, no log line, nothing red. v12.98 did exactly that and only a hand sweep found it at v13.01. A source search cannot do this job, because most of these lines are assembled at run time out of pieces, so the finished sentence exists only once a panel has been drawn, and the only honest instrument is to draw the panels and read them. Opening a panel means finding its element, adding the class and calling its own renderer, and the renderers live inside the closure where a check can reach them and nothing else can, so this build adds one table naming the panels that can be drawn without a raid and the renderer for each; the table draws nothing by itself. Check 13.02 walks that table, draws each panel, drives the pass that applies his wording, and requires that no screen shows the ORIGINAL of a line he has rewritten while his replacement is absent from it, which is the defect stated without naming any line: a key visible in the raw is an edit that is not landing. The control is that the sweep really does see his words, by requiring at least one of his replacements to be found across those screens, so a sweep that rendered nothing would fail rather than pass silently; fails on v13.01, where the table it walks does not exist.',
+  now:'v13.03: found while sweeping his edits for v13.02. Two features carry the same warning and the game writes it two different ways, so his edit of it reaches one of them. The HIRE tab is headed with the warning in capitals and he rewrote that one, his version saying what the warning is actually for, that the feature may glitch; THE LAST POUR carries the same warning on the Undercroft floor written in mixed case, and his wording is matched on the whole string, so the floor sign is a different string and his edit never touches it, leaving him walking past the game version of a warning he has already rewritten. It is also his own rule broken, one word per thing: two spellings of one warning is the same defect as two words for one object, and it is the reason the edit split. The asterisks are his, from v7.74, and they stay; only the spelling is made one. Check 13.03 records what the floor actually draws, finds the entry in his baked map whose key is that warning, and requires the drawn text to be his wording rather than the games, with the control that the warning is still drawn at all so making it one spelling has not deleted the sign; fails on v13.02, where the floor draws the games spelling because his edit cannot match it.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

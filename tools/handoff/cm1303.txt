@@ -1,0 +1,19 @@
+v13.03: the experimental warning is spelled one way
+
+Found while sweeping his edits for v13.02. Two features carry the same warning and the
+game wrote it two ways, so his edit of it reached one of them.
+
+The hire tab carries it in capitals and he rewrote that one; his version says what the
+warning is for. THE LAST POUR carries the same warning on the floor in mixed case, and
+his wording is matched on the whole string, so his edit never touched it. He walks past
+the game's version of a warning he has already rewritten.
+
+It is also his own rule broken: one word per thing. The asterisks are his, from v7.74,
+and they stay. Only the spelling is made one.
+
+Check 13.03 reads the floor through the recorder that keeps both halves of every canvas
+string, and finds the warning in his own map rather than having it written down. The
+control is that the sign is still drawn, since deleting it would pass a test that only
+asked whether the wrong spelling was gone. Fails on v13.02.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
