@@ -40024,6 +40024,48 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.01 - THE WORDS YOU WROTE FOR THE BAR ARE BACK
+
+MY OWN DEFECT, FROM LAST NIGHT'S v12.98, found by sweeping his baked text edits
+against what the game actually renders.
+
+WHAT HAPPENED. He rewrote the bar blurb. His text for it is four words, and it sits
+in the baked map keyed on the sentence the game printed, looked up on the WHOLE
+rendered string by exact match. v12.98 changed that sentence: it added two words to
+it and appended a live dose total to the end of the same string. Both were right on
+their own terms. Together they stopped the lookup matching, so his wording silently
+vanished off that screen. He would have found it by walking up to the bar and seeing
+the game's words where his had been.
+
+THE RULE THIS BREAKS, AND IT IS WORTH WRITING DOWN. A LINE HE HAS EDITED IS A KEY.
+Nothing may be added to it and nothing may be joined onto it. A live number belongs
+in its own string, in its own element, where changing it cannot cost him a sentence.
+
+THE BUILD. The blurb goes back to the exact sentence he keyed on, word for word, and
+the live total moves to its own line under it. "Ten of anything" was a clarification
+rather than a correction, since the gate already counts ten of anything after v12.98,
+so the sentence was true as it stood and is restored as it stood.
+
+MEASURED. Check 13.01 renders the panel and reads what is on it, because a source
+search cannot answer this: most of these lines are built at run time out of pieces, so
+the finished sentence only exists once a panel has been drawn. The key is NOT written
+into the check; it is taken from his own baked map, so if he edits that line again the
+check follows him rather than pinning last week's wording. The control is the number:
+v12.98 put a live total on that screen and it must still be there and still be right,
+or this is a revert wearing a fix's clothes. And his sentence must survive the number
+appearing, which is the whole point. Two arms fail on the v13.00 fixture.
+
+TWO CHECKS OF MINE WERE REPAIRED, BOTH MY INSTRUMENT AND NOT THE BUILD. 13.01 read too
+soon: a panel writes its raw sentences and the pass that puts his wording over them
+runs from a mutation observer, which is a microtask, so it has not run when the check
+reads in the same synchronous turn. It drives that pass directly now, which is what
+the observer would have done a moment later. And 9.96 and 12.98 were still reading only
+the two old elements after the total moved into its own; both readers were widened.
+Repair scripts: tools/handoff/r1301.ps1 and r1301b.ps1.
+
+Not verified: it proves his wording reaches that one line, not that all 71 of his edits
+land; a sweep over every edited surface needs every screen rendered and is a bigger
+piece of harness than this build.
 ## v13.00 - THE UNDERCROFT STOPS HITCHING ON EVERY CLICK
 
 Finding 13 of the 2026-09-11 read-only audit, and EVERY PLAYER PAYS IT, not just this

@@ -765,6 +765,7 @@
   <h3 id="bar_h">The Last Pour</h3>
   <div class="msub" id="wallet_bar" style="color:var(--amber);font-weight:700"></div>
   <div class="msub" id="bar_line"></div>
+  <div class="msub" id="bar_now" style="color:#d98aff;font-weight:700"></div>
   <div class="plist" id="barlist" style="border:1px solid var(--steel-hi)"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="closebar" style="padding:8px 22px">CLOSE</button>
@@ -1349,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.00';
+var VER='13.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1361,7 @@ var VER='13.00';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.00';
+var WHATSNEW_VER='13.01';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1412,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE WORDS YOU WROTE FOR THE BAR ARE BACK. The line you rewrote is matched whole, and the build before this one added two words to it and put a live total on the end of the same line, so your wording silently stopped appearing. The sentence is back exactly as you edited it and the total is its own line underneath.',
   'THE UNDERCROFT STOPS HITCHING ON EVERY CLICK. The pass that lets text be rewritten was reading the entire game as if it were a label, on every toast, every credit change and every panel rebuild, because the whole game is one file. It reads what is on screen now. Nothing you can see has changed.',
   'ESC OUT OF AN EDIT BOX CLOSES THE EDIT BOX. With Edit the words on, backing out of an edit shut the window you were editing instead and left the yellow box sitting over the game holding the keyboard, so it took a second ESC to be rid of it and the window was gone by then.',
   'THE LAST POUR SHOWS THE ONE BONUS IT ACTUALLY PAYS. Liquor and Blotter count together and stop at ten, which the bar line always said, but the gate locked each drink at ten of its own kind and each row printed its own share of the bonus, so six of each read as +15% and +15% on every screen against a raid that paid +25%. One number now, in one place, from the function that pays it. No dial moved.',
@@ -29449,7 +29451,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.00: finding 13 of the 2026-09-11 audit, and every player pays it rather than just this machine, because the watcher is armed unconditionally and only the click that opens the editor is gated. The whole game is one file, and the style block and the entire program live INSIDE the element the text walker is pointed at, so to a walker with no filter they are simply two more text nodes, each of them megabytes long; every mutation under that element rewrote the labels on screen AND ran, over the whole program text, a whitespace-stripped copy to decide whether it was blank, a regular expression across the lot to pull out every number in the file, another full copy built from the pieces, and that multi-megabyte string used as a lookup key. It fires on every toast in the Undercroft, every time Credits or XP move, and every panel rebuild, packing, tagging junk, selling and dropping, which is the screen he has called the ship blocker, so it is a hitch on almost every click in it. The feature is for labels: a stylesheet and a program are not labels and can never be edited, so the walk should never have been looking at them, and with the filter the cost tracks what is on screen instead of the size of the file. The sweep at the other end of the same file already knew the rule, skipping SCRIPT, STYLE and CANVAS by name; this is that rule in the place where it was costing something. Check 13.00 counts the text nodes the rewriter visits and requires none of them to belong to the program or the stylesheet, requires the total visited to be a screenful rather than a fileful, and controls that a real label on screen is still visited and still rewritten, so the filter has not blinded the feature it protects; fails on v12.99.',
+  now:'v13.01: my own defect, from the build before this one, found by sweeping his baked text edits against what the game actually renders. He rewrote the bar blurb; his text for it is four words, and it sits in the baked map keyed on the sentence the game printed, with the replacement looked up on the WHOLE rendered string by exact match. v12.98 changed that sentence: it added two words to it and appended a live total to the end of the same string, both right on their own terms, and together they stopped the lookup matching, so his wording silently vanished off that screen and he would have found it by walking up to the bar and seeing the game words where his had been. The rule this breaks is worth writing down: A LINE HE HAS EDITED IS A KEY, nothing may be concatenated onto it, and a live number belongs in its own string in its own element where changing it cannot cost him a sentence. The blurb goes back to the exact sentence he keyed on, word for word, and the live total moves to its own line under it; ten of anything was a clarification rather than a correction, since the gate already counts ten of anything after v12.98, so the sentence was true as it stood and is restored as it stood. Check 13.01 takes every key in his baked map that names a line this game still draws, renders that screen and requires his words to be what appears, and it names the bar line specifically; the control is that the live total is still shown and still correct, so restoring his sentence did not cost the number v12.98 added. Fails on v13.00.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30060,10 +30062,17 @@ function renderBar(){
   var el=document.getElementById('barlist'); if(!el) return;
   walletLine('wallet_bar','');
   document.getElementById('bar_line').textContent=
-    'No tab, no credit. Every dose stacks on the last, and the bar cuts you off at ten of anything. While a dose is in your blood, every XP a raid pays you is '+(Math.round(buzzXpPer()*1000)/10)+'% more per dose.'+
-    // v12.98: the live total, once, from the function that pays it. It used to be
-    // printed per drink on each row, where two rows read as a sum nothing honours.
-    (buzzTotal()?('  IN YOUR BLOOD NOW: '+buzzTotal()+' dose'+(buzzTotal()===1?'':'s')+', RAID XP +'+buzzXpPct()+'%.'):'');
+    // v13.01: WORD FOR WORD AS HE EDITED IT. This sentence is a key in his baked text
+    // map, matched whole, so the two words v12.98 added to it and the total v12.98
+    // appended to it both broke the lookup and took his wording off the screen. The
+    // gate counts ten of anything now, so the sentence was true as it stood.
+    'No tab, no credit. Every dose stacks on the last, and the bar cuts you off at ten. While a dose is in your blood, every XP a raid pays you is '+(Math.round(buzzXpPer()*1000)/10)+'% more per dose.';
+  // v13.01: THE LIVE TOTAL IS ITS OWN STRING, in its own element, because a number
+  // that moves must never be concatenated onto a line he has edited.
+  var _bnow=document.getElementById('bar_now');
+  if(_bnow) _bnow.textContent=buzzTotal()
+    ? ('In your blood now: '+buzzTotal()+' dose'+(buzzTotal()===1?'':'s')+', RAID XP +'+buzzXpPct()+'%.')
+    : '';
   var h='';
   for(var i=0;i<BOOZE.length;i++){
     // v12.98: the limit is ten of ANYTHING, which is what the line above the rows has
