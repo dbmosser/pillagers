@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.06';
+var VER='13.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,7 +1361,7 @@ var VER='13.06';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.06';
+var WHATSNEW_VER='13.08';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1412,6 +1412,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'YOU ARE NOT CARRYING A GUN AROUND THE UNDERCROFT. The floor draws the same operator a raid does, so it handed you your equipped gun and the stance that goes with it while you walked around your own home. The belt caption went with it: it offered you FIRE and SIGNAL down there, and there is nothing to fire at and nobody to signal. Both are still there in a raid, where they are true.',
   'THE FREEBIE KIT NEVER TOUCHED THE GUN YOU OWN, AND NOW THE CODE SAYS SO. It kept a gun slot aside and handed it back, and nothing in the game ever read it: what you go up with comes from the gun you have equipped, which taking the kit does not change. The dead field is gone and there is a test on the thing that is actually true.',
   'THE EXPERIMENTAL WARNING IS SPELLED ONE WAY. Two features carry it and the game wrote it two ways, so the wording you gave it reached the hire tab and never the sign on the floor by the bar. One spelling, so one edit covers both.',
   'THE GAME NOW CHECKS THAT THE WORDS YOU WROTE STILL APPEAR. Your wording is matched against a whole sentence, so rewording that sentence anywhere used to delete your version with no warning at all. Six screens are now swept every build, and any screen showing the original of a line you rewrote is a failure.',
@@ -23683,9 +23684,15 @@ function drawBuzzFx(){
         ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
       }
     }
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
-    ctx.fillText(sl[sel].name+'   [FIRE] use    [V] signal',W/2,hy-LH(6));
-    ctx.textAlign='left';
+    // v13.08, HIS NOTE: not in the Undercroft. The belt strip is drawn on the floor
+    // as well as in a raid, and this caption offers two actions that do not exist
+    // down there: there is nothing to fire at and nobody to signal. It stays in a
+    // raid, where both are real and he uses them.
+    if(state!=='hub'){
+      ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
+      ctx.fillText(sl[sel].name+'   [FIRE] use    [V] signal',W/2,hy-LH(6));
+      ctx.textAlign='left';
+    }
   }
 
 // v9.12: A PANEL MUST KEEP ITS HANDLE ON SCREEN. The drag writes P.hud[id].dx/dy
@@ -28487,10 +28494,14 @@ function drawHubWorld(dt){
       // and left this one, so the roll animated at roll speed while still
       // drawing the walk cycle. 'roll' is the mode that returns the ball, and it
       // is what the raid passes at its equivalent call.
+      // v13.08, HIS NOTE: "player shouldn't have gun visible in his hand when he's in
+      // the undercroft". The floor draws the raid operator, so it was handing him his
+      // equipped gun and the stance that goes with it. Empty hands down here, the roll
+      // untouched. He still owns the gun and still goes up with it.
       drawOp(p.x,p.y,p.face,(p.rollT>0)?(1-p.rollT/.38)*12.6:p.bob,'#242832',clamp(P.stash.length/24,0,1),0,
-        (p.rollT>0)?'roll':((P.equipped&&P.equipped!=='fists')?'':'none'),0,
+        (p.rollT>0)?'roll':'none',0,
         {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,
-         own:{wep:WEAPONS[P.equipped]||null}});
+         own:{wep:null}});
     }
   }
   // v10.51, HIS NOTE: "WEIRD COLLISION IN UNDERCROFT, ONLY HAPPENS WHEN PLAYER
@@ -28514,9 +28525,10 @@ function drawHubWorld(dt){
     if(_hsHid){
       wc.save();
       wc.globalAlpha=0.5;
+      // v13.08: and the same for the ghost of him, which is the same man.
       drawOp(p.x,p.y,p.face,(p.rollT>0)?(1-p.rollT/.38)*12.6:p.bob,'#9fd8ff',0,0,
-        (p.rollT>0)?'roll':((P.equipped&&P.equipped!=='fists')?'':'none'),0,
-        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,own:{wep:WEAPONS[P.equipped]||null}});
+        (p.rollT>0)?'roll':'none',0,
+        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}});
       wc.restore();
     }
   }
@@ -29475,7 +29487,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.06: a field written in five places and read in none, and two builds have described what it does. Found while reading the freebie kit for his come-back-empty note. P._gunSlot is cleared when the freebie kit is taken, kept aside in the snapshot, and put back when he switches to his own loadout; v12.82 is written up as restoring the items, the tactical belt plan and the gun slot, and the comment at the handoff says the same, so a reader would take all three to be real. It does nothing: grep the whole file and there are five writes and no reads, because what a raid arms him with comes from P.equipped and P.equippedSec, which this never touches. The invariant it pretended to protect is already true for a different reason, and that is the part worth keeping: taking the freebie kit does not change the gun he owns or the one in his hands, because the raid simply ignores them while the kit is on. The field goes and the two claims about it go with it, because a comment that describes a no-op is worse than no comment, it is the reason nobody looked. The version numbers 13.04 and 13.05 are not skipped by accident: they were spent on harness-only checks that carry no game build, the outcome card sweep and the canvas sweep for his text edits. Check 13.06 equips a gun he owns, takes the freebie kit, commits and runs a raid, and requires the gun he owns and the gun in his hands to be exactly what they were, then switches back to his own loadout and requires the same, with the control that the freebie kit really was taken so the check is not passing on a raid that never used it; fails on v13.03 only in the sense that the field it removes is still there, so the check is written against the behaviour rather than the field and passes on both, which is stated plainly rather than dressed up as a control.',
+  now:'v13.08: his notes of 2026-09-12 from live play, two of three. Player should not have a gun visible in his hand when he is in the undercroft; and in the undercroft it says Compact SMG FIRE use V signal, and all that text is useless. One cause, two symptoms: the floor reuses the raid own drawing, the same operator routine and the same belt strip, and both were handed the raid arguments down there, so he walks around his own home holding a gun under a line offering two actions that do not exist in the Undercroft, where you cannot fire and there is nobody to signal. The line is kept in a raid where it is true: he called the text useless where he read it, and where he read it, it is, but up top those are real actions on a real belt and deleting them there would take something he uses. The gun goes out of his hands and not out of his armoury: nothing about what he owns or what he goes up with changes, only what the figure is holding while he walks around downstairs, which is nothing, and the roll pose is untouched. Check 13.08 draws the floor and requires no weapon to reach the operator and the belt caption to be absent, then draws a raid frame and requires both back, so the fix cannot have been made by deleting them everywhere; fails on v13.06 where the floor hands over the equipped gun and prints the caption. NOTE ON VERSION NUMBERS: 13.04, 13.05 and 13.07 carry no game build, they were harness-only checks.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

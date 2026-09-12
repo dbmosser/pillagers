@@ -1,0 +1,22 @@
+v13.08: you are not carrying a gun around the Undercroft
+
+His notes of 2026-09-12, two of three: no gun in hand on the floor, and the belt
+caption offering FIRE and SIGNAL down there is useless.
+
+One cause. The floor reuses the raid's drawing, the same operator routine and the same
+belt strip, and both were handed the raid's arguments. You cannot fire in the
+Undercroft and there is nobody to signal.
+
+The caption stays in a raid, where both are real actions he uses. The gun leaves his
+hands, not his armoury: what he owns and goes up with is unchanged, and the roll pose
+is untouched.
+
+Check 13.08 wraps the operator routine and records the weapon and stance it is handed,
+because the gun is a few pixels in a hand. The raid arm is the control: both could have
+been fixed by deleting them everywhere. Three arms fail on v13.06.
+
+The check's first instrument was wrong: the world draw never paints the belt, which
+lives on the HUD canvas and needs real loop frames. 36 strings and no caption against
+165 and the caption. It asserted nothing until that was fixed.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

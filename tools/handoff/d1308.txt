@@ -1,0 +1,37 @@
+## v13.08 - YOU ARE NOT CARRYING A GUN AROUND THE UNDERCROFT
+
+HIS NOTES, 2026-09-12, from live play, two of three:
+
+  "player shouldn't have gun visible in his hand when he's in the undercroft"
+  "in undercroft it says 'Compact SMG' FIRE use V signal -- all this text is useless"
+
+ONE CAUSE, TWO SYMPTOMS. The floor reuses the raid's own drawing: the same operator
+routine, the same belt strip. Both were handed the raid's arguments down there, so he
+walks around his own home holding a gun, under a line offering two actions that do not
+exist in the Undercroft. You cannot fire down there and there is nobody to signal.
+
+THE LINE IS KEPT IN A RAID, WHERE IT IS TRUE. He called the text useless where he read
+it, and where he read it, it is. Up top those are real actions on a real belt, and
+deleting it there would take something he uses.
+
+THE GUN GOES OUT OF HIS HANDS, NOT OUT OF HIS ARMOURY. Nothing about what he owns or
+what he goes up with changes. This is only what the figure is holding while he walks
+around downstairs, which is nothing. The roll pose is untouched.
+
+MEASURED. Check 13.08 wraps the one routine that draws an operator and records the
+weapon and the stance it is handed, because the gun is a few pixels in a hand and
+reading the canvas for it would be measuring the art rather than the decision. It then
+reads the caption off the frame. The raid arm is the control and it is not decoration:
+both of these could have been fixed by deleting them everywhere, which would pass any
+check that only looked at the floor and would quietly take two things he uses in a
+raid. Three arms fail on the v13.06 fixture.
+
+THE CHECK'S FIRST INSTRUMENT WAS WRONG AND IT IS WORTH RECORDING. It drew the floor
+with the world draw alone, which never paints the belt: the belt and the bag are on the
+HUD canvas and only the loop puts them there. Measured on the v13.06 fixture: 36
+strings and no caption from the world draw, 165 strings and the caption from three loop
+frames. The caption arm was asserting nothing until it ran real frames.
+
+Not verified: it reads what the drawing routine is handed rather than the pixels it
+produces, so it proves no weapon is passed and not that no weapon-shaped thing is
+drawn; and it does not check the character screen, where a gun in hand is correct.

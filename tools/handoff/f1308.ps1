@@ -29,7 +29,7 @@ SubRx @'
 '@ @'
   {v:'13.08',what:'the Undercroft is not a raid: the operator walks the floor with empty hands and the belt caption offering FIRE and SIGNAL is not drawn down there, while both are still exactly as they were in a raid (his notes of 2026-09-12)',
    run:function(){
-     if(!(window.__hubFrame&&window.__showScreen&&window.__hubEnter&&window.__P)) return 'SKIP: this fixture cannot draw the Undercroft floor';
+     if(!(window.__loop&&window.__showScreen&&window.__hubEnter&&window.__P)) return 'SKIP: this fixture cannot draw the Undercroft floor';
      if(typeof drawOp!=='function') return 'SKIP: this build has no operator routine to watch';
      if(!(window.__tx&&window.__tx.record)) return 'SKIP: this fixture cannot record what is painted';
      var bad=[], P2=__P(), oDraw=drawOp;
@@ -55,7 +55,13 @@ SubRx @'
        __showScreen('hub'); __hubEnter();
        watch();
        var painted=[];
-       try{ painted=__tx.record(function(){ __hubFrame(0.016); })||[]; }catch(_r){}
+       // A REAL FLOOR FRAME, not just the world draw. The belt and the bag are painted
+       // on the HUD canvas by the loop, so __hubFrame alone never draws the caption and
+       // an arm written against it would assert nothing at all. Measured on the v13.06
+       // fixture: 36 strings and no caption from __hubFrame, 165 strings and the caption
+       // from three loop frames.
+       var _t0=performance.now();
+       try{ painted=__tx.record(function(){ for(var _lf=0;_lf<3;_lf++) __loop(_t0+_lf*16.7); })||[]; }catch(_r){}
        stop();
        if(!seen.length){
          bad.push('control: the floor drew no operator at all, so there is nothing here to look at');
