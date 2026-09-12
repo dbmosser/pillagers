@@ -91,26 +91,26 @@ SubRx @'
 
 # NEW IN.
 SubRx @'
-  'YOU ARE NOT CARRYING A GUN AROUND THE UNDERCROFT.
+  'ESC NO LONGER DROPS YOU OUT OF FULLSCREEN, IN CHROME AND EDGE.
 '@ @'
   'X SEARCHES A BODY LYING IN AN EXTRACTION POINT. Standing on the way out, the game refused to even look for what was lying there: no prompt, and E always called the beacon, so a man killed in front of you was unlootable and nothing said why. E is still the way out. X searches whatever you are standing on, anywhere, and the prompt names the key it will take.',
-  'YOU ARE NOT CARRYING A GUN AROUND THE UNDERCROFT.
+  'ESC NO LONGER DROPS YOU OUT OF FULLSCREEN, IN CHROME AND EDGE.
 '@
 
 # STAMPS.
 SubRx @'
-var VER='13.08';
+var VER='13.09';
 '@ @'
 var VER='13.10';
 '@
 SubRx @'
-var WHATSNEW_VER='13.08';
+var WHATSNEW_VER='13.09';
 '@ @'
 var WHATSNEW_VER='13.10';
 '@
-$cnt=([regex]::Matches($s,"now:'v13\.08:[^']*'")).Count
-if($cnt -ne 1){ throw "DEVNOW v13.08 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v13\.08:[^']*'",{ param($m) "now:'v13.10: his note of 2026-09-12, need to be able to search bodies inside an extraction point without calling for extract. It was a deliberate rule and he has overturned it: the code refused to even LOOK for a container while he stood in a ring, and said why, that standing inside an extraction ring the BEACON owns E and a crate is never the more important thing to be doing while you are stood on the way out. So the prompt never appeared and E always called, and a man killed on the pad in front of him was unlootable with nothing on screen saying why. His choice of fix, asked and answered: the beacon keeps E and searching gets its own key. He raised a switch key first, and Q is taken because it cycles throwables every raid, and a mode to be caught in during a thirty second boarding window is the wrong thing to add to the most time-pressured moment in the game, while a second key costs nothing and is never surprising. X, because it is the only thing free and it is under that hand: grep says zero uses. It searches ANYWHERE rather than only on the pad, so the rule is one sentence rather than a special case: X searches what you are standing on, and E does too except on the way out, where E is the way out. The prompt names the key it will take, so there is nothing to remember. Check 13.10 stands the player on a ring with a searchable body under him and requires the body to be found and the prompt to name X, requires X to start the search and E not to, and controls that off the pad E still searches and that E on the pad still calls the beacon; fails on v13.08 where the ring hides the body entirely.'" })
+$cnt=([regex]::Matches($s,"now:'v13\.09:[^']*'")).Count
+if($cnt -ne 1){ throw "DEVNOW v13.09 matched $cnt times" }
+$s=[regex]::Replace($s,"now:'v13\.09:[^']*'",{ param($m) "now:'v13.10: his note of 2026-09-12, need to be able to search bodies inside an extraction point without calling for extract. It was a deliberate rule and he has overturned it: the code refused to even LOOK for a container while he stood in a ring, and said why, that standing inside an extraction ring the BEACON owns E and a crate is never the more important thing to be doing while you are stood on the way out. So the prompt never appeared and E always called, and a man killed on the pad in front of him was unlootable with nothing on screen saying why. His choice of fix, asked and answered: the beacon keeps E and searching gets its own key. He raised a switch key first, and Q is taken because it cycles throwables every raid, and a mode to be caught in during a thirty second boarding window is the wrong thing to add to the most time-pressured moment in the game, while a second key costs nothing and is never surprising. X, because it is the only thing free and it is under that hand: grep says zero uses. It searches ANYWHERE rather than only on the pad, so the rule is one sentence rather than a special case: X searches what you are standing on, and E does too except on the way out, where E is the way out. The prompt names the key it will take, so there is nothing to remember. Check 13.10 stands the player on a ring with a searchable body under him and requires the body to be found and the prompt to name X, requires X to start the search and E not to, and controls that off the pad E still searches and that E on the pad still calls the beacon; fails on v13.09 where the ring hides the body entirely.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

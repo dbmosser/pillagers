@@ -886,3 +886,8 @@ outcome card). That finds an edit that is not landing without needing to guess w
 two strings are the same thing. Extend those rather than reviving this.
 
 The draft is tools/handoff/parked/lintE-two-spellings.ps1 and applies cleanly.
+
+## SEE tools/handoff/RAIDCLOCK-NOTE.md
+
+A deployed raid driven by __loop does not run the raid clock, so no check in the corpus
+proves a real E-hold extraction. Measured 2026-09-12 while writing check 13.10.

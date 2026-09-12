@@ -1,0 +1,24 @@
+v13.10: X searches a body lying in an extraction point
+
+His note of 2026-09-12. The code did not merely prefer the beacon: it refused to even
+look for a container while he stood in a ring, so no prompt was drawn and a man killed
+on the pad in front of him was unlootable with nothing saying why.
+
+His choice, asked and answered: the beacon keeps E, searching gets its own key. He
+raised Q first; Q cycles throwables every raid, and a mode to be caught in during a
+thirty second boarding window is the wrong thing to add there.
+
+X is the only free key and it is under that hand. It searches anywhere, so the rule is
+one sentence: X searches what you are standing on, and E does too except on the way
+out, where E is the way out. The prompt names the key that will work. X is in the
+controls list under H.
+
+Check 13.10 moves a real container onto the pad and runs real frames. Two arms fail on
+v13.09.
+
+One control could not be measured and is recorded rather than faked: E starting the
+pull does not happen in this staging on either build, and the raid clock sits at 0, so
+something about a raid driven this way does not run the raid. No existing check proves
+a real E-hold extraction either. Written into START-HERE.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

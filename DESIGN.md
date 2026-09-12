@@ -40024,6 +40024,48 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.10 - X SEARCHES A BODY LYING IN AN EXTRACTION POINT
+
+HIS NOTE, 2026-09-12: "need to be able to search bodies inside an extraction point
+without calling for extract."
+
+IT WAS A DELIBERATE RULE AND HE HAS OVERTURNED IT. The code did not merely prefer the
+beacon: it refused to even LOOK for a container while he stood in a ring, and said why
+in its own comment. "Standing inside an extraction ring, the BEACON owns E. A crate is
+never the more important thing to be doing while you are stood on the way out." So
+nothing was found, no prompt was drawn, and a man killed on the pad in front of him was
+unlootable with nothing on screen saying so.
+
+HIS CHOICE OF FIX, ASKED AND ANSWERED. He raised a switch key first, on Q. Q is taken:
+it cycles throwables, every raid. And a mode to be caught in during a thirty second
+boarding window is the wrong thing to add to the most time-pressured moment in the
+game. Put to him with that, he chose: the beacon keeps E, and searching gets its own
+key.
+
+X, BECAUSE IT IS THE ONLY FREE KEY AND IT IS UNDER THAT HAND. Grep says zero uses. It
+searches ANYWHERE rather than only on the pad, so the rule is one sentence rather than
+a special case: X searches what you are standing on, and E does too, except on the way
+out, where E is the way out. The prompt names the key that will work, so there is
+nothing to remember and nothing to switch. X is in the controls list under H.
+
+MEASURED. Check 13.10 moves a real container onto the pad rather than inventing one,
+because a fabricated container is a shape I chose and the thing under test is whether
+the scan finds what is really there. It runs real frames, because the nearest container
+is worked out inside the player update. Two arms fail on the v13.09 fixture: the ring
+finds nothing at his feet, and X searches nothing.
+
+ONE CONTROL COULD NOT BE MEASURED AND IS RECORDED RATHER THAN FAKED. I wanted to assert
+that E on the pad still starts the pull. It does not start in this staging on EITHER
+build, with no container involved at all: player ten units inside an open ring of radius
+78, raid alive, not downed, E held for six frames, and the pull never begins while the
+raid clock also sits at 0. Something about a raid deployed and driven this way does not
+run the raid, and no existing check proves a real E-hold extraction either; they all end
+raids through the harness instead. That is its own investigation and it is written into
+START-HERE. What IS measured, and is the half he asked about, is that E on the pad is
+not eaten by the search: no search starts, so the key still belongs to the beacon.
+
+Not verified: the pull itself, as above; and the merc-backpack prompt, which shares
+these lines and is reached by a path this check does not walk.
 ## v13.09 - ESC NO LONGER DROPS YOU OUT OF FULLSCREEN, IN CHROME AND EDGE
 
 HIS NOTE, 2026-09-12: "is there a way to make it so hitting esc in the game won't break
