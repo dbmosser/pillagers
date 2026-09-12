@@ -1,0 +1,28 @@
+v12.91: the left stick crawls when you are down
+
+Finding 11 of the 2026-09-11 audit. The downed screen asks you to do one thing, and
+on a controller that one thing was the only thing you could not do.
+
+The downed branch built its movement vector from keyboard codes alone. The stick
+lives in PAD.mx and PAD.my, which every other movement site reads: standing, the
+roll direction, and the Undercroft walk. This branch was the one place it was never
+added.
+
+The pad was not dead while downed, which made it worse: D-DOWN self-revived and X
+extracted, and the stick still swung the aim cursor, so you turned on the spot and
+nothing on screen suggested the controller had stopped being read.
+
+The fix is the same one-line override the other sites use, before the magnitude, so
+the flat 30/s crawl is untouched. An input, not a speed.
+
+The first version of the check was wrong and it is recorded: poking PAD.mx proves
+nothing, because pollPad zeroes it every frame with no gamepad present, so the check
+went red on the FIXED build for its own reason. It now stubs navigator.getGamepads
+with one connected pad and the whole real chain runs.
+
+Check 12.91 crawls all four directions on the keys and on the stick. The keyboard
+arm says whether the way is open, so a wall cannot fail this for the map, and it
+doubles as the control that the keyboard still works with a pad connected. Three
+arms fail on v12.90 at 0 units against 15.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

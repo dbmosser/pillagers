@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.90';
+var VER='12.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.90';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.90';
+var WHATSNEW_VER='12.91';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE LEFT STICK CRAWLS WHEN YOU ARE DOWN. On a controller the one thing the downed screen asks you to do was the one thing you could not do: the crawl read the keyboard only, so you turned on the spot and bled out where you fell. Self-revive and extracting always worked; it was moving that did not.',
   'THE FEELING TAG FOR THE TACTICAL BELT CALLS IT THE TACTICAL BELT. It was the one button left saying the old word, and it was written into the report you send. Runs you logged before today read the new name too, without anything stored being rewritten.',
   'ESC CLOSES THE BACKPACK AND THE MAP IN A RAID. It raised the pause box over whatever you had open instead, and a second press closed the box and left the panel sitting there, so ESC shut the wrong window twice. The map is in front of the backpack, and the pause box is in front of both.',
   'A FRIEND YOU IMPORT CARRIES THE GUN THEY ACTUALLY CARRIED. Their weapon name was cut at the first space, so anyone whose favourite had two words in it came back as an Auto Rifle, which is nine of the sixteen guns. If their report still cannot be read, the game no longer claims a favourite it cannot support.',
@@ -14692,6 +14693,12 @@ function updatePlayer(dt){
     if(keys['KeyS']||keys['ArrowDown'])my0+=1;
     if(keys['KeyA']||keys['ArrowLeft'])mx0-=1;
     if(keys['KeyD']||keys['ArrowRight'])mx0+=1;
+    // v12.91, audit finding 11: THE STICK CRAWLS TOO. This branch read the
+    // keyboard only, so the one action the downed overlay asks for was the one
+    // action a controller could not perform, while the same stick worked standing,
+    // rolling and on the Undercroft floor. Before the magnitude, so the flat
+    // 30-units-a-second crawl below is unchanged: this adds an input, not a speed.
+    if(PAD.on&&(PAD.mx||PAD.my)){ mx0=PAD.mx; my0=PAD.my; }
     var mg0=Math.sqrt(mx0*mx0+my0*my0);
     var dox=p.x,doy=p.y;
     if(mg0>0){ p.x+=(mx0/mg0)*30*dt; p.y+=(my0/mg0)*30*dt; collide(p,G.map.walls); }
@@ -29343,7 +29350,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.90: finding 4 of the 2026-09-11 audit. His vocabulary is binding, the rename was announced outright in the release notes, and the game keeps it everywhere else: the pause key list, the stash heading, the loadout label, the keyboard and pad legends. The feeling-tag button was the one place it was missed, and it is the single most-seen piece of player-facing text in the run-report slice. It reaches HIM and not just the player: tap the tag and press LOG RUN AND RETURN and the string is stored on the run, printed on the Undercroft run row, and lands in the report twice, in the FEELING TAGS header and under the run itself, and that report is the file a friend copies out and sends to Daniel, so the retired word was written into the thing he reads. The lint provably cannot catch this one, which is worth knowing before anyone trusts a green lint run on vocabulary: its sweep only considers quoted strings of 30 to 400 characters and this one is 18, so the word is on its banned list and the sweep never offers it the string. Old runs store the literal, so renaming the button alone would leave every run already logged printing the retired word for the rest of the profile life; a display-time map carries them forward instead of a migration, so nothing stored is rewritten, an export made before today still reads correctly, and there is no one-shot stamp to get wrong, which is its own defect class. The three places that show a stored tag go through it. Check 12.90 requires the retired word to be absent from the tag list the card draws and the new name to be present, presses that button through the real card and requires the stored run to carry it, plants a run holding the old string and requires the run row, the report aggregate and the per-run report line all to show the new name while the stored value is left alone, and controls that an unrenamed tag passes through untouched; fails on v12.89.',
+  now:'v12.91: finding 11 of the 2026-09-11 audit. The downed screen asks him to do one thing and on a controller that one thing is the only thing he cannot do. He is on the pad, and the game itself told him the left stick moves; he is shot to the floor 200 units short of the ring, and the downed overlay says CRAWL TO THE RING, says crawl to an open extraction point if possible, and tells him how far the nearest one is. He pushes the stick and does not move a single unit for the whole bleed-out, then dies where he fell. The downed branch builds its movement vector from keyboard codes alone and then moves the body; the stick lives in PAD.mx and PAD.my, which pollPad refreshes every frame and which every other movement site reads, the standing branch, the roll direction and the Undercroft walk, and this branch is the one place it was never added, with nothing anywhere synthesising a movement key from the pad. It is not that the pad is dead while downed, which makes it worse rather than better: D-DOWN still self-revives and X still extracts, because both go through keys the pad does write, and the left stick still swings the aim cursor, so he turns on the spot while going nowhere. Movement alone was missing. The fix is the same three lines the other sites use, placed before the magnitude so the flat thirty-units-a-second crawl normalisation is untouched: this adds an input, not a speed. Check 12.91 downs the player, pushes the stick with nothing on the keyboard and requires the body to have moved in the direction pushed, requires the keyboard crawl to still work with the pad off, and requires the two speeds to match so the stick is not a faster crawl; fails on v12.90 where the body does not move at all.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

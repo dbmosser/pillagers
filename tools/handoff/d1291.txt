@@ -1,0 +1,48 @@
+## v12.91 - THE LEFT STICK CRAWLS WHEN YOU ARE DOWN
+
+Finding 11 of the 2026-09-11 read-only audit. The downed screen asks him to do one
+thing, and on a controller that one thing is the only thing he cannot do.
+
+WHAT HAPPENS. He is on the pad, and the game itself told him the left stick moves.
+He is shot to the floor 200 units short of the ring. The downed overlay says CRAWL
+TO THE RING, says "Crawl to an open extraction point if possible", and tells him
+how far the nearest one is. He pushes the stick and does not move a single unit for
+the whole bleed-out, then dies where he fell.
+
+WHY. The downed branch builds its movement vector from keyboard codes alone and
+then moves the body. The stick lives in PAD.mx and PAD.my, which pollPad refreshes
+every frame and which every OTHER movement site reads: the standing branch, the
+roll direction, and the Undercroft walk. This branch is the one place it was never
+added, and nothing anywhere synthesises a movement key from the pad.
+
+THE PAD IS NOT DEAD WHILE DOWNED, WHICH MAKES IT WORSE RATHER THAN BETTER. D-DOWN
+still self-revives and X still extracts, because both go through keys the pad does
+write. And the left stick still swings the aim cursor, so he turns on the spot
+while going nowhere. Movement alone was missing, so nothing on screen suggested the
+controller had stopped being read.
+
+THE BUILD. The same one-line stick override the other three movement sites use,
+placed before the magnitude so the flat 30-units-a-second crawl normalisation is
+untouched. This adds an input, not a speed.
+
+MEASURED, AND THE FIRST VERSION OF THE CHECK WAS WRONG IN A WAY WORTH RECORDING.
+Setting PAD.mx by hand proves nothing: pollPad runs every frame before the raid
+update, and with no gamepad present its first act is to set PAD.on false and PAD.mx
+and PAD.my to zero and return, so anything poked into PAD is gone before
+updatePlayer reads it. The check went red on the fixed build for that reason and
+not for the build's. It now stubs navigator.getGamepads to hand back one connected
+pad with the axes it wants, so the whole real chain runs: pollPad reads the axes,
+applies its own deadzone and normalisation, sets PAD, and the crawl reads it.
+
+Check 12.91 crawls all four directions twice, once on the keys with a pad connected
+and the stick at rest, and once on the stick. The keyboard arm says whether the way
+is open at all, so a body lying against a wall cannot make this check fail for the
+map rather than the build, and it doubles as the control that reading the stick has
+not taken the keyboard away from a pad player. The pairing is also the speed
+control: the stick must cover the same ground and not more. Three arms fail on the
+v12.90 fixture, each reporting 0 units on the stick against 15 or 16 on the keys.
+
+Not verified: the fake pad reports axes and no buttons, so it does not re-test
+D-DOWN self-revive or X extract, which the audit confirmed already work; and it
+does not check the analog magnitude, because the crawl is deliberately flat-speed
+and a half-pushed stick should crawl at the same rate as a full one.
