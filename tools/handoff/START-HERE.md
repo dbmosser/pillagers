@@ -770,3 +770,32 @@ TWO LEADS FOUND WHILE READING THIS, neither acted on:
   choosing the freebie kit have been restored." becomes a dead key at v12.87,
   because the sentence it edits no longer exists. Left alone: it is his data and
   a dead key is inert. Do not silently rewrite his words.
+
+## 2026-09-12: THREE HYPOTHESES CHECKED AFTER THE AUDIT DRAINED, ALL REFUTED
+
+Recorded so nobody hunts them twice. None was built.
+
+1. A SEARCH CONTRACT CAN NAME A DISTRICT THE SECTOR HE IS PLAYING CANNOT SUPPLY.
+   v12.70 made the card re-read the current sector while the ask is clamped at
+   generation against the sector it was rolled on, so the v1.74 impossible-contract
+   case looked like it could come back through a sector switch. MEASURED over four
+   seeds on both live sectors: every district on both supplies 9 containers at worst
+   and 233 at best, against an ask of at most about six. COLD STORAGE district 2 is
+   the thinnest at 9 to 21. Not reachable on the sectors that exist. If a third
+   sector is ever added with a thin district, re-measure before assuming it is fine.
+   Buildings per district: COLD STORAGE 8/2/1/9, THE COLD MILE 18/36/23/7.
+
+2. A MERC'S KILLS FAIL A QUIET CONDUCT CONTRACT. The kill counter is gated on
+   e.byPlayer, so nothing the merc or a machine kills reaches T.kills or
+   contractKill. Already correct.
+
+3. A SINGLE CONTRACT CLAIM IS NOT SAVED. Both the single-claim button and CLAIM ALL
+   call saveProfile. Already correct.
+
+ONE LEAD STILL OPEN AND DELIBERATELY NOT BUILT: P._gunSlot is written in five places
+(cleared when the freebie kit is taken, snapshotted into kitSaved, restored by
+freeKitRestore) and READ in none. The gun carried into a raid comes from P.equipped
+and P.equippedSec. So "the gun slot comes back" is a promise about a field nothing
+uses, and the v12.82 entry claiming it restores the gun slot is describing a no-op.
+Removing it is dead-code deletion with the v8.34 deletion risk and no player-visible
+gain, so it is written down rather than done.
