@@ -1,0 +1,20 @@
+v13.12: the other half of the v12.58 bug, and it is the same bug
+
+v12.58 fixed a PINNED weather leaving the weather clock expired, which made the
+turn block redraw thirteen seeded rolls every frame for the rest of the raid and
+pulled two paired runs onto two different seeded streams.
+
+The unpinned case was still live one line below. If the twelve-deep guard loop
+never finds a sky different from the one overhead, the line returns without
+putting the clock forward and without spending the turn, so the next frame walks
+straight back in. A failed turn now costs the same wait as a made one; the turn
+is still owed, so the turn count is untouched.
+
+Check 13.12 runs inside the closure, stubs the picker to keep answering with the
+sky already overhead, and counts draws per frame, so the control is a number.
+On v13.11 the second and third frames each draw another thirteen.
+
+The 2026-09-06 AUDIT section is corrected in the same build: it still listed this
+as the one P3 left open, written before v12.58 shipped the pinned half.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -40024,6 +40024,47 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.12 - THE OTHER HALF OF THE v12.58 BUG, AND IT IS THE SAME BUG
+
+WHAT v12.58 FOUND. A pinned weather left the weather clock expired, so the turn
+block ran its whole draw loop again on every frame for the rest of the raid:
+thirteen seeded rolls a frame, nothing on screen changing, and two paired
+measurement runs quietly walking down two different seeded streams. That is the
+worst kind of fault this project can carry, because every balance number it has
+ever published rests on paired seeds. v12.58 fixed the pinned case by ruling
+that a weather which cannot change has no turns to make.
+
+WHAT WAS STILL LIVE, ONE LINE BELOW. The unpinned case. The turn picks a sky,
+loops up to twelve more times looking for one different from the sky overhead,
+and if it never finds one the line simply returns. The clock is not put forward
+and the turn is not spent, so the next frame walks straight back in and draws
+thirteen more. Same mechanism, same consequence, same silence.
+
+THE FIX, IN ONE SENTENCE. A failed turn now costs the same wait as a made one.
+The turn itself is still owed, so the turn count is deliberately untouched; what
+resets is the wait, so the next attempt is a turn away rather than a frame away.
+
+REPRODUCED, NOT ARGUED. The condition is a picker that keeps answering with the
+sky already overhead, and neither the picker nor the weather table can be reached
+from the page. The check runs inside the closure, so it stubs the picker and
+drives the real clock. That is the honest way into a branch that is rare by
+design and ruinous when it lands.
+
+THE CONTROL IS A NUMBER, NOT AN OPINION. The check counts draws per frame. One
+expired clock must cost one round of draws and then nothing. On v13.11 the
+second and third frames each draw another thirteen, and the check says how many.
+
+AUDIT STATUS CORRECTED IN THE SAME BUILD. The 2026-09-06 in-raid section still
+listed this as the one P3 finding left open, written before v12.58 shipped the
+pinned half. The status line now says which half shipped when, so nobody reads
+that section and re-fixes the part that is already done, which has cost this
+project time twice.
+
+Not verified: whether the guard loop ever actually fails in ordinary play, which
+depends on the weather weights and is not something a test can settle; the draw
+budget of a whole raid, since this check measures frames and not raids; and
+whether any published paired number was affected, because the runs that produced
+them are gone.
 ## v13.11 - THE WAY OUT NOW HAS A TEST, AND THE RAID CLOCK BUG WAS MINE
 
 NOTHING IN THE GAME CHANGED. This is a guard build: the extraction path was
