@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.16';
+var VER='13.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10705,6 +10705,15 @@ window.addEventListener('keydown',function(e){
   // nothing - and the floor is the one place a latched key has nothing else to
   // clear it. Above the hub branch, because that branch returns at its own end.
   if(e.code==='Backspace'&&!e.repeat){ restoreCursor(); e.preventDefault(); return; }
+  // v13.17, HIS NOTE: B backs out of whatever is in front, anywhere. Above every
+  // branch because the floor branch and the raid branch each return at their own
+  // end, so a key answered in only one of them is dead in the other, which is the
+  // exact fault the Backspace line above was added to fix.
+  // It does NOT open the pause box: he asked for a way OUT of menus, and a B with
+  // nothing to close belongs to the merc order it has always had.
+  if(e.code==='KeyB'&&!e.repeat){
+    if(backOut()){ e.preventDefault(); return; }
+  }
   if(state==='hub'){
     keys[e.code]=true;
     // v12.95, audit finding 10: NOTHING ON THE FLOOR ANSWERS A KEY WHILE THE PAUSE
@@ -29531,7 +29540,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.16: HIS NOTE of 2026-09-12, that a looted armour plate should not convert itself into armour but go to the tactical belt or the backpack and be equipped, which takes time, before it counts on the bar. He is describing a rule the game already half had and contradicted: the two second armour wind-up is the equip path and it works, and his own baked text for the plate already says that plates do not auto equip and must be put in during the raid, which the pickup line made a lie for every plate found in a container. What the instant apply cost beyond his note: a plate soaked into the bar could never be carried home, never be sold, never be put on a belt key and never be spent at a moment of his choosing, and because it was silent and immediate it skipped the cost that makes armour a decision under fire, by the most common way of getting one. The branch is simply DELETED with no replacement, because the chain already ends in a default that pushes the item into the backpack and offers it to the tactical belt, and the belt builds its plate cell from whatever armour is in the bag, so removing the line IS the whole of goes to the belt or the backpack. The pickup label stops promising plus armour and names the item and its value like everything else. Check 13.16 loots a real plate from a real container on a live raid and requires the bar not to move, the plate to be in the backpack, the belt to offer it, and then the wind-up to be what puts it on the bar; two arms fail on v13.15',
+  now:'v13.17: HIS NOTE of 2026-09-12, since esc is not working, B backs out of any menu. ONE FUNCTION, ONE KEY, ONE INSERTION POINT: the Escape behaviour is spread over seven handlers with a carefully built front-most order, and bolting B onto each of them is seven chances to get the order wrong, so backOut asks the same question once in the same order and returns whether it closed anything. That order is the right-click menu, then the front-most window, then the Undercroft backpack, then the terminal panel, then in a raid the stall, the emote bar, the map and the backpack, with a held drag going with the bag exactly as the v12.89 Escape line does it. It sits above every branch of the key handler because the floor branch and the raid branch each return at their own end, so a key answered in only one of them is dead in the other, which is the exact fault the Backspace line above it was added to fix. B DOES NOT OPEN THE PAUSE BOX and that is deliberate: he asked for a key that backs OUT, Escape and P still raise the box when nothing is in front, and a B with nothing to close is not a menu key at all, which is what keeps the merc order intact, since B already cycles merc orders in a raid and his own gear card says so. The text-edit box keeps Escape alone, because B is a letter and that box is where you type letters. HIS ESCAPE REPORT IS NOT CLOSED BY THIS and I have not pretended it is: I cannot reproduce it, because a synthetic Escape is a known bad instrument here, it runs before the v11.04 closer and opens the box it then shuts, and his report is about fullscreen, which no fixture can enter',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29803,6 +29812,28 @@ function toggleCarry(on){
 // v10.10, his answer 1: the window in front, and its own way out. Every modal
 // has a CLOSE now; the loadout question's is its NO, the tuning console's is
 // its latch. Returns true if it closed something.
+// v13.17, HIS NOTE: B backs out of whatever is in front. The order below is the
+// same front-most order Escape follows, written once instead of seven times.
+// Returns true if it closed something, which is what lets a B with nothing to
+// close fall through to the merc order it has always had.
+function backOut(){
+  // A right-click menu is in front of everything, including its own panel.
+  var im=document.querySelectorAll('.imenu');
+  if(im.length){ for(var i=0;i<im.length;i++) if(im[i].parentNode) im[i].parentNode.removeChild(im[i]); return true; }
+  if(escCloseTopModal()) return true;
+  try{ if(typeof hubBagOpen!=='undefined'&&hubBagOpen){ hubBagOpenSet(false); return true; } }catch(_hb){}
+  var hb=document.getElementById('hub');
+  if(hb&&hb.classList.contains('on')){ hb.classList.remove('on'); return true; }
+  if(G&&!G.over){
+    if(G.trade){ G.trade=null; G.pedLock=1; return true; }
+    if(G.emoteBar){ G.emoteBar=false; return true; }
+    // Same rule and same order as the v12.89 Escape line: the map is in front of
+    // the backpack, and a held drag goes with the bag.
+    if(G.mapOpen){ G.mapOpen=false; return true; }
+    if(G.bagOpen){ G.bagOpen=false; G.drag=null; return true; }
+  }
+  return false;
+}
 function escCloseTopModal(){
   var ms=document.querySelectorAll('.modal.on'); if(!ms.length) return false;
   var m=ms[ms.length-1];

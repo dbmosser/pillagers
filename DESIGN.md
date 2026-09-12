@@ -40024,6 +40024,46 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.17 - B BACKS OUT OF WHATEVER IS IN FRONT
+
+HIS NOTE, 2026-09-12: "since esc isn't working, lets set it up to hit b to back
+out of any menu."
+
+ONE FUNCTION, ONE KEY, ONE INSERTION POINT. Escape's behaviour is spread over
+seven handlers with a carefully built front-most order, and bolting B onto each
+of them is seven chances to get that order wrong. backOut() asks the same
+question once, in the same order, and returns whether it closed anything: the
+right-click menu, then the front-most window, then the Undercroft backpack, then
+the terminal panel, then in a raid the stall, the emote bar, the map and the
+backpack. A held drag goes with the bag, exactly as the v12.89 Escape line does.
+
+IT SITS ABOVE EVERY BRANCH of the key handler, because the floor branch and the
+raid branch each return at their own end, so a key answered in only one of them
+is dead in the other. That is the exact fault the Backspace line above it was
+added to fix at v8.75, and it is worth not repeating.
+
+B DOES NOT OPEN THE PAUSE BOX, DELIBERATELY. He asked for a way OUT of menus.
+Escape and P still raise the box when nothing is in front. A B with nothing to
+close is not a menu key at all.
+
+WHICH IS WHAT KEEPS THE MERC ORDER. B already cycles a hired merc's orders in a
+raid and the game's own hire card says so: "On the surface B cycles his orders."
+A B that closed something has done its job and stops; a B with nothing to close
+falls through to the merc exactly as before.
+
+THE TEXT-EDIT BOX KEEPS ESCAPE ALONE. B is a letter and that box is where you
+type letters.
+
+HIS ESCAPE REPORT IS NOT CLOSED BY THIS AND I AM NOT PRETENDING IT IS. I cannot
+reproduce it. A synthetic Escape is a known bad instrument in this file: it runs
+before the v11.04 closer, so it opens the box it then shuts, and every control
+built on it has lied. His report is also about fullscreen, which no fixture can
+enter. I need to know what he actually saw: which menu, and whether he was in
+fullscreen at the time.
+
+Not verified: Escape itself, as above; whether B is comfortable while his left
+hand is on WASD, which is a feel question; and the right-click menu arm, since
+the check has no way to open one without a real mouse.
 ## v13.16 - A LOOTED ARMOUR PLATE IS NOT ARMOUR YET
 
 HIS NOTE, 2026-09-12: "if the player loots and finds an armor plate, it shouldn't
