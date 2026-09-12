@@ -1,0 +1,58 @@
+## v13.11 - THE WAY OUT NOW HAS A TEST, AND THE RAID CLOCK BUG WAS MINE
+
+NOTHING IN THE GAME CHANGED. This is a guard build: the extraction path was
+opened up, driven end to end for the first time, found correct, and given the
+check it has never had. Saying that plainly is the point of the entry.
+
+I OWN THE FALSE ALARM. v13.10 shipped a note claiming a deployed raid driven by
+the loop does not run the raid clock and that the extraction pull never starts.
+Both halves were wrong and both were my instrument. The clock does advance:
+measured 0.1335 seconds over six frames, which is the first frame clamped to
+0.05 plus five at 16.7ms, exactly what the loop promises. The pull never started
+because calling the ship is a 1.6 second hold and I held E for six frames, which
+is a tenth of a second. The note has been rewritten rather than deleted, so the
+measurement that refutes it sits where the wrong one sat.
+
+WHAT WAS ACTUALLY UNGUARDED. Every other check in the corpus ends a raid by
+calling the harness, which jumps to the payout and never touches the two-stage
+pull. So the call, the inbound wait, the landing, the cancel on release and the
+board had run in front of a player hundreds of times and in front of a test zero
+times. That is the single most important thirty seconds in the game and it was
+the least tested code in the file.
+
+WHAT THE DRIVE FOUND, each measured on a live raid at seed 4242 with real frames
+and the real key. Hold E for 2.5 seconds on an open point: called, inbound 24.1
+seconds, and the game pointer for the way out moved onto that point. Wind the
+inbound down and run frames: the ship lands with a 29.7 second window. Hold E
+again: the board fills at real time and the raid ends as an extraction at 1.4028
+of 1.4. Release mid-board: the hold is gone on the next frame, it does not bank.
+Get knocked down mid-board: the standing hold is lost as its comment promises,
+the hold restarts from the floor, and the board still completes, which is the
+hauled-aboard rule he chose at v0.90 and it holds. Search a body with X while
+the ship is down and hold E at the same time: both run, the container opens, and
+the extraction still fires. Put the raid clock at 0.30 seconds with the board at
+1.30: the extraction wins the race by one frame rather than the timer killing a
+player who did everything right.
+
+ONE HYPOTHESIS RAISED AND REFUTED BEFORE IT COST A BUILD. I thought the 1.6
+second call might be silent, which would have made a tap read as a dead key.
+It is not: the call bar is drawn in three places, on the pad marker, on the
+extraction row and on the downed overlay, all reading the same value. Recorded
+so nobody builds it twice.
+
+THE CHECK. Five arms, all on a live raid. A hold of well under 1.6 seconds must
+not call, and the bar must be filling while it is held. The full hold must call
+and must move the pointer. The landing must open a window. Releasing must clear
+the board. Holding again must end the raid as an extraction.
+
+NO FAILING CONTROL EXISTS FOR THIS BUILD AND I AM NOT GOING TO INVENT ONE. The
+rule is that a fix is proved by a control that fails on the previous fixture.
+This build fixes nothing, so all five arms pass on v13.10 as they should. What
+was run instead is the negative arm, which is the honest version of the same
+question: the same staging with E never pressed, which fires four of the five.
+That is what proves the check has teeth.
+
+Not verified: the inbound countdown itself, which is wound down rather than
+waited out because it is minutes long; the siege that spawns during it; the
+departure when the window is ignored; and the second and later extraction points
+on a landing, since every arm runs on the first one.

@@ -891,3 +891,21 @@ The draft is tools/handoff/parked/lintE-two-spellings.ps1 and applies cleanly.
 
 A deployed raid driven by __loop does not run the raid clock, so no check in the corpus
 proves a real E-hold extraction. Measured 2026-09-12 while writing check 13.10.
+
+## v13.11: the RAIDCLOCK note was wrong and is now closed
+
+The note I parked at v13.10 said a deployed raid driven by __loop does not run
+the raid clock and that the extraction pull never starts. Both halves were my
+instrument, not the game. RAIDCLOCK-NOTE.md is rewritten with the measurements
+rather than deleted.
+
+THE LESSON, which is general: CALLING THE SHIP IS A 1.6 SECOND HOLD AND BOARDING
+IS A 1.4 SECOND HOLD. Both accumulate by dt inside the player update. Any probe
+that holds E for fewer than about 100 frames sees nothing happen and has
+measured nothing. Six frames is a tenth of a second.
+
+And the dt clamp means the FIRST synthetic frame after a real one is worth 0.05,
+not 0.0167, so a six-frame burst is 0.1335 seconds rather than 0.1.
+
+Check 13.11 now drives all five stages on a live raid. It is the only check in
+the corpus that does not end its raid through the harness.
