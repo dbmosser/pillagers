@@ -40024,6 +40024,262 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.85 - RESTORING A BACKUP CAN BE UNDONE, WHICH THE ROW HAS BEEN PROMISING SINCE v8.75
+
+From the 2026-09-11 read-only audit, and it is the most dangerous thing that
+audit found, because it is a promise made at the exact moment it can be broken.
+
+WHAT IT IS. Restoring a backup replaces everything: credits, stash, armoury,
+wear, contracts, the run log, every Settings choice. The row that offers it said,
+in so many words, that the profile he is on right now is kept "in case you picked
+the wrong file". He reads that, picks a file, and if it was the wrong one he goes
+looking for the way back.
+
+THERE WAS NO WAY BACK. The outgoing profile really is written, to
+salvagerun:profile:prerestore, and that string appeared exactly once in the whole
+game. Nothing read it: no button, no screen, no toast. The one sentence that makes
+it safe to press PICK FILE was the sentence that was untrue, and he would only
+find out after he had already lost the save the promise was about.
+
+THE FIX IS THE BUTTON, NOT THE SENTENCE. The data was already there and had been
+all along; only the way back was missing. Building it is a smaller change than
+deleting the promise, and it leaves him better off than the wording ever claimed.
+UNDO appears on that row only when there is something behind it, and pressing it
+puts the profile he is on now into the kept slot, so pressing it twice returns
+him to where he was rather than stranding him.
+
+IT RELOADS RATHER THAN RE-RENDERING, deliberately, and that is the same choice
+the friend restore-code path already makes. A profile arriving mid-session has to
+be applied everywhere at once, and the same audit found a second defect in this
+very handler from not doing that: the stash layout is not re-applied on restore,
+so the Settings row and the grid disagree until the next reload. A reload cannot
+have that class of bug.
+
+MEASURED. Check 12.85 renders the Settings rows with nothing kept and requires no
+UNDO button, then stages a kept profile of 777 credits and 3 runs, requires the
+button to appear, presses it, and requires the stored save to be that profile.
+The control arm is the button existing at all: on the v12.84 fixture it does not,
+and the check fails there with the sentence that describes the defect, not a SKIP.
+A second arm requires the kept slot to be refilled after the press, so a second
+press cannot strand him.
+
+The check swallows window.setTimeout for the length of the press and puts it
+straight back. The handler ends with a timed location.reload, which is right for
+a player and fatal in a corpus run: a reload throws away the run and every result
+after it. Both storage keys are read before and written back in a finally.
+
+Not verified: it drives the handler rather than the mouse, so it does not prove
+the button is reachable with a click at 1920x1080; it does not test a real file
+picked from disk, which the browser will not let a script do; and it does not
+check that the restored profile renders correctly everywhere, which is the second
+audit finding about the stash layout and is still open.
+## v12.84 - EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED
+
+Found by tools/lint.ps1, and it is the SAME DEFECT AS v12.73 in a second place.
+The lint class is "a message written and then written over in the same breath",
+and it named five functions. I read all five: three are false alarms, where the
+calls sit in branches that cannot both run. This one is real.
+
+WHAT IT IS. Equipping a gun out of the backpack has to tell him two things: what
+happened to the gun it displaced, and what he is now holding. It says both, one
+after the other, into a message line that holds exactly one string. So the first
+is destroyed by the second, every single time.
+
+THE LINE HE LOSES IS THE ONE HE CANNOT WORK OUT FOR HIMSELF. "Left behind" means
+an issued loaner is gone for good. "It goes back to the armoury" means a gun he
+owns has left his hands and is waiting at base rather than sitting in his
+backpack. He was told neither. He was told the name of the thing he had just
+equipped, which he already knew, because he chose it.
+
+THE BUILD. The same shape as v12.73: the first line is kept rather than spoken,
+and the one line that is spoken carries both facts.
+
+MEASURED. Check 12.84 equips a gun out of the backpack three ways and reads the
+one line he is left holding: over an issued loaner it must say the loaner was
+left behind, over a gun he owns it must name the armoury, and the control equips
+over an empty hand and requires neither, so a build that simply printed the line
+always would fail rather than pass. No clock and no death, so it repeats.
+
+Not verified: it reads the stored message rather than pixels; it does not check
+where the displaced gun physically ends up, which v8.32 and v12.42 already cover;
+and it does not judge how long the joined line takes to read, which is his call.
+
+ALSO CHECKED AND NOT BUILT: the lint named useMedical, cycleThrow and doEmote in
+the same class. In all three the calls sit in mutually exclusive branches with
+early returns, so nothing is overwritten. The lint stays as it is: a lead it
+cannot resolve is worth more than a lead it does not raise.
+## v12.83 - SEVEN MORE LINES USE THE WORDS YOU CHOSE
+
+Found by tools/lint.ps1, which I wrote on 2026-09-09 to hunt exactly this. It
+sweeps prose the player can read for the words he retired. Its first run told me
+the vocabulary check I had drafted was too narrow: that check asserts three words,
+and the lint found seven.
+
+I READ ALL TWENTY FOUR HITS BEFORE TOUCHING ANY OF THEM, and most of them are the
+lint crying wolf. Fourteen are the word "standing" used as the ordinary English
+verb, in lines like "you are standing in the way out" and "a heavy pack to be
+standing still with". His ban is on standing as a RANK, the noun, and no English
+sentence can be written around the verb, so those are not defects: the LINT is
+being narrowed rather than the game reworded. Three more are release-note entries
+that describe the renames themselves and have to keep the old word to make sense.
+
+THE SEVEN THAT ARE REAL, every one a line he reads in play:
+  two shop lines said cash, and this game says Credits
+  three seal lines said tier, which is a banned word, and they mean the seal's own
+    strength, so they say stage now, which is what it is
+  two in-raid weight lines and the Peddler blurb said bag, and it is a backpack
+
+Nothing else moves. No number, no behaviour, no screen layout.
+
+MEASURED. Check 12.83 sweeps every long prose string in the running page for the
+whole banned list rather than the three the older check knows, exempting only the
+release notes. Its control plants a banned word in front of the sweep and
+requires it to be found, so a green run cannot mean the sweep has stopped
+looking. Every needle is assembled rather than written, so the check can never
+find itself, which is a trap this codebase has fallen into three times.
+
+Not verified: it sweeps single-quoted prose, so a line built by joining fragments
+at runtime could hide from it; it exempts the release notes wholesale rather than
+line by line; and it cannot judge the word "standing", which is left to reading.
+## v12.82 - DYING WITH THE FREEBIE KIT GIVES YOUR TACTICAL BELT BACK TOO
+
+From the 2026-09-08 first-hour audit, confirmed by a skeptic and then by me
+reading all four sites: both places that hand him the kit, the handoff between
+them, and the restore at the end of a raid.
+
+WHAT WAS ALREADY RIGHT. His spec at v6.88 was that dying with the freebie kit
+puts his own loadout back rather than making him rebuild it. Both places that
+hand him the kit keep a snapshot of all three parts of a loadout: the items he
+had packed, the tactical belt plan, and the gun slot. The button that gives him
+his own gear back reads all three out of that snapshot, which is why that button
+works.
+
+WHAT WAS WRONG. The handoff in the middle took only the items out of the snapshot
+and then threw the snapshot away. So the belt plan and the gun slot were gone
+from the moment he pressed TAKE THE FREEBIE KIT, and the restore at the end of a
+raid had nothing left to give back but a list of items.
+
+WHAT THAT LOOKS LIKE. A new player takes the welcome pack, drags a Medkit onto
+key 1 and a Frag Charge onto key 2, which is the gesture the game teaches him,
+takes the freebie kit, ascends, and dies. The report tells him that two items
+from the loadout he had before choosing the kit have been restored. The items are
+back. Both keys he bound are blank. Nothing said so, and he has no way to know
+the game ever had them.
+
+THE BUILD. All three parts travel together now. The belt plan is filtered to what
+he still owns, which is the rule the item list has always followed, because a key
+pointing at something he no longer has is a dead key rather than a restore. The
+line says how many keys came back with the items.
+
+MEASURED. Check 12.82 presses the real button, runs the real handoff and kills
+him in a real raid, because the whole defect lives in what one function hands to
+another. Two controls: a key bound to something he no longer owns must still be
+dropped, and a clean extraction must restore nothing, so the restore stays tied
+to dying rather than firing on every raid.
+
+Not verified: it presses the button and calls the handoff rather than dragging an
+item onto a key with the mouse; it does not check what the belt looks like drawn;
+and it cannot give the plan back to anyone who already lost one, because that was
+never written down.
+
+## WHAT CHANGED SINCE THIS WAS FIRST DRAFTED, 2026-09-09
+
+TWO THINGS. First, the defect is WORSE than the note above says. commitKit is not
+idempotent: with the freebie kit taken it moves the snapshot into the restore and
+then clears the snapshot, so a SECOND commit finds an empty snapshot and an empty
+kit and overwrites the restore with nothing. Quick ascent commits, and so does the
+staging path, so taking the kit at the stash and then going up left the death
+restore with no items, no belt keys and no gun slot at all, not just a missing
+belt plan. The guard is one line: only fill it when it is empty.
+
+Second, the ORIGINAL CHECK WAS THROWN AWAY. It tried to prove the restore by
+taking the kit, deploying, dying and reading the profile, and it skipped on every
+fixture, because by the time the death ran there was no stash and no kit left and
+it never reached the thing it was testing. Three repairs did not move it, and a
+skip is not a pass, so the build was parked twice rather than shipped on faith.
+The defect does not need a raid to show itself: the check now stages the snapshot
+by hand, calls the real handoff TWICE and looks at what survives. Deterministic,
+and it repeats.
+## v12.81 - THE DOWNED SCREEN STOPS OFFERING A SURRENDER IT WILL NOT TAKE
+
+From the 2026-09-07 read-only audit (P3), specced from the source. Verified by
+reading at v12.80.
+
+WHAT IT WAS. v9.71 gave the surrender a guard it did not have at first: while
+an extraction is waiting on the point you are lying in, the space bar cannot
+end your raid. The reasoning is written into the code and it is right. That
+same overlay is telling you that extracting while downed is permitted, so a
+hand resting on the space bar must not throw away a full backpack in the one
+situation where being down ends well.
+
+Nothing ever told the player about the guard. The surrender row is drawn on a
+single test, that he has spent his self-revive, with no question asked about
+where he is lying. So in that state the screen printed HOLD SPACE TO SURRENDER,
+he held it, and nothing happened: the row never lit, the progress bar never
+appeared because it is only drawn once the hold has started, and no line
+explained the refusal. A dead control and a prompt that lies, at three health
+with the point swarmed.
+
+He does lose nothing by it, which is why the audit called it P3: the working
+verb, HOLD E TO EXTRACT, is drawn in the same stack right underneath, larger
+and in colour, and it works. But a screen that offers a control it will not
+take is the same fault as the crafting button, and it is the fault I have spent
+this week removing.
+
+THE BUILD. The guard becomes one named test with two readers, so the key and
+the screen can never disagree about it again. The row then says what is true
+instead of what is not on offer, with the working verb still underneath it in
+colour. Nothing about the refusal itself changes: the key is refused in exactly
+the same state, for exactly the same reason.
+
+IT COSTS NOTHING ANYWHERE IT CAN BE MEASURED. The behaviour of the key is
+unchanged, the bot never surrenders, and no dial moves.
+
+MEASURED. Check 12.81 runs two arms on one staging. The control runs FIRST: the
+same man, downed with his revive spent, nowhere near a waiting extraction. The
+prompt must be drawn and the hold must start, or a missing prompt in the other
+arm would only say the overlay was never drawn at all. The finding arm lays him
+down inside a point with an extraction waiting, holds the real key for two
+thirds of a second through the real frame loop, and requires the hold never to
+start, the prompt never to be drawn, and the refusal line to be there in its
+place. The needle is assembled from pieces rather than written out, so a check
+that greps the page cannot find this row in its own source.
+
+Not verified: it does not read where the row sits on screen or what colour it
+is, only that the words are drawn; it does not run the hold to completion in
+the control arm, since that would end the raid; and it does not exercise the
+gamepad, which reaches the same key slot.
+## v12.80 - THE COVER GROUND CONTRACT STOPS QUOTING A NUMBER YOU CANNOT READ
+
+His note, after a live round: contracts says "2k of 14k completed", he has no
+idea what it means, just delete it.
+
+WHAT IT WAS. It is the cover-ground contract, and the number is raw world units
+divided by a thousand, against a hardcoded fourteen thousand. Nothing else on any
+screen is ever quoted in those units. Every distance he is shown goes through the
+same metres() the compass and the death card use. So this was the only line in
+the game speaking a unit he had no way to read, and it sat on a panel he checks
+mid raid to see whether he is on track.
+
+THE BUILD. It goes, at his word. The row is not left blank either: the panel's
+push is guarded now, so a conduct note with nothing to say prints nothing at all
+rather than an empty line with a bullet on it.
+
+WHAT IS NOT TOUCHED. Every other conduct note is unchanged, and the contract
+itself is unchanged: it still tracks, still completes on the same distance and
+still pays the same. Only the line describing it in unreadable units is gone.
+
+MEASURED. Check 12.80 puts that contract on the profile with distance on the
+clock and reads the panel the way he does, off the canvas, requiring no line of
+its own. Two controls: another conduct contract in the same state must still
+print its note, so the guard has silenced one line and not the panel, and the
+contract must still complete on the distance it always did and still refuse a
+short one, so deleting a line has not quietly deleted the work.
+
+Not verified: it reads the strings the frame writes rather than pixels; it does
+not walk fourteen thousand units to complete the contract for real, it sets the
+distance and asks the same test the game asks; and it does not change what the
+contract is worth or how far it asks him to go, which are dials and his to set.
 ## v12.79 - H IS THE KEY LIST AND NOTHING ELSE
 
 His note, after a live round: pressing H to look at the full keys is a mess, he

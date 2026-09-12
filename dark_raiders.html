@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.84';
+var VER='12.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.84';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.84';
+var WHATSNEW_VER='12.85';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1410,6 +1410,7 @@ var WHATSNEW=[
   'DYING WITH THE FREEBIE KIT GIVES YOUR TACTICAL BELT BACK TOO. It restored the items you had packed and quietly kept the belt keys you had bound, and the gun slot, which were thrown away the moment you took the kit. Keys pointing at something you no longer own are still dropped.',
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
+  'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
   'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
   'H IS THE KEY LIST AND NOTHING ELSE. It used to open with a second column of gear rules and a sound colour key beside the keys, taller than the keys themselves, so the tips were setting the size of the panel you opened to read the bindings.',
   'THE COVER GROUND CONTRACT STOPS QUOTING A NUMBER YOU CANNOT READ. It said 2k of 14k covered, in raw world units, which nothing else in the game uses. The line is gone at your word; the contract itself still tracks, completes and pays exactly as it did.',
@@ -29303,7 +29304,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.84: found by tools/lint.ps1, and it is the same defect as v12.73 in a second place. The lint class is a message written and then written over in the same breath, and it named five functions; I read all five, three are false alarms where the calls sit in branches that cannot both run, and this one is real. Equipping a gun out of the backpack has to tell him two things, what happened to the gun it displaced and what he is now holding, and it says both one after the other into a message line that holds exactly one string, so the first is destroyed by the second every single time. The line he loses is the one he cannot work out for himself: left behind means an issued loaner is gone for good, and it goes back to the armoury means a gun he owns has left his hands and is waiting at base rather than sitting in his backpack. He was told neither. He was told the name of the thing he had just equipped, which he already knew, because he chose it. Same shape as the fix at v12.73: the first line is kept rather than spoken, and the one line that is spoken carries both facts. Check 12.84 equips a gun over an issued loaner and requires the line he is left with to say what became of the loaner, does the same over a gun he owns and requires the armoury to be named, and controls that equipping over an empty hand still says exactly what it always said; fails on v12.83.',
+  now:'v12.85: from the 2026-09-11 read-only audit, and the most dangerous thing that audit found, because it is a promise made at the exact moment it can be broken. Restoring a backup replaces everything: credits, stash, armoury, wear, contracts, the run log and every Settings choice. The row that offers it said, in so many words, that the profile he is on right now is kept in case he picked the wrong file. He reads that, picks a file, and if it was the wrong one he goes looking for the way back. There was no way back. The outgoing profile really is written, to a key whose name appears exactly once in the whole game, and nothing reads it: no button, no screen, no toast. The one sentence that makes it safe to press PICK FILE was the sentence that was untrue, and he would only find out after he had already lost the save the promise was about. THE FIX IS THE BUTTON, NOT THE SENTENCE: the data was already there all along and only the way back was missing, so building it is a smaller change than deleting the promise and leaves him better off than the wording ever claimed. UNDO appears on that row only when there is something behind it, and pressing it twice returns him to where he was rather than stranding him. It reloads rather than re-rendering, deliberately, and that is the same choice the friend restore-code path already makes: a profile arriving mid-session has to be applied everywhere at once, and the same audit found a second defect in this very handler from not doing that, because the stash layout is not re-applied on restore and the Settings row and the grid disagree until the next reload. A reload cannot have that class of bug. Check 12.85 restores over a staged profile, presses UNDO and requires the stored save to be the one he started with, with a control that the button is absent and the handler refuses when there is nothing to go back to; fails on v12.84.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33990,8 +33991,14 @@ function renderSettings(){
     '<button id="set_share" style="padding:6px 12px">'+(P.shareRuns?'ON':'OFF')+'</button></div>'+
     '<div class="row"><div style="flex:1"><b>Back up your progress</b><div class="hint">Everything you own lives in this browser, and one browser cleanup erases it forever. This saves it all to a file in your Downloads. Do it once in a while.</div></div>'+
     '<button id="set_backup" style="padding:6px 12px">SAVE FILE</button></div>'+
-    '<div class="row"><div style="flex:1"><b>Restore from a backup</b><div class="hint">Pick a backup file and your profile becomes what it was when you saved it. The profile you are on right now is kept under the hood until the next restore, in case you picked the wrong file.</div></div>'+
-    '<button id="set_restore" style="padding:6px 12px">PICK FILE</button></div>'+
+    '<div class="row"><div style="flex:1"><b>Restore from a backup</b><div class="hint">Pick a backup file and your profile becomes what it was when you saved it. The profile you are on right now is kept until the next restore, so if you pick the wrong file, UNDO puts it back.</div></div>'+
+    '<button id="set_restore" style="padding:6px 12px">PICK FILE</button>'+
+    // v12.85, 2026-09-11 audit: THE WAY BACK, which the sentence above has been
+    // promising since v8.75 and which did not exist. The outgoing profile was
+    // already being written to a key nothing ever read. The button only appears
+    // when there is something behind it.
+    (hasPreRestore()?'<button id="set_unrestore" style="padding:6px 12px;margin-left:8px">UNDO</button>':'')+
+    '</div>'+
     '<div class="row"><div style="flex:1"><b>Controls legend</b><div class="hint">H in a raid cycles compact, full and off. Compact is the default.</div></div>'+
     '<span class="hint">H</span></div>'+
     '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you are aiming and returns with the backpack. BACKSPACE forces it back at any time.</div></div>'+
@@ -34055,6 +34062,27 @@ function renderSettings(){
     a.download=name;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     say('Backed up to Downloads as '+name+'.');
+  };
+  // v12.85: is there a profile to go back to. Kept to one place so the button and
+  // the handler can never disagree about whether the way back exists.
+  function preRestoreRaw(){
+    try{ return localStorage.getItem('salvagerun:profile:prerestore')||''; }catch(_e){ return ''; }
+  }
+  function hasPreRestore(){
+    var r=preRestoreRaw(); if(!r) return false;
+    try{ var d=JSON.parse(r); return !!(d&&typeof d.credits==='number'); }catch(_e){ return false; }
+  }
+  var _unb=document.getElementById('set_unrestore');
+  if(_unb) _unb.onclick=function(){
+    var raw=preRestoreRaw(), d3=null;
+    try{ d3=JSON.parse(raw); }catch(_e){}
+    if(!d3||typeof d3.credits!=='number'){ say('There is no profile to go back to.'); return; }
+    // The one he is on now becomes the thing UNDO goes back to, so pressing it
+    // twice returns him to where he was rather than stranding him.
+    try{ localStorage.setItem('salvagerun:profile:prerestore',JSON.stringify(P)); }catch(_e2){}
+    storeSet(JSON.stringify(d3));
+    say('Put back: '+(d3.runs||0)+' runs, '+'$'+(d3.credits||0).toLocaleString()+'. Reloading.');
+    setTimeout(function(){ try{ location.reload(); }catch(_e3){} },700);
   };
   document.getElementById('set_restore').onclick=function(){
     var inp=document.createElement('input');

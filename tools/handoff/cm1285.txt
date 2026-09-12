@@ -1,0 +1,28 @@
+v12.85: restoring a backup can be undone
+
+Also in this commit: the DESIGN.md and AUDIT.md entries for v12.80 through
+v12.84. I applied those five patches by hand instead of through ship.sh, so
+the step that files the changelog never ran and five builds shipped without
+their record. The entries were written at the time; they are filed now.
+
+From the 2026-09-11 read-only audit, and the most dangerous thing it found,
+because it is a promise made at the exact moment it can be broken.
+
+Restoring a backup replaces everything: credits, stash, armoury, wear, contracts,
+the run log, every Settings choice. The row said the profile you are on is kept
+in case you picked the wrong file. There was no way back. The outgoing profile
+really was written, to a key whose name appeared exactly once in the game, and
+nothing read it: no button, no screen, no toast.
+
+The fix is the button, not the sentence. The data was already there; only the way
+back was missing. UNDO appears on that row only when there is something behind it,
+and pressing it puts the profile you are on now into the kept slot, so a second
+press returns you rather than stranding you. It reloads rather than re-rendering,
+the same choice the friend restore-code path already makes.
+
+Check 12.85 stages a kept profile, presses UNDO and requires the stored save to be
+that profile; the control is the button existing at all, which it does not on
+v12.84. It swallows setTimeout for the length of the press so the handler's timed
+reload cannot end the corpus run.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -11,78 +11,71 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FOUND WHILE FIXING THE CATWALK AT v12.47 and written up there rather than built,
-# because narrowing the ramp test is how a deck gets sealed and that has cost
-# every route onto one before.
+# FROM THE 2026-09-11 READ-ONLY AUDIT, and it is the most dangerous thing that
+# audit found, because it is a promise made at the exact moment it can be broken.
 #
-# A deck's edge is four kerbs, and the kerb has to be cut where the ramp meets it
-# or there is no way up. The test that finds the mouth inflates the ramp by 20 in
-# ALL FOUR directions, so it also opens the kerbs it has no business touching. On
-# the DOCK CATWALK the ramp arrives from the west, and the test cuts 20 units off
-# the north kerb and 20 off the south kerb as well, leaving two holes at that end
-# through which he walks straight off the side of a raised deck.
+# Restoring a backup replaces everything: credits, stash, armoury, wear,
+# contracts, the run log, every Settings choice. The row that offers it says, in
+# so many words, that the profile he is on right now is kept "in case you picked
+# the wrong file". He reads that, picks a file, and if it was the wrong one, goes
+# looking for the way back.
 #
-# THE RULE THAT WAS MISSING is which side the ramp is actually on. A kerb is only
-# opened if the ramp lies BEYOND that kerb: a ramp to the west opens the west
-# kerb and nothing else. That is a positional fact, not a guess about the ramp's
-# shape, so it works for the catwalk whose ramp arrives from the side and for the
-# gantry whose ramp arrives from the end, which an aspect-ratio test would have
-# sealed.
+# THERE IS NO WAY BACK. The outgoing profile really is written, to
+# salvagerun:profile:prerestore, and that string appears exactly once in the
+# whole game. Nothing reads it. No button, no screen, no toast. The one sentence
+# that makes it safe to press PICK FILE is the sentence that is untrue, and he
+# only finds out after he has already lost the save the promise was about.
 #
-# THE PADDING ITSELF IS NOT TOUCHED. Ramps are authored abutting a deck rather
-# than overlapping it, so the 20 still has to be there or the mouth is never cut.
+# THE FIX IS THE BUTTON, NOT THE SENTENCE. The data is already there and has been
+# all along; only the way back was missing, so building it is a smaller change
+# than deleting the promise and it leaves him better off than the wording ever
+# claimed. UNDO appears on that row only when there is something to undo.
+#
+# IT RELOADS RATHER THAN RE-RENDERING, deliberately, and that is the same choice
+# the friend restore-code path already makes. A profile arriving mid-session has
+# to be applied everywhere at once, and the audit found a second defect in this
+# very handler from not doing that: the stash layout is not re-applied on restore,
+# so the Settings row and the grid disagree until the next reload. A reload cannot
+# have that class of bug.
 SubRx @'
-  function rampOverlaps(ax,ay,aw,ah){
+    '<div class="row"><div style="flex:1"><b>Restore from a backup</b><div class="hint">Pick a backup file and your profile becomes what it was when you saved it. The profile you are on right now is kept under the hood until the next restore, in case you picked the wrong file.</div></div>'+
+    '<button id="set_restore" style="padding:6px 12px">PICK FILE</button></div>'+
 '@ @'
-  // v12.85: WHICH SIDE THE RAMP IS ON. The inflate below is needed, because
-  // ramps abut a deck rather than overlapping it, but applied in all four
-  // directions it opened kerbs the ramp never touches: on a deck whose ramp
-  // arrives from the west it cut 20 units out of the north and south kerbs as
-  // well, and he walked off the side of the deck through the hole. A kerb is
-  // opened only if the ramp lies BEYOND it, which is a positional fact and
-  // holds for a ramp arriving at the end as well as one arriving at the side.
-  function rampOnSide(R,side,PL){
-    var cx=R.x+R.w/2, cy=R.y+R.h/2;
-    if(side==='N') return cy< PL.y;
-    if(side==='S') return cy> PL.y+PL.h;
-    if(side==='W') return cx< PL.x;
-    if(side==='E') return cx> PL.x+PL.w;
-    return true;
+    '<div class="row"><div style="flex:1"><b>Restore from a backup</b><div class="hint">Pick a backup file and your profile becomes what it was when you saved it. The profile you are on right now is kept until the next restore, so if you pick the wrong file, UNDO puts it back.</div></div>'+
+    '<button id="set_restore" style="padding:6px 12px">PICK FILE</button>'+
+    // v12.85, 2026-09-11 audit: THE WAY BACK, which the sentence above has been
+    // promising since v8.75 and which did not exist. The outgoing profile was
+    // already being written to a key nothing ever read. The button only appears
+    // when there is something behind it.
+    (hasPreRestore()?'<button id="set_unrestore" style="padding:6px 12px;margin-left:8px">UNDO</button>':'')+
+    '</div>'+
+'@
+
+SubRx @'
+  document.getElementById('set_restore').onclick=function(){
+'@ @'
+  // v12.85: is there a profile to go back to. Kept to one place so the button and
+  // the handler can never disagree about whether the way back exists.
+  function preRestoreRaw(){
+    try{ return localStorage.getItem('salvagerun:profile:prerestore')||''; }catch(_e){ return ''; }
   }
-  function rampOverlaps(ax,ay,aw,ah,side,PL){
-'@
-
-SubRx @'
-      if(ax<R.x+R.w+pad&&ax+aw>R.x-pad&&ay<R.y+R.h+pad&&ay+ah>R.y-pad) return true; }
-'@ @'
-      if(side&&PL&&!rampOnSide(R,side,PL)) continue;   // v12.85: not this kerb's ramp
-      if(ax<R.x+R.w+pad&&ax+aw>R.x-pad&&ay<R.y+R.h+pad&&ay+ah>R.y-pad) return true; }
-'@
-
-SubRx @'
-  function edgeSpan(ax,ay,aw,ah,selfIx){
-    // split an edge into segments that skip any ramp mouth
-    function openHere(sx2,sy2,sw2,sh2){
-      return rampOverlaps(sx2,sy2,sw2,sh2)||platJunction(sx2,sy2,sw2,sh2,selfIx);
-    }
-'@ @'
-  function edgeSpan(ax,ay,aw,ah,selfIx,side,PLself){
-    // split an edge into segments that skip any ramp mouth
-    function openHere(sx2,sy2,sw2,sh2){
-      return rampOverlaps(sx2,sy2,sw2,sh2,side,PLself)||platJunction(sx2,sy2,sw2,sh2,selfIx);
-    }
-'@
-
-SubRx @'
-    edgeSpan(PL.x,PL.y,PL.w,t2,i);
-    edgeSpan(PL.x,PL.y+PL.h-t2,PL.w,t2,i);
-    edgeSpan(PL.x,PL.y,t2,PL.h,i);
-    edgeSpan(PL.x+PL.w-t2,PL.y,t2,PL.h,i);
-'@ @'
-    edgeSpan(PL.x,PL.y,PL.w,t2,i,'N',PL);
-    edgeSpan(PL.x,PL.y+PL.h-t2,PL.w,t2,i,'S',PL);
-    edgeSpan(PL.x,PL.y,t2,PL.h,i,'W',PL);
-    edgeSpan(PL.x+PL.w-t2,PL.y,t2,PL.h,i,'E',PL);
+  function hasPreRestore(){
+    var r=preRestoreRaw(); if(!r) return false;
+    try{ var d=JSON.parse(r); return !!(d&&typeof d.credits==='number'); }catch(_e){ return false; }
+  }
+  var _unb=document.getElementById('set_unrestore');
+  if(_unb) _unb.onclick=function(){
+    var raw=preRestoreRaw(), d3=null;
+    try{ d3=JSON.parse(raw); }catch(_e){}
+    if(!d3||typeof d3.credits!=='number'){ say('There is no profile to go back to.'); return; }
+    // The one he is on now becomes the thing UNDO goes back to, so pressing it
+    // twice returns him to where he was rather than stranding him.
+    try{ localStorage.setItem('salvagerun:profile:prerestore',JSON.stringify(P)); }catch(_e2){}
+    storeSet(JSON.stringify(d3));
+    say('Put back: '+(d3.runs||0)+' runs, '+'$'+(d3.credits||0).toLocaleString()+'. Reloading.');
+    setTimeout(function(){ try{ location.reload(); }catch(_e3){} },700);
+  };
+  document.getElementById('set_restore').onclick=function(){
 '@
 
 # NEW IN.
@@ -90,7 +83,7 @@ SubRx @'
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
 '@ @'
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
-  'A RAISED DECK HAS NO HOLE BESIDE ITS RAMP. The test that cuts the ramp mouth out of the edge was opening the two kerbs the ramp never touches as well, leaving a gap at that end you could walk off the side through.',
+  'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
 '@
 
 # STAMPS.
@@ -106,7 +99,7 @@ var WHATSNEW_VER='12.85';
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.84:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.84 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.84:[^']*'",{ param($m) "now:'v12.85: found while fixing the catwalk at v12.47 and written up there rather than built, because narrowing the ramp test is how a deck gets sealed and that has cost every route onto one before. A deck edge is four kerbs, and the kerb has to be cut where the ramp meets it or there is no way up; the test that finds the mouth inflates the ramp by 20 in ALL FOUR directions, so it also opens the kerbs the ramp has no business touching. On the DOCK CATWALK the ramp arrives from the west and the test cut 20 units off the north kerb and 20 off the south kerb as well, leaving two holes at that end through which he walks straight off the side of a raised deck. The rule that was missing is which side the ramp is actually on: a kerb is opened only if the ramp lies BEYOND it, so a ramp to the west opens the west kerb and nothing else. That is a positional fact rather than a guess about the ramp shape, which matters because an aspect-ratio test would have sealed the gantry whose ramp arrives at the end rather than the side. The padding itself is untouched, because ramps are authored abutting a deck rather than overlapping it and the 20 still has to be there or the mouth is never cut. Check 12.85 walks every deck on both sectors and requires the kerb to be unbroken on every side the ramp is NOT on, and still open on the side it is, so a build that sealed a deck would fail as loudly as one that left a hole; fails on v12.84.'" })
+$s=[regex]::Replace($s,"now:'v12\.84:[^']*'",{ param($m) "now:'v12.85: from the 2026-09-11 read-only audit, and the most dangerous thing that audit found, because it is a promise made at the exact moment it can be broken. Restoring a backup replaces everything: credits, stash, armoury, wear, contracts, the run log and every Settings choice. The row that offers it said, in so many words, that the profile he is on right now is kept in case he picked the wrong file. He reads that, picks a file, and if it was the wrong one he goes looking for the way back. There was no way back. The outgoing profile really is written, to a key whose name appears exactly once in the whole game, and nothing reads it: no button, no screen, no toast. The one sentence that makes it safe to press PICK FILE was the sentence that was untrue, and he would only find out after he had already lost the save the promise was about. THE FIX IS THE BUTTON, NOT THE SENTENCE: the data was already there all along and only the way back was missing, so building it is a smaller change than deleting the promise and leaves him better off than the wording ever claimed. UNDO appears on that row only when there is something behind it, and pressing it twice returns him to where he was rather than stranding him. It reloads rather than re-rendering, deliberately, and that is the same choice the friend restore-code path already makes: a profile arriving mid-session has to be applied everywhere at once, and the same audit found a second defect in this very handler from not doing that, because the stash layout is not re-applied on restore and the Settings row and the grid disagree until the next reload. A reload cannot have that class of bug. Check 12.85 restores over a staged profile, presses UNDO and requires the stored save to be the one he started with, with a control that the button is absent and the handler refuses when there is nothing to go back to; fails on v12.84.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

@@ -1,0 +1,49 @@
+## v12.85 - RESTORING A BACKUP CAN BE UNDONE, WHICH THE ROW HAS BEEN PROMISING SINCE v8.75
+
+From the 2026-09-11 read-only audit, and it is the most dangerous thing that
+audit found, because it is a promise made at the exact moment it can be broken.
+
+WHAT IT IS. Restoring a backup replaces everything: credits, stash, armoury,
+wear, contracts, the run log, every Settings choice. The row that offers it said,
+in so many words, that the profile he is on right now is kept "in case you picked
+the wrong file". He reads that, picks a file, and if it was the wrong one he goes
+looking for the way back.
+
+THERE WAS NO WAY BACK. The outgoing profile really is written, to
+salvagerun:profile:prerestore, and that string appeared exactly once in the whole
+game. Nothing read it: no button, no screen, no toast. The one sentence that makes
+it safe to press PICK FILE was the sentence that was untrue, and he would only
+find out after he had already lost the save the promise was about.
+
+THE FIX IS THE BUTTON, NOT THE SENTENCE. The data was already there and had been
+all along; only the way back was missing. Building it is a smaller change than
+deleting the promise, and it leaves him better off than the wording ever claimed.
+UNDO appears on that row only when there is something behind it, and pressing it
+puts the profile he is on now into the kept slot, so pressing it twice returns
+him to where he was rather than stranding him.
+
+IT RELOADS RATHER THAN RE-RENDERING, deliberately, and that is the same choice
+the friend restore-code path already makes. A profile arriving mid-session has to
+be applied everywhere at once, and the same audit found a second defect in this
+very handler from not doing that: the stash layout is not re-applied on restore,
+so the Settings row and the grid disagree until the next reload. A reload cannot
+have that class of bug.
+
+MEASURED. Check 12.85 renders the Settings rows with nothing kept and requires no
+UNDO button, then stages a kept profile of 777 credits and 3 runs, requires the
+button to appear, presses it, and requires the stored save to be that profile.
+The control arm is the button existing at all: on the v12.84 fixture it does not,
+and the check fails there with the sentence that describes the defect, not a SKIP.
+A second arm requires the kept slot to be refilled after the press, so a second
+press cannot strand him.
+
+The check swallows window.setTimeout for the length of the press and puts it
+straight back. The handler ends with a timed location.reload, which is right for
+a player and fatal in a corpus run: a reload throws away the run and every result
+after it. Both storage keys are read before and written back in a finally.
+
+Not verified: it drives the handler rather than the mouse, so it does not prove
+the button is reachable with a click at 1920x1080; it does not test a real file
+picked from disk, which the browser will not let a script do; and it does not
+check that the restored profile renders correctly everywhere, which is the second
+audit finding about the stash layout and is still open.
