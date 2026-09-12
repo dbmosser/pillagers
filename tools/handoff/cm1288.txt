@@ -1,0 +1,23 @@
+v12.88: a friend you import carries the gun they actually carried
+
+Finding 3 of the 2026-09-11 audit, and the only one in that file where the game
+states a fact about a real person and the fact is false.
+
+A friend sends their run report. The game says they favour the Auto Rifle. Their
+report said Scav Pistol on every line. The export writes the DISPLAY name, and the
+capture group stopped at the first space, so "Scav Pistol" became "Scav", the
+lookup missed, and favKey sat on its initialiser, whose name is Auto Rifle.
+
+Nine of sixteen guns have a space in the name. The four issued starters do not,
+which is what a fresh alpha friend usually carries, which is why this survived.
+
+Both halves are fixed. The parse stops at the bracket or the next field, not the
+first space. A lookup that still fails claims no favourite at all rather than a
+confident wrong one; the ghost is armed with the same default either way, so
+nothing about the raid moves and only the claim goes away.
+
+Check 12.88 builds a report in the export's own format with names taken off the
+weapon table, and requires a two-word gun to come back as itself, with and without
+the source bracket. Fails on v12.87.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

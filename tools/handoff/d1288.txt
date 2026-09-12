@@ -1,0 +1,46 @@
+## v12.88 - A FRIEND YOU IMPORT CARRIES THE GUN THEY ACTUALLY CARRIED
+
+Finding 3 of the 2026-09-11 read-only audit, and the only finding in that file
+where the game states a fact about a real person and the fact is false.
+
+WHAT HAPPENS. A friend plays the alpha, exports their run report and sends him the
+file. He opens the Undercroft, goes to the Mainframe, types their name and picks
+the file. The game replies "<NAME> imported: 17 runs, 29% extract, favours the
+Auto Rifle. They walk your raids now." The Mainframe hint repeats it for as long
+as that ghost is installed. The friend never touched an Auto Rifle. Their report
+said Scav Pistol on every line.
+
+WHY. The export writes the weapon as its DISPLAY name, so a run line reads
+wep:Scav Pistol(owned). The capture group is lazy and terminates on whitespace OR
+the bracket, so it stops at the first SPACE and yields "Scav". The lookup against
+the weapon table then finds nothing, and favKey is left sitting on its
+initialiser, 'rifle', whose display name is Auto Rifle.
+
+NINE OF SIXTEEN. Bare Hands, Scav Pistol, Compact SMG, Marksman Rifle, Burst
+Carbine, Riot Scattergun, Support MG, Meridian Lance, and Auto Rifle itself have a
+space in the name. The four issued starters do not, and those are what a fresh
+alpha friend most often carries, which is why this has survived. Auto Rifle
+truncates to "Auto", fails the lookup and lands on 'rifle' by accident, so it is
+reported correctly by coincidence.
+
+TWO THINGS WERE WRONG AND BOTH ARE FIXED. The parse now stops at the bracket or at
+the next field rather than the first space, so the whole display name reaches the
+lookup; the bracket is optional in the format, so " dur:" is the other terminator.
+And a lookup that still fails no longer states a favourite at all: an unreadable
+report gets a ghost with no favourite-gun sentence rather than a confident wrong
+one. The gun that ghost is armed with is unchanged in that case, so nothing about
+the raid moves. Only the claim goes away.
+
+MEASURED. Check 12.88 builds a report in the export's own format, taking the gun
+names off the weapon table rather than typing them, so a rename cannot make it
+quietly stop testing. It requires a friend whose every run names a two-word gun to
+come back carrying and naming that gun, requires the same report without the
+source bracket to read the same way, controls that a one-word gun still reads
+correctly, and requires a report naming a gun this build does not have to claim no
+favourite while still leaving the ghost armed with something usable. On the v12.87
+fixture the two-word report comes back as an Auto Rifle and the check fails there.
+
+Not verified: it hands the parser a string rather than a file, because no script
+may put a file into a file input, so the file-picking half of IMPORT is untested
+here as it always has been; and it does not measure how the ghost then plays, only
+which gun it is given.
