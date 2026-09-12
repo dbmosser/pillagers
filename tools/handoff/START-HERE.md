@@ -856,3 +856,33 @@ looks like the pause box.
 Check 13.04 did exactly that to 12.95 on its first corpus run. The teardown now does
 what the game's own return path does: `G=null; keys={}; showScreen('hub');`. Any check
 that ends a raid should do the same unless it has a reason not to.
+
+## 2026-09-12: LINT CLASS E ("one thing spelled two ways") TRIED AND NOT SHIPPED
+
+v13.03 found the experimental warning written two ways, which split one of his text
+edits, so a lint class for it looked obvious. It is not, and the reason is worth
+keeping.
+
+FIRST CUT: group player-facing strings by letters and digits only. 65 hits, nearly all
+markup fragments, colour values and selector strings colliding once punctuation was
+stripped. Same mistake class A made with a lazy regex.
+
+SECOND CUT: prose only, and CASE-ONLY differences, since punctuation and spacing
+differences are ordinary English. 5 hits, and all five are ordinary typography:
+
+  you killed him / You killed him      mid-sentence against sentence start
+  EXTRACTION INBOUND / Extraction inbound   headline against its own sub-line
+  HOLD TO CRAFT / Hold to craft        button against hint
+  your stats / YOUR STATS              tab label against heading
+  tactical belt / TACTICAL BELT        his own word, heading against prose
+
+A heading in capitals over a sentence in lower case is correct English, not a defect.
+To be useful the class would have to know that two strings are the same KIND of thing,
+which it cannot.
+
+WHAT THE EXPERIMENTAL CASE ACTUALLY NEEDED, and what now exists instead: sweep HIS
+EDITS against what the game draws, which is checks 13.02 (six panels) and 13.04 (the
+outcome card). That finds an edit that is not landing without needing to guess which
+two strings are the same thing. Extend those rather than reviving this.
+
+The draft is tools/handoff/parked/lintE-two-spellings.ps1 and applies cleanly.

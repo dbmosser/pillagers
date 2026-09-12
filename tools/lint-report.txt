@@ -6,18 +6,26 @@
 
 ## B. banned vocabulary in prose the player can read
 
-  line 2650 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
-  line 2653 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
+  line 2667 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
+  line 2670 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
 
 ## C. one-shot migrations missing from the born profile
 
 
 ## D. a message written inside a loop and overwritten after it
 
-  (cleared) line 7789 : doEmote - v12.84: mutually exclusive branches with early returns, nothing is overwritten
-  (cleared) line 11751 : cycleThrow - v12.84: mutually exclusive branches with early returns, nothing is overwritten
-  (cleared) line 12982 : useMedical - v12.84: mutually exclusive branches with early returns, nothing is overwritten
+  (cleared) line 7806 : doEmote - v12.84: mutually exclusive branches with early returns, nothing is overwritten
+  (cleared) line 11768 : cycleThrow - v12.84: mutually exclusive branches with early returns, nothing is overwritten
+  (cleared) line 12999 : useMedical - v12.84: mutually exclusive branches with early returns, nothing is overwritten
 
   3 found, 3 already read and cleared, 0 to read
 
-TOTALS  A=0  B=2  C=0  D=0
+## E. one thing spelled two ways
+
+  [you killed him ] vs [You killed him ]
+  [EXTRACTION INBOUND] vs [Extraction inbound]
+  [HOLD TO CRAFT] vs [Hold to craft]
+  [your stats] vs [YOUR STATS]
+  [tactical belt] vs [TACTICAL BELT]
+
+TOTALS  A=0  B=2  C=0  D=0  E=5
