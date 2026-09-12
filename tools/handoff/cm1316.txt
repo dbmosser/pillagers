@@ -1,0 +1,21 @@
+v13.16: a looted armour plate is not armour yet
+
+His note of 2026-09-12: a looted plate should go to the tactical belt or the
+backpack and be equipped, which takes time, before it counts on the bar.
+
+The game already half had this rule and contradicted it. The two second armour
+wind-up has been the equip path since v3.54, and his own baked text for the plate
+says plates do not auto equip. The pickup line made that a lie for every plate
+found in a container, and a plate soaked into the bar could never be carried
+home, sold, belted, or spent when he chose.
+
+The branch is deleted with no replacement: the chain already ends in a default
+that pushes the item to the backpack and offers it to the belt, and the belt
+builds its plate cell from the bag. His ruling was every plate, not just looted
+ones, and that needed no code: the Peddler and the freebie kit already do this.
+
+Check 13.16 searches a real container on the real key and requires the bar not to
+move, the plate to be in the backpack, the belt to offer it, and the wind-up to
+be what moves the bar. Two arms fail on v13.15.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

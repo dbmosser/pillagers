@@ -909,3 +909,20 @@ not 0.0167, so a six-frame burst is 0.1335 seconds rather than 0.1.
 
 Check 13.11 now drives all five stages on a live raid. It is the only check in
 the corpus that does not end its raid through the harness.
+
+## HIS LIVE NOTES, 2026-09-12 (second batch)
+
+1. SHIPPING as v13.16: a looted armour plate must not convert itself to armour.
+   It goes to the tactical belt or the backpack and is equipped, which takes
+   time, before it counts on the bar. HIS RULING: every plate, not just looted.
+2. SHIPPING as v13.17: "since esc isn't working, lets set it up to hit b to back
+   out of any menu." B backs out; it does NOT open the pause box, so the merc
+   order on B in a raid survives. His ESC report itself is NOT closed: a
+   synthetic Escape is a known bad instrument here and his report is about
+   fullscreen, which no fixture can enter. ASK HIM WHAT HE SAW.
+3. QUEUED as v13.18: "if you buy the limited time offer it shouldnt show up in
+   the gamble." Wirt's Limited Time Offer, once bought, is still in the gamble
+   pool.
+4. NOT BUILT, HIS CALL: a roll costs 45 stamina, so the third in a row is refused
+   and says nothing at all. Measured: 100 -> 55 -> 16. He reported the roll dead
+   and then withdrew it; this is the likely cause. Offered, not built.

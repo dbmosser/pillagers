@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.14';
+var VER='13.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10553,7 +10553,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       containers:0,items:0,rar:{common:0,uncommon:0,rare:0,elite:0},
       firstContact:null,firstLoot:null,distance:0,
       tCrouch:0,tSprint:0,tStill:0,tLit:0,
-      closestExtract:1e9,deathKiller:null,deathDistExtract:null,
+      closestExtract:1e9,deathKiller:null,deathDistExtract:null,diedWithMed:0,
       raidersExtracted:0,beaconCalls:0,beaconMissed:0,notes:[],thr:{smoke:0,decoy:0,frag:0}}};
   // THE SPAWN CENSUS, v3.70. Every sweep from roughly v3.48 to v3.61 ran
   // against fixture-tab state that inflated entity counts about forty percent,
@@ -12442,6 +12442,15 @@ function killPlayer(src){
   var p=G.player;
   p.hp=0; p.downed=false;
   G.tel.deathKiller=p.pendKiller||src||'other';
+  // v13.15: died carrying medical he never applied. Read HERE, at the moment of
+  // death, because the backpack is emptied on the way to the card and a scan
+  // done there would always come back with nothing.
+  if(!(G.tel.heals>0)){
+    for(var _dm=0;_dm<G.bag.length;_dm++){
+      var _dmi=ITEMS[G.bag[_dm]];
+      if(_dmi&&_dmi.use==='heal'){ G.tel.diedWithMed=1; break; }
+    }
+  }
   if(G.beaconT!==null) G.tel.diedInSiege=1;
   // The gut punch is a beat, not a cut. A second and a half of slow motion and
   // a closing red field before the ledger of what you lost. Sim skips it.
@@ -19622,7 +19631,7 @@ wallClip:(G.tel&&G.tel.wallClip)||null,
     ghostIn:(G.tel&&G.tel.ghostIn)?1:0,
     haul:haul,items:G.bag.length,containers:T.containers,
     carriedIn:G.carriedIn||0,   // v10.27: the bag's value when the lift landed
-    shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,eliteKills:T.eliteKills||0,
+    shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,diedWithMed:T.diedWithMed||0,eliteKills:T.eliteKills||0,
     downs:T.downs,revives:T.revives,thr:T.thr,marked:T.marked||0,
     beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,regen:T.regen||0,
     kills:T.kills,dmg:T.dmg,rar:T.rar,
@@ -19691,6 +19700,12 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     if(_contact!==null)
       s.textContent+='   ·   IN CONTACT '+fmtMS(_contact).toUpperCase();
     else s.textContent+='   ·   NEVER SPOTTED';
+    // v13.15, from his telemetry: three runs, two knock-downs each, medical
+    // carried every time and applied zero times. The belt cell for it is built
+    // automatically and the freebie kit issues two Bandages, so nothing was
+    // stopping him; nothing had ever said so either. Only when it is true.
+    if(T.diedWithMed)
+      s.textContent+='   \u00b7   YOU DIED CARRYING MEDICAL YOU NEVER USED';
     // THE FEED. Newest last so it reads forward in time, which is how he will
     // reconstruct the mistake. Health after each hit is the column that makes it
     // a story: it shows the exact hit the run stopped being winnable on.
@@ -29510,7 +29525,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.14: from HIS OWN TELEMETRY rather than from a queue. Run 3 of the 2026-09-11 export, on v12.85: dead, 3860 credits lost, lastHit YOUR OWN CHARGE, killer OTHER. The death card names it right because it prefers the last hit name, and everything that KEEPS a record does not: the run record, the export line, the run list, the career killers tally and the damage-by-source table all filed it as other, which is the bucket for a thing the game could not identify, while the line directly below named it exactly. It came from v8.23, which found that an ENEMY grenade was being reported as YOUR OWN CHARGE and bucketed under other, and gave the enemy case a real source while leaving your own charge on the placeholder it was already using. It is his most common recorded cause of death and he has now done it three times, and a man reading his own reports could not see that, because every one of them said other. Reproduced before it was touched: a real player charge, the shape the throw actually pushes, at his feet on a live raid, and the pending killer came back other with the last hit name already reading YOUR OWN CHARGE. It is now yourself, so the export says killer yourself, the run list says by yourself, the career tally has a row for it and the damage table has a bucket declared for it rather than one appearing by accident. The control is the v8.23 case: an enemy charge must still report the thrower kind and must not be swallowed by this',
+  now:'v13.15: from HIS TELEMETRY again. Three runs, heals 0 and downs 2 every single time: he carries medical, he goes down twice a raid, and he never applies one. I checked the two obvious causes first and both are refuted, so neither was built: the freebie kit DOES issue two Bandages so he is not going up empty, and the tactical belt builds its medical cell from the backpack automatically so the item is under a key whether or not anything was dragged. Nothing is broken. He simply does not use it, and nothing had ever told him so. His own priority line asks for exactly this, deeper coaching to follow if the telemetry does not move, and it has not moved; the card own v3.08 note already says the number worth putting in front of him at the moment of death is the one that makes it feedback rather than an epitaph. So the KILLED IN ACTION card gains one clause, and only when it is true: died carrying medical never used. It says nothing when he healed and nothing when he had nothing to heal with. The flag is read at the moment of death rather than on the card, because the backpack is emptied on the way there and a scan done at the card would always come back with nothing, which is the fault this would otherwise have shipped with. It also goes into the run record and the export line as unusedMed, so the next three runs answer whether saying it changes anything, which is the only way to know if coaching works',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31908,6 +31923,7 @@ if(r.ghostIn) line+=' ghost:1';
     if(r.pgLook&&r.pgLook.seen) line+=' pillagerCam:'+r.pgLook.seen+'seen/'+r.pgLook.still+'still/'+r.pgLook.statue+'statue/'+r.pgLook.fired+'shot'
       +' doing:'+Object.keys(r.pgLook.by||{}).map(function(k){return k+r.pgLook.by[k];}).join(',');
     if(r.outcome==='dead'&&r.lastHitName) line+=' lastHit:'+r.lastHitName;
+    if(r.diedWithMed) line+=' unusedMed:1';
     if(r.census) line+=' ents:'+r.census.total+'(s'+(r.census.by.sentry||0)+'/c'+(r.census.by.crawler||0)+'/r'+(r.census.by.raider||0)+'/sn'+(r.census.by.snitch||0)+' dials '+r.census.dials.nS+'/'+r.census.dials.nC+'/'+r.census.dials.nR+')';
     if(r.mapName) line+=' map:'+r.mapName;
     if(r.wx) line+=' wx:'+r.wx+'/'+(r.tod||'noon');

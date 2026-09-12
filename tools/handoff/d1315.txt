@@ -1,0 +1,34 @@
+## v13.15 - THE DEATH CARD NAMES THE MEDICAL YOU NEVER USED
+
+FROM HIS TELEMETRY AGAIN, and it is the same three runs. heals 0 and downs 2,
+every single time. He carries medical, he goes down twice a raid, and he never
+applies one.
+
+I CHECKED THE TWO OBVIOUS CAUSES FIRST AND BOTH ARE REFUTED, so neither was
+built. The freebie kit DOES issue two Bandages, so he is not going up empty. And
+the tactical belt builds its medical cell from the backpack automatically, so the
+item is under a key whether or not anything was dragged. Nothing is broken. He
+simply does not use it, and nothing had ever told him so.
+
+HIS OWN PRIORITY LINE ASKS FOR THIS. "Deeper coaching to follow if the telemetry
+does not move." It has not moved. And the card's own v3.08 note already settled
+what belongs there: the thing worth putting in front of him at the moment of
+death is whatever makes it feedback rather than an epitaph.
+
+ONE CLAUSE, ONLY WHEN IT IS TRUE. Died carrying medical you never used. Nothing
+when he healed. Nothing when he had nothing to heal with.
+
+READ AT THE MOMENT OF DEATH, NOT ON THE CARD. The backpack is emptied on the way
+to the card, so a scan done there would come back with nothing every time and the
+line would never appear. That is the fault this would otherwise have shipped
+with, and it is why the flag is set inside killPlayer instead.
+
+IT GOES INTO THE RECORD TOO, as unusedMed on the export line, so the next three
+runs answer whether saying it changed anything. That is the only way to find out
+whether coaching works rather than assuming it.
+
+Not verified: whether it changes his behaviour, which is the entire point and
+takes runs rather than tests; whether the clause makes the subtitle too long at
+small text sizes, since it is the third clause on that line; and the same
+question for a player who dies with a medkit rather than a bandage, which is the
+same code path but not the same words on screen.

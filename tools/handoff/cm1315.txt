@@ -1,0 +1,18 @@
+v13.15: the death card names the medical you never used
+
+From his telemetry. Three runs, heals 0 and downs 2 every time: he carries
+medical, goes down twice a raid, and never applies one.
+
+Both obvious causes refuted before building anything: the freebie kit does issue
+two Bandages, and the tactical belt builds its medical cell from the backpack
+automatically. Nothing is broken. Nothing had ever told him.
+
+His own priority line asks for deeper coaching if the telemetry does not move,
+and it has not. The KILLED IN ACTION card gains one clause, only when true.
+
+The flag is set inside killPlayer, not on the card: the backpack is emptied on
+the way there, so a scan at the card would come back empty every time. It also
+lands in the run record and the export as unusedMed, so the next runs answer
+whether saying it changed anything.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
