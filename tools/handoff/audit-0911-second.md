@@ -175,3 +175,39 @@ FIX: give the Undercroft its own label table (first act [A], then [X]/[Y]/[RB]) 
 - skeptic: Survived all six routes. (1) Line 29912 is exact and its context worsens it: nB is per-tag (buzzDoses, 29799) and drives both the AT YOUR LIMIT gate (29917, repeated at 29924) and the printed percentage (29914), while the paying function at 29830 sums both tags and caps at ten. (2) No guard: the station is a live act (27880 KeyE 'drink'), there is no total-length cap on P.buzz (only push site 29927), doses are cleared only on death/abandon (19385) and quit (2578), never on deploy, so they ride into the raid where 23997 reprints the same per-tag figure; 10 Liquor + 6 Blotter is $6,120 and sixteen clicks inside a 180s window. (3) The corpus does not assert it: the only bar-text assertion in tools\mkfixture.ps1 is 18009 'XP +5%' with two doses of ONE kind, and 17982 asserts only the payout cap (twelve vs ten), which is the intended behaviour; a grep for ACID|IN YOUR BLOOD|AT YOUR LIMIT|atCap|cuts you off across the whole fixture returns only 18005 and 18009 — the conditions row, the mixed state and the purchase gate are untested. (4) No drafted patch fixes it: across tools\handoff\p*.ps1 the only buzz hits are p1100 (default dial table), p1163 (xpBaseFor*buzzXpMul) and p1212 (G.tel.doseMul / addXp, the v12.12 card-vs-bank fix already at HEAD 29835); none touches renderBar, the gate or the percentages, and handoff\dry\game.html carries the identical code. (5) The consequence is what the code does, not an inference: at 10 drunk + 6 lsd the bar prints +25% and +15%, 23997 prints the same two, and buzzXpMul returns 1.25, so the Blotter row's +15% is credited nowhere; it is reachable without touching the gate at all, since 6+6 prints +15% and +15% against a paid +25%. (6) Not a dial, not style, not an explained decision: the fix moves no number, the comment at 29826-29827 explains only the payout, AUDIT.md:1315 says that bonus is to be shown on the IN YOUR BLOOD tag and the conditions row, and DESIGN.md:38544-38548 shows the 'cuts you off at ten' copy was written at v7.49 to match the per-tag lock, before the combined-cap bonus existed — drift, not design. A fix would have to compute the gate and both printed percentages (29912/29914 and 23997) from the same combined-and-capped basis buzzXpMul uses, printing the one bonus actually paid rather than a per-tag figure.
 - fix would have to: One clause of the scenario is overstated and should be dropped from the write-up: "The six Blotters past the cap cost $3,120 and changed nothing at all" is false. Those doses still drive buzzLevel('lsd') into the acid warp in drawBuzzFx (23430), so they do change the screen — they just pay none of the XP the row advertised. (buzzSlow at 29819 is already saturated by ten drunk doses, so that part is indeed unchanged.) The correct statement is that they paid nothing of the bonus the bar printed beside them. Also worth narrowing: the defect does not require hitting the per-tag gate at all — 6 Liquor + 6 Blotter ($4,920) already prints +15% and +15% against a paid +25%.
 
+
+---
+
+## DRAINED 2026-09-12. All 16 findings are shipped.
+
+| # | Build | What shipped |
+|---|---|---|
+| 1, 5 | v12.85 | UNDO on the Settings restore row, reading the profile the game was already keeping and nothing could read |
+| 2 | v12.86 | every profile-replacing path ends in finishRestore and arms the v11.04 cancellable reload |
+| 3 | v12.88 | the run-report importer reads the whole weapon name, and claims no favourite it cannot support |
+| 4 | v12.90 | the feeling tag says tactical belt, with a display-time map carrying already-logged runs forward |
+| 6 | v12.97 | a restore code carries net lifetime earnings; older codes zero it rather than leaving the restorer's |
+| 7 | v12.93 | a live beacon owns the last-minute warning |
+| 8 | v12.94 | the downed screen and the surrender guard read the ring he is lying in |
+| 9 | v12.89 | in a raid ESC closes the map, then the backpack, and only then pauses |
+| 10 | v12.95 | the Undercroft pause box owns the keyboard |
+| 11 | v12.91 | the left stick crawls when he is down |
+| 12 | v12.96 | the career card counts stand-ups, not pillagers he picked up |
+| 13 | v13.00 | the text rewriter walks what is on screen, not the whole file |
+| 14 | v12.99 | ESC in the edit box closes the edit box |
+| 15 | v12.92 | every Undercroft station prompt names the button it actually uses |
+| 16 | v12.98 | THE LAST POUR shows the one bonus it pays, and the gate counts the same ten |
+
+LEFT FOR HIS RULING, NOT DECIDED HERE:
+- Pillagers he picked up are a real number and now have no card of their own (from 12).
+  Adding one is a new row on his stats panel.
+- The ascent check still auto-fills a standard loadout when opened with nothing packed
+  (v6.12). That is the next raid's packing screen rather than the Undercroft, so it does
+  not break his come-back-empty rule, but a standard kit does appear the moment he opens
+  the lift check.
+
+TWO LEADS FOUND WHILE READING, NEITHER ACTED ON:
+- P._gunSlot is written in five places and read in none, so the v12.82 restore of it
+  restored a field nothing reads.
+- His baked text edit keyed on the old "have been restored" sentence is a dead key since
+  v12.87, because that sentence no longer exists. Left alone: it is his data.

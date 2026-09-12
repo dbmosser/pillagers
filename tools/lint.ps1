@@ -128,6 +128,15 @@ Say ''
 # message line holds exactly one string, so a say() inside a loop followed by an
 # unconditional say() after it can never be read.
 $dHits = 0
+$dSeen = 0
+# READ AND CLEARED, with the build it was read at. Class D cannot tell a say() that is
+# followed by an early return from one that is not, and these three are all early
+# returns in branches that cannot both run.
+$dCleared = @{
+  'useMedical' = 'v12.84: mutually exclusive branches with early returns, nothing is overwritten';
+  'cycleThrow' = 'v12.84: mutually exclusive branches with early returns, nothing is overwritten';
+  'doEmote'    = 'v12.84: mutually exclusive branches with early returns, nothing is overwritten'
+}
 Say '## D. a message written inside a loop and overwritten after it'
 Say ''
 foreach ($fm in [regex]::Matches($s, '(?s)\nfunction ([A-Za-z0-9_]+)\([^)]*\)\{(.{0,9000}?)\n\}')) {
@@ -139,13 +148,20 @@ foreach ($fm in [regex]::Matches($s, '(?s)\nfunction ([A-Za-z0-9_]+)\([^)]*\)\{(
   $closes = [regex]::Match($tail, '(?s)\n  \}(.*)$')
   if (-not $closes.Success) { continue }
   if ($closes.Groups[1].Value -match 'say\(') {
-    $dHits++
-    Say ("  line " + (LineOf $fm.Index) + " : " + $fname + " says something inside a loop and says something else after it")
+    $dSeen++
+    if ($dCleared.ContainsKey($fname)) {
+      Say ("  (cleared) line " + (LineOf $fm.Index) + " : " + $fname + " - " + $dCleared[$fname])
+    } else {
+      $dHits++
+      Say ("  line " + (LineOf $fm.Index) + " : " + $fname + " says something inside a loop and says something else after it")
+    }
   }
 }
+Say ''
+Say ("  " + $dSeen + " found, " + ($dSeen - $dHits) + " already read and cleared, " + $dHits + " to read")
 Say ''
 
 Say ('TOTALS  A=' + $aHits + '  B=' + $bHits + '  C=' + $cHits + '  D=' + $dHits)
 [IO.File]::WriteAllText('C:\claudecode\dark raiders\tools\lint-report.txt', ($out -join "`r`n"), (New-Object Text.UTF8Encoding $false))
-Write-Output ('LINT  dials-never-read=' + $aHits + '  banned-words=' + $bHits + '  unstamped-migrations=' + $cHits + '  overwritten-lines=' + $dHits)
+Write-Output ('LINT  dials-never-read=' + $aHits + '  banned-words=' + $bHits + '  unstamped-migrations=' + $cHits + '  overwritten-lines=' + $dHits + ' (' + ($dSeen - $dHits) + ' cleared)')
 Write-Output 'detail: tools/lint-report.txt'

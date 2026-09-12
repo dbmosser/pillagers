@@ -6,17 +6,18 @@
 
 ## B. banned vocabulary in prose the player can read
 
-  line 2613 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
-  line 2616 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
+  line 2650 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
+  line 2653 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
 
 ## C. one-shot migrations missing from the born profile
 
 
 ## D. a message written inside a loop and overwritten after it
 
-  line 7752 : doEmote says something inside a loop and says something else after it
-  line 10738 : raidKey says something inside a loop and says something else after it
-  line 11677 : cycleThrow says something inside a loop and says something else after it
-  line 12908 : useMedical says something inside a loop and says something else after it
+  (cleared) line 7789 : doEmote - v12.84: mutually exclusive branches with early returns, nothing is overwritten
+  (cleared) line 11751 : cycleThrow - v12.84: mutually exclusive branches with early returns, nothing is overwritten
+  (cleared) line 12982 : useMedical - v12.84: mutually exclusive branches with early returns, nothing is overwritten
 
-TOTALS  A=0  B=2  C=0  D=4
+  3 found, 3 already read and cleared, 0 to read
+
+TOTALS  A=0  B=2  C=0  D=0
