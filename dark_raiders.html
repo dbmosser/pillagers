@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.95';
+var VER='12.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.95';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.95';
+var WHATSNEW_VER='12.96';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE CAREER CARD STOPS COUNTING PILLAGERS YOU PICKED UP AS TIMES YOU GOT BACK UP. A clean run where you revived three of them read Went down 0 with 3 times you got back up underneath it. The same number went into the report you send. Runs already in your log read right too, without anything stored being changed.',
   'THE PAUSE BOX IN THE UNDERCROFT OWNS THE KEYBOARD NOW. Pressing SPACE while it was up stored a roll your character spent the moment you closed it, TAB opened the backpack invisibly underneath, H flipped the controls panel behind it, and ENTER threw away the update card you had not read. Only P and ESC answer while it is up, which are the two keys it names.',
   'GOING DOWN INSIDE A LANDED EXTRACTION SHOWS YOU THE WAY OUT, EVEN IF SOMEBODY ELSE CALLED IT. If you had one of your own still inbound, the downed screen measured that one instead: no HOLD E TO EXTRACT, no verb at all, and it offered you the surrender that ends the raid and loses the backpack. Holding E there would have carried you out with everything.',
   'THE LAST-MINUTE WARNINGS KNOW YOU ALREADY CALLED A RIDE. At thirty seconds they told you to hold E to CALL an extraction you were standing on top of, which is not what holding E there does, or sent you to a different ring to start a wait you could never finish while the arrow beside them pointed at the extraction you already had. They name your ride now, and whether it is down or still coming.',
@@ -29427,7 +29428,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.95: finding 10 of the 2026-09-11 audit, and the floor twin of the raid rule at v12.22. In the Undercroft he presses ESC, the box says PAUSED, and he presses SPACE while reading the key line the box itself prints: a clank sounds from nowhere and a roll is stored, and because the floor is frozen the roll is not spent until he closes the box, so his character dodge-rolls out of nothing on resume. TAB or I toggles the backpack invisibly underneath, so closing the box reveals a backpack he never opened; H flips the controls panel under the box; and ENTER spends the unread NEW IN card behind it, which only a returning player has, because a profile with no runs has the card stamped seen already. The floor own busy test counts the title screen, any modal, the character screen and the terminal, and does not count the pause box, which is not a modal; the room really is frozen and the box really does say PAUSED, and only the key handler disagrees. It is a regression rather than an old omission: until v12.22 the box focused its note field on open and the TEXTAREA bail at the top of the listener swallowed every floor key as a side effect, and v12.22 removed that focus deliberately and gave the RAID a replacement guard while the floor never got one. The fix is the same shape as the raid, a lockout rather than another entry in a list, for two reasons: a list has to be updated every time a key is added and has been missed once already, and ESC and P must still reach the toggle that closes the box, which is exactly what the busy list would stop. Check 12.95 raises the box on the floor and presses SPACE, TAB, I, H and ENTER through the real listener, requiring no roll stored, no backpack opened, no controls panel flipped and the update card still unread, and controls that P still closes the box and that with the box down every one of those keys still does its job; fails on v12.94.',
+  now:'v12.96: finding 12 of the 2026-09-11 audit, a card that contradicts itself in two lines. He plays a few clean raids, never goes down once, but presses E over three downed pillagers to take their guns, which is his own answer 37 and is prompted on screen; he opens the stats panel and the card reads Went down 0, with 3 times you got back up printed directly underneath it. The counter behind that subtitle is incremented in three places and only two of them are him standing up, the self-revive and a merc pulling him up, and the third is him reviving a downed PILLAGER, which is a different act entirely that the game already knows about: the self-revive is one a raid, reviving others is unlimited, and those pickups are already filed separately as raiderRevives. The same number goes into the report he is sent, as rev beside downs, where it conflates the same two acts. Computed rather than migrated: every run already in his log stores the pickups separately, so subtracting them repairs his whole history in one rule with nothing rewritten and no one-shot stamp to get wrong, which is its own defect class, and the recording is left exactly as it is so a run exported before today still reads the same way. Check 12.96 plants a run with three pickups and no downs and requires the card to say he got back up no times, plants a run with a self-revive and no pickups and requires it to say once, plants one with both and requires only the stand-up to be counted, and controls that the run report line carries the same number as the card; fails on v12.95. NOT BUILT AND FLAGGED TO HIM: the pillagers he picked up are a real number and now have no card of their own, which is a new row on his stats panel and his call rather than mine.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31410,6 +31411,17 @@ function profParts(rows){
           medHaul:med, extPct:Math.round(out*100), downsPerRaid:Math.round(dpr*100)/100,
           accPct:av===null?null:Math.round(av), hurtPerRaid:Math.round(hpr)};
 }
+// v12.96, audit finding 12: THE TIMES HE GOT BACK UP, which is not what the revives
+// counter holds. It is incremented in three places and only two of them are him
+// standing up, the self-revive and a merc pulling him up; the third is him pressing E
+// over a downed pillager, which is a different act and unlimited where the self-revive
+// is one a raid. A clean run with three pickups printed "Went down 0" over "3 times
+// you got back up", two lines of one card contradicting each other.
+//
+// Computed rather than migrated: every run already in his log files the pickups
+// separately, so subtracting them repairs the whole history in one rule with nothing
+// rewritten and no one-shot stamp to get wrong.
+function standUps(r){ return Math.max(0,((r&&r.revives)||0)-((r&&r.raiderRevives)||0)); }
 function statSummary(rows){
   var o={n:rows.length,ext:0,dead:0,aband:0,hauls:[],accs:[],durs:[],conts:[],
          kills:0,downs:0,revives:0,killers:{},maps:{},shots:0,hits:0,banked:0,lost:0};
@@ -31422,7 +31434,7 @@ function statSummary(rows){
     o.shots+=(r.shots||0); o.hits+=(r.hits||0);
     if(r.dur) o.durs.push(r.dur);
     if(r.containers!==undefined) o.conts.push(r.containers||0);
-    o.downs+=(r.downs||0); o.revives+=(r.revives||0);
+    o.downs+=(r.downs||0); o.revives+=standUps(r);
     if(r.kills) for(var kk in r.kills) o.kills+=(r.kills[kk]||0);
     if(r.mapName) o.maps[r.mapName]=(o.maps[r.mapName]||0)+1;
   });
@@ -31740,7 +31752,7 @@ function buildExport(){
       'c items:'+r.items+' cont:'+r.containers+
       (r.containers>0?(' perCont:'+Math.round(r.haul/r.containers)+'c'):'')+
       ' shots:'+r.shots+' acc:'+r.acc+'%'+
-      ' kills:'+kills+(r.eliteKills?' elites:'+r.eliteKills:'')+' heals:'+r.heals+' downs:'+(r.downs||0)+' rev:'+(r.revives||0)+
+      ' kills:'+kills+(r.eliteKills?' elites:'+r.eliteKills:'')+' heals:'+r.heals+' downs:'+(r.downs||0)+' rev:'+standUps(r)+
       ' marked:'+(r.marked||0)+
       ' beacon:'+(r.beaconCalls||0)+'called/'+(r.beaconMissed||0)+'missed'+
       ' regen:'+(r.regen||0)+'hp'+

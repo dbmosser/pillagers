@@ -1,0 +1,22 @@
+v12.96: the career card stops counting pillagers you picked up as times you got back up
+
+Finding 12 of the 2026-09-11 audit. A card that contradicts itself in two lines: a
+clean run where you revived three pillagers read "Went down 0" with "3 times you got
+back up" printed underneath.
+
+The counter is incremented in three places and only two are you standing up: the
+self-revive, and a merc pulling you up. The third is you reviving a downed pillager,
+which the game already files separately. The same number went into the report you are
+sent, as rev: beside downs:.
+
+Computed, not migrated: every run in the log already stores the pickups separately, so
+subtracting them repairs the whole history in one rule. Nothing stored is rewritten.
+
+Check 12.96 plants three runs that separate the two acts, and requires the report to
+agree with the card. The control is a run where he really did get back up, since a
+build printing zero would pass everything else. Three arms fail on v12.95.
+
+Not built, flagged to him: the pillagers picked up are a real number with no card of
+their own now. That is a new row on the stats panel and his call.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -40024,6 +40024,47 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.96 - THE CAREER CARD STOPS COUNTING PILLAGERS YOU PICKED UP AS TIMES YOU GOT BACK UP
+
+Finding 12 of the 2026-09-11 read-only audit. A card that contradicts itself in two
+lines.
+
+WHAT HE SEES. He plays a few clean raids, never goes down once, but presses E over
+three downed pillagers to take their guns, which is his own answer 37 and is prompted
+on screen. He opens the stats panel and the card reads "Went down 0", with "3 times
+you got back up" printed directly underneath it.
+
+WHY. The counter behind that subtitle is incremented in three places and only two of
+them are him standing up: the self-revive, and a merc pulling him up. The third is
+him reviving a downed PILLAGER, which is a different act entirely, and the game knows
+it: the self-revive is one a raid, reviving others is unlimited, and those pickups
+are already filed separately.
+
+THE SAME NUMBER GOES INTO THE REPORT HE IS SENT, as "rev:" beside "downs:", where it
+conflates the same two acts. Two documents describing the same raid, both wrong the
+same way.
+
+COMPUTED, NOT MIGRATED. Every run already in his log stores the pickups separately,
+so subtracting them repairs his whole history in one rule, with nothing rewritten and
+no one-shot stamp to get wrong, which is its own defect class and cost a build at
+v12.43. The recording is left exactly as it is, so a run he exported before today
+still reads the same way.
+
+MEASURED. Check 12.96 plants three runs that separate the two acts: a clean raid with
+three pillagers picked up, a raid where he really stood up and picked nobody up, and
+one with both. The third is the one that distinguishes subtracting the pickups from
+ignoring the counter entirely. It then requires the run report to carry the same
+number as the card, because a fix to one of them would leave the two documents
+disagreeing about the same raid. The control is the second run: a build that simply
+printed zero would pass every other arm. Three arms fail on the v12.95 fixture.
+
+NOT BUILT, AND FLAGGED TO HIM RATHER THAN DECIDED: the pillagers he picked up are a
+real number and now have no card of their own. That is a new row on his stats panel,
+which is his call and not mine.
+
+Not verified: it reads the summary the card is built from rather than the drawn card,
+so it proves the arithmetic and not the wording around it; and it does not drive a
+real revive in a raid, which v9.24 and the answer-37 work already cover.
 ## v12.95 - THE PAUSE BOX IN THE UNDERCROFT OWNS THE KEYBOARD
 
 Finding 10 of the 2026-09-11 read-only audit, and the floor twin of the raid rule at
