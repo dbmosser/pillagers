@@ -1,0 +1,18 @@
+v13.19: a refused roll says so
+
+His report of 2026-09-12, "roll w space bar not working at all", withdrawn as a
+false alarm. It was not one.
+
+A roll costs 45 of 100 stamina. Measured live: 100, 55, 16. The third is refused
+by the first line of tryRoll, which returns with no sound and no line, so a
+working key reads as a broken one. That is his own recorded pattern: broken often
+means silent.
+
+Only the stamina refusal gets a line. The other three are states he can already
+see. No dial moves: the cost stays 45 and the cooldown stays 0.85. Rate limited
+to once every 1.5 seconds, because Space is held.
+
+Check 13.19 wraps say() and requires the refusal to speak, a roll that can happen
+to stay silent, and a held key not to repeat.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

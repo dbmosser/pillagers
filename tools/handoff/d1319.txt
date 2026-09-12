@@ -1,0 +1,37 @@
+## v13.19 - A REFUSED ROLL SAYS SO
+
+HIS REPORT, 2026-09-12: "roll w space bar not working at all." He withdrew it ten
+minutes later as a false alarm. It was not a false alarm. It was this.
+
+A ROLL COSTS 45 OF 100 STAMINA. Measured on a live raid: 100, then 55 after one
+roll, then 16 after the second. The third is refused by the first line of
+tryRoll, which simply returns. No sound, no line, no bar flash, nothing at all.
+The key is dead in the hand and the game does not say why, so a man who has just
+rolled twice concludes the key is broken. He did, and he reported it.
+
+THIS IS HIS OWN RECORDED PATTERN. The crafting note was the same shape: a working
+hold behind a button that answered every wrong gesture with silence. The rule
+that came out of that one was "fix the words". There were no words here.
+
+ONLY STAMINA GETS A LINE, and that is the point. Four things refuse a roll and
+three of them are states he can already see: he knows he is down, he can see the
+roll happening, and the cooldown is a tenth of a second after a roll he just
+watched. Stamina is the one with no visible reason, and it is the one that costs
+45, so the third roll in a row is always the one that dies quietly.
+
+NO DIAL MOVES. The cost stays 45, the cooldown stays 0.85. The roll is exactly as
+expensive as it was. The only change is that being refused is audible.
+
+RATE LIMITED TO ONCE EVERY 1.5 SECONDS, because Space is a key people hold. A
+refusal that repeated every frame would bury every other line the raid is trying
+to say.
+
+MEASURED, AND THE SECOND ARM IS THE ONE WITH TEETH. A refused roll must speak. A
+roll that CAN happen must stay silent, or the line is wallpaper rather than an
+explanation. And holding the key must not repeat it. The check wraps say() for
+its duration and puts it back, because the fixture overrides say and guessing at
+it has lied before.
+
+Not verified: whether the wording is the right wording, which is his call; and
+whether the stamina bar itself needs to flash, which would be the visual half of
+the same answer and is a change to the HUD rather than to the roll.

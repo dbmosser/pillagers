@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.18';
+var VER='13.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11828,6 +11828,20 @@ function cycleThrow(){
 var ROLLSPD=320,ROLLSTAM=45;
 function tryRoll(){
   var p=G.player;
+  // v13.19, HIS REPORT: a refused roll used to be silent, which is how a key
+  // that is working reads as a key that is broken. The other three refusals are
+  // states he can see: he knows he is down, he can see the roll happening, and
+  // the cooldown is a tenth of a second after one he just watched. Stamina is
+  // the one he cannot see the reason for, and it is the one that costs 45 of
+  // 100, so the third roll in a row is always the one that dies quietly.
+  if(!p.downed&&!(p.roll>0)&&!(p.rollCd>0)&&p.stam<ROLLSTAM){
+    G.rollSayT=(G.rollSayT||0);
+    if(G.rollSayT<=0){
+      G.rollSayT=1.5;
+      if(!G.sim){ say('No legs left to roll with.'); blip('clank'); }
+    }
+    return;
+  }
   if(p.downed||p.roll>0||p.rollCd>0||p.stam<ROLLSTAM) return;
   G.crouchTog=false;   // v11.53, HIS NOTE: "rolling should automatically stop crouching"
   var mx=0,my=0,ana=1;
@@ -14805,6 +14819,7 @@ function updatePlayer(dt){
   var _aw=mouseWorld();
   p.face=Math.atan2(_aw.y-p.y,_aw.x-p.x);
   if(p.hitFlash>0) p.hitFlash-=dt;
+  if(G.rollSayT>0) G.rollSayT-=dt;   // v13.19: the refused-roll line, once every 1.5s at most
   if(G.punchT>0) G.punchT-=dt;
   if(G.handsT>0) G.handsT-=dt;
   if(p.recoil>0) p.recoil-=dt*7;
@@ -29540,7 +29555,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.18: HIS NOTE of 2026-09-12, if you buy the limited time offer it should not show up in the gamble. IT IS CALLED LIMITED AND IT WAS NOT: buying the lot paid, banked the items, logged it and then redrew the SAME lot with a live Buy button, because nothing anywhere recorded that this one was sold, and the window is five minutes long, so a man with credits could stand at the counter and buy the same Limited Time Offer over and over until the clock turned. KEYED TO THE LOT OWN CLOCK RATHER THAN A FLAG: a plain boolean would have to be cleared by something, and whatever cleared it would be a second clock that could disagree with the first, while storing WHICH window was bought means the next lot is unsold by definition and there is nothing to reset. NO MIGRATION NEEDED AND NONE WRITTEN, because the field is absent on every existing profile, absent is not equal to the current window, and an absent field therefore reads as not bought, which is the right answer for a save made before this build. The counter still says when the next one lands, because an empty space with no explanation reads as a broken panel. Check 13.18 buys the real lot through the real button and requires the credits to be taken once, the items to be banked once, and a second press of the same button to take nothing more; the control fails on v13.17, where the second press charges him again',
+  now:'v13.19: HIS REPORT of 2026-09-12, roll with space bar not working at all, which he withdrew ten minutes later as a false alarm. IT WAS NOT A FALSE ALARM, it was this. A roll costs 45 of 100 stamina, measured on a live raid: 100, then 55 after one roll, then 16 after the second, so the third is refused by the first line of tryRoll, which simply returns. No sound, no line, no bar flash, nothing at all, so the key is dead in the hand and the game does not say why, and a man who has just rolled twice concludes the key is broken, which is exactly what he did and reported. THIS IS HIS OWN RECORDED PATTERN: the crafting note was the same shape, a working hold behind a button that answered every wrong gesture with silence, and the rule that came out of it was fix the words, and there were no words here. Of the four things that refuse a roll, three are states he can already see, since he knows he is down, he can see the roll happening, and the cooldown is a tenth of a second after one he just watched; stamina is the one with no visible reason and it is the one that costs 45, so the third roll in a row is always the one that dies quietly. NO DIAL MOVES: the cost stays 45 and the cooldown stays 0.85, the roll is exactly as expensive as it was, and the only change is that being refused is audible. Rate limited to one line and one sound every 1.5 seconds, because Space is a key people hold. Check 13.19 drains the bar on a live raid and requires the refusal to speak, requires a roll that CAN happen to stay silent so the line is not wallpaper, and requires holding the key not to repeat it; the control fails on v13.18, where the refusal says nothing at all',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
