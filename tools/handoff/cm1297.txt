@@ -1,0 +1,23 @@
+v12.97: a restore code carries net lifetime earnings
+
+Finding 6 of the 2026-09-11 audit, and the same class as the armoury omission fixed at
+v11.66: a profile field surviving a REPLACE.
+
+Paste a friend's code over your save and everything is replaced except this one card.
+Your own lifetime earnings stayed, and the career page printed it as a fact about the
+character you had just restored. On a fresh install the same card read $0 beside a
+restored best haul of tens of thousands, while every log-derived card around it
+honestly said nothing.
+
+Recomputing does not work: the repair site only fires when the field is absent, and
+the log keeps sixty runs where the counter is kept for the life of the profile.
+
+It is carried in the code now. A code made before today has no key for it and sets it
+to zero rather than leaving the previous character's figure standing. Those codes are
+in the wild in his run reports.
+
+Check 12.97 restores a distinctive figure over a different one, then strips the key and
+requires an honest zero. The control is every counter the restore already carried. Two
+arms fail on v12.96.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

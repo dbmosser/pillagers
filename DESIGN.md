@@ -40024,6 +40024,48 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.97 - A RESTORE CODE CARRIES NET LIFETIME EARNINGS
+
+Finding 6 of the 2026-09-11 read-only audit, and the same class as the armoury
+omission that shipped at v11.66: a profile field surviving a REPLACE.
+
+THE INDEFENSIBLE HALF. A player who already has runs of his own pastes a friend's
+restore code over his save. The panel says, in those words, that it REPLACES the save
+he is playing. Everything else is replaced: name, credits, XP, runs, extracts,
+deaths, best haul, notoriety, the stash, the armoury. Net lifetime earnings is not,
+because nothing writes it, so his own figure stays and the career card prints it as a
+fact about the character he has just restored.
+
+THE OTHER HALF. On a fresh install the restored character lands with that card
+reading $0 beside a restored best haul of tens of thousands. The neighbouring cards
+honestly say nothing, because they are summed from the run log and the panel
+discloses that the log does not come back. This one states a figure instead.
+
+WHY NOT JUST RECOMPUTE IT. The only repair site fires when the field is ABSENT, and on
+an existing save it is present, so it never runs. And the log cannot answer the
+question anyway: it keeps the last sixty runs, while the counter is maintained for the
+life of the profile. Summing the log is a migration approximation, not the number.
+
+THE BUILD. Carry it in the code beside the other counters, and write it in the same
+place. A code made before today has no key for it, and then it is set to zero rather
+than left showing the previous character's figure. That is the judgement call in this
+build: an honest zero for a character whose maker never recorded it beats somebody
+else's lifetime standing as a fact about him. Those older codes are in the wild in his
+run reports, so the rule for them is not hypothetical.
+
+MEASURED. Check 12.97 makes a code from a profile carrying a distinctive lifetime
+figure, applies it over a profile carrying a different one, and requires the restored
+figure rather than the old one. Both numbers are ones no arithmetic in this game would
+land on, because a restored figure that happened to equal the restorer's would prove
+nothing and neither would a zero that could be a default. It then strips the new key
+from a code and requires an honest zero. The control is every counter the restore
+already carried: adding a field changes the object every code is built from, so a
+build that carried the new one and dropped an old one would pass the arms above. Two
+arms fail on the v12.96 fixture.
+
+Not verified: it drives restoreMake and restoreApply directly rather than pasting a
+code through the Settings panel, which v11.04 already covers end to end; and it does
+not read the career card itself, only the field that card prints.
 ## v12.96 - THE CAREER CARD STOPS COUNTING PILLAGERS YOU PICKED UP AS TIMES YOU GOT BACK UP
 
 Finding 12 of the 2026-09-11 read-only audit. A card that contradicts itself in two

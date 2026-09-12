@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.96';
+var VER='12.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.96';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.96';
+var WHATSNEW_VER='12.97';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'A RESTORE CODE CARRIES NET LIFETIME EARNINGS. Everything else was replaced when you pasted one, so a character restored over your save wore YOUR lifetime earnings as its own, and one restored onto a fresh install read $0 beside a best haul of tens of thousands. Codes made before today set it to zero rather than leaving somebody else figure standing.',
   'THE CAREER CARD STOPS COUNTING PILLAGERS YOU PICKED UP AS TIMES YOU GOT BACK UP. A clean run where you revived three of them read Went down 0 with 3 times you got back up underneath it. The same number went into the report you send. Runs already in your log read right too, without anything stored being changed.',
   'THE PAUSE BOX IN THE UNDERCROFT OWNS THE KEYBOARD NOW. Pressing SPACE while it was up stored a roll your character spent the moment you closed it, TAB opened the backpack invisibly underneath, H flipped the controls panel behind it, and ENTER threw away the update card you had not read. Only P and ESC answer while it is up, which are the two keys it names.',
   'GOING DOWN INSIDE A LANDED EXTRACTION SHOWS YOU THE WAY OUT, EVEN IF SOMEBODY ELSE CALLED IT. If you had one of your own still inbound, the downed screen measured that one instead: no HOLD E TO EXTRACT, no verb at all, and it offered you the surrender that ends the raid and loses the backpack. Holding E there would have carried you out with everything.',
@@ -29428,7 +29429,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.96: finding 12 of the 2026-09-11 audit, a card that contradicts itself in two lines. He plays a few clean raids, never goes down once, but presses E over three downed pillagers to take their guns, which is his own answer 37 and is prompted on screen; he opens the stats panel and the card reads Went down 0, with 3 times you got back up printed directly underneath it. The counter behind that subtitle is incremented in three places and only two of them are him standing up, the self-revive and a merc pulling him up, and the third is him reviving a downed PILLAGER, which is a different act entirely that the game already knows about: the self-revive is one a raid, reviving others is unlimited, and those pickups are already filed separately as raiderRevives. The same number goes into the report he is sent, as rev beside downs, where it conflates the same two acts. Computed rather than migrated: every run already in his log stores the pickups separately, so subtracting them repairs his whole history in one rule with nothing rewritten and no one-shot stamp to get wrong, which is its own defect class, and the recording is left exactly as it is so a run exported before today still reads the same way. Check 12.96 plants a run with three pickups and no downs and requires the card to say he got back up no times, plants a run with a self-revive and no pickups and requires it to say once, plants one with both and requires only the stand-up to be counted, and controls that the run report line carries the same number as the card; fails on v12.95. NOT BUILT AND FLAGGED TO HIM: the pillagers he picked up are a real number and now have no card of their own, which is a new row on his stats panel and his call rather than mine.',
+  now:'v12.97: finding 6 of the 2026-09-11 audit, and the same class as the armoury omission that shipped at v11.66, a profile field surviving a REPLACE. The indefensible half: a player who already has runs of his own pastes a friend restore code over his save, and the panel says in those words that it REPLACES the save he is playing; everything else is replaced, name, credits, XP, runs, extracts, deaths, best haul, notoriety, the stash and the armoury, but Net lifetime earnings is not, because nothing writes it, so his own figure stays and the career card prints it as a fact about the character he has just restored. The other half: on a fresh install the restored character lands with that card reading zero beside a restored best haul of tens of thousands, while the neighbouring cards honestly say nothing because they are summed from the run log and the panel discloses that the log does not come back; this one states a figure instead. Recomputing is not the answer: the only repair site fires when the field is ABSENT and on an existing save it is present, and the log cannot answer the question anyway because it keeps the last sixty runs while the counter is maintained for the life of the profile, so summing the log is a migration approximation and not the number. The fix carries it in the code beside the other counters and writes it in the same place, and a code made before today has no key for it and then it is set to zero rather than left showing the previous character figure, because an honest zero for a character whose maker never recorded it beats somebody else lifetime. Check 12.97 makes a code from a profile with a known lifetime figure, applies it over a profile carrying a different one, and requires the restored figure rather than the old one to survive, requires a code with no key for it to zero the field rather than leave the previous character number standing, and controls that every counter the restore already carried is still carried; fails on v12.96.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31594,6 +31595,11 @@ function restoreMake(){
          pk:P.pack||0,ra:P.racks||0,ar:P.arrays||0,cs:P.cstand||0,
          sc:(P.spClaimed||[]).slice(),ki:P.kills||{},cb:P.cosBought||{},
          j:P.junk||{},mi:P.mapIx||0,cd:P.cond||'day',wq:P.wxPick||'any',
+         // v12.97: NET LIFETIME EARNINGS. A counter kept for the life of the
+         // profile, not a restatement of the run log, which keeps only the last
+         // sixty runs; leaving it out meant a restored character wore the figure
+         // belonging to whoever restored it.
+         ne:P.netEarn||0,
          w:{},s:{}};
   // What they are wearing. The RACKS themselves are derived from the numbers
   // above by cosOwned, so nothing here has to list what they have unlocked.
@@ -31647,6 +31653,11 @@ function restoreApply(o){
   P.spClaimed=(o.sc||[]).slice(); P.kills=o.ki||{}; P.cosBought=o.cb||{};
   P.junk=o.j||{}; P.mapIx=o.mi|0; P.cond=(o.cd==='night')?'night':'day';
   P.wxPick=o.wq||'any';
+  // v12.97: and the lifetime earnings with them. A code made before v12.97 has no
+  // key for it, and an honest zero for a character whose maker never recorded it is
+  // better than leaving the restorer's own lifetime standing as a fact about
+  // somebody else. The panel promises this REPLACES the save he is playing.
+  P.netEarn=(typeof o.ne==='number')?o.ne:0;
   var k;
   for(k in COSKEY) if(o.w&&o.w[k]) P[COSKEY[k]]=o.w[k];
   // An item that no longer exists cannot come back, or every panel that draws
