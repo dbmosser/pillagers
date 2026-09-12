@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.94';
+var VER='12.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.94';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.94';
+var WHATSNEW_VER='12.95';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE PAUSE BOX IN THE UNDERCROFT OWNS THE KEYBOARD NOW. Pressing SPACE while it was up stored a roll your character spent the moment you closed it, TAB opened the backpack invisibly underneath, H flipped the controls panel behind it, and ENTER threw away the update card you had not read. Only P and ESC answer while it is up, which are the two keys it names.',
   'GOING DOWN INSIDE A LANDED EXTRACTION SHOWS YOU THE WAY OUT, EVEN IF SOMEBODY ELSE CALLED IT. If you had one of your own still inbound, the downed screen measured that one instead: no HOLD E TO EXTRACT, no verb at all, and it offered you the surrender that ends the raid and loses the backpack. Holding E there would have carried you out with everything.',
   'THE LAST-MINUTE WARNINGS KNOW YOU ALREADY CALLED A RIDE. At thirty seconds they told you to hold E to CALL an extraction you were standing on top of, which is not what holding E there does, or sent you to a different ring to start a wait you could never finish while the arrow beside them pointed at the extraction you already had. They name your ride now, and whether it is down or still coming.',
   'ON A CONTROLLER THE STATIONS NAME THE BUTTON THEY ACTUALLY USE. Every prompt in the Undercroft named the button for the act below the one it was offering, so the lift said [X] go up and X launched the raid instead, with no sector page and no question about what you were taking up. The raid prompts were always right; the floor uses different buttons and was borrowing the raid labels.',
@@ -10657,6 +10658,19 @@ window.addEventListener('keydown',function(e){
   if(e.code==='Backspace'&&!e.repeat){ restoreCursor(); e.preventDefault(); return; }
   if(state==='hub'){
     keys[e.code]=true;
+    // v12.95, audit finding 10: NOTHING ON THE FLOOR ANSWERS A KEY WHILE THE PAUSE
+    // BOX IS UP, except the two its own legend names. The raid has had this rule
+    // since v12.22 and its comment calls the floor the original; the floor itself
+    // never had it. A regression rather than an omission: until v12.22 the box
+    // focused its note field on open and the TEXTAREA bail above swallowed these
+    // keys as a side effect, and when that focus went only the raid was given a
+    // replacement.
+    //
+    // A LOCKOUT, NOT ANOTHER ENTRY IN THE BUSY LIST, for two reasons. The list has
+    // to be updated every time a key is added and has been missed once already. And
+    // ESC and P must still reach the toggle that closes the box, which is exactly
+    // what the busy list would stop.
+    if(pauseOpen&&e.code!=='KeyP'&&e.code!=='Escape'){ e.preventDefault(); return; }
     // v11.45: the title screen sits over the floor with state still 'hub', so the
     // floor keys below must not answer while it is up. ENTER there belongs to the
     // title's own start listener; P and ESC must not raise the pause box over it.
@@ -29413,7 +29427,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.94: finding 8 of the 2026-09-11 audit, and it costs him the whole backpack. He calls extraction A and it is still inbound, so the pointer stays on A; a pillager has called ring C and C has already landed, and riding out on somebody else call is intended play. He crosses to C, is dropped inside that ring with his self-revive already spent, and the screen goes to the downed overlay. What the overlay says is the opposite of what would save him: holding E for 1.4 seconds boards him at C with the full backpack, and the pull code finds the ring by the one he is lying in, so it works, but every readout measures him against A, far away and still inbound, so there is no HOLD E TO EXTRACT and the overlay falls through to a line with no verb in it at all, nearest extraction is 0m away. The world-space E EXTRACT label that would have told him is suppressed while downed, and surrenderBlocked measures A too, so it says nothing is blocked and the overlay prints HOLD SPACE TO SURRENDER; holding SPACE for 1.5 seconds kills him and loses everything, and SPACE is the only key named anywhere on that screen. The guard and the verb read the global pointer instead of the ring he is actually in, which is the exact rule v8.61 already settled for the pull itself, that a pull belongs to the ring you are standing in, and v12.81 exists so a hand resting on the space bar must not throw away a full bag in the one situation where being down ends well, which with two live beacons was inert while the game offered the losing action and hid the winning one. The fix is one resolver used by both: standingRing walks the zones the way the pull does and falls back to the pointer when he is in none, so the single-beacon case is unchanged in every particular and the multi-beacon case stops lying to him. Check 12.94 stages two rings, one his and still inbound and one landed that he did not call, lays him down inside the landed one with his revive spent, and requires the overlay to name the extract verb and the surrender to be blocked, with controls that a single landed ring he called himself still behaves exactly as v12.81 left it and that lying outside every ring still offers the surrender; fails on v12.93.',
+  now:'v12.95: finding 10 of the 2026-09-11 audit, and the floor twin of the raid rule at v12.22. In the Undercroft he presses ESC, the box says PAUSED, and he presses SPACE while reading the key line the box itself prints: a clank sounds from nowhere and a roll is stored, and because the floor is frozen the roll is not spent until he closes the box, so his character dodge-rolls out of nothing on resume. TAB or I toggles the backpack invisibly underneath, so closing the box reveals a backpack he never opened; H flips the controls panel under the box; and ENTER spends the unread NEW IN card behind it, which only a returning player has, because a profile with no runs has the card stamped seen already. The floor own busy test counts the title screen, any modal, the character screen and the terminal, and does not count the pause box, which is not a modal; the room really is frozen and the box really does say PAUSED, and only the key handler disagrees. It is a regression rather than an old omission: until v12.22 the box focused its note field on open and the TEXTAREA bail at the top of the listener swallowed every floor key as a side effect, and v12.22 removed that focus deliberately and gave the RAID a replacement guard while the floor never got one. The fix is the same shape as the raid, a lockout rather than another entry in a list, for two reasons: a list has to be updated every time a key is added and has been missed once already, and ESC and P must still reach the toggle that closes the box, which is exactly what the busy list would stop. Check 12.95 raises the box on the floor and presses SPACE, TAB, I, H and ENTER through the real listener, requiring no roll stored, no backpack opened, no controls panel flipped and the update card still unread, and controls that P still closes the box and that with the box down every one of those keys still does its job; fails on v12.94.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

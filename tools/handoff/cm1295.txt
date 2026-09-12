@@ -1,0 +1,26 @@
+v12.95: the pause box in the Undercroft owns the keyboard
+
+Finding 10 of the 2026-09-11 audit, and the floor twin of the raid rule at v12.22.
+
+Press ESC on the floor, read the key line the box itself prints, press SPACE: a clank
+from nowhere and a roll stored, which the frozen floor spends the instant you close
+the box, so the character dodge-rolls out of nothing on resume. TAB opens the backpack
+invisibly underneath. H flips the controls panel behind it. ENTER throws away the NEW
+IN card you had not read.
+
+The floor's busy test counts modals, the character screen and the terminal. The pause
+box is not a modal. The room really is frozen and the box really does say PAUSED; only
+the key handler disagreed.
+
+A regression, not an omission: until v12.22 the box focused its note field and the
+TEXTAREA bail swallowed floor keys as a side effect. v12.22 removed that focus and
+gave the raid a replacement guard. The floor never got one.
+
+A lockout, not another entry in the busy list: the list needs updating every time a
+key is added and has been missed once already, and ESC and P must still reach the
+toggle that closes the box.
+
+Check 12.95 presses each key twice, paused and unpaused, and requires the unpaused
+press to work. Five arms fail on v12.94.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

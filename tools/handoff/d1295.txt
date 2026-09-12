@@ -1,0 +1,45 @@
+## v12.95 - THE PAUSE BOX IN THE UNDERCROFT OWNS THE KEYBOARD
+
+Finding 10 of the 2026-09-11 read-only audit, and the floor twin of the raid rule at
+v12.22. His 2026-09-03 answer is CLOSE and ESC on every menu; the corollary is that
+whatever is in front owns the keyboard.
+
+WHAT HAPPENS. In the Undercroft he presses ESC, the box says PAUSED, and he presses
+SPACE while reading the key line the box itself prints. A clank sounds from nowhere
+and a roll is stored. The floor is frozen, so the roll is not spent until he closes
+the box, and then his character dodge-rolls out of nothing on resume. TAB or I
+toggles the backpack invisibly underneath a 90 percent overlay, so closing the box
+reveals a backpack he never opened. H flips the controls panel under the box. ENTER
+spends the unread NEW IN card behind it, which only a returning player has, because a
+profile with no runs has that card stamped seen already.
+
+WHY. The floor's own busy test counts the title screen, any modal, the character
+screen and the terminal, and does not count the pause box, which is not a modal. The
+room really is frozen and the box really does say PAUSED. Only the key handler
+disagrees.
+
+AND IT IS A REGRESSION, NOT AN OLD OMISSION. Until v12.22 the box focused its note
+field on open, and the TEXTAREA bail at the top of the listener swallowed every floor
+key as a side effect. v12.22 removed that focus deliberately, so a note could be
+typed without clicking first, and gave the RAID a replacement guard. The floor never
+got one. The raid's own comment calls the floor the original.
+
+THE BUILD. The same shape as the raid's: a lockout, not another entry in a list. Two
+reasons. A list has to be updated every time a key is added, and this one has been
+missed once already. And ESC and P must still reach the toggle that closes the box,
+which is exactly what the busy list would stop.
+
+MEASURED, AND EVERY ARM CARRIES ITS OWN CONTROL IN THE SAME RUN. Check 12.95 presses
+each key twice, once with the box up and once with it down, and requires the box-down
+press to WORK. A lockout that simply broke these keys for everybody would pass a
+check that only tested the paused half. A final control requires P to still close the
+box, or he cannot unpause. Five arms fail on the v12.94 fixture.
+
+The check calls togglePauseBox directly rather than pressing ESC, because a synthetic
+ESC dispatched on window reaches the main listener before the v11.04 Escape closer
+and the two undo each other in one press. P has no such problem and is what the
+closing control uses.
+
+Not verified: it reads the state each key writes rather than the pixels, so it proves
+the backpack did not open and not that nothing was drawn; and it does not test a key
+held down across the pause, only pressed during it.
