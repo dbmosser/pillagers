@@ -40024,6 +40024,69 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.87 - YOU COME BACK DOWN WITH AN EMPTY BACKPACK AND BELT
+
+HIS NOTE, 2026-09-11, verbatim: "when a player comes back to the undercroft after
+dying in a raid or leaving/abandoning a raid, there should be nothing in their
+loadout. This increases the feeling of loss. So, if they had stuff in their
+loadout and took the free kit, then that old loadout should move to their stash,
+so they spawn in the undercroft with nothing. There may be instructions that need
+to change related to this." And, the same day: "(aka nothing in tactical belt or
+backpack)".
+
+THIS REVERSES v6.88 AND v12.82. Both were built to his earlier spec, which said a
+death should re-equip the loadout he had before the freebie, and v12.82 added the
+tactical belt plan and the gun slot to it. He has changed his mind. That is his
+call, and a later reader must not read the missing restore as a regression or put
+it back.
+
+THE ITEMS WERE ALREADY IN THE STASH. Taking the freebie kit commits nothing, so
+his own packing never left the stash. The block that re-selected it was the only
+reason it was in his loadout when he got back down. So "move it to their stash" is
+a matter of not putting it back, and the line he reads now says where his gear is
+instead of claiming it was restored to him.
+
+THE BACKPACK AND THE BELT ARE THE SAME TWO FIELDS. hubBagState builds the
+Undercroft bag out of P.kit and P.hotAssign and writes them back when the bag
+closes, so his clarification names the same things the rule already covered. Both
+are emptied, the gun slot goes with them, and the live bag is dropped rather than
+left in memory to write its old contents straight back over them the moment it
+closes. Dead and abandoned both. Extracting is untouched.
+
+MEASURED. Check 12.87 packs two items and binds two belt keys, takes the freebie
+kit exactly the way the stash button leaves it, commits, starts a real raid and
+ends it dead. It then requires an empty backpack, no belt key bound, and both
+items still sitting in the stash. Then it does the whole thing again and ends that
+raid abandoned. On the v12.86 fixture the backpack comes back with two items in it
+and the belt with two keys bound, so the arms fail there rather than skipping.
+
+Not verified: it reads the profile rather than the drawn grid, so it does not
+prove the Undercroft backpack renders empty, only that the two fields it is built
+from are; and it does not touch extraction, which keeps whatever he carried out.
+
+NOT CHANGED, AND FLAGGED TO HIM RATHER THAN DECIDED: the ascent check still
+auto-fills a standard loadout when it is opened with nothing packed (v6.12). That
+is the next raid's packing screen rather than the Undercroft, so it does not break
+the rule he stated, but it does mean a standard kit appears the moment he opens
+the lift check. His word, not mine.
+
+TWO LEADS FOUND WHILE READING THIS, NEITHER ACTED ON. P._gunSlot is written in
+five places and read in none, so v12.82 restored a field nothing reads. And his
+baked text edit keyed on the old "have been restored" sentence becomes a dead key,
+because that sentence no longer exists; his words are left alone rather than
+rewritten for him.
+ONE CHECK WENT RED AND WAS REPAIRED, NOT OBEYED. Check 12.26 was built to his
+note of 2026-09-07, that the whole loadout did not come back, and it asserts the
+spec this build reverses. A check encoding a retired spec is rewritten; the build
+is not reverted for it. What 12.26 still proves is the half that did not change:
+taking the kit at the stash and then answering FREEBIE KIT again at the lift must
+not destroy the record of what he had packed. That record is what the death card
+is built from to tell him where his gear went, so it matters more now, not less.
+Its three assertions about what comes BACK now require an empty backpack, no bound
+belt key, the three items sitting in the stash, and a card that says where they
+are. It fails on the v12.86 fixture too, so the repair did not soften it into
+something that passes everywhere. Repair script: tools/handoff/r1287.ps1.
+
 ## v12.86 - RESTORING FROM A FILE REBUILDS THE SCREEN INSTEAD OF HALF OF IT
 
 Finding 2 of the 2026-09-11 read-only audit, and it is bigger than the audit said.

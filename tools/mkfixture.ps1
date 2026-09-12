@@ -5709,6 +5709,72 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.87',what:'you come back down with an empty backpack and belt: dying leaves nothing packed and no belt key bound, and leaves the gear you had before the freebie kit sitting in your stash, and walking out of a raid does the same (HIS NOTE 2026-09-11 and his clarification the same day, which REVERSE the v6.88 and v12.82 restore)',
+   run:function(){
+     if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P&&typeof commitKit==='function'))
+       return 'SKIP: this fixture cannot start a raid';
+     var bad=[], P2=__P();
+     var keep={w:(P2.weapons||[]).slice(),eq:P2.equipped,free:P2.freeKit,kit:(P2.kit||[]).slice(),
+               chosen:P2.kitChosen,stash:(P2.stash||[]).slice(),safe:P2.safe,
+               kbf:P2.kitBeforeFree,hbf:P2.hotBeforeFree,gbf:P2.gunBeforeFree,
+               hot:P2.hotAssign,gun:P2._gunSlot,saved:P2.kitSaved};
+     try{
+       var owned=[],k;
+       for(k in ITEMS){ if(!ITEMS[k]||ITEMS[k].use==='gun') continue; if(owned.length<2) owned.push(k); else break; }
+       if(owned.length<2) return 'SKIP: this build has too few items to pack a loadout';
+       // EXACTLY WHAT THE STASH BUTTON LEAVES BEHIND when he takes the freebie
+       // kit: the loadout emptied, his own packing kept aside, and the items
+       // still sitting in the stash because the freebie kit commits nothing.
+       function endWith(how){
+         __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+         P2.stash=owned.slice(); P2.kit=[]; P2.safe=null; P2.freeKit=1; P2.kitChosen=0;
+         P2.hotAssign={}; P2._gunSlot=null;
+         P2.kitBeforeFree=null; P2.hotBeforeFree=null; P2.gunBeforeFree=null;
+         // Two belt keys bound to those two items, because his rule says the
+         // belt is part of the loadout and v12.86 put the plan back as well.
+         var h={}; h['0']=owned[0]; h['1']=owned[1];
+         P2.kitSaved={kit:owned.slice(),hot:h,gun:null};
+         saveProfile();
+         if(!commitKit()) return 'SKIP: the kit handoff refused to run on a staged loadout';
+         if((P2.kitBeforeFree||[]).length!==2)
+           return 'SKIP: the kit handoff did not keep his packing aside, so there is nothing here that could come back';
+         __startRaid({mapIx:0,seed:4242});
+         var g=__state(); if(g&&g.player) g.player.downed=false;
+         __endRaid(how);
+         return null;
+       }
+       var s1=endWith('dead');
+       if(s1) return s1;
+       if((P2.kit||[]).length)
+         bad.push('dying puts '+P2.kit.length+' item'+(P2.kit.length===1?'':'s')+' straight back into his backpack, so he reaches the Undercroft already packed and the raid he just lost costs him nothing to look at');
+       var nk=0,kk; for(kk in (P2.hotAssign||{})) if(P2.hotAssign[kk]) nk++;
+       if(nk)
+         bad.push('dying leaves '+nk+' tactical belt key'+(nk===1?'':'s')+' still bound, so the belt he went up with comes back down with him');
+       var back=0,i;
+       for(i=0;i<owned.length;i++) if((P2.stash||[]).indexOf(owned[i])>=0) back++;
+       if(back!==2)
+         bad.push('the gear he had packed before the freebie kit is not in his stash after a death: '+back+' of 2 are there, so it went nowhere rather than back to the stash');
+       var s2=endWith('abandon');
+       if(s2) return s2;
+       if((P2.kit||[]).length)
+         bad.push('walking out of a raid puts '+P2.kit.length+' item'+(P2.kit.length===1?'':'s')+' back into his backpack, so abandoning costs him nothing either');
+       var nk2=0; for(kk in (P2.hotAssign||{})) if(P2.hotAssign[kk]) nk2++;
+       if(nk2)
+         bad.push('walking out leaves '+nk2+' tactical belt key'+(nk2===1?'':'s')+' still bound');
+       var back2=0;
+       for(i=0;i<owned.length;i++) if((P2.stash||[]).indexOf(owned[i])>=0) back2++;
+       if(back2!==2)
+         bad.push('the gear he had packed is not in his stash after walking out: '+back2+' of 2 are there');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       try{ P2.weapons=keep.w; P2.equipped=keep.eq; P2.freeKit=keep.free; P2.kit=keep.kit;
+            P2.kitChosen=keep.chosen; P2.stash=keep.stash; P2.safe=keep.safe;
+            P2.kitBeforeFree=keep.kbf; P2.hotBeforeFree=keep.hbf; P2.gunBeforeFree=keep.gbf;
+            P2.hotAssign=keep.hot; P2._gunSlot=keep.gun; P2.kitSaved=keep.saved; saveProfile(); }catch(_p){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.86',what:'every way of replacing the whole profile finishes in one place and arms the same reload the v11.04 restore-code path uses: it is armed rather than fired and leaves a handle that can cancel it, and pressing UNDO arms it too instead of reloading on a timer nothing can see (audit finding 2, 2026-09-11, widened)',
    run:function(){
      if(typeof renderSettings!=='function') return 'SKIP: this fixture cannot render the Settings rows';
@@ -5883,7 +5949,7 @@ window.__REGRESS=[
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.82',what:'committing the kit twice does not wipe what was kept aside: the items, the tactical belt plan and the gun slot all survive a second commit, so taking the freebie kit at the stash and then going up no longer destroys the death restore, while a commit with nothing kept aside still takes what is in the kit (his v6.88 spec, found again 2026-09-09)',
+  {v:'12.82',what:'committing the kit twice does not wipe what was kept aside: the items, the tactical belt plan and the gun slot all survive a second commit, so taking the freebie kit at the stash and then going up still leaves a record of what he had packed, while a commit with nothing kept aside still takes what is in the kit (found 2026-09-09; since v12.87 that record tells him his gear is in the stash rather than putting it back on him)',
    run:function(){
      if(!window.__P) return 'SKIP: this fixture cannot read the profile';
      if(typeof commitKit!=='function') return 'SKIP: this build has no kit handoff to drive';
@@ -9005,7 +9071,7 @@ window.__REGRESS=[
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.26',what:'taking the freebie kit at the stash and then confirming FREEBIE KIT at the lift keeps the packing kept aside, and a run that ends dead gives it back (his note of 2026-09-07: the whole loadout did not come back)',
+  {v:'12.26',what:'taking the freebie kit at the stash and then confirming FREEBIE KIT at the lift keeps the record of what he had packed, and a run that ends dead leaves that gear in his stash with an empty backpack and belt and a card that says so (his note of 2026-09-07 built it, his note of 2026-09-11 reversed what comes back)',
    run:function(){
      if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P&&window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot start a raid';
      if(typeof askKit!=='function'||typeof commitKit!=='function'||typeof renderFreeKit!=='function'||typeof ascendNow!=='function') return 'SKIP: this fixture cannot reach the lift question';
@@ -9039,11 +9105,20 @@ window.__REGRESS=[
        var g=__state();
        if(!g||!g.freeKit) bad.push('control: the raid did not take the free kit');
        if(g){ g.player.downed=false; __endRaid('dead'); }
+       // v12.87, HIS NOTE 2026-09-11: the loadout does NOT come back. It stays in
+       // the stash and he arrives with an empty backpack and belt. The record the
+       // steps above protect is what the card is built from to tell him where his
+       // gear went, so it matters more now rather than less.
        var kit=(P2.kit||[]).slice().sort().join(',');
-       if(kit!=='decoy,smoke,wire') bad.push('after the death the backpack holds ['+kit+'], not the three items packed before the freebie kit');
+       if(kit!=='') bad.push('after the death the backpack holds ['+kit+'] rather than nothing, so he reaches the Undercroft already packed');
+       var _nk=0,_hk; for(_hk in (P2.hotAssign||{})) if(P2.hotAssign[_hk]) _nk++;
+       if(_nk) bad.push('after the death '+_nk+' tactical belt key'+(_nk===1?'':'s')+' is still bound, so the belt he went up with came back down with him');
+       var _in=0,_wn,_want=['smoke','decoy','wire'];
+       for(_wn=0;_wn<_want.length;_wn++) if((P2.stash||[]).indexOf(_want[_wn])>=0) _in++;
+       if(_in!==3) bad.push('the three items he had packed before the freebie kit are not in his stash after the death: '+_in+' of 3 are there');
        var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
        if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: the card did not open on the death');
-       if(txt.indexOf('have been restored')<0) bad.push('the card does not say the loadout was restored');
+       if(txt.indexOf('in your stash')<0) bad.push('the card does not tell him where the gear he had packed before the freebie kit went');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
        ascendNow=_asc;

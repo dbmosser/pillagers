@@ -1,5 +1,10 @@
 v12.87: you come back down with an empty backpack and belt
 
+Check 12.26 went red and was repaired, not obeyed: it was built to his note of
+2026-09-07 and asserts the spec this build reverses. What it still proves is the
+half that did not change, that the lift answer must not destroy the record of
+what he had packed. It fails on v12.86 too, so the repair did not soften it.
+
 His note of 2026-09-11: there should be nothing in your loadout when you reach the
 Undercroft after dying or walking out, because it increases the feeling of loss,
 and gear you had packed before taking the free kit should move to your stash.

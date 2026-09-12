@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.86';
+var VER='12.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.86';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.86';
+var WHATSNEW_VER='12.87';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'YOU COME BACK DOWN WITH AN EMPTY BACKPACK AND BELT. Die or walk out and your backpack, your tactical belt and your gun slot are all empty by the time you reach the Undercroft, so the next raid is packed on purpose rather than carried over. If you took the freebie kit, the gear you had packed before it is waiting in your stash, not back on your back.',
   'RESTORING FROM A FILE REBUILDS THE SCREEN INSTEAD OF HALF OF IT. The stash grid, the saved zoom, the game options and the contracts were all still the ones belonging to the profile you had just replaced, so the Settings rows and the screen disagreed until you happened to reload. Every way of replacing your whole profile now ends the same way.',
   'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
   'H IS THE KEY LIST AND NOTHING ELSE. It used to open with a second column of gear rules and a sound colour key beside the keys, taller than the keys themselves, so the tips were setting the size of the panel you opened to read the bindings.',
@@ -19349,41 +19350,49 @@ var _cdone=contractExtract(G.bag,haul);
     }
     lines.push('Run abandoned. '+'$'+haul.toLocaleString()+' left behind.');
   }
-  // v6.88, his spec: "if they die, then their current loadout (before the freebie) should
-  // be re-equipped". commitKit stashed it before the free gear wiped it; put it back on
-  // anything that is not a clean extraction, and clear it either way.
-  if(P.kitBeforeFree&&P.kitBeforeFree.length){
-    if(how!=='extract'){
-      // Only the pieces he still owns: anything spent, sold or lost since is not his to
-      // re-arm, and P.kit is a SELECTION out of the stash rather than a move.
-      var _kb=[],_have={};
-      for(var _ks=0;_ks<P.stash.length;_ks++) _have[P.stash[_ks]]=(_have[P.stash[_ks]]||0)+1;
-      for(var _kf=0;_kf<P.kitBeforeFree.length;_kf++){
-        var _kk=P.kitBeforeFree[_kf];
-        if((_have[_kk]||0)>0){ _have[_kk]--; _kb.push(_kk); }
+  // v12.87, HIS NOTE 2026-09-11, verbatim: "when a player comes back to the
+  // undercroft after dying in a raid or leaving/abandoning a raid, there should
+  // be nothing in their loadout. This increases the feeling of loss. So, if they
+  // had stuff in their loadout and took the free kit, then that old loadout
+  // should move to their stash, so they spawn in the undercroft with nothing."
+  // And, the same day: "aka nothing in tactical belt or backpack".
+  //
+  // THIS REVERSES v6.88 AND v12.82, both built to his earlier spec that a death
+  // should re-equip the loadout he had before the freebie, and v12.82 added the
+  // belt plan and the gun slot to it. He has changed his mind. Do not read the
+  // missing restore as a regression and do not put it back.
+  //
+  // THE ITEMS ARE ALREADY IN THE STASH. Taking the freebie kit commits nothing,
+  // so his own packing never left the stash, and this block re-selecting it was
+  // the only reason it was in his loadout when he got back down. Moving it to
+  // the stash is a matter of not putting it back, and the line he reads says
+  // where his gear is rather than claiming it was restored to him.
+  if(how!=='extract'){
+    var _kbn=0;
+    if(P.kitBeforeFree&&P.kitBeforeFree.length){
+      var _have={},_ks,_kf,_kk;
+      for(_ks=0;_ks<P.stash.length;_ks++) _have[P.stash[_ks]]=(_have[P.stash[_ks]]||0)+1;
+      for(_kf=0;_kf<P.kitBeforeFree.length;_kf++){
+        _kk=P.kitBeforeFree[_kf];
+        if((_have[_kk]||0)>0){ _have[_kk]--; _kbn++; }
       }
-      P.kit=_kb;
-      // v12.82: the tactical belt plan and the gun slot come back with the
-      // items. The plan is filtered to what he still owns, the same rule the
-      // list above follows, because a key pointing at something he no longer has
-      // is a dead key rather than a restore.
-      var _hk=0;
-      if(P.hotBeforeFree){
-        var _pool={},_q,_hi,_hv,_hb={};
-        for(_q=0;_q<_kb.length;_q++) _pool[_kb[_q]]=(_pool[_kb[_q]]||0)+1;
-        for(_hi in P.hotBeforeFree){
-          _hv=P.hotBeforeFree[_hi];
-          if(_hv&&(_pool[_hv]||0)>0){ _hb[_hi]=_hv; _pool[_hv]--; _hk++; }
-        }
-        P.hotAssign=_hb;
-      }
-      if(P.gunBeforeFree) P._gunSlot=P.gunBeforeFree;
-      if(_kb.length) lines.push('<span style="color:var(--coolant)">'+_kb.length+' item'+(_kb.length===1?'':'s')+
-        ' that you had in your loadout before choosing the freebie kit '+(_kb.length===1?'has':'have')+' been restored'+
-        (_hk?(', and '+_hk+' tactical belt key'+(_hk===1?'':'s')+' with '+(_hk===1?'it':'them')):'')+'.</span>');
     }
-    P.kitBeforeFree=null; P.hotBeforeFree=null; P.gunBeforeFree=null;
+    // Nothing in the loadout, whichever way it ended badly and whether or not the
+    // freebie kit was taken. HIS CLARIFICATION, same day: "aka nothing in
+    // tactical belt or backpack". The Undercroft backpack and belt ARE P.kit and
+    // P.hotAssign, read through hubBagState and written back when the bag closes,
+    // so both are the loadout and both go. The gun slot goes with them: a slot
+    // pointing at a gun he is not carrying is the v5.72 fault.
+    P.kit=[]; P.hotAssign={}; P._gunSlot=null;
+    // A bag left open in memory writes its old contents straight back over those
+    // two the moment it closes, so the live one is dropped and rebuilt from the
+    // profile that has just been emptied.
+    hubBagG=null;
+    if(_kbn) lines.push('<span style="color:var(--coolant)">The '+_kbn+' item'+(_kbn===1?'':'s')+
+      ' you had packed before choosing the freebie kit '+(_kbn===1?'is':'are')+
+      ' in your stash. You come back down with an empty backpack and belt.</span>');
   }
+  P.kitBeforeFree=null; P.hotBeforeFree=null; P.gunBeforeFree=null;
   if((how==='dead'||how==='abandon')&&P.buzz&&P.buzz.length){
     P.buzz.length=0;
     // v8.87, his note on the death screen: "'Anything you drank or took is
@@ -29305,7 +29314,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.86: finding 2 of the 2026-09-11 audit, and it is bigger than the audit said. The audit found that restoring a backup from a file never re-applies the stash layout, so the Settings row prints the restored number over a grid still drawn in the old one and they disagree until he happens to reload. That is one of at least five. Boot has a block that runs after the profile exists and it does five things: the saved zoom, the stash layout, the game options, the menu zoom and the contracts. The restore path runs none of them; it calls renderHub and renderSettings and stops. Boot already learned this once, at v8.15, for the stash layout alone, and restoring is the second place a whole profile arrives and never got the same treatment. So the fix is not a fifth call, it is the reload its two siblings already do: the restore-code path has reloaded since v11.04 and the UNDO button added at v12.85 reloads, and the file path was the odd one out, so adding applyStashLayout to it would have closed the one symptom the audit looked for and left the other four. It is one place now rather than three: every path that replaces the whole profile ends in finishRestore, which re-draws, says so, and arms the same cancellable reload the v11.04 path uses, so anything driving a restore can see it coming and stop it. Check 12.86 requires one shared finish for a restore, calls it and requires the reload armed rather than fired with a real handle to cancel, and presses UNDO and requires the same arming, which is the arm that fails on v12.85 where UNDO reloads on a timer nothing can see or cancel.',
+  now:'v12.87: his note of 2026-09-11, verbatim: when a player comes back to the undercroft after dying in a raid or leaving/abandoning a raid, there should be nothing in their loadout, this increases the feeling of loss, so if they had stuff in their loadout and took the free kit then that old loadout should move to their stash, so they spawn in the undercroft with nothing. This REVERSES v6.88 and v12.82, both built to his earlier spec that a death should re-equip the loadout he had before the freebie, with v12.82 adding the belt plan and the gun slot to it; he has changed his mind, and a later reader must not read the missing restore as a regression. The items are already in the stash: taking the freebie kit commits nothing, so his own packing never left the stash, and the block re-selecting it was the only reason it was in his loadout when he got back down, so moving it to the stash is a matter of not putting it back and the line he reads says where his gear is rather than claiming it was restored. His clarification the same day was aka nothing in tactical belt or backpack, and the Undercroft backpack and belt ARE P.kit and P.hotAssign read through hubBagState, so both are emptied and the live bag is dropped rather than left to write its old contents back when it closes. The loadout is emptied on dead and on abandon, freebie or not, and the gun slot goes with it because a slot pointing at a gun he is not carrying is the v5.72 fault; extracting is untouched. Check 12.87 packs two items and binds two belt keys, takes the freebie kit the way the stash button leaves it, commits, runs a raid and ends it dead, then requires an empty backpack, an empty belt and both items still in the stash, and does the same for abandon; the arms fail on v12.86 where the loadout comes back full. NOT CHANGED AND FLAGGED TO HIM: the ascent check still auto-fills a standard loadout when it is opened with nothing packed, which is the next screen rather than the Undercroft, and his baked text edit for the old restored line is now a dead key rather than being rewritten for him.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
