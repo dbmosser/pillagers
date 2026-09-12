@@ -14,6 +14,16 @@ case "$1" in
     powershell -NoProfile -ExecutionPolicy Bypass -File tools/archive-build.ps1 2>&1 | tail -1
     cp dark_raiders.html tools/publish/index.html
     powershell -NoProfile -ExecutionPolicy Bypass -Command "Compress-Archive -Force -Path 'C:\claudecode\dark raiders\tools\publish\index.html' -DestinationPath 'C:\claudecode\dark raiders\tools\publish\dark_raiders_web.zip'; Compress-Archive -Force -Path 'C:\claudecode\dark raiders\tools\publish\index.html' -DestinationPath 'C:\claudecode\dark raiders\tools\publish\pillagers-web.zip'"
+    # THE ITCH PUSH, and it does nothing until he has set it up. butler is itch's
+    # own uploader; it is not installed here and needs an API key only he can make.
+    # The guard means this line is inert today and live the moment tools/HOSTING.md
+    # has been followed, with no further change to this file.
+    if command -v butler >/dev/null 2>&1 && [ -n "$BUTLER_API_KEY" ] && [ -n "$ITCH_TARGET" ]; then
+      echo "itch: pushing $ITCH_TARGET"
+      butler push tools/publish/pillagers-web.zip "$ITCH_TARGET" --userversion "v$(vstr $T)" 2>&1 | tail -2
+    else
+      echo "itch: not pushed (butler, BUTLER_API_KEY or ITCH_TARGET missing; see tools/HOSTING.md)"
+    fi
     git add -A
     git commit -q -F "$SP/$CM" 2>/dev/null || git commit -q -F "/tmp/$CM"
     git log --oneline -1
