@@ -1,0 +1,39 @@
+## v13.06 - THE FREEBIE KIT NEVER TOUCHED THE GUN YOU OWN, AND NOW THE CODE SAYS SO
+
+A field written in five places and read in none, and two builds have described what it
+does. Found while reading the freebie kit for his come-back-empty note of 2026-09-11.
+
+WHAT IT CLAIMED. P._gunSlot is cleared when the freebie kit is taken, kept aside in the
+snapshot, and put back when he switches to his own loadout. v12.82 is written up as
+restoring "the items, the tactical belt plan and the gun slot", and the comment beside
+the code says the same. A reader would take all three to be real.
+
+WHAT IT DOES. Nothing. Five writes, no reads, anywhere in the file. What a raid arms
+him with comes from P.equipped and P.equippedSec, which none of it ever touched.
+
+THE INVARIANT IT PRETENDED TO PROTECT IS ALREADY TRUE FOR A DIFFERENT REASON, and that
+is the part worth keeping: taking the freebie kit does not change the gun he owns or
+the one in his hands, because the raid ignores both while the kit is on. That is what
+should have been asserted all along, instead of a field nothing reads.
+
+THE FIELD GOES, and the two claims about it go with it. A comment that describes a
+no-op is worse than no comment: it is the reason nobody looked.
+
+13.04 AND 13.05 ARE NOT SKIPPED BY ACCIDENT. They were spent on harness-only checks
+that carry no game build: the outcome-card sweep and the canvas sweep for his text
+edits.
+
+MEASURED, AND THE CONTROL TOOK THREE GOES. A deletion has no behaviour change to
+control on, so the honest control is that the thing is deleted, plus proof that what it
+pretended to do still holds. The first version asserted the field was absent on the
+profile, which fails on a profile saved by an older build and is not this build's
+fault; the second cleared it first but drove the freebie kit by setting the flag, which
+never writes the field on either build, so the arm asserted nothing and passed
+everywhere. It presses the real stash button now, which is one of the two places the
+field was written, and it fails on the v13.03 fixture and passes here. The behaviour
+arms require the gun he owns and the gun in his hands to be exactly what they were,
+through the kit, through a raid, and back.
+
+Not verified: it drives the stash button and not the lift answer, which is the other
+place that wrote the field; both are gone by inspection but only one is pressed. And it
+does not check the second weapon slot beyond requiring it unchanged.

@@ -1,0 +1,22 @@
+v13.06: the freebie kit never touched the gun you own, and now the code says so
+
+A field written in five places and read in none, with two builds describing what it
+does. P._gunSlot was cleared when the kit was taken, kept aside, and handed back;
+nothing in the file ever read it. What a raid arms you with comes from P.equipped and
+P.equippedSec, which none of it touched.
+
+The invariant it pretended to protect is true for a different reason: the raid ignores
+your own guns while the kit is on. That is what the new check asserts, which is what
+should have been asserted all along.
+
+The field goes and the two claims go with it. A comment that describes a no-op is worse
+than no comment; it is the reason nobody looked.
+
+13.04 and 13.05 were spent on harness-only checks with no game build.
+
+The control took three goes. A deletion has no behaviour to control on, so the control
+is the deletion plus proof the claim still holds. Asserting the field absent fails on
+an older saved profile; driving the kit by flag never writes it on either build. It
+presses the real stash button now and fails on v13.03.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
