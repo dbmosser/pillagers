@@ -1,0 +1,20 @@
+v13.00: the Undercroft stops hitching on every click
+
+Finding 13 of the 2026-09-11 audit, and every player paid it: the watcher is armed
+unconditionally, and only the click that opens the editor is gated.
+
+The whole game is one file, and the stylesheet and the entire program live inside the
+element the text walker is pointed at. Measured on the old build: one string of
+3,505,542 characters handed to the rewriter, 3,626,573 in total, on every Undercroft
+toast, every credits or XP change and every panel rebuild. For that one string it ran
+two full-source passes and used a multi-megabyte string as a lookup key.
+
+The feature rewrites labels. A stylesheet and a program are not labels. The font sweep
+at the other end of this file has skipped SCRIPT, STYLE and CANVAS by name for builds;
+this is that rule where it was costing something.
+
+Check 13.00 records the length of every string the walk hands over. No timing: a
+stopwatch in a hidden pane is noise, and this is a string length. The control is a
+label planted on screen, which must still arrive. Four arms fail on v12.99.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.99';
+var VER='13.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.99';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.99';
+var WHATSNEW_VER='13.00';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE UNDERCROFT STOPS HITCHING ON EVERY CLICK. The pass that lets text be rewritten was reading the entire game as if it were a label, on every toast, every credit change and every panel rebuild, because the whole game is one file. It reads what is on screen now. Nothing you can see has changed.',
   'ESC OUT OF AN EDIT BOX CLOSES THE EDIT BOX. With Edit the words on, backing out of an edit shut the window you were editing instead and left the yellow box sitting over the game holding the keyboard, so it took a second ESC to be rid of it and the window was gone by then.',
   'THE LAST POUR SHOWS THE ONE BONUS IT ACTUALLY PAYS. Liquor and Blotter count together and stop at ten, which the bar line always said, but the gate locked each drink at ten of its own kind and each row printed its own share of the bonus, so six of each read as +15% and +15% on every screen against a raid that paid +25%. One number now, in one place, from the function that pays it. No dial moved.',
   'A RESTORE CODE CARRIES NET LIFETIME EARNINGS. Everything else was replaced when you pasted one, so a character restored over your save wore YOUR lifetime earnings as its own, and one restored onto a fresh install read $0 beside a best haul of tens of thousands. Codes made before today set it to zero rather than leaving somebody else figure standing.',
@@ -2385,7 +2386,21 @@ function txFind(cx,cy){
 var TXBUSY=0, TXOBS=null;
 function txDom(root){
   if(!root||!document.createTreeWalker) return 0;
-  var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false), n, list=[], i;
+  // v13.00, audit finding 13: NOT THE PROGRAM AND NOT THE STYLESHEET. The whole game
+  // is one file and both of those live inside this element, so an unfiltered text-node
+  // walk handed the whole program to the rewriter on every mutation: a full-source
+  // whitespace strip, a full-source regular expression, another full copy, and a
+  // multi-megabyte lookup key, on every toast, every credit and XP change and every
+  // panel rebuild. They are not labels and can never be edited. The font sweep at the
+  // other end of this file has skipped SCRIPT, STYLE and CANVAS by name for builds;
+  // this is the same rule where it was actually costing something.
+  var TXSKIP={SCRIPT:1,STYLE:1,NOSCRIPT:1,CANVAS:1,TEMPLATE:1};
+  var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
+    acceptNode:function(nd){
+      var pn=nd&&nd.parentNode;
+      return (pn&&TXSKIP[pn.nodeName])?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT;
+    }
+  },false), n, list=[], i;
   while((n=w.nextNode())) list.push(n);
   var hit=0;
   for(i=0;i<list.length;i++){
@@ -29434,7 +29449,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.99: finding 14 of the 2026-09-11 audit, his machine only, in the authoring mode he demonstrably leaves on, which is where his 67 text edits came from. Edit the words is on; he clicks a line inside any window, the yellow box opens over it, he changes his mind and presses ESC to back out, and the capture handler that gives Escape to the front window runs first, finds a modal open, stops the event dead and closes that window. The event never reaches the box, so the one gesture that means CANCEL THIS EDIT destroys the panel the edit was being made in and leaves the editor it was supposed to dismiss sitting over the game with the keyboard; the box outlives the panel because it is appended to the document body rather than inside the screen, so closing the panel cannot take it along, and he has to press ESC a second time to be rid of it, by which point the window he was editing is gone. The handler is right and still wrong: its own comment states the rule, that if a window is open Escape belongs to that window and not to what is underneath, and the editor sits ABOVE the window at z-index 99999, so by the handler own rule Escape belongs to the editor; it simply had no way to know the editor was there. The fix goes at the top of that handler rather than in another one further down the chain, because anything downstream never runs: this one stops propagation before the box can hear the key. Check 12.99 opens a window, opens the edit box over it, presses the real key and requires the box gone and the window still open, with controls that ESC with a window open and no box still closes the window and that the box is still what a second press would have reached; fails on v12.98.',
+  now:'v13.00: finding 13 of the 2026-09-11 audit, and every player pays it rather than just this machine, because the watcher is armed unconditionally and only the click that opens the editor is gated. The whole game is one file, and the style block and the entire program live INSIDE the element the text walker is pointed at, so to a walker with no filter they are simply two more text nodes, each of them megabytes long; every mutation under that element rewrote the labels on screen AND ran, over the whole program text, a whitespace-stripped copy to decide whether it was blank, a regular expression across the lot to pull out every number in the file, another full copy built from the pieces, and that multi-megabyte string used as a lookup key. It fires on every toast in the Undercroft, every time Credits or XP move, and every panel rebuild, packing, tagging junk, selling and dropping, which is the screen he has called the ship blocker, so it is a hitch on almost every click in it. The feature is for labels: a stylesheet and a program are not labels and can never be edited, so the walk should never have been looking at them, and with the filter the cost tracks what is on screen instead of the size of the file. The sweep at the other end of the same file already knew the rule, skipping SCRIPT, STYLE and CANVAS by name; this is that rule in the place where it was costing something. Check 13.00 counts the text nodes the rewriter visits and requires none of them to belong to the program or the stylesheet, requires the total visited to be a screenful rather than a fileful, and controls that a real label on screen is still visited and still rewritten, so the filter has not blinded the feature it protects; fails on v12.99.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
