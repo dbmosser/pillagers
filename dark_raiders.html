@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.08';
+var VER='13.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,7 +1361,7 @@ var VER='13.08';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.08';
+var WHATSNEW_VER='13.09';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1412,6 +1412,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'ESC NO LONGER DROPS YOU OUT OF FULLSCREEN, IN CHROME AND EDGE. A page is not allowed to cancel that key, so the game now asks the browser to hand Escape over while you are fullscreen, which is what the browser built for games like this. Firefox and Safari do not offer it and will still drop out; P pauses in every browser. Holding Escape always leaves fullscreen, so you can never be stuck.',
   'YOU ARE NOT CARRYING A GUN AROUND THE UNDERCROFT. The floor draws the same operator a raid does, so it handed you your equipped gun and the stance that goes with it while you walked around your own home. The belt caption went with it: it offered you FIRE and SIGNAL down there, and there is nothing to fire at and nobody to signal. Both are still there in a raid, where they are true.',
   'THE FREEBIE KIT NEVER TOUCHED THE GUN YOU OWN, AND NOW THE CODE SAYS SO. It kept a gun slot aside and handed it back, and nothing in the game ever read it: what you go up with comes from the gun you have equipped, which taking the kit does not change. The dead field is gone and there is a test on the thing that is actually true.',
   'THE EXPERIMENTAL WARNING IS SPELLED ONE WAY. Two features carry it and the game wrote it two ways, so the wording you gave it reached the hire tab and never the sign on the floor by the bar. One spelling, so one edit covers both.',
@@ -29487,7 +29488,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.08: his notes of 2026-09-12 from live play, two of three. Player should not have a gun visible in his hand when he is in the undercroft; and in the undercroft it says Compact SMG FIRE use V signal, and all that text is useless. One cause, two symptoms: the floor reuses the raid own drawing, the same operator routine and the same belt strip, and both were handed the raid arguments down there, so he walks around his own home holding a gun under a line offering two actions that do not exist in the Undercroft, where you cannot fire and there is nobody to signal. The line is kept in a raid where it is true: he called the text useless where he read it, and where he read it, it is, but up top those are real actions on a real belt and deleting them there would take something he uses. The gun goes out of his hands and not out of his armoury: nothing about what he owns or what he goes up with changes, only what the figure is holding while he walks around downstairs, which is nothing, and the roll pose is untouched. Check 13.08 draws the floor and requires no weapon to reach the operator and the belt caption to be absent, then draws a raid frame and requires both back, so the fix cannot have been made by deleting them everywhere; fails on v13.06 where the floor hands over the equipped gun and prints the caption. NOTE ON VERSION NUMBERS: 13.04, 13.05 and 13.07 carry no game build, they were harness-only checks.',
+  now:'v13.09: his note of 2026-09-12, is there a way to make it so hitting esc in the game will not break fullscreen. The honest answer is that a page cannot cancel it: Escape leaving fullscreen is a guarantee the browser makes to the person using it, not an event the page may swallow, and no amount of preventDefault touches it. There is exactly one supported mechanism and it was built for this, Keyboard Lock, which hands Escape to the page while it is fullscreen because fullscreen games kept asking for precisely this; it is requested on entering fullscreen and released on leaving. What it does not do, and he should hear it from me rather than find out: Chrome, Edge and Opera have it and FIREFOX AND SAFARI DO NOT, so in those Escape still drops out of fullscreen and P pauses in every browser, which is why the pause box names both keys; it needs a secure page, so itch is fine and a file copy is not; and HOLDING Escape for about two seconds still leaves fullscreen in every browser that implements the lock, which is the browser own escape hatch, cannot be removed, and is the right behaviour because nobody should ever be trapped in a game. It is wired into the fullscreenchange event rather than the button, because every way in and out reports through that event and only some of them go through the button, which is the same reason the label is set there. Every failure is silent on purpose, so a browser without the lock plays exactly as it played before. Check 13.09 stubs the keyboard interface and requires Escape to be locked when fullscreen is entered and released when it is left, requires nothing to throw when the interface is absent, and requires the lock call to name Escape and not the whole keyboard; fails on v13.08 where the function does not exist.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32762,6 +32763,22 @@ function fsBackNote(){
   if(el) el.style.display=(was&&!fsOn())?'':'none';
   return !!was;
 }
+// v13.09, HIS NOTE: "hitting esc in the game won't break fullscreen". A page cannot
+// cancel Escape leaving fullscreen; that is a promise the browser makes to the person
+// using it. Keyboard Lock is the one supported mechanism, built for fullscreen games,
+// and it hands Escape to the page instead. Chromium only, secure pages only, and
+// holding Escape still leaves, which is the browser's escape hatch and is right.
+// Every failure here is silent on purpose: a browser without it must play exactly as
+// it played before.
+function fsKeyLock(){
+  try{
+    var k=navigator.keyboard;
+    if(!k||!k.lock||!k.unlock) return false;
+    if(fsOn()){ var pr=k.lock(['Escape']); if(pr&&pr.catch) pr.catch(function(){}); return true; }
+    k.unlock();
+    return true;
+  }catch(_kl){ return false; }
+}
 function fsCan(){
   var el=document.documentElement;
   return !!(el.requestFullscreen||el.webkitRequestFullscreen||
@@ -34887,7 +34904,10 @@ loadProfile().then(function(){
       // Every way out of fullscreen reports through these, including Escape and
       // the browser chrome, which is why the label is not set on click.
       ['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange']
-        .forEach(function(evn){ document.addEventListener(evn,function(){ fsSync(); }); });
+        // v13.09: and the Escape lock with it. Both belong on the event rather than
+        // the button, because leaving fullscreen with Escape or the browser chrome
+        // never goes through the button.
+        .forEach(function(evn){ document.addEventListener(evn,function(){ fsSync(); fsKeyLock(); }); });
       fsSync();
       try{ fsBackNote(); }catch(_fb){}   // v11.02, his note 8
     })();

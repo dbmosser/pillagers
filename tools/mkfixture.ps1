@@ -5709,6 +5709,55 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.09',what:'entering fullscreen asks the browser to hand over Escape and leaving releases it, the request names Escape alone, and a browser with no keyboard lock is left exactly as it was rather than thrown (his note of 2026-09-12)',
+   run:function(){
+     if(typeof fsKeyLock!=='function')
+       return 'nothing asks the browser for the Escape key, so pressing Escape in fullscreen drops him out of it, which is what he reported';
+     if(typeof fsOn!=='function') return 'SKIP: this build has no fullscreen state to read';
+     var bad=[], oFsOn=fsOn, had=Object.prototype.hasOwnProperty.call(navigator,'keyboard'), oKb=navigator.keyboard;
+     var locked=null, unlocked=0, stubbed=false;
+     try{
+       try{
+         Object.defineProperty(navigator,'keyboard',{configurable:true,writable:true,
+           value:{lock:function(a){ locked=a; return {then:function(){return this;},catch:function(){return this;}}; },
+                  unlock:function(){ unlocked++; }}});
+         stubbed=(navigator.keyboard&&typeof navigator.keyboard.lock==='function');
+       }catch(_s){}
+       if(!stubbed) return 'SKIP: this browser will not let the keyboard interface be faked';
+
+       // ENTERING fullscreen asks for Escape.
+       fsOn=function(){ return true; };
+       fsKeyLock();
+       if(locked===null)
+         bad.push('entering fullscreen asks the browser for nothing, so Escape stays the browser key and drops him out of fullscreen the moment he presses it');
+       else if(!(locked&&locked.length===1&&locked[0]==='Escape'))
+         bad.push('entering fullscreen asks for ['+(locked||[]).join(', ')+'] rather than Escape alone, and taking the whole keyboard from a player is not what was asked for');
+
+       // LEAVING releases it. A lock left on after fullscreen ends would keep Escape
+       // away from the browser on an ordinary page.
+       locked=null; unlocked=0;
+       fsOn=function(){ return false; };
+       fsKeyLock();
+       if(!unlocked)
+         bad.push('leaving fullscreen never releases the key, so the page keeps holding Escape when it has no business holding it');
+       if(locked!==null)
+         bad.push('leaving fullscreen asks for the key again rather than giving it back');
+
+       // A BROWSER WITHOUT IT must be untouched. Firefox and Safari have none.
+       try{ Object.defineProperty(navigator,'keyboard',{configurable:true,writable:true,value:undefined}); }catch(_u){}
+       var threw=null;
+       try{ fsOn=function(){ return true; }; fsKeyLock(); }catch(e2){ threw=String(e2&&e2.message||e2); }
+       if(threw)
+         bad.push('a browser with no keyboard lock throws on entering fullscreen: '+threw+'. Firefox and Safari have none, so every friend on one would meet a broken game the first time he pressed the fullscreen button');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ fsOn=oFsOn; }catch(_f){}
+       try{
+         if(had) Object.defineProperty(navigator,'keyboard',{configurable:true,writable:true,value:oKb});
+         else delete navigator.keyboard;
+       }catch(_r){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.08',what:'the Undercroft is not a raid: the operator walks the floor with empty hands and the belt caption offering FIRE and SIGNAL is not drawn down there, while both are still exactly as they were in a raid (his notes of 2026-09-12)',
    run:function(){
      if(!(window.__loop&&window.__showScreen&&window.__hubEnter&&window.__P)) return 'SKIP: this fixture cannot draw the Undercroft floor';

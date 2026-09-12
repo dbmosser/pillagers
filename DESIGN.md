@@ -40024,6 +40024,47 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.09 - ESC NO LONGER DROPS YOU OUT OF FULLSCREEN, IN CHROME AND EDGE
+
+HIS NOTE, 2026-09-12: "is there a way to make it so hitting esc in the game won't break
+fullscreen?"
+
+THE HONEST ANSWER IS THAT A PAGE CANNOT CANCEL IT. Escape leaving fullscreen is a
+guarantee the browser makes to the person using it, not an event a page is allowed to
+swallow. No amount of preventDefault touches it, and that is deliberate.
+
+THERE IS EXACTLY ONE SUPPORTED MECHANISM AND IT WAS BUILT FOR THIS. Keyboard Lock
+hands Escape to the page while it is fullscreen, and it exists because fullscreen games
+kept asking for precisely this. It is requested on entering fullscreen and released on
+leaving.
+
+WHAT IT DOES NOT DO, and he should hear it from me rather than find out:
+
+- Chrome, Edge and Opera have it. FIREFOX AND SAFARI DO NOT, and in those Escape will
+  still drop out of fullscreen. P pauses in every browser, which is why the pause box
+  names both keys.
+- It needs a secure page. Itch is https, so that is satisfied. A file:// copy is not,
+  and will behave like Firefox.
+- HOLDING Escape for about two seconds still leaves fullscreen, in every browser that
+  implements the lock. That is the browser's own escape hatch, it cannot be removed,
+  and it is the right behaviour: nobody should ever be trapped in a game.
+
+WIRED INTO THE EVENT RATHER THAN THE BUTTON, because every way in and out reports
+through fullscreenchange and only some of them go through the button. That is the same
+reason the label is set there and not on click. Every failure is silent on purpose, so
+a browser without the lock plays exactly as it played before.
+
+MEASURED, AND THE CHECK DOES NOT PRETEND TO GO FULLSCREEN. A hidden pane cannot, and no
+test can prove what a browser does with a real Escape key. What it proves is the
+decision: entering asks for the lock, leaving releases it, the request names Escape
+alone rather than taking the whole keyboard from a player, and a browser with no
+keyboard interface is left exactly as it was rather than thrown. That last arm is the
+one that protects his friends: Firefox and Safari have no lock, and if this threw there
+every one of them would meet a broken game the first time they pressed the fullscreen
+button. It fails on the v13.08 fixture, where nothing asks for the key at all.
+
+Not verified: whether the browser actually withholds Escape, which only a real
+fullscreen page can show; and the two-second hold, which is the browser's own timer.
 ## v13.08 - YOU ARE NOT CARRYING A GUN AROUND THE UNDERCROFT
 
 HIS NOTES, 2026-09-12, from live play, two of three:

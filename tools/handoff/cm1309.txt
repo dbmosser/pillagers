@@ -1,0 +1,22 @@
+v13.09: ESC no longer drops you out of fullscreen, in Chrome and Edge
+
+His note of 2026-09-12. The honest answer is that a page cannot cancel that key: it is
+a guarantee the browser makes to the person using it.
+
+Keyboard Lock is the one supported mechanism, built for fullscreen games. It is asked
+for on entering fullscreen and released on leaving.
+
+What it does not do: Firefox and Safari have no such thing, so ESC still drops out
+there and P pauses everywhere. It needs a secure page, which itch is. Holding ESC for
+two seconds always leaves fullscreen and that cannot be removed, which is right.
+
+Wired to the fullscreenchange event, not the button, because leaving with ESC or the
+browser chrome never goes through the button. Every failure is silent, so a browser
+without the lock plays exactly as before.
+
+The check does not pretend to go fullscreen. It proves the decision: entering asks,
+leaving releases, the request names Escape alone, and a browser without the interface
+is left alone rather than thrown. That last arm is what protects Firefox and Safari
+users from a broken game. Fails on v13.08.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
