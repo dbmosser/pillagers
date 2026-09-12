@@ -5709,6 +5709,48 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.99',what:'ESC out of an edit box closes the edit box and leaves the window it was opened over standing, rather than shutting that window and leaving the box over the game holding the keyboard, while ESC with no box open still closes the front window (audit finding 14, 2026-09-11)',
+   run:function(){
+     if(typeof txOpen!=='function'||typeof txClose!=='function'||typeof TXBOX==='undefined')
+       return 'SKIP: this build has no text editor to open';
+     var md=document.getElementById('settingsmodal');
+     if(!md) return 'SKIP: this fixture has no settings window to open the editor over';
+     var bad=[], wasOn=md.classList.contains('on');
+     function esc(target){
+       (target||document).dispatchEvent(new KeyboardEvent('keydown',
+         {code:'Escape',key:'Escape',bubbles:true,cancelable:true}));
+     }
+     try{
+       __topClear();
+       // A WINDOW, AND THE EDITOR OVER IT.
+       md.classList.add('on');
+       if(!md.classList.contains('on')) return 'SKIP: the settings window would not open';
+       txOpen('a probe line','a probe line',100,100,200,16);
+       if(!TXBOX) return 'SKIP: the editor would not open';
+       try{ TXBOX.focus(); }catch(_f){}
+       if(document.activeElement!==TXBOX) return 'SKIP: the editor would not take focus, so this cannot be read';
+       // The real path: a capture listener on the document sees the key on its way
+       // down to the focused input.
+       esc(TXBOX);
+       if(TXBOX)
+         bad.push('ESC in the edit box did not close the box: the handler that gives Escape to the front window took the key first, so the one gesture that means cancel this edit left the editor sitting over the game with the keyboard');
+       if(!md.classList.contains('on'))
+         bad.push('ESC in the edit box closed the window he was editing instead, so backing out of an edit destroys the panel the edit was being made in');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ txClose(); }catch(_t){}
+     }
+     // CONTROL: WITH NO BOX, A WINDOW STILL OWNS ESCAPE. A guard at the top of that
+     // handler is exactly where this could be taken away.
+     try{
+       md.classList.add('on');
+       esc(document);
+       if(md.classList.contains('on'))
+         bad.push('control: with no edit box open ESC no longer closes the window in front, so the guard has taken the key from every window rather than from one case');
+     }catch(e2){ bad.push('control threw: '+(e2&&e2.message||e2)); }
+     try{ txClose(); if(!wasOn) md.classList.remove('on'); else md.classList.add('on'); }catch(_c){}
+     try{ __topClear(); }catch(_c2){}
+     return bad.length?bad.join('; '):null; }},
   {v:'12.98',what:'THE LAST POUR shows the one bonus it actually pays: six Liquor and six Blotter no longer print a share each that reads as a sum no raid honours, the gate stops selling at ten of anything rather than ten of each, and the payout itself is unchanged (audit finding 16, 2026-09-11)',
    run:function(){
      if(typeof renderBar!=='function'||typeof buzzXpMul!=='function'||typeof buzzDoses!=='function')

@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.98';
+var VER='12.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.98';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.98';
+var WHATSNEW_VER='12.99';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'ESC OUT OF AN EDIT BOX CLOSES THE EDIT BOX. With Edit the words on, backing out of an edit shut the window you were editing instead and left the yellow box sitting over the game holding the keyboard, so it took a second ESC to be rid of it and the window was gone by then.',
   'THE LAST POUR SHOWS THE ONE BONUS IT ACTUALLY PAYS. Liquor and Blotter count together and stop at ten, which the bar line always said, but the gate locked each drink at ten of its own kind and each row printed its own share of the bonus, so six of each read as +15% and +15% on every screen against a raid that paid +25%. One number now, in one place, from the function that pays it. No dial moved.',
   'A RESTORE CODE CARRIES NET LIFETIME EARNINGS. Everything else was replaced when you pasted one, so a character restored over your save wore YOUR lifetime earnings as its own, and one restored onto a fresh install read $0 beside a best haul of tens of thousands. Codes made before today set it to zero rather than leaving somebody else figure standing.',
   'THE CAREER CARD STOPS COUNTING PILLAGERS YOU PICKED UP AS TIMES YOU GOT BACK UP. A clean run where you revived three of them read Went down 0 with 3 times you got back up underneath it. The same number went into the report you send. Runs already in your log read right too, without anything stored being changed.',
@@ -29433,7 +29434,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.98: finding 16 of the 2026-09-11 audit. Three places disagreed about one rule, and the bar sold him Credits worth of a bonus it then did not pay. He reads that the bar cuts you off at ten, buys six Liquor and six Blotter for 4920, and the two rows read RAID XP plus 15 percent and RAID XP plus 15 percent; the in-raid conditions panel prints the same two, so every screen he can see says plus 30 percent, and the raid pays plus 25 because the bonus counts both kinds TOGETHER and stops at ten. The gate is on a third basis again: it locks each drink at ten of its OWN kind, so the station will happily sell twenty doses under a line promising ten. No number moves here, the cap is still ten and the rate is still 2.5 percent a dose; this is drift, because the cuts you off at ten copy was written at v7.49 to describe the per-drink lock, before the combined-cap bonus existed, and the per-row percentage was never revisited when it did. The fix is that one number is shown in one place, computed from the function that pays it: two rows each printing a share of a capped total can always be read as a sum the game will not honour, so the rows keep the honest per-drink count and the bonus is printed once, live, on the bar line and once on the conditions panel, while the gate now counts the same total the bonus does. Check 12.98 stages six of each and requires no screen to show a figure other than the one the payout function returns, requires the gate to stop selling at ten of anything rather than ten of each, and controls that a single drink still shows its own dose count and that the payout itself is unchanged at both five and twelve doses; fails on v12.97.',
+  now:'v12.99: finding 14 of the 2026-09-11 audit, his machine only, in the authoring mode he demonstrably leaves on, which is where his 67 text edits came from. Edit the words is on; he clicks a line inside any window, the yellow box opens over it, he changes his mind and presses ESC to back out, and the capture handler that gives Escape to the front window runs first, finds a modal open, stops the event dead and closes that window. The event never reaches the box, so the one gesture that means CANCEL THIS EDIT destroys the panel the edit was being made in and leaves the editor it was supposed to dismiss sitting over the game with the keyboard; the box outlives the panel because it is appended to the document body rather than inside the screen, so closing the panel cannot take it along, and he has to press ESC a second time to be rid of it, by which point the window he was editing is gone. The handler is right and still wrong: its own comment states the rule, that if a window is open Escape belongs to that window and not to what is underneath, and the editor sits ABOVE the window at z-index 99999, so by the handler own rule Escape belongs to the editor; it simply had no way to know the editor was there. The fix goes at the top of that handler rather than in another one further down the chain, because anything downstream never runs: this one stops propagation before the box can hear the key. Check 12.99 opens a window, opens the edit box over it, presses the real key and requires the box gone and the window still open, with controls that ESC with a window open and no box still closes the window and that the box is still what a second press would have reached; fails on v12.98.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32641,6 +32642,16 @@ document.getElementById('closeop').onclick=function(){ document.getElementById('
 // Escape belongs to that window and not to the pause box underneath it.
 document.addEventListener('keydown',function(e){
   if(e.code!=='Escape') return;
+  // v12.99, audit finding 14: THE EDIT BOX IS IN FRONT OF THE WINDOW, so by the rule
+  // in the comment above Escape belongs to it. It is appended to the body rather
+  // than inside the screen, so it survives its own panel being closed and kept the
+  // keyboard afterwards; and it is handled HERE rather than in its own listener
+  // because this one stops propagation before the box can hear the key at all.
+  if(typeof TXBOX!=='undefined'&&TXBOX&&document.activeElement===TXBOX){
+    e.preventDefault(); e.stopPropagation();
+    try{ txClose(); }catch(_tx){}
+    return;
+  }
   var open=document.querySelectorAll('.modal.on');
   if(!open.length) return;
   e.preventDefault(); e.stopPropagation();

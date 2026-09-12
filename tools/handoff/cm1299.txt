@@ -1,0 +1,24 @@
+v12.99: ESC out of an edit box closes the edit box
+
+Finding 14 of the 2026-09-11 audit. His machine only, in the authoring mode he leaves
+on, which is where his 67 text edits came from.
+
+Click a line inside any window, the yellow box opens, press ESC to back out: the
+capture handler that gives Escape to the front window took the key first and closed
+that window. The box never heard it. So cancelling an edit destroyed the panel the
+edit was being made in and left the editor over the game holding the keyboard, until a
+second ESC.
+
+The handler's own comment states the rule: a window in front owns Escape. The editor
+sits above the window at z-index 99999, so by that rule it owns the key. It just had
+no way to know the editor was there.
+
+The guard goes at the top of that handler; anything downstream never runs, because it
+stops propagation before the box can hear the key.
+
+Check 12.99 dispatches AT THE BOX, which is how a real keypress in a focused input
+reaches a document capture listener. Both halves are required: box gone, window still
+open. The control is ESC with no box, which must still close the window. Two arms fail
+on v12.98.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
