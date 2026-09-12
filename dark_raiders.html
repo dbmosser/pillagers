@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.13';
+var VER='13.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10549,7 +10549,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     mercOrder:'follow',mercHold:null,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
       kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0,listener:0,howler:0,bulwark:0,choir:0},
-      dmg:{sentry:0,crawler:0,raider:0,snitch:0,other:0},
+      dmg:{sentry:0,crawler:0,raider:0,snitch:0,yourself:0,other:0},
       containers:0,items:0,rar:{common:0,uncommon:0,rare:0,elite:0},
       firstContact:null,firstLoot:null,distance:0,
       tCrouch:0,tSprint:0,tStill:0,tLit:0,
@@ -12040,7 +12040,12 @@ function explodeFrag(f){
   // the blast position goes with it so the v4.28 direction ring points at it.
   var _fMine=!f.by;
   var _fName=_fMine?'YOUR OWN CHARGE':((f.by.name||'A PILLAGER')+"'S CHARGE");
-  var _fSrc=_fMine?'other':(f.by.kind||'raider');
+  // v13.14, HIS TELEMETRY: your own charge is not an unidentified source. It was
+  // filed as other, the bucket for something the game cannot name, while the
+  // very next line names it exactly. So the death card said YOUR OWN CHARGE and
+  // every record that outlives the card said other, which is how three deaths to
+  // his own frag charge became three deaths to nothing in particular.
+  var _fSrc=_fMine?'yourself':(f.by.kind||'raider');
   if(dp<R&&losClear(f.x,f.y,p.x,p.y,G.map.segs))
     damagePlayer(80*(1-dp/R)+18,_fSrc,_fName,f.x,f.y);   // v11.77: was 60 and 12; 98 at the centre, so a full man just lives
   // The blast takes walls with it. 200 at the centre falling to 40 at the edge:
@@ -29505,7 +29510,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.13: the price of calling the ship now has a test, which closes the last unguarded piece of the extraction system. Calling is meant to be the moment the raid turns: a siege builds through the inbound wait, and if that ever stopped happening the most expensive decision in the game would quietly become free and nothing on screen would say so. Measured on a live raid at seed 4242 with the real key and real frames: the call goes in, and siege-born hostiles appear during the countdown that were not on the landing when it started. The check has a real control rather than an assertion about a level, and it is the arm that gives it teeth: an identical raid of the same length with NO call must produce none, so the arm is measuring the call and not simply time passing. THE EXTRACTION SYSTEM IS NOW FULLY DRIVEN. Every line the v13.11 entry listed as not verified has since been measured: the inbound countdown runs, the ship lands, the window closes and the ship leaves cleanly with the ring left open and callable again, a second call works, and two separate points can be inbound at once and both behave. FOR HIS RULING, NOT MINE TO DECIDE: that last one means every extraction point on the map can be called, 1.6 seconds each, so a player can have three ships in the air and pick whichever is safest, which removes the commitment the call is supposed to be. The code anticipates moving between rings, so this may be intended. It is a rules question and it is his, and no dial has been touched',
+  now:'v13.14: from HIS OWN TELEMETRY rather than from a queue. Run 3 of the 2026-09-11 export, on v12.85: dead, 3860 credits lost, lastHit YOUR OWN CHARGE, killer OTHER. The death card names it right because it prefers the last hit name, and everything that KEEPS a record does not: the run record, the export line, the run list, the career killers tally and the damage-by-source table all filed it as other, which is the bucket for a thing the game could not identify, while the line directly below named it exactly. It came from v8.23, which found that an ENEMY grenade was being reported as YOUR OWN CHARGE and bucketed under other, and gave the enemy case a real source while leaving your own charge on the placeholder it was already using. It is his most common recorded cause of death and he has now done it three times, and a man reading his own reports could not see that, because every one of them said other. Reproduced before it was touched: a real player charge, the shape the throw actually pushes, at his feet on a live raid, and the pending killer came back other with the last hit name already reading YOUR OWN CHARGE. It is now yourself, so the export says killer yourself, the run list says by yourself, the career tally has a row for it and the damage table has a bucket declared for it rather than one appearing by accident. The control is the v8.23 case: an enemy charge must still report the thrower kind and must not be swallowed by this',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

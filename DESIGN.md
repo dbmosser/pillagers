@@ -40024,6 +40024,45 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.14 - YOUR OWN CHARGE IS RECORDED AS YOURS, NOT AS "OTHER"
+
+FROM HIS TELEMETRY, NOT FROM A QUEUE. Run 3 of the 2026-09-11 export, played on
+v12.85: DEAD, 3860 credits lost, lastHit YOUR OWN CHARGE, killer OTHER.
+
+THE CARD GOT IT RIGHT AND EVERY RECORD GOT IT WRONG. The death screen names the
+charge because it prefers the last hit name. Everything that OUTLIVES the card
+did not: the run record, the export line, the run list, the career killers tally
+and the damage-by-source table all filed it as "other", which is the bucket for a
+source the game could not identify. The line directly below the one that wrote it
+names the charge exactly, so the game knew.
+
+WHERE IT CAME FROM. v8.23 found the opposite fault, an ENEMY grenade reported as
+YOUR OWN CHARGE and bucketed under other, and gave the enemy case a real source.
+It left your own charge sitting on the placeholder it was already using, and that
+placeholder has been the record of every self-kill since.
+
+WHY IT IS WORTH A BUILD. It is his most common recorded cause of death. He has
+now done it three times in the runs I can see, and the third cost him 3860
+credits. A man reading his own reports could not learn that from them, because
+every one of them said "other".
+
+REPRODUCED BEFORE IT WAS TOUCHED. A real player charge, the shape the release
+actually pushes, {x,y,t,fuse,mine:1} with no thrower on it, dropped at his feet
+on a live raid. The pending killer came back "other" with the last hit name
+already reading YOUR OWN CHARGE. That is the whole bug in one measurement.
+
+WHAT CHANGED. One word at one site, plus a declared bucket in the damage table so
+the row exists rather than appearing by accident. The export now says killer
+yourself, the run list says by yourself, and the career tally has a row for it.
+
+THE CONTROL IS v8.23 ITSELF. A charge with a thrower on it must still report the
+thrower, on the card and in the record. A fix that swallowed that would put back
+the exact fault v8.23 removed, so the second arm throws an enemy charge.
+
+Not verified: whether any stored run from before this build can be re-read, since
+"other" cannot be told apart from a genuinely unidentified death after the fact,
+so his history keeps the old label; and whether any other damage source is
+reaching the record unnamed, since every remaining call site passes a real kind.
 ## v13.13 - THE PRICE OF CALLING THE SHIP NOW HAS A TEST
 
 NOTHING IN THE GAME CHANGED. Second guard build of the session, and for the same

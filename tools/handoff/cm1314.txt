@@ -1,0 +1,19 @@
+v13.14: your own charge is recorded as yours, not as "other"
+
+From his telemetry. Run 3 of the 2026-09-11 export, on v12.85: dead, 3860
+credits lost, lastHit YOUR OWN CHARGE, killer OTHER.
+
+The death card names the charge because it prefers the last hit name. Every
+record that outlives the card filed it as "other", the bucket for a source the
+game could not identify, while the line below named it exactly. That came from
+v8.23, which fixed the opposite fault for enemy grenades and left your own charge
+on the placeholder.
+
+It is his most common recorded cause of death, three times in the runs I can see.
+
+Reproduced first: a real player charge at his feet on a live raid returned
+pendKiller "other" with lastHitName already YOUR OWN CHARGE. One word at one
+site, plus a declared bucket in the damage table. The control is v8.23 itself: an
+enemy charge must still report its thrower.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
