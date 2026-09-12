@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.17';
+var VER='13.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29540,7 +29540,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.17: HIS NOTE of 2026-09-12, since esc is not working, B backs out of any menu. ONE FUNCTION, ONE KEY, ONE INSERTION POINT: the Escape behaviour is spread over seven handlers with a carefully built front-most order, and bolting B onto each of them is seven chances to get the order wrong, so backOut asks the same question once in the same order and returns whether it closed anything. That order is the right-click menu, then the front-most window, then the Undercroft backpack, then the terminal panel, then in a raid the stall, the emote bar, the map and the backpack, with a held drag going with the bag exactly as the v12.89 Escape line does it. It sits above every branch of the key handler because the floor branch and the raid branch each return at their own end, so a key answered in only one of them is dead in the other, which is the exact fault the Backspace line above it was added to fix. B DOES NOT OPEN THE PAUSE BOX and that is deliberate: he asked for a key that backs OUT, Escape and P still raise the box when nothing is in front, and a B with nothing to close is not a menu key at all, which is what keeps the merc order intact, since B already cycles merc orders in a raid and his own gear card says so. The text-edit box keeps Escape alone, because B is a letter and that box is where you type letters. HIS ESCAPE REPORT IS NOT CLOSED BY THIS and I have not pretended it is: I cannot reproduce it, because a synthetic Escape is a known bad instrument here, it runs before the v11.04 closer and opens the box it then shuts, and his report is about fullscreen, which no fixture can enter',
+  now:'v13.18: HIS NOTE of 2026-09-12, if you buy the limited time offer it should not show up in the gamble. IT IS CALLED LIMITED AND IT WAS NOT: buying the lot paid, banked the items, logged it and then redrew the SAME lot with a live Buy button, because nothing anywhere recorded that this one was sold, and the window is five minutes long, so a man with credits could stand at the counter and buy the same Limited Time Offer over and over until the clock turned. KEYED TO THE LOT OWN CLOCK RATHER THAN A FLAG: a plain boolean would have to be cleared by something, and whatever cleared it would be a second clock that could disagree with the first, while storing WHICH window was bought means the next lot is unsold by definition and there is nothing to reset. NO MIGRATION NEEDED AND NONE WRITTEN, because the field is absent on every existing profile, absent is not equal to the current window, and an absent field therefore reads as not bought, which is the right answer for a save made before this build. The counter still says when the next one lands, because an empty space with no explanation reads as a broken panel. Check 13.18 buys the real lot through the real button and requires the credits to be taken once, the items to be banked once, and a second press of the same button to take nothing more; the control fails on v13.17, where the second press charges him again',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30241,6 +30241,15 @@ function renderWirtLot(){
   var lot=wirtLotKey(), k=lot[0], it=ITEMS[k];
   if(!it){ el.innerHTML='<span class="hint">The counter is empty.</span>'; return; }
   var left=wirtLotLeft(), mins=Math.ceil(left/60);
+  // v13.18, HIS NOTE: bought means gone. The counter still says when the next one
+  // lands, because an empty space with no explanation reads as a broken panel.
+  if(P.wirtLotBought===wirtLotHour()){
+    el.innerHTML='<span style="flex:1;line-height:1.5">'+
+      '<span style="color:var(--ash);font-weight:700;font-size:16px;display:block">Limited Time Offer</span>'+
+      '<span style="color:var(--ash);display:block">Bought. New item in '+mins+' minute'+(mins===1?'':'s')+'</span>'+
+    '</span>';
+    return;
+  }
   var col=RCOL[dispR(k)||it.r]||'#cdd6dd';
   var afford=(P.credits>=WIRT_LOT_PRICE);
   // v9.94, HIS NOTE: three lines and nothing else. "Limited Time Offer", what it
@@ -30272,6 +30281,10 @@ function renderWirtLot(){
       // dead key in his stash.
       var got=0;
       for(var li=0;li<lot2.length;li++) if(ITEMS[lot2[li]]){ P.stash.push(lot2[li]); got++; }
+      // v13.18, HIS NOTE: the offer is spent. Keyed to the window it belongs to
+      // rather than a flag, so the next lot is unsold by definition and there is
+      // nothing anywhere that has to remember to clear it.
+      P.wirtLotBought=wirtLotHour();
       P.gambleLog=P.gambleLog||[]; P.gambleLog.push(lot2[0]);
       if(P.gambleLog.length>40) P.gambleLog.shift();
       saveProfile(); renderGamble(); renderHub();

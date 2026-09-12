@@ -40024,6 +40024,43 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.18 - THE LIMITED TIME OFFER IS ACTUALLY LIMITED NOW
+
+HIS NOTE, 2026-09-12: "if you buy the limited time offer it shouldnt show up in
+the gamble."
+
+IT IS CALLED LIMITED AND IT WAS NOT. Buying the lot paid, banked the items,
+logged it, and then redrew the same lot with a live Buy button, because nothing
+anywhere recorded that this one was sold. The window is five minutes long, so a
+man with credits could stand at the counter and buy the same Limited Time Offer
+over and over until the clock turned.
+
+KEYED TO THE LOT'S OWN CLOCK, NOT A FLAG. A plain boolean would have to be
+cleared by something, and whatever cleared it would be a second clock that could
+disagree with the first, which is a fault this file has shipped before under
+other names. Storing WHICH window was bought means the next lot is unsold by
+definition and there is nothing anywhere that has to remember to reset it.
+
+NO MIGRATION NEEDED, AND NONE WRITTEN. The field is absent on every existing
+profile. Absent is not equal to the current window, so an absent field reads as
+not bought, which is the correct answer for a save made before this build.
+
+THE COUNTER STILL SAYS WHEN THE NEXT ONE LANDS. An empty space with no
+explanation reads as a broken panel, so the card keeps its heading and its clock
+and simply says Bought.
+
+MEASURED AS A CHANGE, NOT A STATE. The fault is not visible in any single
+purchase; it is that the second one works. So check 13.18 clicks the real button
+twice and compares, which is the rule this file has written down three times
+under "measure a rise, never a level". It restores the credits and stash it
+spent, because every later check in the corpus runs on the profile this one
+leaves behind and a check that quietly empties his credits shows up as somebody
+else's unrelated red.
+
+Not verified: whether the same hole exists on any other one-per-window purchase,
+since this is the only lot of its kind; and what the counter looks like to him at
+the moment it flips from Bought to the next offer, which is a five minute wait
+and not something a check sits through.
 ## v13.17 - B BACKS OUT OF WHATEVER IS IN FRONT
 
 HIS NOTE, 2026-09-12: "since esc isn't working, lets set it up to hit b to back
