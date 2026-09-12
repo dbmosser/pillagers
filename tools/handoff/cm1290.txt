@@ -1,0 +1,23 @@
+v12.90: the feeling tag for the tactical belt calls it the tactical belt
+
+Finding 4 of the 2026-09-11 audit. His vocabulary is binding and the game keeps it
+everywhere else: the pause key list, the stash heading, the loadout label, the
+keyboard and pad legends. This button was the one place it was missed.
+
+It reaches him, not just the player. Tap the tag, log the run, and the string is
+stored on the run, printed on the Undercroft run row, and written into the report
+twice. That report is the file a friend sends to Daniel.
+
+The lint cannot catch this one: the word is on its banned list, but the sweep only
+considers quoted strings of 30 to 400 characters and this one is 18. A green
+vocabulary lint says nothing about short labels.
+
+Old runs store the literal, so a display-time map carries them forward rather than
+a migration. Nothing stored is rewritten, an export he already has reads the same
+way, and there is no one-shot stamp to get wrong.
+
+Check 12.90 requires the retired word gone from the tag set and the new name shown
+on all three surfaces for a run logged before the rename, while the stored value
+stays as it was. The control is a tag that was never renamed. Fails on v12.89.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

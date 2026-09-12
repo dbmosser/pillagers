@@ -1,0 +1,46 @@
+## v12.90 - THE FEELING TAG FOR THE TACTICAL BELT CALLS IT THE TACTICAL BELT
+
+Finding 4 of the 2026-09-11 read-only audit. His vocabulary is binding, the rename
+was announced outright in the release notes, and the game keeps it everywhere else:
+the pause key list, the stash heading, the loadout label, the keyboard and pad
+legends. This button is the one place it was missed, and it is the single most-seen
+piece of player-facing text in the run-report slice.
+
+IT REACHES HIM, NOT JUST THE PLAYER. Tap the tag, press LOG RUN AND RETURN, and
+the string is stored on the run, printed on the Undercroft run row, and lands in
+the report twice: in the FEELING TAGS header and under the run itself. That report
+is the file a friend copies out and sends to Daniel, so the retired word was being
+written into the thing he reads.
+
+THE LINT PROVABLY CANNOT CATCH THIS ONE, which is worth knowing before anyone
+trusts a green lint run on vocabulary. The word is on its banned list, but its
+sweep only considers quoted strings of 30 to 400 characters and this one is 18, so
+the sweep never offers it the string. A green vocabulary lint means nothing about
+short labels.
+
+OLD RUNS STORE THE LITERAL, so renaming the button alone would leave every run
+already logged printing the retired word for the rest of the profile's life. A
+display-time map carries them forward instead of a migration: nothing stored is
+rewritten, so an export he already has still reads the same way, and there is no
+one-shot stamp to get wrong, which is its own defect class and cost a build at
+v12.43. The three places that show a stored tag go through it.
+
+MEASURED. Check 12.90 requires the retired word to be absent from the tag set the
+card draws and the new name to be present, then plants a run holding the old string
+and requires the Undercroft run row, the FEELING TAGS aggregate and the per-run
+line in the report all to show the new name, while requiring the stored value to
+still be the old one so a display map cannot have quietly become an unstamped
+migration. The control is a tag that was never renamed: a map that swallowed
+anything it did not recognise would pass every arm above. Every needle is
+assembled, so the row cannot be found by its own search. Four arms fail on the
+v12.89 fixture.
+
+THE NEW NAME IS NINE CHARACTERS LONGER, and that was checked rather than left as a
+worry: .tagwrap is a wrapping flex row with a 560px cap and a 6px gap, so a longer
+label reflows onto the next line instead of overflowing anything. No layout change
+was needed.
+
+Not verified: it reads the tag set and the built report rather than clicking the
+button on the card, which v11.01's own check already covers; and the reflow above is
+read off the stylesheet rather than measured in pixels, because the tag row only
+exists while the outcome card is up.

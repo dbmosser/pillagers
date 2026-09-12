@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.89';
+var VER='12.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.89';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.89';
+var WHATSNEW_VER='12.90';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE FEELING TAG FOR THE TACTICAL BELT CALLS IT THE TACTICAL BELT. It was the one button left saying the old word, and it was written into the report you send. Runs you logged before today read the new name too, without anything stored being rewritten.',
   'ESC CLOSES THE BACKPACK AND THE MAP IN A RAID. It raised the pause box over whatever you had open instead, and a second press closed the box and left the panel sitting there, so ESC shut the wrong window twice. The map is in front of the backpack, and the pause box is in front of both.',
   'A FRIEND YOU IMPORT CARRIES THE GUN THEY ACTUALLY CARRIED. Their weapon name was cut at the first space, so anyone whose favourite had two words in it came back as an Auto Rifle, which is nine of the sixteen guns. If their report still cannot be read, the game no longer claims a favourite it cannot support.',
   'YOU COME BACK DOWN WITH AN EMPTY BACKPACK AND BELT. Die or walk out and your backpack, your tactical belt and your gun slot are all empty by the time you reach the Undercroft, so the next raid is packed on purpose rather than carried over. If you took the freebie kit, the gear you had packed before it is waiting in your stash, not back on your back.',
@@ -2020,6 +2021,13 @@ var DISTRICTS=[
 // thirty builds. Every button below is something a person can judge in one raid,
 // and the first three lines are what he most needs to hear from someone who is
 // not him: it broke, it looked wrong, I could not read it.
+// v12.90: TAGS THAT HAVE BEEN RENAMED, carried forward where they are SHOWN
+// rather than rewritten where they are stored. A run logged before the rename
+// holds the old string; mapping at display leaves his exports readable and needs
+// no one-shot migration stamp, which is its own defect class.
+var TAGFWD={'Hotbar worked well':'Tactical belt worked well'};
+function tagText(t){ return TAGFWD[t]||t; }
+function tagList(a){ var o=[],i; for(i=0;i<(a||[]).length;i++) o.push(tagText(a[i])); return o; }
 var TAGS=[
   // The two a friend cannot tell him any other way.
   'Something crashed','Something looked wrong','Sound was off',
@@ -2028,7 +2036,7 @@ var TAGS=[
   // The overall feel.
   'Felt great','Too easy','Too hard','Too dark',
   // The things carried and the room they live in.
-  'Inventory fiddly','Hotbar worked well','Loot boring','Loot exciting',
+  'Inventory fiddly','Tactical belt worked well','Loot boring','Loot exciting',
   'Nothing worth carrying','Ran out of ammo','Undercroft confusing',
   // Who is up there.
   'Pillagers felt human','Pillagers felt dumb','Machines too tough',
@@ -29335,7 +29343,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.89: finding 9 of the 2026-09-11 audit, and the raid twin of the v12.11 fix on the Undercroft floor; his 2026-09-03 answer is CLOSE and ESC on every menu. Mid-raid he presses TAB to look in the backpack, or M for the map, then presses ESC to back out of it, which is what every other window in this game has taught him, and the pause box rises OVER the open panel and the raid freezes; a second ESC closes the box and the backpack is still sitting there underneath, and only TAB, I or M will actually shut it, so ESC closed the wrong window twice and the panel he was looking at neither time. Worse, while the box was up the v12.22 lockout blocked TAB, I and M as well, so the one key that would have shut the panel was the one key he could not use. It was already inconsistent inside one raid: ESC does close the emote bar and the Peddler stall, because both are handled above that line, so the same key answered two in-raid panels and paused over the other two. The map is in front of the backpack, because drawMapOverlay runs after drawBag, so one press takes the map and the next takes the bag; the pause box is in front of both, which is what pauseOpen is doing in the guard, because without it ESC would shut the panel behind the box. A held drag goes with the bag, the way the focus-loss rescue already drops it. Check 12.89 deploys, opens the backpack and presses the real key, requiring the backpack shut and the box down, does the same for the map, requires one press each when both are open with the map going first, and controls that ESC with nothing open still raises the box and that ESC with the box up closes the box and not the panel behind it; fails on v12.88 where the first press raises the box over the panel.',
+  now:'v12.90: finding 4 of the 2026-09-11 audit. His vocabulary is binding, the rename was announced outright in the release notes, and the game keeps it everywhere else: the pause key list, the stash heading, the loadout label, the keyboard and pad legends. The feeling-tag button was the one place it was missed, and it is the single most-seen piece of player-facing text in the run-report slice. It reaches HIM and not just the player: tap the tag and press LOG RUN AND RETURN and the string is stored on the run, printed on the Undercroft run row, and lands in the report twice, in the FEELING TAGS header and under the run itself, and that report is the file a friend copies out and sends to Daniel, so the retired word was written into the thing he reads. The lint provably cannot catch this one, which is worth knowing before anyone trusts a green lint run on vocabulary: its sweep only considers quoted strings of 30 to 400 characters and this one is 18, so the word is on its banned list and the sweep never offers it the string. Old runs store the literal, so renaming the button alone would leave every run already logged printing the retired word for the rest of the profile life; a display-time map carries them forward instead of a migration, so nothing stored is rewritten, an export made before today still reads correctly, and there is no one-shot stamp to get wrong, which is its own defect class. The three places that show a stored tag go through it. Check 12.90 requires the retired word to be absent from the tag list the card draws and the new name to be present, presses that button through the real card and requires the stored run to carry it, plants a run holding the old string and requires the run row, the report aggregate and the per-run report line all to show the new name while the stored value is left alone, and controls that an unrenamed tag passes through untouched; fails on v12.89.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31476,7 +31484,7 @@ function fmtRun(r){
         ' &middot; '+statMMSS(r.dur)+' &middot; '+kills+'k &middot; '+r.acc+'%';
   if(r.downs) s+=' &middot; downs '+r.downs;
   if(r.outcome==='dead'&&r.deathKiller) s+=' &middot; by '+escHtml(r.deathKiller);
-  if(r.tags&&r.tags.length) s+='<br><span style="color:var(--amber)">'+escHtml(r.tags.join(', '))+'</span>';
+  if(r.tags&&r.tags.length) s+='<br><span style="color:var(--amber)">'+escHtml(tagList(r.tags).join(', '))+'</span>';
   if(r.note) s+='<br><span style="color:var(--ash)">&ldquo;'+escHtml(r.note)+'&rdquo;</span>';
   body.innerHTML=s;
   d.appendChild(o); d.appendChild(body);
@@ -31626,7 +31634,7 @@ function buildExport(){
   // no multiplier now, so every figure below is simply the figure.
   L.push('');
   var tagCount={};
-  P.log.forEach(function(r){ (r.tags||[]).forEach(function(t){ tagCount[t]=(tagCount[t]||0)+1; }); });
+  P.log.forEach(function(r){ (r.tags||[]).forEach(function(t){ var _t=tagText(t); tagCount[_t]=(tagCount[_t]||0)+1; }); });
   var tk=Object.keys(tagCount).sort(function(a,b){return tagCount[b]-tagCount[a];});
   if(tk.length){
     L.push('FEELING TAGS (all runs): '+tk.map(function(t){return t+' x'+tagCount[t];}).join(', '));
@@ -31703,7 +31711,7 @@ if(r.ghostIn) line+=' ghost:1';
     if(r.diedInSiege) line+=' diedInSiege:1';
     if(r.doorsOpened) line+=' doors:'+r.doorsOpened;
     L.push(line);
-    if(r.tags&&r.tags.length) L.push('   tags: '+r.tags.join(', '));
+    if(r.tags&&r.tags.length) L.push('   tags: '+tagList(r.tags).join(', '));
     if(r.note) L.push('   note: '+r.note);
     (r.inRunNotes||[]).forEach(function(n){ L.push('   in-run note @'+n.t+'s: '+n.txt); });
   });
