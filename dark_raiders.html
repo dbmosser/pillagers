@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.03';
+var VER='13.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,7 +1361,7 @@ var VER='13.03';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.03';
+var WHATSNEW_VER='13.06';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1412,6 +1412,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE FREEBIE KIT NEVER TOUCHED THE GUN YOU OWN, AND NOW THE CODE SAYS SO. It kept a gun slot aside and handed it back, and nothing in the game ever read it: what you go up with comes from the gun you have equipped, which taking the kit does not change. The dead field is gone and there is a test on the thing that is actually true.',
   'THE EXPERIMENTAL WARNING IS SPELLED ONE WAY. Two features carry it and the game wrote it two ways, so the wording you gave it reached the hire tab and never the sign on the floor by the bar. One spelling, so one edit covers both.',
   'THE GAME NOW CHECKS THAT THE WORDS YOU WROTE STILL APPEAR. Your wording is matched against a whole sentence, so rewording that sentence anywhere used to delete your version with no warning at all. Six screens are now swept every build, and any screen showing the original of a line you rewrote is a failure.',
   'THE WORDS YOU WROTE FOR THE BAR ARE BACK. The line you rewrote is matched whole, and the build before this one added two words to it and put a live total on the end of the same line, so your wording silently stopped appearing. The sentence is back exactly as you edited it and the total is its own line underneath.',
@@ -19494,9 +19495,10 @@ var _cdone=contractExtract(G.bag,haul);
     // freebie kit was taken. HIS CLARIFICATION, same day: "aka nothing in
     // tactical belt or backpack". The Undercroft backpack and belt ARE P.kit and
     // P.hotAssign, read through hubBagState and written back when the bag closes,
-    // so both are the loadout and both go. The gun slot goes with them: a slot
-    // pointing at a gun he is not carrying is the v5.72 fault.
-    P.kit=[]; P.hotAssign={}; P._gunSlot=null;
+    // so both are the loadout and both go. v13.06: the gun slot used to be cleared
+    // here too, and it was a field nothing in the file ever read; what he goes up
+    // armed with is P.equipped and P.equippedSec, which none of this touches.
+    P.kit=[]; P.hotAssign={};
     // A bag left open in memory writes its old contents straight back over those
     // two the moment it closes, so the live one is dropped and rebuilt from the
     // profile that has just been emptied.
@@ -28238,8 +28240,11 @@ function askKit(){
     // answer, still offered at the lift, re-snapshotted the emptied kit over it, so
     // commitKit kept an empty list and the death restore gave nothing back. Kept
     // aside only when the kit is not already taken: the stash button's own rule.
-    if(!P.freeKit) P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button does since v12.16
-    P.hotAssign={}; P._gunSlot=null;
+    // v13.06: the gun slot is gone from this snapshot. It was written here, cleared
+    // here, kept aside and put back, and read by nothing in the file: what a raid arms
+    // him with comes from P.equipped and P.equippedSec, which none of that touched.
+    if(!P.freeKit) P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{}))};   // kept aside for the restore, as the stash button does since v12.16
+    P.hotAssign={};
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
     try{ renderStage(); }catch(_e){}
     ascendNow();
@@ -29470,7 +29475,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.03: found while sweeping his edits for v13.02. Two features carry the same warning and the game writes it two different ways, so his edit of it reaches one of them. The HIRE tab is headed with the warning in capitals and he rewrote that one, his version saying what the warning is actually for, that the feature may glitch; THE LAST POUR carries the same warning on the Undercroft floor written in mixed case, and his wording is matched on the whole string, so the floor sign is a different string and his edit never touches it, leaving him walking past the game version of a warning he has already rewritten. It is also his own rule broken, one word per thing: two spellings of one warning is the same defect as two words for one object, and it is the reason the edit split. The asterisks are his, from v7.74, and they stay; only the spelling is made one. Check 13.03 records what the floor actually draws, finds the entry in his baked map whose key is that warning, and requires the drawn text to be his wording rather than the games, with the control that the warning is still drawn at all so making it one spelling has not deleted the sign; fails on v13.02, where the floor draws the games spelling because his edit cannot match it.',
+  now:'v13.06: a field written in five places and read in none, and two builds have described what it does. Found while reading the freebie kit for his come-back-empty note. P._gunSlot is cleared when the freebie kit is taken, kept aside in the snapshot, and put back when he switches to his own loadout; v12.82 is written up as restoring the items, the tactical belt plan and the gun slot, and the comment at the handoff says the same, so a reader would take all three to be real. It does nothing: grep the whole file and there are five writes and no reads, because what a raid arms him with comes from P.equipped and P.equippedSec, which this never touches. The invariant it pretended to protect is already true for a different reason, and that is the part worth keeping: taking the freebie kit does not change the gun he owns or the one in his hands, because the raid simply ignores them while the kit is on. The field goes and the two claims about it go with it, because a comment that describes a no-op is worse than no comment, it is the reason nobody looked. The version numbers 13.04 and 13.05 are not skipped by accident: they were spent on harness-only checks that carry no game build, the outcome card sweep and the canvas sweep for his text edits. Check 13.06 equips a gun he owns, takes the freebie kit, commits and runs a raid, and requires the gun he owns and the gun in his hands to be exactly what they were, then switches back to his own loadout and requires the same, with the control that the freebie kit really was taken so the check is not passing on a raid that never used it; fails on v13.03 only in the sense that the field it removes is still there, so the check is written against the behaviour rather than the field and passes on both, which is stated plainly rather than dressed up as a control.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33796,8 +33801,8 @@ function renderFreeKit(){
     // hotbar plan is cleared for the same reason, since a key pointing at something
     // you are not carrying is the exact fault v5.72 fixed.
     // v12.16: kept aside first, so switching back to his own gear is not a wipe.
-    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};
-    P.kit=[]; P.hotAssign={}; P._gunSlot=null;
+    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{}))};
+    P.kit=[]; P.hotAssign={};
     P.freeKit=1;
     saveProfile();
     try{ sfx('pick'); }catch(e){}
@@ -33818,7 +33823,7 @@ function freeKitRestore(){
   if(!_ks) return false;
   var _pool=(P.stash||[]).slice(), _kit=[];
   for(var _ki=0;_ki<(_ks.kit||[]).length;_ki++){ var _kx=_pool.indexOf(_ks.kit[_ki]); if(_kx>=0){ _pool.splice(_kx,1); _kit.push(_ks.kit[_ki]); } }
-  P.kit=_kit; P.hotAssign=_ks.hot||{}; P._gunSlot=_ks.gun||null;
+  P.kit=_kit; P.hotAssign=_ks.hot||{};
   try{ dropDeadKeys(); }catch(_dk){}
   return true;
 }
