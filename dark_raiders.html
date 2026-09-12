@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.15';
+var VER='13.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13302,14 +13302,20 @@ function grantLoot(ct,keys,delay0){
     // the loot array, so it lands last and on its own, which is the case he
     // called out by name.
     label(ct.x,ct.y-10,
-      itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<armorCap()?' +'+Math.round(Math.min(armorCap()-p.armor,itm.amt))+' armor':' '+ival(key)+'c')),
+      itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':' '+ival(key)+'c'),
       RCOL[_gdr],(delay0||0)+l*0.34,_gdr==='rare'||_gdr==='elite'||_gdr==='gold',key);
     if(itm.use==='ammo') p.reserve+=itm.amt;   // SPEC 6.4: one universal pool
-    // A plate is worth 55 but only applied below 20 armour, so deploying with a
-    // plate from stash put you at 55 and made every plate you then found dead
-    // weight you could never use, flatly contradicting the legend. Plates now
-    // apply until armour is actually full.
-    else if(itm.use==='armor'&&p.armor<armorCap()) p.armor=Math.min(armorCap(),p.armor+itm.amt);
+    // v13.16, HIS NOTE 2026-09-12: a looted plate is not armour yet. It used to
+    // soak straight into the bar the instant it left the container, which meant
+    // it could never be carried home, never be sold, never be put on a belt key
+    // and never be spent at a moment of his choosing, and it skipped the two
+    // second wind-up that makes armour a decision under fire. His own baked text
+    // for the plate has said "Armour plates don't auto equip; you must put them
+    // in during the raid" the whole time this line was making that a lie.
+    // There is no replacement branch on purpose: the chain already ends in a
+    // default that pushes the item into the backpack and offers it to the
+    // tactical belt, and the belt builds its plate cell from whatever armour is
+    // in the bag. Equipping stays where it already was, startPrep armour.
     else if(itm.use==='throw') G.pouch[itm.tk]++;
     else if(itm.use==='gun'){
       // The four issued starters have to rank here too. Without them the lookup
@@ -29525,7 +29531,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.15: from HIS TELEMETRY again. Three runs, heals 0 and downs 2 every single time: he carries medical, he goes down twice a raid, and he never applies one. I checked the two obvious causes first and both are refuted, so neither was built: the freebie kit DOES issue two Bandages so he is not going up empty, and the tactical belt builds its medical cell from the backpack automatically so the item is under a key whether or not anything was dragged. Nothing is broken. He simply does not use it, and nothing had ever told him so. His own priority line asks for exactly this, deeper coaching to follow if the telemetry does not move, and it has not moved; the card own v3.08 note already says the number worth putting in front of him at the moment of death is the one that makes it feedback rather than an epitaph. So the KILLED IN ACTION card gains one clause, and only when it is true: died carrying medical never used. It says nothing when he healed and nothing when he had nothing to heal with. The flag is read at the moment of death rather than on the card, because the backpack is emptied on the way there and a scan done at the card would always come back with nothing, which is the fault this would otherwise have shipped with. It also goes into the run record and the export line as unusedMed, so the next three runs answer whether saying it changes anything, which is the only way to know if coaching works',
+  now:'v13.16: HIS NOTE of 2026-09-12, that a looted armour plate should not convert itself into armour but go to the tactical belt or the backpack and be equipped, which takes time, before it counts on the bar. He is describing a rule the game already half had and contradicted: the two second armour wind-up is the equip path and it works, and his own baked text for the plate already says that plates do not auto equip and must be put in during the raid, which the pickup line made a lie for every plate found in a container. What the instant apply cost beyond his note: a plate soaked into the bar could never be carried home, never be sold, never be put on a belt key and never be spent at a moment of his choosing, and because it was silent and immediate it skipped the cost that makes armour a decision under fire, by the most common way of getting one. The branch is simply DELETED with no replacement, because the chain already ends in a default that pushes the item into the backpack and offers it to the tactical belt, and the belt builds its plate cell from whatever armour is in the bag, so removing the line IS the whole of goes to the belt or the backpack. The pickup label stops promising plus armour and names the item and its value like everything else. Check 13.16 loots a real plate from a real container on a live raid and requires the bar not to move, the plate to be in the backpack, the belt to offer it, and then the wind-up to be what puts it on the bar; two arms fail on v13.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

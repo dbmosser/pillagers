@@ -1,0 +1,18 @@
+v13.17: B backs out of whatever is in front
+
+His note of 2026-09-12: since Escape is not working for him, B should back out of
+any menu.
+
+One function, one key, one insertion point. Escape is spread over seven handlers
+with a careful front-most order; backOut() asks the same question once in the
+same order and returns whether it closed anything. It sits above every branch of
+the key handler, because the floor branch and the raid branch each return at
+their own end.
+
+B does not open the pause box. He asked for a way out of menus, and that is what
+keeps the merc order intact, since B already cycles merc orders in a raid.
+
+His Escape report is NOT closed by this. A synthetic Escape is a known bad
+instrument here and his report is about fullscreen, which no fixture can enter.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

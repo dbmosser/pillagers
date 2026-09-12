@@ -22,9 +22,20 @@ case "$1" in
     # own uploader; it is not installed here and needs an API key only he can make.
     # The guard means this line is inert today and live the moment
     # tools/collector/README.md has been followed, with no further change here.
-    if command -v butler >/dev/null 2>&1 && [ -n "$BUTLER_API_KEY" ] && [ -n "$ITCH_TARGET" ]; then
+    # v13.15: READ THE VARIABLES FROM WINDOWS, not from this shell. They live in
+    # the USER environment, and a shell already open when they were written never
+    # sees them, so the first real push printed "not pushed" with everything set
+    # up correctly. A shell should not have to be younger than the setup.
+    BUTLER_EXE="${BUTLER_EXE:-/c/Users/User1/bin/butler.exe}"
+    [ -n "$BUTLER_API_KEY" ] || BUTLER_API_KEY=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('BUTLER_API_KEY','User')" 2>/dev/null | tr -d '\r\n')
+    [ -n "$ITCH_TARGET" ]    || ITCH_TARGET=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('ITCH_TARGET','User')" 2>/dev/null | tr -d '\r\n')
+    export BUTLER_API_KEY ITCH_TARGET
+    BUTLER_CMD=""
+    if [ -x "$BUTLER_EXE" ]; then BUTLER_CMD="$BUTLER_EXE"
+    elif command -v butler >/dev/null 2>&1; then BUTLER_CMD="butler"; fi
+    if [ -n "$BUTLER_CMD" ] && [ -n "$BUTLER_API_KEY" ] && [ -n "$ITCH_TARGET" ]; then
       echo "itch: pushing $ITCH_TARGET"
-      butler push tools/publish/pillagers-web.zip "$ITCH_TARGET" --userversion "v$(vstr $T)" 2>&1 | tail -2
+      "$BUTLER_CMD" push tools/publish/pillagers-web.zip "$ITCH_TARGET" --userversion "v$(vstr $T)" 2>&1 | tail -2
     else
       echo "itch: not pushed (butler, BUTLER_API_KEY or ITCH_TARGET missing; see tools/collector/README.md)"
     fi

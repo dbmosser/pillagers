@@ -40024,6 +40024,49 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.16 - A LOOTED ARMOUR PLATE IS NOT ARMOUR YET
+
+HIS NOTE, 2026-09-12: "if the player loots and finds an armor plate, it shouldn't
+automatically convert to armor. it should go to their tact belt or backpack, and
+then they have to equip it, which takes time, then it serves as armor on the
+armor bar."
+
+HE IS DESCRIBING A RULE THE GAME ALREADY HALF HAD AND CONTRADICTED. The two
+second armour wind-up is the equip path and it has worked since v3.54, when he
+asked for it. His own baked text edit for the plate already reads "Armour plates
+don't auto equip; you must put them in during the raid." The pickup line made
+that sentence a lie for every plate found in a container.
+
+WHAT THE INSTANT APPLY COST, BEYOND HIS NOTE. A plate soaked into the bar the
+instant it left the container could never be carried home, never be sold, never
+be put on a belt key, and never be spent at a moment of his choosing. And because
+it was silent and immediate, the two second cost that makes armour a decision
+under fire was skipped by the most common way of getting one.
+
+THE BRANCH IS DELETED WITH NO REPLACEMENT. The chain already ends in a default
+that pushes the item into the backpack and offers it to the tactical belt, and
+the belt builds its plate cell from whatever armour is in the bag. So removing
+the line IS the whole of "goes to the belt or the backpack". Nothing was added.
+
+HIS RULING ON SCOPE, ASKED AND ANSWERED: every plate, not just looted ones. That
+turned out to need no code. A plate bought from the Peddler already goes to the
+backpack, and so does the one in the freebie kit. The single deletion is all of
+it.
+
+THE PICKUP LABEL STOPS PROMISING ARMOUR. It used to read "Armour Plate +20 armor"
+because it was describing what the line below was about to do. It names the item
+and its value now, like everything else in the container.
+
+MEASURED. Check 13.16 searches a real container on the real key and requires four
+things: the bar does not move, the plate is in the backpack, the tactical belt
+offers it, and equipping it takes its wind-up before the bar moves. Armour starts
+at zero on purpose, because the old line only applied a plate below the cap and a
+full bar would have passed for entirely the wrong reason. Two arms fail on v13.15.
+
+Not verified: whether the plate on the belt is reachable by the key he expects
+rather than merely present in the list, which is a layout question this check does
+not ask; and whether the armour economy still works out with plates being carried
+rather than consumed on sight, which is a balance question and no dial was moved.
 ## v13.15 - THE DEATH CARD NAMES THE MEDICAL YOU NEVER USED
 
 FROM HIS TELEMETRY AGAIN, and it is the same three runs. heals 0 and downs 2,

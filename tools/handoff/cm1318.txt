@@ -1,0 +1,16 @@
+v13.18: the Limited Time Offer is actually limited now
+
+His note of 2026-09-12. Buying the lot paid, banked the items, logged it, and
+redrew the same lot with a live Buy button, because nothing recorded that it was
+sold. The window is five minutes, so the same offer could be bought over and over
+until the clock turned.
+
+Keyed to the lot's own clock rather than a flag, so the next lot is unsold by
+definition and nothing has to remember to reset it. No migration needed: the
+field is absent on existing profiles and absent reads as not bought.
+
+Check 13.18 clicks the real button twice and compares, because the fault is not
+visible in one purchase, only in the second working. It restores the credits and
+stash it spent.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
