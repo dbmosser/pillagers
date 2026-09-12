@@ -1,0 +1,57 @@
+## v12.92 - ON A CONTROLLER THE STATIONS NAME THE BUTTON THEY ACTUALLY USE
+
+Finding 15 of the 2026-09-11 read-only audit, and the worst case is not a mislabel,
+it is a loss: the button the lift called "go up" is the one that skips the loadout
+question.
+
+WHAT HAPPENS. He plugs in the pad, walks to THE LIFT and reads the prompt the station
+draws: [X] go up, [Y] quick ascent, [RB] the terms. He presses X expecting the sector
+page and the question about what he is taking up. On the floor X is bound to KeyR, so
+the raid starts immediately: no sector page, no loadout question, no chance to answer
+MY LOADOUT or FREEBIE KIT.
+
+EVERY STATION IS SHIFTED THE SAME WAY. At SHOP, CRAFT, AND HIRE the sub line says
+[X] shop, [Y] craft, [D-DOWN] hire, while X opens CRAFT, Y opens HIRE and D-DOWN does
+nothing at all down here. At THE MAINFRAME, [X] contracts opens REWARDS. And the big
+bottom prompt reads [X] THE STASH over a station that opens on A.
+
+WHY. ONE LABEL TABLE WAS SERVING TWO DIFFERENT BINDING SETS. In a raid the pad really
+does put KeyE on X, KeyR on Y and KeyF on D-DOWN, and PADLABEL says so. The Undercroft
+deliberately keeps the FIRST act on A, because there is nothing to shoot down here,
+and then hangs the other three on X, Y and RB. That is one button lower all the way
+along, and PADLABEL has no entry that says A at all. Only RB happened to line up,
+which is why the shift shows as three wrong prompts rather than four.
+
+THE v6.83 COMMENT ASSERTED THE OPPOSITE in as many words: X, Y and RB carry the
+second, third and fourth action, "matching the labels PADLABEL prints". They do not,
+because the labels name the second, third and fourth entries of a table whose first
+entry is the one the floor moved. That sentence is removed rather than left to mislead
+the next reader.
+
+THE FIX IS A SECOND TABLE, NOT A REBINDING. Moving the floor onto the raid buttons
+would take A away from the stations, which v6.83 kept on purpose. One label table per
+binding set, chosen by the screen being drawn, holding exactly the four station keys
+the floor binds. That is the whole set: the three station prompt lines are the only
+places keyLabel is called on the floor.
+
+MEASURED, AND THE CHECK ASSERTS NEITHER HALF. It asks the game which button actually
+performs each station act, by pressing the sixteen buttons one at a time through a
+faked pad and watching which key the floor claims, and then requires the label the
+floor PRINTS for that act to name that button. Neither the bindings nor the labels are
+written down in the check, so a rebinding cannot leave it green over a wrong prompt
+and a relabel cannot either. It calls pollPad directly rather than running a frame, so
+the buttons are read without the floor also acting on them and opening a station.
+
+Two controls. The raid is a different binding set and its labels were right all along,
+so the first act in a raid must still be named with a different button than the floor
+uses: a fix that handed both sets one table in the other direction would break the
+prompts that worked. And with no pad connected, the keyboard letter must still print,
+or a keyboard player reads controller buttons.
+
+Three arms fail on the v12.91 fixture: A printed as X, X printed as Y, Y printed as
+D-DOWN.
+
+Not verified: it reads keyLabel, which is what all three station prompt lines are
+built from, rather than the pixels of the drawn line; and it does not press a station
+act through to its screen, so it proves the prompt now names the right button and not
+that each act still opens what it always opened, which the v6.83 work already covers.

@@ -1,0 +1,27 @@
+v12.92: on a controller the stations name the button they actually use
+
+Finding 15 of the 2026-09-11 audit. The worst case is not a mislabel but a loss: the
+button the lift called "go up" is the one that skips the loadout question.
+
+The lift prompt read [X] go up. On the floor X is bound to KeyR, so pressing it
+launched the raid: no sector page, no question about what you were taking up. Every
+station is shifted the same way, and the bottom prompt read [X] THE STASH over a
+station that opens on A.
+
+One label table was serving two binding sets. In a raid the pad really does put KeyE
+on X and KeyR on Y, and PADLABEL says so. The Undercroft keeps the first act on A
+deliberately, then hangs the rest on X, Y and RB: one button lower all the way along,
+and PADLABEL has no entry for A. Only RB lined up.
+
+The v6.83 comment claimed these matched the labels PADLABEL prints. They did not, and
+that sentence is removed rather than left to mislead the next reader.
+
+The fix is a second table, not a rebinding: moving the floor onto the raid buttons
+would take A away from the stations, which v6.83 kept on purpose.
+
+Check 12.92 asserts neither half. It presses all sixteen buttons through a faked pad
+to learn which one really performs each act, then requires the printed label to name
+that button. Controls: the raid labels stay different, and with no pad the keyboard
+letter prints. Three arms fail on v12.91.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

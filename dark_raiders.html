@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.91';
+var VER='12.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.91';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.91';
+var WHATSNEW_VER='12.92';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'ON A CONTROLLER THE STATIONS NAME THE BUTTON THEY ACTUALLY USE. Every prompt in the Undercroft named the button for the act below the one it was offering, so the lift said [X] go up and X launched the raid instead, with no sector page and no question about what you were taking up. The raid prompts were always right; the floor uses different buttons and was borrowing the raid labels.',
   'THE LEFT STICK CRAWLS WHEN YOU ARE DOWN. On a controller the one thing the downed screen asks you to do was the one thing you could not do: the crawl read the keyboard only, so you turned on the spot and bled out where you fell. Self-revive and extracting always worked; it was moving that did not.',
   'THE FEELING TAG FOR THE TACTICAL BELT CALLS IT THE TACTICAL BELT. It was the one button left saying the old word, and it was written into the report you send. Runs you logged before today read the new name too, without anything stored being rewritten.',
   'ESC CLOSES THE BACKPACK AND THE MAP IN A RAID. It raised the pause box over whatever you had open instead, and a second press closed the box and left the panel sitting there, so ESC shut the wrong window twice. The map is in front of the backpack, and the pause box is in front of both.',
@@ -11347,8 +11348,19 @@ var PADLABEL={KeyE:'X',KeyR:'Y',KeyF:'D-DOWN',KeyT:'RB',KeyG:'D-RIGHT',KeyQ:'LB'
 // The keyboard half, kept beside the controller half so a station key can never be
 // labelled by one table and pressed by the other.
 var KEYNAME_KB={KeyE:'E',KeyR:'R',KeyF:'F',KeyT:'T'};
+// v12.92, audit finding 15: THE FLOOR HAS ITS OWN BUTTONS, SO IT HAS ITS OWN
+// LABELS. The Undercroft keeps the first station act on A and hangs the other three
+// on X, Y and RB; the raid puts the same four keys one button higher. One table was
+// labelling both, so every station prompt down here named the button for the act
+// BELOW the one it was offering, and the lift's [X] go up was really the quick
+// ascent that skips the loadout question. These four are the whole set the floor
+// binds, and the station prompt lines are the only place it labels anything.
+var PADLABEL_HUB={KeyE:'A',KeyR:'X',KeyF:'Y',KeyT:'RB'};
 function keyLabel(code,fallback){
-  if(padOn()&&PADLABEL[code]) return PADLABEL[code];
+  if(padOn()){
+    if(state==='hub'&&PADLABEL_HUB[code]) return PADLABEL_HUB[code];
+    if(PADLABEL[code]) return PADLABEL[code];
+  }
   return fallback===undefined?code:fallback;
 }
 // ================================================== THE PAD IN A MENU, v6.84
@@ -11527,7 +11539,11 @@ function pollPad(){
     // the raid's fire binding has nothing to collide with.
     // v6.83: a station's other actions were unreachable on a pad. A opened the shop and
     // nothing could reach CRAFT, HIRE, REWARDS or the TERMS. X, Y and RB now carry the
-    // second, third and fourth action, matching the labels PADLABEL prints.
+    // second, third and fourth action.
+    // v12.92: and the claim that used to end this comment, that they match the
+    // labels PADLABEL prints, was untrue for five years of builds. PADLABEL is the
+    // RAID table and has no entry for A, so it named the act below the one each
+    // button actually performed. PADLABEL_HUB is the table for these four.
     padHold('KeyR',pressed(2));
     padHold('KeyF',pressed(3));
     padHold('KeyT',pressed(5));
@@ -29350,7 +29366,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.91: finding 11 of the 2026-09-11 audit. The downed screen asks him to do one thing and on a controller that one thing is the only thing he cannot do. He is on the pad, and the game itself told him the left stick moves; he is shot to the floor 200 units short of the ring, and the downed overlay says CRAWL TO THE RING, says crawl to an open extraction point if possible, and tells him how far the nearest one is. He pushes the stick and does not move a single unit for the whole bleed-out, then dies where he fell. The downed branch builds its movement vector from keyboard codes alone and then moves the body; the stick lives in PAD.mx and PAD.my, which pollPad refreshes every frame and which every other movement site reads, the standing branch, the roll direction and the Undercroft walk, and this branch is the one place it was never added, with nothing anywhere synthesising a movement key from the pad. It is not that the pad is dead while downed, which makes it worse rather than better: D-DOWN still self-revives and X still extracts, because both go through keys the pad does write, and the left stick still swings the aim cursor, so he turns on the spot while going nowhere. Movement alone was missing. The fix is the same three lines the other sites use, placed before the magnitude so the flat thirty-units-a-second crawl normalisation is untouched: this adds an input, not a speed. Check 12.91 downs the player, pushes the stick with nothing on the keyboard and requires the body to have moved in the direction pushed, requires the keyboard crawl to still work with the pad off, and requires the two speeds to match so the stick is not a faster crawl; fails on v12.90 where the body does not move at all.',
+  now:'v12.92: finding 15 of the 2026-09-11 audit, and the worst case is not a mislabel, it is a loss: the button the lift calls go up is the one that skips the loadout question. He plugs in the pad, walks to THE LIFT and reads the prompt the station draws, X go up, Y quick ascent, RB the terms; he presses X expecting the sector page and the question about what he is taking up, and on the floor X is bound to KeyR, so the raid starts immediately with no sector page, no loadout question and no chance to answer MY LOADOUT or FREEBIE KIT. Every station is shifted the same way: at SHOP, CRAFT, AND HIRE the sub line says X shop, Y craft, D-DOWN hire, while X opens CRAFT, Y opens HIRE and D-DOWN does nothing at all down here; at THE MAINFRAME, X contracts opens REWARDS; and the big bottom prompt reads X THE STASH over a station that opens on A. One label table was serving two different binding sets: in a raid the pad really does put KeyE on X, KeyR on Y and KeyF on D-DOWN and PADLABEL says so, while the Undercroft deliberately keeps the FIRST act on A because there is nothing to shoot down here and then hangs the other three on X, Y and RB, which is one button lower all the way along, and PADLABEL has no entry that says A at all. The v6.83 comment asserted the opposite in as many words, that X, Y and RB carry the second, third and fourth action matching the labels PADLABEL prints; they do not, because the labels name the second, third and fourth entries of a table whose first entry is the one the floor moved, and that sentence has been removed rather than left to mislead the next reader. The fix is a second table and not a rebinding, because moving the floor onto the raid buttons would take A away from the stations, which v6.83 kept on purpose: one label table per binding set, chosen by the screen being drawn, holding exactly the four station keys the floor binds, which is the whole set the three station prompt lines ever label. Check 12.92 fakes a connected pad and requires every station act the floor draws to name the button the floor actually binds it to, reads the lift line and requires the first act not to be named with the button that launches the raid, and controls that the raid prompts are unchanged and that with no pad the keyboard letters still print; fails on v12.91.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
