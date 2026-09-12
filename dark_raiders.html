@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.92';
+var VER='12.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.92';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.92';
+var WHATSNEW_VER='12.93';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE LAST-MINUTE WARNINGS KNOW YOU ALREADY CALLED A RIDE. At thirty seconds they told you to hold E to CALL an extraction you were standing on top of, which is not what holding E there does, or sent you to a different ring to start a wait you could never finish while the arrow beside them pointed at the extraction you already had. They name your ride now, and whether it is down or still coming.',
   'ON A CONTROLLER THE STATIONS NAME THE BUTTON THEY ACTUALLY USE. Every prompt in the Undercroft named the button for the act below the one it was offering, so the lift said [X] go up and X launched the raid instead, with no sector page and no question about what you were taking up. The raid prompts were always right; the floor uses different buttons and was borrowing the raid labels.',
   'THE LEFT STICK CRAWLS WHEN YOU ARE DOWN. On a controller the one thing the downed screen asks you to do was the one thing you could not do: the crawl read the keyboard only, so you turned on the spot and bled out where you fell. Self-revive and extracting always worked; it was moving that did not.',
   'THE FEELING TAG FOR THE TACTICAL BELT CALLS IT THE TACTICAL BELT. It was the one button left saying the old word, and it was written into the report you send. Runs you logged before today read the new name too, without anything stored being rewritten.',
@@ -28208,6 +28209,26 @@ function compass8(dx,dy){
   return ['east','south east','south','south west','west','north west','north','north east'][Math.round(a/45)%8];
 }
 function outHint(urgent){
+  // v12.93, audit finding 7: A LIVE BEACON OWNS THIS SENTENCE. Everything below
+  // used to read distance and nothing else, so at thirty seconds the game told a
+  // man standing on a landed ship to hold E to CALL one, which is not the action
+  // that happens when he does, and told a man with a ship inbound to walk to a
+  // different ring and start a second wait he could never finish. A called ring is
+  // deliberately kept open, which is exactly what let a nearer one beat it.
+  //
+  // beaconT is the inbound clock and is not cleared when the ship lands; hold is
+  // the boarding window and only exists once it is down. That is the whole state
+  // machine this line was missing.
+  var ac=G&&G.active;
+  if(ac&&ac.beaconT!==null&&ac.beaconT!==undefined){
+    var landed=(typeof ac.hold==='number'&&ac.hold>0);
+    var din=dist(G.player,ac);
+    if(din<ac.r)
+      return landed?('Your way out is down. Hold E to extract, '+Math.ceil(ac.hold)+'s left.')
+                   :('Your way out is '+Math.ceil(ac.beaconT)+'s away. Stay in the ring.');
+    return 'Your extraction is '+metres(din)+'m '+compass8(ac.x-G.player.x,ac.y-G.player.y)+'. '+
+           (landed?('It leaves in '+Math.ceil(ac.hold)+'s.'):('It lands in '+Math.ceil(ac.beaconT)+'s.'));
+  }
   var no=nearestOut();
   // v9.39: nearestOut returns nothing when every ring is shut, which is a real
   // sentence rather than a missing one.
@@ -29366,7 +29387,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.92: finding 15 of the 2026-09-11 audit, and the worst case is not a mislabel, it is a loss: the button the lift calls go up is the one that skips the loadout question. He plugs in the pad, walks to THE LIFT and reads the prompt the station draws, X go up, Y quick ascent, RB the terms; he presses X expecting the sector page and the question about what he is taking up, and on the floor X is bound to KeyR, so the raid starts immediately with no sector page, no loadout question and no chance to answer MY LOADOUT or FREEBIE KIT. Every station is shifted the same way: at SHOP, CRAFT, AND HIRE the sub line says X shop, Y craft, D-DOWN hire, while X opens CRAFT, Y opens HIRE and D-DOWN does nothing at all down here; at THE MAINFRAME, X contracts opens REWARDS; and the big bottom prompt reads X THE STASH over a station that opens on A. One label table was serving two different binding sets: in a raid the pad really does put KeyE on X, KeyR on Y and KeyF on D-DOWN and PADLABEL says so, while the Undercroft deliberately keeps the FIRST act on A because there is nothing to shoot down here and then hangs the other three on X, Y and RB, which is one button lower all the way along, and PADLABEL has no entry that says A at all. The v6.83 comment asserted the opposite in as many words, that X, Y and RB carry the second, third and fourth action matching the labels PADLABEL prints; they do not, because the labels name the second, third and fourth entries of a table whose first entry is the one the floor moved, and that sentence has been removed rather than left to mislead the next reader. The fix is a second table and not a rebinding, because moving the floor onto the raid buttons would take A away from the stations, which v6.83 kept on purpose: one label table per binding set, chosen by the screen being drawn, holding exactly the four station keys the floor binds, which is the whole set the three station prompt lines ever label. Check 12.92 fakes a connected pad and requires every station act the floor draws to name the button the floor actually binds it to, reads the lift line and requires the first act not to be named with the button that launches the raid, and controls that the raid prompts are unchanged and that with no pad the keyboard letters still print; fails on v12.91.',
+  now:'v12.93: finding 7 of the 2026-09-11 audit. The two lines the game speaks at its most time-critical moments were blind to the extraction it had already called. He calls extraction A with 60 seconds on the clock; it lands at 35 and the window runs to 5, and at exactly thirty seconds the raid clock speaks and says THIRTY SECONDS, you are standing in the way out, hold E to call it. He is standing in ring A, the banner directly above him reads EXTRACT NOW, and the ship he paid for is already on the ground; holding E there does not call anything, it extracts him, so the line names a different action than the one that happens at the exact moment he has no time to work out which. The other half is worse because it sends him the wrong way: with ring A called and ring C nearer, the same warning names C and tells him to stand in it and hold E, which is a full inbound wait he cannot finish, while the HUD arrow beside it points the other way at the ship he already has. nearestOut reads only whether a ring is open and how far it is, and outHint reads only nearestOut, so neither knows an extraction exists, and a called ring is deliberately KEPT open, which is what puts it in the running to be beaten by a nearer one. The fix is that a live beacon owns the sentence: when one is burning the line names that ring and nothing else, in the words the rest of the game already uses, extract when the ship is down and wait when it is inbound, and where nothing is called the old two lines stand exactly as they were. beaconT is the inbound clock and is not cleared when the ship lands, and hold is the boarding window that only exists once it is down; that is the whole state machine the line was missing. Check 12.93 stages a called ring with a second ring nearer and requires the warning to name the called one and never to tell him to call what he is standing on, requires the inbound and landed wordings to differ and to carry the right seconds, and controls that with nothing called both original sentences are word for word what they were; fails on v12.92.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

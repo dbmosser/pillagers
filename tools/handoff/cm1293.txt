@@ -1,0 +1,31 @@
+v12.93: the last-minute warnings know you already called a ride
+
+My slip, caught by the harness: the release-notes entry I first wrote named the
+extraction as a vehicle, the word he retired on 2026-09-02, on the card he reads.
+Check 12.48 went red and named it. That check exists because I did this on
+2026-09-08. One word changed.
+
+Finding 7 of the 2026-09-11 audit. The two lines the game speaks at its most
+time-critical moments were blind to the extraction it had already called.
+
+At thirty seconds, standing in the ring you called with the ship on the ground and
+EXTRACT NOW above your head, it said "You are standing in the way out. Hold E to
+call it." Holding E there does not call anything. It extracts you.
+
+The other half sent you the wrong way: with your ride called and another ring
+nearer, it named the other ring and told you to start a wait you could not finish,
+while the arrow beside it pointed at the ship you already had.
+
+nearestOut reads only open-ness and distance, and outHint reads only nearestOut, so
+neither knew an extraction existed. A called ring is deliberately kept open, which
+is what let a nearer one beat it.
+
+A live beacon now owns the sentence: it names that ring, and says extract when the
+ship is down or how long when it is inbound. With nothing called, both original
+lines are untouched.
+
+Check 12.93 stages a called ring with a nearer uncalled one, which is the only shape
+where the two answers differ. The control requires both original sentences back word
+for word. Five arms fail on v12.92.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

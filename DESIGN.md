@@ -40024,6 +40024,58 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.93 - THE LAST-MINUTE WARNINGS KNOW YOU ALREADY CALLED A RIDE
+
+Finding 7 of the 2026-09-11 read-only audit. The two lines the game speaks at its
+most time-critical moments were blind to the extraction it had already called.
+
+WHAT HAPPENS. He calls extraction A with 60 seconds on the clock. It lands at 35 and
+the window runs to 5. At exactly thirty seconds the raid clock speaks, and what it
+says is "THIRTY SECONDS. You are standing in the way out. Hold E to call it." He is
+standing in ring A, the banner directly above him reads EXTRACT NOW, and the ship he
+paid for is already on the ground. Holding E there does not call anything: it
+extracts him. The line names a different action than the one that happens, at the
+exact moment he has no time to work out which.
+
+THE OTHER HALF IS WORSE, because it sends him the wrong way. With ring A called and
+ring C nearer, the same warning names C and tells him to stand in it and hold E,
+which is a full inbound wait he cannot finish, while the HUD arrow beside it points
+the other way at the ship he already has. Two live readouts, two different doors.
+
+WHY. nearestOut reads only whether a ring is open and how far it is, and outHint
+reads only nearestOut. Neither looks at the beacon or the hold, so neither knows an
+extraction exists at all. And a called ring is deliberately KEPT open, which is
+exactly what puts it in the running to be beaten by a nearer one.
+
+THE BUILD. A live beacon owns the sentence. When one is burning the line names that
+ring and nothing else, in the words the rest of the game already uses: extract when
+the ship is down, wait when it is inbound, with the seconds either way. Where
+nothing is called, the two original lines stand exactly as they were. beaconT is the
+inbound clock and is not cleared when the ship lands; hold is the boarding window
+and only exists once it is down. That is the whole state machine the line was
+missing.
+
+MEASURED. Check 12.93 stages the exact shape the audit described, a ring he has
+called and a NEARER ring he has not, because that is the only arrangement where
+naming the nearest open ring and naming his own ride give different answers: a check
+that did not build it would be green either way. It requires the landed wording to
+say extract and not to say call, requires the inbound and landed wordings to differ
+and to carry their own seconds, and requires the wrong-ring case never to send him
+to start a second wait. The control is that with nothing called BOTH original
+sentences come back word for word, because the easiest way to pass every arm above
+is to rewrite the line for all cases and quietly retire two good ones. Five arms
+fail on the v12.92 fixture.
+
+Not verified: it calls the hint directly rather than waiting for the thirty-second
+warning to speak it, so it proves the sentence and not the moment; and it does not
+check the HUD arrow, which has pointed at the called ring since v12.57 and is the
+readout this line now agrees with.
+MY SLIP, CAUGHT BY THE HARNESS. The release-notes entry I first wrote for this build
+named the extraction as a vehicle, using the exact word he retired on 2026-09-02, on
+the what-is-new card he reads. Check 12.48 went red and named the entry. That check
+exists because I made the same mistake on 2026-09-08, and this is it doing its job.
+One word changed; the sentence says extraction. Repair script: tools/handoff/r1293.ps1.
+
 ## v12.92 - ON A CONTROLLER THE STATIONS NAME THE BUTTON THEY ACTUALLY USE
 
 Finding 15 of the 2026-09-11 read-only audit, and the worst case is not a mislabel,
