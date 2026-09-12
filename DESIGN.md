@@ -40024,6 +40024,69 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.94 - GOING DOWN INSIDE A LANDED EXTRACTION SHOWS YOU THE WAY OUT
+
+Finding 8 of the 2026-09-11 read-only audit, and it costs him the whole backpack.
+
+WHAT HAPPENS. He calls extraction A and it is still inbound, so the pointer stays on
+A. A pillager has called ring C and C has already landed; riding out on somebody
+else's call is intended play. He crosses to C, is dropped inside that ring with his
+self-revive already spent, and the screen goes to the downed overlay.
+
+WHAT THE OVERLAY SAYS IS THE OPPOSITE OF WHAT WOULD SAVE HIM. Holding E for 1.4
+seconds boards him at C with the full backpack, and the pull code finds the ring by
+the one he is lying in, so the mechanic works. But every readout measured him against
+A, far away and still inbound. So there was no HOLD E TO EXTRACT: the overlay fell
+through to a line with no verb in it at all, "Nearest extraction is 0m away". The
+world-space [E] EXTRACT label that would have told him is suppressed while downed.
+And surrenderBlocked measured A too, so it reported nothing blocked and the overlay
+printed HOLD [SPACE] TO SURRENDER. Holding SPACE for 1.5 seconds kills him and loses
+everything, and SPACE was the only key named anywhere on that screen.
+
+WHY. The guard and the verb read the global pointer instead of the ring he is
+actually in. That is the exact rule v8.61 already settled for the pull itself: a pull
+belongs to the ring you are standing in. v12.81 exists so that "a hand resting on the
+space bar must not throw away a full bag in the one situation where being down ends
+well", and with two live beacons that guard was inert while the game offered the
+losing action and hid the winning one.
+
+THE BUILD. One resolver, used by both. standingRing walks the zones the way the pull
+does and falls back to the pointer when he is in none, so a single beacon behaves
+exactly as before in every particular, and ringLanded asks of THAT ring whether its
+ship is down with a window still running.
+
+NOT DONE, DELIBERATELY: the audit also suggests un-suppressing the world-space [E]
+EXTRACT label while downed. The downed overlay paints a full-screen wash over the
+world before it draws, so that label would be under it. The overlay verb is the
+readout he can actually see, and it is the one that was wrong.
+
+MEASURED. Check 12.94 stages two live beacons, which is the whole finding: with a
+single beacon every readout agrees and nothing is measurable, so a check that did not
+build the second one would be green on both builds. It lays him down inside the
+landed ring he did not call and requires the surrender to be blocked and the extract
+verb to be on screen. It reads the drawn screen through __textTrace, because the verb
+is decided inside the HUD draw and cannot be called from a check. Two controls: a
+single landed ring he called himself must behave exactly as v12.81 left it, and lying
+outside every ring must still offer the surrender, or the guard has been turned on
+for everybody and the key he asked for at v9.71 is gone. Three arms fail on the
+v12.93 fixture.
+
+A CHECK BUG WORTH RECORDING. The first version searched the drawn text for the word
+SURRENDER and found the fix's own success line, NO SURRENDER WITH AN EXTRACTION
+WAITING, so it failed on the build that fixed it. Same class as three checks in two
+earlier builds: the needle matched the row's own output. It searches for the prompt
+itself now.
+
+Not verified: it reads the strings the frame paints rather than the pixels, so it
+proves the verb is drawn and not that it is legible under the wash; and it does not
+hold E through to an actual extraction from the second ring, which v8.61 already
+covers.
+A SECOND CHECK WENT RED AND ITS STAGING WAS THE REASON. Check 9.71 landed arm sets
+the global mirrors and never the ring itself, which is a state the game cannot
+produce, and it passed only because the old guard read the same mirrors the check
+was writing. The staging now sets the ring as well. The repair only ADDS state and
+removes no assertion, so it cannot have weakened the check: tools/handoff/r1294.ps1.
+
 ## v12.93 - THE LAST-MINUTE WARNINGS KNOW YOU ALREADY CALLED A RIDE
 
 Finding 7 of the 2026-09-11 read-only audit. The two lines the game speaks at its

@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.93';
+var VER='12.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.93';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.93';
+var WHATSNEW_VER='12.94';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'GOING DOWN INSIDE A LANDED EXTRACTION SHOWS YOU THE WAY OUT, EVEN IF SOMEBODY ELSE CALLED IT. If you had one of your own still inbound, the downed screen measured that one instead: no HOLD E TO EXTRACT, no verb at all, and it offered you the surrender that ends the raid and loses the backpack. Holding E there would have carried you out with everything.',
   'THE LAST-MINUTE WARNINGS KNOW YOU ALREADY CALLED A RIDE. At thirty seconds they told you to hold E to CALL an extraction you were standing on top of, which is not what holding E there does, or sent you to a different ring to start a wait you could never finish while the arrow beside them pointed at the extraction you already had. They name your ride now, and whether it is down or still coming.',
   'ON A CONTROLLER THE STATIONS NAME THE BUTTON THEY ACTUALLY USE. Every prompt in the Undercroft named the button for the act below the one it was offering, so the lift said [X] go up and X launched the raid instead, with no sector page and no question about what you were taking up. The raid prompts were always right; the floor uses different buttons and was borrowing the raid labels.',
   'THE LEFT STICK CRAWLS WHEN YOU ARE DOWN. On a controller the one thing the downed screen asks you to do was the one thing you could not do: the crawl read the keyboard only, so you turned on the spot and bled out where you fell. Self-revive and extracting always worked; it was moving that did not.',
@@ -14642,10 +14643,29 @@ function GIVEUP_HOLD(){ return 1.5; }
 // into giveUpTick alone, so the overlay that offers the surrender knew nothing
 // about it and printed the prompt anyway: the key did nothing, the bar never
 // appeared, and no line said why. Both read this now.
+// v12.94, audit finding 8: THE RING HE IS LYING IN, NOT THE ONE HE POINTED AT.
+// The same scan the pull uses since v8.61, because the pull will board him at the
+// ring he is inside whatever the pointer says, and every readout that disagreed
+// with it was telling him the losing thing. Falls back to the pointer when he is
+// in no ring at all, so the single-beacon case is unchanged in every particular.
+function standingRing(){
+  var p=G&&G.player; if(!p) return null;
+  if(G.zones) for(var zi=0;zi<G.zones.length;zi++){
+    var Z=G.zones[zi];
+    if(Z.open!==false&&dist(p,Z)<Z.r) return Z;
+  }
+  return G.active||null;
+}
+// Whether that ring has a ship on the ground with a window still running, which is
+// the state in which holding E ends the raid well.
+function ringLanded(z){
+  return !!(z&&z.beaconT!==null&&z.beaconT!==undefined&&z.beaconT<=0&&
+            typeof z.hold==='number'&&z.hold>0);
+}
 function surrenderBlocked(){
   var p=G&&G.player; if(!p) return false;
-  return !!(G.active&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT<=0&&
-    G.shipHold!==null&&G.shipHold!==undefined&&dist(p,G.active)<G.active.r);
+  var z=standingRing();
+  return !!(z&&ringLanded(z)&&dist(p,z)<z.r);
 }
 function giveUpTick(dt){
   var p=G.player;
@@ -24925,15 +24945,21 @@ var _slp=w2s(p.x,66,p.y);
   // Before this the two blocks were independent, one scaled by hudRes and one
   // not, which is why his 4K screen showed one panel in three different sizes.
   function downedVerb(){
-    if(G.over||G.beaconT===null||!G.active) return null;
-    var _sd=(G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined);
-    var _ir=dist(p,G.active)<G.active.r;
+    // v12.94: the ring he is lying in owns this too. Reading the pointer meant a
+    // man down inside a landed ring he had not called himself was shown no verb at
+    // all, while the pull would have taken him.
+    var _dz=(typeof standingRing==='function')?standingRing():G.active;
+    if(G.over||!_dz) return null;
+    if((_dz.beaconT===null||_dz.beaconT===undefined)&&(G.beaconT===null||!G.active)) return null;
+    var _sd=(typeof ringLanded==='function')?ringLanded(_dz)
+            :(_dz.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined);
+    var _ir=dist(p,_dz)<_dz.r;
     if(_ir&&_sd&&CFG.hauledAboard!==0) return {msg:'THEY HAVE YOU',sub:'Pulling you out',col:'#4de3d0'};
     if(_ir&&_sd) return {msg:'HOLD E TO EXTRACT',sub:'Extracting while downed is permitted',col:'#4de3d0'};
     if(_ir) return {msg:'EXTRACTION INBOUND',sub:'Extracting while downed is permitted',col:'#ffc04a'};
-    if((dist(p,G.active)-G.active.r)<=300)
+    if((dist(p,_dz)-_dz.r)<=300)
       return {msg:'CRAWL TO THE RING',
-              sub:_sd?('Extraction closes in '+fmtMS(Math.max(0,Math.ceil(G.shipHold)))):'Extraction inbound',
+              sub:_sd?('Extraction closes in '+fmtMS(Math.max(0,Math.ceil(_dz.hold)))):'Extraction inbound',
               col:'#ff5a4a'};
     // HIS REPORT: "unnecessary repetition of down". This case used to print YOU
     // ARE DOWN directly under a DOWN that is twice its size. It had nothing to
@@ -29387,7 +29413,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.93: finding 7 of the 2026-09-11 audit. The two lines the game speaks at its most time-critical moments were blind to the extraction it had already called. He calls extraction A with 60 seconds on the clock; it lands at 35 and the window runs to 5, and at exactly thirty seconds the raid clock speaks and says THIRTY SECONDS, you are standing in the way out, hold E to call it. He is standing in ring A, the banner directly above him reads EXTRACT NOW, and the ship he paid for is already on the ground; holding E there does not call anything, it extracts him, so the line names a different action than the one that happens at the exact moment he has no time to work out which. The other half is worse because it sends him the wrong way: with ring A called and ring C nearer, the same warning names C and tells him to stand in it and hold E, which is a full inbound wait he cannot finish, while the HUD arrow beside it points the other way at the ship he already has. nearestOut reads only whether a ring is open and how far it is, and outHint reads only nearestOut, so neither knows an extraction exists, and a called ring is deliberately KEPT open, which is what puts it in the running to be beaten by a nearer one. The fix is that a live beacon owns the sentence: when one is burning the line names that ring and nothing else, in the words the rest of the game already uses, extract when the ship is down and wait when it is inbound, and where nothing is called the old two lines stand exactly as they were. beaconT is the inbound clock and is not cleared when the ship lands, and hold is the boarding window that only exists once it is down; that is the whole state machine the line was missing. Check 12.93 stages a called ring with a second ring nearer and requires the warning to name the called one and never to tell him to call what he is standing on, requires the inbound and landed wordings to differ and to carry the right seconds, and controls that with nothing called both original sentences are word for word what they were; fails on v12.92.',
+  now:'v12.94: finding 8 of the 2026-09-11 audit, and it costs him the whole backpack. He calls extraction A and it is still inbound, so the pointer stays on A; a pillager has called ring C and C has already landed, and riding out on somebody else call is intended play. He crosses to C, is dropped inside that ring with his self-revive already spent, and the screen goes to the downed overlay. What the overlay says is the opposite of what would save him: holding E for 1.4 seconds boards him at C with the full backpack, and the pull code finds the ring by the one he is lying in, so it works, but every readout measures him against A, far away and still inbound, so there is no HOLD E TO EXTRACT and the overlay falls through to a line with no verb in it at all, nearest extraction is 0m away. The world-space E EXTRACT label that would have told him is suppressed while downed, and surrenderBlocked measures A too, so it says nothing is blocked and the overlay prints HOLD SPACE TO SURRENDER; holding SPACE for 1.5 seconds kills him and loses everything, and SPACE is the only key named anywhere on that screen. The guard and the verb read the global pointer instead of the ring he is actually in, which is the exact rule v8.61 already settled for the pull itself, that a pull belongs to the ring you are standing in, and v12.81 exists so a hand resting on the space bar must not throw away a full bag in the one situation where being down ends well, which with two live beacons was inert while the game offered the losing action and hid the winning one. The fix is one resolver used by both: standingRing walks the zones the way the pull does and falls back to the pointer when he is in none, so the single-beacon case is unchanged in every particular and the multi-beacon case stops lying to him. Check 12.94 stages two rings, one his and still inbound and one landed that he did not call, lays him down inside the landed one with his revive spent, and requires the overlay to name the extract verb and the surrender to be blocked, with controls that a single landed ring he called himself still behaves exactly as v12.81 left it and that lying outside every ring still offers the surrender; fails on v12.93.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

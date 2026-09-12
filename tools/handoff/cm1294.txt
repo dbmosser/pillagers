@@ -1,0 +1,33 @@
+v12.94: going down inside a landed extraction shows you the way out
+
+A second check went red and its staging was the reason: 9.71 set the global
+mirrors and never the ring, which is a state the game cannot produce, and it
+passed only because the old guard read the same mirrors the check was writing.
+The staging now sets the ring too. It adds state and removes no assertion.
+
+Finding 8 of the 2026-09-11 audit, and it costs the whole backpack.
+
+You call extraction A, still inbound. A pillager has called ring C and C has landed;
+riding out on somebody else's call is intended play. You cross to C, go down inside
+it with your self-revive spent, and the overlay tells you the opposite of what saves
+you.
+
+Holding E there boards you at C with everything, and the pull code finds the ring by
+the one you are lying in, so it works. But every readout measured ring A: no HOLD E
+TO EXTRACT, no verb at all, and surrenderBlocked measured A too, so the screen
+offered HOLD [SPACE] TO SURRENDER. That kills you and loses the lot, and SPACE was
+the only key named anywhere on it.
+
+One resolver now, used by both: standingRing walks the zones the way the pull has
+since v8.61, and falls back to the pointer when you are in none, so the single-beacon
+case is unchanged.
+
+Check 12.94 stages two live beacons, which is the whole finding, and reads the drawn
+text. Controls: the v12.81 single-ring case, and lying outside every ring. Three arms
+fail on v12.93.
+
+The first version of the check searched for the word SURRENDER and matched the fix's
+own success line, NO SURRENDER WITH AN EXTRACTION WAITING, so it failed on the build
+that fixed it. Same class as three earlier checks. It searches for the prompt now.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
