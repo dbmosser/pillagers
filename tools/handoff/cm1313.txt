@@ -1,0 +1,23 @@
+v13.13: the price of calling the ship now has a test
+
+Guard build. Nothing in the game changed.
+
+A siege building through the inbound wait is the reason calling the ship is a
+decision rather than a formality. If it stopped, every raid would get quietly
+easier and nothing on screen would say so. Measured on a live raid at seed 4242:
+the call goes in, and siege-born hostiles appear during the countdown that were
+not on the landing when it started.
+
+The control is the arm that matters: the same landing, the same frames, no call,
+which must bring nobody. Without it the first arm measures the clock, not the
+call.
+
+This closes the extraction system. Every line v13.11 listed as not verified has
+now been measured: the countdown, the landing, the departure, a second call, and
+two points inbound at once.
+
+For his ruling: that last one means every point on a landing can be called for
+1.6 seconds each, so three ships can be in the air at once and the commitment the
+call is meant to be goes away. It may be intended. No dial touched.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

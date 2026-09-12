@@ -40024,6 +40024,43 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.13 - THE PRICE OF CALLING THE SHIP NOW HAS A TEST
+
+NOTHING IN THE GAME CHANGED. Second guard build of the session, and for the same
+reason as the first: the code under it was driven for the first time and found
+correct. Saying so is the point.
+
+WHY THIS ONE MATTERS. A siege building through the inbound wait is the entire
+reason calling the ship is a decision rather than a formality. If it ever stopped
+happening the ending of every raid would get quietly easier, nothing on screen
+would say so, and the first sign would be a friend saying extraction feels flat.
+
+MEASURED ON A LIVE RAID, seed 4242, real key and real frames. The call goes in at
+24.6 seconds inbound. Siege-born hostiles then appear during the countdown that
+were not on the landing when it started: one by roughly nine seconds in, two by
+eighteen, with the extraction point counting them as it spawns them.
+
+THE CONTROL IS THE ARM THAT MATTERS. An identical landing, the same number of
+frames, no call. It must bring nobody. Without it the first arm would be
+measuring the clock rather than the call, which is the exact mistake this file
+has recorded three times under other names.
+
+THE EXTRACTION SYSTEM IS NOW FULLY DRIVEN, and this closes it. Every line v13.11
+listed as not verified has since been measured: the inbound countdown runs, the
+ship lands, the window closes and the ship leaves cleanly with the ring left open
+and callable again, a second call works, and two separate points can be inbound
+at once and both behave.
+
+FOR HIS RULING, NOT MINE TO DECIDE. That last measurement means every extraction
+point on a landing can be called, 1.6 seconds each, so a player can have three
+ships in the air and walk to whichever is safest. That removes the commitment the
+call is supposed to be. The code anticipates moving between rings, so it may well
+be intended. It is a rules question, it is his, and no dial has been touched.
+
+Not verified: the size of the siege over a whole wait rather than the first two
+thirds of one, since the check stops early to stay cheap; whether the siege
+behaves the same on the other three maps, since every arm runs on the first; and
+what the siege does after the ship lands, which is a different timer.
 ## v13.12 - THE OTHER HALF OF THE v12.58 BUG, AND IT IS THE SAME BUG
 
 WHAT v12.58 FOUND. A pinned weather left the weather clock expired, so the turn
