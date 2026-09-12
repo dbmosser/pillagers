@@ -1,0 +1,31 @@
+v12.87: you come back down with an empty backpack and belt
+
+His note of 2026-09-11: there should be nothing in your loadout when you reach the
+Undercroft after dying or walking out, because it increases the feeling of loss,
+and gear you had packed before taking the free kit should move to your stash.
+Clarified the same day: nothing in tactical belt or backpack.
+
+This REVERSES v6.88 and v12.82, which re-equipped the pre-freebie loadout, the
+belt plan and the gun slot on any bad outcome. That was his earlier spec and he
+has changed it. Do not read the missing restore as a regression.
+
+The items were already in the stash. The freebie kit commits nothing, so his own
+packing never left it; the block re-selecting it was the only reason it came back
+to his hands. The card line now says where his gear is rather than claiming a
+restore.
+
+The Undercroft backpack and belt ARE P.kit and P.hotAssign, read through
+hubBagState, so both are emptied and the live bag is dropped rather than left to
+write its old contents back when it closes. Dead and abandoned both; extracting is
+untouched.
+
+Check 12.87 packs two items, binds two belt keys, takes the kit the way the stash
+button leaves it, runs a real raid and ends it dead, then requires an empty
+backpack, no bound key and both items in the stash; then again, ending abandoned.
+Both fail on v12.86.
+
+Not changed and flagged to him: the ascent check still auto-fills a standard
+loadout when opened with nothing packed. That is the next raid's packing screen,
+not the Undercroft, so it is his call.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

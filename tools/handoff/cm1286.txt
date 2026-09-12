@@ -1,0 +1,23 @@
+v12.86: restoring from a file rebuilds the screen instead of half of it
+
+Finding 2 of the 2026-09-11 audit, and bigger than the audit said. It found that
+restoring a backup never re-applies the stash layout, so Settings prints the
+restored number over a grid still drawn in the old one.
+
+That is one of at least five. Boot re-applies five things once the profile
+exists: the saved zoom, the stash layout, the game options, the menu zoom and the
+contracts. The restore path runs none of them; it calls renderHub and
+renderSettings and stops.
+
+So the fix is not a fifth call, it is the reload its two siblings already do. The
+restore-code path has reloaded since v11.04; the UNDO button added at v12.85
+reloads. The file path was the odd one out, and adding applyStashLayout would
+have closed the one symptom and left the other four.
+
+Every profile-replacing path now ends in finishRestore and arms the v11.04
+cancellable reload, so anything driving a restore can see it coming and stop it.
+
+Check 12.86 requires the shared finish and the armed reload, then presses UNDO and
+requires the same. That press is the control: on v12.85 the flag stays at 0.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

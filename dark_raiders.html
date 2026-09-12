@@ -1349,7 +1349,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.85';
+var VER='12.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1360,7 +1360,7 @@ var VER='12.85';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.85';
+var WHATSNEW_VER='12.86';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1411,6 +1411,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'RESTORING FROM A FILE REBUILDS THE SCREEN INSTEAD OF HALF OF IT. The stash grid, the saved zoom, the game options and the contracts were all still the ones belonging to the profile you had just replaced, so the Settings rows and the screen disagreed until you happened to reload. Every way of replacing your whole profile now ends the same way.',
   'A GUN YOU CHOSE IS NOT SWAPPED OUT BEHIND YOUR BACK. A pickup used to replace the weapon in your hands whenever the game judged it a step up. Only an empty slot, Bare Hands or the Scav Pistol yields now; with two real guns on you, the find goes to the backpack and equipping it is your call.',
   'H IS THE KEY LIST AND NOTHING ELSE. It used to open with a second column of gear rules and a sound colour key beside the keys, taller than the keys themselves, so the tips were setting the size of the panel you opened to read the bindings.',
   'THE COVER GROUND CONTRACT STOPS QUOTING A NUMBER YOU CANNOT READ. It said 2k of 14k covered, in raw world units, which nothing else in the game uses. The line is gone at your word; the contract itself still tracks, completes and pays exactly as it did.',
@@ -29304,7 +29305,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.85: from the 2026-09-11 read-only audit, and the most dangerous thing that audit found, because it is a promise made at the exact moment it can be broken. Restoring a backup replaces everything: credits, stash, armoury, wear, contracts, the run log and every Settings choice. The row that offers it said, in so many words, that the profile he is on right now is kept in case he picked the wrong file. He reads that, picks a file, and if it was the wrong one he goes looking for the way back. There was no way back. The outgoing profile really is written, to a key whose name appears exactly once in the whole game, and nothing reads it: no button, no screen, no toast. The one sentence that makes it safe to press PICK FILE was the sentence that was untrue, and he would only find out after he had already lost the save the promise was about. THE FIX IS THE BUTTON, NOT THE SENTENCE: the data was already there all along and only the way back was missing, so building it is a smaller change than deleting the promise and leaves him better off than the wording ever claimed. UNDO appears on that row only when there is something behind it, and pressing it twice returns him to where he was rather than stranding him. It reloads rather than re-rendering, deliberately, and that is the same choice the friend restore-code path already makes: a profile arriving mid-session has to be applied everywhere at once, and the same audit found a second defect in this very handler from not doing that, because the stash layout is not re-applied on restore and the Settings row and the grid disagree until the next reload. A reload cannot have that class of bug. Check 12.85 restores over a staged profile, presses UNDO and requires the stored save to be the one he started with, with a control that the button is absent and the handler refuses when there is nothing to go back to; fails on v12.84.',
+  now:'v12.86: finding 2 of the 2026-09-11 audit, and it is bigger than the audit said. The audit found that restoring a backup from a file never re-applies the stash layout, so the Settings row prints the restored number over a grid still drawn in the old one and they disagree until he happens to reload. That is one of at least five. Boot has a block that runs after the profile exists and it does five things: the saved zoom, the stash layout, the game options, the menu zoom and the contracts. The restore path runs none of them; it calls renderHub and renderSettings and stops. Boot already learned this once, at v8.15, for the stash layout alone, and restoring is the second place a whole profile arrives and never got the same treatment. So the fix is not a fifth call, it is the reload its two siblings already do: the restore-code path has reloaded since v11.04 and the UNDO button added at v12.85 reloads, and the file path was the odd one out, so adding applyStashLayout to it would have closed the one symptom the audit looked for and left the other four. It is one place now rather than three: every path that replaces the whole profile ends in finishRestore, which re-draws, says so, and arms the same cancellable reload the v11.04 path uses, so anything driving a restore can see it coming and stop it. Check 12.86 requires one shared finish for a restore, calls it and requires the reload armed rather than fired with a real handle to cancel, and presses UNDO and requires the same arming, which is the arm that fails on v12.85 where UNDO reloads on a timer nothing can see or cancel.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33943,6 +33944,21 @@ function cycleGameOpt(k){
   applyGameOpts();
   saveProfile();
 }
+// v12.86: THE ONE PLACE A RESTORE FINISHES. Three paths replace the whole profile
+// now, a backup file, a friend's restore code, and the UNDO button, and each was
+// ending its own way. Everything on the floor was built from the profile that is
+// gone, so the page comes back rather than being patched up piece by piece.
+// RESTORE_RELOAD and RESTORE_TIMER are the v11.04 handles: 0 none, 1 armed, 2
+// fired, and the timer can be cancelled by anything that does not want the page
+// to go.
+function finishRestore(line){
+  try{ renderHub(); }catch(_fr1){}
+  try{ renderSettings(); }catch(_fr2){}
+  say(line+' The game is reloading.');
+  RESTORE_RELOAD=1;
+  try{ RESTORE_TIMER=setTimeout(function(){ RESTORE_RELOAD=2; try{ location.reload(); }catch(_fr3){} },400); }
+  catch(_fr4){ RESTORE_RELOAD=2; try{ location.reload(); }catch(_fr5){} }
+}
 function renderSettings(){
   var host=document.getElementById('setlist');
   // THE GAME ROWS COME FIRST. The presentation rows below are real settings but
@@ -34081,8 +34097,7 @@ function renderSettings(){
     // twice returns him to where he was rather than stranding him.
     try{ localStorage.setItem('salvagerun:profile:prerestore',JSON.stringify(P)); }catch(_e2){}
     storeSet(JSON.stringify(d3));
-    say('Put back: '+(d3.runs||0)+' runs, '+'$'+(d3.credits||0).toLocaleString()+'. Reloading.');
-    setTimeout(function(){ try{ location.reload(); }catch(_e3){} },700);
+    finishRestore('Put back: '+(d3.runs||0)+' runs, '+'$'+(d3.credits||0).toLocaleString()+'.');
   };
   document.getElementById('set_restore').onclick=function(){
     var inp=document.createElement('input');
@@ -34096,10 +34111,10 @@ function renderSettings(){
         if(!d2||typeof d2.credits!=='number'){ say('That is not a Pillagers backup.'); return; }
         try{ localStorage.setItem('salvagerun:profile:prerestore',JSON.stringify(P)); }catch(e3){}
         storeSet(JSON.stringify(d2));
+        // v12.86: the read-back stays, so the profile in memory is the profile in
+        // storage even on a host where the reload never happens.
         loadProfile().then(function(){
-          try{ renderHub(); }catch(e4){}
-          try{ renderSettings(); }catch(e5){}
-          say('Restored. '+(P.runs||0)+' runs, '+'$'+(P.credits||0).toLocaleString()+'.');
+          finishRestore('Restored. '+(P.runs||0)+' runs, '+'$'+(P.credits||0).toLocaleString()+'.');
         });
       };
       rd.readAsText(f);

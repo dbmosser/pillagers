@@ -40024,6 +40024,48 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.86 - RESTORING FROM A FILE REBUILDS THE SCREEN INSTEAD OF HALF OF IT
+
+Finding 2 of the 2026-09-11 read-only audit, and it is bigger than the audit said.
+
+WHAT THE AUDIT FOUND. Restoring a backup from a file never re-applies the stash
+layout, so the Settings row prints the restored number over a grid still drawn in
+the old one, and they disagree until he happens to reload.
+
+WHAT IS ACTUALLY WRONG. That is one of at least five. Boot has a block that runs
+once the profile exists, and it does five things: the saved zoom, the stash
+layout, the game options, the menu zoom, and the contracts. The restore path runs
+NONE of them. It calls renderHub and renderSettings and stops. Boot already
+learned this once, at v8.15, for the stash layout alone, with a comment saying his
+saved choice was silently thrown away every boot. Restoring is the second place a
+whole profile arrives, and it never got the same treatment.
+
+SO THE FIX IS NOT A FIFTH CALL, IT IS THE RELOAD its two siblings already do. The
+friend restore-code path has reloaded since v11.04. The UNDO button added
+yesterday at v12.85 reloads. The file path was the odd one out. Adding
+applyStashLayout to it would have closed the one symptom the audit went looking
+for and left the other four sitting there.
+
+AND IT IS ONE PLACE NOW, NOT THREE. Every path that replaces the whole profile
+ends in finishRestore: re-draw, say so, and arm the same cancellable reload the
+v11.04 path uses. RESTORE_RELOAD and RESTORE_TIMER are that path's own handles,
+0 none, 1 armed, 2 fired, written so anything driving a restore can see the reload
+coming and call it off. Three ways of ending a restore became one way with a
+handle on it.
+
+MEASURED. Check 12.86 requires one shared finish, calls it, and requires the
+reload ARMED rather than fired and leaving a real handle to cancel. Then it
+presses UNDO and requires the same arming. That press is the control: on the
+v12.85 fixture the flag stays at 0, because UNDO there reloads on a bare timer
+nothing records and nothing can stop, and the check fails with both arms firing
+rather than skipping.
+
+Not verified: a script may not put a file into a file input, so the path the
+audit actually complained about cannot be pressed from a check. What is asserted
+is the thing that makes it correct, that all three paths end in the one finish
+that arms the reload, not a click through the picker. It also does not prove the
+page comes back correctly after the reload, which is boot's own job and is what
+every other check in the corpus already exercises.
 ## v12.85 - RESTORING A BACKUP CAN BE UNDONE, WHICH THE ROW HAS BEEN PROMISING SINCE v8.75
 
 From the 2026-09-11 read-only audit, and it is the most dangerous thing that

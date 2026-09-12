@@ -732,3 +732,41 @@ sector generates in exchange for closing a twenty unit gap, and re-baselining th
 fingerprint is HIS call, not mine, so the tree was reverted to v12.84 clean. If he wants
 it: apply p1285, re-measure, write the new numbers into __verifySafe and into every check
 that asserts the old ones, and say plainly in the notes that the map contents moved.
+
+## HIS NOTE 2026-09-11: COMING BACK EMPTY (build this next, it outranks the queue)
+
+Verbatim: "when a player comes back to the undercroft after dying in a raid or
+leaving/abandoning a raid, there should be nothing in their loadout. This
+increases the feeling of loss. So, if they had stuff in their loadout and took
+the free kit, then that old loadout should move to their stash, so they spawn in
+the undercroft with nothing. There may be instructions that need to change
+related to this."
+
+WHAT THIS REVERSES. v12.82 and the builds around it made dying with the freebie
+kit RESTORE the items he had packed, plus the tactical belt plan and the gun slot.
+That was his v6.88 spec and he has now changed it. The kept loadout does not come
+back to the loadout: it goes to the STASH, and he arrives in the Undercroft with
+an empty loadout.
+
+BOTH OUTCOMES, not just death: dead AND abandoned. Extracting is untouched.
+
+READ BEFORE BUILDING: P.kitBeforeFree / P.hotBeforeFree / P.gunBeforeFree (the
+v12.82 idempotency block), commitKit, and the death-restore path. The belt plan
+and gun slot should be cleared too, since they would point at things no longer in
+the loadout. Also sweep the player-facing wording: any line that promises the kit
+is given back needs to say it goes to the stash instead, and the WHATSNEW entry
+from v12.82 describes behaviour that will no longer be true.
+
+CLARIFICATION the same day: "(aka nothing in tactical belt or backpack)". The
+Undercroft backpack and tactical belt ARE P.kit and P.hotAssign, read through
+hubBagState and written back when the bag closes, so both are the loadout and
+both are emptied. hubBagG is dropped too, or a bag left in memory writes its old
+contents straight back over them.
+
+TWO LEADS FOUND WHILE READING THIS, neither acted on:
+- P._gunSlot is written in five places and READ in none. v12.82 restored a field
+  nothing reads. Worth a look before anyone builds on it.
+- His baked text edit keyed on "5 items that you had in your loadout before
+  choosing the freebie kit have been restored." becomes a dead key at v12.87,
+  because the sentence it edits no longer exists. Left alone: it is his data and
+  a dead key is inert. Do not silently rewrite his words.
