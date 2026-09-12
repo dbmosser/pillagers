@@ -1,0 +1,48 @@
+## v13.02 - THE GAME NOW CHECKS THAT THE WORDS HE WROTE STILL APPEAR
+
+The guard for what v13.01 caught by hand. Nothing in this build changes the game; it
+gives the harness one thing it did not have, which is the ability to see his edits.
+
+THE PROBLEM IT CLOSES. His wording is applied by exact match on a whole rendered
+sentence. Reword that sentence anywhere and his version stops appearing, silently: no
+error, no log line, nothing red. v12.98 did it to the bar blurb and only a hand sweep
+found it at v13.01. There was nothing standing between the next reworded line and the
+same silent loss.
+
+WHY A SOURCE SEARCH CANNOT DO THIS JOB. Most of these lines are assembled at run time
+out of pieces, so the finished sentence exists only once a panel has been drawn. Two
+attempts at a source sweep during this investigation gave 4 false hits and then 40,
+because the search either found the map's own keys or could not find a sentence that
+does not exist until it is built. The only honest instrument is to draw the panels and
+read them.
+
+WHAT THE HARNESS NEEDED. Opening a panel means finding its element, adding the class
+and calling its own renderer, and the renderers live inside the closure where a check
+can reach them and nothing else can. So the build adds one table naming the panels
+that can be drawn without a raid and the renderer for each. The table draws nothing by
+itself.
+
+THE RULE THE CHECK ASSERTS NAMES NO LINE. If his edit is landing, the ORIGINAL
+sentence can never be on screen, because his replacement is there instead. So any raw
+key visible on a drawn panel, with his replacement absent from that panel, is an edit
+that has stopped working. That holds for every line he has ever edited and every line
+he edits next, without the check knowing any of them, so it cannot go stale.
+
+HIS REPLACEMENT MUST BE ABSENT TOO, AND THAT IS NOT A DETAIL. Several of his edits
+keep the original sentence and add to it, so the raw text is a prefix of his own
+replacement and a naive search would flag those every run. The pair is the test:
+original present AND replacement missing.
+
+TWO CONTROLS, because this is a sweep and a sweep that sees nothing reports nothing.
+At least one panel must have drawn text, and at least one of his replacements must
+have been found across those panels. Without both, its silence would mean the same on
+a build that had lost every edit he ever made.
+
+MEASURED. Six panels drawn: the bar, Settings, the shop, the terms, the carry screen
+and Wirt. No raw key visible on any of them, and his wording found. On the v13.01
+fixture the check fails outright, because the table it walks does not exist there.
+
+Not verified: six panels is not every screen. The Undercroft floor, the raid HUD, the
+outcome card and the Mainframe are not in the table, so an edit of his on those is
+still unguarded; the table is the place to add them and each one needs a way to be
+drawn without a live raid.

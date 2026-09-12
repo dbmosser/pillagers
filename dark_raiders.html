@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.01';
+var VER='13.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,7 +1361,7 @@ var VER='13.01';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.01';
+var WHATSNEW_VER='13.02';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1412,6 +1412,7 @@ var WHATSNEW=[
   'SEVEN MORE LINES USE THE WORDS YOU CHOSE. The shop said cash, the seal said tier, and three lines called the backpack a bag. A sweep written for this found them; the same sweep says the rest of the game is clean.',
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
+  'THE GAME NOW CHECKS THAT THE WORDS YOU WROTE STILL APPEAR. Your wording is matched against a whole sentence, so rewording that sentence anywhere used to delete your version with no warning at all. Six screens are now swept every build, and any screen showing the original of a line you rewrote is a failure.',
   'THE WORDS YOU WROTE FOR THE BAR ARE BACK. The line you rewrote is matched whole, and the build before this one added two words to it and put a live total on the end of the same line, so your wording silently stopped appearing. The sentence is back exactly as you edited it and the total is its own line underneath.',
   'THE UNDERCROFT STOPS HITCHING ON EVERY CLICK. The pass that lets text be rewritten was reading the entire game as if it were a label, on every toast, every credit change and every panel rebuild, because the whole game is one file. It reads what is on screen now. Nothing you can see has changed.',
   'ESC OUT OF AN EDIT BOX CLOSES THE EDIT BOX. With Edit the words on, backing out of an edit shut the window you were editing instead and left the yellow box sitting over the game holding the keyboard, so it took a second ESC to be rid of it and the window was gone by then.',
@@ -2385,6 +2386,19 @@ function txFind(cx,cy){
 // THE DOM DOOR. Every text node is rewritten through the same map, and the
 // original is parked on the node so re-running this is idempotent however many
 // times a panel is rebuilt.
+// v13.02: THE PANELS A CHECK CAN DRAW WITHOUT A RAID, so his own wording can be swept
+// against what the game actually renders. Added because v12.98 reworded a line he had
+// edited and deleted his version of it without a sound, and only a hand sweep at
+// v13.01 found it. Each entry is a panel element and the function that fills it; the
+// table draws nothing by itself.
+var TXPANELS=[
+  {id:'barmodal',      fn:function(){ renderBar(); }},
+  {id:'settingsmodal', fn:function(){ renderSettings(); }},
+  {id:'tradermodal',   fn:function(){ renderShop(); }},
+  {id:'termsmodal',    fn:function(){ renderTerms(); }},
+  {id:'carrymodal',    fn:function(){ renderCarry(); }},
+  {id:'gamblemodal',   fn:function(){ renderGamble(); }}
+];
 var TXBUSY=0, TXOBS=null;
 function txDom(root){
   if(!root||!document.createTreeWalker) return 0;
@@ -29451,7 +29465,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.01: my own defect, from the build before this one, found by sweeping his baked text edits against what the game actually renders. He rewrote the bar blurb; his text for it is four words, and it sits in the baked map keyed on the sentence the game printed, with the replacement looked up on the WHOLE rendered string by exact match. v12.98 changed that sentence: it added two words to it and appended a live total to the end of the same string, both right on their own terms, and together they stopped the lookup matching, so his wording silently vanished off that screen and he would have found it by walking up to the bar and seeing the game words where his had been. The rule this breaks is worth writing down: A LINE HE HAS EDITED IS A KEY, nothing may be concatenated onto it, and a live number belongs in its own string in its own element where changing it cannot cost him a sentence. The blurb goes back to the exact sentence he keyed on, word for word, and the live total moves to its own line under it; ten of anything was a clarification rather than a correction, since the gate already counts ten of anything after v12.98, so the sentence was true as it stood and is restored as it stood. Check 13.01 takes every key in his baked map that names a line this game still draws, renders that screen and requires his words to be what appears, and it names the bar line specifically; the control is that the live total is still shown and still correct, so restoring his sentence did not cost the number v12.98 added. Fails on v13.00.',
+  now:'v13.02: the guard for what v13.01 caught by hand, and nothing in this build changes the game. His wording is applied by exact match on a whole rendered sentence, so rewording that sentence anywhere stops his version appearing, silently: no error, no log line, nothing red. v12.98 did exactly that and only a hand sweep found it at v13.01. A source search cannot do this job, because most of these lines are assembled at run time out of pieces, so the finished sentence exists only once a panel has been drawn, and the only honest instrument is to draw the panels and read them. Opening a panel means finding its element, adding the class and calling its own renderer, and the renderers live inside the closure where a check can reach them and nothing else can, so this build adds one table naming the panels that can be drawn without a raid and the renderer for each; the table draws nothing by itself. Check 13.02 walks that table, draws each panel, drives the pass that applies his wording, and requires that no screen shows the ORIGINAL of a line he has rewritten while his replacement is absent from it, which is the defect stated without naming any line: a key visible in the raw is an edit that is not landing. The control is that the sweep really does see his words, by requiring at least one of his replacements to be found across those screens, so a sweep that rendered nothing would fail rather than pass silently; fails on v13.01, where the table it walks does not exist.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

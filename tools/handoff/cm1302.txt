@@ -1,0 +1,24 @@
+v13.02: the game now checks that the words he wrote still appear
+
+The guard for what v13.01 caught by hand. No game change: this gives the harness the
+ability to see his edits.
+
+His wording is applied by exact match on a whole rendered sentence, so rewording that
+sentence deletes his version silently. v12.98 did it and only a hand sweep found it.
+
+A source search cannot do this: most of these lines are assembled at run time, so the
+finished sentence exists only once a panel is drawn. Two source sweeps during the
+investigation gave 4 false hits and then 40. Draw the panels and read them.
+
+The renderers live in the closure, so the build adds a table naming the panels a check
+can draw and the renderer for each. It draws nothing by itself.
+
+Check 13.02 names no line: if an edit is landing, the ORIGINAL can never be on screen.
+A raw key visible with his replacement absent is an edit that stopped working. The
+replacement must be absent too, because several of his edits keep the original and add
+to it. Two controls: something was drawn, and his wording was found.
+
+Six panels, no raw key visible. Fails outright on v13.01, where the table does not
+exist.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
