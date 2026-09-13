@@ -1,0 +1,13 @@
+v13.36: a controller can crouch
+
+Both controller key lists say RS click crouches. RS click was a held pad button that
+set a key nothing reads; crouch is a toggle flipped only in raidKey since v10.07.
+Reproduced live with a faked pad on v13.34.
+
+Button 11 moves from PADHOLD to PADTAP, so its press goes through raidKey like Ctrl
+and C, one change per click. No words, labels or numbers change.
+
+Check 13.36 fakes a pad through the frame loop: one click crouches, a held click
+changes once, the crouched walk is slower, keyboard C unchanged. Fails on v13.35.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

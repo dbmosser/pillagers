@@ -1,0 +1,12 @@
+v13.38: contract done reaches the screen
+
+Killing the last pillager a kill contract needs said CONTRACT DONE, then the grudge
+line "NAME will remember that." with a plain say in the same step, so the contract
+line never showed.
+
+The grudge line now goes through sayWhenFree and follows the contract line.
+
+Check 13.38 fires a real player round into a downed named pillager with a contract one
+short, and requires both lines in order. Fails on v13.37.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

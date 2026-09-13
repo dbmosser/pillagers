@@ -1,0 +1,14 @@
+v13.35: where a looted item went reaches the screen
+
+Holding E at a box: grantLoot said where the item went (gun slot 2 and how to swap,
+or which tactical belt key it took), and the search then said "Took X." in the same
+frame. say() keeps one line, so the where-it-went line never showed. Reproduced live
+on v13.34 with a Burst Carbine.
+
+autoBelt and grantLoot now hand the line back, and the staged pull queues it through
+sayWhenFree behind Took. No wording or numbers change.
+
+Check 13.35 holds X at a real box, a gun arm and a stim arm, reading the message
+line after whole frames. Fails on v13.34.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

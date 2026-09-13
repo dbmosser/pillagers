@@ -1122,3 +1122,43 @@ the corpus that does not end its raid through the harness.
   over the showing line; the v13.32 control run showed it. r1334c also sets
   G2.waveT=-1e9 in the check. LESSON: emptying a raid is not silence; it is the
   urgent-wave condition.
+- QUEUE FROM THE v13.35 HUNT (2026-09-13, read-only workflow, each confirmed by two
+  skeptics against v13.34; REPRODUCE LIVE BEFORE BUILDING). Full evidence:
+  the w2w0uq0g3 workflow output. Eight:
+  1. LOOT LINE WRITTEN OVER: "Took X." replaces where the item went, so the v12.73
+     and v13.24 gun lines and the belt-key line never show (near line 15692).
+  2. CONTROLLER CANNOT CROUCH: both pad key lists say RS click crouches; PADHOLD
+     holds ControlLeft but crouch is a toggle flipped only in raidKey (near 25529,
+     11426, 10864).
+  3. CONTROLLER CANNOT SURRENDER: downed screen says HOLD [B] TO SURRENDER; pad B is
+     a PADTAP that clears keys.Space the same poll, and giveUpTick polls keys.Space
+     (near 25177, 11409, 11686, 14809).
+  4. CONTROLLER SEARCH IN AN EXTRACTION RING: shows [X] SEARCH, pad X calls the
+     extraction and no pad button searches there (near 24487).
+  5. CONTROLLER PEDDLER: says [X] walk away, pad X does not close it, and the [1]-[9]
+     trade keys have no pad button, so a pad player cannot trade (near 26290).
+  6. CONTRACT DONE WRITTEN OVER by "NAME will remember that." (near 16811).
+  7. SURVIVOR REWARD LINE WRITTEN OVER by the notoriety line (near 9283).
+  8. HOT GROUND BONUS LINE WRITTEN OVER by the Found line (near 13295).
+  REFUTED, do not re-hunt: #carrymodal (BACKPACK window) is openable; checks 10.14,
+  13.02, 10.26, 9.90, 9.89 on it are not hollow; the hail "waves back" line.
+  LIVE REPRODUCTIONS on v13.34 fixtures, separate :8804-:8806 origins, 2026-09-13:
+  #1 LOOT LINE: hold E at a container holding gun_carbine, second slot empty: the
+     carbine went to gun slot 2 and the only message shown was "Took Burst Carbine
+     (field)."; the v13.24 empty-slot line never showed. REPRODUCED.
+  #2 CROUCH: fake pad (navigator.getGamepads stub), RS click held 8 frames:
+     keys.ControlLeft true (the pad reached the game; the left stick also moved the
+     player 53 units) and G.crouchTog stayed false; keyboard Ctrl toggles it.
+     REPRODUCED.
+  #8 HOT GROUND: container 238 units from the hot zone centre (radius 620): two bonus
+     items appeared and the only message shown was "Found: Circuit Board, Armour
+     Plate". REPRODUCED.
+  #3 SURRENDER: first probe INVALID, its keyboard control (held Space) did not
+     surrender either, so the staged downed state was wrong; redo before building.
+  #3 SURRENDER, REDONE: the first probe never set p.downT, so tickDowned cleared the
+     downed state on frame one (LESSON: stage downed with downed, revived AND downT).
+     With downT 60: pad B held 130 frames set keys.Space on 0 of them and giveT stayed
+     0; keyboard Space held the same 130 frames raised giveT to 1.49 of the 1.5
+     needed. REPRODUCED: the surrender path works on keyboard and a pad cannot reach it.
+  The other four (#4 search in a ring on a pad, #5 Peddler on a pad, #6 contract
+  line, #7 survivor line) are proven by each build's own control failing on v13.34.

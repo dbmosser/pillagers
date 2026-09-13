@@ -1,0 +1,30 @@
+## v13.35 - WHERE A LOOTED ITEM WENT REACHES THE SCREEN
+
+FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34, and reproduced
+live: holding E at a box with a Burst Carbine in it and the second slot free put the
+carbine in gun slot 2, and the only line on screen was "Took Burst Carbine (field)."
+
+ONE UPDATE DID ALL OF IT. The staged pull a player uses (openContainer with one key)
+reached grantLoot. grantLoot built the line saying the gun went to the empty slot and
+how to swap to it (v12.73, v13.24), or let autoBelt say which tactical belt key an
+item took, and then said that line or the Found line. Back in the search, the pull
+said "Took X." say() keeps one line, so only Took was ever drawn. The v12.73 and
+v13.24 gun lines and every belt-key line had never been on screen.
+
+FIX. autoBelt hands back the belt line it said. grantLoot collects it with its gun
+line and returns them. openContainer passes that back to the staged pull, which says
+Took as before and sends the kept line through sayWhenFree, so it waits behind Took
+instead of being lost. No wording changes and no numbers move. The bot, the Peddler
+and the full open at the end of a search ignore the new return value, so the sim's
+seeded streams do not change.
+
+MEASURED. Check 13.35 holds X at a real box through the frame loop, once for the best
+gun in the table with the second slot free and once for a stim with the belt plan
+cleared, with machines and waves removed and boxes in the hot zone skipped. It reads
+the message line only after whole frames and requires each where-it-went line to
+reach the screen. Fails on v13.34.
+
+Not verified: the where-it-went line now appears about 3.2 seconds after the last
+pull of a search, later if other messages keep the line busy; for a gun or a stim he
+may prefer that line at once in place of Took, which is his call. The hot-zone full
+open still loses its belt line; that is the hot ground fix, queued next.

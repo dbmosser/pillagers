@@ -1,0 +1,13 @@
+v13.37: a controller can surrender
+
+The downed screen says hold B to surrender. Pad B is a tap, raised and cleared in the
+same poll, and giveUpTick reads keys.Space every frame, so it never saw B held.
+Reproduced live on v13.34: pad B 130 frames, bar 0; space bar, bar 1.49 of 1.5.
+
+pollPad now holds Space through padHold while B is down and the player is downed.
+Every rule about when the hold counts is unchanged.
+
+Check 13.37 fakes a pad: tap of B still rolls, unspent revive refuses, a one second
+hold does not surrender, release lets go, 2.5 s surrenders. Fails on v13.36.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

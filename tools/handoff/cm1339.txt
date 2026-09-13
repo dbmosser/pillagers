@@ -1,0 +1,11 @@
+v13.39: the survivor pay line reaches the screen
+
+Helping the survivor with notoriety said the cache, pay and gift sentence, then the
+notoriety line with a plain say in the same call, so the pay sentence never showed.
+
+The notoriety line now goes through sayWhenFree and follows it.
+
+Check 13.39 presses E beside a staged survivor at notoriety 2 and requires both lines
+in order. Fails on v13.38.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.34';
+var VER='13.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13267,7 +13267,7 @@ function findHeal(){
 // pays out item by item as the bar fills. Called with no subset it behaves exactly as
 // it always did and finishes the job, so every existing caller is untouched.
 function openContainer(ct,onlyKeys){
-  if(onlyKeys){ grantLoot(ct,onlyKeys); return; }
+  if(onlyKeys) return grantLoot(ct,onlyKeys);   // v13.35: hands back where the item went, for the staged pull to show after Took
   var _wnDelay=0;   // v8.79: set by the windfall roll below, read by the grant
   // Searching is messy. Two or three bits of discarded packing hit the ground
   // beside every container you rifle through, and they stay: a looted district
@@ -13333,7 +13333,12 @@ function grantLoot(ct,keys,delay0){
   // which hand, were overwritten by the Found line every time the loop ran. On
   // a new profile the second slot holds Bare Hands, so the first good gun of a
   // first raid arms a number key and he was told only the name of the item.
-  var _gunLine='';
+  // v13.35, 2026-09-13 hunt: WHERE IT WENT IS HANDED BACK. The belt line autoBelt
+  // writes below is written over by the Found line in this same frame, and on a
+  // staged pull the caller then writes Took over whatever is left, the gun line
+  // included. Both are collected here and returned, and the staged pull in
+  // updatePlayer queues them behind its Took line.
+  var _gunLine='', _beltKeep=[], _beltGot;
   var p=G.player,T=G.tel;
   for(var l=0;l<keys.length;l++){
     var key=keys[l],itm=ITEMS[key];
@@ -13454,9 +13459,9 @@ function grantLoot(ct,keys,delay0){
           // A gun worth auto-equipping is a gun, so it sounds like one, v2.72.
           if(found.qRank>=2) blip('pickGun');
         }
-      } else { G.bag.push(key); autoBelt(key); }
+      } else { G.bag.push(key); _beltGot=autoBelt(key); if(_beltGot) _beltKeep.push(_beltGot); }
     }
-    else { G.bag.push(key); autoBelt(key); }
+    else { G.bag.push(key); _beltGot=autoBelt(key); if(_beltGot) _beltKeep.push(_beltGot); }
     spark(ct.x,ct.y,itm.c,7,120);
   }
   if(!G.sim){
@@ -13479,6 +13484,8 @@ function grantLoot(ct,keys,delay0){
     } else blip('pick');
     ping(p.x,p.y,90,false,false,'player','move');
   }
+  // v13.35: empty unless something went into a hand or onto a belt key.
+  return _beltKeep.length?((_gunLine?_gunLine+' ':'')+_beltKeep.join(' ')):_gunLine;
 }
 // Three-phase extract: call it in from inside the ring, survive the inbound wait
 // anywhere you like, then be standing in the ring when it lands.
@@ -13688,8 +13695,10 @@ function autoBelt(key){
       // reach the profile, and mine yield to derived cells instead of masking.
       G.hotAuto=G.hotAuto||{};
       G.hotAuto[bi]=1;
-      say(it.name+' to belt slot '+(bi+1)+'.');
-      return;
+      var _beltTxt=it.name+' to belt slot '+(bi+1)+'.';
+      say(_beltTxt);
+      // v13.35: handed back as well, because the loot grant writes its Found line over this one.
+      return _beltTxt;
     }
   }
 }
@@ -15674,7 +15683,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
         while(_due>0&&near.loot.length>0){
           var _k=near.loot.shift();
           near.pulled=(near.pulled||0)+1;
-          openContainer(near,[_k]);
+          var _where=openContainer(near,[_k]);   // v13.35: the gun slot or belt key it took, if any
           // THE v2.48 LOOT VOICES WERE UNREACHABLE, v2.59, and this is where they
           // actually belong. That build wired pickRare, pickElite and pickGun into
           // the FULL-open path of openContainer, and verified them by calling that
@@ -15690,6 +15699,10 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
             // v4.30 HIS NOTE run #56: the found message was random because only
             // leftovers at the final open announced; each pulled item speaks now.
             say('Took '+ITEMS[_k].name+'.');
+            // v13.35, 2026-09-13 hunt: Took was the last word in the frame, written over
+            // the line naming the gun slot or belt key the item had just taken, so that
+            // line never showed. It now waits its turn behind Took.
+            if(_where) sayWhenFree(_where);
             var _lv=lootVoice([_k]);
             if(_lv!=='pick') blip(_lv);
           }
@@ -29583,7 +29596,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.34: THE WHAT-IS-NEW CARD NEVER SAID THE WELCOME PACK NOW GOES TO THE STASH. His ruling of 2026-09-13 sent the whole welcome pack to the stash, guns as items, with nothing equipped, and v13.31 and v13.32 taught the sector page and the raid to say so. None of it reached the card: its stamp still read 13.22, so a friend coming back was shown nothing new, and the old entry about the pack sits far below where the card stops drawing and never mentions the stash. One line now, inserted right after the X line as entry 5, inside the thirteen the card draws, with B and the plate line left where check 13.22 keeps them; the stamp moves to 13.34 so the card is shown again. Check 13.34 requires the stamp to be no older than the stash ruling, and an entry within the drawn thirteen that says the pack goes to the stash and names Equip as your gun, and fails on v13.33. The same build gives check 13.32 the pane guard 13.33 already has, so a pane with no layout skips instead of throwing',
+  now:'v13.35: WHERE A LOOTED ITEM WENT WAS WRITTEN OVER BY TOOK IN THE SAME FRAME. Found by a read-only hunt, confirmed by two skeptics and reproduced live on v13.34: holding E at a box with a Burst Carbine in it and the second slot free put the carbine in gun slot 2, and the only line on screen was Took Burst Carbine. One update did all of it: the staged pull reached grantLoot, which built the line saying the gun went to the empty slot and how to swap to it, or let autoBelt say which tactical belt key an item took, then said that line or the Found line; back in the search the pull then said Took, and say keeps one line, so only Took was ever drawn. autoBelt now hands back the belt line, grantLoot returns it with its gun line, and the staged pull says Took as before and sends the kept line through sayWhenFree, so it waits behind Took instead of being lost. No wording changes and no numbers move; the bot, the Peddler and the full open at the end of a search ignore the new return value. Check 13.35 holds X at a real box through the frame loop, once for the best gun with the second slot free and once for a stim with free belt keys, reads the message line after whole frames, requires each where-it-went line to reach the screen, and fails on v13.34',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

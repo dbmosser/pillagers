@@ -1,0 +1,19 @@
+## v13.39 - THE SURVIVOR PAY LINE REACHES THE SCREEN
+
+FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34. Helping the
+survivor says one sentence: where the cache is, how much he paid and what he handed
+over; its own comment says say holds one line, so what he did is one sentence. A
+player carrying notoriety then had it lowered and heard "Word of that will travel too.
+Notoriety N." with a plain say in the same call, so he never read the pay sentence.
+
+FIX. The notoriety line goes through sayWhenFree and follows the pay sentence when it
+runs out. A player with no notoriety sees what he saw before. Nothing is reworded.
+
+MEASURED. Check 13.39 stages a survivor who wants a bandage beside the player, presses
+E through the player update at notoriety 2, confirms he was helped and notoriety fell
+to 1, steps the frame loop, and requires the pay sentence and then the notoriety line
+on screen in that order. Fails on v13.38.
+
+Not verified: a survivor met in real play, where a door or seal within reach of the E
+press could act first; and the notoriety line is dropped if the raid ends before it
+shows, while the notoriety change itself is already saved.

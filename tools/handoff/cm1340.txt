@@ -1,0 +1,12 @@
+v13.40: the hot ground bonus line reaches the screen
+
+Opening a box on the hot ground said the bonus line, then the grant in the same call
+said the Found line over it. Reproduced live on v13.34.
+
+The line is now said through sayWhenFree just after the grant, so it follows the Found
+line. No loot, odds or wording change.
+
+Check 13.40 searches a box on the hot ground through the frame loop and requires the
+line once, and silence off the hot ground. Fails on v13.39.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
