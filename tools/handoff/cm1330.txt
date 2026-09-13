@@ -1,0 +1,16 @@
+v13.30: the test runner can run a slice of the checks
+
+Harness build, nothing in the game changes. His order: use the whole machine while he
+is away; the corpus ran on one thread of sixteen.
+
+__regressBg takes an optional slice [a,b) and is unchanged when called with no
+arguments. start-servers.ps1 also starts eight separate-origin fixture servers,
+ports 8803-8810.
+
+Two trial runs: four shards put six cores at 85-98% and caught a real miss (check
+10.66) the single-tab gates never ran. But background tabs lose their 1920x1080 size
+at every turn end; the trial runner pauses rather than measuring the wrong screen, and
+with turn gaps the shards finished slower than one front tab. The single front-tab run
+stays the ship gate.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

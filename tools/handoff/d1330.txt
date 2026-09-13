@@ -1,0 +1,31 @@
+## v13.30 - THE TEST RUNNER CAN RUN A SLICE OF THE CHECKS
+
+A HARNESS BUILD. Nothing in the game changes.
+
+HIS ORDER, 2026-09-13: use the whole machine while he is away. Measured before this
+build: the corpus stepped every check on one JavaScript thread in one hidden tab,
+about one of his sixteen threads for twenty-five minutes, and total CPU read zero at
+the end.
+
+WHAT CHANGED. __regressBg takes an optional slice [a,b). Called with no arguments it
+is the same runner over the whole list, so every existing call and the loop step that
+makes it are unchanged. start-servers.ps1 now also starts eight fixture servers on
+ports 8803 to 8810. Each port is its own origin, so each shard has its own storage and
+cannot inherit another shard's profile.
+
+WHAT THE TRIAL MEASURED, TWO RUNS ON THE v13.29 FIXTURE.
+- Parallelism is real while turns are active: four shards put six logical cores at
+  85-98% and ran about 2.25x the single-tab throughput.
+- The first sharded run caught a real miss the single-tab gates never ran: check 10.66
+  still required the welcome pack gun in the armoury. It was repaired before v13.29
+  shipped.
+- THE TRAP: background tabs lose their 1920x1080 emulation every time a turn ends, so
+  their layout checks measure a 1024x768 screen. The shard runner used for the trial
+  pauses a check whenever the width is not 1920 and resumes after it is re-applied,
+  which turned false layout failures into lost time instead.
+- The honest result: with turn gaps of minutes, the paused background shards finished
+  SLOWER than one front tab. The single front-tab run stays the ship gate of record.
+
+Not verified: a sharded run that keeps its viewport between turns, which this pane
+does not currently allow; until then, sharding is a speed-up only while turns are
+active, and it is not the gate.

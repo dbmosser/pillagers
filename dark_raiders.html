@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.29';
+var VER='13.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29562,7 +29562,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.29: HIS RULING of 2026-09-13, the initial welcome pack goes to the stash. It reverses v10.67, which had TAKE put the pack guns into the armoury and into the player hands, the first into an empty first slot and the second into an empty second slot, while the pack window said the guns went to the armoury and the pack description already said everything went straight into the stash; his rule makes that description the truth. Everything goes to the stash, guns included, as gun items, gun_smg and gun_carbine, the same form a gun found in a container or crafted at the bench takes, and the stash right-click menu already offers Equip as your gun on them. Nothing is equipped for him and nothing is added to the armoury, so he packs on purpose, the same stash-first rule as coming back empty at v12.87. The consequence is stated, not hidden: a new player who takes the pack and does not equip a gun goes up with nothing of his own, and the ascent screen already warns him in exactly those words before he climbs. Every row in the pack window now says to your stash. Three checks encoded the reversed rule and are repaired in the same build: 13.07 required the pack to put a gun in his hands, and keeps its declining and consent arms; 10.67 was entirely the hands rule, and now guards the part that survives, that TAKE never touches a gun the player chose; 10.29 required the guns in the armoury, and now requires them in the stash. Check 13.29 presses the real TAKE on a brand-new player and requires both guns in the stash as items, none added to the armoury, nothing equipped, and every row saying to your stash; it fails on v13.28',
+  now:'v13.30: A HARNESS BUILD, nothing in the game changes. His order of 2026-09-13 is to use the whole machine while he is away, and the corpus runner stepped all of its checks on one JavaScript thread in one hidden tab, about one of his sixteen threads for twenty-five minutes, with total CPU reading zero percent at the end. The runner now takes an optional slice of the list, and four more fixture servers run on ports 8803 to 8806, each its own origin so each shard has its own storage and none can inherit another shard profile, which is the contamination that made two tabs on one origin drift. Called with no arguments the runner is the same runner over the whole list, so every existing call and the loop step that makes it are unchanged. Adoption is gated on evidence: the union of four sharded runs must report the same checks, the same failures and the same skips as one ordinary run of the same build',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

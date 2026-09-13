@@ -24374,13 +24374,16 @@ window.__regress=function(){
 // v9.93: the same corpus, one check per MessageChannel message, so a long run
 // survives a hidden tab and can be polled on window.__PROG. Give it its own
 // tab: navigating the tab kills it.
-window.__regressBg=function(){
-  var res={pass:true,checked:0,fail:[],skipped:[],cleared:0}, i=0;
+window.__regressBg=function(a,b){
+  // v13.30: an optional slice [a,b) of the list, so shards on separate origins can
+  // split the corpus. With no arguments the slice is the whole list, as before.
+  a=(a|0)||0; b=(b===undefined||b===null)?__REGRESS.length:Math.min(b|0,__REGRESS.length);
+  var res={pass:true,checked:0,fail:[],skipped:[],cleared:0,range:[a,b]}, i=a;
   __runPrep();
-  window.__PROG={done:0,total:__REGRESS.length,cur:'',finished:false,res:null};
+  window.__PROG={done:0,total:b-a,cur:'',finished:false,res:null,range:[a,b]};
   var ch=new MessageChannel();
   ch.port1.onmessage=function(){
-    if(i>=__REGRESS.length){
+    if(i>=b){
       var ran=res.checked-res.skipped.length;
       res.summary=res.pass?('PASS, '+ran+' checks, '+res.skipped.length+' could not run'):('FAIL x'+res.fail.length);
       __PROG.res=res; __PROG.finished=true; return;
@@ -24391,10 +24394,10 @@ window.__regressBg=function(){
     try{ r=t.run(); }catch(e){ r='threw: '+(e&&e.stack||e); }
     if(r&&String(r).indexOf('SKIP: ')===0) res.skipped.push('v'+t.v+' '+t.what+' -> '+String(r).slice(6));
     else if(r){ res.pass=false; res.fail.push('v'+t.v+' '+t.what+' -> '+r); }
-    i++; __PROG.done=i; ch.port2.postMessage(0);
+    i++; __PROG.done=i-a; ch.port2.postMessage(0);
   };
   ch.port2.postMessage(0);
-  return 'started '+__REGRESS.length;
+  return 'started '+(b-a)+' of '+__REGRESS.length+' ['+a+','+b+')';
 };
 // v8.58: the DOM panels that COMPUTE their contents, so a probe can read the
 // real rendered text instead of redoing the arithmetic and grading itself.

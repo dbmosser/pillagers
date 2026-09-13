@@ -1,0 +1,14 @@
+v13.31: the ascent screen says how to take a gun from the stash
+
+Since his ruling, a new player's pack guns wait in the stash. The ascent screen warned
+he was going up with no gun of his own, and the obvious click on the stash gun packs
+it as loot, while buildRaid issues a starter when nothing is equipped.
+
+"Equip as your gun" already works on stash gun items, from the same screen. The
+warning now names it, only when no gun is equipped and a gun is in the stash, without
+saying right-click so it holds for controllers. Making the click itself equip is his
+design call and was not done.
+
+Check 13.31 draws the ascent screen with and without a stash gun. Fails on v13.30.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
