@@ -40024,6 +40024,33 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.37 - A CONTROLLER CAN SURRENDER
+
+FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34, and reproduced
+live: downed with the self-revive spent, a faked controller holding B for 130 frames
+never registered the key and the surrender bar stayed empty, while the keyboard space
+bar held as long filled it to 1.49 of the 1.5 seconds.
+
+THE SCREEN SAYS HOLD B. The downed screen and the DOWN line both name B for the
+surrender. B reaches the game as a tap: raised and cleared in the same controller
+poll. The surrender reads the key every frame, so it never saw B held.
+
+FIX. One line after the tap handling holds the key while B is down and the player is
+downed, and lets it go the way the other held buttons are let go. A downed player
+cannot roll, so the tap still does nothing there, and every rule about when the hold
+counts is unchanged: not while a self-revive is left, not inside a landed extraction.
+No words, labels or numbers change.
+
+MEASURED. Check 13.37 fakes a controller through the frame loop. It first proves a tap
+of B still rolls a standing player and that the space bar can surrender in its staging,
+then requires an unspent revive to refuse, a one-second hold not to surrender, letting
+go to release the key and empty the bar, and B held 2.5 seconds with the revive spent
+to surrender under the machine that put him down. Fails on v13.36.
+
+Not verified: a real controller in his hands; and a B already held at the moment he
+goes down, which counts toward the surrender straight away, as a held space bar has
+since v9.71; v12.37 latched the F key against the same thing for the self-revive, and
+latching B too is his call.
 ## v13.36 - A CONTROLLER CAN CROUCH
 
 FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34, and reproduced

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.36';
+var VER='13.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11690,6 +11690,16 @@ function pollPad(){
     if(now&&!PAD.prev[n]){ raidKey(PADTAP[n],false,null); keys[PADTAP[n]]=false; }
     PAD.prev[n]=now;
   }
+  // v13.37, audit: B IS A TAP, BUT THE SURRENDER IS A HOLD. The downed screen and the
+  // DOWN line both name B for the surrender, and B reaches the game as a Space tap
+  // that the loop above clears inside the same poll, so giveUpTick, which reads the
+  // key every frame, never saw it held: the bar never filled and a controller player
+  // with the revive spent could only bleed out. While he is down B is also HELD,
+  // through padHold, so it is let go the same way the other held buttons are. After
+  // the tap loop on purpose, so the tap cannot clear it. A downed man cannot roll, so
+  // the tap still does nothing there, and giveUpTick keeps every rule about when the
+  // hold counts.
+  padHold('Space',pressed(1)&&!G.over&&!!(G.player&&G.player.downed));
   // v6.79, his note: the bumpers walk the belt. Wrapping at both ends, because a
   // selector that stops dead at slot nine is worse than one that comes round.
   var _lbN=pressed(4), _rbN=pressed(5);
@@ -29600,7 +29610,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.36: A CONTROLLER COULD NOT CROUCH. Found by a read-only hunt, confirmed by two skeptics and reproduced live on v13.34 with a faked controller: holding the right stick click set the held key and moved nothing, the left stick still moved the player, and crouch never changed, while keyboard Ctrl toggles it. Both controller key lists say the right stick click crouches. The click sat in the table of held buttons, which only sets a key, and no code reads that key: crouch has been a toggle since v10.07, flipped only by the key handler. The click now sits in the table of pressed buttons, so it goes through the same handler as Ctrl and C; holding it is one change, and the left stick click stays a held sprint. No words, labels or numbers change. Check 13.36 fakes a controller, confirms the left stick click still reaches the raid, then requires one click to crouch, a held click to change the stance once, a third click to crouch again, a crouched walk on the stick to be slower, and keyboard C to still work; it fails on v13.35',
+  now:'v13.37: A CONTROLLER COULD NOT SURRENDER. Found by a read-only hunt, confirmed by two skeptics and reproduced live on v13.34: downed with the self-revive spent, a faked controller holding B for 130 frames never registered the key and the surrender bar stayed empty, while the keyboard space bar held as long filled it to 1.49 of 1.5 seconds. The downed screen and the DOWN line both say hold B to surrender. B reaches the game as a tap that is raised and cleared in the same poll, and the surrender reads the key every frame, so it never saw B held. One line now holds the key while B is down and the player is downed, and lets it go the way the other held buttons are let go; a downed player cannot roll, so the tap still does nothing there, and every rule about when the hold counts is unchanged. Check 13.37 fakes a controller, confirms a tap of B still rolls a standing player and the space bar can surrender, then requires an unspent revive to refuse, a one second hold not to surrender, letting go to release the key, and a held B for 2.5 seconds with the revive spent to surrender under the machine that put him down; it fails on v13.36',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

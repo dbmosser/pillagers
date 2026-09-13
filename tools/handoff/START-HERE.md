@@ -1162,3 +1162,17 @@ the corpus that does not end its raid through the harness.
      needed. REPRODUCED: the surrender path works on keyboard and a pad cannot reach it.
   The other four (#4 search in a ring on a pad, #5 Peddler on a pad, #6 contract
   line, #7 survivor line) are proven by each build's own control failing on v13.34.
+- SHARDED CORPUS, FIRST REAL RUN (v13.37, 2026-09-13): tools/shard.html loads the
+  fixture in a fixed 1920x1080 iframe, so a background tab keeps its layout even when
+  the pane clears emulation. Six tabs on ports 8803-8808 ran slices [0,78) [78,156)
+  [156,234) [234,312) [312,390) [390,465) in about 30 minutes alongside a single-tab
+  run. Union skips matched the single run exactly (v8.88, v11.24).
+  FLAKES UNDER LOAD, NOT REGRESSIONS: the single run failed v11.63 (a run banked with
+  no xpGot figure) as the six shards started; the shard run failed v10.60 (a crowd body
+  inside a wall picture). v11.63 passed 3 of 3 alone on :8800; v10.60 passed 3 of 3
+  alone in two shard frames. v13.37 (pad B held while downed) touches neither.
+  GOTCHAS: writing tools/shard.html made the pane open it as a file:// tab that ran
+  its own full corpus; close any file:// tab. Two tabs (seed and the :8807 shard)
+  then returned "Internal error" to every script while free RAM fell from 16 to 12.7
+  GB; reload a tab that does that. Reads of a shard busy in a long check time out at
+  45 s; that is busy, not dead.
