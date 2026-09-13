@@ -926,3 +926,34 @@ the corpus that does not end its raid through the harness.
 4. NOT BUILT, HIS CALL: a roll costs 45 stamina, so the third in a row is refused
    and says nothing at all. Measured: 100 -> 55 -> 16. He reported the roll dead
    and then withdrew it; this is the likely cause. Offered, not built.
+
+## 2026-09-12 PM: HUNTED AND FOUND CORRECT, DO NOT RE-HUNT
+
+- THE PLATE ON THE BELT (v13.16 "not verified"): the number key SELECTS the
+  plate cell (setHot), G uses it, useHot dispatches kind armor to useArmor,
+  which starts the 2s prep and says "Armour is already full." when it is.
+  Reachable and spoken. No defect.
+- EVERY BELT ACTION'S REFUSALS SPEAK, or refuse only on a state he can see:
+  useStim "No stim.", useMedical "Already at full" / "Already healing.",
+  doThrow and startCook via emptyThrowCell "No X left. Gun up.", cycleThrow
+  "No throwables". doThrow/startCook/swapGuns refuse silently only when downed,
+  mid-roll, or with the always-drawn vacant second-gun cell. The roll was the
+  only silent one, fixed at v13.19.
+- THE CRAWLER DRAWERR in old DESIGN "not verified" lines: fixed at v1.55. It
+  reappears in exports only because the log reprints all 60 runs. The game
+  code at the run-record builder already says so.
+- THE DEATH CARD OVERFLOW: 17px before v13.15's clause, 34px after; both
+  buttons stay on the card. Not a defect.
+- ESC: parked, NOT reproduced. No pointer lock anywhere in the file; the modal
+  Escape handler is wired in the capture phase. Needs from him: which menu,
+  and fullscreen or not.
+- ITCH PAGE IS PASSWORD-LOCKED (confirmed by curl): no friend can play any
+  build pushed today until he changes Visibility & access.
+- HIRING A SECOND MERC OVER A PAID ONE: looks like a silent fee loss in the
+  #merclist row handler (charges, replaces P.merc, no confirm, while Dismiss
+  asks first). UNREACHABLE: #merclist is display:none and never shown; its rows
+  are clicked only by renderMercDetail's HIRE button, which is disabled and
+  reads ONE AT A TIME whenever someone else is hired. Not a defect.
+- REPEAT-BUY HOLES: every credits-spending site checked. Staging shop redraws
+  after purchase so "Owned" is live; counter shop checks P.weapons live; bar is
+  capped at ten; gamble is repeatable by design; Wirt's lot fixed at v13.18.

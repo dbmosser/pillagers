@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.20';
+var VER='13.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29555,7 +29555,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.20: THE GAME IS ON ITCH NOW AND THIS IS THE FIRST THING THAT BREAKS THERE. With no collector deployed a run report falls back to saving itself as a file, an itch HTML game runs inside an iframe whose sandbox carries no allow-downloads, and a download link in such a frame does nothing at all and throws nothing, so the catch never fired, lastReport was set to downloaded, and the player was told a report had been saved that does not exist anywhere. That is the WHOLE feedback path for every friend playing today, because the collector is not deployed yet, so the fallback IS the path, and on the only place the game is actually hosted the fallback was a no-op that reported success. The game now stops claiming a save it cannot verify and says what to do instead, pointing at Copy report, which already exists and does work inside an iframe because a clipboard write is not a download. reportEmbedded is its own function so a check can stub it, since window.self and window.top cannot be assigned and a fix that cannot be tested on the only place the game is hosted is not good enough. SEPARATELY AND MORE URGENTLY, MEASURED BY LOADING HIS OWN PAGE AS A STRANGER: pillagers.itch.io/pillagersv1306 answers A PASSWORD IS REQUIRED TO VIEW THIS PAGE, so every build pushed today is behind a password and any friend sent that link has seen a password box rather than the game; either the project is still a Draft, which always asks whatever else is set, or Restricted is set to password rather than anyone with the secret URL. Told him, and it is his to change',
+  now:'v13.21: THE LAST RESORT WAS SILENT. On itch the game runs in an iframe, v13.20 stopped the report claiming a file download there and pointed the player at Copy report, and the outcome card Copy report has handled a refused clipboard honestly since v11.32, saying when both routes fail that the report is under Settings, Recorder. That sentence sends him to the Recorder Copy button, and THAT BUTTON SAID NOTHING, EVER: it selected the text, called the async clipboard with no rejection handler and returned, so copied, blocked and refused all looked identical, and the one place a failed copy directs a player was the one place that could not tell him whether it worked. The legacy copy command now runs FIRST, while the click is still a live gesture, because a copy command needs the gesture and the gesture is gone by the time an async clipboard promise has rejected, so a fallback that waits for the rejection runs at the moment least likely to work; the async clipboard is the second try. When both fail, the report stays selected and he is told to press Ctrl+C, because a selected textarea can be copied by hand inside any frame, which makes it a path nothing can block, and that is what a last resort is for. Reproduced with the instrument check 11.32 already uses, the clipboard hidden and the copy command stubbed so the check stays synchronous: on v13.20 the button text does not change whether the copy succeeds or is refused. NOT BUILT, RECORDED: the outcome card itself still tries the async clipboard before the legacy command, so on itch its own fallback also runs after the gesture has expired; that cannot be reproduced without a real click inside a real cross-origin frame, and it is guarded by checks 11.32 and 11.65, so it waits for evidence rather than a theory',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34917,11 +34917,24 @@ function openSettings(tab){
   openModal('settingsmodal');
 }
 document.getElementById('exportbtn').onclick=function(){ openSettings('rec'); };
+// v13.21: THE LAST RESORT SPEAKS. The outcome card sends a failed copy here by
+// name, and this button used to answer copied, blocked and refused identically,
+// with nothing. The legacy command runs first while the click is still a live
+// gesture; the async clipboard is the second try; and when both are refused the
+// report stays selected and he is told to press Ctrl+C, which no frame can block.
 document.getElementById('copybtn').onclick=function(){
-  var ta=document.getElementById('exporttext');
-  ta.select();
-  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value);
-  else document.execCommand('copy');
+  var ta=document.getElementById('exporttext'), b=document.getElementById('copybtn'), was='Copy to clipboard';
+  function show(t,ms){ b.textContent=t; setTimeout(function(){ b.textContent=was; },ms); }
+  function done(){ show('Copied. Paste it to Daniel.',2600); }
+  function failed(){ try{ ta.focus(); ta.select(); }catch(_f){} show('Copy blocked here. The report is selected: press Ctrl+C.',6000); }
+  try{ ta.focus(); ta.select(); if(ta.setSelectionRange) ta.setSelectionRange(0,ta.value.length); }catch(_s){}
+  var ok=false;
+  try{ ok=!!document.execCommand('copy'); }catch(_e){ ok=false; }
+  if(ok){ done(); return; }
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(done,failed);
+    else failed();
+  }catch(_c){ failed(); }
 };
 
 // v11.04, HIS NOTE 14: READ, then a typed word, then REPLACE. Nothing is written
