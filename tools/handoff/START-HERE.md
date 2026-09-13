@@ -1176,3 +1176,16 @@ the corpus that does not end its raid through the harness.
   then returned "Internal error" to every script while free RAM fell from 16 to 12.7
   GB; reload a tab that does that. Reads of a shard busy in a long check time out at
   45 s; that is busy, not dead.
+- SHARDED RUN FOR v13.38 STALLED UNATTENDED (2026-09-13, about 15:05 to 15:55): with
+  the pane displayed but not painting, four of six shard tabs and even the idle seed
+  tab stopped answering any script (45 s timeouts), while CPU stayed at 55-65% and
+  no driver or hardware events were logged. A fresh navigate made a tab answer at
+  once. Re-navigating the four stuck slices finished three of them clean within four
+  minutes. The :8806 tab (slice 234-312) stalled again after its reload and was
+  closed. The slice was re-run on :8804, where it failed v11.63 (run not banked with
+  xpGot) and v11.65 (Copy report logged 0 runs). Both passed 3 of 3 alone on :8800.
+  The :8804 profile had been reused by several fixtures today and its tab then stopped
+  answering too. LESSONS: when every tab times out, navigate (reload) them instead of
+  waiting. Reused shard origins go bad, so clear a shard origin's localStorage before
+  each build's run. A pair of run-logging reds on one shard only means a stale profile
+  until they fail alone on :8800.

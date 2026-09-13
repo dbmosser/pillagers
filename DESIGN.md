@@ -40024,6 +40024,29 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.38 - CONTRACT DONE REACHES THE SCREEN
+
+FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34. Killing the last
+pillager a kill contract needs runs the contract step, which says CONTRACT DONE, and
+then, for a named pillager, the grudge block, which says "NAME will remember that."
+with a plain say in the same step. say keeps one line, so the only in-raid word that
+the contract was done never reached the screen. The conditions panel drops a finished
+contract, so only the report after the raid showed it.
+
+FIX. The grudge line goes through sayWhenFree. With nothing showing it appears at once,
+as before; with a line showing it follows when that one runs out. No wording or numbers
+change.
+
+MEASURED. Check 13.38 stages a kill contract one pillager short, fires a real player
+round, in the shape the fire path pushes, into a downed named pillager through the
+frame loop, confirms the round killed him, the contract finished and was recorded, and
+the grudge was written, and requires the contract line and then the grudge line on
+screen in that order. Fails on v13.37.
+
+Not verified: a live kill in his hands. Also found by its reviewer and left for a
+later build: a player grenade that kills his own hired mercenary can finish a pillager
+kill contract, and the mercenary death line, a plain say, then writes over CONTRACT
+DONE the same way.
 ## v13.37 - A CONTROLLER CAN SURRENDER
 
 FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34, and reproduced
