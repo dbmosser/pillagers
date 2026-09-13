@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.26';
+var VER='13.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29562,7 +29562,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.26: HIS REWRITE OF THE SECTOR LINE REACHED ONLY HIM, AND ONLY ONE MAP. He baked two edits of the map screen fact line: keep the run count, size, zones and keyed rooms, say the test robot extract rate is for that map, and drop first contact, containers a raid and median haul. Baked edits match the whole rendered sentence, and this one carries the player run count and the live robot figures, and his keys held his own counts at the time, two runs on Cold Storage and never raided on The Cold Mile. Measured on a fresh profile after the text engine had run: The Cold Mile showed his wording only because a new player has never raided it either, and Cold Storage showed the long line he cut; the moment a friend raids The Cold Mile once, or the robot figures are re-measured, that map reverts too. v11.51 made these lines exact-only on purpose, because matching by digit shape printed the wrong map name, so the text engine could not be the fix. The game now builds his sentence itself, so every player sees it with their own count; the dropped figures stay in SECTOR_MEAS for the checks that read them. One word was chosen for him and is flagged: his Cold Storage edit reads extracts in 39.2 percent of its raids in Cold Storage, his Cold Mile edit reads extracts 38.3 percent of its raids in The Cold Mile, one generated sentence cannot be both, and the second reads as intended. Check 11.29 required first contact on the screen for both maps, the display his wording retired, and is repaired in the same build. Check 13.26 draws the map screen for a player who has never raided and for one with a run on each map, requires his wording on both maps and none of the three cut figures, and fails on v13.25',
+  now:'v13.27: THE FIRST SENTENCE EVERY FRIEND READS MADE A PROMISE NOTHING KEEPS. Found by walking a brand-new save, the way every friend on itch starts: the title screen tells a player with no raids that the Undercroft will walk him through it, and nothing walks anyone through anything. There is no tutorial, no first-run sequence and no guidance chain anywhere in the file; a search for any of it finds only this sentence. What a new player actually gets is the welcome pack, offered once, and the station prompts on the floor. It is not his wording, since none of his baked edits keys on it or produces it, so it is original copy and mine to make true. The line now describes what happens, asking the same question the game asks before it offers the pack, welcomeFresh: a player who will be offered the pack is told to take it and then walk to ENTER RAID, and a player who will not, a restored save with no raids or one who already closed the pack, is only told to walk to ENTER RAID, so nobody is told about a pack that never appears. No key is named, because a controller player presses a different button on the floor and the station prompt he walks up to already names the right one. Checks 11.73 and 10.98 read this element only with a raid logged, the other branch, and are unaffected. Check 13.27 draws the line for a new player who will be offered the pack and for one who will not, requires no walkthrough promise in either and the pack only where it is offered, and fails on v13.26',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35063,7 +35063,12 @@ loadProfile().then(function(){
         // The default is born set now, but this is the line a player SEES, and
         // a name is not something to print raw.
         ? ((P.pname||'PILLAGER')+'  \u00b7  '+P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked')
-        : 'First time out. The Undercroft will walk you through it.';
+        // v13.27: it promised the Undercroft would walk him through it, and nothing
+        // does. This says what actually happens, asking the same question the game
+        // asks before it offers the pack.
+        : ((typeof welcomeFresh==='function'&&welcomeFresh())
+            ? 'First time out. Take the welcome pack, then walk to ENTER RAID.'
+            : 'First time out. Walk to ENTER RAID when you are ready.');
     }
     subSync();
     // v7.64, his order: saves on the front door. Slot 1 is the original

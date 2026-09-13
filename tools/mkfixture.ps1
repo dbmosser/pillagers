@@ -5715,6 +5715,38 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.27',what:'the title screen stops promising a new player a walkthrough that does not exist: it tells him to take the welcome pack only when the pack will be offered, and to walk to ENTER RAID either way',
+   run:function(){
+     if(typeof titleRefresh!=='function') return 'SKIP: this fixture cannot redraw the title line';
+     var sub=document.getElementById('titlesub'); if(!sub) return 'SKIP: this build draws no line under the title';
+     var bad=[];
+     var keep={runs:P.runs,welcomed:P.welcomed,stash:(P.stash||[]).slice(),weapons:(P.weapons||[]).slice()};
+     function line(){ try{ titleRefresh(); }catch(_t){} return String(sub.textContent||''); }
+     try{
+       // ONE: a brand-new player the game will offer the pack to.
+       P.runs=0; P.welcomed=0; P.stash=[]; P.weapons=['pistol'];
+       var a=line();
+       if(!a) return 'SKIP: the title line drew nothing for a player with no raids';
+       if(/walk you through/i.test(a))
+         bad.push('a brand-new player is promised that the Undercroft will walk him through it, and nothing in the game does: the first sentence he reads is a promise no screen keeps');
+       if(a.indexOf('welcome pack')<0)
+         bad.push('a new player who is about to be offered the welcome pack is not told to take it: ['+a+']');
+       if(a.indexOf('ENTER RAID')<0)
+         bad.push('a new player is not told where to go to start: ['+a+']');
+
+       // TWO: a player with no raids who has already been welcomed.
+       P.runs=0; P.welcomed=1; P.stash=[]; P.weapons=['pistol'];
+       var b=line();
+       if(b.indexOf('welcome pack')>=0)
+         bad.push('a player who will never be offered the welcome pack is told to take it, so he goes looking for a pack that does not appear: ['+b+']');
+       if(b.indexOf('ENTER RAID')<0)
+         bad.push('a player with no raids who has already been welcomed is not told where to go: ['+b+']');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P.runs=keep.runs; P.welcomed=keep.welcomed; P.stash=keep.stash; P.weapons=keep.weapons; titleRefresh(); }catch(_r){}
+       try{ __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.26',what:'the map screen shows every player the sector line he rewrote: the test robot extract rate in that map, without first contact, containers or median haul, whether or not that player has raided there (his baked edits matched only his own run counts)',
    run:function(){
      if(typeof renderSector!=='function'||typeof FIXED_MAPS==='undefined'||typeof SECTOR_MEAS==='undefined') return 'SKIP: this fixture cannot draw the map screen';
