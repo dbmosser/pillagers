@@ -1,0 +1,14 @@
+v13.33: a line that must not be lost waits its turn
+
+The rival warning, a 4-second timer, called say() directly and wrote over whatever was
+showing, including v13.32's loaner line. One waiting slot could also hold only one
+line.
+
+sayWhenFree queues a line in G.msgQ while a message shows; the frame loop shows the
+next when the current one runs out. The loaner line and the rival warning use it;
+every other say() is unchanged.
+
+Check 13.33 queues two lines behind a showing message and steps the real loop: all
+three must show, in order. Fails on v13.32.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
