@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.21';
+var VER='13.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,15 @@ var VER='13.21';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.10';
+var WHATSNEW_VER='13.22';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'PRESS B TO BACK OUT OF ANY MENU. It closes whatever is in front, one thing per press, in the Undercroft and on the surface. With nothing open it still gives your hire his orders, and it never opens the pause box.',
+  'AN ARMOUR PLATE YOU FIND GOES IN YOUR BACKPACK. It no longer snaps onto your armour when you pick it up: select it on your tactical belt and use it, which takes two seconds, or carry it home.',
+  'X SEARCHES WHAT YOU ARE STANDING ON, even inside an extraction point, where E is the key that calls for extraction.',
+  'THE LIMITED TIME OFFER SELLS ONCE. Buy it and the counter stays empty until the next offer arrives.',
+  'A ROLL WITH NO STAMINA LEFT SAYS SO. A roll costs almost half the bar, so the third in a row is refused, and it used to fail without a word.',
   'WHOEVER KILLED YOU KILLED YOU. A round landing on your body during the death fade used to throw a second DOWN over the top of it, add another down to your record, and put its own name on the KILLED IN ACTION card in place of the machine that actually did it.',
   'A KEY ALREADY DOWN IS NOT A PRESS. F is the melee strike, so a hand resting on it when the hit landed used to spend your one self-revive on the first downed frame, with no decision made. The revive now waits for a release and a real press.',
   'EXTRACTING WITH A GUN IN EACH HAND LEAVES A GUN IN EACH HAND. Banking the better gun into slot 1 used to leave slot 2 naming the same gun, so the next raid came up with an empty second slot and a gun you still owned quietly unslotted.',
@@ -1573,7 +1578,7 @@ var WHATSNEW=[
   'THE UNDERCROFT READS PROPERLY NOW. The station names were painted into the room before the room went dark, so the darkness went over them as well; they are drawn on top of it now and are no longer see-through. The controls line and the line under each station prompt came up with them. THE STATION WITH THE RACKS IS NOW CALLED FASHION, everywhere.',
   'YOU ARE MUCH EASIER TO FIND ON THE MAP. Your marker was eight pixels across and was the only one that did not grow when the map did. It is about twice the size now, with a halo under it and a longer line showing which way you are facing.',
   'THE RESIZE GRIP MOVES TO THE SIDE THAT HAS ROOM. A panel against the right edge of the screen had its drag corner jammed into that edge with eight pixels of travel, so it could not be made bigger. Those panels grip on their left now.',
-  'X NO LONGER SWAPS WEAPONS. The tactical belt does that job, so the key is gone along with its legend lines. Your stowed gun and its ammo are still shown, just without a key in front of them. On a controller, X is still search.',
+  'X NO LONGER SWAPS WEAPONS. The tactical belt does that job, and X searches what you are standing on instead, on a keyboard and on a controller. Your stowed gun and its ammo are still shown, just without a key in front of them.',
   'AND THE HUM STOPS WHEN YOU PAUSE. Same fault as the one below, met the common way: the room tone is turned down inside the part of the frame that a pause switches off, so it used to hold its level under the pause menu. It ducks now and comes back when you resume.',
   'THE HUM STOPS WHEN THE RAID DOES. The low bed under a raid is five voices that never stop, turned down rather than switched off, and the only thing turning them down ran inside the raid itself. So it froze at its last level when you died and kept going through the card and the Undercroft, loudest of all if something was on top of you at the end.',
   'MACHINES CAN FIND THE DOOR NOW. One inside a building could not work out how to get out to you, so it bumped about indoors while you stood outside untouched. Nineteen buildings across the two maps were traps like that and eleven still are, but if something is in there with you it is far likelier to come.',
@@ -29555,7 +29560,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.21: THE LAST RESORT WAS SILENT. On itch the game runs in an iframe, v13.20 stopped the report claiming a file download there and pointed the player at Copy report, and the outcome card Copy report has handled a refused clipboard honestly since v11.32, saying when both routes fail that the report is under Settings, Recorder. That sentence sends him to the Recorder Copy button, and THAT BUTTON SAID NOTHING, EVER: it selected the text, called the async clipboard with no rejection handler and returned, so copied, blocked and refused all looked identical, and the one place a failed copy directs a player was the one place that could not tell him whether it worked. The legacy copy command now runs FIRST, while the click is still a live gesture, because a copy command needs the gesture and the gesture is gone by the time an async clipboard promise has rejected, so a fallback that waits for the rejection runs at the moment least likely to work; the async clipboard is the second try. When both fail, the report stays selected and he is told to press Ctrl+C, because a selected textarea can be copied by hand inside any frame, which makes it a path nothing can block, and that is what a last resort is for. Reproduced with the instrument check 11.32 already uses, the clipboard hidden and the copy command stubbed so the check stays synchronous: on v13.20 the button text does not change whether the copy succeeds or is refused. NOT BUILT, RECORDED: the outcome card itself still tries the async clipboard before the legacy command, so on itch its own fallback also runs after the gesture has expired; that cannot be reproduced without a real click inside a real cross-origin frame, and it is guarded by checks 11.32 and 11.65, so it waits for evidence rather than a theory',
+  now:'v13.22: THE WHAT IS NEW CARD HAD ROTTED AGAIN, the third time in the class the memory names, because WHATSNEW_VER is not enforced: it sat at 13.10 through twelve builds while five of them changed how he plays, and parsecheck calls a drift of 0.11 fine and only flags STALE past 0.20, so it would not have caught this for another ten builds. Only lines that change how he plays go on the card, which is its own rule, so the medical line on the death card and the Copy report repairs are fixes and stay off it. Five lines, most important first, because the card shows only the top entries that fit the screen and cuts at the last whole one: B backs out of any menu, first, because it is the key he was given since Escape is not working for him and a key nobody is told about does not exist; a found armour plate goes to the backpack; X searches what you stand on; the Limited Time Offer sells once; a refused roll says so. And one old entry was now false, saying the X key is gone and that X is still search only on a controller, while since v13.10 X searches on the keyboard too; it sits below the fold and is never drawn, but a list that contradicts the controls is wrong wherever it is read, and no check keys on its text. Check 13.22 requires the stamp to be no older than the oldest change it lists, requires B and the plate to sit high enough to be drawn, and requires that no entry still claims the X key is gone; all three fail on v13.21',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

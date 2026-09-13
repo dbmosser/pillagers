@@ -1,0 +1,18 @@
+v13.22: the what's new card catches up with today
+
+WHATSNEW_VER is not enforced and had sat at 13.10 through twelve builds, five of
+which change how he plays. parsecheck's 0.20 drift gate would not have caught it
+for another ten.
+
+Five lines, most important first, because the card draws only the entries that
+fit: B backs out of any menu (the key he was given since Escape is not working
+for him), a found armour plate goes to the backpack, X searches, the Limited Time
+Offer sells once, a refused roll says so. Fixes stay off, per the card's own rule.
+
+An old entry said the X key is gone; since v13.10 X searches. Corrected.
+
+Check 13.22 reads the list, requires the stamp not to be older than what it
+lists, requires B and the plate high enough to be drawn, and requires no entry
+still claiming the X key is gone. All three fail on v13.21.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

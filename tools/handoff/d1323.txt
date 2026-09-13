@@ -1,0 +1,33 @@
+## v13.23 - B IS ON THE KEY LIST
+
+B WAS ON NO KEY LIST. v13.17 made B back out of whatever is in front, on his note,
+because Escape is not working for him. v13.22 announces it once on the what's new
+card, which a player sees one time and dismisses by walking. The key list behind
+H is the reference he opens when he wants to know what a key does, and B was not
+on it. Nor had it ever been for the hire, although B has cycled a hired
+pillager's orders since v3.73.
+
+THE FULL LIST ONLY. The compact list that shows by default is deliberately tiny,
+on his note to make the legend smaller, and it names the keys a player presses
+constantly. B is a key he reaches for when something is in the way, which is what
+the full list is for.
+
+IN THE WORLD GROUP, after P, with the keys that change what is on the screen
+rather than with movement, combat or gear.
+
+WHY THE EXISTING LEGEND CHECK COULD NOT HAVE CAUGHT THIS. Check 8192 requires
+every legend label to be drawn on the full panel, but it looks for the label
+itself, and a single B is already painted inside BKSP. A B row that never drew
+would still pass it. Check 13.23 uses the same drawing instrument with a different
+needle: the row's description, which appears nowhere else on the panel. It also
+requires the row to exist in the table, because drawn text with no table row
+could drift away from the bindings. Both halves fail on v13.22.
+
+NOT ADDED, AND WHY. G uses the selected slot, Q cycles throwables and V signals,
+and none of them is on the keyboard list either. They were not added: the list
+was cut down on his instruction, FIRE already covers using the selected slot, and
+there is no evidence any of the three is being missed. B is the key he asked for.
+
+Not verified: whether the WORLD group box fits a sixth row at every text size,
+since the check draws at the default one; and the controller list, which has its
+own B button meaning roll and is a separate table.

@@ -40024,6 +40024,40 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.22 - THE WHAT'S NEW CARD CATCHES UP WITH TODAY
+
+THE CARD HAD ROTTED AGAIN, the third time in the class the memory names:
+WHATSNEW_VER is not enforced. It sat at 13.10 through twelve builds while five of
+them changed how he plays. parsecheck calls a drift of 0.11 fine and only flags
+STALE past 0.20, so it would not have caught this for another ten builds.
+
+ONLY LINES THAT CHANGE HOW HE PLAYS, which is the card's own rule. The medical
+line on the death card and the Copy report repairs are fixes, and fixes stay off.
+
+FIVE LINES, MOST IMPORTANT FIRST, because the card draws only the top entries
+that fit on screen and cuts at the last whole one:
+1. B backs out of any menu. First, because it is the key he was given since
+   Escape is not working for him, and a key nobody is told about does not exist.
+2. A found armour plate goes to the backpack.
+3. X searches what you are standing on.
+4. The Limited Time Offer sells once.
+5. A refused roll says so.
+
+ONE OLD ENTRY WAS NOW FALSE. It said the X key is gone and that X is still search
+only on a controller. Since v13.10, X searches on the keyboard too. It sits below
+the fold and is never drawn, but a list that contradicts the controls is wrong
+wherever it is read, and no check keys on its text.
+
+MEASURED. Check 13.22 reads the list, not the page. It requires the stamp to be
+no older than the oldest change the list names (v13.16), rather than pinning one
+number that would break the next time the list moves. It requires B and the
+plate to sit high enough to be drawn, and no entry to still claim the X key is
+gone. All three fail on v13.21.
+
+Not verified: exactly how many entries fit on the card at 1080p, since the row
+count is computed inside the draw from wrapped text and cannot be read from the
+page; the thresholds are set so today's layout passes with room. Also not
+verified: whether a returning player reads it, which only his friends can say.
 ## v13.21 - THE LAST RESORT FOR A RUN REPORT SAYS WHETHER IT WORKED
 
 WHERE A FAILED COPY SENDS YOU. On itch the game runs in an iframe. v13.20 stopped

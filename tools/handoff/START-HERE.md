@@ -957,3 +957,24 @@ the corpus that does not end its raid through the harness.
 - REPEAT-BUY HOLES: every credits-spending site checked. Staging shop redraws
   after purchase so "Owned" is live; counter shop checks P.weapons live; bar is
   capped at ten; gamble is repeatable by design; Wirt's lot fixed at v13.18.
+- THE PLATE, DRIVEN ON REAL KEYS (v13.16's last "not verified" line): with a
+  plate in the backpack and armour at 0, pressing Digit1..9 then G on each, only
+  Digit7 starts the armour prep; armour reads 0 two frames later (the wind-up is
+  paid) and 20 after 2.5s, and the plate has left the bag. Closed.
+- B ON A REAL RIGHT-CLICK MENU (v13.17's last "not verified" line), play path:
+  stood on station term, HELD E across frames (station acts are polled in the
+  hub step at keys[ak], so a same-tick keydown+keyup never fires them), stash
+  opened; right-clicked a real DIV.cell, item menu opened; first B closed the
+  menu and left the stash open; second B closed the stash. Closed.
+  PROBE LESSON: hub station keys must be HELD across frames, not tapped.
+- VOCABULARY PASS over every player-facing string added v13.11 to v13.21
+  (git diff eb53589..HEAD): "No legs left to roll with.", "This page cannot save
+  files. Use COPY REPORT and paste it to Daniel.", "Copied. Paste it to Daniel.",
+  "Copy blocked here. The report is selected: press Ctrl+C.", "YOU DIED CARRYING
+  MEDICAL YOU NEVER USED", "Bought. New item in N minutes", killer "yourself".
+  No banned word. v13.16 REMOVED one ("+N armor", the rule says Armour). Clean.
+- VERSION STAMPS (idle queue: "grep every VER-like constant"): every version-shaped
+  token inside a quoted string sits in a trailing // vX.YY code comment. No
+  player-facing string hard-codes a version. WHATSNEW_VER was the only rotting
+  stamp, fixed at v13.22. The self-updating ones are VER (gated by parsecheck via
+  DEVNOW) and the export header, which reads VER.
