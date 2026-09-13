@@ -1,0 +1,20 @@
+v13.21: the last resort for a run report says whether it worked
+
+On itch the outcome card's Copy report, when refused, sends the player to
+Settings > Recorder > Copy. That button selected the text, called the async
+clipboard with no rejection handler, and said nothing: copied, blocked and
+refused looked identical. With no collector deployed it is the last way a
+friend's run reaches Daniel.
+
+The legacy copy command now runs first, while the click is a live gesture; the
+async clipboard is the second try. When both are refused the report stays
+selected and the button says press Ctrl+C, which no frame can block.
+
+Reproduced with check 11.32's instrument (clipboard hidden, copy command
+stubbed): on v13.20 the button text never changes.
+
+Not built, recorded: the outcome card still tries async clipboard first, so its
+own fallback may run after the gesture expires on itch. Unreproducible without a
+real cross-origin click, and guarded by 11.32 and 11.65.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

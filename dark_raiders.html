@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.19';
+var VER='13.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29555,7 +29555,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.19: HIS REPORT of 2026-09-12, roll with space bar not working at all, which he withdrew ten minutes later as a false alarm. IT WAS NOT A FALSE ALARM, it was this. A roll costs 45 of 100 stamina, measured on a live raid: 100, then 55 after one roll, then 16 after the second, so the third is refused by the first line of tryRoll, which simply returns. No sound, no line, no bar flash, nothing at all, so the key is dead in the hand and the game does not say why, and a man who has just rolled twice concludes the key is broken, which is exactly what he did and reported. THIS IS HIS OWN RECORDED PATTERN: the crafting note was the same shape, a working hold behind a button that answered every wrong gesture with silence, and the rule that came out of it was fix the words, and there were no words here. Of the four things that refuse a roll, three are states he can already see, since he knows he is down, he can see the roll happening, and the cooldown is a tenth of a second after one he just watched; stamina is the one with no visible reason and it is the one that costs 45, so the third roll in a row is always the one that dies quietly. NO DIAL MOVES: the cost stays 45 and the cooldown stays 0.85, the roll is exactly as expensive as it was, and the only change is that being refused is audible. Rate limited to one line and one sound every 1.5 seconds, because Space is a key people hold. Check 13.19 drains the bar on a live raid and requires the refusal to speak, requires a roll that CAN happen to stay silent so the line is not wallpaper, and requires holding the key not to repeat it; the control fails on v13.18, where the refusal says nothing at all',
+  now:'v13.20: THE GAME IS ON ITCH NOW AND THIS IS THE FIRST THING THAT BREAKS THERE. With no collector deployed a run report falls back to saving itself as a file, an itch HTML game runs inside an iframe whose sandbox carries no allow-downloads, and a download link in such a frame does nothing at all and throws nothing, so the catch never fired, lastReport was set to downloaded, and the player was told a report had been saved that does not exist anywhere. That is the WHOLE feedback path for every friend playing today, because the collector is not deployed yet, so the fallback IS the path, and on the only place the game is actually hosted the fallback was a no-op that reported success. The game now stops claiming a save it cannot verify and says what to do instead, pointing at Copy report, which already exists and does work inside an iframe because a clipboard write is not a download. reportEmbedded is its own function so a check can stub it, since window.self and window.top cannot be assigned and a fix that cannot be tested on the only place the game is hosted is not good enough. SEPARATELY AND MORE URGENTLY, MEASURED BY LOADING HIS OWN PAGE AS A STRANGER: pillagers.itch.io/pillagersv1306 answers A PASSWORD IS REQUIRED TO VIEW THIS PAGE, so every build pushed today is behind a password and any friend sent that link has seen a password box rather than the game; either the project is still a Draft, which always asks whatever else is set, or Restricted is set to password rather than anyone with the secret URL. Told him, and it is his to change',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33176,7 +33176,26 @@ function installId(){
 function reportFileName(){
   return 'pillagers_run'+(P.runs||0)+'.txt';
 }
+// v13.20: ARE WE INSIDE SOMEBODY ELSE PAGE. An itch HTML game runs in an iframe
+// whose sandbox carries no allow-downloads, so a download link there does
+// nothing and throws nothing. Cross-origin access to window.top throws, and a
+// throw is itself the answer, so both arms return true. Its own function so a
+// check can stub it: window.self and window.top cannot be assigned, and a fix
+// that cannot be tested on the only place the game is hosted is not good enough.
+function reportEmbedded(){
+  try{ return window.self!==window.top; }catch(_re){ return true; }
+}
 function downloadExport(){
+  // EMBEDDED MEANS THE FILE NEVER LANDS. Saying "downloaded" here was not a
+  // small lie: with no collector deployed the file IS the feedback path, so on
+  // itch every report was being thrown away while the game reported success.
+  // Copy report still works in an iframe, because a clipboard write is not a
+  // download, so that is what the player is pointed at.
+  if(reportEmbedded()){
+    P.lastReport='embedded';
+    try{ if(typeof say2==='function') say2('This page cannot save files. Use COPY REPORT and paste it to Daniel.'); }catch(_se){}
+    return;
+  }
   try{
     var blob=new Blob([buildExport()],{type:'text/plain'});
     var url=URL.createObjectURL(blob);

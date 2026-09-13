@@ -40024,6 +40024,45 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.20 - THE GAME STOPS CLAIMING IT SAVED A REPORT IT COULD NOT SAVE
+
+THE GAME IS ON ITCH NOW, AND THIS IS THE FIRST THING THAT BREAKS THERE.
+
+With no collector deployed, a run report falls back to saving itself as a file.
+An itch HTML game runs inside an iframe, and that iframe carries no
+allow-downloads, so clicking a download link there does nothing at all. It does
+not throw. The catch never fires, lastReport is set to "downloaded", and the
+player is told a report was saved that does not exist anywhere.
+
+THAT IS THE WHOLE FEEDBACK PATH FOR EVERY FRIEND PLAYING TODAY. The collector is
+not deployed, so the fallback IS the path, and on the only place the game is
+actually hosted the fallback was a no-op that reported success.
+
+WHAT CHANGES. The game stops claiming a save it cannot verify, and says what to
+do instead. Copy report already exists and does work inside an iframe, because a
+clipboard write is not a download.
+
+reportEmbedded IS ITS OWN FUNCTION SO A CHECK CAN STUB IT. window.self and
+window.top cannot be assigned, so a decision made inline would be a decision no
+test could reach, and an untestable fix on the only hosted build is not good
+enough. The check stubs that one function and counts real anchor clicks rather
+than trusting the status string, because the status string is precisely the thing
+that could not be trusted.
+
+SEPARATELY, AND MORE URGENTLY, MEASURED BY LOADING HIS OWN PAGE AS A STRANGER
+WOULD: pillagers.itch.io/pillagersv1306 answers "A password is required to view
+this page". Every build pushed today is behind a password, and any friend sent
+that link has seen a password box rather than the game. Either the project is
+still a Draft, which always asks whatever else is set, or Restricted is set to
+password rather than "anyone with the secret URL". He has been told and it is his
+to change; nothing in the code can reach it.
+
+Not verified: the exact sandbox attribute itch serves today, because the page is
+password-locked and I could not read the frame; the behaviour is taken from the
+absence of allow-downloads being the default for that embed, and the fix is
+correct either way, since a page that CAN download is the arm that still
+downloads. Also not verified: whether Copy report survives that sandbox, which
+needs one friend to try it and say.
 ## v13.19 - A REFUSED ROLL SAYS SO
 
 HIS REPORT, 2026-09-12: "roll w space bar not working at all." He withdrew it ten

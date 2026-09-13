@@ -1,0 +1,19 @@
+v13.20: the game stops claiming it saved a report it could not save
+
+The game is on itch now and this is the first thing that breaks there. With no
+collector deployed, a run report falls back to saving itself as a file. An itch
+HTML game runs in an iframe with no allow-downloads, so the download click does
+nothing and throws nothing: the catch never fires, lastReport reads "downloaded",
+and the player is told a report was saved that does not exist.
+
+That is the entire feedback path for every friend playing today.
+
+The game now says so and points at Copy report, which works in an iframe because
+a clipboard write is not a download. reportEmbedded is its own function so the
+check can stub it; the check counts real anchor clicks rather than trusting the
+status string, which is the thing that could not be trusted.
+
+Separately: loading his itch page as a stranger returns "A password is required
+to view this page". Every build pushed today is behind a password. Told him.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
