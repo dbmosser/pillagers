@@ -31,3 +31,24 @@ there is no evidence any of the three is being missed. B is the key he asked for
 Not verified: whether the WORLD group box fits a sixth row at every text size,
 since the check draws at the default one; and the controller list, which has its
 own B button meaning roll and is a separate table.
+
+HARNESS REPAIR IN THE SAME BUILD, AND IT IS MINE FROM v13.18. The v13.22 corpus
+passed with no failures but THREE skips instead of two. The new one was v11.61,
+Wirt's Buy delivering the lot named on the card: "no Buy button on the counter".
+P.wirtLotBought is the profile field v13.18 added, and __cleanProfile resets only a
+fixed list, so it never cleared it. Every check that presses Buy (v9.11, and v11.61
+itself) left the counter reading Bought in the saved profile, and the next check to
+open that counter inside the same five-minute window found no button. It is timing
+dependent, which is why the v13.18 to v13.21 corpora happened to show two skips.
+
+REPRODUCED DETERMINISTICALLY: with the flag set to the current window, v11.61
+returns SKIP no Buy button; with it cleared, the same check runs and passes.
+
+A SECOND PATH: v11.61 moves the clock forward before pressing Buy, so its purchase
+is recorded against a future window, which springs on whatever check runs once real
+time reaches it. Deleting the field at the baseline covers both.
+
+NO CONTROL CHECK FOR THE REPAIR, AND WHY. The previous-build fixture is generated
+from the same new harness, so a check on __cleanProfile would pass on both builds
+and prove nothing. The reproduction above is the evidence, and v11.61 running again
+in the corpus is the ongoing guard.

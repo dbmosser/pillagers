@@ -40024,6 +40024,60 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.23 - B IS ON THE KEY LIST
+
+B WAS ON NO KEY LIST. v13.17 made B back out of whatever is in front, on his note,
+because Escape is not working for him. v13.22 announces it once on the what's new
+card, which a player sees one time and dismisses by walking. The key list behind
+H is the reference he opens when he wants to know what a key does, and B was not
+on it. Nor had it ever been for the hire, although B has cycled a hired
+pillager's orders since v3.73.
+
+THE FULL LIST ONLY. The compact list that shows by default is deliberately tiny,
+on his note to make the legend smaller, and it names the keys a player presses
+constantly. B is a key he reaches for when something is in the way, which is what
+the full list is for.
+
+IN THE WORLD GROUP, after P, with the keys that change what is on the screen
+rather than with movement, combat or gear.
+
+WHY THE EXISTING LEGEND CHECK COULD NOT HAVE CAUGHT THIS. Check 8192 requires
+every legend label to be drawn on the full panel, but it looks for the label
+itself, and a single B is already painted inside BKSP. A B row that never drew
+would still pass it. Check 13.23 uses the same drawing instrument with a different
+needle: the row's description, which appears nowhere else on the panel. It also
+requires the row to exist in the table, because drawn text with no table row
+could drift away from the bindings. Both halves fail on v13.22.
+
+NOT ADDED, AND WHY. G uses the selected slot, Q cycles throwables and V signals,
+and none of them is on the keyboard list either. They were not added: the list
+was cut down on his instruction, FIRE already covers using the selected slot, and
+there is no evidence any of the three is being missed. B is the key he asked for.
+
+Not verified: whether the WORLD group box fits a sixth row at every text size,
+since the check draws at the default one; and the controller list, which has its
+own B button meaning roll and is a separate table.
+
+HARNESS REPAIR IN THE SAME BUILD, AND IT IS MINE FROM v13.18. The v13.22 corpus
+passed with no failures but THREE skips instead of two. The new one was v11.61,
+Wirt's Buy delivering the lot named on the card: "no Buy button on the counter".
+P.wirtLotBought is the profile field v13.18 added, and __cleanProfile resets only a
+fixed list, so it never cleared it. Every check that presses Buy (v9.11, and v11.61
+itself) left the counter reading Bought in the saved profile, and the next check to
+open that counter inside the same five-minute window found no button. It is timing
+dependent, which is why the v13.18 to v13.21 corpora happened to show two skips.
+
+REPRODUCED DETERMINISTICALLY: with the flag set to the current window, v11.61
+returns SKIP no Buy button; with it cleared, the same check runs and passes.
+
+A SECOND PATH: v11.61 moves the clock forward before pressing Buy, so its purchase
+is recorded against a future window, which springs on whatever check runs once real
+time reaches it. Deleting the field at the baseline covers both.
+
+NO CONTROL CHECK FOR THE REPAIR, AND WHY. The previous-build fixture is generated
+from the same new harness, so a check on __cleanProfile would pass on both builds
+and prove nothing. The reproduction above is the evidence, and v11.61 running again
+in the corpus is the ongoing guard.
 ## v13.22 - THE WHAT'S NEW CARD CATCHES UP WITH TODAY
 
 THE CARD HAD ROTTED AGAIN, the third time in the class the memory names:

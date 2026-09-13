@@ -66,6 +66,32 @@ SubRx @'
   {v:'13.22',what:'the what-is-new card names what changed how you play since v13.10, high enough to be drawn: B backs out of menus and a found armour plate goes to the backpack; the stamp is not older than what it lists; and no entry still claims the X key is gone',
 '@
 
+# HARNESS REPAIR, MINE, FROM v13.18. P.wirtLotBought is a profile field v13.18
+# added, and __cleanProfile resets only a fixed list, so it never cleared it.
+# Every check that presses Wirt's Buy (v9.11, and v11.61 itself) left the counter
+# reading Bought in the saved profile, and the next check to open that counter
+# inside the same five-minute window found no button: the v13.22 corpus came back
+# with THREE skips instead of two, the third being v11.61, "no Buy button on the
+# counter". A skipped check is a guard that silently stopped guarding.
+#
+# REPRODUCED, NOT ARGUED: with the flag set to the current window, v11.61 returns
+# SKIP no Buy button; with it cleared, the same check runs and passes.
+#
+# AND A SECOND PATH: v11.61 moves the clock forward before it presses Buy, so the
+# purchase is recorded against a FUTURE window, which springs on whatever check
+# runs once real time reaches it. Clearing the field at the baseline covers both.
+#
+# The same class as the v10.48 night and v10.54 outfit leaks: a new profile field
+# needs a line here, or a later check inherits it.
+SubRx @'
+  P.cond='day';   // v10.48: a night a check left in the SAVED profile ran every fingerprint after it after dark
+  P.cosOutfit='outnone';   // v10.54: a suit left on by a check would overrule every sprite check after it
+'@ @'
+  P.cond='day';   // v10.48: a night a check left in the SAVED profile ran every fingerprint after it after dark
+  P.cosOutfit='outnone';   // v10.54: a suit left on by a check would overrule every sprite check after it
+  delete P.wirtLotBought;   // v13.23: a Limited Time Offer one check bought left the counter reading Bought for the next, and v11.61 skipped
+'@
+
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
 $want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
 if ($n -ne $want) { throw "expected $want edits, made $n" }

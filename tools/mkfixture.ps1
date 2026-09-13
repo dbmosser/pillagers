@@ -173,6 +173,7 @@ window.__cleanProfile=function(){
   delete P.uiScale;
   P.cond='day';   // v10.48: a night a check left in the SAVED profile ran every fingerprint after it after dark
   P.cosOutfit='outnone';   // v10.54: a suit left on by a check would overrule every sprite check after it
+  delete P.wirtLotBought;   // v13.23: a Limited Time Offer one check bought left the counter reading Bought for the next, and v11.61 skipped
   try{ saveProfile(); }catch(e){}
   return was;
 };
@@ -5713,6 +5714,43 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'13.23',what:'the full key list behind H names B, and actually draws the row, so the key he was given because Escape is not working is on the reference he opens to look keys up',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__textTrace&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and read the drawn text';
+     if(typeof LEGEND==='undefined') return 'SKIP: this build has no key table';
+     if(typeof PAD!=='undefined'&&PAD&&PAD.on) return 'SKIP: a controller is connected, so the keyboard list is not the one drawn';
+     var bad=[];
+     var row=null, i, j;
+     for(i=0;i<LEGEND.length;i++) for(j=0;j<LEGEND[i][1].length;j++){
+       var r=LEGEND[i][1][j];
+       if(r&&r[0]==='B') row=r;
+     }
+     if(!row)
+       bad.push('the full key list has no B row, so the key he was given because Escape is not working for him is on no list a player can look up, and the hire orders B has given since v3.73 never have been either');
+     else if(String(row[1]).indexOf('back out')<0)
+       bad.push('the B row on the key list reads ['+row[1]+'], which does not say B backs out of a menu');
+     var keep=null, g=null;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_f){}
+       if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be drawn';
+       __deploy({kit:[],mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no live raid to open the key list in';
+       keep=g.legendOn; g.legendOn=2;
+       var lines=[]; try{ lines=__textTrace(function(){ __frame(0.016); }); }catch(_t){}
+       var full=''; for(i=0;i<lines.length;i++) full+=' | '+lines[i].t;
+       if(!full) return 'SKIP: the full key list drew no text at all';
+       // THE DESCRIPTION, not the letter: a lone B is already painted inside BKSP.
+       if(full.indexOf('back out of a menu')<0)
+         bad.push('the full key list does not draw a line saying B backs out of a menu, so even with the row in the table nothing on the screen tells him');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(g) g.legendOn=keep; }catch(_k){}
+       try{ var g6=__state(); if(g6&&!g6.over){ g6.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       try{ G=null; keys={}; showScreen('hub'); }catch(_q){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'13.22',what:'the what-is-new card names what changed how you play since v13.10, high enough to be drawn: B backs out of menus and a found armour plate goes to the backpack; the stamp is not older than what it lists; and no entry still claims the X key is gone',
    run:function(){

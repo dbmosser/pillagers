@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.22';
+var VER='13.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25465,7 +25465,7 @@ var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','hold to sprint'],['CTRL / C','crouch on/off, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['F','melee strike, whatever you are holding']]],
   ['GEAR',[['1-9','select tactical belt slot'],['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
-['WORLD',[['E','search / call for extraction'],['X','search, even on the way out'],['M','map'],['H','cycle this list'],['P','pause']]],
+['WORLD',[['E','search / call for extraction'],['X','search, even on the way out'],['M','map'],['H','cycle this list'],['P','pause'],['B','back out of a menu, or order your hire']]],
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
 ];
 // SPEC 10.3: the colour language has to be learnable, so it is stated.
@@ -29560,7 +29560,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.22: THE WHAT IS NEW CARD HAD ROTTED AGAIN, the third time in the class the memory names, because WHATSNEW_VER is not enforced: it sat at 13.10 through twelve builds while five of them changed how he plays, and parsecheck calls a drift of 0.11 fine and only flags STALE past 0.20, so it would not have caught this for another ten builds. Only lines that change how he plays go on the card, which is its own rule, so the medical line on the death card and the Copy report repairs are fixes and stay off it. Five lines, most important first, because the card shows only the top entries that fit the screen and cuts at the last whole one: B backs out of any menu, first, because it is the key he was given since Escape is not working for him and a key nobody is told about does not exist; a found armour plate goes to the backpack; X searches what you stand on; the Limited Time Offer sells once; a refused roll says so. And one old entry was now false, saying the X key is gone and that X is still search only on a controller, while since v13.10 X searches on the keyboard too; it sits below the fold and is never drawn, but a list that contradicts the controls is wrong wherever it is read, and no check keys on its text. Check 13.22 requires the stamp to be no older than the oldest change it lists, requires B and the plate to sit high enough to be drawn, and requires that no entry still claims the X key is gone; all three fail on v13.21',
+  now:'v13.23: B IS ON THE KEY LIST NOW, and it was on none. v13.17 made B back out of whatever is in front, on his note, because Escape is not working for him, and v13.22 announces it once on the what is new card, which a player sees one time and dismisses by walking. The key list behind H is the reference he opens when he wants to know what a key does, and B was not on it; nor had it ever been for the hire, although B has cycled a hired pillager orders since v3.73. The row goes on the FULL list only: the compact list that shows by default is deliberately tiny, on his note to make the legend smaller, and it names the keys a player presses constantly, while B is a key he reaches for when something is in the way, which is what the full list is for. It sits in the WORLD group after P, with the keys that change what is on the screen. WHY THE EXISTING LEGEND CHECK COULD NOT HAVE CAUGHT THIS: check 8192 requires every legend label to be drawn on the full panel, but it looks for the label itself, and a single B is already on the screen inside BKSP, so a B row that never drew would still pass it. Check 13.23 looks for the row description on the drawn panel instead, and requires the row to exist in the table; both fail on v13.22',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

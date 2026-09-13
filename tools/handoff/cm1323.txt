@@ -1,16 +1,14 @@
-v13.23: B is on the key list
+v13.23: B is on the key list, and a harness leak of mine is closed
 
-v13.17 made B back out of whatever is in front, and v13.22 announces it once on
-the what's new card. The key list behind H, the reference he opens to look keys
-up, did not name B, nor the hire orders B has given since v3.73.
+v13.17 made B back out of whatever is in front, and v13.22 announces it once. The
+key list behind H did not name B, nor the hire orders B has given since v3.73. One
+row, full list only, WORLD group. Check 8192 could not have caught it: a lone B is
+already painted inside BKSP. Check 13.23 looks for the row description, and the row.
 
-One row, full list only, in the WORLD group after P. The compact default list
-stays small on his instruction.
-
-Check 8192 could not have caught this: it looks for each label on the drawn panel
-and a lone B is already painted inside BKSP. Check 13.23 looks for the row
-description instead, and requires the table row. Both fail on v13.22.
-
-G, Q and V are also absent from the keyboard list and were deliberately not added.
+Harness repair, mine from v13.18: __cleanProfile never cleared P.wirtLotBought, so a
+check that pressed Wirt's Buy left the counter reading Bought, and v11.61 skipped
+with "no Buy button" in the v13.22 corpus (three skips, not two). Reproduced: flag
+set, v11.61 skips; flag cleared, it runs and passes. v11.61 also records its buy
+against a future window. Deleting the field at the baseline covers both.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
