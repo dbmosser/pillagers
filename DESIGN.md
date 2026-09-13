@@ -40024,6 +40024,30 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.36 - A CONTROLLER CAN CROUCH
+
+FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34, and reproduced
+live with a faked controller: holding the right stick click set its held key, the left
+stick still moved the player, and crouch never changed. Keyboard Ctrl toggles it.
+
+BOTH CONTROLLER KEY LISTS SAY RS CLICK CROUCHES. The click sat in the table of held pad
+buttons, which only sets a key, and no code reads that key. Crouch has been a toggle
+since v10.07, flipped only inside the key handler.
+
+FIX. The right stick click moves to the table of pressed pad buttons, so its press
+goes through the same handler as Ctrl and C. Holding it is one change, because pressed
+buttons are edge-detected. The left stick click stays a held sprint. No words, labels
+or numbers change.
+
+MEASURED. Check 13.36 fakes a controller polled by the frame loop, first proving the
+pad reaches the raid (the held left stick click sets sprint), then requires one click
+to crouch, a held click to change the stance exactly once, a third click to crouch
+again and stay crouched, a crouched walk on the stick to cover well under 80 percent of
+a standing walk, and keyboard C to still crouch. Fails on v13.35.
+
+Not verified: a real controller in his hands, since every press here is a faked pad;
+and a player still holding the right stick as a window closes, which may count one
+extra click, the same edge every other pressed pad button already has.
 ## v13.35 - WHERE A LOOTED ITEM WENT REACHES THE SCREEN
 
 FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34, and reproduced
