@@ -5715,6 +5715,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.34',what:'the what-is-new card tells a player coming back that the welcome pack now goes to the stash and how to take a gun from it, Equip as your gun, within the entries the card draws, and its stamp is not older than the stash ruling',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined') return 'SKIP: this build has no what-is-new card';
+     var bad=[];
+     var ver=parseFloat(WHATSNEW_VER);
+     if(!(ver>=13.29))
+       bad.push('the card still says NEW IN v'+WHATSNEW_VER+', older than his ruling that sends the welcome pack to the stash, so a friend coming back is shown nothing about it');
+     var lead=['THE','WELCOME','PACK','GOES','TO','YOUR','STASH'].join(' ');
+     var needle=['Equip','as','your','gun'].join(' ');
+     var idx=-1;
+     for(var i=0;i<WHATSNEW.length;i++){ if(String(WHATSNEW[i]).indexOf(lead)===0){ idx=i; break; } }
+     if(idx<0)
+       bad.push('no entry on the card says the welcome pack now goes to the stash, so a player who took it before expects its guns in his hands');
+     else {
+       if(idx>12) bad.push('the stash entry is entry '+(idx+1)+', below the thirteen the card draws, so it is on the list and never on the screen');
+       if(String(WHATSNEW[idx]).indexOf(needle)<0) bad.push('the stash entry does not say how to take a gun from the stash');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.33',what:'a line that must not be lost waits its turn: with a message showing, two more queued behind it are each shown when the one before runs out, in order and none written over, which is how the rival warning and the loaner line reach the player',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__loop&&window.__showScreen)) return 'SKIP: this fixture cannot start a raid or step the loop';
@@ -5729,6 +5747,12 @@ window.__REGRESS=[
        var t0=performance.now(), f=0, i;
        // Let landing say what it says, so the queue starts empty.
        for(i=0;i<420;i++){ __loop(t0+(++f)*16.7); }
+       // r1334b: nothing else may speak while the queue is measured. A live crier on
+       // one seed kept the line busy past the stepping window.
+       G2.ents.length=0;
+       // r1334c: and no wave either. With nobody alive the spawner sends a man every
+       // eight seconds with a line of its own; its clock is held back for the check.
+       G2.waveT=-1e9;
        G2.msgQ=[]; G2.msgT=0;
        var L1=['first','line','of','three'].join(' '), L2=['second','line','of','three'].join(' '), L3=['third','line','of','three'].join(' ');
        say(L1);
@@ -5762,6 +5786,8 @@ window.__REGRESS=[
      if(!(window.__hubEnter&&window.__hb&&window.__keys&&window.__showScreen&&window.__state&&window.__endRaid&&window.__P&&window.__loop)) return 'SKIP: this fixture cannot walk the floor or step the loop';
      if(typeof updateHubWorld!=='function'||typeof startRaid!=='function') return 'SKIP: this build has no floor update or no raid to start';
      if(!ITEMS.gun_smg||!WEAPONS.smg||!WEAPONS.pistol) return 'SKIP: this build has no stash gun item to stage';
+     // r1334: the frame loop draws, and a pane with no layout throws in drawImage.
+     if(!__vpAlive()) return 'SKIP: the pane has no layout ('+window.innerWidth+'x'+window.innerHeight+'), so the frame loop cannot draw';
      var bad=[], P2=__P();
      var keep={equipped:P2.equipped,equippedSec:P2.equippedSec,weapons:(P2.weapons||[]).slice(),stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),freeKit:P2.freeKit,hot:JSON.parse(JSON.stringify(P2.hotAssign||{}))};
      var needle=['Equip','as','your','gun'].join(' ');

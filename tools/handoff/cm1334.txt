@@ -1,0 +1,18 @@
+v13.34: the what-is-new card says the welcome pack goes to the stash
+
+His ruling sent the pack to the stash with nothing equipped (v13.29), and the sector
+page and raid learned to say so (v13.31, v13.32). The card's stamp still read 13.22,
+so a returning friend saw nothing.
+
+One line after the X line, entry 5, inside the thirteen the card draws, naming Equip
+as your gun. The stamp moves to 13.34. Carries r1334: check 13.32 skips on a pane with
+no layout instead of throwing.
+
+Also repairs check 13.33, which failed the first v13.34 corpus on a random seed: a
+live crier kept the message line busy. r1334b removes the machines once landing
+settles; r1334c holds the raid wave clock, because an emptied raid sends a pillager
+every 8 seconds with a line of its own. Controls: fails on v13.32, passes on v13.33.
+
+Check 13.34 reads the stamp and the entry's place and wording. Fails on v13.33.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

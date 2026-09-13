@@ -40024,6 +40024,39 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.34 - THE WHAT-IS-NEW CARD SAYS THE WELCOME PACK GOES TO THE STASH
+
+HIS RULING NEVER REACHED THE CARD. On 2026-09-13 (v13.29) he sent the whole welcome
+pack to the stash, guns as items, with nothing equipped, and v13.31 and v13.32 taught
+the sector page and the raid to say so. The what-is-new card still carried the stamp
+13.22, so a friend coming back was shown nothing new. The old entry about the pack
+(v10.29) sits far below where the card stops drawing and never mentions the stash.
+
+ONE LINE, DRAWN. It goes in right after the X line, as entry 5: "THE WELCOME PACK
+GOES TO YOUR STASH AND EQUIPS NOTHING. Both guns wait there as items: open your stash
+and choose Equip as your gun on one. Until you do, the lift issues you a loaner, and
+the sector page and the raid both say so." B stays entry 2 and the plate line entry 3,
+where check 13.22 keeps them. The card draws thirteen entries at the default text
+size, measured at v13.22. The stamp moves to 13.34 so the card is shown again.
+
+HARNESS REPAIR CARRIED. Check 13.32 steps the real frame loop, which draws, and on a
+pane with no layout it threw in drawImage: three throws at width 0 on the v13.32 gate,
+three passes at 1920x1080. It now asks __vpAlive first and skips, as 13.33 does.
+
+MEASURED. Check 13.34 requires the stamp to be no older than the stash ruling, and an
+entry within the thirteen drawn that says the pack goes to the stash and names Equip
+as your gun. Fails on v13.33.
+
+CHECK 13.33 REPAIRED IN THIS BUILD. The first v13.34 corpus failed it: the check steps
+twelve seconds of a live raid on a random seed, and a crier reached the parked player
+and kept the message line busy. r1334b removes the machines once landing settles.
+Its control run then showed a wave line: with no pillager alive the spawner sends one
+every 8 seconds, each saying so over the line. r1334c holds the raid wave clock for
+the check. The repaired check passes 3 of 3, fails on v13.32 and passes on v13.33.
+
+Not verified: the card at the larger text sizes, where fewer than thirteen entries may
+be drawn; and whether he wants the old v10.29 pack entry reworded, which is history
+and was left alone.
 ## v13.33 - A LINE THAT MUST NOT BE LOST WAITS ITS TURN
 
 THE RIVAL WARNING WROTE OVER WHATEVER WAS SHOWING. v13.32 gave landing one waiting

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.33';
+var VER='13.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,13 +1361,14 @@ var VER='13.33';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.22';
+var WHATSNEW_VER='13.34';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'PRESS B TO BACK OUT OF ANY MENU. It closes whatever is in front, one thing per press, in the Undercroft and on the surface. With nothing open it still gives your hire his orders, and it never opens the pause box.',
   'AN ARMOUR PLATE YOU FIND GOES IN YOUR BACKPACK. It no longer snaps onto your armour when you pick it up: select it on your tactical belt and use it, which takes two seconds, or carry it home.',
   'X SEARCHES WHAT YOU ARE STANDING ON, even inside an extraction point, where E is the key that calls for extraction.',
+  'THE WELCOME PACK GOES TO YOUR STASH AND EQUIPS NOTHING. Both guns wait there as items: open your stash and choose Equip as your gun on one. Until you do, the lift issues you a loaner, and the sector page and the raid both say so.',
   'THE LIMITED TIME OFFER SELLS ONCE. Buy it and the counter stays empty until the next offer arrives.',
   'A ROLL WITH NO STAMINA LEFT SAYS SO. A roll costs almost half the bar, so the third in a row is refused, and it used to fail without a word.',
   'WHOEVER KILLED YOU KILLED YOU. A round landing on your body during the death fade used to throw a second DOWN over the top of it, add another down to your record, and put its own name on the KILLED IN ACTION card in place of the machine that actually did it.',
@@ -29582,7 +29583,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.33: THE RIVAL WARNING WROTE OVER WHATEVER WAS SHOWING, AND ONE WAITING SLOT COULD HOLD ONLY ONE LINE. v13.32 gave landing one waiting line, shown when the current message runs out. The rival warning is a separate 4 second timer that called say directly, and say holds one message and overwrites it, so on a raid with a weather line and a rival the loaner line showed for under a second before the rival line wrote over it, and a second waiting line would have replaced the first in the slot. A short queue replaces the slot: sayWhenFree says a line at once when nothing is showing and otherwise queues it, and the frame loop shows the next queued line each time the current message runs out. The loaner line and the rival warning both go through it; the rival line keeps its 4 second delay and its guard, and every other say is unchanged. Check 13.33 starts a raid, shows a message, queues two lines behind it through sayWhenFree, steps the real frame loop, and requires all three to be shown in order with none lost, and fails on v13.32',
+  now:'v13.34: THE WHAT-IS-NEW CARD NEVER SAID THE WELCOME PACK NOW GOES TO THE STASH. His ruling of 2026-09-13 sent the whole welcome pack to the stash, guns as items, with nothing equipped, and v13.31 and v13.32 taught the sector page and the raid to say so. None of it reached the card: its stamp still read 13.22, so a friend coming back was shown nothing new, and the old entry about the pack sits far below where the card stops drawing and never mentions the stash. One line now, inserted right after the X line as entry 5, inside the thirteen the card draws, with B and the plate line left where check 13.22 keeps them; the stamp moves to 13.34 so the card is shown again. Check 13.34 requires the stamp to be no older than the stash ruling, and an entry within the drawn thirteen that says the pack goes to the stash and names Equip as your gun, and fails on v13.33. The same build gives check 13.32 the pane guard 13.33 already has, so a pane with no layout skips instead of throwing',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

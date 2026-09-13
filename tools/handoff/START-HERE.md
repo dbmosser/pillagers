@@ -1108,3 +1108,17 @@ the corpus that does not end its raid through the harness.
   defect; a new player who takes the pack and goes up without packing risks those
   items, and whether that should change is his call. "0 seconds on the surface,
   killed by unknown" was the probe ending the raid at once, not data.
+- CHECK 13.33 WAS SEED-DEPENDENT (found by the v13.34 corpus, 2026-09-13): it steps
+  twelve seconds of a live raid on a random seed, and on one run a crier reached the
+  parked player; its plain say() lines kept the message busy, so the third queued line
+  was still waiting when stepping stopped. Repaired in the same build by r1334b (the
+  machines are removed after landing settles), not reverted: it passed its gates and
+  the whole v13.33 corpus. RECORDED, NOT CHANGED: a queued line waits as long as other
+  messages keep the line busy, so a repeating crier alarm can hold the rival warning
+  back in a fight.
+  ADDENDUM, same day: r1334b alone was not enough. Emptying G.ents left no pillager
+  alive, and the wave spawner sends one every 8 s when fewer than 4 live
+  (raiderFloorN, raiderFloorGap), each with "Another wave of pillagers has entered."
+  over the showing line; the v13.32 control run showed it. r1334c also sets
+  G2.waveT=-1e9 in the check. LESSON: emptying a raid is not silence; it is the
+  urgent-wave condition.
