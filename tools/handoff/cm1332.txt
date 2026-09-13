@@ -1,0 +1,14 @@
+v13.32: the quick ascent says your own gun is in the stash
+
+The quick ascent skips the sector page, so v13.31's line never reached it. Since his
+ruling a new player's pack guns wait in the stash with nothing equipped, and that door
+issued a loaner silently.
+
+At landing, when the gun in hand was issued and a gun waits in the stash, one line
+names Equip as your gun. It waits in G.msgNext while the weather line shows and the
+frame loop shows it when that runs out, instead of overwriting it.
+
+Check 13.32 presses the quick ascent at the lift and steps the real loop past the
+weather line. Fails on v13.31.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -11,41 +11,47 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v13.31 CHECK, inserted before the v13.29 entry (v13.30 was a harness build with no
-# check of its own).
+# v13.31 CHECK, inserted before the v13.29 entry (v13.30 was a harness build).
 #
-# IT DRAWS THE REAL ASCENT SCREEN through renderStage and reads the warning it wrote,
-# for a player with no gun equipped: once with a gun in his stash, where the line must
-# name Equip as your gun, and once with none, where naming it would send him looking
-# for a gun that is not there. The profile fields it sets are put back in finally.
+# ON THE PLAY PATH: it draws the sector page through renderSector, the same call the
+# lift's E act makes, and reads the kit box the player actually sees before the loadout
+# question. The first attempt at this build drew the ascent check screen directly,
+# which nothing in the game opens, and passed for that reason alone.
 SubRx @'
   {v:'13.29',what:'the welcome pack goes to the stash: both guns land there as gun items, nothing is added to the armoury, nothing is equipped for him, and every row in the window says to your stash (his ruling of 2026-09-13)',
 '@ @'
-  {v:'13.31',what:'the ascent screen tells a player going up with no gun of his own how to take one from his stash, Equip as your gun, and only when his stash holds a gun (the pack guns wait there since his ruling)',
+  {v:'13.31',what:'the sector page the lift opens tells a player with nothing equipped that he has a gun of his own in his stash and how to take it, Equip as your gun, and only when his stash holds a gun (the pack guns wait there since his ruling)',
    run:function(){
-     if(typeof renderStage!=='function') return 'SKIP: this fixture cannot draw the ascent screen';
-     var W=document.getElementById('stagewarn'); if(!W) return 'SKIP: this build has no ascent warning';
+     if(typeof renderSector!=='function') return 'SKIP: this fixture cannot draw the sector page';
+     var K=document.getElementById('sectorkit'); if(!K) return 'SKIP: this build has no sector kit box';
      if(!ITEMS.gun_smg||!WEAPONS.smg) return 'SKIP: this build has no stash gun item to stage';
      var bad=[];
      var keep={equipped:P.equipped,equippedSec:P.equippedSec,weapons:(P.weapons||[]).slice(),stash:(P.stash||[]).slice(),kit:(P.kit||[]).slice(),freeKit:P.freeKit};
-     function warnText(){ try{ renderStage(); }catch(_s){} return (W.style.display==='none')?'':String(W.textContent||''); }
+     var needle=['Equip','as','your','gun'].join(' ');
+     function boxText(){ try{ renderSector(); }catch(_s){} return String(K.textContent||''); }
      try{
-       // ONE: no gun equipped, and a pack gun waiting in the stash.
+       // ONE: nothing equipped, and a pack gun waiting in the stash.
        P.freeKit=0; P.equipped='fists'; P.equippedSec='none'; P.weapons=['pistol']; P.kit=[]; P.stash=['gun_smg','bandage'];
-       var a=warnText();
-       if(!a) return 'SKIP: the ascent screen drew no warning for a player with no gun equipped';
-       if(a.indexOf('Equip as your gun')<0)
-         bad.push('a player going up with no gun of his own, with a gun waiting in his stash, is not told how to take it: the obvious click packs it as loot and a loaner goes in his hands ['+a+']');
+       var a=boxText();
+       if(!a) return 'SKIP: the sector page drew an empty kit box';
+       if(a.indexOf(needle)<0)
+         bad.push('a player with nothing equipped and a gun of his own in his stash is told only that he goes up with an issued gun, on the last screen before the lift ['+a.slice(0,140)+']');
 
-       // TWO: no gun equipped and no gun in the stash either.
+       // TWO: nothing equipped and no gun in the stash either.
        P.stash=['bandage'];
-       var b=warnText();
-       if(b.indexOf('Equip as your gun')>=0)
-         bad.push('a player with no gun anywhere in his stash is told to equip one from it, so he goes looking for a gun that is not there');
+       var b=boxText();
+       if(b.indexOf(needle)>=0)
+         bad.push('a player with no gun in his stash is told to equip one from it, so he goes looking for a gun that is not there');
+
+       // THREE: a gun equipped, with another in the stash. He is not going up with a loaner.
+       P.equipped='pistol'; P.stash=['gun_smg'];
+       var c=boxText();
+       if(c.indexOf(needle)>=0)
+         bad.push('a player who already has a gun equipped is told to equip one from his stash');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ P.equipped=keep.equipped; P.equippedSec=keep.equippedSec; P.weapons=keep.weapons; P.stash=keep.stash; P.kit=keep.kit; P.freeKit=keep.freeKit; saveProfile(); }catch(_r){}
-       try{ var sm=document.getElementById('stagemodal'); if(sm) sm.classList.remove('on'); }catch(_m){}
+       try{ renderSector(); }catch(_rs){}
        try{ __topClear(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},

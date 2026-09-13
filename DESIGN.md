@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.31 - THE SECTOR PAGE SAYS YOU HAVE A GUN IN YOUR STASH
+
+FOLLOWS FROM HIS RULING. Since v13.29 a new player's welcome pack guns sit in his
+stash as items, with nothing equipped.
+
+THE LAST SCREEN BEFORE THE LIFT DID NOT SAY SO. The lift's E act opens the sector
+page, whose kit box reads "Going up with: a gun issued at the lift". That is the last
+word before the loadout question, and both of its answers go straight up. buildRaid
+takes the gun in his hands only from the equipped slot, so he climbed with a loaner
+while two guns of his own waited in the stash.
+
+THE PATH THAT WORKS ALREADY EXISTED. The stash item menu has "Equip as your gun",
+which moves the gun into the armoury and equips it. The kit box now names it, only
+when nothing is equipped and a usable gun is in the stash, in its own line, and it
+names the menu choice rather than right-click so it holds on a controller.
+
+A FIRST ATTEMPT WAS PARKED BEFORE COMMIT. It put the same line on the ascent check
+screen, and its corpus was passing. Nothing in the game opens that screen any more:
+the sector page's ASCEND goes to the loadout question, confirmed live. Its check
+passed only because it drew the screen itself.
+
+MEASURED. Check 13.31 draws the sector page through renderSector, the call the lift
+makes, with nothing equipped: with a gun in the stash the kit box must name Equip as
+your gun; with none, or with a gun already equipped, it must not. Fails on v13.30.
+
+Not verified: the quick ascent, which skips the sector page by design and still
+climbs with a loaner and no word; whether he would rather the lift equip a stash gun
+for him; and the other checks that draw the ascent check screen directly, which
+measure a screen no player reaches.
 ## v13.30 - THE TEST RUNNER CAN RUN A SLICE OF THE CHECKS
 
 A HARNESS BUILD. Nothing in the game changes.

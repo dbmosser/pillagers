@@ -1,0 +1,28 @@
+## v13.32 - THE QUICK ASCENT SAYS YOUR OWN GUN IS IN THE STASH
+
+THE SECOND DOOR. v13.31 put the stash-gun line on the sector page. The lift's quick
+ascent key skips that page by design and starts the raid at once. Since his ruling a
+new player's pack guns wait in the stash with nothing equipped, so that door rolls
+him a random starter, and buildRaid issues it without a word. The only message about
+issued guns fires when he tries to stow one.
+
+ONE LINE AT LANDING, only when the gun in his hands was issued and a usable gun of his
+own is in the stash. It is said on every door, because the raid is where the loaner is
+actually in his hands, so a player who came through the sector page and still did not
+equip hears it once more.
+
+IT WAITS ITS TURN. say() holds one message for 3.2 seconds, and a second say in the
+same frame overwrites the first, which is the fault his notes found twice. Landing
+already says the weather line. While a message is showing, the line is kept in
+G.msgNext and the frame loop shows it the moment the current one runs out. Nothing
+else uses that slot.
+
+MEASURED. Check 13.32 stands on the lift, presses the quick ascent key through the
+floor update, steps the real frame loop about five seconds, past the weather line, and
+records every message shown. With a gun in the stash the line must appear; with none,
+or with a gun of his own equipped, it must not. Fails on v13.31.
+
+Not verified: the rival warning, a separate 4-second timer that still says its line
+over whatever is showing, so on a raid with both a weather line and a rival the
+loaner line shows for under a second; and whether he wants the lift to equip a stash
+gun for him instead.

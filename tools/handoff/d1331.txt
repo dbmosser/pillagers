@@ -1,29 +1,29 @@
-## v13.31 - THE ASCENT SCREEN SAYS HOW TO TAKE A GUN FROM THE STASH
+## v13.31 - THE SECTOR PAGE SAYS YOU HAVE A GUN IN YOUR STASH
 
 FOLLOWS FROM HIS RULING. Since v13.29 a new player's welcome pack guns sit in his
-stash as items. The ascent screen warns "Going up with no gun of your own. That is
-allowed", and the obvious next move is to click the gun in the stash panel beside it.
+stash as items, with nothing equipped.
 
-THAT CLICK PACKS IT AS LOOT. It is "carry one": the gun goes into the backpack.
-buildRaid takes the gun in his hands only from the equipped slot and issues a random
-starter when that is empty, so he climbed with his pack gun as loot and a loaner in
-his hands, and nothing on the screen said otherwise.
+THE LAST SCREEN BEFORE THE LIFT DID NOT SAY SO. The lift's E act opens the sector
+page, whose kit box reads "Going up with: a gun issued at the lift". That is the last
+word before the loadout question, and both of its answers go straight up. buildRaid
+takes the gun in his hands only from the equipped slot, so he climbed with a loaner
+while two guns of his own waited in the stash.
 
-THE PATH THAT WORKS ALREADY EXISTED. Every stash cell on that screen is built by
-invCell and carries the item menu, and "Equip as your gun" on a stash gun moves it
-into the armoury and equips it. Nothing told him it was there.
+THE PATH THAT WORKS ALREADY EXISTED. The stash item menu has "Equip as your gun",
+which moves the gun into the armoury and equips it. The kit box now names it, only
+when nothing is equipped and a usable gun is in the stash, in its own line, and it
+names the menu choice rather than right-click so it holds on a controller.
 
-THE WARNING NOW NAMES IT, ONLY WHEN IT APPLIES: no gun equipped and a usable gun in
-the stash. It names the menu choice rather than right-click, because a controller
-opens the same menu another way.
+A FIRST ATTEMPT WAS PARKED BEFORE COMMIT. It put the same line on the ascent check
+screen, and its corpus was passing. Nothing in the game opens that screen any more:
+the sector page's ASCEND goes to the loadout question, confirmed live. Its check
+passed only because it drew the screen itself.
 
-NOT DONE, AND HIS CALL: making a plain click on a gun equip it instead of packing it.
-That would change what a click does on every stash gun, including a spare he means to
-carry up and sell, so it is a design decision rather than a fix.
+MEASURED. Check 13.31 draws the sector page through renderSector, the call the lift
+makes, with nothing equipped: with a gun in the stash the kit box must name Equip as
+your gun; with none, or with a gun already equipped, it must not. Fails on v13.30.
 
-MEASURED. Check 13.31 draws the ascent screen through renderStage for a player with no
-gun equipped, once with a gun in his stash and once without, requires the warning to
-name Equip as your gun only in the first case, and fails on v13.30.
-
-Not verified: the in-raid path, where a gun carried in the backpack can still be
-equipped from the backpack; and whether he would rather the click itself equip.
+Not verified: the quick ascent, which skips the sector page by design and still
+climbs with a loaner and no word; whether he would rather the lift equip a stash gun
+for him; and the other checks that draw the ascent check screen directly, which
+measure a screen no player reaches.

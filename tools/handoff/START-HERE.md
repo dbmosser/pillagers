@@ -1045,3 +1045,45 @@ the corpus that does not end its raid through the harness.
   your own" (HIS baked edit), yet buildRaid sets wepIssued=false for it on purpose
   (v6.88: take the freebie and extract, you keep it). Behaviour is right; only the
   loaner is left behind. The word is his for the freebie kit, so it was not renamed.
+- ASCENT BELT SLOT REFUSES A DROPPED GUN WITH ONLY A CLANK (hunted 2026-09-13, do not
+  re-hunt): renderStage binds two drop paths on each [data-plan] slot. The game drag
+  (dropzone, through planPut) takes a gun like any item, per his v6.60 note. The
+  native HTML5 'drop' listener beside it refuses any gun with sfx('clank') and no
+  words. UNREACHABLE: stash cells are draggable=true, but grabbable() calls
+  preventDefault on mousedown, and Chrome starts no native drag after that, so only
+  the game drag ever fires. Dead code, not a player-facing defect. Remove it only as
+  part of a cleanup build.
+- A BETTER GUN AUTO-EQUIPPED IN A RAID SENDS THE OLD ONE TO THE BACKPACK UNBELTED
+  (hunted 2026-09-13, do not re-hunt): pickup at the auto-equip branch pushes the
+  displaced gun to G.bag without autoBelt, unlike every other pickup. BY DESIGN: the
+  belt's gun cells are the two guns in hand (hotbarSlots gunA/gunB), a backpack gun
+  is loot, and extraction banks it back to the armoury through bankItem. The only
+  gap is that the line "X equipped, +N% damage." does not say where the old gun
+  went, and v12.73 keeps that line rather than speaking it. Not worth a build without
+  his say.
+- A CONTROLLER HAS NO BACK-OUT BUTTON (hunted 2026-09-13, FLAGGED FOR HIS RULING,
+  not built): his B order is keyboard B (the 10719 handler). PADTAP maps pad B
+  (button 1) to Space, the dodge roll; View to Tab (inventory) and Menu to KeyP
+  (pause). No pad button reaches KeyB or Escape, and PADLABEL has no KeyB entry.
+  NOTHING IS MISLABELLED: the keyboard key list says B backs out, both controller
+  lists say B is the roll, and no prompt passes KeyB through the pad label reader.
+  The gap is functional: a controller player cannot close an Undercroft window by
+  button. Giving pad B the back-out while a window is open (you cannot roll with a
+  modal up) is the obvious candidate, but which button backs out is his call.
+- FIRST v13.31 PARKED (2026-09-13): it put the stash-gun hint on the ASCENT CHECK
+  screen (stagemodal, renderStage, #stagewarn), and its corpus was passing. NOTHING
+  IN THE GAME OPENS THAT SCREEN: openModal takes a literal id and no call passes
+  stagemodal; the lift E act opens the sector page, whose ASCEND calls askKit, and
+  both answers there call ascendNow. Confirmed live on a v13.30 fixture: ASCEND on
+  the sector page leaves askmodal on and stagemodal off. The check passed only
+  because it called renderStage itself. Redone as v13.31 on the sector page kit box
+  (syncSectorKit, #sectorkit), drawn through renderSector, which the lift calls.
+  STANDING DOUBT: every check that draws stagemodal directly measures a screen no
+  player reaches; audit those before trusting them.
+- CHECKS THAT DRAW THE UNREACHABLE ASCENT CHECK SCREEN (listed 2026-09-13, audit
+  before trusting): v12.67, v12.39 (part two reads #stagesum; part one, the gun slot
+  after a death, is real), v12.38, v10.12, v9.98, v9.89. All call __renderStage.
+  renderStage itself is not dead: renderHub and the freebie button call it, and some
+  stage elements live on the stash screen, so only assertions on stagemodal content
+  are hollow. No player-facing string names the ascent check; every mention in the
+  game is a code comment.

@@ -1,14 +1,14 @@
-v13.31: the ascent screen says how to take a gun from the stash
+v13.31: the sector page says you have a gun in your stash
 
-Since his ruling, a new player's pack guns wait in the stash. The ascent screen warned
-he was going up with no gun of his own, and the obvious click on the stash gun packs
-it as loot, while buildRaid issues a starter when nothing is equipped.
+Since his ruling, a new player's pack guns wait in the stash with nothing equipped.
+The sector page the lift opens said only "Going up with: a gun issued at the lift",
+the last word before the loadout question, and he climbed with a loaner.
 
-"Equip as your gun" already works on stash gun items, from the same screen. The
-warning now names it, only when no gun is equipped and a gun is in the stash, without
-saying right-click so it holds for controllers. Making the click itself equip is his
-design call and was not done.
+The kit box now names Equip as your gun, in its own line, only when nothing is
+equipped and a gun is in the stash.
 
-Check 13.31 draws the ascent screen with and without a stash gun. Fails on v13.30.
+A first attempt put the line on the ascent check screen, which nothing opens any
+more; it was parked before commit. Check 13.31 draws the sector page through
+renderSector, the lift's own call. Fails on v13.30.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

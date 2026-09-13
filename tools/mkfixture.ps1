@@ -5715,6 +5715,41 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.31',what:'the sector page the lift opens tells a player with nothing equipped that he has a gun of his own in his stash and how to take it, Equip as your gun, and only when his stash holds a gun (the pack guns wait there since his ruling)',
+   run:function(){
+     if(typeof renderSector!=='function') return 'SKIP: this fixture cannot draw the sector page';
+     var K=document.getElementById('sectorkit'); if(!K) return 'SKIP: this build has no sector kit box';
+     if(!ITEMS.gun_smg||!WEAPONS.smg) return 'SKIP: this build has no stash gun item to stage';
+     var bad=[];
+     var keep={equipped:P.equipped,equippedSec:P.equippedSec,weapons:(P.weapons||[]).slice(),stash:(P.stash||[]).slice(),kit:(P.kit||[]).slice(),freeKit:P.freeKit};
+     var needle=['Equip','as','your','gun'].join(' ');
+     function boxText(){ try{ renderSector(); }catch(_s){} return String(K.textContent||''); }
+     try{
+       // ONE: nothing equipped, and a pack gun waiting in the stash.
+       P.freeKit=0; P.equipped='fists'; P.equippedSec='none'; P.weapons=['pistol']; P.kit=[]; P.stash=['gun_smg','bandage'];
+       var a=boxText();
+       if(!a) return 'SKIP: the sector page drew an empty kit box';
+       if(a.indexOf(needle)<0)
+         bad.push('a player with nothing equipped and a gun of his own in his stash is told only that he goes up with an issued gun, on the last screen before the lift ['+a.slice(0,140)+']');
+
+       // TWO: nothing equipped and no gun in the stash either.
+       P.stash=['bandage'];
+       var b=boxText();
+       if(b.indexOf(needle)>=0)
+         bad.push('a player with no gun in his stash is told to equip one from it, so he goes looking for a gun that is not there');
+
+       // THREE: a gun equipped, with another in the stash. He is not going up with a loaner.
+       P.equipped='pistol'; P.stash=['gun_smg'];
+       var c=boxText();
+       if(c.indexOf(needle)>=0)
+         bad.push('a player who already has a gun equipped is told to equip one from his stash');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P.equipped=keep.equipped; P.equippedSec=keep.equippedSec; P.weapons=keep.weapons; P.stash=keep.stash; P.kit=keep.kit; P.freeKit=keep.freeKit; saveProfile(); }catch(_r){}
+       try{ renderSector(); }catch(_rs){}
+       try{ __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.29',what:'the welcome pack goes to the stash: both guns land there as gun items, nothing is added to the armoury, nothing is equipped for him, and every row in the window says to your stash (his ruling of 2026-09-13)',
    run:function(){
      if(typeof maybeWelcome!=='function'||typeof WELCOME_PACK==='undefined') return 'SKIP: this fixture cannot open the welcome pack';
