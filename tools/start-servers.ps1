@@ -49,6 +49,14 @@ else { Start-Bg $collector @('-Root', $Root, '-Port', '8799'); "8799 collector  
 # 8779: image sink, so a rendered frame can be written to disk and looked at.
 Start-Bg $capture @()
 
+# 8803-8810: CORPUS SHARDS, his order of 2026-09-13 to use the whole machine while
+# he is away. Same tools folder as 8800, but each port is its own origin, so each
+# shard has its own localStorage and cannot inherit another shard profile.
+foreach ($sp in 8803,8804,8805,8806,8807,8808,8809,8810) {
+  if (Test-Port $sp 'fixture.html') { "$sp shard       already up" }
+  else { Start-Bg $serve @('-Root', $tools, '-Port', "$sp"); "$sp shard       starting" }
+}
+
 Start-Sleep -Seconds 3
 ""
 "--- listening ---"

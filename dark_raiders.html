@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.28';
+var VER='13.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29562,7 +29562,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.28: A BRAND-NEW SAVE SAID CONTINUING. Found by walking a fresh save, the way every friend on itch starts: the save list on the title screen tags whichever save you are on as CONTINUING, and it did that for a save with no raids at all, right beside the line that says 0 raids, so a player on his first ever launch was told he was continuing something. The tag now reads the same number the line prints: slotInfo already returns the saved run count and the line beside the tag uses it, so the current save reads CONTINUING once it has a raid and NEW until then, with no new field and no new rule. Not his wording, since none of his baked edits touches it, and no check keys on it',
+  now:'v13.29: HIS RULING of 2026-09-13, the initial welcome pack goes to the stash. It reverses v10.67, which had TAKE put the pack guns into the armoury and into the player hands, the first into an empty first slot and the second into an empty second slot, while the pack window said the guns went to the armoury and the pack description already said everything went straight into the stash; his rule makes that description the truth. Everything goes to the stash, guns included, as gun items, gun_smg and gun_carbine, the same form a gun found in a container or crafted at the bench takes, and the stash right-click menu already offers Equip as your gun on them. Nothing is equipped for him and nothing is added to the armoury, so he packs on purpose, the same stash-first rule as coming back empty at v12.87. The consequence is stated, not hidden: a new player who takes the pack and does not equip a gun goes up with nothing of his own, and the ascent screen already warns him in exactly those words before he climbs. Every row in the pack window now says to your stash. Three checks encoded the reversed rule and are repaired in the same build: 13.07 required the pack to put a gun in his hands, and keeps its declining and consent arms; 10.67 was entirely the hands rule, and now guards the part that survives, that TAKE never touches a gun the player chose; 10.29 required the guns in the armoury, and now requires them in the stash. Check 13.29 presses the real TAKE on a brand-new player and requires both guns in the stash as items, none added to the armoury, nothing equipped, and every row saying to your stash; it fails on v13.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34123,23 +34123,26 @@ function maybeWelcome(){
   var rows='';
   for(var g=0;g<WELCOME_PACK.guns.length;g++){ var W=WEAPONS[WELCOME_PACK.guns[g]]; if(!W) continue;
     var rr2=(typeof gunRarity==='function')?gunRarity(W.id):'common';
-    rows+='<div class="row"><div style="flex:1"><b class="r-'+rr2+'">'+W.name+'</b><div class="hint">'+rr2+' gun, to your armoury</div></div></div>'; }
+    rows+='<div class="row"><div style="flex:1"><b class="r-'+rr2+'">'+W.name+'</b><div class="hint">'+rr2+' gun, to your stash</div></div></div>'; }
   var counts={}; for(var i=0;i<WELCOME_PACK.items.length;i++) counts[WELCOME_PACK.items[i]]=(counts[WELCOME_PACK.items[i]]||0)+1;
   for(var k in counts){ var it=ITEMS[k]; if(!it) continue;
     rows+='<div class="row"><div style="flex:1"><b class="r-'+(it.r||'common')+'">'+it.name+(counts[k]>1?' x'+counts[k]:'')+'</b><div class="hint">to your stash</div></div></div>'; }
   box.innerHTML=rows;
   document.getElementById('welcometake').onclick=function(){
     P.weapons=P.weapons||[];
-    for(var g2=0;g2<WELCOME_PACK.guns.length;g2++) if(WEAPONS[WELCOME_PACK.guns[g2]]&&P.weapons.indexOf(WELCOME_PACK.guns[g2])<0) P.weapons.push(WELCOME_PACK.guns[g2]);
+    // v13.29, HIS RULING 2026-09-13: the whole pack goes to the stash, guns included,
+    // as the gun items a container or the bench would give. Nothing is equipped for
+    // him and nothing is added to the armoury.
     P.stash=P.stash||[];
+    for(var g2=0;g2<WELCOME_PACK.guns.length;g2++){ var _gi='gun_'+WELCOME_PACK.guns[g2]; if(WEAPONS[WELCOME_PACK.guns[g2]]&&ITEMS[_gi]) P.stash.push(_gi); }
     for(var i2=0;i2<WELCOME_PACK.items.length;i2++) if(ITEMS[WELCOME_PACK.items[i2]]) P.stash.push(WELCOME_PACK.items[i2]);
     // v10.67: and into his HANDS. The deploy issues a starter to anyone who has
     // equipped nothing, so without this the two guns he was just given sit in
     // the armoury while his first raid hands him something else entirely.
     // Only into empty slots: a player who has already chosen keeps his choice.
-    var _wg=WELCOME_PACK.guns;
-    if((!P.equipped||P.equipped==='fists')&&_wg[0]&&WEAPONS[_wg[0]]) P.equipped=_wg[0];
-    if((!P.equippedSec||P.equippedSec==='none'||P.equippedSec==='fists')&&_wg[1]&&WEAPONS[_wg[1]]&&_wg[1]!==P.equipped) P.equippedSec=_wg[1];
+    // v13.29: v10.67 equipped the pack guns here. His ruling puts the pack in the
+    // stash instead, so he packs on purpose and the ascent screen tells him if he is
+    // going up with no gun of his own.
     P.welcomed=1; saveProfile();
     md.classList.remove('on');
     try{ if(typeof renderHub==='function') renderHub(); }catch(e){}

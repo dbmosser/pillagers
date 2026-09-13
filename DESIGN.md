@@ -40024,6 +40024,47 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.29 - THE WELCOME PACK GOES TO THE STASH
+
+HIS RULING, 2026-09-13: "initial welcome pack should go to the stash."
+
+WHAT IT REVERSES. Since v10.67, TAKE put the pack guns into the armoury AND into the
+player's hands: the first into an empty first slot, the second into an empty second
+slot, so a new player went up holding both. The pack window's gun rows said "to your
+armoury", while the pack description above them already said everything went
+"straight into your stash". His rule makes the description the truth.
+
+EVERYTHING GOES TO THE STASH, GUNS INCLUDED. A gun in the stash is an item, gun_smg
+and gun_carbine, the same form a gun found in a container or crafted at the bench
+takes, and the stash right-click menu already offers "Equip as your gun" on it.
+Nothing is equipped for him and nothing is added to the armoury. He packs on purpose,
+which is the same stash-first rule as coming back empty at v12.87.
+
+THE CONSEQUENCE IS STATED, NOT HIDDEN. A new player who takes the pack and does not
+equip a gun goes up with nothing of his own, and the ascent screen already warns him
+in exactly those words, "Going up with no gun of your own", before he climbs.
+
+EVERY ROW IN THE PACK WINDOW NOW SAYS "TO YOUR STASH", because that is where every
+line goes.
+
+THREE CHECKS ENCODED THE REVERSED RULE, repaired in the same build, the same way a
+check asserting a reversed spec was repaired at r1287:
+- 13.07 required the pack to put a gun in his hands. Its declining and consent arms
+  stay; the two hands assertions go.
+- 10.67 was entirely the hands rule. It now guards the part that survives: TAKE never
+  touches a gun the player chose.
+- 10.29 required the guns in the armoury. It now requires them in the stash.
+- 10.66 also required a gun in the armoury. The single-tab gates never ran it; the
+  first sharded corpus run caught it, and r1329 repaired it before this commit.
+
+MEASURED. Check 13.29 presses the real TAKE on a brand-new player and requires both
+guns in the stash as items, none added to the armoury, nothing equipped, and every
+row saying to your stash. It fails on v13.28.
+
+Not verified: how a new player who never opens the stash finds the Equip option for
+a pack gun, which is a discoverability question about the stash rather than the pack;
+and whether he wants the starter pistol the first raid issues to a player with no gun
+of his own to stay as it is.
 ## v13.28 - A BRAND-NEW SAVE NO LONGER SAYS CONTINUING
 
 FOUND BY WALKING A FRESH SAVE, the way every friend on itch starts. The save list on
