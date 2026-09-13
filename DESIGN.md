@@ -40024,6 +40024,31 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.33 - A LINE THAT MUST NOT BE LOST WAITS ITS TURN
+
+THE RIVAL WARNING WROTE OVER WHATEVER WAS SHOWING. v13.32 gave landing one waiting
+line, shown when the current message runs out. The rival warning is a separate
+4-second timer that called say() directly, and say() holds one message and overwrites
+it. On a raid with a weather line and a rival, the loaner line showed for under a
+second before the rival line wrote over it. A second line waiting at the same time
+would also have replaced the first in the one slot.
+
+A SHORT QUEUE REPLACES THE SLOT. sayWhenFree(m) says the line at once when nothing is
+showing, and otherwise queues it in G.msgQ; the frame loop shows the next queued line
+each time the current message runs out. The loaner line and the rival warning both go
+through it. The rival line keeps its 4-second delay and its guard. Every other say()
+is unchanged, so nothing else waits.
+
+MEASURED. Check 13.33 starts a real raid, lets landing finish, shows a line, queues two
+more behind it, steps the real frame loop about twelve seconds, and requires all three
+to be shown in order with none lost; and, as a control, that a line sent with nothing
+showing is said at once. On v13.32 the check drives the direct say() the rival
+warning used, and the first two lines are lost. Fails on v13.32.
+
+Not verified: the rival warning itself firing on a live raid with a weather line,
+since its 4-second timer is asynchronous and the corpus runs checks synchronously;
+the change there is the one call, and the queue it now uses is what the check
+measures. Also not verified: whether any other message deserves to wait its turn.
 ## v13.32 - THE QUICK ASCENT SAYS YOUR OWN GUN IS IN THE STASH
 
 THE SECOND DOOR. v13.31 put the stash-gun line on the sector page. The lift's quick

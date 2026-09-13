@@ -1087,3 +1087,24 @@ the corpus that does not end its raid through the harness.
   stage elements live on the stash screen, so only assertions on stagemodal content
   are hollow. No player-facing string names the ascent check; every mention in the
   game is a code comment.
+- A NEW PROFILE OWNS A PISTOL BUT RAIDS WITH A LOANER (hunted 2026-09-13, do not
+  re-hunt, DELIBERATE): the born profile is weapons ['pistol'], equipped 'fists'
+  (P literal near line 2173). v2.80 chose that so a fresh player gets a rolled
+  starter instead of two identical pistols; its own not-verified line asked whether
+  the armoury pistol should go too, and v13.29's record flags the starter question
+  for his ruling. The v13.31 sector line and v13.32 landing line look only at STASH
+  guns on purpose: pointing a new player at the armoury pistol would undo v2.80.
+- FRESH-PROFILE WALK AFTER v13.33, LIVE ON A CLEARED :8804 ORIGIN (2026-09-13, do not
+  re-walk this stretch): born on the title screen, 900 Credits, empty stash, weapons
+  ['pistol'], fists equipped. Entering the Undercroft opens the welcome pack window by
+  itself; every row says to your stash. TAKE THE PACK closes it with the toast "The
+  welcome pack is in your stash." and equips nothing (guns land as gun_smg and
+  gun_carbine). First raid: a loaner (Scuttle) is issued; at landing the fog line
+  shows and the v13.32 loaner line waits in G.msgQ behind it (v13.33 queue confirmed
+  on the play path). Death card: the loaner is not counted lost, both pack guns stay
+  in the stash, fists stay equipped (COMING BACK EMPTY holds). The card lists an
+  Armour Plate and two Bandages lost, $460: with nothing packed the raid packs the
+  STANDARD KIT out of the stash (kitChosen 0), which is the long-standing rule, not a
+  defect; a new player who takes the pack and goes up without packing risks those
+  items, and whether that should change is his call. "0 seconds on the surface,
+  killed by unknown" was the probe ending the raid at once, not data.

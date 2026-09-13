@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.32';
+var VER='13.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10684,13 +10684,13 @@ if(G.wx.id!=='clear'&&G.wx.line) say(G.wx.line);
   try{
     if(!G.sim&&G.player&&G.player.wepIssued&&(P.stash||[]).some(function(k){ var it=ITEMS[k]; return it&&it.use==='gun'&&it.gk&&WEAPONS[it.gk]; })){
       var _loanLn='You are carrying a loaner. Your own gun waits in your stash: choose Equip as your gun on it there before your next ascent.';
-      if(G.msgT>0) G.msgNext=_loanLn; else say(_loanLn);
+      sayWhenFree(_loanLn);   // v13.33: through the queue, so nothing writes over it
     }
   }catch(_loan0){}
   for(var _rv=0;_rv<G.ents.length;_rv++){
     if(G.ents[_rv].rival){
       G.tel.rivalMet=1;
-      setTimeout((function(nm,g0){return function(){ if(G===g0&&!G.over) say('YOUR RIVAL is out here: '+nm+'. He will shoot on sight.'); };})(G.ents[_rv].name,G),4000);
+      setTimeout((function(nm,g0){return function(){ if(G===g0&&!G.over) sayWhenFree('YOUR RIVAL is out here: '+nm+'. He will shoot on sight.'); };})(G.ents[_rv].name,G),4000);   // v13.33: waits its turn
       break;
     }
   }
@@ -12286,6 +12286,14 @@ function hubToast(t){
     if(e2) e2.classList.remove('on');
     HUBTOAST_T=null;
   },5000);
+}
+// v13.33: SAY IT WHEN NOTHING ELSE IS SHOWING. say() holds one message and a second
+// call writes over it; a line that must not be lost waits in G.msgQ, and the frame
+// loop shows the next one when the current message runs out. Outside a live raid
+// it is just say().
+function sayWhenFree(m){
+  if(G&&!G.sim&&G.msgT>0){ (G.msgQ=G.msgQ||[]).push(m); return; }
+  say(m);
 }
 function say(m){
   if(G&&!G.sim){ G.msg=m; G.msgT=3.2; return; }
@@ -29130,7 +29138,8 @@ function loop(ts){
       if(G.msgT>0) G.msgT-=dt;
       // v13.32: one waiting line, shown when the current message runs out rather than
       // written over it in the same frame.
-      if(G.msgNext&&!(G.msgT>0)){ var _mNext=G.msgNext; G.msgNext=null; say(_mNext); }
+      // v13.33: a short queue in place of the one slot, so two waiting lines both show.
+      if(G.msgQ&&G.msgQ.length&&!(G.msgT>0)) say(G.msgQ.shift());
       if(G.marked>0) G.marked-=dt;
       // Sound. Threat is the nearest hunting body, so the room tightens before
       // you see anything, and a heartbeat comes up as integrity falls.
@@ -29573,7 +29582,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.32: THE QUICK ASCENT SENT HIM UP WITH A LOANER WITHOUT A WORD WHILE HIS OWN GUN WAITED IN THE STASH. v13.31 put the stash gun line on the sector page, and the lift has a second door: the quick ascent key skips that page by design and starts the raid at once. Since his ruling a new player pack guns wait in the stash with nothing equipped, so that door rolls him a random starter, and buildRaid issues it silently; the only message about issued guns fires when he tries to stow one. One line at landing now, only when the gun in his hands was issued and a usable gun of his own is in the stash, said on every door because the raid is where the loaner is actually in his hands. It waits its turn: say holds one message for 3.2 seconds and a second say in the same frame overwrites the first, which is the fault his notes found twice, and landing already says the weather line, so while a message is showing the line is kept in G.msgNext and shown by the frame loop the moment the current one runs out. Check 13.32 presses the quick ascent key at the lift with nothing equipped, steps the real frame loop past the weather line, requires the line to be shown with a gun in the stash, and not with none or with a gun of his own equipped, and fails on v13.31',
+  now:'v13.33: THE RIVAL WARNING WROTE OVER WHATEVER WAS SHOWING, AND ONE WAITING SLOT COULD HOLD ONLY ONE LINE. v13.32 gave landing one waiting line, shown when the current message runs out. The rival warning is a separate 4 second timer that called say directly, and say holds one message and overwrites it, so on a raid with a weather line and a rival the loaner line showed for under a second before the rival line wrote over it, and a second waiting line would have replaced the first in the slot. A short queue replaces the slot: sayWhenFree says a line at once when nothing is showing and otherwise queues it, and the frame loop shows the next queued line each time the current message runs out. The loaner line and the rival warning both go through it; the rival line keeps its 4 second delay and its guard, and every other say is unchanged. Check 13.33 starts a raid, shows a message, queues two lines behind it through sayWhenFree, steps the real frame loop, and requires all three to be shown in order with none lost, and fails on v13.32',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
