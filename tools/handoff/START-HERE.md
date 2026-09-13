@@ -1189,3 +1189,8 @@ the corpus that does not end its raid through the harness.
   waiting. Reused shard origins go bad, so clear a shard origin's localStorage before
   each build's run. A pair of run-logging reds on one shard only means a stale profile
   until they fail alone on :8800.
+- v13.39 SHARDED RUN CLEAN (2026-09-13): shard.html now clears its origin's
+  localStorage before loading the fixture. All six slices passed, 467 checks, skips
+  exactly v8.88 and v11.24. __verifySafe takes 37 to 51 s, longer than a 45 s tool call:
+  launch it with setTimeout, store the result on window, and read it later. Running
+  it synchronously made the seed tab look wedged twice.

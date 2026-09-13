@@ -2,15 +2,20 @@
 <html><head><meta charset="utf-8"><title>shard</title>
 <style>body{margin:0;background:#111}iframe{width:1920px;height:1080px;border:0;display:block}</style></head>
 <body>
-<iframe id="f" src="fixture.html"></iframe>
+<iframe id="f"></iframe>
 <script>
 // One corpus shard. The fixture runs inside a fixed 1920x1080 frame, so its viewport
 // does not depend on the tab size, which the pane clears between turns. Each port is
 // its own origin with its own saved profile. Read window.__PROG from the tab.
+// v13.38 lesson: a shard origin reused across builds went bad (run-logging checks
+// failed there and the tab stopped answering), so each load starts from a clean
+// profile: this origin's storage is cleared BEFORE the fixture is loaded.
 var q = new URLSearchParams(location.search);
 var A = +(q.get('a') || 0), B = q.get('b') === null ? null : +q.get('b');
 var f = document.getElementById('f');
 window.__PROG = { done: 0, total: 0, finished: false, res: null, range: [A, B], hosted: true };
+try { localStorage.clear(); } catch (e) {}
+try { sessionStorage.clear(); } catch (e) {}
 f.onload = function () {
   var tries = 0;
   (function start() {
@@ -33,5 +38,6 @@ f.onload = function () {
     }, 6000);
   })();
 };
+f.src = 'fixture.html';
 </script>
 </body></html>
