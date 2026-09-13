@@ -5715,6 +5715,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.25',what:'the what-is-new card no longer promises Escape keeps fullscreen where it cannot: an entry about Escape and fullscreen says it only holds in the game own tab, and what happens inside another page such as itch (his report of 2026-09-12)',
+   run:function(){
+     if(typeof WHATSNEW==='undefined') return 'SKIP: this build has no what-is-new card';
+     var bad=[], about=0, honest=0;
+     for(var i=0;i<WHATSNEW.length;i++){
+       var t=String(WHATSNEW[i]), u=t.toUpperCase();
+       if(u.indexOf('ESC')<0||u.indexOf('FULLSCREEN')<0) continue;
+       about++;
+       var qualified=(u.indexOf('OWN TAB')>=0)||(u.indexOf('ANOTHER PAGE')>=0);
+       if(u.indexOf('NO LONGER DROPS YOU OUT OF FULLSCREEN')>=0&&!qualified)
+         bad.push('the card still promises that Escape no longer drops you out of fullscreen, and on itch, where every friend plays, it does, so the one line about it is false in exactly the place it is read');
+       if(qualified) honest++;
+     }
+     if(about&&!honest)
+       bad.push('no entry about Escape and fullscreen says what happens when the game is played inside another page, so a player on itch is told nothing true about the key he reported');
+     return bad.length?bad.join('; '):null; }},
   {v:'13.24',what:'finding a better gun with the second slot free tells you to swap to it on the tactical belt, not to press X, which searches',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__loop&&window.__keysRef&&window.__endRaid))
