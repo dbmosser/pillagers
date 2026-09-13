@@ -5715,6 +5715,40 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.28',what:'the save you are on is tagged NEW until it has a raid and CONTINUING after, instead of telling a player on his first ever launch that he is continuing something',
+   run:function(){
+     if(typeof titleRefresh!=='function'||typeof saveProfile!=='function') return 'SKIP: this fixture cannot save and redraw the save list';
+     var host=document.getElementById('slotlist'); if(!host) return 'SKIP: this build draws no save list';
+     if(typeof SLOT==='undefined') return 'SKIP: this fixture cannot tell which save is current';
+     var bad=[], keepRuns=P.runs;
+     function tag(){
+       try{ titleRefresh(); }catch(_t){}
+       var row=host.querySelector('[data-slot="'+SLOT+'"]');
+       if(!row) return null;
+       var sp=row.querySelector('b span');
+       return sp?String(sp.textContent||'').trim():'';
+     }
+     try{
+       // ONE: the current save has never been raided.
+       P.runs=0; saveProfile();
+       var a=tag();
+       if(a===null) return 'SKIP: the save list drew no row for the current save';
+       if(a==='CONTINUING')
+         bad.push('a save with no raids on it is tagged CONTINUING, right beside the line that says 0 raids, so a player on his first ever launch is told he is continuing something');
+       else if(a!=='NEW')
+         bad.push('a save with no raids is tagged ['+a+'] rather than NEW');
+
+       // TWO: the current save has a raid.
+       P.runs=1; saveProfile();
+       var b=tag();
+       if(b!=='CONTINUING')
+         bad.push('a save that has been played is tagged ['+String(b)+'] rather than CONTINUING, so the fix took the tag away from the case it was right for');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P.runs=keepRuns; saveProfile(); titleRefresh(); }catch(_r){}
+       try{ __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.27',what:'the title screen stops promising a new player a walkthrough that does not exist: it tells him to take the welcome pack only when the pack will be offered, and to walk to ENTER RAID either way',
    run:function(){
      if(typeof titleRefresh!=='function') return 'SKIP: this fixture cannot redraw the title line';

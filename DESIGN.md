@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.28 - A BRAND-NEW SAVE NO LONGER SAYS CONTINUING
+
+FOUND BY WALKING A FRESH SAVE, the way every friend on itch starts. The save list on
+the title screen tags whichever save you are on as CONTINUING. It did that for a save
+with no raids at all, right beside the line that says "0 raids", so a player on his
+first ever launch was told he was continuing something.
+
+THE TAG NOW READS THE SAME NUMBER THE LINE PRINTS. slotInfo already returns the saved
+run count and the line beside the tag already uses it. The current save reads NEW
+until it has a raid and CONTINUING after. No new field, no new rule.
+
+NOT HIS WORDING. None of his baked edits touches it. The one check that reads the
+save list, 9.18, only swaps it for a placeholder to measure scrolling and never reads
+the tag.
+
+MEASURED THE WAY THE TAG IS READ. slotInfo reads the saved slot from storage, not the
+live profile, so check 13.28 saves the run count, redraws through titleRefresh (the
+refresh check 11.73 already uses), and reads the tag it drew: NEW with no raids,
+CONTINUING with one. It restores and re-saves the run count, because every later
+check runs on this profile. It fails on v13.27.
+
+Not verified: other save slots than the current one, which carry no tag at all.
 ## v13.27 - THE TITLE SCREEN STOPS PROMISING A WALKTHROUGH THAT DOES NOT EXIST
 
 FOUND BY WALKING A BRAND-NEW SAVE, the way every friend on itch starts. The title
