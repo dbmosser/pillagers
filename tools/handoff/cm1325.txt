@@ -1,0 +1,14 @@
+v13.25: the game stops promising Escape keeps fullscreen where it cannot
+
+His report: ESC still kills fullscreen in Chrome on itch. v13.09's what's new entry
+promised it would not, which is true only for a top-level page. On itch the game is
+in a frame: itch fullscreens its own page, so the game never asks for the lock, and
+Chrome grants the keyboard lock only to top-level pages. Not fixable from the game.
+
+The entry now says Escape keeps fullscreen only with the game in its own tab, and
+names B for menus. F11 is not written into the game: untested on itch.
+
+Check 13.25 requires no unqualified promise and an honest line about embedded play.
+Fails on v13.24.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

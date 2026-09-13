@@ -1,0 +1,32 @@
+## v13.25 - THE GAME STOPS PROMISING ESCAPE KEEPS FULLSCREEN WHERE IT CANNOT
+
+HIS REPORT, 2026-09-12: "ESC still is killing the fullscreen in chrome on itch."
+
+THE GAME PROMISED OTHERWISE. v13.09 added a what's new entry: "ESC NO LONGER DROPS
+YOU OUT OF FULLSCREEN, IN CHROME AND EDGE." That is true only when the game is the
+top-level page. On itch it is not, and itch is where every friend plays, so the
+promise was false in exactly the place it was read.
+
+WHY IT CANNOT BE MADE TRUE FROM INSIDE THE GAME. fsOn reads the game document's
+fullscreen state, but itch's fullscreen button fullscreens itch's own page around
+the frame, so the game sees no fullscreen and never asks for the lock. And Chrome
+grants the keyboard lock only to a top-level page, so even fullscreening the game
+itself inside the frame cannot keep Escape. That is a browser rule, not a missing
+line of code. v13.09's lock still works when the game has its own tab.
+
+THE ENTRY NOW SAYS WHAT IS TRUE, and names B, the key that backs out of menus in
+every browser. It does NOT suggest F11. F11 browser fullscreen should survive
+Escape in Chrome on Windows, but it is untested on itch while the page is locked,
+and a promise the game cannot back is precisely the mistake being corrected. F11 was
+offered to him as something to try, not written into the game.
+
+WHATSNEW_VER IS NOT MOVED. This corrects a line below the fold rather than adding a
+change to how he plays, and re-showing the card for a correction would be a nag.
+
+MEASURED. Check 13.25 reads the list and applies a rule rather than one sentence: no
+entry may promise Escape keeps fullscreen unless it also says that only holds with
+the game in its own tab, and an entry about Escape and fullscreen must say what
+happens inside another page. It fails on v13.24.
+
+Not verified: F11 on itch, as above; and Edge, which shares Chrome's engine and
+should behave the same but was not opened.

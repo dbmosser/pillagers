@@ -978,3 +978,31 @@ the corpus that does not end its raid through the harness.
   player-facing string hard-codes a version. WHATSNEW_VER was the only rotting
   stamp, fixed at v13.22. The self-updating ones are VER (gated by parsecheck via
   DEVNOW) and the export header, which reads VER.
+- PROFILE-FIELD LEAK AUDIT (after the v13.18 wirtLotBought leak): every P.x=
+  assignment in lines added v13.10..v13.23 names only P.lastReport (pre-existing,
+  9 refs before v13.10, a status string check 13.20 restores in finally) and
+  P.wirtLotBought (new, reset by __cleanProfile since v13.23). No other new profile
+  field. RULE: a new profile field needs a line in __cleanProfile, or a later check
+  inherits it.
+- HELP-LINE AUDIT AFTER TODAY'S CONTROL CHANGES, CLOSED: the only false line was
+  the free-second-slot gun pickup saying "X swaps" (fixed v13.24; check v12.14 had
+  taken the same phrase off the controls card and missed this second copy). Its two
+  sibling lines are clean and name no key: the hand-swap line "<gun> equipped, +N%
+  damage." and the summary "Found: ...". No text anywhere claims a plate snaps on at
+  pickup. B is on the H key list (v13.23) and the what's new card (v13.22).
+- CHECK 12.73 ENCODED THE RETIRED "X swaps" WORDING: the v13.24 corpus failed it,
+  and its own failure message quoted the corrected line on screen, whole. Needle
+  was indexOf('swaps'); the line now ends "to swap." r1324.ps1 repaired both
+  needles to /\bswaps?\b/, same precedent as r1287 (a check asserting a spec the
+  build had just reversed). The fix was NOT reverted.
+- ESC ON ITCH, HIS REPORT 2026-09-12: "ESC still is killing the fullscreen in
+  chrome on itch". CAUSE, from the code: fsOn() reads the GAME document's
+  fullscreenElement; itch's fullscreen button fullscreens the iframe in ITCH's
+  document, so inside the frame fsOn() is false and fsKeyLock never locks. And
+  Chrome grants navigator.keyboard.lock only to a top-level page, so even the game's
+  own fullscreen cannot keep Escape inside an iframe. NOT FIXABLE FROM THE GAME.
+  v13.09's lock works only when the game is opened top-level.
+  WORKAROUND TOLD HIM: B backs out of menus; F11 browser fullscreen should not be
+  exited by Esc in Chrome on Windows (NOT VERIFIED on itch, page is locked).
+  FALSE LINE TO CORRECT AS v13.25: WHATSNEW entry "ESC NO LONGER DROPS YOU OUT OF
+  FULLSCREEN, IN CHROME AND EDGE" is untrue where friends play.

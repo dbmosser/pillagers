@@ -1,0 +1,33 @@
+## v13.24 - FINDING A GUN NO LONGER TELLS YOU TO PRESS X
+
+A LIVE FALSE INSTRUCTION, found by auditing every help line after today's control
+changes. Pick up a better gun with your second slot free and the game said the old
+gun "stays in hand, X swaps." X has not swapped weapons since the tactical belt
+took that job, and since v13.10 X searches what you are standing on.
+
+IT WAS SPOKEN, NOT DEAD CODE. autoEquipOn returns true for every human player (only
+the test bot keeps the dial), and the pickup summary says the kept gun line
+whenever it is set. So every player who found a better gun with the second slot
+free was told to press a key that does something else, at the exact moment he
+wanted the new gun.
+
+WHY THE EXISTING GUARD MISSED IT. Check v12.14 already took the X swaps line off the controls card on these same grounds and guards the
+WEAPONS rule text against "X swaps". This is a different string, built inside the
+pickup branch, so nothing was watching it.
+
+THE LINE NOW NAMES THE REAL SWAP: select the new gun on the tactical belt, which is
+what calls swapGuns for a keyboard player.
+
+MEASURED ON THE PLAY PATH. Check 13.24 searches a real container on the real key,
+holding the best gun in the table so a tier rise is guaranteed, with the second
+slot emptied because that is the branch under test. It captures what the game says
+and requires the line not to send him to X and to name the tactical belt. It skips
+honestly when the branch is not reached, since a line never spoken cannot be wrong.
+It fails on v13.23.
+
+THE SAME AUDIT, CLEAN ELSEWHERE: no text anywhere still claims a plate snaps on at
+pickup, and there is no other X-swap phrasing in the file.
+
+Not verified: the other two pickup lines in that branch (a better gun into your
+hands, and the summary for several items), which do not name a swap key; and
+whether "Select X on your tactical belt" reads naturally to him, which is his call.
