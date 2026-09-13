@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.39';
+var VER='13.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13306,7 +13306,9 @@ function openContainer(ct,onlyKeys){
         if(_hk) ct.loot.push(_hk);
       }
       ct.hotPaid=1; T.hotOpened=(T.hotOpened||0)+1;
-      if(!G.sim) say('Hot ground. There is more in here than there should be.');
+      // v13.40: KEPT HERE, SAID AFTER THE GRANT BELOW. grantLoot writes the Found line in
+      // this same call and say() holds one line, so said here it was never on screen.
+      var _hotLine=G.sim?'':'Hot ground. There is more in here than there should be.';
     }
   }
   ct.opened=true; T.containers++;
@@ -13339,6 +13341,9 @@ function openContainer(ct,onlyKeys){
   // building never touched this, so both sector fingerprints are unchanged, and
   // the live game and the sim lose the same draw so they stay in step.
   grantLoot(ct,ct.loot,_wnDelay);
+  // v13.40: the Found line is showing now, so the hot ground line waits its turn behind it
+  // instead of lying under it. Declared in the hot zone block above; undefined elsewhere.
+  if(_hotLine) sayWhenFree(_hotLine);
 }
 function grantLoot(ct,keys,delay0){
   // v12.73, 2026-09-08 first-hour audit: WHAT HAPPENED TO HIS GUNS SURVIVES THE
@@ -29610,7 +29615,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.39: THE SURVIVOR PAY LINE WAS WRITTEN OVER BY THE NOTORIETY LINE. Found by a read-only hunt and confirmed by two skeptics: helping the survivor says one sentence with where the cache is, what he paid and what he handed over, and a player carrying notoriety then had it lowered and heard Word of that will travel too with a plain say in the same call, so he never read the pay sentence. The notoriety line now waits its turn through sayWhenFree and follows when the pay sentence runs out; a player with no notoriety sees what he saw before, and nothing is reworded. Check 13.39 stages a survivor who wants a bandage, presses E beside him through the player update at notoriety 2, confirms he was helped and notoriety fell to 1, steps the frame loop, and requires the pay sentence and then the notoriety line on screen in that order; it fails on v13.38',
+  now:'v13.40: THE HOT GROUND BONUS LINE WAS WRITTEN OVER BY THE FOUND LINE. Found by a read-only hunt, confirmed by two skeptics and reproduced live on v13.34: a box inside the hot zone gained its two bonus items and the only line on screen was the Found line. Opening the box pushed the bonus items and said Hot ground, then the grant in the same call said the Found line over it. The line is now kept where it is built and said through sayWhenFree just after the grant, while the Found line shows, so it follows when that runs out; saying it through sayWhenFree in place would only work while a Took line happened to be showing. No loot, odds, wording or numbers change, and the sim is untouched. Check 13.40 moves the hot ground onto an ordinary box, holds X beside it through the frame loop until it opens, confirms the bonus was paid and the Found line showed, requires the hot ground line on screen exactly once, and requires a box off the hot ground never to say it; it fails on v13.39',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

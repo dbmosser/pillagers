@@ -1,0 +1,22 @@
+## v13.41 - A BOX THAT FINISHES A CONTRACT SAYS SO
+
+A LEAD FROM THE v13.40 REVIEW. Opening a box that finished an open or district
+contract ran contractOpen, which ran contractStep, which said "CONTRACT DONE" with a
+plain say. Then the grant, in the same openContainer call, said the Found line over it.
+So the only in-raid word that the contract was done never reached the screen.
+contractOpen has one caller, and nothing returns between it and the grant.
+
+FIX. contractStep takes an optional list. contractOpen passes one and returns it, so
+the lines a box finishes are held. openContainer says them through sayWhenFree just
+after the grant, behind the Found line and before the v13.40 hot ground line. The kill
+path passes no list and says the line at once, as before. No wording or numbers
+change.
+
+MEASURED. Check 13.41 stages an open contract one box short for a box type, holds X
+beside a box of that type through the frame loop until it opens, with machines, waves,
+the clock and the hot ground held. It confirms the contract finished and was recorded,
+and requires CONTRACT DONE on screen. Fails on v13.40.
+
+Not verified: a district contract, which takes the same held path through the same
+call but was not staged; and a player grenade killing his own hired mercenary, which
+can still write the mercenary death line over CONTRACT DONE on the kill path.

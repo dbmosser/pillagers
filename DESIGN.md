@@ -40024,6 +40024,30 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.40 - THE HOT GROUND BONUS LINE REACHES THE SCREEN
+
+FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34, and reproduced
+live: a box inside the hot zone gained its two bonus items and the only line on screen
+was "Found: Circuit Board, Armour Plate".
+
+ONE CALL DID BOTH. Opening the box pushed the bonus items and said "Hot ground. There
+is more in here than there should be.", then the grant in the same call said the Found
+line over it.
+
+FIX. The line is kept where it is built and said through sayWhenFree just after the
+grant, while the Found line shows, so it follows when that runs out. Saying it through
+sayWhenFree in place would only have worked while a Took line happened to be showing.
+No loot, odds, wording or numbers change, and the sim is untouched.
+
+MEASURED. Check 13.40 moves the hot ground onto an ordinary box, holds X beside it
+through the frame loop until it opens, confirms the bonus was paid and the Found line
+showed, requires the hot ground line on screen exactly once, and requires a box off the
+hot ground never to say it. Its tail after the open is 900 frames, on the advice of its
+reviewer, since a where-it-went line from v13.35 can wait ahead of it. Fails on v13.39.
+
+Not verified: the contract line from an open or district contract finished by the same
+box, which the Found line can still write over in that call; that belongs with the
+contract lines.
 ## v13.39 - THE SURVIVOR PAY LINE REACHES THE SCREEN
 
 FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34. Helping the
