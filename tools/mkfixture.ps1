@@ -5715,6 +5715,36 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.26',what:'the map screen shows every player the sector line he rewrote: the test robot extract rate in that map, without first contact, containers or median haul, whether or not that player has raided there (his baked edits matched only his own run counts)',
+   run:function(){
+     if(typeof renderSector!=='function'||typeof FIXED_MAPS==='undefined'||typeof SECTOR_MEAS==='undefined') return 'SKIP: this fixture cannot draw the map screen';
+     var host=document.getElementById('sectorlist'); if(!host) return 'SKIP: there is no map list to draw into';
+     var bad=[], keepLog=(P.log||[]).slice();
+     function title(n){ return String(n||'').toLowerCase().replace(/\b[a-z]/g,function(c){ return c.toUpperCase(); }); }
+     function rows(){ renderSector(); var out=[]; host.querySelectorAll('.sectorpick').forEach(function(r){ out.push(String(r.textContent||'').replace(/\s+/g,' ')); }); return out; }
+     function judge(label){
+       var rs=rows();
+       if(rs.length<2){ bad.push(label+': the map screen drew '+rs.length+' maps, not both'); return; }
+       for(var i=0;i<rs.length&&i<FIXED_MAPS.length;i++){
+         var t=rs[i], nm=FIXED_MAPS[i].name, MS=SECTOR_MEAS[i]||{};
+         if(MS.ext===undefined) continue;
+         if(t.indexOf('first contact ~')>=0||t.indexOf('median haul')>=0||t.indexOf('containers a raid')>=0)
+           bad.push(label+': '+nm+' still shows first contact, containers or median haul, the three figures he cut from this line');
+         if(t.indexOf('of its raids in '+title(nm)+'.')<0)
+           bad.push(label+': '+nm+' does not give the extract rate for that map in his words, ending "of its raids in '+title(nm)+'."');
+       }
+     }
+     try{
+       P.log=[];
+       judge('a player who has never raided either map');
+       P.log=[]; for(var j=0;j<FIXED_MAPS.length;j++) P.log.push({mapName:FIXED_MAPS[j].name});
+       judge('a player with one run on each map');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P.log=keepLog; renderSector(); }catch(_r){}
+       try{ __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.25',what:'the what-is-new card no longer promises Escape keeps fullscreen where it cannot: an entry about Escape and fullscreen says it only holds in the game own tab, and what happens inside another page such as itch (his report of 2026-09-12)',
    run:function(){
      if(typeof WHATSNEW==='undefined') return 'SKIP: this build has no what-is-new card';
@@ -13888,7 +13918,7 @@ window.__REGRESS=[
        if(SM&&SM.length>=2){
          for(var mi=0;mi<2;mi++){
            if(st.indexOf('extracts '+SM[mi].ext+'%')<0) bad.push('map '+mi+' shows a different extract figure from the code, which says '+SM[mi].ext);
-           if(st.indexOf('first contact ~'+SM[mi].fc+'s')<0) bad.push('map '+mi+' shows a different first contact from the code, which says '+SM[mi].fc);
+           // r1326: first contact is no longer printed on this line; his edit cut it and v13.26 shows his wording to everyone.
          }
          // CONTROL: the figures are not the v8.01 ones any more.
          if(SM[0].ext===18||SM[1].ext===23.5) bad.push('control: the code still carries the v8.01 figures, so nothing was refreshed');

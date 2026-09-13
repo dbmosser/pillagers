@@ -1,0 +1,15 @@
+v13.27: the title screen stops promising a walkthrough that does not exist
+
+Found by walking a brand-new save. The title told every player with no raids "The
+Undercroft will walk you through it." Nothing does: no tutorial, no first-run
+sequence anywhere in the file. A new player gets the welcome pack and the station
+prompts. Not his wording.
+
+The line now says what happens, using welcomeFresh, the same question the game asks
+before offering the pack: take the welcome pack if it will be offered, and walk to
+ENTER RAID either way. No key named, because controllers use a different button.
+
+Check 13.27 redraws the line through titleRefresh for a player who qualifies for the
+pack and one already welcomed. Fails on v13.26.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

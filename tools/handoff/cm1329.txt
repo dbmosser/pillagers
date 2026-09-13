@@ -1,0 +1,13 @@
+v13.29: the welcome pack goes to the stash
+
+His ruling of 2026-09-13. Since v10.67 TAKE put the pack guns into the armoury and
+into the player's hands. Now everything goes to the stash, guns as the gun_smg and
+gun_carbine items the stash already equips from, and nothing is equipped for him.
+Every pack row says "to your stash". The ascent screen already warns a player going
+up with no gun of his own.
+
+Three checks encoded the reversed rule and are repaired: 13.07 loses its two hands
+assertions, 10.67 now guards that TAKE never touches a gun he chose, and 10.29 now
+requires the guns in the stash. Check 13.29 presses TAKE and fails on v13.28.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

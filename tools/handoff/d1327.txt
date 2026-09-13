@@ -1,0 +1,36 @@
+## v13.27 - THE TITLE SCREEN STOPS PROMISING A WALKTHROUGH THAT DOES NOT EXIST
+
+FOUND BY WALKING A BRAND-NEW SAVE, the way every friend on itch starts. The title
+screen tells a player with no raids: "First time out. The Undercroft will walk you
+through it."
+
+NOTHING WALKS ANYONE THROUGH ANYTHING. There is no tutorial, no first-run sequence
+and no guidance chain anywhere in the file; a search for any of it finds only this
+sentence. What a new player actually gets is the welcome pack, offered once, and the
+station prompts on the floor. Check 13.07, written the day the game went in front of
+strangers, guarantees a gun in hand and no pointless consent question. It promises
+no walkthrough either.
+
+IT IS NOT HIS WORDING. None of his baked edits keys on it or produces it, so it is
+original copy, and mine to make true rather than his to be asked about.
+
+THE LINE NOW SAYS WHAT HAPPENS, and asks the same question the game asks before it
+offers the pack, welcomeFresh. A player who will be offered the pack is told to take
+it and walk to ENTER RAID. A player who will not (a restored save with no raids, or
+one who already closed the pack) is told only to walk to ENTER RAID, so nobody goes
+looking for a pack that never appears.
+
+NO KEY IS NAMED. A controller player presses a different button on the floor, and
+the station prompt he walks up to already names the right one.
+
+UNAFFECTED: checks 11.73 and 10.98 read this element only with a raid logged, which
+is the other branch.
+
+MEASURED. Check 13.27 redraws the line through titleRefresh, the refresh check 11.73
+already uses, for a new player who qualifies for the pack and for one already
+welcomed. It requires no walkthrough promise, the pack only where it is offered, and
+ENTER RAID in both. It fails on v13.26.
+
+Not verified: whether "walk to ENTER RAID" is enough for a player who has never seen
+the floor, which is the question a real first-run guide would answer; that is a
+design decision about building one, and his.

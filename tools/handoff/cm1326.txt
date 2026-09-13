@@ -1,0 +1,17 @@
+v13.26: every player sees his wording on the map screen
+
+Found by walking a fresh save. His baked edits rewrote the sector line (extract
+rate for that map; no first contact, containers or median haul), but baked edits
+match the whole sentence, and his keys held his own run counts. On a fresh profile
+The Cold Mile showed his wording by coincidence and Cold Storage showed the long
+line he cut. v11.51 made these exact-only on purpose, so the text engine cannot fix
+it.
+
+The game now builds his sentence for every player. His two edits differ by a word
+("extracts in 39.2%" vs "extracts 38.3%"); the second form is used, flagged.
+
+Check 11.29 required first contact on screen, a display his wording retired;
+repaired. Check 13.26 draws both maps for a new player and one with runs, requires
+his wording and none of the cut figures, and fails on v13.25.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

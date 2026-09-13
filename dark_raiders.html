@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.25';
+var VER='13.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29562,7 +29562,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.25: HIS REPORT of 2026-09-12, ESC still kills fullscreen in Chrome on itch. The game promised otherwise: v13.09 added a what is new entry saying Escape no longer drops you out of fullscreen in Chrome and Edge, which is true only when the game is the top-level page, and on itch it is not, and itch is where every friend plays, so the promise was false in exactly the place it was read. It cannot be made true from inside the game: fsOn reads the game document fullscreen state, but itch fullscreens its own page around the frame, so the game sees no fullscreen and never asks for the lock; and Chrome grants the keyboard lock only to a top-level page, so even fullscreening the game itself inside the frame cannot keep Escape. That is a browser rule, not a missing line of code. The entry now says what is true and names the key that works everywhere, B. It does not suggest F11, which is untested on itch while the page is locked, because a promise the game cannot back is the mistake being corrected. WHATSNEW_VER is not moved, since this corrects a line below the fold rather than adding a change to how he plays. Check 13.25 requires no entry to promise Escape keeps fullscreen without the own-tab qualification, and one entry to say what happens inside another page; it fails on v13.24',
+  now:'v13.26: HIS REWRITE OF THE SECTOR LINE REACHED ONLY HIM, AND ONLY ONE MAP. He baked two edits of the map screen fact line: keep the run count, size, zones and keyed rooms, say the test robot extract rate is for that map, and drop first contact, containers a raid and median haul. Baked edits match the whole rendered sentence, and this one carries the player run count and the live robot figures, and his keys held his own counts at the time, two runs on Cold Storage and never raided on The Cold Mile. Measured on a fresh profile after the text engine had run: The Cold Mile showed his wording only because a new player has never raided it either, and Cold Storage showed the long line he cut; the moment a friend raids The Cold Mile once, or the robot figures are re-measured, that map reverts too. v11.51 made these lines exact-only on purpose, because matching by digit shape printed the wrong map name, so the text engine could not be the fix. The game now builds his sentence itself, so every player sees it with their own count; the dropped figures stay in SECTOR_MEAS for the checks that read them. One word was chosen for him and is flagged: his Cold Storage edit reads extracts in 39.2 percent of its raids in Cold Storage, his Cold Mile edit reads extracts 38.3 percent of its raids in The Cold Mile, one generated sentence cannot be both, and the second reads as intended. Check 11.29 required first contact on the screen for both maps, the display his wording retired, and is repaired in the same build. Check 13.26 draws the map screen for a player who has never raided and for one with a run on each map, requires his wording on both maps and none of the three cut figures, and fails on v13.25',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33407,6 +33407,9 @@ function sizeTag(ix){
   if(ix===maxI) return '(LARGER MAP)';
   return '';
 }
+// v13.26: the map name the way he wrote it in the sector line, Cold Storage and The
+// Cold Mile, from the upper-case name the heading uses.
+function sectorTitle(n){ return String(n||'').toLowerCase().replace(/\b[a-z]/g,function(c){ return c.toUpperCase(); }); }
 function renderSector(){
   var host=document.getElementById('sectorlist');
   var cur=clamp(P.mapIx||0,0,FIXED_MAPS.length-1),h='';
@@ -33426,10 +33429,10 @@ var _myR=0;
                (M.locked?M.locked.length:0)+' keyed rooms'];
     // Real numbers, labelled as the bot's, replacing the fabricated loot
     // percentage that came off an inert constant.
-    if(MS.ext!==undefined) facts.push('the test robot extracts '+MS.ext+'% of its raids here');
-    if(MS.fc!==undefined)  facts.push('first contact ~'+MS.fc+'s');
-    if(MS.cont!==undefined)facts.push(MS.cont+' containers a raid');
-    if(MS.haul!==undefined)facts.push('median haul '+'$'+MS.haul.toLocaleString()+'');
+    // v13.26, HIS WORDING FOR EVERY PLAYER: his baked edits of this line matched
+    // only his own run counts, so a new player saw the long version he cut on one
+    // map and his on the other. The figures he dropped stay in SECTOR_MEAS.
+    if(MS.ext!==undefined) facts.push('the test robot extracts '+MS.ext+'% of its raids in '+sectorTitle(M.name)+'.');
     if(R.tier>0||R.cut>0) facts.push('seal tier '+(R.tier+1)+', '+Math.round(R.cut)+' of '+sealNeed(R.tier)+'s cut');
 
     h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;cursor:pointer;'+

@@ -1006,3 +1006,42 @@ the corpus that does not end its raid through the harness.
   exited by Esc in Chrome on Windows (NOT VERIFIED on itch, page is locked).
   FALSE LINE TO CORRECT AS v13.25: WHATSNEW entry "ESC NO LONGER DROPS YOU OUT OF
   FULLSCREEN, IN CHROME AND EDGE" is untrue where friends play.
+- FULL KEY LIST AT EVERY TEXT SIZE (v13.23's last "not verified" line), measured
+  at 1920x1080 through __textTrace with legendOn=2: the B row draws at default,
+  1.5, 2.0 and even 2.5. The whole list fits at 2.0 (lowest legend line y=985).
+  At 2.5 the last rows ("- = HUD size", "0 reset zoom", footer "H  hide") fall
+  below the screen, because the panel is bottom-anchored with top floored at 8px
+  (top=Math.max(8,H-(LH(70)+LH(20))-boxH)). NOT A DEFECT: UISCALES is
+  [1.0,1.2,1.5,1.75,2.0] and set_text only cycles those, so 2.5 is unreachable.
+  Revisit only if a larger text size is ever added.
+- WHAT'S NEW CARD DRAW BUDGET (v13.22's last "not verified" line), measured at
+  1920x1080 default text: fresh page load (WNSEEN=0), P.runs>0, Undercroft, no
+  keys held, __textTrace over __loop frames. Card shows "NEW IN v13.22" and draws
+  entries 1 to 13; all five v13.22 lines (B, plate, X, offer, roll) are drawn.
+  Check 13.22's thresholds (B <= entry 3, plate <= entry 4) sit well inside the
+  budget. Closed. A new card line beyond entry 13 at this size is not drawn.
+- WHOLE-FILE VOCABULARY SWEEP (2026-09-13), every quoted string outside comments,
+  DEVNOW and TXSHIP, for ship/boarding/touchdown/hotbar/snitch/cash/reputation/
+  battle pass/wardrobe/overcroft/npc/enemy; plus inventory/raider/trader/options/
+  the bag in HTML text nodes and say/fillText literals. CLEAN. Every hit is one of:
+  a what's-new history line quoting a retired word on purpose (1417, 1613); TAGFWD's
+  old-name key 'Hotbar worked well' mapped to 'Tactical belt worked well' at display
+  (2051); RMV2 old roadmap-row text kept only to match saved drag orders (2676-2681,
+  the live ROADMAP rows at 29496 have none); internal kind 'snitch' and sound type
+  'touchdown' (allowed); HTML 1003 "Your inventory is your backpack plus your
+  tactical belt" defines the concept, not a screen name (allowed).
+- HIS BAKED TEXT EDITS REACH A FRESH PROFILE (checked 2026-09-13 because a fresh
+  Undercroft trace showed the floor sign as ***EXPERIMENTAL***): TX() falls back to
+  TXSHIP whenever P.txt has no entry, so every friend on a new save gets all of
+  them. Measured with __tx.record on a fresh profile (P.txt undefined): the sign is
+  painted "***EXPERIMENTAL FEATURE MAY GLITCH***". NOT A DEFECT.
+  INSTRUMENT LESSON: __textTrace records the string BEFORE TX translation; only
+  __tx.record (its t field) shows what is actually painted. Never judge whether an
+  edit of his landed from __textTrace.
+- "ISSUED" MEANS TWO THINGS ON SCREEN, FLAGGED FOR HIS RULING, NOT BUILT: the loaner
+  you get with nothing equipped is "a gun issued at the lift" and "was issued kit,
+  left behind" on extraction; the freebie kit is ALSO called issued, on the ascent
+  line "Scav Pistol (issued)" and on the button "Go up with issued gear instead of
+  your own" (HIS baked edit), yet buildRaid sets wepIssued=false for it on purpose
+  (v6.88: take the freebie and extract, you keep it). Behaviour is right; only the
+  loaner is left behind. The word is his for the freebie kit, so it was not renamed.

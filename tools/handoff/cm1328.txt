@@ -1,0 +1,12 @@
+v13.28: a brand-new save no longer says CONTINUING
+
+Found by walking a fresh save. The title screen's save list tagged the current save
+CONTINUING even with no raids on it, beside the line reading 0 raids.
+
+The tag now reads the run count slotInfo already returns: NEW until the save has a
+raid, CONTINUING after. Not his wording; check 9.18 never reads the tag.
+
+Check 13.28 saves the run count, redraws through titleRefresh, reads the tag, and
+restores the save. Fails on v13.27.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
