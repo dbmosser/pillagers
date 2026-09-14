@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.97';
+var VER='13.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18255,6 +18255,7 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
         if(e.revProg>=3.2){
           TG.downed=0; TG.state='loot'; TG.hp=Math.round(TG.maxhp*0.4);
           TG.alert=0; TG.goal=null;
+          TG.byPlayer=false;   // v13.98, AI audit: as your own revive does, his next death is not yours unless you cause it
           e.reviving=null; e.revProg=0;
           if(!G.sim){ label(TG.x,TG.y-18,'PICKED UP','#ffc04a',0,true); }
           if(G.tel) G.tel.crewRevives=(G.tel.crewRevives||0)+1;
@@ -29855,7 +29856,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.97: A PACK CALL DOES NOT RESET A CRIER ALARM. Machine and pillager AI audit of 2026-09-14, finding 2: packCall pulled nearby sentries, crawlers and criers into chase and skipped only those already chasing, so a crier winding up its alarm was overwritten to chase, restarting its 3 to 4 second countdown on its next sighting or dropping the alarm at once if sight was broken, and every machine that spotted the player reset it again. A crier in alarm now keeps its countdown. Check 13.97 calls the pack beside a crier with half a second of alarm left and requires it still in alarm with the same wind, with a patrolling crier joining the call as the control; it fails on v13.96',
+  now:'v13.98: A CREW PICK-UP CLEARS YOUR KILL CREDIT. Machine and pillager AI audit of 2026-09-14, finding 3: your lethal round sets byPlayer and he goes down with it, and the crew pick-up restored downed, state, health, alert and goal but not byPlayer, which your own revive clears, so a later Howler shell or bleed-out credited his death to you with a kill on the report and contract and a permanent grudge. The crew pick-up now clears it too. Check 13.98 has a crewmate pick up a pillager you downed and requires the credit cleared, with the pick-up itself as the precondition; it fails on v13.97',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
