@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.56';
+var VER='14.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11056,7 +11056,10 @@ function raidKey(code,repeat,ev){
   // rescues the hub screen.
   if(code==='Backspace'&&!repeat) restoreCursor();
   if(code==='Space'&&G&&!G.over&&!G.paused&&!repeat) tryRoll();
-  if((code==='KeyI'||code==='KeyB')&&G&&!G.over&&!repeat){
+  // v14.57, backpack audit finding 2: THE BACKPACK DOES NOT OPEN WHILE HE IS DOWN. v14.07 closes it on going down, and B or I
+  // opened it again at once, so a tile could be held through the bleed-out into the death fade and past the end of the raid.
+  // An open backpack can still be closed.
+  if((code==='KeyI'||code==='KeyB')&&G&&!G.over&&!repeat&&(G.bagOpen||!(G.player&&(G.player.downed||G.player.dying)))){
     G.bagOpen=!G.bagOpen; G.bagSel=0;
     // v12.09: an arrow still held when the bag opens stops walking too.
     if(G.bagOpen){ keys['ArrowUp']=false; keys['ArrowDown']=false; keys['ArrowLeft']=false; keys['ArrowRight']=false; }
@@ -11212,7 +11215,7 @@ cv.addEventListener('mousedown',function(e){
   }
   // PICK UP AN ITEM. Only while the inventory is open, and the drag is claimed
   // here so the same click cannot also pull the trigger.
-  if(G&&!G.over&&G.bagOpen&&G.bagCells){
+  if(G&&!G.over&&G.bagOpen&&G.bagCells&&!(G.player&&(G.player.downed||G.player.dying))){   // v14.57: not while down
     for(var dc=0;dc<G.bagCells.length;dc++){
       var C=G.bagCells[dc];
       if(mouse.x>=C.x&&mouse.x<=C.x+C.w&&mouse.y>=C.y&&mouse.y<=C.y+C.h){
@@ -30053,7 +30056,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.56: A DRAG HELD WHEN THE RAID ENDS WRITES NOTHING. A death empties the belt plan and saves, but a backpack or belt drag held through the end of the raid survived it, and letting go on the outcome card wrote the raid belt back into the plan and saved, so he came home with keys bound to what he had lost. Ending the raid now drops the drag, and a release after the end does nothing. Check 14.56 releases a belt drag in a live raid and after it ends; it fails on v14.55',
+  now:'v14.57: THE BACKPACK DOES NOT OPEN WHILE HE IS DOWN. Going down closed the backpack, but B or I opened it again at once, and a tile could be picked up and held through the bleed-out into the end of the raid. B and I now only close it while he is down or dying, and a tile cannot be picked up then. Check 14.57 presses I standing and downed in a live raid; it fails on v14.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

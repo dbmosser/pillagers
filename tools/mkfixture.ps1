@@ -5718,6 +5718,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.57',what:'the backpack does not open while he is down: I opens it standing, and while downed I leaves it shut (backpack audit finding 2)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof raidKey!=='function') return 'SKIP: no raid keys in this build';
+     var bad=[], g0=null;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g&&g.player; if(!g||!p) return 'SKIP: no live raid';
+       g0=g; p.iv=99;
+       // CONTROL: standing, I opens the backpack.
+       g.bagOpen=false; p.downed=false; p.dying=false;
+       raidKey('KeyI',false,null);
+       if(!g.bagOpen) return 'SKIP: I did not open the backpack standing up here';
+       raidKey('KeyI',false,null);
+       if(g.bagOpen) return 'SKIP: I did not close the backpack here';
+       // THE FIX: downed, I does not open it.
+       p.downed=true;
+       raidKey('KeyI',false,null);
+       if(g.bagOpen) bad.push('I opened the backpack while he was down, so a tile can be held through the bleed-out');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(g0){ g0.bagOpen=false; g0.drag=null; if(g0.player){ g0.player.downed=false; g0.player.dying=false; g0.player.iv=0; } if(!g0.over) __endRaid('abandon'); } }catch(_e){}
+       try{ var K3=__keysRef(); for(var k3 in K3) K3[k3]=false; }catch(_k){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.56',what:'a drag held when the raid ends writes nothing: a belt item released off the belt in a live raid unbinds it in the plan, and the same release after the raid has ended leaves the emptied plan alone (backpack audit finding 1)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
