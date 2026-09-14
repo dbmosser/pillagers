@@ -1,0 +1,9 @@
+v13.81: a dropped gun comes back with its own rounds
+
+Picking up a gun you dropped auto-equipped it with half a magazine and ignored
+its stored load, so bagging and dropping an empty gun made free ammo. It now
+comes back with what it had.
+
+Check 13.81 empties, bags, drops and picks up a carbine. Fails on v13.80.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

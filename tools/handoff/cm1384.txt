@@ -1,0 +1,9 @@
+v13.84: one swing clock for bare hands, and no punch with a live grenade
+
+The F strike and the bare-hands left click kept separate cooldowns, so
+alternating them doubled the punch rate, and F punched with a pin pulled. They
+now share one clock and F refuses while a grenade cooks.
+
+Check 13.84 swings with the click then F, and F while cooking. Fails on v13.83.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.80 - THE DEAD DO NOTHING IN THE DEATH FADE
+
+The combat and player state audit of 2026-09-14, finding 2. killPlayer clears downed, sets
+dying, and opens a 1.5 second death beat before the raid ends. But every input handler asks only
+whether the raid is over, and the action verbs refuse only when downed. So during the red fade:
+
+- A number key for a gun in the backpack equipped it over the armoury gun in hand. That gun
+  was sent back to the armoury, so the death that should have taken it did not.
+- F still punched, and a kill it landed was credited and banked.
+- G spent belt items, and Space started a roll.
+
+THE BUILD. tryRoll, meleeStrike, swapGuns, equipFromBag, bagHeldGun and useHot all refuse while
+dying. setHot reaches only swapGuns and equipFromBag, so it is covered by them.
+
+MEASURED. Check 13.80 deploys with an armoury rifle and magnum in hand and an SMG on belt key 5,
+kills the player, presses 5 in the fade, ends the raid as a death, and requires the rifle gone
+from the armoury. With no key pressed the rifle must be gone too (the control). A punch in the
+fade must be refused. It fails on v13.79.
+
+Not verified: throwing a grenade with its own key in the fade, which goes through doThrow and
+not these verbs.
 ## v13.79 - THE CLOCK LETS A BOARDING HOLD FINISH
 
 The downed and extraction audit of 2026-09-14, finding 2. Boarding a landed ship is a hold of E

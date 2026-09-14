@@ -1,0 +1,9 @@
+v13.80: the dead do nothing in the death fade
+
+In the 1.5 second death beat a belt key could swap out an armoury gun so the
+death did not take it, and F, G and Space still acted. Those verbs now refuse
+while dying.
+
+Check 13.80 presses a belt key and punches in the fade. Fails on v13.79.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

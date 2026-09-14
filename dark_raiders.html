@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.79';
+var VER='13.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11962,7 +11962,7 @@ function tryRoll(){
     }
     return;
   }
-  if(p.downed||p.roll>0||p.rollCd>0||p.stam<ROLLSTAM) return;
+  if(p.dying||p.downed||p.roll>0||p.rollCd>0||p.stam<ROLLSTAM) return;   // v13.80: not in the death fade
   G.crouchTog=false;   // v11.53, HIS NOTE: "rolling should automatically stop crouching"
   var mx=0,my=0,ana=1;
   if(keys['KeyW']||keys['ArrowUp'])my-=1;
@@ -12920,7 +12920,7 @@ function damageWall(w,amt,x,y){
 function meleeStrike(){
   if(!G||G.over||G.paused||G.sim||G.trade) return false;
   var p=G.player;
-  if(!p||p.downed||p.roll>0||G.searching) return false;
+  if(!p||p.downed||p.dying||p.roll>0||G.searching) return false;   // v13.80: not in the death fade
   var gap=(WEAPONS.fists.rof||420)/1000;
   if(p.meleeAt!==undefined&&(G.t-p.meleeAt)<gap) return false;
   p.meleeAt=G.t;
@@ -13718,7 +13718,7 @@ function takeRounds(id,mag){
   return Math.ceil(mag/2);
 }
 function bagHeldGun(slot){
-  var p=G&&G.player; if(!p||p.downed||G.over) return false;
+  var p=G&&G.player; if(!p||p.downed||p.dying||G.over) return false;   // v13.80
   var sw=!!p.swapped;
   var isHand=(slot==='gunA')?!sw:sw;
   var g=isHand?p.wep:p.sec, issued=isHand?p.wepIssued:p.secIssued, arm=isHand?p.wepFromArmory:p.secFromArmory;
@@ -13741,7 +13741,7 @@ function bagHeldGun(slot){
 }
 function swapGuns(){
   var pp=G&&G.player;
-  if(!pp||!pp.sec||pp.downed||pp.roll>0||G.over||G.paused) return false;
+  if(!pp||!pp.sec||pp.downed||pp.dying||pp.roll>0||G.over||G.paused) return false;   // v13.80
   var ow=pp.wep,oa=pp.ammo,oi=pp.wepIssued,of2=pp.wepFromArmory;
   pp.wep=pp.sec; pp.ammo=pp.secAmmo; pp.wepIssued=pp.secIssued; pp.wepFromArmory=pp.secFromArmory;
   pp.sec=ow; pp.secAmmo=oa; pp.secIssued=oi; pp.secFromArmory=of2;
@@ -13789,7 +13789,7 @@ function swapGuns(){
 // armoury copy never left base. That fix is old and this must not undo it.
 function equipFromBag(ix,slot){
   var p=G&&G.player;
-  if(!p||p.downed||p.roll>0||G.over||G.paused) return false;
+  if(!p||p.downed||p.dying||p.roll>0||G.over||G.paused) return false;   // v13.80: a gun equipped in the death fade survived the death
   if(ix<0||ix>=G.bag.length) return false;
   var key=G.bag[ix],itm=ITEMS[key];
   // v6.28: the wear-a-rig-from-the-bag branch is gone. It tested itm.use==='rig' and
@@ -14136,6 +14136,7 @@ function useHot(){
   // v13.63, in-raid audit: nothing on the belt is used from the floor. The heal never ticks
   // while he is down, so the item was spent for nothing.
   if(G&&G.player&&G.player.downed){ if(!G.sim) say('Not while you are down.'); return; }
+  if(G&&G.player&&G.player.dying) return;   // v13.80, combat audit: nor in the death fade
   var sl=hotbarSlots(),s2=sl[hotSel()];
   if(!s2) return;
   // AN ASSIGNED SLOT NAMES ONE SPECIFIC ITEM. The generic heal path calls
@@ -29803,7 +29804,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.79: THE CLOCK LETS A BOARDING HOLD FINISH. Downed and extraction audit of 2026-09-14, finding 2: the frame loop tests the raid clock before updatePlayer, so a hold E already running in a landed ring was ended as a death by the timer when the clock reached zero at 1.3 of 1.4, losing the backpack and the guns while standing in the ring. While a hold is running in a landed ring the clock now rests at zero and the pull finishes or is released; a released pull meets the clock the next frame as before. Check 13.79 holds E in a landed ring with one second left and requires an extraction, with five seconds left as the control; it fails on v13.78',
+  now:'v13.80: THE DEAD DO NOTHING IN THE DEATH FADE. Combat and player state audit of 2026-09-14, finding 2: killPlayer clears downed and sets dying for a 1.5 second beat, but the inputs ask only whether the raid is over and the verbs refuse only when downed, so in the fade a number key equipped a backpack gun over the armoury gun in hand, which went back to the armoury and survived the death, F punched with kills credited, G spent belt items and Space rolled. tryRoll, meleeStrike, swapGuns, equipFromBag, bagHeldGun and useHot now refuse while dying. Check 13.80 kills the player and presses the belt key of a backpack gun in the fade, requiring the armoury rifle lost at the death, with no key press as the control, and a punch in the fade refused; it fails on v13.79',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

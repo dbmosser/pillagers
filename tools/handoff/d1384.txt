@@ -1,0 +1,19 @@
+## v13.84 - ONE SWING CLOCK FOR BARE HANDS, AND NO PUNCH WITH A LIVE GRENADE
+
+The combat and player state audit of 2026-09-14, finding 5. Two faults in the punch:
+
+- The F strike (meleeStrike) keeps its own p.meleeAt stamp, and the left click with Bare Hands
+  keeps p.lastShot. Neither read the other, so alternating left click and F swung twice every
+  0.42 seconds, double the punch rate.
+- meleeStrike had no cooking test. With a pin pulled, F still punched, which the trigger has
+  refused for a shot since v13.62.
+
+THE BUILD. With bare hands up, the two swings share one clock both ways: F waits on the left
+click's last swing and stamps it, and the left click waits on F's. F refuses while a grenade is
+cooking.
+
+MEASURED. Check 13.84 swings with the left click through a real updatePlayer frame and presses
+F in the same instant, requiring F refused; and pulls a pin and presses F, requiring F refused.
+F on its own must still swing (the control, run first). It fails on v13.83.
+
+Not verified: F with a gun in hand, which keeps only its own clock as before.

@@ -1,0 +1,22 @@
+## v13.82 - A BURST STOPS WHEN ITS GUN LEAVES YOUR HAND
+
+The combat and player state audit of 2026-09-14, finding 3. A Burst Carbine fires its first
+round on the click and queues the second and third 70 ms apart. Each queued round took a round
+from G.player.ammo, which is whatever gun is in hand when it fires. So swapping to the Magnum
+inside those 140 ms:
+
+- still fired three carbine rounds,
+- stowed the carbine with 23 of 24 when it had fired three,
+- and brought the Magnum up with 4 of its 6.
+
+Dragging the carbine into the backpack or equipping over it mid-burst did the same.
+
+THE BUILD. Each queued round already carried the gun that fired it. A player round now fires
+only while that same gun is still in hand; once it has been swapped, bagged or replaced, the
+rest of the burst is dropped.
+
+MEASURED. Check 13.82 fires a burst from a 24-round carbine, swaps to a 6-round Magnum at once,
+runs the throwables through both delays, and requires the Magnum at 6 and the carbine at 23.
+The same burst with no swap must leave the carbine at 21 (the control). It fails on v13.81.
+
+Not verified: a pillager's burst, which spends no magazine and is unchanged.

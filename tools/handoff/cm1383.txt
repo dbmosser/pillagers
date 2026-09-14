@@ -1,0 +1,9 @@
+v13.83: a roll does not freeze the reload
+
+The reload only ticked on the standing path, so rolls froze it and a reload
+started before going down finished after standing. It now also ticks in a roll,
+and going down lets it go.
+
+Check 13.83 rolls through a reload and goes down during one. Fails on v13.82.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

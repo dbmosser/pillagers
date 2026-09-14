@@ -1,0 +1,9 @@
+v13.82: a burst stops when its gun leaves your hand
+
+The later rounds of a burst took ammo from whatever gun was in hand, so a swap
+mid-burst charged the new gun for the old one's rounds. They now fire only while
+the gun that fired them is still in hand.
+
+Check 13.82 fires a burst and swaps at once. Fails on v13.81.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
