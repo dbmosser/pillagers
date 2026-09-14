@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.80';
+var VER='14.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19984,6 +19984,9 @@ var _cdone=contractExtract(G.bag,haul);
     // default, so that is what the slot goes back to.
     if(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists'&&
        P.weapons.indexOf(P.equippedSec)<0) P.equippedSec='none';
+    // v14.81, gun audit finding 3: AND THE TWO SLOTS NEVER NAME ONE GUN. Gun 1 is refilled from the first gun on the list, which
+    // can be the gun already in gun 2, and buildRaid then leaves gun 2 empty while the armoury menu calls both slots taken.
+    if((P.equippedSec||'none')===P.equipped) P.equippedSec='none';
     // Everything the ledger just called GONE is not gone. It is lying where you
     // fell, and the map you died on will show it to you next time you deploy
     // there. One body at a time, so this replaces any older one.
@@ -30111,7 +30114,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.80: TWO OF THE SAME GUN ARE TWO GUNS LOST. With a field copy of a gun in hand and his own armoury copy in gun 2, a death kept the armoury copy, because only one of a same-model pair was counted and it was the one in hand. Both are now lost. Check 14.80 arms that pair and dies; it fails on v14.79',
+  now:'v14.81: AFTER A DEATH THE TWO GUN SLOTS NEVER NAME ONE GUN. Gun 1 was refilled from the first gun he still owned, which could be the gun in gun 2, so both slots named it, the next raid left gun 2 empty and the armoury menu called both slots taken. Gun 2 is now emptied when that happens. Check 14.81 dies with that armoury; it fails on v14.80',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
