@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.90';
+var VER='14.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2317,6 +2317,11 @@ function txSet(orig,next){
   if(typeof next!=='string'||next===''||next===orig){
     delete m[orig];
     delete pm[so.pat];
+    // v14.91, words audit finding 3: CLEARING A BAKED LINE BRINGS THE ORIGINAL BACK. With his profile entry
+    // deleted the shipped edit showed again, so clearing a line he had baked changed nothing on screen and the report carried
+    // nothing to undo the bake with. For a baked line the original is written as his own entry instead.
+    if(TXSHIP&&typeof TXSHIP[orig]==='string') m[orig]=orig;
+    if(so.nums.length&&typeof TXPSHIP==='object'&&TXPSHIP&&typeof TXPSHIP[so.pat]==='string') pm[so.pat]=so.pat;
   } else {
     m[orig]=next;
     // The shape he typed. A number he kept, in the order the original had them,
@@ -30138,7 +30143,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.90: HIS WORDS SHOW ON THE ITEM AND GUN MENUS. Both right-click menus are added outside the part of the page his edits are applied to, so a reworded menu row was saved and exported but the menu opened with the original words. His edits are now applied to both menus as they open. Check 14.90 rewords a row of the item menu and opens it; it fails on v14.89',
+  now:'v14.91: CLEARING A BAKED LINE IN THE WORDS EDITOR BRINGS THE ORIGINAL BACK. An empty edit is how he gets a line back, but for a line baked into the file it only deleted his profile entry, so the baked words stayed on screen and the report carried nothing to undo the bake. The original is now written as his own entry for a baked line. Check 14.91 clears a baked line; it fails on v14.90',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

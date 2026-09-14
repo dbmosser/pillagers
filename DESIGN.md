@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.91 - CLEARING A BAKED LINE IN THE WORDS EDITOR BRINGS THE ORIGINAL BACK
+
+Words audit finding 3 (MEDIUM). The code says an empty replacement is how he gets the original back. For a line baked into the
+file (TXSHIP, shipped as the default under his profile), clearing it deleted only his profile entry; the lookup then fell back to
+the baked words, so nothing changed on screen, and the report's TEXT EDITS carried no entry for the line, so the bake could not
+be undone from his machine either.
+
+THE BUILD. For a baked line, an empty edit writes the original as his own entry (and the same for a baked number pattern), so the
+original shows and the report says so. No baked line is reworded.
+
+MEASURED. Check 14.91 takes a baked line with no numbers (control: it shows its baked words with no entry of his), clears it and
+requires the original. It restores his profile's edits afterwards. It fails on v14.90.
+
+Not verified: clearing a baked line by hand in edit mode.
 ## v14.90 - HIS WORDS SHOW ON THE ITEM AND GUN MENUS
 
 Words audit finding 2 (MEDIUM). His edits reach the page two ways: a watcher that rewrites text inside #root as it changes, and
