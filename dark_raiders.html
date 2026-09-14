@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.86';
+var VER='13.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,14 +1361,14 @@ var VER='13.86';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.66';
+var WHATSNEW_VER='13.87';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'NOTHING ON YOUR BELT IS USED WHILE YOU ARE DOWN, where a Medkit never healed you and was lost. A Medkit is also refused at full health straight after a Bandage, and one on its own belt key works while Bandages are still healing you.',
-  'A GRENADE YOU ARE COOKING STAYS IN YOUR HAND. Switching to your gun no longer fires the gun or stops the fuse, and the throw key no longer throws a second grenade.',
-  'IN THE UNDERCROFT: a restore code replaces your whole save, crafting takes from your stash before what you packed, one gun cannot be in both hands, and buying the lot from Wirt never locks you out of the next one.',
-  'CONTRACTS AND HAZARD PAY COUNT ONLY WHAT THE RUN FOUND. What you carried in no longer finishes an item contract or earns hazard pay, issued Bandages are not banked as finds, a contract finished before you died stays in your run report, and the XP on the card is the XP you get at every distance.',
+  'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, a dropped gun comes back with the rounds it had, and a found gun in slot 2 puts the old one in your backpack. Nothing happens in the death fade, a burst stops when you swap guns, a roll no longer freezes a reload, and you cannot punch with a grenade cooking in your hand.',
+  'YOUR HIRE AND THE PEDDLER. Your hire shoots the pillagers and not you, and your own charge does not kill him. SELL BACKPACK leaves your tactical belt and the issued Bandages alone, going down shuts the stall, and on a controller X walks away from it.',
+  'GOING DOWN AND GETTING OUT. Nothing on your belt is used while you are down, and a drink keeps wearing off. A second copy of a gun you own is kept when you extract, the clock lets you finish holding E in a landed extraction, and backing out at once keeps a gun you put in your backpack.',
+  'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
   'A CONTROLLER WORKS ON THE UNDERCROFT FLOOR AND IN EVERY RAID. View opens your backpack and Menu pauses, you can search and call for extraction from inside an extraction point, you can trade with the peddler, and the prompts name your buttons. The menus also fit the 1280 by 720 window itch opens the game at.',
   'FEWER ENEMIES BY DEFAULT. Few machines now means the number it says: houses no longer push crawlers past it. Few pillagers is the new default, with smaller reinforcement waves. A character that never changed these settings moves to Few too.',
   'OUT OF BANDAGES OR GRENADES, YOU SWITCH BACK TO YOUR GUN YOURSELF. Using the last of something, or clicking a cell with nothing in it, no longer puts your gun up for you, so clicking on can never fire it. The game says which key brings your gun up, and every raid starts with your gun selected.',
@@ -13594,6 +13594,16 @@ function grantLoot(ct,keys,delay0){
       var _secFree=_yields(p.sec);
       var _handFree=_yields(p.wep);
       if(autoEquipOn()&&(tierUp||condUp)&&_secFree){
+        // v13.87, loot audit: the gun this displaces from slot 2 goes into the backpack with its load,
+        // exactly as the hand branch below bags its gun. It used to be overwritten and lost.
+        if(p.sec&&p.sec.id!=='fists'&&p.sec.mag!==0&&!p.secIssued&&ITEMS['gun_'+p.sec.id]){
+          G.bag.push('gun_'+p.sec.id);
+          stowRounds(p.sec.id,p.secAmmo);
+          if(!G.sim&&p.secFromArmory){
+            var _soi=P.weapons.indexOf(p.sec.id);
+            if(_soi>=0){ P.weapons.splice(_soi,1); (G.spliced=G.spliced||[]).push(p.sec.id); }
+          }
+        }
         // v13.81, combat audit: a gun from a crate you dropped comes back with its own load (v12.42), not half a magazine.
         p.sec=found; p.secAmmo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(found.mag/2); p.secIssued=false; p.secFromArmory=false;
         T.gunsEquipped=(T.gunsEquipped||0)+1;
@@ -29822,7 +29832,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.86: A PILE YOU DROP DOES NOT RESTOCK. Searching and loot audit of 2026-09-14, finding 2: opened crates and lockers refill after 170 seconds and the restock tested only the type, so a pile dropped from the backpack, which is type crate, refilled with fresh crate items every 170 seconds for the rest of the raid once it was searched back up. The restock now skips dropped piles. Check 13.86 drops an item, searches the pile back up, ages it 171 seconds and requires it still opened, with an ordinary opened crate restocking as the control; it fails on v13.85',
+  now:'v13.87: A FOUND GUN IN SLOT 2 BAGS THE GUN IT REPLACES. Searching and loot audit of 2026-09-14, finding 5: a find may displace a Scav Pistol, Bare Hands or an empty slot (v12.78), and the hand branch bags the gun it displaces, but the slot 2 branch overwrote p.sec, so a field Scav Pistol held in slot 2 vanished when a better gun was found. Slot 2 now bags the displaced gun with its load, splicing an armoury copy as the hand branch does. Check 13.87 holds a field pistol in slot 2, finds an SMG, and requires the pistol in the backpack, with an empty slot 2 taking the SMG as the control; it fails on v13.86',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

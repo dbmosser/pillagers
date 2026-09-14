@@ -40024,6 +40024,32 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.87 - A FOUND GUN IN SLOT 2 BAGS THE GUN IT REPLACES
+
+The searching and loot audit of 2026-09-14, finding 5. Since v12.78 a found gun may displace a
+Scav Pistol, Bare Hands or an empty slot, and leaves any other gun alone. The hand branch bags
+the gun it displaces and keeps its load. The slot 2 branch just overwrote p.sec. So:
+
+- Start with a starter in hand, take a Scav Pistol off a body, and put it in slot 2.
+- Find a better gun. It takes slot 2.
+- The pistol is gone: not in either hand, not in the backpack, not banked at the extraction.
+
+THE BUILD. The slot 2 branch bags the gun it displaces with its load, and splices an armoury
+copy onto G.spliced, exactly as the hand branch does. Bare Hands and issued kit are left out,
+as before.
+
+MEASURED. Check 13.87 first finds an SMG with slot 2 empty and requires it in slot 2 (the
+control, which proves the branch is reached). Then it holds a field Scav Pistol in slot 2, finds
+the SMG, and requires the pistol in a hand or the backpack. It fails on v13.86.
+
+THE CARD, IN THE SAME BUILD. The parse gate failed v13.87 on the what is new card: WHATSNEW_VER
+stood at 13.66, 0.21 behind, over the 0.20 limit. I let it drift through twenty builds without
+watching it. Four of the five lines v13.66 wrote are rewritten in the same four slots to cover
+v13.53 to v13.87, so the stash entry stays inside the thirteen the card draws, and WHATSNEW_VER
+moves to 13.87. None of the four is one of his edited lines.
+
+Not verified: the player's own armoury Scav Pistol in slot 2, which is now bagged and spliced
+like an armoury gun displaced from the hand; and the rewritten card read at 1280x720.
 ## v13.86 - A PILE YOU DROP DOES NOT RESTOCK
 
 The searching and loot audit of 2026-09-14, finding 2. Opened crates and lockers refill after

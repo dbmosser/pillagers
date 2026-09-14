@@ -5,4 +5,7 @@ vanished. Slot 2 now bags the displaced gun the way the hand slot does.
 
 Check 13.87 finds an SMG over a field pistol in slot 2. Fails on v13.86.
 
+Also refreshes the what is new card, which the parse gate failed at 0.21
+builds stale: four of the v13.66 lines are rewritten to cover v13.53-v13.87.
+
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
