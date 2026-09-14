@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.33 - NOISE DOES NOT ALERT THE PEDDLER OR THE STRAY
+
+Weather audit finding 3 (LOW). Every noise (a step, a shot, a bolt) runs through ping, which sets alert on every entity in
+earshot except Listeners. Alert decays only in the machine and pillager update; the Stray's branch and the Peddler's branch
+both finish before that line. So one noise near either left it alerted for the rest of the raid. The frame loop counts any
+alerted entity as a threat for the ambient sound, so standing at the Peddler's stall after a shot played the ambient bed at
+near full threat, louder and brighter, as if a machine were on top of you.
+
+THE BUILD. Noise skips the Peddler, the Stray and anything marked neutral, the same way the hire's and the raiders' target
+loops have skipped them since v8.23. Nothing else changes, and no random draw is involved.
+
+MEASURED. Check 14.33 starts a raid, stands the Peddler, a stray and a crawler beside the player and makes a noise: the
+crawler must be alerted (control), the Peddler and the stray must not. It fails on v14.32.
+
+Not verified: the ambient sound at the stall, by ear.
 ## v14.32 - THE LIGHTNING FLASH RUNS OUT AFTER THE STORM PASSES
 
 Weather audit finding 2 (MEDIUM). A bolt sets a 0.34 second flash that lights the street and lifts the fog. The renderer
