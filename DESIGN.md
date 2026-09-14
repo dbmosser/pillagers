@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.44 - THE FULL SAVES LABEL CLEARS WHEN A SAVE IS FREED
+
+Title and saves audit finding 4 (LOW). Pressing CREATE A NEW SAVE with all eight saves in use replaces the button's label
+with ALL EIGHT SAVES HAVE PILLAGERS IN THEM. Nothing ever put the label back. Delete one save and the button still said all
+eight were full, although pressing it now worked.
+
+THE BUILD. Drawing the save list, which happens after every delete and every title refresh, puts the button's own label
+back. With all eight still full, pressing it says so again.
+
+MEASURED. Check 14.44 sets the full label, redraws the list through titleRefresh (control: a save row is drawn) and
+requires the label gone. It fails on v14.43.
+
+Not verified: filling all eight saves and deleting one by hand.
 ## v14.43 - A SAVE THE GAME CANNOT READ IS NOT QUIETLY REPLACED
 
 Title and saves audit finding 3 (LOW). When a save holds data that will not parse, or has no numeric credits, the loader

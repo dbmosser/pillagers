@@ -5718,6 +5718,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.44',what:'the full saves label clears when the save list is drawn again: with CREATE A NEW SAVE left reading that all eight saves are full, a redraw of the list puts its own label back (title and saves audit finding 4)',
+   run:function(){
+     var ng=document.getElementById('newgame');
+     if(!ng||typeof titleRefresh!=='function'||!document.getElementById('slotlist')) return 'SKIP: no title save list in this document';
+     var bad=[], was=ng.textContent;
+     var FULL=['ALL EIGHT SAVES','HAVE PILLAGERS IN THEM'].join(' ');
+     try{
+       ng.textContent=FULL;
+       titleRefresh();
+       // CONTROL: the list was drawn, so the redraw ran.
+       if(!document.querySelector('#slotlist [data-slot]')) return 'SKIP: the title list drew no save row, so the redraw did not run here';
+       if(ng.textContent===FULL) bad.push('after the save list was drawn again CREATE A NEW SAVE still says all eight saves are full');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ ng.textContent=was; }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.43',what:'a save the game cannot read is not quietly replaced: unreadable data given to the loader is copied aside under its own key, and a save holding unreadable data is listed on the title instead of read as empty (title and saves audit finding 3)',
    run:function(){
      if(typeof applyLoadedProfile!=='function'||typeof SKEY==='undefined') return 'SKIP: no profile loader in this build';
