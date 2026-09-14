@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.75 - A DRINK KEEPS WEARING OFF WHILE YOU ARE DOWN
+
+The downed and extraction audit of 2026-09-14, finding 5. tickBuzz counts each drink from the
+bar down to nothing, but updatePlayer called it on the standing path. That is below the
+downed return and below the roll return. So:
+
+- Every second on the floor, and every roll, pushed a drink and its wears-off line back.
+- An extraction does not clear the drinks, so the frozen time came home with you.
+
+v11.83 moved the stim clock above both returns for exactly this reason, and the drink clock
+was left behind.
+
+THE BUILD. The drink clock ticks beside the stim clock, above both returns, once a frame.
+
+MEASURED. Check 13.75 downs the player through damagePlayer with a drink running, runs two
+seconds of real updatePlayer frames, and requires two seconds off the drink. The same two
+seconds standing must take two seconds off (the control). It fails on v13.74.
+
+Not verified: the roll, which returns after the same line and is covered by the move.
 ## v13.74 - A SECOND COPY OF A GUN YOU OWN IS KEPT WHEN YOU EXTRACT HOLDING IT
 
 The downed and extraction audit of 2026-09-14, finding 1. At the extraction, each gun in your

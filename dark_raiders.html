@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.74';
+var VER='13.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15037,6 +15037,9 @@ function updatePlayer(dt){
   // v11.83, HIS SPEC: the stim clock, up here with the other timers so it keeps
   // running through a roll and while downed (both return before the stamina line).
   if(p.stimT>0){ p.stimT-=dt; if(p.stimT<=0){ p.stimT=0; if(!G.sim) say('The stim wears off.'); } }
+  // v13.75, downed audit: the drink clock too. It ticked below the downed and roll returns, so a
+  // drink stopped wearing off on the floor and in every roll.
+  if(!G.sim) tickBuzz(dt);
 
   if(p.downed){
     if(tickDowned(dt)) return;
@@ -15300,7 +15303,6 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     T.distance+=_pdd;
   } else { p.noiseAcc=0; p.moving=false; p.bob+=dt*1.2; T.tStill+=dt; collide(p,G.map.walls); }
   if(crouch) T.tCrouch+=dt;
-  if(!G.sim) tickBuzz(dt);
   // Once per frame, not once per enemy: 57 bodies each scanning the bush list
   // would be the same answer computed 57 times.
   G.pBush=inBush(p.x,p.y);
@@ -29788,7 +29790,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.74: A SECOND COPY OF A GUN YOU OWN IS KEPT WHEN YOU EXTRACT HOLDING IT. Downed and extraction audit of 2026-09-14, finding 1: the extraction added a gun in your hands to the armoury only when its id was new and otherwise dropped it, while the same gun in the backpack went to the stash, so a found carbine that auto-equipped over your own vanished at the extraction. Each hand is banked on its own by where its gun came from: a new id to the armoury, a second copy not from your armoury to the stash, your own armoury gun never copied. Check 13.74 extracts holding a found copy of an owned gun and requires one more in the stash, with the backpack copy and the armoury gun as the two controls; it fails on v13.73',
+  now:'v13.75: A DRINK KEEPS WEARING OFF WHILE YOU ARE DOWN. Downed and extraction audit of 2026-09-14, finding 5: tickBuzz ran on the standing path of updatePlayer, below the downed and roll returns, so every second on the floor or in a roll pushed a drink and its wears-off line back, and the frozen time came home at an extraction. It now ticks beside the stim clock, which v11.83 moved above both returns for the same reason. Check 13.75 downs the player with a drink running and requires two seconds of frames to take two seconds off it, with the same two seconds standing as the control; it fails on v13.74',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
