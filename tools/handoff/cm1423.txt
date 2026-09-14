@@ -1,0 +1,9 @@
+v14.23: the pause box works on a pad
+
+The pad had nothing to focus in the pause box, so a pad player could not
+resume or abandon from it, and D-UP opened the map behind it. The pause box is
+now a pad panel, and B or Menu on it resumes the run.
+
+Check 14.23. Fails on v14.22.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

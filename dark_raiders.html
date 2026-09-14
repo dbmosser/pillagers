@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.19';
+var VER='14.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11730,6 +11730,12 @@ function pollPad(){
   // the marked row through the same number key the keyboard uses, and X walks away, the
   // button the stall prompt names. Nothing else on the pad acts behind the panel.
   if(G.trade&&!G.over){
+    // v14.20, controller audit finding 2: THE PAD LETS GO WHILE THE STALL IS OPEN. This branch returned before the raid
+    // branch could release anything, so A held when the stall opened left the fire flag, the aim and any held key on for
+    // as long as the stall stayed open: the fire and cook code runs before the stall's own early return in updatePlayer,
+    // so an automatic gun kept shooting and reloading through the reserve behind the panel, and a frag cooked off in his
+    // hand. padRelease clears only what the pad set, and leaves PAD.prev alone, so the rows below still read presses.
+    padRelease();
     var _pn=((G.trade.stock&&G.trade.stock.length)||0)+1;
     if(_pn>9) _pn=9;
     G.pedSel=clamp(G.pedSel||0,0,_pn-1);
@@ -29895,7 +29901,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.19: THE STALL READS REAL PRESSES ON A PAD. A raid frame recorded the last state only of the buttons it had never seen, so A and X kept the value the Undercroft or the stall left, and the stall compared against it: the first X at the peddler opened the stall and shut it on the next frame, and A held into the stall read as a press of SELL BACKPACK. Every button is now recorded every raid frame. Check 14.19 holds X, then A, from raid frames into an open stall with a faked pad; it fails on v14.18',
+  now:'v14.20: THE PAD LETS GO WHILE THE STALL IS OPEN. The stall branch of the pad poll returned before anything was released, so A held when the stall opened kept the fire flag and the aim on behind the panel, and the fire and cook code runs before the stall returns: an automatic gun shot and reloaded through the reserve, and a frag cooked off in his hand. The stall branch now lets go of what the pad holds first. Check 14.20 holds A from the raid into an open stall with a faked pad; it fails on v14.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

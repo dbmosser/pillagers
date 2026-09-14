@@ -1,0 +1,9 @@
+v14.24: A does not fire under the open map or backpack
+
+A mouse click on the map or backpack never fires, but pad A did, and in the
+backpack it could cook and throw a selected frag. The pad trigger is now off
+while either is open.
+
+Check 14.24. Fails on v14.23.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
