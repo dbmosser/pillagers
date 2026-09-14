@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.92';
+var VER='14.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2294,7 +2294,12 @@ var TXPANY=0;
 function TX(s){
   if(typeof s!=='string'||!s) return s;
   var pm=P&&P.txt, v=pm?pm[s]:undefined;
-  if(typeof v!=='string'&&TXSHIP) v=TXSHIP[s];   // v11.42: shipped default under his profile
+  if(typeof v==='string') return v;
+  // v14.93, words audit finding 6: HIS OWN PATTERN BEATS A BAKED EXACT LINE. His rewording of a number line saves a pattern for
+  // any number, but a line baked at one number was consulted first, so at exactly that number the old wording came back,
+  // against "His own P.txt wins" at TXSHIP. His pattern is looked up before the baked line.
+  if(TXPANY&&pm&&P.txp&&/\d/.test(s)){ var sp0=txSplit(s), pv0=P.txp[sp0.pat]; if(typeof pv0==='string'&&sp0.nums.length) return txFill(pv0,sp0.nums); }
+  if(TXSHIP) v=TXSHIP[s];   // v11.42: shipped default under his profile
   if(typeof v==='string') return v;
   var haveP=!!(TXPANY&&pm&&P.txp);
   if(!haveP&&!TXPSHIPANY) return s;
@@ -30148,7 +30153,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.92: THE WORDS EDITOR OPENS ON THE TEXT UNDER THE POINTER. In a sentence with a bold phrase the editor always took the first piece of text, so clicking the words after the bold part opened it on the words before, and his typing replaced those. It now takes the piece under the pointer. Check 14.92 clicks both sides of a bold phrase; it fails on v14.91',
+  now:'v14.93: HIS OWN PATTERN BEATS A BAKED EXACT LINE. His rewording of a line with a number saves a pattern for any number, but a line baked into the file at one number was looked up first, so at exactly that number the old wording came back. His pattern is now looked up before the baked line. Check 14.93 saves a pattern over a baked number line; it fails on v14.92',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

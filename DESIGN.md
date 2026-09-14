@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.93 - HIS OWN PATTERN BEATS A BAKED EXACT LINE
+
+Words audit finding 6 (LOW, his tool). The words lookup is meant to put his own profile first ("His own P.txt wins", at the
+baked table). A line with numbers that he rewords saves an exact entry and a pattern that refills the numbers next time. Lines
+baked into the file were looked up before his patterns, so where a line was baked at one number (for example "New item in 4
+minutes") and he later reworded the same line at another number, his wording showed at every number except the baked one, where
+the old baked wording came back.
+
+THE BUILD. His exact entry, then his pattern, then the baked line, then the baked pattern. No baked line is reworded.
+
+MEASURED. Check 14.93 takes a baked line with numbers (control: with no edit of his it shows the baked words), saves a pattern of
+his for it and requires his words at the baked number. It restores his profile's edits afterwards. It fails on v14.92.
+
+Not verified: rewording a number line by hand in edit mode.
 ## v14.92 - THE WORDS EDITOR OPENS ON THE TEXT UNDER THE POINTER
 
 Words audit finding 5 (LOW, his tool). A click on a panel word in edit mode opens the editor on a text piece of the element under

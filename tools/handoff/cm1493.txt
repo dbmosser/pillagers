@@ -1,0 +1,9 @@
+v14.93: his own pattern beats a baked exact line
+
+A line baked into the file at one number was looked up before his own pattern
+for the same line, so his rewording lost at exactly that number. His pattern
+now comes first.
+
+Check 14.93. Fails on v14.92.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

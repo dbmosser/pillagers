@@ -5718,6 +5718,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.93',what:'his own pattern beats a baked exact line: with his rewording of a baked number line saved as a pattern, the line at the baked number shows his words (words audit finding 6)',
+   run:function(){
+     if(typeof TX!=='function'||typeof txSplit!=='function'||typeof TXSHIP==='undefined'||!TXSHIP||typeof TXPANY==='undefined') return 'SKIP: no baked words or patterns in this build';
+     var k=null; for(var s0 in TXSHIP) if(typeof TXSHIP[s0]==='string'&&(/\d/).test(s0)&&s0.indexOf('test robot extracts')<0&&txSplit(s0).nums.length){ k=s0; break; }
+     if(!k) return 'SKIP: no baked line with numbers';
+     var bad=[], P0=__P(), keepTxt=JSON.stringify(P0.txt||null), keepTxp=JSON.stringify(P0.txp||null), keepAny=TXPANY;
+     try{
+       if(P0.txt) delete P0.txt[k];
+       if(P0.txp) delete P0.txp[txSplit(k).pat];
+       // CONTROL: with no edit of his, the baked words show.
+       if(TX(k)!==TXSHIP[k]) return 'SKIP: the baked line does not show its baked words here';
+       var sp=txSplit(k);
+       P0.txt=P0.txt||{}; P0.txp=P0.txp||{}; P0.txp[sp.pat]='ZQXP '+sp.pat; TXPANY=1;
+       var got=String(TX(k));
+       if(got.indexOf('ZQXP ')!==0) bad.push('his own pattern for the line '+k.slice(0,40)+' lost to the baked words: '+got.slice(0,60));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ TXPANY=keepAny; P0.txt=JSON.parse(keepTxt); if(P0.txt===null) delete P0.txt; P0.txp=JSON.parse(keepTxp); if(P0.txp===null) delete P0.txp; }catch(_r){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.92',what:'the words editor opens on the text under the pointer: in a line with a bold phrase, a click over the words before it opens on those and a click over the words after it opens on those (words audit finding 5)',
    run:function(){
      if(typeof txClick!=='function'||typeof txClose!=='function'||typeof CFG==='undefined') return 'SKIP: no words editor in this build';
