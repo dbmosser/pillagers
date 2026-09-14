@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.51';
+var VER='13.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11462,8 +11462,8 @@ function padOn(){ return !!(typeof PAD!=='undefined'&&PAD&&PAD.on); }
 // connected. Bracketed ASCII on purpose: circled-letter glyphs are non-ASCII and this
 // file has been corrupted twice by non-ASCII surviving a patch script badly.
 var PADLABEL={KeyE:'X',KeyR:'Y',KeyF:'D-DOWN',KeyT:'RB',KeyG:'D-RIGHT',KeyQ:'LB',
-              Space:'B',Tab:'BACK',KeyP:'START',KeyZ:'D-LEFT',
-              ShiftLeft:'LS',ControlLeft:'RS',KeyM:'D-UP',KeyI:'BACK'};
+              Space:'B',Tab:'BACK',KeyP:'MENU',KeyZ:'D-LEFT',
+              ShiftLeft:'LS',ControlLeft:'RS',KeyM:'D-UP',KeyI:'VIEW'};   // v13.52: the full pad list and the backpack say VIEW and MENU
 // The keyboard half, kept beside the controller half so a station key can never be
 // labelled by one table and pressed by the other.
 var KEYNAME_KB={KeyE:'E',KeyR:'R',KeyF:'F',KeyT:'T'};
@@ -12074,6 +12074,7 @@ function emptyThrowCell(tk){
 // holds the gun in his hands, so a gun bound to key 5 says 5.
 function gunKeyLine(){
   var gc=gunCell();
+  if(padOn()) return 'LB or RB to your gun.';   // v13.52: no pad button reaches a digit; the bumpers walk the belt
   return 'Press '+keyLabel('Digit'+(gc+1),String(gc+1))+' for your gun.';
 }
 function doThrow(){
@@ -23030,7 +23031,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     else if(ne.kind==='raider'&&ne.parley>0&&ne.hostile) ne._plateTag=' [LISTENING]';
     else ne._plateTag='';
     var plate=ne.kind==='peddler'
-      ? (pedOpen()?(G.nearPed===ne?(G.pedBlocked?'THE PEDDLER  (search the crate first)':'THE PEDDLER  [E] DEAL'):'THE PEDDLER'):'THE PEDDLER  [CLOSED]')
+      ? (pedOpen()?(G.nearPed===ne?(G.pedBlocked?'THE PEDDLER  (search the crate first)':'THE PEDDLER  ['+keyLabel('KeyE','E')+'] DEAL'):'THE PEDDLER'):'THE PEDDLER  [CLOSED]')
       : ne.name+(ne.state==='extract'?' [RUNNING]':(ne._plateTag||''));
     // CREWS ARE VISIBLE, v2.57. v2.49 gave every raider a crew and rival crews
     // shoot each other, and then nothing on screen said who was with whom, so a
@@ -23912,7 +23913,7 @@ function drawBuzzFx(){
     // raid, where both are real and he uses them.
     if(state!=='hub'){
       ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
-      ctx.fillText(sl[sel].name+'   [FIRE] use    [V] signal',W/2,hy-LH(6));
+      ctx.fillText(sl[sel].name+'   [FIRE] use'+(padOn()?'':'    [V] signal'),W/2,hy-LH(6));   // v13.52: no pad button reaches V
       ctx.textAlign='left';
     }
   }
@@ -25125,7 +25126,7 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   // moved clear of the tallest line in the stack.
   if(!G.bagOpen){
     ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
-    ctx.fillText('B / I  BACKPACK',W-16,by-LH(70));
+    ctx.fillText(padOn()?'VIEW  BACKPACK':'B / I  BACKPACK',W-16,by-LH(70));   // v13.52: pad B is the dodge roll
   }
   var pl2=[],tsn=THROWKEYS[G.tsel];
   for(i=0;i<3;i++){
@@ -25193,7 +25194,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     ctx.textAlign='left';
   } else if(!G.over&&dist(p,G.active)<G.active.r){
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
-    ctx.fillStyle='#4de3d0'; ctx.fillText('HOLD E TO CALL FOR EXTRACTION',W/2,_exRow);
+    ctx.fillStyle='#4de3d0'; ctx.fillText('HOLD '+keyLabel('KeyE','E')+' TO CALL FOR EXTRACTION',W/2,_exRow);
     // The 1.6 second hold is VISIBLE now. It had a tiny bar on the ring marker
     // and nothing where you are actually looking, so letting go at a second
     // read as the button not working.
@@ -25339,7 +25340,7 @@ var _slp=w2s(p.x,66,p.y);
     if(G.beaconT===null&&G.active&&G.active.open&&dist(p,G.active)<G.active.r){
       _rowY+=Math.round(_hD*1.35);
       ctx.font=_fD; ctx.fillStyle='#4de3d0';
-      ctx.fillText('HOLD E TO CALL FOR EXTRACTION',W/2,_rowY);
+      ctx.fillText('HOLD '+keyLabel('KeyE','E')+' TO CALL FOR EXTRACTION',W/2,_rowY);
       if(G.active.callT>0) bar(W/2-70,_rowY+Math.round(_hD*0.45),140,7,clamp(G.active.callT/1.6,0,1),'#4de3d0');
     }
     ctx.textAlign='left';
@@ -25635,8 +25636,8 @@ var LEGEND_MINI_PAD=[
   ['A','fire'],['LT / RT','reach'],
   ['X','search'],['Y','reload'],
   ['LB / RB','tactical belt'],['D-RIGHT','use it'],
-  ['BACK','backpack'],['D-DOWN','medical'],
-  ['D-UP','map'],['START','pause']
+  ['VIEW','backpack'],['D-DOWN','revive'],
+  ['D-UP','map'],['MENU','pause']
 ];
 // v11.08, HIS NOTE 21: BUILT FROM THE COLOUR TABLE, never typed beside it. Two of
 // the six entries here were wrong: a cream swatch labelled "you", for a ring that
@@ -25658,7 +25659,7 @@ var SOUNDKEY=[
 var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['RS CLICK','crouch'],['B','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['A','fire'],['LT / RT','reach, analog'],['Y','reload']]],
-  ['GEAR',[['LB/RB','change tactical belt slot'],['D-RIGHT','use selected'],['D-LEFT','drop selected'],['D-DOWN','use medical'],['VIEW','backpack']]],
+  ['GEAR',[['LB/RB','change tactical belt slot'],['D-RIGHT','use selected'],['D-LEFT','drop selected'],['D-DOWN','revive when down'],['VIEW','backpack']]],
   ['WORLD',[['X','search / call for extraction'],['DPAD UP','map'],['MENU','pause']]]
 ];
 // Every line here used to run past the right edge of its own panel, by 83 to 164
@@ -29713,7 +29714,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.51: A CONTROLLER IN A RING CAN ALWAYS CALL FOR EXTRACTION AGAIN. My regression from v13.48, found by the key prompt audit of 2026-09-14: in a ring with an unopened box in reach, pad X held only X, so a pad player could search and could not call or board, and a box that refuses the search (a full backpack) never opens and held him away from the way out. X now searches first; with no search started 0.35 s into the press it holds E, and a search that has started in this hold keeps X until the box is done. Check 13.51 fakes a pad on a ring: a searchable box is still searched, a box refused by a full backpack gives the call after the grace, and with nothing in reach X calls at once; it fails on v13.50',
+  now:'v13.52: WHAT A CONTROLLER PLAYER READS MATCHES THE BUTTON. The key prompt audit of 2026-09-14, findings 2 to 7: the empty cell line said Press 1 for your gun, which no pad button reaches, and now says LB or RB; the short pad key list said BACK and START while the full list and the backpack say VIEW and MENU, and PADLABEL now agrees; D-DOWN was labelled medical, which it has not done since v11.27, and now reads revive; the HUD backpack cue named B, the dodge roll, and reads VIEW on a pad; the Peddler DEAL prompt and both HOLD TO CALL lines printed E and now name the pad button; and the belt caption hides V signal on a pad. Keyboard text is unchanged. Check 13.52 stubs padOn and requires the new wording, and that the keyboard wording still stands; it fails on v13.51',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
