@@ -40024,6 +40024,22 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.17 - A CLICK ON A FILLED BELT KEY CLEARS IT
+
+Undercroft audit finding 3 (MEDIUM). A filled tactical belt cell on the stash screen says "click to clear". Since v8.72 the
+same cell is also a drag source, and a drag starts on the press with no movement threshold. So a click was a drag: the
+release landed on the cell's own drop target and ran planPut on the same key, renderHub rebuilt the belt row, and the click
+that clears never reached the rebuilt cell. The key stayed bound and a pick sound played. When nothing of the item was
+packed, which a belt key surviving a raid often is, that release packed half the stash stack instead.
+
+THE BUILD. An item picked up off a belt key and let go on that same key clears the key, as the old click did. Nothing is
+packed. A drag to a different key or to the stash is unchanged.
+
+MEASURED. Check 14.17 binds key 5 to Medkit over six stash Medkits and nothing packed, confirms the cell is a drag source
+(control), presses and releases on it through the real mousedown and mouseup when the cell is on top (the drop handler
+itself otherwise), and requires the key unbound, no Medkit packed and six still in the stash. It fails on v14.16.
+
+Not verified: a hand click at 1920x1080.
 ## v14.16 - THE STASH HOVER KEY STAYS ON THE STASH SCREEN
 
 Undercroft audit finding 2 (MEDIUM). Pointing at a stash item and pressing a number binds it to that belt key, and J tags

@@ -1,0 +1,8 @@
+v14.20: the pad lets go while the stall is open
+
+A held on a pad when the Peddler's stall opened kept firing and aiming behind
+the panel. The stall branch now releases what the pad holds first.
+
+Check 14.20. Fails on v14.19.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

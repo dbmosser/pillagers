@@ -1,0 +1,16 @@
+## v14.20 - THE PAD LETS GO WHILE THE STALL IS OPEN
+
+Controller audit finding 2 (MEDIUM). While the Peddler's stall is open, the pad poll takes its own branch: the D-pad moves
+the row marker, A takes a row, X walks away. That branch returned before the raid branch could release anything the pad
+was holding. So with A held when the stall opened, the fire flag, the aim and any held key stayed on until the stall
+closed. In updatePlayer the fire and grenade cook code runs before the stall's own early return, so an automatic gun kept
+shooting and auto-reloading through the reserve behind the panel, and a frag selected on the bumpers cooked off in his hand.
+
+THE BUILD. The stall branch calls padRelease first. It clears only what the pad itself set (held keys, the fire flag, the
+aim) and does not touch the recorded button states, so A, X and the D-pad still read as presses on the stall rows.
+
+MEASURED. Check 14.20 fakes a pad, holds A through two raid frames (control: the fire flag and the aim are on), opens a
+stall and polls once with A still held: the fire flag, the pad's firing mark and the aim must all be off. It fails on
+v14.19.
+
+Not verified: a real controller holding fire into a stall.
