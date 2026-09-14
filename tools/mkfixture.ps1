@@ -5718,6 +5718,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.61',what:'restoring a code replaces the whole save: the packed loadout, the belt keys, the saved packings and an armed Data Core are cleared along with the stash the code replaces (Undercroft audit 2026-09-14, finding 4)',
+   run:function(){
+     if(!window.__P||typeof restoreApply!=='function') return 'SKIP: no restore in this build';
+     var P2=__P(), snap=JSON.parse(JSON.stringify(P2)), bad=[];
+     try{
+       __topClear(); __cleanProfile();
+       P2.stash=['bandage','bandage']; P2.kit=['bandage']; P2.hotAssign={2:'bandage'};
+       P2.kitSaved=['bandage']; P2.kitBeforeFree=['bandage']; P2.intel=1;
+       var ok=restoreApply({v:1,n:'ZQXRESTORE61',c:4321,x:10,l:1,s:{scrap:3}});
+       if(!ok) return 'SKIP: restoreApply refused the staged code';
+       // CONTROL: the code did replace the stash.
+       var sc=0; for(var i=0;i<P2.stash.length;i++) if(P2.stash[i]==='scrap') sc++;
+       if(sc!==3||P2.stash.indexOf('bandage')>=0) bad.push('control: the restore did not replace the stash with the code (stash '+JSON.stringify(P2.stash)+')');
+       if(P2.kit&&P2.kit.length) bad.push('the restored character kept the old loadout: '+JSON.stringify(P2.kit));
+       if(P2.hotAssign&&Object.keys(P2.hotAssign).length) bad.push('the restored character kept the old belt keys: '+JSON.stringify(P2.hotAssign));
+       if(P2.kitSaved) bad.push('the restored character kept the old saved packing');
+       if(P2.kitBeforeFree) bad.push('the restored character kept the old packing from before the freebie kit');
+       if(P2.intel) bad.push('the restored character kept intel armed from a core this save never spent');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var k; for(k in P2) if(!(k in snap)) delete P2[k]; for(k in snap) P2[k]=snap[k]; saveProfile(); }catch(_r){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.60',what:'buying the Wirt lot marks as bought the window the card was drawn for: a card drawn in one window and bought after the clock moved to the next stamps the window drawn, so the next lot is not locked out, and with no change of window the stamp is that window (Undercroft audit 2026-09-14, finding 2)',
    run:function(){
      if(!window.__P||typeof renderWirtLot!=='function'||typeof wirtLotHour!=='function'||typeof wirtLotKey!=='function') return 'SKIP: no Wirt lot in this build';

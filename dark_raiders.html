@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.60';
+var VER='13.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29722,7 +29722,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.60: BUYING WIRT S LOT NEVER LOCKS YOU OUT OF THE NEXT ONE. Undercroft audit of 2026-09-14, finding 2: the lot card captures its lot when drawn and v11.61 buys that lot at the click, but the bought stamp used the clock at the click, and nothing redraws the card on a timer, so a click after the five minute change paid for the old lot and stamped the new window, locking him out of a lot he never saw. The card now remembers the window it was drawn for and the purchase stamps that window. Check 13.60 draws the card in one window, moves the clock to the next before the click, and requires the stamp to name the window drawn, with no change of window as the control; it fails on v13.59',
+  now:'v13.61: A RESTORE CODE REPLACES THE WHOLE SAVE. Undercroft audit of 2026-09-14, finding 4: restoreApply replaced the stash, credits and guns but never the loadout, the belt, the saved packings or an armed Data Core, so the restored character kept the old belt keys, the old packing and intel armed from a core this save never spent. It now clears all five with the rest of the save. Check 13.61 arms a core, packs and binds an item, restores a code, and requires all five cleared, with the stash replaced as the control; it fails on v13.60',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32034,6 +32034,9 @@ function restoreApply(o){
     for(i=0;i<c;i++) st.push(id);
   }
   P.stash=st;
+  // v13.61, Undercroft audit: the rest of what belonged to the save being replaced. The
+  // loadout, the belt, the saved packings and an armed core all went with the old stash.
+  P.kit=[]; P.hotAssign={}; P.kitSaved=null; P.kitBeforeFree=null; P.intel=0;
   // v11.66: the armoury, when the code carries one. A gun this build does not
   // know is dropped, the same rule as the stash; an older code without the
   // block leaves the guns as they are rather than stripping them.
