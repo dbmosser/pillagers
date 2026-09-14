@@ -1,0 +1,9 @@
+v13.65: a Medkit on its own belt key is not refused as already healing
+
+The named-slot heal path tested health plus queue against full, while the
+Medical cell caps that at the running heal's ceiling, so a bound Medkit was
+refused while Bandages were healing. Both now use the same reach.
+
+Check 13.65 uses a bound Medkit with Bandage heal queued. Fails on v13.64.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

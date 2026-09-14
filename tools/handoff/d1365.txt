@@ -1,0 +1,16 @@
+## v13.65 - A MEDKIT ON ITS OWN BELT KEY IS NOT REFUSED AS ALREADY HEALING
+
+The in-raid audit of 2026-09-14, finding 4. Since v12.04 useMedical has measured what he can
+reach as the lower of health plus the queue and the running heal's ceiling. So two Bandages
+queued at 50 health, which stop at 85, still leave room for a Medkit. The named-slot path in
+useHot, which a Medkit dragged onto its own belt key takes, tested health plus queue alone
+against full health. The same Medkit on its own key was refused as Already healing while the
+Medical cell beside it used it.
+
+THE BUILD. The named-slot path uses the same reach as useMedical. Two ways in, one rule.
+
+MEASURED. Check 13.65 binds a Medkit to the last belt key, queues 60 of Bandage heal at 50
+health under an 85 ceiling, and requires the key to use the Medkit. At 50 health with nothing
+running, the same key must use it (the control). It fails on v13.64.
+
+Not verified: the belt cell's own label while the refusal was showing.
