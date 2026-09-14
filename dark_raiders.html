@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.00';
+var VER='14.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10667,6 +10667,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       if(WEAPONS[FREEKIT_GUN]){
         g.player.wep=WEAPONS[FREEKIT_GUN];
         g.player.ammo=g.player.wep.mag;
+        g.player.reserve=g.player.wep.mag*2;   // v14.01, loadout audit: its own two magazines, not the home gun's
         // v6.88, his spec: "if they take the freebie and extract, then they keep the
         // freebie stuff". Issued kit is never banked, so this cannot be flagged issued or
         // walking out with it would keep nothing. Dying with it still loses it.
@@ -29865,7 +29866,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.00: KEY 1 PICKS UP THE GUN BOUND TO IT. Deploy and loadout audit of 2026-09-15, finding 3: a gun carried in the backpack and bound to key 1 replaces the first gun cell, the raid starts with that slot selected because the gun in hand has no cell, and setHot returned at once for an already selected slot, so pressing 1 did nothing while the cell read the bound gun and the trigger fired the loaner. Pressing the selected key now still equips a gun waiting in the backpack. Check 14.00 goes up with an SMG bound to key 1 and requires pressing 1 to put it in a hand, with the SMG bound to key 2 and 2 pressed as the control; it fails on v13.99',
+  now:'v14.01: THE FREEBIE PISTOL CARRIES ITS OWN RESERVE. Deploy and loadout audit of 2026-09-15, finding 4: the player is built with two magazines of the equipped gun in reserve, and the freebie branch swapped in the Scav Pistol and refilled its magazine without touching the reserve, so with a Support MG at home the free pistol came up with 120 rounds behind it and with a Scav Pistol 24. The free pistol now gets two of its own magazines. Check 14.01 takes the freebie with a Support MG equipped and requires a reserve of two pistol magazines, with a Scav Pistol equipped as the control; it fails on v14.00',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

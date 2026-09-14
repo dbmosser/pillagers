@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.01 - THE FREEBIE PISTOL CARRIES ITS OWN RESERVE
+
+The deploy and loadout audit of 2026-09-15, finding 4. The player is built with a reserve of two
+magazines of whatever gun he has equipped at home. When he takes the freebie kit, the branch swaps in the
+Scav Pistol and refills its magazine, but leaves the reserve as it was. Reserve ammunition is one shared
+pool, so:
+
+- With a Support MG (60-round magazine) equipped at home, the free pistol came up with 120 rounds in
+  reserve.
+- With a Scav Pistol equipped, 24.
+- With nothing equipped, anywhere from 12 to 56, depending on which starter was rolled.
+
+The same free kit varied up to five-fold with what stayed in the armoury.
+
+THE BUILD. The free pistol's reserve is set to two of its own magazines when it is handed out.
+
+MEASURED. Check 14.01 takes the freebie with a Scav Pistol equipped at home and requires a reserve of
+two pistol magazines (the control, which also proves the free kit hands out the pistol). With a Support
+MG equipped at home it requires the same. It fails on v14.00.
+
+Not verified: the free kit card in the Undercroft, which names the gun but not its reserve.
 ## v14.00 - KEY 1 PICKS UP THE GUN BOUND TO IT
 
 The deploy and loadout audit of 2026-09-15, finding 3. A number key in the Undercroft binds any item to
