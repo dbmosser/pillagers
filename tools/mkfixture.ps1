@@ -277,6 +277,7 @@ window.__wallIndex=function(pred){
 window.__simRaiders=function(o){
   o=o||{};
   __deploy({kit:[],safe:null,mapIx:(o.mapIx===undefined?0:o.mapIx),seed:(o.seed||9001),sim:true});
+  var roster0=(G.roster||[]).length;   // r1341b: the roster as built, before any wave
   var live={mach:CFG.machVsRaider, feud:CFG.raiderFeud, greed:CFG.simGreed, sim:!!G.sim};
   var p=G.player, T=0, dt=0.15, horizon=(o.horizon||CFG.raidSec||540), steps=Math.round(horizon/dt), over=null, threw=null, tl=[], next=60;
   var px=-3000, py=-3000, hits=0, downs=0, lastHp={}, seenDown={}, raiderShots=0, machShots=0, playerShots=0;
@@ -293,7 +294,7 @@ window.__simRaiders=function(o){
   for(i=0;i<G.ents.length;i++) present[G.ents[i].name||('#'+i)]=1;
   for(i=0;i<ros.length;i++){ e=ros[i].ref; if(ros[i].out){ out++; outAt.push(Math.round(ros[i].outAt||0)); continue; }
     if(!present[e.name]) dead++; else if(e.downed) downed++; else if(e.hp<=0) dead++; else alive++; }
-  return {seed:o.seed||9001, mapIx:(o.mapIx===undefined?0:o.mapIx), buildings:(G.map.buildings||[]).length, live:live, park:(o.park==='centre'?'centre':'far'), horizon:horizon, ranTo:Math.round(T), over:over, threw:threw, roster:ros.length, out:out, alive:alive, downed:downed, dead:dead, hits:hits, downs:downs, raiderShots:raiderShots, machShots:machShots, playerShots:playerShots, outAt:outAt, timeline:tl};
+  return {seed:o.seed||9001, mapIx:(o.mapIx===undefined?0:o.mapIx), buildings:(G.map.buildings||[]).length, live:live, park:(o.park==='centre'?'centre':'far'), horizon:horizon, ranTo:Math.round(T), over:over, threw:threw, roster:ros.length, out:out, alive:alive, downed:downed, dead:dead, hits:hits, downs:downs, raiderShots:raiderShots, machShots:machShots, playerShots:playerShots, outAt:outAt, timeline:tl, roster0:roster0};
 };
 // Samples one sim raid so a stall can be told apart from a decision never made.
 window.__simTraceSeed=function(seed){
@@ -5716,6 +5717,90 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'13.41',what:'the raised decks are gone from both sectors: no deck, ramp or deck edge wall is left in a raid, he walks straight north across where the DOCK CATWALK stood, and every container and machine on the seed sits where it did with the decks in (his report of 2026-09-13)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keys)) return 'SKIP: this fixture cannot deploy and drive the player';
+     if(typeof FIXED_MAPS==='undefined'||!FIXED_MAPS.length) return 'SKIP: this build has no authored maps';
+     var bad=[], keepTs=lastTs, mi, i, sectors=0;
+     function prints(g){
+       var s=[], c;
+       for(c=0;c<g.containers.length;c++) s.push(Math.round(g.containers[c].x)+','+Math.round(g.containers[c].y));
+       for(c=0;c<g.ents.length;c++){ var e=g.ents[c]; if(e.kind==='sentry'||e.kind==='crawler') s.push(e.kind+Math.round(e.x)+','+Math.round(e.y)); }
+       return s.join(';');
+     }
+     function fresh(){ __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); }
+     function endAny(){ try{ var g0=__state(); if(g0&&!g0.over){ g0.player.downed=false; __endRaid('abandon'); } }catch(_0){} }
+     try{
+       for(mi=0;mi<Math.min(2,FIXED_MAPS.length);mi++){
+         var D=FIXED_MAPS[mi], nm=(D&&D.name)||('sector '+mi);
+         if(!(D&&D.plats&&D.plats.length)) continue;
+         sectors++;
+         // CONTROL: decks 1 builds them, so a zero below is the build and not a blind check.
+         fresh(); CFG.decks=1;
+         __deploy({kit:[],mapIx:mi,seed:4242});
+         var g1=__state(); if(!g1||!g1.map){ delete CFG.decks; return 'SKIP: no live raid on '+nm; }
+         var led1=0; for(i=0;i<g1.map.walls.length;i++) if(g1.map.walls[i].ledge) led1++;
+         var plats1=(g1.map.plats||[]).length, print1=prints(g1);
+         endAny(); delete CFG.decks;
+         // THE BUILD: the default raid.
+         fresh();
+         __deploy({kit:[],mapIx:mi,seed:4242});
+         var g2=__state(); if(!g2||!g2.map) return 'SKIP: no second raid on '+nm;
+         var M=g2.map, led=0;
+         for(i=0;i<M.walls.length;i++) if(M.walls[i].ledge) led++;
+         if(!plats1||!led1) bad.push('control: decks 1 on '+nm+' built '+plats1+' decks and '+led1+' edge walls, so this check cannot see a deck');
+         if((M.plats||[]).length) bad.push(nm+': '+M.plats.length+' raised deck(s) still built');
+         if((M.ramps||[]).length) bad.push(nm+': '+M.ramps.length+' ramp(s) still built');
+         if(led) bad.push(nm+': '+led+' deck edge wall(s) still stand, and he collides with every one');
+         for(i=0;i<D.plats.length;i++){
+           var PL=D.plats[i], lf=M.liftAt?M.liftAt(PL.x+PL.w/2,PL.y+PL.h/2):0;
+           if(lf) bad.push(nm+': the middle of '+(PL.name||'a deck')+' still lifts a man '+lf+' units');
+         }
+         if(print1!==prints(g2)) bad.push(nm+': taking the decks out moved a container or a machine on seed 4242, so the map is no longer the one every other check measures');
+         endAny();
+       }
+       if(!sectors) return 'SKIP: no sector authors a raised deck';
+       // THE WALK: south to north across the largest deck on the first sector that has one.
+       var D0=null, PL0=null, mi0=-1;
+       for(mi=0;mi<Math.min(2,FIXED_MAPS.length)&&!D0;mi++) if(FIXED_MAPS[mi].plats&&FIXED_MAPS[mi].plats.length){ D0=FIXED_MAPS[mi]; mi0=mi; }
+       for(i=0;i<D0.plats.length;i++) if(!PL0||D0.plats[i].w*D0.plats[i].h>PL0.w*PL0.h) PL0=D0.plats[i];
+       if(PL0.w<PL0.h) bad.push('staging: the largest deck on '+D0.name+' runs north to south, so a walk north does not cross its long edges');
+       else {
+         fresh();
+         __deploy({kit:[],mapIx:mi0,seed:4242});
+         var g=__state(), p=g.player, K=__keys(), k, cx=null, x;
+         var yTop=PL0.y-50, yBot=PL0.y+PL0.h+50;
+         for(x=PL0.x+40;x<=PL0.x+PL0.w-40&&cx===null;x+=20){
+           var clear=true;
+           for(i=0;i<g.map.walls.length&&clear;i++){ var W=g.map.walls[i]; if(W.ledge) continue;
+             if(W.x<x+26&&W.x+W.w>x-26&&W.y<yBot&&W.y+W.h>yTop) clear=false; }
+           for(i=0;i<g.containers.length&&clear;i++){ var C=g.containers[i];
+             if(Math.abs(C.x-x)<40&&C.y>yTop-20&&C.y<yBot+20) clear=false; }
+           if(clear) cx=x;
+         }
+         if(cx===null) bad.push('staging: no clear column 52 wide across where '+PL0.name+' stood, from 50 south of it to 50 north');
+         else {
+           for(k in K) delete K[k];
+           g.ents.length=0; g.waveT=-1e9;
+           p.downed=false; p.hp=100; p.iv=99; p.autoJog=false; p.roll=0; p.cooking=0;
+           p.x=cx; p.y=PL0.y+PL0.h+36;
+           var y0=p.y, clk=Math.max(performance.now(),(lastTs||0)+100);
+           K['KeyW']=true;
+           for(i=0;i<300&&p.y>PL0.y-24;i++){ p.iv=99; clk+=16.7; __loop(clk); if(__state()!==g||g.over) break; }
+           for(k in K) delete K[k];
+           if(!(p.y<=PL0.y-24)) bad.push('holding W from '+Math.round(y0)+' north across where '+PL0.name+' stood ('+PL0.y+' to '+(PL0.y+PL0.h)+'), he stopped at '+Math.round(p.y)+' and never reached '+(PL0.y-24));
+         }
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ delete CFG.decks; }catch(_d){}
+       try{ var K3=__keys(); for(var k3 in K3) delete K3[k3]; }catch(_k){}
+       try{ lastTs=keepTs; }catch(_t){}
+       try{ var gz=__state(); if(gz&&gz.player){ gz.player.iv=0; gz.player.downed=false; } }catch(_a){}
+       endAny();
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'13.40',what:'a box searched on the hot ground says so: after a held X search through the frame loop, the hot ground bonus line is shown after the Found line instead of being written over by it in the same call, and a box off the hot ground never says it',
    run:function(){
@@ -14865,7 +14950,7 @@ window.__REGRESS=[
      if(g0.live&&g0.live.mach!==1) bad.push('control: the lifted arm lost the war dial');
      if(!(g0.raiderShots>0)) bad.push('with engageNear 0 the pillagers still fired '+g0.raiderShots+' rounds out of sight, so the dial does not reach the three sites');
      // CONTROL TWO: the dial rolls no dice. Both arms open with the same roster.
-     if(g6.timeline.length&&g0.timeline.length&&g6.timeline[0][1]!==g0.timeline[0][1]) bad.push('control: the arms opened with '+g6.timeline[0][1]+' and '+g0.timeline[0][1]+' pillagers, so the seeded stream moved');
+     if(g6.roster0!==g0.roster0) bad.push('control: the arms were built with '+g6.roster0+' and '+g0.roster0+' pillagers, so the seeded stream moved');   // r1341b: the build, not the roster at 60 s
      return bad.length?bad.join('; '):null; }},
   {v:'11.24',what:'the centre-parked sim builds COLD STORAGE, runs the full clock and is populated; the feud is then measured with the Bulwark isolated out so only pillager-on-pillager hits count, and the seat is skipped honestly when none are visible (the raw hit count is the Bulwark, not a feud)',
    run:function(){
@@ -14925,7 +15010,7 @@ window.__REGRESS=[
      if(off.out<1) bad.push('control: with machVsRaider 0 no pillager got out of COLD STORAGE at seed 9001, so extraction itself is broken for pillagers');
      if(!(off.out>on.out)) bad.push('control: with the war off '+off.out+' pillagers got out against '+on.out+' with it on, so the switch no longer decides anything');
      // CONTROL THREE: both arms saw the same opening roster, the switch rolls no dice.
-     if(on.timeline.length&&off.timeline.length&&on.timeline[0][1]!==off.timeline[0][1]) bad.push('control: the two arms opened with '+on.timeline[0][1]+' and '+off.timeline[0][1]+' pillagers, so the seeded stream moved');
+     if(on.roster0!==off.roster0) bad.push('control: the two arms were built with '+on.roster0+' and '+off.roster0+' pillagers, so the seeded stream moved');   // r1341b: the build, not the roster at 60 s
      return bad.length?bad.join('; '):null; }},
   {v:'11.22',what:'no building on THE COLD MILE holds ANY pocket of floor nothing can reach, down to a 12 by 12 niche behind a table, on five seeds; the old furniture rules bring the niches back; and the repair pass demolishes nothing on seven seeds of both maps',
    run:function(){
@@ -22375,9 +22460,11 @@ window.__REGRESS=[
      // and furniture wedged in a body-width gap are not placed any more.
      // v11.18: 2206 and 552 became 2205 and 551. Partitions reaching into a
      // doorway are cut back at the end of the build; net one segment a map.
-     if(mile.walls!==2205||cold.walls!==551)
+     // v13.41: 2205 and 551 became 2191 and 545. The raised decks are gone, and with
+     // them 14 and 6 deck edge walls.
+     if(mile.walls!==2191||cold.walls!==545)
        bad.push('control: the maps hold '+mile.walls+' and '+cold.walls+
-                ' walls rather than 2205 and 551, so the split geometry moved');
+                ' walls rather than 2191 and 545, so the split geometry moved');
      if(mile.ents!==374||cold.ents!==85)
        bad.push('control: the maps spawn '+mile.ents+' and '+cold.ents+
                 ' rather than 374 and 85, so the seeded stream moved');

@@ -11,14 +11,14 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v13.41 CHECK, inserted before the v13.40 entry. Built on check 13.40's helpers: X held
+# v13.44 CHECK, inserted before the v13.40 entry. Built on check 13.40's helpers: X held
 # beside an ordinary box through the frame loop until it opens, the player placed on a
 # clear spot, and the message line read after whole frames. Machines, waves and the
 # clock are held, and the hot ground is moved off the map so no bonus line joins in.
 SubRx @'
   {v:'13.40',what:'a box searched on the hot ground says so: after a held X search through the frame loop, the hot ground bonus line is shown after the Found line instead of being written over by it in the same call, and a box off the hot ground never says it',
 '@ @'
-  {v:'13.41',what:'searching a box that finishes an open contract shows CONTRACT DONE on screen, instead of the Found line writing over it in the same call',
+  {v:'13.44',what:'searching a box that finishes an open contract shows CONTRACT DONE on screen, instead of the Found line writing over it in the same call',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__vpAlive)) return 'SKIP: this fixture cannot deploy a raid or step the loop';
      if(!__vpAlive()) return 'SKIP: the pane has no layout ('+window.innerWidth+'x'+window.innerHeight+'), so the frame loop cannot draw';

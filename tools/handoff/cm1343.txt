@@ -1,0 +1,7 @@
+v13.43: fewer enemies by default
+
+His rulings: Machines Few means what it says (no house floor), and a new
+pillager starts on Few pillagers with smaller waves. The corpus pins Standard,
+so no fingerprint moves. Check 13.43 fails on v13.42; 12.29 repaired.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

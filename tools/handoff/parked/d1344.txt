@@ -1,4 +1,4 @@
-## v13.41 - A BOX THAT FINISHES A CONTRACT SAYS SO
+## v13.44 - A BOX THAT FINISHES A CONTRACT SAYS SO
 
 A LEAD FROM THE v13.40 REVIEW. Opening a box that finished an open or district
 contract ran contractOpen, which ran contractStep, which said "CONTRACT DONE" with a
@@ -12,10 +12,10 @@ after the grant, behind the Found line and before the v13.40 hot ground line. Th
 path passes no list and says the line at once, as before. No wording or numbers
 change.
 
-MEASURED. Check 13.41 stages an open contract one box short for a box type, holds X
+MEASURED. Check 13.44 stages an open contract one box short for a box type, holds X
 beside a box of that type through the frame loop until it opens, with machines, waves,
 the clock and the hot ground held. It confirms the contract finished and was recorded,
-and requires CONTRACT DONE on screen. Fails on v13.40.
+and requires CONTRACT DONE on screen. Fails on v13.43.
 
 Not verified: a district contract, which takes the same held path through the same
 call but was not staged; and a player grenade killing his own hired mercenary, which

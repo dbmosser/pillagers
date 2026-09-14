@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.40';
+var VER='13.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='13.40';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.34';
+var WHATSNEW_VER='13.41';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE RAISED DECKS ARE GONE. The catwalks and gantries kept stopping you short of their edges and trapping you on them, so every one has been taken out of both sectors. Where a deck stood is plain ground you can walk straight across.',
   'PRESS B TO BACK OUT OF ANY MENU. It closes whatever is in front, one thing per press, in the Undercroft and on the surface. With nothing open it still gives your hire his orders, and it never opens the pause box.',
   'AN ARMOUR PLATE YOU FIND GOES IN YOUR BACKPACK. It no longer snaps onto your armour when you pick it up: select it on your tactical belt and use it, which takes two seconds, or carry it home.',
   'X SEARCHES WHAT YOU ARE STANDING ON, even inside an extraction point, where E is the key that calls for extraction.',
@@ -1382,7 +1383,7 @@ var WHATSNEW=[
   'THE EXTRACTION WINDOW NEVER OUTLIVES THE CLOCK. An extraction arriving in the last seconds of a raid used to announce three seconds on every readout and then let the timer kill you with a second still showing. It now says what the raid actually has left.',
   'CUTTING THE SEAL NO LONGER STOPS THE WORLD. For the whole length of a cut your health did not recover, an extraction you had already called for stopped arriving, its window stopped running, and no pillager wave could arrive while you made the loudest noise in the game.',
   'AUTO-JOG STOPS WHEN YOU GO DOWN. It used to survive the whole time you were on the floor, so the moment you got up again you walked off toward the cursor at 40 health with no key held, which was the character walking off by himself.',
-  'THE EDGE OF A RAISED DECK IS WHERE IT LOOKS. Catwalk and gantry edges were painted like building walls, 26 units taller than the thing you actually collide with, so a third of the deck you were standing on was covered by a wall you could walk through, you stopped short of the edge you could see, and standing at the near side hid you behind it.',
+
   'ONE WORD PER THING, ON THIS CARD TOO. Five older entries here still used words you retired: the extraction called a vehicle in three places, and the tactical belt called by its old name in one. They use your words now, and a check holds the whole card to the list from here on.',
   'A HOWLER SHELL NO LONGER REACHES THROUGH A WALL. A shell bursting in the street took about twenty health off you standing well inside a building, with the hit ring pointing at something you could not see. Walls stop the blast now, exactly as they stop a frag.',
   'BREAKING A CRIER LINE OF SIGHT NOW ACTUALLY CANCELS ITS ALARM. The cancel cleared the windup and then fired the alarm on the very same frame, so hiding never once called one off. The three seconds have to be unbroken now, which they always claimed to be.',
@@ -10485,6 +10486,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   // v8.36: termClock is computed once, up with the closure schedule that also
   // needs it. Declaring it twice would let the raid clock and the ring clock
   // drift apart, which is the exact failure this build is fixing.
+  if(CFG.decks!==1){ map.plats=[]; map.ramps=[]; }   // v13.41: emptied before the ground bake below, which draws nothing from them
   var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wingrid:buildSegGrid(map.wsegs||[],WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
     nMach:N_SENTRY+N_CRAWLER,map:map,vegPal:mkVegPal(map),ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),raidLen:Math.round(CFG.raidSec*termClock),paused:false,
     spawnDbg:_spDbg,
@@ -10653,6 +10655,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     for(var h=0;h<g.bag.length;h++){ var hi2=ITEMS[g.bag[h]]; if(hi2&&hi2.use==='heal') carried++; }
     while(carried<ISSUED_HEALS){ g.bag.push('bandage'); carried++; }
   }
+  if(CFG.decks!==1) clearDecks(g);   // v13.41: last, after every placement roll
   return g;
 }
 function startRaid(){
@@ -12750,6 +12753,37 @@ function rebuildGeometry(){
   var _nb2=(CFG.navBody===undefined?15:CFG.navBody);
   G.map.navD=carveDoors(_nb2>0?buildNav(walls,_nb2):G.map.nav,G.map.doors,walls,_nb2);
   refreshVseg();
+}
+// v13.41, HIS REPORT OF 2026-09-13: THE RAISED DECKS ARE GONE. A deck edge is a
+// wall tagged ledge; it held him short of what he could see and would not let him
+// off the catwalk, so every one is taken out of a finished raid, with the deck and
+// ramp lists, and the ground where they stood is plain ground. Called at the end of
+// buildRaid, after every placement roll, so no container or machine moves on any
+// seed. The same rebuild a destroyed wall gets, done on the raid being built.
+function clearDecks(g){
+  var map=g.map, walls=map.walls, cut=0, i;
+  for(i=walls.length-1;i>=0;i--) if(walls[i]&&walls[i].ledge){ walls.splice(i,1); cut++; }
+  map.plats=[]; map.ramps=[];
+  map.platAt=function(){ return null; };
+  map.liftAt=function(){ return 0; };
+  if(!cut) return 0;
+  var segs=[], wsegs=[];
+  for(i=0;i<walls.length;i++){ var w2=walls[i], L=w2.win?wsegs:segs;
+    L.push({x1:w2.x,y1:w2.y,x2:w2.x+w2.w,y2:w2.y});
+    L.push({x1:w2.x+w2.w,y1:w2.y,x2:w2.x+w2.w,y2:w2.y+w2.h});
+    L.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
+    L.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
+  }
+  map.segs=segs; map.wsegs=wsegs;
+  g.grid=buildSegGrid(segs,WORLD_W,WORLD_H);
+  g.wingrid=buildSegGrid(wsegs,WORLD_W,WORLD_H);
+  g.wgrid=buildWallGrid(walls,WORLD_W,WORLD_H);
+  g.vseg=map.segs;
+  map._fsGrid=null;
+  map.nav=buildNav(walls);
+  var nb=(CFG.navBody===undefined?15:CFG.navBody);
+  map.navD=carveDoors(nb>0?buildNav(walls,nb):map.nav,map.doors,walls,nb);
+  return cut;
 }
 function damageWall(w,amt,x,y){
   if(CFG.destruct===0) return false;
@@ -29615,7 +29649,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.40: THE HOT GROUND BONUS LINE WAS WRITTEN OVER BY THE FOUND LINE. Found by a read-only hunt, confirmed by two skeptics and reproduced live on v13.34: a box inside the hot zone gained its two bonus items and the only line on screen was the Found line. Opening the box pushed the bonus items and said Hot ground, then the grant in the same call said the Found line over it. The line is now kept where it is built and said through sayWhenFree just after the grant, while the Found line shows, so it follows when that runs out; saying it through sayWhenFree in place would only work while a Took line happened to be showing. No loot, odds, wording or numbers change, and the sim is untouched. Check 13.40 moves the hot ground onto an ordinary box, holds X beside it through the frame loop until it opens, confirms the bonus was paid and the Found line showed, requires the hot ground line on screen exactly once, and requires a box off the hot ground never to say it; it fails on v13.39',
+  now:'v13.41: THE RAISED DECKS ARE GONE. His report of 2026-09-13 with two screenshots: the DOCK CATWALK on COLD STORAGE still stopped him short of its edges and would not let him walk off it, and another deck was broken elsewhere; he asked for them gone. Every deck edge wall and every deck and ramp is taken out at the very end of the raid build, after every container and machine has been placed, so no seed moves; the deck and ramp lists are emptied before the ground bake so neither is painted, and segments, grids and routing are rebuilt the way a destroyed wall rebuilds them. Check 13.41 finds no deck, ramp or edge wall on either sector, walks him north across where the DOCK CATWALK stood, and requires every container and machine where it was with the decks restored; it fails on v13.40',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

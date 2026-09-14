@@ -1,0 +1,16 @@
+v13.41: the raised decks are gone
+
+His report of 2026-09-13: the DOCK CATWALK still would not let him move up off
+it, and another deck was broken elsewhere. Every deck edge wall, deck and ramp
+is taken out at the end of buildRaid, after every placement roll, so no seed
+moves. Segments, grids and routing are rebuilt as for a destroyed wall.
+
+Check 13.41: decks 1 builds them (control); the default builds none on either
+sector, moves no container or machine, and a held W crosses where the DOCK
+CATWALK stood. Fails on v13.40.
+
+Harness: r1341 moves check 9.81 to the new wall counts (2191 and 545);
+r1341b makes the 11.25 and 11.24 roster control read the roster as built,
+not the roster at 60 s, which counts waves.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

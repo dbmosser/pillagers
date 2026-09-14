@@ -1,0 +1,13 @@
+v13.42: out of a consumable, he switches back to the gun himself
+
+His ruling of 2026-09-13: running out of bandages or throwables must never
+autofire the gun. Five places selected the gun so the next click fired it; all
+five now keep the highlight, and every empty press names the key for the gun.
+A raid starts with the gun cell selected.
+
+Check 13.42 spends the last Bandage and the last cooked Frag and clicks on with
+no shot, uses the empty Frag by key, fires from the gun cell as the control, and
+starts a raid with the gun on key 5. Fails on v13.41. Checks 12.08 and 12.31
+repaired to the ruling.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

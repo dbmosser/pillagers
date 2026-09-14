@@ -1,0 +1,1441 @@
+{
+  "summary": "Map every Escape, Tab, B, I and P binding, the words and checks that name them, then plan and review the remap: Tab does what Escape does, B and I open the backpack, hire orders move to O",
+  "agentCount": 5,
+  "logs": [],
+  "result": {
+    "plan": {
+      "summary": "What changes for a player, in two builds. Line numbers are from the file as it is now. v13.41 (raised decks gone) landed while I was reading, so these builds become v13.42 and v13.43.\n\nBUILD 1 (v13.42): TAB does everything Escape does.\n- In a raid, TAB closes the map, then the backpack, the emote bar and the peddler stall, one per press.\n- With nothing open, TAB pauses. With the pause box up, TAB closes the box, even while typing in its note.\n- In the Undercroft, TAB closes the top window, a right-click item menu, the edit box, the floor backpack and the stash panel. With nothing open it pauses.\n- On the title, TAB closes a window and never pauses, which is what Escape does there.\n- Escape keeps every behaviour it has today.\n- TAB stops opening the backpack; I still opens it. B still backs out for this one build, and B with nothing open still gives the hire his orders.\n- A held TAB pauses once instead of flickering the box.\n- Controller: nothing changes. The View button used to tap Tab. If left alone it would have become a second pause button, so it now taps I, which does exactly what Tab did before (opens and closes the raid backpack, closes the stall).\n- Words changed: pause box key line, title controls line, HUD hint, both keyboard key lists, the Undercroft H panel, and three what-is-new entries. One stale entry is deleted. The PRESS B entry is reworded with the same opening so its position on the card does not move.\n\nBUILD 2 (v13.43): B and I both open and close the backpack, in a raid and in the Undercroft.\n- B no longer backs out of anything; TAB has that.\n- O now gives the hire his orders. O was unused anywhere in the game.\n- B also closes the peddler stall, like I.\n- Words changed: every backpack label now says B / I, the key list gets an O row for the hire in place of the B row, the backpack panel header says B or I to close, and the what-is-new entry and the itch fullscreen entry name TAB.\n- Controller players see no change in this build either. Pads never had a hire-orders button.\n\nNot touched:\n- The hire bench sentence that names B for orders. It is one of the owner's baked text edits and shows as \"Buy a friend.\", so no player sees the B wording.\n- Escape's keyboard lock for fullscreen.\n\nEvidence (all read-only):\n- Every old_verbatim below was counted with an ordinal search against the current files.\n- Game-file anchors that build 1 does not change were counted in the v13.41 file.\n- Build 2 anchors that are build 1's new text count 0 now and exactly 1 once build 1 is applied. Each is marked in its build's risks.",
+      "owner_decisions": "1. HIRE ORDERS KEY. O is assumed. If he picks another key, change only the KeyO in build 2 (dark_raiders.html line 10933), the O row in LEGEND (line 25554) and the O in the what-is-new entry. Check v13.43 taps KeyO and looks for an O row, so those two strings change with it.\n\n2. CONTROLLER VIEW BUTTON. PADTAP at line 11417 reads \"8:'Tab',        // View   inventory\", and pad taps go straight into raidKey.\n   - Default in build 1: View taps KeyI, so View stays the backpack button. All four places that promise that stay true: LEGEND_MINI_PAD ['BACK','backpack'] (line 25575 area), LEGEND_PAD ['VIEW','backpack'], the bag header 'VIEW to close' (line 27093), and PADLABEL KeyI:'BACK' (line 11443).\n   - The alternative is to make View the pad's pause and back-out button. The pad would then have no backpack button, and those four labels would all need rewriting.\n\n3. CONTROLLER BACK-OUT GAPS. These are unchanged, and the ruling does not cover pads.\n   - Pad B backs out only inside a window or the stash panel. padMenu, read at line 11529 before v13.41 shifted the file by four lines, clicks the Leave/Close/Back/Done/Return button.\n   - A pad cannot close the pause box, the floor backpack, or the raid map, backpack, stall or emote bar.\n   - On the Undercroft floor, View and Menu do nothing at all: the hub branch of pollPad binds only A, X, Y, RB and LS.\n   - Least invasive default: leave as is. START-HERE.md lines 1064-1072 say a pad cannot close Undercroft windows. padMenu shows it can, so that note is wrong.\n\n4. PADLABEL Tab:'BACK' (line 11442). After build 1 it labels a key no pad button taps. No keyLabel call passes Tab, so nothing on screen shows it. Default: leave it.\n\n5. The pad lists already name the same two buttons two ways: BACK/START in LEGEND_MINI_PAD and PADLABEL, VIEW/MENU in LEGEND_PAD and the bag header. This predates the remap. Default: leave it.\n\n6. TAB INSIDE A WINDOW'S TEXT FIELD now closes the window instead of moving to the next field, exactly as Escape does. On the title name and delete inputs (#pnamein, #delword), TAB still does the browser default. Inside the itch frame that can move focus off the game, which Escape never did because it does nothing there. Default: accept, and watch his reports.\n\n7. COMPACT CORNER KEY LIST. It draws exactly 12 entries: MH=MROW*6 at line 26265 area, read at 26230. So TAB pause is not added there; only the full H list, the pause box and the Undercroft H panel name it. Default: leave it. Adding it needs a seventh row and a height change.\n\n8. HIRE BENCH SENTENCE. 'On the surface B cycles his orders.' (line 30105 before the shift) is a TXSHIP key replaced by his 'Buy a friend.', so it is left untouched. Default: no new line. If he wants the bench to name O, it has to be a new separate element.\n\n9. BUILD NUMBERS. v13.42 and v13.43 assume nothing else ships first. v13.41 shipped during this read-only pass. If another build lands, renumber VER, WHATSNEW_VER and the check v fields, and recount every anchor.\n\n10. HISTORY ENTRY DELETED. Build 1 deletes the what-is-new entry 'A BELT KEY TELLS YOU THE RIGHT KEY...' (line 1545). It has been stale since v11.91 and the ruling makes it false twice. Default: delete. The alternative is rewording it, which would mean writing a new history claim.",
+      "builds": [
+        {
+          "title": "v13.42 TAB pauses and backs out, the way Escape does",
+          "player_effect": "TAB now does everything Escape does, which matters on itch, where the browser spends Escape on leaving fullscreen.\n- Raid: TAB closes the map before the backpack, closes the emote bar and the stall, pauses with nothing open, and closes the pause box.\n- Undercroft: TAB closes the top window, the item menu, the edit box, the floor backpack and the stash panel, and pauses with nothing open.\n- Title: TAB never pauses.\n- Escape behaves exactly as before.\n- TAB no longer opens the backpack; I does.\n- B still backs out and still gives orders in this build.\n- A controller player notices nothing: View still opens the backpack, because it now taps I.\n- Key lists, the pause line, the title line, the HUD hint and the what-is-new card say I for the backpack and TAB for pause and back.",
+          "edits": [
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "var VER='13.41';",
+              "old_match_count": 1,
+              "new_text": "var VER='13.42';"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "var WHATSNEW_VER='13.41';",
+              "old_match_count": 1,
+              "new_text": "var WHATSNEW_VER='13.42';"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  'PRESS B TO BACK OUT OF ANY MENU. It closes whatever is in front, one thing per press, in the Undercroft and on the surface. With nothing open it still gives your hire his orders, and it never opens the pause box.',",
+              "old_match_count": 1,
+              "new_text": "  'PRESS B TO BACK OUT OF ANY MENU, OR TAB, WHICH ALSO PAUSES. Either closes whatever is in front, one thing per press, in the Undercroft and on the surface. On itch the browser spends Escape on leaving fullscreen, so TAB now does everything Escape does in the game: with nothing open it pauses, and it closes the pause box again. B with nothing open still gives your hire his orders. The backpack is on I.',"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": " Only P and ESC answer while it is up, which are the two keys it names.',",
+              "old_match_count": 1,
+              "new_text": " Only P, TAB and ESC answer while it is up, which are the keys it names.',"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "and the full-pack message names Z, which drops, not TAB, which opens it.',",
+              "old_match_count": 1,
+              "new_text": "and the full-pack message names Z, which drops, not the key that opens it.',"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  'A BELT KEY TELLS YOU THE RIGHT KEY. Pressing a tactical belt key for a gun still in your backpack used to say \"TAB to equip it\"; TAB only opens the backpack. It now says TAB, then ENTER, which is what equips it.',",
+              "old_match_count": 1,
+              "new_text": ""
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "F is your melee strike, TAB is the backpack, 1 to 9 is the tactical belt.',",
+              "old_match_count": 1,
+              "new_text": "F is your melee strike, 1 to 9 is the tactical belt.',"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "1-9 tactical belt &nbsp; TAB backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; P / ESC pause</div>",
+              "old_match_count": 1,
+              "new_text": "1-9 tactical belt &nbsp; I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; TAB back out &nbsp; P / TAB / ESC pause</div>"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "<b style=\"color:var(--bone)\">TAB</b> backpack &nbsp;",
+              "old_match_count": 1,
+              "new_text": "<b style=\"color:var(--bone)\">I</b> backpack &nbsp;"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "ctx.fillText('TAB  BACKPACK',W-16,by-LH(70));",
+              "old_match_count": 1,
+              "new_text": "ctx.fillText('I  BACKPACK',W-16,by-LH(70));"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack']",
+              "old_match_count": 1,
+              "new_text": "['FIRE','use selected slot'],['I','backpack'],['ENTER','equip gun from backpack']"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "['H','cycle this list'],['P','pause'],['B','back out of a menu, or order your hire']]],",
+              "old_match_count": 1,
+              "new_text": "['H','cycle this list'],['P','pause'],['TAB','pause, or back out of a menu'],['B','back out of a menu, or order your hire']]],"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  ['1-9','tactical belt'],['TAB','backpack'],",
+              "old_match_count": 1,
+              "new_text": "  ['1-9','tactical belt'],['I','backpack'],"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "'I or TAB','your things','M','the map, on the surface','H','close this'];",
+              "old_match_count": 1,
+              "new_text": "'I','your things','TAB','pause, or back out','M','the map, on the surface','H','close this'];"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if(e.code==='KeyB'&&!e.repeat){",
+              "old_match_count": 1,
+              "new_text": "  // v13.42, HIS RULING OF 2026-09-13: TAB DOES WHAT ESCAPE DOES. Inside the itch\n  // page the browser spends Escape on leaving fullscreen and the game cannot stop\n  // it, so TAB backs out of whatever is in front, in the same front-most order.\n  // Not while the pause box is up: the box is in front of everything, so TAB\n  // closes the box first, as ESC does.\n  if(e.code==='Tab'&&!pauseOpen&&!e.repeat){\n    if(backOut()){ e.preventDefault(); return; }\n  }\n  if(e.code==='KeyB'&&!e.repeat){"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "    if(pauseOpen&&e.code!=='KeyP'&&e.code!=='Escape'){ e.preventDefault(); return; }",
+              "old_match_count": 1,
+              "new_text": "    if(pauseOpen&&e.code!=='KeyP'&&e.code!=='Escape'&&e.code!=='Tab'){ e.preventDefault(); return; }"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "    if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&&",
+              "old_match_count": 1,
+              "new_text": "    if((e.code==='Escape'||e.code==='KeyP'||e.code==='Tab')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&&"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "       !(e.code==='Escape'&&hubBagOpen)){",
+              "old_match_count": 1,
+              "new_text": "       !((e.code==='Escape'||e.code==='Tab')&&hubBagOpen)){"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "    if(e.code==='Escape'&&!document.querySelector('.imenu')){",
+              "old_match_count": 1,
+              "new_text": "    if((e.code==='Escape'||e.code==='Tab')&&!document.querySelector('.imenu')){"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "    if(e.code==='Escape'&&!document.querySelector('.imenu')&&!document.querySelector('.modal.on'))",
+              "old_match_count": 1,
+              "new_text": "    if((e.code==='Escape'||e.code==='Tab')&&!document.querySelector('.imenu')&&!document.querySelector('.modal.on'))"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "    if((e.code==='KeyI'||e.code==='Tab')&&!e.repeat){",
+              "old_match_count": 1,
+              "new_text": "    if(e.code==='KeyI'&&!e.repeat){"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if(pauseOpen&&code!=='KeyP'&&code!=='Escape'){ if(ev) ev.preventDefault(); return; }",
+              "old_match_count": 1,
+              "new_text": "  if(pauseOpen&&code!=='KeyP'&&code!=='Escape'&&code!=='Tab'){ if(ev) ev.preventDefault(); return; }"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "    if(code==='KeyV'||code==='Escape'){ if(ev) ev.preventDefault(); G.emoteBar=false; return; }",
+              "old_match_count": 1,
+              "new_text": "    if(code==='KeyV'||code==='Escape'||code==='Tab'){ if(ev) ev.preventDefault(); G.emoteBar=false; return; }"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if(code==='Escape'&&G&&!G.over&&!pauseOpen&&(G.mapOpen||G.bagOpen)&&!repeat){",
+              "old_match_count": 1,
+              "new_text": "  if((code==='Escape'||code==='Tab')&&G&&!G.over&&!pauseOpen&&(G.mapOpen||G.bagOpen)&&!repeat){"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if((code==='Escape'||code==='KeyP')&&G&&!G.over)",
+              "old_match_count": 1,
+              "new_text": "  if((code==='Escape'||code==='KeyP'||(code==='Tab'&&!repeat))&&G&&!G.over)"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){",
+              "old_match_count": 1,
+              "new_text": "  if(code==='KeyI'&&G&&!G.over&&!repeat){"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if(ev.code!=='Escape') return;",
+              "old_match_count": 1,
+              "new_text": "  if(ev.code!=='Escape'&&ev.code!=='Tab') return;\n  // v13.42: a TAB the main listener already answered is spent. A press dispatched\n  // at window reaches that listener first, and it may have just raised this box.\n  if(ev.code==='Tab'&&ev.defaultPrevented) return;"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "    var _ta=document.getElementById('pausenote'); if(_ta) _ta.blur();",
+              "old_match_count": 1,
+              "new_text": "    if(ev.code==='Tab'&&ev.repeat) return;   // v13.42: a held TAB closes the box once, not on every repeat\n    var _ta=document.getElementById('pausenote'); if(_ta) _ta.blur();"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if(e.code!=='Escape') return;",
+              "old_match_count": 1,
+              "new_text": "  if(e.code!=='Escape'&&e.code!=='Tab') return;   // v13.42, his ruling: TAB closes the edit box and the top window too"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if(ev.key!=='Escape') return;",
+              "old_match_count": 1,
+              "new_text": "  if(ev.key!=='Escape'&&ev.key!=='Tab') return;"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  8:'Tab',        // View   inventory",
+              "old_match_count": 1,
+              "new_text": "  8:'KeyI',       // View   backpack. v13.42: TAB pauses and backs out now, so View taps I"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "       tap('Tab');\r\n       if(!g.bagOpen){ bad.push('control: TAB did not open the backpack, so there is nothing here for ESC to close'); }",
+              "old_match_count": 1,
+              "new_text": "       tap('KeyI');\r\n       if(!g.bagOpen){ bad.push('control: I did not open the backpack, so there is nothing here for ESC to close'); }"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "       tap('Tab'); tap('KeyM');",
+              "old_match_count": 1,
+              "new_text": "       tap('KeyI'); tap('KeyM');"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "       tap('Tab');\r\n       if(!g.bagOpen){ bad.push('control: TAB did not re-open the backpack'); }",
+              "old_match_count": 1,
+              "new_text": "       tap('KeyI');\r\n       if(!g.bagOpen){ bad.push('control: I did not re-open the backpack'); }"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "       var _bagKeys=['Tab','KeyI'], bi;",
+              "old_match_count": 1,
+              "new_text": "       var _bagKeys=['KeyI'], bi;   // v13.42: TAB pauses on the floor now, and v13.42 owns that press"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "     var need=[['F ','melee strike'].join(''), ['TAB ','backpack'].join(''), ['tactical ','belt'].join(''), ['hold to ','sprint'].join('')];",
+              "old_match_count": 1,
+              "new_text": "     var need=[['F ','melee strike'].join(''), ['I ','backpack'].join(''), ['tactical ','belt'].join(''), ['hold to ','sprint'].join('')];"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "     if(tt.indexOf('TAB backpack')<0) bad.push('the title controls line does not say \"TAB backpack\": '+tt.slice(0,120));",
+              "old_match_count": 1,
+              "new_text": "     if(tt.indexOf('I backpack')<0) bad.push('the title controls line does not say \"I backpack\": '+tt.slice(0,120));"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "     if(hud.indexOf(['TAB  ','BACKPACK'].join(''))<0) bad.push('the HUD hint does not read TAB  BACKPACK');",
+              "old_match_count": 1,
+              "new_text": "     if(hud.indexOf(['I  ','BACKPACK'].join(''))<0) bad.push('the HUD hint does not read I  BACKPACK');"
+            }
+          ],
+          "check_body": "  {v:'13.42',what:'TAB does what Escape does, because on itch the browser spends Escape on leaving fullscreen: in a raid it closes the map before the backpack and closes the emote bar, raises the pause box with nothing open and closes it again, and leaves a backpack behind the box alone; in the Undercroft it closes the top window and the backpack, pauses with nothing open and unpauses; on the title it raises nothing; and the controller View button still opens the backpack (his ruling of 2026-09-13)',\n   run:function(){\n     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__keysRef&&window.__hubEnter&&window.__hubBag&&window.__showScreen))\n       return 'SKIP: this fixture cannot drive a raid, the Undercroft floor and the title';\n     var pb=document.getElementById('pausebox');\n     if(!pb||typeof togglePauseBox!=='function') return 'SKIP: this build has no pause box';\n     var bad=[];\n     function keysOff(){ try{ var K=__keysRef(); for(var kk in K) K[kk]=false; }catch(_k){} }\n     // ON WINDOW ONLY. window plus document doubles every press (v11.28). Cancelable,\n     // because a real key press is, and the pause closer reads defaultPrevented.\n     function tap(c){\n       keysOff();\n       window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:c,bubbles:true,cancelable:true}));\n       window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:c,bubbles:true,cancelable:true}));\n     }\n     function boxUp(){ return pb.classList.contains('on'); }\n     function boxDown(){ try{ if(boxUp()) togglePauseBox(false); }catch(_b){} pb.classList.remove('on'); }\n     function modalsUp(){ return document.querySelectorAll('.modal.on').length; }\n     function floorBagShut(){ try{ if(__hubBag()){ try{ hubBagOpenSet(false); }catch(_hs){ __hubBag(false); } } }catch(_h){} }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       floorBagShut();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       var g=__state();\n       if(!g||!g.player) return 'SKIP: the raid did not start';\n       g.player.downed=false; g.trade=null; g.emoteBar=false; g.mapOpen=false; g.bagOpen=false; g.drag=null;\n       boxDown();\n\n       // RAID ONE: THE MAP IS IN FRONT OF THE BACKPACK, one panel per press, as ESC does.\n       tap('KeyI'); tap('KeyM');\n       if(!(g.bagOpen&&g.mapOpen)) bad.push('control: I and M did not open the backpack and the map, so there was nothing for TAB to close');\n       else {\n         tap('Tab');\n         if(g.mapOpen) bad.push('TAB over the open map did not close it, so the key he was given for itch does nothing to the panel in front of him');\n         if(!g.bagOpen) bad.push('one TAB closed the backpack behind the map, so TAB answers out of order or eats two panels');\n         if(boxUp()) bad.push('TAB over the open map raised the pause box');\n         tap('Tab');\n         if(g.bagOpen) bad.push('the second TAB did not close the backpack, which the second ESC does');\n         if(boxUp()) bad.push('the TAB that should have closed the backpack raised the pause box');\n       }\n       boxDown(); g.bagOpen=false; g.mapOpen=false; g.drag=null;\n\n       // RAID TWO: THE EMOTE BAR.\n       g.emoteBar=true;\n       tap('Tab');\n       if(g.emoteBar) bad.push('TAB did not close the emote bar, which ESC closes');\n       if(g.bagOpen) bad.push('TAB over the emote bar opened the backpack under it');\n       if(boxUp()) bad.push('TAB over the emote bar raised the pause box');\n       boxDown(); g.emoteBar=false; g.bagOpen=false;\n\n       // RAID THREE: NOTHING OPEN. TAB pauses, and TAB unpauses.\n       tap('Tab');\n       if(!boxUp()) bad.push('TAB with nothing open in a raid does not raise the pause box, so on itch, where ESC leaves fullscreen, he has no pause on the key he was given');\n       if(g.bagOpen) bad.push('TAB with nothing open in a raid still opens the backpack instead of pausing');\n       if(boxUp()){\n         tap('Tab');\n         if(boxUp()) bad.push('TAB does not close the pause box in a raid, so the key that opened it cannot close it');\n         else if(g.paused) bad.push('TAB took the pause box down and the raid stayed paused');\n       }\n       boxDown(); g.bagOpen=false;\n\n       // RAID FOUR: THE BOX IS IN FRONT OF THE BACKPACK. P raises it over an open backpack.\n       tap('KeyI');\n       if(!g.bagOpen) bad.push('control: I did not open the backpack');\n       else {\n         tap('KeyP');\n         if(!boxUp()) bad.push('control: P did not raise the pause box over the open backpack');\n         else {\n           tap('Tab');\n           if(boxUp()) bad.push('with the pause box over the backpack TAB did not close the box, which is in front');\n           if(!g.bagOpen) bad.push('with the pause box up TAB closed the backpack behind it');\n         }\n       }\n       boxDown(); g.bagOpen=false; g.drag=null;\n\n       // RAID FIVE, THE CONTROLLER: View taps whatever PADTAP names, through raidKey, as pollPad does.\n       if(typeof PADTAP!=='undefined'&&typeof raidKey==='function'){\n         keysOff();\n         raidKey(PADTAP[8],false,null);\n         keysOff();\n         if(!g.bagOpen) bad.push('the controller View button no longer opens the backpack: it taps '+PADTAP[8]+', and every controller key list says View is the backpack');\n         if(boxUp()) bad.push('the controller View button raises the pause box, so a controller has two pause buttons and no backpack button');\n         boxDown(); g.bagOpen=false;\n       }\n       try{ var ge=__state(); if(ge&&!ge.over){ ge.player.downed=false; __endRaid('abandon'); } }catch(_e1){}\n       try{ G=null; keys={}; showScreen('hub'); }catch(_g1){}\n\n       __hubEnter(); floorBagShut(); boxDown(); keysOff();\n\n       // FLOOR ONE: THE TOP WINDOW.\n       try{ openModal('settingsmodal'); }catch(_om){}\n       if(!modalsUp()) bad.push('control: the Settings window would not open on the floor');\n       else {\n         tap('Tab');\n         if(modalsUp()) bad.push('TAB does not close an open window in the Undercroft, so every window down there still needs ESC, which on itch leaves fullscreen');\n         if(boxUp()) bad.push('TAB over an open window in the Undercroft raised the pause box');\n       }\n       try{ var ms=document.querySelectorAll('.modal.on'); for(var mi=0;mi<ms.length;mi++) ms[mi].classList.remove('on'); }catch(_mc){}\n       boxDown();\n\n       // FLOOR TWO: THE BACKPACK, opened with I, the way a player opens it.\n       tap('KeyI');\n       if(!__hubBag()) bad.push('control: I did not open the backpack on the floor');\n       else {\n         tap('Tab');\n         if(__hubBag()) bad.push('TAB does not close the open backpack in the Undercroft');\n         if(boxUp()) bad.push('TAB over the open backpack in the Undercroft raised the pause box over it, which v12.11 stopped ESC doing');\n       }\n       boxDown(); if(__hubBag()) tap('KeyI');\n\n       // FLOOR THREE: NOTHING OPEN. TAB pauses, and TAB unpauses.\n       tap('Tab');\n       if(!boxUp()) bad.push('TAB with nothing open in the Undercroft does not raise the pause box');\n       if(__hubBag()) bad.push('TAB with nothing open in the Undercroft still opens the backpack instead of pausing');\n       if(boxUp()){\n         tap('Tab');\n         if(boxUp()) bad.push('TAB does not close the pause box in the Undercroft');\n       }\n       boxDown(); if(__hubBag()) tap('KeyI');\n\n       // TITLE: TAB raises nothing over the boot title, as ESC raises nothing (v11.45).\n       var tt=document.getElementById('title');\n       if(tt){\n         boxDown(); keysOff();\n         __showScreen('hub'); tt.classList.add('on');\n         tap('Tab');\n         if(boxUp()) bad.push('TAB on the title screen raised the pause box over it, which ESC does not do');\n         tt.classList.remove('on');\n       }\n     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }\n     finally{\n       keysOff();\n       try{ boxDown(); }catch(_p){}\n       try{ var g6=__state(); if(g6){ g6.bagOpen=false; g6.mapOpen=false; g6.emoteBar=false; g6.drag=null; if(!g6.over){ g6.player.downed=false; __endRaid('abandon'); } } }catch(_e){}\n       try{ var ms2=document.querySelectorAll('.modal.on'); for(var m2=0;m2<ms2.length;m2++) ms2[m2].classList.remove('on'); }catch(_m){}\n       floorBagShut();\n       try{ var t2=document.getElementById('title'); if(t2) t2.classList.remove('on'); }catch(_t){}\n       try{ G=null; keys={}; showScreen('hub'); }catch(_q){}\n       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join('; '):null; }},",
+          "checks_to_repair": "WHERE THE NEW CHECK GOES\n- Insert check_body immediately above tools\\mkfixture.ps1 line 5720, which starts \"  {v:'13.41',what:'the raised decks are gone from both sectors:\" (exactly 1 occurrence).\n- The fixture is CRLF (24544 of 25262 lines), so write the check's lines with CRLF.\n\nWHY IT FAILS ON v13.40 AND v13.41 (traced)\n- RAID ONE: Tab toggles the backpack shut and leaves the map, so 'TAB over the open map did not close it' fires.\n- RAID TWO: the backpack opens and the emote bar stays.\n- RAID THREE: no pause box.\n- RAID FOUR: the raid lockout at dark_raiders.html line 10853 swallows Tab, so the box stays up.\n- FLOOR ONE: the floor Tab block at line 10812 does nothing while a window is open.\n- FLOOR THREE: Tab opens the backpack instead of pausing.\n- RAID FIVE and TITLE pass on v13.41 on purpose. RAID FIVE guards the PADTAP edit: without it, View would pause.\n\nCHECKS THAT ASSERT THE OLD BINDING, repaired by this build's mkfixture edits (line numbers are the v13.41 file):\n\n1. v12.89 (header line 8696). It opens the backpack with Tab at lines 8714, 8735 and 8752. After this build Tab with nothing open pauses, so its controls at 8715 and 8753 would fire and the both-open arm would silently not run. Repair: Tab becomes KeyI in all three places, and 'TAB did not' becomes 'I did not' in both control messages.\n   - Lines 8714-8715 are one old_verbatim with \\r\\n (count 1).\n   - Line 8735 \"       tap('Tab'); tap('KeyM');\" (count 1).\n   - Lines 8752-8753 are one old_verbatim with \\r\\n (count 1).\n   - Its Escape assertions stay as they are.\n\n2. v12.95 (header line 8281). Line 8325 \"       var _bagKeys=['Tab','KeyI'], bi;\" becomes ['KeyI']. Otherwise the Tab arm's control at line 8330, 'with the box down [Tab] no longer opens the backpack', fires, because Tab now pauses. The tap('Tab') with the box up would also close the box it expects to stay up.\n\n3. v11.26 (header line 14908). Line 14921 needs 'TAB backpack' in the pause box text; it becomes ['I ','backpack'].join('').\n\n4. v11.33 (header line 14680). Line 14687 needs 'TAB backpack' in the title line; it becomes 'I backpack'.\n\n5. v9.90 (header line 21616). Line 21651 needs 'TAB  BACKPACK' in the HUD; it becomes ['I  ','BACKPACK'].join('').\n\n   Needles 3, 4 and 5 stay true after build 2, because 'B / I backpack' contains 'I backpack' and 'B / I  BACKPACK' contains 'I  BACKPACK'.\n\nNOT REPAIRED IN THIS BUILD, STILL CORRECT (traced)\n- v13.17 (line 6969): B still runs backOut.\n- v13.23 (line 6718): the B row still says 'back out of a menu'. The new TAB row is not a B row.\n- v13.22 (line 6755): 'PRESS B TO BACK OUT' keeps its prefix and stays at index 2. The armour plate entry stays at index 3, because the entry is reworded in place and not added. Adding a new entry on top would push both past their limits of 2 and 3.\n- v13.34: the welcome pack entry stays at index 5, inside its limit of 12.\n- v13.25: still qualified by 'OWN TAB' in the itch entry.\n- Escape-only checks v12.11, v12.99, v12.22, v12.02, v11.45, v10.10 and v13.09 are untouched. Escape paths are unchanged and the Escape keyboard lock is untouched.\n- KeyI checks v8.84, v8.95, v8.96, v9.31, v9.32 and v9.88: I still toggles on the floor and in a raid.\n- v12.79: it reads the table, so the new TAB label is drawn and found.\n- v10.44: the full list is sized on its rows and is one row taller.",
+          "risks": "1. THE FILE IS MOVING. v13.41 (raised decks) landed during this read-only pass: VER went 13.40 to 13.41 and WHATSNEW gained an entry. Recount every anchor right before applying, and renumber if another build lands first.\n\n2. SYNTHETIC ORDER. The pause-box capture listener (window, line 11812) runs before the main listener for a real press, and after it for a press dispatched at window (memory note 'A synthetic ESC runs late'; the v12.89 comment says the same).\n   - The new guard 'Tab && defaultPrevented' keeps a window-dispatched Tab from opening and shutting the box in one press.\n   - The '!pauseOpen' guard keeps the Tab back-out from closing panels behind the box.\n   - I traced both possible at-target orders, and each arm of the check gives the same result either way.\n   - Escape's listener lines keep their behaviour: its capture arm has no new guard.\n\n3. HELD TAB. The first press pauses and repeats do nothing: raidKey needs !repeat for Tab, the floor toggle already needs !e.repeat, and the capture listener returns on a repeat. A player who holds Tab out of habit from other games sees the pause box.\n\n4. TEXT FIELDS.\n   - The pause note keeps working, through the capture listener.\n   - The edit box closes on Tab, through the document capture listener at line 32903.\n   - Tab inside any text field in a window closes the window, as Escape does.\n   - On the title inputs #pnamein and #delword, Tab is still the browser's focus move, which inside the itch iframe can leave the game. That is pre-existing.\n\n5. LAYOUT.\n   - The pause key line gains about 25 characters inside max-width 730px and may wrap to a third line; no check measures it. At 1920x1080, confirm Resume and Abandon stay visible.\n   - The full H list grows from 28 to 29 rows. It scales itself (line 25361 area) and v10.44 checks it on screen.\n   - The compact list is capped at 12 entries (MH=MROW*6), so TAB is not added there.\n\n6. INTERIM. In this build B and TAB both back out, and B with nothing open still orders the hire. Build 2 removes B's back-out.\n\n7. DELETED HISTORY ENTRY. Deleting 'A BELT KEY TELLS YOU THE RIGHT KEY' leaves a blank line in the WHATSNEW array. The array already has two blank lines, so this is harmless. No check reads that entry.\n\n8. ENTRY NOT EDITED. The history entry 'P RESUMES A PAUSED RAID ... no other key touches the raid' (line 1460 area) was left as is. It was already loose once ESC closed the box.\n\n9. NO TXSHIP IMPACT. Line 2265 contains none of TAB, ESC, Escape, back out, pause, BACKPACK, 'to close' or 'your things' (scanned), so no baked edit of his is changed by these words.\n\n10. CONTROLLER. raidKey('KeyI') does exactly what raidKey('Tab') did for the pad: it closes the stall and toggles the backpack. The pad's Menu button (KeyP) is unchanged. PADLABEL Tab:'BACK' is now stale but no prompt reads it."
+        },
+        {
+          "title": "v13.43 B and I open the backpack, O orders your hire",
+          "player_effect": "- B and I both open and close the backpack, in a raid and in the Undercroft, and neither pauses. Either also closes the peddler stall.\n- B no longer backs out of windows or panels; TAB does.\n- O gives the hired man his next order: loot, follow, hold. B no longer does.\n- Every backpack label says B / I, the full key list has an O row for the hire, the backpack panel says B or I to close, and the what-is-new card leads with TAB pausing and backing out, B and I opening the backpack, and O giving orders.\n- Controller players see no change: pads never had an orders button, and View already taps I.",
+          "edits": [
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "var VER='13.42';",
+              "old_match_count": 1,
+              "new_text": "var VER='13.43';"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "var WHATSNEW_VER='13.42';",
+              "old_match_count": 1,
+              "new_text": "var WHATSNEW_VER='13.43';"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  'PRESS B TO BACK OUT OF ANY MENU, OR TAB, WHICH ALSO PAUSES. Either closes whatever is in front, one thing per press, in the Undercroft and on the surface. On itch the browser spends Escape on leaving fullscreen, so TAB now does everything Escape does in the game: with nothing open it pauses, and it closes the pause box again. B with nothing open still gives your hire his orders. The backpack is on I.',",
+              "old_match_count": 1,
+              "new_text": "  'TAB PAUSES AND BACKS OUT OF ANY MENU. On itch the browser spends Escape on leaving fullscreen, so TAB does everything Escape does in the game: it closes whatever is in front, one thing per press, in the Undercroft and on the surface, and with nothing open it pauses. B AND I OPEN THE BACKPACK, and O gives your hire his orders, which B used to do.',"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "B backs out of any menu in every browser, and P pauses.",
+              "old_match_count": 1,
+              "new_text": "TAB backs out of any menu in every browser, and TAB or P pauses."
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "1-9 tactical belt &nbsp; I backpack &nbsp;",
+              "old_match_count": 1,
+              "new_text": "1-9 tactical belt &nbsp; B / I backpack &nbsp;"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "<b style=\"color:var(--bone)\">I</b> backpack &nbsp;",
+              "old_match_count": 1,
+              "new_text": "<b style=\"color:var(--bone)\">B / I</b> backpack &nbsp;"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "ctx.fillText('I  BACKPACK',W-16,by-LH(70));",
+              "old_match_count": 1,
+              "new_text": "ctx.fillText('B / I  BACKPACK',W-16,by-LH(70));"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "['FIRE','use selected slot'],['I','backpack'],",
+              "old_match_count": 1,
+              "new_text": "['FIRE','use selected slot'],['B / I','backpack'],"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "['B','back out of a menu, or order your hire']",
+              "old_match_count": 1,
+              "new_text": "['O','order your hire']"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  ['1-9','tactical belt'],['I','backpack'],",
+              "old_match_count": 1,
+              "new_text": "  ['1-9','tactical belt'],['B / I','backpack'],"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "(PAD&&PAD.on)?'VIEW to close':'TAB or I to close'",
+              "old_match_count": 1,
+              "new_text": "(PAD&&PAD.on)?'VIEW to close':'B or I to close'"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "'I','your things','TAB','pause, or back out',",
+              "old_match_count": 1,
+              "new_text": "'B or I','your things','TAB','pause, or back out',"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if(e.code==='KeyB'&&!e.repeat){\n    if(backOut()){ e.preventDefault(); return; }\n  }\n",
+              "old_match_count": 1,
+              "new_text": "  // v13.43, HIS RULING OF 2026-09-13: B NO LONGER BACKS OUT. B and I open the backpack, and TAB, above, has the back-out.\n"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "    if(e.code==='KeyI'&&!e.repeat){",
+              "old_match_count": 1,
+              "new_text": "    if((e.code==='KeyI'||e.code==='KeyB')&&!e.repeat){"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "    if(code==='Escape'||code==='KeyE'||code==='Tab'||code==='KeyI'){ G.trade=null; G.pedLock=1; return; }",
+              "old_match_count": 1,
+              "new_text": "    if(code==='Escape'||code==='KeyE'||code==='Tab'||code==='KeyI'||code==='KeyB'){ G.trade=null; G.pedLock=1; return; }"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if(code==='KeyB'&&G&&!G.over&&!G.paused&&!repeat&&!G.sim){",
+              "old_match_count": 1,
+              "new_text": "  if(code==='KeyO'&&G&&!G.over&&!G.paused&&!repeat&&!G.sim){   // v13.43, his ruling: the hire orders moved from B to O"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  if(code==='KeyI'&&G&&!G.over&&!repeat){",
+              "old_match_count": 1,
+              "new_text": "  if((code==='KeyI'||code==='KeyB')&&G&&!G.over&&!repeat){"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+              "old_verbatim": "  // press and ate bag browsing. Merc orders stay on keyboard B.",
+              "old_match_count": 1,
+              "new_text": "  // press and ate bag browsing. Merc orders stay on the keyboard, on O since v13.43."
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "  {v:'13.17',what:'B backs out of whatever is in front, in the Undercroft and in a raid, and a B with nothing open does not raise the pause box (his note of 2026-09-12, since Escape is not working for him)',",
+              "old_match_count": 1,
+              "new_text": "  {v:'13.17',what:'the back-out key backs out of whatever is in front, in the Undercroft and in a raid (his note of 2026-09-12; the key was B until v13.43 and is TAB since his ruling of 2026-09-13, whose press with nothing open pauses and is checked by v13.42)',"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "     function pressB(){ window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyB',bubbles:true})); }",
+              "old_match_count": 1,
+              "new_text": "     function pressB(){ window.dispatchEvent(new KeyboardEvent('keydown',{code:'Tab',key:'Tab',bubbles:true,cancelable:true})); }   // v13.43: the back-out key is TAB"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "       // B WITH NOTHING OPEN MUST NOT PAUSE. This is the arm that matters: a key\r\n       // meant to get him OUT of a menu must never put him into one.\r\n       try{ togglePauseBox(false); }catch(_tp){}\r\n       keysOff(); frames(2);\r\n       pressB(); frames(2);\r\n       if(paused()) bad.push('B with nothing open raises the pause box, so the key he was given to escape a menu opens a menu instead');",
+              "old_match_count": 1,
+              "new_text": "       // v13.43: RETIRED. The back-out key is TAB now, and by his ruling TAB with\r\n       // nothing open pauses; v13.42 checks that press.\r\n       try{ togglePauseBox(false); }catch(_tp){}"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "       if(r&&r[0]==='B') row=r;",
+              "old_match_count": 1,
+              "new_text": "       if(r&&r[0]==='TAB') row=r;   // v13.43: the back-out moved from B to TAB"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "       bad.push('the full key list has no B row, so the key he was given because Escape is not working for him is on no list a player can look up, and the hire orders B has given since v3.73 never have been either');",
+              "old_match_count": 1,
+              "new_text": "       bad.push('the full key list has no TAB row, so the key he was given because Escape leaves fullscreen on itch is on no list a player can look up');"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "       bad.push('the B row on the key list reads ['+row[1]+'], which does not say B backs out of a menu');",
+              "old_match_count": 1,
+              "new_text": "       bad.push('the TAB row on the key list reads ['+row[1]+'], which does not say TAB backs out of a menu');"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "       if(idxB<0&&t.indexOf('PRESS B TO BACK OUT')===0) idxB=i;",
+              "old_match_count": 1,
+              "new_text": "       if(idxB<0&&t.indexOf('TAB PAUSES AND BACKS OUT')===0) idxB=i;   // v13.43: B backed out until his TAB ruling"
+            },
+            {
+              "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+              "old_verbatim": "       var _bagKeys=['KeyI'], bi;   // v13.42: TAB pauses on the floor now, and v13.42 owns that press",
+              "old_match_count": 1,
+              "new_text": "       var _bagKeys=['KeyI','KeyB'], bi;   // v13.43: B opens the backpack too; TAB pauses on the floor and v13.42 owns that press"
+            }
+          ],
+          "check_body": "  {v:'13.43',what:'B and I both open and close the backpack, in a raid and in the Undercroft, without pausing; B no longer gives the hire his orders or closes a window, O gives the orders, and TAB still closes the window; and the key list names B and I for the backpack and O for the orders (his ruling of 2026-09-13)',\n   run:function(){\n     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__keysRef&&window.__hubEnter&&window.__hubBag&&window.__P))\n       return 'SKIP: this fixture cannot drive a raid and the Undercroft floor';\n     if(typeof LEGEND==='undefined') return 'SKIP: this build has no key table';\n     var bad=[], skipped='';\n     var P2=window.__P(), ids=(window.__identityIds?__identityIds():[]), svMerc=P2.merc, svCred=P2.credits;\n     var pb=document.getElementById('pausebox');\n     function keysOff(){ try{ var K=__keysRef(); for(var kk in K) K[kk]=false; }catch(_k){} }\n     // ON WINDOW ONLY. window plus document doubles every press (v11.28).\n     function tap(c){\n       keysOff();\n       window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:c,bubbles:true,cancelable:true}));\n       window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:c,bubbles:true,cancelable:true}));\n     }\n     function boxUp(){ return !!(pb&&pb.classList.contains('on')); }\n     function boxDown(){ try{ if(boxUp()) togglePauseBox(false); }catch(_b){} if(pb) pb.classList.remove('on'); }\n     function modalsUp(){ return document.querySelectorAll('.modal.on').length; }\n     function floorBagShut(){ try{ if(__hubBag()){ try{ hubBagOpenSet(false); }catch(_hs){ __hubBag(false); } } }catch(_h){} }\n     function word(s,w){ return new RegExp('(^|[^A-Z])'+w+'([^A-Z]|$)').test(String(s||'')); }\n     try{\n       // THE KEY TABLE, read from the table so the panel cannot say otherwise.\n       var bagRow=null, oRow=null, bRow=null, i, j;\n       for(i=0;i<LEGEND.length;i++) for(j=0;j<LEGEND[i][1].length;j++){\n         var r=LEGEND[i][1][j];\n         if(!r) continue;\n         if(String(r[1])==='backpack') bagRow=r;\n         if(r[0]==='O') oRow=r;\n         if(r[0]==='B') bRow=r;\n       }\n       if(!bagRow||!word(bagRow[0],'B')||!word(bagRow[0],'I'))\n         bad.push('the key list names ['+(bagRow?bagRow[0]:'no key')+'] for the backpack, not B and I');\n       if(!oRow||String(oRow[1]).indexOf('hire')<0)\n         bad.push('the key list has no O row for the hire orders, so the key that gives them is on no list');\n       if(bRow)\n         bad.push('the key list still has a B row of its own reading ['+bRow[1]+'], while B is the backpack');\n\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       floorBagShut();\n       if(ids&&ids.length){ P2.merc=ids[0]; P2.credits=1000; }\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       var g=__state();\n       if(!g||!g.player) return 'SKIP: the raid did not start';\n       g.player.downed=false; g.trade=null; g.emoteBar=false; g.mapOpen=false; g.bagOpen=false; g.drag=null;\n       boxDown();\n\n       // RAID ONE: B opens and closes the backpack, and never pauses.\n       tap('KeyB');\n       if(!g.bagOpen) bad.push('B with nothing open does not open the backpack in a raid');\n       if(boxUp()) bad.push('B with nothing open raised the pause box in a raid');\n       tap('KeyB');\n       if(g.bagOpen) bad.push('a second B does not close the backpack in a raid');\n       // CONTROL: I is unchanged.\n       tap('KeyI');\n       if(!g.bagOpen) bad.push('control: I no longer opens the backpack in a raid');\n       tap('KeyI');\n       if(g.bagOpen) bad.push('control: a second I no longer closes the backpack in a raid');\n       boxDown(); g.bagOpen=false; g.drag=null;\n\n       // RAID TWO: THE ORDERS. B leaves them alone, O gives the next one.\n       var M=null;\n       for(i=0;i<g.ents.length;i++){ var en=g.ents[i]; if(en&&en.kind==='raider'&&en.merc&&!en.downed){ M=en; break; } }\n       if(!M) skipped='the hired man did not come up on this seed, so the orders were not pressed';\n       else {\n         g.mercOrder='follow'; g.mercHold=null; g.bagOpen=false;\n         tap('KeyB');\n         if(g.mercOrder!=='follow') bad.push('B still changes the hire order, to '+g.mercOrder+', while B is the backpack key');\n         boxDown(); g.bagOpen=false; g.drag=null;\n         tap('KeyO');\n         if(g.mercOrder!=='hold') bad.push('O does not give the hire his next order: FOLLOW stayed '+g.mercOrder+' when it should have become HOLD');\n         if(g.bagOpen) bad.push('O opened the backpack');\n         if(boxUp()) bad.push('O raised the pause box');\n       }\n       g.mercOrder='follow'; g.mercHold=null; boxDown(); g.bagOpen=false;\n       try{ var ge=__state(); if(ge&&!ge.over){ ge.player.downed=false; __endRaid('abandon'); } }catch(_e1){}\n       try{ G=null; keys={}; showScreen('hub'); }catch(_g1){}\n\n       __hubEnter(); floorBagShut(); boxDown(); keysOff();\n\n       // FLOOR ONE: B opens and closes the backpack, and never pauses.\n       tap('KeyB');\n       if(!__hubBag()) bad.push('B does not open the backpack in the Undercroft');\n       if(boxUp()) bad.push('B in the Undercroft raised the pause box');\n       tap('KeyB');\n       if(__hubBag()) bad.push('a second B does not close the backpack in the Undercroft');\n       boxDown(); if(__hubBag()) tap('KeyI');\n\n       // FLOOR TWO: B is not a back-out key any more, and TAB still is.\n       try{ openModal('settingsmodal'); }catch(_om){}\n       if(!modalsUp()) bad.push('control: the Settings window would not open on the floor');\n       else {\n         tap('KeyB');\n         if(!modalsUp()) bad.push('B still closes an open window in the Undercroft, so B is two keys at once');\n         if(__hubBag()) bad.push('B opened the backpack behind an open window');\n         tap('Tab');\n         if(modalsUp()) bad.push('control: TAB does not close the open window, so with B no longer backing out nothing does');\n       }\n       try{ var ms=document.querySelectorAll('.modal.on'); for(var mi=0;mi<ms.length;mi++) ms[mi].classList.remove('on'); }catch(_mc){}\n       boxDown(); if(__hubBag()) tap('KeyI');\n     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }\n     finally{\n       keysOff();\n       try{ boxDown(); }catch(_p){}\n       try{ var g6=__state(); if(g6){ g6.bagOpen=false; g6.drag=null; if(!g6.over){ g6.player.downed=false; __endRaid('abandon'); } } }catch(_e){}\n       try{ var ms2=document.querySelectorAll('.modal.on'); for(var m2=0;m2<ms2.length;m2++) ms2[m2].classList.remove('on'); }catch(_m){}\n       floorBagShut();\n       try{ var P3=window.__P(); P3.merc=svMerc; P3.credits=svCred; if(typeof saveProfile==='function') saveProfile(); }catch(_r){}\n       try{ G=null; keys={}; showScreen('hub'); }catch(_q){}\n       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}\n     }\n     if(!bad.length&&skipped) return 'SKIP: '+skipped;\n     return bad.length?bad.join('; '):null; }},",
+          "checks_to_repair": "WHERE THE NEW CHECK GOES\n- Insert check_body immediately above build 1's line \"  {v:'13.42',what:'TAB does what Escape does\". It occurs once after build 1 and does not exist in v13.41.\n- Use CRLF.\n\nWHY IT FAILS ON v13.40, v13.41 AND BUILD 1 (traced)\n- The key table names TAB (or I) for the backpack and has no O row.\n- RAID ONE: B with nothing open runs backOut (false), then the merc order in raidKey, and never opens the backpack.\n- FLOOR ONE: B does nothing on the floor.\n- RAID TWO (when the hire spawns): B cycles follow to hold, and O does nothing.\n- FLOOR TWO fails on build 1, where B's backOut still closes the window.\n\nCHECKS THAT ASSERT THE OLD BINDING, repaired by this build's mkfixture edits. Line numbers are the v13.41 file; build 1 inserts about 150 lines above them, so find each by the quoted old_verbatim.\n\n1. v13.17 (header line 6969). With B's back-out removed, its B arms would go red:\n   - the map arm: B toggles the backpack shut and leaves the map\n   - the settings window arm\n   - the drag arm: raidKey's toggle does not clear G.drag\n   Repairs:\n   - Line 6980 pressB dispatches code 'Tab', key 'Tab', cancelable true.\n   - Lines 7002-7007, the arm 'B WITH NOTHING OPEN MUST NOT PAUSE', are retired. TAB with nothing open now pauses by his ruling, and v13.42 asserts that. This is one old_verbatim with \\r\\n, count 1.\n   - The what text on line 6969 is rewritten.\n   - Its remaining failure messages still say B. That is wording only; the arms now drive TAB through backOut and pass.\n\n2. v13.23 (header line 6718). Line 6727 'r[0]===B' becomes 'TAB'. The messages at lines 6730 and 6732 are rewritten to TAB. The drawn needle 'back out of a menu' is still matched by build 1's row 'pause, or back out of a menu'.\n\n3. v13.22 (header line 6755). The needle on line 6765, 'PRESS B TO BACK OUT', becomes 'TAB PAUSES AND BACKS OUT'. That entry is still index 2, and the armour plate is still index 3, because the entry is replaced in place. Its messages at lines 6761 and 6771 still say B (wording only).\n\n4. v12.95 (line 8325, build 1's text). _bagKeys becomes ['KeyI','KeyB']. This is coverage, not a fix: B must not open the backpack under the floor pause box (the lockout at line 10749 swallows it) and must open it with the box down.\n\nNOT NEEDING REPAIR (traced)\n- v11.26 'I backpack', v11.33 'I backpack' and v9.90 'I  BACKPACK' still match the new 'B / I' words.\n- v12.89 already uses KeyI.\n- v13.25: the reworded itch entry still contains 'OWN TAB' and 'ANOTHER PAGE'.\n- No check dispatches KeyO. Grep found no KeyB other than v13.17 line 6980, and no check sets the orders through a key.",
+          "risks": "1. POST-BUILD-1 ANCHORS. These count 0 in the v13.41 file and 1 only after build 1:\n   - var VER='13.42'\n   - var WHATSNEW_VER='13.42'\n   - the reworded PRESS B entry\n   - '1-9 tactical belt &nbsp; I backpack &nbsp;'\n   - '<b style=\"color:var(--bone)\">I</b> backpack &nbsp;'\n   - 'I  BACKPACK'\n   - the GEAR ['I','backpack'] row\n   - the MINI ['I','backpack'] row\n   - 'I','your things','TAB','pause, or back out'\n   - the floor '    if(e.code===KeyI&&!e.repeat){' line\n   - the raid '  if(code===KeyI&&G&&!G.over&&!repeat){' line\n   - the v12.95 _bagKeys line\n   Every other anchor here counted exactly 1 in the v13.41 file. The multi-line KeyB block (LF, line 10732) also counted 1, and build 1's inserted Tab block does not share its first line.\n\n2. HELD DRAG. B or I closing the raid backpack goes through raidKey's toggle, which does not clear G.drag. That was already true for I and Tab. Only the TAB back-out clears a held drag.\n\n3. HABIT. A player who learned B as the way out now opens the backpack instead. The what-is-new card and the key lists say so.\n\n4. KEY POSITIONS. KeyB, KeyI and KeyO are physical key codes, as every binding in the game already is, so non-QWERTY layouts get the physical positions.\n\n5. PAGE DEFAULTS. B, I and O have no browser default, so no preventDefault is added. O had no meaning anywhere before (grep).\n\n6. HIRE ARM MAY SKIP. RAID TWO of the new check needs the hired man to spawn from P.merc on seed 4242, as v12.40 relies on. If he does not, the check runs every other arm and returns SKIP only when those passed. Credits and P.merc are restored in finally.\n\n7. BENCH SENTENCE. The hire bench sentence naming B stays. It is his baked text edit, and TXSHIP line 2265 maps it to 'Buy a friend.', so no player reads it. If he wants the bench to name O, that is a new element."
+        }
+      ]
+    },
+    "review": {
+      "sound": false,
+      "problems": "Not sound: one check the plan misses goes red, one on-screen line still names ESC for pause, and one controller finding in the plan is wrong. I read everything below; nothing was edited and no browser was used. The v13.41 file is unchanged (dark_raiders.html:1353 \"var VER='13.41';\").\n\n1. BLOCKER: build 1 turns check v12.48 red, and the plan does not list it.\n- Build 1 edit 7 removes \"TAB is the backpack\" from the history entry at dark_raiders.html:1549.\n- That entry keeps \"still said F heals, TAB opens the bag and Q throws\".\n- v12.48 (mkfixture.ps1:10906) sets OLDPACK='b'+'ag'.\n- mkfixture.ps1:10919-10921 reads \"if(word(line,OLDPACK)){ if(has(line,NEWPACK)) renamePack++; else bad.push(tag+' calls the backpack by the name he retired at v9.90...\".\n- After the edit the entry has the word bag and no 'backpack', so the check pushes a failure on v13.42.\n- Fix: keep the word backpack in that entry (corrected text below).\n\n2. The pause box still names ESC for pause.\n- Build 1 edit 8 writes \"P / TAB / ESC pause\" into #pausekeys (dark_raiders.html:653). Build 2 never touches that line.\n- Your criterion is that nothing tells a player to press ESC to pause. On itch in fullscreen, ESC leaves fullscreen and never pauses, which is exactly his complaint.\n- No check needs ESC in that line: no match in the fixture for 'P / ESC' or 'ESC pause', and v11.26 (mkfixture.ps1:14921) needs only 'F melee strike', 'I backpack', 'tactical belt' and 'hold to sprint'.\n- Build 1 edit 4 (dark_raiders.html:1434) also ends \"which are the keys it names\". That becomes false once ESC is off the line.\n- Corrected text for both is below.\n\n3. Owner decision 3 is wrong about the raid.\n- The plan says a pad cannot close \"the raid map, backpack, stall\" or the pause box. In a raid it can:\n  - Menu: PADTAP 9 is 'KeyP' (dark_raiders.html:11417). pollPad calls raidKey (11693), the lockout at 10852 lets KeyP through, and 10902 toggles the box. pollPad runs while paused: 29115-29118, \"Ahead of every early return below... while paused\".\n  - View closes the backpack (10948) and the stall (10882).\n  - D-up toggles the map: 11689 \"if(pressed(12)&&!bagNav&&!PAD.prev[12]&&G&&!G.over) G.mapOpen=!G.mapOpen;\".\n- The real pad gaps are narrower:\n  - Nothing closes the emote bar: no pad button reaches KeyV.\n  - On the Undercroft floor, nothing opens or closes the backpack or closes the pause box. The hub branch (11624-11646) binds only buttons 0, 10, 2, 3 and 5, and padOpenModal (11464-11473) sees only .modal.on and #hub.\n\n4. Traced, but not caught by any check (synthetic presses only).\n- Setting: the Undercroft, pause box up, and in front of it the floor backpack, a window, the stash panel or the title.\n- A Tab dispatched at window runs the main listener first (memory note 'synthetic ESC runs late'). Its hub branch calls preventDefault on Tab at 10789 \"if(['Space','KeyE','Tab','KeyI'].indexOf(e.code)>=0) e.preventDefault();\".\n- The new \"if(ev.code==='Tab'&&ev.defaultPrevented) return;\" guard then makes the capture closer skip, so the box stays up.\n- A real press is fine: the window capture listener (11811) runs first and stops propagation.\n- None of the new check's arms stage this, so they pass. A future check must not assert a synthetic Tab closes the box in these states.\n\n5. Every other state where Escape acts matches, traced for real presses in the order window capture (11811), document capture (32901), document item menu (30851), window main (10706).\n- Pause box: 11812-11817.\n- Edit box: 32908.\n- Top window: 32913-32921.\n- Item menu: 30857.\n- Carry window, floor backpack and stash panel: backOut 29928-29945 runs them in the same order as the Escape lines 10797-10804.\n- Stall, emote bar, map and backpack: backOut runs trade, emote, map, bag, the same order as raidKey 10880-10901.\n- Pause with nothing open: 10772 and 10902.\n- Title raises nothing: _titleUp at 10752.\n- Repeats: 10797 and 10803 have no repeat guard, the same as ESC today.\n\n6. Line references are stale, often by one. Anchors are verbatim, so no edit is affected. Actual lines:\n- PADTAP View 11416, PADLABEL 11440-11442\n- KeyB orders 10932, LEGEND WORLD row 25553, LEGEND_MINI_PAD BACK row 25574\n- bag header 27092, compact list MH 26264, document capture listener 32901\n- raid lockout 10852, floor Tab block 10811, hire bench 30139\n- TXSHIP is line 2266, not 2265 (2265 is a comment). The plan's conclusion holds: at 2266 'backpack' and 'tactical belt' appear only inside unrelated keys, and none of the changed strings is a key.\n\n7. Wording nits, no failures.\n- Build 2 says B \"no longer backs out of anything\". Like I, B still closes the stash panel and the carry window on the floor (10811-10834: \"if(_cm&&_cm.classList.contains('on')){ toggleCarry(false)...\" and \"if(_hb.classList.contains('on')) _hb.classList.remove('on');\").\n- History entries 1434 (\"TAB opened the backpack invisibly underneath\") and 1460 (\"no other key touches the raid\") stay as they are.\n- After build 2, v13.17, v13.22 and v13.23 still say B in their what text and messages.\n\nWHAT IS SOUND\n- Anchors, counted ordinally on the current files:\n  - All 31 build 1 game anchors and all 7 build 1 fixture anchors (the CRLF ones included) count exactly 1.\n  - Build 2: 7 anchors count 1 now. The other 11 count 0 now, and each is exactly 1 after build 1 is applied in memory.\n  - Build 2's v13.17, v13.22 and v13.23 fixture anchors count 1.\n  - The insertion anchor is mkfixture.ps1:5720 \"  {v:'13.41',what:'the raised decks are gone from both sectors:\".\n- Old-binding repairs: the fixture's only 'Tab' literals are 8325, 8714, 8735 and 8752. Its only KeyB is 6980. The TAB needles are at 14687, 14921 and 21651. v13.23 is at 6727 and v13.22 at 6765.\n- The v13.42 check fails on v13.41 and passes after the build, in both at-target orders. v13.25 stays qualified by 'OWN TAB' at 1423. v13.34 keeps the welcome pack entry at index 5.\n- Build 2's check:\n  - __cleanProfile changes P in place (mkfixture.ps1:169-179), so its P2 reference is live.\n  - The hire spawns from P.merc (10293-10313), the same way v12.40 stages him.\n  - The fixture's inject is a single-quoted here-string (line 15), and neither new check contains $ or a line starting '@.\n- The hire bench TXSHIP key \"...On the surface B cycles his orders...\" maps to \"Buy a friend.\". O is unused in the game. START-HERE 1070-1071 is wrong, as the plan says: padMenu 11532-11538 closes windows on pad B.",
+      "corrected": "BUILD 1, EDIT 7 (replaces the plan's edit; fixes v12.48):\nold_verbatim: F is your melee strike, TAB is the backpack, 1 to 9 is the tactical belt.',\nnew_text: F is your melee strike, 1 to 9 is the tactical belt, and the backpack key opens the backpack.',\n\nBUILD 1, EDIT 8 (replaces the plan's edit; no ESC for pause):\nold_verbatim: 1-9 tactical belt &nbsp; TAB backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; P / ESC pause</div>\nnew_text: 1-9 tactical belt &nbsp; I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; TAB back out &nbsp; P / TAB pause</div>\n(v11.26 still finds 'I backpack'. Build 2's anchor '1-9 tactical belt &nbsp; I backpack &nbsp;' still counts 1.)\n\nBUILD 1, EDIT 4 (replaces the plan's edit):\nold_verbatim:  Only P and ESC answer while it is up, which are the two keys it names.',\nnew_text:  Only P, TAB and ESC answer while it is up.',\n\nADD TO BUILD 1 checks_to_repair:\nv12.48 at mkfixture.ps1:10897 needs no fixture edit once edit 7 keeps the word backpack in the entry at dark_raiders.html:1549.\n\nOWNER DECISION 3, corrected wording:\nIn a raid a pad already closes the pause box (Menu taps KeyP, line 11417, which raidKey lets through its lockout at 10852), the backpack and the stall (View, 11416, reaching 10948 and 10882) and the map (D-up, 11689). It cannot close the emote bar, because no pad button reaches KeyV. On the Undercroft floor it cannot open or close the backpack or close the pause box, because the hub branch at 11624-11646 binds only buttons 0, 10, 2, 3 and 5."
+    },
+    "maps": {
+      "handlers": {
+        "items": [
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11808,
+            "quoted": "window.addEventListener('keydown',function(ev){ / if(ev.code!=='Escape') return; / if(_pb&&_pb.classList.contains('on')){ ev.stopPropagation(); ev.preventDefault(); ... togglePauseBox(false); / },true);",
+            "what_it_does": "Window CAPTURE listener, so it runs first of all key listeners. Escape with the pause box up blurs #pausenote, closes the box and stops propagation. Nothing else hears that Escape. It works even when focus is inside the note textarea. There is no Tab twin, and Tab inside the note is dropped by the main listener's text-field bail (10705), so the browser moves focus instead.",
+            "context": "pause (raid and Undercroft), including note textarea focused"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 32867,
+            "quoted": "document.addEventListener('keydown',function(e){ / if(e.code!=='Escape') return; / if(typeof TXBOX!=='undefined'&&TXBOX&&document.activeElement===TXBOX){ ... txClose(); return; } / var open=document.querySelectorAll('.modal.on'); if(!open.length) return; e.preventDefault(); e.stopPropagation(); escCloseTopModal(); ... },true);",
+            "what_it_does": "Document CAPTURE listener, second in line after 11808. Escape with the edit box focused closes the edit box. Otherwise, with any .modal.on, it presses the top modal's own close button and stops propagation, so the floor handler and raidKey never see that Escape. With the pause box also up, 11808 has already taken the key, so the pause box closes before any modal or edit box.",
+            "context": "which window open: any .modal, edit box; title, Undercroft, raid"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 2466,
+            "quoted": "el.addEventListener('keydown',function(ev){ ev.stopPropagation(); if(ev.key==='Enter'){ txSet(orig,el.value); txClose(); } else if(ev.key==='Escape'){ txClose(); } });",
+            "what_it_does": "The edit box input's own listener (Edit the words, DEV_LOCAL only). Enter commits, Escape closes. It stops propagation, and keyup and keypress are stopped too (2471-2472). Escape normally never reaches it, because 32867 closes TXBOX in the capture phase first. Tab here falls to the browser default and moves focus.",
+            "context": "edit box"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 30817,
+            "quoted": "document.addEventListener('keydown',function(ev){ if(ev.key!=='Escape') return; ... if(!document.querySelector('.imenu')) return; closeItemMenu(); ev.preventDefault(); ev.stopPropagation(); if(ev.stopImmediatePropagation) ev.stopImmediatePropagation(); });",
+            "what_it_does": "Document BUBBLE listener. Escape with a right-click item menu (.imenu) open closes that menu only and spends the key, so the window floor handler cannot also close the stash behind it. There is no Tab twin.",
+            "context": "which window open: right-click item menu (stash, backpack cells)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 30947,
+            "quoted": "document.addEventListener('keydown',function(ev){ if(!INVHOVER) return; ... if(ev.key==='j'||ev.key==='J'){",
+            "what_it_does": "Hover-bind listener: J tags junk and 1-9 bind the hovered cell. It reads none of Escape, Tab, B, I, P or O. It is listed because line 30954 is the only letter check on ev.key in the file.",
+            "context": "Undercroft stash/backpack cells under the cursor"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10705,
+            "quoted": "if(tn==='TEXTAREA'||tn==='INPUT') return;",
+            "what_it_does": "Main window keydown listener (starts 10703, bubble phase, runs after the capture listeners). Every key aimed at a text field is ignored and gets no preventDefault. Tab in #pausenote, #pnamein, #delword or the edit box therefore does browser focus traversal, which inside an itch iframe can move focus out of the game.",
+            "context": "pause note, title name/delete inputs, edit box"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10728,
+            "quoted": "if(e.code==='KeyB'&&!e.repeat){ / if(backOut()){ e.preventDefault(); return; } / }",
+            "what_it_does": "v13.17: B runs backOut() in EVERY state (title, Undercroft, raid) before the hub branch and before raidKey, so it also runs before both pause lockouts (10745, 10849). With the pause box up, B still closes a modal, the floor backpack, the stash panel, or the raid stall, emote bar, map or backpack behind the box. It never closes the pause box, the edit box or the outcome card. If backOut closes nothing: on the floor B does nothing more; in a raid it falls to raidKey, where the merc order runs (10929).",
+            "context": "title, Undercroft floor, raid, pause"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10745,
+            "quoted": "if(pauseOpen&&e.code!=='KeyP'&&e.code!=='Escape'){ e.preventDefault(); return; }",
+            "what_it_does": "Floor pause lockout (v12.95). While the pause box is up on the floor, every key except P and Escape is swallowed, Tab and I included. A Tab that closes the pause box must be let through here, or handled earlier in a capture listener.",
+            "context": "pause, Undercroft floor"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10749,
+            "quoted": "var _titleUp=!!(document.getElementById('title')&&document.getElementById('title').classList.contains('on'));",
+            "what_it_does": "The title screen overlays the floor with state still 'hub', so all title-screen keys go through the hub branch. This flag stops P and Escape from pausing (10769) and makes Tab and I do nothing (10822).",
+            "context": "title"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10769,
+            "quoted": "if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&& / !document.querySelector('.imenu')&&!document.getElementById('hub').classList.contains('on')&& / !(e.code==='Escape'&&hubBagOpen)){ / togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));",
+            "what_it_does": "On the floor, Escape or P toggles the pause box only when there is no title, no modal, no item menu and no stash/terminal panel (#hub). Escape is also skipped while the floor backpack is open, but P is not, so P pauses over an open floor backpack. In practice Escape only OPENS the box here, because 11808 takes Escape first whenever the box is up; P both opens and closes it.",
+            "context": "Undercroft floor, pause"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10786,
+            "quoted": "if(['Space','KeyE','Tab','KeyI'].indexOf(e.code)>=0) e.preventDefault();",
+            "what_it_does": "On the floor and the title, preventDefault for Tab (no focus traversal) and I. It is reached only if nothing above returned: not paused, no Backquote, Backspace or a B that closed something, no H, pause or roll return.",
+            "context": "Undercroft floor, title"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10794,
+            "quoted": "if(e.code==='Escape'&&!document.querySelector('.imenu')){ ... if(_cm2&&_cm2.classList.contains('on')){ toggleCarry(false); e.preventDefault(); return; } / if(hubBagOpen){ hubBagOpenSet(false); e.preventDefault(); return; }",
+            "what_it_does": "On the floor, Escape closes the open floor backpack (hubBagOpenSet(false) commits it to P.kit). The carrymodal branch is effectively dead for Escape: carrymodal is a .modal (line 1001), so 32867 closes it first.",
+            "context": "Undercroft floor, floor backpack open"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10800,
+            "quoted": "if(e.code==='Escape'&&!document.querySelector('.imenu')&&!document.querySelector('.modal.on')) / document.getElementById('hub').classList.remove('on');",
+            "what_it_does": "On the floor, Escape closes the terminal/stash panel (#hub, a .screen rather than a modal) when nothing is on top of it. On the title this is a no-op.",
+            "context": "Undercroft station panel (terminal/stash)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10808,
+            "quoted": "if((e.code==='KeyI'||e.code==='Tab')&&!e.repeat){ ... if(_cm&&_cm.classList.contains('on')){ toggleCarry(false); ...return; } / if(hubBagOpen){ hubBagOpenSet(false); ...return; } ... if(document.querySelector('.imenu')) _anyModal=true; / if(_titleUp) _anyModal=true; ... if(_hb.classList.contains('on')) _hb.classList.remove('on'); / else hubBagOpenSet(!hubBagOpen);",
+            "what_it_does": "Floor I/Tab, in this order: close carrymodal if open; else close the floor backpack if open; else, if any modal, item menu or the title is up, do nothing; else if the stash/terminal panel is open, close it; else toggle the floor backpack open. This is the only place the floor backpack OPENS. It also works with the H controls panel or the what-is-new card up, since neither counts as busy.",
+            "context": "Undercroft floor, title, station panel, floor backpack"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10836,
+            "quoted": "if(state!=='raid') return; / raidKey(e.code,e.repeat,e);",
+            "what_it_does": "Every non-hub key in a raid goes to raidKey. The gamepad also calls raidKey directly with ev null, so none of the preventDefaults apply to pad calls.",
+            "context": "raid"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10849,
+            "quoted": "if(pauseOpen&&code!=='KeyP'&&code!=='Escape'){ if(ev) ev.preventDefault(); return; }",
+            "what_it_does": "Raid pause lockout (v12.22). While the pause box is up, only P and Escape pass. Tab, I and B's merc order are dropped, but B's backOut has already run at 10728.",
+            "context": "pause, raid"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10852,
+            "quoted": "if(code==='KeyV'||code==='Escape'){ if(ev) ev.preventDefault(); G.emoteBar=false; return; }",
+            "what_it_does": "With the emote bar up (and no stall open), Escape or V closes the emote bar and returns. Tab, I and P fall through: P pauses and Tab/I toggle the backpack with the emote bar still up.",
+            "context": "raid, emote bar open"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10879,
+            "quoted": "if(code==='Escape'||code==='KeyE'||code==='Tab'||code==='KeyI'){ G.trade=null; G.pedLock=1; return; }",
+            "what_it_does": "With the peddler stall open (G.trade), Escape, E, Tab or I closes the stall and returns, so Tab/I never open the backpack while trading. P is not caught (only digits, G, Space, Q and C return at 10887), so P pauses over the open stall. B's backOut closes the stall at 29903 before raidKey runs.",
+            "context": "peddler stall"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10889,
+            "quoted": "if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyV','KeyC','KeyX','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();",
+            "what_it_does": "Raid preventDefault list. It contains Tab, I and P, but not KeyB, KeyO or Escape.",
+            "context": "raid"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10893,
+            "quoted": "if(code==='Escape'&&G&&!G.over&&!pauseOpen&&(G.mapOpen||G.bagOpen)&&!repeat){ ... if(G.mapOpen) G.mapOpen=false; / else { G.bagOpen=false; G.drag=null; } / return;",
+            "what_it_does": "Raid Escape (v12.89) closes the map first, then the backpack (dropping a held drag), one per press, and does not pause.",
+            "context": "raid, map or backpack open"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10899,
+            "quoted": "if((code==='Escape'||code==='KeyP')&&G&&!G.over) / togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));",
+            "what_it_does": "Raid Escape or P toggles the pause box (also while downed, where the box reads BLEEDING OUT). P has no map, backpack, stall or modal exclusion, so it pauses over all of them. Escape reaches this line only to OPEN the box, because 11808 closes it first, and only with no modal (32867) and no map or backpack (10893). With G.over (the outcome card) nothing happens.",
+            "context": "raid, pause"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10929,
+            "quoted": "if(code==='KeyB'&&G&&!G.over&&!G.paused&&!repeat&&!G.sim){ ... if(_me.kind==='raider'&&_me.merc&&!_me.downed){ _mrc=_me; break; } } ... G.mercOrder=(G.mercOrder==='loot')?'follow':(G.mercOrder==='follow'?'hold':'loot');",
+            "what_it_does": "HIRE ORDERS: the only place orders are given. B, when backOut closed nothing, with the raid live and not paused, and with a living, not-downed hired merc, cycles loot, follow, hold (hold stores G.mercHold at his position). It then says 'Order: NAME, ...' and blips. No merc means silence. There is no pad button for this. Readers of the order are at 17959 (follow) and 17996 (hold); the default is 'follow' (10555).",
+            "context": "raid, nothing open"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10945,
+            "quoted": "if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ / G.bagOpen=!G.bagOpen; G.bagSel=0;",
+            "what_it_does": "RAID BACKPACK TOGGLE: the only place the raid backpack OPENS. Keyboard Tab or I, and pad View via PADTAP 8, flip G.bagOpen and clear held arrows on open. There is no check for the map, being downed, the tuning console or a modal, so Tab over a raid modal toggles the backpack underneath it.",
+            "context": "raid"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 35252,
+            "quoted": "window.addEventListener('keydown',function(e){ var _ae=document.activeElement; if(_ae&&(_ae.id==='pnamein'||_ae.id==='delword')) return; if(t.classList.contains('on')&&(e.code==='Enter'||e.code==='Space')) go(); });",
+            "what_it_does": "Title screen listener (window bubble, registered after 10703). Only Enter or Space starts. The title has no own Escape, Tab, B, I, P or O handling. On the title, B backs out of the welcome, share and cheat modals via backOut, Escape closes modals via 32867, and Tab/I/P/Escape otherwise do nothing (10769, 10822).",
+            "context": "title"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11032,
+            "quoted": "window.addEventListener('keyup',function(e){ keys[e.code]=false; });",
+            "what_it_does": "The only game keyup listener. It clears the held-key table and has no per-key logic.",
+            "context": "all"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 29894,
+            "quoted": "function backOut(){ ... if(im.length){ ...removeChild(im[i]); return true; } / if(escCloseTopModal()) return true; / try{ if(typeof hubBagOpen!=='undefined'&&hubBagOpen){ hubBagOpenSet(false); return true; } }catch(_hb){} / if(hb&&hb.classList.contains('on')){ hb.classList.remove('on'); return true; } / if(G.trade){ G.trade=null; G.pedLock=1; return true; } / if(G.emoteBar){ G.emoteBar=false; return true; } / if(G.mapOpen){ G.mapOpen=false; return true; } / if(G.bagOpen){ G.bagOpen=false; G.drag=null; return true; }",
+            "what_it_does": "B's back-out, one thing per press, front-most first: item menu (removed directly, not through closeItemMenu, so IMENU is left stale), top modal, floor backpack, stash/terminal panel, then in a live raid the stall, emote bar, map and backpack. It does NOT cover the pause box, the edit box, the outcome card, the title screen, the H controls panel (HB.legend) or the what-is-new card. This is the function a Tab back-out would call.",
+            "context": "which window open: all states"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 29912,
+            "quoted": "if(m.id==='tunemodal'){ try{ toggleTune(false); }catch(e0){ m.classList.remove('on'); } return true; } / var b=m.querySelector('[data-esc]')||m.querySelector('button[id^=\"close\"]')|| / m.querySelector('#stageback')||m.querySelector('#carryclose')||m.querySelector('#askno');",
+            "what_it_does": "Closes the last .modal.on by clicking its own door: data-esc, close*, #stageback, #carryclose or #askno. Otherwise it strips .on. It is shared by the Escape capture listener (32867) and B (backOut). Modals: tradermodal 685, gamblemodal 723, appearmodal 745, barmodal 764, termsmodal 775, devmodal 792, opmodal 822, askmodal 876, sectormodal 887, cheatmodal 989, carrymodal 1001, stagemodal 1016, welcomemodal 1053, sharemodal 1063, settingsmodal 1072, cratemodal 1114, tunemodal 1135, simmodal 1152.",
+            "context": "Undercroft station windows, title modals, raid modals"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11740,
+            "quoted": "function togglePauseBox(on){ ... if(G&&G.over) return; / if(!G&&state!=='hub') return; ... if(on){ keys={}; mouse.down=false; }",
+            "what_it_does": "Opens or closes #pausebox and syncs G.paused. Closing banks the note (as a raid note, or as a floor note when there is no raid). Opening disarms Abandon and clears held keys. It refuses when G.over.",
+            "context": "pause"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 33107,
+            "quoted": "document.getElementById('resumebtn').onclick=function(){ disarmAbandon(); togglePauseBox(false);   // v12.02: the close banks the note, for this button and for ESC alike",
+            "what_it_does": "Non-key pause box closers: Resume button (33107), charselbtn (33098, floor only, reopens the title), confirmabandon (33155, then endRaid), and endRaid itself (19231, 19253).",
+            "context": "pause"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 26907,
+            "quoted": "function hubBagOpenSet(on){ ... P.kit=(hubBagG.bag||[]).slice(); ... hubBagG=null; hubBagOpen=false;",
+            "what_it_does": "UNDERCROFT BACKPACK open/close. Opening builds hubBagG from the profile; closing commits bag and hotAssign to P and saves. Opened only at 10831 (Tab/I). Closed at 10798 (Escape), 10812 (Tab/I), 29899 (B via backOut), 28138 (the terminal E act) and directly at 28920 (showScreen hub, no commit).",
+            "context": "Undercroft floor backpack"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 28138,
+            "quoted": "acts:{KeyE:['terminal',function(){ if(hubBagOpen) hubBagOpenSet(false);",
+            "what_it_does": "The terminal station's E act commits and closes an open floor backpack, then opens the #hub stash/terminal panel.",
+            "context": "Undercroft station"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 28967,
+            "quoted": "if(G){ G.bagOpen=false; G.drag=null; }",
+            "what_it_does": "releaseAllKeys (focus or visibility loss) closes the raid backpack. Raid backpack closers overall: 10896 (Escape), 10946 (Tab/I toggle), 29908 (B via backOut), 28967.",
+            "context": "raid backpack"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 15540,
+            "quoted": "if(ped&&!crateUnderfoot&&!G.trade&&keys['KeyE']&&!G.pedLock){ ... else { G.trade=ped; blip('pick'); }",
+            "what_it_does": "The peddler stall opens on held E near the peddler. It is closed by Escape, E, Tab or I (10879), by B (29903), or automatically when out of range or downed (15539).",
+            "context": "peddler"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 10861,
+            "quoted": "if(code==='KeyM'&&G&&!G.over&&!repeat){ G.mapOpen=!G.mapOpen; }",
+            "what_it_does": "The raid map toggles on M (and on pad D-pad up at 11686). It is closed by Escape (10895) or B (29907). Tab and I do not close it; they toggle the backpack under it.",
+            "context": "raid map"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 29881,
+            "quoted": "function toggleCarry(on){",
+            "what_it_does": "carrymodal toggle. A grep for toggleCarry( finds only false calls (10796, 10810, 32652 carryclose) and no opener, so the carrymodal branches in the floor handler appear unreachable.",
+            "context": "Undercroft carrymodal"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 32940,
+            "quoted": "if(fsOn()){ var pr=k.lock(['Escape']); if(pr&&pr.catch) pr.catch(function(){}); return true; }",
+            "what_it_does": "v13.09 Keyboard Lock of Escape. It is re-applied on every fullscreenchange (35115: fsSync(); fsKeyLock();). It only works when the game's own document is fullscreen at top level. Per START-HERE 998-1004 it never locks on itch. Tab needs no lock.",
+            "context": "fullscreen"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11413,
+            "quoted": "8:'Tab',        // View   inventory / 9:'KeyP',       // Menu   pause",
+            "what_it_does": "PADTAP: pad View taps raidKey('Tab'), which today opens and closes the raid backpack. Pad Menu taps raidKey('KeyP'), which pauses and unpauses. Pad B (button 1) is Space, the roll (11409). Comment 11416 says merc orders stay on keyboard B. Taps run only in the raid branch (11690).",
+            "context": "controller, raid"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11438,
+            "quoted": "Space:'B',Tab:'BACK',KeyP:'START',KeyZ:'D-LEFT', / ShiftLeft:'LS',ControlLeft:'RS',KeyM:'D-UP',KeyI:'BACK'};",
+            "what_it_does": "PADLABEL labels both Tab and KeyI as the BACK (View) button and KeyP as START. There is no entry for KeyB, KeyO or Escape, so keyLabel falls back to the raw code or the caller's fallback (11454-11456).",
+            "context": "controller labels"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11529,
+            "quoted": "if(tap(1)){ ... if(/leave|close|not yet|back|done|return/i.test(bs[i].textContent||'')) { back=bs[i]; break; } / if(back) back.click(); else md.classList.remove('on');",
+            "what_it_does": "padMenu: with a .modal.on or the #hub panel up (padOpenModal 11461-11470), pad B presses that panel's Leave/Close/Back/Done/Return button, or strips .on. padMenu runs before both hub and raid branches (11620) and takes the whole pad. It does NOT see the pause box, the floor backpack, or the raid map, backpack, stall or emote bar.",
+            "context": "controller, Undercroft windows and stash panel"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11628,
+            "quoted": "padHold('KeyE',pressed(0)); ... padHold('KeyR',pressed(2)); padHold('KeyF',pressed(3)); padHold('KeyT',pressed(5)); ... return;",
+            "what_it_does": "Pad on the Undercroft floor: only A, X, Y, RB (stations) and LS (sprint) are bound. View (8) and Menu (9) do nothing on the floor, so a controller cannot open the floor backpack or pause in the Undercroft today.",
+            "context": "controller, Undercroft floor"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11690,
+            "quoted": "if(now&&!PAD.prev[n]){ raidKey(PADTAP[n],false,null); keys[PADTAP[n]]=false; }",
+            "what_it_does": "Pad raid taps go straight into raidKey, bypassing the window listener. They skip the 10728 B backOut block and all preventDefaults. Whatever Tab and KeyP come to mean inside raidKey, View and Menu inherit.",
+            "context": "controller, raid"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 653,
+            "quoted": "TAB backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; P / ESC pause</div>",
+            "what_it_does": "Pause box key list (#pausekeys). It names TAB as the backpack and P / ESC as pause.",
+            "context": "pause box text"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 963,
+            "quoted": "<b style=\"color:var(--bone)\">TAB</b> backpack &nbsp;",
+            "what_it_does": "Title screen controls line: TAB backpack.",
+            "context": "title text"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25030,
+            "quoted": "ctx.fillText('TAB  BACKPACK',W-16,by-LH(70));",
+            "what_it_does": "Raid HUD hint while the backpack is closed. mkfixture check at tools/mkfixture.ps1:21567 asserts this exact text.",
+            "context": "raid HUD text"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 27058,
+            "quoted": "ctx.fillText((PAD&&PAD.on)?'VIEW to close':'TAB or I to close',x+PW-11,cy); ctx.textAlign='left';",
+            "what_it_does": "Backpack panel header, drawn by drawBag for both raid and floor. It names TAB or I (keyboard) or VIEW (pad) as the close key.",
+            "context": "raid and Undercroft backpack text"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 28878,
+            "quoted": "'I or TAB','your things','M','the map, on the surface','H','close this'];",
+            "what_it_does": "Undercroft H controls panel. It names I or TAB for your things. Pause, back-out and B are not listed.",
+            "context": "Undercroft floor text"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25519,
+            "quoted": "['P','pause'],['B','back out of a menu, or order your hire']]],",
+            "what_it_does": "Raid H key list (LEGEND). Line 25518 has ['TAB','backpack']. Both rows must change: TAB to back/pause, B and I to backpack, O to hire orders.",
+            "context": "raid key list text"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25531,
+            "quoted": "['1-9','tactical belt'],['TAB','backpack'],",
+            "what_it_does": "Compact raid key list (LEGEND_MINI) names TAB as the backpack.",
+            "context": "raid key list text"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25540,
+            "quoted": "['BACK','backpack'],['D-DOWN','medical'], / ['D-UP','map'],['START','pause']",
+            "what_it_does": "Compact controller list (LEGEND_MINI_PAD) calls View BACK and Menu START. Line 25536 has ['B','roll'].",
+            "context": "controller key list text"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25563,
+            "quoted": "['VIEW','backpack']]], / ['WORLD',[['X','search / call for extraction'],['DPAD UP','map'],['MENU','pause']]]",
+            "what_it_does": "Full controller list (LEGEND_PAD) calls the same buttons VIEW and MENU. This naming already disagrees with LEGEND_MINI_PAD's BACK and START. Line 25561 has ['B','dodge roll'].",
+            "context": "controller key list text"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 30105,
+            "quoted": "' on top of the fee. On the surface B cycles his orders. Your shots cannot hurt '+",
+            "what_it_does": "Hire bench THE DEAL sentence names B for orders. It is a baked TXSHIP key (next item), so do not reword it.",
+            "context": "Undercroft hire bench station text"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 2265,
+            "quoted": "\"One run, paid up front. He loots for himself, ... On the surface B cycles his orders. Your shots cannot hurt him. If you go down, he comes for you.\":\"Buy a friend.\"",
+            "what_it_does": "TXSHIP maps that whole hire bench sentence to the owner's edit 'Buy a friend.', so the B wording is not shown to players today. Changing B to O inside it would break the key, bring back the long sentence and delete his wording. Any O-for-orders wording must go in a new element. No other TXSHIP key on this line contains TAB, ESC, or pause or legend wording (checked with a read-only grep).",
+            "context": "TXSHIP baked edit"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1364,
+            "quoted": "var WHATSNEW_VER='13.34';",
+            "what_it_does": "The what-is-new stamp. The WHATSNEW array runs from 1366 to 1625.",
+            "context": "what-is-new card"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1368,
+            "quoted": "'PRESS B TO BACK OUT OF ANY MENU. ... With nothing open it still gives your hire his orders, and it never opens the pause box.',",
+            "what_it_does": "Entry 2 on the card. It becomes false under the ruling (back-out moves to Tab, orders to O). mkfixture check v13.22 (tools/mkfixture.ps1:6671) requires the card to name B backing out high enough to be drawn.",
+            "context": "what-is-new card"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1422,
+            "quoted": "B backs out of any menu in every browser, and P pauses. Holding Escape always leaves fullscreen, so you can never be stuck.",
+            "what_it_does": "The itch Escape entry. It tells players B is the back-out key on itch, which the ruling replaces with Tab.",
+            "context": "what-is-new card"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1433,
+            "quoted": "TAB opened the backpack invisibly underneath ... Only P and ESC answer while it is up, which are the two keys it names.",
+            "what_it_does": "Older entry claiming only P and ESC answer the Undercroft pause box, and naming TAB as the backpack key.",
+            "context": "what-is-new card"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1439,
+            "quoted": "'ESC CLOSES THE BACKPACK AND THE MAP IN A RAID.",
+            "what_it_does": "Older entry naming ESC as the raid back-out.",
+            "context": "what-is-new card"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1467,
+            "quoted": "'ESC CLOSES THE OPEN BACKPACK IN THE UNDERCROFT instead of raising the pause box over it.',",
+            "what_it_does": "Older entry naming ESC. Similar older key entries: 1429 'ESC OUT OF AN EDIT BOX CLOSES THE EDIT BOX.', 1474 'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT', 1530 'Pressing P or ESC on the title screen', 1619 'CLOSE ON EVERY WINDOW, AND ESC CLOSES THE TOP ONE'.",
+            "context": "what-is-new card"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1544,
+            "quoted": "It now says TAB, then ENTER, which is what equips it.",
+            "what_it_does": "Older entry naming TAB as the backpack. Others: 1541 'not TAB, which opens it' and 1548 'TAB is the backpack, 1 to 9 is the tactical belt.'",
+            "context": "what-is-new card"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 30954,
+            "quoted": "if(ev.key==='j'||ev.key==='J'){",
+            "what_it_does": "KeyO is FREE. The grep for Escape|'Tab'|\"Tab\"|KeyB|KeyI|KeyP|KeyO over the file returned 46 lines and none contain KeyO. The only ev.key letter test in the file is this J. No keyCode or which tests exist.",
+            "context": "KeyO usage"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 6896,
+            "quoted": "function pressB(){ window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyB',bubbles:true})); }",
+            "what_it_does": "Existing checks built on the old bindings that will fail or need repair: 6887-6896 (backOut via B), 8241 \"var _bagKeys=['Tab','KeyI'], bi;\", 8619-8677 (tap('Tab') and tap('Escape') sequences), 21567 (HUD reads TAB  BACKPACK), 7446 (lock is exactly ['Escape']), 6671 (card names B backing out), plus many KeyI dispatches (1961, 2473, 4600, 21685, 21748).",
+            "context": "regression checks"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\handoff\\START-HERE.md",
+            "line": 1070,
+            "quoted": "The gap is functional: a controller player cannot close an Undercroft window by",
+            "what_it_does": "This handoff note (2026-09-13) contradicts the code: padMenu at dark_raiders.html 11529-11534 lets pad B press Close/Leave on any .modal and on the #hub panel. What a pad cannot back out of is the pause box, the floor backpack, and the raid map, backpack, stall and emote bar.",
+            "context": "controller, handoff note accuracy"
+          }
+        ],
+        "notes": "Read-only map of dark_raiders.html at v13.40. No files were changed and no browser tools were used.\n\nDISPATCH ORDER for one keydown (this decides who wins):\n1. window capture 11808: Escape with the pause box up.\n2. document capture 32867: Escape with the edit box focused, or any .modal.on.\n3. The edit box's own listener 2466.\n4. document bubble 30817 (Escape closes the item menu) and 30947 (J and digits).\n5. window bubble 10703: the main listener. It bails on text fields at 10705, runs B backOut at 10728, then the hub branch 10731-10835, or raidKey 10842 in a raid.\n6. window bubble 35252: title Enter/Space.\n\nConsequences:\n- With the pause box AND a modal up, Escape closes the pause box first.\n- With the pause box up and the edit box focused, Escape closes the pause box, not the edit box.\n- The carrymodal Escape line (10796) is unreachable.\n\nWHAT EACH KEY DOES TODAY\n- Escape\n  - Pause box up: closes it (11808).\n  - Edit box focused: closes it (32874).\n  - Modal open: presses its close button (32867).\n  - Item menu open: closes the menu only (30817).\n  - Undercroft floor: closes the floor backpack (10798), else the stash/terminal panel (10801). With nothing open it opens the pause box (10769). Never on the title or over a modal, item menu or #hub.\n  - Raid: closes the emote bar (10852), else the stall (10879), else the map then the backpack (10893). Otherwise it opens the pause box (10899). Nothing when G.over.\n- P\n  - Floor: toggles the pause box when there is no title, modal, item menu or #hub. It still works over the open floor backpack (10769).\n  - Raid: toggles the pause box over anything, including the map, backpack and stall (10899).\n  - Pad Menu = raidKey('KeyP'), raid only.\n- Tab and I (identical everywhere)\n  - Floor: closes carrymodal, else the floor backpack, else nothing if a modal, item menu or title is up, else closes #hub, else opens the floor backpack (10808).\n  - Raid: closes the stall (10879), else toggles G.bagOpen (10945) with no map, modal or downed check.\n  - Blocked while paused (10745, 10849). preventDefault at 10786 and 10889. Ignored inside text fields (10705), so the browser moves focus there.\n  - Pad View = raidKey('Tab'), raid only.\n- B\n  - backOut() in every state, before the pause lockouts (10728). Order: item menu, top modal, floor backpack, #hub, stall, emote bar, map, raid backpack.\n  - If nothing closed, in a raid only: hire orders (10929).\n  - Never pauses. Never closes the pause box, edit box, outcome card or title.\n- O: unused anywhere.\n\nBACKPACK\n- Raid: opens only at raidKey 10945 (Tab/I, pad View). Closes at 10896 (Escape), 10946, 29908 (B), 28967 (focus loss).\n- Undercroft: opens only through hubBagOpenSet(!hubBagOpen) at 10831. Closes at 10798, 10812, 29899, 28138, 28920. Closing commits P.kit (26915).\n\nHIRE ORDERS: only raidKey 10929-10940 (KeyB). Readers are at 17959 and 17996. No pad button.\n\nCAUTIONS FOR THE BUILD\n1. A Tab closer for the pause box needs the capture path, like 11808, and must preventDefault. The main listener drops Tab from #pausenote and inputs, and both pause lockouts return before any Tab logic.\n2. Escape-only closers with no Tab twin: 11808 (pause), 32867 (modals and edit box), 30817 (item menu), 10794-10801 (floor), 10852 (emote bar), 10893 (raid map and backpack).\n3. backOut is the natural Tab back-out. It lacks the pause box and the edit box, and it runs before the lockouts, so it closes panels behind an open pause box.\n4. If Tab pauses when nothing is open, mirror the Escape exclusions: floor 10769-10771 and raid 10893.\n5. The B block at 10728 must move to Tab, or B would close a window instead of opening the backpack. The raid merc block at 10929 moves to KeyO.\n6. The stall closer 10879 should add KeyB. KeyO has no browser default and is not in the 10889 preventDefault list.\n7. The outcome card (#outcome, not a .modal) answers none of these keys today.\n8. TXSHIP: the hire bench sentence at 30105 is baked (2265) and shows as 'Buy a friend.'. Do not edit it.\n9. WHATSNEW_VER is 13.34. Entries 1368 and 1422 become false. Older entries 1429, 1433, 1439, 1467, 1474, 1530, 1541, 1544, 1548 and 1619 name ESC or TAB. mkfixture 13.22 (6671) requires the card to name B backing out.\n10. Checks at mkfixture 6887-6896, 8241, 8619-8677, 21567 and 7446 encode the old keys.\n11. Key words to update: 653, 963, 25030, 25518, 25519, 25531, 27058, 28878. Hire orders on O need new wording in a new element, not the baked sentence.\n\nCONTROLLER IMPACT (needs the owner)\n- Pad raid taps call raidKey directly (11690), so View inherits whatever Tab means inside raidKey. If Tab becomes back/pause and the backpack moves to B/I, View stops opening the backpack. Menu already pauses, so the pad would have two pause-ish buttons and no backpack button. Meanwhile LEGEND_MINI_PAD 25540, LEGEND_PAD 25563 and the bag header 27058 would still say View is the backpack.\n- Minimal fix that keeps pads as they are: PADTAP 8:'KeyI' (PADLABEL already has KeyI:'BACK' at 11439). PADLABEL Tab:'BACK' (11438) then mislabels the new Tab. PADLABEL has no KeyB or KeyO entry, so keyLabel prints the fallback for them.\n- Pad B is the roll (Space) and backs out only inside padMenu (.modal and #hub). Today it cannot back out of the pause box, the floor backpack, or the raid map, backpack, stall or emote bar.\n- On the Undercroft floor the pad has no View or Menu at all (11628-11643): no floor backpack, no floor pause.\n- The pad has no hire-order button, so O adds nothing for pads.\n- Pre-existing naming clash: BACK/START (25540) versus VIEW/MENU (25563, 27058).\n- START-HERE 1070 wrongly says a pad cannot close Undercroft windows; padMenu at 11529 does.\n- Decisions for the owner:\n  1. Does View stay the backpack, or become Tab's back/pause?\n  2. Should pad B back out of the raid map, backpack and stall and the floor backpack?\n  3. Should pads get a hire-orders button?\n  4. Should View and Menu work on the Undercroft floor?\n\nFULLSCREEN: fsKeyLock locks only ['Escape'] (32940) and never takes effect inside the itch iframe (START-HERE 998-1004). Tab needs no lock."
+      },
+      "words": {
+        "items": [
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25518,
+            "quoted": "['GEAR',[['1-9','select tactical belt slot'],['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],",
+            "what_it_does": "LEGEND, the full keyboard key list. The row ['TAB','backpack'] needs to become B / I backpack. Not a TXSHIP key.",
+            "context": "raid, full controls panel drawn when H cycles to the full list (G.legendOn, line 10907), keyboard only (LEGEND_PAD replaces it when a pad is on)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25519,
+            "quoted": "['WORLD',[['E','search / call for extraction'],['X','search, even on the way out'],['M','map'],['H','cycle this list'],['P','pause'],['B','back out of a menu, or order your hire']]],",
+            "what_it_does": "LEGEND WORLD group. ['P','pause'] stays true if P keeps pausing, but TAB now pauses and backs out too. ['B','back out of a menu, or order your hire'] becomes false twice: back-out moves to TAB and hire orders move to O. Check v13.17 in tools/mkfixture.ps1 (lines 6641-6662) requires a row whose key is exactly 'B' containing 'back out', and requires 'back out of a menu' in the drawn text, so that check must be rewritten together with this row. Not a TXSHIP key.",
+            "context": "raid, full controls panel (H), keyboard"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25531,
+            "quoted": "['1-9','tactical belt'],['TAB','backpack'],",
+            "what_it_does": "LEGEND_MINI, the compact always-on key list. ['TAB','backpack'] needs to become B / I. The list has no pause or back entry, so a TAB pause / back row would be new.",
+            "context": "raid, compact controls list (default legend state), keyboard"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 653,
+            "quoted": "<div id=\"pausekeys\" ...>MOUSE aim &nbsp; LMB fire ... CTRL / C crouch toggle<br>E interact &nbsp; R reload &nbsp; F melee strike &nbsp; 1-9 tactical belt &nbsp; TAB backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; P / ESC pause</div>",
+            "what_it_does": "Pause box key line (static HTML). 'TAB backpack' needs to become B / I backpack. 'P / ESC pause' needs TAB added. WHATSNEW line 1433 calls P and ESC the two keys this line names, and the pause-box lockouts at 10745 (floor) and 10849 (raid) let only KeyP and Escape through while the box is up, so Tab must be added there or it cannot close the box. Not a TXSHIP key.",
+            "context": "pause box, shown both in a raid (RAID PAUSED / BLEEDING OUT) and in the Undercroft (PAUSED), per togglePauseBox lines 11777-11798"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 963,
+            "quoted": "<b style=\"color:var(--bone)\">TAB</b> backpack &nbsp;",
+            "what_it_does": "Title screen controls line (WASD move, MOUSE aim, LMB fire, CTRL crouch, E search, TAB backpack, M map, H controls). TAB needs to become B / I. The line names no pause or back key. Not a TXSHIP key.",
+            "context": "title"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25030,
+            "quoted": "ctx.fillText('TAB  BACKPACK',W-16,by-LH(70));",
+            "what_it_does": "HUD hint drawn while the backpack is closed. It has no controller variant, so it says TAB even with a pad. It needs to name B / I. Check tools/mkfixture.ps1 line 21567 asserts the HUD reads ['TAB  ','BACKPACK'].join(''), so that check changes with it.",
+            "context": "raid HUD, right-hand stack, backpack closed"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 27058,
+            "quoted": "ctx.fillText((PAD&&PAD.on)?'VIEW to close':'TAB or I to close',x+PW-11,cy); ctx.textAlign='left';",
+            "what_it_does": "Backpack panel header hint. The keyboard half 'TAB or I to close' must become B or I (and could add TAB, since TAB now backs out). The pad half says VIEW. In the Undercroft the pad hub branch of pollPad (lines 11621-11643) never taps View, so VIEW to close is already untrue on the floor.",
+            "context": "backpack open, in a raid and in the Undercroft (the floor draws the raid backpack with the same function, comment at line 10830)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 28878,
+            "quoted": "'I or TAB','your things','M','the map, on the surface','H','close this'];",
+            "what_it_does": "Undercroft H controls panel (the _lg list starting at line 28877). 'I or TAB' opens your things and must become B or I. There is no pause or back row; 'H close this' is the only close key named. Not a TXSHIP key.",
+            "context": "Undercroft floor, H controls panel (HB.legend)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 30105,
+            "quoted": "' on top of the fee. On the surface B cycles his orders. Your shots cannot hurt '+",
+            "what_it_does": "Hire bench THE DEAL paragraph (lines 30097-30106, innerHTML). 'B cycles his orders' becomes false once orders move to O. TXSHIP-PROTECTED: the whole paragraph from 'One run, paid up front.' to 'he comes for you.' is a TXSHIP key at line 2265, replaced by 'Buy a friend.'. TX() matches the whole string (line 2288 v=TXSHIP[s]), plus a digit-pattern match on the $3,400 (lines 2273-2280). Rewording any word would drop the owner's 'Buy a friend.' and bring the old paragraph back. Do not reword. With the edit active, players see 'Buy a friend.', not this sentence. If O needs naming here, put it in a new separate element.",
+            "context": "Undercroft, hire bench panel (THE DEAL)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1364,
+            "quoted": "var WHATSNEW_VER='13.34';",
+            "what_it_does": "What-is-new card stamp, drawn as 'NEW IN v'+WHATSNEW_VER at line 28859. It must move to the build that ships the remap, or returning players are told nothing.",
+            "context": "Undercroft floor, what-is-new card"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1368,
+            "quoted": "'PRESS B TO BACK OUT OF ANY MENU. It closes whatever is in front, one thing per press, in the Undercroft and on the surface. With nothing open it still gives your hire his orders, and it never opens the pause box.',",
+            "what_it_does": "Top WHATSNEW entry. False after the remap on every claim: B no longer backs out, B opens the backpack, orders move to O, and TAB with nothing open does open the pause box. It needs removing or replacing with a new top entry (TAB pauses and backs out, B and I open the backpack, O orders your hire). Check v13.22 in tools/mkfixture.ps1 (lines 6681, 6686-6689) requires an entry starting 'PRESS B TO BACK OUT' in the top three, so that check must be retired or rewritten. Not a TXSHIP key.",
+            "context": "Undercroft floor, what-is-new card, entry 2 (drawn)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1422,
+            "quoted": "'ESC ONLY KEEPS FULLSCREEN WHEN THE GAME HAS ITS OWN TAB, IN CHROME AND EDGE. Played inside another page, such as itch, the browser does not let the game keep that key, so Escape leaves fullscreen there. B backs out of any menu in every browser, and P pauses. Holding Escape always leaves fullscreen, so you can never be stuck.',",
+            "what_it_does": "WHATSNEW entry. 'B backs out of any menu in every browser' becomes false (now TAB). Warning: 'ITS OWN TAB' here means a browser tab, not the Tab key, so a blind TAB-to-B substitution would corrupt it. Not a TXSHIP key.",
+            "context": "what-is-new card (history)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1429,
+            "quoted": "'ESC OUT OF AN EDIT BOX CLOSES THE EDIT BOX. With Edit the words on, backing out of an edit shut the window you were editing instead and left the yellow box sitting over the game holding the keyboard, so it took a second ESC to be rid of it and the window was gone by then.',",
+            "what_it_does": "History entry, still true for ESC. The edit box closer at line 2469 is ev.key==='Escape' only, so Tab needs the same txClose for the ruling. Wording can stay; a new entry could say TAB closes the edit box too.",
+            "context": "edit box (Edit the words on), what-is-new card history"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1433,
+            "quoted": "'THE PAUSE BOX IN THE UNDERCROFT OWNS THE KEYBOARD NOW. Pressing SPACE while it was up stored a roll your character spent the moment you closed it, TAB opened the backpack invisibly underneath, H flipped the controls panel behind it, and ENTER threw away the update card you had not read. Only P and ESC answer while it is up, which are the two keys it names.',",
+            "what_it_does": "History entry. 'Only P and ESC answer while it is up' becomes stale once TAB closes the pause box, and it ties to the pausekeys line at 653. Not a TXSHIP key.",
+            "context": "pause box in the Undercroft, what-is-new card history"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1439,
+            "quoted": "'ESC CLOSES THE BACKPACK AND THE MAP IN A RAID. It raised the pause box over whatever you had open instead, and a second press closed the box and left the panel sitting there, so ESC shut the wrong window twice. The map is in front of the backpack, and the pause box is in front of both.',",
+            "what_it_does": "History entry, still true for ESC. TAB must follow the same front-most order (raid handler at line 10893: map, then backpack, then pause).",
+            "context": "raid, map and backpack open, what-is-new card history"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1459,
+            "quoted": "'P RESUMES A PAUSED RAID, the way the pause box says. The box used to hand the keyboard to its note the moment it opened, so a second P typed a letter into the note; click the note to write one. While the box is up, no other key touches the raid.',",
+            "what_it_does": "History entry naming P for pause. It stays true if P keeps pausing. 'no other key touches the raid' is loosely stale once TAB also closes the box.",
+            "context": "raid pause box, what-is-new card history"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1467,
+            "quoted": "'ESC CLOSES THE OPEN BACKPACK IN THE UNDERCROFT instead of raising the pause box over it.',",
+            "what_it_does": "History entry, true for ESC (floor handler lines 10769-10771 and 10797-10798). TAB needs the same rule: close the floor backpack, do not raise the pause box.",
+            "context": "Undercroft, backpack open, what-is-new card history"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1474,
+            "quoted": "'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT, the same as the resume button; it goes out with your run report.',",
+            "what_it_does": "History entry, true for ESC. TAB closing the box has to go through togglePauseBox(false) so the note is banked (lines 11760-11769), and must work while the note textarea has focus (ESC does this with a capture listener at 11808-11816). TAB inside a focused textarea would otherwise move focus.",
+            "context": "pause box note field, raid and Undercroft"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1530,
+            "quoted": "'THE TITLE SCREEN NO LONGER ANSWERS THE FLOOR KEYS. Pressing P or ESC on the title screen used to open the pause box over it, and ENTER to start could quietly dismiss the NEW IN card before you saw it. The title keeps its own keys now: ENTER or SPACE starts, nothing else.',",
+            "what_it_does": "History entry naming P and ESC. By design ESC does not pause on the title (line 10769 has !_titleUp) and TAB/I do nothing there (line 10822). So on the title, Esc does only what the modal capture closer does (line 32864, top modal). Tab doing everything Esc does on the title means closing a top modal only, never pausing.",
+            "context": "title, what-is-new card history"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1541,
+            "quoted": "'ONE WORD FOR THE PACK: BACKPACK. The title controls line, the empty-panel hint and the full-pack message called it the \"bag\"; they say backpack now, and the full-pack message names Z, which drops, not TAB, which opens it.',",
+            "what_it_does": "History entry. 'TAB, which opens it' becomes false (B or I opens it). Existing double quotes are in the old line, not new code. Not a TXSHIP key.",
+            "context": "what-is-new card history"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1544,
+            "quoted": "'A BELT KEY TELLS YOU THE RIGHT KEY. Pressing a tactical belt key for a gun still in your backpack used to say \"TAB to equip it\"; TAB only opens the backpack. It now says TAB, then ENTER, which is what equips it.',",
+            "what_it_does": "History entry, already stale: the in-game message it describes was replaced at v11.91 (comment at line 13941; the key now equips directly, line 13949). After the remap 'TAB only opens the backpack' is also false. Candidate for removal. Not a TXSHIP key.",
+            "context": "what-is-new card history"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1548,
+            "quoted": "'THE PAUSE SCREEN KEY LIST IS RIGHT AGAIN. It printed a stray \"&nbsp;\" between every key and still said F heals, TAB opens the bag and Q throws. It now matches the controls list under H: F is your melee strike, TAB is the backpack, 1 to 9 is the tactical belt.',",
+            "what_it_does": "History entry. 'TAB is the backpack' becomes false. Not a TXSHIP key.",
+            "context": "what-is-new card history, about the pause box key line"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 1619,
+            "quoted": "'CLOSE ON EVERY WINDOW, AND ESC CLOSES THE TOP ONE, anywhere: the stash, the lift, the bar, Fashion and Settings.',",
+            "what_it_does": "History entry, true for ESC via escCloseTopModal (capture handler at line 32864, closer at 29912). TAB needs the same, including over Undercroft station panels (#hub terminal at line 10801) and the right-click item menu (Escape-only listener at 30817-30826).",
+            "context": "Undercroft station windows and modals, what-is-new card history"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25540,
+            "quoted": "['BACK','backpack'],['D-DOWN','medical'],",
+            "what_it_does": "LEGEND_MINI_PAD. BACK (the View button) opens the backpack. That stays true only if PADTAP 8 is re-pointed from 'Tab' to a backpack key such as 'KeyI'. The pad lists use two names for one button: BACK here and in PADLABEL, VIEW in LEGEND_PAD and at 27058.",
+            "context": "raid, compact controls list with a controller connected"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25541,
+            "quoted": "['D-UP','map'],['START','pause']",
+            "what_it_does": "LEGEND_MINI_PAD. START (Menu button, PADTAP 9 = KeyP) pauses. Unaffected if P keeps pausing.",
+            "context": "raid, compact controls list with a controller connected"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25536,
+            "quoted": "['RS','crouch'],['B','roll'],",
+            "what_it_does": "LEGEND_MINI_PAD. B here is the controller B button (PADTAP 1 = Space, dodge roll), not keyboard B. Do not change it.",
+            "context": "raid, compact controls list with a controller connected"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25563,
+            "quoted": "['GEAR',[['LB/RB','change tactical belt slot'],['D-RIGHT','use selected'],['D-LEFT','drop selected'],['D-DOWN','use medical'],['VIEW','backpack']]],",
+            "what_it_does": "LEGEND_PAD. VIEW opens the backpack. It stays true only if PADTAP 8 stops tapping Tab once Tab becomes pause/back.",
+            "context": "raid, full controls panel with a controller connected"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25564,
+            "quoted": "['WORLD',[['X','search / call for extraction'],['DPAD UP','map'],['MENU','pause']]]",
+            "what_it_does": "LEGEND_PAD. MENU (PADTAP 9 = KeyP) pauses. No controller back-out or hire-orders button is listed.",
+            "context": "raid, full controls panel with a controller connected"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25561,
+            "quoted": "['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['RS CLICK','crouch'],['B','dodge roll']]],",
+            "what_it_does": "LEGEND_PAD. B is the controller B button (Space). Not keyboard B; do not change.",
+            "context": "raid, full controls panel with a controller connected"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11413,
+            "quoted": "8:'Tab',        // View   inventory",
+            "what_it_does": "PADTAP. The View button is raised as a Tab keydown through raidKey (line 11690), raid only. After the remap, View would pause the raid or back out of the map or backpack instead of opening the backpack, and every pad legend saying VIEW/BACK = backpack would be wrong. The simplest fix keeping the legends true is 8:'KeyI' (PADLABEL already maps KeyI:'BACK'). Owner decision: should View stay backpack, or become back/pause?",
+            "context": "raid, controller"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11414,
+            "quoted": "9:'KeyP',       // Menu   pause",
+            "what_it_does": "PADTAP. The Menu button taps P, so the controller pause is unaffected if P keeps pausing. In the Undercroft the pad hub branch (lines 11621-11643) taps neither View nor Menu, so a controller player cannot pause or open the backpack on the floor today.",
+            "context": "raid, controller"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11425,
+            "quoted": "var PADHOLD={",
+            "what_it_does": "PADHOLD (lines 11425-11431): 2 KeyE, 3 KeyR, 13 KeyF, 10 ShiftLeft. It binds no Escape, Tab, B, I or P, so the remap does not touch it.",
+            "context": "raid, controller held buttons"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11438,
+            "quoted": "Space:'B',Tab:'BACK',KeyP:'START',KeyZ:'D-LEFT',",
+            "what_it_does": "PADLABEL (lines 11437-11439, ending ... KeyM:'D-UP',KeyI:'BACK'}). It labels Tab and KeyI both as BACK, KeyP as START, and Space as B. No keyLabel() call passes Tab, KeyI, KeyP, KeyB or Escape (grep found only keyLabel('Space',...) at 12700 and 25209), so today the Tab, KeyI and KeyP entries label nothing on screen. If Tab becomes pause/back, Tab:'BACK' reads as the controller back button, but the pad back-out is the B button in menus (padMenu, lines 11529-11535). There is no KeyB or KeyO entry, so hire orders have no controller label or button (a comment at line 11416 says orders stay keyboard-only).",
+            "context": "controller prompt labels, raid"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 11450,
+            "quoted": "var PADLABEL_HUB={KeyE:'A',KeyR:'X',KeyF:'Y',KeyT:'RB'};",
+            "what_it_does": "Undercroft station button labels. No Tab, B, I or P entries, so no change is needed for the remap.",
+            "context": "Undercroft floor, controller station prompts"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 25209,
+            "quoted": "ctx.fillText('HOLD ['+keyLabel('Space','SPACE')+'] TO SURRENDER',W/2,_rowY);",
+            "what_it_does": "Downed screen prompt. On a controller keyLabel returns 'B' (PADLABEL Space:'B'), so a pad player reads HOLD [B] TO SURRENDER. That is the controller B button and must not be treated as keyboard B. Unchanged by the remap.",
+            "context": "raid, downed screen, controller"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\dark_raiders.html",
+            "line": 12700,
+            "quoted": "say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold '+keyLabel('Space','SPACE')+' to give up.'))",
+            "what_it_does": "DOWN message. On a pad it says 'hold B to give up' (controller B = Space). Not keyboard B; unchanged.",
+            "context": "raid, going down the second time, controller"
+          }
+        ],
+        "notes": "I ran nothing that writes; all reads were Grep, Read and one read-only PowerShell line read. Repo is C:\\claudecode\\dark raiders; VER is '13.40' at line 1353.\n\nTXSHIP (line 2265, 71 entries): I scanned the whole line for ESC, Esc, Escape, TAB, Tab, B, I, P, BACK, VIEW, START and MENU. There is exactly ONE match. It is the hire bench paragraph built at lines 30097-30106, containing 'On the surface B cycles his orders.'. It is a TXSHIP key whose value is 'Buy a friend.'. No WHATSNEW entry, legend or prompt listed above is a TXSHIP key. Edits in the owner's live profile (P.txt, checked first at line 2287) are not in the file and were not checked.\n\nO is free: no KeyO, ['O' or 'O'] anywhere in dark_raiders.html.\n\nWords that are not the key, so a blind substitution must not touch them:\n- 'ITS OWN TAB' at line 1422 means a browser tab.\n- 'hire tab' at 1425, 'ALL tab' at 1543, 'recorder tab' at 1568 and 'Nothing under this tab.' at 31407 mean UI tabs.\n- Controller B in LEGEND_MINI_PAD (25536), LEGEND_PAD (25561), PADLABEL Space:'B', and the downed prompts at 25209 and 12700 means the pad B button (Space).\n\nSkipped, not player text:\n- CSS comment 'ESC BACK / TAB INVENTORY' at line 328 (the right-click menu key row at 30774 only prints belt digits).\n- The CLOSE buttons with the data-esc attribute (996, 1059, 1068) say only CLOSE; data-esc is read by escCloseTopModal at 29916.\n- The what-is-new card dismiss hint 'press ENTER or walk to dismiss' (28870) names no affected key.\n- Pause box headings RAID PAUSED / PAUSED (652, 11785) name no key.\n\nWhere the behaviour lives, so Tab can match Escape:\n- Edit box closer: 2469.\n- Floor pause lockout: 10745. Raid pause lockout: 10849.\n- Floor pause toggle: 10769-10774.\n- Floor carry window / backpack / terminal on Escape: 10794-10801.\n- Emote bar: 10852. Peddler stall closes on Escape, E, Tab or I: 10879.\n- Raid map then backpack: 10893-10897. Raid pause: 10899-10900.\n- Pause note capture listener: 11808-11816. Right-click item menu: 30817-30826.\n- Top modal capture closer: 32864-32868. B back-out shared function backOut: 29894-29911.\n- Tab or I backpack toggle today: floor 10808-10831, raid 10945-10949.\n- B today: backOut at 10728-10730, hire orders at 10929-10939.\n- Escape keyboard lock for fullscreen: 32940.\n\nChecks in tools/mkfixture.ps1 tied to these words:\n- v13.17 B row at 6641-6662.\n- v13.22 'PRESS B TO BACK OUT' at 6681-6689.\n- v13.17 pressB at 6885-6896.\n- HUD 'TAB  BACKPACK' at 21567.\n- Tab taps at 8241, 8630, 8651, 8668.\n- Many KeyI dispatches (1961, 2473, 4600, 21685, 21748), which stay valid if I keeps the backpack.\n\nWhat the remap does to a controller player, and what needs the owner:\n1. The View button taps Tab (PADTAP 8, raid only). After the remap it would pause or back out instead of opening the backpack. Four places promise View/BACK = backpack: 25540, 25563, 27058, and PADLABEL KeyI/Tab:'BACK'. Re-pointing PADTAP 8 to 'KeyI' keeps them all true. Ask: keep View as backpack, or make View the back/pause button?\n2. On the Undercroft floor the pad taps neither View nor Menu (hub branch, lines 11621-11643). A pad player cannot pause or open the backpack there, and 'VIEW to close' at 27058 is already untrue on the floor.\n3. Controller back-out inside windows is the B button via padMenu (11529-11535). It clicks a button whose text matches leave/close/not yet/back/done/return, and only while a .modal or the #hub terminal is up. It does not close the raid backpack, map or peddler stall, which keyboard B/Esc do through backOut.\n4. Hire orders have no controller button: the comment at 11416 says orders stay on keyboard B. Moving them to O leaves the pad the same, but no legend or PADLABEL names O.\n5. The pad lists name the same buttons two ways: BACK/START in LEGEND_MINI_PAD and PADLABEL, VIEW/MENU in LEGEND_PAD and at 27058.\n6. The pad Menu button taps KeyP, so the controller pause is unaffected as long as P keeps pausing."
+      },
+      "checks": {
+        "items": [
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 6885,
+            "quoted": "function pressB(){ window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyB',bubbles:true})); }",
+            "what_it_does": "v13.17. The helper is at line 6896. If backOut is missing it returns a failure, not a SKIP (6887-6888). It then asserts four things. (1) In a raid, B closes the backpack and drops a held drag (6907-6908). (2) With the map and the backpack both open, B closes only the map (6914-6915). (3) B with nothing open does not raise the pause box (6923). (4) In the Undercroft, B closes an open settingsmodal (6934). RULING MAKES IT WRONG: back-out moves to Tab and B becomes a backpack toggle. Arm 2 would go red: B would close the backpack and leave the map, firing both 'B does not close the map' and 'closed the map AND the backpack'. Arm 4 would go red. Arm 1 passes for the wrong reason, because B simply toggles the backpack. Arm 3 passes, but a copy aimed at Tab must be inverted, since Tab with nothing open is supposed to pause. Game today: B calls backOut first (dark_raiders.html 10728-10729), and raid B with nothing open gives hire orders (10929).",
+            "context": "raid (backpack, map, nothing open, pause) and Undercroft floor (settings window)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 6634,
+            "quoted": "if(r&&r[0]==='B') row=r;",
+            "what_it_does": "v13.23. Asserts the LEGEND table has a row whose key is B and whose text contains 'back out' (6643-6648). Then it deploys a raid, sets legendOn=2, and asserts the drawn full key list contains 'back out of a menu' (6661). It SKIPs when a pad is connected (6638). The game row it reads is at dark_raiders.html 25519: ['B','back out of a menu, or order your hire']. RULING MAKES IT WRONG: the B row must now say backpack, back-out belongs on a TAB row, and hire orders go on an O row. The GEAR row ['TAB','backpack'] at 25518 also has to change.",
+            "context": "raid, full key list (H, legendOn=2)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 6681,
+            "quoted": "if(idxB<0&&t.indexOf('PRESS B TO BACK OUT')===0) idxB=i;",
+            "what_it_does": "v13.22 (header at line 6671). Asserts: WHATSNEW_VER >= 13.16 (6676); an entry starting 'PRESS B TO BACK OUT' at index 2 or lower (6686-6689); an entry starting 'AN ARMOUR PLATE YOU FIND' at index 3 or lower (6690-6693); an 'X SEARCHES WHAT YOU ARE STANDING ON' entry; and no entry saying 'key is gone'. The game entry at dark_raiders.html 1368 reads 'PRESS B TO BACK OUT OF ANY MENU. ... With nothing open it still gives your hire his orders...'. RULING MAKES IT WRONG: the B prefix needle has to become a Tab entry, and the hire sentence has to name O. Watch the index limits: if two new entries go on top, the armour plate entry moves past index 3 and the check goes red. This string appears only at 1368 and not in TXSHIP (2265), so it is not one of the owner's baked edits.",
+            "context": "what-is-new card"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 8612,
+            "quoted": "tap('Tab');\n       if(!g.bagOpen){ bad.push('control: TAB did not open the backpack, so there is nothing here for ESC to close'); }",
+            "what_it_does": "v12.89. Uses Tab as the raid backpack opener at 8630, 8651 and 8668. Asserts: ESC over the open backpack closes it without pausing (8634-8635); ESC over the map closes it (8644-8645); with both open, ESC closes the map first, then the backpack (8654-8658); with the backpack open, P raises the box and leaves the backpack (8671-8673); ESC then closes the box first and the backpack second (8675-8679). ESC with nothing open is deliberately not asserted, because a synthetic ESC runs late (comment 8662-8667). RULING MAKES THE TAB OPENER WRONG: Tab with nothing open should pause. The 8631 and 8669 controls would fire, the both-open arm would silently not run (8652), and the other ESC arms would be skipped. Replace the opener with KeyI or KeyB. The ESC assertions are still correct, but a Tab copy is needed. If Tab is added to the same capture listener as Escape, the late-dispatch problem described at 8662-8667 will apply to Tab too.",
+            "context": "raid: backpack, map, both, pause box over backpack"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 8241,
+            "quoted": "var _bagKeys=['Tab','KeyI'], bi;",
+            "what_it_does": "v12.95 (header at line 8197), on the Undercroft floor. For both Tab and I: with the pause box up the key must not open the backpack (8245), and with the box down it must (8246). The same pattern covers SPACE, H and ENTER. Control: P closes the box (8270-8271). RULING MAKES THE TAB HALF WRONG: with the box down, Tab should pause instead of opening the backpack, so the 8246 control would fire. With the box up, Tab should close the box, which only P is tested for. Swap 'Tab' for 'KeyB' in _bagKeys and add Tab next to P in the closes-the-box control. Game floor handler: dark_raiders.html 10808, (e.code==='KeyI'||e.code==='Tab').",
+            "context": "Undercroft floor, pause box up and down"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 14837,
+            "quoted": "var need=[['F ','melee strike'].join(''), ['TAB ','backpack'].join(''), ['tactical ','belt'].join(''), ['hold to ','sprint'].join('')];",
+            "what_it_does": "v11.26 (header at line 14824). Asserts the pause box text contains 'TAB backpack', 'F melee strike', 'tactical belt' and 'hold to sprint' (14838). It also asserts that 'TAB bag ' and other old strings are gone (14834-14835). The game text is the #pausekeys line at dark_raiders.html 653: 'TAB backpack ... M map  H controls  P / ESC pause'. RULING MAKES IT WRONG: the line must name B / I for the backpack and Tab for pause and back, so this check goes red once the words are fixed. It never reads the pause keys, so a stale 'P / ESC pause' would slip past it.",
+            "context": "pause box key line"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 14603,
+            "quoted": "if(tt.indexOf('TAB backpack')<0) bad.push('the title controls line does not say \"TAB backpack\": '+tt.slice(0,120));",
+            "what_it_does": "v11.33 (header at line 14596). Asserts the #title text contains 'TAB backpack' and not 'TAB bag'. It also asserts that the old 'Bag is empty.', 'Bag full (' and 'TAB bag ' strings are gone from the source, and that 'Backpack is empty.' is present (14608-14615). The game line is dark_raiders.html 963: <b style=\"color:var(--bone)\">TAB</b> backpack. RULING MAKES IT WRONG: the title controls line must name B and I, so this needle has to change.",
+            "context": "title screen"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 21567,
+            "quoted": "if(hud.indexOf(['TAB  ','BACKPACK'].join(''))<0) bad.push('the HUD hint does not read TAB  BACKPACK');",
+            "what_it_does": "v9.90 (header at line 21532). Asserts: the compact legend has a backpack row (21557); the full legend says backpack (21563); the HUD hint beside the vitals (legendOn=0) reads 'TAB  BACKPACK', which is drawn at dark_raiders.html 25030; and the controller legend says both 'tactical belt' and 'backpack' (21577). RULING MAKES THE HUD NEEDLE WRONG. The controller arm only breaks if the ['VIEW','backpack'] row (25563) is relabelled with no other backpack row left, which is the owner's controller decision.",
+            "context": "raid HUD hint, compact and full legends, controller legend"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 6575,
+            "quoted": "var qualified=(u.indexOf('OWN TAB')>=0)||(u.indexOf('ANOTHER PAGE')>=0);",
+            "what_it_does": "v13.25 (header at line 6567). For every what-is-new entry that mentions both ESC and FULLSCREEN, it asserts the entry does not promise 'NO LONGER DROPS YOU OUT OF FULLSCREEN' unqualified, and that at least one entry is qualified with 'OWN TAB' or 'ANOTHER PAGE'. NOT WRONG, BUT BLIND: the entry it guards, at dark_raiders.html 1422, also says 'B backs out of any menu in every browser, and P pauses'. The ruling makes that sentence false and this check never reads it. It needs an arm requiring the entry to name Tab for back-out and pause on itch. 'OWN TAB' here means a browser tab, so new wording about the Tab key must not be written to satisfy that needle by accident.",
+            "context": "what-is-new card, fullscreen on itch"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 12601,
+            "quoted": "document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));",
+            "what_it_does": "v12.11 (header at line 12589), on the Undercroft floor. With the backpack open, ESC closes it and does not raise the pause box (12602-12603). Control: with the backpack closed, ESC raises the pause box (12607-12608). NOT WRONG for Escape, but a Tab copy is needed. A Tab copy would fail today on the second arm, because floor Tab toggles the backpack (dark_raiders.html 10808) and the floor pause only listens for Escape or P (10769).",
+            "context": "Undercroft floor: backpack open, nothing open, pause"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 7999,
+            "quoted": "{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));",
+            "what_it_does": "v12.99 (header at line 7990). With TXBOX, the edit box, open over settingsmodal, ESC closes the edit box and leaves the window standing (8012-8016). Control: with no edit box, ESC closes the front window (8025-8027). NOT WRONG, but a Tab copy is needed. The ruling names edit boxes, yet the edit handler at dark_raiders.html 2469 only reads ev.key==='Escape'. Tab inside a text field is normally focus movement, so that needs deciding.",
+            "context": "edit box over a window (Undercroft settings)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 12342,
+            "quoted": "press('Escape',ta);",
+            "what_it_does": "v12.22 (header at line 12303), in a raid. P opens the pause box and pauses (12312, 12322-12323), and without scheduling focus handoffs (12325). A second P, sent to whatever holds focus, resumes (12326-12328). M does nothing while the box is up and opens the map once it is down (12332-12337). ESC from inside the pause note closes the box (12342-12343). NOT WRONG, because P is unchanged. Needs a Tab arm from inside the note, and its claim that no other key reaches the raid while the box is up must now let Tab close it.",
+            "context": "raid pause box and its note field"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 12841,
+            "quoted": "ta.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));",
+            "what_it_does": "v12.02 (header at line 12828), in a raid. A note typed into the pause box is kept in g.tel.notes when ESC closes the box (12842-12845). NOT WRONG. Needs a Tab copy: Tab from the note closes the box and keeps the note.",
+            "context": "raid pause box note"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 14284,
+            "quoted": "K('Escape','Escape');",
+            "what_it_does": "v11.45 (header at line 14264), on the boot title (state hub with title on). P (14281) and ESC (14284) must not raise the pause box. ENTER must not stamp the NEW IN card as seen, and ENTER still starts the game. NOT WRONG. Tab should do what ESC does here, which is not open the pause box, so add a Tab arm.",
+            "context": "title screen"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 20705,
+            "quoted": "function esc(){ document.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true})); }",
+            "what_it_does": "v10.10 (header at line 20684), in the Undercroft. Every .modal has a CLOSE (20692-20702). ESC dispatched at document closes gamblemodal, barmodal, sectormodal and cheatmodal (20707-20721). Control: ESC closes the stash screen #hub (20725). NOT WRONG, but a Tab copy is needed. This is the only check that walks the station windows.",
+            "context": "Undercroft station windows (gamble, bar, sector, cheat) and stash screen"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 7446,
+            "quoted": "else if(!(locked&&locked.length===1&&locked[0]==='Escape'))",
+            "what_it_does": "v13.09 (header at line 7425). With navigator.keyboard stubbed: entering fullscreen must call lock(['Escape']) with Escape alone (7444-7447); leaving must unlock and not lock again (7454-7457); with no navigator.keyboard it must not throw (7463). NOT WRONG: Escape keeps working wherever the browser allows, and this lock is how that works in the game's own tab. It would go red if someone added Tab to the lock, which is not needed because Tab does not exit fullscreen.",
+            "context": "fullscreen (title button)"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 1961,
+            "quoted": "document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));",
+            "what_it_does": "v8.84 (header at line 1948), in the Undercroft. I opens the backpack and neither the terminal (#hub) nor the retired carrymodal (1967-1969). A second I closes it (1970). NOT WRONG: I keeps the backpack under the ruling.",
+            "context": "Undercroft floor backpack"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 2473,
+            "quoted": "document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));",
+            "what_it_does": "v8.95 (header at line 2459). I opens the Undercroft backpack as the shared raid panel, not fullscreen, with 4 cells (2474-2497). I closes it again (2500-2501). NOT WRONG.",
+            "context": "Undercroft floor backpack"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 2513,
+            "quoted": "document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));",
+            "what_it_does": "v8.96 (header at line 2503). I opens the Undercroft backpack to test belt drags. I closes it at the end (2559). The assertions are about drags, not the key. NOT WRONG.",
+            "context": "Undercroft floor backpack"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 4600,
+            "quoted": "window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));",
+            "what_it_does": "v9.31 (header at line 4584). I opens the raid backpack; if it does not, the check returns SKIP 'the backpack did not open on I' (4604). The assertions are about dragging an item off the belt. NOT WRONG.",
+            "context": "raid backpack"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 4655,
+            "quoted": "document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));",
+            "what_it_does": "v9.32 (header at line 4646). I opens the Undercroft backpack to measure the drag ghost. NOT WRONG.",
+            "context": "Undercroft floor backpack"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 21748,
+            "quoted": "document.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));",
+            "what_it_does": "v9.88 (header at line 21667). I opens the Undercroft backpack for control two (SKIP 'I did not open the backpack' at 21750). done() closes it with I (21685). NOT WRONG.",
+            "context": "Undercroft floor backpack"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 8418,
+            "quoted": "var BTN={0:'A',1:'B',2:'X',3:'Y',4:'LB',5:'RB',6:'LT',7:'RT',8:'BACK',9:'START',",
+            "what_it_does": "v12.92 (header at line 8407). On a fake pad, the Undercroft station acts KeyE, KeyR, KeyF and KeyT must print the button that actually performs them. Controls cover the raid labels and the keyboard letters. It never touches Tab or I. NOT WRONG, but button 8 is labelled BACK here, matching PADLABEL Tab:'BACK' and KeyI:'BACK' (dark_raiders.html 11438-11439). No check drives pad button 8 (View).",
+            "context": "controller, Undercroft station prompts"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 5976,
+            "quoted": "// One button down, or none (-1). Button 1 is B on the standard layout.",
+            "what_it_does": "v13.37 (header at line 5966). Pad B (button 1) held while downed with the self-revive spent surrenders; a tap of pad B rolls (6040-6043, 6064-6066). Pad B maps to Space (PADTAP 1:'Space', dark_raiders.html 11409), not to keyboard KeyB. NOT AFFECTED by the keyboard remap. Listed so the two meanings of B are not confused.",
+            "context": "controller, raid downed state"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 9162,
+            "quoted": "var LEG=(typeof PAD!=='undefined'&&PAD&&PAD.on)?LEGEND_PAD:LEGEND, i, j, missing=0, firstMiss='';",
+            "what_it_does": "v12.79 (header at line 9141). Every label in LEGEND (or LEGEND_PAD with a pad on) must be drawn on the full key panel, no tip text may be drawn there, and the compact legend must still draw some key (9163-9189). NOT WRONG, because it follows whatever the table says. It is weak for the remap: a one-letter label like 'O' or 'I' is found in almost any drawn text, so it cannot prove a new O row is actually drawn.",
+            "context": "raid full key panel and compact legend"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 19634,
+            "quoted": "if(no&&!no.hasAttribute('data-esc')) bad.push('ESC does not reach the CLOSE');",
+            "what_it_does": "v10.39 (header at line 19606). The share question window's CLOSE button must carry data-esc. escCloseTopModal clicks [data-esc] (dark_raiders.html 29916), and backOut calls escCloseTopModal (29898). NOT WRONG as long as Tab goes through the same closer. Only the failure wording names ESC.",
+            "context": "share question window"
+          },
+          {
+            "file": "C:\\claudecode\\dark raiders\\tools\\mkfixture.ps1",
+            "line": 14696,
+            "quoted": "var wrong=['TAB to ','equip it'].join('');",
+            "what_it_does": "v11.30 (header at line 14682). Pressing a belt key for a gun still in the backpack brings the gun up, and the message must not say 'TAB to equip it' or name ENTER (14699-14702). NOT WRONG: it only checks that retired wording is gone.",
+            "context": "raid belt key message"
+          }
+        ],
+        "notes": "SUMMARY. I read tools/mkfixture.ps1 checks only and changed nothing. 27 checks touch Escape, Tab, KeyB, KeyI or KeyP, or read key text naming them. 8 have an assertion the ruling makes wrong: v13.17, v13.23, v13.22, v12.89 (Tab as the backpack opener), v12.95 (the Tab half), v11.26 (pause line 'TAB backpack'), v11.33 (title 'TAB backpack') and v9.90 (HUD 'TAB  BACKPACK'). 8 more are still right for Escape but have no Tab version, and v13.25 (a what-is-new check) also misses the stale 'B backs out' sentence: v12.11, v12.99, v12.22, v12.02, v11.45, v10.10, v13.25, v13.09. The last one should not get a Tab arm; it only goes red if Tab is added to the keyboard lock. 6 KeyI checks match the ruling: v8.84, v8.95, v8.96, v9.31, v9.32, v9.88. The rest are v12.92, v13.37, v12.79, v10.39 and v11.30, none made wrong.\n\nGAPS, no check covers these:\n- No check anywhere dispatches KeyO. Grep for KeyO, hire and orders in mkfixture found no KeyB press for merc orders, so the move from B to O is untested in both directions.\n- No check presses Tab or Escape at the peddler stall. Game line 10879 already closes the stall on Escape, E, Tab or I.\n- No check covers the emote bar (10852, V or Escape).\n- No check covers the right-click item menu (backOut, 29896).\n- Only v10.10 walks the Undercroft station windows.\n- No check drives pad button 8 (View). Grep for padWith(8, pad(8 and PADTAP found only the hook at mkfixture line 1143.\n- v10.96 (16630-16639), v11.50 (14125) and the fullscreen label check near 24075 mention Escape only in comments or call togglePauseBox directly. I left them out.\n\nTXSHIP (the owner's baked text edits). TXSHIP is JSON on game line 2265. A grep for 'PRESS B', 'back out', 'B backs', 'ESC ONLY', 'TAB backpack', 'P / ESC' and 'order your hire' matched game lines 653, 1368, 1422 and 25519, never 2265. So none of the strings these checks match is one of his edits, as far as a literal grep can show.\n\nCONTROLLER (game file):\n- View currently taps Tab: PADTAP 8:'Tab' with the comment 'View inventory' (11413). Menu taps P (9:'KeyP', 11414).\n- If Tab becomes pause and back, the View button stops opening the backpack. A pad player then has two pause buttons and no backpack button. The controller legend row ['VIEW','backpack'] (25563) becomes false, and v9.90's controller arm (21577) goes red if that row loses 'backpack'.\n- PADLABEL labels both Tab and KeyI as 'BACK' (11438-11439), so any prompt that names Tab for back-out would read BACK on a pad.\n- Comment at 11416 says 'Merc orders stay on keyboard B', which goes stale. There is no pad button for hire orders at all.\n- A grep fragment at game line 11530 says 'B backs out: the panel's own Leave or Close'. That suggests pad B already backs out of menus; I did not read that block.\n\nNEEDS THE OWNER'S DECISION:\n(a) Does View stay the backpack button (point PADTAP 8 at KeyI) and pad back-out stay on pad B in menus, or does View become back/pause?\n(b) Does a pad player get a hire-orders button?\n(c) Should Tab inside a text field (the edit box, the pause note) cancel, as the ruling says, rather than move focus? The edit handler (2469) reads Escape only.\n(d) If the Tab pause is built into the same capture listener as Escape, a synthetic Tab will open and close the pause box in one press, exactly like the late ESC described in v12.89's comment (8662-8667). A Tab copy of 'nothing open pauses' would then have to be driven on P or staged differently.\n(e) Watch v13.22's position limits: two new top entries would push the armour plate entry past index 3."
+      }
+    }
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Map"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 2,
+      "title": "Plan"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 3,
+      "title": "Review"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "map:handlers",
+      "phaseIndex": 1,
+      "phaseTitle": "Map",
+      "agentId": "a69dfcfbe564a0ef0",
+      "model": "claude-opus-5",
+      "state": "done",
+      "startedAt": 1789342299227,
+      "queuedAt": 1789342297297,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Read-only map of dark_raiders.html at v13.40. No files were…",
+      "promptPreview": "PROJECT: Pillagers, a single-file ES5 browser game. Repo: C:\\claudecode\\dark raiders\n- Game: dark_raiders.html (about 2 MB). NEVER read it whole; use Grep with line numbers and Read with offset and limit. Current applied build is v13.40 (VER near line 1353). Most of the file has plain LF line endings.\n- Checks: tools/mkfixture.ps1, entries {v:'X.YY',what:'...',run:function(){...}} in window.__REGR…",
+      "promptFramed": false,
+      "lastProgressAt": 1789342921189,
+      "tokens": 165957,
+      "toolCalls": 54,
+      "durationMs": 620466,
+      "resultPreview": "{\"items\":[{\"file\":\"C:\\\\claudecode\\\\dark raiders\\\\dark_raiders.html\",\"line\":11808,\"quoted\":\"window.addEventListener('keydown',function(ev){ / if(ev.code!=='Escape') return; / if(_pb&&_pb.classList.contains('on')){ ev.stopPropagation(); ev.preventDefault(); ... togglePauseBox(false); / },true);\",\"what_it_does\":\"Window CAPTURE listener, so it runs first of all key listeners. Escape with the pause box…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "map:words",
+      "phaseIndex": 1,
+      "phaseTitle": "Map",
+      "agentId": "accd79c068c4f8238",
+      "model": "claude-opus-5",
+      "state": "done",
+      "startedAt": 1789342299162,
+      "queuedAt": 1789342297297,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "I ran nothing that writes; all reads were Grep, Read and on…",
+      "promptPreview": "PROJECT: Pillagers, a single-file ES5 browser game. Repo: C:\\claudecode\\dark raiders\n- Game: dark_raiders.html (about 2 MB). NEVER read it whole; use Grep with line numbers and Read with offset and limit. Current applied build is v13.40 (VER near line 1353). Most of the file has plain LF line endings.\n- Checks: tools/mkfixture.ps1, entries {v:'X.YY',what:'...',run:function(){...}} in window.__REGR…",
+      "promptFramed": false,
+      "lastProgressAt": 1789342689752,
+      "tokens": 163081,
+      "toolCalls": 46,
+      "durationMs": 389029,
+      "resultPreview": "{\"items\":[{\"file\":\"C:\\\\claudecode\\\\dark raiders\\\\dark_raiders.html\",\"line\":25518,\"quoted\":\"['GEAR',[['1-9','select tactical belt slot'],['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],\",\"what_it_does\":\"LEGEND, the full keyboard key list. The row ['TAB','backpack'] needs to become B / I backpack. Not a TXSHIP key.\",\"context\":\"raid, full …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 3,
+      "label": "map:checks",
+      "phaseIndex": 1,
+      "phaseTitle": "Map",
+      "agentId": "a0afabf5e1d75969f",
+      "model": "claude-opus-5",
+      "state": "done",
+      "startedAt": 1789342299135,
+      "queuedAt": 1789342297297,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "SUMMARY. I read tools/mkfixture.ps1 checks only and changed…",
+      "promptPreview": "PROJECT: Pillagers, a single-file ES5 browser game. Repo: C:\\claudecode\\dark raiders\n- Game: dark_raiders.html (about 2 MB). NEVER read it whole; use Grep with line numbers and Read with offset and limit. Current applied build is v13.40 (VER near line 1353). Most of the file has plain LF line endings.\n- Checks: tools/mkfixture.ps1, entries {v:'X.YY',what:'...',run:function(){...}} in window.__REGR…",
+      "promptFramed": false,
+      "lastProgressAt": 1789342721745,
+      "tokens": 198019,
+      "toolCalls": 60,
+      "durationMs": 422609,
+      "resultPreview": "{\"items\":[{\"file\":\"C:\\\\claudecode\\\\dark raiders\\\\tools\\\\mkfixture.ps1\",\"line\":6885,\"quoted\":\"function pressB(){ window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyB',bubbles:true})); }\",\"what_it_does\":\"v13.17. The helper is at line 6896. If backOut is missing it returns a failure, not a SKIP (6887-6888). It then asserts four things. (1) In a raid, B closes the backpack and drops a held dra…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 4,
+      "label": "plan:remap",
+      "phaseIndex": 2,
+      "phaseTitle": "Plan",
+      "agentId": "a5b8b211e8924897f",
+      "model": "claude-opus-5",
+      "state": "done",
+      "startedAt": 1789342924756,
+      "queuedAt": 1789342922933,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "What changes for a player, in two builds. Line numbers are …",
+      "promptPreview": "PROJECT: Pillagers, a single-file ES5 browser game. Repo: C:\\claudecode\\dark raiders\n- Game: dark_raiders.html (about 2 MB). NEVER read it whole; use Grep with line numbers and Read with offset and limit. Current applied build is v13.40 (VER near line 1353). Most of the file has plain LF line endings.\n- Checks: tools/mkfixture.ps1, entries {v:'X.YY',what:'...',run:function(){...}} in window.__REGR…",
+      "promptFramed": false,
+      "lastProgressAt": 1789344468349,
+      "tokens": 287758,
+      "toolCalls": 62,
+      "durationMs": 1543592,
+      "resultPreview": "{\"summary\":\"What changes for a player, in two builds. Line numbers are from the file as it is now. v13.41 (raised decks gone) landed while I was reading, so these builds become v13.42 and v13.43.\\n\\nBUILD 1 (v13.42): TAB does everything Escape does.\\n- In a raid, TAB closes the map, then the backpack, the emote bar and the peddler stall, one per press.\\n- With nothing open, TAB pauses. With the pa…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 5,
+      "label": "review:remap",
+      "phaseIndex": 3,
+      "phaseTitle": "Review",
+      "agentId": "a7fca3c17784a6092",
+      "model": "claude-opus-5",
+      "state": "done",
+      "startedAt": 1789344473299,
+      "queuedAt": 1789344469620,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Not sound: one check the plan misses goes red, one on-scree…",
+      "promptPreview": "PROJECT: Pillagers, a single-file ES5 browser game. Repo: C:\\claudecode\\dark raiders\n- Game: dark_raiders.html (about 2 MB). NEVER read it whole; use Grep with line numbers and Read with offset and limit. Current applied build is v13.40 (VER near line 1353). Most of the file has plain LF line endings.\n- Checks: tools/mkfixture.ps1, entries {v:'X.YY',what:'...',run:function(){...}} in window.__REGR…",
+      "promptFramed": false,
+      "lastProgressAt": 1789345542868,
+      "tokens": 289218,
+      "toolCalls": 77,
+      "durationMs": 1069568,
+      "resultPreview": "{\"sound\":false,\"problems\":\"Not sound: one check the plan misses goes red, one on-screen line still names ESC for pause, and one controller finding in the plan is wrong. I read everything below; nothing was edited and no browser was used. The v13.41 file is unchanged (dark_raiders.html:1353 \\\"var VER='13.41';\\\").\\n\\n1. BLOCKER: build 1 turns check v12.48 red, and the plan does not list it.\\n- Build…"
+    }
+  ],
+  "totalTokens": 1104033,
+  "totalToolCalls": 299
+}

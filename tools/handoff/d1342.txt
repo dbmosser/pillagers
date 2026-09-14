@@ -1,0 +1,42 @@
+## v13.42 - OUT OF A CONSUMABLE, YOU SWITCH BACK TO THE GUN YOURSELF
+
+His ruling of 2026-09-13, in his words: if i switch to bandages or other
+throwables/consumables, it should not autofire the gun when I am out of those
+consumables, i should have to switch back to the gun.
+
+WHAT IT DID. Since v2.92 the belt had a safety valve: spending the last of a stack
+selected the gun, so the trigger was never dead. v12.08 and v12.31 extended it to a
+press on an empty throwable and a press on a blank cell, and v12.41 to the use key on
+an empty throwable. The press that emptied the cell never fired the gun, but the NEXT
+click did. Clicking on a bandage until it ran out, or a grenade, meant the click after
+the last one fired his rifle. That is the thing he is describing.
+
+THE BUILD. Five places selected the gun for him, and all five now leave the highlight
+where he put it:
+  the press on a blank cell
+  the press on an empty throwable cell
+  spending the last of a stack with a click
+  letting go of the last cooked grenade
+  the use key on an empty throwable cell
+Every press on a cell with nothing left says what is missing and names the key of the
+belt cell that holds his gun, for example: No Bandage left. Press 1 for your gun.
+The key comes from the cell that actually holds the gun in his hands, so a gun bound to
+key 5 says 5.
+
+WHY THE RAID START CHANGED. The blank-cell fall-back existed because a raid with the
+held gun bound to a higher key started on a blank cell 1, and the first click of the
+raid did nothing (v12.31). A raid now starts with the gun cell selected, wherever his
+belt put it, so the first click fires as it did before.
+
+MEASURED. Check 13.42, on seed 4242: one Bandage on the Medical cell, one click spends
+it, then three held clicks must fire nothing, keep the Medical cell and name the gun
+key; one cooked Frag thrown, then three held clicks must fire nothing, keep the Frag
+cell, start no cook and name the key; the use key on that empty Frag cell must keep it
+and name the key; selecting the gun cell and clicking must fire (the control that shows
+the zeros are the ruling, not a dead gun); and with the held gun bound to key 5 the raid
+must start on key 5. It fails on v13.41. Checks 12.08 and 12.31 asserted the fall-back
+and are repaired to the ruling: no fall-back, no shot, and the line names key 5.
+
+Not verified: the controller, whose trigger reaches the same code but was not driven;
+the pause between the empty line and a later line written over it; and a Stim or an
+assigned valuable run to zero, which take the same spent-cell branch but were not staged.

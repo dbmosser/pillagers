@@ -29,7 +29,7 @@ function SubRx([string]$old, [string]$new) {
 SubRx @'
 function contractStep(c){
 '@ @'
-function contractStep(c,hold){   // v13.41: hold, when given, collects the line instead of saying it
+function contractStep(c,hold){   // v13.44: hold, when given, collects the line instead of saying it
 '@
 
 SubRx @'
@@ -45,7 +45,7 @@ SubRx @'
   if(ct&&ct.dropped) return;   // audit: searching your own discard farmed contracts
 '@ @'
   if(ct&&ct.dropped) return;   // audit: searching your own discard farmed contracts
-  var _hold=[];   // v13.41: lines this box finishes, said by openContainer after its grant
+  var _hold=[];   // v13.44: lines this box finishes, said by openContainer after its grant
 '@
 
 SubRx @'
@@ -68,7 +68,7 @@ SubRx @'
 SubRx @'
   contractOpen(ct);
 '@ @'
-  var _contractLines=contractOpen(ct);   // v13.41: said after the grant below, not under it
+  var _contractLines=contractOpen(ct);   // v13.44: said after the grant below, not under it
 '@
 
 SubRx @'
@@ -76,21 +76,21 @@ SubRx @'
   // v13.40: the Found line is showing now, so the hot ground line waits its turn behind it
 '@ @'
   grantLoot(ct,ct.loot,_wnDelay);
-  // v13.41: a contract this box finished waits its turn behind the Found line.
+  // v13.44: a contract this box finished waits its turn behind the Found line.
   if(_contractLines) for(var _cli=0;_cli<_contractLines.length;_cli++) sayWhenFree(_contractLines[_cli]);
   // v13.40: the Found line is showing now, so the hot ground line waits its turn behind it
 '@
 
 SubRx @'
-var VER='13.40';
+var VER='13.43';
 '@ @'
-var VER='13.41';
+var VER='13.44';
 '@
 
-$pat = "(?m)^  now:'v13\.40:.*$"
+$pat = "(?m)^  now:'v13\.43:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v13.41: A BOX THAT FINISHES A CONTRACT SAYS SO. Opening a box that finished an open or district contract ran the contract step, which said CONTRACT DONE, and then the grant in the same call said the Found line over it, so the only in-raid word that the contract was done never reached the screen. The contract step now takes an optional list: opening a box passes one and gets the lines back, and they are said through sayWhenFree just after the grant, behind the Found line and before the hot ground line. The kill path passes no list and says the line at once, as before. No wording or numbers change. Check 13.41 stages an open contract one box short, holds X at a box of that type through the frame loop until it opens, confirms the contract finished and was recorded, and requires CONTRACT DONE on screen; it fails on v13.40',"
+$new = "  now:'v13.44: A BOX THAT FINISHES A CONTRACT SAYS SO. Opening a box that finished an open or district contract ran the contract step, which said CONTRACT DONE, and then the grant in the same call said the Found line over it, so the only in-raid word that the contract was done never reached the screen. The contract step now takes an optional list: opening a box passes one and gets the lines back, and they are said through sayWhenFree just after the grant, behind the Found line and before the hot ground line. The kill path passes no list and says the line at once, as before. No wording or numbers change. Check 13.44 stages an open contract one box short, holds X at a box of that type through the frame loop until it opens, confirms the contract finished and was recorded, and requires CONTRACT DONE on screen; it fails on v13.43',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s

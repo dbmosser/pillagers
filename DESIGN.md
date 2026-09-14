@@ -40024,6 +40024,48 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.41 - THE RAISED DECKS ARE GONE
+
+His report of 2026-09-13, live, with two screenshots. The DOCK CATWALK on COLD
+STORAGE was still broken after v12.47 moved its kerb paint: he could not move up
+off it because the game thought he was inside it. Another deck elsewhere on the
+map was broken the same way. His words: get rid of it, start over entirely if you
+have to.
+
+WHAT A DECK WAS. A raised deck is floor with a lift, fenced by four walls 14 units
+thick laid inside its own footprint and tagged as ledges, with a gap cut wherever
+a ramp meets it. Collision, sight and routing all read those edge walls. COLD
+STORAGE authored two (DOCK CATWALK, CHILL GANTRY) and THE COLD MILE seven. Every
+one of them has been a source of stuck, hidden and walked-into-nothing reports.
+
+THE BUILD. Every deck edge wall, every deck and every ramp is taken out of the
+raid. The ground where they stood is plain ground. Nothing lifts the sprite, the
+ground bake paints no deck or ramp, and footsteps no longer ring as metal there.
+
+WHERE, AND WHY THERE. Containers, machines and pillagers are placed by asking the
+wall list whether a spot is free. Taking the edge walls out while the map is
+built would change the answer for any roll that landed near a kerb, and every
+roll after it would move: every seed would be a different map. So the edges come
+out at the very end of buildRaid, after every placement roll, where nothing
+downstream rolls anything. The deck and ramp lists are emptied just before the
+ground bake, which draws nothing from them. Segments, the sight, window and wall
+grids, the placement grid and the routing grid are then rebuilt, the same rebuild
+a destroyed wall gets. The bot sim builds its raids through the same function, so
+it plays the same map. A fixture dial, decks 1, restores the decks.
+
+MEASURED. Check 13.41 builds each sector that authors decks twice on seed 4242.
+With decks 1 it must find decks and edge walls, the control that proves it can
+see one. With the default it must find no deck, no ramp, no edge wall and no lift
+at the middle of any authored deck. Every container and machine must sit where it
+sat with the decks in. Then it holds W through the real frame loop, from south of
+where the DOCK CATWALK stood to north of it, in a column clear of every other
+wall and box, and requires him to cross. It fails on v13.40.
+
+Not verified: how the old deck footprints look in play, beyond the bake no longer
+painting them; the sector map overlay was not captured; the map.reachGrid computed
+during the build still carries the kerb cells as unreached, which only matters to a
+container relocation that already ran; and the two sim seeds measured by __verifySafe
+are the only seeds whose container and machine counts were compared by number.
 ## v13.40 - THE HOT GROUND BONUS LINE REACHES THE SCREEN
 
 FOUND BY A READ-ONLY HUNT, confirmed by two skeptics against v13.34, and reproduced

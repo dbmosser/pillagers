@@ -1,4 +1,4 @@
-v13.41: a box that finishes a contract says so
+v13.44: a box that finishes a contract says so
 
 Opening a box that finished an open or district contract said CONTRACT DONE, then
 the grant in the same call said the Found line over it.
@@ -7,7 +7,7 @@ contractStep now takes an optional list; contractOpen passes one and returns it,
 openContainer says the lines through sayWhenFree after the grant. The kill path is
 unchanged.
 
-Check 13.41 stages an open contract one box short and requires CONTRACT DONE on
-screen after a held X search. Fails on v13.40.
+Check 13.44 stages an open contract one box short and requires CONTRACT DONE on
+screen after a held X search. Fails on v13.43.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
