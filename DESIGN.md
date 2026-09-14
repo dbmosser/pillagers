@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.24 - A DOES NOT FIRE UNDER THE OPEN MAP OR BACKPACK
+
+Controller audit finding 6 (LOW). With the mouse, a click on the open map or on the backpack panel never reaches the
+trigger; the canvas mouse-down handler is written that way. On a pad A is the trigger, and the pad's trigger checked only
+that the raid was not over or paused. So D-UP to open the map and then A fired the gun, and in the backpack, browsing with
+the D-pad and pressing A on an item fired the gun, or with a grenade cell selected cooked and threw the frag.
+
+THE BUILD. The pad trigger is off while the map or the backpack is open, the same rule the mouse follows. Holding A as
+either closes fires as before.
+
+MEASURED. Check 14.24 fakes a pad in a raid, presses A with nothing open (control: the trigger is set), then holds A with
+the map open and with the backpack open (the trigger must stay off each time). It fails on v14.23.
+
+Not verified: a real controller in the backpack with a frag selected.
 ## v14.23 - THE PAUSE BOX WORKS ON A PAD
 
 Controller audit finding 5 (MEDIUM). Menu on a pad pauses a raid and opens the pause box. The pad finds a panel to drive by
