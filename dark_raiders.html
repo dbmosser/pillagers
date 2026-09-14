@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.01';
+var VER='14.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,13 +1361,13 @@ var VER='14.01';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.87';
+var WHATSNEW_VER='14.02';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, a dropped gun comes back with the rounds it had, and a found gun in slot 2 puts the old one in your backpack. Nothing happens in the death fade, a burst stops when you swap guns, a roll no longer freezes a reload, and you cannot punch with a grenade cooking in your hand.',
-  'YOUR HIRE AND THE PEDDLER. Your hire shoots the pillagers and not you, and your own charge does not kill him. SELL BACKPACK leaves your tactical belt and the issued Bandages alone, going down shuts the stall, and on a controller X walks away from it.',
-  'GOING DOWN AND GETTING OUT. Nothing on your belt is used while you are down, and a drink keeps wearing off. A second copy of a gun you own is kept when you extract, the clock lets you finish holding E in a landed extraction, and backing out at once keeps a gun you put in your backpack.',
+  'THE STALL, YOUR HIRE AND YOUR BELT KEYS. What you buy at the stall is not loot you found, your hire is never also a stranger on the map, and an enemy charge does not turn him on you. A belt key never points at something you left behind, key 1 picks up the gun bound to it, and the free pistol carries its own two magazines.',
+  'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, a dropped gun comes back with the rounds it had, a revived pillager pays his gun once, and issued Bandages stay issued. Nothing happens in the death fade, a burst stops when you swap guns, a roll no longer freezes a reload, and you cannot punch with a grenade cooking in your hand.',
+  'YOUR HIRE, THE PEDDLER AND GETTING OUT. Your hire shoots the pillagers and not you, SELL BACKPACK leaves your tactical belt alone, and going down shuts the stall. Nothing on your belt is used while you are down, a second copy of a gun you own is kept when you extract, and the clock lets you finish holding E in a landed extraction.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
   'A CONTROLLER WORKS ON THE UNDERCROFT FLOOR AND IN EVERY RAID. View opens your backpack and Menu pauses, you can search and call for extraction from inside an extraction point, you can trade with the peddler, and the prompts name your buttons. The menus also fit the 1280 by 720 window itch opens the game at.',
   'FEWER ENEMIES BY DEFAULT. Few machines now means the number it says: houses no longer push crawlers past it. Few pillagers is the new default, with smaller reinforcement waves. A character that never changed these settings moves to Few too.',
@@ -29866,7 +29866,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.01: THE FREEBIE PISTOL CARRIES ITS OWN RESERVE. Deploy and loadout audit of 2026-09-15, finding 4: the player is built with two magazines of the equipped gun in reserve, and the freebie branch swapped in the Scav Pistol and refilled its magazine without touching the reserve, so with a Support MG at home the free pistol came up with 120 rounds behind it and with a Scav Pistol 24. The free pistol now gets two of its own magazines. Check 14.01 takes the freebie with a Support MG equipped and requires a reserve of two pistol magazines, with a Scav Pistol equipped as the control; it fails on v14.00',
+  now:'v14.02: THE WHAT IS NEW CARD IS CURRENT AGAIN, BEFORE IT GOES STALE. WHATSNEW_VER stood at 13.87 against 14.01, one build short of the fifteen-build gate held by checks 9.19 and 10.38, and the card said nothing about v13.88 to v14.01. Three of my own card lines are rewritten in the same three slots, newest first, keeping the stash entry inside the thirteen the card draws; his edited lines are untouched and WHATSNEW_VER moves to 14.02. Check 14.02 requires the card current and naming the stall and belt key news, with every card check still holding; it fails on v14.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

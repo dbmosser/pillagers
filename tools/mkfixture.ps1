@@ -5718,6 +5718,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.02',what:'the what is new card is current again before it goes stale: its version is within five builds of the build and it names the stall and belt key news of v13.91 to v14.01, still opening with the alpha line',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vNow-vCard>0.05) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', past the point this refresh was for');
+     var all=L.join(' ').toUpperCase();
+     var NEWS=['picks up the gun','bound to it'].join(' ').toUpperCase();
+     if(all.indexOf(NEWS)<0) bad.push('the card does not mention the belt key news of v14.00');
+     if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+     return bad.length?bad.join('; '):null; }},
   {v:'14.01',what:'the freebie pistol carries its own reserve: taking the free kit with a Support MG equipped at home gives the Scav Pistol a reserve of two pistol magazines, the same as with a Scav Pistol equipped (deploy and loadout audit 2026-09-15, finding 4)',
    run:function(){
      if(!(window.__startRaid&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot start a raid';

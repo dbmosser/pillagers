@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.02 - THE WHAT IS NEW CARD IS CURRENT AGAIN, BEFORE IT GOES STALE
+
+A card refresh, done on purpose this time rather than when a gate forced it (v13.87). WHATSNEW_VER
+stood at 13.87 against a build at 14.01. That is one build short of the fifteen-build gate that checks
+9.19 and 10.38 hold the card to, and six short of the parse gate. The card said nothing about v13.88 to
+v14.01.
+
+THE BUILD. Three of my own card lines are rewritten in the same three slots, newest first:
+
+- the stall, your hire and your belt keys (v13.91 to v14.01),
+- nothing from nothing and a fairer fight (v13.80 to v13.90),
+- your hire, the peddler and getting out (v13.68 to v13.79).
+
+The Medkit and grenade line and the controller line are kept as they were. The stash entry stays inside
+the thirteen lines the card draws (check 13.34), the retired words stay out (check 12.48), and none of
+his edited lines is touched. WHATSNEW_VER moves to 14.02.
+
+MEASURED. Check 14.02 requires the card within five builds of the build, naming the v14.00 belt key
+news, and still opening with the alpha line. Every check that reads the card was run on the dry build.
+It fails on v14.01.
+
+Not verified: the card read at 1280x720 by eye.
 ## v14.01 - THE FREEBIE PISTOL CARRIES ITS OWN RESERVE
 
 The deploy and loadout audit of 2026-09-15, finding 4. The player is built with a reserve of two
