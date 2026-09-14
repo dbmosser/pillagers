@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.66';
+var VER='14.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30091,7 +30091,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.66: THE WEATHER HINT DOES NOT PROMISE A BONUS BLACKOUT PROTOCOL CANCELS. Since v14.28 blackout weather under the term pays no hard weather XP, because the term places no lamps, but the sector page still promised 1.1x at night. With the term signed the hint now says there is no bonus. Check 14.66 reads the hint for blackout weather at night with and without the term; it fails on v14.65',
+  now:'v14.67: THE SECTOR PAGE NAMES HIS OWN GUN 2. With gun 1 empty and his own gun in gun 2, the raid issues a loaner in hand and brings his gun as gun 2, where a death can lose it, but the page before the lift named only the loaner. It now names gun 2 whenever it is his own gun. Check 14.67 fills the sector page with gun 1 empty and his gun in gun 2; it fails on v14.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34136,6 +34136,11 @@ function syncSectorKit(){
   // That half is gone rather than reworded: the amber line under this one is
   // already the true and useful version of it.
   var line='<b>Going up with:</b> '+(w?escHtml(w.name):'a gun issued at the lift');
+  // v14.67, ascent audit finding 3: AND HIS OWN GUN 2. With gun 1 emptied and his own gun put in gun 2, the raid issues a loaner
+  // in hand and brings his gun as gun 2, riding the gun rules, so a death can lose it; the last screen before the lift named
+  // only the loaner. Gun 2 is named whenever it is his own gun and not the gun in slot 1.
+  var _s2=P.equippedSec;
+  if(_s2&&_s2!=='none'&&_s2!=='fists'&&WEAPONS[_s2]&&(P.weapons||[]).indexOf(_s2)>=0&&_s2!==P.equipped) line+=', and your '+escHtml(WEAPONS[_s2].name)+' as gun 2';
   // v13.31: since his ruling the pack guns wait in the stash with nothing equipped.
   // Say he owns one, and how to take it, on the last screen before the lift.
   if(!w&&(P.stash||[]).some(function(k){ var it=ITEMS[k]; return it&&it.use==='gun'&&it.gk&&WEAPONS[it.gk]; }))

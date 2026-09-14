@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.67 - THE SECTOR PAGE NAMES HIS OWN GUN 2
+
+Ascent audit finding 3 (LOW). The sector page's "Going up with" line names gun 1, or "a gun issued at the lift" when gun 1
+is empty. On the stash screen he can put his only gun in gun 2 ("Put in gun 2"), which empties gun 1. The raid then issues a
+loaner in hand and also brings his own gun as gun 2, under his gun rules, so a death can lose it. The last screen before the
+lift read only "a gun issued at the lift" and never named the gun he could lose.
+
+THE BUILD. The line also names gun 2 whenever gun 2 is his own gun, in his armoury, and not the gun in gun 1: "and your
+<gun> as gun 2".
+
+MEASURED. Check 14.67 puts his gun in gun 1 and fills the sector page (control: the gun is named), then empties gun 1 and
+puts the gun in gun 2: the line must name it and say gun 2. It fails on v14.66.
+
+Not verified: Put in gun 2 at the stash and the lift, by hand.
 ## v14.66 - THE WEATHER HINT DOES NOT PROMISE A BONUS BLACKOUT PROTOCOL CANCELS
 
 Ascent audit finding 2 (LOW). On the sector page, picking Blackout weather shows a hint about the hard weather XP bonus:
