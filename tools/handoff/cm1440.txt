@@ -1,0 +1,8 @@
+v14.40: the what is new card is current again
+
+The card stood at v14.27. Two of my own card lines are rewritten in place to
+cover the storm, sound, reward and save fixes of v14.28 to v14.39.
+
+Check 14.40 holds the card current. Fails on v14.39.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

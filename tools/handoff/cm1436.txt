@@ -1,0 +1,9 @@
+v14.36: a hidden tab goes quiet
+
+Hiding the tab during a raid froze the game but not the audio, so the ambient
+bed kept playing. The audio context is now suspended when the tab is hidden
+and resumes on the first frame back.
+
+Check 14.36. Fails on v14.35.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -40024,6 +40024,23 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.35 - THE SOUND OF THE MACHINES NO LONGER MOVES THE SEEDED WORLD
+
+Audio audit finding 1 (MEDIUM). Machines voice on timers: each has an idle and a hunting window, and a crawler's voice is a
+burst of skitter clicks. Both timers and the burst's click count drew from rr, the seeded stream the map, weather,
+lightning and loot all read. Only a live raid with working audio ever reached those lines: the bot returns first on G.sim,
+and the fixture has no audio context. So the same seed gave a different raid with sound on than in the bot or the fixture,
+and every seeded roll after the first voice moved: weather turns, lightning placement and its finds, loot tables. That
+breaks stream parity and every paired A/B measured on a seed.
+
+THE BUILD. The two voice timers draw with fxn and the click count with fxi, the cosmetic stream v7.69 made for sound and
+decoration. What the machines sound like does not change.
+
+MEASURED. Check 14.35 starts a raid, installs a fake audio context, counts calls to rr (control: a draw through rnd is
+counted), then lets a crawler within earshot run its first timer, voice on its next, and plays a hunting skitter burst:
+no seeded draw may happen. It fails on v14.34.
+
+Not verified: a seeded raid played with sound on and compared against the bot, end to end.
 ## v14.34 - AN OPENED DOOR OR A DESTROYED WALL OPENS THE PLACEMENT GRIDS TOO
 
 Weather audit finding 4 (LOW). When a keyed door opens or a wall is destroyed, rebuildGeometry makes the segments, the sight

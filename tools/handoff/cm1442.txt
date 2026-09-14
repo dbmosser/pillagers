@@ -1,0 +1,9 @@
+v14.42: Enter on the title starts the game and nothing else
+
+After clicking GO FULLSCREEN, Enter started the game and also clicked that
+focused button, dropping fullscreen. Enter and Space on the title now stop the
+key there.
+
+Check 14.42. Fails on v14.41.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

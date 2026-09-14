@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.34';
+var VER='14.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4019,7 +4019,12 @@ function tickMachineVoices(dt){
   for(var i=0;i<G.ents.length;i++){
     var e=G.ents[i],V=VOICE[e.kind];
     if(!V) continue;
-    e.vT=(e.vT===undefined)?rnd(0,V.idle[1]):e.vT-dt;
+    // v14.35, audio audit finding 1: THE SOUND OF THE MACHINES DRAWS FROM THE COSMETIC DICE. These voice timers, and the
+    // crawler skitter in blip, drew from the seeded stream, and only a live raid with working audio ever reached them: the
+    // bot returns on G.sim and the fixture has no audio context. So the same seed gave a different raid with sound on,
+    // shifting every later seeded roll (weather turns, lightning, finds, loot) and breaking stream parity and every paired
+    // A/B. fxn and fxi are the cosmetic stream v7.69 made for exactly this.
+    e.vT=(e.vT===undefined)?fxn(0,V.idle[1]):e.vT-dt;
     if(e.vT>0) continue;
     var d=dist(p,e);
     var hunting=(e.state==='chase'||e.state==='alarm'||e.state==='hunt'||e.alert>0.8);
@@ -4028,7 +4033,7 @@ function tickMachineVoices(dt){
     // faint dish creak is the reward for moving carefully.
     var rng=V.far*(e.kind==='listener'&&e.state==='dormant'?0.34:1);
     var win=hunting?V.hunt:V.idle;
-    e.vT=rnd(win[0],win[1]);
+    e.vT=fxn(win[0],win[1]);
     if(d>rng) continue;
     if(VOICE_BUDGET<1) continue;
     VOICE_BUDGET--;
@@ -4409,7 +4414,7 @@ function blip(type,d,pan){
     // Chitin on concrete: a burst of short irregular clicks. Hunting, the burst
     // is longer and faster, which is the sound of it having decided.
     var hn2=arguments[3]?1:0;
-    var nCl=hn2?ri(5,8):ri(2,4);
+    var nCl=hn2?fxi(5,8):fxi(2,4);   // v14.35: the cosmetic dice, not the seeded stream
     for(var ci2=0;ci2<nCl;ci2++){
       var ct2=t+ci2*(hn2?0.035:0.062)+Math.random()*0.018;
       var cb=a.createBuffer(1,340,a.sampleRate),cc2=cb.getChannelData(0);
@@ -29989,7 +29994,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.34: AN OPENED DOOR OR A DESTROYED WALL OPENS THE PLACEMENT GRIDS TOO. The geometry rebuild after a door or wall kept the cached reachable-area flood and the free-spot wall grid, so an opened room still read unreachable and a removed wall still ruled spots out for anything placed mid-raid. The rebuild now clears the wall grid and floods the reachable area again from the same drop. Check 14.34 removes every wall of a live raid and rebuilds; it fails on v14.33',
+  now:'v14.35: THE SOUND OF THE MACHINES NO LONGER MOVES THE SEEDED WORLD. The machine voice timers and the crawler skitter drew from the seeded stream, and only a live raid with working audio reached them, so the same seed played differently with sound on than in the bot or the fixture, shifting weather, lightning, finds and loot. They now draw from the cosmetic stream. Check 14.35 counts seeded draws while a crawler voices with a fake audio context; it fails on v14.34',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

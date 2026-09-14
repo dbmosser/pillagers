@@ -1,0 +1,9 @@
+v14.39: no audio resume before the first click
+
+The audio was asked to resume every frame from page load, and before any click
+the browser refused and logged a warning each time. Resume is now asked for
+only after a click or key press.
+
+Check 14.39. Fails on v14.38.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

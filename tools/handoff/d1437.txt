@@ -1,0 +1,14 @@
+## v14.37 - A PICK FAR AWAY SOUNDS FAR AWAY
+
+Audio audit finding 3 (LOW). blip turns a distance into a volume, and every voice scales by it except 'pick', which set a
+fixed 0.07. Its raid callers pass a distance: a hired mercenary or crew looting a crate (up to about 580 units away), and
+two fixed 260 unit calls. So a hire looting across the street played at full loudness, dead centre, as if the pickup were
+in the player's own hands.
+
+THE BUILD. The pick voice starts at 0.07 times the distance volume, like the voices around it. Without a distance that
+volume is 1, so every Undercroft and menu pick is exactly as loud as before.
+
+MEASURED. Check 14.37 installs a fake audio context that records every call, plays a pick with no distance (control: it
+starts at 0.07) and one at 580 units (it must start below 0.05). It fails on v14.36.
+
+Not verified: a hire looting at a distance in a live raid, by ear.

@@ -1,0 +1,8 @@
+v14.41: erasing a save erases its UNDO copy
+
+ERASE removed a save but left its restore backup, so a new character made in
+that save could UNDO back to the erased one. ERASE now removes the backup too.
+
+Check 14.41. Fails on v14.40.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

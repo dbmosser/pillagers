@@ -1,0 +1,9 @@
+v14.35: the sound of the machines no longer moves the seeded world
+
+Machine voice timers and the crawler skitter drew from the seeded stream, so a
+raid with sound on played differently from the same seed in the bot. They now
+draw from the cosmetic stream.
+
+Check 14.35. Fails on v14.34.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

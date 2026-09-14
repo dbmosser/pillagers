@@ -1,0 +1,8 @@
+v14.38: wearing or unlocking a look makes a sound
+
+Both wardrobe successes asked for a sound that does not exist, so they were
+silent while a refusal clanked. They now play the rare find sound.
+
+Check 14.38. Fails on v14.37.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

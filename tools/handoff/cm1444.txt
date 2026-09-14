@@ -1,0 +1,8 @@
+v14.44: the full saves label clears when a save is freed
+
+With all eight saves full, CREATE A NEW SAVE said so and kept saying it after a
+delete. Drawing the save list now puts the label back.
+
+Check 14.44. Fails on v14.43.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

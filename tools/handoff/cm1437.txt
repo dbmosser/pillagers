@@ -1,0 +1,8 @@
+v14.37: a pick far away sounds far away
+
+The pick sound ignored distance, so a hire looting across the street played at
+full loudness. It now scales with distance; with no distance it is unchanged.
+
+Check 14.37. Fails on v14.36.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

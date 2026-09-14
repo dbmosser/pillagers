@@ -1,0 +1,9 @@
+v14.43: a save the game cannot read is not quietly replaced
+
+Unreadable save data was ignored and then overwritten, and the title listed
+that save as empty. The loader now keeps a copy first, and the title lists the
+save as UNREADABLE.
+
+Check 14.43. Fails on v14.42.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

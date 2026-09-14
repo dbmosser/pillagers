@@ -1,0 +1,16 @@
+## v14.36 - A HIDDEN TAB GOES QUIET
+
+Audio audit finding 2 (MEDIUM). Switching browser tabs or minimising stops the frames, so the game freezes in place and
+the code that ramps the ambient bed never runs again. The audio context itself kept running, and nothing in the file ever
+suspended it. So in a raid the room tone (up to 0.46), rain (0.045) and the dread layer near a Warden (0.22) held at their
+last level for as long as the tab stayed hidden. Undercroft music went quiet within a second only because nothing new was
+scheduled.
+
+THE BUILD. The visibility handler suspends the audio context when the page is hidden, beside letting go of held keys as
+before. Nothing new is needed to bring it back: ac() already resumes a suspended context, and the music, reverb and
+ambience ticks call it on the first frame the tab is visible again.
+
+MEASURED. Check 14.36 runs on the hidden test pane, holds a key, installs a fake audio context and fires the visibility
+change: the key must be let go (control) and the context suspended. It fails on v14.35.
+
+Not verified: the ambient bed going silent and coming back when switching tabs in a live raid, by ear.
