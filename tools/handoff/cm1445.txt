@@ -1,0 +1,8 @@
+v14.45: a roll does not carry through a raid
+
+A roll started just before going up finished when he came back, rolling him
+out of the lamp he arrives in. Arriving on the floor now ends any roll.
+
+Check 14.45. Fails on v14.44.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

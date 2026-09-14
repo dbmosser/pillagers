@@ -5718,6 +5718,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.45',what:'a roll does not carry through a raid: arriving on the Undercroft floor with a roll part done places him at the lamp with the roll over, where it used to finish from there (floor audit finding 1)',
+   run:function(){
+     if(typeof showScreen!=='function') return 'SKIP: no screen switch in this build';
+     if(typeof G!=='undefined'&&G) return 'SKIP: a raid is live, so the floor arrival cannot be driven cleanly';
+     var bad=[];
+     try{
+       __topClear(); __cleanProfile();
+       showScreen('hub'); __topClear();
+       if(typeof HB==='undefined'||!HB||!HB.player) return 'SKIP: no Undercroft floor player in this build';
+       HB.player.rollT=0.3; HB.eLock=false;
+       showScreen('hub');
+       // CONTROL: the arrival ran, because it set the E lock.
+       if(HB.eLock!==true) return 'SKIP: showScreen did not run the floor arrival here';
+       if(HB.player.rollT>0) bad.push('arriving on the floor left a roll with '+HB.player.rollT+' s to run, so he rolls out of the lamp he was placed in');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(HB&&HB.player) HB.player.rollT=0; }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.44',what:'the full saves label clears when the save list is drawn again: with CREATE A NEW SAVE left reading that all eight saves are full, a redraw of the list puts its own label back (title and saves audit finding 4)',
    run:function(){
      var ng=document.getElementById('newgame');

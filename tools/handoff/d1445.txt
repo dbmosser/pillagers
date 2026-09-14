@@ -1,0 +1,14 @@
+## v14.45 - A ROLL DOES NOT CARRY THROUGH A RAID
+
+Undercroft floor audit finding 1 (LOW). SPACE rolls on the floor for 0.38 seconds, and station actions still fire during a
+roll. So a roll toward the lift followed by R (quick ascent), or E and DEPLOY, inside those 0.38 seconds started the raid
+with the floor frozen mid-roll. Coming back, the arrival places him at the lamp in the lower left corner, the spot he is
+always meant to arrive in, but never ended the roll: on the first free frame he rolled up to about 160 units out of the
+lamp in the old direction.
+
+THE BUILD. Arriving on the floor ends any roll, beside the E lock and the cleared keys the arrival already sets.
+
+MEASURED. Check 14.45 arrives on the floor, sets a roll with 0.3 seconds left and the E lock off, then arrives again: the E
+lock must be set (control) and the roll over. It fails on v14.44.
+
+Not verified: a roll into R and back from a raid by hand.

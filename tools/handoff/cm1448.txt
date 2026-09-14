@@ -1,0 +1,8 @@
+v14.48: a floor backpack drag does not survive alt-tab
+
+Alt-tab mid-drag in the Undercroft backpack kept the drag, and the next click
+bound or removed a belt key and saved it. Losing focus now drops that drag.
+
+Check 14.48. Fails on v14.47.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.44';
+var VER='14.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29311,6 +29311,10 @@ function showScreen(s){
     // or walked away. 140,390 is the lamp at that corner, so you arrive standing in it.
     HB.player.x=140; HB.player.y=390; HB.player.face=-0.9;
     HB.near=null; HB.eLock=true; keys={};
+    // v14.45, floor audit finding 1: A ROLL DOES NOT CARRY THROUGH A RAID. Station actions still fire mid-roll, so a roll
+    // toward the lift and R inside its 0.38 s froze the floor with the roll part done; he was placed at the lamp above and on
+    // the first free frame back rolled up to 160 units out of it in the old direction. The roll ends with the arrival.
+    if(HB.player) HB.player.rollT=0;
     renderHub();
     // v10.66: one at a time and in order, or one card paints over another
     // and a new player never reads the only card that teaches the game.
@@ -30010,7 +30014,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.44: THE FULL SAVES LABEL CLEARS WHEN A SAVE IS FREED. Pressing CREATE A NEW SAVE with all eight saves in use changed the button to say they are full, and it kept saying so after a delete freed one. The save list redraw now puts the label back. Check 14.44 sets the full label and redraws the list; it fails on v14.43',
+  now:'v14.45: A ROLL DOES NOT CARRY THROUGH A RAID. A roll toward the lift followed by R inside its 0.38 seconds froze the floor mid-roll, and coming back he was placed at the lamp and then rolled up to 160 units out of it. Arriving on the floor now ends any roll. Check 14.45 sets a roll part done and arrives on the floor; it fails on v14.44',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,8 @@
+v14.47: a button held while the floor pause box closes does not fire a station
+
+A held A or E carried through the floor pause box closing fired the station he
+stood at. Closing the box now arms the E lock until the keys are let go.
+
+Check 14.47. Fails on v14.46.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
