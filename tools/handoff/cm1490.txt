@@ -1,0 +1,8 @@
+v14.90: his words show on the item and gun menus
+
+Both right-click menus sit outside the part of the page his edits are applied
+to, so a reworded menu row never showed. His edits now apply to both menus.
+
+Check 14.90. Fails on v14.89.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

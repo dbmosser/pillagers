@@ -1,0 +1,9 @@
+v14.91: clearing a baked line in the words editor brings the original back
+
+An empty edit on a line baked into the file left the baked words on screen.
+The original is now written as his own entry, so it shows and the report
+carries it.
+
+Check 14.91. Fails on v14.90.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

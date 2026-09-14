@@ -5718,6 +5718,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.86',what:'a drag on the belt in a raid keeps the keys for what stayed home: deployed with key 7 on a Stim left at home, unbinding a Medkit key mid-raid saves a plan that still has the Stim on key 7 (belt audit finding 3)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof mouse==='undefined'||!ITEMS.stim||!ITEMS.medkit) return 'SKIP: no mouse state or items in this build';
+     var bad=[], g0=null, _sp=saveProfile;
+     var release=function(){ window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true,cancelable:true})); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       var prof=__P(); prof.hotAssign={6:'stim'};
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
+       g0=g; saveProfile=function(){};
+       prof=__P();
+       // CONTROL: the raid's copy let go of the key on the Stim that stayed home.
+       if(g.hotAssign&&g.hotAssign[6]==='stim') return 'SKIP: the raid kept a key on a Stim it did not carry, so nothing was set aside';
+       g.bagOpen=false; g.hotCells=[]; g.bagPanel=null;
+       g.hotAssign=g.hotAssign||{}; g.hotAssign[4]='medkit';
+       g.drag={key:'medkit',fromHot:4,px:300,py:300}; mouse.x=500; mouse.y=300; release();
+       if(g.hotAssign[4]==='medkit') return 'SKIP: the drag off the belt did not unbind the Medkit key here';
+       if(!prof.hotAssign||prof.hotAssign[6]!=='stim') bad.push('unbinding a key mid-raid saved his plan without key 7 on the Stim he left at home ('+JSON.stringify(prof.hotAssign)+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       saveProfile=_sp;
+       try{ if(g0){ g0.drag=null; if(!g0.over) __endRaid('abandon'); } }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.85',what:'a belt key on a gun in his hands survives the dead key sweep: with the SMG equipped and in neither the stash nor the kit, its key stays, while a key on an item held nowhere goes (belt audit finding 2)',
    run:function(){
      if(typeof dropDeadKeys!=='function'||!window.__applyLoaded||!ITEMS.gun_smg||!ITEMS.stim) return 'SKIP: no dead key sweep in this build';

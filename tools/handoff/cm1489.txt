@@ -1,0 +1,8 @@
+v14.89: a key held when the words editor opens is let go
+
+The editor box kept key releases from the game, so a movement key held while
+clicking a word stayed down. The box now releases the key it hears go up.
+
+Check 14.89. Fails on v14.88.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
