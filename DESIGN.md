@@ -40024,6 +40024,23 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.71 - THE STALL DOES NOT BUY ISSUED BANDAGES
+
+The hire and peddler audit of 2026-09-14, finding 5. The lift issues up to two Bandages as a
+loaner, and v13.54 stopped them being banked. The stall still bought them at 55 percent, 33
+each, and that money was carried home at the extraction. Free money every raid. And once sold
+they were no longer in the backpack for the extraction to hold back.
+
+THE BUILD. The sale and the SELL BACKPACK count keep as many Bandages as are still issued,
+the same way they keep the belt's copies since v13.70. A belted Bandage counts as issued
+first, so a Bandage is never kept twice over.
+
+MEASURED. Check 13.71 sells a backpack holding the two issued Bandages and one plain item, and
+requires both Bandages kept and only the plain item paid for. A found Bandage, with none
+issued, must still sell (the control). It fails on v13.70.
+
+Not verified: the drawn count on the stall panel, which uses the same rule but was not read
+off the canvas.
 ## v13.70 - SELL BACKPACK LEAVES YOUR BELT ALONE
 
 The hire and peddler audit of 2026-09-14, finding 3. His v8.78 rule is that an item is on the

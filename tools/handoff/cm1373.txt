@@ -1,0 +1,8 @@
+v13.73: going down shuts the stall
+
+The stall stayed open and trading over the DOWN screen. Going down now shuts it,
+and buying or selling refuses from the floor.
+
+Check 13.73 downs the player at an open stall. Fails on v13.72.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
