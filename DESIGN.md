@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.66 - THE WEATHER HINT DOES NOT PROMISE A BONUS BLACKOUT PROTOCOL CANCELS
+
+Ascent audit finding 2 (LOW). On the sector page, picking Blackout weather shows a hint about the hard weather XP bonus:
+at night "Harder going, so XP pays 1.1x", and in daylight that it depends on the hour. Since v14.28, with BLACKOUT
+PROTOCOL signed, lamp-killing weather is never hard weather, because the term places no lamps, and the run pays no weather
+bonus. The hint did not look at the term, so it promised a bonus that would not arrive.
+
+THE BUILD. With BLACKOUT PROTOCOL signed, the hint for lamp-killing weather says "No bonus: under Blackout Protocol there are
+no lamps to kill." Without the term it reads as before.
+
+MEASURED. Check 14.66 picks Blackout weather at night and reads the hint without the term (control: the bonus is promised)
+and with the term signed (it must say no bonus). It fails on v14.65.
+
+Not verified: the sector page read by eye after signing the term.
 ## v14.65 - THE LOADOUT QUESTION COUNTS WHAT MY LOADOUT WILL TAKE UP
 
 Ascent audit finding 1 (LOW). ASCEND TO THIS SECTOR asks what he is taking up: MY LOADOUT, with "the N items you packed", or

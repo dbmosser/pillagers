@@ -5718,6 +5718,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.66',what:'the weather hint does not promise a bonus Blackout Protocol cancels: blackout weather at night reads the XP bonus without the term, and no bonus with the term signed (ascent audit finding 2)',
+   run:function(){
+     if(typeof syncSectorWx!=='function'||typeof wxPicked!=='function'||typeof hasTerm!=='function'||typeof isDay!=='function') return 'SKIP: no sector weather hint in this build';
+     var hint=document.getElementById('wxhint');
+     if(!hint||!document.getElementById('sectorwx')) return 'SKIP: no weather hint elements in this document';
+     var bad=[], _wp=wxPicked, _ht=hasTerm, _id=isDay;
+     try{
+       wxPicked=function(){ return 'blackout'; }; isDay=function(){ return false; };
+       // CONTROL: no term, blackout at night promises the bonus.
+       hasTerm=function(){ return false; };
+       syncSectorWx();
+       if(String(hint.textContent).indexOf('x.')<0) return 'SKIP: blackout at night did not promise the bonus here ("'+String(hint.textContent).slice(0,60)+'")';
+       // THE FIX: the term signed.
+       hasTerm=function(id){ return id==='blackout'; };
+       syncSectorWx();
+       var tx=String(hint.textContent);
+       if(tx.indexOf('No bonus')<0) bad.push('with Blackout Protocol signed the hint said "'+tx.slice(0,80)+'", a bonus the run never pays');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ wxPicked=_wp; hasTerm=_ht; isDay=_id; try{ syncSectorWx(); }catch(_s){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.65',what:'the loadout question counts what MY LOADOUT will take up: with the freebie kit taken over three packed items, the question names the three items packed, as it names one packed item without the freebie kit (ascent audit finding 1)',
    run:function(){
      if(typeof askKit!=='function') return 'SKIP: no loadout question in this build';

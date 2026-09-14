@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.65';
+var VER='14.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30091,7 +30091,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.65: THE LOADOUT QUESTION COUNTS WHAT MY LOADOUT WILL TAKE UP. After taking the freebie kit at the stash the packing is set aside, so the question counted nothing packed while MY LOADOUT restored and took the set-aside items. It now counts the set-aside packing, and otherwise the packed items still in the stash. Check 14.65 asks the question with the freebie kit taken over three packed items; it fails on v14.64',
+  now:'v14.66: THE WEATHER HINT DOES NOT PROMISE A BONUS BLACKOUT PROTOCOL CANCELS. Since v14.28 blackout weather under the term pays no hard weather XP, because the term places no lamps, but the sector page still promised 1.1x at night. With the term signed the hint now says there is no bonus. Check 14.66 reads the hint for blackout weather at night with and without the term; it fails on v14.65',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34091,6 +34091,10 @@ function syncSectorWx(){
     return false; })();
   var payLine='. Harder going, so XP pays '+(Math.round(wxXpMul()*100)/100)+'x.';
   if(lampsOnly){
+    // v14.66, ascent audit finding 2: UNDER BLACKOUT PROTOCOL THE HINT PROMISES NO BONUS. Since v14.28 lamp-killing weather under
+    // the term is never hard weather, because the term places no lamps, but this hint still said the XP pays 1.1x at night and
+    // that daylight depended on the hour. It says there is no bonus.
+    if(typeof hasTerm==='function'&&hasTerm('blackout')){ hint.textContent=nm+'. No bonus: under Blackout Protocol there are no lamps to kill.'; return; }
     hint.textContent=nm+(isDay()
       ? '. Only harder if the lamps were on, and in daylight that depends on the hour you land at.'
       : payLine);
