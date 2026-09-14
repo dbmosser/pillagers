@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.49 - A CONTROLLER CAN TRADE WITH THE PEDDLER
+
+Audit item 5 of 2026-09-13. The Peddler stall answered only the keyboard. Its rows are the
+number keys, [1] to sell the backpack and [2] onward for his stock, and no pad button
+reaches a number key. Its [X] walk away named the pad X button, which holds E for a poll
+the stall never reads, so X did not close it either. A controller player at the stall could
+look and could not trade; only the View button, which taps I, got him out.
+
+THE BUILD. While the stall is open it owns the pad. The D-pad moves a marker over the rows,
+A takes the marked row through the same number key the keyboard presses, and X walks away,
+all on the press. On a pad the panel draws [A] on the marked row, leaves the numbers off,
+and names D-PAD, A and X in its prompt. On the keyboard nothing about the panel changes.
+
+MEASURED. Check 13.49 fakes a standard pad at an open stall with two items in stock and
+5000 credits. D-pad down must move the marker to his first item, A must buy it without
+closing the stall, and X must close it. As the control, the keyboard 3 must still buy his
+second item. It fails on v13.48.
+
+Not verified: the drawn marker and prompt, which the check does not read; a stall with more
+than eight items, whose extra rows no key reaches on the keyboard either; and a real pad.
 ## v13.48 - A CONTROLLER CAN SEARCH INSIDE AN EXTRACTION POINT
 
 Audit item 4 of 2026-09-13. Since v13.10 the keyboard searches a body lying in an

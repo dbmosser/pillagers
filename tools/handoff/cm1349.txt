@@ -1,0 +1,9 @@
+v13.49: a controller can trade with the Peddler
+
+The stall rows are number keys no pad button reaches, and its [X] walk away named
+a pad button that did not close it. While the stall is open the D-pad moves a
+marker, A takes the marked row and X walks away; the panel names them on a pad.
+
+Check 13.49 fakes a pad at an open stall. Fails on v13.48.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
