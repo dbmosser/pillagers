@@ -4,5 +4,7 @@ The card stood at v14.02. Three of my own card lines are rewritten in place to
 cover v13.68 to v14.13, keeping the stash entry inside the lines drawn.
 
 Check 14.14 holds the card current. Fails on v14.13.
+Check 14.02 allowed five builds of drift and went red from v14.08; both
+checks now allow fifteen, as the other card checks do.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

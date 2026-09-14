@@ -38,7 +38,7 @@ var VER='14.14';
 $pat = "(?m)^  now:'v14\.13:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v14.14: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 14.02 against 14.13 and the card said nothing about the saves, downed screen and HUD fixes of v14.03 to v14.13. Three of my own card lines are rewritten in the same three slots, newest first, keeping the stash entry inside the thirteen the card draws and his edited lines untouched, and WHATSNEW_VER moves to 14.14. Check 14.14 requires the card current and naming the uncalled ring news, with every card check still holding; it fails on v14.13',"
+$new = "  now:'v14.14: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 14.02 against 14.13 and the card said nothing about the saves, downed screen and HUD fixes of v14.03 to v14.13. Three of my own card lines are rewritten in the same three slots, newest first, keeping the stash entry inside the thirteen the card draws and his edited lines untouched, and WHATSNEW_VER moves to 14.14. Check 14.14 requires the card current and naming the uncalled ring news, with every card check still holding; it fails on v14.13. Check 14.02 allowed five builds of drift and went red from v14.08; both now allow fifteen',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s

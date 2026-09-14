@@ -40024,6 +40024,24 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.12 - THE REVIVE PROMPT SHOWS THE TIME HE ACTUALLY HAS
+
+The raid HUD and map screen audit of 2026-09-15, finding 5. A downed pillager has two clocks. One is sixteen seconds of bleed
+(RAIDER_DOWN_T). The other is his fifty health (raiderDownHp), which drains at the same pace and which any stray round,
+splash or charge also takes, because damage has no downed exemption. He is finished by whichever runs out first. The
+"[E] REVIVE" prompt printed only the bleed clock. So:
+
+- A pillager who took 25 of his 50 in crossfire read "[E] REVIVE KITE 16s", was finished about eight seconds later, and the
+  prompt vanished still reading about eight.
+- One shot to zero vanished at once with seconds still showing.
+
+THE BUILD. The prompt prints the smaller of the bleed clock and his health divided by the bleed pace.
+
+MEASURED. Check 14.12 traces the HUD text for a downed pillager beside the player. At full health the prompt must read the
+whole sixteen seconds (the control, which proves the trace reads the prompt). At half health it must read about eight. It
+fails on v14.11.
+
+Not verified: a pillager being picked up by his crew, whose own clock the prompt does not show.
 ## v14.11 - RING CLOSURE LINES WAIT THEIR TURN
 
 The raid HUD and map screen audit of 2026-09-15, finding 3. On the Standard raid clock of 540 seconds, the extraction points
