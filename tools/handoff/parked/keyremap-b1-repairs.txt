@@ -1,0 +1,41 @@
+WHERE THE NEW CHECK GOES
+- Insert check_body immediately above tools\mkfixture.ps1 line 5720, which starts "  {v:'13.41',what:'the raised decks are gone from both sectors:" (exactly 1 occurrence).
+- The fixture is CRLF (24544 of 25262 lines), so write the check's lines with CRLF.
+
+WHY IT FAILS ON v13.40 AND v13.41 (traced)
+- RAID ONE: Tab toggles the backpack shut and leaves the map, so 'TAB over the open map did not close it' fires.
+- RAID TWO: the backpack opens and the emote bar stays.
+- RAID THREE: no pause box.
+- RAID FOUR: the raid lockout at dark_raiders.html line 10853 swallows Tab, so the box stays up.
+- FLOOR ONE: the floor Tab block at line 10812 does nothing while a window is open.
+- FLOOR THREE: Tab opens the backpack instead of pausing.
+- RAID FIVE and TITLE pass on v13.41 on purpose. RAID FIVE guards the PADTAP edit: without it, View would pause.
+
+CHECKS THAT ASSERT THE OLD BINDING, repaired by this build's mkfixture edits (line numbers are the v13.41 file):
+
+1. v12.89 (header line 8696). It opens the backpack with Tab at lines 8714, 8735 and 8752. After this build Tab with nothing open pauses, so its controls at 8715 and 8753 would fire and the both-open arm would silently not run. Repair: Tab becomes KeyI in all three places, and 'TAB did not' becomes 'I did not' in both control messages.
+   - Lines 8714-8715 are one old_verbatim with \r\n (count 1).
+   - Line 8735 "       tap('Tab'); tap('KeyM');" (count 1).
+   - Lines 8752-8753 are one old_verbatim with \r\n (count 1).
+   - Its Escape assertions stay as they are.
+
+2. v12.95 (header line 8281). Line 8325 "       var _bagKeys=['Tab','KeyI'], bi;" becomes ['KeyI']. Otherwise the Tab arm's control at line 8330, 'with the box down [Tab] no longer opens the backpack', fires, because Tab now pauses. The tap('Tab') with the box up would also close the box it expects to stay up.
+
+3. v11.26 (header line 14908). Line 14921 needs 'TAB backpack' in the pause box text; it becomes ['I ','backpack'].join('').
+
+4. v11.33 (header line 14680). Line 14687 needs 'TAB backpack' in the title line; it becomes 'I backpack'.
+
+5. v9.90 (header line 21616). Line 21651 needs 'TAB  BACKPACK' in the HUD; it becomes ['I  ','BACKPACK'].join('').
+
+   Needles 3, 4 and 5 stay true after build 2, because 'B / I backpack' contains 'I backpack' and 'B / I  BACKPACK' contains 'I  BACKPACK'.
+
+NOT REPAIRED IN THIS BUILD, STILL CORRECT (traced)
+- v13.17 (line 6969): B still runs backOut.
+- v13.23 (line 6718): the B row still says 'back out of a menu'. The new TAB row is not a B row.
+- v13.22 (line 6755): 'PRESS B TO BACK OUT' keeps its prefix and stays at index 2. The armour plate entry stays at index 3, because the entry is reworded in place and not added. Adding a new entry on top would push both past their limits of 2 and 3.
+- v13.34: the welcome pack entry stays at index 5, inside its limit of 12.
+- v13.25: still qualified by 'OWN TAB' in the itch entry.
+- Escape-only checks v12.11, v12.99, v12.22, v12.02, v11.45, v10.10 and v13.09 are untouched. Escape paths are unchanged and the Escape keyboard lock is untouched.
+- KeyI checks v8.84, v8.95, v8.96, v9.31, v9.32 and v9.88: I still toggles on the floor and in a raid.
+- v12.79: it reads the table, so the new TAB label is drawn and found.
+- v10.44: the full list is sized on its rows and is one row taller.

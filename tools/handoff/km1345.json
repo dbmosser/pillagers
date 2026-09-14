@@ -1,0 +1,201 @@
+{
+    "nowPat":  "(?m)^  now:\u0027v13\\.44:.*$",
+    "nowLine":  "  now:\u0027v13.45: TAB PAUSES AND BACKS OUT, THE WAY ESCAPE DOES. TAB now does everything Escape does, which matters on itch, where the browser spends Escape on leaving fullscreen. - Raid: TAB closes the map before the backpack, closes the emote bar and the stall, pauses with nothing open, and closes the pause box. - Undercroft: TAB closes the top window, the item menu, the edit box, the floor backpack and the stash panel, and pauses with nothing open. - Title: TAB never pauses. - Escape behaves exactly as before. - TAB no longer opens the backpack; I does. - B still backs out and still gives orders in this build. - A controller player notices nothing: View still opens the backpack, because it now taps I. - Key lists, the pause line, the title line, the HUD hint and the what-is-new card say I for the backpack and TAB for pause and back.\u0027,",
+    "edits":  [
+                  {
+                      "kind":  "h",
+                      "old":  "var VER=\u002713.44\u0027;",
+                      "new":  "var VER=\u002713.45\u0027;"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "var WHATSNEW_VER=\u002713.43\u0027;",
+                      "new":  "var WHATSNEW_VER=\u002713.45\u0027;"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  \u0027PRESS B TO BACK OUT OF ANY MENU. It closes whatever is in front, one thing per press, in the Undercroft and on the surface. With nothing open it still gives your hire his orders, and it never opens the pause box.\u0027,",
+                      "new":  "  \u0027PRESS B TO BACK OUT OF ANY MENU, OR TAB, WHICH ALSO PAUSES. Either closes whatever is in front, one thing per press, in the Undercroft and on the surface. On itch the browser spends Escape on leaving fullscreen, so TAB now does everything Escape does in the game: with nothing open it pauses, and it closes the pause box again. B with nothing open still gives your hire his orders. The backpack is on I.\u0027,"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  " Only P and ESC answer while it is up, which are the two keys it names.\u0027,",
+                      "new":  " Only P, TAB and ESC answer while it is up.\u0027,"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "and the full-pack message names Z, which drops, not TAB, which opens it.\u0027,",
+                      "new":  "and the full-pack message names Z, which drops, not the key that opens it.\u0027,"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  \u0027A BELT KEY TELLS YOU THE RIGHT KEY. Pressing a tactical belt key for a gun still in your backpack used to say \"TAB to equip it\"; TAB only opens the backpack. It now says TAB, then ENTER, which is what equips it.\u0027,",
+                      "new":  ""
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "F is your melee strike, TAB is the backpack, 1 to 9 is the tactical belt.\u0027,",
+                      "new":  "F is your melee strike, I opens the backpack, 1 to 9 is the tactical belt.\u0027,"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "1-9 tactical belt \u0026nbsp; TAB backpack \u0026nbsp; ENTER equip from backpack \u0026nbsp; M map \u0026nbsp; H controls \u0026nbsp; P / ESC pause\u003c/div\u003e",
+                      "new":  "1-9 tactical belt \u0026nbsp; I backpack \u0026nbsp; ENTER equip from backpack \u0026nbsp; M map \u0026nbsp; H controls \u0026nbsp; TAB back out \u0026nbsp; P / TAB pause\u003c/div\u003e"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "\u003cb style=\"color:var(--bone)\"\u003eTAB\u003c/b\u003e backpack \u0026nbsp;",
+                      "new":  "\u003cb style=\"color:var(--bone)\"\u003eI\u003c/b\u003e backpack \u0026nbsp;"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "ctx.fillText(\u0027TAB  BACKPACK\u0027,W-16,by-LH(70));",
+                      "new":  "ctx.fillText(\u0027I  BACKPACK\u0027,W-16,by-LH(70));"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "[\u0027FIRE\u0027,\u0027use selected slot\u0027],[\u0027TAB\u0027,\u0027backpack\u0027],[\u0027ENTER\u0027,\u0027equip gun from backpack\u0027]",
+                      "new":  "[\u0027FIRE\u0027,\u0027use selected slot\u0027],[\u0027I\u0027,\u0027backpack\u0027],[\u0027ENTER\u0027,\u0027equip gun from backpack\u0027]"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "[\u0027H\u0027,\u0027cycle this list\u0027],[\u0027P\u0027,\u0027pause\u0027],[\u0027B\u0027,\u0027back out of a menu, or order your hire\u0027]]],",
+                      "new":  "[\u0027H\u0027,\u0027cycle this list\u0027],[\u0027P\u0027,\u0027pause\u0027],[\u0027TAB\u0027,\u0027pause, or back out of a menu\u0027],[\u0027B\u0027,\u0027back out of a menu, or order your hire\u0027]]],"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  [\u00271-9\u0027,\u0027tactical belt\u0027],[\u0027TAB\u0027,\u0027backpack\u0027],",
+                      "new":  "  [\u00271-9\u0027,\u0027tactical belt\u0027],[\u0027I\u0027,\u0027backpack\u0027],"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "\u0027I or TAB\u0027,\u0027your things\u0027,\u0027M\u0027,\u0027the map, on the surface\u0027,\u0027H\u0027,\u0027close this\u0027];",
+                      "new":  "\u0027I\u0027,\u0027your things\u0027,\u0027TAB\u0027,\u0027pause, or back out\u0027,\u0027M\u0027,\u0027the map, on the surface\u0027,\u0027H\u0027,\u0027close this\u0027];"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  if(e.code===\u0027KeyB\u0027\u0026\u0026!e.repeat){",
+                      "new":  "  // v13.45, HIS RULING OF 2026-09-13: TAB DOES WHAT ESCAPE DOES. Inside the itch\n  // page the browser spends Escape on leaving fullscreen and the game cannot stop\n  // it, so TAB backs out of whatever is in front, in the same front-most order.\n  // Not while the pause box is up: the box is in front of everything, so TAB\n  // closes the box first, as ESC does.\n  if(e.code===\u0027Tab\u0027\u0026\u0026!pauseOpen\u0026\u0026!e.repeat){\n    if(backOut()){ e.preventDefault(); return; }\n  }\n  if(e.code===\u0027KeyB\u0027\u0026\u0026!e.repeat){"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "    if(pauseOpen\u0026\u0026e.code!==\u0027KeyP\u0027\u0026\u0026e.code!==\u0027Escape\u0027){ e.preventDefault(); return; }",
+                      "new":  "    if(pauseOpen\u0026\u0026e.code!==\u0027KeyP\u0027\u0026\u0026e.code!==\u0027Escape\u0027\u0026\u0026e.code!==\u0027Tab\u0027){ e.preventDefault(); return; }"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "    if((e.code===\u0027Escape\u0027||e.code===\u0027KeyP\u0027)\u0026\u0026!e.repeat\u0026\u0026!_titleUp\u0026\u0026!document.querySelector(\u0027.modal.on\u0027)\u0026\u0026",
+                      "new":  "    if((e.code===\u0027Escape\u0027||e.code===\u0027KeyP\u0027||e.code===\u0027Tab\u0027)\u0026\u0026!e.repeat\u0026\u0026!_titleUp\u0026\u0026!document.querySelector(\u0027.modal.on\u0027)\u0026\u0026"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "       !(e.code===\u0027Escape\u0027\u0026\u0026hubBagOpen)){",
+                      "new":  "       !((e.code===\u0027Escape\u0027||e.code===\u0027Tab\u0027)\u0026\u0026hubBagOpen)){"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "    if(e.code===\u0027Escape\u0027\u0026\u0026!document.querySelector(\u0027.imenu\u0027)){",
+                      "new":  "    if((e.code===\u0027Escape\u0027||e.code===\u0027Tab\u0027)\u0026\u0026!document.querySelector(\u0027.imenu\u0027)){"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "    if(e.code===\u0027Escape\u0027\u0026\u0026!document.querySelector(\u0027.imenu\u0027)\u0026\u0026!document.querySelector(\u0027.modal.on\u0027))",
+                      "new":  "    if((e.code===\u0027Escape\u0027||e.code===\u0027Tab\u0027)\u0026\u0026!document.querySelector(\u0027.imenu\u0027)\u0026\u0026!document.querySelector(\u0027.modal.on\u0027))"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "    if((e.code===\u0027KeyI\u0027||e.code===\u0027Tab\u0027)\u0026\u0026!e.repeat){",
+                      "new":  "    if(e.code===\u0027KeyI\u0027\u0026\u0026!e.repeat){"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  if(pauseOpen\u0026\u0026code!==\u0027KeyP\u0027\u0026\u0026code!==\u0027Escape\u0027){ if(ev) ev.preventDefault(); return; }",
+                      "new":  "  if(pauseOpen\u0026\u0026code!==\u0027KeyP\u0027\u0026\u0026code!==\u0027Escape\u0027\u0026\u0026code!==\u0027Tab\u0027){ if(ev) ev.preventDefault(); return; }"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "    if(code===\u0027KeyV\u0027||code===\u0027Escape\u0027){ if(ev) ev.preventDefault(); G.emoteBar=false; return; }",
+                      "new":  "    if(code===\u0027KeyV\u0027||code===\u0027Escape\u0027||code===\u0027Tab\u0027){ if(ev) ev.preventDefault(); G.emoteBar=false; return; }"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  if(code===\u0027Escape\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!pauseOpen\u0026\u0026(G.mapOpen||G.bagOpen)\u0026\u0026!repeat){",
+                      "new":  "  if((code===\u0027Escape\u0027||code===\u0027Tab\u0027)\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!pauseOpen\u0026\u0026(G.mapOpen||G.bagOpen)\u0026\u0026!repeat){"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  if((code===\u0027Escape\u0027||code===\u0027KeyP\u0027)\u0026\u0026G\u0026\u0026!G.over)",
+                      "new":  "  if((code===\u0027Escape\u0027||code===\u0027KeyP\u0027||(code===\u0027Tab\u0027\u0026\u0026!repeat))\u0026\u0026G\u0026\u0026!G.over)"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  if((code===\u0027Tab\u0027||code===\u0027KeyI\u0027)\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!repeat){",
+                      "new":  "  if(code===\u0027KeyI\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!repeat){"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  if(ev.code!==\u0027Escape\u0027) return;",
+                      "new":  "  if(ev.code!==\u0027Escape\u0027\u0026\u0026ev.code!==\u0027Tab\u0027) return;\n  // v13.45: a TAB the main listener already answered is spent. A press dispatched\n  // at window reaches that listener first, and it may have just raised this box.\n  if(ev.code===\u0027Tab\u0027\u0026\u0026ev.defaultPrevented) return;"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "    var _ta=document.getElementById(\u0027pausenote\u0027); if(_ta) _ta.blur();",
+                      "new":  "    if(ev.code===\u0027Tab\u0027\u0026\u0026ev.repeat) return;   // v13.45: a held TAB closes the box once, not on every repeat\n    var _ta=document.getElementById(\u0027pausenote\u0027); if(_ta) _ta.blur();"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  if(e.code!==\u0027Escape\u0027) return;",
+                      "new":  "  if(e.code!==\u0027Escape\u0027\u0026\u0026e.code!==\u0027Tab\u0027) return;   // v13.45, his ruling: TAB closes the edit box and the top window too"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  if(ev.key!==\u0027Escape\u0027) return;",
+                      "new":  "  if(ev.key!==\u0027Escape\u0027\u0026\u0026ev.key!==\u0027Tab\u0027) return;"
+                  },
+                  {
+                      "kind":  "h",
+                      "old":  "  8:\u0027Tab\u0027,        // View   inventory",
+                      "new":  "  8:\u0027KeyI\u0027,       // View   backpack. v13.45: TAB pauses and backs out now, so View taps I"
+                  },
+                  {
+                      "kind":  "f",
+                      "old":  "       tap(\u0027Tab\u0027);\r\n       if(!g.bagOpen){ bad.push(\u0027control: TAB did not open the backpack, so there is nothing here for ESC to close\u0027); }",
+                      "new":  "       tap(\u0027KeyI\u0027);\r\n       if(!g.bagOpen){ bad.push(\u0027control: I did not open the backpack, so there is nothing here for ESC to close\u0027); }"
+                  },
+                  {
+                      "kind":  "f",
+                      "old":  "       tap(\u0027Tab\u0027); tap(\u0027KeyM\u0027);",
+                      "new":  "       tap(\u0027KeyI\u0027); tap(\u0027KeyM\u0027);"
+                  },
+                  {
+                      "kind":  "f",
+                      "old":  "       tap(\u0027Tab\u0027);\r\n       if(!g.bagOpen){ bad.push(\u0027control: TAB did not re-open the backpack\u0027); }",
+                      "new":  "       tap(\u0027KeyI\u0027);\r\n       if(!g.bagOpen){ bad.push(\u0027control: I did not re-open the backpack\u0027); }"
+                  },
+                  {
+                      "kind":  "f",
+                      "old":  "       var _bagKeys=[\u0027Tab\u0027,\u0027KeyI\u0027], bi;",
+                      "new":  "       var _bagKeys=[\u0027KeyI\u0027], bi;   // v13.45: TAB pauses on the floor now, and v13.45 owns that press"
+                  },
+                  {
+                      "kind":  "f",
+                      "old":  "     var need=[[\u0027F \u0027,\u0027melee strike\u0027].join(\u0027\u0027), [\u0027TAB \u0027,\u0027backpack\u0027].join(\u0027\u0027), [\u0027tactical \u0027,\u0027belt\u0027].join(\u0027\u0027), [\u0027hold to \u0027,\u0027sprint\u0027].join(\u0027\u0027)];",
+                      "new":  "     var need=[[\u0027F \u0027,\u0027melee strike\u0027].join(\u0027\u0027), [\u0027I \u0027,\u0027backpack\u0027].join(\u0027\u0027), [\u0027tactical \u0027,\u0027belt\u0027].join(\u0027\u0027), [\u0027hold to \u0027,\u0027sprint\u0027].join(\u0027\u0027)];"
+                  },
+                  {
+                      "kind":  "f",
+                      "old":  "     if(tt.indexOf(\u0027TAB backpack\u0027)\u003c0) bad.push(\u0027the title controls line does not say \"TAB backpack\": \u0027+tt.slice(0,120));",
+                      "new":  "     if(tt.indexOf(\u0027I backpack\u0027)\u003c0) bad.push(\u0027the title controls line does not say \"I backpack\": \u0027+tt.slice(0,120));"
+                  },
+                  {
+                      "kind":  "f",
+                      "old":  "     if(hud.indexOf([\u0027TAB  \u0027,\u0027BACKPACK\u0027].join(\u0027\u0027))\u003c0) bad.push(\u0027the HUD hint does not read TAB  BACKPACK\u0027);",
+                      "new":  "     if(hud.indexOf([\u0027I  \u0027,\u0027BACKPACK\u0027].join(\u0027\u0027))\u003c0) bad.push(\u0027the HUD hint does not read I  BACKPACK\u0027);"
+                  },
+                  {
+                      "kind":  "f",
+                      "old":  "  {v:\u002713.44\u0027,what:\u0027searching a box that finishes an open contract",
+                      "new":  "  {v:\u002713.45\u0027,what:\u0027TAB does what Escape does, because on itch the browser spends Escape on leaving fullscreen: in a raid it closes the map before the backpack and closes the emote bar, raises the pause box with nothing open and closes it again, and leaves a backpack behind the box alone; in the Undercroft it closes the top window and the backpack, pauses with nothing open and unpauses; on the title it raises nothing; and the controller View button still opens the backpack (his ruling of 2026-09-13)\u0027,\r\n   run:function(){\r\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__keysRef\u0026\u0026window.__hubEnter\u0026\u0026window.__hubBag\u0026\u0026window.__showScreen))\r\n       return \u0027SKIP: this fixture cannot drive a raid, the Undercroft floor and the title\u0027;\r\n     var pb=document.getElementById(\u0027pausebox\u0027);\r\n     if(!pb||typeof togglePauseBox!==\u0027function\u0027) return \u0027SKIP: this build has no pause box\u0027;\r\n     var bad=[];\r\n     function keysOff(){ try{ var K=__keysRef(); for(var kk in K) K[kk]=false; }catch(_k){} }\r\n     // ON WINDOW ONLY. window plus document doubles every press (v11.28). Cancelable,\r\n     // because a real key press is, and the pause closer reads defaultPrevented.\r\n     function tap(c){\r\n       keysOff();\r\n       window.dispatchEvent(new KeyboardEvent(\u0027keydown\u0027,{code:c,key:c,bubbles:true,cancelable:true}));\r\n       window.dispatchEvent(new KeyboardEvent(\u0027keyup\u0027,{code:c,key:c,bubbles:true,cancelable:true}));\r\n     }\r\n     function boxUp(){ return pb.classList.contains(\u0027on\u0027); }\r\n     function boxDown(){ try{ if(boxUp()) togglePauseBox(false); }catch(_b){} pb.classList.remove(\u0027on\u0027); }\r\n     function modalsUp(){ return document.querySelectorAll(\u0027.modal.on\u0027).length; }\r\n     function floorBagShut(){ try{ if(__hubBag()){ try{ hubBagOpenSet(false); }catch(_hs){ __hubBag(false); } } }catch(_h){} }\r\n     try{\r\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\r\n       floorBagShut();\r\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\r\n       var g=__state();\r\n       if(!g||!g.player) return \u0027SKIP: the raid did not start\u0027;\r\n       g.player.downed=false; g.trade=null; g.emoteBar=false; g.mapOpen=false; g.bagOpen=false; g.drag=null;\r\n       boxDown();\r\n\r\n       // RAID ONE: THE MAP IS IN FRONT OF THE BACKPACK, one panel per press, as ESC does.\r\n       tap(\u0027KeyI\u0027); tap(\u0027KeyM\u0027);\r\n       if(!(g.bagOpen\u0026\u0026g.mapOpen)) bad.push(\u0027control: I and M did not open the backpack and the map, so there was nothing for TAB to close\u0027);\r\n       else {\r\n         tap(\u0027Tab\u0027);\r\n         if(g.mapOpen) bad.push(\u0027TAB over the open map did not close it, so the key he was given for itch does nothing to the panel in front of him\u0027);\r\n         if(!g.bagOpen) bad.push(\u0027one TAB closed the backpack behind the map, so TAB answers out of order or eats two panels\u0027);\r\n         if(boxUp()) bad.push(\u0027TAB over the open map raised the pause box\u0027);\r\n         tap(\u0027Tab\u0027);\r\n         if(g.bagOpen) bad.push(\u0027the second TAB did not close the backpack, which the second ESC does\u0027);\r\n         if(boxUp()) bad.push(\u0027the TAB that should have closed the backpack raised the pause box\u0027);\r\n       }\r\n       boxDown(); g.bagOpen=false; g.mapOpen=false; g.drag=null;\r\n\r\n       // RAID TWO: THE EMOTE BAR.\r\n       g.emoteBar=true;\r\n       tap(\u0027Tab\u0027);\r\n       if(g.emoteBar) bad.push(\u0027TAB did not close the emote bar, which ESC closes\u0027);\r\n       if(g.bagOpen) bad.push(\u0027TAB over the emote bar opened the backpack under it\u0027);\r\n       if(boxUp()) bad.push(\u0027TAB over the emote bar raised the pause box\u0027);\r\n       boxDown(); g.emoteBar=false; g.bagOpen=false;\r\n\r\n       // RAID THREE: NOTHING OPEN. TAB pauses, and TAB unpauses.\r\n       tap(\u0027Tab\u0027);\r\n       if(!boxUp()) bad.push(\u0027TAB with nothing open in a raid does not raise the pause box, so on itch, where ESC leaves fullscreen, he has no pause on the key he was given\u0027);\r\n       if(g.bagOpen) bad.push(\u0027TAB with nothing open in a raid still opens the backpack instead of pausing\u0027);\r\n       if(boxUp()){\r\n         tap(\u0027Tab\u0027);\r\n         if(boxUp()) bad.push(\u0027TAB does not close the pause box in a raid, so the key that opened it cannot close it\u0027);\r\n         else if(g.paused) bad.push(\u0027TAB took the pause box down and the raid stayed paused\u0027);\r\n       }\r\n       boxDown(); g.bagOpen=false;\r\n\r\n       // RAID FOUR: THE BOX IS IN FRONT OF THE BACKPACK. P raises it over an open backpack.\r\n       tap(\u0027KeyI\u0027);\r\n       if(!g.bagOpen) bad.push(\u0027control: I did not open the backpack\u0027);\r\n       else {\r\n         tap(\u0027KeyP\u0027);\r\n         if(!boxUp()) bad.push(\u0027control: P did not raise the pause box over the open backpack\u0027);\r\n         else {\r\n           tap(\u0027Tab\u0027);\r\n           if(boxUp()) bad.push(\u0027with the pause box over the backpack TAB did not close the box, which is in front\u0027);\r\n           if(!g.bagOpen) bad.push(\u0027with the pause box up TAB closed the backpack behind it\u0027);\r\n         }\r\n       }\r\n       boxDown(); g.bagOpen=false; g.drag=null;\r\n\r\n       // RAID FIVE, THE CONTROLLER: View taps whatever PADTAP names, through raidKey, as pollPad does.\r\n       if(typeof PADTAP!==\u0027undefined\u0027\u0026\u0026typeof raidKey===\u0027function\u0027){\r\n         keysOff();\r\n         raidKey(PADTAP[8],false,null);\r\n         keysOff();\r\n         if(!g.bagOpen) bad.push(\u0027the controller View button no longer opens the backpack: it taps \u0027+PADTAP[8]+\u0027, and every controller key list says View is the backpack\u0027);\r\n         if(boxUp()) bad.push(\u0027the controller View button raises the pause box, so a controller has two pause buttons and no backpack button\u0027);\r\n         boxDown(); g.bagOpen=false;\r\n       }\r\n       try{ var ge=__state(); if(ge\u0026\u0026!ge.over){ ge.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e1){}\r\n       try{ G=null; keys={}; showScreen(\u0027hub\u0027); }catch(_g1){}\r\n\r\n       __hubEnter(); floorBagShut(); boxDown(); keysOff();\r\n\r\n       // FLOOR ONE: THE TOP WINDOW.\r\n       try{ openModal(\u0027settingsmodal\u0027); }catch(_om){}\r\n       if(!modalsUp()) bad.push(\u0027control: the Settings window would not open on the floor\u0027);\r\n       else {\r\n         tap(\u0027Tab\u0027);\r\n         if(modalsUp()) bad.push(\u0027TAB does not close an open window in the Undercroft, so every window down there still needs ESC, which on itch leaves fullscreen\u0027);\r\n         if(boxUp()) bad.push(\u0027TAB over an open window in the Undercroft raised the pause box\u0027);\r\n       }\r\n       try{ var ms=document.querySelectorAll(\u0027.modal.on\u0027); for(var mi=0;mi\u003cms.length;mi++) ms[mi].classList.remove(\u0027on\u0027); }catch(_mc){}\r\n       boxDown();\r\n\r\n       // FLOOR TWO: THE BACKPACK, opened with I, the way a player opens it.\r\n       tap(\u0027KeyI\u0027);\r\n       if(!__hubBag()) bad.push(\u0027control: I did not open the backpack on the floor\u0027);\r\n       else {\r\n         tap(\u0027Tab\u0027);\r\n         if(__hubBag()) bad.push(\u0027TAB does not close the open backpack in the Undercroft\u0027);\r\n         if(boxUp()) bad.push(\u0027TAB over the open backpack in the Undercroft raised the pause box over it, which v12.11 stopped ESC doing\u0027);\r\n       }\r\n       boxDown(); if(__hubBag()) tap(\u0027KeyI\u0027);\r\n\r\n       // FLOOR THREE: NOTHING OPEN. TAB pauses, and TAB unpauses.\r\n       tap(\u0027Tab\u0027);\r\n       if(!boxUp()) bad.push(\u0027TAB with nothing open in the Undercroft does not raise the pause box\u0027);\r\n       if(__hubBag()) bad.push(\u0027TAB with nothing open in the Undercroft still opens the backpack instead of pausing\u0027);\r\n       if(boxUp()){\r\n         tap(\u0027Tab\u0027);\r\n         if(boxUp()) bad.push(\u0027TAB does not close the pause box in the Undercroft\u0027);\r\n       }\r\n       boxDown(); if(__hubBag()) tap(\u0027KeyI\u0027);\r\n\r\n       // TITLE: TAB raises nothing over the boot title, as ESC raises nothing (v11.45).\r\n       var tt=document.getElementById(\u0027title\u0027);\r\n       if(tt){\r\n         boxDown(); keysOff();\r\n         __showScreen(\u0027hub\u0027); tt.classList.add(\u0027on\u0027);\r\n         tap(\u0027Tab\u0027);\r\n         if(boxUp()) bad.push(\u0027TAB on the title screen raised the pause box over it, which ESC does not do\u0027);\r\n         tt.classList.remove(\u0027on\u0027);\r\n       }\r\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\r\n     finally{\r\n       keysOff();\r\n       try{ boxDown(); }catch(_p){}\r\n       try{ var g6=__state(); if(g6){ g6.bagOpen=false; g6.mapOpen=false; g6.emoteBar=false; g6.drag=null; if(!g6.over){ g6.player.downed=false; __endRaid(\u0027abandon\u0027); } } }catch(_e){}\r\n       try{ var ms2=document.querySelectorAll(\u0027.modal.on\u0027); for(var m2=0;m2\u003cms2.length;m2++) ms2[m2].classList.remove(\u0027on\u0027); }catch(_m){}\r\n       floorBagShut();\r\n       try{ var t2=document.getElementById(\u0027title\u0027); if(t2) t2.classList.remove(\u0027on\u0027); }catch(_t){}\r\n       try{ G=null; keys={}; showScreen(\u0027hub\u0027); }catch(_q){}\r\n       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}\r\n     }\r\n     return bad.length?bad.join(\u0027; \u0027):null; }},\r\n  {v:\u002713.44\u0027,what:\u0027searching a box that finishes an open contract"
+                  }
+              ]
+}

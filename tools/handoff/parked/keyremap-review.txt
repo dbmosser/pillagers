@@ -1,0 +1,69 @@
+Not sound: one check the plan misses goes red, one on-screen line still names ESC for pause, and one controller finding in the plan is wrong. I read everything below; nothing was edited and no browser was used. The v13.41 file is unchanged (dark_raiders.html:1353 "var VER='13.41';").
+
+1. BLOCKER: build 1 turns check v12.48 red, and the plan does not list it.
+- Build 1 edit 7 removes "TAB is the backpack" from the history entry at dark_raiders.html:1549.
+- That entry keeps "still said F heals, TAB opens the bag and Q throws".
+- v12.48 (mkfixture.ps1:10906) sets OLDPACK='b'+'ag'.
+- mkfixture.ps1:10919-10921 reads "if(word(line,OLDPACK)){ if(has(line,NEWPACK)) renamePack++; else bad.push(tag+' calls the backpack by the name he retired at v9.90...".
+- After the edit the entry has the word bag and no 'backpack', so the check pushes a failure on v13.42.
+- Fix: keep the word backpack in that entry (corrected text below).
+
+2. The pause box still names ESC for pause.
+- Build 1 edit 8 writes "P / TAB / ESC pause" into #pausekeys (dark_raiders.html:653). Build 2 never touches that line.
+- Your criterion is that nothing tells a player to press ESC to pause. On itch in fullscreen, ESC leaves fullscreen and never pauses, which is exactly his complaint.
+- No check needs ESC in that line: no match in the fixture for 'P / ESC' or 'ESC pause', and v11.26 (mkfixture.ps1:14921) needs only 'F melee strike', 'I backpack', 'tactical belt' and 'hold to sprint'.
+- Build 1 edit 4 (dark_raiders.html:1434) also ends "which are the keys it names". That becomes false once ESC is off the line.
+- Corrected text for both is below.
+
+3. Owner decision 3 is wrong about the raid.
+- The plan says a pad cannot close "the raid map, backpack, stall" or the pause box. In a raid it can:
+  - Menu: PADTAP 9 is 'KeyP' (dark_raiders.html:11417). pollPad calls raidKey (11693), the lockout at 10852 lets KeyP through, and 10902 toggles the box. pollPad runs while paused: 29115-29118, "Ahead of every early return below... while paused".
+  - View closes the backpack (10948) and the stall (10882).
+  - D-up toggles the map: 11689 "if(pressed(12)&&!bagNav&&!PAD.prev[12]&&G&&!G.over) G.mapOpen=!G.mapOpen;".
+- The real pad gaps are narrower:
+  - Nothing closes the emote bar: no pad button reaches KeyV.
+  - On the Undercroft floor, nothing opens or closes the backpack or closes the pause box. The hub branch (11624-11646) binds only buttons 0, 10, 2, 3 and 5, and padOpenModal (11464-11473) sees only .modal.on and #hub.
+
+4. Traced, but not caught by any check (synthetic presses only).
+- Setting: the Undercroft, pause box up, and in front of it the floor backpack, a window, the stash panel or the title.
+- A Tab dispatched at window runs the main listener first (memory note 'synthetic ESC runs late'). Its hub branch calls preventDefault on Tab at 10789 "if(['Space','KeyE','Tab','KeyI'].indexOf(e.code)>=0) e.preventDefault();".
+- The new "if(ev.code==='Tab'&&ev.defaultPrevented) return;" guard then makes the capture closer skip, so the box stays up.
+- A real press is fine: the window capture listener (11811) runs first and stops propagation.
+- None of the new check's arms stage this, so they pass. A future check must not assert a synthetic Tab closes the box in these states.
+
+5. Every other state where Escape acts matches, traced for real presses in the order window capture (11811), document capture (32901), document item menu (30851), window main (10706).
+- Pause box: 11812-11817.
+- Edit box: 32908.
+- Top window: 32913-32921.
+- Item menu: 30857.
+- Carry window, floor backpack and stash panel: backOut 29928-29945 runs them in the same order as the Escape lines 10797-10804.
+- Stall, emote bar, map and backpack: backOut runs trade, emote, map, bag, the same order as raidKey 10880-10901.
+- Pause with nothing open: 10772 and 10902.
+- Title raises nothing: _titleUp at 10752.
+- Repeats: 10797 and 10803 have no repeat guard, the same as ESC today.
+
+6. Line references are stale, often by one. Anchors are verbatim, so no edit is affected. Actual lines:
+- PADTAP View 11416, PADLABEL 11440-11442
+- KeyB orders 10932, LEGEND WORLD row 25553, LEGEND_MINI_PAD BACK row 25574
+- bag header 27092, compact list MH 26264, document capture listener 32901
+- raid lockout 10852, floor Tab block 10811, hire bench 30139
+- TXSHIP is line 2266, not 2265 (2265 is a comment). The plan's conclusion holds: at 2266 'backpack' and 'tactical belt' appear only inside unrelated keys, and none of the changed strings is a key.
+
+7. Wording nits, no failures.
+- Build 2 says B "no longer backs out of anything". Like I, B still closes the stash panel and the carry window on the floor (10811-10834: "if(_cm&&_cm.classList.contains('on')){ toggleCarry(false)..." and "if(_hb.classList.contains('on')) _hb.classList.remove('on');").
+- History entries 1434 ("TAB opened the backpack invisibly underneath") and 1460 ("no other key touches the raid") stay as they are.
+- After build 2, v13.17, v13.22 and v13.23 still say B in their what text and messages.
+
+WHAT IS SOUND
+- Anchors, counted ordinally on the current files:
+  - All 31 build 1 game anchors and all 7 build 1 fixture anchors (the CRLF ones included) count exactly 1.
+  - Build 2: 7 anchors count 1 now. The other 11 count 0 now, and each is exactly 1 after build 1 is applied in memory.
+  - Build 2's v13.17, v13.22 and v13.23 fixture anchors count 1.
+  - The insertion anchor is mkfixture.ps1:5720 "  {v:'13.41',what:'the raised decks are gone from both sectors:".
+- Old-binding repairs: the fixture's only 'Tab' literals are 8325, 8714, 8735 and 8752. Its only KeyB is 6980. The TAB needles are at 14687, 14921 and 21651. v13.23 is at 6727 and v13.22 at 6765.
+- The v13.42 check fails on v13.41 and passes after the build, in both at-target orders. v13.25 stays qualified by 'OWN TAB' at 1423. v13.34 keeps the welcome pack entry at index 5.
+- Build 2's check:
+  - __cleanProfile changes P in place (mkfixture.ps1:169-179), so its P2 reference is live.
+  - The hire spawns from P.merc (10293-10313), the same way v12.40 stages him.
+  - The fixture's inject is a single-quoted here-string (line 15), and neither new check contains $ or a line starting '@.
+- The hire bench TXSHIP key "...On the surface B cycles his orders..." maps to "Buy a friend.". O is unused in the game. START-HERE 1070-1071 is wrong, as the plan says: padMenu 11532-11538 closes windows on pad B.

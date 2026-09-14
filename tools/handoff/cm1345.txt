@@ -1,0 +1,7 @@
+v13.45: TAB pauses and backs out, the way Escape does
+
+His note: Escape kills fullscreen on itch. TAB now does everything Escape does, which matters on itch, where the browser spends Escape on leaving fullscreen. - Raid: TAB closes the map before the backpack, closes the emote bar and the stall, pauses with nothing open, and closes the pause box. - Undercroft: TAB closes the top window, the item menu, the edit box, the floor backpack and the stash panel, and pauses with nothing open. - Title: TAB never pauses. - Escape behaves exactly as before. - TAB no longer opens the backpack; I does. - 
+
+Check 13.45 fails on the previous build.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

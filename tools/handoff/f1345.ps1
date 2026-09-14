@@ -1,0 +1,1 @@
+Write-Output 'OK, 0 edits applied (the check is inserted by p1345)'

@@ -40024,6 +40024,30 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.43 - FEWER ENEMIES BY DEFAULT
+
+His rulings of 2026-09-13: too many bots on the lightest setting. Asked, he chose:
+Machines Few means what it says, and a new pillager starts on Few pillagers.
+
+HIS LAST RUN: Machines Few, dials 12 sentries and 20 crawlers, and COLD STORAGE
+built 29 crawlers. The per-house floor (HIS 5, crawlerPerHouse 1.5 on Few) is
+raised-only and lands above the count Few names.
+
+THE BUILD. Machines Few and DEF carry crawlerPerHouse 0, so the floor no longer
+lifts Few. Standard and Many keep theirs. Pillagers default to Few (5, scaled by
+area), and Few now also brings smaller waves: raiderWaveCap 4 and raiderFloorN 2.
+Standard and Many carry 8 and 4, as before. A profile that never picked these rows
+moves with the defaults on load; a row he picked himself stays.
+
+WHAT DID NOT MOVE. __pinDefaults pins Standard for every corpus check, so the
+85/374 fingerprint and every balance number are unchanged. His own 2026-08-26 note
+asking for 10 pillagers is still what Standard gives.
+
+MEASURED. Check 13.43 builds COLD STORAGE by day from a fresh profile: both rows
+must read Few, crawlers at most 20 and pillagers at most 5; the control puts the old
+floor back and must build more crawlers. Fails on v13.42. Check 12.29 repaired.
+
+Not verified: THE COLD MILE, the night multiplier, and the waves over a whole raid.
 ## v13.42 - OUT OF A CONSUMABLE, YOU SWITCH BACK TO THE GUN YOURSELF
 
 His ruling of 2026-09-13, in his words: if i switch to bandages or other
