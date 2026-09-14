@@ -40024,6 +40024,22 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.43 - A SAVE THE GAME CANNOT READ IS NOT QUIETLY REPLACED
+
+Title and saves audit finding 3 (LOW). When a save holds data that will not parse, or has no numeric credits, the loader
+ignores it and keeps the fresh default character, and boot then saves that character over the save's key, the thing the
+v11.47 crash guard exists to prevent. On the title, a save whose data will not parse was listed as nothing at all, so
+CREATE A NEW SAVE treated it as empty and picked it. Either way the old data was gone with no message. It needs a damaged
+value in storage, or a host whose storage read fails.
+
+THE BUILD. Before ignoring data it cannot read, the loader copies the raw value aside under the save's key plus :unreadable.
+The title lists a save that holds unreadable data as UNREADABLE, with its DELETE button, so CREATE A NEW SAVE passes it by.
+Readable saves load and list exactly as before.
+
+MEASURED. Check 14.43 gives the loader unreadable data (the raw value must be kept under the :unreadable key), then writes
+unreadable data into save 8 and refreshes the title (save 8 must be listed). It fails on v14.42.
+
+Not verified: recovering a character by hand from a kept :unreadable value.
 ## v14.42 - ENTER ON THE TITLE STARTS THE GAME AND NOTHING ELSE
 
 Title and saves audit finding 2 (MEDIUM, browser dependent). Any key on the title starts the game; the listener called go()

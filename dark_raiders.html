@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.42';
+var VER='14.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2578,6 +2578,11 @@ function rigBuyback(pr){
   return {n:n,credits:paid};
 }
 function applyLoadedProfile(r){
+      // v14.43, title and saves audit finding 3: A SAVE THE LOADER CANNOT READ IS KEPT BEFORE IT IS REPLACED. Stored data that
+      // will not parse, or has no numeric credits, is ignored below, and boot then saves the fresh character over that key, so
+      // the old data was gone with no message. The raw value is copied aside under its own key first.
+      if(r&&r.value){ var _rdOk=false; try{ var _rd0=JSON.parse(r.value); _rdOk=!!(_rd0&&typeof _rd0.credits==='number'); }catch(_rpe){}
+        if(!_rdOk){ try{ localStorage.setItem(SKEY+':unreadable',String(r.value)); }catch(_rue){} } }
       if(r&&r.value){ var d=JSON.parse(r.value);
         if(d&&typeof d.credits==='number'){ P=d;
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
@@ -30005,7 +30010,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.42: ENTER ON THE TITLE STARTS THE GAME AND NOTHING ELSE. After a click on GO FULLSCREEN that button kept focus, and Enter both entered the Undercroft and clicked it, dropping fullscreen. Enter and Space on the title now start the game and stop the key there. Check 14.42 presses Enter on the title and reads whether the key was stopped; it fails on v14.41',
+  now:'v14.43: A SAVE THE GAME CANNOT READ IS NOT QUIETLY REPLACED. Data in a save that would not parse was ignored, boot saved a fresh character over it, and the title listed that save as empty so CREATE A NEW SAVE picked it. The loader now copies unreadable data aside first, and the title lists such a save as UNREADABLE. Check 14.43 loads unreadable data through the loader and lists a save holding it; it fails on v14.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35597,8 +35602,13 @@ loadProfile().then(function(){
     function slotInfo(sn){
       try{ var v=localStorage.getItem(slotKey(sn)); if(!v) return null;
         var d=JSON.parse(v);
+        if(!d||typeof d.credits!=='number') return {name:'UNREADABLE',runs:0,credits:0,xp:0};
         return {name:(d.pname||'PILLAGER'),runs:d.runs||0,credits:d.credits||0,xp:d.xp||0};
-      }catch(e){ return null; }
+      }catch(e){
+        // v14.43: a save holding something unreadable is not an empty save. It is listed as UNREADABLE, so CREATE A NEW SAVE
+        // does not pick it and write a fresh character over it.
+        try{ if(localStorage.getItem(slotKey(sn))) return {name:'UNREADABLE',runs:0,credits:0,xp:0}; }catch(_se){}
+        return null; }
     }
     function renderSlots(){
       var host=document.getElementById('slotlist'); if(!host) return;
