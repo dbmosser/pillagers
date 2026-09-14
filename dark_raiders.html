@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.68';
+var VER='13.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12198,6 +12198,7 @@ function explodeFrag(f){
   }
   for(i=G.ents.length-1;i>=0;i--){
     var e=G.ents[i],de=dist(e,f);
+    if(_fMine&&e.merc&&!e.downed) continue;   // v13.68, hire audit: your charge spares your hire, as your rounds (v6.72) and fists (v11.38) do
     if(de<R+e.r&&losClear(f.x,f.y,e.x,e.y,G.map.segs)){
       e.hp-=115*(1-Math.max(0,de-e.r)/R)+25; e.hitT=.2;   // v11.77: was 85 and 15
       // v8.30, his ruling: "frag kills a neutral should def get a point." And
@@ -29757,7 +29758,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.68: YOUR HIRE SHOOTS THE PILLAGERS, NOT YOU. Hire and peddler audit of 2026-09-14, finding 1: mercEngage fires at hostile pillagers on the enemy bullet path, which tested the player with no look at who fired, so a round crossing you hit you under his name; and a pillager takes another pillager round only when feudFoe allows, which it never does for a hire, so every round passed through his target. His rounds now pass through you, as yours pass through him, and hit a hostile pillager. Check 13.68 stages the hire, a hostile pillager and you in a line and requires the pillager hit and you untouched, with the pillager firing at you as the control; it fails on v13.67',
+  now:'v13.69: YOUR OWN CHARGE DOES NOT KILL YOUR HIRE. Hire and peddler audit of 2026-09-14, finding 2: your rounds and fists pass through your hire but the frag loop had no such rule, so a charge killed him outright with byPlayer set, which put a kill on his identity so he never works for you again, ticked a pillager kill contract, billed the death benefit, and sent a wounded hire chasing you. The frag loop now skips your standing hire when the charge is yours; an enemy charge still hurts him. Check 13.69 bursts your charge beside the hire and requires him untouched with no kill recorded, with an enemy charge wounding him as the control; it fails on v13.68',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
