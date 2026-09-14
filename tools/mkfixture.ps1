@@ -5718,6 +5718,39 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.03',what:'a gun taken out of the armoury comes back if the page goes away mid-raid: the armoury carbine bagged in a raid, saved, and loaded again through the real loader without the raid ever ending is back in the armoury, as an owned carbine saved and loaded is (saving, profile and settings audit 2026-09-15, finding 1)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy or load a profile';
+     if(typeof bagHeldGun!=='function'||!WEAPONS.carbine) return 'SKIP: no gun bagging in this build';
+     var bad=[], keep=JSON.parse(JSON.stringify(__P()));
+     function copyW(id){ var w={},k; for(k in WEAPONS[id]) w[k]=WEAPONS[id][k]; return w; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // CONTROL: an owned carbine saved and loaded is still owned.
+       var P0=__P(); P0.weapons=['carbine']; P0.equipped='carbine'; P0.equippedSec='none';
+       __applyLoaded(JSON.parse(JSON.stringify(P0)));
+       if(__P().weapons.indexOf('carbine')<0) return 'SKIP: the loader dropped an owned carbine from an ordinary save, so nothing here can be measured';
+       // THE FINDING: bag it mid-raid, save, and load that save with the raid never ended.
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), P2=__P();
+       if(!g||!g.player) return 'SKIP: no live raid';
+       var p=g.player;
+       g.ents.length=0; p.downed=false; g.spliced=null;
+       P2.weapons=['carbine']; P2.equipped='carbine'; P2.equippedSec='none';
+       p.wep=copyW('carbine'); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=true; p.swapped=false;
+       p.sec=WEAPONS.fists; p.secIssued=true; p.secFromArmory=false;
+       if(!bagHeldGun('gunA')) return 'SKIP: the belt would not bag the carbine';
+       if(P2.weapons.indexOf('carbine')>=0) return 'SKIP: bagging did not take the carbine off the armoury list';
+       var saved=JSON.parse(JSON.stringify(P2));
+       __applyLoaded(saved);
+       if(__P().weapons.indexOf('carbine')<0) bad.push('the armoury carbine bagged in a raid that never ended was in neither the armoury nor the stash after the save was loaded');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       try{ __applyLoaded(keep); saveProfile(); }catch(_p){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.02',what:'the what is new card is current again before it goes stale: its version is within five builds of the build and it names the stall and belt key news of v13.91 to v14.01, still opening with the alpha line',
    run:function(){
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';

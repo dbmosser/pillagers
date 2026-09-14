@@ -1,0 +1,21 @@
+## v14.06 - UNDO KEEPS ITS OWN SLOT AND A RESTORE CODE KEEPS THE CHARACTER IT REPLACES
+
+The saving, profile and settings audit of 2026-09-15, finding 2. Every save slot has its own storage key, but the
+backup UNDO goes back to was one fixed key for all of them. And only a file restore wrote it. So:
+
+- In save 1, restore from a backup file. Go to the title, start a new game in save 2, and play. Settings in save 2
+  now offers UNDO. Pressing it turned save 2 into save 1's pre-restore character, and save 2's own character was left
+  only in that shared key, for the next file restore or UNDO in any slot to overwrite. Gone for good.
+- Do a file restore, play for weeks, then paste a friend's restore code and press UNDO. It brought back the weeks-old
+  profile, because pasting a code never kept the character it replaced.
+
+THE BUILD. The backup key is the slot's own key plus ":prerestore". Save 1's key name is unchanged, so an existing
+backup in save 1 still works. Pasting a restore code writes the character it replaces into that backup before applying,
+exactly as a file restore does.
+
+MEASURED. Check 14.06 makes a code from a character named PROBESOURCE, switches the live character to BEFORECODE,
+pastes the code through the real READ and REPLACE buttons (cancelling the reload), and requires the UNDO backup to hold
+BEFORECODE. The code must be applied (the control, which proves the panel ran). It fails on v14.05.
+
+Not verified: a second save slot by drive, which needs a page load under that slot; the key is built from SKEY, which
+the save itself already uses.

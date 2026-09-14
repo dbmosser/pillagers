@@ -1,0 +1,9 @@
+v14.05: the crash catcher stops saving every frame and keeps older crashes
+
+A repeating error saved the whole profile every frame, and two alternating
+errors pushed older crashes off the list. Repeats now merge with any matching
+entry and save at most once a window.
+
+Check 14.05 alternates two errors twenty times. Fails on v14.04.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

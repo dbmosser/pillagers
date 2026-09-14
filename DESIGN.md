@@ -40024,6 +40024,33 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.03 - A GUN TAKEN OUT OF THE ARMOURY COMES BACK IF THE PAGE GOES AWAY MID-RAID
+
+The saving, profile and settings audit of 2026-09-15, finding 1. When an armoury gun leaves your hands mid-raid,
+it comes off the armoury list and is recorded on G.spliced, so that an abandoned raid can put it back. That
+happens when you bag it, or when a better gun auto-equips and bags it for you. G.spliced lives only in memory,
+and only endRaid's abandon paths read it. But the profile is also saved mid-raid, by a mouse-wheel zoom, the
+crash catcher and a few others. So:
+
+- Own a Carbine, go up with it, and bag it (or let a pickup bag it).
+- Anything saves the profile.
+- The tab closes, F5 is pressed, the browser crashes, or the PC freezes (his PC has hard-frozen five times).
+- On the next load the Carbine is in neither the armoury nor the stash.
+
+The same steps ending in Abandon give it back, so whether the gun was lost depended on whether a save happened to
+fire first.
+
+THE BUILD. Each of the three splice sites also records the gun on P.raidSpliced, which is saved with the profile.
+endRaid clears that record at its start on every path, because it settles the guns itself from G.spliced. The
+loader puts back any gun on the record and then clears it, exactly as an abandon would have.
+
+MEASURED. Check 14.03 saves an owned carbine and loads it through the real loader (the control, which proves the
+loader keeps an owned gun). It then bags the armoury carbine in a live raid, copies the profile as a mid-raid save
+would, loads it through the real loader without the raid ever ending, and requires the carbine back in the
+armoury. It fails on v14.02.
+
+Not verified: a death that was never settled, where the gun would have been lost, now comes back on reload; that is
+the same outcome an abandon gives and is judged fairer than losing an owned gun to a frozen PC.
 ## v14.02 - THE WHAT IS NEW CARD IS CURRENT AGAIN, BEFORE IT GOES STALE
 
 A card refresh, done on purpose this time rather than when a gate forced it (v13.87). WHATSNEW_VER

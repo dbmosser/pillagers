@@ -1,0 +1,9 @@
+v14.06: UNDO keeps its own slot and a restore code keeps the character it replaces
+
+The UNDO backup was one key shared by every save slot, and pasting a restore
+code never wrote it. The backup now uses each slot's own key, and a restore
+code keeps the character it replaces.
+
+Check 14.06 pastes a code through the real panel buttons. Fails on v14.05.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

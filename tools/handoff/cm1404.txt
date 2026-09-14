@@ -1,0 +1,8 @@
+v14.04: a restore code replaces the hire, contracts, cutting, map and Terms too
+
+A restore code left the old character's hire, contract progress, seal cutting,
+explored map and signed Terms in place. They are now cleared with the rest.
+
+Check 14.04 restores a code over a character carrying all four. Fails on v14.03.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.02';
+var VER='14.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2733,6 +2733,12 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
           if(GUNMIG[P.equipped]) P.equipped=GUNMIG[P.equipped];
           if(P.wear){ for(var _gk in GUNMIG){ if(P.wear[_gk]!==undefined){
             P.wear[GUNMIG[_gk]]=(P.wear[GUNMIG[_gk]]||0)+P.wear[_gk]; delete P.wear[_gk]; } } }
+          // v14.03, save audit: a raid that ended by the page going away (a closed tab, F5, a crash, a frozen PC)
+          // never settled the armoury guns it had taken out. They go back, as an abandon would put them back.
+          if(Array.isArray(P.raidSpliced)){
+            for(var _rsi=0;_rsi<P.raidSpliced.length;_rsi++){ var _rsk=P.raidSpliced[_rsi]; if(_rsk&&P.weapons.indexOf(_rsk)<0) P.weapons.push(_rsk); }
+          }
+          delete P.raidSpliced;
           P.weapons=P.weapons.filter(function(k){ return !!WEAPONS[k]; });
           if(!WEAPONS[P.equipped]) P.equipped=P.weapons.length?P.weapons[0]:'fists';
           // The saved config is a full copy of every tunable, so it silently pins
@@ -13629,7 +13635,7 @@ function grantLoot(ct,keys,delay0){
           stowRounds(p.sec.id,p.secAmmo);
           if(!G.sim&&p.secFromArmory){
             var _soi=P.weapons.indexOf(p.sec.id);
-            if(_soi>=0){ P.weapons.splice(_soi,1); (G.spliced=G.spliced||[]).push(p.sec.id); }
+            if(_soi>=0){ P.weapons.splice(_soi,1); (G.spliced=G.spliced||[]).push(p.sec.id); (P.raidSpliced=P.raidSpliced||[]).push(p.sec.id); }   // v14.03: on the saved profile too
           }
         }
         // v13.81, combat audit: a gun from a crate you dropped comes back with its own load (v12.42), not half a magazine.
@@ -13666,7 +13672,7 @@ function grantLoot(ct,keys,delay0){
             stowRounds(p.wep.id,p.ammo);   // v12.42: the gun a field pickup displaces keeps its load
             if(!G.sim&&p.wepFromArmory){
               var oi=P.weapons.indexOf(p.wep.id);
-              if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(p.wep.id); }
+              if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(p.wep.id); (P.raidSpliced=P.raidSpliced||[]).push(p.wep.id); }   // v14.03: on the saved profile too
             }
           }
         }
@@ -13787,7 +13793,7 @@ function bagHeldGun(slot){
   if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in a bag.'); return false; }
   G.bag.push('gun_'+g.id);
   stowRounds(g.id,isHand?p.ammo:p.secAmmo);   // v12.42: the load goes with it
-  if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); } }
+  if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); (P.raidSpliced=P.raidSpliced||[]).push(g.id); } }   // v14.03: on the saved profile too
   if(isHand){
     p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0;
     p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
@@ -19392,6 +19398,9 @@ var DEATH_FEED_HTML='';
 function endRaid(how){
   if(G.over) return;
   G.over=how;
+  // v14.03, save audit: the raid is being settled here, and G.spliced drives the settling; the saved record of
+  // guns taken out of the armoury is only for a raid that never reaches this line.
+  if(!G.sim&&P) delete P.raidSpliced;
   // v12.12: THE BONUS THE CARD PRINTS IS THE BONUS THE RUN BANKS. Taken here,
   // before the death branch below clears the drink; the banking at the bottom
   // of this function ran after that clear and paid the run without it.
@@ -29866,7 +29875,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.02: THE WHAT IS NEW CARD IS CURRENT AGAIN, BEFORE IT GOES STALE. WHATSNEW_VER stood at 13.87 against 14.01, one build short of the fifteen-build gate held by checks 9.19 and 10.38, and the card said nothing about v13.88 to v14.01. Three of my own card lines are rewritten in the same three slots, newest first, keeping the stash entry inside the thirteen the card draws; his edited lines are untouched and WHATSNEW_VER moves to 14.02. Check 14.02 requires the card current and naming the stall and belt key news, with every card check still holding; it fails on v14.01',
+  now:'v14.03: A GUN TAKEN OUT OF THE ARMOURY COMES BACK IF THE PAGE GOES AWAY MID-RAID. Saving, profile and settings audit of 2026-09-15, finding 1: bagging an armoury gun mid-raid takes it off P.weapons and records it only on G.spliced in memory, and the profile is saved mid-raid, so a closed tab, F5, a crash or a PC freeze after such a save left the gun in neither armoury nor stash on reload. The splice is now also kept on P.raidSpliced, endRaid clears it on every path, and the loader puts those guns back. Check 14.03 bags the armoury carbine, loads the saved profile through the real loader and requires the carbine in the armoury, with an ordinary save of an owned carbine as the control; it fails on v14.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

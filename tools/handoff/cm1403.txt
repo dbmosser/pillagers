@@ -1,0 +1,11 @@
+v14.03: a gun taken out of the armoury comes back if the page goes away mid-raid
+
+An armoury gun bagged mid-raid came off the armoury list and only an in-memory
+record could put it back, so a closed tab, F5, crash or PC freeze after a
+mid-raid save lost it for good. The record is now saved, endRaid clears it and
+the loader restores it.
+
+Check 14.03 loads a mid-raid save after bagging the armoury carbine. Fails on
+v14.02.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
