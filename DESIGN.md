@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.59 - UP AND DOWN REACH EVERY BACKPACK STACK
+
+Backpack audit finding 4 (MEDIUM). With the backpack open the arrows select a stack: left and right step one, up and down
+step a row of G.bagCols. The row step wrapped by the number of stacks. At 1920x1080 the grid has twelve columns, so with six
+stacks down went from stack 0 to (0+12)%6, stack 0 again; with eight stacks it visited 0 and 4 only. A controller browses
+the backpack with up and down alone (left is drop, A is blocked there), so a pad player could select, drop or inspect only
+the first stack. On the keyboard with seven stacks, down from the first jumped to the sixth.
+
+THE BUILD. Down moves a row while there is a stack below; at the bottom of a column it moves to the top of the next column,
+and after the last column back to the first, so it visits every stack. Up mirrors it. Left and right are unchanged.
+
+MEASURED. Check 14.59 starts a raid, puts six distinct items in the backpack with twelve columns (control: ArrowRight steps
+to stack 1), then presses down six times and up six times from stack 0: each must visit all six stacks. It fails on v14.58.
+
+Not verified: browsing a real backpack with a controller.
 ## v14.58 - ONLY A LEFT CLICK PICKS UP A BACKPACK TILE
 
 Backpack audit finding 3 (MEDIUM). A press on a backpack tile started a drag with any mouse button, but only a left

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.58';
+var VER='14.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11083,8 +11083,15 @@ function raidKey(code,repeat,ev){
     var _stN=bagStacks().length, _bc=G.bagCols||5;
     if(code==='ArrowLeft'){ G.bagSel=(G.bagSel-1+_stN)%_stN; if(ev) ev.preventDefault(); }
     if(code==='ArrowRight'){ G.bagSel=(G.bagSel+1)%_stN; if(ev) ev.preventDefault(); }
-    if(code==='ArrowUp'){ G.bagSel=(G.bagSel-_bc+_stN)%_stN; if(ev) ev.preventDefault(); }
-    if(code==='ArrowDown'){ G.bagSel=(G.bagSel+_bc)%_stN; if(ev) ev.preventDefault(); }
+    // v14.59, backpack audit finding 4: UP AND DOWN REACH EVERY STACK. A row step wrapped by the stack count, so with twelve
+    // columns and six stacks down went from stack 0 back to stack 0, and a controller, which browses with up and down only,
+    // could select, drop or inspect nothing but the first stack. Down walks a column and then moves to the top of the next
+    // column; up walks back and then to the bottom of the column before.
+    if(code==='ArrowUp'){
+      if(G.bagSel-_bc>=0) G.bagSel-=_bc;
+      else { var _ucol=(G.bagSel%_bc)-1; if(_ucol<0) _ucol=Math.min(_bc,_stN)-1; while(_ucol+_bc<_stN) _ucol+=_bc; G.bagSel=_ucol; }
+      if(ev) ev.preventDefault(); }
+    if(code==='ArrowDown'){ G.bagSel=(G.bagSel+_bc<_stN)?G.bagSel+_bc:((G.bagSel%_bc)+1)%Math.min(_bc,_stN); if(ev) ev.preventDefault(); }
     if(code==='KeyZ'&&!repeat){
       // Drop ONE from the selected stack, the last one picked up.
       var _stk=bagStacks()[clamp(G.bagSel,0,_stN-1)];
@@ -30059,7 +30066,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.58: ONLY A LEFT CLICK PICKS UP A BACKPACK TILE. A wheel or thumb click started a drag that only a left release could end, so the item stuck to the cursor even after the backpack closed, and the next shot bound it to a belt key or handed it to the hire. Tiles now pick up on the left button only, and B or I drops any drag. Check 14.58 presses the middle and left buttons on a staged tile and toggles the backpack mid-drag; it fails on v14.57',
+  now:'v14.59: UP AND DOWN REACH EVERY BACKPACK STACK. A row step wrapped by the stack count, so with twelve columns and six stacks down stayed on the first stack, and a controller, which browses with up and down only, could reach nothing else. Down now walks a column and moves on to the next; up walks back. Check 14.59 presses down and up six times each over six stacks; it fails on v14.58',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

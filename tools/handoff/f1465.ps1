@@ -12,7 +12,7 @@ function SubRx([string]$old, [string]$new) {
 }
 
 SubRx @'
-  {v:'14.64',what:
+  {v:'14.63',what:
 '@ @'
   {v:'14.65',what:'the loadout question counts what MY LOADOUT will take up: with the freebie kit taken over three packed items, the question names the three items packed, as it names one packed item without the freebie kit (ascent audit finding 1)',
    run:function(){
@@ -34,7 +34,7 @@ SubRx @'
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ if(prof){ prof.freeKit=0; prof.kitSaved=null; prof.kit=[]; } }catch(_p){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'14.64',what:
+  {v:'14.63',what:
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
