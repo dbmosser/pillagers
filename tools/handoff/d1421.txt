@@ -1,0 +1,16 @@
+## v14.21 - AN A THAT CLICKS A MENU BUTTON DOES NOT FIRE ON ARRIVAL
+
+Controller audit finding 3 (MEDIUM). On a pad, A clicks the focused menu button on the press. At the lift that button is
+ASCEND, ASCEND TO THIS SECTOR, MY LOADOUT or FREEBIE KIT, and each starts the raid on the spot. On the next poll no menu
+was open, so the same held A went to the raid branch, where A is the trigger, and nothing delays input on arrival. Every
+pad ascent fired a shot at the spawn point. A mouse click on the same button never did, because the fire listener is on
+the canvas, not on the page.
+
+THE BUILD. An A that clicks a menu button is marked spent. The raid branch ignores A while it is spent and clears the mark
+on the first poll with A up, so the next press fires as normal. Menus, the stall rows and the keyboard are unchanged.
+
+MEASURED. Check 14.21 opens a probe window with one button, fakes a pad and presses A (the button must be clicked, or the
+check skips), starts a raid with A still held and polls twice (the trigger must stay off), then lets A go and presses it
+again (control: the trigger is on). It fails on v14.20.
+
+Not verified: a real controller pressing ASCEND.

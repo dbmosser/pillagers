@@ -1,0 +1,9 @@
+v14.21: an A that clicks a menu button does not fire on arrival
+
+Pressing ASCEND with A on a pad started the raid with A still held, and the
+raid read it as the trigger. An A spent on a menu click is now ignored in the
+raid until it is let go.
+
+Check 14.21. Fails on v14.20.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.18 - AN ARMOURY GUN DROPPED ON THE STASH GOES INTO THE STASH
+
+Undercroft audit finding 5 (LOW). Since v11.95, his order that guns move around like any other item, an owned gun in the
+armoury row drags with the label 'rack', and a drop on a belt key or on the backpack takes it out of the armoury into the
+stash as its item form. The stash grid itself refused only 'weapons', a label nothing sends, then returned on anything that
+was not from the backpack. So dragging a gun from the armoury onto the stash did nothing: no line, no sound.
+
+THE BUILD. A spare gun dropped on the stash grid goes through rackToStash, the same move the belt and the backpack make,
+and the stash says "<gun> is in the stash." A gun in his hands stays where it is and says "That one goes up in your hands
+already.", the backpack's own line for it.
+
+MEASURED. Check 14.18 drops a spare gun from the armoury on the stash grid (it must leave the armoury, be in the stash and
+say a line), then the gun in his hands (it must stay and say a line). It fails on v14.17.
+
+Not verified: a hand drag at 1920x1080.
 ## v14.17 - A CLICK ON A FILLED BELT KEY CLEARS IT
 
 Undercroft audit finding 3 (MEDIUM). A filled tactical belt cell on the stash screen says "click to clear". Since v8.72 the
