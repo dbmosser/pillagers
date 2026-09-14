@@ -40024,6 +40024,23 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.77 - THE ASCENT QUESTION SAYS WHAT GOES UP WHEN NOTHING IS PACKED
+
+First-hour audit finding 1 (HIGH). At ENTER RAID the question offers MY LOADOUT or the freebie kit. With nothing packed it
+read "Your loadout: your current tactical belt and backpack." But MY LOADOUT then commits an empty list, kitChosen stays 0,
+and buildRaid packs the standard kit out of the stash: two of each grenade and up to three plates, ammo or heals. That
+fallback is deliberate (v8.40, and the deploy audit's parked finding 2 left it for his call). On a fresh character who took
+the welcome pack and packed nothing, six of the ten free items went up, and a first raid mostly ends in death, which comes
+back empty. The ascent check screen is never opened, so this question is the only warning on that path.
+
+THE BUILD. Words only; what goes up is unchanged. With nothing packed and a standard kit to pick, the question says how many
+items go up from the stash, picked for you, grenades first, and that anything that goes up can be lost. standardKit works on a
+copy, so counting it moves nothing.
+
+MEASURED. Check 14.77 packs one Bandage (control: "1 item you packed") and then nothing, with grenades and Bandages in the
+stash: the question must name the standard kit's count and the stash. It fails on v14.76.
+
+Not verified: the question read on screen; a fresh character's first ascent by hand.
 ## v14.76 - THE STASH HOVER ROW OFFERS EVERY KEY FOR EVERY ITEM
 
 Stash and trader audit finding 4 (LOW). v6.60 made every belt key take any item, and v8.18 fixed the right-click menu to offer

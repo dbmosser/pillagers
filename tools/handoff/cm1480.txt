@@ -1,0 +1,8 @@
+v14.80: two of the same gun are two guns lost
+
+With a field copy of a gun in hand and his own armoury copy in gun 2, a death
+kept the armoury copy. Both are now lost.
+
+Check 14.80. Fails on v14.79.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

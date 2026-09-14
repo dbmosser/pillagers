@@ -1,0 +1,9 @@
+v14.79: an extraction leaves both gun slots on guns he owns
+
+A gun put in the backpack, dropped, and an empty-handed extraction left gun 1
+naming a gun he no longer owned. Extraction now repairs both slots the way a
+death does.
+
+Check 14.79. Fails on v14.78.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

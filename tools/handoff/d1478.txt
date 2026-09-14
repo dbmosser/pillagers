@@ -1,0 +1,17 @@
+## v14.78 - HIS VOCABULARY IN THE RAID AND THE REWARDS
+
+First-hour audit findings 2 and 3 (LOW). The retired word for the backpack was still in player text:
+- Two raid messages, shown when a gun is dragged off its belt key and dropped on no cell: "Nothing there to ..." and
+  "... has no place in a ...".
+- Two season reward names, listed in the Mainframe rewards from the first visit and on the extraction card's Next line.
+
+None of the four is one of his edited lines (the exact strings appear nowhere else in the file).
+
+THE BUILD. The messages say "put in your backpack" and "has no place in your backpack". The rewards are the CRATE OF FRAGS and
+the BIGGER CRATE OF FRAGS. Claimed rewards are stored by tier, not by name, so nothing already claimed changes.
+
+MEASURED. Check 14.78 reads every reward name through tierLabel (control: a frag reward is named) and drives both refusals in
+a raid (control: both say something): none may use the retired word, built from pieces so the check does not match itself.
+It fails on v14.77.
+
+Not verified: the messages and the rewards list on screen.

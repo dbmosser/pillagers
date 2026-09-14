@@ -5718,6 +5718,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.77',what:'the ascent question says what goes up when nothing is packed: with one item packed it says one item you packed, and with nothing packed it names how many items go up from the stash (first-hour audit finding 1)',
+   run:function(){
+     if(typeof askKit!=='function'||typeof standardKit!=='function'||!document.getElementById('asksub')) return 'SKIP: no ascent question in this build';
+     var bad=[], prof=null, keep=null;
+     function sub(){
+       askKit();
+       var t=String((document.getElementById('asksub')||{}).textContent||'');
+       try{ document.getElementById('askmodal').classList.remove('on'); }catch(_m){}
+       return t.split(/The freebie kit/i)[0];
+     }
+     try{
+       __topClear(); __cleanProfile(); prof=__P();
+       keep={s:(prof.stash||[]).slice(),k:(prof.kit||[]).slice(),f:prof.freeKit,ks:prof.kitSaved,h:JSON.parse(JSON.stringify(prof.hotAssign||{}))};
+       prof.stash=['frag','frag','smoke','bandage','bandage']; prof.hotAssign={}; prof.freeKit=0; prof.kitSaved=null;
+       // CONTROL: one Bandage packed reads as one item you packed.
+       prof.kit=['bandage'];
+       var t1=sub();
+       if(!(/\b1 item you packed/).test(t1)) return 'SKIP: with one Bandage packed the question read: '+t1.slice(0,120);
+       prof.kit=[];
+       var nk=standardKit().length;
+       if(nk<1) return 'SKIP: the standard kit picks nothing from this stash';
+       var t2=sub();
+       if(t2.indexOf(String(nk)+' item')<0||t2.toLowerCase().indexOf('from your stash')<0) bad.push('with nothing packed and '+nk+' items about to be packed from the stash, the question read: '+t2.slice(0,140));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=__P(); if(keep){ q.stash=keep.s; q.kit=keep.k; q.freeKit=keep.f; q.kitSaved=keep.ks; q.hotAssign=keep.h; } }catch(_a){} try{ document.getElementById('askmodal').classList.remove('on'); }catch(_m){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.76',what:'the stash hover row offers every key for every item: hovering a Bandage or a gun item in the stash offers keys 1 to 9 (stash and trader audit finding 4)',
    run:function(){
      if(typeof renderHub!=='function'||typeof ITEMS==='undefined'||!ITEMS.bandage||typeof HOTBAR_N==='undefined'||!document.getElementById('stashgrid')) return 'SKIP: no stash hover row in this build';

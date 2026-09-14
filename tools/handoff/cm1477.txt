@@ -1,0 +1,9 @@
+v14.77: the ascent question says what goes up when nothing is packed
+
+With nothing packed the raid packs grenades and heals out of the stash, but the
+question said only an empty belt and backpack went up. It now names how many
+items go up from the stash and that they can be lost.
+
+Check 14.77. Fails on v14.76.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

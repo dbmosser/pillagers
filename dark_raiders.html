@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.76';
+var VER='14.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28793,9 +28793,15 @@ function askKit(){
   var kitN=(P.freeKit&&P.kitSaved)?((P.kitSaved.kit||[]).length):((typeof stageKitLive==='function')?stageKitLive().length:(P.kit||[]).length);
   var qq=document.getElementById('askq'), ss=document.getElementById('asksub');
   if(qq) qq.textContent='What are you taking up?';
+  // v14.77, first-hour audit finding 1: THE QUESTION SAYS WHAT GOES UP WHEN NOTHING IS PACKED. With nothing packed MY LOADOUT
+  // commits an empty list, kitChosen stays 0 and buildRaid packs the standard kit out of the stash (v8.40, deliberate), so a
+  // fresh character took up six of the ten welcome pack items after reading that only an empty belt and backpack went up.
+  // standardKit works on a copy, so counting it here moves nothing.
+  var autoN=0; if(!kitN){ try{ autoN=standardKit().length; }catch(_sk){ autoN=0; } }
   if(ss) ss.innerHTML='<b>Your loadout</b>: '+
     (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current tactical belt and backpack.')
-         :'your current tactical belt and backpack.')+
+         :(autoN?('nothing is packed, so '+autoN+' item'+(autoN===1?' goes':'s go')+' up from your stash, picked for you: grenades first, then plates, ammo and heals. Anything that goes up can be lost.')
+                :'your current tactical belt and backpack.'))+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
   ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v12.16: MY LOADOUT gets his packing back too
   ASKALT=function(){
@@ -30094,7 +30100,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.76: THE STASH HOVER ROW OFFERS EVERY KEY FOR EVERY ITEM. The put on key buttons under a hovered stash item offered keys 3 to 9, and nothing at all for a gun or a part, while right-click and the number keys put any item on any key. The row now offers keys 1 to 9 for every item. Check 14.76 hovers a Bandage and a gun; it fails on v14.75',
+  now:'v14.77: THE ASCENT QUESTION SAYS WHAT GOES UP WHEN NOTHING IS PACKED. With nothing packed the raid packs the standard kit out of the stash, so a fresh character took up six welcome pack items after reading that only an empty belt and backpack went up. The question now names how many items will be packed from the stash and that they can be lost. Check 14.77 asks with one item packed and with none; it fails on v14.76',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

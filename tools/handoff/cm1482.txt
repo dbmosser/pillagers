@@ -1,0 +1,9 @@
+v14.82: a contract gun fills an empty hand
+
+A contract paying a gun left gun 1 empty when he had no gun, so the next raid
+handed him a loaner. The paid gun now goes into an empty hand, as reward and
+bought guns already do.
+
+Check 14.82. Fails on v14.81.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

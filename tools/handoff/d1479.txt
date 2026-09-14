@@ -1,0 +1,16 @@
+## v14.79 - AN EXTRACTION LEAVES BOTH GUN SLOTS ON GUNS HE OWNS
+
+Gun audit finding 2 (MEDIUM). Putting a gun in the backpack from its belt key takes it off the armoury list (v14.03). If that
+gun was then dropped or given to the hire and he extracted empty-handed, the extraction branch repaired only a collision
+between the two slots, so gun 1 still named a gun he no longer owned. The sector page and the ascent check read the slot raw
+and said the gun was going up; the raid handed him a loaner; a gun bought next did not go into his hand, because the slot was
+not empty. The same happened to gun 2. The death branch has repaired both slots since v2.82 and v12.39.
+
+THE BUILD. After the collision repair, extraction applies the death branch's two ownership repairs and clears a collision
+they create.
+
+MEASURED. Check 14.79 owns only the SMG in gun 1 (control: the raid arms it from the armoury), puts it in the backpack, drops
+it (control: neither owned nor carried) and extracts: gun 1 must name a gun he owns or none. It restores the profile through
+the loader. It fails on v14.78.
+
+Not verified: the sector page after such a raid by eye.

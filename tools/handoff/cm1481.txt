@@ -1,0 +1,8 @@
+v14.81: after a death the two gun slots never name one gun
+
+A death could refill gun 1 with the gun already in gun 2, leaving both slots
+naming it. Gun 2 is now emptied when that happens.
+
+Check 14.81. Fails on v14.80.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

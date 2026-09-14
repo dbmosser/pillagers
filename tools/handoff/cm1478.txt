@@ -1,0 +1,9 @@
+v14.78: his vocabulary in the raid and the rewards
+
+The retired word for the backpack was still in two raid messages and two season
+reward names. The messages now say your backpack, and the rewards are the Crate
+of Frags and the Bigger Crate of Frags.
+
+Check 14.78. Fails on v14.77.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

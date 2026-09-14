@@ -1,0 +1,13 @@
+## v14.81 - AFTER A DEATH THE TWO GUN SLOTS NEVER NAME ONE GUN
+
+Gun audit finding 3 (LOW). A death refills gun 1 with the first gun still on the armoury list when the gun in hand was lost,
+without looking at gun 2. With a pistol in gun 1 and the SMG in gun 2, a field gun equipped into gun 2 sends the SMG back to
+the armoury; dying with the pistol then leaves the list as the SMG alone, gun 1 becomes the SMG and gun 2 still names it.
+buildRaid leaves gun 2 empty for that, and the armoury right-click menu greys out both slots as already there.
+
+THE BUILD. After the two ownership repairs, gun 2 is emptied when it names the same gun as gun 1, as on extraction.
+
+MEASURED. Check 14.81 stages that raid and dies (control: the pistol is lost and gun 1 is the SMG): the two slots must differ.
+It restores the profile through the loader. It fails on v14.80.
+
+Not verified: the armoury menu after such a death by eye.
