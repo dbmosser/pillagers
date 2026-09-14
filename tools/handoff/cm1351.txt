@@ -1,0 +1,9 @@
+v13.51: a controller in a ring can always call for extraction again
+
+My v13.48 regression: in a ring with an unopened box in reach, pad X held only X,
+so a pad player could not call or board, and a box that refuses the search held
+him there. X now searches first and holds E if no search starts within 0.35 s.
+
+Check 13.51 fakes a pad on a ring with a full backpack. Fails on v13.50.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

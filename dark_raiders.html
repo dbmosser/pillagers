@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.50';
+var VER='13.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11725,10 +11725,19 @@ function pollPad(){
   // the way out and only X searches, and the pad X button held E, so the [X] SEARCH
   // prompt named a button that called the dropship. With something to search in reach
   // inside a ring, pad X holds X; the other key is let go so a switch mid-hold is clean.
-  var _xSearch=!!(G.nearPad&&G.nearContainer);
+  // v13.51: AND THE WAY OUT STAYS REACHABLE. v13.48 held X for as long as a box was in
+  // reach, so a box that refuses the search (a full backpack) held him away from the
+  // call. X searches first; with no search started 0.35 s into the press it holds E, and a
+  // search that has started in this hold keeps X until the box is done.
+  // Timed on the raid clock, not the wall clock between polls, so it means the same
+  // 0.35 s of play however fast the frames arrive.
+  var _xDown=pressed(2);
+  if(!_xDown){ PAD.xDownAt=null; PAD.xSearched=false; }
+  else { if(PAD.xDownAt==null) PAD.xDownAt=G.t; if(G.searching) PAD.xSearched=true; }
+  var _xSearch=!!(G.nearPad&&G.nearContainer&&(PAD.xSearched||PAD.xDownAt==null||(G.t-PAD.xDownAt)<0.35));
   for(var h in PADHOLD){
     var hn=+h;
-    if(hn===2){ padHold(_xSearch?'KeyE':'KeyX',false); padHold(_xSearch?'KeyX':'KeyE',pressed(2)); continue; }
+    if(hn===2){ padHold(_xSearch?'KeyE':'KeyX',false); padHold(_xSearch?'KeyX':'KeyE',_xDown); continue; }
     // dpad down browses the bag rather than using medical while it is open
     padHold(PADHOLD[h], pressed(hn)&&!(bagNav&&hn===13));
   }
@@ -29704,7 +29713,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.50: THE GAME STOPS ASKING ITCH FOR A FILE THAT IS NEVER THERE. Found by the 2026-09-14 crash sweep: the build picker fetched builds/index.json on every page load, and the build archive exists only where he serves the repo on his own machine, so on itch every load requested a missing file and logged the error. buildArchiveHost now limits the request to localhost, and elsewhere the picker says there is no build archive on this host. Check 13.50 stubs the host test and fetch: off his machine the picker makes no request, on it the request is still made; it fails on v13.49',
+  now:'v13.51: A CONTROLLER IN A RING CAN ALWAYS CALL FOR EXTRACTION AGAIN. My regression from v13.48, found by the key prompt audit of 2026-09-14: in a ring with an unopened box in reach, pad X held only X, so a pad player could search and could not call or board, and a box that refuses the search (a full backpack) never opens and held him away from the way out. X now searches first; with no search started 0.35 s into the press it holds E, and a search that has started in this hold keeps X until the box is done. Check 13.51 fakes a pad on a ring: a searchable box is still searched, a box refused by a full backpack gives the call after the grace, and with nothing in reach X calls at once; it fails on v13.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

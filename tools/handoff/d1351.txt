@@ -1,0 +1,22 @@
+## v13.51 - A CONTROLLER IN A RING CAN ALWAYS CALL FOR EXTRACTION AGAIN
+
+My regression from v13.48, found by the key prompt audit of 2026-09-14. v13.48 made pad X
+hold X inside a ring whenever a container was in reach, so a controller player could search
+a body on the way out. But while that container stayed in reach X never held E, and E is
+both the extraction call and the boarding pull. A box that refuses the search never opens
+(a full backpack refuses it), so a pad player standing next to one could not call or board
+at all, under a prompt telling him X calls for extraction.
+
+THE BUILD. X searches first. If no search has started 0.35 s into the press, it holds E
+instead. Once a search has started in a hold, X keeps searching until the box is done, so
+a looting hold never turns into a call halfway through. An opened box stops counting as in
+reach, so the next hold calls.
+
+MEASURED. Check 13.51 fakes a pad on the first extraction point with a box at the player's
+feet. A box that can be searched is still searched. With bagWeight forced full so the search
+is refused, half a second of X must hold E and not X. With the box moved out of reach, X
+must hold E at once. It fails on v13.50.
+
+Not verified: a real controller; a search held continuously from one box straight onto the
+call, where the call now begins only after the box finishes; and the other prompts the audit
+found naming keyboard keys on a controller, which are the next build.

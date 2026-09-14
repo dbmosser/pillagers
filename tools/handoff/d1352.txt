@@ -1,0 +1,25 @@
+## v13.52 - WHAT A CONTROLLER PLAYER READS MATCHES THE BUTTON
+
+The key prompt audit of 2026-09-14, findings 2 to 7. With a controller connected, six
+pieces of text named a keyboard key, or a button that does something else:
+  the empty cell line said Press 1 for your gun, and no pad button reaches a number key
+  the short pad key list said BACK and START, while the full list and the backpack say
+    VIEW and MENU
+  D-DOWN was labelled medical, which it has not done since the held heal went at v11.27
+  the HUD backpack cue named B, which is the dodge roll on a pad
+  the Peddler DEAL prompt and both HOLD TO CALL FOR EXTRACTION lines printed E
+  the belt caption offered V signal, which no pad button reaches
+
+THE BUILD. On a pad: the empty cell line names LB or RB, the bumpers that walk the belt;
+PADLABEL and the short list say VIEW and MENU; D-DOWN reads revive; the backpack cue reads
+VIEW; the three E prompts name the pad button through keyLabel; and the belt caption leaves
+V signal out. On the keyboard every one of these reads exactly as before.
+
+MEASURED. Check 13.52 deploys a raid and stubs padOn. With it off, the empty cell line must
+still begin Press. With it on, the line must name LB and not Press, PADLABEL must say VIEW
+and MENU, the short list must name neither BACK nor START, and neither pad list may say
+medical for D-DOWN. It fails on v13.51.
+
+Not verified: the four canvas prompts (backpack cue, DEAL, both HOLD TO CALL lines, belt
+caption), which the check does not read; and finding 8, the hire card that still says B for
+orders under his baked text, left alone so his wording is not dropped.

@@ -1,0 +1,10 @@
+v13.52: what a controller player reads matches the button
+
+Key prompt audit findings 2 to 7: on a pad the empty cell line, the short key
+list, the D-DOWN label, the HUD backpack cue, the DEAL and HOLD TO CALL prompts
+and the belt caption named keys or buttons that do something else. Pad wording
+now names the right button; the keyboard text is unchanged.
+
+Check 13.52 stubs padOn. Fails on v13.51.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
