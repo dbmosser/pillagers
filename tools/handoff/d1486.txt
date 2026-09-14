@@ -1,0 +1,16 @@
+## v14.86 - A DRAG ON THE BELT IN A RAID KEEPS THE KEYS FOR WHAT STAYED HOME
+
+Belt audit finding 3 (MEDIUM). At raid start the raid's copy of the belt plan lets go of keys on items carried neither in the
+backpack nor the pouch (v13.99), so the derived cells they would have blanked stay; the comment there promises his Undercroft
+plan is left as he set it. But a drag onto a belt key or off one mid-raid saves the raid's copy over the whole plan, so every
+key on an item that stayed home was gone when he got back. A common case: after an extraction the key stays but nothing is
+packed, and one drag in the next raid erased it.
+
+THE BUILD. The keys let go at raid start are kept aside, and both mid-raid saves put them back into the saved plan, unless the
+drag put something else on that key or moved that item to another key.
+
+MEASURED. Check 14.86 deploys with key 7 on a Stim left at home (control: the raid's copy let it go), binds and then unbinds a
+Medkit key by a drag released off the belt (control: it unbinds), and requires the saved plan to still hold the Stim on key 7.
+It fails on v14.85. The drag onto the belt uses the same helper and is not driven by the check.
+
+Not verified: a real drag mid-raid and the plan at home by eye.

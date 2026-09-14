@@ -5718,6 +5718,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.84',what:'a heal on a belt key does not take Medical away from the other heals: with a Medkit on key 8 and a Bandage carried, the belt still has a Medical cell, and with only the Medkit carried it does not (belt audit finding 1)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof hotbarSlots!=='function'||!ITEMS.medkit||!ITEMS.bandage) return 'SKIP: no belt in this build';
+     var bad=[], g0=null;
+     function medical(g){ return (hotbarSlots()||[]).filter(function(c){ return c&&c.kind==='heal'&&!c.assigned; }).length; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
+       g0=g; g.hotAuto={};
+       // CONTROL: with only the Medkit carried and on key 8, Medical is blanked, and key 8 is his Medkit key.
+       g.hotAssign={7:'medkit'}; g.bag=['medkit'];
+       var sl=hotbarSlots();
+       if(!sl[7]||!sl[7].assigned||sl[7].itemKey!=='medkit') return 'SKIP: key 8 is not his Medkit key here';
+       if(medical(g)) return 'SKIP: Medical still shows with every heal carried on a key';
+       g.bag=['medkit','bandage'];
+       if(!medical(g)) bad.push('with a Medkit on key 8 and a Bandage carried the belt has no Medical cell, so the Bandage cannot be used');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(g0&&!g0.over) __endRaid('abandon'); }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.83',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the stash news of v14.74, still opening with the alpha line',
    run:function(){
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';

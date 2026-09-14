@@ -1,0 +1,9 @@
+v14.87: the Undercroft belt counts what goes up
+
+The belt drawn in the Undercroft counted no grenades, so a key on three packed
+Frags read 0, and it skipped a key on gun 2. It now counts packed grenades and
+knows the second gun.
+
+Check 14.87. Fails on v14.86.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

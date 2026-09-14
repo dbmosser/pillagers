@@ -1,0 +1,9 @@
+v14.86: a drag on the belt in a raid keeps the keys for what stayed home
+
+A drag onto or off a belt key mid-raid saved the raid's trimmed copy of the
+plan, erasing keys on items left at home. Those keys now go back into the
+saved plan.
+
+Check 14.86. Fails on v14.85.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

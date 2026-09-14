@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.84 - A HEAL ON A BELT KEY NO LONGER TAKES MEDICAL AWAY FROM THE OTHER HEALS
+
+Belt audit finding 1 (HIGH). The belt is derived: fixed cells for the guns, grenades, Medical and plates, overridden where he has
+bound an item to a key. Since v6.70 a derived cell that would show the same thing as a bound key is blanked. For heals the test
+was any heal bound anywhere, so a Medkit on key 8 blanked Medical, even though Medical uses the cheapest useful heal carried,
+here the Bandages. Medical is the only cell that uses the heals he did not bind. Once the Medkit was spent key 8 said none left,
+and the Bandages in the backpack, including the issued ones every raid hands out, could not be used for the rest of the raid.
+
+THE BUILD. Medical is blanked only when every heal carried is on a key.
+
+MEASURED. Check 14.84 deploys, binds a Medkit to key 8 with only the Medkit carried (control: key 8 is his Medkit key and
+Medical is blanked), then carries a Bandage too: Medical must show. It fails on v14.83.
+
+Not verified: using the Bandage from Medical in a live raid by hand.
 ## v14.83 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 WHATSNEW_VER stood at 14.72 against a build at 14.82, and the card said nothing about the fixes of v14.73 to v14.82: the stash

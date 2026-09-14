@@ -1,0 +1,9 @@
+v14.84: a heal on a belt key no longer takes Medical away from the other heals
+
+Any heal bound to a key blanked the Medical cell, so with a Medkit on a key the
+Bandages carried could not be used. Medical is now blanked only when every heal
+carried is on a key.
+
+Check 14.84. Fails on v14.83.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

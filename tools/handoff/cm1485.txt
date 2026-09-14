@@ -1,0 +1,9 @@
+v14.85: a belt key on a gun in his hands survives an extraction
+
+A key bound to gun 1 or gun 2 from the rack was deleted after every extraction,
+because the gun is in neither the stash nor the kit. The equipped guns now
+count as held.
+
+Check 14.85. Fails on v14.84.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
