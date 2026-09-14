@@ -5718,6 +5718,147 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.44',what:'TAB does what Escape does, because on itch the browser spends Escape on leaving fullscreen: in a raid it closes the map before the backpack and closes the emote bar, raises the pause box with nothing open and closes it again, and leaves a backpack behind the box alone; in the Undercroft it closes the top window and the backpack, pauses with nothing open and unpauses; on the title it raises nothing; and the controller View button still opens the backpack (his ruling of 2026-09-13)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__keysRef&&window.__hubEnter&&window.__hubBag&&window.__showScreen))
+       return 'SKIP: this fixture cannot drive a raid, the Undercroft floor and the title';
+     var pb=document.getElementById('pausebox');
+     if(!pb||typeof togglePauseBox!=='function') return 'SKIP: this build has no pause box';
+     var bad=[];
+     function keysOff(){ try{ var K=__keysRef(); for(var kk in K) K[kk]=false; }catch(_k){} }
+     // ON WINDOW ONLY. window plus document doubles every press (v11.28). Cancelable,
+     // because a real key press is, and the pause closer reads defaultPrevented.
+     function tap(c){
+       keysOff();
+       window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:c,bubbles:true,cancelable:true}));
+       window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:c,bubbles:true,cancelable:true}));
+     }
+     function boxUp(){ return pb.classList.contains('on'); }
+     function boxDown(){ try{ if(boxUp()) togglePauseBox(false); }catch(_b){} pb.classList.remove('on'); }
+     function modalsUp(){ return document.querySelectorAll('.modal.on').length; }
+     function floorBagShut(){ try{ if(__hubBag()){ try{ hubBagOpenSet(false); }catch(_hs){ __hubBag(false); } } }catch(_h){} }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       floorBagShut();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       if(!g||!g.player) return 'SKIP: the raid did not start';
+       g.player.downed=false; g.trade=null; g.emoteBar=false; g.mapOpen=false; g.bagOpen=false; g.drag=null;
+       boxDown();
+
+       // RAID ONE: THE MAP IS IN FRONT OF THE BACKPACK, one panel per press, as ESC does.
+       tap('KeyI'); tap('KeyM');
+       if(!(g.bagOpen&&g.mapOpen)) bad.push('control: I and M did not open the backpack and the map, so there was nothing for TAB to close');
+       else {
+         tap('Tab');
+         if(g.mapOpen) bad.push('TAB over the open map did not close it, so the key he was given for itch does nothing to the panel in front of him');
+         if(!g.bagOpen) bad.push('one TAB closed the backpack behind the map, so TAB answers out of order or eats two panels');
+         if(boxUp()) bad.push('TAB over the open map raised the pause box');
+         tap('Tab');
+         if(g.bagOpen) bad.push('the second TAB did not close the backpack, which the second ESC does');
+         if(boxUp()) bad.push('the TAB that should have closed the backpack raised the pause box');
+       }
+       boxDown(); g.bagOpen=false; g.mapOpen=false; g.drag=null;
+
+       // RAID TWO: THE EMOTE BAR.
+       g.emoteBar=true;
+       tap('Tab');
+       if(g.emoteBar) bad.push('TAB did not close the emote bar, which ESC closes');
+       if(g.bagOpen) bad.push('TAB over the emote bar opened the backpack under it');
+       if(boxUp()) bad.push('TAB over the emote bar raised the pause box');
+       boxDown(); g.emoteBar=false; g.bagOpen=false;
+
+       // RAID THREE: NOTHING OPEN. TAB pauses, and TAB unpauses.
+       tap('Tab');
+       if(!boxUp()) bad.push('TAB with nothing open in a raid does not raise the pause box, so on itch, where ESC leaves fullscreen, he has no pause on the key he was given');
+       if(g.bagOpen) bad.push('TAB with nothing open in a raid still opens the backpack instead of pausing');
+       if(boxUp()){
+         tap('Tab');
+         if(boxUp()) bad.push('TAB does not close the pause box in a raid, so the key that opened it cannot close it');
+         else if(g.paused) bad.push('TAB took the pause box down and the raid stayed paused');
+       }
+       boxDown(); g.bagOpen=false;
+
+       // RAID FOUR: THE BOX IS IN FRONT OF THE BACKPACK. P raises it over an open backpack.
+       tap('KeyI');
+       if(!g.bagOpen) bad.push('control: I did not open the backpack');
+       else {
+         tap('KeyP');
+         if(!boxUp()) bad.push('control: P did not raise the pause box over the open backpack');
+         else {
+           tap('Tab');
+           if(boxUp()) bad.push('with the pause box over the backpack TAB did not close the box, which is in front');
+           if(!g.bagOpen) bad.push('with the pause box up TAB closed the backpack behind it');
+         }
+       }
+       boxDown(); g.bagOpen=false; g.drag=null;
+
+       // RAID FIVE, THE CONTROLLER: View taps whatever PADTAP names, through raidKey, as pollPad does.
+       if(typeof PADTAP!=='undefined'&&typeof raidKey==='function'){
+         keysOff();
+         raidKey(PADTAP[8],false,null);
+         keysOff();
+         if(!g.bagOpen) bad.push('the controller View button no longer opens the backpack: it taps '+PADTAP[8]+', and every controller key list says View is the backpack');
+         if(boxUp()) bad.push('the controller View button raises the pause box, so a controller has two pause buttons and no backpack button');
+         boxDown(); g.bagOpen=false;
+       }
+       try{ var ge=__state(); if(ge&&!ge.over){ ge.player.downed=false; __endRaid('abandon'); } }catch(_e1){}
+       try{ G=null; keys={}; showScreen('hub'); }catch(_g1){}
+
+       __hubEnter(); floorBagShut(); boxDown(); keysOff();
+
+       // FLOOR ONE: THE TOP WINDOW.
+       try{ openModal('settingsmodal'); }catch(_om){}
+       if(!modalsUp()) bad.push('control: the Settings window would not open on the floor');
+       else {
+         tap('Tab');
+         if(modalsUp()) bad.push('TAB does not close an open window in the Undercroft, so every window down there still needs ESC, which on itch leaves fullscreen');
+         if(boxUp()) bad.push('TAB over an open window in the Undercroft raised the pause box');
+       }
+       try{ var ms=document.querySelectorAll('.modal.on'); for(var mi=0;mi<ms.length;mi++) ms[mi].classList.remove('on'); }catch(_mc){}
+       boxDown();
+
+       // FLOOR TWO: THE BACKPACK, opened with I, the way a player opens it.
+       tap('KeyI');
+       if(!__hubBag()) bad.push('control: I did not open the backpack on the floor');
+       else {
+         tap('Tab');
+         if(__hubBag()) bad.push('TAB does not close the open backpack in the Undercroft');
+         if(boxUp()) bad.push('TAB over the open backpack in the Undercroft raised the pause box over it, which v12.11 stopped ESC doing');
+       }
+       boxDown(); if(__hubBag()) tap('KeyI');
+
+       // FLOOR THREE: NOTHING OPEN. TAB pauses, and TAB unpauses.
+       tap('Tab');
+       if(!boxUp()) bad.push('TAB with nothing open in the Undercroft does not raise the pause box');
+       if(__hubBag()) bad.push('TAB with nothing open in the Undercroft still opens the backpack instead of pausing');
+       if(boxUp()){
+         tap('Tab');
+         if(boxUp()) bad.push('TAB does not close the pause box in the Undercroft');
+       }
+       boxDown(); if(__hubBag()) tap('KeyI');
+
+       // TITLE: TAB raises nothing over the boot title, as ESC raises nothing (v11.45).
+       var tt=document.getElementById('title');
+       if(tt){
+         boxDown(); keysOff();
+         __showScreen('hub'); tt.classList.add('on');
+         tap('Tab');
+         if(boxUp()) bad.push('TAB on the title screen raised the pause box over it, which ESC does not do');
+         tt.classList.remove('on');
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       keysOff();
+       try{ boxDown(); }catch(_p){}
+       try{ var g6=__state(); if(g6){ g6.bagOpen=false; g6.mapOpen=false; g6.emoteBar=false; g6.drag=null; if(!g6.over){ g6.player.downed=false; __endRaid('abandon'); } } }catch(_e){}
+       try{ var ms2=document.querySelectorAll('.modal.on'); for(var m2=0;m2<ms2.length;m2++) ms2[m2].classList.remove('on'); }catch(_m){}
+       floorBagShut();
+       try{ var t2=document.getElementById('title'); if(t2) t2.classList.remove('on'); }catch(_t){}
+       try{ G=null; keys={}; showScreen('hub'); }catch(_q){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.43',what:'a fresh profile starts on Few machines and Few pillagers, and a COLD STORAGE raid by day holds no more crawlers than Few names and no more than 5 pillagers, while putting the old house floor back raises the crawlers (his rulings of 2026-09-13)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
@@ -8430,7 +8571,7 @@ window.__REGRESS=[
        }
        // TAB and I: the backpack opens invisibly under a 90 percent overlay, so
        // closing the box reveals a backpack he never opened.
-       var _bagKeys=['Tab','KeyI'], bi;
+       var _bagKeys=['KeyI'], bi;   // v13.44: TAB pauses on the floor now, and v13.44 owns that press
        for(bi=0;bi<_bagKeys.length;bi++){
          var rb=paired(_bagKeys[bi],function(){ return !!__hubBag(); },function(){ __hubBag(false); });
          if(rb){
@@ -8819,8 +8960,8 @@ window.__REGRESS=[
        if(!g) return 'SKIP: the raid did not start';
        var K=__keysRef(); for(var k in K) K[k]=false;
        // THE BACKPACK, opened with its own key.
-       tap('Tab');
-       if(!g.bagOpen){ bad.push('control: TAB did not open the backpack, so there is nothing here for ESC to close'); }
+       tap('KeyI');
+       if(!g.bagOpen){ bad.push('control: I did not open the backpack, so there is nothing here for ESC to close'); }
        else {
          tap('Escape');
          if(g.bagOpen) bad.push('ESC over the open backpack did not close it, so the gesture every other window in this game teaches him does nothing to the one panel he has open');
@@ -8840,7 +8981,7 @@ window.__REGRESS=[
        g.bagOpen=false; g.mapOpen=false;
        // BOTH OPEN: the map is drawn in front, so it goes first and one press
        // must not take them both.
-       tap('Tab'); tap('KeyM');
+       tap('KeyI'); tap('KeyM');
        if(g.bagOpen&&g.mapOpen){
          tap('Escape');
          if(g.mapOpen) bad.push('with both open ESC did not close the map, which is the one drawn in front');
@@ -8857,8 +8998,8 @@ window.__REGRESS=[
        // raidKey first and that listener second, where it closes the box raidKey
        // just opened. In real play it runs in the capture phase, before raidKey,
        // and does nothing. What IS readable is the order of the three layers.
-       tap('Tab');
-       if(!g.bagOpen){ bad.push('control: TAB did not re-open the backpack'); }
+       tap('KeyI');
+       if(!g.bagOpen){ bad.push('control: I did not re-open the backpack'); }
        else {
          tap('KeyP');
          if(!boxUp()) bad.push('control: with the backpack open P no longer raises the pause box, so the pause key has been taken away rather than the panel given its own');
@@ -14790,7 +14931,7 @@ window.__REGRESS=[
      var title=document.getElementById('title');
      if(!title) return 'SKIP: no title element in this document';
      var tt=(title.textContent||'').replace(/\s+/g,' ');
-     if(tt.indexOf('TAB backpack')<0) bad.push('the title controls line does not say "TAB backpack": '+tt.slice(0,120));
+     if(tt.indexOf('I backpack')<0) bad.push('the title controls line does not say "I backpack": '+tt.slice(0,120));
      if(tt.indexOf('TAB bag')>=0) bad.push('the title controls line still says "TAB bag"');
      // TWO: the old strings are gone from everywhere the player reads, source
      // included. The needles are assembled so this check does not match itself.
@@ -15024,7 +15165,7 @@ window.__REGRESS=[
      var stale=[['F ','heal/revive'].join(''), ['Q/G ','throw'].join(''), ['TAB ','bag '].join(''), ['sprint ','on/off'].join(''), ['superhot ','mode'].join('')];
      for(var i=0;i<stale.length;i++) if(text.indexOf(stale[i])>=0) bad.push('the pause box still says "'+stale[i]+'"');
      // WHAT IT MUST SAY, and it must agree with the H list.
-     var need=[['F ','melee strike'].join(''), ['TAB ','backpack'].join(''), ['tactical ','belt'].join(''), ['hold to ','sprint'].join('')];
+     var need=[['F ','melee strike'].join(''), ['I ','backpack'].join(''), ['tactical ','belt'].join(''), ['hold to ','sprint'].join('')];
      for(i=0;i<need.length;i++) if(text.indexOf(need[i])<0) bad.push('the pause box does not say "'+need[i]+'"');
      var L=(window.__legend?__legend():null);
      if(L&&L.length){ var fRow=null; for(i=0;i<L.length;i++){ var rows=L[i][1]||[]; for(var j=0;j<rows.length;j++) if(rows[j][0]==='F') fRow=rows[j][1]; }
@@ -21754,7 +21895,7 @@ window.__REGRESS=[
      // THREE: the HUD hint beside the vitals, "TAB  INVENTORY" on v9.89.
      var hud=drawn(0).join(' | ');
      if(hud.indexOf(TABINV)>=0) bad.push('the HUD hint still reads '+TABINV);
-     if(hud.indexOf(['TAB  ','BACKPACK'].join(''))<0) bad.push('the HUD hint does not read TAB  BACKPACK');
+     if(hud.indexOf(['I  ','BACKPACK'].join(''))<0) bad.push('the HUD hint does not read I  BACKPACK');
      g.legendOn=keepLeg;
      // FOUR: the controller legend table, which v9.89 missed entirely.
      if(window.__pad&&__pad.legend){

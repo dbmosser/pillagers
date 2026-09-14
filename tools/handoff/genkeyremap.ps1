@@ -8,19 +8,19 @@ trap { Write-Output "FAILED: $_"; exit 1 }
 $h = 'C:\claudecode\dark raiders\tools\handoff'
 $j = [IO.File]::ReadAllText("$h\parked\keyremap-plan.txt") | ConvertFrom-Json
 $r = $j.result; if ($r -is [string]) { $r = $r | ConvertFrom-Json }
-function RenV([string]$s) { return $s.Replace('13.43', '13.46').Replace('13.42', '13.45') }
+function RenV([string]$s) { return $s.Replace('13.43', '13.45').Replace('13.42', '13.44') }
 function Clean([string]$s) { return (($s -replace "[`r`n]+", ' ') -replace "['`"\\$]", '').Trim() }
 
-$tags = @('1345', '1346'); $prevNow = @('13\.44', '13\.45')
-$anchor = @("  {v:'13.44',what:'searching a box that finishes an open contract", "  {v:'13.45',what:'TAB does what Escape does")
+$tags = @('1344', '1345'); $prevNow = @('13\.43', '13\.44')
+$anchor = @("  {v:'13.43',what:'a fresh profile starts on Few machines", "  {v:'13.44',what:'TAB does what Escape does")
 for ($bi = 0; $bi -lt 2; $bi++) {
   $b = $r.plan.builds[$bi]; $tag = $tags[$bi]; $ver = '13.' + $tag.Substring(2)
   $edits = @()
   for ($k = 0; $k -lt $b.edits.Count; $k++) {
     $e = $b.edits[$k]
     $old = RenV ([string]$e.old_verbatim); $new = RenV ([string]$e.new_text)
-    if ($bi -eq 0 -and $k -eq 0) { $old = "var VER='13.44';"; $new = "var VER='13.45';" }
-    if ($bi -eq 0 -and $k -eq 1) { $old = "var WHATSNEW_VER='13.43';"; $new = "var WHATSNEW_VER='13.45';" }
+    if ($bi -eq 0 -and $k -eq 0) { $old = "var VER='13.43';"; $new = "var VER='13.44';" }
+    if ($bi -eq 0 -and $k -eq 1) { $old = "var WHATSNEW_VER='13.43';"; $new = "var WHATSNEW_VER='13.44';" }
     if ($bi -eq 0 -and $k -eq 3) { $new = $old.Substring(0, $old.IndexOf('Only')) + "Only P, TAB and ESC answer while it is up.'," }
     if ($bi -eq 0 -and $k -eq 6) { $new = "F is your melee strike, I opens the backpack, 1 to 9 is the tactical belt.'," }
     if ($bi -eq 0 -and $k -eq 7) { $new = '1-9 tactical belt &nbsp; I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; TAB back out &nbsp; P / TAB pause</div>' }
