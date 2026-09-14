@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.56';
+var VER='13.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19441,7 +19441,7 @@ silentExit:T.silentExit||0,
   var tPay=termsPay();
   (function(){
     var _grec={outcome:how,haul:haul,carriedIn:G.carriedIn||0,containers:T.containers,kills:T.kills,termPay:tPay,
-      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:T.distance||0,
+      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:Math.round(T.distance||0),   // v13.57: rounded as the banked record rounds it
       // v11.63: the same two flags the banked record carries, so the card prints
       // what addProgress and addXp will actually credit: night, weather and dose.
       night:(typeof isDay==='function'&&!isDay())?1:0,
@@ -29727,7 +29727,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.56: A CONTRACT FINISHED MID-RAID STAYS IN THE RUN LOG ON A DEATH. End-of-raid audit of 2026-09-14, finding 4: kill, open and district cards finished during the raid are noted in contractsMid, but only contractExtract copied them into the logged list, and it runs on an extraction alone, so dying after finishing one left the log row and the report with no contracts while the card still paid at the Mainframe. The log row now falls back to the mid-raid contracts when nothing was banked. Check 13.56 stages a mid-raid kill contract, dies, and requires it in the newest log row, with an extraction as the control; it fails on v13.55',
+  now:'v13.57: THE XP ON THE CARD IS THE XP BANKED, AT EVERY DISTANCE. End-of-raid audit of 2026-09-14, finding 5: the outcome card built its XP from the raw distance walked while the banked record rounds the distance first, and the XP formula rounds distance over its step again, so at a rounding edge the card printed one XP less than the profile banked. The card record now rounds the distance as the banked record does. Check 13.57 finds a distance where raw and rounded give different XP, extracts at it, and requires the XP on the card to equal the XP banked, with a round distance as the control; it fails on v13.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

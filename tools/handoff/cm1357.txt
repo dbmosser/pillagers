@@ -1,0 +1,9 @@
+v13.57: the XP on the card is the XP banked, at every distance
+
+The outcome card used the raw distance walked while the banked record rounds it,
+so at a rounding edge the card printed one XP less than was banked. The card
+record now rounds the distance the same way.
+
+Check 13.57 extracts at a rounding edge. Fails on v13.56.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

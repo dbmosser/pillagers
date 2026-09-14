@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.57 - THE XP ON THE CARD IS THE XP BANKED, AT EVERY DISTANCE
+
+The end-of-raid audit of 2026-09-14, finding 5, the minor one. The outcome card works out
+the XP it prints from a record carrying the raw distance walked. The record the profile
+banks rounds the distance first. The XP formula then rounds distance over its step again,
+so at a rounding edge the two disagree by one, and the card printed one XP less than the
+profile actually banked.
+
+THE BUILD. The card's record rounds the distance exactly as the banked record does, so both
+go through the formula with the same number.
+
+MEASURED. Check 13.57 searches the XP formula for a fractional distance where the raw and
+rounded values give different XP, extracts at that distance, reads the +N XP line off the
+outcome card, and requires it to equal the XP the profile banked. The same extraction at a
+round distance is the control, which agrees on both builds and proves the check reads the
+right two numbers. It fails on v13.56.
+
+Not verified: a night or weather run, where the multipliers apply after the base and were
+held off in the check.
 ## v13.56 - A CONTRACT FINISHED MID-RAID STAYS IN THE RUN LOG ON A DEATH
 
 The end-of-raid audit of 2026-09-14, finding 4. Kill, open and district contracts can finish
