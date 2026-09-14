@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.46 - SPACE AND H WAIT WHILE THE FLOOR BACKPACK IS OPEN
+
+Undercroft floor audit finding 2 (LOW). The backpack opened on the floor with B freezes the floor like a window. The floor
+key handler's "busy" test counted windows, the stash screen and the character screen, but not the backpack. So behind the
+open backpack SPACE clanked, moved nothing because the floor was frozen, and left a full roll to start the moment the
+backpack closed; H toggled the controls panel, hidden under the backpack.
+
+THE BUILD. The open floor backpack counts as busy. Only H and SPACE read that test; ESC, TAB and P keep the backpack rule
+they already had.
+
+MEASURED. Check 14.46 arrives on the floor and presses SPACE with the backpack shut (control: a roll starts), then opens the
+backpack and presses SPACE (no roll) and H (the panel stays hidden). It fails on v14.45.
+
+Not verified: B, SPACE, B on the floor by hand.
 ## v14.45 - A ROLL DOES NOT CARRY THROUGH A RAID
 
 Undercroft floor audit finding 1 (LOW). SPACE rolls on the floor for 0.38 seconds, and station actions still fire during a

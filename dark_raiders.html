@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.45';
+var VER='14.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10851,8 +10851,11 @@ window.addEventListener('keydown',function(e){
     // v8.16, audit: nothing on the floor answers a key while something is open
     // over it. SPACE used to roll the character behind an open window rather
     // than pressing the control he was looking at.
+    // v14.46, floor audit finding 2: THE OPEN BACKPACK COUNTS AS BUSY. It freezes the floor like a window, but SPACE and H
+    // still acted behind it: SPACE clanked and left a full roll to start the moment it closed, and H toggled a panel hidden
+    // under it. Only H and SPACE read this; ESC, TAB and P keep their own backpack rule below.
     var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v12.06: the character screen counts here too
-                    document.getElementById('hub').classList.contains('on'));
+                    document.getElementById('hub').classList.contains('on')||hubBagOpen);
     // v6.73, his notes: H shows the controls down here too, and SPACE rolls.
     if(e.code==='KeyH'&&!e.repeat&&HB&&!_hubBusy){ HB.legend=!HB.legend; e.preventDefault(); return; }
     // v8.70, HIS REPORT: ESC and P pause on the floor. The raid owns these keys
@@ -30014,7 +30017,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.45: A ROLL DOES NOT CARRY THROUGH A RAID. A roll toward the lift followed by R inside its 0.38 seconds froze the floor mid-roll, and coming back he was placed at the lamp and then rolled up to 160 units out of it. Arriving on the floor now ends any roll. Check 14.45 sets a roll part done and arrives on the floor; it fails on v14.44',
+  now:'v14.46: SPACE AND H WAIT WHILE THE FLOOR BACKPACK IS OPEN. The open backpack freezes the floor, but SPACE behind it clanked and left a full roll to start when it closed, and H toggled a panel hidden under it. Both now wait for the backpack to close, like any window. Check 14.46 presses SPACE with the backpack shut, then SPACE and H with it open; it fails on v14.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
