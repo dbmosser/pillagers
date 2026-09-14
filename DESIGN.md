@@ -40024,6 +40024,23 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.99 - THE DATA CORE PRICE ON THE MAINFRAME IS THE PRICE IT SELLS FOR
+
+Copies audit finding 3 (LOW). The Mainframe's Data Core line said "$520 on the shelf" as typed text. Every other place prices the
+core with ival('core'), which the How much is out there setting scales (Rich 1.35, Lean 0.7): the stash hover, Sell one, the raid
+backpack hover and the sell button. On Rich, with a core in the stash, the Mainframe said $520 while the hover said $702 each and
+Sell one paid $702.
+
+The branch shown with no core in the stash is one of his baked edits: its whole sentence is the key his wording replaces. It must
+stay byte for byte, or his wording stops applying.
+
+THE BUILD. With a core in the stash the line names ival('core'). The line with no core is left exactly as it was.
+
+MEASURED. Check 14.99 sets Rich (control: the core's value moves off 520) and reads the line with a core: it must name the core's
+value. With no core the line must still be the baked key or his wording for it. It restores the setting and the profile. It fails
+on v14.98.
+
+Not verified: the Mainframe on screen on Rich and Lean.
 ## v14.98 - THE RACK LINE SAYS WHAT THE WALL PAYS
 
 Copies audit finding 2 (LOW). An extraction pays mfPayPer: racks times the rack pay plus Arrays times the Array pay, and the

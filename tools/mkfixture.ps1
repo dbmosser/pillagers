@@ -5718,6 +5718,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.99',what:'the Data Core price on the Mainframe is the price it sells for: on a loot value setting that scales it, with a core in the stash the line names that price, and with none the line still matches his baked key (copies audit finding 3)',
+   run:function(){
+     if(typeof renderMainframe!=='function'||typeof ival!=='function'||!ITEMS.core||!document.getElementById('mfslothint')||!window.__applyLoaded) return 'SKIP: no Mainframe core line in this build';
+     var bad=[], snap=null, keepLoot=CFG.lootMult, NONE='Spend a Data Core ($520 on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. None in the stash right now.';
+     function line(){ renderMainframe(); return String(document.getElementById('mfslothint').textContent||''); }
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       var q=__P(); q.intel=0; CFG.lootMult=1.35;
+       var price=ival('core');
+       // CONTROL: the setting moves the core's sell value off 520.
+       if(price===520) return 'SKIP: the loot value setting does not move the Data Core value here';
+       q.stash=['core'];
+       var withCore=line();
+       if(withCore.indexOf('$'+price.toLocaleString())<0) bad.push('with a core in the stash worth $'+price+' the Mainframe line reads: '+withCore.slice(0,60));
+       q.stash=[];
+       var none=line();
+       if(none!==NONE&&!(typeof TXSHIP!=='undefined'&&TXSHIP&&none===TXSHIP[NONE])) bad.push('with no core the line no longer matches his baked key: '+none.slice(0,60));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ CFG.lootMult=keepLoot; try{ if(snap) __applyLoaded(snap); }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.98',what:'the rack line says what the wall pays: a rack built beside an Array names the pay of racks and Arrays together, which is what an extraction pays (copies audit finding 2)',
    run:function(){
      if(typeof buildRack!=='function'||typeof mfPayPer!=='function'||typeof RACK_COST==='undefined'||!window.__applyLoaded) return 'SKIP: no mainframe racks in this build';

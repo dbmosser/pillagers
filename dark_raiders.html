@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.98';
+var VER='14.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30067,7 +30067,9 @@ function renderMainframe(){
     :'A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.'; }
   if(sh2){ sh2.textContent=P.intel
     ?'Your next raid deploys with intel: every locked-room key and every elite, live on your map. One core, one raid.'
-    :('Spend a Data Core ($520 on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. '+(P.stash.indexOf('core')>=0?'One is in the stash.':'None in the stash right now.')); }
+    :(P.stash.indexOf('core')>=0
+      ?('Spend a Data Core ($'+ival('core').toLocaleString()+' on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. One is in the stash.')
+      :'Spend a Data Core ($520 on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. None in the stash right now.'); }   // v14.99
 }
 function stashCounts(){
   var c={},i;
@@ -30162,7 +30164,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.98: THE RACK LINE SAYS WHAT THE WALL PAYS. Building a rack said the racks alone pay per extraction, leaving out the Arrays the extraction pays for and the Mainframe line counts, so with one Array it said 200 where the wall pays 2,800. It now names the whole wall pay. Check 14.98 builds a rack beside an Array; it fails on v14.97',
+  now:'v14.99: THE DATA CORE PRICE ON THE MAINFRAME IS THE PRICE IT SELLS FOR. The Mainframe said 520 on the shelf at every loot value setting, while the stash hover and Sell one pay the scaled value, 702 on Rich. With a core in the stash the line now names the real price; the line with none is his baked wording and is untouched. Check 14.99 reads the line on Rich with a core; it fails on v14.98',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
