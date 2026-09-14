@@ -5718,6 +5718,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.79',what:'an extraction leaves both gun slots on guns you own: gun 1 put in the backpack from its belt key, dropped, and an empty-handed extraction leaves gun 1 on a gun you own or none (gun audit finding 2)',
+   run:function(){
+     if(typeof bagHeldGun!=='function'||typeof dropItem!=='function'||typeof endRaid!=='function'||!window.__startRaid||!window.__applyLoaded||!ITEMS.gun_smg) return 'SKIP: no belt drop, drop or loader in this build';
+     var bad=[], snap=null;
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       var q=__P(); q.weapons=['smg']; q.equipped='smg'; q.equippedSec='none'; q.freeKit=0;
+       __startRaid({mapIx:0,seed:4242});
+       var pl=G&&G.player;
+       // CONTROL: gun 1 is his SMG out of the armoury.
+       if(!pl||!pl.wep||pl.wep.id!=='smg'||!pl.wepFromArmory) return 'SKIP: the raid did not put his armoury SMG in gun 1 ('+(pl&&pl.wep&&pl.wep.id)+')';
+       pl.swapped=false;
+       if(!bagHeldGun('gunA')) return 'SKIP: the SMG would not go in the backpack here';
+       var bi=G.bag.indexOf('gun_smg'); if(bi<0) return 'SKIP: the SMG is not in the backpack';
+       dropItem(bi);
+       if(__P().weapons.indexOf('smg')>=0||G.bag.indexOf('gun_smg')>=0) return 'SKIP: the SMG is still owned or carried after the drop';
+       endRaid('extract');
+       var r=__P();
+       if(r.equipped!=='fists'&&r.weapons.indexOf(r.equipped)<0) bad.push('after extracting without it, gun 1 still names the '+r.equipped+', which he no longer owns (armoury: '+r.weapons.join(',')+')');
+       if(r.equippedSec&&r.equippedSec!=='none'&&r.equippedSec!=='fists'&&r.weapons.indexOf(r.equippedSec)<0) bad.push('gun 2 names the '+r.equippedSec+', which he does not own');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(snap) __applyLoaded(snap); }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.78',what:'his vocabulary in the raid and the rewards: no season reward name and neither refusal for putting a gun away from its belt key uses the retired word for the backpack (first-hour audit findings 2 and 3)',
    run:function(){
      if(typeof SEASON_TIERS==='undefined'||typeof tierLabel!=='function'||typeof bagHeldGun!=='function'||!window.__startRaid) return 'SKIP: no reward list or belt drop in this build';

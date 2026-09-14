@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.78';
+var VER='14.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19867,6 +19867,13 @@ var _cdone=contractExtract(G.bag,haul);
     // armoury menu applies when a gun is put into a slot it already sits in.
     if(kept.length&&(P.equippedSec||'none')===P.equipped)
       P.equippedSec=(kept.length>1&&kept[1].id!==P.equipped)?kept[1].id:'none';
+    // v14.79, gun audit finding 2: AN EXTRACTION LEAVES BOTH SLOTS ON GUNS HE OWNS. Only the collision above was repaired here.
+    // A gun put in the backpack from its belt key leaves the armoury, and if it was then dropped or given away he extracted
+    // empty-handed with gun 1 still naming it: the sector page and the ascent check said it was going up, a raid handed him a
+    // loaner, and a gun bought next did not go into his hand. The death branch's two ownership repairs, applied here too.
+    if(P.equipped!=='fists'&&P.weapons.indexOf(P.equipped)<0) P.equipped=P.weapons.length?P.weapons[0]:'fists';
+    if(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists'&&P.weapons.indexOf(P.equippedSec)<0) P.equippedSec='none';
+    if((P.equippedSec||'none')===P.equipped) P.equippedSec='none';
     for(i=0;i<THROWKEYS.length;i++){
       var tk=THROWKEYS[i];
       for(var q=0;q<G.pouch[tk];q++) P.stash.push(tk);
@@ -30100,7 +30107,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.78: HIS VOCABULARY IN THE RAID AND THE REWARDS. The retired word for the backpack was still in two raid messages for putting a gun away from its belt key and in two season reward names. The messages now say your backpack and the rewards are the Crate of Frags and the Bigger Crate of Frags. Check 14.78 reads every reward name and both messages; it fails on v14.77',
+  now:'v14.79: AN EXTRACTION LEAVES BOTH GUN SLOTS ON GUNS HE OWNS. A gun put in the backpack from its belt key leaves the armoury, and dropped or given away it left gun 1 naming a gun he no longer owned after an extraction, so the sector page promised it and the next raid handed out a loaner. Extraction now repairs both slots the way a death does. Check 14.79 puts gun 1 away, drops it and extracts; it fails on v14.78',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
