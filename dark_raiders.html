@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.72';
+var VER='14.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30094,7 +30094,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.72: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 14.60 against 14.71, and the card said nothing about the wardrobe, belt key and backpack fixes of v14.61 to v14.71. Two of my own card lines are rewritten in place: the first names the new news and the second merges the two older lines, keeping what checks 14.60, 14.40, 14.27, 14.14 and 14.02 read, and WHATSNEW_VER moves to 14.72. Check 14.72 requires the card current and naming the wardrobe news; it fails on v14.71',
+  now:'v14.73: THE SHOP DOES NOT ASK FOR MONEY FOR A GUN HE OWNS. An owned gun counted as locked for its own reason only when he could afford it anyway, so selecting the Scav Pistol on a fresh profile showed a dead NEED 900 MORE button. Owning the gun is now its own reason. Check 14.73 selects an owned gun and a gun not owned, both short of the price; it fails on v14.72',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32876,7 +32876,10 @@ function renderShopDetail(rows){
   // and no reason. Money is the reason unless something else is: a row disabled
   // while he CAN afford one is locked for its own reason and keeps its own
   // words, and everything else short of the price now says how short.
-  var _otherLock=!!(btn&&btn.disabled&&(P.credits>=o.price));
+  // v14.73, stash and trader audit finding 1: A GUN HE OWNS IS LOCKED FOR ITS OWN REASON. An owned gun's row is disabled and
+  // reads Owned, but it counted as locked for its own reason only when he could afford it anyway, so a fresh profile with 900
+  // selecting the Scav Pistol he already owns got a dead button reading NEED $900 MORE. Owning it is the reason.
+  var _otherLock=!!(btn&&btn.disabled&&(P.credits>=o.price||(o.kind==='wep'&&(P.weapons||[]).indexOf(o.k)>=0)));
   if(!_canAll&&!_otherLock){
     var _short=(o.price*qty)-P.credits;
     b.textContent='NEED $'+_short.toLocaleString()+' MORE';
