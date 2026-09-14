@@ -5718,6 +5718,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.75',what:'the stash header counts what the ALL tab counts: with two Bandages and two guns the STASH held number matches the ALL tab, guns included (stash and trader audit finding 3)',
+   run:function(){
+     if(typeof renderHub!=='function'||typeof WEAPONS==='undefined'||!document.getElementById('stashn')) return 'SKIP: no stash header in this build';
+     var guns=Object.keys(WEAPONS).filter(function(g){ return g!=='fists'; }).slice(0,2);
+     if(guns.length<2) return 'SKIP: fewer than two guns';
+     var bad=[], prof=null, keep=null;
+     try{
+       __topClear(); __cleanProfile(); prof=__P();
+       keep={s:(prof.stash||[]).slice(),w:(prof.weapons||[]).slice(),t:prof.stashTab};
+       prof.stash=['bandage','bandage']; prof.weapons=guns.slice(); prof.stashTab='all';
+       renderHub();
+       var allTab=[].slice.call(document.querySelectorAll('.invtab')).filter(function(d){ return (/^\s*ALL\b/i).test(d.textContent||''); })[0];
+       var m=allTab?String(allTab.textContent).match(/\d+/):null;
+       // CONTROL: the ALL tab counts the two Bandages and the two guns.
+       if(!m) return 'SKIP: the stash drew no ALL tab with a count';
+       if(+m[0]!==4) return 'SKIP: the ALL tab counted '+m[0]+', not the four held';
+       var head=+(document.getElementById('stashn').textContent||'NaN');
+       if(head!==+m[0]) bad.push('the STASH header reads '+head+' held above an ALL tab counting '+m[0]);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(prof&&keep){ var q=__P(); q.stash=keep.s; q.weapons=keep.w; q.stashTab=keep.t; } }catch(_a){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.74',what:'A on a controller packs one from the stash: a pad press on two Bandages in the stash packs one, while a mouse click on them still packs nothing (stash and trader audit finding 2)',
    run:function(){
      if(typeof renderHub!=='function'||typeof ITEMS==='undefined'||!ITEMS.bandage||!document.getElementById('stashgrid')) return 'SKIP: no stash grid in this build';

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.74';
+var VER='14.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30094,7 +30094,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.74: A ON A CONTROLLER PACKS ONE FROM THE STASH. The pad presses A on a stash cell as a plain click, which did nothing, and the pad has no right-click, drag or hover, so a pad player could not pack from the stash at all. A pad press now packs one; a mouse click still does nothing. Check 14.74 clicks a stash stack with the mouse and with the pad; it fails on v14.73',
+  now:'v14.75: THE STASH HEADER COUNTS WHAT THE ALL TAB COUNTS. Armoury guns are in the stash grid and in the ALL tab count but were left out of the STASH held number, so a fresh profile read 0 held above ALL 1. The header now counts the guns too. Check 14.75 holds two Bandages and two guns; it fails on v14.74',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30988,7 +30988,10 @@ function renderKitCol(){
     }
   })();
   var kn=document.getElementById('kitn'); if(kn) kn.textContent=K.length;
-  var sn=document.getElementById('stashn'); if(sn) sn.textContent=P.stash.length;
+  // v14.75, stash and trader audit finding 3: THE STASH HEADER COUNTS WHAT THE ALL TAB COUNTS. Armoury guns are drawn in the
+  // stash grid and counted by the ALL and GUNS tabs, but not by this header, which also counted save keys with no item. A
+  // fresh profile read STASH 0 held above ALL 1 and a pistol, and buying the SMG did not move it.
+  var sn=document.getElementById('stashn'); if(sn) sn.textContent=P.stash.filter(function(x){ return !!ITEMS[x]; }).length+(P.weapons||[]).length;
   // v6.01: the loadout header carries what it is worth, the way his screenshot
   // carries weight and value. Weight is deliberately absent: his spec says weight
   // is irrelevant, so putting a weight readout there would be inventing a system.

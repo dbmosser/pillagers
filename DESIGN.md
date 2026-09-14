@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.75 - THE STASH HEADER COUNTS WHAT THE ALL TAB COUNTS
+
+Stash and trader audit finding 3 (LOW). Armoury guns are drawn in the stash grid and counted by the ALL and GUNS tabs, but the
+STASH header counted only the stash list, including save keys with no item entry, which the tabs skip. A fresh profile read
+STASH 0 held above a tab reading ALL 1 and one pistol cell, and buying the SMG, which goes straight into the armoury, did not
+move the header.
+
+THE BUILD. The header counts stash entries that are items plus the armoury guns, the same count as the ALL tab.
+
+MEASURED. Check 14.75 holds two Bandages and two guns: the ALL tab must count four (control), and the header must match it. It
+fails on v14.74.
+
+Not verified: the stash screen by eye.
 ## v14.74 - A ON A CONTROLLER PACKS ONE FROM THE STASH
 
 Stash and trader audit finding 2 (MEDIUM). The pad can focus stash cells, and A presses the focused control as a click with no
