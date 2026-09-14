@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.55';
+var VER='13.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19823,7 +19823,9 @@ var _cdone=contractExtract(G.bag,haul);
     census:G.census||null,
     intel:G.intel?1:0,
 wallClip:(G.tel&&G.tel.wallClip)||null,
-    contractsBanked:(G.tel&&G.tel.contractsBanked)||null,
+    // v13.56, end-of-raid audit: on a death or abandon contractExtract never runs, so the
+    // cards finished during the raid are read straight from the raid's own record.
+    contractsBanked:(G.tel&&(G.tel.contractsBanked||((G.tel.contractsMid&&G.tel.contractsMid.length)?G.tel.contractsMid.map(function(m){ return m.label; }):null)))||null,
     ghostIn:(G.tel&&G.tel.ghostIn)?1:0,
     haul:haul,items:G.bag.length,containers:T.containers,
     carriedIn:G.carriedIn||0,   // v10.27: the bag's value when the lift landed
@@ -29725,7 +29727,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.55: AN ITEM CONTRACT COUNTS ONLY WHAT THE RUN FOUND. End-of-raid audit of 2026-09-14, finding 2: extract carrying N of an item counted every match in the backpack at the extraction, including items packed from the stash that went straight back to it, so packing two Optics and walking out completed and paid the card on every refill. The raid now records which items the lift carried up, and the card counts only matches beyond those, the item-count form of the v12.65 haul fix. Check 13.55 stages an extract-carrying card for two of an item and calls the extraction count with the items carried up, which must not complete it, and found, which must; it fails on v13.54',
+  now:'v13.56: A CONTRACT FINISHED MID-RAID STAYS IN THE RUN LOG ON A DEATH. End-of-raid audit of 2026-09-14, finding 4: kill, open and district cards finished during the raid are noted in contractsMid, but only contractExtract copied them into the logged list, and it runs on an extraction alone, so dying after finishing one left the log row and the report with no contracts while the card still paid at the Mainframe. The log row now falls back to the mid-raid contracts when nothing was banked. Check 13.56 stages a mid-raid kill contract, dies, and requires it in the newest log row, with an extraction as the control; it fails on v13.55',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
