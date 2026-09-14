@@ -5718,6 +5718,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.80',what:'two of the same gun are two guns lost: a field SMG in hand beside his own armoury SMG in gun 2, a death takes the SMG off the armoury list (gun audit finding 1)',
+   run:function(){
+     if(typeof equipFromBag!=='function'||typeof endRaid!=='function'||!window.__startRaid||!window.__applyLoaded||!ITEMS.gun_smg||!WEAPONS.pistol) return 'SKIP: no equip from the backpack or loader in this build';
+     var bad=[], snap=null;
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       var q=__P(); q.weapons=['pistol','smg']; q.equipped='pistol'; q.equippedSec='smg'; q.freeKit=0;
+       __startRaid({mapIx:0,seed:4242});
+       var pl=G&&G.player;
+       if(!pl||!pl.sec||pl.sec.id!=='smg'||!pl.secFromArmory) return 'SKIP: the raid did not put his armoury SMG in gun 2';
+       pl.swapped=false;
+       G.bag.push('gun_smg');
+       equipFromBag(G.bag.indexOf('gun_smg'),1);
+       // CONTROL: a field SMG in hand and his armoury SMG in gun 2.
+       if(!(pl.wep&&pl.wep.id==='smg'&&!pl.wepFromArmory&&pl.sec&&pl.sec.id==='smg'&&pl.secFromArmory))
+         return 'SKIP: equipping from the backpack did not leave that pair ('+(pl.wep&&pl.wep.id)+' '+pl.wepFromArmory+' / '+(pl.sec&&pl.sec.id)+' '+pl.secFromArmory+')';
+       G.tel.deathKiller='timer'; endRaid('dead');
+       if(__P().weapons.indexOf('smg')>=0) bad.push('he died carrying his own armoury SMG in gun 2 and it is still on the armoury list ('+__P().weapons.join(',')+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(snap) __applyLoaded(snap); }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.79',what:'an extraction leaves both gun slots on guns you own: gun 1 put in the backpack from its belt key, dropped, and an empty-handed extraction leaves gun 1 on a gun you own or none (gun audit finding 2)',
    run:function(){
      if(typeof bagHeldGun!=='function'||typeof dropItem!=='function'||typeof endRaid!=='function'||!window.__startRaid||!window.__applyLoaded||!ITEMS.gun_smg) return 'SKIP: no belt drop, drop or loader in this build';

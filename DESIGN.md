@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.80 - TWO OF THE SAME GUN ARE TWO GUNS LOST
+
+Gun audit finding 1 (MEDIUM). On a death, carriedGuns lists the guns he carried, and when both slots hold the same model it
+keeps only one, the one in hand. Only a gun that came out of the armoury comes off the armoury list. So with his pistol in
+gun 1, his SMG in gun 2 and a spare SMG packed (a duplicate reward), equipping the packed SMG into gun 1 put a field SMG in
+hand beside his armoury SMG, and a death kept the armoury SMG: the card said an SMG was lost and the armoury still held it.
+Swapping hands first gave the right result, so which hand was up decided the loss.
+
+THE BUILD. When the hand's gun is the only one listed and gun 2 holds a non-issued copy of the same model, gun 2 is listed
+too. The armoury copy comes off, and the card counts the two guns he actually lost.
+
+MEASURED. Check 14.80 arms that pair (control: field SMG in hand, armoury SMG in gun 2) and dies: the SMG must be off the
+armoury list. It restores the profile through the loader. It fails on v14.79.
+
+Not verified: the death card for that pair by eye.
 ## v14.79 - AN EXTRACTION LEAVES BOTH GUN SLOTS ON GUNS HE OWNS
 
 Gun audit finding 2 (MEDIUM). Putting a gun in the backpack from its belt key takes it off the armoury list (v14.03). If that

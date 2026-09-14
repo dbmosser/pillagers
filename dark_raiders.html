@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.79';
+var VER='14.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19917,7 +19917,11 @@ var _cdone=contractExtract(G.bag,haul);
       lines.push('<span style="color:'+(RCOL[dispR(_lk2)||li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+
         '<span style="color:var(--rust)">  LOST</span>');
     }
-    var gone=carriedGuns(G.player);
+    var gone=carriedGuns(G.player), _gp0=G.player;
+    // v14.80, gun audit finding 1: TWO OF THE SAME GUN ARE TWO GUNS LOST. carriedGuns keeps one of a same-model pair, the hand,
+    // and only a gun that came out of the armoury comes off the list below, so a field copy in hand beside his own armoury copy
+    // in gun 2 left the armoury copy on the list after the death. Which hand was up decided whether he kept a gun he died with.
+    if(gone.length===1&&gone[0]===_gp0.wep&&_gp0.sec&&_gp0.sec.id===_gp0.wep.id&&!_gp0.secIssued) gone.push(_gp0.sec);
     // v10.72: and they go in the count and in the money. Both branches below
     // print LOST, so both are counted here, once, before the branch.
     var _gunN=0,_gunVal=0;
@@ -30107,7 +30111,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.79: AN EXTRACTION LEAVES BOTH GUN SLOTS ON GUNS HE OWNS. A gun put in the backpack from its belt key leaves the armoury, and dropped or given away it left gun 1 naming a gun he no longer owned after an extraction, so the sector page promised it and the next raid handed out a loaner. Extraction now repairs both slots the way a death does. Check 14.79 puts gun 1 away, drops it and extracts; it fails on v14.78',
+  now:'v14.80: TWO OF THE SAME GUN ARE TWO GUNS LOST. With a field copy of a gun in hand and his own armoury copy in gun 2, a death kept the armoury copy, because only one of a same-model pair was counted and it was the one in hand. Both are now lost. Check 14.80 arms that pair and dies; it fails on v14.79',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
