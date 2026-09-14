@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.39';
+var VER='14.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,12 +1361,12 @@ var VER='14.39';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='14.27';
+var WHATSNEW_VER='14.40';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A CONTROLLER ON EVERY SCREEN, AND THE UNDERCROFT MENUS. A controller now works the title screen and the pause box, keeps its place when a panel redraws, and does not fire when you press ASCEND, open the map or browse your backpack. The stall no longer shuts itself or sells your backpack on a held button. In the Undercroft a second hire does not eat the first fee, a click on a filled belt key clears it, and a gun dropped from the armoury onto the stash goes into the stash.',
-  'SAVES, THE DOWNED SCREEN AND YOUR BELT KEYS. A gun in your backpack comes back if the page closes mid-raid, a restore code keeps the character it replaced for UNDO, and going down closes the map, the backpack and a search; in an uncalled ring the downed screen offers the call. What you buy at the stall is not loot you found, key 1 picks up the gun bound to it, and the free pistol carries its own two magazines.',
+  'STORMS, SOUND AND REWARDS. Lightning no longer hits you through a wall or under a roof, the flash no longer sticks after a storm passes, and a noise near the Peddler no longer leaves the threat sound playing at his stall. A reward gun claimed with nothing in hand becomes your gun, your level is right the moment a save loads, the game goes quiet in a hidden tab, and a look you wear or buy makes a sound.',
+  'A CONTROLLER ON EVERY SCREEN, SAVES AND YOUR BELT KEYS. A controller now works the title screen and the pause box and does not fire when you press ASCEND. A gun in your backpack comes back if the page closes mid-raid, and in an uncalled ring the downed screen offers the call. A second hire does not eat the first fee, a click on a filled belt key clears it, and key 1 picks up the gun bound to it.',
   'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
   'A CONTROLLER WORKS ON THE UNDERCROFT FLOOR AND IN EVERY RAID. View opens your backpack and Menu pauses, you can search and call for extraction from inside an extraction point, you can trade with the peddler, and the prompts name your buttons. The menus also fit the 1280 by 720 window itch opens the game at.',
@@ -30005,7 +30005,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.39: NO RESUME BEFORE THE FIRST CLICK. The audio was asked to resume every frame from page load, so before any click the browser refused and logged a warning sixty times a second, burying real errors in the console. Resume is now asked for only once the page has had a click or key press. Check 14.39 calls ac() on a suspended fake context with and without a recorded gesture; it fails on v14.38',
+  now:'v14.40: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 14.27 against 14.39 and the card said nothing about the storm, sound, reward and save fixes of v14.28 to v14.39. Two of my own card lines are rewritten in place: the first names the new news and the second merges the two older lines, keeping what checks 14.27, 14.14 and 14.02 read, and WHATSNEW_VER moves to 14.40. Check 14.40 requires the card current and naming the lightning news, with every card check still holding; it fails on v14.39',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

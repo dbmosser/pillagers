@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.40 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+A planned card refresh, as at v14.27. WHATSNEW_VER stood at 14.27 against a build at 14.39, and the card said nothing about
+v14.28 to v14.39: lightning and the flash, the Peddler's alert, reward guns, the level on load and the sound fixes.
+
+THE BUILD. Two of my own card lines are rewritten in the same slots, newest first:
+
+- storms, sound and rewards (v14.28 to v14.39),
+- a controller on every screen, saves and your belt keys (v13.91 to v14.26), merged from the two older lines, keeping the
+  title screen and pause box news check 14.27 reads, the uncalled ring news check 14.14 reads and the belt key news check
+  14.02 reads.
+
+The third of my lines, the stash entry inside the thirteen the card draws (check 13.34) and none of his edited lines are
+touched. WHATSNEW_VER moves to 14.40.
+
+MEASURED. Check 14.40 requires the card within fifteen builds of the build, naming the lightning news, and still opening
+with the alpha line. Every check that reads the card is run on the dry build. It fails on v14.39.
+
+Not verified: the card read at 1280x720 by eye.
 ## v14.39 - NO RESUME BEFORE THE FIRST CLICK
 
 Audio audit finding 5 (LOW). Browsers start the audio context suspended until the page has had a click or key press. ac()
