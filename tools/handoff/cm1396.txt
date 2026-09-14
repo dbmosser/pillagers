@@ -1,0 +1,8 @@
+v13.96: an enemy charge does not turn your hire on you
+
+An enemy pillager's charge set your hire to chase, and the pillager chase branch
+then shot and threw charges at you. A blast no longer sets your hire chasing.
+
+Check 13.96 bursts an enemy charge beside your hire. Fails on v13.95.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

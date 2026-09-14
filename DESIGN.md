@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.93 - KILLING A GHOST DOES NOT BLAME A STRANGER
+
+The contracts, notoriety and waves audit of 2026-09-14, finding 2. An imported ghost is placed by
+applyGhost, which takes the first ordinary pillager in the raid, renames him to the ghost's tag and
+gives him the ghost's gun. It kept his identity. Every ledger write keys on the identity, so:
+
+- Killing the ghost wrote a kill on the record of the pillager whose body the ghost took, a man
+  the player never saw by name.
+- From the next raid on, that pillager spawned hostile, refused parley, and could never be hired.
+- Reviving or shooting the ghost moved that pillager's standing.
+- Only the roster name changed, so a wave could bring in a second man with that identity.
+
+THE BUILD. The ghost takes an identity of its own, "ghost_" and his tag, which is outside the list
+spawns and the hire screen read. The rival flag the old identity may have carried is cleared.
+
+MEASURED. Check 13.93 imports a probe ghost, deploys, turns pillager downing off so the kill is
+immediate, kills the ghost as the player, and requires no identity in the pillager list to gain a
+kill. An ordinary pillager killed the same way must record a kill on his identity (the control).
+It fails on v13.92.
+
+Not verified: reviving or betraying the ghost, which write through the same identity.
 ## v13.92 - YOUR HIRE IS NOT ALSO A STRANGER ON THE MAP
 
 The contracts, notoriety and waves audit of 2026-09-14, finding 1. The opening roster takes its

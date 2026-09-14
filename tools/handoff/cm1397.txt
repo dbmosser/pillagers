@@ -1,0 +1,8 @@
+v13.97: a pack call does not reset a crier alarm
+
+A machine calling the pack overwrote a crier mid-alarm to chase, restarting or
+dropping its countdown. A crier in alarm now keeps it.
+
+Check 13.97 calls the pack beside a crier mid-alarm. Fails on v13.96.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

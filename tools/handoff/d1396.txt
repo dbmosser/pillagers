@@ -1,0 +1,20 @@
+## v13.96 - AN ENEMY CHARGE DOES NOT TURN YOUR HIRE ON YOU
+
+The machine and pillager AI audit of 2026-09-14, finding 1. explodeFrag turns every survivor in the
+blast into a chaser. Since v13.69 your own charge skips your hire, but an enemy's charge did not. So:
+
+- A hostile pillager's charge went off near your hire and set him to chase.
+- Nothing on a hire ever takes him out of chase again.
+- The pillager chase branch treats him as a pillager hunting the player. He fired at you every
+  cycle (the rounds pass through you since v13.68 and hit whatever is behind), and if his spawn bag
+  rolled a Frag Charge he threw it at you, up to 98 damage, killing you under his name.
+- On LOOT he stopped looting, and on HOLD he was pulled off his spot.
+
+THE BUILD. A blast never stands your hire up into a chaser, whoever threw the charge. He still
+takes the damage.
+
+MEASURED. Check 13.96 puts your hire and an ordinary hostile pillager beside an enemy pillager's
+charge. The ordinary pillager must give chase (the control, which proves the blast is live). Your
+hire must not. It fails on v13.95.
+
+Not verified: a hire already stuck in chase from an older save state, which this does not reset.

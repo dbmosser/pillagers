@@ -1,0 +1,20 @@
+## v13.98 - A CREW PICK-UP CLEARS YOUR KILL CREDIT
+
+The machine and pillager AI audit of 2026-09-14, finding 3. Your lethal round sets byPlayer on a
+pillager, and he goes down with it still set. When his crewmate picks him up, the pick-up restores
+downed, state, health, alert and goal, but not byPlayer. Your own revive clears it (v11.64: his next
+death is not yours unless you cause it). So:
+
+- Shoot a hostile pillager down and walk away. His crewmate picks him up.
+- Later a Howler shell downs him and he bleeds out, or a second shell finishes him. A Howler shell
+  takes health without writing byPlayer, so the stale flag from your shot decides.
+- You get "NAME will remember that", a raider kill on the report and the contract, and from the next
+  raid on his identity is hostile and refuses parley, for a death you had nothing to do with.
+
+THE BUILD. The crew pick-up clears byPlayer, exactly as your own revive does.
+
+MEASURED. Check 13.98 stages a downed pillager carrying your kill flag and a crewmate about to finish
+picking him up, runs updateEnts until he is up (the precondition, which proves the pick-up ran), and
+requires the flag cleared. It fails on v13.97.
+
+Not verified: the full Howler death afterwards, which reads the flag this build clears.

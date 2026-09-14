@@ -1,0 +1,9 @@
+v13.98: a crew pick-up clears your kill credit
+
+A pillager you downed and his crew picked up kept your kill flag, so a later
+death you had no part in was credited to you. The crew pick-up now clears it,
+as your own revive does.
+
+Check 13.98 stages a crew pick-up of a pillager you downed. Fails on v13.97.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
