@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.00 - KEY 1 PICKS UP THE GUN BOUND TO IT
+
+The deploy and loadout audit of 2026-09-15, finding 3. A number key in the Undercroft binds any item to
+any belt slot, key 1 included. A gun carried in the backpack and bound to slot 0 replaces the first gun
+cell. When the raid starts, the gun in hand has no belt cell of its own, so the game selects slot 0.
+setHot returned at once when the pressed slot was already the selected one. So:
+
+- On the first frame cell 1 read Compact SMG and was highlighted.
+- The trigger fired the loaner in hand, which had no cell.
+- Pressing 1 did nothing, because slot 0 was already selected.
+
+The same happened with any gun in hand and a backpack gun bound to key 1.
+
+THE BUILD. Pressing the already selected key still goes through when that cell is a gun sitting in the
+backpack, so it is equipped as any other bound gun is. Pressing the selected key for anything else is
+still a no-op, as before.
+
+MEASURED. Check 14.00 goes up with a fresh armoury and an SMG packed. Bound to key 2, pressing 2 must put
+the SMG in a hand (the control). Bound to key 1, pressing 1 must do the same. It fails on v13.99.
+
+Not verified: the highlight on the first frame, which still sits on the bound cell until a key is pressed.
 ## v13.99 - A BELT KEY DOES NOT POINT AT SOMETHING THAT STAYED BEHIND
 
 The deploy and loadout audit of 2026-09-15, finding 1. Committing a loadout empties the kit but keeps
