@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.91';
+var VER='14.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2499,8 +2499,13 @@ function txClick(cx,cy){
   var el=document.elementFromPoint(cx,cy);
   if(el&&el.tagName&&el.tagName.toLowerCase()==='input') return null;
   if(el&&el.tagName&&el.tagName.toLowerCase()!=='canvas'){
+    // v14.92, words audit finding 5: THE PIECE OF TEXT UNDER THE POINTER. A sentence with a bold phrase is several text pieces,
+    // and this always took the first, so clicking the words after the bold part opened the editor on the words before it and
+    // his typing replaced those. The piece under the pointer is taken when there is one; the first piece is the fallback.
     var tn=null,i;
-    for(i=0;i<el.childNodes.length;i++){
+    try{ var cr=document.caretRangeFromPoint&&document.caretRangeFromPoint(cx,cy), cn=cr&&cr.startContainer;
+      if(cn&&cn.nodeType===3&&cn.parentNode===el&&cn.nodeValue.replace(/\s+/g,'').length) tn=cn; }catch(_cr){}
+    for(i=0;!tn&&i<el.childNodes.length;i++){
       var c=el.childNodes[i];
       if(c.nodeType===3&&c.nodeValue&&c.nodeValue.replace(/\s+/g,'').length){ tn=c; break; }
     }
@@ -30143,7 +30148,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.91: CLEARING A BAKED LINE IN THE WORDS EDITOR BRINGS THE ORIGINAL BACK. An empty edit is how he gets a line back, but for a line baked into the file it only deleted his profile entry, so the baked words stayed on screen and the report carried nothing to undo the bake. The original is now written as his own entry for a baked line. Check 14.91 clears a baked line; it fails on v14.90',
+  now:'v14.92: THE WORDS EDITOR OPENS ON THE TEXT UNDER THE POINTER. In a sentence with a bold phrase the editor always took the first piece of text, so clicking the words after the bold part opened it on the words before, and his typing replaced those. It now takes the piece under the pointer. Check 14.92 clicks both sides of a bold phrase; it fails on v14.91',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,9 @@
+v14.92: the words editor opens on the text under the pointer
+
+In a sentence with a bold phrase the editor always opened on the first piece
+of text, so clicking the words after the bold part edited the words before it.
+It now takes the piece under the pointer.
+
+Check 14.92. Fails on v14.91.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

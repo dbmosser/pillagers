@@ -1,0 +1,14 @@
+## v14.92 - THE WORDS EDITOR OPENS ON THE TEXT UNDER THE POINTER
+
+Words audit finding 5 (LOW, his tool). A click on a panel word in edit mode opens the editor on a text piece of the element under
+the pointer. A sentence with a bold phrase inside it is several text pieces, and the editor always took the first. The ascent
+check line "You ascend with no armour on. Equip Armour Plates ..." is one: clicking "Equip Armour Plates" opened the box holding
+"You ascend with ", and his typing replaced that.
+
+THE BUILD. The text piece under the pointer is taken when the browser can say which it is; the first piece stays the fallback.
+
+MEASURED. Check 14.92 draws a probe line with a bold phrase in the middle, turns edit mode on and clicks over the first words
+(control: the editor opens on them) and over the words after the bold phrase: the editor must open on those. It fails on
+v14.91.
+
+Not verified: rewording the ascent check line by hand.
