@@ -1,0 +1,10 @@
+v13.67: issued Bandages are spent first, however they leave
+
+Issued Bandages were counted down only on use, so after dropping or selling
+them the next Bandages found were held back at extraction. The backpack's
+Bandage count is now watched each frame and any fall spends issued ones first.
+
+Check 13.67 drops the issued pair then finds two, and uses one then finds one.
+Fails on v13.66.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

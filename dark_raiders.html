@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.65';
+var VER='13.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,15 @@ var VER='13.65';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.45';
+var WHATSNEW_VER='13.66';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'NOTHING ON YOUR BELT IS USED WHILE YOU ARE DOWN, where a Medkit never healed you and was lost. A Medkit is also refused at full health straight after a Bandage, and one on its own belt key works while Bandages are still healing you.',
+  'A GRENADE YOU ARE COOKING STAYS IN YOUR HAND. Switching to your gun no longer fires the gun or stops the fuse, and the throw key no longer throws a second grenade.',
+  'IN THE UNDERCROFT: a restore code replaces your whole save, crafting takes from your stash before what you packed, one gun cannot be in both hands, and buying the lot from Wirt never locks you out of the next one.',
+  'CONTRACTS AND HAZARD PAY COUNT ONLY WHAT THE RUN FOUND. What you carried in no longer finishes an item contract or earns hazard pay, issued Bandages are not banked as finds, a contract finished before you died stays in your run report, and the XP on the card is the XP you get at every distance.',
+  'A CONTROLLER WORKS ON THE UNDERCROFT FLOOR AND IN EVERY RAID. View opens your backpack and Menu pauses, you can search and call for extraction from inside an extraction point, you can trade with the peddler, and the prompts name your buttons. The menus also fit the 1280 by 720 window itch opens the game at.',
   'FEWER ENEMIES BY DEFAULT. Few machines now means the number it says: houses no longer push crawlers past it. Few pillagers is the new default, with smaller reinforcement waves. A character that never changed these settings moves to Few too.',
   'OUT OF BANDAGES OR GRENADES, YOU SWITCH BACK TO YOUR GUN YOURSELF. Using the last of something, or clicking a cell with nothing in it, no longer puts your gun up for you, so clicking on can never fire it. The game says which key brings your gun up, and every raid starts with your gun selected.',
   'THE RAISED DECKS ARE GONE. The catwalks and gantries kept stopping you short of their edges and trapping you on them, so every one has been taken out of both sectors. Where a deck stood is plain ground you can walk straight across.',
@@ -29736,7 +29741,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.65: A MEDKIT ON ITS OWN BELT KEY IS NOT REFUSED AS ALREADY HEALING. In-raid audit of 2026-09-14, finding 4: useMedical has measured reach as the lower of health plus queue and the running ceiling since v12.04, but the named-slot path in useHot tested health plus queue alone, so with two Bandages queued at 50 health a Medkit bound to a key was refused while the Medical cell used it. The slot path now uses the same reach. Check 13.65 binds a Medkit to a key with Bandage heal queued past full under an 85 ceiling and requires it used, with a plain use at 50 as the control; it fails on v13.64',
+  now:'v13.66: THE WHAT IS NEW CARD IS CURRENT AGAIN. The full corpus on v13.61 failed checks 9.19 and 10.38: the card stood at v13.45, past the fifteen-build gate, and said nothing about the controller, contracts, hazard pay, the restore code, the cooked grenade or the belt on the floor. Five lines go in newest first under the alpha line, five so the stash entry stays inside the thirteen the card draws (check 13.34), nothing already on the card is reworded, and WHATSNEW_VER moves to 13.66. Check 13.66 requires the card within fifteen builds and naming the cooked grenade and the belt while down; it fails on v13.65',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

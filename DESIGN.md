@@ -40024,6 +40024,22 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.66 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+The full corpus on v13.61 failed checks 9.19 and 10.38 for the same reason: the what is new
+card stood at v13.45, past the fifteen-build gate. It said nothing about the controller
+work, the contract and hazard pay fixes, the restore code, the cooked grenade or the belt on
+the floor.
+
+THE BUILD. Five lines go in, newest first, under the alpha line. The first draft had ten, and
+check 13.34 caught it pushing the stash entry to eighteenth, below the thirteen the card draws. Nothing already on the card
+is reworded, so none of his edited lines lose their key. WHATSNEW_VER moves to 13.66.
+
+MEASURED. Check 13.66 requires the card within fifteen builds, still opening with the alpha
+line, and naming the cooked grenade and the belt while down. It fails on v13.65.
+
+Not verified: how the longer card reads at 1280x720; checks 9.19, 10.38 and 13.22 are run
+against the build but nobody has looked at it.
 ## v13.65 - A MEDKIT ON ITS OWN BELT KEY IS NOT REFUSED AS ALREADY HEALING
 
 The in-raid audit of 2026-09-14, finding 4. Since v12.04 useMedical has measured what he can
