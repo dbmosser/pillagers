@@ -5718,6 +5718,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.30',what:'the level is worked out from the XP when a profile loads: a save with 1,980 XP and a stored level of 1 loads through the real loader at level 4 (progression audit finding 3)',
+   run:function(){
+     if(typeof syncXpLevel!=='function'||!window.__applyLoaded) return 'SKIP: no level sync or loader in this build';
+     var bad=[], snap=null;
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       var d=JSON.parse(JSON.stringify(snap));
+       d.xp=1980; d.xpLevel=1;
+       var want=1+Math.floor(Math.sqrt(1980/220));
+       __applyLoaded(d);
+       var q=__P();
+       if(q.xp!==1980) return 'SKIP: the loader did not keep the XP of the save ('+q.xp+'), so the level cannot be judged';
+       if(q.xpLevel!==want) bad.push('a save with 1,980 XP and a stored level of 1 loaded at level '+q.xpLevel+', not '+want);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(snap) __applyLoaded(snap); }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.29',what:'a reward gun claimed with nothing in hand becomes gun 1: a gun reward claimed with gun 1 on fists and an empty armoury goes into the armoury and into hand, and the next gun reward leaves that gun in hand (progression audit finding 2)',
    run:function(){
      if(typeof claimTier!=='function'||typeof SEASON_TIERS==='undefined'||typeof WEAPONS==='undefined') return 'SKIP: no reward tiers in this build';
