@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.73';
+var VER='14.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30094,7 +30094,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.73: THE SHOP DOES NOT ASK FOR MONEY FOR A GUN HE OWNS. An owned gun counted as locked for its own reason only when he could afford it anyway, so selecting the Scav Pistol on a fresh profile showed a dead NEED 900 MORE button. Owning the gun is now its own reason. Check 14.73 selects an owned gun and a gun not owned, both short of the price; it fails on v14.72',
+  now:'v14.74: A ON A CONTROLLER PACKS ONE FROM THE STASH. The pad presses A on a stash cell as a plain click, which did nothing, and the pad has no right-click, drag or hover, so a pad player could not pack from the stash at all. A pad press now packs one; a mouse click still does nothing. Check 14.74 clicks a stash stack with the mouse and with the pad; it fails on v14.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31779,7 +31779,14 @@ try{ renderFreeKit(); }catch(_fk){}
         ev.stopPropagation(); ev.preventDefault();
         _packSome(Math.max(1,Math.floor(counts[k]/2))); return;
       }
-      if(!ev.shiftKey) return;                  // plain click is the junk tag, below
+      // v14.74, stash and trader audit finding 2: A ON A CONTROLLER PACKS ONE. The pad focuses stash cells and presses A as a
+      // click with no SHIFT or ALT, which this handler ignored, and the pad has no right-click, drag or hover, so a pad player
+      // could not pack anything from the stash while A on a backpack cell unpacked one. A pad press has detail 0, the test the
+      // crafting button uses; a mouse click has detail 1 or more and still does nothing here.
+      if(!ev.shiftKey){
+        if(ev.detail===0){ ev.stopPropagation(); ev.preventDefault(); _packSome(1); }
+        return;                                 // plain click is the junk tag, below
+      }
       ev.stopPropagation(); ev.preventDefault();
       _packSome(counts[k]);
     },true);

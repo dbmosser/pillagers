@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.74 - A ON A CONTROLLER PACKS ONE FROM THE STASH
+
+Stash and trader audit finding 2 (MEDIUM). The pad can focus stash cells, and A presses the focused control as a click with no
+SHIFT or ALT held. The stash cell's click handler packs only on SHIFT (all) or ALT (half) and ignores a plain click. The pad
+has no right-click route, no drag and no hover for the number keys, so on the stash screen a pad player could not pack
+anything, while A on a backpack cell unpacks one: the two halves of one screen disagreed.
+
+THE BUILD. A click with detail 0, which is what a pad press is and the same test the crafting button uses, packs one. A mouse
+click has detail 1 or more and still does nothing.
+
+MEASURED. Check 14.74 puts two Bandages in the stash: a mouse click on the stack must pack nothing (control), and a pad press
+must pack one. It fails on v14.73.
+
+Not verified: a real controller on the stash screen.
 ## v14.73 - THE SHOP DOES NOT ASK FOR MONEY FOR A GUN HE OWNS
 
 Stash and trader audit finding 1 (MEDIUM). The shop's big button names the shortfall when money is the reason it is dead, and
