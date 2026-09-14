@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.62 - A DRAG WHOSE ITEM HAS LEFT THE BACKPACK BINDS NOTHING
+
+Backpack audit finding 7 (LOW). Pressing a backpack tile starts a drag and selects that stack. Z drops the selected stack.
+So: press and hold an SMG tile, press Z, and let go over belt key 6. The release still ran the belt assignment for the key
+the drag named, bound key 6 to an SMG he no longer carried, and wrote that into the saved plan.
+
+THE BUILD. A drag from the backpack binds a belt key only while its item is still in the backpack. A drag from another belt
+key is unchanged.
+
+MEASURED. Check 14.62 starts a raid and releases a staged Medkit drag over belt key 6 with a Medkit in the backpack (control:
+bound), then with the backpack empty: nothing may be bound in the raid or in the plan. It fails on v14.61.
+
+Not verified: hold a tile, Z, release on the belt, by hand.
 ## v14.61 - A CLICK THAT SLIPS OFF A BELT KEY DOES NOT UNBIND IT
 
 Backpack audit finding 6 (LOW). A press on a belt cell selects it and, for an item, starts a drag. A release anywhere off
