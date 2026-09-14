@@ -5718,6 +5718,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.72',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the wardrobe news of v14.71, still opening with the alpha line',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
+     var all=L.join(' ').toUpperCase();
+     var NEWS=['surprise me takes','a worn suit off'].join(' ').toUpperCase();
+     if(all.indexOf(NEWS)<0) bad.push('the card does not mention the wardrobe news of v14.71');
+     if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+     return bad.length?bad.join('; '):null; }},
   {v:'14.71',what:'SURPRISE ME takes a worn suit off: with no suit on a random look puts none on, and with a suit on a random look leaves no suit (wardrobe audit finding 3)',
    run:function(){
      if(typeof lookRandom!=='function'||typeof COSDEF==='undefined'||typeof COSKEY==='undefined') return 'SKIP: no random look in this build';

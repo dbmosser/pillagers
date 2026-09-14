@@ -1,0 +1,8 @@
+v14.75: the stash header counts what the ALL tab counts
+
+The STASH held number left out the armoury guns the grid and the ALL tab show,
+so a fresh profile read 0 held above ALL 1. It now counts them.
+
+Check 14.75. Fails on v14.74.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

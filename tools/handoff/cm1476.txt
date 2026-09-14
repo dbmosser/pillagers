@@ -1,0 +1,9 @@
+v14.76: the stash hover row offers every key for every item
+
+The put on key buttons under a hovered stash item offered keys 3 to 9, and
+none for a gun or a part, while right-click put any item on any key. The row
+now offers keys 1 to 9 for every item.
+
+Check 14.76. Fails on v14.75.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

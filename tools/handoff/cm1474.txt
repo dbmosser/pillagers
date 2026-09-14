@@ -1,0 +1,9 @@
+v14.74: A on a controller packs one from the stash
+
+A pad press on a stash stack did nothing, and the pad has no right-click, drag
+or hover, so a pad player could not pack from the stash. A pad press now packs
+one; a mouse click is unchanged.
+
+Check 14.74. Fails on v14.73.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

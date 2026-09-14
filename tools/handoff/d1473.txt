@@ -1,0 +1,14 @@
+## v14.73 - THE SHOP DOES NOT ASK FOR MONEY FOR A GUN HE OWNS
+
+Stash and trader audit finding 1 (MEDIUM). The shop's big button names the shortfall when money is the reason it is dead, and
+keeps the row's own words when the row is locked for another reason. An owned gun's row is disabled and reads Owned, but it
+counted as locked for another reason only when he could afford the gun anyway. A fresh profile owns the Scav Pistol and has
+900: selecting the pistol showed a dead button reading NEED $900 MORE for a gun he already owns. The same happened for the SMG
+once bought, whenever the balance fell below its price.
+
+THE BUILD. Owning the gun is its own reason: the button keeps reading OWNED.
+
+MEASURED. Check 14.73 owns one shop gun and holds half the price: a gun not owned must say NEED (control), and the owned gun
+must not. It fails on v14.72.
+
+Not verified: the shop by eye.

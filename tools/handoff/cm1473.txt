@@ -1,0 +1,8 @@
+v14.73: the shop does not ask for money for a gun he owns
+
+Selecting an owned gun with less money than its price showed a dead NEED $X
+MORE button. Owning the gun is now its own reason, so it reads OWNED.
+
+Check 14.73. Fails on v14.72.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

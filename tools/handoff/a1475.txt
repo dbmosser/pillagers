@@ -1,0 +1,1 @@
+| THE STASH HEADER COUNTS WHAT THE ALL TAB COUNTS | v14.75 | STASH/TRADER AUDIT 3 (LOW): renderKitCol set #stashn to P.stash.length, leaving out armoury guns the grid and ALL tab show and counting keys with no item. FIX: item entries plus P.weapons.length. MEASURED: check 14.75 (two Bandages, two guns: ALL 4 control; header matches); fails on v14.74. NOT VERIFIED: by eye |
