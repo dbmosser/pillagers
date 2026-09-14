@@ -1,0 +1,8 @@
+v14.27: the what is new card is current again
+
+The card stood at v14.14. Two of my own card lines are rewritten in place to
+cover the controller and Undercroft menu fixes of v14.15 to v14.26.
+
+Check 14.27 holds the card current. Fails on v14.26.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

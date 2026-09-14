@@ -40024,6 +40024,23 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.23 - THE PAUSE BOX WORKS ON A PAD
+
+Controller audit finding 5 (MEDIUM). Menu on a pad pauses a raid and opens the pause box. The pad finds a panel to drive by
+looking for an open .modal, then the stash screen. The pause box is a .pausebox, neither of those, so the pad had nothing
+to focus in it: Resume run, Abandon run and the note field were out of reach, and a pad player could not abandon a run at
+all. The input fell through to the raid branch behind the box, where D-UP opened and shut the map; the keyboard M is
+blocked while paused.
+
+THE BUILD. The pad treats an open pause box as a panel, after any window opened over it and before the stash screen, so
+the D-pad moves between its buttons and A presses them, and nothing reaches the raid behind it. On the pause box B and Menu
+resume the run. B's usual search for a way out is skipped there, because the first button it matches is the hidden RETURN
+TO CHARACTER SELECTION, which does nothing in a raid.
+
+MEASURED. Check 14.23 starts a raid, fakes a pad and opens the pause box (control: it is open), polls (the focus must be on
+a control in the box), presses D-UP (the map must stay shut), then presses B (the box must close). It fails on v14.22.
+
+Not verified: Abandon run pressed with a real controller.
 ## v14.22 - A REBUILT PANEL KEEPS THE PAD'S PLACE
 
 Controller audit finding 4 (MEDIUM). On a pad the focused control is remembered as an element. Many clicks rebuild the

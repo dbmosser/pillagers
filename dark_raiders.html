@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.22';
+var VER='14.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11542,6 +11542,11 @@ function padOpenModal(){
   // .modal, so the pad found nothing to focus and, because the floor stops
   // simulating under it, could not walk out either. Checked after the modals,
   // so a window opened FROM the Stash still wins.
+  // v14.23, controller audit finding 5: THE PAUSE BOX IS A PANEL TOO. It is a .pausebox, not a .modal, so the pad found
+  // nothing to focus in it: Resume run and Abandon run were out of reach, a pad player could not abandon a run, and the
+  // input fell through to the raid behind it, where D-UP opened and shut the map. A window opened over it still wins.
+  var pbx=document.getElementById('pausebox');
+  if(pbx&&pbx.classList.contains('on')) return pbx;
   var hb=document.getElementById('hub');
   if(hb&&hb.classList.contains('on')) return hb;
   return null;
@@ -11617,6 +11622,16 @@ function padMenu(pressed){
   // raid as the trigger: every pad ascent fired a shot at the spawn point. A mouse click on the button never did, since the
   // fire listener is on the canvas. The raid branch ignores A until it has been released once.
   if(tap(0)&&PAD.focus){ PAD.aSpent=1; PAD.focus.click(); }
+  // v14.23: on the pause box B and Menu resume the run. The search for a way out below would click the hidden RETURN TO
+  // CHARACTER SELECTION first, which does nothing in a raid.
+  if(md.id==='pausebox'){
+    var _pbMenu=tap(9), _pbBack=tap(1);
+    if(_pbMenu||_pbBack){
+      try{ togglePauseBox(false); }catch(_tp){}
+      padSetFocus(null); PAD.focus=null;
+      return true;
+    }
+  }
   if(tap(1)){
     // B backs out: the panel's own Leave or Close if it has one, so any cleanup that
     // button does still runs, and only otherwise the blunt instrument.
@@ -29916,7 +29931,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.22: A REBUILT PANEL KEEPS THE PAD S PLACE. A pad click that rebuilds a panel replaced the focused control, and the focus went back to the first control: on the ascent check that is TAKE THE FREEBIE KIT, so a second A swapped his own gear for the freebie, and in Settings every change jumped back to the first tab. The focus now returns to the same place in the rebuilt panel. Check 14.22 moves the pad two controls down a probe window, clicks one that rebuilds the window, and polls again; it fails on v14.21',
+  now:'v14.23: THE PAUSE BOX WORKS ON A PAD. The pause box is not a .modal, so the pad had nothing to focus in it and a pad player could neither resume nor abandon from it, while D-UP opened and shut the map behind it. The pad now treats the pause box as a panel, after any window opened over it, and B or Menu on it resumes the run. Check 14.23 pauses a raid with a faked pad, then checks the focus lands in the box, D-UP leaves the map shut and B resumes; it fails on v14.22',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,18 @@
+## v14.27 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+A planned card refresh, as at v14.14. WHATSNEW_VER stood at 14.14 against a build at 14.26, and the card said nothing about
+v14.15 to v14.26: the controller fixes from both audits and the Undercroft menu fixes.
+
+THE BUILD. Two of my own card lines are rewritten in the same slots, newest first:
+
+- a controller on every screen and the Undercroft menus (v14.15 to v14.26),
+- saves, the downed screen and your belt keys (v13.91 to v14.13), merged from the two older lines, keeping the uncalled ring
+  news check 14.14 reads and the belt key news check 14.02 reads.
+
+The third of my lines, the stash entry inside the thirteen the card draws (check 13.34) and none of his edited lines are
+touched. WHATSNEW_VER moves to 14.27.
+
+MEASURED. Check 14.27 requires the card within fifteen builds of the build, naming the title screen and pause box news,
+and still opening with the alpha line. Every check that reads the card is run on the dry build. It fails on v14.26.
+
+Not verified: the card read at 1280x720 by eye.
