@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.48 - A CONTROLLER CAN SEARCH INSIDE AN EXTRACTION POINT
+
+Audit item 4 of 2026-09-13. Since v13.10 the keyboard searches a body lying in an
+extraction point with X, because E there calls the dropship. The pad X button holds E, no
+pad button reaches X, and the prompt reads [X] SEARCH. A controller player standing on the
+way out therefore could not search what was at his feet, and the button the prompt named
+called the dropship instead.
+
+THE BUILD. Inside a ring, with something to search in reach, pad X holds X. Everywhere else
+it holds E exactly as before, so the dropship call, every station and every ordinary search
+are unchanged. The key it is not using is let go, so a switch in the middle of a hold is
+clean. It reads the ring and the nearest container from the previous frame, which the loot
+code already records.
+
+MEASURED. Check 13.48 fakes a standard pad, puts a box with loot on the first extraction
+point under the player, and requires held X to start a search. With the box moved out of
+reach it requires X to hold E again and not X. It fails on v13.47.
+
+Not verified: standing on an opened, empty body in a ring, where the dropship call waits
+until he steps off it if the game still counts that body as in reach; and a real controller.
 ## v13.47 - THE CONTROLLER WORKS ON THE UNDERCROFT FLOOR
 
 Found by the key remap review of 2026-09-13. The floor branch of pollPad bound only A, X,

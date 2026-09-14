@@ -1,0 +1,9 @@
+v13.48: a controller can search inside an extraction point
+
+In a ring only X searches, and the pad X button held E, so the [X] SEARCH prompt
+named a button that called the dropship. With a container in reach inside a ring,
+pad X now holds X; everywhere else it holds E as before.
+
+Check 13.48 fakes a pad on the ring. Fails on v13.47.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
