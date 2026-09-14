@@ -10,4 +10,7 @@ no shot, uses the empty Frag by key, fires from the gun cell as the control, and
 starts a raid with the gun on key 5. Fails on v13.41. Checks 12.08 and 12.31
 repaired to the ruling.
 
+Harness: r1342 drops the top-slot bound in check 13.22; the newest rulings own
+the top of the what-is-new card, and the B and plate lines must still be on it.
+
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

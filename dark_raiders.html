@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.41';
+var VER='13.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='13.41';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.41';
+var WHATSNEW_VER='13.42';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'OUT OF BANDAGES OR GRENADES, YOU SWITCH BACK TO YOUR GUN YOURSELF. Using the last of something, or clicking a cell with nothing in it, no longer puts your gun up for you, so clicking on can never fire it. The game says which key brings your gun up, and every raid starts with your gun selected.',
   'THE RAISED DECKS ARE GONE. The catwalks and gantries kept stopping you short of their edges and trapping you on them, so every one has been taken out of both sectors. Where a deck stood is plain ground you can walk straight across.',
   'PRESS B TO BACK OUT OF ANY MENU. It closes whatever is in front, one thing per press, in the Undercroft and on the surface. With nothing open it still gives your hire his orders, and it never opens the pause box.',
   'AN ARMOUR PLATE YOU FIND GOES IN YOUR BACKPACK. It no longer snaps onto your armour when you pick it up: select it on your tactical belt and use it, which takes two seconds, or carry it home.',
@@ -1448,7 +1449,7 @@ var WHATSNEW=[
   'THE PEDDLER STALL IS NOT A PAUSE. Shopping used to stop every extraction clock while the raid clock and the machines ran on, so an extraction you had called sat at the same number until you closed the panel. It counts down while you trade now.',
   'SPRINTING LEAVES ONE TRAIL OF BOOT PRINTS, NOT TWO. A second set was being drawn from the trail a tracker smells, unrotated, so it lined up with your path and doubled your footprints when you ran up or down the screen.',
   'THE BENCH SAYS HOLD TO CRAFT ON THE BUTTON, because holding it is what crafts. A click on its own still spends nothing, as you asked, but it now says so instead of doing nothing, and so does letting go too soon.',
-  'THE TRIGGER NO LONGER DIES WHEN THE GUN IN YOUR HANDS IS BOUND TO ANOTHER KEY. Cell 1 goes blank then, and every fall-back to it landed on nothing; the fall-back finds the cell that holds your gun now, and a click on a blank cell raises the gun the way a click on an empty grenade cell does.',
+
   'A CRAWLER THAT REACHES YOU BITES. It used to stand next to you for up to seven seconds first, serving out the clock it had rolled for its next wander, whether it came for you on its own or because you shot it.',
   'A NEW PROFILE NOW STARTS ON FEWER MACHINES AND A LIGHTER EXTRACTION. Both are still in Settings and both still go all the way up; only where they start has moved.',
   'A PEDDLER PURCHASE NOW SAYS WHERE IT WENT: on your tactical belt, key N, or in your backpack. A bought gun is pinned to a free belt key, and the backpack grid keeps a belted item off its cells, which is why a rifle you paid for was not in the backpack.',
@@ -10660,6 +10661,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
 }
 function startRaid(){
   G=buildRaid(false);
+  try{ G.hot=gunCell(); }catch(_gh){}   // v13.42: a raid starts with the gun in hand selected, wherever his belt put it
   G.carriedIn=bagValue();   // v10.27: what the lift carried in, valued as the haul is
   // THE CORE BURNS, v3.81. One core, one raid: armed intel is consumed the
   // moment the lift moves, and the raid carries the flag plus the live list
@@ -12005,8 +12007,15 @@ function throwFrom(tk,cookT){
 // DESIGN entry recorded the key and the pad as not verified; this is that line.
 // Q still cycles on purpose. A use key never does.
 function emptyThrowCell(tk){
-  setHot(gunCell());
-  if(!G.sim) say('No '+((ITEMS[tk]&&ITEMS[tk].name)||'throwable')+' left. '+((G.player.wep&&G.player.wep.name)||'Your gun')+' up.');
+  // v13.42, HIS RULING OF 2026-09-13: names what is missing and the key for the gun,
+  // and never selects the gun for him.
+  if(!G.sim) say('No '+((ITEMS[tk]&&ITEMS[tk].name)||'throwable')+' left. '+gunKeyLine());
+}
+// v13.42: the sentence every empty cell ends with. The key is the belt cell that
+// holds the gun in his hands, so a gun bound to key 5 says 5.
+function gunKeyLine(){
+  var gc=gunCell();
+  return 'Press '+keyLabel('Digit'+(gc+1),String(gc+1))+' for your gun.';
 }
 function doThrow(){
   var p=G.player;
@@ -15267,21 +15276,21 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
   // belongs: spending the last of a stack SELECTS THE GUN, so the trigger is
   // never dead, and the swap happens between clicks rather than during one.
   // Tools and assigned valuables are not held things, so they still yield.
+  // v13.42, HIS RULING OF 2026-09-13: the valve is gone too. Nothing selects the
+  // gun for him; an empty cell says what is missing and which key brings it up.
   var hotGun=(!HSC||HSC.kind==='gun'||HSC.kind==='item');
   if(mouse.down&&!hotGun){
     // THROWABLES COOK, v3.11. Press pulls the pin and starts the clock in your
     // hand; release throws whatever fuse is left. Everything else on the hotbar
     // keeps the single-shot press behaviour it has always had, because a bandage
     // has nothing to hold down for.
-    // v12.31, audit P1: AN EMPTY CELL DOES NOT OWN THE TRIGGER EITHER. The raid
-    // starts with the highlight on cell 1, and with the held gun bound to a
-    // higher key that cell is blank, so the first click of the raid fired
-    // nothing. The same rule as the empty throwable cell below: the press
-    // selects the gun and yields; the next click fires it.
+    // v12.31, audit P1: a blank cell 1 at the raid start killed the first click.
+    // v13.42, HIS RULING: the raid now starts on the gun cell (startRaid), and a
+    // press on a blank cell never selects the gun; it says which key does.
     if(HSC&&HSC.kind==='empty'){
       if(!p.fired){
-        p.fired=true; setHot(gunCell()); p.trigYield=1;
-        if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
+        p.fired=true;
+        if(!G.sim) say('Nothing in that cell. '+gunKeyLine());
       }
     }
     else if(HSC&&HSC.kind==='throw'){
@@ -15291,8 +15300,8 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // own rule the press selects the gun; the next click fires it, never this
       // one, which is the automatic-weapon safety that rule was written for.
       if(!p.cooking&&!p.fired&&!((HSC.count|0)>0)){
-        p.fired=true; setHot(gunCell()); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded; v12.31: the cell that holds it, not cell 1 by number
-        if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
+        p.fired=true;   // v13.42, HIS RULING: the Frag cell keeps the highlight and the gun is never raised for him
+        if(!G.sim) say('No '+(HSC.name||'throwable')+' left. '+gunKeyLine());
       }
       else if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
       else {
@@ -15302,13 +15311,11 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     }
     else if(!p.fired){
       p.fired=true;
-      var _hadCount=HSC.count;
-      useHot();
-      // Emptied by that use? Fall back to the gun for the NEXT click.
-      if(_hadCount!==null&&_hadCount!==undefined){
-        var _now=hotbarSlots()[hotSel()];
-        if(_now&&_now.count===0) setHot(gunCell());   // v12.31: the cell that holds the gun, not cell 1 by number
-      }
+      // v13.42, HIS RULING OF 2026-09-13: spending the last of a stack no longer
+      // selects the gun. The highlight stays where he put it, and a press on the
+      // spent cell says what is missing and which key brings the gun up.
+      if(HSC.count===0){ if(!G.sim) say('No '+(HSC.name||'item')+' left. '+gunKeyLine()); }
+      else useHot();
     }
   }
   else if(mouse.down&&!p.trigYield&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v12.08: not on the hold that yielded to the gun
@@ -15362,9 +15369,7 @@ if(!p.fired||p.wep.auto){
     // Let go of a cooked grenade and it goes. Done before p.fired clears so a
     // release can never be read as a fresh press on the same frame.
     if(p.cooking){
-      releaseCook();
-      var _ns=hotbarSlots()[hotSel()];
-      if(_ns&&_ns.count===0) setHot(gunCell());   // v12.31: the cell that holds the gun, not cell 1 by number
+      releaseCook();   // v13.42, HIS RULING: the last one thrown leaves its cell selected; he brings the gun up himself
     }
     p.fired=false;
   }
@@ -29649,7 +29654,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.41: THE RAISED DECKS ARE GONE. His report of 2026-09-13 with two screenshots: the DOCK CATWALK on COLD STORAGE still stopped him short of its edges and would not let him walk off it, and another deck was broken elsewhere; he asked for them gone. Every deck edge wall and every deck and ramp is taken out at the very end of the raid build, after every container and machine has been placed, so no seed moves; the deck and ramp lists are emptied before the ground bake so neither is painted, and segments, grids and routing are rebuilt the way a destroyed wall rebuilds them. Check 13.41 finds no deck, ramp or edge wall on either sector, walks him north across where the DOCK CATWALK stood, and requires every container and machine where it was with the decks restored; it fails on v13.40',
+  now:'v13.42: OUT OF A CONSUMABLE, HE SWITCHES BACK TO THE GUN HIMSELF. His ruling of 2026-09-13: switching to bandages or throwables and running out must never autofire the gun. Five places selected the gun for him, the press on a blank cell, the press on an empty throwable, spending the last of a stack, letting go of the last cooked grenade and the use key on an empty throwable; all five now leave the highlight where he put it, and every empty press says what is missing and names the key of the cell that holds his gun. A raid now starts with the gun cell selected, which is what the blank-cell fall-back existed for. Check 13.42 spends the last Bandage and clicks on, throws the last cooked Frag and clicks on, presses the use key on the empty Frag cell, then selects the gun and fires it, and binds the gun to key 5 and requires the raid to start there; it fails on v13.41. Checks 12.08 and 12.31 are repaired to the ruling',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
