@@ -1,0 +1,8 @@
+v14.14: the what is new card is current again
+
+The card stood at v14.02. Three of my own card lines are rewritten in place to
+cover v13.68 to v14.13, keeping the stash entry inside the lines drawn.
+
+Check 14.14 holds the card current. Fails on v14.13.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

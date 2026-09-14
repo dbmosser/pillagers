@@ -40024,6 +40024,23 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.10 - THE GIVE PROMPT SHOWS ONLY WHERE E GIVES
+
+The raid HUD and map screen audit of 2026-09-15, finding 7. A found survivor who wants something you carry gets a prompt
+over him, "[E] GIVE MEDKIT" and the like. The prompt was drawn within 120 units. Pressing E only hands the item over within
+70. So between 70 and 120 units:
+
+- the prompt named the key,
+- pressing it gave nothing and said nothing,
+- or E went to a nearby crate or extraction point instead.
+
+THE BUILD. The prompt uses the same 70 units as the hand-over, so it appears only where the key works. The hand-over distance
+is unchanged.
+
+MEASURED. Check 14.10 traces the HUD text through ctx.fillText. With the survivor 50 units away the give prompt must be drawn
+(the control, which proves the trace sees it). At 100 units it must not be. It fails on v14.09.
+
+Not verified: a survivor who wants an Ammo Box, which the check swaps for a Bandage; the prompt branch is the same.
 ## v14.09 - THE EMPTY SECOND-GUN SLOT SAYS HOW TO FILL IT
 
 The raid HUD and map screen audit of 2026-09-15, finding 6. With one gun carried, the second gun cell is always drawn,

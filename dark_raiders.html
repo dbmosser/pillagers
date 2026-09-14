@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.09';
+var VER='14.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25369,7 +25369,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     for(var _si=0;_si<G.ents.length;_si++){
       var _se=G.ents[_si];
       if(_se.kind!=='stray'||!_se.found||_se.helped||_se.hostile) continue;
-      if(dist(_se,p)>120) continue;
+      if(dist(_se,p)>70) continue;   // v14.10, HUD audit: the prompt only where E hands the item over (70), not out to 120
       var _sp=w2s(_se.x,40,_se.y);
       ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#7fc4a0';
       ctx.fillText('['+keyLabel('KeyE','E')+'] GIVE '+ITEMS[_se.want].name.toUpperCase(),_sp.x,_sp.y);
@@ -29884,7 +29884,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.09: THE EMPTY SECOND-GUN SLOT SAYS HOW TO FILL IT. Raid HUD and map screen audit of 2026-09-15, finding 6: setHot said No second weapon. Drag one here to carry it. for the vacant cell but did not mark the hint given, so the generic cell line wrote Second weapon x0 over it in the same call and the explanation never showed. The vacant line now counts as the hint. Check 14.09 selects the empty second slot with one gun carried and requires the message to be the explanation, with a probe line reaching the message as the control; it fails on v14.08',
+  now:'v14.10: THE GIVE PROMPT SHOWS ONLY WHERE E GIVES. Raid HUD and map screen audit of 2026-09-15, finding 7: the [E] GIVE prompt over a found survivor was drawn within 120 units while E only hands the item over within 70, so between the two the prompt named a key that gave nothing. The prompt now uses the same 70. Check 14.10 traces the HUD text with a survivor who wants a carried item at 100 units and requires no GIVE prompt, with the survivor at 50 units drawing it as the control; it fails on v14.09',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
