@@ -1,0 +1,20 @@
+## v13.87 - A FOUND GUN IN SLOT 2 BAGS THE GUN IT REPLACES
+
+The searching and loot audit of 2026-09-14, finding 5. Since v12.78 a found gun may displace a
+Scav Pistol, Bare Hands or an empty slot, and leaves any other gun alone. The hand branch bags
+the gun it displaces and keeps its load. The slot 2 branch just overwrote p.sec. So:
+
+- Start with a starter in hand, take a Scav Pistol off a body, and put it in slot 2.
+- Find a better gun. It takes slot 2.
+- The pistol is gone: not in either hand, not in the backpack, not banked at the extraction.
+
+THE BUILD. The slot 2 branch bags the gun it displaces with its load, and splices an armoury
+copy onto G.spliced, exactly as the hand branch does. Bare Hands and issued kit are left out,
+as before.
+
+MEASURED. Check 13.87 first finds an SMG with slot 2 empty and requires it in slot 2 (the
+control, which proves the branch is reached). Then it holds a field Scav Pistol in slot 2, finds
+the SMG, and requires the pistol in a hand or the backpack. It fails on v13.86.
+
+Not verified: the player's own armoury Scav Pistol in slot 2, which is now bagged and spliced
+like an armoury gun displaced from the hand.

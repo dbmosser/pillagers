@@ -1,0 +1,8 @@
+v13.88: a revived pillager pays his gun once
+
+Reviving the same pillager again paid another copy of the gun he keeps holding.
+His hands now pay only on the first revive.
+
+Check 13.88 revives the same pillager twice. Fails on v13.87.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

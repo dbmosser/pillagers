@@ -1,0 +1,8 @@
+v13.87: a found gun in slot 2 bags the gun it replaces
+
+A found gun taking slot 2 overwrote a field Scav Pistol held there, so it
+vanished. Slot 2 now bags the displaced gun the way the hand slot does.
+
+Check 13.87 finds an SMG over a field pistol in slot 2. Fails on v13.86.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

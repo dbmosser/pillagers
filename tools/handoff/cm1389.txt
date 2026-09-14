@@ -1,0 +1,8 @@
+v13.89: a dropped item never lands inside a wall
+
+Dropping an item against a wall could put the pile inside it, where no search
+could reach it. A pile with no clear line from the player now lands at his feet.
+
+Check 13.89 drops forty items against a solid wall. Fails on v13.88.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
