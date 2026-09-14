@@ -1,0 +1,9 @@
+v14.26: the title screen works on a pad
+
+With only a controller nothing on the title screen could be pressed. The pad
+now drives the title like a panel, starting on ENTER THE UNDERCROFT, and B
+does nothing there.
+
+Check 14.26. Fails on v14.25.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

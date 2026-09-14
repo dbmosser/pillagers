@@ -40024,6 +40024,24 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.22 - A REBUILT PANEL KEEPS THE PAD'S PLACE
+
+Controller audit finding 4 (MEDIUM). On a pad the focused control is remembered as an element. Many clicks rebuild the
+panel they are in: on the ascent check a belt plan cell, Arm, standard and every kit cell re-render the page, and in
+Settings every change replaces the whole list. The remembered element is then gone, and the pad put the focus back on the
+first control in the panel. On the ascent check that is TAKE THE FREEBIE KIT, above the grids, so a second A emptied the
+backpack and the belt plan, and ASCEND sent him up with the freebie kit instead of his own gear. In Settings every change
+sent the focus back to the first tab.
+
+THE BUILD. Each poll records the focused control's position in the panel. When the control has been replaced, the focus
+goes to the same position in the rebuilt panel, or its last control if the panel got shorter. A different panel still
+starts at its first control.
+
+MEASURED. Check 14.22 opens a probe window of five stacked buttons, moves the pad down two (control: the third button has
+the focus), presses A on it, and its click rebuilds the window; after the next poll the focus must be on the rebuilt third
+button, not the first. It fails on v14.21.
+
+Not verified: a real controller on the ascent check and in Settings.
 ## v14.21 - AN A THAT CLICKS A MENU BUTTON DOES NOT FIRE ON ARRIVAL
 
 Controller audit finding 3 (MEDIUM). On a pad, A clicks the focused menu button on the press. At the lift that button is

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.21';
+var VER='14.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11589,7 +11589,16 @@ function padMenu(pressed){
   var list=padFocusables(md);
   if(!list.length) return true;
   // The remembered control may have been re-rendered out from under us.
-  if(!PAD.focus||list.indexOf(PAD.focus)<0||!md.contains(PAD.focus)) padSetFocus(list[0]);
+  // v14.22, controller audit finding 4: A REBUILT PANEL KEEPS THE PAD'S PLACE. A click that rebuilds the panel (a belt plan
+  // cell, Arm, standard or a kit cell on the ascent check; any change in Settings) replaces the focused control, and this
+  // line put the focus back on the first control in the panel. On the ascent check that is TAKE THE FREEBIE KIT, so a second
+  // A emptied the backpack and the belt plan and ASCEND sent him up with the freebie instead of his own gear; in Settings
+  // every change jumped back to the first tab. The focus now returns to the same place in the rebuilt panel, and only a
+  // different panel starts at its first control.
+  if(!PAD.focus||list.indexOf(PAD.focus)<0||!md.contains(PAD.focus)){
+    var _pfi=(PAD.focusMd===md&&typeof PAD.focusIx==='number'&&PAD.focusIx>=0)?Math.min(PAD.focusIx,list.length-1):0;
+    padSetFocus(list[_pfi]);
+  }
   function tap(nn){ var now=pressed(nn), was=PAD.prev[nn]; PAD.prev[nn]=now; return now&&!was; }
   var mv=null;
   if(tap(12)) mv=[0,-1]; else if(tap(13)) mv=[0,1];
@@ -11602,6 +11611,7 @@ function padMenu(pressed){
     PAD.mrep=0.20;
   }
   if(mv){ var nx=padStep(list,PAD.focus,mv[0],mv[1]); if(nx) padSetFocus(nx); }
+  PAD.focusIx=list.indexOf(PAD.focus); PAD.focusMd=md;
   // v14.21, controller audit finding 3: AN A THAT CLICKS A MENU BUTTON IS SPENT UNTIL IT IS LET GO. The click happens on the
   // press, and ASCEND switches to the raid on the spot, so on the next poll no menu was open and the same held A reached the
   // raid as the trigger: every pad ascent fired a shot at the spawn point. A mouse click on the button never did, since the
@@ -29906,7 +29916,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.21: AN A THAT CLICKS A MENU BUTTON DOES NOT FIRE ON ARRIVAL. The pad clicks a menu button on the press, ASCEND starts the raid on the spot, and on the next poll the same held A was the trigger, so every pad ascent fired a shot at the spawn point. An A spent on a menu click is now ignored by the raid until it is let go. Check 14.21 presses A on a probe window button, starts a raid with A held, then lets go and presses again; it fails on v14.20',
+  now:'v14.22: A REBUILT PANEL KEEPS THE PAD S PLACE. A pad click that rebuilds a panel replaced the focused control, and the focus went back to the first control: on the ascent check that is TAKE THE FREEBIE KIT, so a second A swapped his own gear for the freebie, and in Settings every change jumped back to the first tab. The focus now returns to the same place in the rebuilt panel. Check 14.22 moves the pad two controls down a probe window, clicks one that rebuilds the window, and polls again; it fails on v14.21',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

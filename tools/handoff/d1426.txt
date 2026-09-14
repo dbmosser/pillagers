@@ -1,0 +1,17 @@
+## v14.26 - THE TITLE SCREEN WORKS ON A PAD
+
+Controller audit finding 7 (LOW). The title screen is a .screen, not a .modal. The pad finds a panel to drive by looking
+for an open window, then the pause box (v14.23), then the stash screen, so on the title it found nothing. The floor is
+frozen under the title and the floor's pad taps return there. Booted with only a controller, nothing on the title could be
+pressed, ENTER THE UNDERCROFT included. Had the title been found, B's usual way out would have been worse: it finds no
+Leave or Close button there and strips the title's .on without running what ENTER THE UNDERCROFT runs, leaving a blank
+screen.
+
+THE BUILD. An open title screen is a pad panel, after any window and the pause box. The focus starts on ENTER THE
+UNDERCROFT rather than GO FULLSCREEN above it; the D-pad moves to the saves, the name field and CREATE A NEW SAVE; A
+presses. B does nothing on the title.
+
+MEASURED. Check 14.26 shows the title with a faked pad (control: ENTER THE UNDERCROFT is laid out as a reachable control),
+polls (the focus must be on ENTER THE UNDERCROFT), then presses B (the title must stay). It fails on v14.25.
+
+Not verified: a boot with only a real controller connected.
