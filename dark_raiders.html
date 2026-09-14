@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.18';
+var VER='14.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11830,7 +11830,12 @@ function pollPad(){
     if(dD&&!PAD.prev[13]){ raidKey('ArrowDown',false,null); keys['ArrowDown']=false; }
     PAD.prev[12]=dU; PAD.prev[13]=dD;
   } else { PAD.prev[12]=pressed(12); PAD.prev[13]=pressed(13); }
-  for(var b2=0;b2<bt.length;b2++) if(PAD.prev[b2]===undefined) PAD.prev[b2]=pressed(b2);
+  // v14.19, controller audit finding 1: EVERY BUTTON'S LAST STATE IS RECORDED EVERY RAID FRAME. This line only filled in
+  // buttons never seen, so A, X, Y and the stick clicks kept whatever the Undercroft, a menu or the stall last recorded,
+  // and the stall compares against exactly that. The first X at the peddler after coming up opened the stall through the
+  // X hold and read the same X as a fresh press on the next frame, shutting it again; and A held into the stall read as a
+  // press of the marked row, which starts on SELL BACKPACK. A raid frame now records them all, so a press means a press.
+  for(var b2=0;b2<bt.length;b2++) PAD.prev[b2]=pressed(b2);
 }
 window.addEventListener('gamepadconnected',function(){ PAD.announced=false; });
 window.addEventListener('gamepaddisconnected',function(){ padRelease(); PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false; });
@@ -29890,7 +29895,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.18: AN ARMOURY GUN DROPPED ON THE STASH GOES INTO THE STASH. The armoury row drags with the label rack and the stash grid only refused a label nothing sends, so the drop did nothing at all. A spare gun now leaves the armoury for the stash as its item form, the way the belt and the backpack already take it, and a gun in his hands says it goes up with him. Check 14.18 drops a spare gun and the gun in his hands on the stash grid; it fails on v14.17',
+  now:'v14.19: THE STALL READS REAL PRESSES ON A PAD. A raid frame recorded the last state only of the buttons it had never seen, so A and X kept the value the Undercroft or the stall left, and the stall compared against it: the first X at the peddler opened the stall and shut it on the next frame, and A held into the stall read as a press of SELL BACKPACK. Every button is now recorded every raid frame. Check 14.19 holds X, then A, from raid frames into an open stall with a faked pad; it fails on v14.18',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

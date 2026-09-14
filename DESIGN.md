@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.19 - THE STALL READS REAL PRESSES ON A PAD
+
+Controller audit finding 1 (HIGH). pollPad keeps each button's state from the last poll in PAD.prev, and a press is a
+button down now that was up then. The raid branch records that state for B, View, Menu, the right stick, the bumpers and
+the D-pad, and its last line filled in the rest only when they had never been seen. So A, X, Y and the left stick kept
+whatever the Undercroft, a menu or the stall last recorded, for the whole raid. The stall branch compares against those:
+
+- the first X at the peddler after every ascent opened the stall through the X hold, and on the next frame the stall read
+  the same X as a fresh press, called E and shut the stall again,
+- closing a stall with A up froze A as up; holding A to fire and pressing X at a stall later read A as a fresh press of the
+  marked row, and the marker starts on SELL BACKPACK, which sells every eligible backpack item with no question.
+
+THE BUILD. The raid branch's last line records every button every frame. Nothing in the raid branch reads the old values
+for A, X or Y; the buttons it does read as presses already recorded themselves, and recording them again stores the same
+value.
+
+MEASURED. Check 14.19 fakes a pad, starts a raid, holds X through raid frames with the stall shut, opens a stall and polls
+with X still held (no E may be sent), then does the same with A (no row may be taken), then lets X go and presses it again
+in the stall (control: E is sent). It fails on v14.18.
+
+Not verified: a real controller at the peddler.
 ## v14.18 - AN ARMOURY GUN DROPPED ON THE STASH GOES INTO THE STASH
 
 Undercroft audit finding 5 (LOW). Since v11.95, his order that guns move around like any other item, an owned gun in the

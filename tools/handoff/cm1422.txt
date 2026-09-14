@@ -1,0 +1,9 @@
+v14.22: a rebuilt panel keeps the pad's place
+
+A pad click that re-rendered a panel sent the focus to its first control; on
+the ascent check that is TAKE THE FREEBIE KIT, so a second A swapped his gear.
+The focus now returns to the same place in the rebuilt panel.
+
+Check 14.22. Fails on v14.21.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
