@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.13';
+var VER='14.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,13 +1361,13 @@ var VER='14.13';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='14.02';
+var WHATSNEW_VER='14.14';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'SAVES, THE DOWNED SCREEN AND WHAT THE HUD TELLS YOU. A gun you put in your backpack comes back if the page closes mid-raid, a restore code replaces the whole old character and keeps the one it replaced for UNDO, and a repeating error no longer stutters the game. Going down closes the map, the backpack, a search and the door prompt, and in an uncalled ring the downed screen offers the call.',
   'THE STALL, YOUR HIRE AND YOUR BELT KEYS. What you buy at the stall is not loot you found, your hire is never also a stranger on the map, and an enemy charge does not turn him on you. A belt key never points at something you left behind, key 1 picks up the gun bound to it, and the free pistol carries its own two magazines.',
-  'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, a dropped gun comes back with the rounds it had, a revived pillager pays his gun once, and issued Bandages stay issued. Nothing happens in the death fade, a burst stops when you swap guns, a roll no longer freezes a reload, and you cannot punch with a grenade cooking in your hand.',
-  'YOUR HIRE, THE PEDDLER AND GETTING OUT. Your hire shoots the pillagers and not you, SELL BACKPACK leaves your tactical belt alone, and going down shuts the stall. Nothing on your belt is used while you are down, a second copy of a gun you own is kept when you extract, and the clock lets you finish holding E in a landed extraction.',
+  'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
   'A CONTROLLER WORKS ON THE UNDERCROFT FLOOR AND IN EVERY RAID. View opens your backpack and Menu pauses, you can search and call for extraction from inside an extraction point, you can trade with the peddler, and the prompts name your buttons. The menus also fit the 1280 by 720 window itch opens the game at.',
   'FEWER ENEMIES BY DEFAULT. Few machines now means the number it says: houses no longer push crawlers past it. Few pillagers is the new default, with smaller reinforcement waves. A character that never changed these settings moves to Few too.',
@@ -29890,7 +29890,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.13: DOWNED IN AN UNCALLED RING, THE OVERLAY OFFERS THE CALL, NOT ANOTHER RING SHIP. Raid HUD and map screen audit of 2026-09-15, finding 1: downedVerb only gave up when both the ring he lay in and the global pointer were uncalled, so with any other ring called a man down in an open uncalled ring read EXTRACTION INBOUND through that other ring landing, and the HOLD E TO CALL FOR EXTRACTION row, reading the pointer, stayed hidden. Both now read the ring he lies in. Check 14.13 calls one ring, downs the player in another, traces the HUD and requires no inbound verb and the call row, with the player down in the called ring reading inbound as the control; it fails on v14.12',
+  now:'v14.14: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 14.02 against 14.13 and the card said nothing about the saves, downed screen and HUD fixes of v14.03 to v14.13. Three of my own card lines are rewritten in the same three slots, newest first, keeping the stash entry inside the thirteen the card draws and his edited lines untouched, and WHATSNEW_VER moves to 14.14. Check 14.14 requires the card current and naming the uncalled ring news, with every card check still holding; it fails on v14.13. Check 14.02 allowed five builds of drift and went red from v14.08; both now allow fifteen',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

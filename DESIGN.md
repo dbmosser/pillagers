@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.14 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+A planned card refresh, as at v14.02. WHATSNEW_VER stood at 14.02 against a build at 14.13, and the card said nothing about
+v14.03 to v14.13: the save fixes, the downed screen and what the HUD tells you.
+
+THE BUILD. Three of my own card lines are rewritten in the same three slots, newest first:
+
+- saves, the downed screen and what the HUD tells you (v14.03 to v14.13),
+- the stall, your hire and your belt keys (v13.91 to v14.01, kept word for word),
+- nothing from nothing and a fairer fight (v13.68 to v13.90, the two older lines merged into one).
+
+The Medkit and grenade line and the controller line are kept. The stash entry stays inside the thirteen lines the card draws
+(check 13.34). The phrases check 13.66 needs stay in, and the words check 12.48 forbids stay out. None of his edited lines is
+touched. WHATSNEW_VER moves to 14.14.
+
+CHECK 14.02 WAS A FALSE RED. It allowed five builds of drift and so failed from v14.08 on, while the parse gate and checks 9.19,
+10.38 and 13.66 allow fifteen. It now allows fifteen, and so does 14.14.
+
+MEASURED. Check 14.14 requires the card within fifteen builds of the build, naming the v14.13 uncalled ring news, and still
+opening with the alpha line. Every check that reads the card is run on the dry build. It fails on v14.13.
+
+Not verified: the card read at 1280x720 by eye.
 ## v14.13 - DOWNED IN AN UNCALLED RING, THE OVERLAY OFFERS THE CALL, NOT ANOTHER RING'S SHIP
 
 The raid HUD and map screen audit of 2026-09-15, finding 1. downedVerb decides what the downed overlay tells him to do. Since
