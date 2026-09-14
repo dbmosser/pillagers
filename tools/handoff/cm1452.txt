@@ -1,0 +1,9 @@
+v14.52: a report corrected after Copy report is saved again
+
+A note added after Copy report sent the report again, and the save rule marked
+it not saved with 0 raids waiting, so the file lacked the note. A run already
+saved is now saved again with the correction.
+
+Check 14.52. Fails on v14.51.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

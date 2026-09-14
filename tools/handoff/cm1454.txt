@@ -1,0 +1,9 @@
+v14.54: a note is at most 400 characters
+
+Outcome and in-raid notes had no limit, so pasting a copied report stored it
+in the run and repeated it in every later report. Both are now cut at 400, as
+floor notes already were.
+
+Check 14.54. Fails on v14.53.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

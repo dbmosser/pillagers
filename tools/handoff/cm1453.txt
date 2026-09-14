@@ -1,0 +1,8 @@
+v14.53: a note with a line break stays one line in the report
+
+A note typed over two lines printed its second line with no label, reading as
+part of the report. Breaks in notes now print as a slash on the note's own line.
+
+Check 14.53. Fails on v14.52.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

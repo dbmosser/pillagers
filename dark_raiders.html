@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.48';
+var VER='14.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29441,14 +29441,19 @@ function noteCrash(kind,msg,where){
     var now=Date.now(), hit=null;
     for(var _ci=P.crashes.length-1;_ci>=0;_ci--){
       var _ce=P.crashes[_ci];
-      if(_ce&&_ce.msg===msg&&_ce.kind===kind&&(now-_ce.t)<CRASH_SAME_MS){ hit=_ce; break; }
+      // v14.49, report audit finding 1: A REPEAT IS THE SAME CRASH EVEN WHEN A NUMBER IN IT CHANGES. Chrome names the key it
+      // failed to read, so a grid read out of range reads '37', then '38', as things move: never an exact match, a new entry
+      // every frame, a profile save every frame, and every earlier crash pushed out within twelve frames. Digits are ignored
+      // when matching; the first message is kept as it was.
+      if(_ce&&_ce.kind===kind&&(now-_ce.t)<CRASH_SAME_MS&&String(_ce.msg).replace(/\d+/g,'#')===msg.replace(/\d+/g,'#')){ hit=_ce; break; }
     }
     if(hit){ hit.n=(hit.n||1)+1; hit.t=now; }
     else{
       P.crashes.push({v:VER,t:now,kind:kind,screen:(typeof state!=='undefined'&&state)?state:'?',msg:msg,where:where,n:1});
       while(P.crashes.length>CRASH_KEEP) P.crashes.shift();
     }
-    if(!hit||!(noteCrash.savedAt>0)||(now-noteCrash.savedAt)>=CRASH_SAME_MS){ noteCrash.savedAt=now; try{ saveProfile(); }catch(_sp){} }
+    // v14.49: and a new entry saves at most once a second, so a burst of different errors cannot save every frame either.
+    if(!(noteCrash.savedAt>0)||(now-noteCrash.savedAt)>=(hit?CRASH_SAME_MS:1000)){ noteCrash.savedAt=now; try{ saveProfile(); }catch(_sp){} }
     if(!crashTold){ crashTold=true; say('Something broke: '+msg.slice(0,80)+'. It was written into your run report.'); }
   }catch(_nc){}
 }
@@ -30026,7 +30031,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.48: A FLOOR BACKPACK DRAG DOES NOT SURVIVE ALT-TAB. Leaving the window mid-drag in the Undercroft backpack kept the drag, so the next click anywhere bound or removed a belt key and saved it. Losing focus now drops that drag along with the held keys. Check 14.48 starts a floor backpack drag and releases all keys; it fails on v14.47',
+  now:'v14.49: A CRASH REPEATING EVERY FRAME IS ONE ENTRY, NOT TWELVE. An error whose message carries a changing number, such as the key a failed read names, never matched the entry before it, so every frame added a crash, saved the whole profile and pushed the real first crash out of the list. Repeats now match with the numbers ignored, and a new entry saves at most once a second. Check 14.49 reports ten frames of one error with a changing key and one different error; it fails on v14.48',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

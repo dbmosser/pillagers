@@ -1,0 +1,15 @@
+## v14.54 - A NOTE IS AT MOST 400 CHARACTERS
+
+Report audit finding 5 (LOW). Floor notes are cut at 400 characters; the outcome card note and the notes typed in the
+pause box during a raid had no limit. Right after Copy report the clipboard holds the whole report, and the note box sits
+beside the button. Paste into it and Log run, and the whole report, restore code and every earlier note included, was stored
+inside that run and printed again in every later report. Doing it again made it bigger each time, pushing the profile
+toward the storage limit, after which saves fail.
+
+THE BUILD. The pause box note banked in a raid, the outcome note on a run being logged, and the outcome note patched onto a
+run already logged are each cut at 400 characters, the same as floor notes.
+
+MEASURED. Check 14.54 banks a 2,000 character pause box note in a raid (control: it is banked) and patches a 2,000 character
+outcome note onto a logged run (control: it reaches the run): both must be stored at 400 or fewer. It fails on v14.53.
+
+Not verified: pasting a copied report into the outcome note by hand.

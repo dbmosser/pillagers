@@ -40024,6 +40024,24 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.49 - A CRASH REPEATING EVERY FRAME IS ONE ENTRY, NOT TWELVE
+
+Report audit finding 1 (HIGH). The crash catcher merges a repeat into the entry it repeats, counts it, and since v14.05
+saves at most once a window for repeats. A repeat had to match the message exactly. Chrome puts the key it tried to read
+into the message, so a grid read out of range reports "reading '37'", then '38', and so on as the player or an enemy moves.
+None matched: every frame added a new entry, a new entry always saved the whole profile (about sixty saves a second, and
+the game stutters while the fault lasts), and the list holds twelve, so within twelve frames every earlier crash, the root
+cause included, was pushed out. The report showed twelve near-identical lines from the last fifth of a second.
+
+THE BUILD. A repeat matches with every run of digits ignored; the entry keeps the first message it saw. A new entry saves at
+most once a second, so a burst of different errors cannot save every frame either; repeats still save at most once a
+window.
+
+MEASURED. Check 14.49 replaces saveProfile with a counter and reports ten errors that differ only in the key they read,
+then one different error: the different one must have its own entry (control), the ten must be one entry counted ten
+times, and the burst may save at most twice. It fails on v14.48.
+
+Not verified: a real out-of-range fault in a live raid.
 ## v14.48 - A FLOOR BACKPACK DRAG DOES NOT SURVIVE ALT-TAB
 
 Undercroft floor audit finding 4 (LOW). When the window loses focus the game lets go of every held key and drops the

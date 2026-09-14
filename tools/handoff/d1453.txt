@@ -1,0 +1,15 @@
+## v14.53 - A NOTE WITH A LINE BREAK STAYS ONE LINE IN THE REPORT
+
+Report audit finding 4 (LOW). The note boxes (the pause box, the outcome card) are text areas, so pressing Enter while
+typing puts a line break in the note. The run report prints each note on a labelled line: "after run #N", "note:",
+"in-run note @Ns:". A break in the note carried into the report, so the second line printed at the left margin with no
+label. It read as a line of the report itself, with no way to tell where the note ended.
+
+THE BUILD. Floor notes, run notes and in-run notes print their line breaks as " / " on their own labelled line. The note
+text is stored exactly as typed.
+
+MEASURED. Check 14.53 puts a floor note typed over two lines in place and builds the report: the note must reach the report
+(control), no report line may start with its second half, and the two halves must be joined on the labelled line. It fails
+on v14.52.
+
+Not verified: a note typed with Enter in the pause box and read in a copied report.

@@ -1,0 +1,9 @@
+v14.55: a boot crash repeating every frame is one entry too
+
+Crashes before the profile loads never merged, so a repeating boot fault added
+an entry and a storage write every frame. Repeats of the last boot crash are
+now counted and written at most once a second.
+
+Check 14.55. Fails on v14.54.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

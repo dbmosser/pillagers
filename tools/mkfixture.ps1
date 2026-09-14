@@ -5718,6 +5718,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.49',what:'a crash repeating every frame with a changing number is one entry: ten errors that differ only in the key they read become one crash counted ten times and save the profile at most twice, while a different error still gets its own entry (report audit finding 1)',
+   run:function(){
+     if(typeof noteCrash!=='function'||typeof PLOADED==='undefined') return 'SKIP: no crash catcher in this build';
+     if(!PLOADED) return 'SKIP: the profile has not loaded, so crashes go to the boot list';
+     var bad=[], saves=0, _sp=saveProfile, keep=P.crashes, keepAt=noteCrash.savedAt, keepTold=crashTold;
+     try{
+       P.crashes=[]; noteCrash.savedAt=0;
+       saveProfile=function(){ saves++; };
+       var Q=String.fromCharCode(39);
+       for(var i=0;i<10;i++) noteCrash('error','Cannot read properties of undefined (reading '+Q+(37+i)+Q+')','zqx:1:1');
+       noteCrash('error','zqx a different fault entirely','zqx:2:2');
+       var ours=P.crashes.filter(function(c){ return /reading/.test(c.msg); });
+       // CONTROL: the different fault has its own entry.
+       if(!P.crashes.some(function(c){ return /different fault/.test(c.msg); })) bad.push('control: a different crash did not get its own entry');
+       if(ours.length!==1) bad.push('ten frames of one error with a changing key made '+ours.length+' crash entries instead of one');
+       else if(ours[0].n!==10) bad.push('the merged crash counted '+ours[0].n+' repeats, not 10');
+       if(saves>2) bad.push('eleven crash reports in a burst saved the whole profile '+saves+' times');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ saveProfile=_sp; P.crashes=keep; noteCrash.savedAt=keepAt; try{ crashTold=keepTold; }catch(_t){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.48',what:'a floor backpack drag does not survive losing focus: with a drag held in the open Undercroft backpack, releasing all keys drops the drag and leaves the backpack open (floor audit finding 4)',
    run:function(){
      if(typeof showScreen!=='function'||typeof hubBagOpenSet!=='function'||typeof releaseAllKeys!=='function') return 'SKIP: no floor backpack in this build';
