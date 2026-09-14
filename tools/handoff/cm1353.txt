@@ -1,0 +1,10 @@
+v13.53: hazard pay is paid only on what the run brought home
+
+Hazard pay was the whole backpack value times the Terms rate, including gear the
+lift carried up from the stash, so packing a valuable item and signing Terms paid
+up to 140 percent of it every raid. The bonus now subtracts what came up, as the
+haul contract and XP already do.
+
+Check 13.53 extracts the same item carried up and found. Fails on v13.52.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

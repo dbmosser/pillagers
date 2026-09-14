@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.52';
+var VER='13.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19490,7 +19490,9 @@ silentExit:T.silentExit||0,
   // than a difficulty slider.
 
   if(how==='extract'&&tPay>0){
-    var bonus=Math.round(haul*tPay);
+    // v13.53, end-of-raid audit: only what the run brought home earns hazard pay. The
+    // lift's own cargo goes straight back to the stash, as v12.65 and v12.69 already count.
+    var bonus=Math.round(Math.max(0,haul-(G.carriedIn||0))*tPay);
     P.credits+=bonus;
     var tn=[];
     for(var tq=0;tq<TERMS.length;tq++) if(hasTerm(TERMS[tq].id)) tn.push(TERMS[tq].name);
@@ -29714,7 +29716,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.52: WHAT A CONTROLLER PLAYER READS MATCHES THE BUTTON. The key prompt audit of 2026-09-14, findings 2 to 7: the empty cell line said Press 1 for your gun, which no pad button reaches, and now says LB or RB; the short pad key list said BACK and START while the full list and the backpack say VIEW and MENU, and PADLABEL now agrees; D-DOWN was labelled medical, which it has not done since v11.27, and now reads revive; the HUD backpack cue named B, the dodge roll, and reads VIEW on a pad; the Peddler DEAL prompt and both HOLD TO CALL lines printed E and now name the pad button; and the belt caption hides V signal on a pad. Keyboard text is unchanged. Check 13.52 stubs padOn and requires the new wording, and that the keyboard wording still stands; it fails on v13.51',
+  now:'v13.53: HAZARD PAY IS PAID ONLY ON WHAT THE RUN BROUGHT HOME. End-of-raid audit of 2026-09-14, finding 1: the bonus was the whole backpack value times the Terms rate, and the backpack includes what the lift carried up from the stash, which goes straight back to the stash, so packing a valuable item and signing Terms paid up to 140 percent of his own item every raid. The haul contract (v12.65) and XP (v12.69) already subtract what came up; hazard pay now does too. Check 13.53 extracts with the same item carried up and then found, with the Terms rate stubbed: carried up pays no hazard bonus, found still pays it; it fails on v13.52',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,22 @@
+## v13.53 - HAZARD PAY IS PAID ONLY ON WHAT THE RUN BROUGHT HOME
+
+The end-of-raid audit of 2026-09-14, finding 1. Hazard pay was the whole backpack value
+times the Terms rate. The backpack at extraction includes whatever the lift carried up from
+the stash, and all of it goes straight back to the stash. So packing a valuable item,
+signing all five Terms and extracting paid up to 140 percent of his own item in credits,
+every raid, for loot the run never found.
+
+The same leak was already closed twice: the haul contract at v12.65 and XP at v12.69 both
+subtract what the lift carried in (G.carriedIn). Hazard pay did not.
+
+THE BUILD. The bonus is now the Terms rate times the haul minus what came up the lift,
+floored at zero. Nothing else about Terms changes: a death under them still pays nothing,
+and loot found in the raid pays the full rate.
+
+MEASURED. Check 13.53 stubs the Terms rate at 50 percent and extracts twice with the same
+item worth at least 600. Carried up from the stash, the extraction must not pay the hazard
+bonus on it. Found in the raid, it must pay the full rate. It fails on v13.52.
+
+Not verified: a raid that carries some items up and finds others, where the subtraction is
+by value rather than by item; and the other three audit findings, which are their own
+builds.
