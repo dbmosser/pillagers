@@ -22713,7 +22713,7 @@ window.__REGRESS=[
      // nothing is exactly the fault this build is about.
      function build(ix,mapIx,seed){
        __cleanProfile(); __resetCfg(); __pinDefaults(0);
-       var P2=__P(); P2.gameOpts={robots:ix};
+       var P2=__P(); P2.gameOpts={robots:ix,raiders:1};   // r1352: pillagers held at Standard; the row defaults to Few since v13.43
        __opts.apply();
        var C=__cfg();
        __deploy({kit:[],safe:null,mapIx:mapIx,seed:seed});
