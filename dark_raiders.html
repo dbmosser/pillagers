@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.95';
+var VER='13.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12249,7 +12249,7 @@ function explodeFrag(f){
       // his pitch, so overwriting them moved his stall to the blast), and a
       // downed pillager is out until he bleeds or is picked up. They keep the
       // damage and the notoriety above; they just do not give chase.
-      if(e.state!=='alarm'&&e.kind!=='peddler'&&e.kind!=='stray'&&!e.downed){
+      if(e.state!=='alarm'&&e.kind!=='peddler'&&e.kind!=='stray'&&!e.downed&&!e.merc){   // v13.96, AI audit: a blast never turns your hire on you
         e.state='chase'; e.alert=2.5;
         if(_fMine){ e.tx=p.x; e.ty=p.y; } else { e.tx=f.x; e.ty=f.y; }
       }
@@ -29855,7 +29855,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.95: A STRAY CLEARING YOUR NOTORIETY CLEARS ITS FADE COUNT. Contracts, notoriety and waves audit of 2026-09-14, finding 6: a point of notoriety fades after four extractions counted on P.notExt, which resets only when a point fades, and helping a Stray took a point off without touching it, so at notoriety 1 with three counted the Stray took it to zero with three still counted and the next point faded after one extraction. Clearing the last point now clears the count. Check 13.95 helps a Stray at notoriety 1 with three counted and requires both at zero, with notoriety 2 keeping its count as the control; it fails on v13.94',
+  now:'v13.96: AN ENEMY CHARGE DOES NOT TURN YOUR HIRE ON YOU. Machine and pillager AI audit of 2026-09-14, finding 1: explodeFrag sets every survivor in the blast to chase, and only your own charge skipped your hire, so an enemy pillager charge near him set him chasing, nothing put a hire back, and the pillager chase branch had him fire at you and throw his own charges at you while dropping his orders. A blast now never stands your hire up into a chaser; he keeps the damage. Check 13.96 bursts an enemy charge beside your hire and requires him not chasing, with an ordinary pillager beside the same blast chasing as the control; it fails on v13.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
