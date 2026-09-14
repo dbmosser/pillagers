@@ -1,0 +1,9 @@
+v14.25: one item, one key, in the Undercroft backpack too
+
+A drag onto the belt from the Undercroft backpack could leave the same item on
+two keys, and dropping a key on a filled key deleted what it held. It now
+follows the raid rule: the item moves, and a displaced item swaps back.
+
+Check 14.25. Fails on v14.24.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
