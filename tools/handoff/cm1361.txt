@@ -1,0 +1,8 @@
+v13.61: a restore code replaces the whole save
+
+restoreApply replaced the stash, credits and guns but left the old loadout, belt
+keys, saved packings and armed Data Core. It now clears all five.
+
+Check 13.61 restores a code over a packed, bound, armed save. Fails on v13.60.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

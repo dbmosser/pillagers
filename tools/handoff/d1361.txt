@@ -1,0 +1,19 @@
+## v13.61 - A RESTORE CODE REPLACES THE WHOLE SAVE
+
+The Undercroft audit of 2026-09-14, finding 4, the low-impact one. A restore code rebuilds
+a character. The panel promises it replaces the save he is playing, and restoreApply does
+replace the stash, the credits, the XP and the guns. It never wrote the packed loadout
+(P.kit), the belt keys (P.hotAssign), the saved packings (P.kitSaved and P.kitBeforeFree)
+or an armed Data Core (P.intel). So the restored character came back with the old belt keys
+on any matching items, the old packing re-selected, and intel armed from a core this save
+never spent. Nothing was duplicated, because the packing check matches the kit against the
+new stash, but the new character was not clean.
+
+THE BUILD. restoreApply clears all five alongside the stash it replaces.
+
+MEASURED. Check 13.61 packs a Bandage on key 3, saves packings and arms a core, then applies
+a restore code holding three Scrap. The stash must become the code's three Scrap (the
+control), and the loadout, belt keys, both saved packings and the armed core must all be
+cleared. It fails on v13.60. The check puts the whole profile back afterwards.
+
+Not verified: restoring from a backup file and the UNDO button, which take other paths.
