@@ -40024,6 +40024,31 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.99 - A BELT KEY DOES NOT POINT AT SOMETHING THAT STAYED BEHIND
+
+The deploy and loadout audit of 2026-09-15, finding 1. Committing a loadout empties the kit but keeps
+the belt plan, and the key clean-up keeps any key whose item is still in the stash. So a key bound on
+one raid stays bound on the next, whether or not the item goes up. In the raid:
+
+- The raid copies the whole plan, and a bound item with none carried still counts as bound (v9.03
+  keeps a learned key on its item).
+- The dedupe then blanks the derived Medical cell, because a heal is already bound.
+- So with a Medkit bound to key 8 from last raid and only Bandages packed this time, key 8 said
+  "No Medkit left" and the Bandages that did come up had no belt key at all. KeyF is melee, so
+  healing needed the backpack open.
+
+It happened on the first raid after almost every extraction where a bound item was not repacked.
+
+THE BUILD. When the raid is built, its copy of the belt plan lets go of any item carried neither in the
+backpack nor in the pouch. Guns are left alone, because they ride in the hands and not the bag. The
+Undercroft plan he set is not touched, so the key comes back the next time the item is packed.
+
+MEASURED. Check 13.99 goes up with two Bandages. With a Bandage bound to key 8 the binding must reach the
+raid (the control, which proves the plan is copied). With a Medkit bound to key 8 the raid must drop
+that binding and show a Medical cell holding the two Bandages. It fails on v13.98.
+
+Not verified: a spent item mid-raid, which v9.03 keeps on its key by his answer 16 and this does not
+change.
 ## v13.98 - A CREW PICK-UP CLEARS YOUR KILL CREDIT
 
 The machine and pillager AI audit of 2026-09-14, finding 3. Your lethal round sets byPlayer on a

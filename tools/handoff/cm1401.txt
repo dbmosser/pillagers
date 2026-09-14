@@ -1,0 +1,9 @@
+v14.01: the freebie pistol carries its own reserve
+
+The free Scav Pistol kept the reserve built from the gun left at home, up to
+120 rounds. It now gets two of its own magazines.
+
+Check 14.01 takes the free kit with a Support MG and a pistol at home. Fails on
+v14.00.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

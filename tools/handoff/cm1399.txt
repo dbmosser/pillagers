@@ -1,0 +1,9 @@
+v13.99: a belt key does not point at something that stayed behind
+
+A key bound on an earlier raid stayed bound when its item was not packed,
+blanking the Medical cell. The raid copy of the belt plan now drops items that
+did not come up.
+
+Check 13.99 goes up with Bandages and a stale Medkit binding. Fails on v13.98.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

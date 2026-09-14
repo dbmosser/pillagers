@@ -1,0 +1,8 @@
+v14.02: the what is new card is current again, before it goes stale
+
+The card stood at v13.87, one build short of the staleness gate. Three of my
+own card lines are rewritten in place to cover v13.68 to v14.01.
+
+Check 14.02 holds the card current. Fails on v14.01.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

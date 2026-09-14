@@ -1,0 +1,9 @@
+v14.00: key 1 picks up the gun bound to it
+
+A backpack gun bound to key 1 could not be equipped with 1, because the raid
+starts with that slot selected and setHot ignored the selected slot. It now
+equips a backpack gun on the selected key.
+
+Check 14.00 presses 1 with an SMG bound there. Fails on v13.99.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
