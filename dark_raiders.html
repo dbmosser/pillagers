@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.93';
+var VER='14.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,12 +1361,12 @@ var VER='14.93';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='14.83';
+var WHATSNEW_VER='14.94';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'YOUR STASH, THE SHOP AND YOUR GUNS. A controller packs from the stash with A, the stash count includes your guns, and hovering any item offers every belt key. The shop no longer asks for money for a gun you own, and the ascent question says when items are packed from your stash for you. After a raid neither gun slot names a gun you lost, and a contract gun fills an empty hand.',
-  'WARDROBE, SAVES, STORMS AND A CONTROLLER ON EVERY SCREEN. SURPRISE ME takes a worn suit off and a restore code replaces your clothes too. Erasing a save erases its UNDO copy, and lightning no longer hits you through a wall or under a roof. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
+  'YOUR BELT KEYS AND YOUR GUNS. A heal on a key no longer stops Medical using your other heals, a key on the gun in your hands survives an extraction, and a drag on the belt in a raid keeps your keys for things you left at home. The Undercroft belt counts the grenades you packed. After a raid neither gun slot names a gun you lost, and a contract gun fills an empty hand.',
+  'STASH, SHOP, WARDROBE, SAVES, STORMS AND CONTROLLERS. A controller packs from the stash with A, and the shop no longer asks for money for a gun you own. SURPRISE ME takes a worn suit off, and erasing a save erases its UNDO copy. Lightning no longer hits you through a wall or under a roof. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
   'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
   'A CONTROLLER WORKS ON THE UNDERCROFT FLOOR AND IN EVERY RAID. View opens your backpack and Menu pauses, you can search and call for extraction from inside an extraction point, you can trade with the peddler, and the prompts name your buttons. The menus also fit the 1280 by 720 window itch opens the game at.',
@@ -30153,7 +30153,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.93: HIS OWN PATTERN BEATS A BAKED EXACT LINE. His rewording of a line with a number saves a pattern for any number, but a line baked into the file at one number was looked up first, so at exactly that number the old wording came back. His pattern is now looked up before the baked line. Check 14.93 saves a pattern over a baked number line; it fails on v14.92',
+  now:'v14.94: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 14.83 against 14.93, and the card said nothing about the belt key fixes of v14.84 to v14.87; the words editor fixes are his tool and stay off the card. Two of my own card lines are rewritten in place: the first names the new news and the second merges the two older lines, keeping what checks 14.83, 14.72, 14.60, 14.40, 14.27, 14.14 and 14.02 read, and WHATSNEW_VER moves to 14.94. Check 14.94 requires the card current and naming the belt key news; it fails on v14.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

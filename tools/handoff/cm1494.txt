@@ -1,0 +1,8 @@
+v14.94: the what is new card is current again
+
+The card stood at 14.83 and said nothing about the belt key fixes since. Two of
+my own lines are rewritten in place, keeping every phrase the card checks read.
+
+Check 14.94. Fails on v14.93.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

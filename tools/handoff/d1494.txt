@@ -1,0 +1,14 @@
+## v14.94 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+WHATSNEW_VER stood at 14.83 against a build at 14.93, and the card said nothing about the belt key fixes of v14.84 to v14.87.
+The words editor fixes of v14.88 to v14.93 are his tool, shown only on his machine, so they stay off a card every player reads.
+
+THE BUILD. Two of my own card lines are rewritten in place. The first slot names the belt key news and keeps the gun slot news.
+The second merges the two older lines, keeping every phrase checks 14.83, 14.72, 14.60, 14.40, 14.27, 14.14 and 14.02 read.
+Dropped from the card: the stash count, the hover row, the ascent question, the restore code clothes and the second hire fee
+lines. Every line of his and every other line are untouched, so the card still holds thirteen lines. WHATSNEW_VER moves to 14.94.
+
+MEASURED. Check 14.94 requires the card within fifteen builds and naming the belt key news; it fails on v14.93. Every card check
+was run on the dry build.
+
+Not verified: the card read on screen by eye.
