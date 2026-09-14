@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.88 - A REVIVED PILLAGER PAYS HIS GUN ONCE
+
+The searching and loot audit of 2026-09-14, finding 3. Picking a downed pillager up pays out of
+his own pockets (v9.10): the gun in his bag, or failing that the best thing he carries, or
+failing that a copy of the gun in his hands, which he keeps holding. The first revive marks him
+paidRevive, so that his body does not pay that same gun again when he dies. But the revive
+itself never read the mark:
+
+- Revive a pillager with an empty bag: he pays a copy of the gun in his hands.
+- Shoot him down again and revive him again: his bag is still empty, so his hands pay another.
+- Reviving has cost nothing since v9.24, so this was an endless supply of his gun.
+
+THE BUILD. The copy from his hands is paid only when he has not already paid a revive. His bag
+and his best item still pay as before.
+
+MEASURED. Check 13.88 puts a downed pillager with an empty bag and an SMG beside the player,
+revives him through real updatePlayer frames, and requires one SMG in the backpack (the
+control). It downs him again, revives him again, and requires still one. It fails on v13.87.
+
+Not verified: a pillager whose bag refills between the two revives, who still pays from it.
 ## v13.87 - A FOUND GUN IN SLOT 2 BAGS THE GUN IT REPLACES
 
 The searching and loot audit of 2026-09-14, finding 5. Since v12.78 a found gun may displace a
