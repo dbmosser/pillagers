@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.89 - A DROPPED ITEM NEVER LANDS INSIDE A WALL
+
+The searching and loot audit of 2026-09-14, finding 4. dropItem puts the pile 6 to 18 units
+below the player and 14 either side, with no wall test. A player pressed against the top face
+of a wall has his centre 11 units from it, so about two drops in five put the pile's centre
+inside the wall. The pile was drawn, but a search needs a clear line to it, so:
+
+- No search prompt appeared from either side, and X and E did nothing.
+- The item was lost to him, though a pillager's distance-only loot test could still take it.
+
+THE BUILD. After placing the pile, dropItem tests the line from the player to it. With no clear
+line, the pile goes down at the player's feet. The placement roll is unchanged, so the seeded
+stream is untouched.
+
+MEASURED. Check 13.89 finds a solid wall whose top face blocks a point 18 units below a player
+pressed against it (the precondition that the wall is really there), drops forty items from
+that spot, and requires every pile reachable in a clear line. It fails on v13.88.
+
+Not verified: the auto-cull shed crates, which go through dropItem and so are covered, but were
+not driven against a wall.
 ## v13.88 - A REVIVED PILLAGER PAYS HIS GUN ONCE
 
 The searching and loot audit of 2026-09-14, finding 3. Picking a downed pillager up pays out of
