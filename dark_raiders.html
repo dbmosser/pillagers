@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.47';
+var VER='14.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29360,6 +29360,10 @@ function releaseAllKeys(){
   // The reticle also hides for an open bag, and alt-tabbing with the bag open
   // left that panel latched too. Cleared with the keys, for the same reason.
   if(G){ G.bagOpen=false; G.drag=null; }
+  // v14.48, floor audit finding 4: AND THE FLOOR BACKPACK'S DRAG. Alt-tabbing mid-drag in the Undercroft backpack left its
+  // drag set with the icon stuck to the cursor, and the next click anywhere bound that item to the belt key under it, or
+  // deleted the key it came from, and saved it. The drag is dropped with the keys; the backpack stays open.
+  if(typeof hubBagG!=='undefined'&&hubBagG) hubBagG.drag=null;
   // v8.14, audit: and the DOM drag, which only the document mouseup ever
   // cleared. Released over the taskbar or another monitor, no mouseup arrives,
   // GRAB stays armed and the next click anywhere drops a stale item.
@@ -30022,7 +30026,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.47: A BUTTON HELD WHILE THE FLOOR PAUSE BOX CLOSES DOES NOT FIRE A STATION. A held A or E carried through the box closing read as a fresh press at the station he stood at, so the sector page could open at once. Closing the pause box on the floor now arms the E lock, which clears when the keys are let go. Check 14.47 opens and closes the pause box on the floor with the lock off; it fails on v14.46',
+  now:'v14.48: A FLOOR BACKPACK DRAG DOES NOT SURVIVE ALT-TAB. Leaving the window mid-drag in the Undercroft backpack kept the drag, so the next click anywhere bound or removed a belt key and saved it. Losing focus now drops that drag along with the held keys. Check 14.48 starts a floor backpack drag and releases all keys; it fails on v14.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

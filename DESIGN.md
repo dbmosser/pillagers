@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.48 - A FLOOR BACKPACK DRAG DOES NOT SURVIVE ALT-TAB
+
+Undercroft floor audit finding 4 (LOW). When the window loses focus the game lets go of every held key and drops the
+raid's drag. The backpack opened on the Undercroft floor keeps its own drag, and that one was not dropped. So press on an
+item or a belt cell in the floor backpack, alt-tab before releasing, come back and click anywhere: the icon was still stuck
+to the cursor, and the click either bound that item to the belt key under the cursor or deleted the key it was dragged
+from, and the mouse release saved the result to the profile.
+
+THE BUILD. Letting go of the keys also drops the floor backpack's drag. The backpack itself stays open.
+
+MEASURED. Check 14.48 opens the floor backpack, holds a drag and a key, and releases all keys: the key must be let go
+(control), the backpack still open and the drag gone. It fails on v14.47.
+
+Not verified: alt-tab mid-drag by hand.
 ## v14.47 - A BUTTON HELD WHILE THE FLOOR PAUSE BOX CLOSES DOES NOT FIRE A STATION
 
 Undercroft floor audit finding 3 (LOW). A station fires on E (and R, F, T for its other actions), guarded by an E lock that

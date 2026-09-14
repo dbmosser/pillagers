@@ -1,0 +1,9 @@
+v14.51: a crash note keeps where it happened
+
+The crash location was cut at 200 characters starting with the message, so a
+long message lost the line and column. The stack lines that carry a location
+are now kept.
+
+Check 14.51. Fails on v14.50.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

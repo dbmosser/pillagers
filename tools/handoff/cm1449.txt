@@ -1,0 +1,9 @@
+v14.49: a crash repeating every frame is one entry, not twelve
+
+An error with a changing number in its message never merged, so every frame
+added a crash, saved the profile and pushed the real first crash out. Repeats
+now match with numbers ignored, and new entries save at most once a second.
+
+Check 14.49. Fails on v14.48.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

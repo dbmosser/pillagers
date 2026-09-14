@@ -1,0 +1,8 @@
+v14.50: Clear recorder clears old crashes and floor notes too
+
+Clearing the recorder left every old crash and floor note in the next report,
+so an old fault read as a live one. Both are now cleared with the log.
+
+Check 14.50. Fails on v14.49.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

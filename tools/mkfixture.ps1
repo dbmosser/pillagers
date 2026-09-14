@@ -5718,6 +5718,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.48',what:'a floor backpack drag does not survive losing focus: with a drag held in the open Undercroft backpack, releasing all keys drops the drag and leaves the backpack open (floor audit finding 4)',
+   run:function(){
+     if(typeof showScreen!=='function'||typeof hubBagOpenSet!=='function'||typeof releaseAllKeys!=='function') return 'SKIP: no floor backpack in this build';
+     if(typeof G!=='undefined'&&G) return 'SKIP: a raid is live, so the floor backpack cannot be driven';
+     var bad=[];
+     try{
+       __topClear(); __cleanProfile();
+       showScreen('hub'); __topClear();
+       hubBagOpenSet(true);
+       if(!hubBagOpen||!hubBagG) return 'SKIP: the floor backpack did not open';
+       hubBagG.drag={key:'medkit'};
+       var K=__keysRef(); K['KeyW']=true;
+       releaseAllKeys();
+       // CONTROL: the keys were let go, so the release ran.
+       if(__keysRef()['KeyW']) return 'SKIP: releaseAllKeys did not let go of a held key here';
+       if(!hubBagG) bad.push('releasing the keys closed the floor backpack');
+       else if(hubBagG.drag) bad.push('losing focus mid-drag left the floor backpack drag held, so the next click binds or removes a belt key and saves it');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(hubBagG) hubBagG.drag=null; if(hubBagOpen) hubBagOpenSet(false); }catch(_b){}
+       try{ var K3=__keysRef(); for(var k3 in K3) K3[k3]=false; }catch(_k){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.47',what:'a button held while the floor pause box closes does not fire a station: opening and closing the pause box on the floor with the E lock off leaves the lock armed (floor audit finding 3)',
    run:function(){
      if(typeof showScreen!=='function'||typeof togglePauseBox!=='function') return 'SKIP: no floor pause box in this build';
