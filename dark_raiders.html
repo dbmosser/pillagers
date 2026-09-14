@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.93';
+var VER='13.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8948,7 +8948,7 @@ function idRec(id){
 function myRival(){
   var best=null,bs=1;
   for(var id in (P.rivals||{})){
-    var r=P.rivals[id],f=(r.kills||0)+(r.deaths||0);
+    var r=P.rivals[id],f=(r.kills||0);   // v13.94: kills alone. deaths is only ever a hire dying on your job.
     if(f>bs){ bs=f; best=id; }
   }
   return best;
@@ -10728,7 +10728,7 @@ if(G.wx.id!=='clear'&&G.wx.line) say(G.wx.line);
     }
   }catch(_loan0){}
   for(var _rv=0;_rv<G.ents.length;_rv++){
-    if(G.ents[_rv].rival){
+    if(G.ents[_rv].rival&&!G.ents[_rv].merc){   // v13.94, contracts audit: never announce your own hire
       G.tel.rivalMet=1;
       setTimeout((function(nm,g0){return function(){ if(G===g0&&!G.over) sayWhenFree('YOUR RIVAL is out here: '+nm+'. He will shoot on sight.'); };})(G.ents[_rv].name,G),4000);   // v13.33: waits its turn
       break;
@@ -29854,7 +29854,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.93: KILLING A GHOST DOES NOT BLAME A STRANGER. Contracts, notoriety and waves audit of 2026-09-14, finding 2: applyGhost renamed the first ordinary pillager into the imported ghost but kept his identity, so killing the ghost wrote a kill on that pillager record, which spawned him hostile, refused parley and barred his hire from the next raid on. The ghost now takes an identity of its own outside IDENTITIES and drops the old rival flag. Check 13.93 kills the ghost and requires no identity in IDENTITIES to gain a kill, with an ordinary pillager killed the same way recording one as the control; it fails on v13.92',
+  now:'v13.94: A HIRE WHO DIED ON YOUR JOB IS NOT YOUR RIVAL. Contracts, notoriety and waves audit of 2026-09-14, finding 5: myRival scored an identity by kills plus deaths, and deaths is only written when a hire dies on your job, so a hire who had died twice became YOUR RIVAL, carried the rival star and was announced as shooting on sight while he walked beside you. The score now reads kills alone and the announcement never names a hire. Check 13.94 requires an identity with two deaths and no kills not to be the rival, with an identity of two kills as the rival as the control; it fails on v13.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
