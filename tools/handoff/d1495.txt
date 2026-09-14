@@ -1,0 +1,14 @@
+## v14.95 - THE SHORT WINDOW TERM DOES NOT PROMISE TO CUT A RAID CLOCK THAT IS OFF
+
+Falsy-zero audit finding 1 (LOW). The tuning console's raid timer slider reaches 0, shown as OFF, and every raid reader treats 0
+as no clock at all. The SHORT WINDOW term's words read the clock with `CFG.raidSec||DEF.raidSec`, so 0 counted as unset and the
+Terms board said the whole raid clock is cut by a third, about 356 seconds instead of 540, on a raid with no clock.
+
+THE BUILD. Words only. The term reads the dial as a number, and with the clock off it says there is no clock to cut. What the term
+pays is unchanged: with the clock off it still pays its bonus for a cut that changes nothing, which is a number and is left for
+his call.
+
+MEASURED. Check 14.95 reads the term with the clock at its default (control: the words name the full clock) and with the clock off:
+the words must name neither the full clock nor the cut one. It fails on v14.94.
+
+Not verified: the Terms board by eye with the clock off.

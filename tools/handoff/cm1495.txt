@@ -1,0 +1,8 @@
+v14.95: the Short Window term does not promise to cut a raid clock that is off
+
+With the raid timer dial at 0 (off), the term still promised about 356 seconds
+instead of 540. It now says there is no clock to cut.
+
+Check 14.95. Fails on v14.94.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
