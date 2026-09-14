@@ -5718,6 +5718,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.27',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the controller news of v14.23 and v14.26, still opening with the alpha line',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
+     var all=L.join(' ').toUpperCase();
+     var NEWS=['the title screen','and the pause box'].join(' ').toUpperCase();
+     if(all.indexOf(NEWS)<0) bad.push('the card does not mention the controller news of v14.23 and v14.26');
+     if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+     return bad.length?bad.join('; '):null; }},
   {v:'14.26',what:'the title screen works on a pad: with the title showing the pad focus lands on ENTER THE UNDERCROFT, and B leaves the title up instead of stripping it to a blank screen (controller audit finding 7)',
    run:function(){
      if(typeof pollPad!=='function'||typeof padMenu!=='function'||typeof padFocusables!=='function'||typeof PAD==='undefined') return 'SKIP: no pad menu in this build';
