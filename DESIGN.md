@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.89 - A KEY HELD WHEN THE WORDS EDITOR OPENS IS LET GO
+
+Words audit finding 4 (MEDIUM). The game hears key releases only through one keyup listener on window. The words editor box
+stops keyup from leaving it, so that typing does not drive the game. A key already held when the box took focus, W while
+walking in a raid, was released inside the box and never reached the game; after Enter he kept walking. Moving focus inside the
+page does not fire the window blur that lets every key go.
+
+THE BUILD. The box marks the key it hears go up as released, then stops the event as before.
+
+MEASURED. Check 14.89 holds W, opens the editor (control: it opens), releases W inside it and closes it: the game must no
+longer hold W. It fails on v14.88.
+
+Not verified: a real held key while editing a HUD word.
 ## v14.88 - A WORD CLICKED IN EDIT MODE IS NOT ALSO PRESSED
 
 Words audit finding 1 (HIGH, his tool). With Edit the words on, a mousedown on a word opens the editor over it and stops the

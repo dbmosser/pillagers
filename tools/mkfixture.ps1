@@ -5718,6 +5718,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.89',what:'a key held when the words editor opens is let go: W held, the editor opened, W released inside it, and the game no longer holds W (words audit finding 4)',
+   run:function(){
+     if(typeof txOpen!=='function'||typeof txClose!=='function'||typeof keys==='undefined') return 'SKIP: no words editor in this build';
+     var bad=[];
+     try{
+       keys.KeyW=true;
+       var el=txOpen('zqx probe line','zqx probe line',0,0,50,14);
+       // CONTROL: the editor box is open.
+       if(!el||!el.parentNode) return 'SKIP: the words editor did not open here';
+       el.dispatchEvent(new KeyboardEvent('keyup',{code:'KeyW',key:'w',bubbles:true,cancelable:true}));
+       txClose();
+       if(keys.KeyW) bad.push('W released inside the words editor is still held by the game');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ keys.KeyW=false; txClose(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.88',what:'a word clicked in edit mode is not also pressed: with the words editor on, a press on a button opens the editor on its word and the click after it does not press the button (words audit finding 1)',
    run:function(){
      if(typeof txClick!=='function'||typeof txClose!=='function'||typeof CFG==='undefined') return 'SKIP: no words editor in this build';
