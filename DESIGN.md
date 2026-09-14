@@ -40117,67 +40117,7 @@ His note of 2026-09-13: on itch, Escape kills fullscreen. Tab does what Escape d
 
 Measured: check 13.45 fails on the previous build and passes on this one. Existing checks that asserted the old keys are repaired in this build.
 
-Not verified: 1. POST-BUILD-1 ANCHORS. These count 0 in the v13.41 file and 1 only after build 1:
-
-
-
-- var VER=13.44
-
-
-
-- var WHATSNEW_VER=13.44
-
-
-
-- the reworded PRESS B entry
-
-
-
-- 1-9 tactical belt &nbsp; I backpack &nbsp;
-
-
-
-- <b style=color:var(--bone)>I</b> backpack &nbsp;
-
-
-
-- I
-
-BACKPACK
-
-
-
-- the GEAR [I,backpack] row
-
-
-
-- the MINI [I,backpack] row
-
-
-
-- I,your things,TAB,pause, or back out
-
-
-
-- the floor
-
-
-
- if(e.code===KeyI&&!e.repeat){ line
-
-
-
-- the raid
-
- if(code===KeyI&&G&&!G.over&&!repeat){ line
-
-
-
-- the v12.95 _bagKeys line
-
-
-
-Every other anchor here counted exactly 1 in the v13.41 file. The mu
+Not verified: a real keyboard and controller session end to end; the hire bench sentence, which still names B for orders under his edited text (it shows Buy a friend); and checks 13.17, 13.22 and 13.23, which pass but still say B in their own failure messages.
 ## v13.44 - TAB PAUSES AND BACKS OUT, THE WAY ESCAPE DOES
 
 His note of 2026-09-13: on itch, Escape kills fullscreen. Tab does what Escape did in the game; B and I open the backpack. Built under rulebook rule 1 on the default he was asked about: hire orders on O.
@@ -40194,15 +40134,7 @@ TAB now does everything Escape does, which matters on itch, where the browser sp
 
 Measured: check 13.44 fails on the previous build and passes on this one. Existing checks that asserted the old keys are repaired in this build.
 
-Not verified: 1. THE FILE IS MOVING. v13.41 (raised decks) landed during this read-only pass: VER went 13.40 to 13.41 and WHATSNEW gained an entry. Recount every anchor right before applying, and renumber if another build lands first. 2. SYNTHETIC ORDER. The pause-box capture listener (window, line 11812) runs before the main listener for a real press, and after it for a press dispatched at window (memory note A synthetic ESC runs late; the v12.89 comment says the same).
-
-
-
-- The new guard Tab && defaultPrevented keeps a window-dispatched Tab from opening and shutting the box in one press.
-
-
-
-- The !pauseOp
+Not verified: a synthetic TAB with the Undercroft pause box up behind another window, which was traced but not driven; TAB inside a window text field, which now closes the window as Escape does; and the controller gaps this build did not cover (the emote bar, and the floor pause box before v13.47).
 ## v13.43 - FEWER ENEMIES BY DEFAULT
 
 His rulings of 2026-09-13: too many bots on the lightest setting. Asked, he chose:
