@@ -650,7 +650,7 @@
 
 <div class="pausebox" id="pausebox">
   <h3>RAID PAUSED</h3>
-  <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch toggle<br>E interact &nbsp; R reload &nbsp; F melee strike &nbsp; 1-9 tactical belt &nbsp; I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; TAB back out &nbsp; P / TAB pause</div>
+  <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch toggle<br>E interact &nbsp; R reload &nbsp; F melee strike &nbsp; 1-9 tactical belt &nbsp; B / I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; TAB back out &nbsp; P / TAB pause</div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Please provide feedback anything that went or felt wrong.</div>
   <textarea id="pausenote" rows="3" style="max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
   <div style="display:flex;gap:8px">
@@ -960,7 +960,7 @@
       <b style="color:var(--bone)">LMB</b> fire &nbsp;
       <b style="color:var(--bone)">CTRL</b> crouch &nbsp;
       <b style="color:var(--bone)">E</b> search &nbsp;
-      <b style="color:var(--bone)">I</b> backpack &nbsp;
+      <b style="color:var(--bone)">B / I</b> backpack &nbsp;
       <b style="color:var(--bone)">M</b> map &nbsp;
       <b style="color:var(--bone)">H</b> controls
     </div>
@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.44';
+var VER='13.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,14 +1361,14 @@ var VER='13.44';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='13.44';
+var WHATSNEW_VER='13.45';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'FEWER ENEMIES BY DEFAULT. Few machines now means the number it says: houses no longer push crawlers past it. Few pillagers is the new default, with smaller reinforcement waves. A character that never changed these settings moves to Few too.',
   'OUT OF BANDAGES OR GRENADES, YOU SWITCH BACK TO YOUR GUN YOURSELF. Using the last of something, or clicking a cell with nothing in it, no longer puts your gun up for you, so clicking on can never fire it. The game says which key brings your gun up, and every raid starts with your gun selected.',
   'THE RAISED DECKS ARE GONE. The catwalks and gantries kept stopping you short of their edges and trapping you on them, so every one has been taken out of both sectors. Where a deck stood is plain ground you can walk straight across.',
-  'PRESS B TO BACK OUT OF ANY MENU, OR TAB, WHICH ALSO PAUSES. Either closes whatever is in front, one thing per press, in the Undercroft and on the surface. On itch the browser spends Escape on leaving fullscreen, so TAB now does everything Escape does in the game: with nothing open it pauses, and it closes the pause box again. B with nothing open still gives your hire his orders. The backpack is on I.',
+  'TAB PAUSES AND BACKS OUT OF ANY MENU. On itch the browser spends Escape on leaving fullscreen, so TAB does everything Escape does in the game: it closes whatever is in front, one thing per press, in the Undercroft and on the surface, and with nothing open it pauses. B AND I OPEN THE BACKPACK, and O gives your hire his orders, which B used to do.',
   'AN ARMOUR PLATE YOU FIND GOES IN YOUR BACKPACK. It no longer snaps onto your armour when you pick it up: select it on your tactical belt and use it, which takes two seconds, or carry it home.',
   'X SEARCHES WHAT YOU ARE STANDING ON, even inside an extraction point, where E is the key that calls for extraction.',
   'THE WELCOME PACK GOES TO YOUR STASH AND EQUIPS NOTHING. Both guns wait there as items: open your stash and choose Equip as your gun on one. Until you do, the lift issues you a loaner, and the sector page and the raid both say so.',
@@ -1422,7 +1422,7 @@ var WHATSNEW=[
   'EQUIPPING A GUN TELLS YOU WHAT HAPPENED TO THE ONE IT REPLACED. That a loaner was left behind, or that a gun you own went back to the armoury rather than into your backpack, was written and then written over by the name of the gun you had just chosen, in the same frame, every time.',
   'RESTORING A BACKUP CAN BE UNDONE, WHICH THE SETTINGS ROW HAS BEEN PROMISING FOR A WHILE. Your outgoing profile was already being kept, and nothing in the game could read it back. There is an UNDO button on that row now, and it only appears when there is something behind it.',
   'X SEARCHES A BODY LYING IN AN EXTRACTION POINT. Standing on the way out, the game refused to even look for what was lying there: no prompt, and E always called the beacon, so a man killed in front of you was unlootable and nothing said why. E is still the way out. X searches whatever you are standing on, anywhere, and the prompt names the key it will take.',
-  'ESC ONLY KEEPS FULLSCREEN WHEN THE GAME HAS ITS OWN TAB, IN CHROME AND EDGE. Played inside another page, such as itch, the browser does not let the game keep that key, so Escape leaves fullscreen there. B backs out of any menu in every browser, and P pauses. Holding Escape always leaves fullscreen, so you can never be stuck.',
+  'ESC ONLY KEEPS FULLSCREEN WHEN THE GAME HAS ITS OWN TAB, IN CHROME AND EDGE. Played inside another page, such as itch, the browser does not let the game keep that key, so Escape leaves fullscreen there. TAB backs out of any menu in every browser, and TAB or P pauses. Holding Escape always leaves fullscreen, so you can never be stuck.',
   'YOU ARE NOT CARRYING A GUN AROUND THE UNDERCROFT. The floor draws the same operator a raid does, so it handed you your equipped gun and the stance that goes with it while you walked around your own home. The belt caption went with it: it offered you FIRE and SIGNAL down there, and there is nothing to fire at and nobody to signal. Both are still there in a raid, where they are true.',
   'THE FREEBIE KIT NEVER TOUCHED THE GUN YOU OWN, AND NOW THE CODE SAYS SO. It kept a gun slot aside and handed it back, and nothing in the game ever read it: what you go up with comes from the gun you have equipped, which taking the kit does not change. The dead field is gone and there is a test on the thing that is actually true.',
   'THE EXPERIMENTAL WARNING IS SPELLED ONE WAY. Two features carry it and the game wrote it two ways, so the wording you gave it reached the hire tab and never the sign on the floor by the bar. One spelling, so one edit covers both.',
@@ -10739,9 +10739,7 @@ window.addEventListener('keydown',function(e){
   if(e.code==='Tab'&&!pauseOpen&&!e.repeat){
     if(backOut()){ e.preventDefault(); return; }
   }
-  if(e.code==='KeyB'&&!e.repeat){
-    if(backOut()){ e.preventDefault(); return; }
-  }
+  // v13.45, HIS RULING OF 2026-09-13: B NO LONGER BACKS OUT. B and I open the backpack, and TAB, above, has the back-out.
   if(state==='hub'){
     keys[e.code]=true;
     // v12.95, audit finding 10: NOTHING ON THE FLOOR ANSWERS A KEY WHILE THE PAUSE
@@ -10819,7 +10817,7 @@ window.addEventListener('keydown',function(e){
     // the backpack now, which is what I opens upstairs and what his own
     // vocabulary note says the key means. The terminal is untouched and is still
     // a station you walk to.
-    if(e.code==='KeyI'&&!e.repeat){
+    if((e.code==='KeyI'||e.code==='KeyB')&&!e.repeat){
       var _cm=document.getElementById('carrymodal');
       if(_cm&&_cm.classList.contains('on')){ toggleCarry(false); e.preventDefault(); return; }
       // v8.95: and the Undercroft backpack closes on the same key.
@@ -10890,7 +10888,7 @@ function raidKey(code,repeat,ev){
   // slot out from under you.
   if(G&&!G.over&&G.trade){
     if(ev) ev.preventDefault();
-    if(code==='Escape'||code==='KeyE'||code==='Tab'||code==='KeyI'){ G.trade=null; G.pedLock=1; return; }
+    if(code==='Escape'||code==='KeyE'||code==='Tab'||code==='KeyI'||code==='KeyB'){ G.trade=null; G.pedLock=1; return; }
     if(code.indexOf('Digit')===0&&!repeat){
       var td=parseInt(code.slice(5),10);
       // v7.96, his bug: the cap at 4 predates the stall growing past three
@@ -10940,7 +10938,7 @@ function raidKey(code,repeat,ev){
   // are the feedback: LOOT is the freelancer he has always been, FOLLOW keeps
   // him at your shoulder, HOLD nails him to the spot he is standing on when
   // you say it. No merc alive, no order, no message.
-  if(code==='KeyB'&&G&&!G.over&&!G.paused&&!repeat&&!G.sim){
+  if(code==='KeyO'&&G&&!G.over&&!G.paused&&!repeat&&!G.sim){   // v13.45, his ruling: the hire orders moved from B to O
     var _mrc=null;
     for(var _mi=0;_mi<G.ents.length;_mi++){ var _me=G.ents[_mi];
       if(_me.kind==='raider'&&_me.merc&&!_me.downed){ _mrc=_me; break; } }
@@ -10956,7 +10954,7 @@ function raidKey(code,repeat,ev){
   // rescues the hub screen.
   if(code==='Backspace'&&!repeat) restoreCursor();
   if(code==='Space'&&G&&!G.over&&!G.paused&&!repeat) tryRoll();
-  if(code==='KeyI'&&G&&!G.over&&!repeat){
+  if((code==='KeyI'||code==='KeyB')&&G&&!G.over&&!repeat){
     G.bagOpen=!G.bagOpen; G.bagSel=0;
     // v12.09: an arrow still held when the bag opens stops walking too.
     if(G.bagOpen){ keys['ArrowUp']=false; keys['ArrowDown']=false; keys['ArrowLeft']=false; keys['ArrowRight']=false; }
@@ -11427,7 +11425,7 @@ var PADTAP={
   8:'KeyI',       // View   backpack. v13.44: TAB pauses and backs out now, so View taps I
   9:'KeyP',       // Menu   pause
   // v7.87: 12 (dpad up) removed - it fought the v6.41 map toggle on the same
-  // press and ate bag browsing. Merc orders stay on keyboard B.
+  // press and ate bag browsing. Merc orders stay on the keyboard, on O since v13.45.
   14:'KeyZ',      // Dpad left   drop selected
   15:'KeyG',      // Dpad right  use the selected belt slot (was autoloot, v6.79)
   // v13.36, audit 2026-09-13: RS click is raised on the press. Crouch has been a
@@ -25079,7 +25077,7 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   // moved clear of the tallest line in the stack.
   if(!G.bagOpen){
     ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
-    ctx.fillText('I  BACKPACK',W-16,by-LH(70));
+    ctx.fillText('B / I  BACKPACK',W-16,by-LH(70));
   }
   var pl2=[],tsn=THROWKEYS[G.tsel];
   for(i=0;i<3;i++){
@@ -25567,8 +25565,8 @@ function safeSet(){
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','hold to sprint'],['CTRL / C','crouch on/off, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['F','melee strike, whatever you are holding']]],
-  ['GEAR',[['1-9','select tactical belt slot'],['FIRE','use selected slot'],['I','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
-['WORLD',[['E','search / call for extraction'],['X','search, even on the way out'],['M','map'],['H','cycle this list'],['P','pause'],['TAB','pause, or back out of a menu'],['B','back out of a menu, or order your hire']]],
+  ['GEAR',[['1-9','select tactical belt slot'],['FIRE','use selected slot'],['B / I','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
+['WORLD',[['E','search / call for extraction'],['X','search, even on the way out'],['M','map'],['H','cycle this list'],['P','pause'],['TAB','pause, or back out of a menu'],['O','order your hire']]],
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
 ];
 // SPEC 10.3: the colour language has to be learnable, so it is stated.
@@ -25580,7 +25578,7 @@ var LEGEND_MINI=[
   ['LMB','fire'],['RMB','sights'],
   ['R','reload'],
   ['F','melee'],
-  ['1-9','tactical belt'],['I','backpack'],
+  ['1-9','tactical belt'],['B / I','backpack'],
   ['E','search'],['M','map']
 ];
 var LEGEND_MINI_PAD=[
@@ -27107,7 +27105,7 @@ function drawBag(){
   // BACKPACK, and inventory means the backpack plus the belt together.
   ctx.fillText('BACKPACK',x+11,cy);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
-  ctx.fillText((PAD&&PAD.on)?'VIEW to close':'TAB or I to close',x+PW-11,cy); ctx.textAlign='left';
+  ctx.fillText((PAD&&PAD.on)?'VIEW to close':'B or I to close',x+PW-11,cy); ctx.textAlign='left';
   cy+=LH(8);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
 
@@ -28927,7 +28925,7 @@ function drawHubHUD(ox,oy){
   // the surface. Drawn after the update card so the two never fight for the middle.
   if(HB.legend){
     var _lg=['WASD','walk','SHIFT','jog','SPACE','roll','E','use the station in front of you',
-             'I','your things','TAB','pause, or back out','M','the map, on the surface','H','close this'];
+             'B or I','your things','TAB','pause, or back out','M','the map, on the surface','H','close this'];
     ctx.font=FS(TYPE.label);
     var _lw=0;
     for(var _li=0;_li<_lg.length;_li+=2)
@@ -29667,7 +29665,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.44: TAB PAUSES AND BACKS OUT, THE WAY ESCAPE DOES. TAB now does everything Escape does, which matters on itch, where the browser spends Escape on leaving fullscreen. - Raid: TAB closes the map before the backpack, closes the emote bar and the stall, pauses with nothing open, and closes the pause box. - Undercroft: TAB closes the top window, the item menu, the edit box, the floor backpack and the stash panel, and pauses with nothing open. - Title: TAB never pauses. - Escape behaves exactly as before. - TAB no longer opens the backpack; I does. - B still backs out and still gives orders in this build. - A controller player notices nothing: View still opens the backpack, because it now taps I. - Key lists, the pause line, the title line, the HUD hint and the what-is-new card say I for the backpack and TAB for pause and back.',
+  now:'v13.45: B AND I OPEN THE BACKPACK, O ORDERS YOUR HIRE. - B and I both open and close the backpack, in a raid and in the Undercroft, and neither pauses. Either also closes the peddler stall. - B no longer backs out of windows or panels; TAB does. - O gives the hired man his next order: loot, follow, hold. B no longer does. - Every backpack label says B / I, the full key list has an O row for the hire, the backpack panel says B or I to close, and the what-is-new card leads with TAB pausing and backing out, B and I opening the backpack, and O giving orders. - Controller players see no change: pads never had an orders button, and View already taps I.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

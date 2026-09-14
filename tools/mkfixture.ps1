@@ -5718,6 +5718,118 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.45',what:'B and I both open and close the backpack, in a raid and in the Undercroft, without pausing; B no longer gives the hire his orders or closes a window, O gives the orders, and TAB still closes the window; and the key list names B and I for the backpack and O for the orders (his ruling of 2026-09-13)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__keysRef&&window.__hubEnter&&window.__hubBag&&window.__P))
+       return 'SKIP: this fixture cannot drive a raid and the Undercroft floor';
+     if(typeof LEGEND==='undefined') return 'SKIP: this build has no key table';
+     var bad=[], skipped='';
+     var P2=window.__P(), ids=(window.__identityIds?__identityIds():[]), svMerc=P2.merc, svCred=P2.credits;
+     var pb=document.getElementById('pausebox');
+     function keysOff(){ try{ var K=__keysRef(); for(var kk in K) K[kk]=false; }catch(_k){} }
+     // ON WINDOW ONLY. window plus document doubles every press (v11.28).
+     function tap(c){
+       keysOff();
+       window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:c,bubbles:true,cancelable:true}));
+       window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:c,bubbles:true,cancelable:true}));
+     }
+     function boxUp(){ return !!(pb&&pb.classList.contains('on')); }
+     function boxDown(){ try{ if(boxUp()) togglePauseBox(false); }catch(_b){} if(pb) pb.classList.remove('on'); }
+     function modalsUp(){ return document.querySelectorAll('.modal.on').length; }
+     function floorBagShut(){ try{ if(__hubBag()){ try{ hubBagOpenSet(false); }catch(_hs){ __hubBag(false); } } }catch(_h){} }
+     function word(s,w){ return new RegExp('(^|[^A-Z])'+w+'([^A-Z]|$)').test(String(s||'')); }
+     try{
+       // THE KEY TABLE, read from the table so the panel cannot say otherwise.
+       var bagRow=null, oRow=null, bRow=null, i, j;
+       for(i=0;i<LEGEND.length;i++) for(j=0;j<LEGEND[i][1].length;j++){
+         var r=LEGEND[i][1][j];
+         if(!r) continue;
+         if(String(r[1])==='backpack') bagRow=r;
+         if(r[0]==='O') oRow=r;
+         if(r[0]==='B') bRow=r;
+       }
+       if(!bagRow||!word(bagRow[0],'B')||!word(bagRow[0],'I'))
+         bad.push('the key list names ['+(bagRow?bagRow[0]:'no key')+'] for the backpack, not B and I');
+       if(!oRow||String(oRow[1]).indexOf('hire')<0)
+         bad.push('the key list has no O row for the hire orders, so the key that gives them is on no list');
+       if(bRow)
+         bad.push('the key list still has a B row of its own reading ['+bRow[1]+'], while B is the backpack');
+
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       floorBagShut();
+       if(ids&&ids.length){ P2.merc=ids[0]; P2.credits=1000; }
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       if(!g||!g.player) return 'SKIP: the raid did not start';
+       g.player.downed=false; g.trade=null; g.emoteBar=false; g.mapOpen=false; g.bagOpen=false; g.drag=null;
+       boxDown();
+
+       // RAID ONE: B opens and closes the backpack, and never pauses.
+       tap('KeyB');
+       if(!g.bagOpen) bad.push('B with nothing open does not open the backpack in a raid');
+       if(boxUp()) bad.push('B with nothing open raised the pause box in a raid');
+       tap('KeyB');
+       if(g.bagOpen) bad.push('a second B does not close the backpack in a raid');
+       // CONTROL: I is unchanged.
+       tap('KeyI');
+       if(!g.bagOpen) bad.push('control: I no longer opens the backpack in a raid');
+       tap('KeyI');
+       if(g.bagOpen) bad.push('control: a second I no longer closes the backpack in a raid');
+       boxDown(); g.bagOpen=false; g.drag=null;
+
+       // RAID TWO: THE ORDERS. B leaves them alone, O gives the next one.
+       var M=null;
+       for(i=0;i<g.ents.length;i++){ var en=g.ents[i]; if(en&&en.kind==='raider'&&en.merc&&!en.downed){ M=en; break; } }
+       if(!M) skipped='the hired man did not come up on this seed, so the orders were not pressed';
+       else {
+         g.mercOrder='follow'; g.mercHold=null; g.bagOpen=false;
+         tap('KeyB');
+         if(g.mercOrder!=='follow') bad.push('B still changes the hire order, to '+g.mercOrder+', while B is the backpack key');
+         boxDown(); g.bagOpen=false; g.drag=null;
+         tap('KeyO');
+         if(g.mercOrder!=='hold') bad.push('O does not give the hire his next order: FOLLOW stayed '+g.mercOrder+' when it should have become HOLD');
+         if(g.bagOpen) bad.push('O opened the backpack');
+         if(boxUp()) bad.push('O raised the pause box');
+       }
+       g.mercOrder='follow'; g.mercHold=null; boxDown(); g.bagOpen=false;
+       try{ var ge=__state(); if(ge&&!ge.over){ ge.player.downed=false; __endRaid('abandon'); } }catch(_e1){}
+       try{ G=null; keys={}; showScreen('hub'); }catch(_g1){}
+
+       __hubEnter(); floorBagShut(); boxDown(); keysOff();
+
+       // FLOOR ONE: B opens and closes the backpack, and never pauses.
+       tap('KeyB');
+       if(!__hubBag()) bad.push('B does not open the backpack in the Undercroft');
+       if(boxUp()) bad.push('B in the Undercroft raised the pause box');
+       tap('KeyB');
+       if(__hubBag()) bad.push('a second B does not close the backpack in the Undercroft');
+       boxDown(); if(__hubBag()) tap('KeyI');
+
+       // FLOOR TWO: B is not a back-out key any more, and TAB still is.
+       try{ openModal('settingsmodal'); }catch(_om){}
+       if(!modalsUp()) bad.push('control: the Settings window would not open on the floor');
+       else {
+         tap('KeyB');
+         if(!modalsUp()) bad.push('B still closes an open window in the Undercroft, so B is two keys at once');
+         if(__hubBag()) bad.push('B opened the backpack behind an open window');
+         tap('Tab');
+         if(modalsUp()) bad.push('control: TAB does not close the open window, so with B no longer backing out nothing does');
+       }
+       try{ var ms=document.querySelectorAll('.modal.on'); for(var mi=0;mi<ms.length;mi++) ms[mi].classList.remove('on'); }catch(_mc){}
+       boxDown(); if(__hubBag()) tap('KeyI');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       keysOff();
+       try{ boxDown(); }catch(_p){}
+       try{ var g6=__state(); if(g6){ g6.bagOpen=false; g6.drag=null; if(!g6.over){ g6.player.downed=false; __endRaid('abandon'); } } }catch(_e){}
+       try{ var ms2=document.querySelectorAll('.modal.on'); for(var m2=0;m2<ms2.length;m2++) ms2[m2].classList.remove('on'); }catch(_m){}
+       floorBagShut();
+       try{ var P3=window.__P(); P3.merc=svMerc; P3.credits=svCred; if(typeof saveProfile==='function') saveProfile(); }catch(_r){}
+       try{ G=null; keys={}; showScreen('hub'); }catch(_q){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     if(!bad.length&&skipped) return 'SKIP: '+skipped;
+     return bad.length?bad.join('; '):null; }},
   {v:'13.44',what:'TAB does what Escape does, because on itch the browser spends Escape on leaving fullscreen: in a raid it closes the map before the backpack and closes the emote bar, raises the pause box with nothing open and closes it again, and leaves a backpack behind the box alone; in the Undercroft it closes the top window and the backpack, pauses with nothing open and unpauses; on the title it raises nothing; and the controller View button still opens the backpack (his ruling of 2026-09-13)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__keysRef&&window.__hubEnter&&window.__hubBag&&window.__showScreen))
@@ -6975,12 +7087,12 @@ window.__REGRESS=[
      var row=null, i, j;
      for(i=0;i<LEGEND.length;i++) for(j=0;j<LEGEND[i][1].length;j++){
        var r=LEGEND[i][1][j];
-       if(r&&r[0]==='B') row=r;
+       if(r&&r[0]==='TAB') row=r;   // v13.45: the back-out moved from B to TAB
      }
      if(!row)
-       bad.push('the full key list has no B row, so the key he was given because Escape is not working for him is on no list a player can look up, and the hire orders B has given since v3.73 never have been either');
+       bad.push('the full key list has no TAB row, so the key he was given because Escape leaves fullscreen on itch is on no list a player can look up');
      else if(String(row[1]).indexOf('back out')<0)
-       bad.push('the B row on the key list reads ['+row[1]+'], which does not say B backs out of a menu');
+       bad.push('the TAB row on the key list reads ['+row[1]+'], which does not say TAB backs out of a menu');
      var keep=null, g=null;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -7013,7 +7125,7 @@ window.__REGRESS=[
      var idxB=-1, idxP=-1, idxX=-1, stale=false;
      for(var i=0;i<WHATSNEW.length;i++){
        var t=String(WHATSNEW[i]);
-       if(idxB<0&&t.indexOf('PRESS B TO BACK OUT')===0) idxB=i;
+       if(idxB<0&&t.indexOf('TAB PAUSES AND BACKS OUT')===0) idxB=i;   // v13.45: B backed out until his TAB ruling
        if(idxP<0&&t.indexOf('AN ARMOUR PLATE YOU FIND')===0) idxP=i;
        if(idxX<0&&t.indexOf('X SEARCHES WHAT YOU ARE STANDING ON')===0) idxX=i;
        if(t.indexOf('key is gone')>=0) stale=true;
@@ -7215,7 +7327,7 @@ window.__REGRESS=[
        try{ __topClear(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'13.17',what:'B backs out of whatever is in front, in the Undercroft and in a raid, and a B with nothing open does not raise the pause box (his note of 2026-09-12, since Escape is not working for him)',
+  {v:'13.17',what:'the back-out key backs out of whatever is in front, in the Undercroft and in a raid (his note of 2026-09-12; the key was B until v13.45 and is TAB since his ruling of 2026-09-13, whose press with nothing open pauses and is checked by v13.44)',
    run:function(){
      if(typeof backOut!=='function')
        return 'there is no back-out key in this build at all, so B answers nothing and every menu still depends on the key he says is not working for him';
@@ -7226,7 +7338,7 @@ window.__REGRESS=[
      function frames(k){ for(var f=0;f<(k||6);f++){ T0+=16.7; var st=__state(); if(!st||st.over) return; __loop(T0); } }
      function keysOff(){ try{ var K=__keysRef(); for(var kk in K) K[kk]=false; }catch(_){} }
      // ON WINDOW ONLY. window plus document doubles every press (v11.28).
-     function pressB(){ window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyB',bubbles:true})); }
+     function pressB(){ window.dispatchEvent(new KeyboardEvent('keydown',{code:'Tab',key:'Tab',bubbles:true,cancelable:true})); }   // v13.45: the back-out key is TAB
      function paused(){ var el=document.getElementById('pausebox'); return !!(el&&el.classList.contains('on')); }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -7248,12 +7360,9 @@ window.__REGRESS=[
        if(!s2.bagOpen) bad.push('B closed the map AND the backpack under it in one press, so one key ate two menus');
        g2.bagOpen=false; g2.mapOpen=false;
 
-       // B WITH NOTHING OPEN MUST NOT PAUSE. This is the arm that matters: a key
-       // meant to get him OUT of a menu must never put him into one.
+       // v13.45: RETIRED. The back-out key is TAB now, and by his ruling TAB with
+       // nothing open pauses; v13.44 checks that press.
        try{ togglePauseBox(false); }catch(_tp){}
-       keysOff(); frames(2);
-       pressB(); frames(2);
-       if(paused()) bad.push('B with nothing open raises the pause box, so the key he was given to escape a menu opens a menu instead');
        try{ togglePauseBox(false); }catch(_tp2){}
        try{ var ge=__state(); if(ge&&!ge.over){ ge.player.downed=false; __endRaid('abandon'); } }catch(_e1){}
        try{ G=null; keys={}; showScreen('hub'); }catch(_g1){}
@@ -8571,7 +8680,7 @@ window.__REGRESS=[
        }
        // TAB and I: the backpack opens invisibly under a 90 percent overlay, so
        // closing the box reveals a backpack he never opened.
-       var _bagKeys=['KeyI'], bi;   // v13.44: TAB pauses on the floor now, and v13.44 owns that press
+       var _bagKeys=['KeyI','KeyB'], bi;   // v13.45: B opens the backpack too; TAB pauses on the floor and v13.44 owns that press
        for(bi=0;bi<_bagKeys.length;bi++){
          var rb=paired(_bagKeys[bi],function(){ return !!__hubBag(); },function(){ __hubBag(false); });
          if(rb){
