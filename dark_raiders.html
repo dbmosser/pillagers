@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.36';
+var VER='14.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4185,7 +4185,10 @@ function blip(type,d,pan){
   } else if(type==='pick'){
     var o2=a.createOscillator(),g4=a.createGain();
     o2.type='sine'; o2.frequency.setValueAtTime(660,t); o2.frequency.exponentialRampToValueAtTime(1180,t+.09);
-    g4.gain.setValueAtTime(.07,t); g4.gain.exponentialRampToValueAtTime(.001,t+.12);
+    // v14.37, audio audit finding 3: A PICK FAR AWAY SOUNDS FAR AWAY. This voice ignored the distance its callers pass, so
+    // a hire or a crew looting a crate 580 units off played at full loudness, as if it were in your own hands. Without a
+    // distance vol is 1, so every Undercroft and menu pick is exactly as loud as before.
+    g4.gain.setValueAtTime(.07*vol,t); g4.gain.exponentialRampToValueAtTime(.001,t+.12);
     o2.connect(g4); g4.connect(OUT); o2.start(t); o2.stop(t+.13);
   // HIS NOTE, 2026-08-25: "there should be a better loot noise for finding rare
   // items or guns". Every container in the game played the one 'pick' blip above,
@@ -29998,7 +30001,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.36: A HIDDEN TAB GOES QUIET. Switching tabs or minimising during a raid froze the frames but not the audio, so room tone, rain and dread held at their last level for as long as the tab stayed hidden. The audio context is now suspended when the tab is hidden, and the first frame back resumes it. Check 14.36 fires the visibility change on a hidden pane with a fake audio context; it fails on v14.35',
+  now:'v14.37: A PICK FAR AWAY SOUNDS FAR AWAY. The pick sound ignored the distance passed to it, so a hire or crew looting a crate across the street played at full loudness, as if in your own hands. It now scales with distance like the other voices; with no distance it is exactly as loud as before. Check 14.37 plays a pick with no distance and at 580 units with a fake audio context; it fails on v14.36',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
