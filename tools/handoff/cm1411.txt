@@ -1,0 +1,8 @@
+v14.11: ring closure lines wait their turn
+
+At the default raid clock a ring closure and another warning were said in the
+same frame and one was overwritten. The ring lines now queue instead.
+
+Check 14.11 runs a tick with a closure and a warning together. Fails on v14.10.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

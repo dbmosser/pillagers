@@ -5718,6 +5718,39 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.06',what:'a restore code keeps the character it replaces for UNDO: pasting a code through the real READ and REPLACE buttons leaves the replaced character in the UNDO backup, while the code itself is applied (saving, profile and settings audit 2026-09-15, finding 2)',
+   run:function(){
+     if(!(window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot load a profile';
+     if(typeof restoreMake!=='function'||!document.getElementById('resread')||!document.getElementById('resgo')||!document.getElementById('rescode')||!document.getElementById('resword')) return 'SKIP: no restore code panel in this page';
+     var bad=[], keep=JSON.parse(JSON.stringify(__P()));
+     var BK=(typeof RESTORE_BACKUP_KEY!=='undefined')?RESTORE_BACKUP_KEY:(SKEY+':prerestore');
+     var keepBk=null; try{ keepBk=localStorage.getItem(BK); }catch(_k){}
+     function el(id){ return document.getElementById(id); }
+     try{
+       __topClear(); __cleanProfile();
+       try{ localStorage.removeItem(BK); }catch(_r){}
+       var P2=__P();
+       P2.pname='PROBESOURCE'; P2.credits=4242;
+       var code='';   // the pasteable string, built the way the game's own code maker builds it
+       try{ code='PIL1'+btoa(unescape(encodeURIComponent(JSON.stringify(restoreMake())))).replace(/=+$/,''); }catch(_mk){ code=''; }
+       if(!code) return 'SKIP: no restore code could be made';
+       P2.pname='BEFORECODE'; P2.credits=1717;
+       el('rescode').value=code; el('resread').click();
+       el('resword').value='restore'; el('resgo').click();
+       try{ clearTimeout(RESTORE_TIMER); RESTORE_RELOAD=0; }catch(_t){}
+       // CONTROL: the code was applied.
+       if(__P().pname!=='PROBESOURCE') return 'SKIP: the code was not applied through the panel, so nothing here can be measured';
+       var d=null; try{ d=JSON.parse(localStorage.getItem(BK)||'null'); }catch(_j){}
+       if(!(d&&d.pname==='BEFORECODE')) bad.push('pasting a restore code kept no backup of the character it replaced, so UNDO cannot bring it back');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ clearTimeout(RESTORE_TIMER); RESTORE_RELOAD=0; }catch(_t2){}
+       try{ if(keepBk===null) localStorage.removeItem(BK); else localStorage.setItem(BK,keepBk); }catch(_b){}
+       try{ var rc=el('rescode'); if(rc) rc.value=''; }catch(_v){}
+       try{ __applyLoaded(keep); saveProfile(); }catch(_p){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.05',what:'the crash catcher stops saving every frame and keeps older crashes: two errors alternating twenty times save the profile at most three times and leave an older, different crash on the list, while a genuinely new error is still saved (saving, profile and settings audit 2026-09-15, finding 4)',
    run:function(){
      if(!window.__P||typeof noteCrash!=='function'||typeof saveProfile!=='function') return 'SKIP: no crash catcher in this build';

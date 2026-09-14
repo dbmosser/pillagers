@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.05';
+var VER='14.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2198,6 +2198,7 @@ var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,die
   log:[],pack:0,contracts:[],cfg:null,menuZoom:1.3,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day',crashes:[]};
 var SLOT=(function(){ try{ return localStorage.getItem('salvagerun:activeSlot')||'1'; }catch(e){ return '1'; } })();
 var SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT);
+var RESTORE_BACKUP_KEY=SKEY+':prerestore';   // v14.06, save audit: each slot keeps its own UNDO backup; save 1 keeps the old key name
 function storeSet(v){
   try{
     if(window.storage&&window.storage.set){ window.storage.set(SKEY,v).catch(function(){ storeWarn(); }); return; }
@@ -29881,7 +29882,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.05: THE CRASH CATCHER STOPS SAVING EVERY FRAME AND KEEPS OLDER CRASHES. Saving, profile and settings audit of 2026-09-15, finding 4: noteCrash merged a repeat only with the last entry and saved the whole profile on every call, so an error thrown each frame wrote the profile about sixty times a second and two alternating errors pushed every earlier crash out of the twelve kept. A repeat now merges with any matching entry in the window and repeats save at most once a window. Check 14.05 alternates two errors twenty times and requires at most three saves and the older crash kept, with a genuinely new error still saved as the control; it fails on v14.04',
+  now:'v14.06: UNDO KEEPS ITS OWN SLOT AND A RESTORE CODE KEEPS THE CHARACTER IT REPLACES. Saving, profile and settings audit of 2026-09-15, finding 2: the pre-restore backup was one fixed key for every save slot, so a file restore in save 1 made UNDO in save 2 turn it into save 1 old character, and pasting a restore code wrote no backup at all. The backup now uses the slot own key, save 1 keeping the old name, and a restore code writes it before applying. Check 14.06 pastes a code through the real READ and REPLACE buttons and requires the backup to hold the character it replaced, with the code applied as the control; it fails on v14.05',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34819,7 +34820,7 @@ function renderSettings(){
   // v12.85: is there a profile to go back to. Kept to one place so the button and
   // the handler can never disagree about whether the way back exists.
   function preRestoreRaw(){
-    try{ return localStorage.getItem('salvagerun:profile:prerestore')||''; }catch(_e){ return ''; }
+    try{ return localStorage.getItem(RESTORE_BACKUP_KEY)||''; }catch(_e){ return ''; }
   }
   function hasPreRestore(){
     var r=preRestoreRaw(); if(!r) return false;
@@ -34832,7 +34833,7 @@ function renderSettings(){
     if(!d3||typeof d3.credits!=='number'){ say('There is no profile to go back to.'); return; }
     // The one he is on now becomes the thing UNDO goes back to, so pressing it
     // twice returns him to where he was rather than stranding him.
-    try{ localStorage.setItem('salvagerun:profile:prerestore',JSON.stringify(P)); }catch(_e2){}
+    try{ localStorage.setItem(RESTORE_BACKUP_KEY,JSON.stringify(P)); }catch(_e2){}
     storeSet(JSON.stringify(d3));
     finishRestore('Put back: '+(d3.runs||0)+' runs, '+'$'+(d3.credits||0).toLocaleString()+'.');
   };
@@ -34846,7 +34847,7 @@ function renderSettings(){
         var d2=null;
         try{ d2=JSON.parse(String(rd.result)); }catch(e2){}
         if(!d2||typeof d2.credits!=='number'){ say('That is not a Pillagers backup.'); return; }
-        try{ localStorage.setItem('salvagerun:profile:prerestore',JSON.stringify(P)); }catch(e3){}
+        try{ localStorage.setItem(RESTORE_BACKUP_KEY,JSON.stringify(P)); }catch(e3){}
         storeSet(JSON.stringify(d2));
         // v12.86: the read-back stays, so the profile in memory is the profile in
         // storage even on a host where the reload never happens.
@@ -35325,6 +35326,8 @@ document.getElementById('copybtn').onclick=function(){
     var w=el('resword'), word=((w&&w.value)||'').trim().toLowerCase();
     if(word!=='restore'||!pend) return;
     var o=pend;
+    // v14.06, save audit: the character a code replaces is kept for UNDO, as a file restore keeps it.
+    try{ localStorage.setItem(RESTORE_BACKUP_KEY,JSON.stringify(P)); }catch(_pk){}
     if(!restoreApply(o)) return;
     shut();
     var say=el('reswhat');
