@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.25';
+var VER='14.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11556,6 +11556,10 @@ function padOpenModal(){
   // input fell through to the raid behind it, where D-UP opened and shut the map. A window opened over it still wins.
   var pbx=document.getElementById('pausebox');
   if(pbx&&pbx.classList.contains('on')) return pbx;
+  // v14.26, controller audit finding 7: THE TITLE SCREEN IS A PANEL TOO. It is a .screen, the floor is frozen under it and
+  // the floor's pad taps return there, so with only a pad nothing on the title could be pressed, ENTER THE UNDERCROFT included.
+  var ttl=document.getElementById('title');
+  if(ttl&&ttl.classList.contains('on')) return ttl;
   var hb=document.getElementById('hub');
   if(hb&&hb.classList.contains('on')) return hb;
   return null;
@@ -11602,6 +11606,8 @@ function padMenu(pressed){
   if(!md){ if(PAD.focus){ padSetFocus(null); PAD.focus=null; } return false; }
   var list=padFocusables(md);
   if(!list.length) return true;
+  // v14.26: the title opens on ENTER THE UNDERCROFT, not on GO FULLSCREEN above it.
+  if(md.id==='title'&&(!PAD.focus||!md.contains(PAD.focus))){ var _tsb=document.getElementById('titlestart'); if(_tsb&&list.indexOf(_tsb)>=0) padSetFocus(_tsb); }
   // The remembered control may have been re-rendered out from under us.
   // v14.22, controller audit finding 4: A REBUILT PANEL KEEPS THE PAD'S PLACE. A click that rebuilds the panel (a belt plan
   // cell, Arm, standard or a kit cell on the ascent check; any change in Settings) replaces the focused control, and this
@@ -11633,6 +11639,9 @@ function padMenu(pressed){
   if(tap(0)&&PAD.focus){ PAD.aSpent=1; PAD.focus.click(); }
   // v14.23: on the pause box B and Menu resume the run. The search for a way out below would click the hidden RETURN TO
   // CHARACTER SELECTION first, which does nothing in a raid.
+  // v14.26: B on the title does nothing. The search for a way out below finds no button there and would strip the title's
+  // .on without running what ENTER THE UNDERCROFT runs, leaving a blank screen.
+  if(md.id==='title') tap(1);
   if(md.id==='pausebox'){
     var _pbMenu=tap(9), _pbBack=tap(1);
     if(_pbMenu||_pbBack){
@@ -29943,7 +29952,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.25: ONE ITEM, ONE KEY, IN THE UNDERCROFT BACKPACK TOO. A drag onto the tactical belt from the Undercroft backpack let go only of the key it came from, so the same Medkit could sit on two keys, and a key dragged onto a filled key deleted what that key held. It now follows the raid rule: the item leaves its other keys, and a displaced item swaps back onto the key the drag came from. Check 14.25 releases a drag over two staged belt cells through the real mouseup; it fails on v14.24',
+  now:'v14.26: THE TITLE SCREEN WORKS ON A PAD. The title is a .screen and the floor is frozen under it, so with only a pad nothing on it could be pressed, ENTER THE UNDERCROFT included, and B would have stripped it to a blank screen. The pad now drives the title like a panel, starting on ENTER THE UNDERCROFT, and B does nothing there. Check 14.26 shows the title with a faked pad, then checks the focus and presses B; it fails on v14.25',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
