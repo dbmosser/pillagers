@@ -1,0 +1,9 @@
+v14.34: an opened door or a destroyed wall opens the placement grids too
+
+The geometry rebuild after a door or wall kept the cached reachable-area flood
+and the free-spot wall grid, so opened rooms still read unreachable for things
+placed mid-raid. Both are rebuilt now.
+
+Check 14.34. Fails on v14.33.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

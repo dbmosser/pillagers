@@ -1,0 +1,9 @@
+v14.33: noise does not alert the Peddler or the Stray
+
+One noise near the Peddler or the Stray left them alerted for good, so the
+ambient sound played at full threat at the stall. Noise now skips them, as
+the target loops already do.
+
+Check 14.33. Fails on v14.32.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,9 @@
+v14.31: lightning does not hit you through a wall or under a roof
+
+A bolt hurt anyone within its ring by distance alone, so a player indoors near
+a wall, or behind one, took 62 damage. A bolt now needs no roof over the target
+and a clear line to it.
+
+Check 14.31. Fails on v14.30.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

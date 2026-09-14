@@ -40024,6 +40024,23 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.31 - LIGHTNING DOES NOT HIT YOU THROUGH A WALL OR UNDER A ROOF
+
+Weather audit finding 1 (HIGH). In a storm a bolt is telegraphed by a ring and lands 1.6 seconds later, hurting anyone
+within 118 units for 62. Since v11.56, his note that lightning does not strike inside buildings, a strike point under a roof
+is walked out through the nearest wall, but only 40 units past it. The damage then checked distance alone: a player indoors
+within about 78 units of that wall, or outside with a solid wall between him and the bolt, took the full 62. The Howler
+shell tests the roof and the frag tests the line; the bolt tested neither. Machines and pillagers were hit the same way.
+
+THE BUILD. A bolt hurts the player only when he is out from under a roof and has a clear line to it, and the same rule
+applies to the machines and pillagers in reach. S.hit is still set whenever he was inside the ring, so the missed-you branch
+and its random draw run exactly as before.
+
+MEASURED. Check 14.31 starts a raid in storm weather, replaces damagePlayer with a counter, finds open ground by a fixed
+scan and lands a bolt 60 units away with a clear line (control: one hit), then stands him in the middle of a roofed building
+and lands a bolt 40 units away (no hit). It fails on v14.30.
+
+Not verified: a bolt landing just outside a wall with him indoors, in a live storm by eye.
 ## v14.30 - THE LEVEL IS WORKED OUT FROM THE XP WHEN A PROFILE LOADS
 
 Progression audit finding 3 (LOW). The level is stored on the profile as xpLevel and recomputed from XP only when XP is

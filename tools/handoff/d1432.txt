@@ -1,0 +1,14 @@
+## v14.32 - THE LIGHTNING FLASH RUNS OUT AFTER THE STORM PASSES
+
+Weather audit finding 2 (MEDIUM). A bolt sets a 0.34 second flash that lights the street and lifts the fog. The renderer
+counted it down only while the current weather had lightning. Weather changes by blending over a 14 second turn, and the
+lightning flag switches at the halfway point. A bolt in the last third of a second before a storm's turn passed halfway left
+the flash above zero with nothing left to count it down. The flash stayed near full and the fog sheet stayed lifted for the
+rest of the raid; at night the fog fell from 0.60 to about 0.16 opacity. Roughly one turn in 25 out of a storm.
+
+THE BUILD. The flash counts down on every drawn frame, whatever the weather. In a storm it runs exactly as before.
+
+MEASURED. Check 14.32 starts a raid, sets a 0.3 second flash and draws five 0.1 second frames in storm weather (control:
+out), then does the same in weather with no lightning (must be out). It fails on v14.31.
+
+Not verified: a storm turning over in a live raid, by eye.

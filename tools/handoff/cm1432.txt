@@ -1,0 +1,9 @@
+v14.32: the lightning flash runs out after the storm passes
+
+The flash counted down only during lightning weather, so a bolt just before a
+storm turned over left the flash and the lifted fog on for the rest of the
+raid. It now counts down every frame.
+
+Check 14.32. Fails on v14.31.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
