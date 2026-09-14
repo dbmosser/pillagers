@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.76 - BACKING OUT AT ONCE NO LONGER DELETES A GUN YOU BAGGED
+
+The downed and extraction audit of 2026-09-14, finding 4. Dragging your armoury gun off the
+belt into the backpack takes it off the armoury list and records it on G.spliced, so that an
+abandoned raid can put the armoury back as it was. endRaid does that in its abandon branch.
+
+But an abandon inside 1.5 seconds, with nothing walked, searched or fired, takes the discard
+path first. That path throws the raid away as never having happened and returns before the
+abandon branch. The backpack holding the gun was thrown away with it, so the armoury lost the
+gun on a run the game treats as never having happened.
+
+THE BUILD. The discard path puts the spliced guns back before it saves, the same loop the
+abandon branch runs.
+
+MEASURED. Check 13.76 puts the armoury carbine in hand, bags it through bagHeldGun, confirms it
+left the armoury list, abandons inside a second, and requires it back. The same abandon with
+the clock five seconds in must put it back too (the control, the ordinary abandon branch). It
+fails on v13.75.
+
+Not verified: the same fault on the second slot, which bagHeldGun splices the same way.
 ## v13.75 - A DRINK KEEPS WEARING OFF WHILE YOU ARE DOWN
 
 The downed and extraction audit of 2026-09-14, finding 5. tickBuzz counts each drink from the

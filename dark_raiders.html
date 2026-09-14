@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.75';
+var VER='13.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19399,6 +19399,9 @@ silentExit:T.silentExit||0,
     // never having happened, but the kit was spliced out of the stash at commit
     // and is gone regardless, so the keys were left pointing at it. Whether the
     // KIT should come back on an instant quit is a separate question and his.
+    // v13.76, downed and extraction audit: an armoury gun spliced out in these first moments
+    // goes back, exactly as the abandon branch below puts it back. This path returned first.
+    if(!G.sim&&G.spliced) for(var _sq=0;_sq<G.spliced.length;_sq++) if(P.weapons.indexOf(G.spliced[_sq])<0) P.weapons.push(G.spliced[_sq]);
     if(!G.sim){ dropDeadKeys(); saveProfile(); }
     G=null; keys={};
     showScreen('hub');
@@ -29790,7 +29793,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.75: A DRINK KEEPS WEARING OFF WHILE YOU ARE DOWN. Downed and extraction audit of 2026-09-14, finding 5: tickBuzz ran on the standing path of updatePlayer, below the downed and roll returns, so every second on the floor or in a roll pushed a drink and its wears-off line back, and the frozen time came home at an extraction. It now ticks beside the stim clock, which v11.83 moved above both returns for the same reason. Check 13.75 downs the player with a drink running and requires two seconds of frames to take two seconds off it, with the same two seconds standing as the control; it fails on v13.74',
+  now:'v13.76: BACKING OUT AT ONCE NO LONGER DELETES A GUN YOU BAGGED. Downed and extraction audit of 2026-09-14, finding 4: bagging your armoury gun takes it off the armoury and records it on G.spliced for an abandon to put back, but an abandon inside 1.5 seconds with nothing done takes the discard path, which returned before the abandon branch that restores it, so the gun was gone. The discard path now restores the spliced guns. Check 13.76 bags the armoury carbine and abandons at once, requiring the carbine back in the armoury, with the same abandon five seconds in as the control; it fails on v13.75',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,8 @@
+v13.78: the EXTRACTED card counts only what was secured
+
+Issued Bandages handed back at extraction were still counted as items secured.
+The card line now leaves them and their value out.
+
+Check 13.78 extracts with the issued pair and one find. Fails on v13.77.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,8 @@
+v13.77: an abandoned run does not say you fell
+
+The run report told an abandoned run its stall money was lost where you fell.
+A death keeps that line; an abandon now says the money was left behind.
+
+Check 13.77 reads the card after an abandon and a death. Fails on v13.76.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
