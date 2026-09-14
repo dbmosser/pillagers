@@ -1,0 +1,22 @@
+## v13.92 - YOUR HIRE IS NOT ALSO A STRANGER ON THE MAP
+
+The contracts, notoriety and waves audit of 2026-09-14, finding 1. The opening roster takes its
+names from a shuffle of all the pillager identities, with no look at who he hired. The hire is
+built from the same identity list. So:
+
+- On roughly half of raids a second man with his hire's name and tag was on the map.
+- The rivals ledger keeps one record per identity. Killing that stranger wrote a kill against
+  the hire's record.
+- From then on the hire's identity spawned hostile and refused parley, and the hire screen refused
+  him for good, for a kill on a different man.
+
+THE BUILD. After the shuffle, the hired identity is moved to the back of the pool, past every name
+the opening roster draws (only a raid of 28 or more pillagers would reach it). The move happens
+after the seeded draws, so the seeded stream is untouched.
+
+MEASURED. Check 13.92 finds an identity that walks the map as a stranger on some of sixteen seeds
+with no hire (the control), hires that identity, deploys the same sixteen seeds, and requires no
+stranger carrying it. It fails on v13.91.
+
+Not verified: reinforcement waves, which may name their men by a different route than the opening
+roster.

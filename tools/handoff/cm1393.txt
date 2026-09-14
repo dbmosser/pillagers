@@ -1,0 +1,8 @@
+v13.93: killing a ghost does not blame a stranger
+
+The imported ghost kept the identity of the pillager it replaced, so killing it
+put a permanent grudge on that man. The ghost now has an identity of its own.
+
+Check 13.93 kills the ghost and an ordinary pillager. Fails on v13.92.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

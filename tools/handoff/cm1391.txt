@@ -1,0 +1,8 @@
+v13.91: what you buy at the stall is not loot you earned
+
+Goods bought from the stall had no carried-in stamp, so they completed contracts
+and paid hazard pay. A purchase now joins what the lift carried in.
+
+Check 13.91 buys a rifle against a haul card. Fails on v13.90.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

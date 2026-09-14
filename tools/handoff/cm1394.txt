@@ -1,0 +1,8 @@
+v13.94: a hire who died on your job is not your rival
+
+The rival score counted a hire's deaths on your job, so a twice-dead hire was
+announced as your rival. It now counts kills alone and never names a hire.
+
+Check 13.94 scores a two-death identity against a two-kill one. Fails on v13.93.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

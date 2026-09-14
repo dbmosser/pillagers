@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.90';
+var VER='13.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9376,7 +9376,12 @@ function pedBuy(ix){
   P.credits-=st.price; saveProfile();
   st.sold=true; G.trade.traded=1;
   if(_pAmmo){ var _pp=G.player; _pp.reserve=(_pp.reserve||0)+(ITEMS[st.k].amt||0); }
-  else { G.bag.push(st.k); autoBelt(st.k); }
+  else {
+    G.bag.push(st.k); autoBelt(st.k);
+    // v13.91, contracts audit: bought with banked Credits, so not earned by the run. It joins what the
+    // lift carried in, which hazard pay, the haul and item cards and the XP haul term all subtract.
+    G.carriedIn=(G.carriedIn||0)+ival(st.k); (G.carriedKit=G.carriedKit||[]).push(st.k);
+  }
   G.pedBought=(G.pedBought||0)+st.price;
   // v12.28, HIS NOTE: "I bought stuff from the peddler and it didn't show up in
   // my inventory including an auto rifle". autoBelt above claims a bought gun or
@@ -29843,7 +29848,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.90: AN ISSUED BANDAGE PICKED BACK UP IS STILL ISSUED. Searching and loot audit of 2026-09-14, finding 6, an edge of v13.67: the issued count falls when the backpack holds fewer Bandages and a rise counts as a find, so dropping the issued pair and searching it back up turned both into found loot the stall bought and the extraction banked. A dropped issued Bandage now comes off the count at the drop and marks its pile, and picking that pile up puts it back. Check 13.90 drops both issued Bandages, searches both piles up and requires the issued count back at two, with a found Bandage dropped and picked up staying found as the guard; it fails on v13.89',
+  now:'v13.91: WHAT YOU BUY AT THE STALL IS NOT LOOT YOU EARNED. Contracts, notoriety and waves audit of 2026-09-14, finding 4: every measure of what the run earned subtracts what the lift carried in (hazard pay, the haul and item cards, the XP haul term, the best haul), but pedBuy put bought goods in the backpack with no stamp, so a rifle bought with banked Credits completed a haul card and paid hazard pay while he kept it. A purchase now joins G.carriedIn and G.carriedKit. Check 13.91 buys a rifle and requires a haul card worth the rifle left incomplete, with the same rifle found in the raid completing it as the control; it fails on v13.90',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,20 @@
+## v13.94 - A HIRE WHO DIED ON YOUR JOB IS NOT YOUR RIVAL
+
+The contracts, notoriety and waves audit of 2026-09-14, finding 5. myRival picks the identity with
+the highest score over one, and scored kills plus deaths. The only thing that ever writes deaths
+on the ledger is a hired merc dying on your job. So:
+
+- Hire a man and let him die, rehire him and let him die again.
+- On the next raid with no other identity at two kills, he is YOUR RIVAL: his entity carries the
+  rival flag and star, and four seconds in the game says he will shoot on sight.
+- If he is your current hire, that is the companion who cannot shoot you.
+
+THE BUILD. The rival score reads kills alone. The rival announcement never names an entity that is
+your hire.
+
+MEASURED. Check 13.94 sets an identity with two kills and requires myRival to pick it (the
+control), then sets only an identity with two deaths and no kills and requires myRival not to pick
+it. It fails on v13.93.
+
+Not verified: the rival flag on a spawned hire, now unreachable through the score, which the
+announcement guard also covers.

@@ -1,0 +1,9 @@
+v13.92: your hire is not also a stranger on the map
+
+The opening roster could spawn a stranger with your hire's identity, and
+killing him banned the hire forever. The hired identity now goes to the back of
+the name pool.
+
+Check 13.92 deploys sixteen seeds with and without the hire. Fails on v13.91.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

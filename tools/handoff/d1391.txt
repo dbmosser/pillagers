@@ -1,0 +1,27 @@
+## v13.91 - WHAT YOU BUY AT THE STALL IS NOT LOOT YOU EARNED
+
+The contracts, notoriety and waves audit of 2026-09-14, finding 4. Since v10.27 the game stamps
+what the lift carried in (G.carriedIn, and since v13.55 which items, G.carriedKit). Every measure
+of what the run earned subtracts it:
+
+- hazard pay (v13.53),
+- the haul card (v12.65),
+- the item card (v13.55),
+- the XP haul term, the best haul and the run earnings on the log.
+
+pedBuy took banked Credits and put the item straight into the backpack with no stamp. So a gun
+bought from the stall completed a haul card, paid hazard pay on its value under the Terms, and an
+Optics Lens or Servo Actuator counted toward an item card, all while he kept the goods. Stash money
+turned into contract payouts.
+
+THE BUILD. A purchase joins the stamp: its value is added to G.carriedIn and its key to
+G.carriedKit, exactly as if the lift had carried it up. Every measure above then leaves it out
+without being touched. Ammunition goes to the reserve and carries no haul value, so it is not
+stamped.
+
+MEASURED. Check 13.91 buys a rifle from the stall with banked Credits into an empty backpack, runs
+contractExtract with the backpack's value, and requires a haul card worth the rifle left
+incomplete. The same rifle found in the raid must complete it (the control). It fails on v13.90.
+
+Not verified: hazard pay and the item card by drive, which read the same stamp; and a bought item
+sold back to the stall, which stays on the stamp.
