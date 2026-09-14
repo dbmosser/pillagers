@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.53';
+var VER='14.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11967,7 +11967,10 @@ function togglePauseBox(on){
   // before anything ends the raid, so this is the one place that banks.
   if(!on&&G&&!G.over){
     var _rn=document.getElementById('pausenote'), _rt=_rn?_rn.value.trim():'';
-    if(_rt){ G.tel.notes.push({t:Math.round(elapsed()),txt:_rt}); _rn.value=''; }
+    // v14.54, report audit finding 5: A NOTE IS AT MOST 400 CHARACTERS, as floor notes already were. Right after Copy report
+    // the clipboard holds the whole report, and a paste into a note stored all of it inside the run and repeated it in every
+    // later report, growing each time until saves hit the storage limit.
+    if(_rt){ G.tel.notes.push({t:Math.round(elapsed()),txt:_rt.slice(0,400)}); _rn.value=''; }
   }
   if(!on&&!G){
     // v14.47, floor audit finding 3: CLOSING THE PAUSE BOX ON THE FLOOR ARMS THE E LOCK. A key or pad button held while the
@@ -30039,7 +30042,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.53: A NOTE WITH A LINE BREAK STAYS ONE LINE IN THE REPORT. Notes are typed in text areas, so Enter put a break in them, and the second line of a note printed at the left margin with no label, reading as part of the report itself. Breaks in floor, run and in-run notes now print as a slash on the note own line. Check 14.53 builds a report with a floor note typed over two lines; it fails on v14.52',
+  now:'v14.54: A NOTE IS AT MOST 400 CHARACTERS. The outcome card note and in-raid notes had no limit, so pasting the report Copy report had just put on the clipboard stored the whole report inside the run and repeated it in every later report, growing toward the storage limit. Both are now cut at 400, as floor notes already were. Check 14.54 banks a long pause box note in a raid and corrects a run with a long outcome note; it fails on v14.53',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33806,7 +33809,7 @@ function ocCommit(){
     // out again with them, instead of being thrown away at the early return.
     if(committedRun){
       var _lt=selTags.slice(), _ln=document.getElementById('oc_note');
-      _ln=_ln?_ln.value.trim():'';
+      _ln=_ln?_ln.value.trim().slice(0,400):'';   // v14.54: the same 400 character cap
       if(_lt.join('|')!==(committedRun.tags||[]).join('|')||_ln!==(committedRun.note||'')){
         committedRun.tags=_lt; committedRun.note=_ln;
         saveProfile(); autoExport();
@@ -33819,7 +33822,7 @@ function ocCommit(){
   // written row when the commit happened without him.
   pendingRun.tags=selTags.slice();
   var _ocn=document.getElementById('oc_note');
-  pendingRun.note=_ocn?_ocn.value.trim():'';
+  pendingRun.note=_ocn?_ocn.value.trim().slice(0,400):'';   // v14.54: the same 400 character cap
   commitRun(pendingRun);
   committedRun=pendingRun;
   pendingRun=null;
