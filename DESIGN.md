@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.41 - ERASING A SAVE ERASES ITS UNDO COPY
+
+Title and saves audit finding 1 (MEDIUM). Since v14.06 each save keeps its own restore backup beside it, under the save's
+key plus :prerestore, and Settings shows UNDO whenever that backup exists. DELETE on the title screen, after the typed word
+and ERASE, removed only the profile key. So:
+
+1. restore a character in save 2 (which writes save 2's backup),
+2. switch to save 1 and erase save 2,
+3. CREATE A NEW SAVE lands in save 2, the first empty one,
+4. Settings shows UNDO on a character that never restored anything, and UNDO writes the erased character over it.
+
+A save the screen says is erased forever was still sitting in storage.
+
+THE BUILD. ERASE removes the save's restore backup as well as the save.
+
+MEASURED. Check 14.41 writes save 7 with a backup, refreshes the title list, presses save 7's DELETE, types the word and
+presses ERASE through the page's own buttons: save 7 must be gone (control) and so must its backup. It fails on v14.40.
+
+Not verified: the full restore, erase, new save and Settings sequence by hand.
 ## v14.40 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 A planned card refresh, as at v14.27. WHATSNEW_VER stood at 14.27 against a build at 14.39, and the card said nothing about

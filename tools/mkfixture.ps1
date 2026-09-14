@@ -5718,6 +5718,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.41',what:'erasing a save erases its UNDO copy: DELETE, the typed word and ERASE on the title screen remove save 7 and the restore backup kept beside it (title and saves audit finding 1)',
+   run:function(){
+     if(typeof titleRefresh!=='function'||!document.getElementById('slotlist')) return 'SKIP: no title save list in this document';
+     if(typeof SLOT!=='undefined'&&SLOT==='7') return 'SKIP: the fixture is running in save 7';
+     var bad=[], K7='salvagerun:profile:7', B7=K7+':prerestore';
+     try{
+       localStorage.setItem(K7,JSON.stringify({credits:5,pname:'ZQXSEVEN',runs:0,xp:0}));
+       localStorage.setItem(B7,'zqx backup of save seven');
+       titleRefresh();
+       var del=document.querySelector('#slotlist [data-del="7"]');
+       if(!del) return 'SKIP: save 7 was not listed with a DELETE button after the refresh';
+       del.click();
+       var word=document.getElementById('delword'), go=document.getElementById('delgo');
+       if(!word||!go||typeof go.onclick!=='function') return 'SKIP: the erase confirmation did not appear';
+       word.value='delete'; go.onclick();
+       // CONTROL: the save itself is gone, so ERASE ran.
+       if(localStorage.getItem(K7)!==null) return 'SKIP: ERASE did not remove save 7, so the erase path did not run here';
+       if(localStorage.getItem(B7)!==null) bad.push('ERASE removed save 7 but left its restore backup, which UNDO writes back over the next character made in that save');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ localStorage.removeItem(K7); localStorage.removeItem(B7); titleRefresh(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.40',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the lightning news of v14.31, still opening with the alpha line',
    run:function(){
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';

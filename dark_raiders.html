@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.40';
+var VER='14.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30005,7 +30005,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.40: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 14.27 against 14.39 and the card said nothing about the storm, sound, reward and save fixes of v14.28 to v14.39. Two of my own card lines are rewritten in place: the first names the new news and the second merges the two older lines, keeping what checks 14.27, 14.14 and 14.02 read, and WHATSNEW_VER moves to 14.40. Check 14.40 requires the card current and naming the lightning news, with every card check still holding; it fails on v14.39',
+  now:'v14.41: ERASING A SAVE ERASES ITS UNDO COPY. Each save keeps a restore backup beside it, and ERASE removed only the profile, so a new character made in that save later showed UNDO and UNDO brought the erased character back over it. ERASE now removes the backup too. Check 14.41 erases a save that has a backup through the title screen buttons; it fails on v14.40',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35658,6 +35658,10 @@ loadProfile().then(function(){
         var w=(document.getElementById('delword').value||'').trim().toLowerCase();
         if(w!=='delete'||!armed) return;
         try{ localStorage.removeItem(slotKey(armed)); }catch(e){}
+        // v14.41, title and saves audit finding 1: ERASE TAKES THE SAVE'S UNDO COPY WITH IT. Each save keeps its own restore
+        // backup beside it (v14.06), and erasing removed only the profile, so a new character later made in that save showed
+        // UNDO, and UNDO wrote the erased character back over the new one. The backup is erased too.
+        try{ localStorage.removeItem(slotKey(armed)+':prerestore'); }catch(e){}
         armed=null; renderSlots();
       };
       var dn=document.getElementById('delno');
