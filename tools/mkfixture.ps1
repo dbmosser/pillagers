@@ -5718,6 +5718,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.70',what:'a saved look is worn whole: a look saved with no outfit, worn over a suit, puts on the hat it names and takes the suit off (wardrobe audit finding 4)',
+   run:function(){
+     if(typeof lookWear!=='function'||typeof COSDEF==='undefined'||typeof COSKEY==='undefined') return 'SKIP: no saved looks in this build';
+     var suit=null, hat=null;
+     for(var i=0;i<COSMETICS.length;i++){ var c=COSMETICS[i]; if(!suit&&c.kind==='outfit'&&c.id!==COSDEF.outfit) suit=c.id; if(!hat&&c.kind==='hat'&&c.id!==COSDEF.hat) hat=c.id; }
+     if(!suit||!hat) return 'SKIP: no suit and hat to wear';
+     var bad=[], prof=null, keepAll=null;
+     try{
+       __topClear(); __cleanProfile(); prof=__P(); keepAll=prof.cosAll;
+       prof.cosAll=true; prof[COSKEY.outfit]=suit; prof[COSKEY.hat]=COSDEF.hat;
+       lookWear({hat:hat});   // saved before outfits existed: it has no outfit key
+       // CONTROL: the hat the look names is on.
+       if(prof[COSKEY.hat]!==hat) return 'SKIP: wearing the look did not put its hat on here';
+       if(prof[COSKEY.outfit]===suit) bad.push('a look saved with no outfit, worn over the '+suit+' suit, left the suit on over it');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(prof) prof.cosAll=keepAll; }catch(_a){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.69',what:'a restore code replaces the clothes, the saved looks and the all cosmetics flag: a code made from a character who never dressed, applied over one with a hat, saved looks and the flag on, leaves no hat, no saved look and the flag off (wardrobe audit finding 2)',
    run:function(){
      if(typeof restoreMake!=='function'||typeof restoreApply!=='function'||typeof COSKEY==='undefined'||!window.__applyLoaded) return 'SKIP: no restore codes in this build';

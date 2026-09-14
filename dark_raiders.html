@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.69';
+var VER='14.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30094,7 +30094,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.69: A RESTORE CODE REPLACES THE CLOTHES TOO. A slot the restored character never changed came through empty and was skipped, so the replaced character kept its clothes on the restored one, and its saved looks and the all cosmetics flag carried over. Every slot now takes the code value or the default, and the looks and the flag start clean. Check 14.69 applies a code from an undressed character over a dressed one; it fails on v14.68',
+  now:'v14.70: A SAVED LOOK IS WORN WHOLE. A kind missing from a saved look, or locked since it was saved, kept the piece already worn, so an old look worn over a suit stayed hidden under the suit. A missing or locked kind now goes to its default. Check 14.70 wears a look saved with no outfit over a suit; it fails on v14.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35364,7 +35364,12 @@ function lookWear(L){
   if(!L) return false;
   for(var i=0;i<LOOK_KINDS.length;i++){
     var k=LOOK_KINDS[i], c=cosFind(L[k]);
+    // v14.70, wardrobe audit finding 4: A SAVED LOOK IS WORN WHOLE. A kind missing from the look (every look saved before v10.54
+    // has no outfit) or locked since it was saved was skipped, so the piece already worn stayed, and the result was part saved
+    // look and part what he had on, at worst a suit over all of it. A missing or locked kind goes to its default, which is what
+    // an old look had in that slot.
     if(c&&c.kind===k&&cosOwned(c)) P[COSKEY[k]]=c.id;
+    else P[COSKEY[k]]=COSDEF[k];
   }
   saveProfile(); return true;
 }

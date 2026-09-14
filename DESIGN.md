@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.70 - A SAVED LOOK IS WORN WHOLE
+
+Wardrobe audit finding 4 (LOW). Wearing a saved look sets every kind the look names that is still unlocked. A kind the look
+does not name, or one locked since it was saved, was skipped, and the piece already worn stayed. So a look saved before
+v10.54, which has no outfit slot, worn while wearing The Machine, left the suit on over the whole look; and a look saved
+with ALL COSMETICS on, worn after turning it off, came out part saved look and part what he had on. It still reported
+success and played the sound.
+
+THE BUILD. A kind the look does not name, or cannot be worn, goes to its default, which is what an old look had in that
+slot.
+
+MEASURED. Check 14.70 puts a suit on and wears a look that names only a hat (control: the hat is put on): the suit must come
+off. It fails on v14.69.
+
+Not verified: an old saved look worn on the wardrobe by eye.
 ## v14.69 - A RESTORE CODE REPLACES THE CLOTHES TOO
 
 Wardrobe audit finding 2 (MEDIUM). A restore code replaces the save he is playing (v14.04 cleared the other state the old
