@@ -5718,6 +5718,40 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.95',what:'a Stray clearing your notoriety clears its fade count: helped at notoriety 1 with three extractions counted, both go to zero, while at notoriety 2 the count keeps running (contracts, notoriety and waves audit 2026-09-14, finding 6)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
+     if(typeof mkStray!=='function'||typeof strayGive!=='function') return 'SKIP: no Stray in this build';
+     var bad=[], P2=__P(), keep={no:P2.notoriety,ne:P2.notExt,cr:P2.credits};
+     function help(noto){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return null;
+       var p=g.player;
+       g.ents.length=0; g.hotAssign={}; p.downed=false; p.iv=99;
+       var e=mkStray(p.x+20,p.y); e.found=1; g.ents.push(e);
+       if(e.want==='ammobox'){ g.bag=[]; p.reserve=400; } else g.bag=[e.want];
+       P2.notoriety=noto; P2.notExt=3;
+       strayGive(e);
+       return {helped:!!e.helped, noto:P2.notoriety, ext:P2.notExt};
+     }
+     try{
+       // THE FINDING: the Stray clears the last point with three extractions counted.
+       var A=help(1);
+       if(A===null) return 'SKIP: no live raid';
+       if(!A.helped) return 'SKIP: the Stray would not take what he asked for';
+       if(A.noto!==0) return 'SKIP: helping the Stray did not clear notoriety 1 in this build';
+       if(A.ext!==0) bad.push('the Stray cleared the last point of notoriety and left '+A.ext+' extractions counted toward the next fade');
+       // CONTROL: at notoriety 2 the count keeps running.
+       var B=help(2);
+       if(B&&B.helped&&(B.noto!==1||B.ext!==3)) bad.push('control: at notoriety 2 the Stray left notoriety '+B.noto+' and count '+B.ext+', not 1 and 3');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ P2.notoriety=keep.no; P2.notExt=keep.ne; P2.credits=keep.cr; saveProfile(); }catch(_s){}
+       try{ var g2=__state(); if(g2){ if(g2.player) g2.player.iv=0; if(!g2.over) __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.94',what:'a hire who died on your job is not your rival: an identity with two deaths and no kills is not picked as the rival, while an identity with two kills is (contracts, notoriety and waves audit 2026-09-14, finding 5)',
    run:function(){
      if(!window.__P||typeof myRival!=='function'||typeof IDENTITIES==='undefined'||IDENTITIES.length<2) return 'SKIP: no rivals ledger in this build';
