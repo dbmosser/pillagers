@@ -40024,6 +40024,24 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.63 - NOTHING ON THE BELT IS SPENT FROM THE FLOOR
+
+The in-raid audit of 2026-09-14, finding 2. The belt key (G or the pad D-right) and the
+trigger on a belt cell both reach useHot. Nothing on that path checked whether he was
+down; only the throws did. The downed branch of updatePlayer returns before the heal ticks.
+So a Medkit used while down left the bag, said Applying, and never healed; if he was then
+hauled aboard it was not banked either. A Stim burned its ten seconds while he crawled. A
+heal started with the self-revive still unspent landed only after he stood up.
+
+THE BUILD. useHot refuses while he is down and says so. The self-revive on F and the
+surrender hold are separate paths and are untouched.
+
+MEASURED. Check 13.63 downs the player with the self-revive spent and a Bandage on the
+Medical cell, uses the cell, and requires the Bandage kept and no heal started. Standing at
+40 health, the same use must spend it (the control). It fails on v13.62.
+
+Not verified: an Armour Plate or a Stim on the floor, which go through the same useHot; and
+a drag of an item to use it, which takes other paths.
 ## v13.62 - A COOKED GRENADE OWNS THE HAND UNTIL IT IS THROWN
 
 The in-raid audit of 2026-09-14, finding 3. Holding the trigger on a Frag pulls the pin and

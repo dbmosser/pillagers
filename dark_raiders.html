@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.62';
+var VER='13.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14093,6 +14093,9 @@ function useStim(ix){
 }
 // One action key drives whatever is selected, which is the point of the hotbar.
 function useHot(){
+  // v13.63, in-raid audit: nothing on the belt is used from the floor. The heal never ticks
+  // while he is down, so the item was spent for nothing.
+  if(G&&G.player&&G.player.downed){ if(!G.sim) say('Not while you are down.'); return; }
   var sl=hotbarSlots(),s2=sl[hotSel()];
   if(!s2) return;
   // AN ASSIGNED SLOT NAMES ONE SPECIFIC ITEM. The generic heal path calls
@@ -29729,7 +29732,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.62: A COOKED GRENADE OWNS THE HAND UNTIL IT IS THROWN. In-raid audit of 2026-09-14, finding 3: the cook timer only ran in the throwable branch of the trigger and the gun branch never checked p.cooking, so switching to the gun mid-cook fired the gun with a live grenade in hand and froze the fuse, and G while cooking threw a second grenade. The fuse now burns whatever cell is selected, the gun does not fire while a grenade is cooking, and a throw key says to throw the one in hand first. Check 13.62 cooks a Frag, switches to an automatic gun and holds the trigger, and requires no shot and the fuse still counting, and G to throw nothing extra, with the gun firing normally as the control; it fails on v13.61',
+  now:'v13.63: NOTHING ON THE BELT IS SPENT FROM THE FLOOR. In-raid audit of 2026-09-14, finding 2: the belt key and the trigger on a belt cell reach useHot, and nothing on that path checked for a downed player, while the downed branch of updatePlayer returns before the heal ticks, so a Medkit used while down left the bag, said Applying and never healed, and a Stim burned its ten seconds on the floor. useHot now refuses while down and says why; the self-revive and the surrender are untouched. Check 13.63 downs the player with a Bandage on the Medical cell and requires the use refused with the Bandage kept, with the same use standing as the control; it fails on v13.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
