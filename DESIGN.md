@@ -40024,6 +40024,23 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.07 - GOING DOWN CLOSES THE MAP AND THE BACKPACK
+
+The raid HUD and map screen audit of 2026-09-15, finding 2. Nothing closed an open map or backpack when the player went
+down, and both are drawn after the downed overlay:
+
+- With the map open (M), the screen stayed on the sector map. DOWN, the bleed seconds and [F] SELF-REVIVE were all under
+  its near-opaque fill, and he could bleed out not knowing he was down.
+- With the backpack open, its panel sat over the DOWN block, and the pointer is hidden while downed.
+
+THE BUILD. The going-down branch of damagePlayer closes the map and the backpack and drops any drag in hand, in the same
+place it shuts the stall (v13.73) and lets the reload go (v13.83).
+
+MEASURED. Check 14.07 hits the player for five with the map open and requires the map still open (the control, which
+proves only going down closes it). It then downs him with the map open, and again with the backpack open, and requires
+each closed. It fails on v14.06.
+
+Not verified: opening the map or backpack again while already down, which the M and I/B keys still allow.
 ## v14.06 - UNDO KEEPS ITS OWN SLOT AND A RESTORE CODE KEEPS THE CHARACTER IT REPLACES
 
 The saving, profile and settings audit of 2026-09-15, finding 2. Every save slot has its own storage key, but the

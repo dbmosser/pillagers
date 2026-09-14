@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.06';
+var VER='14.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12821,6 +12821,7 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     // it stayed open and trading over the DOWN screen for the whole bleed-out.
     if(G.trade){ G.trade=null; G.pedLock=1; }
     p.reloading=0;   // v13.83, combat audit: a reload does not wait on the floor to finish after he stands
+    G.mapOpen=false; G.bagOpen=false; G.drag=null;   // v14.07, HUD audit: nothing covers the downed screen
     // v8.58, audit: it does NOT need medical. selfRevive requires none and
     // consumes none, by his v6.45 order, and the function's own comment says so.
     // This told a player bleeding out that they needed an item they do not have
@@ -29882,7 +29883,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.06: UNDO KEEPS ITS OWN SLOT AND A RESTORE CODE KEEPS THE CHARACTER IT REPLACES. Saving, profile and settings audit of 2026-09-15, finding 2: the pre-restore backup was one fixed key for every save slot, so a file restore in save 1 made UNDO in save 2 turn it into save 1 old character, and pasting a restore code wrote no backup at all. The backup now uses the slot own key, save 1 keeping the old name, and a restore code writes it before applying. Check 14.06 pastes a code through the real READ and REPLACE buttons and requires the backup to hold the character it replaced, with the code applied as the control; it fails on v14.05',
+  now:'v14.07: GOING DOWN CLOSES THE MAP AND THE BACKPACK. Raid HUD and map screen audit of 2026-09-15, finding 2: nothing closed an open map or backpack when he went down, and both draw after the downed overlay, so the map fill hid DOWN, the bleed seconds and the self-revive prompt and the backpack sat over the DOWN block with the pointer hidden. Going down now closes both, and any drag, as it shuts the stall. Check 14.07 downs the player with the map open and again with the backpack open and requires both closed, with a non-lethal hit leaving the map open as the control; it fails on v14.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

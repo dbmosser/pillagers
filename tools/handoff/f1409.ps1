@@ -25,7 +25,7 @@ SubRx @'
        var g=__state(), p=g.player;
        if(!g||!p||g.sim) return 'SKIP: no live raid';
        g.ents.length=0; g.hotAssign={}; g.hotAuto={};
-       p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false; p.swapped=false;
+       p.sec=null; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false; p.swapped=false;   // no second gun at all: the belt draws the vacant cell only for this
        // CONTROL: a line said here reaches the message.
        __say('PROBE LINE SEVEN');
        if(g.msg!=='PROBE LINE SEVEN') return 'SKIP: say does not reach the message in this fixture, so nothing here can be measured';
