@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.11 - RING CLOSURE LINES WAIT THEIR TURN
+
+The raid HUD and map screen audit of 2026-09-15, finding 3. On the Standard raid clock of 540 seconds, the extraction points
+close in turn, and two of those times land on the same moment as other lines:
+
+- At 6:00 one ring closes (at 360) and another is warned two minutes ahead of closing (240 plus 120). Both are said in the
+  same pass of the ring loop.
+- At 4:00 the second ring closes in the same frame as the minute warning "4 minutes left."
+
+Both ring lines were plain say() calls. say() holds one line and the last call in a frame wins, so one line of each pair was
+never on screen. On default settings the four-minute warning never showed at all, only its alarm sound.
+
+THE BUILD. The "closes in two minutes" and "is closed" lines go through sayWhenFree, which queues a line while another is
+showing, so each is read in turn.
+
+MEASURED. Check 14.11 runs one extraction tick with a ring set to close alone and requires "is closed" to be said (the control,
+which proves the tick reaches the ring lines). It then runs a tick in which one ring closes and another is warned, and requires
+both lines to be showing or queued. It fails on v14.10.
+
+Not verified: the minute warning at 4:00 by driven frames, which now meets a queued closure line instead of being overwritten.
 ## v14.10 - THE GIVE PROMPT SHOWS ONLY WHERE E GIVES
 
 The raid HUD and map screen audit of 2026-09-15, finding 7. A found survivor who wants something you carry gets a prompt

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.10';
+var VER='14.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15001,12 +15001,12 @@ z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
     if(!cz.warned&&G.timeLeft<=cz.closeAt+120){
       cz.warned=1;
       // v10.75, his one-word rule: the same letter the map and the banner use.
-      say('Extraction '+extLetter(cz)+' closes in two minutes.');
+      sayWhenFree('Extraction '+extLetter(cz)+' closes in two minutes.');   // v14.11, HUD audit: waits its turn instead of writing over a line
     }
     if(cz.open&&G.timeLeft<=cz.closeAt){
       if(cz.beaconT!==null&&cz.beaconT!==undefined){ continue; }  // pulled: it completes
       cz.open=false;
-      say('Extraction '+extLetter(cz)+' is closed.');   // v10.75: the letter, as everywhere else
+      sayWhenFree('Extraction '+extLetter(cz)+' is closed.');   // v10.75: the letter, as everywhere else; v14.11: waits its turn
       if(G.active===cz){
         for(var aj=0;aj<G.zones.length;aj++) if(G.zones[aj].open){ G.active=G.zones[aj]; break; }
       }
@@ -29884,7 +29884,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.10: THE GIVE PROMPT SHOWS ONLY WHERE E GIVES. Raid HUD and map screen audit of 2026-09-15, finding 7: the [E] GIVE prompt over a found survivor was drawn within 120 units while E only hands the item over within 70, so between the two the prompt named a key that gave nothing. The prompt now uses the same 70. Check 14.10 traces the HUD text with a survivor who wants a carried item at 100 units and requires no GIVE prompt, with the survivor at 50 units drawing it as the control; it fails on v14.09',
+  now:'v14.11: RING CLOSURE LINES WAIT THEIR TURN. Raid HUD and map screen audit of 2026-09-15, finding 3: on the default 540-second clock one ring closes at 360 and another at 240, so a closure and a two-minute warning were said in the same pass at 6:00 and a closure landed on the minute warning at 4:00, and both being plain say() calls one of each pair never showed. The ring lines now go through sayWhenFree. Check 14.11 runs one extraction tick in which one ring closes and another is warned, and requires both lines to survive, with a ring closing alone saying so as the control; it fails on v14.10',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
