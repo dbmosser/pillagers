@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.07';
+var VER='14.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12822,6 +12822,7 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     if(G.trade){ G.trade=null; G.pedLock=1; }
     p.reloading=0;   // v13.83, combat audit: a reload does not wait on the floor to finish after he stands
     G.mapOpen=false; G.bagOpen=false; G.drag=null;   // v14.07, HUD audit: nothing covers the downed screen
+    G.searching=null; G.searchT=0; G.nearDoor=null;   // v14.08, HUD audit: no search bar or door prompt frozen over the floor
     // v8.58, audit: it does NOT need medical. selfRevive requires none and
     // consumes none, by his v6.45 order, and the function's own comment says so.
     // This told a player bleeding out that they needed an item they do not have
@@ -24721,7 +24722,7 @@ ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
   }
   ctx.textAlign='left';
   // projected world labels
-  if(G.nearDoor){
+  if(G.nearDoor&&!(G.player&&G.player.downed)){   // v14.08: not while down
     var dsc=w2s(G.nearDoor.doorX,26,G.nearDoor.doorY);
     if(dsc){
       var haveKey=false;
@@ -24934,7 +24935,7 @@ ctx.fillStyle='#4de3d0';
       bar(_rb.x-25,_rb.y-LH(9),50,LH(5),clamp(1-p.reloading/p.wep.reload,0,1),'#ffc04a');
     }
   }
-  if(G.searching){
+  if(G.searching&&!(G.player&&G.player.downed)){   // v14.08: not while down
     var s2=w2s(G.searching.x,26,G.searching.y);
     if(s2){
       // HIS PRINCIPLE, applied to the one place I had left it, v3.05. At v2.99 I
@@ -29883,7 +29884,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.07: GOING DOWN CLOSES THE MAP AND THE BACKPACK. Raid HUD and map screen audit of 2026-09-15, finding 2: nothing closed an open map or backpack when he went down, and both draw after the downed overlay, so the map fill hid DOWN, the bleed seconds and the self-revive prompt and the backpack sat over the DOWN block with the pointer hidden. Going down now closes both, and any drag, as it shuts the stall. Check 14.07 downs the player with the map open and again with the backpack open and requires both closed, with a non-lethal hit leaving the map open as the control; it fails on v14.06',
+  now:'v14.08: GOING DOWN LETS GO OF THE SEARCH AND THE DOOR PROMPT. Raid HUD and map screen audit of 2026-09-15, finding 4: the downed branch returns before the door and container scans, the only places that clear G.nearDoor and G.searching, and going down cleared neither, so the search bar froze on the crate and [E] UNLOCK stayed up for the whole bleed-out. Going down now clears both and neither is drawn while down. Check 14.08 downs the player mid-search beside a door and requires both cleared, with a non-lethal hit leaving the search running as the control; it fails on v14.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
