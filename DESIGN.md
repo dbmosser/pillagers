@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.82 - A CONTRACT GUN FILLS AN EMPTY HAND
+
+Gun audit finding 4 (LOW). v14.29 made a reward gun claimed with nothing in hand become his gun, and the note there says the
+shop and banking already did. A contract whose payout is a gun (payGear) only put it on the armoury list, so after losing
+every gun, gun 1 stayed empty, the next raid issued a loaner, and the sector page's hint about a gun of his own looks only at
+the stash, so it never mentioned the gun he had just been paid.
+
+THE BUILD. A gun paid by a contract goes into gun 1 when gun 1 is empty or names a gun he does not own. A gun in hand is
+never replaced.
+
+MEASURED. Check 14.82 pays an SMG with the pistol in hand (control: the SMG reaches the armoury and the pistol stays in hand)
+and with no gun: gun 1 must become the SMG. It restores the profile through the loader. It fails on v14.81.
+
+Not verified: a real contract payout by hand.
 ## v14.81 - AFTER A DEATH THE TWO GUN SLOTS NEVER NAME ONE GUN
 
 Gun audit finding 3 (LOW). A death refills gun 1 with the first gun still on the armoury list when the gun in hand was lost,

@@ -5718,6 +5718,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.82',what:'a contract gun fills an empty hand: paid with no gun in hand it becomes gun 1, and paid with a gun in hand it goes to the armoury without taking the hand (gun audit finding 4)',
+   run:function(){
+     if(typeof payGear!=='function'||!window.__applyLoaded||!WEAPONS.smg||!WEAPONS.pistol) return 'SKIP: no contract gear payment in this build';
+     var bad=[], snap=null;
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       var q=__P();
+       // CONTROL: with the pistol in hand, a paid SMG goes to the armoury and the hand keeps the pistol.
+       q.weapons=['pistol']; q.equipped='pistol'; q.equippedSec='none';
+       payGear({kind:'wep',k:'smg'});
+       if(q.weapons.indexOf('smg')<0) return 'SKIP: a paid SMG did not reach the armoury here';
+       if(q.equipped!=='pistol') bad.push('a paid SMG took the hand from the pistol he had equipped');
+       q.weapons=[]; q.equipped='fists'; q.equippedSec='none';
+       payGear({kind:'wep',k:'smg'});
+       if(q.equipped!=='smg') bad.push('with no gun in hand a paid SMG went to the armoury and gun 1 stayed '+q.equipped);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(snap) __applyLoaded(snap); }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.81',what:'after a death the two gun slots never name one gun: pistol in hand from the armoury, a field gun put in gun 2, a death refills gun 1 with the SMG and gun 2 does not also name it (gun audit finding 3)',
    run:function(){
      if(typeof equipFromBag!=='function'||typeof endRaid!=='function'||!window.__startRaid||!window.__applyLoaded||!WEAPONS.pistol||!WEAPONS.smg) return 'SKIP: no equip from the backpack or loader in this build';

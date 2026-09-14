@@ -1,0 +1,9 @@
+v14.83: the what is new card is current again
+
+The card stood at 14.72 and said nothing about the stash, shop, ascent question
+and gun slot fixes since. Two of my own lines are rewritten in place, keeping
+every phrase the card checks read.
+
+Check 14.83. Fails on v14.82.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
