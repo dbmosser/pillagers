@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.38 - WEARING OR UNLOCKING A LOOK MAKES A SOUND
+
+Audio audit finding 4 (LOW). On the wardrobe, wearing a look and buying a look both asked sfx for a voice named 'cache',
+and blip has no branch by that name. So both successes were silent, while the refusal on the line beside each played a
+clank. Each call also left a stereo panner connected to nothing.
+
+THE BUILD. Both successes play the rare find voice, the rising two-note sound the game already uses for a good find.
+
+MEASURED. Check 14.38 installs a fake audio context that records every call. The rare find voice must create sound sources
+and the old name must create none (controls). The fix: no script on the page may still ask for the old name. It fails on
+v14.37.
+
+Not verified: wearing and buying a look on the wardrobe, by ear.
 ## v14.37 - A PICK FAR AWAY SOUNDS FAR AWAY
 
 Audio audit finding 3 (LOW). blip turns a distance into a volume, and every voice scales by it except 'pick', which set a
