@@ -1,0 +1,9 @@
+v14.88: a word clicked in edit mode is not also pressed
+
+Clicking the word on a button or menu row in edit mode opened the editor and
+pressed the button too. The click after the editor opens is now eaten; the
+Edit the words switch still works.
+
+Check 14.88. Fails on v14.87.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

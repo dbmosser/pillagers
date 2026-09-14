@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.86';
+var VER='14.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27395,16 +27395,20 @@ function drawHubBelt(){
   finally{ G=old; }
 }
 function hubBagState(){
-  var wep=WEAPONS[P.equipped]||WEAPONS.fists;
+  // v14.87, belt audit finding 4: THE UNDERCROFT BELT COUNTS WHAT GOES UP. Its pouch was empty, so a Frag key over three packed
+  // Frags drew greyed with 0 while the stash row said x3 and the raid carried three, and with no second gun a key on gun 2 was
+  // skipped and slot 2 read Second weapon. The pouch counts the packed grenades and gun 2 is the equipped second gun.
+  var wep=WEAPONS[P.equipped]||WEAPONS.fists, sec=(P.equippedSec&&P.equippedSec!==P.equipped&&WEAPONS[P.equippedSec])||WEAPONS.fists, pq={smoke:0,decoy:0,frag:0};
+  (P.kit||[]).forEach(function(k){ if(pq[k]!==undefined) pq[k]++; });
   return {
     bag:(P.kit||[]).slice(),
     hotAssign:P.hotAssign||{},
     bagSel:0, bagCells:[], hotCells:[], bagCols:0, bagPanel:null,
-    bagOpen:true, over:false, sim:0, t:0, pouch:{},
+    bagOpen:true, over:false, sim:0, t:0, pouch:pq,
     // A loaded magazine and no spare rounds, which is what you are actually
     // holding down here until you pack ammo. Without the mag the readout drew
     // the word undefined, which the first screenshot caught.
-    player:{wep:wep, ammo:(wep&&wep.mag)||0, hp:100, maxhp:100, armor:0, reserve:0, r:11}
+    player:{wep:wep, ammo:(wep&&wep.mag)||0, sec:sec, secAmmo:sec.mag||0, hp:100, maxhp:100, armor:0, reserve:0, r:11}
   };
 }
 // G is restored in a finally, so a throw in here can never leave the game
@@ -30125,7 +30129,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.86: A DRAG ON THE BELT IN A RAID KEEPS THE KEYS FOR WHAT STAYED HOME. The raid copy of the belt plan drops keys on items that did not come up, and a drag onto or off a key mid-raid saved that copy over the whole plan, so those keys were gone at home. The keys set aside at raid start now go back into the saved plan. Check 14.86 deploys with a key on a Stim left at home and unbinds another key; it fails on v14.85',
+  now:'v14.87: THE UNDERCROFT BELT COUNTS WHAT GOES UP. The belt drawn in the Undercroft had an empty pouch, so a key on three packed Frags read 0 and greyed while the stash row said x3, and a key on gun 2 was skipped. The pouch now counts packed grenades and gun 2 is the equipped second gun. Check 14.87 draws that belt with three Frags packed; it fails on v14.86',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

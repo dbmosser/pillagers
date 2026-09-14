@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.87 - THE UNDERCROFT BELT COUNTS WHAT GOES UP
+
+Belt audit finding 4 (LOW). The belt drawn in the Undercroft (on the floor and in its backpack) is built from hubBagState, a
+stand-in raid state. Its pouch, where grenades are counted, was empty. With three Frags packed and one on key 7, the stash belt
+row said x3 and the raid carried three, but the Undercroft belt greyed key 7 with 0, and the default Smoke, Decoy and Frag
+cells read 0. The stand-in also had no second gun, so a key on gun 2 was skipped and slot 2 read Second weapon.
+
+THE BUILD. The stand-in's pouch counts the packed Smoke, Decoy and Frags, and its second gun is the equipped gun 2 when it
+differs from gun 1.
+
+MEASURED. Check 14.87 packs three Frags with key 7 on them and draws the stand-in belt: key 7 must be his Frag key (control)
+and count three. It restores the profile through the loader and puts the raid state back. It fails on v14.86.
+
+Not verified: the Undercroft belt by eye; gun 2's key on it.
 ## v14.86 - A DRAG ON THE BELT IN A RAID KEEPS THE KEYS FOR WHAT STAYED HOME
 
 Belt audit finding 3 (MEDIUM). At raid start the raid's copy of the belt plan lets go of keys on items carried neither in the
