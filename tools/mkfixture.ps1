@@ -5718,6 +5718,52 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.47',what:'on a controller on the Undercroft floor View opens and closes the backpack and Menu raises and closes the pause box, one change per press, and View does nothing under the pause box, as the keyboard I and P behave there (key remap review 2026-09-13)',
+   run:function(){
+     if(typeof pollPad!=='function'||typeof hubBagOpenSet!=='function'||typeof togglePauseBox!=='function'||!window.__hubEnter) return 'SKIP: no pad poll or floor backpack in this build';
+     var NG=navigator.getGamepads;
+     if(typeof NG!=='function') return 'SKIP: this browser has no pad interface to fake';
+     var bad=[], stubbed=false;
+     try{ navigator.getGamepads=function(){ return []; }; stubbed=(navigator.getGamepads!==NG); }catch(_s){}
+     if(!stubbed){ try{ navigator.getGamepads=NG; }catch(_r0){} return 'SKIP: this browser will not let the pad be faked'; }
+     function padWith(down){
+       var bts=[],i;
+       for(i=0;i<16;i++) bts.push({pressed:(i===down),value:(i===down)?1:0,touched:(i===down)});
+       var fake={connected:true,id:'probe pad',index:0,mapping:'standard',timestamp:1,axes:[0,0,0,0],buttons:bts};
+       navigator.getGamepads=function(){ return [fake]; };
+     }
+     function tap(b){ padWith(b); pollPad(); padWith(-1); pollPad(); }
+     function boxOn(){ var pb=document.getElementById('pausebox'); return !!(pb&&pb.classList.contains('on')); }
+     try{
+       __topClear(); __cleanProfile(); __hubEnter();
+       if(state!=='hub') return 'SKIP: the floor did not open';
+       [].forEach.call(document.querySelectorAll('.modal.on'),function(x){ x.classList.remove('on'); });   // a fresh profile opens the welcome window, and an open window owns the pad
+       if(document.querySelector('.modal.on')) return 'SKIP: a window stayed open over the floor';
+       if(hubBagOpen) hubBagOpenSet(false);
+       if(boxOn()) togglePauseBox(false);
+       padWith(-1); pollPad();
+       tap(8);
+       if(!hubBagOpen) bad.push('View on the floor did not open the backpack');
+       tap(8);
+       if(hubBagOpen) bad.push('a second View on the floor did not close the backpack');
+       tap(9);
+       if(!boxOn()) bad.push('Menu on the floor did not raise the pause box');
+       tap(8);
+       if(hubBagOpen) bad.push('View opened the backpack under the pause box, which the keyboard refuses');
+       tap(9);
+       if(boxOn()) bad.push('a second Menu on the floor did not close the pause box');
+       padWith(8); pollPad(); pollPad(); pollPad(); padWith(-1); pollPad();
+       if(!hubBagOpen) bad.push('a View held for three frames did not leave the backpack open');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ navigator.getGamepads=function(){ return []; }; pollPad(); }catch(_p0){}
+       try{ navigator.getGamepads=NG; }catch(_p){}
+       try{ if(hubBagOpen) hubBagOpenSet(false); }catch(_b){}
+       try{ if(boxOn()) togglePauseBox(false); }catch(_x){}
+       try{ var K3=__keysRef(); for(var k3 in K3) K3[k3]=false; }catch(_k){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.46',what:'on a 1280x720 itch window the menus fit the screen: the Undercroft and the corner readout are drawn at the size that fits instead of their 1080p size times his menu size, while at 1920x1080 his size of 1.3 still applies in full',
    run:function(){
      if(!(window.__forceSize&&window.__P)||typeof applyMenuZoom!=='function'||typeof titleRes!=='function') return 'SKIP: no menu zoom or size forcing in this build';

@@ -1,0 +1,9 @@
+v13.47: the controller works on the Undercroft floor
+
+The floor branch of pollPad bound only A, X, Y, RB and the left stick, so View
+and Menu did nothing there. floorPadTap gives View the backpack and Menu the
+pause box under the keyboard floor rules, one change per press.
+
+Check 13.47 fakes a pad on the floor. Fails on v13.46.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

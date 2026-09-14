@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.46';
+var VER='13.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10851,6 +10851,21 @@ window.addEventListener('keydown',function(e){
 // Every in-raid action lives here rather than inside the keydown listener, so
 // the gamepad can raise the same action without faking DOM events. ev is null
 // when the caller is not a real key press and there is nothing to preventDefault.
+// v13.47: THE PAD ON THE FLOOR. View is the backpack and Menu is pause, the same rules
+// the keyboard I and P follow down here: nothing answers under a title, a window or a
+// right-click menu, and under the pause box only Menu does.
+function floorPadTap(code){
+  if(state!=='hub') return;
+  var _t=document.getElementById('title');
+  if((_t&&_t.classList.contains('on'))||document.querySelector('.modal.on')||document.querySelector('.imenu')) return;
+  if(code==='KeyP'){ togglePauseBox(!document.getElementById('pausebox').classList.contains('on')); return; }
+  if(pauseOpen) return;
+  if(code==='KeyI'){
+    var _hb=document.getElementById('hub');
+    if(_hb&&_hb.classList.contains('on')) _hb.classList.remove('on');
+    hubBagOpenSet(!hubBagOpen);
+  }
+}
 function raidKey(code,repeat,ev){
   keys[code]=true;
   // v12.22: NOTHING IN THE RAID ANSWERS A KEY WHILE THE PAUSE BOX IS UP, except
@@ -11651,6 +11666,9 @@ function pollPad(){
     padHold('KeyR',pressed(2));
     padHold('KeyF',pressed(3));
     padHold('KeyT',pressed(5));
+    // v13.47: View opens and closes the backpack, Menu pauses, one change per press.
+    if(pressed(8)&&!PAD.prev[8]) floorPadTap('KeyI');
+    if(pressed(9)&&!PAD.prev[9]) floorPadTap('KeyP');
     for(var b0=0;b0<bt.length;b0++) PAD.prev[b0]=pressed(b0);
     return;
   }
@@ -29665,7 +29683,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.46: THE MENUS FIT A 1280x720 ITCH WINDOW. His question of 2026-09-13 about the itch viewport; the recommended embed is 1280x720 and the menus never shrank below their 1080p size, because titleRes was floored at 1 and his menu size multiplied on top. One helper, menuScale, now gives every menu site the same factor: his size times the screen factor at 1080p and above, and the screen factor alone below it, floored at half. Check 13.46 forces 1280x720 and requires the Undercroft and the corner readout drawn at the size that fits, and his 1.3 intact at 1920x1080; it fails on v13.45',
+  now:'v13.47: THE CONTROLLER WORKS ON THE UNDERCROFT FLOOR. Found by the key remap review of 2026-09-13: the floor branch of pollPad bound only A, X, Y, RB and the left stick, so View and Menu did nothing down there, and a pad could not open or close the floor backpack or raise and close the pause box. floorPadTap now gives View the backpack and Menu the pause box under the same rules the keyboard I and P follow on the floor, one change per press, called directly rather than as synthetic keys. Check 13.47 fakes a pad on the floor and requires View to open and close the backpack, Menu to raise and close the box, View to do nothing under the box, and a held View to open once; it fails on v13.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

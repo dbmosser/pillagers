@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.47 - THE CONTROLLER WORKS ON THE UNDERCROFT FLOOR
+
+Found by the key remap review of 2026-09-13. The floor branch of pollPad bound only A, X,
+Y, RB and the left stick. View and Menu did nothing down there, so a pad could not open or
+close the floor backpack, and could not raise or close the pause box. Upstairs both buttons
+do exactly that.
+
+THE BUILD. floorPadTap gives View the backpack and Menu the pause box, under the rules the
+keyboard I and P already follow on the floor. Nothing answers under the title, a window or
+a right-click menu, and under the pause box only Menu does. Each press makes one change.
+The buttons call the game directly rather than faking key events, because a synthetic key
+on window also reaches the capture closer and toggles the pause box twice.
+
+MEASURED. Check 13.47 fakes a standard pad on the floor. View must open and close the
+backpack, Menu must raise and close the pause box, View must do nothing under the box, and
+a View held for three frames must open the backpack once. It fails on v13.46.
+
+Not verified: a real controller; the pad labels, which still name BACK for the backpack on
+the floor; and the emote bar in a raid, which no pad button can close.
 ## v13.46 - THE MENUS FIT A 1280x720 ITCH WINDOW
 
 His question of 2026-09-13: reduce the viewport for the itch version. The recommended
