@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.86 - A PILE YOU DROP DOES NOT RESTOCK
+
+The searching and loot audit of 2026-09-14, finding 2. Opened crates and lockers refill after
+170 seconds, and the restock tested only the container's type. A pile dropped from the backpack
+is type crate. So once it was searched back up:
+
+- It refilled with one or two fresh crate items every 170 seconds for the rest of the raid.
+- It kept its dropped mark, so it searched in 0.6 seconds and its prompt named one item.
+- Every drop left another permanent refilling pile, and inside the hot zone each refill paid
+  the bonus too until v13.85.
+
+THE BUILD. The restock skips a pile you dropped. The world's own crates and lockers restock as
+before.
+
+MEASURED. Check 13.86 drops an item, searches the pile back up, opens an ordinary crate far
+away, ages both 171 seconds, runs updateEnts once, and requires the pile still opened. The
+ordinary crate must have restocked (the control). It fails on v13.85.
+
+Not verified: parley gift crates, which the audit also named and which carry no dropped mark.
 ## v13.85 - A PILE YOU DROP EARNS NO HOT ZONE BONUS
 
 The searching and loot audit of 2026-09-14, finding 1. Opening a container inside the hot zone
