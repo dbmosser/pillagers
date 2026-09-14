@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.85 - A PILE YOU DROP EARNS NO HOT ZONE BONUS
+
+The searching and loot audit of 2026-09-14, finding 1. Opening a container inside the hot zone
+rolls two extra items from the safe table onto it. The only guards were against caches and
+containers already opened. A pile you drop from the backpack is a fresh, unopened crate, so:
+
+- Stand in the hot zone, drop any piece of junk, and search the pile back up.
+- Two items from the safe table come with it: cores, titanium, black boxes, a marksman rifle, a
+  longshot, the Lance, keys.
+- Repeat as often as you like.
+
+THE BUILD. The bonus skips a pile you dropped. The zone's own containers pay as before.
+
+MEASURED. Check 13.85 sets a hot zone on the player, drops one light plain item, searches the
+pile back up, and requires exactly that one item in the backpack. An ordinary crate in the same
+zone must still pay at least one bonus item (the control). It fails on v13.84.
+
+Not verified: a pillager's dropped loot inside the zone, which is not marked dropped and still
+pays.
 ## v13.84 - ONE SWING CLOCK FOR BARE HANDS, AND NO PUNCH WITH A LIVE GRENADE
 
 The combat and player state audit of 2026-09-14, finding 5. Two faults in the punch:

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.84';
+var VER='13.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13471,7 +13471,7 @@ function openContainer(ct,onlyKeys){
   var p=G.player,T=G.tel;
   // INSIDE THE HOT ZONE, RIGHT NOW. Checked at open time, not at build time, so
   // the zone moving actually means something.
-  if(G.hotZone&&!ct.cache&&!ct.opened){
+  if(G.hotZone&&!ct.cache&&!ct.opened&&!ct.dropped){   // v13.85, loot audit: a pile you dropped earns no bonus
     var _hd=Math.hypot(ct.x-G.hotZone.x,ct.y-G.hotZone.y);
     if(_hd<=G.hotZone.r){
       for(var _hb=0;_hb<2;_hb++){
@@ -29821,7 +29821,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.84: ONE SWING CLOCK FOR BARE HANDS, AND NO PUNCH WITH A LIVE GRENADE. Combat and player state audit of 2026-09-14, finding 5: the F strike kept p.meleeAt and the bare-hands left click kept p.lastShot, neither reading the other, so alternating them swung twice every 0.42 seconds, and meleeStrike had no cooking test so F punched with a pin pulled. The two now share one clock both ways and F refuses while a grenade cooks. Check 13.84 swings with the left click and then presses F in the same instant, requiring F refused, and pulls a pin and presses F, requiring it refused, with F on its own as the control; it fails on v13.83',
+  now:'v13.85: A PILE YOU DROP EARNS NO HOT ZONE BONUS. Searching and loot audit of 2026-09-14, finding 1: opening a container in the hot zone rolls two items from the safe table onto it, guarded only against caches and opened containers, so a pile dropped from the backpack inside the zone paid two high-tier items every time it was searched back up. The bonus now skips dropped piles. Check 13.85 drops one item in the hot zone and searches it back up, requiring the backpack to hold that one item, with an ordinary crate in the zone still paying the bonus as the control; it fails on v13.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
