@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.90 - HIS WORDS SHOW ON THE ITEM AND GUN MENUS
+
+Words audit finding 2 (MEDIUM). His edits reach the page two ways: a watcher that rewrites text inside #root as it changes, and
+the canvas text hook. The right-click item menu and gun menu are built and added to the page body, outside #root, so neither
+applied. A menu row he reworded was saved in his profile and exported with the report, but the menu drew the original words
+every time it opened, and baking the edit into the file would not have shown either.
+
+THE BUILD. Both menus apply his edits to themselves as they are added, through the same rewriter the watcher uses.
+
+MEASURED. Check 14.90 opens the Bandage menu (control: it has a row of words), rewords that row in his profile, opens it again
+and requires his words. It restores his profile's edits afterwards. It fails on v14.89. The gun menu takes the same one line
+and is not driven by the check.
+
+Not verified: a menu row reworded by hand in edit mode.
 ## v14.89 - A KEY HELD WHEN THE WORDS EDITOR OPENS IS LET GO
 
 Words audit finding 4 (MEDIUM). The game hears key releases only through one keyup listener on window. The words editor box

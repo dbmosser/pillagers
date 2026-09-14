@@ -5718,6 +5718,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.90',what:'his words show on the item menu: a row of the Bandage menu reworded in his profile opens with his words (words audit finding 2)',
+   run:function(){
+     if(typeof openItemMenu!=='function'||typeof closeItemMenu!=='function'||!ITEMS.bandage) return 'SKIP: no item menu in this build';
+     var bad=[], P0=__P(), keepTxt=null, label=null;
+     function firstText(root){
+       var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false), t;
+       while((t=w.nextNode())){ if(t.nodeValue&&t.nodeValue.replace(/\s+/g,'').length>2&&!(/\d/).test(t.nodeValue)) return t.nodeValue; }
+       return null;
+     }
+     try{
+       __topClear();
+       keepTxt=JSON.stringify(P0.txt||null);
+       closeItemMenu(); openItemMenu(120,120,'bandage','stash',2);
+       var m=document.querySelector('.imenu');
+       // CONTROL: the menu opened with a row of words to reword.
+       label=m?firstText(m):null;
+       if(!label) return 'SKIP: the Bandage menu opened with no row of words here';
+       closeItemMenu();
+       P0.txt=P0.txt||{}; P0.txt[label]='ZQXW '+label;
+       openItemMenu(120,120,'bandage','stash',2);
+       m=document.querySelector('.imenu');
+       if(!m||String(m.textContent).indexOf('ZQXW ')<0) bad.push('the row '+label+' was reworded in his profile and the menu still opened with the original words');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ closeItemMenu(); }catch(_m){} try{ P0.txt=JSON.parse(keepTxt); if(P0.txt===null) delete P0.txt; }catch(_r){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.89',what:'a key held when the words editor opens is let go: W held, the editor opened, W released inside it, and the game no longer holds W (words audit finding 4)',
    run:function(){
      if(typeof txOpen!=='function'||typeof txClose!=='function'||typeof keys==='undefined') return 'SKIP: no words editor in this build';
