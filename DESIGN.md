@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.34 - AN OPENED DOOR OR A DESTROYED WALL OPENS THE PLACEMENT GRIDS TOO
+
+Weather audit finding 4 (LOW). When a keyed door opens or a wall is destroyed, rebuildGeometry makes the segments, the sight
+and bullet grids and the nav again. Two placement structures were left behind:
+
+- the free-spot wall grid, cached on the map and reused whenever its walls array is the map's walls array; the array is
+  spliced in place, so the stale grid passed and a removed wall still ruled spots out,
+- the reachable-area flood, built once from the drop at raid build and never rebuilt, so an opened room still read
+  unreachable and nothing placed mid-raid (a find where lightning lands) could land in it.
+
+Neither placed anything badly or trapped anyone; they only ruled good spots out.
+
+THE BUILD. navReach remembers the point it flooded from. rebuildGeometry drops the free-spot wall grid and, when a flood
+exists, floods again from that same point over the new nav. No random number is drawn.
+
+MEASURED. Check 14.34 starts a raid (control: a reachable-area grid exists), sets a stand-in free-spot grid, removes every
+wall in place and rebuilds: the reachable area must grow and the stand-in grid must be gone. It fails on v14.33.
+
+Not verified: a fulgurite find landing inside a room opened with a key in a live storm.
 ## v14.33 - NOISE DOES NOT ALERT THE PEDDLER OR THE STRAY
 
 Weather audit finding 3 (LOW). Every noise (a step, a shot, a bolt) runs through ping, which sets alert on every entity in

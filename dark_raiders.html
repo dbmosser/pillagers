@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.33';
+var VER='14.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5294,6 +5294,7 @@ function buildNav(walls,pad){
 // cached on the map, and then every candidate is an O(1) lookup.
 function navReach(map,fx,fy){
   if(map.reachGrid) return map.reachGrid;
+  map.reachFrom={x:fx,y:fy};   // v14.34: where the flood started, so an opened door can flood it again from the same drop
   var nav=map.nav,gw=nav.w,gh=nav.h,blk=nav.blk,c=nav.c;
   var seen=new Uint8Array(gw*gh);
   var sx=clamp(Math.floor(fx/c),0,gw-1),sy=clamp(Math.floor(fy/c),0,gh-1);
@@ -12967,6 +12968,13 @@ function rebuildGeometry(){
   G.map.nav=buildNav(walls);
   var _nb2=(CFG.navBody===undefined?15:CFG.navBody);
   G.map.navD=carveDoors(_nb2>0?buildNav(walls,_nb2):G.map.nav,G.map.doors,walls,_nb2);
+  // v14.34, weather audit finding 4: AN OPENED DOOR OR A DESTROYED WALL OPENS THE PLACEMENT GRIDS TOO. This rebuild made
+  // the segments, the grids and the nav again but kept the free-spot wall grid, which passes its identity test because the
+  // walls array is spliced in place, and the reachable-area flood, which is cached once at raid build. So a removed wall
+  // still ruled spots out, and an opened room still read unreachable, so nothing found mid-raid could land in it. Both are
+  // rebuilt from the new walls; the flood starts from the same drop and draws no random number.
+  G.map._fsGrid=null;
+  if(G.map.reachGrid&&G.map.reachFrom){ G.map.reachGrid=null; navReach(G.map,G.map.reachFrom.x,G.map.reachFrom.y); }
   refreshVseg();
 }
 // v13.41, HIS REPORT OF 2026-09-13: THE RAISED DECKS ARE GONE. A deck edge is a
@@ -29981,7 +29989,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.33: NOISE DOES NOT ALERT THE PEDDLER OR THE STRAY. A noise set every entity in earshot to alerted, and the Peddler and the Stray never let it decay, so after one shot nearby the ambient sound played at full threat at the stall for the rest of the raid. Noise now skips them, as the target loops already do. Check 14.33 makes a noise beside the Peddler, a stray and a crawler; it fails on v14.32',
+  now:'v14.34: AN OPENED DOOR OR A DESTROYED WALL OPENS THE PLACEMENT GRIDS TOO. The geometry rebuild after a door or wall kept the cached reachable-area flood and the free-spot wall grid, so an opened room still read unreachable and a removed wall still ruled spots out for anything placed mid-raid. The rebuild now clears the wall grid and floods the reachable area again from the same drop. Check 14.34 removes every wall of a live raid and rebuilds; it fails on v14.33',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
