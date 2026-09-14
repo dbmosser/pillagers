@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.77';
+var VER='14.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13938,9 +13938,9 @@ function bagHeldGun(slot){
   var sw=!!p.swapped;
   var isHand=(slot==='gunA')?!sw:sw;
   var g=isHand?p.wep:p.sec, issued=isHand?p.wepIssued:p.secIssued, arm=isHand?p.wepFromArmory:p.secFromArmory;
-  if(!g||g.id==='fists'||g.mag===0){ say('Nothing there to bag.'); return false; }
+  if(!g||g.id==='fists'||g.mag===0){ say('Nothing there to put in your backpack.'); return false; }   // v14.78: his word
   if(issued){ say(g.name+' is issued kit; it stays in your hands.'); return false; }
-  if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in a bag.'); return false; }
+  if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in your backpack.'); return false; }
   G.bag.push('gun_'+g.id);
   stowRounds(g.id,isHand?p.ammo:p.secAmmo);   // v12.42: the load goes with it
   if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); (P.raidSpliced=P.raidSpliced||[]).push(g.id); } }   // v14.03: on the saved profile too
@@ -19243,7 +19243,7 @@ var SEASON_TIERS=[
   {sp:100800, kind:'credits', v:1500, label:'$1,500 CREDITS'},
   {sp:124800, kind:'kit', v:['plate','plate','bandage','bandage'], label:'FIRST ARMOUR PLATES'},
   {sp:151200, kind:'kit', v:['stim','stim','medkit'], label:'STIMS AND A MEDKIT'},
-  {sp:180000, kind:'kit', v:['frag','frag','frag','frag','smoke','smoke'], label:'BAG OF FRAGS'},
+  {sp:180000, kind:'kit', v:['frag','frag','frag','frag','smoke','smoke'], label:'CRATE OF FRAGS'},
   {sp:183800, kind:'credits', v:2500, label:'$2,500 CREDITS'},
   {sp:187800, kind:'wep', v:'smg', label:'FACTORY SMG'},
   {sp:191800, kind:'kit', v:['medkit','medkit','medkit','stim'], label:'MEDKIT THREE-PACK'},
@@ -19278,7 +19278,7 @@ var SEASON_TIERS=[
   {sp:331700, kind:'kit', v:['titan','core'], label:'TITAN AND DATA CORE'},
   {sp:338800, kind:'wep', v:'shotgun', label:'CRATED SCATTERGUN'},
   {sp:346000, kind:'credits', v:8000, label:'$8,000 CREDITS'},
-  {sp:353400, kind:'kit', v:['frag','frag','frag','frag','frag','frag','decoy','decoy','decoy'], label:'BIGGER BAG OF FRAGS'},
+  {sp:353400, kind:'kit', v:['frag','frag','frag','frag','frag','frag','decoy','decoy','decoy'], label:'BIGGER CRATE OF FRAGS'},
   {sp:360900, kind:'kit', v:['coil','cell','cell','cell','cell','cell'], label:'COIL AND POWER CELLS'},
   {sp:368600, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','medkit','plate','plate','plate','plate'], label:'MEDKITS AND PLATES'},
   {sp:376400, kind:'wep', v:'rifle', label:'SERVICE RIFLE'},
@@ -30100,7 +30100,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.77: THE ASCENT QUESTION SAYS WHAT GOES UP WHEN NOTHING IS PACKED. With nothing packed the raid packs the standard kit out of the stash, so a fresh character took up six welcome pack items after reading that only an empty belt and backpack went up. The question now names how many items will be packed from the stash and that they can be lost. Check 14.77 asks with one item packed and with none; it fails on v14.76',
+  now:'v14.78: HIS VOCABULARY IN THE RAID AND THE REWARDS. The retired word for the backpack was still in two raid messages for putting a gun away from its belt key and in two season reward names. The messages now say your backpack and the rewards are the Crate of Frags and the Bigger Crate of Frags. Check 14.78 reads every reward name and both messages; it fails on v14.77',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
