@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.25 - ONE ITEM, ONE KEY, IN THE UNDERCROFT BACKPACK TOO
+
+Undercroft audit finding 4 (LOW). The backpack opened on the Undercroft floor has its own drop onto the tactical belt. It
+only let go of the key an item was dragged from. So:
+
+- with two Medkits in the backpack, dragging one to key 4 and the other to key 5 put Medkit on both keys, and the next
+  binding change through the stash wiped both at once,
+- dragging key 3 (Medkit) onto key 4 (Frag) deleted the Frag's key instead of swapping the Frag back onto key 3.
+
+The raid drop has taken an item off its other keys and swapped a displaced item back since v8.04, so the same drag gave a
+different belt on the floor than in a raid.
+
+THE BUILD. The Undercroft drop follows the raid rule: the dragged item leaves every other key, and an item already on the
+target key moves to the key the drag came from. A drop back on its own key changes nothing.
+
+MEASURED. Check 14.25 opens the Undercroft backpack, stages belt cells for keys 4 and 5 and releases a drag over key 5
+through the real window mouseup: a Medkit while key 4 holds Medkit (key 5 only), then key 4 dragged onto a key 5 holding
+another item (swapped). It fails on v14.24.
+
+Not verified: a hand drag on the drawn belt cells.
 ## v14.24 - A DOES NOT FIRE UNDER THE OPEN MAP OR BACKPACK
 
 Controller audit finding 6 (LOW). With the mouse, a click on the open map or on the backpack panel never reaches the

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.24';
+var VER='14.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11284,7 +11284,16 @@ window.addEventListener('mouseup',function(e){
         var _H=HCq[_q3];
         if(mouse.x>=_H.x&&mouse.x<=_H.x+_H.w&&mouse.y>=_H.y&&mouse.y<=_H.y+_H.h){
           G.hotAssign=G.hotAssign||{};
-          if(d.fromHot!==undefined&&d.fromHot!==_H.i) delete G.hotAssign[d.fromHot];
+          // v14.25, Undercroft audit finding 4: ONE ITEM, ONE KEY, IN THE UNDERCROFT BACKPACK TOO. This drop only let go of the
+          // key the item was dragged from. It never took the same item off its other keys, so dragging one Medkit to key 4
+          // and another to key 5 put Medkit on both; and dragging key 3 onto a filled key 4 deleted what key 4 held instead of
+          // swapping it back onto key 3. The raid drop has done both since v8.04, and this is the same rule.
+          var _hPrev=G.hotAssign[_H.i];
+          if(d.fromHot!==_H.i){
+            for(var _hk in G.hotAssign) if(G.hotAssign[_hk]===d.key) delete G.hotAssign[_hk];
+            if(d.fromHot!==undefined) delete G.hotAssign[d.fromHot];
+            if(d.fromHot!==undefined&&_hPrev&&_hPrev!==d.key) G.hotAssign[d.fromHot]=_hPrev;
+          }
           G.hotAssign[_H.i]=d.key;
           blip('pick');
           return;
@@ -29934,7 +29943,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.24: A DOES NOT FIRE UNDER THE OPEN MAP OR BACKPACK. A click on the map or the backpack panel never reaches the trigger, but pad A did: with the map open it fired the gun, and in the backpack it fired or cooked and threw a selected frag. The pad trigger is now off while either is open. Check 14.24 holds A with the map open, then the backpack open, with a faked pad, and fires with both shut as the control; it fails on v14.23',
+  now:'v14.25: ONE ITEM, ONE KEY, IN THE UNDERCROFT BACKPACK TOO. A drag onto the tactical belt from the Undercroft backpack let go only of the key it came from, so the same Medkit could sit on two keys, and a key dragged onto a filled key deleted what that key held. It now follows the raid rule: the item leaves its other keys, and a displaced item swaps back onto the key the drag came from. Check 14.25 releases a drag over two staged belt cells through the real mouseup; it fails on v14.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
