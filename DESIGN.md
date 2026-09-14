@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.54 - ISSUED BANDAGES ARE NO LONGER BANKED
+
+The end-of-raid audit of 2026-09-14, finding 3. A raid that lands with no medical is given
+two Bandages. The code describes them as issued kit on the same deal as the loaner
+sidearm, and the loaner is never banked. But the Bandages went into the backpack as plain
+items, and the extraction banks every backpack item, so each extraction put two free
+Bandages in the stash.
+
+THE BUILD. The raid counts how many Bandages it issued. Using a Bandage counts one of those
+off first, which is fair because Bandages are all alike. At the extraction the issued
+Bandages still carried are skipped, and only the ones beyond that count are banked, which
+is exactly what he found. Nothing about using them in the raid changes.
+
+MEASURED. Check 13.54 deploys with no kit, so the raid issues its Bandages, and extracts.
+With nothing found the stash must gain no Bandage. With one Bandage added as found it must
+gain exactly one. It fails on v13.53, where the issued pair is banked.
+
+Not verified: a Bandage dropped with Z or sold at the stall, which does not count an issued
+one off, so a later found Bandage can be kept back in its place; and a death or abandon,
+where nothing is banked anyway.
 ## v13.53 - HAZARD PAY IS PAID ONLY ON WHAT THE RUN BROUGHT HOME
 
 The end-of-raid audit of 2026-09-14, finding 1. Hazard pay was the whole backpack value

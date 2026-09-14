@@ -1,0 +1,9 @@
+v13.54: issued bandages are no longer banked
+
+A raid landing with no medical issues two Bandages as kit, but every extraction
+banked them into the stash. The raid now counts what it issued, a used Bandage
+counts one off, and only Bandages beyond that count are banked.
+
+Check 13.54 extracts with and without a found Bandage. Fails on v13.53.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

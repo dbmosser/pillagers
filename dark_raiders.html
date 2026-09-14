@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.53';
+var VER='13.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10655,7 +10655,8 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     }
     var carried=0;
     for(var h=0;h<g.bag.length;h++){ var hi2=ITEMS[g.bag[h]]; if(hi2&&hi2.use==='heal') carried++; }
-    while(carried<ISSUED_HEALS){ g.bag.push('bandage'); carried++; }
+    g.issuedBandages=0;   // v13.54: issued kit, like the loaner sidearm, is never banked
+    while(carried<ISSUED_HEALS){ g.bag.push('bandage'); carried++; g.issuedBandages++; }
   }
   if(CFG.decks!==1) clearDecks(g);   // v13.41: last, after every placement roll
   return g;
@@ -13238,6 +13239,9 @@ function useMedical(){
 // neither verb waits for the other; each still refuses a second of its own
 // kind while it runs.
 function startPrep(kind,key){
+  // v13.54: a Bandage used spends an issued one first; they are all alike, so what is
+  // left over at the extraction is what he found.
+  if(kind==='heal'&&key==='bandage'&&G&&G.issuedBandages>0) G.issuedBandages--;
   var _pr={t:0,
     max:(kind==='armor'?(CFG.armorPrep===undefined?2:CFG.armorPrep)
                        :(CFG.healPrep===undefined?1.5:CFG.healPrep)),
@@ -19535,7 +19539,8 @@ silentExit:T.silentExit||0,
 var _cdone=contractExtract(G.bag,haul);
     for(i=0;i<_cdone.length;i++)
       lines.push('<span style="color:#7fc4a0">CONTRACT COMPLETE: '+escHtml(_cdone[i])+'. Complete contract at mainframe.</span>');
-    for(i=0;i<G.bag.length;i++){ var bm=bankItem(G.bag[i]); if(bm) lines.push(bm); }
+    var _issB=G.issuedBandages||0;   // v13.54: the issued Bandages still carried go back to the quartermaster, not the stash
+    for(i=0;i<G.bag.length;i++){ if(_issB>0&&G.bag[i]==='bandage'){ _issB--; continue; } var bm=bankItem(G.bag[i]); if(bm) lines.push(bm); }
     if(G.pedCarry&&!G.sim){ P.credits+=G.pedCarry; }
     // Both hands count. Extracting with the sidearm up used to throw away the
     // Marksman Rifle holstered in the other slot. Issued kit is a loaner and is
@@ -29716,7 +29721,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.53: HAZARD PAY IS PAID ONLY ON WHAT THE RUN BROUGHT HOME. End-of-raid audit of 2026-09-14, finding 1: the bonus was the whole backpack value times the Terms rate, and the backpack includes what the lift carried up from the stash, which goes straight back to the stash, so packing a valuable item and signing Terms paid up to 140 percent of his own item every raid. The haul contract (v12.65) and XP (v12.69) already subtract what came up; hazard pay now does too. Check 13.53 extracts with the same item carried up and then found, with the Terms rate stubbed: carried up pays no hazard bonus, found still pays it; it fails on v13.52',
+  now:'v13.54: ISSUED BANDAGES ARE NO LONGER BANKED. End-of-raid audit of 2026-09-14, finding 3: a raid landing with no medical is given two Bandages as issued kit, on the same deal as the loaner sidearm that is never banked, but they were plain backpack items and every extraction banked them, two free Bandages a raid. The raid now counts what it issued, a Bandage used counts one of those off first, and the extraction banks only the Bandages beyond that count. Check 13.54 extracts with the issued pair and nothing found, which must add no Bandage to the stash, and with one Bandage found, which must add exactly one; it fails on v13.53',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

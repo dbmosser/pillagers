@@ -1,0 +1,9 @@
+v13.55: an item contract counts only what the run found
+
+Extract carrying N of an item counted items packed from the stash, so the card
+completed and paid with no looting on every refill. The raid records which items
+came up and the card counts only what is beyond them.
+
+Check 13.55 stages a card for two Optics. Fails on v13.54.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
