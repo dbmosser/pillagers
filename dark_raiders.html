@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.83';
+var VER='13.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12926,7 +12926,13 @@ function meleeStrike(){
   if(!p||p.downed||p.dying||p.roll>0||G.searching) return false;   // v13.80: not in the death fade
   var gap=(WEAPONS.fists.rof||420)/1000;
   if(p.meleeAt!==undefined&&(G.t-p.meleeAt)<gap) return false;
+  // v13.84, combat audit: not with a live grenade in the hand, and with bare hands up the F
+  // strike and the left click are one swing on one clock.
+  if(p.cooking) return false;
+  var _bare=!!(p.wep&&p.wep.mag===0);
+  if(_bare&&p.lastShot!==undefined&&(G.t*1000-p.lastShot)<=(WEAPONS.fists.rof||420)) return false;
   p.meleeAt=G.t;
+  if(_bare) p.lastShot=G.t*1000;
   G.punchT=0.22;                      // the thrust the fists attack draws
   // G.tel, not a bare T: T is a local alias for it inside the functions that
   // use it, and a bare one here threw before the swing ever ran. The dry run
@@ -15454,7 +15460,8 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
   else if(mouse.down&&!p.trigYield&&!p.cooking&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v13.62: no shot with a live grenade in hand   // v12.08: not on the hold that yielded to the gun
     var _mw=p.wep;
     if(_mw.mag===0){
-      if(_mw.auto||!p.fired){ p.lastShot=now; p.fired=true;
+      // v13.84, combat audit: the left-click swing waits on the F strike's clock too.
+      if((_mw.auto||!p.fired)&&!(p.meleeAt!==undefined&&(G.t-p.meleeAt)<(WEAPONS.fists.rof||420)/1000)){ p.lastShot=now; p.fired=true; p.meleeAt=G.t;
         // v7.61: the swing shows - a thrust fist for a beat.
         if(_mw.id==='fists') G.punchT=0.22;
         fireWeapon(p,_mw,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true); }
@@ -29814,7 +29821,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.83: A ROLL DOES NOT FREEZE THE RELOAD. Combat and player state audit of 2026-09-14, finding 4: the only reload tick was on the standing path of updatePlayer, below the roll and downed returns, so each roll froze the reload bar and a reload started before going down finished after he stood up. The tick moves into tickReload, run where it was and again in the roll branch beside tickHeal, and going down lets the reload go. Check 13.83 starts an Auto Rifle reload and rolls through four frames, requiring the reload to count down, with the same frames standing as the control and going down clearing it; it fails on v13.82',
+  now:'v13.84: ONE SWING CLOCK FOR BARE HANDS, AND NO PUNCH WITH A LIVE GRENADE. Combat and player state audit of 2026-09-14, finding 5: the F strike kept p.meleeAt and the bare-hands left click kept p.lastShot, neither reading the other, so alternating them swung twice every 0.42 seconds, and meleeStrike had no cooking test so F punched with a pin pulled. The two now share one clock both ways and F refuses while a grenade cooks. Check 13.84 swings with the left click and then presses F in the same instant, requiring F refused, and pulls a pin and presses F, requiring it refused, with F on its own as the control; it fails on v13.83',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
