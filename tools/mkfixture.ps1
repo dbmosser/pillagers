@@ -5718,6 +5718,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.98',what:'the rack line says what the wall pays: a rack built beside an Array names the pay of racks and Arrays together, which is what an extraction pays (copies audit finding 2)',
+   run:function(){
+     if(typeof buildRack!=='function'||typeof mfPayPer!=='function'||typeof RACK_COST==='undefined'||!window.__applyLoaded) return 'SKIP: no mainframe racks in this build';
+     var bad=[], snap=null, _say=say, said='';
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       var q=__P(); q.racks=0; q.arrays=1; q.kit=[]; q.stash=[];
+       for(var k in RACK_COST) for(var j=0;j<RACK_COST[k];j++) q.stash.push(k);
+       say=function(m){ said=String(m); };
+       buildRack();
+       say=_say;
+       // CONTROL: the rack was built.
+       if(__P().racks!==1) return 'SKIP: the rack was not built here ('+said.slice(0,80)+')';
+       var want='$'+mfPayPer().toLocaleString();
+       if(said.indexOf(want)<0) bad.push('with one Array the new rack says '+said.slice(0,90)+' where the wall pays '+want);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ say=_say; try{ if(snap) __applyLoaded(snap); }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.97',what:'the Undercroft backpack shows a packed gun the raid shows: with key 5 on the SMG and a field SMG packed, the backpack counts it when the SMG is in his hands, and hides it when the pistol is (copies audit finding 1)',
    run:function(){
      if(typeof renderHub!=='function'||!document.getElementById('kitn')||!window.__applyLoaded||!ITEMS.gun_smg||!WEAPONS.pistol||!WEAPONS.smg) return 'SKIP: no Undercroft backpack count in this build';

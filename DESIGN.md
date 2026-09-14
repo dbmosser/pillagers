@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.98 - THE RACK LINE SAYS WHAT THE WALL PAYS
+
+Copies audit finding 2 (LOW). An extraction pays mfPayPer: racks times the rack pay plus Arrays times the Array pay, and the
+Mainframe status line prints that same figure. The message after building a rack computed racks times the rack pay alone. With one
+Array built and the wall cleared, the first new rack said "$200 every time you make it home" while the status line said +$2,800 per
+extraction and an extraction paid $2,800.
+
+THE BUILD. Words only. The rack message names mfPayPer, the figure the status line shows and the extraction pays.
+
+MEASURED. Check 14.98 stocks the rack parts beside one Array and builds a rack (control: the rack is built): the message must name
+the wall pay. It restores the profile through the loader. It fails on v14.97.
+
+Not verified: the message on screen.
 ## v14.97 - THE UNDERCROFT BACKPACK SHOWS A PACKED GUN THE RAID SHOWS
 
 Copies audit finding 1 (MEDIUM). A belt key on an item claims one copy of it: that copy is on the belt and not counted in the
