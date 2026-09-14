@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.85 - A BELT KEY ON A GUN IN HIS HANDS SURVIVES AN EXTRACTION
+
+Belt audit finding 2 (MEDIUM). Dragging his equipped gun from the armoury rack onto a belt key binds the key and leaves the gun
+on the rack (rackPut), so the gun is in neither the stash nor the packed kit. The key works in the raid. But dropDeadKeys, the
+sweep that deletes keys pointing at items he no longer holds, counts only the stash and the kit, and it runs after every
+extraction and when MY LOADOUT is chosen after the freebie kit. So the key he set on gun 1 or gun 2 was gone after his first
+extraction.
+
+THE BUILD. The sweep counts the two equipped guns as held.
+
+MEASURED. Check 14.85 equips the SMG with no copy in the stash or kit, binds key 5 to it and key 6 to a Stim held nowhere, and
+sweeps: the Stim key must go (control) and the SMG key must stay. It restores the profile through the loader. It fails on
+v14.84.
+
+Not verified: a key on a rack gun across a real extraction.
 ## v14.84 - A HEAL ON A BELT KEY NO LONGER TAKES MEDICAL AWAY FROM THE OTHER HEALS
 
 Belt audit finding 1 (HIGH). The belt is derived: fixed cells for the guns, grenades, Medical and plates, overridden where he has

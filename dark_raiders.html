@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.84';
+var VER='14.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30125,7 +30125,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.84: A HEAL ON A BELT KEY NO LONGER TAKES MEDICAL AWAY FROM THE OTHER HEALS. Any heal bound to a key blanked the Medical cell, the only cell that uses the heals he did not bind, so with a Medkit on key 8 the Bandages in the backpack could not be used once the Medkit was spent. Medical is now blanked only when every heal carried is on a key. Check 14.84 binds a Medkit with a Bandage carried; it fails on v14.83',
+  now:'v14.85: A BELT KEY ON A GUN IN HIS HANDS SURVIVES AN EXTRACTION. A key bound to gun 1 or gun 2 from the rack points at a gun that is in neither the stash nor the kit, so the dead key sweep after every extraction and after MY LOADOUT deleted it. The two equipped guns now count as held. Check 14.85 sweeps with a key on the equipped SMG and a key on an item held nowhere; it fails on v14.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31218,6 +31218,11 @@ function dropDeadKeys(){
   var have={},i,k;
   for(i=0;i<(P.stash||[]).length;i++) have[P.stash[i]]=1;
   for(i=0;i<(P.kit||[]).length;i++) have[P.kit[i]]=1;
+  // v14.85, belt audit finding 2: A KEY ON A GUN IN HIS HANDS IS A LIVE KEY. rackPut binds a key to gun 1 or gun 2 and leaves
+  // the gun on the rack, so it is in neither the stash nor the kit, and every extraction and every MY LOADOUT after the
+  // freebie kit deleted the key he had set. The two equipped guns count as held.
+  if(P.equipped&&P.equipped!=='fists') have['gun_'+P.equipped]=1;
+  if(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists') have['gun_'+P.equippedSec]=1;
   for(k in P.hotAssign) if(!have[P.hotAssign[k]]) delete P.hotAssign[k];
 }
 function clearKeysFor(key){
