@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.73 - GOING DOWN SHUTS THE STALL
+
+The downed and extraction audit of 2026-09-14, finding 3. The only line that closes the stall
+when you go down is on the standing path of updatePlayer, below the downed return. Going down
+cleared the medical prep, the heal queue, the extraction pull and the cooked grenade, but not
+the stall. So the panel stayed over the DOWN screen for the whole bleed-out:
+
+- The number keys still bought, taking banked Credits and saving at once, into a backpack
+  that was about to die with you.
+- 1 sold the backpack into stall money, which is lost on death.
+- On a controller, A bought the marked row.
+
+THE BUILD. damagePlayer shuts the stall in the same place it clears the heal. pedBuy and
+pedSellAll also refuse while you are down, so no other route trades from the floor.
+
+MEASURED. Check 13.73 opens the stall, shoots the player to the floor through damagePlayer, and
+requires the stall shut. With the stall forced open again, the 2 key must buy nothing and keep
+the Credits. Standing, the same key must buy (the control). It fails on v13.72.
+
+Not verified: the controller A path while downed, which reaches the same pedBuy refusal.
 ## v13.72 - X WALKS AWAY FROM THE STALL AND STAYS AWAY
 
 The hire and peddler audit of 2026-09-14, finding 4, and a fault in my own v13.49. On a

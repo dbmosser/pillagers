@@ -1,0 +1,10 @@
+v13.74: a second copy of a gun you own is kept when you extract holding it
+
+In-hand guns were banked only when their id was new, so a found copy of a gun
+you own vanished at extraction. Each hand is now banked by where its gun came
+from; your own armoury gun is never copied.
+
+Check 13.74 extracts with a found copy, a backpack copy and your own gun. Fails
+on v13.73.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
