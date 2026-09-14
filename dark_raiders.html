@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.62';
+var VER='14.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9342,7 +9342,7 @@ function strayGive(e){
 // v13.70: the copies the tactical belt claims, per key, the way bagStacks counts them (v8.78).
 function pedBeltClaims(){
   var cl={};
-  if(G&&G.hotAssign) for(var a in G.hotAssign){ var hk=G.hotAssign[a]; if(hk) cl[hk]=(cl[hk]||0)+1; }
+  if(G&&G.hotAssign) for(var a in G.hotAssign){ var hk=G.hotAssign[a]; if(hk&&beltClaimsBag(hk)) cl[hk]=(cl[hk]||0)+1; }   // v14.63
   return cl;
 }
 function pedSellAll(){
@@ -27287,6 +27287,18 @@ function iconImgHTML(key,S){
 // item except the plate, so nothing else changes. Read by the backpack and stash grids;
 // the belt does not use it, on his instruction.
 function stackN(k){ var it=ITEMS[k]; return (it&&it.stackN)?it.stackN:99999; }
+// v14.63, backpack audit finding 5: A BELT KEY FOR THE GUN IN HIS HANDS DOES NOT HIDE A BACKPACK COPY. Every belt assignment
+// claimed one backpack copy of its item, but a key naming a gun he is holding shows that gun in hand, not a copy from the
+// backpack. With the SMG on key 5 and an SMG in hand, a second SMG looted into the backpack was claimed by that key: in
+// neither the grid nor the belt, so it could not be dropped, equipped, given or sold. Such a key claims nothing.
+function beltClaimsBag(k){
+  if(!k) return false;
+  if(k.indexOf('gun_')===0&&typeof G!=='undefined'&&G&&G.player){
+    var _gk=k.slice(4), _pp=G.player;
+    if((_pp.wep&&_pp.wep.id===_gk)||(_pp.sec&&_pp.sec.id===_gk)) return false;
+  }
+  return true;
+}
 function bagStacks(){
   var st=[],ix={};
   // v8.78, HIS RULE: INVENTORY = BACKPACK + HOTBAR, and an item is in one or the
@@ -27296,7 +27308,7 @@ function bagStacks(){
   var _hbClaim={};
   if(G.hotAssign) for(var _ha in G.hotAssign){
     var _hk=G.hotAssign[_ha];
-    if(_hk) _hbClaim[_hk]=(_hbClaim[_hk]||0)+1;
+    if(_hk&&beltClaimsBag(_hk)) _hbClaim[_hk]=(_hbClaim[_hk]||0)+1;   // v14.63: not the gun in hand
   }
   for(var i=0;i<G.bag.length;i++){ var k=G.bag[i];
     // This copy is the one on the belt. It is on the belt INSTEAD of in here.
@@ -27502,7 +27514,7 @@ function drawBag(){
   // other's items. Counted the same way the grid claims them, per key, so it
   // cannot drift from what is drawn below it.
   var _bpN=0,_bltN=0,_clm={};
-  if(G.hotAssign) for(var _ck in G.hotAssign){ var _cv=G.hotAssign[_ck]; if(_cv) _clm[_cv]=(_clm[_cv]||0)+1; }
+  if(G.hotAssign) for(var _ck in G.hotAssign){ var _cv=G.hotAssign[_ck]; if(_cv&&beltClaimsBag(_cv)) _clm[_cv]=(_clm[_cv]||0)+1; }   // v14.63
   for(var _ci=0;_ci<G.bag.length;_ci++){ var _ck2=G.bag[_ci];
     if(_clm[_ck2]>0){ _clm[_ck2]--; _bltN++; } else _bpN++; }
   ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armour '+Math.round(p.armor)+
@@ -30075,7 +30087,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.62: A DRAG WHOSE ITEM HAS LEFT THE BACKPACK BINDS NOTHING. Holding a backpack tile, dropping its stack with Z and letting go over a belt key bound the key to an item no longer carried and saved the plan. A backpack drag now binds only while its item is still in the backpack. Check 14.62 releases a staged backpack drag over a belt cell with the item carried and after it is gone; it fails on v14.61',
+  now:'v14.63: A SECOND COPY OF THE GUN IN HIS HANDS SHOWS IN THE BACKPACK. A belt key naming the gun he holds shows that gun in hand, but it still claimed a backpack copy of it, so a second one looted into the backpack was in neither the grid nor the belt and could not be dropped, equipped, given or sold. A belt key for a gun in hand now claims no backpack copy, in the backpack, its header and the stall. Check 14.63 carries a second copy of the gun in hand with a key bound to it; it fails on v14.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
