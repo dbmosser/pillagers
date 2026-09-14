@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.55 - AN ITEM CONTRACT COUNTS ONLY WHAT THE RUN FOUND
+
+The end-of-raid audit of 2026-09-14, finding 2. An "extract carrying" contract (two
+Optics, say) counted every matching item in the backpack at the extraction. That included
+items packed from the stash, and everything in the backpack goes straight back to the stash
+afterwards. So packing two Optics, going up and walking out completed the card and paid
+it, again every time the board offered it. v12.65 closed the same leak for the haul card by
+value; this card counts items, so it needed the same fix by count.
+
+THE BUILD. The raid records which items the lift carried up (G.carriedKit, taken beside
+G.carriedIn). At the extraction the card subtracts the matching items that came up and
+completes only if what is left meets its count.
+
+MEASURED. Check 13.55 stages a card for two Optics and calls the extraction count with two
+Optics in the backpack. Carried up from the stash, the card must not complete. Found in the
+raid, it must. It fails on v13.54.
+
+Not verified: an item carried up, used or dropped, and a matching item found later, where
+the found item is still counted against the one that came up.
 ## v13.54 - ISSUED BANDAGES ARE NO LONGER BANKED
 
 The end-of-raid audit of 2026-09-14, finding 3. A raid that lands with no medical is given

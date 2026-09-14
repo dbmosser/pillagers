@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.54';
+var VER='13.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3228,7 +3228,10 @@ function contractExtract(bag,haul){
     if(c.type==='exItem'){
       var n=0;
       for(var j=0;j<bag.length;j++) if(bag[j]===c.item) n++;
-      if(n>=c.n) c.prog=c.n;
+      // v13.55, end-of-raid audit: what the run earned, not what the lift carried, by count.
+      var _up=0, _ck=(G&&G.carriedKit)||[];
+      for(var j2=0;j2<_ck.length;j2++) if(_ck[j2]===c.item) _up++;
+      if(n-_up>=c.n) c.prog=c.n;
     }
     // v12.65, 2026-09-08 audit: WHAT THE RUN EARNED, NOT WHAT THE LIFT CARRIED.
     // This tested the whole backpack, and the backpack starts the raid holding
@@ -10664,7 +10667,8 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
 function startRaid(){
   G=buildRaid(false);
   try{ G.hot=gunCell(); }catch(_gh){}   // v13.42: a raid starts with the gun in hand selected, wherever his belt put it
-  G.carriedIn=bagValue();   // v10.27: what the lift carried in, valued as the haul is
+  G.carriedIn=bagValue();
+  G.carriedKit=(G.bag||[]).slice();   // v13.55: WHICH items came up, so an item contract counts only what was found   // v10.27: what the lift carried in, valued as the haul is
   // THE CORE BURNS, v3.81. One core, one raid: armed intel is consumed the
   // moment the lift moves, and the raid carries the flag plus the live list
   // of which containers hold the locked-room keys, computed here because the
@@ -29721,7 +29725,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.54: ISSUED BANDAGES ARE NO LONGER BANKED. End-of-raid audit of 2026-09-14, finding 3: a raid landing with no medical is given two Bandages as issued kit, on the same deal as the loaner sidearm that is never banked, but they were plain backpack items and every extraction banked them, two free Bandages a raid. The raid now counts what it issued, a Bandage used counts one of those off first, and the extraction banks only the Bandages beyond that count. Check 13.54 extracts with the issued pair and nothing found, which must add no Bandage to the stash, and with one Bandage found, which must add exactly one; it fails on v13.53',
+  now:'v13.55: AN ITEM CONTRACT COUNTS ONLY WHAT THE RUN FOUND. End-of-raid audit of 2026-09-14, finding 2: extract carrying N of an item counted every match in the backpack at the extraction, including items packed from the stash that went straight back to it, so packing two Optics and walking out completed and paid the card on every refill. The raid now records which items the lift carried up, and the card counts only matches beyond those, the item-count form of the v12.65 haul fix. Check 13.55 stages an extract-carrying card for two of an item and calls the extraction count with the items carried up, which must not complete it, and found, which must; it fails on v13.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

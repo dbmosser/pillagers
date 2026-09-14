@@ -1,0 +1,21 @@
+## v13.56 - A CONTRACT FINISHED MID-RAID STAYS IN THE RUN LOG ON A DEATH
+
+The end-of-raid audit of 2026-09-14, finding 4. Kill, open and district contracts can finish
+during the raid; the screen says CONTRACT DONE and the raid notes it in its telemetry
+(contractsMid). But the only code that copies those notes into the run's logged contract
+list is contractExtract, and that runs on an extraction alone. Finish a kill contract and
+then die, and the run's log row and the exported report showed no contracts, while the card
+itself could still be claimed and paid at the Mainframe, so credits arrived that no run
+record explained.
+
+THE BUILD. The log row reads the banked list as before, and when there is none it falls
+back to the contracts finished during the raid. An extraction is unchanged, because
+contractExtract already folds the mid-raid ones into its list.
+
+MEASURED. Check 13.56 stages a mid-raid kill contract in the raid record, ends the raid with
+a death, and requires the contract in the newest log row. The same staging with an
+extraction is the control. It fails on v13.55.
+
+Not verified: the KIA card, which still does not print the contract line (only the log row
+and the exported report were fixed); and an abandon, which takes the same row builder but
+was not staged.

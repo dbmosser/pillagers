@@ -1,0 +1,9 @@
+v13.56: a contract finished mid-raid stays in the run log on a death
+
+Mid-raid contracts were copied into the run's logged list only on an extraction,
+so dying after finishing one left the log row and the report empty while the card
+still paid at the Mainframe. The log row now falls back to them.
+
+Check 13.56 stages a mid-raid contract and a death. Fails on v13.55.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
