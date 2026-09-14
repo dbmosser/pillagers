@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.71 - SURPRISE ME TAKES A WORN SUIT OFF
+
+Wardrobe audit finding 3 (LOW). SURPRISE ME rolls a random piece for every kind he owns, and since v10.54 skips the outfit so
+a random look never puts a suit on over what it rolled. It skipped the outfit without removing one already worn. With The
+Street Poet on, the new hat, hairstyle, beard, clothing, boots, patch, tattoo and face were saved and every one hidden under
+the suit: the button played its sound and the figure barely changed.
+
+THE BUILD. A random look takes a worn suit off. It still never puts one on.
+
+MEASURED. Check 14.71 presses SURPRISE ME with no suit on (control: no suit afterwards) and with a suit on (no suit
+afterwards). It fails on v14.70.
+
+Not verified: SURPRISE ME on the wardrobe by eye.
 ## v14.70 - A SAVED LOOK IS WORN WHOLE
 
 Wardrobe audit finding 4 (LOW). Wearing a saved look sets every kind the look names that is still unlocked. A kind the look

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.70';
+var VER='14.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30094,7 +30094,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.70: A SAVED LOOK IS WORN WHOLE. A kind missing from a saved look, or locked since it was saved, kept the piece already worn, so an old look worn over a suit stayed hidden under the suit. A missing or locked kind now goes to its default. Check 14.70 wears a look saved with no outfit over a suit; it fails on v14.69',
+  now:'v14.71: SURPRISE ME TAKES A WORN SUIT OFF. A random look skipped the suit without removing it, so with a suit on every piece it rolled was saved and hidden under the suit, and the figure barely changed. It now takes the suit off. Check 14.71 presses SURPRISE ME with no suit and with a suit on; it fails on v14.70',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35376,7 +35376,10 @@ function lookWear(L){
 function lookRandom(){
   for(var i=0;i<LOOK_KINDS.length;i++){
     var k=LOOK_KINDS[i];
-    if(k==='outfit') continue;   // v10.54: a random look never puts a suit on over what it rolled
+    // v14.71, wardrobe audit finding 3: AND IT TAKES A WORN SUIT OFF. The outfit was skipped but not removed, so with a suit on the
+    // new hat, hair, beard, clothes and boots were saved and all hidden under it: the button sounded and the figure barely
+    // changed. A random look never puts a suit on, and now it takes one off.
+    if(k==='outfit'){ P[COSKEY[k]]=COSDEF[k]; continue; }   // v10.54: a random look never puts a suit on over what it rolled
     var pool=COSMETICS.filter(function(c){ return c.kind===k&&cosOwned(c); });
     if(pool.length) P[COSKEY[k]]=pool[Math.floor(Math.random()*pool.length)].id;
   }
