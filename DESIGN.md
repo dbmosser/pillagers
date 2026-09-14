@@ -40024,6 +40024,18 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.76 - THE STASH HOVER ROW OFFERS EVERY KEY FOR EVERY ITEM
+
+Stash and trader audit finding 4 (LOW). v6.60 made every belt key take any item, and v8.18 fixed the right-click menu to offer
+keys 1 to 9 for every item. The put on key row drawn under a hovered stash item is a second copy that kept the old rule: keys
+3 to 9 only, and only for items that heal, throw, plate or stim. Hovering a Bandage offered seven keys; hovering a gun, a part
+or a key item offered none, while right-click and the number keys put the same item on any key.
+
+THE BUILD. The row offers keys 1 to 9 for every item. Each button still goes through planPut, the rule the other two routes use.
+
+MEASURED. Check 14.76 hovers a Bandage (control: the row draws) and a gun item: both must offer every key. It fails on v14.75.
+
+Not verified: the hover row by eye.
 ## v14.75 - THE STASH HEADER COUNTS WHAT THE ALL TAB COUNTS
 
 Stash and trader audit finding 3 (LOW). Armoury guns are drawn in the stash grid and counted by the ALL and GUNS tabs, but the

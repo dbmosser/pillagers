@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.75';
+var VER='14.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30094,7 +30094,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.75: THE STASH HEADER COUNTS WHAT THE ALL TAB COUNTS. Armoury guns are in the stash grid and in the ALL tab count but were left out of the STASH held number, so a fresh profile read 0 held above ALL 1. The header now counts the guns too. Check 14.75 holds two Bandages and two guns; it fails on v14.74',
+  now:'v14.76: THE STASH HOVER ROW OFFERS EVERY KEY FOR EVERY ITEM. The put on key buttons under a hovered stash item offered keys 3 to 9, and nothing at all for a gun or a part, while right-click and the number keys put any item on any key. The row now offers keys 1 to 9 for every item. Check 14.76 hovers a Bandage and a gun; it fails on v14.75',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31838,12 +31838,15 @@ try{ renderFreeKit(); }catch(_fk){}
       // gate was the thing refusing to assign it. Without this the Stim Injector
       // is loot and shop stock that can never be used. (Until v11.83 the ascent
       // check also counted it as healing you are carrying; it no longer does.)
-      if(it.use==='heal'||it.use==='throw'||it.use==='armor'||it.use==='stim'){
+      // v14.76, stash and trader audit finding 4: EVERY ITEM ON EVERY KEY, AS THE RIGHT-CLICK MENU HAS OFFERED SINCE v8.18. This
+      // hover row kept the old rule, keys 3 to 9 and only for what heals, throws, plates or stims, so hovering a gun or a part
+      // offered no key while right-click and the number keys put it on any key. planPut is the rule for all three.
+      {
         var _lab=document.createElement('span');
         _lab.textContent='  put on key';
         _lab.style.cssText='color:var(--ash);font-size:10.5px;letter-spacing:.1em;margin-left:8px';
         acts.appendChild(_lab);
-        for(var _sq=2;_sq<HOTBAR_N;_sq++){
+        for(var _sq=0;_sq<HOTBAR_N;_sq++){
           (function(slot){
             var taken=(P.hotAssign||{})[slot], mine=(taken===k);
             var b=document.createElement('button');
