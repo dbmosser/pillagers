@@ -1,0 +1,9 @@
+v14.97: the Undercroft backpack shows a packed gun the raid shows
+
+A belt key on the gun in his hands hid a packed copy of that gun from the
+Undercroft backpack, while the raid backpack shows it. The Undercroft now
+follows the raid rule.
+
+Check 14.97. Fails on v14.96.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

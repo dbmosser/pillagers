@@ -5718,6 +5718,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.97',what:'the Undercroft backpack shows a packed gun the raid shows: with key 5 on the SMG and a field SMG packed, the backpack counts it when the SMG is in his hands, and hides it when the pistol is (copies audit finding 1)',
+   run:function(){
+     if(typeof renderHub!=='function'||!document.getElementById('kitn')||!window.__applyLoaded||!ITEMS.gun_smg||!WEAPONS.pistol||!WEAPONS.smg) return 'SKIP: no Undercroft backpack count in this build';
+     var bad=[], snap=null;
+     function packed(){ renderHub(); return +(document.getElementById('kitn').textContent||'NaN'); }
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       var q=__P();
+       q.weapons=['pistol','smg']; q.stash=['gun_smg']; q.kit=['gun_smg']; q.hotAssign={4:'gun_smg'}; q.freeKit=0;
+       // CONTROL: with the pistol in hand the key on the SMG claims the packed SMG.
+       q.equipped='pistol'; q.equippedSec='none';
+       var c0=packed();
+       if(c0!==0) return 'SKIP: with the pistol in hand the backpack counted '+c0+', so the key claim is not what it was here';
+       q.equipped='smg';
+       var c1=packed();
+       if(c1!==1) bad.push('with the SMG in his hands and key 5 on it, the packed field SMG reads '+c1+' in the Undercroft backpack, while the raid backpack shows it');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(snap) __applyLoaded(snap); }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.96',what:'the gun hover prints its real rate of fire: the gun with the shortest gap between shots reads more rounds per minute than the gun with the longest, and its rate is the gap turned into shots a minute (unit audit finding 1)',
    run:function(){
      if(typeof itemRows!=='function'||typeof WEAPONS==='undefined'||typeof ITEMS==='undefined') return 'SKIP: no gun hover in this build';

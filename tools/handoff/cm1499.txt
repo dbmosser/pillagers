@@ -1,0 +1,9 @@
+v14.99: the Data Core price on the Mainframe is the price it sells for
+
+The Mainframe said $520 for a Data Core at every loot value setting, while the
+stash pays the scaled value. With a core in the stash it now names that price;
+the line with none is his baked wording and is untouched.
+
+Check 14.99. Fails on v14.98.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

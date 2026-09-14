@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.96';
+var VER='14.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30160,7 +30160,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.96: THE GUN HOVER PRINTS ITS REAL RATE OF FIRE. The time between shots, in milliseconds, was printed as rounds per minute, so the fastest guns read slowest and the slowest read fastest, and the damage a second held was wrong by up to eight times. The rate and damage a second now come from the gap. Check 14.96 compares the hover of the fastest and slowest guns; it fails on v14.95',
+  now:'v14.97: THE UNDERCROFT BACKPACK SHOWS A PACKED GUN THE RAID SHOWS. A belt key on the gun in his hands hid a packed copy of that gun from the Undercroft backpack, while since v14.63 the raid backpack shows it. The Undercroft now follows the raid rule. Check 14.97 packs a field SMG with a key on the SMG, with the pistol and with the SMG in hand; it fails on v14.96',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31050,6 +31050,10 @@ function renderKitCol(){
     var ha=P.hotAssign||{};
     for(var sk in ha){
       var kk=ha[sk]; if(!kk) continue;
+      // v14.97, copies audit finding 1: A KEY ON THE GUN IN HIS HANDS CLAIMS NO PACKED COPY, the raid's rule since v14.63
+      // (beltClaimsBag). With the SMG in gun 1, key 5 on it and a field SMG packed, this backpack read 0 packed and hid the
+      // SMG, while the raid's backpack showed it.
+      if(kk.indexOf('gun_')===0&&(P.equipped===kk.slice(4)||P.equippedSec===kk.slice(4))) continue;
       var at=K.indexOf(kk); if(at>=0) K.splice(at,1);
     }
   })();

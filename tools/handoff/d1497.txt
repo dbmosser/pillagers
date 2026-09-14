@@ -1,0 +1,14 @@
+## v14.97 - THE UNDERCROFT BACKPACK SHOWS A PACKED GUN THE RAID SHOWS
+
+Copies audit finding 1 (MEDIUM). A belt key on an item claims one copy of it: that copy is on the belt and not counted in the
+backpack. v14.63 fixed the raid's copy of that rule (beltClaimsBag): a key naming the gun in his hands claims no backpack copy,
+because the key already has the gun. The Undercroft backpack (renderKitCol) still took one copy away for every key. With the SMG in
+gun 1, key 5 on it and a field SMG packed from the stash, the Undercroft read Backpack 0 packed with no SMG in the grid, while the
+raid backpack showed the field SMG.
+
+THE BUILD. The Undercroft backpack skips the claim for a key on gun 1 or gun 2, following the raid rule.
+
+MEASURED. Check 14.97 packs a field SMG with key 5 on the SMG: with the pistol in hand the backpack counts 0 (control: the key
+claims it), with the SMG in hand it must count 1. It restores the profile through the loader. It fails on v14.96.
+
+Not verified: the same count read in a live raid and on screen.

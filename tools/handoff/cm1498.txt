@@ -1,0 +1,9 @@
+v14.98: the rack line says what the wall pays
+
+Building a rack named the pay of the racks alone, leaving out the Arrays an
+extraction pays for. It now names the whole wall pay, as the Mainframe line
+does.
+
+Check 14.98. Fails on v14.97.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
