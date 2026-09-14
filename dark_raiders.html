@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.49';
+var VER='14.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30031,7 +30031,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.49: A CRASH REPEATING EVERY FRAME IS ONE ENTRY, NOT TWELVE. An error whose message carries a changing number, such as the key a failed read names, never matched the entry before it, so every frame added a crash, saved the whole profile and pushed the real first crash out of the list. Repeats now match with the numbers ignored, and a new entry saves at most once a second. Check 14.49 reports ten frames of one error with a changing key and one different error; it fails on v14.48',
+  now:'v14.50: CLEAR RECORDER CLEARS OLD CRASHES AND FLOOR NOTES TOO. It emptied the run log, but the fresh report still listed every old crash and floor notes for runs that were gone, so an old fault read as a live one. Both are now cleared with the log. Check 14.50 clicks Clear recorder twice with an old crash and an old floor note in place; it fails on v14.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35532,7 +35532,10 @@ document.getElementById('copybtn').onclick=function(){
 })();
 document.getElementById('wipelog').onclick=function(){
   var b=document.getElementById('wipelog');
-  if(b.dataset.armed){ P.log=[]; P.lastSim=null; delete b.dataset.armed; b.textContent='Clear recorder'; saveProfile(); renderHub();
+  // v14.50, report audit finding 6: CLEAR RECORDER CLEARS THE CRASHES AND FLOOR NOTES TOO. It emptied the run log and the last
+  // sim, but the fresh report still listed every old crash, and floor notes for runs that were gone: the old fault read as
+  // a live one, the mistake the v1.90 note warns about.
+  if(b.dataset.armed){ P.log=[]; P.lastSim=null; P.crashes=[]; P.floorNotes=[]; delete b.dataset.armed; b.textContent='Clear recorder'; saveProfile(); renderHub();
     document.getElementById('exporttext').value=buildExport(); }
   else { b.dataset.armed='1'; b.textContent='Click again to confirm'; }
 };

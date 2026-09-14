@@ -40024,6 +40024,18 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.50 - CLEAR RECORDER CLEARS OLD CRASHES AND FLOOR NOTES TOO
+
+Report audit finding 6 (LOW). Clear recorder, after its confirming second click, emptied the run log and the last sim. The
+next report still listed every old crash, and floor notes marked "after run #N" for runs no longer in it. An old fault then
+read as a live one, the mistake the v1.90 comment on the recorder warns about.
+
+THE BUILD. The confirmed Clear recorder also empties the crash list and the floor notes.
+
+MEASURED. Check 14.50 puts an old run, an old crash and an old floor note in place and clicks Clear recorder twice: the run
+log must be empty (control), and so must the crash list and the floor notes. It fails on v14.49.
+
+Not verified: a report copied right after clearing, read by eye.
 ## v14.49 - A CRASH REPEATING EVERY FRAME IS ONE ENTRY, NOT TWELVE
 
 Report audit finding 1 (HIGH). The crash catcher merges a repeat into the entry it repeats, counts it, and since v14.05

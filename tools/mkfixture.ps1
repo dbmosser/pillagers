@@ -5718,6 +5718,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.50',what:'Clear recorder clears the crash list and the floor notes as well as the run log: two clicks leave no old crash and no old floor note for the next report (report audit finding 6)',
+   run:function(){
+     var b=document.getElementById('wipelog');
+     if(!b||typeof b.onclick!=='function') return 'SKIP: no Clear recorder button in this document';
+     var bad=[], _sp=saveProfile, keep={log:P.log,crashes:P.crashes,floorNotes:P.floorNotes,lastSim:P.lastSim};
+     try{
+       saveProfile=function(){};
+       P.log=[{zqx:1}]; P.crashes=[{v:VER,t:Date.now(),kind:'error',msg:'zqx old fault',where:'',n:1}]; P.floorNotes=[{run:1,t:Date.now(),txt:'zqx old note'}];
+       delete b.dataset.armed;
+       b.onclick(); b.onclick();
+       // CONTROL: the run log was cleared, so the confirmed click ran.
+       if(P.log&&P.log.length) return 'SKIP: two clicks did not clear the run log here';
+       if(P.crashes&&P.crashes.length) bad.push('Clear recorder left '+P.crashes.length+' old crash entry in the next report');
+       if(P.floorNotes&&P.floorNotes.length) bad.push('Clear recorder left '+P.floorNotes.length+' old floor note in the next report');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       saveProfile=_sp; P.log=keep.log; P.crashes=keep.crashes; P.floorNotes=keep.floorNotes; P.lastSim=keep.lastSim;
+       try{ delete b.dataset.armed; b.textContent='Clear recorder'; }catch(_b){}
+       try{ __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.49',what:'a crash repeating every frame with a changing number is one entry: ten errors that differ only in the key they read become one crash counted ten times and save the profile at most twice, while a different error still gets its own entry (report audit finding 1)',
    run:function(){
      if(typeof noteCrash!=='function'||typeof PLOADED==='undefined') return 'SKIP: no crash catcher in this build';

@@ -7,7 +7,8 @@ loaded wrote a new entry and a storage write every frame, and after the load up 
 saved crashes out of the crash list.
 
 THE BUILD. A boot crash that repeats the last boot entry within the same window, with numbers ignored as in v14.49, is
-counted on that entry. A merged repeat writes to storage at most once a second; a new entry writes at once.
+counted on that entry. The list is read back from storage on every call, so every call still writes it; what stops is
+the list filling with copies.
 
 MEASURED. Check 14.55 clears the boot list, marks the profile not loaded, reports one error eight times with a changing
 number, restores the flag and reads the list: the crash must be there (control) as one entry counted eight times. It fails

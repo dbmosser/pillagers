@@ -21,12 +21,13 @@ SubRx @'
         // v14.55, report audit finding 7: A BOOT CRASH REPEATING EVERY FRAME IS ONE ENTRY TOO. Before the profile loads a crash
         // goes to its own list, which never merged a repeat: an error repeating each frame while a slow host storage loaded
         // wrote a new entry and a storage write every frame, and after load up to twelve copies pushed real crashes out. A
-        // repeat of the last entry within the window, numbers ignored, is counted, and written at most once a second.
-        var _pl=_pc[_pc.length-1], _pnow=Date.now(), _pmerged=false;
-        if(_pl&&_pl.kind===kind&&(_pnow-_pl.t)<CRASH_SAME_MS&&String(_pl.msg).replace(/\d+/g,'#')===msg.replace(/\d+/g,'#')){ _pl.n=(_pl.n||1)+1; _pl.t=_pnow; _pmerged=true; }
+        // repeat of the last entry within the window, numbers ignored, is counted on it. The list is read back from storage on
+        // every call, so every call writes it, or the count would be lost.
+        var _pl=_pc[_pc.length-1], _pnow=Date.now();
+        if(_pl&&_pl.kind===kind&&(_pnow-_pl.t)<CRASH_SAME_MS&&String(_pl.msg).replace(/\d+/g,'#')===msg.replace(/\d+/g,'#')){ _pl.n=(_pl.n||1)+1; _pl.t=_pnow; }
         else _pc.push({v:VER,t:_pnow,kind:kind,screen:'boot',msg:msg,where:where,n:1});
         while(_pc.length>CRASH_KEEP) _pc.shift();
-        if(!_pmerged||!(noteCrash.bootAt>0)||(_pnow-noteCrash.bootAt)>=1000){ noteCrash.bootAt=_pnow; localStorage.setItem(PRECRASH,JSON.stringify(_pc)); }
+        localStorage.setItem(PRECRASH,JSON.stringify(_pc));
 '@
 SubRx @'
 var VER='14.54';
@@ -37,7 +38,7 @@ var VER='14.55';
 $pat = "(?m)^  now:'v14\.54:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v14.55: A BOOT CRASH REPEATING EVERY FRAME IS ONE ENTRY TOO. A crash before the profile loads goes to its own list, which added a new entry and a storage write for every repeat, so a fault repeating while slow storage loaded filled the list and pushed real crashes out once merged. A repeat of the last entry, numbers ignored, is now counted and written at most once a second. Check 14.55 reports one boot crash repeating eight times with a changing number; it fails on v14.54',"
+$new = "  now:'v14.55: A BOOT CRASH REPEATING EVERY FRAME IS ONE ENTRY TOO. A crash before the profile loads goes to its own list, which added a new entry and a storage write for every repeat, so a fault repeating while slow storage loaded filled the list and pushed real crashes out once merged. A repeat of the last entry, numbers ignored, is now counted on that entry instead. Check 14.55 reports one boot crash repeating eight times with a changing number; it fails on v14.54',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s
