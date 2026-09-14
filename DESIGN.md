@@ -40024,6 +40024,22 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.78 - THE EXTRACTED CARD COUNTS ONLY WHAT WAS SECURED
+
+The downed and extraction audit of 2026-09-14, finding 6. Since v13.54, the issued Bandages
+still in the backpack go back to the quartermaster and are skipped at banking. The card line
+below still read the whole backpack and the whole haul. Two issued Bandages and one find
+printed "3 items secured", with 120 of Bandages inside the figure, while one item reached the
+stash.
+
+THE BUILD. The banking loop counts the Bandages it hands back. The secured line prints the
+backpack less those, and the haul less their value.
+
+MEASURED. Check 13.78 extracts with the two issued Bandages and one plain find and requires
+"1 item secured". The same backpack with nothing issued must print "3 items secured" (the
+control, which proves the check reads the count). It fails on v13.77.
+
+Not verified: the best-haul record, which still reads the whole haul and is left as it was.
 ## v13.77 - AN ABANDONED RUN DOES NOT SAY YOU FELL
 
 The downed and extraction audit of 2026-09-14, finding 7. The run report has one line for stall

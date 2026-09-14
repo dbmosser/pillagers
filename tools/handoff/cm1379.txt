@@ -1,0 +1,9 @@
+v13.79: the clock lets a boarding hold finish
+
+The raid clock was tested before the boarding pull, so a hold already running
+in a landed ring died to the timer at zero. While a pull runs in a landed ring
+the clock now rests at zero until it finishes or is released.
+
+Check 13.79 holds E in a landed ring with one second left. Fails on v13.78.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
