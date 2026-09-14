@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.47 - A BUTTON HELD WHILE THE FLOOR PAUSE BOX CLOSES DOES NOT FIRE A STATION
+
+Undercroft floor audit finding 3 (LOW). A station fires on E (and R, F, T for its other actions), guarded by an E lock that
+stops a press carried over from a window from firing again. The pause box on the floor is not opened by a station, so the
+lock was off while it was up. A button still held as the box closed read as a fresh press on the next frame: on a pad, A on
+the box's button; on the keyboard, P, hold E, P. Standing at the lift, the sector page opened at once; at another station,
+that station's window.
+
+THE BUILD. Closing the pause box on the floor arms the E lock. The lock already clears itself once E, R, F and T are all let
+go, so the next real press works as before.
+
+MEASURED. Check 14.47 arrives on the floor, turns the E lock off, opens and closes the pause box (controls: it opened and
+closed), and requires the lock armed. It fails on v14.46.
+
+Not verified: A on the pause box button at the lift with a real controller.
 ## v14.46 - SPACE AND H WAIT WHILE THE FLOOR BACKPACK IS OPEN
 
 Undercroft floor audit finding 2 (LOW). The backpack opened on the floor with B freezes the floor like a window. The floor

@@ -5718,6 +5718,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.47',what:'a button held while the floor pause box closes does not fire a station: opening and closing the pause box on the floor with the E lock off leaves the lock armed (floor audit finding 3)',
+   run:function(){
+     if(typeof showScreen!=='function'||typeof togglePauseBox!=='function') return 'SKIP: no floor pause box in this build';
+     if(typeof G!=='undefined'&&G) return 'SKIP: a raid is live, so the floor pause box cannot be driven';
+     var box=document.getElementById('pausebox');
+     if(!box) return 'SKIP: no pause box in this document';
+     var bad=[];
+     try{
+       __topClear(); __cleanProfile();
+       showScreen('hub'); __topClear();
+       if(typeof HB==='undefined'||!HB) return 'SKIP: no Undercroft floor in this build';
+       HB.eLock=false;
+       togglePauseBox(true);
+       if(!box.classList.contains('on')) return 'SKIP: the pause box did not open on the floor here';
+       togglePauseBox(false);
+       // CONTROL: the box closed.
+       if(box.classList.contains('on')) return 'SKIP: the pause box did not close';
+       if(HB.eLock!==true) bad.push('closing the floor pause box left the E lock off, so a key or button held through the close fires the station he stands at');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(box.classList.contains('on')) togglePauseBox(false); }catch(_p){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.46',what:'SPACE and H wait while the floor backpack is open: SPACE on the floor with the backpack shut starts a roll, and with it open SPACE starts no roll and H does not toggle the controls panel (floor audit finding 2)',
    run:function(){
      if(typeof showScreen!=='function'||typeof hubBagOpenSet!=='function') return 'SKIP: no floor backpack in this build';
