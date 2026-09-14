@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.29 - A REWARD GUN CLAIMED WITH NOTHING IN HAND BECOMES GUN 1
+
+Progression audit finding 2 (LOW). When every armoury gun has been lost to deaths, gun 1 is set to fists. Claiming a gun
+reward (the Scav Pistol at reward 5, and the SMG, scattergun and carbine rewards) put the gun in the armoury and said so, but
+left gun 1 on fists. The raid build sees fists and issues a random starter as a loaner, so the rewarded gun stayed home.
+bankItem's own comment calls that state broken, and both the shop purchase and the recovered-gun path repair it.
+
+THE BUILD. A claimed gun reward takes gun 1 when gun 1 is fists, empty, or a gun no longer in the armoury, the same line
+bankItem uses. A gun already in hand is never replaced by a reward.
+
+MEASURED. Check 14.29 empties the armoury, sets gun 1 to fists and claims a gun reward (control: in the armoury; it must be
+gun 1), then claims a second, different gun reward (it must not take gun 1). It fails on v14.28.
+
+Not verified: pressing R at the lift after the claim and reading the ascent check by eye.
 ## v14.28 - UNDER BLACKOUT PROTOCOL, BLACKOUT WEATHER IS NOT HARD WEATHER
 
 Progression audit finding 1 (LOW). A run in hard weather banks a 1.1x XP bonus. The rule has two halves: weather that cuts
