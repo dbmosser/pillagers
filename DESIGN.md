@@ -40024,6 +40024,24 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.50 - THE GAME STOPS ASKING ITCH FOR A FILE THAT IS NEVER THERE
+
+Found by the 2026-09-14 crash sweep. The sweep found no crash in the raids it drove, but
+the network log showed builds/index.json failing on every page load. The build picker in
+the dev box fetches the local build archive at boot. builds/ exists only where he serves
+the repo from his own machine. The itch copy is one file, so every itch page load
+requested a missing file and logged the error.
+
+THE BUILD. buildArchiveHost limits the request to localhost. On any other host the picker
+makes no request, says there is no build archive on this host, and disables its open
+button. On his machine nothing changes.
+
+MEASURED. Check 13.50 stubs fetch and the host test. Off his machine the picker must make
+no request for the archive and must disable its button; on his machine it must still make
+the request. On v13.49 there is no host test and the check fails.
+
+Not verified: the itch page itself, whose network log I cannot read from here; the sweep
+had finished only a small share of its 120 raids when this was found.
 ## v13.49 - A CONTROLLER CAN TRADE WITH THE PEDDLER
 
 Audit item 5 of 2026-09-13. The Peddler stall answered only the keyboard. Its rows are the
@@ -40062,8 +40080,8 @@ MEASURED. Check 13.48 fakes a standard pad, puts a box with loot on the first ex
 point under the player, and requires held X to start a search. With the box moved out of
 reach it requires X to hold E again and not X. It fails on v13.47.
 
-Not verified: standing on an opened, empty body in a ring, where the dropship call waits
-until he steps off it if the game still counts that body as in reach; and a real controller.
+Not verified: a real controller. (Checked in code afterwards: the reach scan skips opened
+containers, so an emptied body in a ring never holds X away from the dropship call.)
 ## v13.47 - THE CONTROLLER WORKS ON THE UNDERCROFT FLOOR
 
 Found by the key remap review of 2026-09-13. The floor branch of pollPad bound only A, X,

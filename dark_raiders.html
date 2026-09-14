@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.49';
+var VER='13.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29704,7 +29704,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.49: A CONTROLLER CAN TRADE WITH THE PEDDLER. Audit item 5 of 2026-09-13: the stall rows are the number keys, which no pad button reaches, and its [X] walk away named the pad X button, which holds E for a poll the stall never reads. While the stall is open the D-pad now moves a marker over the rows, A takes the marked row through the same number key the keyboard uses, and X walks away, and the panel draws the marker and names the buttons on a pad. Check 13.49 fakes a pad at an open stall and requires D-pad down to move the marker, A to buy the marked item, and X to close the stall, with the keyboard 3 still buying as the control; it fails on v13.48',
+  now:'v13.50: THE GAME STOPS ASKING ITCH FOR A FILE THAT IS NEVER THERE. Found by the 2026-09-14 crash sweep: the build picker fetched builds/index.json on every page load, and the build archive exists only where he serves the repo on his own machine, so on itch every load requested a missing file and logged the error. buildArchiveHost now limits the request to localhost, and elsewhere the picker says there is no build archive on this host. Check 13.50 stubs the host test and fetch: off his machine the picker makes no request, on it the request is still made; it fails on v13.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29756,9 +29756,16 @@ function renderRoadmap(){
     };
   });
 }
+// v13.50: THE BUILD ARCHIVE IS ON HIS MACHINE ONLY. builds/ is served from the repo on
+// localhost; the itch copy is one file, so a request for the archive there always failed.
+function buildArchiveHost(){
+  var h=(location&&location.hostname)||'';
+  return h==='localhost'||h==='127.0.0.1';
+}
 function initBuildPicker(){
   var sel=document.getElementById('buildsel'),go=document.getElementById('buildgo');
   if(!sel||!go) return;
+  if(!buildArchiveHost()){ sel.innerHTML='<option>no build archive on this host</option>'; go.disabled=true; return; }   // v13.50
   fetch('builds/index.json').then(function(r){ return r.json(); }).then(function(list){
 
     sel.innerHTML=list.map(function(b){ return '<option value="'+b.file+'">'+b.ver+'  '+b.note+'</option>'; }).join('');

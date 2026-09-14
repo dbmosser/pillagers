@@ -1,0 +1,10 @@
+v13.50: the game stops asking itch for a file that is never there
+
+The build picker fetched builds/index.json on every page load, and the archive
+exists only on his machine, so every itch load requested a missing file. It asks
+only on localhost now.
+
+Check 13.50 stubs fetch and the host test. Fails on v13.49.
+Also: the v13.48 changelog records the opened-body question as checked in code.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
