@@ -40146,8 +40146,8 @@ MEASURED. Check 13.47 fakes a standard pad on the floor. View must open and clos
 backpack, Menu must raise and close the pause box, View must do nothing under the box, and
 a View held for three frames must open the backpack once. It fails on v13.46.
 
-Not verified: a real controller; the pad labels, which still name BACK for the backpack on
-the floor; and the emote bar in a raid, which no pad button can close.
+Not verified: a real controller; and the emote bar in a raid, which no pad button can close.
+(The pad labels that still named BACK for the backpack were fixed at v13.52.)
 ## v13.46 - THE MENUS FIT A 1280x720 ITCH WINDOW
 
 His question of 2026-09-13: reduce the viewport for the itch version. The recommended
