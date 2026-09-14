@@ -40024,6 +40024,22 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.28 - UNDER BLACKOUT PROTOCOL, BLACKOUT WEATHER IS NOT HARD WEATHER
+
+Progression audit finding 1 (LOW). A run in hard weather banks a 1.1x XP bonus. The rule has two halves: weather that cuts
+sight is always hard, and weather that kills the lamps is hard only when the lamps were on. The BLACKOUT PROTOCOL term places
+no lamps at all and forces a lit hour, dawn or dusk. The rule read that hour's nominal lamp level, not the lamps that exist,
+so Blackout weather under the term always counted as hard. The run card printed and the run banked the hard weather bonus on
+top of the term's own +25 percent, and the record stored wxHard 1, for lamps that were never there.
+
+THE BUILD. With BLACKOUT PROTOCOL signed, lamp-killing weather does not count as hard. Weather that cuts sight (fog, rain,
+storm) still does. The fix is inside the hard weather rule, which only the run record and the sector page label read, so the
+lighting of the map does not change. No dial moves.
+
+MEASURED. Check 14.28 reads the rule for Blackout at a lit daytime hour without the term (control: hard), with the term (not
+hard), and for fog with the term (still hard). It fails on v14.27.
+
+Not verified: a whole raid under the term and Blackout weather, read off the run card.
 ## v14.27 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 A planned card refresh, as at v14.14. WHATSNEW_VER stood at 14.14 against a build at 14.26, and the card said nothing about

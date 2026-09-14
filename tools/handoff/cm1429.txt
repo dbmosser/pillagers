@@ -1,0 +1,9 @@
+v14.29: a reward gun claimed with nothing in hand becomes gun 1
+
+With every armoury gun lost, a claimed gun reward went to the armoury while gun
+1 stayed on fists, so the next raid issued a loaner. It now takes gun 1, the
+same repair the shop makes.
+
+Check 14.29. Fails on v14.28.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

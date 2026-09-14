@@ -1,0 +1,20 @@
+## v14.30 - THE LEVEL IS WORKED OUT FROM THE XP WHEN A PROFILE LOADS
+
+Progression audit finding 3 (LOW). The level is stored on the profile as xpLevel and recomputed from XP only when XP is
+added (a run, or a stash sale). Nothing recomputed it when a profile loaded. A save whose stored level had fallen behind its
+XP therefore loaded at the wrong level:
+
+- a save from v10.02 to v12.66 whose last XP came from a stash sale, when those sales did not update the level,
+- a save migrated through the old reputation merge in the loader, which adds XP,
+- a save whose broken xp value the loader's number cleanup resets.
+
+Level-gated cosmetics (the Number 23 Jersey at level 4 and the others) showed locked or unlocked against that level, the
+Undercroft card printed it, and a worn level cosmetic could be taken off when the wardrobe checked what was unlocked. It put
+itself right after the next raid or sale.
+
+THE BUILD. The loader recomputes the level from the XP straight after it cleans the numbers.
+
+MEASURED. Check 14.30 takes the clean profile, sets 1,980 XP and a stored level of 1, loads it through the real loader and
+requires level 4, then restores the snapshot through the loader. It fails on v14.29.
+
+Not verified: an old save file from v12 loaded by hand.

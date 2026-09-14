@@ -1,0 +1,9 @@
+v14.30: the level is worked out from the XP when a profile loads
+
+A save whose stored level had fallen behind its XP loaded at the wrong level,
+and level-gated cosmetics and the card read it. The loader now recomputes the
+level from the XP.
+
+Check 14.30. Fails on v14.29.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

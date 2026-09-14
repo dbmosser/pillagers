@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.27';
+var VER='14.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5622,6 +5622,11 @@ function wxHardId(id,day,tdo){
     var W=WEATHER[i];
     if(W.view!==undefined&&W.view<1) return 1;
     if(W.lights!==undefined&&W.lights<1){
+      // v14.28, progression audit finding 1: UNDER BLACKOUT PROTOCOL THERE ARE NO LAMPS TO KILL. The term places no lamps and
+      // forces a lit hour, and lampBase reads that hour's nominal lamp level, so Blackout weather under the term always
+      // counted as hard: the run card printed and the run banked the hard weather bonus on top of the term's own pay, for
+      // lamps that were never there. By this function's own rule, lamp-killing weather counts only when the lamps were on.
+      if(typeof hasTerm==='function'&&hasTerm('blackout')) return 0;
       var base=lampBase(day,tdo);
       return ((base-base*W.lights)>=0.15)?1:0;
     }
@@ -29952,7 +29957,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.27: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 14.14 against 14.26 and the card said nothing about the controller and Undercroft menu fixes of v14.15 to v14.26. Two of my own card lines are rewritten in place: the first names the new news and the second merges the two older lines, keeping what checks 14.02 and 14.14 read, and WHATSNEW_VER moves to 14.27. Check 14.27 requires the card current and naming the controller news, with every card check still holding; it fails on v14.26',
+  now:'v14.28: UNDER BLACKOUT PROTOCOL, BLACKOUT WEATHER IS NOT HARD WEATHER. The term places no lamps, but the hard weather rule read the nominal lamp level of the hour it forces, so Blackout weather under the term paid the hard weather XP bonus for lamps that were never there. With the term signed, lamp-killing weather no longer counts as hard; weather that cuts sight still does. Check 14.28 reads the rule with and without the term; it fails on v14.27',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

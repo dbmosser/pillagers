@@ -1,0 +1,9 @@
+v14.28: under Blackout Protocol, blackout weather is not hard weather
+
+The term places no lamps, but the hard weather rule read the lamp level of the
+hour it forces, so Blackout weather under the term paid the hard weather XP
+bonus for lamps that were never there.
+
+Check 14.28. Fails on v14.27.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
