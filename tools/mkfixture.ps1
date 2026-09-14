@@ -5718,6 +5718,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.70',what:'SELL BACKPACK leaves the tactical belt alone: with a Medkit on a belt key and one other item in the backpack, the stall keeps the Medkit and pays only for the other item (hire and peddler audit 2026-09-14, finding 3)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof pedSellAll!=='function'||typeof pedBuyRate!=='function'||!ITEMS.medkit) return 'SKIP: no stall in this build';
+     var bad=[], X=null, k;
+     for(k in ITEMS){ var it=ITEMS[k]; if(it&&k!=='medkit'&&k!=='bandage'&&it.use!=='key'&&it.use!=='gun'&&it.use!=='heal'&&it.use!=='throw'&&ival(k)>=40){ X=k; break; } }
+     if(!X) return 'SKIP: nothing plain to sell beside the Medkit';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       g.ents.length=0; g.trade={kind:'peddler',hp:100,x:g.player.x,y:g.player.y}; g.pedCarry=0; g.pedSold=0; g.issuedBandages=0;
+       g.bag=['medkit',X]; g.hotAssign={2:'medkit'}; g.hotAuto={};
+       pedSellAll();
+       var want=Math.round(ival(X)*pedBuyRate());
+       if(g.bag.indexOf('medkit')<0) bad.push('SELL BACKPACK sold the Medkit on belt key 3 (carried now '+g.pedCarry+', the other item alone is '+want+')');
+       // CONTROL: the item that is only in the backpack is sold and paid for.
+       if(g.bag.indexOf(X)>=0||!(g.pedCarry>=want)) bad.push('control: the '+X+' in the backpack was not sold for '+want+', so this check cannot see a sale');
+       else if(g.pedCarry!==want) bad.push('the stall paid '+g.pedCarry+' where the backpack alone is worth '+want);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g2=__state(); if(g2){ g2.trade=null; g2.hotAssign={}; g2.pedCarry=0; } if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.69',what:'your own charge does not kill your hire: a charge of yours bursting 40 units from him leaves his health and the kill ledger untouched and does not set him chasing you, while an enemy charge in the same spot still wounds him (hire and peddler audit 2026-09-14, finding 2)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';

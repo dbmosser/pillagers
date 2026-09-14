@@ -1,0 +1,21 @@
+## v13.72 - X WALKS AWAY FROM THE STALL AND STAYS AWAY
+
+The hire and peddler audit of 2026-09-14, finding 4, and a fault in my own v13.49. On a
+controller, X closed the stall and it opened again on the next frame:
+
+- Frame one: the stall branch of pollPad sees the X press, closes the stall and releases E.
+  updatePlayer sees E up and clears the Peddler lock.
+- Frame two: the stall is shut, so the ordinary pad path runs. X is still held, so it holds
+  E. updatePlayer finds the Peddler in reach, E down and no lock, and opens the stall again.
+
+X never walked away. The only way out was walking 74 units off.
+
+THE BUILD. The X press that closes the stall is spent until X is let go. The ordinary pad path
+treats X as up until it is released once.
+
+MEASURED. Check 13.72 fakes a pad, opens the stall beside the Peddler, holds X through three
+real frames of pollPad and updatePlayer, and requires the stall shut on every frame. With X
+let go, the keyboard E must open the stall on the same path (the control). It fails on v13.71.
+
+Not verified: X held on past the stall into a search or an extraction call, which now waits
+for a fresh press.

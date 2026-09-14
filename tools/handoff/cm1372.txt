@@ -1,0 +1,8 @@
+v13.72: X walks away from the stall and stays away
+
+On a controller the still-held X held E on the next frame and the stall opened
+again. The X press that closes the stall is now spent until X is let go.
+
+Check 13.72 holds X through three real frames. Fails on v13.71.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

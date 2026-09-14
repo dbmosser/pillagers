@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.69';
+var VER='13.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9297,17 +9297,27 @@ function strayGive(e){
   emoteBubble(e.x,e.y,'nod','#7fc4a0',2.0);
   label(e.x,e.y-34,'+$'+pay,'#ffc04a',0.35,false);
 }
+// v13.70: the copies the tactical belt claims, per key, the way bagStacks counts them (v8.78).
+function pedBeltClaims(){
+  var cl={};
+  if(G&&G.hotAssign) for(var a in G.hotAssign){ var hk=G.hotAssign[a]; if(hk) cl[hk]=(cl[hk]||0)+1; }
+  return cl;
+}
 function pedSellAll(){
   // G.trade is the open stall panel, which only exists in the real game. The bot
   // has no panel, so it is allowed through under G.sim and the caller is
   // responsible for having put it next to a peddler first.
   if(!G||(!G.trade&&!G.sim)) return;
   var i,tot=0,full=0,n=0,kept=[];
+  var _cl=pedBeltClaims();
   for(i=0;i<G.bag.length;i++){
     var k=G.bag[i];
     // He will not buy a key. Selling him the way into the vault you are standing
     // next to is not a trade, it is a mistake with a confirmation button.
     if(ITEMS[k]&&ITEMS[k].use==='key'){ kept.push(k); continue; }
+    // v13.70, hire and peddler audit: a copy on the tactical belt is on the belt INSTEAD of in
+    // the backpack (v8.78), so SELL BACKPACK does not sell it.
+    if(_cl[k]>0){ _cl[k]--; kept.push(k); continue; }
     tot+=Math.round(ival(k)*pedBuyRate()); full+=ival(k); n++;
   }
   if(!n){ if(!G.sim) say('Nothing in your backpack he wants.'); return; }
@@ -26471,9 +26481,10 @@ function drawTrade(){
   cy+=LH(9);
   ctx.strokeStyle='#3a3222'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.moveTo(x+14,cy); ctx.lineTo(x+PW-14,cy); ctx.stroke();
-  var tot=0,n=0,fullv=0;
+  var tot=0,n=0,fullv=0,_tcl=pedBeltClaims();
   for(i=0;i<G.bag.length;i++){
     var k=G.bag[i]; if(ITEMS[k]&&ITEMS[k].use==='key') continue;
+    if(_tcl[k]>0){ _tcl[k]--; continue; }   // v13.70: the belt's copies are not for sale
     tot+=Math.round(ival(k)*pedBuyRate()); fullv+=ival(k); n++;
   }
   cy+=LH(21);
@@ -29758,7 +29769,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.69: YOUR OWN CHARGE DOES NOT KILL YOUR HIRE. Hire and peddler audit of 2026-09-14, finding 2: your rounds and fists pass through your hire but the frag loop had no such rule, so a charge killed him outright with byPlayer set, which put a kill on his identity so he never works for you again, ticked a pillager kill contract, billed the death benefit, and sent a wounded hire chasing you. The frag loop now skips your standing hire when the charge is yours; an enemy charge still hurts him. Check 13.69 bursts your charge beside the hire and requires him untouched with no kill recorded, with an enemy charge wounding him as the control; it fails on v13.68',
+  now:'v13.70: SELL BACKPACK LEAVES YOUR BELT ALONE. Hire and peddler audit of 2026-09-14, finding 3: an item is on the tactical belt or in the backpack, never both (v8.78), and the backpack grid hides the belt copies, but the stall counted and sold all of G.bag, so a Medkit on a key or a gun just bought and belted went for 55 percent and the key named nothing. pedBeltClaims counts the belt copies per key as bagStacks does, and both the stall count and the sale leave them out. Check 13.70 sells a backpack holding a belted Medkit and one other item and requires the Medkit kept and only the other item paid for; it fails on v13.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
