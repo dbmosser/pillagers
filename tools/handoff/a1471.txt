@@ -1,0 +1,1 @@
+| SURPRISE ME TAKES A WORN SUIT OFF | v14.71 | WARDROBE AUDIT 3 (LOW): lookRandom skipped the outfit without clearing a worn suit, so every rolled piece was hidden under it. FIX: the outfit branch sets COSDEF.outfit. MEASURED: check 14.71 (no suit: none put on control; suit on: taken off); fails on v14.70. NOT VERIFIED: the wardrobe by eye |

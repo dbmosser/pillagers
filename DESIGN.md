@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.68 - HIS HATS ARE NEVER ON A PILLAGER
+
+Wardrobe audit finding 5 (LOW, against his ruling). At v11.13 he ruled that a piece marked crowd:0 is his alone, like the
+crown: the Spartan Helmet and the Ghost Mask. The Undercroft crowd respects the mark. Raid pillagers draw their looks
+through raiderLook, whose hat pick skipped only the crown, so about one pillager in eight wore one of his two hats.
+
+THE BUILD. The pillager hat pick skips the crown and every hat marked crowd:0. The look hash advances the same way whatever
+the pool, so no other pillager pick changes; which hat a pillager wears can.
+
+MEASURED. Check 14.68 draws 600 pillager looks: they must wear at least three different hats (control), and none may be a
+hat marked crowd:0. It fails on v14.67.
+
+Not verified: pillagers seen in a live raid by eye.
 ## v14.67 - THE SECTOR PAGE NAMES HIS OWN GUN 2
 
 Ascent audit finding 3 (LOW). The sector page's "Going up with" line names gun 1, or "a gun issued at the lift" when gun 1

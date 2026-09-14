@@ -5718,6 +5718,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.68',what:'a hat marked his alone is never on a pillager: across 600 pillager looks no hat marked crowd:0 appears, while several other hats do (wardrobe audit finding 5)',
+   run:function(){
+     if(typeof raiderLook!=='function'||typeof COSMETICS==='undefined') return 'SKIP: no pillager looks in this build';
+     var his=COSMETICS.filter(function(c){ return c.kind==='hat'&&c.crowd===0; }).map(function(c){ return c.id; });
+     if(!his.length) return 'SKIP: no hat is marked his alone in this build';
+     var seen={}, bad=[], worn=0;
+     for(var i=0;i<600;i++){
+       var L=raiderLook('zqx'+i,(i*37)%3000,(i*53)%3000);
+       if(L&&L.hat){ seen[L.hat]=(seen[L.hat]||0)+1; if(his.indexOf(L.hat)>=0) worn++; }
+     }
+     // CONTROL: pillagers wear a spread of hats, so the pick is running.
+     var kinds=Object.keys(seen).filter(function(h){ return h!=='none'; });
+     if(kinds.length<3) return 'SKIP: 600 pillager looks drew only '+kinds.length+' hats, so the pick is not varied here';
+     if(worn) bad.push(worn+' of 600 pillagers wore a hat ruled his alone ('+his.filter(function(h){ return seen[h]; }).join(', ')+')');
+     return bad.length?bad.join('; '):null; }},
   {v:'14.67',what:'the sector page names his own gun 2: with gun 1 empty and his own gun in gun 2 the going up line names that gun as gun 2, as it names a gun in gun 1 (ascent audit finding 3)',
    run:function(){
      if(typeof syncSectorKit!=='function'||typeof WEAPONS==='undefined') return 'SKIP: no sector kit line in this build';

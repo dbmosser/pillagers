@@ -1,0 +1,8 @@
+v14.71: SURPRISE ME takes a worn suit off
+
+A random look skipped the suit without removing it, so every piece it rolled
+stayed hidden under the suit. It now takes the suit off.
+
+Check 14.71. Fails on v14.70.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

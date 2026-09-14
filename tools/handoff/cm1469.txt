@@ -1,0 +1,9 @@
+v14.69: a restore code replaces the clothes too
+
+A restore code left the replaced character's clothes, saved looks and the all
+cosmetics flag on the restored one. Every slot now takes the code value or the
+default, and the looks and flag start clean.
+
+Check 14.69. Fails on v14.68.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

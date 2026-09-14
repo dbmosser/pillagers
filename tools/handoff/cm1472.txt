@@ -1,0 +1,9 @@
+v14.72: the what is new card is current again
+
+The card stood at 14.60 and said nothing about the wardrobe, belt key,
+backpack and weather hint fixes since. Two of my own lines are rewritten in
+place, keeping every phrase the card checks read.
+
+Check 14.72. Fails on v14.71.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

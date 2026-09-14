@@ -1,0 +1,9 @@
+v14.70: a saved look is worn whole
+
+A kind missing from a saved look, or locked since, kept the piece already worn,
+so an old look worn over a suit stayed hidden. Such a kind now goes to its
+default.
+
+Check 14.70. Fails on v14.69.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

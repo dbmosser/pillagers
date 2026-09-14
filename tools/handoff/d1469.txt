@@ -1,0 +1,17 @@
+## v14.69 - A RESTORE CODE REPLACES THE CLOTHES TOO
+
+Wardrobe audit finding 2 (MEDIUM). A restore code replaces the save he is playing (v14.04 cleared the other state the old
+character left). The clothes were carried in the code only for slots the restored character had changed; a slot never
+changed came through empty, and restoreApply skipped empty slots. So character A wearing The Skeleton, with three saved
+looks and ALL COSMETICS on, applying a code from character B, who never opened the OUTFIT rack, left B wearing A's
+Skeleton, holding A's saved looks and with every rack unlocked. A kept piece B had not earned stayed hidden and appeared
+the moment B earned it.
+
+THE BUILD. Every clothing slot takes the code's value, or nothing, which reads as the default. The saved looks are cleared
+and the all cosmetics flag turned off.
+
+MEASURED. Check 14.69 makes a code from a character with no clothes set, then dresses the character in a hat with two saved
+looks and the flag on, applies the code (control: it applies) and requires no hat, no saved look and the flag off. It
+restores the profile through the loader afterwards. It fails on v14.68.
+
+Not verified: a real code from another save applied by hand.

@@ -1,0 +1,9 @@
+v14.68: his hats are never on a pillager
+
+His ruling made the Spartan Helmet and Ghost Mask his alone, like the crown,
+but raid pillagers skipped only the crown. Every hat marked his alone is now
+skipped.
+
+Check 14.68. Fails on v14.67.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
