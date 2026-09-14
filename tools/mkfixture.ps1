@@ -1133,7 +1133,7 @@ try{ if(window.webkitAudioContext) window.webkitAudioContext=window.AudioContext
 // and function declarations are hoisted regardless, so direct stubs stick.
 // DROP stays redirected as belt and braces.
 try{ DROP='http://127.0.0.1:9/blackhole'; }catch(e){}
-try{ autoExport=function(){ if(typeof P!=='undefined'&&P) P.lastReport='fixture-stub'; }; }catch(e){}
+try{ window.__realAutoExport=autoExport; autoExport=function(){ if(typeof P!=='undefined'&&P) P.lastReport='fixture-stub'; }; }catch(e){}
 // v13.20: KEEP THE REAL ONE. The stub below stays, because a corpus run must
 // never write files into his Downloads; but a check that is specifically about
 // what downloadExport does needs the real function, and it can only have it if
@@ -5717,6 +5717,33 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'14.52',what:'a report corrected after Copy report is saved again: with no drop address and this run already saved, sending the report again saves the file instead of marking it not saved, as two waiting runs always did (report audit finding 3)',
+   run:function(){
+     if(typeof autoExport!=='function'||typeof telemetryDest!=='function'||typeof downloadExport!=='function') return 'SKIP: no report save path in this build';
+     if(typeof savedAtRun==='undefined'||typeof droppedThisSession==='undefined') return 'SKIP: the save counters are not reachable here';
+     // The fixture stubs autoExport so a corpus never writes files; the real one is kept aside for this check.
+     var AE=window.__realAutoExport;
+     if(typeof AE!=='function') return 'SKIP: the real autoExport was not kept aside by this fixture';
+     var bad=[], saves=0, _td=telemetryDest, _dl=downloadExport, _sp=saveProfile;
+     var keep={at:savedAtRun,dropped:droppedThisSession,ae:P.autoExport,ad:P.autoDownload,lr:P.lastReport,runs:P.runs};
+     try{
+       telemetryDest=function(){ return null; };
+       downloadExport=function(){ saves++; };
+       saveProfile=function(){};
+       P.autoExport=true; P.autoDownload=false; droppedThisSession=true; P.runs=5;
+       // CONTROL: with two runs waiting since the last save, the report is saved.
+       savedAtRun=P.runs-2; saves=0; AE();
+       if(saves!==1) return 'SKIP: with two runs waiting the report was not saved ('+saves+'), so the save path did not run here';
+       // THE FIX: this run already saved (Copy report), and the report goes out again with a note.
+       savedAtRun=P.runs; saves=0; P.lastReport='zqx'; AE();
+       if(saves!==1) bad.push('a report sent again for a run already saved was not saved ('+(P.lastReport==='no drop'?'marked not saved, 0 raids waiting':P.lastReport)+'), so the file on disk lacks the note');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       telemetryDest=_td; downloadExport=_dl; saveProfile=_sp;
+       savedAtRun=keep.at; droppedThisSession=keep.dropped; P.autoExport=keep.ae; P.autoDownload=keep.ad; P.lastReport=keep.lr; P.runs=keep.runs;
+       try{ syncAutoEx(); }catch(_s){}
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'14.51',what:'a crash note keeps where it happened: an error with a long message raised through the real error listener is noted with a line and column in its location (report audit finding 2)',
    run:function(){

@@ -40024,6 +40024,22 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.52 - A REPORT CORRECTED AFTER COPY REPORT IS SAVED AGAIN
+
+Report audit finding 3 (MEDIUM). With no drop address (the page is not embedded, or itch), the run report is saved as a
+file, on the first run of a sitting and then every second run. On the outcome card, Copy report saves the file and marks
+the run saved. A tag or note chosen after that, then Log run, sends the report out again with them (v11.65). The save rule
+then saw zero runs since the last save, fewer than the two it waits for, and marked the report not saved. The banner read
+"RUN REPORT NOT SAVED: 0 raids not saved yet", and the file on disk had been built before the note existed.
+
+THE BUILD. A report sent again for the run that was already saved is saved again, so the file carries the note. Saving on
+every second run otherwise is unchanged.
+
+MEASURED. Check 14.52 replaces the drop address with none and the file save with a counter: with two runs waiting the
+report must save (control); with this run already saved it must save again rather than be marked not saved. It fails on
+v14.51.
+
+Not verified: Copy report, a note, then Log run, with the downloaded file read by eye.
 ## v14.51 - A CRASH NOTE KEEPS WHERE IT HAPPENED
 
 Report audit finding 2 (MEDIUM). The crash catcher records where an error happened as the first two lines of its stack, cut
