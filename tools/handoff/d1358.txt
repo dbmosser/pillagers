@@ -1,0 +1,20 @@
+## v13.58 - ONE GUN CANNOT BE IN BOTH HANDS
+
+The Undercroft audit of 2026-09-14, finding 3. With a Pistol in gun 1 and a Carbine in gun
+2, a second Carbine in the stash (a Wirt roll, a duplicate reward, or one carried out) could
+be equipped with Equip as your gun. That set gun 1 to the Carbine and left gun 2 naming the
+Carbine too. Raid start drops gun 2 when it matches gun 1, so the raid began with one gun;
+the Pistol had left his hands without a word, and the gun menu greyed out both slots as
+already there, so it could not undo it. The gun menu's own Put in gun 1 already cleared gun
+2; the item menus did not.
+
+THE BUILD. All four equip sites (two in the stash item menu, two in the right-click menu)
+now empty gun 2 when it names the gun going to gun 1.
+
+MEASURED. Check 13.58 gives him two guns with the second in gun 2 and a spare copy of it in
+the stash, presses Equip as your gun on the spare through the stash item menu, and requires
+the gun in gun 1 and gun 2 no longer naming it. The control equips a spare of a third gun
+he owns and requires gun 2 unchanged. It fails on v13.57.
+
+Not verified: the right-click menu copy of the verb, which takes the same edit but was not
+driven; and the Pistol he held before, which goes back to the armoury as before.

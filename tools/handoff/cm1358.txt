@@ -1,0 +1,9 @@
+v13.58: one gun cannot be in both hands
+
+Equip as your gun on a spare copy of the gun already in gun 2 left gun 2 naming
+the same gun, so the raid started with no second gun and the gun menu could not
+undo it. All four equip sites now empty gun 2 when it names the gun going to gun 1.
+
+Check 13.58 equips a spare from the stash menu. Fails on v13.57.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

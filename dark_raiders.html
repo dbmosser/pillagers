@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.57';
+var VER='13.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29727,7 +29727,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.57: THE XP ON THE CARD IS THE XP BANKED, AT EVERY DISTANCE. End-of-raid audit of 2026-09-14, finding 5: the outcome card built its XP from the raw distance walked while the banked record rounds the distance first, and the XP formula rounds distance over its step again, so at a rounding edge the card printed one XP less than the profile banked. The card record now rounds the distance as the banked record does. Check 13.57 finds a distance where raw and rounded give different XP, extracts at it, and requires the XP on the card to equal the XP banked, with a round distance as the control; it fails on v13.56',
+  now:'v13.58: ONE GUN CANNOT BE IN BOTH HANDS. Undercroft audit of 2026-09-14, finding 3: Equip as your gun on a spare copy of the gun already in gun 2 set gun 1 and left gun 2 naming the same gun, so raid start dropped gun 2 and the raid began with one gun, while the gun menu greyed both slots out. All four equip sites, in the stash item menu and the right-click menu, now empty gun 2 when it names the gun going to gun 1, as Put in gun 1 already does. Check 13.58 equips a spare of the gun-2 gun from the stash menu and requires it in gun 1 only, with a spare of a third gun leaving gun 2 alone as the control; it fails on v13.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30830,7 +30830,7 @@ function itemMenuRows(key,ctx,count){
       // then decline to grant anything if the model was already in the armoury,
       // so equipping a duplicate destroyed a sellable gun for nothing.
       if(P.weapons.indexOf(it.gk)>=0){
-        P.equipped=it.gk; saveProfile(); refreshInv();
+        if(P.equippedSec===it.gk) P.equippedSec='none'; P.equipped=it.gk; saveProfile(); refreshInv();   // v13.58: one gun, one hand
         say2('That model is already yours, so it stays in the stash to sell. Equipped.');
         return;
       }
@@ -30840,7 +30840,7 @@ function itemMenuRows(key,ctx,count){
       // neither in the stash nor in the armoury. The row is built for key.
       clearKeysFor(key);               // v8.51, audit: it left the backpack
       P.weapons.push(it.gk);
-      P.equipped=it.gk; saveProfile(); refreshInv();
+      if(P.equippedSec===it.gk) P.equippedSec='none'; P.equipped=it.gk; saveProfile(); refreshInv();   // v13.58: one gun, one hand
     }});
     // No "wear it" row. There is no use:'rig' item in ITEMS; rigs are set from the
     // counter, and an Armor Plate is a consumable you heal with, per his note
@@ -31402,14 +31402,14 @@ try{ renderFreeKit(); }catch(_fk){}
         var ix=P.stash.indexOf(k); if(ix<0) return;
         // v8.12, audit: same bug, second copy. See the note in itemMenuRows.
         if(P.weapons.indexOf(it.gk)>=0){
-          P.equipped=it.gk; saveProfile(); renderHub();
+          if(P.equippedSec===it.gk) P.equippedSec='none'; P.equipped=it.gk; saveProfile(); renderHub();   // v13.58: one gun, one hand
           say2('That model is already yours, so it stays in the stash to sell. Equipped.');
           return;
         }
         P.stash.splice(ix,1);
         clearKeysFor(k);               // v8.51, audit: same rule, second copy
         P.weapons.push(it.gk);
-        P.equipped=it.gk; saveProfile(); renderHub();
+        if(P.equippedSec===it.gk) P.equippedSec='none'; P.equipped=it.gk; saveProfile(); renderHub();   // v13.58: one gun, one hand
       });
       // v5.92: 'stim' belongs here. useHot has always known how to use one, but
       // the only route into useHot's item branch is an assigned key, and this
