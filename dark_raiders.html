@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.89';
+var VER='13.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13097,6 +13097,13 @@ function dropItem(idx){
   c.time=0.6; c.dropped=1;
   // v13.89, loot audit: never inside a wall, where no search could reach it. At his feet instead.
   if(G.vseg&&!losClear(p.x,p.y,c.x,c.y,G.vseg)){ c.x=p.x; c.y=p.y; }
+  // v13.90, loot audit: an issued Bandage stays issued on the ground. The drop spends it from the
+  // count now (and from what the count last saw, so the frame tick does not spend it twice), and
+  // the pile carries it back when it is searched up.
+  if(key==='bandage'&&(G.issuedBandages||0)>0){
+    G.issuedBandages--; c.issuedB=1;
+    if(G.bandSeen!==undefined) G.bandSeen--;
+  }
   G.containers.push(c);
   return key;
 }
@@ -13537,6 +13544,7 @@ function grantLoot(ct,keys,delay0){
   for(var l=0;l<keys.length;l++){
     var key=keys[l],itm=ITEMS[key];
     T.items++; T.rar[itm.r]++;
+    if(ct.issuedB&&key==='bandage'){ ct.issuedB=0; G.issuedBandages=(G.issuedBandages||0)+1; }   // v13.90: an issued Bandage picked back up is still issued
     // v8.03: the first surface a gun is ever seen on now agrees with every
     // panel that follows it - tier rarity, not the economy row.
     var _gdr=dispR(key)||itm.r;
@@ -29835,7 +29843,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.89: A DROPPED ITEM NEVER LANDS INSIDE A WALL. Searching and loot audit of 2026-09-14, finding 4: dropItem put the pile 6 to 18 units below the player with no wall test, so pressed against a wall about two drops in five landed inside it, drawn but unsearchable from either side. A pile with no clear line from the player is now put at his feet. Check 13.89 presses the player against the top of a solid wall, drops forty items, and requires every pile reachable in a clear line, with the wall itself blocking a pile placed 18 units down as the precondition; it fails on v13.88',
+  now:'v13.90: AN ISSUED BANDAGE PICKED BACK UP IS STILL ISSUED. Searching and loot audit of 2026-09-14, finding 6, an edge of v13.67: the issued count falls when the backpack holds fewer Bandages and a rise counts as a find, so dropping the issued pair and searching it back up turned both into found loot the stall bought and the extraction banked. A dropped issued Bandage now comes off the count at the drop and marks its pile, and picking that pile up puts it back. Check 13.90 drops both issued Bandages, searches both piles up and requires the issued count back at two, with a found Bandage dropped and picked up staying found as the guard; it fails on v13.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
