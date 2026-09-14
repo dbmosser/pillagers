@@ -1,0 +1,17 @@
+## v14.63 - A SECOND COPY OF THE GUN IN HIS HANDS SHOWS IN THE BACKPACK
+
+Backpack audit finding 5 (LOW to MEDIUM). Since v8.78 an item is on the belt or in the backpack, never both: every belt
+assignment claims one backpack copy of its item, so that copy is drawn on the belt instead. A belt key naming a gun he is
+holding is different: the belt shows the gun in his hands on that key, not a backpack copy. The claim was counted anyway.
+With the SMG on key 5 in the Undercroft plan and an SMG in hand, a second SMG looted into the backpack (auto-belting refuses
+it, the key is taken) was claimed by that key. It was in neither the grid nor the belt, so it could not be dropped, equipped,
+given or sold, and the header said BELT 1. It still banked on extraction.
+
+THE BUILD. A belt key naming a gun in either hand claims no backpack copy. The rule is one helper used by all three counts:
+the backpack stacks, the backpack header and the stall's claim count.
+
+MEASURED. Check 14.63 starts a raid, binds a Medkit in the backpack to a key (control: not shown as a stack), then puts a gun
+in his hand, binds that gun to key 5 and puts a second copy in the backpack: it must be shown as a backpack stack. It fails
+on v14.62.
+
+Not verified: looting a second copy of the gun in hand in a live raid.

@@ -1,0 +1,14 @@
+## v14.58 - ONLY A LEFT CLICK PICKS UP A BACKPACK TILE
+
+Backpack audit finding 3 (MEDIUM). A press on a backpack tile started a drag with any mouse button, but only a left
+release ends a drag. A wheel click, easy while zooming with the wheel, or a thumb button on a tile stuck the item to the
+cursor. B or I closed the backpack without dropping the drag (ESC, TAB and focus loss already dropped it), and the ghost is
+drawn whether the backpack is open or not, so the item rode the reticle. The next left click to shoot, released over a belt
+cell, bound the item there and saved the plan; released over his hire, it handed the item over.
+
+THE BUILD. Only the left button picks up a backpack tile, and B or I drops any drag as it toggles the backpack.
+
+MEASURED. Check 14.58 starts a raid, stages one backpack tile, presses the left button on it (control: picked up), the
+middle button (nothing picked up), then holds a drag and presses I (the drag is gone). It fails on v14.57.
+
+Not verified: a real wheel click on a tile.

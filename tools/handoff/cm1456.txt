@@ -1,0 +1,9 @@
+v14.56: a drag held when the raid ends writes nothing
+
+A drag held through the end of a raid, released on the outcome card, wrote the
+raid belt back into the plan after a death emptied it. Ending the raid drops
+the drag, and a release after the end does nothing.
+
+Check 14.56. Fails on v14.55.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

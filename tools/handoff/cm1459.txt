@@ -1,0 +1,9 @@
+v14.59: up and down reach every backpack stack
+
+Up and down wrapped by the stack count, so with a wide grid a controller could
+reach only the first stack. Down now walks a column and moves on to the next,
+and up mirrors it.
+
+Check 14.59. Fails on v14.58.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

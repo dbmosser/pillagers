@@ -1,0 +1,14 @@
+## v14.57 - THE BACKPACK DOES NOT OPEN WHILE HE IS DOWN
+
+Backpack audit finding 2 (MEDIUM). Since v14.07 going down closes the backpack. Nothing stopped B or I opening it again,
+and a tile could be picked up with the player downed. So a downed player could open the backpack, press and hold a tile
+through the bleed-out or the give-up hold, into the death fade and past the end of the raid, which is the drag v14.56 now
+drops at the end.
+
+THE BUILD. While he is downed or dying, B and I can only close the backpack, and a tile cannot be picked up. Standing up,
+nothing changes.
+
+MEASURED. Check 14.57 starts a raid and presses I standing (control: it opens, and a second I closes it), then marks him
+downed and presses I: the backpack must stay shut. It fails on v14.56.
+
+Not verified: pressing I while downed in a live raid.

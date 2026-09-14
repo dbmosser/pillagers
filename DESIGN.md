@@ -40024,6 +40024,24 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.56 - A DRAG HELD WHEN THE RAID ENDS WRITES NOTHING
+
+Backpack audit finding 1 (MEDIUM). Dying or abandoning returns him empty: endRaid empties the belt plan and saves. But
+endRaid never dropped a drag in progress, and the raid state lives on until the outcome card's button. So:
+
+1. with the backpack open, press and hold a belt item (or a backpack tile),
+2. the raid ends under him (the clock runs out, or the nuke),
+3. he lets go on the outcome card.
+
+The release still ran the drag's belt logic, wrote the raid's whole belt into the plan and saved. He arrived in the
+Undercroft with keys bound to everything he had just lost, and items he packed later were claimed by those old keys.
+
+THE BUILD. Ending the raid drops any drag, and the release handler does nothing once the raid is over.
+
+MEASURED. Check 14.56 starts a raid and releases belt key 4 dragged off the belt (control: the plan loses key 4), then
+empties the plan, ends the raid and releases the same drag: the plan must stay empty. It fails on v14.55.
+
+Not verified: a drag held through a real clock run-out.
 ## v14.55 - A BOOT CRASH REPEATING EVERY FRAME IS ONE ENTRY TOO
 
 Report audit finding 7 (LOW). A crash before the profile has loaded cannot save the profile (that would write the default

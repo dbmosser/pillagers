@@ -1,0 +1,9 @@
+v14.62: a drag whose item has left the backpack binds nothing
+
+Holding a tile, dropping its stack with Z and letting go on the belt bound a
+key to an item no longer carried. A backpack drag now binds only while its
+item is still in the backpack.
+
+Check 14.62. Fails on v14.61.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,9 @@
+v14.63: a second copy of the gun in his hands shows in the backpack
+
+A belt key for the gun in hand still claimed a backpack copy, so a second one
+looted was shown nowhere and could not be used. Such a key now claims no
+backpack copy.
+
+Check 14.63. Fails on v14.62.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

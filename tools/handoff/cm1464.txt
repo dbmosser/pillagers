@@ -1,0 +1,7 @@
+v14.64: check 10.37 follows the crash rules of v14.49 and v14.51
+
+No game change. Check 10.37 still expected the old crash location text and fed
+distinct crashes that differ only in a number, which v14.49 merges. It now
+accepts a line and column location and its probes differ in a letter.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

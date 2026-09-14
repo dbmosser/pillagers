@@ -1,0 +1,8 @@
+v14.61: a click that slips off a belt key does not unbind it
+
+Clicking a belt key and moving the mouse off the belt before letting go unbound
+the item and saved. A belt drag now has to move more than 24 units first.
+
+Check 14.61. Fails on v14.60.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

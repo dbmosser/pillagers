@@ -1,0 +1,8 @@
+v14.60: the what is new card is current again
+
+The card stood at v14.40, past the drift its checks allow. Two of my own card
+lines are rewritten in place to cover the fixes of v14.41 to v14.59.
+
+Check 14.60 holds the card current. Fails on v14.59.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

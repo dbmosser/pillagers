@@ -1,0 +1,9 @@
+v14.57: the backpack does not open while he is down
+
+Going down closed the backpack but B or I reopened it at once, so a tile could
+be held into the end of the raid. While downed they only close it, and tiles
+cannot be picked up.
+
+Check 14.57. Fails on v14.56.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

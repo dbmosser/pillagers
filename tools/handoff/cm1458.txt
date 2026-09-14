@@ -1,0 +1,9 @@
+v14.58: only a left click picks up a backpack tile
+
+A wheel or thumb click picked up a tile that only a left release could drop,
+so it rode the cursor into the next shot. Tiles pick up on the left button
+only, and B or I drops any drag.
+
+Check 14.58. Fails on v14.57.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
