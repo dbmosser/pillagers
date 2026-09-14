@@ -5718,6 +5718,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.61',what:'a click that slips off a belt key does not unbind it: a belt item drag released off the belt 10 units from its press point keeps its key, while one released 200 units away unbinds it (backpack audit finding 6)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof mouse==='undefined') return 'SKIP: no mouse state in this build';
+     var bad=[], g0=null, _sp=saveProfile, _say=(typeof say==='function')?say:null;
+     var release=function(){ window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true,cancelable:true})); };
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
+       g0=g; saveProfile=function(){};
+       var prof=__P();
+       var stage=function(mx,my){ g.bagOpen=false; g.hotCells=[]; g.bagPanel=null; g.hotAssign={4:'medkit'}; prof.hotAssign={4:'medkit'}; g.drag={key:'medkit',fromHot:4,px:300,py:300}; mouse.x=mx; mouse.y=my; release(); };
+       // CONTROL: released 200 units from the press point, off the belt, the key is unbound.
+       stage(500,300);
+       if(g.hotAssign[4]==='medkit') return 'SKIP: a belt drag released far off the belt did not unbind the key here, so an unbind cannot be seen';
+       // THE FIX: released 10 units from the press point, the click keeps the key.
+       stage(308,306);
+       if(g.hotAssign[4]!=='medkit'||!prof.hotAssign||prof.hotAssign[4]!=='medkit') bad.push('a click on belt key 5 that slipped 10 units before release unbound the Medkit and saved the plan without it');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       saveProfile=_sp;
+       try{ if(g0){ g0.drag=null; if(!g0.over) __endRaid('abandon'); } }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.60',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the save news of v14.41, still opening with the alpha line',
    run:function(){
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';

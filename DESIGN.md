@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.61 - A CLICK THAT SLIPS OFF A BELT KEY DOES NOT UNBIND IT
+
+Backpack audit finding 6 (LOW). A press on a belt cell selects it and, for an item, starts a drag. A release anywhere off
+the belt took that as taking the item off its key: it unbound it, saved the plan and said "Medkit off slot 5". The hand gun
+drag has had a 24 unit click threshold since v11.97; the item drag had none. So mid-fight, clicking key 5 to select the
+Medkit and flicking the mouse up to aim before letting go unbound the Medkit.
+
+THE BUILD. A belt item drag records where it was pressed. A release off the belt unbinds only once the mouse has moved more
+than 24 units from that point; less than that is a click, and the key stays bound. Drags that record no press point unbind
+as before.
+
+MEASURED. Check 14.61 starts a raid, binds a Medkit to belt key 5 and releases its drag 200 units away (control: unbound),
+then 10 units from the press point (the key must stay bound in the raid and in the plan). It fails on v14.60.
+
+Not verified: a click and flick in a live fight.
 ## v14.60 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 A card refresh, as at v14.40, and a late one. WHATSNEW_VER stood at 14.40 against a build at 14.59: past the fifteen builds
