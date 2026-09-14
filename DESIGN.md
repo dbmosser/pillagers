@@ -40024,6 +40024,29 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.81 - A DROPPED GUN COMES BACK WITH ITS OWN ROUNDS
+
+The combat and player state audit of 2026-09-14, finding 1. Since v12.42, a gun put in the
+backpack keeps its load (stowRounds), and equipping it from the backpack takes that load back
+(takeRounds). But dropping it leaves a crate, and picking it up from that crate goes through
+grantLoot. grantLoot auto-equips a better gun with half a magazine and never read the stored
+load. So:
+
+- Empty a Burst Carbine, drag it into the backpack (it stores 0), drop it, and pick it up.
+- It comes back with twelve rounds that came from nowhere.
+- Repeat for unlimited ammunition with no reserve spent.
+
+THE BUILD. A gun auto-equipped from a crate you dropped takes its stored load through
+takeRounds, which falls back to half a magazine when nothing was stored. A gun found in any
+other container still arrives with half a magazine.
+
+MEASURED. Check 13.81 empties a carbine in the second slot, bags it, drops it, picks it up from
+its crate, and requires no rounds created across the magazine, the reserve and the stored
+loads. A carbine found in an ordinary crate must still arrive with half a magazine (the
+control). It fails on v13.80.
+
+Not verified: a sold gun's stored load left behind for the next gun of that kind, the smaller
+leak the audit also named.
 ## v13.80 - THE DEAD DO NOTHING IN THE DEATH FADE
 
 The combat and player state audit of 2026-09-14, finding 2. killPlayer clears downed, sets

@@ -1,0 +1,8 @@
+v13.85: a pile you drop earns no hot zone bonus
+
+Dropping an item in the hot zone and searching it back up rolled two safe-table
+items every time. The bonus now skips piles you dropped.
+
+Check 13.85 drops and re-searches in the zone. Fails on v13.84.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

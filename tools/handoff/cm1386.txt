@@ -1,0 +1,8 @@
+v13.86: a pile you drop does not restock
+
+Dropped piles are type crate, so the 170 second restock refilled them with fresh
+items for the rest of the raid. The restock now skips them.
+
+Check 13.86 ages a re-searched dropped pile past the restock. Fails on v13.85.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
