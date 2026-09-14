@@ -40024,6 +40024,23 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.64 - A MEDKIT IS NOT SPENT AT FULL HEALTH
+
+The in-raid audit of 2026-09-14, finding 1. tickHeal empties the heal queue when there is
+no room left under the running heal's ceiling, but it kept the ceiling. With a Bandage's 85
+still stored and his health back at full by any other route, the medical verb works out
+what he can reach as the lower of health plus queue and that ceiling, so it read 85. The
+Medkit was not refused as Already at full, and it was used for nothing.
+
+THE BUILD. The ceiling clears together with the queue, as it already did when the queue ran
+out normally.
+
+MEASURED. Check 13.64 runs a Bandage heal into its 85 with queue left over, brings health to
+full, and requires the Medkit refused and kept. At 50 health the same Medkit must be used
+(the control). It fails on v13.63.
+
+Not verified: which other route to full health he meets in play; the check sets health
+directly.
 ## v13.63 - NOTHING ON THE BELT IS SPENT FROM THE FLOOR
 
 The in-raid audit of 2026-09-14, finding 2. The belt key (G or the pad D-right) and the

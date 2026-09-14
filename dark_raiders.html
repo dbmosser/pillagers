@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.63';
+var VER='13.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13284,7 +13284,9 @@ function tickHeal(dt){
   // set going at 80 would have run all the way to 100 out here, because the drain
   // only ever knew about maxhp.
   var room=((p.healCap===undefined)?p.maxhp:p.healCap)-p.hp;
-  if(room<=0){ p.healQ=0; p.healRate=0; return; }
+  // v13.63, in-raid audit: the ceiling goes with the queue, as it does when the queue runs
+  // out below. Left behind, a Bandage's 85 made every later test read full health as 85.
+  if(room<=0){ p.healQ=0; p.healRate=0; p.healCap=undefined; return; }
   if(give>room) give=room;
   p.hp+=give; p.healQ-=give;
   if(p.healQ<=0.001){ p.healQ=0; p.healRate=0; p.healCap=undefined; }
@@ -29732,7 +29734,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.63: NOTHING ON THE BELT IS SPENT FROM THE FLOOR. In-raid audit of 2026-09-14, finding 2: the belt key and the trigger on a belt cell reach useHot, and nothing on that path checked for a downed player, while the downed branch of updatePlayer returns before the heal ticks, so a Medkit used while down left the bag, said Applying and never healed, and a Stim burned its ten seconds on the floor. useHot now refuses while down and says why; the self-revive and the surrender are untouched. Check 13.63 downs the player with a Bandage on the Medical cell and requires the use refused with the Bandage kept, with the same use standing as the control; it fails on v13.62',
+  now:'v13.64: A MEDKIT IS NOT SPENT AT FULL HEALTH. In-raid audit of 2026-09-14, finding 1: tickHeal cleared the queue when there was no room under the running ceiling but kept the ceiling, so with a Bandage 85 still stored and health back at full, every medical test read his reach as 85 and a Medkit was used for nothing. The ceiling now clears with the queue. Check 13.64 runs a Bandage into its ceiling, brings health to full, and requires the Medkit refused and kept, with a Medkit at 50 health spent as the control; it fails on v13.63',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

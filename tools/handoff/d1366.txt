@@ -5,7 +5,8 @@ card stood at v13.45, past the fifteen-build gate. It said nothing about the con
 work, the contract and hazard pay fixes, the restore code, the cooked grenade or the belt on
 the floor.
 
-THE BUILD. Ten lines go in, newest first, under the alpha line. Nothing already on the card
+THE BUILD. Five lines go in, newest first, under the alpha line. The first draft had ten, and
+check 13.34 caught it pushing the stash entry to eighteenth, below the thirteen the card draws. Nothing already on the card
 is reworded, so none of his edited lines lose their key. WHATSNEW_VER moves to 13.66.
 
 MEASURED. Check 13.66 requires the card within fifteen builds, still opening with the alpha

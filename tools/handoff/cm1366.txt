@@ -1,6 +1,6 @@
 v13.66: the what is new card is current again
 
-The card stood at v13.45 and failed checks 9.19 and 10.38. Ten lines for the
+The card stood at v13.45 and failed checks 9.19 and 10.38. Five lines for the
 builds since go in newest first under the alpha line; nothing is reworded.
 
 Check 13.66 holds the card current. Fails on v13.65.
