@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.62 - A COOKED GRENADE OWNS THE HAND UNTIL IT IS THROWN
+
+The in-raid audit of 2026-09-14, finding 3. Holding the trigger on a Frag pulls the pin and
+starts its fuse; letting go throws it. But the fuse only counted inside the throwable
+branch of the trigger, and the gun branch never looked at whether a grenade was cooking. So
+cooking a Frag and then pressing 1 or a bumper while still holding the trigger fired the
+gun with a live grenade in his hand, the fuse stopped counting, and letting go threw the
+grenade with whatever time it had when he switched. The throw key while cooking also threw
+a second grenade out of the pouch.
+
+THE BUILD. While a grenade is cooking, its fuse burns whatever cell is selected, the gun
+does not fire, and the throw key says to throw the one in hand first. Letting go still
+throws the cooked grenade, as before.
+
+MEASURED. Check 13.62 first fires an automatic gun with nothing cooking (the control).
+Then it cooks a Frag, switches to the gun and holds the trigger for half the fuse: no round
+may be fired, the fuse must keep counting, and the throw key must put no second grenade in
+the air. It fails on v13.61.
+
+Not verified: a Smoke or Decoy switched mid-cook, which have no fuse and are held the same
+way; and the pad bumpers, which switch cells through the same setHot.
 ## v13.61 - A RESTORE CODE REPLACES THE WHOLE SAVE
 
 The Undercroft audit of 2026-09-14, finding 4, the low-impact one. A restore code rebuilds

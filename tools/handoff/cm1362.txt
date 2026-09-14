@@ -1,0 +1,9 @@
+v13.62: a cooked grenade owns the hand until it is thrown
+
+Switching to the gun mid-cook fired the gun with a live grenade in hand and froze
+the fuse, and the throw key threw a second grenade. The fuse now burns whatever is
+selected, the gun does not fire while cooking, and the throw key waits.
+
+Check 13.62 cooks a Frag and switches to an automatic gun. Fails on v13.61.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

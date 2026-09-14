@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.61';
+var VER='13.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12085,6 +12085,7 @@ function gunKeyLine(){
 function doThrow(){
   var p=G.player;
   if(p.downed||p.roll>0) return;
+  if(p.cooking){ if(!G.sim) say('Throw the one in your hand first.'); return; }   // v13.62: one grenade at a time
   var tk=THROWKEYS[G.tsel];
   if(G.pouch[tk]<=0){ emptyThrowCell(tk); return; }
   G.pouch[tk]--; G.tel.thr[tk]++;
@@ -15346,6 +15347,12 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
   // Tools and assigned valuables are not held things, so they still yield.
   // v13.42, HIS RULING OF 2026-09-13: the valve is gone too. Nothing selects the
   // gun for him; an empty cell says what is missing and which key brings it up.
+  // v13.62, in-raid audit: A COOKED GRENADE KEEPS BURNING WHATEVER IS SELECTED. The fuse
+  // only ran in the throwable branch, so switching cells mid-cook stopped it dead.
+  if(p.cooking&&mouse.down&&!(HSC&&HSC.kind==='throw')){
+    p.cookT=(p.cookT||0)+dt;
+    if(p.cookKind==='frag'&&p.cookT>=FRAG_FUSE) cookOff();
+  }
   var hotGun=(!HSC||HSC.kind==='gun'||HSC.kind==='item');
   if(mouse.down&&!hotGun){
     // THROWABLES COOK, v3.11. Press pulls the pin and starts the clock in your
@@ -15386,7 +15393,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       else useHot();
     }
   }
-  else if(mouse.down&&!p.trigYield&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v12.08: not on the hold that yielded to the gun
+  else if(mouse.down&&!p.trigYield&&!p.cooking&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v13.62: no shot with a live grenade in hand   // v12.08: not on the hold that yielded to the gun
     var _mw=p.wep;
     if(_mw.mag===0){
       if(_mw.auto||!p.fired){ p.lastShot=now; p.fired=true;
@@ -29722,7 +29729,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.61: A RESTORE CODE REPLACES THE WHOLE SAVE. Undercroft audit of 2026-09-14, finding 4: restoreApply replaced the stash, credits and guns but never the loadout, the belt, the saved packings or an armed Data Core, so the restored character kept the old belt keys, the old packing and intel armed from a core this save never spent. It now clears all five with the rest of the save. Check 13.61 arms a core, packs and binds an item, restores a code, and requires all five cleared, with the stash replaced as the control; it fails on v13.60',
+  now:'v13.62: A COOKED GRENADE OWNS THE HAND UNTIL IT IS THROWN. In-raid audit of 2026-09-14, finding 3: the cook timer only ran in the throwable branch of the trigger and the gun branch never checked p.cooking, so switching to the gun mid-cook fired the gun with a live grenade in hand and froze the fuse, and G while cooking threw a second grenade. The fuse now burns whatever cell is selected, the gun does not fire while a grenade is cooking, and a throw key says to throw the one in hand first. Check 13.62 cooks a Frag, switches to an automatic gun and holds the trigger, and requires no shot and the fuse still counting, and G to throw nothing extra, with the gun firing normally as the control; it fails on v13.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

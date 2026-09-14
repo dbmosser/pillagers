@@ -1,0 +1,9 @@
+v13.63: nothing on the belt is spent from the floor
+
+The belt key and the trigger on a belt cell used items while downed, where the
+heal never ticks, so the item was spent for nothing. useHot now refuses while
+down and says so.
+
+Check 13.63 uses a Bandage while downed and standing. Fails on v13.62.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

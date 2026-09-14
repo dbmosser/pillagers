@@ -1,0 +1,10 @@
+v13.64: a Medkit is not spent at full health
+
+tickHeal kept a Bandage's 85 ceiling after emptying the queue, so full health
+read as 85 and a Medkit was used for nothing. The ceiling now clears with the
+queue.
+
+Check 13.64 runs a Bandage into its ceiling then uses a Medkit at full. Fails
+on v13.63.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
