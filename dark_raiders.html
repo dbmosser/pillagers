@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.73';
+var VER='13.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19608,9 +19608,16 @@ var _cdone=contractExtract(G.bag,haul);
     // never banked: banking it silently ended the fresh starter roll forever,
     // because owning one made it the permanent equipped gun from then on.
     var kept=carriedGuns(G.player);
-    for(i=0;i<kept.length;i++){
-      // v6.68, his note: no line about it. The gun is still kept, silently.
-      if(P.weapons.indexOf(kept[i].id)<0) P.weapons.push(kept[i].id);
+    // v13.74, downed and extraction audit: each hand on its own, by where its gun came from. A
+    // new id goes to the armoury; a second copy that did not come out of your armoury goes to
+    // the stash, as the same gun carried in the backpack does; your own armoury gun is never
+    // copied. v6.68, his note: no line about it. The gun is still kept, silently.
+    var _kp=G.player, _ks=[[_kp.wep,_kp.wepIssued,_kp.wepFromArmory],[_kp.sec,_kp.secIssued,_kp.secFromArmory]];
+    for(i=0;i<_ks.length;i++){
+      var _kw=_ks[i][0];
+      if(!_kw||_kw.id==='fists'||_ks[i][1]) continue;
+      if(P.weapons.indexOf(_kw.id)<0) P.weapons.push(_kw.id);
+      else if(!_ks[i][2]&&ITEMS['gun_'+_kw.id]) P.stash.push('gun_'+_kw.id);
     }
     if(kept.length) P.equipped=kept[0].id;
     // v12.38, audit gun-slot-reconcile: SLOT TWO IS RECONCILED WITH SLOT ONE.
@@ -29781,7 +29788,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.73: GOING DOWN SHUTS THE STALL. Downed and extraction audit of 2026-09-14, finding 3: the only line that closes the stall when you go down is on the standing path below the downed return, so the stall stayed open over the DOWN screen, the number keys bought with banked Credits into a backpack about to die, and 1 sold the backpack into stall money lost on death. damagePlayer now shuts the stall as it clears the heal, and pedBuy and pedSellAll refuse from the floor. Check 13.73 downs the player with the stall open and requires it shut and a buy refused with the Credits kept, with the same buy standing as the control; it fails on v13.72',
+  now:'v13.74: A SECOND COPY OF A GUN YOU OWN IS KEPT WHEN YOU EXTRACT HOLDING IT. Downed and extraction audit of 2026-09-14, finding 1: the extraction added a gun in your hands to the armoury only when its id was new and otherwise dropped it, while the same gun in the backpack went to the stash, so a found carbine that auto-equipped over your own vanished at the extraction. Each hand is banked on its own by where its gun came from: a new id to the armoury, a second copy not from your armoury to the stash, your own armoury gun never copied. Check 13.74 extracts holding a found copy of an owned gun and requires one more in the stash, with the backpack copy and the armoury gun as the two controls; it fails on v13.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,8 @@
+v13.75: a drink keeps wearing off while you are down
+
+The drink clock ticked below the downed and roll returns, so drinks froze on
+the floor. It now ticks beside the stim clock.
+
+Check 13.75 runs two seconds downed with a drink. Fails on v13.74.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

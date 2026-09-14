@@ -1,0 +1,8 @@
+v13.76: backing out at once no longer deletes a gun you bagged
+
+An abandon inside 1.5 seconds took the discard path, which skipped the restore
+of armoury guns bagged mid-raid. It now restores them too.
+
+Check 13.76 bags the armoury carbine and abandons at once. Fails on v13.75.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

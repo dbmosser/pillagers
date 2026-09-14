@@ -40024,6 +40024,40 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.74 - A SECOND COPY OF A GUN YOU OWN IS KEPT WHEN YOU EXTRACT HOLDING IT
+
+The downed and extraction audit of 2026-09-14, finding 1. At the extraction, each gun in your
+hands was added to the armoury only when its id was new. Otherwise nothing happened to it. The
+same gun carried in the backpack goes to the stash as a duplicate through bankItem, and a
+death bills it as lost, but held in the hand it was simply dropped.
+
+The common case on a mature profile:
+
+- You carry your armoury carbine, and a better carbine auto-equips over it.
+- Yours goes into the backpack and comes off the armoury list.
+- At the extraction the backpack puts yours back, and the found one in your hand vanishes.
+
+Two identical guns, one in each hand, also lost one, because carriedGuns drops the repeat.
+
+THE BUILD. Each hand is banked on its own, by where its gun came from:
+
+- A new id goes to the armoury.
+- A second copy that did not come out of your armoury goes to the stash.
+- Your own armoury gun is never copied.
+
+P.equipped and the slot two repair still run from carriedGuns as before.
+
+MEASURED. Check 13.74 extracts three times with a carbine in the armoury:
+
+- A found carbine in hand must add one to the stash (the finding).
+- The same carbine carried in the backpack must add one (the control that the check can see a
+  stash copy).
+- Your own armoury carbine in hand must add none (the guard against copying).
+
+It fails on v13.73.
+
+Not verified: an issued loaner in one hand and a found copy in the other, and a gun re-equipped
+from the backpack mid-raid, both of which the provenance flags cover but no check drives.
 ## v13.73 - GOING DOWN SHUTS THE STALL
 
 The downed and extraction audit of 2026-09-14, finding 3. The only line that closes the stall
