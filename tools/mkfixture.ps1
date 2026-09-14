@@ -5718,6 +5718,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.96',what:'the gun hover prints its real rate of fire: the gun with the shortest gap between shots reads more rounds per minute than the gun with the longest, and its rate is the gap turned into shots a minute (unit audit finding 1)',
+   run:function(){
+     if(typeof itemRows!=='function'||typeof WEAPONS==='undefined'||typeof ITEMS==='undefined') return 'SKIP: no gun hover in this build';
+     var guns=[];
+     for(var k in ITEMS){ var it=ITEMS[k]; if(it&&it.use==='gun'&&it.gk&&WEAPONS[it.gk]&&WEAPONS[it.gk].rof>0) guns.push(k); }
+     if(guns.length<2) return 'SKIP: fewer than two gun items';
+     guns.sort(function(a,b){ return WEAPONS[ITEMS[a].gk].rof-WEAPONS[ITEMS[b].gk].rof; });
+     var fast=guns[0], slow=guns[guns.length-1], gf=WEAPONS[ITEMS[fast].gk], gs=WEAPONS[ITEMS[slow].gk];
+     if(!(gf.rof<gs.rof)) return 'SKIP: every gun has the same gap between shots';
+     function rate(key){ var R=itemRows(key); for(var i=0;i<R.length;i++) if(R[i][0]==='RATE'){ var m=String(R[i][1]).match(/(\d+) rpm/); return m?+m[1]:-1; } return -1; }
+     var rf=rate(fast), rs=rate(slow), bad=[];
+     // CONTROL: both hovers print a RATE in rpm.
+     if(rf<0||rs<0) return 'SKIP: a gun hover printed no rate in rpm here';
+     if(!(rf>rs)) bad.push('the '+ITEMS[fast].name+', '+gf.rof+' ms between shots, reads '+rf+' rpm against '+rs+' rpm for the '+ITEMS[slow].name+' at '+gs.rof+' ms');
+     if(rf!==Math.round(60000/gf.rof)) bad.push('the '+ITEMS[fast].name+' reads '+rf+' rpm, not the '+Math.round(60000/gf.rof)+' its '+gf.rof+' ms gap fires');
+     return bad.length?bad.join('; '):null; }},
   {v:'14.95',what:'the SHORT WINDOW term does not promise to cut a raid clock that is off: with the clock on it names the full clock, and with the clock off it names neither the full clock nor the cut one (falsy-zero audit finding 1)',
    run:function(){
      if(typeof TERMS==='undefined'||typeof CFG==='undefined'||typeof DEF==='undefined') return 'SKIP: no terms in this build';

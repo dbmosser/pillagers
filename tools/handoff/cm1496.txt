@@ -1,0 +1,9 @@
+v14.96: the gun hover prints its real rate of fire
+
+The time between shots was printed as rounds per minute, so the fastest guns
+read slowest and the damage a second was wrong by up to eight times. Both now
+come from the gap between shots.
+
+Check 14.96. Fails on v14.95.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

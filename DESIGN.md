@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.96 - THE GUN HOVER PRINTS ITS REAL RATE OF FIRE
+
+Unit audit finding 1 (HIGH). In WEAPONS, rof is the milliseconds between shots: the trigger fires when now minus the last shot
+is greater than rof, now is G.t in milliseconds, and machines wait rof/1000 seconds. The item hover shown in the stash and the
+in-raid backpack printed rof as rounds per minute, and worked out the damage a second held as rof/60. So the Compact SMG, 88 ms
+between shots, read 88 rpm; the Whisper, 520 ms, read 520 rpm and 121 damage a second held. The order was backwards: the slowest
+gun read fastest, on the panel used to choose a gun. The comment above the function said rof was rounds per minute.
+
+THE BUILD. Words only. RATE is 60000/rof rounds per minute and the damage a second held is damage times 1000/rof. The comment
+says milliseconds. No weapon number moves.
+
+MEASURED. Check 14.96 takes the gun items with the shortest and longest gaps (control: both hovers print a rate in rpm): the
+fastest must read more rpm than the slowest, and its rate must be its gap turned into shots a minute. It fails on v14.95.
+
+Not verified: the hover by eye; shots counted in a live raid.
 ## v14.95 - THE SHORT WINDOW TERM DOES NOT PROMISE TO CUT A RAID CLOCK THAT IS OFF
 
 Falsy-zero audit finding 1 (LOW). The tuning console's raid timer slider reaches 0, shown as OFF, and every raid reader treats 0
