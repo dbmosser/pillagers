@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.87';
+var VER='14.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2461,7 +2461,7 @@ function txWatch(){
 }
 // The editor itself. One floating input, positioned over whatever was clicked,
 // used for canvas text and DOM text alike so there is one gesture to learn.
-var TXBOX=null;
+var TXBOX=null, TXEAT=0;   // v14.88: set when the editor took a mousedown, so the click after it is eaten too
 function txClose(){ if(TXBOX&&TXBOX.parentNode) TXBOX.parentNode.removeChild(TXBOX); TXBOX=null; }
 function txOpen(orig,shown,px,py,pw,ph){
   txClose();
@@ -2514,11 +2514,17 @@ function txClick(cx,cy){
 (function(){
   try{
     document.addEventListener('mousedown',function(ev){
+      TXEAT=0;
       if(CFG.textEdit!==1||!DEV_LOCAL) return;   // v10.49: never away from his machine
       if(TXBOX&&ev.target===TXBOX) return;
+      if(ev.target&&ev.target.closest&&ev.target.closest('#go_textEdit')) return;   // v14.88: the switch that turns this off stays a switch
       var r=txClick(ev.clientX,ev.clientY);
       if(!r){ txClose(); return; }
       ev.preventDefault(); ev.stopPropagation();
+      // v14.88, words audit finding 1: AND THE CLICK THAT FOLLOWS IS EATEN. Stopping mousedown does not stop the click after it,
+      // so a word clicked on a button or a menu row opened the editor and pressed the button too: Equip all equipped, HIRE
+      // hired, a Settings row changed its option.
+      TXEAT=1;
       if(r.kind==='dom') return;
       // The canvas has no elements to ask, so the answer is one recorded frame:
       // what fillText actually painted, where, at what size. Two frames deep
@@ -2533,6 +2539,7 @@ function txClick(cx,cy){
         });
       });
     },true);
+    document.addEventListener('click',function(ev){ if(!TXEAT) return; TXEAT=0; ev.preventDefault(); ev.stopPropagation(); },true);   // v14.88
   }catch(e){}
 })();
 // v11.52, HIS NOTE: credits and XP shown at all times in the upper right, in
@@ -30129,7 +30136,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.87: THE UNDERCROFT BELT COUNTS WHAT GOES UP. The belt drawn in the Undercroft had an empty pouch, so a key on three packed Frags read 0 and greyed while the stash row said x3, and a key on gun 2 was skipped. The pouch now counts packed grenades and gun 2 is the equipped second gun. Check 14.87 draws that belt with three Frags packed; it fails on v14.86',
+  now:'v14.88: A WORD CLICKED IN EDIT MODE IS NOT ALSO PRESSED. The words editor stopped the mousedown but not the click after it, so clicking the word on a button or menu row opened the editor and pressed it too, equipping, hiring or changing a setting. The click that follows is now eaten, and the Edit the words switch itself still works. Check 14.88 clicks a button word in edit mode; it fails on v14.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

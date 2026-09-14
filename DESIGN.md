@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.88 - A WORD CLICKED IN EDIT MODE IS NOT ALSO PRESSED
+
+Words audit finding 1 (HIGH, his tool). With Edit the words on, a mousedown on a word opens the editor over it and stops the
+mousedown. Stopping a mousedown does not stop the click that follows it, and nothing else in the file checks edit mode, so
+clicking the word on a button or a menu row opened the editor and pressed the button as well: "Equip all" on an item menu
+equipped the items, HIRE hired, and a Settings row changed its option while he was only trying to reword it.
+
+THE BUILD. When the editor takes a mousedown, the click after it is eaten too. The Edit the words switch in Settings is left
+alone, so it can still be turned off by clicking it.
+
+MEASURED. Check 14.88 puts a probe button on top, turns edit mode on, presses the button (control: the editor opens on its word)
+and clicks it: the button must not have been pressed. It fails on v14.87.
+
+Not verified: rewording a real menu row by hand with the mouse.
 ## v14.87 - THE UNDERCROFT BELT COUNTS WHAT GOES UP
 
 Belt audit finding 4 (LOW). The belt drawn in the Undercroft (on the floor and in its backpack) is built from hubBagState, a
