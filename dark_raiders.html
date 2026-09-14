@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.35';
+var VER='14.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29355,7 +29355,11 @@ function restoreCursor(){
   if(G&&!G.over) say('Cursor reset.');
 }
 document.addEventListener('visibilitychange',function(){
-  if(document.hidden) releaseAllKeys(); else lastTs=performance.now();
+  // v14.36, audio audit finding 2: A HIDDEN TAB GOES QUIET. Hiding or minimising the tab stops the frames, so the game
+  // freezes and the ambient bed is never ramped again, but the audio context kept running: room tone, rain and dread held
+  // at their last level for as long as the tab stayed hidden. The context is suspended here; ac() resumes it on the first
+  // frame back, since the music, reverb and ambience ticks all call it.
+  if(document.hidden){ releaseAllKeys(); try{ if(AC&&AC.suspend) AC.suspend(); }catch(e){} } else lastTs=performance.now();
 });
 window.addEventListener('blur',releaseAllKeys);
 window.addEventListener('focus',function(){ releaseAllKeys(); lastTs=performance.now(); });
@@ -29994,7 +29998,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.35: THE SOUND OF THE MACHINES NO LONGER MOVES THE SEEDED WORLD. The machine voice timers and the crawler skitter drew from the seeded stream, and only a live raid with working audio reached them, so the same seed played differently with sound on than in the bot or the fixture, shifting weather, lightning, finds and loot. They now draw from the cosmetic stream. Check 14.35 counts seeded draws while a crawler voices with a fake audio context; it fails on v14.34',
+  now:'v14.36: A HIDDEN TAB GOES QUIET. Switching tabs or minimising during a raid froze the frames but not the audio, so room tone, rain and dread held at their last level for as long as the tab stayed hidden. The audio context is now suspended when the tab is hidden, and the first frame back resumes it. Check 14.36 fires the visibility change on a hidden pane with a fake audio context; it fails on v14.35',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

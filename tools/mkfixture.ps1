@@ -5718,6 +5718,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.36',what:'a hidden tab goes quiet: the visibility change on a hidden page suspends the audio context, and still lets go of held keys (audio audit finding 2)',
+   run:function(){
+     if(typeof AC==='undefined'||typeof releaseAllKeys!=='function') return 'SKIP: no audio context holder in this build';
+     if(!document.hidden) return 'SKIP: the page is visible, so the hidden branch cannot be driven here';
+     var bad=[], calls=[], _AC=AC;
+     function MK(path){ var f=function(){}; return new Proxy(f,{get:function(t,k){ if(k==='currentTime') return 1; if(k==='sampleRate') return 44100; if(k==='state') return 'running'; if(typeof k==='symbol') return k===Symbol.toPrimitive?function(){ return 1; }:undefined; if(k==='then'||k==='toJSON') return undefined; return MK(path+'.'+k); }, set:function(){ return true; }, apply:function(){ calls.push(path); return MK(path+'()'); }}); }
+     try{
+       __topClear();
+       var K=__keysRef(); K['KeyW']=true;
+       AC=MK('AC');
+       document.dispatchEvent(new Event('visibilitychange'));
+       // CONTROL: the handler ran, because it let go of the held key.
+       var K2=__keysRef();
+       if(K2['KeyW']||K['KeyW']===true&&K2===K) return 'SKIP: the visibility handler did not let go of a held key, so it did not run here';
+       if(calls.indexOf('AC.suspend')<0) bad.push('on a hidden page the audio context was not suspended, so the ambient bed keeps playing while the game is frozen ('+(calls.join(',')||'no audio calls')+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ AC=_AC; try{ var K3=__keysRef(); for(var k3 in K3) K3[k3]=false; }catch(_k){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.35',what:'the sound of the machines draws no seeded numbers: with a working audio context, a crawler voicing through its timers and a hunting skitter burst make no draw from the seeded stream, while a seeded draw is still counted (audio audit finding 1)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
