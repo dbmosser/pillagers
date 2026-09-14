@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.59';
+var VER='14.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,12 +1361,12 @@ var VER='14.59';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='14.40';
+var WHATSNEW_VER='14.60';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'STORMS, SOUND AND REWARDS. Lightning no longer hits you through a wall or under a roof, the flash no longer sticks after a storm passes, and a noise near the Peddler no longer leaves the threat sound playing at his stall. A reward gun claimed with nothing in hand becomes your gun, your level is right the moment a save loads, the game goes quiet in a hidden tab, and a look you wear or buy makes a sound.',
-  'A CONTROLLER ON EVERY SCREEN, SAVES AND YOUR BELT KEYS. A controller now works the title screen and the pause box and does not fire when you press ASCEND. A gun in your backpack comes back if the page closes mid-raid, and in an uncalled ring the downed screen offers the call. A second hire does not eat the first fee, a click on a filled belt key clears it, and key 1 picks up the gun bound to it.',
+  'YOUR SAVES, YOUR BACKPACK AND YOUR CRASH REPORTS. Erasing a save erases its UNDO copy, and a save the game cannot read is listed as UNREADABLE instead of being replaced. The backpack no longer opens while you are down or keeps a drag after a raid ends, and up and down reach every stack in it. A crash repeating every frame is one entry in your run report, and Clear recorder clears old crashes too.',
+  'STORMS, A CONTROLLER ON EVERY SCREEN AND YOUR BELT KEYS. Lightning no longer hits you through a wall or under a roof, and a noise near the Peddler no longer leaves the threat sound playing. A controller now works the title screen and the pause box, and in an uncalled ring the downed screen offers the call. A second hire does not eat the first fee, and key 1 picks up the gun bound to it.',
   'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
   'A CONTROLLER WORKS ON THE UNDERCROFT FLOOR AND IN EVERY RAID. View opens your backpack and Menu pauses, you can search and call for extraction from inside an extraction point, you can trade with the peddler, and the prompts name your buttons. The menus also fit the 1280 by 720 window itch opens the game at.',
@@ -30066,7 +30066,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.59: UP AND DOWN REACH EVERY BACKPACK STACK. A row step wrapped by the stack count, so with twelve columns and six stacks down stayed on the first stack, and a controller, which browses with up and down only, could reach nothing else. Down now walks a column and moves on to the next; up walks back. Check 14.59 presses down and up six times each over six stacks; it fails on v14.58',
+  now:'v14.60: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 14.40 against 14.59, past the fifteen builds the card checks allow, and the card said nothing about the save, floor, crash report and backpack fixes of v14.41 to v14.59. Two of my own card lines are rewritten in place: the first names the new news and the second merges the two older lines, keeping what checks 14.40, 14.27, 14.14 and 14.02 read, and WHATSNEW_VER moves to 14.60. Check 14.60 requires the card current and naming the save news, with every card check still holding; it fails on v14.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

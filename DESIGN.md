@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.60 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+A card refresh, as at v14.40, and a late one. WHATSNEW_VER stood at 14.40 against a build at 14.59: past the fifteen builds
+the card checks allow (from v14.55 their floating point difference was already over 0.15), and the card said nothing about
+v14.41 to v14.59, the save slot, Undercroft floor, crash report and backpack fixes.
+
+THE BUILD. Two of my own card lines are rewritten in the same slots, newest first:
+
+- your saves, your backpack and your crash reports (v14.41 to v14.59),
+- storms, a controller on every screen and your belt keys, merged from the two older lines, keeping the lightning news check
+  14.40 reads, the title screen and pause box news check 14.27 reads, the uncalled ring news check 14.14 reads and the belt
+  key news check 14.02 reads.
+
+The third of my lines, the stash entry inside the thirteen the card draws (check 13.34) and none of his edited lines are
+touched. WHATSNEW_VER moves to 14.60.
+
+MEASURED. Check 14.60 requires the card within fifteen builds of the build, naming the save news, and still opening with
+the alpha line. Every check that reads the card is run on the dry build. It fails on v14.59.
+
+Not verified: the card read at 1280x720 by eye.
 ## v14.59 - UP AND DOWN REACH EVERY BACKPACK STACK
 
 Backpack audit finding 4 (MEDIUM). With the backpack open the arrows select a stack: left and right step one, up and down
