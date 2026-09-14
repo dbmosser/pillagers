@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.42 - ENTER ON THE TITLE STARTS THE GAME AND NOTHING ELSE
+
+Title and saves audit finding 2 (MEDIUM, browser dependent). Any key on the title starts the game; the listener called go()
+for Enter and Space but did not cancel the key. A mouse click on GO FULLSCREEN leaves that button focused, and a focused
+button's default action on Enter is a click. So click GO FULLSCREEN, press Enter: go() opened the Undercroft, then the
+browser clicked the now hidden GO FULLSCREEN and fullscreen toggled off. He landed in the Undercroft windowed. The floor
+handler already cancels Space; nothing cancelled Enter.
+
+THE BUILD. Enter and Space on the title cancel the key's default action before starting the game.
+
+MEASURED. Check 14.42 presses a cancelable Enter with the title hidden (control: nothing cancels it) and with the title
+showing (the game must start, and the key must be cancelled). It fails on v14.41.
+
+Not verified: GO FULLSCREEN then Enter in a real browser window.
 ## v14.41 - ERASING A SAVE ERASES ITS UNDO COPY
 
 Title and saves audit finding 1 (MEDIUM). Since v14.06 each save keeps its own restore backup beside it, under the save's
