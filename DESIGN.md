@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.65 - THE LOADOUT QUESTION COUNTS WHAT MY LOADOUT WILL TAKE UP
+
+Ascent audit finding 1 (LOW). ASCEND TO THIS SECTOR asks what he is taking up: MY LOADOUT, with "the N items you packed", or
+the freebie kit. TAKE THE FREEBIE KIT on the stash screen empties the packing and the belt plan and sets a copy aside. The
+question counted the now empty packing, so it read "your current tactical belt and backpack" with no items, and MY LOADOUT
+then restored the set-aside items and keys and ascended with them. It also counted packed entries no longer in the stash,
+which the rest of this path drops.
+
+THE BUILD. With the freebie kit taken, the question counts the set-aside packing. Otherwise it counts the packed entries
+still in the stash, the same count the ascent uses.
+
+MEASURED. Check 14.65 packs one Medkit from the stash and asks (control: "1 item you packed"), then sets the freebie kit over
+three set-aside items and asks again: the question must say "3 items you packed". It fails on v14.64.
+
+Not verified: taking the freebie kit at the stash and pressing ASCEND TO THIS SECTOR by hand.
 ## v14.64 - CHECK 10.37 FOLLOWS THE CRASH RULES OF v14.49 AND v14.51
 
 No game change. The full corpus on v14.55 showed check 10.37 red, and it stayed red run on its own, so it was not the hidden
