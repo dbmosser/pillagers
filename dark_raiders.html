@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.54';
+var VER='14.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29433,7 +29433,14 @@ function noteCrash(kind,msg,where){
       try{
         var _pc=[]; try{ _pc=JSON.parse(localStorage.getItem(PRECRASH)||'[]'); }catch(_p0){ _pc=[]; }
         if(!Array.isArray(_pc)) _pc=[];
-        _pc.push({v:VER,t:Date.now(),kind:kind,screen:'boot',msg:msg,where:where,n:1});
+        // v14.55, report audit finding 7: A BOOT CRASH REPEATING EVERY FRAME IS ONE ENTRY TOO. Before the profile loads a crash
+        // goes to its own list, which never merged a repeat: an error repeating each frame while a slow host storage loaded
+        // wrote a new entry and a storage write every frame, and after load up to twelve copies pushed real crashes out. A
+        // repeat of the last entry within the window, numbers ignored, is counted on it. The list is read back from storage on
+        // every call, so every call writes it, or the count would be lost.
+        var _pl=_pc[_pc.length-1], _pnow=Date.now();
+        if(_pl&&_pl.kind===kind&&(_pnow-_pl.t)<CRASH_SAME_MS&&String(_pl.msg).replace(/\d+/g,'#')===msg.replace(/\d+/g,'#')){ _pl.n=(_pl.n||1)+1; _pl.t=_pnow; }
+        else _pc.push({v:VER,t:_pnow,kind:kind,screen:'boot',msg:msg,where:where,n:1});
         while(_pc.length>CRASH_KEEP) _pc.shift();
         localStorage.setItem(PRECRASH,JSON.stringify(_pc));
       }catch(_p1){}
@@ -30042,7 +30049,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.54: A NOTE IS AT MOST 400 CHARACTERS. The outcome card note and in-raid notes had no limit, so pasting the report Copy report had just put on the clipboard stored the whole report inside the run and repeated it in every later report, growing toward the storage limit. Both are now cut at 400, as floor notes already were. Check 14.54 banks a long pause box note in a raid and corrects a run with a long outcome note; it fails on v14.53',
+  now:'v14.55: A BOOT CRASH REPEATING EVERY FRAME IS ONE ENTRY TOO. A crash before the profile loads goes to its own list, which added a new entry and a storage write for every repeat, so a fault repeating while slow storage loaded filled the list and pushed real crashes out once merged. A repeat of the last entry, numbers ignored, is now counted on that entry instead. Check 14.55 reports one boot crash repeating eight times with a changing number; it fails on v14.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

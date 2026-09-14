@@ -40024,6 +40024,23 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.55 - A BOOT CRASH REPEATING EVERY FRAME IS ONE ENTRY TOO
+
+Report audit finding 7 (LOW). A crash before the profile has loaded cannot save the profile (that would write the default
+character over a real save, v11.47), so it goes to its own list in storage and is merged in after the load. That list never
+merged a repeat. On a host with slow async storage, a title-screen drawing error repeating every frame while the profile
+loaded wrote a new entry and a storage write every frame, and after the load up to twelve identical entries pushed real
+saved crashes out of the crash list.
+
+THE BUILD. A boot crash that repeats the last boot entry within the same window, with numbers ignored as in v14.49, is
+counted on that entry. The list is read back from storage on every call, so every call still writes it; what stops is
+the list filling with copies.
+
+MEASURED. Check 14.55 clears the boot list, marks the profile not loaded, reports one error eight times with a changing
+number, restores the flag and reads the list: the crash must be there (control) as one entry counted eight times. It fails
+on v14.54.
+
+Not verified: a slow host storage load with a repeating title error.
 ## v14.54 - A NOTE IS AT MOST 400 CHARACTERS
 
 Report audit finding 5 (LOW). Floor notes are cut at 400 characters; the outcome card note and the notes typed in the
