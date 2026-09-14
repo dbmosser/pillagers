@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.38';
+var VER='14.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3293,7 +3293,11 @@ function ac(){
   // backgrounded tabs and on first load before you have interacted, and nothing
   // here ever asked it to resume, so the game could go silent for a whole
   // session with no way to recover short of a reload.
-  if(AC&&AC.state==='suspended'&&AC.resume){ try{ AC.resume(); }catch(e){} }
+  // v14.39, audio audit finding 5: NO RESUME BEFORE THE FIRST CLICK. The music and reverb ticks call this every frame from
+  // page load, so before a friend had clicked or pressed anything the browser was asked to resume sixty times a second,
+  // refused each time, and logged a warning each time, burying real errors in the console. Resume is asked for once the
+  // page has had a user gesture; where the browser cannot say, it is asked as before.
+  if(AC&&AC.state==='suspended'&&AC.resume&&(!navigator.userActivation||navigator.userActivation.hasBeenActive)){ try{ AC.resume(); }catch(e){} }
   return AC||null;
 }
 // Everything used to arrive dead centre, so a shot in the dark told you it had
@@ -30001,7 +30005,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.38: WEARING OR UNLOCKING A LOOK MAKES A SOUND. Both successes asked for a sound the game has never had, so they were silent while a refusal clanked. They now play the rare find sound. Check 14.38 confirms that voice sounds, that the missing one does not, and that no cosmetic handler still asks for it; it fails on v14.37',
+  now:'v14.39: NO RESUME BEFORE THE FIRST CLICK. The audio was asked to resume every frame from page load, so before any click the browser refused and logged a warning sixty times a second, burying real errors in the console. Resume is now asked for only once the page has had a click or key press. Check 14.39 calls ac() on a suspended fake context with and without a recorded gesture; it fails on v14.38',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -5718,6 +5718,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.39',what:'no audio resume before the first click: on a suspended audio context, ten calls to ac() before any user gesture ask to resume nothing, while after a gesture they still ask (audio audit finding 5)',
+   run:function(){
+     if(typeof ac!=='function'||typeof AC==='undefined') return 'SKIP: no audio context holder in this build';
+     var bad=[], resumes=0, _AC=AC, own=Object.getOwnPropertyDescriptor(navigator,'userActivation'), faked=false;
+     var fake={state:'suspended', resume:function(){ resumes++; return {then:function(){}}; }, suspend:function(){}};
+     var gesture=function(active){ try{ Object.defineProperty(navigator,'userActivation',{configurable:true,get:function(){ return {hasBeenActive:active,isActive:active}; }}); faked=true; return navigator.userActivation&&navigator.userActivation.hasBeenActive===active; }catch(e){ return false; } };
+     try{
+       AC=fake;
+       if(!gesture(true)) return 'SKIP: this browser will not let the user activation state be faked';
+       // CONTROL: after a gesture, a suspended context is asked to resume.
+       resumes=0; for(var i=0;i<10;i++) ac();
+       if(!resumes) return 'SKIP: after a gesture ac() asked for no resume, so a resume cannot be seen here';
+       // THE FIX: before any gesture, no resume is asked for.
+       gesture(false);
+       resumes=0; for(var j=0;j<10;j++) ac();
+       if(resumes) bad.push('before any click, ten calls to ac() asked the browser to resume '+resumes+' times, each one refused and logged');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       AC=_AC;
+       try{ if(faked){ if(own) Object.defineProperty(navigator,'userActivation',own); else delete navigator.userActivation; } }catch(_u){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.38',what:'wearing or unlocking a look makes a sound: the rare find voice plays oscillators while the old cosmetic voice name plays nothing, and no call in the game still asks for that name (audio audit finding 4)',
    run:function(){
      if(typeof sfx!=='function'||typeof AC==='undefined') return 'SKIP: no sfx or audio context holder in this build';

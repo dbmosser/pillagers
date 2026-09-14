@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.39 - NO RESUME BEFORE THE FIRST CLICK
+
+Audio audit finding 5 (LOW). Browsers start the audio context suspended until the page has had a click or key press. ac()
+asks a suspended context to resume, which is right, but the music and reverb ticks call ac() every frame from page load.
+So a friend sitting on the first-run card without touching anything had the browser asked to resume sixty times a second;
+each request was refused and Chromium logged "AudioContext was not allowed to start" each time. The crash catcher does not
+read those warnings, but they buried real errors in the console of anyone asked to look.
+
+THE BUILD. ac() asks for a resume only once the page reports a user gesture (navigator.userActivation.hasBeenActive).
+Where the browser has no way to say, it asks as before. After the first click the context resumes exactly as it did.
+
+MEASURED. Check 14.39 installs a suspended fake audio context that counts resume requests and fakes the gesture state:
+after a gesture ten calls must ask (control), before any gesture ten calls must ask none. It fails on v14.38.
+
+Not verified: the console of a fresh page load left untouched for a minute.
 ## v14.38 - WEARING OR UNLOCKING A LOOK MAKES A SOUND
 
 Audio audit finding 4 (LOW). On the wardrobe, wearing a look and buying a look both asked sfx for a voice named 'cache',
