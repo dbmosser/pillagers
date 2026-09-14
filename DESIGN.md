@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.97 - A PACK CALL DOES NOT RESET A CRIER ALARM
+
+The machine and pillager AI audit of 2026-09-14, finding 2. When a sentry or crawler first spots the
+player it calls the pack, and packCall pulls nearby sentries, crawlers and criers into chase. It
+skipped only machines already chasing. A crier winding up its alarm is in state alarm, so it was
+overwritten to chase. So:
+
+- If the crier could still see the player, its next sighting started a fresh 3 to 4 second alarm,
+  with the warning line and the sound again. Every further machine that spotted the player reset it
+  again, so in a busy fight the alarm could be put off indefinitely, and the timer the player was
+  racing was wrong.
+- If the player had just broken sight, the alarm was dropped at once instead of after three hidden
+  seconds, and the crier sat in chase and never ran its leave-the-house logic.
+
+THE BUILD. A crier already in alarm is skipped by the pack call and keeps its countdown.
+
+MEASURED. Check 13.97 isolates a crawler and a crier 300 units apart. A patrolling crier must join
+the crawler's call (the control). A crier in alarm with half a second of wind left must stay in alarm
+with the same wind. It fails on v13.96.
+
+Not verified: the end-to-end mark landing half a second later through updateEnts.
 ## v13.96 - AN ENEMY CHARGE DOES NOT TURN YOUR HIRE ON YOU
 
 The machine and pillager AI audit of 2026-09-14, finding 1. explodeFrag turns every survivor in the
