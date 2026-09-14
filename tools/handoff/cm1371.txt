@@ -1,0 +1,8 @@
+v13.71: the stall does not buy issued Bandages
+
+Issued Bandages are a loaner that is never banked, but the stall bought them at
+33 each every raid. The sale and its count now keep them.
+
+Check 13.71 sells a backpack with the issued pair. Fails on v13.70.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

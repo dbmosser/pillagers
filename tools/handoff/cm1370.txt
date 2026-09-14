@@ -1,0 +1,9 @@
+v13.70: SELL BACKPACK leaves your belt alone
+
+The stall sold every copy in the bag, including the ones on the tactical belt
+that the backpack does not show. The sale and its count now leave the belt's
+copies out.
+
+Check 13.70 sells a backpack with a belted Medkit. Fails on v13.69.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

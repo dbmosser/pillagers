@@ -1,0 +1,10 @@
+v13.69: your own charge does not kill your hire
+
+Rounds and fists already skipped the hire; the frag loop did not, so your
+charge killed him with the kill credited to you and a permanent refusal. Your
+charge now skips your standing hire.
+
+Check 13.69 bursts your charge beside the hire, then an enemy one. Fails on
+v13.68.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

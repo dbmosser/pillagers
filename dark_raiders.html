@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.67';
+var VER='13.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18829,7 +18829,10 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
             }
           }
         } else {
-          if(dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); spark(b.x,b.y,'#ff5a4a',10,200); hit=true; }
+          // v13.68, hire audit: a round your hire fired passes through you, as yours pass
+          // through him (v6.72), and it hits a hostile pillager, the man he was aiming at.
+          var _mOwn=!!(b.owner&&b.owner.merc);
+          if(!_mOwn&&dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); spark(b.x,b.y,'#ff5a4a',10,200); hit=true; }
           if(!hit) for(var e3=0;e3<G.ents.length;e3++){
             var en3=G.ents[e3];
             if(en3===b.owner) continue;
@@ -18837,7 +18840,8 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
             // round passed straight THROUGH another raider even once he was
             // aiming at him. The exception is deliberately narrow: feuding
             // raiders only, so machines still never shoot each other.
-            if(dist(b,en3)<en3.r+3&&(en3.kind!==b.owner.kind||feudFoe(b.owner,en3))){
+            if(dist(b,en3)<en3.r+3&&(en3.kind!==b.owner.kind||feudFoe(b.owner,en3)||
+               (_mOwn&&en3.kind==='raider'&&!en3.merc&&en3.hostile!==false&&!en3.friendlyPC))){
               en3.hp-=b.dmg; en3.hitT=.16;
               if(en3.hp<=0) en3.byPlayer=false;
               // A RAIDER SHOT BY A RIVAL MUST NOT GO AND HUNT THE PLAYER, which
@@ -29753,7 +29757,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.67: ISSUED BANDAGES ARE SPENT FIRST, HOWEVER THEY LEAVE. In-raid audit of 2026-09-14, finding 5: v13.54 counted issued Bandages down only in startPrep, so after dropping, selling or giving away the issued pair the next Bandages he found were held back at the extraction. trackIssuedBandages watches how many Bandages the backpack holds on the heal tick and at the extraction, and any fall spends issued ones first; the startPrep decrement goes so a use is not counted twice. Check 13.67 drops the issued Bandages, finds as many, and requires all of them banked, with a use then a find banking exactly one as the second arm; it fails on v13.66',
+  now:'v13.68: YOUR HIRE SHOOTS THE PILLAGERS, NOT YOU. Hire and peddler audit of 2026-09-14, finding 1: mercEngage fires at hostile pillagers on the enemy bullet path, which tested the player with no look at who fired, so a round crossing you hit you under his name; and a pillager takes another pillager round only when feudFoe allows, which it never does for a hire, so every round passed through his target. His rounds now pass through you, as yours pass through him, and hit a hostile pillager. Check 13.68 stages the hire, a hostile pillager and you in a line and requires the pillager hit and you untouched, with the pillager firing at you as the control; it fails on v13.67',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

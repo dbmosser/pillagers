@@ -1,0 +1,22 @@
+## v13.68 - YOUR HIRE SHOOTS THE PILLAGERS, NOT YOU
+
+The hire and peddler audit of 2026-09-14, finding 1, and the standing raid audit line about a
+merc that never shoots raiders. Since v8.24, mercEngage aims the hire at hostile pillagers and
+fires on the enemy bullet path. That path had two faults:
+
+- It tested the player first, with no look at who fired. A round from your own hire crossing
+  your position hit you, was logged under his name, and could down you.
+- A pillager is only hit by another pillager's round when feudFoe allows it, and feudFoe
+  refuses whenever either side is a hire. Every round he fired passed through the man he was
+  aiming at and kept flying, often into you.
+
+THE BUILD. A round your hire fired passes through you, the same rule as your rounds passing
+through him since v6.72. It hits a hostile pillager, using the same test his target picker
+already uses. Machines were always hit and still are.
+
+MEASURED. Check 13.68 stages the hire, a hostile pillager 150 units along a clear line, and you
+65 units beyond him. Ten rounds from the hire must hurt the pillager and leave you at full
+health. Ten rounds from the pillager at you must hit you (the control). It fails on v13.67.
+
+Not verified: how much more the hire now kills, and whether pillagers answering his fire
+change the feel of a raid with him along.

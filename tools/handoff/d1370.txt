@@ -1,0 +1,20 @@
+## v13.70 - SELL BACKPACK LEAVES YOUR BELT ALONE
+
+The hire and peddler audit of 2026-09-14, finding 3. His v8.78 rule is that an item is on the
+tactical belt or in the backpack, never both, and the backpack grid hides the copies the belt
+claims. The stall ignored that. SELL BACKPACK counted and sold everything in G.bag, so:
+
+- A Medkit bound to a belt key went for 55 percent, and the key then said No Medkit left.
+- A gun bought from him at 190 percent, which the stall puts straight on the belt, went back
+  to him at 55 on the next press of 1, and its belt key then did nothing.
+
+THE BUILD. pedBeltClaims counts the belt's copies per key, the same way bagStacks does. The
+sale and the SELL BACKPACK count on the stall both leave those copies out, so the number on
+the stall and what the press sells always agree.
+
+MEASURED. Check 13.70 puts a Medkit on belt key 3 and one plain item in the backpack, presses
+the sale, and requires the Medkit kept and exactly the plain item's price carried. The plain
+item being sold is the control. It fails on v13.69.
+
+Not verified: the drawn count on the stall panel, which uses the same claims but was not read
+off the canvas.

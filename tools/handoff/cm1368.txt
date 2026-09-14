@@ -1,0 +1,9 @@
+v13.68: your hire shoots the pillagers, not you
+
+The hire's rounds hit the player with no owner test and passed through every
+pillager because feudFoe refuses hires. They now pass through the player and hit
+a hostile pillager.
+
+Check 13.68 stages hire, pillager and player in a line. Fails on v13.67.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

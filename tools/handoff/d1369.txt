@@ -1,0 +1,21 @@
+## v13.69 - YOUR OWN CHARGE DOES NOT KILL YOUR HIRE
+
+The hire and peddler audit of 2026-09-14, finding 2. Your rounds pass through your hire
+(v6.72), your fists do too (v11.38), and the hire screen tells you your shots cannot hurt
+him. The frag loop had no such rule. A charge does up to 140 damage, a hire has 78 or less,
+and a hire is never downed, so a charge thrown at something near him killed him outright with
+byPlayer set. That did four things:
+
+- It put a kill on that identity's record, so he refuses to work for you from then on.
+- It ticked a pillager kill contract.
+- It billed his death benefit at the extraction.
+- A charge that only wounded him set him chasing you.
+
+THE BUILD. When the charge is yours, the frag loop skips your standing hire. An enemy charge
+still hurts him.
+
+MEASURED. Check 13.69 bursts your charge 40 units from a 78-health hire and requires his
+health, the kill ledger and his state untouched. An enemy charge in the same spot must wound
+him (the control). It fails on v13.68.
+
+Not verified: a downed hire in the blast, which the rule leaves to take damage as before.
