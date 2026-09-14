@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.66';
+var VER='13.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13249,9 +13249,8 @@ function useMedical(){
 // neither verb waits for the other; each still refuses a second of its own
 // kind while it runs.
 function startPrep(kind,key){
-  // v13.54: a Bandage used spends an issued one first; they are all alike, so what is
-  // left over at the extraction is what he found.
-  if(kind==='heal'&&key==='bandage'&&G&&G.issuedBandages>0) G.issuedBandages--;
+  // v13.67: the issued Bandage count is kept by trackIssuedBandages, which sees every way
+  // one leaves the backpack; this line saw only a use.
   var _pr={t:0,
     max:(kind==='armor'?(CFG.armorPrep===undefined?2:CFG.armorPrep)
                        :(CFG.healPrep===undefined?1.5:CFG.healPrep)),
@@ -13280,8 +13279,20 @@ function tickPrepSlot(p,slot,dt){
   }
   blip('pick');
 }
+// v13.67, in-raid audit: ISSUED BANDAGES ARE SPENT FIRST, HOWEVER THEY LEAVE. A use, a drop, a
+// sale to the peddler and a Bandage handed to a hire all lower how many the backpack holds,
+// and every fall spends issued ones before found ones, so what is left at the extraction
+// above the issued count is what he found. Rises are finds and change nothing.
+function trackIssuedBandages(){
+  if(!G||!G.bag) return;
+  var c=0; for(var i=0;i<G.bag.length;i++) if(G.bag[i]==='bandage') c++;
+  if(G.bandSeen!==undefined&&c<G.bandSeen&&G.issuedBandages>0)
+    G.issuedBandages=Math.max(0,G.issuedBandages-(G.bandSeen-c));
+  G.bandSeen=c;
+}
 function tickHeal(dt){
   var p=G.player;
+  trackIssuedBandages();
   tickPrep(dt);
   if(!(p.healQ>0)) return;
   var give=Math.min(p.healQ,(p.healRate||10)*dt);
@@ -19562,6 +19573,7 @@ silentExit:T.silentExit||0,
 var _cdone=contractExtract(G.bag,haul);
     for(i=0;i<_cdone.length;i++)
       lines.push('<span style="color:#7fc4a0">CONTRACT COMPLETE: '+escHtml(_cdone[i])+'. Complete contract at mainframe.</span>');
+    trackIssuedBandages();   // v13.67: a Bandage that left since the last frame is counted first
     var _issB=G.issuedBandages||0;   // v13.54: the issued Bandages still carried go back to the quartermaster, not the stash
     for(i=0;i<G.bag.length;i++){ if(_issB>0&&G.bag[i]==='bandage'){ _issB--; continue; } var bm=bankItem(G.bag[i]); if(bm) lines.push(bm); }
     if(G.pedCarry&&!G.sim){ P.credits+=G.pedCarry; }
@@ -29741,7 +29753,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.66: THE WHAT IS NEW CARD IS CURRENT AGAIN. The full corpus on v13.61 failed checks 9.19 and 10.38: the card stood at v13.45, past the fifteen-build gate, and said nothing about the controller, contracts, hazard pay, the restore code, the cooked grenade or the belt on the floor. Five lines go in newest first under the alpha line, five so the stash entry stays inside the thirteen the card draws (check 13.34), nothing already on the card is reworded, and WHATSNEW_VER moves to 13.66. Check 13.66 requires the card within fifteen builds and naming the cooked grenade and the belt while down; it fails on v13.65',
+  now:'v13.67: ISSUED BANDAGES ARE SPENT FIRST, HOWEVER THEY LEAVE. In-raid audit of 2026-09-14, finding 5: v13.54 counted issued Bandages down only in startPrep, so after dropping, selling or giving away the issued pair the next Bandages he found were held back at the extraction. trackIssuedBandages watches how many Bandages the backpack holds on the heal tick and at the extraction, and any fall spends issued ones first; the startPrep decrement goes so a use is not counted twice. Check 13.67 drops the issued Bandages, finds as many, and requires all of them banked, with a use then a find banking exactly one as the second arm; it fails on v13.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,24 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.67 - ISSUED BANDAGES ARE SPENT FIRST, HOWEVER THEY LEAVE
+
+The in-raid audit of 2026-09-14, finding 5, and an edge of my own v13.54. That build counted
+the issued Bandages down only in startPrep, when one was used. If he dropped the issued pair,
+sold it to the peddler or gave it to a hire, the count stayed at two, and the next two
+Bandages he found were held back at the extraction as if they had been issued.
+
+THE BUILD. trackIssuedBandages counts the Bandages in the backpack on the heal tick, which the
+player and the bot both run every frame, and once more at the extraction. Any fall spends
+issued ones first, which is the rule v13.54 wrote for a use; a rise is a find and changes
+nothing. The startPrep decrement is removed so a use is not counted twice.
+
+MEASURED. Check 13.67 drops every issued Bandage, finds as many, and requires every one found
+banked. A second arm uses one issued Bandage, finds one, and requires exactly one banked,
+which catches a double count. It fails on v13.66. Check 13.54 still holds.
+
+Not verified: the sale to the peddler and the hand-off to a hire, which reach the same count
+but were not driven; a drop and a find inside one frame, which the count cannot tell apart.
 ## v13.66 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 The full corpus on v13.61 failed checks 9.19 and 10.38 for the same reason: the what is new
