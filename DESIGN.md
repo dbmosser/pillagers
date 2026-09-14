@@ -40024,6 +40024,32 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.79 - THE CLOCK LETS A BOARDING HOLD FINISH
+
+The downed and extraction audit of 2026-09-14, finding 2. Boarding a landed ship is a hold of E
+for 1.4 seconds, longer under a slowing drink. Since v11.98 the window stays open for as long as
+he keeps pulling. But the frame loop tests the raid clock before updatePlayer runs. So:
+
+- When the clock reached zero with a ship down and his pull at, say, 1.3 of 1.4, the raid
+  ended as a death by the timer.
+- He lost the whole backpack and his armoury guns, standing in a landed ring with E held.
+- A ship landing in the last four seconds, whose window runs right up to the clock, made the
+  whole last 1.4 seconds a dead zone.
+
+This is not the v12-era fix to the window outliving the clock; here the window was inside the
+clock and the pull it accepted could not finish.
+
+THE BUILD. When he is inside a landed ring with a pull already running, neither the timer death
+nor the site burn fires, and the clock rests at zero. The pull finishes, or he lets go, the pull
+clears, and the next frame's clock test ends the raid exactly as before. A pull cannot be
+started once the clock is at zero, because the death fires before the frame that would start it.
+
+MEASURED. Check 13.79 lands a ship at an open ring, stands the player in it, sets one second on
+the clock, holds E through real frames, and requires an extraction. The same hold with five
+seconds left must extract (the control). It fails on v13.78.
+
+Not verified: a slowing drink stretching the pull past two seconds, and the downed hauled
+aboard path at zero, which does not pull.
 ## v13.78 - THE EXTRACTED CARD COUNTS ONLY WHAT WAS SECURED
 
 The downed and extraction audit of 2026-09-14, finding 6. Since v13.54, the issued Bandages
