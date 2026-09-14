@@ -1,0 +1,9 @@
+v13.59: crafting no longer breaks what you packed
+
+The crafting bench and the Build Rack spent packed copies without touching the
+loadout or the belt, so packed items vanished and belt keys showed a red 0. They
+now spend unpacked copies first and unpack any packed ones properly.
+
+Check 13.59 crafts a Medkit from packed Bandages. Fails on v13.58.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

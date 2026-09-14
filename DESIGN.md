@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.59 - CRAFTING NO LONGER BREAKS WHAT YOU PACKED
+
+The Undercroft audit of 2026-09-14, finding 1. The crafting bench counted every stash copy
+of an ingredient, packed for the next raid or not, and spliced whichever copy came first.
+It never touched the loadout or the belt. The packing check then silently dropped loadout
+entries that no longer matched the stash. So with two Bandages packed on key 3, crafting a
+Medkit took both: they vanished from the backpack, key 3 kept showing Bandage with a red 0,
+and a quick ascent went up with nothing to heal with. The Build Rack spent its parts the
+same way.
+
+THE BUILD. One helper, spendHeld, now spends from the stash for both. Unpacked copies go
+first. Any packed copies still needed are taken off the loadout through unpackSome, which
+also clears a belt key left pointing at nothing. Crafting says when it had to use packed
+items. Nothing is cheaper and nothing is refused that was allowed before.
+
+MEASURED. Check 13.59 packs both Bandages on key 3 with a Component Kit in the stash,
+presses the Medkit Craft button, and requires the Bandages off the loadout and key 3
+cleared. The control adds two spare unpacked Bandages and requires the packing and the key
+untouched. It fails on v13.58.
+
+Not verified: the Build Rack, which takes the same helper but was not driven; and the words
+of the crafting message, which the check does not read.
 ## v13.58 - ONE GUN CANNOT BE IN BOTH HANDS
 
 The Undercroft audit of 2026-09-14, finding 3. With a Pistol in gun 1 and a Carbine in gun

@@ -1,0 +1,20 @@
+## v13.60 - BUYING WIRT'S LOT NEVER LOCKS YOU OUT OF THE NEXT ONE
+
+The Undercroft audit of 2026-09-14, finding 2. Wirt's lot card is drawn when the station
+opens and captures its lot then; since v11.61 the Buy button buys exactly that lot. But the
+bought stamp (P.wirtLotBought) took the clock at the moment of the click, and nothing
+redraws the card on a timer. So opening Wirt near the end of a five minute window and
+clicking Buy after the change paid for the old lot, which is right, and stamped the new
+window as bought, which is wrong: the card read Bought, new item in five minutes, and he
+was locked out of a lot he never saw.
+
+THE BUILD. The card remembers the window it was drawn for, and the purchase stamps that
+window. The lot bought and its price are unchanged.
+
+MEASURED. Check 13.60 fixes the lot, draws the card in one window, moves the clock to the
+next window before clicking Buy, and requires the stamp to name the window the card was
+drawn for. The control buys with no change of window and requires that window. It fails on
+v13.59.
+
+Not verified: the card still does not redraw itself when the window changes, so it keeps
+showing the old lot until the station is reopened; that is a separate polish item.

@@ -1,0 +1,9 @@
+v13.60: buying Wirt's lot never locks you out of the next one
+
+The lot card buys the lot it drew, but stamped bought with the clock at the
+click, so a click after the five minute change locked him out of the next lot.
+The card now remembers the window it was drawn for and the purchase stamps it.
+
+Check 13.60 moves the clock between drawing and buying. Fails on v13.59.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
