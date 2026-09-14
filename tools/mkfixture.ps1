@@ -5718,6 +5718,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.53',what:'a note with a line break stays one line in the run report: a floor note typed over two lines prints on its labelled line with the break shown, and no report line starts with its second half (report audit finding 4)',
+   run:function(){
+     if(typeof buildExport!=='function') return 'SKIP: no run report builder in this build';
+     var bad=[], keep=P.floorNotes;
+     try{
+       P.floorNotes=[{run:P.runs||0,t:Date.now(),txt:'zqx first half\nzqx second half'}];
+       var out=String(buildExport());
+       // CONTROL: the floor note reached the report.
+       if(out.indexOf('zqx first half')<0) return 'SKIP: the floor note did not reach the report here';
+       var lines=out.split('\n');
+       if(lines.some(function(l){ return l.indexOf('zqx second half')===0; })) bad.push('the second line of a floor note printed at the left margin with no label, reading as a line of the report itself');
+       if(out.indexOf('zqx first half / zqx second half')<0) bad.push('the two halves of the note were not joined on its labelled line');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P.floorNotes=keep; }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.52',what:'a report corrected after Copy report is saved again: with no drop address and this run already saved, sending the report again saves the file instead of marking it not saved, as two waiting runs always did (report audit finding 3)',
    run:function(){
      if(typeof autoExport!=='function'||typeof telemetryDest!=='function'||typeof downloadExport!=='function') return 'SKIP: no report save path in this build';
