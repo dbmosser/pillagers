@@ -1,0 +1,8 @@
+v13.95: a Stray clearing your notoriety clears its fade count
+
+Helping a Stray took the last point of notoriety off but left the fade count,
+so the next point faded after one extraction. The count now clears with it.
+
+Check 13.95 helps a Stray at notoriety 1 and 2. Fails on v13.94.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,19 @@
+## v13.95 - A STRAY CLEARING YOUR NOTORIETY CLEARS ITS FADE COUNT
+
+The contracts, notoriety and waves audit of 2026-09-14, finding 6. A point of notoriety fades after
+four extractions. P.notExt counts extractions while notoriety is above zero, and resets only when a
+point fades. Helping a Stray takes a point off without touching the count. So:
+
+- At notoriety 1, extract three times: the count is 3.
+- Help a Stray: notoriety goes to 0, and the count stays at 3.
+- Later shoot a peaceful pillager (notoriety 1) and extract once: the count reaches 4 and the new
+  point fades after one extraction, not the four the rule promises.
+
+THE BUILD. When helping a Stray takes the last point off, the count is cleared with it. A Stray
+that leaves notoriety above zero leaves the count running, as before.
+
+MEASURED. Check 13.95 hands a Stray what he wants at notoriety 1 with three extractions counted, and
+requires notoriety and the count both at zero. At notoriety 2 the same help must leave notoriety 1
+and the count at 3 (the control). It fails on v13.94.
+
+Not verified: any other route that lowers notoriety to zero without going through a fade.
