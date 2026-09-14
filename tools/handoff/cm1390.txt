@@ -1,0 +1,8 @@
+v13.90: an issued Bandage picked back up is still issued
+
+Dropping the issued Bandages and searching them back up turned them into found
+loot. The pile now carries the issued mark back to the count.
+
+Check 13.90 drops and re-searches both issued Bandages. Fails on v13.89.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

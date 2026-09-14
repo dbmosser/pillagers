@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.83 - A ROLL DOES NOT FREEZE THE RELOAD
+
+The combat and player state audit of 2026-09-14, finding 4. The only reload tick sat on the
+standing path of updatePlayer, below the roll return and the downed return. So:
+
+- Every 0.38 second roll froze the reload bar, and a reload with two rolls in it came in about
+  three quarters of a second late.
+- A reload started just before going down picked up where it stopped, and "Reloaded" appeared
+  after he stood up again.
+
+Healing has run through a roll for a long time, and v11.83 and v13.75 moved the stim and drink
+clocks above both returns; the reload was left behind.
+
+THE BUILD. The reload tick moves into tickReload. It runs where it always did and again in the
+roll branch beside tickHeal. Going down lets the reload go, as it lets the heal go.
+
+MEASURED. Check 13.83 starts a 2050 ms Auto Rifle reload on open ground, runs four 0.09 second
+frames inside a roll, and requires the reload under 1800. The same frames standing must bring
+it under 1800 too (the control). Going down through damagePlayer must clear it. It fails on
+v13.82.
+
+Not verified: the bot's own reload tick in updateBot, which is separate and unchanged.
 ## v13.82 - A BURST STOPS WHEN ITS GUN LEAVES YOUR HAND
 
 The combat and player state audit of 2026-09-14, finding 3. A Burst Carbine fires its first

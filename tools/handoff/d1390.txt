@@ -1,0 +1,21 @@
+## v13.90 - AN ISSUED BANDAGE PICKED BACK UP IS STILL ISSUED
+
+The searching and loot audit of 2026-09-14, finding 6, and an edge of my own v13.67. Since
+v13.67 the issued Bandage count falls whenever the backpack holds fewer Bandages, and a rise
+counts as a find. So:
+
+- Drop both issued Bandages from the backpack. The count falls to zero.
+- Search both piles back up. The backpack rises by two, which counts as two finds.
+- The stall then bought them (v13.71 kept only issued ones), and the extraction banked them.
+
+THE BUILD. Dropping an issued Bandage takes it off the issued count at the drop, and off the
+count the frame tick last saw so it is not taken off twice, and marks its pile. Searching that
+pile back up puts it back on the issued count. A found Bandage dropped and picked up stays
+found.
+
+MEASURED. Check 13.90 drops both issued Bandages, searches both piles back up, and requires the
+issued count back at two. A found Bandage dropped and picked up must stay found (the guard). It
+fails on v13.89.
+
+Not verified: an issued Bandage picked up by a pillager from the pile, which leaves the mark on
+a pile nobody searches.
