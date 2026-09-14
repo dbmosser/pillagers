@@ -1,0 +1,10 @@
+v14.19: the stall reads real presses on a pad
+
+In a raid the pad recorded A and X only the first time it saw them, so the
+stall read stale values: the first X at the peddler shut the stall it opened,
+and A held into the stall pressed SELL BACKPACK. Every button is now recorded
+every raid frame.
+
+Check 14.19. Fails on v14.18.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

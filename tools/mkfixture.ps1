@@ -5718,6 +5718,36 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.16',what:'the stash hover key stays on its screen: with the stash screen and the ascent check both closed, a leftover hover item takes no J junk tag and no number key binding or packing, and on the stash screen J still tags it (Undercroft audit finding 2)',
+   run:function(){
+     if(typeof INVHOVER==='undefined') return 'SKIP: no stash hover key in this build';
+     var bad=[], prof, hub=document.getElementById('hub'), stg=document.getElementById('stagemodal');
+     if(!hub) return 'SKIP: no stash screen element';
+     var press=function(k){ document.dispatchEvent(new KeyboardEvent('keydown',{key:k,bubbles:true,cancelable:true})); };
+     var medkits=function(){ return (prof.kit||[]).filter(function(x){ return x==='medkit'; }).length; };
+     try{
+       __topClear(); __cleanProfile(); prof=__P();
+       try{ __hubEnter(); }catch(_h){}
+       prof.stash=['medkit','medkit','medkit','medkit']; prof.kit=[]; prof.hotAssign={}; prof.junk={};
+       // ARM 1, THE FIX: both screens closed, with a hover item left behind.
+       hub.classList.remove('on'); if(stg) stg.classList.remove('on');
+       INVHOVER='medkit';
+       press('j');
+       if(prof.junk&&prof.junk.medkit) bad.push('with the stash screen closed, J tagged the leftover hover item as junk');
+       INVHOVER='medkit';
+       press('7');
+       if(prof.hotAssign&&prof.hotAssign[6]!==undefined) bad.push('with the stash screen closed, key 7 bound the leftover hover item ('+prof.hotAssign[6]+')');
+       if(medkits()) bad.push('with the stash screen closed, key 7 packed '+medkits()+' Medkits');
+       // ARM 2, the control: on the stash screen J still tags what is under the cursor.
+       prof.junk={};
+       try{ renderHub(); }catch(_r){}
+       hub.classList.add('on');
+       INVHOVER='medkit';
+       press('j');
+       if(!(prof.junk&&prof.junk.medkit)) bad.push('control: on the stash screen J did not tag the hovered item as junk');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ INVHOVER=null; }catch(_i){} try{ hub.classList.remove('on'); }catch(_o){} try{ if(prof) prof.junk={}; }catch(_j){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.15',what:'a second hire does not eat the first fee: with someone hired, clicking another row on the hire bench leaves the credits and the hire alone and says why, a row he cannot afford says so, and an unhired bench still hires and charges once (Undercroft audit finding 1)',
    run:function(){
      if(typeof renderMerc!=='function'||typeof mercCost!=='function'||typeof IDENTITIES==='undefined') return 'SKIP: no hire bench in this build';

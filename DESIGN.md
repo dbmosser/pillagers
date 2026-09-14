@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.16 - THE STASH HOVER KEY STAYS ON THE STASH SCREEN
+
+Undercroft audit finding 2 (MEDIUM). Pointing at a stash item and pressing a number binds it to that belt key, and J tags
+it as junk. The item under the cursor was forgotten only when the mouse left its cell, and the key press itself rebuilds
+the grid under the cursor, so the old cell never said the mouse had left. Closing the stash with ESC or TAB without moving
+the mouse left the item set, and the key listener had no screen check:
+
+- every 1-9 anywhere, in a raid too where the digits also switch belt slots, packed half the copies still in the stash,
+  rebound the key and saved; the backpack survives an extraction, so he came home to items he never packed,
+- with no copies left, every digit clanked and posted a refusal,
+- J anywhere toggled the junk tag, which Sell all salvage then sells.
+
+THE BUILD. The listener answers only while the stash screen or the ascent check is open, and forgets the item otherwise.
+
+MEASURED. Check 14.16 puts four Medkits in the stash, closes both screens with a Medkit left under the cursor, presses J
+and 7 (no junk tag, no key, nothing packed), then opens the stash screen and presses J (control: tagged). It fails on
+v14.15.
+
+Not verified: a real mouse left still over a cell while a raid starts; the check sets the item directly.
 ## v14.15 - A SECOND HIRE DOES NOT EAT THE FIRST FEE
 
 Undercroft audit finding 1 (HIGH). On the hire bench, with someone already hired, clicking another row charged the new fee

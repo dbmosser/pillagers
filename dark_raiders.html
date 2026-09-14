@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.15';
+var VER='14.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29890,7 +29890,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.15: A SECOND HIRE DOES NOT EAT THE FIRST FEE. With someone hired, clicking another row on the hire bench charged the new fee and replaced the hire, so the first fee was gone with no question, and a row he could not afford said nothing. Now a second row leaves the credits and the hire alone and says to press Hire nobody first, and a short row says there are not enough credits. Check 14.15 hires once, clicks a second row, then clicks with no credits; it fails on v14.14',
+  now:'v14.16: THE STASH HOVER KEY STAYS ON THE STASH SCREEN. The item under the cursor was forgotten only on mouseleave, and a key press rebuilds the grid under the cursor, so closing the stash with ESC or TAB left it set: every 1-9 anywhere, in a raid too, packed and bound it, and J anywhere tagged it as junk. The key listener now answers only while the stash screen or the ascent check is open, and forgets the item otherwise. Check 14.16 presses J and 7 with both closed, then J on the stash screen; it fails on v14.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31247,6 +31247,12 @@ function invCell(k,count,opt){
 // same rules as every other way of assigning a key, guns included.
 document.addEventListener('keydown',function(ev){
   if(!INVHOVER) return;
+  // v14.16, Undercroft audit finding 2: THE HOVER KEY STAYS ON THE SCREEN IT WAS SET ON. INVHOVER is cleared only by the
+  // cell's mouseleave, and a key press rebuilds the grid under the cursor, so the old cell never fires it. Closed with ESC
+  // or TAB without moving the mouse, every 1-9 anywhere (in a raid too, where the digits also switch belt slots) packed and
+  // bound that item, and J anywhere tagged it as junk for Sell all salvage. Only the stash screen and the ascent check own it.
+  var _ihHub=document.getElementById('hub'), _ihStg=document.getElementById('stagemodal');
+  if(!((_ihHub&&_ihHub.classList.contains('on'))||(_ihStg&&_ihStg.classList.contains('on')))){ INVHOVER=null; return; }
   if(ev.ctrlKey||ev.altKey||ev.metaKey) return;
   var t=ev.target;
   if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')) return;
