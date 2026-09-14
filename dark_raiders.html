@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.71';
+var VER='13.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11709,7 +11709,7 @@ function pollPad(){
     if(pressed(12)&&!PAD.prev[12]) G.pedSel=(G.pedSel-1+_pn)%_pn;
     if(pressed(13)&&!PAD.prev[13]) G.pedSel=(G.pedSel+1)%_pn;
     if(pressed(0)&&!PAD.prev[0]){ var _pk='Digit'+(G.pedSel+1); raidKey(_pk,false,null); keys[_pk]=false; }
-    if(pressed(2)&&!PAD.prev[2]){ raidKey('KeyE',false,null); keys['KeyE']=false; G.pedSel=0; }
+    if(pressed(2)&&!PAD.prev[2]){ raidKey('KeyE',false,null); keys['KeyE']=false; G.pedSel=0; PAD.xAfterTrade=1; }
     for(var _tb=0;_tb<bt.length;_tb++) PAD.prev[_tb]=pressed(_tb);
     return;
   }
@@ -11755,6 +11755,9 @@ function pollPad(){
   // Timed on the raid clock, not the wall clock between polls, so it means the same
   // 0.35 s of play however fast the frames arrive.
   var _xDown=pressed(2);
+  // v13.72, hire and peddler audit: the X that walked away from the stall is spent until it is
+  // let go. Still held on the next frame, it held E here and the stall opened again.
+  if(PAD.xAfterTrade){ if(_xDown) _xDown=false; else PAD.xAfterTrade=0; }
   if(!_xDown){ PAD.xDownAt=null; PAD.xSearched=false; }
   else { if(PAD.xDownAt==null) PAD.xDownAt=G.t; if(G.searching) PAD.xSearched=true; }
   var _xSearch=!!(G.nearPad&&G.nearContainer&&(PAD.xSearched||PAD.xDownAt==null||(G.t-PAD.xDownAt)<0.35));
@@ -29773,7 +29776,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.71: THE STALL DOES NOT BUY ISSUED BANDAGES. Hire and peddler audit of 2026-09-14, finding 5: the Bandages the lift issues are a loaner never banked (v13.54), but the stall bought them at 55 percent, 33 each, carried home at the extraction every raid. The sale and the stall count now keep the issued count of Bandages, a belted copy counting as issued first. Check 13.71 sells a backpack holding the two issued Bandages and one plain item and requires both Bandages kept and only the plain item paid for, with a found Bandage sold as the control; it fails on v13.70',
+  now:'v13.72: X WALKS AWAY FROM THE STALL AND STAYS AWAY. Hire and peddler audit of 2026-09-14, finding 4, a fault in v13.49: on a controller X closed the stall and released E, but on the next frame the ordinary pad path found X still held, held E for it, and updatePlayer opened the stall again, so X never walked away. The X press that closes the stall is now spent until it is let go. Check 13.72 holds X on a fake pad through three real frames beside the Peddler and requires the stall shut on every one, with the keyboard E opening it as the control; it fails on v13.71',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
