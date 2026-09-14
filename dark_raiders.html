@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.03';
+var VER='14.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29875,7 +29875,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.03: A GUN TAKEN OUT OF THE ARMOURY COMES BACK IF THE PAGE GOES AWAY MID-RAID. Saving, profile and settings audit of 2026-09-15, finding 1: bagging an armoury gun mid-raid takes it off P.weapons and records it only on G.spliced in memory, and the profile is saved mid-raid, so a closed tab, F5, a crash or a PC freeze after such a save left the gun in neither armoury nor stash on reload. The splice is now also kept on P.raidSpliced, endRaid clears it on every path, and the loader puts those guns back. Check 14.03 bags the armoury carbine, loads the saved profile through the real loader and requires the carbine in the armoury, with an ordinary save of an owned carbine as the control; it fails on v14.02',
+  now:'v14.04: A RESTORE CODE REPLACES THE HIRE, CONTRACTS, CUTTING, MAP AND TERMS TOO. Saving, profile and settings audit of 2026-09-15, finding 3: restoreApply cleared the kit, belt, saved packings and core but none of the other state the code does not carry, so a restored character kept the old one paid hire and death benefit, contract progress, seal cutting, explored map and signed Terms. They are cleared with the rest, and the boot refills the board. Check 14.04 restores a code over a character with a hire, a contract at five of six, thirty seconds of cutting and signed Terms, and requires all four gone, with the code name applied as the control; it fails on v14.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32190,6 +32190,10 @@ function restoreApply(o){
   // v13.61, Undercroft audit: the rest of what belonged to the save being replaced. The
   // loadout, the belt, the saved packings and an armed core all went with the old stash.
   P.kit=[]; P.hotAssign={}; P.kitSaved=null; P.kitBeforeFree=null; P.intel=0;
+  // v14.04, save audit: and the rest the code does not carry. A hire he paid for, a contract board half done, cutting on
+  // a sealed door, an explored map and signed Terms all belonged to the character being replaced.
+  P.merc=null; P.contracts=[]; P.seals={}; P.mapSeen={}; P.discover={}; P.terms=[]; P.notExt=0;
+  P.freeKit=0; P.kitChosen=0; P.dropKit=[];
   // v11.66: the armoury, when the code carries one. A gun this build does not
   // know is dropped, the same rule as the stash; an older code without the
   // block leaves the guns as they are rather than stripping them.

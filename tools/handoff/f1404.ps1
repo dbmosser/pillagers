@@ -23,10 +23,8 @@ SubRx @'
        __topClear(); __cleanProfile();
        var P2=__P();
        P2.pname='PROBESOURCE'; P2.credits=4242;
-       var code=restoreMake();
-       if(typeof code!=='string'||!code) return 'SKIP: restoreMake made no code';
-       var o=restoreRead(code);
-       if(!o) return 'SKIP: the code made here does not read back';
+       var o=restoreMake();   // the code as the object restoreApply takes, as check 12.97 builds it
+       if(!o||typeof o!=='object') return 'SKIP: restoreMake made nothing';
        // The character the code is pasted over.
        P2.pname='OLDCHAR';
        P2.merc=(typeof IDENTITIES!=='undefined'&&IDENTITIES.length)?IDENTITIES[0].id:'probe';

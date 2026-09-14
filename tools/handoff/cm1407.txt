@@ -1,0 +1,8 @@
+v14.07: going down closes the map and the backpack
+
+An open map or backpack stayed up over the downed screen, hiding DOWN and the
+bleed timer. Going down now closes both.
+
+Check 14.07 downs the player with each open. Fails on v14.06.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

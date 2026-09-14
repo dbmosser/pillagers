@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.04 - A RESTORE CODE REPLACES THE HIRE, CONTRACTS, CUTTING, MAP AND TERMS TOO
+
+The saving, profile and settings audit of 2026-09-15, finding 3. restoreApply writes what a restore code carries,
+and since v13.61 also clears the kit, the belt, the saved packings and an armed core. The code carries none of these,
+and nothing cleared them:
+
+- the hired mercenary (P.merc): the restored character had the old one's hire without paying, and was billed his
+  death benefit if he died;
+- the contract board (P.contracts): the old one's half-done cards and their progress;
+- seal cutting (P.seals): the hub line still said the old one's seconds of cutting were done;
+- the explored map (P.mapSeen, P.discover) and signed Terms (P.terms), and the notoriety fade count.
+
+The restore panel promises the code replaces the save he is playing.
+
+THE BUILD. restoreApply clears those fields with the rest, together with the freebie and kit-choice flags. The boot's
+ensureContracts refills the contract board.
+
+MEASURED. Check 14.04 makes a code from a character named PROBESOURCE, pastes it over a character with a hire, a kill
+contract at five of six, thirty seconds of cutting and signed Terms, and requires none of the four to survive. The
+code's own name must be applied (the control, which proves the restore ran). It fails on v14.03.
+
+Not verified: the board refill and the hub seal line after the reload the panel triggers.
 ## v14.03 - A GUN TAKEN OUT OF THE ARMOURY COMES BACK IF THE PAGE GOES AWAY MID-RAID
 
 The saving, profile and settings audit of 2026-09-15, finding 1. When an armoury gun leaves your hands mid-raid,

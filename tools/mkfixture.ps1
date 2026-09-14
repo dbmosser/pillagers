@@ -5718,6 +5718,37 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.04',what:'a restore code replaces the hire, contracts, cutting, map and Terms too: restoring a code over a character with a paid hire, a contract at five of six, thirty seconds of cutting on a seal and signed Terms leaves none of them, while the code own name is applied (saving, profile and settings audit 2026-09-15, finding 3)',
+   run:function(){
+     if(!(window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot load a profile';
+     if(typeof restoreMake!=='function'||typeof restoreRead!=='function'||typeof restoreApply!=='function') return 'SKIP: no restore codes in this build';
+     var bad=[], keep=JSON.parse(JSON.stringify(__P()));
+     try{
+       __topClear(); __cleanProfile();
+       var P2=__P();
+       P2.pname='PROBESOURCE'; P2.credits=4242;
+       var o=restoreMake();   // the code as the object restoreApply takes, as check 12.97 builds it
+       if(!o||typeof o!=='object') return 'SKIP: restoreMake made nothing';
+       // The character the code is pasted over.
+       P2.pname='OLDCHAR';
+       P2.merc=(typeof IDENTITIES!=='undefined'&&IDENTITIES.length)?IDENTITIES[0].id:'probe';
+       P2.contracts=[{type:'kill',kind:'crawler',n:6,prog:5,reward:1,tier:'std',desc:'probe kill card'}];
+       P2.seals={'0':{cut:30,tier:0,done:0}};
+       P2.terms=['blackout'];
+       restoreApply(o);
+       var P3=__P();
+       // CONTROL: the code was applied.
+       if(P3.pname!=='PROBESOURCE') return 'SKIP: the code was not applied (name '+P3.pname+'), so nothing here can be measured';
+       if(P3.merc) bad.push('the restored character kept the old one hire ('+P3.merc+')');
+       if((P3.contracts||[]).some(function(c){ return c&&c.prog===5; })) bad.push('the restored character kept the old contract at five of six');
+       if(P3.seals&&P3.seals['0']&&P3.seals['0'].cut>0) bad.push('the restored character kept thirty seconds of cutting on a seal');
+       if((P3.terms||[]).length) bad.push('the restored character kept the old signed Terms');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ __applyLoaded(keep); saveProfile(); }catch(_p){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.03',what:'a gun taken out of the armoury comes back if the page goes away mid-raid: the armoury carbine bagged in a raid, saved, and loaded again through the real loader without the raid ever ending is back in the armoury, as an owned carbine saved and loaded is (saving, profile and settings audit 2026-09-15, finding 1)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy or load a profile';

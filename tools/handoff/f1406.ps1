@@ -27,8 +27,9 @@ SubRx @'
        try{ localStorage.removeItem(BK); }catch(_r){}
        var P2=__P();
        P2.pname='PROBESOURCE'; P2.credits=4242;
-       var code=restoreMake();
-       if(typeof code!=='string'||!code) return 'SKIP: restoreMake made no code';
+       var code='';   // the pasteable string, built the way the game's own code maker builds it
+       try{ code='PIL1'+btoa(unescape(encodeURIComponent(JSON.stringify(restoreMake())))).replace(/=+$/,''); }catch(_mk){ code=''; }
+       if(!code) return 'SKIP: no restore code could be made';
        P2.pname='BEFORECODE'; P2.credits=1717;
        el('rescode').value=code; el('resread').click();
        el('resword').value='restore'; el('resgo').click();
