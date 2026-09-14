@@ -17,12 +17,12 @@ window.addEventListener('error',function(ev){
   if(!(ev&&ev.message)&&!er) return;
   var st=(er&&er.stack)?String(er.stack).split('\n').slice(0,2).join(' '):((ev&&ev.filename)?(ev.filename+':'+ev.lineno):'');
 '@ @'
-// v14.51, report audit finding 2: WHERE A CRASH HAPPENED SURVIVES A LONG MESSAGE. Chrome's stack starts with the message itself,
+// v14.51, report audit finding 2: WHERE A CRASH HAPPENED SURVIVES A LONG MESSAGE. In Chrome a stack starts with the message itself,
 // so the first two lines were the message and the top frame, cut at 200 characters: a canvas error is about 120 characters
 // before the frame, and the cut took the line and column, the only part that says where. The lines that carry a location
 // are kept; a stack with none keeps its first two lines as before.
 function crashWhere(stack){
-  var L=String(stack||'').split('\n'), loc=L.filter(function(x){ return /:\d+:\d+/.test(x); });
+  var L=String(stack||'').split('\n'), loc=L.filter(function(x){ return (/:\d+:\d+/).test(x); });
   return (loc.length?loc:L).slice(0,2).join(' ');
 }
 window.addEventListener('error',function(ev){

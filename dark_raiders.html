@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.50';
+var VER='14.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29457,15 +29457,23 @@ function noteCrash(kind,msg,where){
     if(!crashTold){ crashTold=true; say('Something broke: '+msg.slice(0,80)+'. It was written into your run report.'); }
   }catch(_nc){}
 }
+// v14.51, report audit finding 2: WHERE A CRASH HAPPENED SURVIVES A LONG MESSAGE. In Chrome a stack starts with the message itself,
+// so the first two lines were the message and the top frame, cut at 200 characters: a canvas error is about 120 characters
+// before the frame, and the cut took the line and column, the only part that says where. The lines that carry a location
+// are kept; a stack with none keeps its first two lines as before.
+function crashWhere(stack){
+  var L=String(stack||'').split('\n'), loc=L.filter(function(x){ return (/:\d+:\d+/).test(x); });
+  return (loc.length?loc:L).slice(0,2).join(' ');
+}
 window.addEventListener('error',function(ev){
   var er=ev&&ev.error;
   if(!(ev&&ev.message)&&!er) return;
-  var st=(er&&er.stack)?String(er.stack).split('\n').slice(0,2).join(' '):((ev&&ev.filename)?(ev.filename+':'+ev.lineno):'');
+  var st=(er&&er.stack)?crashWhere(er.stack):((ev&&ev.filename)?(ev.filename+':'+ev.lineno):'');
   noteCrash('error',(ev&&ev.message)||(er&&er.message),st);
 });
 window.addEventListener('unhandledrejection',function(ev){
   var r=ev&&ev.reason;
-  var st=(r&&r.stack)?String(r.stack).split('\n').slice(0,2).join(' '):'';
+  var st=(r&&r.stack)?crashWhere(r.stack):'';   // v14.51: the location lines, not the message
   noteCrash('rejection',(r&&r.message)||String(r),st);
 });
 var ctxLost=false;
@@ -30031,7 +30039,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.50: CLEAR RECORDER CLEARS OLD CRASHES AND FLOOR NOTES TOO. It emptied the run log, but the fresh report still listed every old crash and floor notes for runs that were gone, so an old fault read as a live one. Both are now cleared with the log. Check 14.50 clicks Clear recorder twice with an old crash and an old floor note in place; it fails on v14.49',
+  now:'v14.51: A CRASH NOTE KEEPS WHERE IT HAPPENED. The crash location was the first two stack lines cut at 200 characters, and in Chrome the first line is the message, so a long message cut off the line and column. The location lines are now kept instead. Check 14.51 raises an error with a long message through the real error listener; it fails on v14.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

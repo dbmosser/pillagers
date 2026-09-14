@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.51 - A CRASH NOTE KEEPS WHERE IT HAPPENED
+
+Report audit finding 2 (MEDIUM). The crash catcher records where an error happened as the first two lines of its stack, cut
+at 200 characters. In Chrome the first line of a stack is the message itself, so the location was the message plus only the
+top frame. A canvas error, the kind this game is known to throw, is about 120 characters of message before the frame; with
+a function name and a file:// or itch address the cut fell before ":line:col", the only part that says where the crash was.
+
+THE BUILD. The error and unhandled rejection listeners keep the first two stack lines that carry a line and column. A stack
+with no such line keeps its first two lines as before.
+
+MEASURED. Check 14.51 raises an error with a long message through the real error listener (control: it is noted) and
+requires a line and column in the noted location. It fails on v14.50.
+
+Not verified: a real canvas fault on the itch page.
 ## v14.50 - CLEAR RECORDER CLEARS OLD CRASHES AND FLOOR NOTES TOO
 
 Report audit finding 6 (LOW). Clear recorder, after its confirming second click, emptied the run log and the last sim. The
