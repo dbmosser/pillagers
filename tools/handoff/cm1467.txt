@@ -1,0 +1,9 @@
+v14.67: the sector page names his own gun 2
+
+With gun 1 empty and his own gun in gun 2, the page before the lift named only
+the loaner, not the gun a death can lose. It now names gun 2 whenever it is his
+own gun.
+
+Check 14.67. Fails on v14.66.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

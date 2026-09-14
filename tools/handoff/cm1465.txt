@@ -1,0 +1,9 @@
+v14.65: the loadout question counts what MY LOADOUT will take up
+
+After taking the freebie kit at the stash, the question counted nothing packed
+while MY LOADOUT took the set-aside items. It now counts those, and otherwise
+the packed items still in the stash.
+
+Check 14.65. Fails on v14.64.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

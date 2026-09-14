@@ -1,0 +1,9 @@
+v14.66: the weather hint does not promise a bonus Blackout Protocol cancels
+
+Under the Blackout Protocol term, blackout weather pays no weather bonus, but
+the sector page still promised 1.1x. With the term signed the hint now says
+there is no bonus.
+
+Check 14.66. Fails on v14.65.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
