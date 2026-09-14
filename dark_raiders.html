@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.12';
+var VER='14.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25398,7 +25398,8 @@ var _slp=w2s(p.x,66,p.y);
     // all, while the pull would have taken him.
     var _dz=(typeof standingRing==='function')?standingRing():G.active;
     if(G.over||!_dz) return null;
-    if((_dz.beaconT===null||_dz.beaconT===undefined)&&(G.beaconT===null||!G.active)) return null;
+    // v14.13, HUD audit: an uncalled ring he lies in is not inbound because some other ring is. The call row below offers it instead.
+    if((_dz.beaconT===null||_dz.beaconT===undefined)&&(G.beaconT===null||!G.active||_dz!==G.active)) return null;
     var _sd=(typeof ringLanded==='function')?ringLanded(_dz)
             :(_dz.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined);
     var _ir=dist(p,_dz)<_dz.r;
@@ -25500,11 +25501,13 @@ var _slp=w2s(p.x,66,p.y);
     // covered every state except this one: in the ring, no ship called. A man
     // holding a dead-feeling key for a second with no response concludes it
     // does not work, and he is right to.
-    if(G.beaconT===null&&G.active&&G.active.open&&dist(p,G.active)<G.active.r){
+    // v14.13, HUD audit: the ring he is lying in, uncalled, whatever the global pointer says about another ring.
+    var _cr=(typeof standingRing==='function')?standingRing():G.active;
+    if(_cr&&_cr.open!==false&&(_cr.beaconT===null||_cr.beaconT===undefined)&&dist(p,_cr)<_cr.r){
       _rowY+=Math.round(_hD*1.35);
       ctx.font=_fD; ctx.fillStyle='#4de3d0';
       ctx.fillText('HOLD '+keyLabel('KeyE','E')+' TO CALL FOR EXTRACTION',W/2,_rowY);
-      if(G.active.callT>0) bar(W/2-70,_rowY+Math.round(_hD*0.45),140,7,clamp(G.active.callT/1.6,0,1),'#4de3d0');
+      if(_cr.callT>0) bar(W/2-70,_rowY+Math.round(_hD*0.45),140,7,clamp(_cr.callT/1.6,0,1),'#4de3d0');
     }
     ctx.textAlign='left';
     ctx.restore();
@@ -29887,7 +29890,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.12: THE REVIVE PROMPT SHOWS THE TIME HE ACTUALLY HAS. Raid HUD and map screen audit of 2026-09-15, finding 5: a downed pillager is finished by his sixteen-second bleed clock or his fifty health, which drains at the same pace and which stray fire also takes, whichever runs out first, but the REVIVE prompt printed only the bleed clock, so a man at half health read 16s and was finished about eight seconds later. The prompt now prints the smaller of the two. Check 14.12 traces the prompt for a downed pillager at 25 of 50 health with sixteen seconds of bleed and requires about eight seconds, with a pillager at full health reading sixteen as the control; it fails on v14.11',
+  now:'v14.13: DOWNED IN AN UNCALLED RING, THE OVERLAY OFFERS THE CALL, NOT ANOTHER RING SHIP. Raid HUD and map screen audit of 2026-09-15, finding 1: downedVerb only gave up when both the ring he lay in and the global pointer were uncalled, so with any other ring called a man down in an open uncalled ring read EXTRACTION INBOUND through that other ring landing, and the HOLD E TO CALL FOR EXTRACTION row, reading the pointer, stayed hidden. Both now read the ring he lies in. Check 14.13 calls one ring, downs the player in another, traces the HUD and requires no inbound verb and the call row, with the player down in the called ring reading inbound as the control; it fails on v14.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

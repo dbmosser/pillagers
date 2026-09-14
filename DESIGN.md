@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.13 - DOWNED IN AN UNCALLED RING, THE OVERLAY OFFERS THE CALL, NOT ANOTHER RING'S SHIP
+
+The raid HUD and map screen audit of 2026-09-15, finding 1. downedVerb decides what the downed overlay tells him to do. Since
+v12.94 it reads the ring he is lying in. But it only returned nothing when both that ring and the global pointer (G.beaconT,
+G.active) were uncalled. The pointer mirrors whichever ring has been called anywhere on the map. So:
+
+- A pillager calls extraction point A, or he calls A himself and walks off.
+- He goes down inside open point B, which nobody has called.
+- The overlay reads EXTRACTION INBOUND, "Extracting while downed is permitted", through A's landing and A's whole boarding
+  window. Nothing is coming to B.
+- The HOLD E TO CALL FOR EXTRACTION row also read the pointer, which was live, so it stayed hidden. Holding E in B would
+  have called B, but nothing on screen offered it.
+
+THE BUILD. downedVerb returns nothing for an uncalled ring he is lying in unless it is the called ring. The call row reads the
+ring he is lying in, so an open uncalled ring offers the call whatever another ring is doing.
+
+MEASURED. Check 14.13 calls point A, downs the player inside A, and traces the HUD text: it must read EXTRACTION INBOUND (the
+control, which proves the trace sees the verb). It then downs the player inside point B and requires no EXTRACTION INBOUND and
+the call row drawn. It fails on v14.12.
+
+Not verified: holding E from the floor to call B, which goes through the same pull code as standing.
 ## v14.12 - THE REVIVE PROMPT SHOWS THE TIME HE ACTUALLY HAS
 
 The raid HUD and map screen audit of 2026-09-15, finding 5. A downed pillager has two clocks. One is sixteen seconds of bleed
