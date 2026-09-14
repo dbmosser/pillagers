@@ -1,0 +1,8 @@
+v14.09: the empty second-gun slot says how to fill it
+
+Selecting the empty second-gun slot wrote "Second weapon x0" over its
+explanation in the same call. The explanation now stays.
+
+Check 14.09 selects the vacant slot and reads the message. Fails on v14.08.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

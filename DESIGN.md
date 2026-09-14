@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.05 - THE CRASH CATCHER STOPS SAVING EVERY FRAME AND KEEPS OLDER CRASHES
+
+The saving, profile and settings audit of 2026-09-15, finding 4. noteCrash writes an error into P.crashes for the
+run report. Two faults:
+
+- A repeat of the same error within five seconds only bumps the count on the last entry, but saveProfile ran on
+  every call. The frame loop re-arms before it runs, so an error thrown inside a frame reaches noteCrash every frame.
+  The whole profile, sixty log rows included, was serialised and written to storage about sixty times a second, and
+  the game stuttered for as long as the error lasted.
+- The merge compared only the last entry. Two errors taking turns added a new entry each frame, and within twelve
+  frames the twelve-entry list had pushed out every earlier, different crash, which are the entries the report exists
+  to carry.
+
+THE BUILD. A repeat merges with any entry of the same kind and message inside the window, not only the last. The
+profile is saved when a new entry is added, and a run of repeats saves at most once a window.
+
+MEASURED. Check 14.05 seeds one older crash, stubs the save to count calls, alternates two errors twenty times, and
+requires at most three saves and the older crash still on the list. A genuinely new error must still be saved (the
+control, which proves the fix did not stop saving). It fails on v14.04.
+
+Not verified: the stutter itself, which is inferred from the save count rather than timed.
 ## v14.04 - A RESTORE CODE REPLACES THE HIRE, CONTRACTS, CUTTING, MAP AND TERMS TOO
 
 The saving, profile and settings audit of 2026-09-15, finding 3. restoreApply writes what a restore code carries,

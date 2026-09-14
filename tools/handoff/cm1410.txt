@@ -1,0 +1,8 @@
+v14.10: the give prompt shows only where E gives
+
+The survivor's give prompt showed out to 120 units while E only worked within
+70. The prompt now uses 70.
+
+Check 14.10 traces the HUD text at 100 and 50 units. Fails on v14.09.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

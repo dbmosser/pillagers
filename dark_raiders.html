@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.04';
+var VER='14.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29291,13 +29291,19 @@ function noteCrash(kind,msg,where){
       }catch(_p1){}
       return;
     }
-    var now=Date.now(), last=P.crashes[P.crashes.length-1];
-    if(last&&last.msg===msg&&last.kind===kind&&(now-last.t)<CRASH_SAME_MS){ last.n=(last.n||1)+1; last.t=now; }
+    // v14.05, save audit: a repeat merges with ANY matching entry in the window, not only the last, so two errors taking
+    // turns cannot push every earlier crash out; and a repeat saves at most once a window instead of once a frame.
+    var now=Date.now(), hit=null;
+    for(var _ci=P.crashes.length-1;_ci>=0;_ci--){
+      var _ce=P.crashes[_ci];
+      if(_ce&&_ce.msg===msg&&_ce.kind===kind&&(now-_ce.t)<CRASH_SAME_MS){ hit=_ce; break; }
+    }
+    if(hit){ hit.n=(hit.n||1)+1; hit.t=now; }
     else{
       P.crashes.push({v:VER,t:now,kind:kind,screen:(typeof state!=='undefined'&&state)?state:'?',msg:msg,where:where,n:1});
       while(P.crashes.length>CRASH_KEEP) P.crashes.shift();
     }
-    try{ saveProfile(); }catch(_sp){}
+    if(!hit||!(noteCrash.savedAt>0)||(now-noteCrash.savedAt)>=CRASH_SAME_MS){ noteCrash.savedAt=now; try{ saveProfile(); }catch(_sp){} }
     if(!crashTold){ crashTold=true; say('Something broke: '+msg.slice(0,80)+'. It was written into your run report.'); }
   }catch(_nc){}
 }
@@ -29875,7 +29881,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.04: A RESTORE CODE REPLACES THE HIRE, CONTRACTS, CUTTING, MAP AND TERMS TOO. Saving, profile and settings audit of 2026-09-15, finding 3: restoreApply cleared the kit, belt, saved packings and core but none of the other state the code does not carry, so a restored character kept the old one paid hire and death benefit, contract progress, seal cutting, explored map and signed Terms. They are cleared with the rest, and the boot refills the board. Check 14.04 restores a code over a character with a hire, a contract at five of six, thirty seconds of cutting and signed Terms, and requires all four gone, with the code name applied as the control; it fails on v14.03',
+  now:'v14.05: THE CRASH CATCHER STOPS SAVING EVERY FRAME AND KEEPS OLDER CRASHES. Saving, profile and settings audit of 2026-09-15, finding 4: noteCrash merged a repeat only with the last entry and saved the whole profile on every call, so an error thrown each frame wrote the profile about sixty times a second and two alternating errors pushed every earlier crash out of the twelve kept. A repeat now merges with any matching entry in the window and repeats save at most once a window. Check 14.05 alternates two errors twenty times and requires at most three saves and the older crash kept, with a genuinely new error still saved as the control; it fails on v14.04',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

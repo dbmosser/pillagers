@@ -1,0 +1,19 @@
+## v14.08 - GOING DOWN LETS GO OF THE SEARCH AND THE DOOR PROMPT
+
+The raid HUD and map screen audit of 2026-09-15, finding 4. The downed branch of updatePlayer returns before the door scan
+and the container scan. Those are the only places that clear G.nearDoor and G.searching, and going down cleared neither.
+The HUD draws both without asking whether he is down, although the prompts beside them do ask. So:
+
+- Downed halfway through searching a crate, the amber search bar and its "3 items left" plate stayed frozen on the crate
+  for the whole bleed-out while he crawled away.
+- Downed within reach of a locked door with its key in the backpack, "[E] UNLOCK" stayed on screen, and E did nothing for
+  the door from the floor.
+
+THE BUILD. The going-down branch of damagePlayer clears the search and the door prompt, beside the map, backpack, stall and
+reload it already lets go. The HUD also skips both while he is down.
+
+MEASURED. Check 14.08 stages a search in progress on a crate and a door prompt. A five-point hit must leave the search
+running (the control, which proves only going down clears it). Shot to the floor, the search and the door prompt must both
+be cleared. It fails on v14.07.
+
+Not verified: the drawn frame itself, which the HUD guards cover but no pixel test reads.

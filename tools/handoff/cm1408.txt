@@ -1,0 +1,8 @@
+v14.08: going down lets go of the search and the door prompt
+
+A search bar and the unlock prompt stayed frozen on screen while downed. Going
+down now clears both and the HUD skips them.
+
+Check 14.08 downs the player mid-search beside a door. Fails on v14.07.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
