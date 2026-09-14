@@ -1,0 +1,9 @@
+v13.46: the menus fit a 1280x720 itch window
+
+titleRes was floored at 1 and his menu size multiplied on top, so the recommended
+1280x720 embed drew every menu 1.2 times too big. menuScale gives all five sites
+one factor: unchanged at 1080p and above, the screen factor alone below it.
+
+Check 13.46 fails on v13.45.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

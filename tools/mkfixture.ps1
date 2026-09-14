@@ -5718,6 +5718,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'13.46',what:'on a 1280x720 itch window the menus fit the screen: the Undercroft and the corner readout are drawn at the size that fits instead of their 1080p size times his menu size, while at 1920x1080 his size of 1.3 still applies in full',
+   run:function(){
+     if(!(window.__forceSize&&window.__P)||typeof applyMenuZoom!=='function'||typeof titleRes!=='function') return 'SKIP: no menu zoom or size forcing in this build';
+     var bad=[], P2=__P(), keepZ=P2.menuZoom;
+     try{
+       P2.menuZoom=1.3;
+       __forceSize(1280,720); applyMenuZoom();
+       var hub=document.getElementById('hub'), tr=document.getElementById('topright');
+       var hz=parseFloat(hub&&hub.style.zoom)||0, tz=parseFloat(tr&&tr.style.zoom)||0;
+       if(!(hz>0)) return 'SKIP: the Undercroft carries no zoom to read';
+       if(hz>0.667*0.92+0.02) bad.push('at 1280x720 the Undercroft is drawn at '+hz.toFixed(2)+', larger than the 0.61 that fits the window');
+       if(tz>0.667+0.02) bad.push('at 1280x720 the corner readout is drawn at '+tz.toFixed(2)+', larger than the 0.67 that fits');
+       // CONTROL: at 1920x1080 his size of 1.3 still applies in full.
+       __forceSize(1920,1080); applyMenuZoom();
+       var hz2=parseFloat(hub.style.zoom)||0;
+       if(Math.abs(hz2-1.3*0.92)>0.02) bad.push('control: at 1920x1080 the Undercroft is drawn at '+hz2.toFixed(2)+', not his 1.3 times 0.92');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ P2.menuZoom=keepZ; __forceSize(1920,1080); applyMenuZoom(); }catch(_f){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'13.45',what:'B and I both open and close the backpack, in a raid and in the Undercroft, without pausing; B no longer gives the hire his orders or closes a window, O gives the orders, and TAB still closes the window; and the key list names B and I for the backpack and O for the orders (his ruling of 2026-09-13)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__keysRef&&window.__hubEnter&&window.__hubBag&&window.__P))
@@ -12617,7 +12636,7 @@ window.__REGRESS=[
        // THE FINDING, 4K: on v12.24 el.style.zoom is empty, so the readout is the same 44 pixels at every size.
        __forceSize(3840,2160); applyMenuZoom();
        if(!(W>=3000)) return 'SKIP: the canvas would not go to 4K ('+W+'x'+H+')';
-       var want=Math.max(1,P2.menuZoom)*titleRes(), c=rd();
+       var want=((typeof menuScale==='function')?menuScale():Math.max(1,P2.menuZoom)*titleRes()), c=rd();
        if(Math.abs(c.z-want)>0.05) bad.push('at 4K the readout zoom is '+c.z+' where the windows are at '+want.toFixed(2));
        if(!(c.h>a.h*1.4)) bad.push('at 4K the readout is '+c.h.toFixed(0)+'px tall against '+a.h.toFixed(0)+' at 1080p: it did not follow the monitor');
        var tz=parseFloat(toast.style.zoom)||1;
@@ -13364,7 +13383,7 @@ window.__REGRESS=[
        if(!m) bad.push('control: no menu opened');
        else {
          var hubEl=document.getElementById('hub');
-         var want=(hubEl&&hubEl.classList.contains('on')&&parseFloat(hubEl.style.zoom)>0)?parseFloat(hubEl.style.zoom):Math.max(1,(P2.menuZoom||1))*titleRes();
+         var want=(hubEl&&hubEl.classList.contains('on')&&parseFloat(hubEl.style.zoom)>0)?parseFloat(hubEl.style.zoom):((typeof menuScale==='function')?menuScale():Math.max(1,(P2.menuZoom||1))*titleRes());
          var z=parseFloat(m.style.zoom||'1')||1;
          if(Math.abs(z-want)>0.05) bad.push('the menu zoom is '+z+' where the windows are at '+want.toFixed(2));
          var r=m.getBoundingClientRect();

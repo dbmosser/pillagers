@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.46 - THE MENUS FIT A 1280x720 ITCH WINDOW
+
+His question of 2026-09-13: reduce the viewport for the itch version. The recommended
+embed is 1280x720 with the Fullscreen button. Built under rulebook rule 1 on the default
+he was asked about: below 1080p the menus shrink to fit.
+
+WHAT WAS WRONG. titleRes, the screen factor for every menu, was floored at 1, and his
+menu size (1.3 by default) multiplied on top of it. A 720p window therefore drew the
+Undercroft, every window and the corner readout at 1.2 times a layout built for 1080p.
+
+THE BUILD. One helper, menuScale, now gives all five menu sites the same factor. At
+1080p and above it is his size times the screen factor, exactly as before. Below 1080p it
+is the screen factor alone, floored at half, so the whole 1080p layout is scaled to fit
+the window. The canvas HUD (hudRes) is untouched.
+
+MEASURED. Check 13.46 forces 1280x720 with his size at 1.3 and requires the Undercroft
+at no more than 0.61 and the corner readout at no more than 0.67, then forces 1920x1080
+and requires his 1.3 times 0.92 intact. It fails on v13.45. Two checks that computed the
+menu size themselves now ask menuScale.
+
+Not verified: how readable the text is at 0.67 in a real itch embed; windows that set
+their own zoom outside applyMenuZoom; and the canvas HUD, which still never shrinks.
 ## v13.45 - B AND I OPEN THE BACKPACK, O ORDERS YOUR HIRE
 
 His note of 2026-09-13: on itch, Escape kills fullscreen. Tab does what Escape did in the game; B and I open the backpack. Built under rulebook rule 1 on the default he was asked about: hire orders on O.

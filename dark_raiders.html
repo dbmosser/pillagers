@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.45';
+var VER='13.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29665,7 +29665,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.45: B AND I OPEN THE BACKPACK, O ORDERS YOUR HIRE. - B and I both open and close the backpack, in a raid and in the Undercroft, and neither pauses. Either also closes the peddler stall. - B no longer backs out of windows or panels; TAB does. - O gives the hired man his next order: loot, follow, hold. B no longer does. - Every backpack label says B / I, the full key list has an O row for the hire, the backpack panel says B or I to close, and the what-is-new card leads with TAB pausing and backing out, B and I opening the backpack, and O giving orders. - Controller players see no change: pads never had an orders button, and View already taps I.',
+  now:'v13.46: THE MENUS FIT A 1280x720 ITCH WINDOW. His question of 2026-09-13 about the itch viewport; the recommended embed is 1280x720 and the menus never shrank below their 1080p size, because titleRes was floored at 1 and his menu size multiplied on top. One helper, menuScale, now gives every menu site the same factor: his size times the screen factor at 1080p and above, and the screen factor alone below it, floored at half. Check 13.46 forces 1280x720 and requires the Undercroft and the corner readout drawn at the size that fits, and his 1.3 intact at 1920x1080; it fails on v13.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30851,7 +30851,7 @@ function openItemMenu(x,y,key,ctx,count){
   // v11.99, HIS NOTE: the menu is outside every element applyMenuZoom scales,
   // so at 4K it was a 1080p menu under a 4K stash. Same factor as the windows;
   // zoom scales the fixed offsets too, so the click point is divided by it.
-  var _mz=Math.max(1,(P&&P.menuZoom)||1)*titleRes();
+  var _mz=menuScale();   // v13.46
   var _hubEl=document.getElementById('hub');   // the stash runs at 0.92 of the window factor (v9.67); the menu matches the surface it opens over
   if(_hubEl&&_hubEl.classList.contains('on')&&parseFloat(_hubEl.style.zoom)>0) _mz=parseFloat(_hubEl.style.zoom);
   m.style.zoom=_mz; x=x/_mz; y=y/_mz;
@@ -30920,7 +30920,7 @@ function openGunMenu(x,y,gk){
   // v11.99, HIS NOTE: the menu is outside every element applyMenuZoom scales,
   // so at 4K it was a 1080p menu under a 4K stash. Same factor as the windows;
   // zoom scales the fixed offsets too, so the click point is divided by it.
-  var _mz=Math.max(1,(P&&P.menuZoom)||1)*titleRes();
+  var _mz=menuScale();   // v13.46
   var _hubEl=document.getElementById('hub');   // the stash runs at 0.92 of the window factor (v9.67); the menu matches the surface it opens over
   if(_hubEl&&_hubEl.classList.contains('on')&&parseFloat(_hubEl.style.zoom)>0) _mz=parseFloat(_hubEl.style.zoom);
   m.style.zoom=_mz; x=x/_mz; y=y/_mz;
@@ -32947,9 +32947,17 @@ document.addEventListener('keydown',function(e){
 // window is never shrunk further and capped so an ultrawide does not turn the
 // title into a billboard. Same shape as hudRes, which does this for the canvas
 // HUD; this is the DOM half of the same idea.
+// v13.46, HIS ITCH WINDOW: THE ONE SCALE FOR MENUS. At 1080p and above it is his menu
+// size times the screen factor, as before. Below 1080p it is the screen factor alone,
+// so a 1280x720 embed shows the whole 1080p layout scaled to fit instead of a layout
+// 1.2 times too big for the window.
+function menuScale(){
+  var tr=titleRes();
+  return tr<1?tr:Math.max(1,(P&&P.menuZoom)||1)*tr;
+}
 function titleRes(){
   if(!W||!H) return 1;
-  return clamp(Math.min(W/1920,H/1080),1,1.9);
+  return clamp(Math.min(W/1920,H/1080),0.5,1.9);   // v13.46: below 1080p it shrinks, down to half
 }
 // v9.58, HIS INSTRUCTION: "there should be a clear button to enter fullscreen
 // mode." The whole file had no fullscreen call in it at all, while the title
@@ -33035,7 +33043,7 @@ function applyMenuZoom(){
   // scales what is inside it. Which is the whole thing that was wanted. My first
   // cut of this divided the width by the zoom to compensate for an overflow that
   // does not happen, and shrank every menu to three quarters of the window.
-  var _sf=z*titleRes();
+  var _sf=menuScale();   // v13.46: below 1080p the menus fit the screen
   document.querySelectorAll('.modal,.pausebox,.outcome,#hub').forEach(function(m){
     // v9.67, his note: "reduce text size in the undercroft only slightly". The
     // station panel alone, at 0.92, which is one notch of the wheel. He can put
@@ -33062,7 +33070,7 @@ function applyMenuZoom(){
   // measured against the room there is, and reduced until it fits.
   var _ti=document.getElementById('title');
   if(_ti){
-    var _want=z*titleRes(), _col=_ti.querySelector('.titlecol');
+    var _want=menuScale(), _col=_ti.querySelector('.titlecol');
     if(_col){
       _ti.style.zoom=1;
       var _nat=_col.scrollHeight, _room=(window.innerHeight||1080)*0.985;
@@ -33744,7 +33752,7 @@ function grabGhost(text){
       'color:var(--bone);font-size:11px;font-family:Rubik,system-ui,sans-serif;white-space:nowrap';
     document.body.appendChild(g);
     // v12.25: born lazily, after applyMenuZoom has run, so it takes the factor itself.
-    try{ g.style.zoom=Math.max(1,(P&&P.menuZoom)||1)*titleRes(); }catch(_gz){}
+    try{ g.style.zoom=menuScale(); }catch(_gz){}
   }
   g.textContent=text; g.style.display='block';
   return g;
