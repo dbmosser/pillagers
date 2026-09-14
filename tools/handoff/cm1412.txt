@@ -1,0 +1,8 @@
+v14.12: the revive prompt shows the time he actually has
+
+The revive prompt counted only the bleed clock, but a downed pillager whose
+health is taken dies sooner. It now shows whichever runs out first.
+
+Check 14.12 traces the prompt at full and half health. Fails on v14.11.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

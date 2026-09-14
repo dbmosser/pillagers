@@ -1,0 +1,10 @@
+v14.13: downed in an uncalled ring, the overlay offers the call
+
+Down inside an extraction point nobody had called, the overlay said a ship was
+inbound because another point was called, and hid the call row. Both now read
+the point he is lying in.
+
+Check 14.13 downs the player in a called and an uncalled point. Fails on
+v14.12.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.09 - THE EMPTY SECOND-GUN SLOT SAYS HOW TO FILL IT
+
+The raid HUD and map screen audit of 2026-09-15, finding 6. With one gun carried, the second gun cell is always drawn,
+vacant, since v8.67. Selecting it (the 2 key, or a click on the cell) runs setHot, which says "No second weapon. Drag one
+here to carry it." It did not mark that it had given a hint, so the generic line further down, which names the cell and
+its count, ran in the same call and wrote "Second weapon  x0" over it. say() holds one line and the last call wins, so
+the explanation was never on screen.
+
+THE BUILD. The vacant cell's line counts as the hint, so the generic cell line does not follow it.
+
+MEASURED. Check 14.09 says a probe line and requires it to reach the message (the control, which proves the message field
+is live in the fixture). With one gun carried it selects the vacant second-gun cell and requires the message to begin
+"No second weapon". It fails on v14.08.
+
+Not verified: the click on the cell, which reaches the same setHot.
 ## v14.08 - GOING DOWN LETS GO OF THE SEARCH AND THE DOOR PROMPT
 
 The raid HUD and map screen audit of 2026-09-15, finding 4. The downed branch of updatePlayer returns before the door scan

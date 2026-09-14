@@ -5718,6 +5718,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'14.09',what:'the empty second-gun slot says how to fill it: with one gun carried, selecting the vacant second slot leaves its explanation as the message rather than a "x0" cell line (raid HUD and map screen audit 2026-09-15, finding 6)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__say)) return 'SKIP: this fixture cannot deploy or read the message';
+     if(typeof setHot!=='function'||typeof hotbarSlots!=='function') return 'SKIP: no belt in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       if(!g||!p||g.sim) return 'SKIP: no live raid';
+       g.ents.length=0; g.hotAssign={}; g.hotAuto={};
+       p.sec=null; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false; p.swapped=false;   // no second gun at all: the belt draws the vacant cell only for this
+       // CONTROL: a line said here reaches the message.
+       __say('PROBE LINE SEVEN');
+       if(g.msg!=='PROBE LINE SEVEN') return 'SKIP: say does not reach the message in this fixture, so nothing here can be measured';
+       var sl=hotbarSlots(), vi=-1;
+       for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].vacant){ vi=i; break; }
+       if(vi<0) return 'SKIP: no vacant second-gun cell with one gun carried';
+       g.hot=(vi===0?1:0);
+       setHot(vi);
+       var NEED=['No','second','weapon'].join(' ');
+       if(String(g.msg||'').indexOf(NEED)!==0) bad.push('selecting the empty second-gun slot left the message as "'+g.msg+'" instead of how to fill it');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.08',what:'going down lets go of the search and the door prompt: shot to the floor halfway through a search beside a locked door, both the search and the door prompt are cleared, while a hit that does not down him leaves the search running (raid HUD and map screen audit 2026-09-15, finding 4)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
