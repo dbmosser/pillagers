@@ -1,0 +1,16 @@
+## v14.15 - A SECOND HIRE DOES NOT EAT THE FIRST FEE
+
+Undercroft audit finding 1 (HIGH). On the hire bench, with someone already hired, clicking another row charged the new fee
+and replaced the hire. The first fee was gone with no question and no message. Hire nobody has asked first since v8.17,
+because that fee is not refunded; switching hires skipped the question entirely. A row he could not afford answered the
+click with nothing at all.
+
+THE BUILD. With someone hired, a click on another row changes nothing and says "<name> is already hired. Press Hire nobody
+first; that fee is not refunded." A row he cannot afford says "Not enough credits to hire <name>." Hiring with nobody hired
+is unchanged. No price moves.
+
+MEASURED. Check 14.15 hires once with 1,000,000 credits (control: hired, charged the fee once), clicks a second row (the
+credits and the hire must not change and a line must be said), then clicks with 0 credits (a line must be said). It fails
+on v14.14.
+
+Not verified: the line read on the bench at 1920x1080 by eye.

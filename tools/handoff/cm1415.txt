@@ -1,0 +1,9 @@
+v14.15: a second hire does not eat the first fee
+
+With someone hired, clicking another row on the hire bench charged the new
+fee and replaced the hire with nothing said. It now refuses and says to press
+Hire nobody first; a row he cannot afford says so.
+
+Check 14.15. Fails on v14.14.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,9 @@
+v14.16: the stash hover key stays on the stash screen
+
+Closing the stash with ESC or TAB left the pointed-at item selected, so every
+number key anywhere, raids included, packed and bound it and J tagged it as
+junk. The keys now answer only on the stash screen and the ascent check.
+
+Check 14.16. Fails on v14.15.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

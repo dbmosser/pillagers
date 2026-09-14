@@ -1,0 +1,9 @@
+v14.18: an armoury gun dropped on the stash goes into the stash
+
+The stash grid refused a drag label nothing sends, so a gun dragged from the
+armoury onto it did nothing. It now moves into the stash like it does via the
+belt and the backpack, and a gun in his hands says why it stays.
+
+Check 14.18. Fails on v14.17.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

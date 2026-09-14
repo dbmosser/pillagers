@@ -1,0 +1,9 @@
+v14.17: a click on a filled belt key clears it
+
+The filled belt cell is also a drag source, so a click dropped the item back on
+its own key, kept the binding, and could pack half the stash stack. Letting go
+on its own key now clears it.
+
+Check 14.17. Fails on v14.16.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
