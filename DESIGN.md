@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v13.77 - AN ABANDONED RUN DOES NOT SAY YOU FELL
+
+The downed and extraction audit of 2026-09-14, finding 7. The run report has one line for stall
+money that was not carried out, and a death and an abandon shared it. So a run he walked away
+from through the pause box read "Stall money lost where you fell", when he had not fallen.
+
+THE BUILD. A death keeps that line word for word. An abandon now reads "Stall money left
+behind", with the same amount.
+
+MEASURED. Check 13.77 abandons a run a minute in with 517 of stall money carried, and requires
+the card to say the money was left behind and not where he fell. A death must still say where
+he fell (the control, which proves the check reads the line). It fails on v13.76.
+
+Not verified: how the new line reads beside the "Run abandoned" line above it.
 ## v13.76 - BACKING OUT AT ONCE NO LONGER DELETES A GUN YOU BAGGED
 
 The downed and extraction audit of 2026-09-14, finding 4. Dragging your armoury gun off the

@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='13.76';
+var VER='13.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19545,7 +19545,10 @@ silentExit:T.silentExit||0,
   if(G.pedSold){
     lines.push(how==='extract'
       ?'<span style="color:var(--coolant)">Stall money carried out: '+'$'+(G.pedCarry||0).toLocaleString()+', banked.</span>'
-      :'<span style="color:var(--rust)">Stall money lost where you fell: '+'$'+(G.pedCarry||0).toLocaleString()+'.</span>');
+      :(how==='dead'
+        ?'<span style="color:var(--rust)">Stall money lost where you fell: '+'$'+(G.pedCarry||0).toLocaleString()+'.</span>'
+        // v13.77, downed and extraction audit: an abandoned run did not fall anywhere.
+        :'<span style="color:var(--rust)">Stall money left behind: '+'$'+(G.pedCarry||0).toLocaleString()+'.</span>'));
   }
   if(G.pedBought){
     lines.push('<span style="color:var(--ash)">Spent '+'$'+G.pedBought.toLocaleString()+' at the stall.</span>');
@@ -29793,7 +29796,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v13.76: BACKING OUT AT ONCE NO LONGER DELETES A GUN YOU BAGGED. Downed and extraction audit of 2026-09-14, finding 4: bagging your armoury gun takes it off the armoury and records it on G.spliced for an abandon to put back, but an abandon inside 1.5 seconds with nothing done takes the discard path, which returned before the abandon branch that restores it, so the gun was gone. The discard path now restores the spliced guns. Check 13.76 bags the armoury carbine and abandons at once, requiring the carbine back in the armoury, with the same abandon five seconds in as the control; it fails on v13.75',
+  now:'v13.77: AN ABANDONED RUN DOES NOT SAY YOU FELL. Downed and extraction audit of 2026-09-14, finding 7: the stall money line for a run that did not extract was shared by a death and an abandon, so an abandoned run read Stall money lost where you fell. A death keeps that line; an abandon now reads Stall money left behind. Check 13.77 abandons a run a minute in with stall money carried and requires the card to say left behind and not where you fell, with a death saying where you fell as the control; it fails on v13.76',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
