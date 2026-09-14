@@ -40024,6 +40024,24 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v14.64 - CHECK 10.37 FOLLOWS THE CRASH RULES OF v14.49 AND v14.51
+
+No game change. The full corpus on v14.55 showed check 10.37 red, and it stayed red run on its own, so it was not the hidden
+pane. Two of its assertions described the crash catcher before this session's report fixes changed it on purpose:
+
+- it wanted the recorded location to contain the word Error or the file name, and since v14.51 the location is the stack
+  lines that carry a line and column; the location it read was "at fire (fixture.html:59208:85) at Object.run (...)",
+- its cap test fired twenty messages that differ only in a number, and since v14.49 those are one crash counted twenty
+  times, so the newest entry was the first probe, not the twentieth.
+
+THE BUILD. Check 10.37 accepts a line and column location, and its cap probes differ in a letter. What it claims still holds:
+an uncaught error and a rejection are recorded with a stack or a file, counted, capped at the newest twelve distinct crashes,
+and told once.
+
+MEASURED. Check 10.37 fails on v14.55 as it stood and passes on the dry build with the corrected probes; the checks for
+v14.49 and v14.51 still pass beside it.
+
+Not verified: nothing further; this changes a check only.
 ## v14.63 - A SECOND COPY OF THE GUN IN HIS HANDS SHOWS IN THE BACKPACK
 
 Backpack audit finding 5 (LOW to MEDIUM). Since v8.78 an item is on the belt or in the backpack, never both: every belt

@@ -23866,7 +23866,7 @@ window.__REGRESS=[
      if(c.msg!==tag) bad.push('the entry says "'+c.msg+'" and not the message thrown');
      if(c.v!==VER) bad.push('the entry is stamped v'+c.v+' and not v'+VER);
      if(!c.screen||c.screen==='?') bad.push('the entry names no screen: "'+c.screen+'"');
-     if(!/Error|probe\.js/.test(c.where||'')) bad.push('the entry carries no stack and no file: "'+c.where+'"');
+     if(!/Error|probe\.js|:\d+:\d+/.test(c.where||'')) bad.push('the entry carries no stack and no file: "'+c.where+'"');   // v14.64: a line and column location counts (v14.51)
      var rep=buildExport();
      if(rep.indexOf('CRASHES')<0||rep.indexOf(tag)<0) bad.push('the run report does not carry the crash');
      // THE SAME FAULT EVERY FRAME COUNTS ON ONE LINE, it does not fill the list.
@@ -23880,10 +23880,11 @@ window.__REGRESS=[
      catch(_e){ bad.push('could not raise a rejection event: '+_e.message); }
      if(!P2.crashes.some(function(x){ return x.kind==='rejection'&&x.msg===rtag; })) bad.push('an unhandled rejection was not recorded');
      // THE LIST KEEPS ITS NEWEST TWELVE.
-     for(var i=0;i<20;i++) fire('probe distinct '+i+' 4242');
+     // v14.64: the probes differ in a letter, because since v14.49 messages differing only in a number are one crash.
+     for(var i=0;i<20;i++) fire('probe distinct '+String.fromCharCode(97+i)+' 4242');
      if(P2.crashes.length>12) bad.push('the list grew to '+P2.crashes.length+', past twelve');
      var newest=P2.crashes[P2.crashes.length-1]||{};
-     if(newest.msg!=='probe distinct 19 4242') bad.push('the cap dropped the newest entry rather than the oldest: last is "'+newest.msg+'"');
+     if(newest.msg!=='probe distinct t 4242') bad.push('the cap dropped the newest entry rather than the oldest: last is "'+newest.msg+'"');
      // A RESOURCE ERROR WITH NO MESSAGE AND NO ERROR IS NOT A CRASH.
      var before=P2.crashes.length; window.dispatchEvent(new ErrorEvent('error',{}));
      if(P2.crashes.length!==before) bad.push('an empty error event was recorded as a crash');

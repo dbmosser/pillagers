@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='14.63';
+var VER='14.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30087,7 +30087,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v14.63: A SECOND COPY OF THE GUN IN HIS HANDS SHOWS IN THE BACKPACK. A belt key naming the gun he holds shows that gun in hand, but it still claimed a backpack copy of it, so a second one looted into the backpack was in neither the grid nor the belt and could not be dropped, equipped, given or sold. A belt key for a gun in hand now claims no backpack copy, in the backpack, its header and the stall. Check 14.63 carries a second copy of the gun in hand with a key bound to it; it fails on v14.62',
+  now:'v14.64: CHECK 10.37 FOLLOWS THE CRASH RULES OF v14.49 AND v14.51. The game is unchanged. The full corpus on v14.55 found check 10.37 red on its own: it wanted the crash location to hold the word Error, which v14.51 now drops in favour of the line and column, and its cap test fired twenty messages differing only in a number, which v14.49 now counts as one crash. The check now accepts a line and column location and its cap probes differ in letters; everything it claimed still holds',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
