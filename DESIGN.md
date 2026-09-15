@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.13 - A RESTORE CODE STAYS SHORT ENOUGH TO PASTE
+
+The corpus on v15.11 went red on check 11.03: "the code is 6162 characters, which is not something a person pastes into a chat
+window". v15.00 made the restore code carry P.rivals, the record of each named pillager. The game writes a record, all zeros, the
+moment it reads one for a named pillager, so the fixture's long-played profile held 74 records of which one held anything, and those
+blank records were most of the code. A real long save grows the same way. That was my regression.
+
+THE BUILD. The code carries only records with a kill, a death, a meeting or a standing. A record left out is exactly what the game
+creates when it reads a missing one, so nothing is lost. restoreApply is unchanged.
+
+MEASURED. Check 15.13 sets 72 blank records and one real one (control: the code carries a records object): the code must carry one
+record, stay under 4,000 characters, and a restore must give the real record back. It restores the profile through the loader. It
+fails on v15.12. Check 11.03 was run on the dry build.
+
+Not verified: a real long career's code pasted by hand.
 ## v15.12 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 WHATSNEW_VER stood at 14.94 against a build at 15.11. The card checks allow fifteen builds of drift, so the corpus on v15.11 went red

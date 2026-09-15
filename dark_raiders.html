@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.12';
+var VER='15.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30211,7 +30211,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.12: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 14.94 against 15.11, past the fifteen builds the card checks allow, so every card check went red in the corpus, and the card said nothing about the fixes of v14.95 to v15.11. Two of my own card lines are rewritten in place: the first names the new news and the second merges the two older lines, keeping what checks 14.94, 14.83, 14.72, 14.60, 14.40, 14.27, 14.14 and 14.02 read, and WHATSNEW_VER moves to 15.12. Check 15.12 requires the card current and naming the grenade news; it fails on v15.11',
+  now:'v15.13: A RESTORE CODE STAYS SHORT ENOUGH TO PASTE. Since v15.00 the code carried every named pillager record, and a blank record exists for each one a raid ever names, so a long save made a code over 6,000 characters and check 11.03 went red. Only records that hold something travel now; a missing record is created blank when read. Check 15.13 makes a code over seventy blank records and one real one; it fails on v15.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32535,6 +32535,18 @@ function fmtRun(r){
 }
 // v11.03, HIS NOTE 14: THE CHARACTER, SMALL ENOUGH TO PASTE. Short keys on
 // purpose: this ends up in a report a friend sends by hand.
+// v15.13, corpus on v15.11 (check 11.03): A RESTORE CODE STAYS SHORT ENOUGH TO PASTE. v15.00 put every named pillager's record in
+// the code, and a record is written, all zeros, for each named pillager a raid ever names, so a long save carried seventy blank
+// records and a code over 6,000 characters, past what a person pastes into a chat window. Only a record that holds something
+// travels; a missing record is created, all zeros, the moment the game reads it.
+function rivalsForCode(){
+  var out={}, rv=P.rivals||{};
+  for(var id in rv){
+    var r=rv[id]||{};
+    if((r.kills|0)||(r.deaths|0)||(r.met|0)||(r.standing|0)) out[id]={kills:r.kills|0,deaths:r.deaths|0,met:r.met|0,standing:r.standing|0};
+  }
+  return out;
+}
 function restoreMake(){
   var o={v:1,n:P.pname||'PILLAGER',c:P.credits||0,x:P.xp||0,l:P.xpLevel||1,
          r:P.runs||0,e:P.ext||0,d:P.died||0,b:P.best||0,no:P.notoriety||0,
@@ -32548,7 +32560,7 @@ function restoreMake(){
          ne:P.netEarn||0,
          // v15.00, save audit finding 1: HIS STANDING WITH EVERY NAMED PILLAGER. Kills, deaths and standing decide who shoots him
          // on sight and who will take his money as a hire, and the code carried none of it.
-         rv:P.rivals||{},
+         rv:rivalsForCode(),   // v15.13: only the records that hold something
          cc:P.cdone||0,   // v15.01, save audit finding 2: the contracts he completed, beside the standing it already carries
          w:{},s:{}};
   // What they are wearing. The RACKS themselves are derived from the numbers
