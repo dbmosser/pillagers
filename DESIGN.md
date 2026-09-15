@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.05 - THE GAMBLE BUTTON READS ITS PRICE WITH A COMMA
+
+Wirt audit finding (LOW). Steps: stand at Wirt's counter in the Undercroft and press E. The money line ends "$2,500 per roll", an
+empty roll list says "Nothing rolled yet. $2,500 per roll.", and the Limited Time Offer button says "Buy $10,000", but the button
+directly under the roll list says "Gamble $2500". renderGamble wrote GAMBLE_PRICE onto that button bare, while the two lines above
+it and renderWirtLot pass their prices through toLocaleString. No TXSHIP key is shaped "Gamble $<number>", so nothing rewrites it
+on screen.
+
+THE BUILD. The button prints 'Gamble $'+GAMBLE_PRICE.toLocaleString(), so it reads "Gamble $2,500" in the same form as the rest
+of the panel. Display only: the price stays 2500, and the disabled state and dimming are untouched. The placeholder "Gamble 2500c"
+in the page markup is left as it is; renderGamble overwrites it before the panel opens, from E at the counter and from the modal
+table. Fixture check 10.41 read the button with /2500/, which "Gamble $2,500" does not match, so f1505 widens that one test to
+/2\D?500/: it accepts the separator of any locale and still requires the price.
+
+MEASURED. Check 15.05 cleans the profile, blanks the button and the money line and calls renderGamble. Controls: this browser
+prints 2500 with a separator (otherwise SKIP, since both builds would read the same); the money line reads "$2,500 per roll"; the
+button was written. It requires the button text to hold that same "$2,500". It puts back the two texts, restores the profile
+through the loader and cancels the offer card timer. It fails on v15.04: the button reads "Gamble $2500". The widened 10.41 test
+accepts both readings.
+
+Not verified: the Wirt panel by eye at 1080p; a locale that groups digits with a dot or a space; tools/handoff/dry/mk.ps1, the
+copy used by the older dry chain, still holds the /2500/ test and was not changed.
 ## v15.04 - BUYING THE LIMITED TIME OFFER IS NOT LOGGED AS A GAMBLE ROLL
 
 Wirt audit finding (LOW). THE GAMBLE lists the last eight rolls from P.gambleLog, or "Nothing rolled yet. $2,500 per roll." when

@@ -5718,6 +5718,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'15.05',what:'the Gamble button reads its price with a thousands separator, like every other price in the Wirt panel: with the money line reading 2,500 per roll, the button reads Gamble 2,500 and not Gamble 2500 (wirt audit finding)',
+   run:function(){
+     if(typeof renderGamble!=='function'||typeof GAMBLE_PRICE!=='number'||!window.__applyLoaded||!window.__P) return 'SKIP: no Wirt counter in this build';
+     var gb=document.getElementById('gamblebtn'), wg=document.getElementById('wallet_gamble');
+     if(!gb||!wg) return 'SKIP: the Gamble button or the money line of the Wirt panel is not in this page';
+     // CONTROL: this browser groups the digits, or both builds print the same thing.
+     if(GAMBLE_PRICE.toLocaleString()===String(GAMBLE_PRICE)) return 'SKIP: this browser prints '+GAMBLE_PRICE+' with no thousands separator, so the two builds read the same';
+     var fmt='$'+GAMBLE_PRICE.toLocaleString();
+     var bad=[], snap=null, keepB=gb.textContent, keepW=wg.textContent;
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       gb.textContent=''; wg.textContent='';
+       renderGamble();
+       // CONTROL: the draw reached the panel: the money line prints the price with its separator and the button was written.
+       if(String(wg.textContent).indexOf(fmt+' per roll')<0) return 'SKIP: the money line of the Wirt panel did not read '+fmt+' per roll here: '+String(wg.textContent).slice(0,80);
+       if(!gb.textContent) return 'SKIP: the draw did not write the Gamble button here';
+       var t=String(gb.textContent).replace(/\s+/g,' ').trim();
+       if(t.indexOf(fmt)<0) bad.push('the Gamble button reads "'+t+'" while the money line above it reads '+fmt+' per roll');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ gb.textContent=keepB; wg.textContent=keepW; }catch(_x){}
+       try{ if(snap) __applyLoaded(snap); }catch(_r){}
+       try{ if(typeof wirtLotTick==='function') wirtLotTick(); }catch(_t){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'15.04',what:'buying the Limited Time Offer is not logged as a gamble roll: with nothing rolled, buying the lot leaves the roll history empty and no roll listed under THE GAMBLE, and one real roll is still logged and listed (wirt audit finding)',
    run:function(){
      if(typeof renderGamble!=='function'||typeof renderWirtLot!=='function'||typeof wirtLotKey!=='function'||typeof WIRT_LOT_PRICE!=='number'||typeof GAMBLE_PRICE!=='number'||!window.__applyLoaded||!window.__P) return 'SKIP: no Wirt counter in this build';
@@ -24525,7 +24552,8 @@ window.__REGRESS=[
      if(!gl) bad.push('Wirt has no line');
      else if(typeof VENDOR_LINES!=='undefined'&&VENDOR_LINES.gamble&&VENDOR_LINES.gamble.indexOf(gl.textContent.trim())<0) bad.push('Wirt says "'+gl.textContent.trim()+'", which is not in his pool');
      var gb=document.getElementById('gamblebtn');
-     if(gb&&!/2500/.test(gb.textContent)) bad.push('the gamble button reads "'+gb.textContent+'" and the price is 2500');
+     // v15.05: the button prints its price with a thousands separator (Gamble $2,500), which /2500/ does not match.
+     if(gb&&!/2\D?500/.test(gb.textContent)) bad.push('the gamble button reads "'+gb.textContent+'" and the price is 2,500');
      // CONTROL: the three lines he sent back empty are untouched.
      var sn=document.getElementById('termsclear');
      if(!sn||sn.textContent.trim()!=='Sign nothing') bad.push('control: the Sign nothing button changed, and that row came back empty');

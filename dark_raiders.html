@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.04';
+var VER='15.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30164,7 +30164,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.04: BUYING THE LIMITED TIME OFFER IS NOT LOGGED AS A GAMBLE ROLL. Buying the offer put the first item of its lot in the roll history under THE GAMBLE, as if a roll had produced it, though nothing was rolled. The purchase no longer writes to that history, and a real roll still does. Check 15.04 buys the offer with nothing rolled and reads the roll history; it fails on v15.03',
+  now:'v15.05: THE GAMBLE BUTTON READS ITS PRICE WITH A COMMA. The Gamble button in the Wirt panel read Gamble 2500, while the money line above it, the empty roll list and the Buy button of the limited offer all print prices with a comma, as in 2,500 per roll. The button now prints its price the same way, and the price itself does not change. Check 15.05 draws the Wirt panel and reads the button against the money line; it fails on v15.04',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30869,7 +30869,10 @@ function renderGamble(){
   }
   el.innerHTML=h;
   var b=document.getElementById('gamblebtn');
-  b.textContent='Gamble $'+GAMBLE_PRICE;
+  // v15.05, wirt audit finding: THE GAMBLE BUTTON READS ITS PRICE WITH A COMMA. The money line and the empty roll list above
+  // it print GAMBLE_PRICE through toLocaleString, and so does the Buy button of the Limited Time Offer, but this button printed
+  // the bare number, so the panel read $2,500 per roll over a button reading Gamble $2500. Display only: the price stays 2500.
+  b.textContent='Gamble $'+GAMBLE_PRICE.toLocaleString();
   b.disabled=P.credits<GAMBLE_PRICE;
   b.style.opacity=P.credits<GAMBLE_PRICE?0.45:1;
   renderWirtLot();
