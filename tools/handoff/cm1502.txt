@@ -1,0 +1,9 @@
+v15.02: a restore code opens Wirt's offer to the restored character
+
+The limited offer bought by the replaced character stayed marked bought after a
+restore, so the restored character could not buy it until the period turned. A
+restore now clears it.
+
+Check 15.02. Fails on v15.01.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

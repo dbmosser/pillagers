@@ -1,0 +1,9 @@
+v15.01: a restore code carries the contracts completed count
+
+The code carried the contract standing but not the count the board prints
+beside it, so a restore showed the old count. The count now travels with the
+code.
+
+Check 15.01. Fails on v15.00.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

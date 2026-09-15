@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.00 - A RESTORE CODE CARRIES HIS STANDING WITH THE NAMED PILLAGERS
+
+Save audit finding 1 (MEDIUM). P.rivals holds kills, deaths, meetings and standing for each named pillager. It decides whether that
+pillager is hostile on sight every raid, whether he refuses to be hired, and the hire discount. A restore code replaces the save he
+is playing (v14.04 cleared the hire, contracts, seals and map knowledge of the character being replaced), but it neither carried
+P.rivals nor cleared it. A character restored from a code who had never met a named pillager inherited the grudge of the save he
+replaced: shot on sight and refused as a hire. The other way, the restored character's own grudges and earned discounts were lost.
+
+THE BUILD. The code carries P.rivals, and a restore sets it from the code. An older code with no standing starts clean.
+
+MEASURED. Check 15.00 makes a code with a grudge against one pillager, sets a grudge against another, restores the code (control:
+it applies) and requires the first grudge and not the second. It restores the profile through the loader. It fails on v14.99.
+
+Not verified: a real code from another save applied by hand.
 ## v14.99 - THE DATA CORE PRICE ON THE MAINFRAME IS THE PRICE IT SELLS FOR
 
 Copies audit finding 3 (LOW). The Mainframe's Data Core line said "$520 on the shelf" as typed text. Every other place prices the

@@ -1,0 +1,9 @@
+v15.00: a restore code carries his standing with the named pillagers
+
+A restore code neither carried nor cleared the grudges with named pillagers, so
+the restored character inherited who shoots on sight and who refuses a hire.
+The code now carries them and a restore replaces them.
+
+Check 15.00. Fails on v14.99.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

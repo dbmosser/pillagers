@@ -5718,6 +5718,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'15.00',what:'a restore code carries his standing with the named pillagers: a code made with a grudge against one pillager, restored over a character with a grudge against another, leaves the first grudge and not the second (save audit finding 1)',
+   run:function(){
+     if(typeof restoreMake!=='function'||typeof restoreApply!=='function'||!window.__applyLoaded) return 'SKIP: no restore codes in this build';
+     var bad=[], snap=null;
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       __P().rivals={zqxA:{kills:3,deaths:0,met:3,standing:-4}};
+       var o=JSON.parse(JSON.stringify(restoreMake()));
+       __P().rivals={zqxB:{kills:1,deaths:0,met:1,standing:-2}};
+       var ok=restoreApply(o);
+       // CONTROL: the code applied.
+       if(ok===false) return 'SKIP: restoreApply refused a code made a moment ago';
+       var rv=__P().rivals||{};
+       if(!rv.zqxA||rv.zqxA.kills!==3) bad.push('the grudge carried by the code is gone after the restore ('+JSON.stringify(rv).slice(0,80)+')');
+       if(rv.zqxB) bad.push('the replaced character\'s grudge is still there after the restore');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(snap) __applyLoaded(snap); }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'14.99',what:'the Data Core price on the Mainframe is the price it sells for: on a loot value setting that scales it, with a core in the stash the line names that price, and with none the line still matches his baked key (copies audit finding 3)',
    run:function(){
      if(typeof renderMainframe!=='function'||typeof ival!=='function'||!ITEMS.core||!document.getElementById('mfslothint')||!window.__applyLoaded) return 'SKIP: no Mainframe core line in this build';
