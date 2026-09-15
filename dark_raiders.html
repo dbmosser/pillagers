@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.03';
+var VER='15.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30164,7 +30164,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.03: THE LIMITED TIME OFFER CARD KEEPS TIME WHILE THE PANEL IS OPEN. The offer card read the clock once when it was drawn, so left open its minutes froze, and a bought card never showed the next item until the panel was closed and opened again. It now redraws itself when its minute turns, only while the panel is up. Check 15.03 opens the panel on a stubbed clock, runs the redraw the card arms past its minute turn and reads the card; it fails on v15.02',
+  now:'v15.04: BUYING THE LIMITED TIME OFFER IS NOT LOGGED AS A GAMBLE ROLL. Buying the offer put the first item of its lot in the roll history under THE GAMBLE, as if a roll had produced it, though nothing was rolled. The purchase no longer writes to that history, and a real roll still does. Check 15.04 buys the offer with nothing rolled and reads the roll history; it fails on v15.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30943,8 +30943,9 @@ function renderWirtLot(){
       // rather than a flag, so the next lot is unsold by definition and there is
       // nothing anywhere that has to remember to clear it.
       P.wirtLotBought=lotHr;   // v13.60: the window of the lot he bought, not the clock at the click
-      P.gambleLog=P.gambleLog||[]; P.gambleLog.push(lot2[0]);
-      if(P.gambleLog.length>40) P.gambleLog.shift();
+      // v15.04, wirt audit finding: BUYING THE LIMITED TIME OFFER IS NOT LOGGED AS A GAMBLE ROLL. This handler pushed the lot's
+      // first item onto P.gambleLog, the history renderGamble lists under THE GAMBLE, so a 10,000 purchase showed as a 2,500 roll
+      // he never made, and only the headline item of the lot. The gamble button's own push is the only writer of that history now.
       saveProfile(); renderGamble(); renderHub();
       ac(); blip('pick');
       say2('Wirt hands over the '+ITEMS[lot2[0]].name+(got>1?(' and '+(got-1)+' more'):'')+'.');
