@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.09';
+var VER='15.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19685,9 +19685,22 @@ silentExit:T.silentExit||0,
     // v13.76, downed and extraction audit: an armoury gun spliced out in these first moments
     // goes back, exactly as the abandon branch below puts it back. This path returned first.
     if(!G.sim&&G.spliced) for(var _sq=0;_sq<G.spliced.length;_sq++) if(P.weapons.indexOf(G.spliced[_sq])<0) P.weapons.push(G.spliced[_sq]);
+    // v15.10, quit audit finding 8: A NOTE TYPED IN THE PAUSE BOX SURVIVES AN INSTANT QUIT. The confirm closes the box first,
+    // which banks the note into this raid's notes, and this branch then threw the raid away before P.runs++ and pendingRun,
+    // the only readers of those notes: the note was in no run record, not under FLOOR NOTES and in no report, and nothing
+    // said so. With no run to attach it to, it is kept as a floor note, in the shape and cap the floor close uses, so the
+    // run still counts as never having happened.
+    var _qNoted=!G.sim&&T.notes&&T.notes.length>0;
+    if(_qNoted){
+      P.floorNotes=P.floorNotes||[];
+      for(var _qn=0;_qn<T.notes.length;_qn++) P.floorNotes.push({run:P.runs||0,t:Date.now(),txt:String(T.notes[_qn].txt).slice(0,400)});
+      while(P.floorNotes.length>20) P.floorNotes.shift();
+    }
     if(!G.sim){ dropDeadKeys(); saveProfile(); }
     G=null; keys={};
     showScreen('hub');
+    // v15.10, quit audit finding 8: and the Undercroft says it was kept, with the floor close's own line.
+    if(_qNoted){ try{ say2('Noted. It goes out with your next run report.'); }catch(_qsn){} }
     return;
   }
 
@@ -30188,7 +30201,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.09: AN ABANDON THAT COSTS XP SAYS SO ON THE OUTCOME CARD. Walking out after the first minute takes an XP fee, and the only line that said so was drawn on the raid screen in the same click that covered it with the outcome card, so the card showed a lower XP total with nothing to explain it. The card now shows the fee on its own line and the run report records it. Check 15.09 walks out five minutes in with 5000 XP and reads the card, the run record and the report; it fails on v15.08',
+  now:'v15.10: A NOTE TYPED IN THE PAUSE BOX SURVIVES AN INSTANT QUIT. Abandoning a raid in its first moments, before moving, looting or firing, throws the run away as if it never happened, and a note typed in the pause box went with it, into no run record and no report, with no word said. The note is now kept with the floor notes, printed under FLOOR NOTES in the next report, and the Undercroft says Noted. Check 15.10 types a note in the box right after ascending, confirms the abandon and reads the floor notes; it fails on v15.09',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
