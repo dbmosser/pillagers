@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.01 - A RESTORE CODE CARRIES THE CONTRACTS COMPLETED COUNT
+
+Save audit finding 2 (LOW). The contract board prints "Contracts completed N" beside the standing that gates harder work. The
+restore code carried the standing (cs, P.cstand) but not the count (P.cdone), and a restore did not touch the count. After restoring
+a character with no contracts over one with ten, the board read "Contracts completed 10 · HARD work needs 3 more credits", the old
+count against the new standing, and the restored character's own count was lost.
+
+THE BUILD. The code carries the count and a restore sets it. An older code without it starts at 0.
+
+MEASURED. Check 15.01 makes a code at 7 contracts, sets 99, restores the code (control: it applies) and requires 7. It restores the
+profile through the loader. It fails on v15.00.
+
+Not verified: the contract board after a real restore by eye.
 ## v15.00 - A RESTORE CODE CARRIES HIS STANDING WITH THE NAMED PILLAGERS
 
 Save audit finding 1 (MEDIUM). P.rivals holds kills, deaths, meetings and standing for each named pillager. It decides whether that

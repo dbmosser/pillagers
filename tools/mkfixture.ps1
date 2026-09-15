@@ -5718,6 +5718,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'15.01',what:'a restore code carries the contracts completed count: a code made at seven contracts, restored over a character at ninety nine, leaves seven (save audit finding 2)',
+   run:function(){
+     if(typeof restoreMake!=='function'||typeof restoreApply!=='function'||!window.__applyLoaded) return 'SKIP: no restore codes in this build';
+     var bad=[], snap=null;
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       __P().cdone=7;
+       var o=JSON.parse(JSON.stringify(restoreMake()));
+       __P().cdone=99;
+       var ok=restoreApply(o);
+       // CONTROL: the code applied.
+       if(ok===false) return 'SKIP: restoreApply refused a code made a moment ago';
+       if(__P().cdone!==7) bad.push('after restoring a code made at 7 contracts the board counts '+__P().cdone);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(snap) __applyLoaded(snap); }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'15.00',what:'a restore code carries his standing with the named pillagers: a code made with a grudge against one pillager, restored over a character with a grudge against another, leaves the first grudge and not the second (save audit finding 1)',
    run:function(){
      if(typeof restoreMake!=='function'||typeof restoreApply!=='function'||!window.__applyLoaded) return 'SKIP: no restore codes in this build';
