@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.08';
+var VER='15.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20064,6 +20064,9 @@ var _cdone=contractExtract(G.bag,haul);
         if(P.weapons.indexOf(G.spliced[i])<0) P.weapons.push(G.spliced[i]);
     }
     lines.push('Run abandoned. '+'$'+haul.toLocaleString()+' left behind.');
+    // v15.09, quit audit finding 7: AND THE FEE THE CONFIRM TOOK, ON ITS OWN LINE. The XP line above is his baked wording and its
+    // total is counted after the fee, so this line is what explains the drop. A new line: no baked key is reworded.
+    if(G.abandonFee>0) lines.push('<span style="color:var(--rust)">Walked out on the job. XP -'+G.abandonFee+'.</span>');
   }
   // v12.87, HIS NOTE 2026-09-11, verbatim: "when a player comes back to the
   // undercroft after dying in a raid or leaving/abandoning a raid, there should
@@ -20192,6 +20195,7 @@ var _cdone=contractExtract(G.bag,haul);
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
     doseMul:(T.doseMul>0)?T.doseMul:1,   // v12.12: the dose bonus the card printed, banked below
     dur:Math.round(elapsed()),
+    abandonFee:G.abandonFee||0,   // v15.09, quit audit finding 7: the XP a walk-out cost, so the run report can say it
     census:G.census||null,
     intel:G.intel?1:0,
 wallClip:(G.tel&&G.tel.wallClip)||null,
@@ -30184,7 +30188,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.08: A COOKED FRAG CHARGE KEEPS BURNING THROUGH A ROLL. With the pin out, a roll stopped the fuse and the COOKING countdown for the whole roll, so two rolls held a live Frag Charge in hand about three quarters of a second past its fuse. The fuse now burns through a roll, and if it runs out mid-roll it goes off in his hand with the roll cover dropped. Check 15.08 cooks a Frag Charge, rolls and reads the fuse and the cook-off; it fails on v15.07',
+  now:'v15.09: AN ABANDON THAT COSTS XP SAYS SO ON THE OUTCOME CARD. Walking out after the first minute takes an XP fee, and the only line that said so was drawn on the raid screen in the same click that covered it with the outcome card, so the card showed a lower XP total with nothing to explain it. The card now shows the fee on its own line and the run report records it. Check 15.09 walks out five minutes in with 5000 XP and reads the card, the run record and the report; it fails on v15.08',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32722,6 +32726,8 @@ function buildExport(){
     if(r.thr&&(r.thr.smoke||r.thr.decoy||r.thr.frag))
       line+=' thrown:'+r.thr.smoke+'sm/'+r.thr.decoy+'dc/'+r.thr.frag+'fr';
     if(r.outcome==='dead') line+=' killer:'+r.deathKiller+' diedAt:'+metres(r.deathDistExtract)+'m';
+    // v15.09, quit audit finding 7: THE RUN REPORT NAMES THE ABANDON FEE. The row kept the run's own XP and nothing of the fee.
+    if(r.abandonFee) line+=' abandonFee:'+r.abandonFee;
     if(r.raidersExtracted) line+=' aiExtracted:'+r.raidersExtracted;
     if(r.drawErr) line+=' DRAWERR:'+r.drawErr;
     // Older rows have no map because they predate v2.96, and they are NOT
@@ -33864,6 +33870,10 @@ document.getElementById('confirmabandon').onclick=function(){
     // nothing, because he had nothing to lose.
     var _rc=Math.min(abandonRepCost(elapsed()),(P.xp||0));
     P.xp=Math.max(0,(P.xp||0)-_rc);
+    // v15.09, quit audit finding 7: AN ABANDON THAT COSTS XP SAYS SO ON THE OUTCOME CARD. The line below is drawn on the raid
+    // screen, and endRaid covers that screen with the outcome card in this same click, so the fee was never read and the card's
+    // XP total came out lower than the XP it printed with nothing to explain it. The raid keeps the fee for the card and the report.
+    G.abandonFee=_rc;
     say(_rc>0?('Walked out on the job. XP -'+_rc+'.'):'Walked out on the job. No XP to lose.');
   }
   togglePauseBox(false);   // v12.02: the close banks the note
