@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.02 - A RESTORE CODE OPENS WIRT'S OFFER TO THE RESTORED CHARACTER
+
+Save audit finding 3 (LOW). Buying Wirt's limited offer marks the current five-minute period as bought (P.wirtLotBought), which
+hides the offer and shows "Bought. New item in N minutes". A restore replaces the character (v14.04 cleared what belonged to the
+replaced one) but left this mark, so a restored character who had bought nothing could not buy the offer until the period turned.
+
+THE BUILD. A restore clears the mark with the other per-character state. Restoring a code onto yourself can therefore let the same
+lot be bought twice in one five-minute period; the offer turns over within five minutes either way, and no number moves.
+
+MEASURED. Check 15.02 makes a code, marks this period's lot bought (control: it reads as bought), restores the code and requires the
+mark gone. It restores the profile through the loader. It fails on v15.01.
+
+Not verified: Wirt's counter after a real restore by eye.
 ## v15.01 - A RESTORE CODE CARRIES THE CONTRACTS COMPLETED COUNT
 
 Save audit finding 2 (LOW). The contract board prints "Contracts completed N" beside the standing that gates harder work. The

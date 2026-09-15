@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.01';
+var VER='15.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30164,7 +30164,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.01: A RESTORE CODE CARRIES THE CONTRACTS COMPLETED COUNT. The code carried the contract standing but not the count the board prints beside it, so after a restore the board showed the replaced character count against the restored character standing. The count now travels with the code. Check 15.01 makes a code at seven contracts and restores it over ninety nine; it fails on v15.00',
+  now:'v15.02: A RESTORE CODE OPENS WIRT S OFFER TO THE RESTORED CHARACTER. The limited offer bought this period belonged to the character being replaced, and after a restore it stayed marked bought, so the restored character could not buy it until the period turned. A restore now clears it. Check 15.02 buys the lot, restores a code and reads the mark; it fails on v15.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32569,7 +32569,9 @@ function restoreApply(o){
   // v14.04, save audit: and the rest the code does not carry. A hire he paid for, a contract board half done, cutting on
   // a sealed door, an explored map and signed Terms all belonged to the character being replaced.
   P.merc=null; P.contracts=[]; P.seals={}; P.mapSeen={}; P.discover={}; P.terms=[]; P.notExt=0;
-  P.freeKit=0; P.kitChosen=0; P.dropKit=[];
+  // v15.02, save audit finding 3: AND WIRT'S OFFER IS OPEN TO THE RESTORED CHARACTER. The lot bought this period belonged to the
+  // character being replaced, and it kept the offer hidden from a character who had bought nothing until the period turned.
+  P.freeKit=0; P.kitChosen=0; P.dropKit=[]; P.wirtLotBought=null;
   // v11.66: the armoury, when the code carries one. A gun this build does not
   // know is dropped, the same rule as the stash; an older code without the
   // block leaves the guns as they are rather than stripping them.
