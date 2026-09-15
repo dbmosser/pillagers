@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.06';
+var VER='15.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15905,7 +15905,11 @@ if(!p.fired||p.wep.auto){
         // v13.88, loot audit: once. He keeps holding it, so a second revive paid another copy.
         else if(!downRdr.paidRevive&&downRdr.wep&&downRdr.wep.id&&ITEMS['gun_'+downRdr.wep.id]) _rpk='gun_'+downRdr.wep.id;
         if(_rpk&&ITEMS[_rpk]){
-          G.bag.push(_rpk);
+          // v15.07, throwables audit finding 5: A GRENADE A PILLAGER PAYS FOR A REVIVE CAN BE THROWN. A Frag, Smoke or Decoy he
+          // paid went into the backpack, but doThrow, startCook and the belt throw cell read only G.pouch, so the cell showed x0
+          // and the key said none was left. A throwable goes into the pouch now, as it does from a container and the drop kit.
+          if(ITEMS[_rpk].use==='throw'&&G.pouch&&G.pouch[ITEMS[_rpk].tk]!==undefined) G.pouch[ITEMS[_rpk].tk]++;
+          else G.bag.push(_rpk);
           // THE BODY MUST NOT PAY IT AGAIN. The death path re-adds the held gun
           // to any body that is not already carrying it, so without this you
           // could revive a man for his shotgun and then shoot him for a second.
@@ -30174,7 +30178,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.06: Q NEVER PICKS A GRENADE THAT HAS NO KEY ON THE TACTICAL BELT. With something of his own on key 3, where the Smoke sits, Q from the Frag chose the Smoke anyway, left the highlight on the Frag and said the Smoke was ready, and the trigger then cooked a Smoke under the Frag count. Q now passes over a grenade no key can use, and the trigger and G use the grenade in the highlighted cell. Check 15.06 puts a Medkit over the Smoke, presses Q from the Frag and pulls the trigger and G; it fails on v15.05',
+  now:'v15.07: A GRENADE A PILLAGER PAYS FOR A REVIVE CAN BE THROWN. When a downed pillager you picked up paid you a Frag Charge, Smoke Canister or Decoy Beacon, it went into the backpack, where no key could throw it: the tactical belt kept the old count and the key said none was left. It now adds to the grenade count on the tactical belt, as a grenade from a container does. Check 15.07 picks up a pillager carrying only a Frag Charge and reads the Frag count and the backpack; it fails on v15.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
