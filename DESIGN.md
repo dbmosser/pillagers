@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.06 - Q NEVER PICKS A GRENADE THAT HAS NO KEY ON THE TACTICAL BELT
+
+Throwables audit finding 4 (MEDIUM). Put something of your own, a Medkit, on key 3, where the Smoke Canister cell sits. The
+Medkit covers that cell, so the Smoke has no cell anywhere on the tactical belt. Carry 2 Smoke and 2 Frag, press 5 for the Frag,
+then press Q. cycleThrow put the Smoke in hand (G.tsel), found no cell to highlight, left the highlight on the Frag and said
+"Smoke Canister ready". The next trigger press cooked a Smoke under the Frag highlight and its count of 2, and pressing 5 again
+did not put it right, because setHot returns early on the cell already selected. With the Frag at 0 the press said the Frag was
+gone right after Q said the Smoke was ready. A drag that moves the highlight (G.hot=HC.i) leaves the same stale hand, and G, and
+the pad through useHot, threw from it too.
+
+THE BUILD. Q passes over a grenade that has no key and moves the hand only together with the highlight; with throwables carried
+and none on a key it says "No throwable you carry is on your tactical belt." (a new line; "No throwables" is kept). The trigger
+and the derived throw cell under G and the pad now point the hand at the grenade in the highlighted cell before they cook or
+throw, as setHot and the assigned-cell path already did. No number moves.
+
+MEASURED. Check 15.06 deploys and puts both grenades on keys, then presses Q from the Frag (control: the hand and the highlight
+move to the Smoke and the press cooks a Smoke). It puts a Medkit on the Smoke key (control: the Smoke has no cell and the Frag
+cell has not moved) and requires Q from the Frag to stay on the Frag, the press to cook a Frag and spend no Smoke, and, with the
+hand left on the Smoke, the press and G on the Frag cell to use the Frag. It fails on v15.05 on the Q step, the cook and the
+Smoke count.
+
+Not verified: Q, the trigger and G by hand in a real raid; the pad throw; the new line by eye.
 ## v15.05 - THE GAMBLE BUTTON READS ITS PRICE WITH A COMMA
 
 Wirt audit finding (LOW). Steps: stand at Wirt's counter in the Undercroft and press E. The money line ends "$2,500 per roll", an

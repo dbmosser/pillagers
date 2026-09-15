@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.05';
+var VER='15.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12094,10 +12094,11 @@ window.addEventListener('keydown',function(ev){
 
 // ================================================================ throwables
 function cycleThrow(){
+  // v15.06, throwables audit finding 4: the hand is no longer moved here, before a key is found. See the cell search below.
+  var _unkeyed=0;
   for(var i=1;i<=3;i++){
     var n=(G.tsel+i)%3;
     if(G.pouch[THROWKEYS[n]]>0){
-      G.tsel=n;
       // v12.56, 2026-09-06 in-raid audit: AND THE BELT FOLLOWS THE HAND. Which
       // grenade is in your hand and which cell the belt highlights are two
       // different fields, and this key wrote only the first, so choosing a
@@ -12113,12 +12114,17 @@ function cycleThrow(){
         if(!_cc) continue;
         if(_cc.k===_ck||_cc.itemKey===THROWKEYS[n]){ _cf=_ci; break; }
       }
-      if(_cf>=0) G.hot=_cf;
+      // v15.06, throwables audit finding 4: Q NEVER PICKS A GRENADE THAT HAS NO KEY ON THE TACTICAL BELT. Something of his own on
+      // the Smoke key covers the Smoke cell, so the Smoke had no cell anywhere; Q still put the Smoke in hand, left the highlight
+      // on the Frag and said the Smoke was ready, and the trigger cooked a Smoke under the Frag count. A grenade no key can use
+      // is passed over, and the hand and the highlight now move together or not at all.
+      if(_cf<0){ _unkeyed++; continue; }
+      G.tsel=n; G.hot=_cf;
       say(ITEMS[THROWKEYS[n]].name+' ready');
       return;
     }
   }
-  say('No throwables');
+  say(_unkeyed?'No throwable you carry is on your tactical belt.':'No throwables');
 }
 // His playtest, 2026-08-22: "the roll, it rolls too far, and it should take a
 // lot of stamina to do it." Both, as one change, because they are the same
@@ -14453,7 +14459,9 @@ function useHot(){
     }
     return;   // valuables are carried, not used
   }
-  if(s2.kind==='throw') doThrow();
+  // v15.06, throwables audit finding 4: AND G THROWS THE GRENADE IN THE HIGHLIGHTED CELL. doThrow reads the hidden selector,
+  // which a drag moves past without touching, so G (and the pad, which comes through here) could throw another grenade.
+  if(s2.kind==='throw'){ var _dtx=THROWKEYS.indexOf(String(s2.k).split(':')[1]); if(_dtx>=0) G.tsel=_dtx; doThrow(); }
   else if(s2.kind==='heal') useMedical();   // never raidKey: it latches the key on, v2.91
   else if(s2.kind==='armor') useArmor();
 }
@@ -15672,7 +15680,9 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
         p.fired=true;   // v13.42, HIS RULING: the Frag cell keeps the highlight and the gun is never raised for him
         if(!G.sim) say('No '+(HSC.name||'throwable')+' left. '+gunKeyLine());
       }
-      else if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
+      // v15.06, throwables audit finding 4: AND THE TRIGGER COOKS THE GRENADE IN THE HIGHLIGHTED CELL. startCook reads the hidden
+      // selector, so a hand left on another grenade cooked that one under this cell's count.
+      else if(!p.cooking){ if(!p.fired){ p.fired=true; var _htx=THROWKEYS.indexOf(String(HSC.k).split(':')[1]); if(_htx>=0) G.tsel=_htx; startCook(); } }
       else {
         p.cookT=(p.cookT||0)+dt;
         if(p.cookKind==='frag'&&p.cookT>=FRAG_FUSE) cookOff();
@@ -30164,7 +30174,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.05: THE GAMBLE BUTTON READS ITS PRICE WITH A COMMA. The Gamble button in the Wirt panel read Gamble 2500, while the money line above it, the empty roll list and the Buy button of the limited offer all print prices with a comma, as in 2,500 per roll. The button now prints its price the same way, and the price itself does not change. Check 15.05 draws the Wirt panel and reads the button against the money line; it fails on v15.04',
+  now:'v15.06: Q NEVER PICKS A GRENADE THAT HAS NO KEY ON THE TACTICAL BELT. With something of his own on key 3, where the Smoke sits, Q from the Frag chose the Smoke anyway, left the highlight on the Frag and said the Smoke was ready, and the trigger then cooked a Smoke under the Frag count. Q now passes over a grenade no key can use, and the trigger and G use the grenade in the highlighted cell. Check 15.06 puts a Medkit over the Smoke, presses Q from the Frag and pulls the trigger and G; it fails on v15.05',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
