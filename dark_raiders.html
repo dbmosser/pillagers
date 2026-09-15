@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.07';
+var VER='15.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15388,6 +15388,12 @@ function updatePlayer(dt){
     // NOTHING, 30 stayed 30. Makes no seeded draw, so the stream is untouched.
     tickHeal(dt);
     tickReload(dt);   // v13.83, combat audit: and the reload keeps going through a roll
+    // v15.08, throwables audit finding 6: A COOKED FRAG CHARGE KEEPS BURNING THROUGH A ROLL. This branch returns before both
+    // fuse ticks, so a roll stopped the fuse and the COOKING countdown for the whole 0.38s, and two rolls held a live Frag
+    // Charge about 0.76s past its fuse, against the v13.62 rule that a cooked grenade keeps burning. Not gated on the trigger:
+    // a release cannot throw mid-roll, so the grenade is still in hand. The roll cover is dropped at the cook-off, because
+    // damagePlayer ignores a hit while p.iv runs and the blast in his hand would otherwise do nothing. No seeded draw.
+    if(p.cooking&&p.cookKind==='frag'){ p.cookT=(p.cookT||0)+dt; if(p.cookT>=FRAG_FUSE){ p.iv=0; cookOff(); } }
     tryExtractTick(dt);
     return;
   }
@@ -30178,7 +30184,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.07: A GRENADE A PILLAGER PAYS FOR A REVIVE CAN BE THROWN. When a downed pillager you picked up paid you a Frag Charge, Smoke Canister or Decoy Beacon, it went into the backpack, where no key could throw it: the tactical belt kept the old count and the key said none was left. It now adds to the grenade count on the tactical belt, as a grenade from a container does. Check 15.07 picks up a pillager carrying only a Frag Charge and reads the Frag count and the backpack; it fails on v15.06',
+  now:'v15.08: A COOKED FRAG CHARGE KEEPS BURNING THROUGH A ROLL. With the pin out, a roll stopped the fuse and the COOKING countdown for the whole roll, so two rolls held a live Frag Charge in hand about three quarters of a second past its fuse. The fuse now burns through a roll, and if it runs out mid-roll it goes off in his hand with the roll cover dropped. Check 15.08 cooks a Frag Charge, rolls and reads the fuse and the cook-off; it fails on v15.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

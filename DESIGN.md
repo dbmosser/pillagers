@@ -40024,6 +40024,29 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.08 - A COOKED FRAG CHARGE KEEPS BURNING THROUGH A ROLL
+
+Throwables audit finding 6 (LOW). Select the Frag Charge cell and hold the trigger: COOKING counts down from 1.1s. At about
+0.3s left, press Space. tryRoll has no cooking check, and the roll branch of updatePlayer returns before both places the fuse
+burns, so the countdown sits at 0.3s for the whole 0.38s roll. The Frag Charge that should have gone off in his hand during the
+roll goes off 0.38s late, and two rolls in one cook hold it about 0.76s past its fuse. This breaks the v13.62 rule that a cooked
+grenade keeps burning, and it is the same shape as the v8.59 heal and v13.83 reload fixes in that branch.
+
+THE BUILD. The roll branch now burns a cooking Frag Charge's fuse next to the reload tick, and cooks it off in his hand when the
+fuse runs out. It is not gated on the trigger: a release cannot throw mid-roll (the release, doThrow and startCook all wait for
+the roll), so the grenade is still in hand. The roll's invulnerability is cleared at the cook-off, because damagePlayer ignores
+a hit while p.iv runs and the blast would otherwise do nothing to him. One side effect: rolling within 2s of a revive loses the
+rest of that protection if his own Frag Charge goes off in his hand. FRAG_FUSE, the blast and the damage are unchanged, and the
+tick makes no seeded draw, so the bot's stream is untouched.
+
+MEASURED. Check 15.08 deploys at seed 4242, puts the Frag Charge cell in hand and stages a cook at 0.5s with the trigger held.
+Control: standing, four 0.05s steps of updatePlayer move the fuse to 0.70. Through a 0.38s roll the same four steps must also
+reach 0.70 with the roll still running, and a cook 0.03s from its fuse must go off within two roll steps with the roll cover at
+zero (explodeFrag is stubbed to record the cook-off, so nothing is hurt). It ends the raid with abandon. It fails on v15.07:
+the fuse stays at 0.50 through the roll and the spent cook is still in hand.
+
+Not verified: the COOKING countdown on screen through a roll by eye, a real cook-off mid-roll with the blast damage applied,
+and the check has not been run in a browser in this pass.
 ## v15.07 - A GRENADE A PILLAGER PAYS FOR A REVIVE CAN BE THROWN
 
 Throwables audit finding 5 (MEDIUM). Picking up a downed pillager with E pays you out of his own backpack (the v9.10 revive
