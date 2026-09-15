@@ -1,0 +1,25 @@
+## v15.03 - THE LIMITED TIME OFFER CARD KEEPS TIME WHILE THE PANEL IS OPEN
+
+Wirt audit finding (MEDIUM). renderWirtLot reads the clock once, when it draws: the minutes under the offer, the lot on the card,
+and whether this window's lot is bought. Only renderGamble calls it, and renderGamble runs only on E at the counter, a roll and a
+buy. The file has no setInterval and no timer touches the panel. Steps: buy the Limited Time Offer, so the card reads "Bought. New
+item in 3 minutes". Leave the panel open for 4 minutes. It still says 3 minutes, a new lot is on sale, and there is no Buy button
+until he closes and reopens the panel or pays for a roll. Unbought, "New item in 2 minutes" stays at 2 and the old lot stays on the
+card after the window turns. The countdown promises an item that never arrives on screen.
+
+THE BUILD. A new closure function, wirtLotTick, redraws the card only while #gamblemodal is open; with the panel closed it cancels
+its timer and stops. renderWirtLot arms it with setTimeout for 50 ms past the moment its minute drops, and at one minute that is 50
+ms past the window turn, so the next lot and its Buy button draw. It is armed after the empty-counter return and before the bought
+branch, so both cards keep time. renderGamble is not called, so Wirt's line does not rotate, and a rebuilt Buy button keeps its
+place in the pad order. No player text changes ("New item in" is untouched) and no number moves.
+
+MEASURED. Check 15.03 stubs Date.now to 60.5 seconds before a window turns, calls renderGamble, opens the panel and draws the card
+again with setTimeout recorded instead of armed. Control: the card reads 2 minutes, which proves the stubbed clock reached the card.
+The draw must arm a redraw due just past the minute turn (500 ms to 1.5 s ahead); the check moves the clock to that moment, runs the
+armed redraw, and requires 1 minute and a further redraw armed. A bought card half a second before the turn (control: no Buy
+button) must arm a redraw just past the turn that shows the next item and its Buy button, and with the panel closed the next armed
+redraw must leave the card as it was and arm nothing more. It restores Date.now, setTimeout, the lot mark and Wirt's line, closes
+the panel and cancels the timer. It fails on v15.02: drawing the card arms nothing, so nothing in that build can redraw it.
+
+Not verified: the real timer firing with the panel open in a visible tab (the check runs the armed redraw itself, and a hidden tab
+throttles timers); the pad focus staying on a rebuilt Buy button, by eye.

@@ -1,0 +1,19 @@
+## v15.09 - AN ABANDON THAT COSTS XP SAYS SO ON THE OUTCOME CARD
+
+Quit audit finding 7 (MEDIUM). With about 5,000 XP, play a raid for five minutes, press P, click Abandon run, then
+YES, ABANDON THIS RUN (costs 130 XP). The confirm quotes the fee and the handler takes it, but the only line reporting what was
+taken went through say(), which draws on the raid screen. endRaid opens the outcome card over that screen in the same click,
+and OK ends the raid, so the line was never read. The card showed only its XP line, for example +30 XP (75% penalty for backing
+out) with a total 100 below what he went up with, and nothing explained the drop. The run record kept xpGot and no fee, so the
+run report could not say it either.
+
+THE BUILD. The confirm keeps the fee it took on the raid (G.abandonFee). The abandon card gets a new rust line under Run abandoned:
+"Walked out on the job. XP -130.", the same words the raid line already used. The run record carries abandonFee and the report
+row prints abandonFee:N after the death fields. The XP line and Run abandoned. are his baked lines and are not reworded; the fee
+itself is unchanged, and a walk-out with no XP to lose or inside the free first minute adds no line.
+
+MEASURED. Check 15.09 deploys, ages the raid to five minutes, sets 5,000 XP and presses the confirm. Controls: the run ended, the
+game's own line named the fee, and an abandon was recorded. It then requires the fee on the outcome card, abandonFee on the run
+record and abandonFee:N in the report. It restores the profile through the loader. It fails on v15.08.
+
+Not verified: the card by eye at 1080p with the extra line; a report carrying abandonFee read back through the importer.

@@ -1,0 +1,9 @@
+v15.04: buying the limited time offer is not logged as a gamble roll
+
+The Limited Time Offer's Buy handler pushed the lot's first item onto the roll
+history, so THE GAMBLE listed a purchase as a roll never made. The push is gone;
+the Gamble button still logs real rolls.
+
+Check 15.04. Fails on v15.03.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

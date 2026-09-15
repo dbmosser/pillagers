@@ -1,0 +1,9 @@
+v15.03: the limited time offer card keeps time while the panel is open
+
+Wirt's offer card read the clock once when drawn, so left open its minutes froze
+and a bought card never showed the next item. A timer now redraws the card when
+its minute turns, only while the panel is up.
+
+Check 15.03. Fails on v15.02.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

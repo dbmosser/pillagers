@@ -1,0 +1,9 @@
+v15.07: a grenade a pillager pays for a revive can be thrown
+
+A Frag, Smoke or Decoy paid for picking up a downed pillager went into the
+backpack, where no throw and no belt count reads it. It now goes into the
+pouch, as a grenade taken from a container does.
+
+Check 15.07. Fails on v15.06.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

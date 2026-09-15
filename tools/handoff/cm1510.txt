@@ -1,0 +1,9 @@
+v15.10: a note typed in the pause box survives an instant quit
+
+An abandon in the first moments of a raid threw the run away before its
+notes were read, so a note typed in the pause box was lost without a word.
+The note is now kept as a floor note, and the Undercroft says so.
+
+Check 15.10. Fails on v15.09.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

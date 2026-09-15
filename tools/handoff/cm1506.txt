@@ -1,0 +1,9 @@
+v15.06: q never picks a grenade that has no key on the tactical belt
+
+With something on the Smoke key, Q chose the Smoke anyway, left the highlight on
+the Frag, and the trigger cooked a Smoke under the Frag count. Q now passes over
+it, and the trigger and G use the grenade in the highlighted cell.
+
+Check 15.06. Fails on v15.05.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

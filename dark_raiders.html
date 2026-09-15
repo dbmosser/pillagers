@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.02';
+var VER='15.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30164,7 +30164,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.02: A RESTORE CODE OPENS WIRT S OFFER TO THE RESTORED CHARACTER. The limited offer bought this period belonged to the character being replaced, and after a restore it stayed marked bought, so the restored character could not buy it until the period turned. A restore now clears it. Check 15.02 buys the lot, restores a code and reads the mark; it fails on v15.01',
+  now:'v15.03: THE LIMITED TIME OFFER CARD KEEPS TIME WHILE THE PANEL IS OPEN. The offer card read the clock once when it was drawn, so left open its minutes froze, and a bought card never showed the next item until the panel was closed and opened again. It now redraws itself when its minute turns, only while the panel is up. Check 15.03 opens the panel on a stubbed clock, runs the redraw the card arms past its minute turn and reads the card; it fails on v15.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30874,6 +30874,18 @@ function renderGamble(){
   b.style.opacity=P.credits<GAMBLE_PRICE?0.45:1;
   renderWirtLot();
 }
+// v15.03, wirt audit finding: THE LIMITED TIME OFFER CARD KEEPS TIME WHILE THE PANEL IS OPEN. renderWirtLot reads the clock once,
+// when it draws, and only renderGamble calls it (E at the counter, a roll, a buy). So a card left open froze its minutes, kept a
+// lot whose window had turned, and a bought card never showed the next item or its Buy button until the panel was opened again.
+// wirtLotTick is what renderWirtLot arms for the moment its minute changes: it redraws the card only while the panel is up, and
+// with the panel closed it cancels its timer and stops.
+var WIRTLOT_TM=null;
+function wirtLotTick(){
+  var gm=document.getElementById('gamblemodal');
+  if(gm&&gm.classList.contains('on')){ renderWirtLot(); return; }
+  if(WIRTLOT_TM) clearTimeout(WIRTLOT_TM);
+  WIRTLOT_TM=null;
+}
 // v9.11: the one thing on the counter. Named, priced and visible before he pays,
 // which is the whole difference between this and the pull.
 function renderWirtLot(){
@@ -30881,6 +30893,12 @@ function renderWirtLot(){
   var lot=wirtLotKey(), k=lot[0], it=ITEMS[k], lotHr=wirtLotHour();   // v13.60: the window this card was drawn for
   if(!it){ el.innerHTML='<span class="hint">The counter is empty.</span>'; return; }
   var left=wirtLotLeft(), mins=Math.ceil(left/60);
+  // v15.03, wirt audit finding: THE LIMITED TIME OFFER CARD KEEPS TIME WHILE THE PANEL IS OPEN. The minutes, the lot and the bought
+  // mark were read once, here, and nothing redrew them. Arm wirtLotTick for 50 ms past the moment the minute drops; at one minute
+  // that is 50 ms past the window turn, so the next lot draws. Armed after the empty-counter return and before the bought branch,
+  // so both cards keep time. renderGamble is not called, so the vendor line does not rotate; a rebuilt Buy button keeps its pad place.
+  if(WIRTLOT_TM) clearTimeout(WIRTLOT_TM);
+  WIRTLOT_TM=setTimeout(wirtLotTick,Math.max(50,(WIRT_LOT_MS-(Date.now()%WIRT_LOT_MS))-(mins-1)*60000+50));
   // v13.18, HIS NOTE: bought means gone. The counter still says when the next one
   // lands, because an empty space with no explanation reads as a broken panel.
   if(P.wirtLotBought===wirtLotHour()){

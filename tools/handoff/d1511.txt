@@ -1,0 +1,29 @@
+## v15.11 - AN INSTANT QUIT OR A RELOAD FORGETS THE FREEBIE KIT PACKING
+
+Quit audit finding 9 (LOW). Pack a Medkit and Bandages, choose TAKE THE FREEBIE KIT and ascend. commitKit sets that packing
+aside in P.kitBeforeFree and saves it, so a death card can say the packed items never left the stash. The only clear was at the
+end of endRaid, after the raid settles, and two routes never reached it. An abandon in the first 1.5 s with no steps, looting or
+shots takes the instant-quit branch, which saves and returns before the clear. A raid that ended with the page going away (a
+closed tab, F5, a crash) left the list saved, and nothing cleared it at load. Next session, pack your own kit, choose MY
+LOADOUT, ascend and die: the card counted the old list against the stash and said the items packed before choosing the freebie
+kit were in the stash, on a raid where no freebie kit was taken. The stale list also stuck: commitKit keeps a list that is not
+empty, so a later freebie kit taken at the stash was counted against the old packing rather than the new one.
+
+THE BUILD. The instant-quit branch clears P.kitBeforeFree, P.hotBeforeFree and P.gunBeforeFree before its save, as every other
+raid end already does. applyLoadedProfile clears the same three beside the v14.03 raidSpliced cleanup, where no raid is running;
+its callers are boot and the Settings restore from a backup file, which replaces the whole character (restoreApply already
+clears the list the same way). hotBeforeFree and gunBeforeFree are written but never read and are cleared so no stale copy is
+left. No player text changes and no number moves.
+
+MEASURED. Check 15.11 runs three arms in order. One: a save holding a three-item list is loaded through the loader (control: the
+loader replaced the profile and deleted a staged raidSpliced, so the block with the fix ran); the list must be gone. Two: the
+freebie kit is taken through commitKit over the same packing (control: the list is set aside), the raid goes up at seed 4242
+through startRaid with the clock zeroed (controls: the raid carries the freebie kit, the list survived the ascent, and it is an
+instant quit by clock, distance, containers and shots) and is abandoned (controls: the run ended as an abandon, G is null and the
+run count did not move); the list must be gone. Three: his own kit goes up with no freebie kit at seed 4242 and he dies (controls:
+the stash holds copies of the old packing, the raid is not a freebie raid, and the death card is drawn); the card must not carry
+the line about items packed before the freebie kit, read with an assembled needle. A control that cannot run after a failure
+keeps the failure. It restores the profile through the loader. It fails on v15.10.
+
+Not verified: the card after a real closed tab and reload by eye; an instant quit from the pause box with a pad; quick ascent
+(R) after a stale list, which the load clear covers but no arm drives.

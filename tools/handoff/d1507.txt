@@ -1,0 +1,25 @@
+## v15.07 - A GRENADE A PILLAGER PAYS FOR A REVIVE CAN BE THROWN
+
+Throwables audit finding 5 (MEDIUM). Picking up a downed pillager with E pays you out of his own backpack (the v9.10 revive
+reward in updatePlayer): his gun if he carries one, otherwise the most valuable thing he carries. The reward always went into
+G.bag. A Frag Charge, Smoke Canister or Decoy Beacon lives in G.pouch everywhere else (a container take, the drop kit and the
+free kit all add to G.pouch), and doThrow, startCook and the throw cell on the tactical belt read only G.pouch. Every pillager
+spawns with his gun in his backpack, so the first revive pays the gun; but a revived pillager can go down again, and the second
+revive pays his best item. Pillager backpacks roll body, locker and safe loot, which hold Frag Charges, and a Frag (180) outranks
+bandage 60, ammobox 90, comp 120 and board 150. Steps: pick up a pillager a second time whose most valuable item is a Frag
+Charge. The toast says "He puts his frag charge in your hands." and the Frag Charge appears as a tile in the backpack, while the
+Frag cell keeps its old count (x0 if you had none) and the Frag key says none is left. Dragging the tile onto a belt key binds a
+cell that still reads x0 and hides the tile. The only way to use it was to drop it and search the pile again.
+
+THE BUILD. The revive reward sends a throwable (use 'throw') to G.pouch under its tk key, the same field the container take
+uses; everything else still goes to the backpack. The pouch count is guarded the way the drop kit guards it, so an item with no
+pouch count still lands in the backpack. The toast and the label are unchanged. No number moves.
+
+MEASURED. Check 15.07 deploys (seed 4242), clears the other entities and stages one downed pillager next to the player, then
+runs one updatePlayer frame with E held. Control: carrying only a Medkit, he gets up and the Medkit reaches the backpack, which
+proves the revive branch ran. Then the same pillager carrying only a Frag Charge, with 2 Frag carried: his backpack empties (a
+second control, he paid the Frag), and the check requires the Frag count to read 3 and no Frag Charge in the backpack. It fails
+on v15.06 on both: the count stays 2 and the Frag Charge is in the backpack.
+
+Not verified: a real second revive by hand in a raid; the Smoke and the Decoy, which take the same branch but are not driven; the
+belt cell and the throw by eye after the reward.

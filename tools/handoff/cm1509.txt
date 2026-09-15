@@ -1,0 +1,9 @@
+v15.09: an abandon that costs xp says so on the outcome card
+
+The XP fee for walking out was reported only on the raid screen, which the
+outcome card covers in the same click. The card now shows the fee on a new
+line, and the run record and the run report carry it.
+
+Check 15.09. Fails on v15.08.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

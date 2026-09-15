@@ -1,0 +1,22 @@
+## v15.10 - A NOTE TYPED IN THE PAUSE BOX SURVIVES AN INSTANT QUIT
+
+Quit audit finding 8 (MEDIUM). Ascend and, before moving, press ESC or P, which is how a new player reads the controls in the
+box. The raid clock stops while the box is open, so the raid stays under a second and a half old. Type a note in the box, click
+Abandon run, then YES. The confirm closes the box first, which banks the note into the raid's notes (G.tel.notes) and clears the
+box. endRaid then takes the instant-quit branch (an abandon under 1.5 s, under 8 distance, no containers, no shots), which saves
+and sets G=null before P.runs++ and pendingRun, the only readers of those notes. The note was in no run record, not under FLOOR
+NOTES and in no report, and nothing told the player.
+
+THE BUILD. The instant-quit branch keeps the raid's notes as floor notes before its save, in the shape the floor close writes
+({run,t,txt}, 400 characters each, the newest 20 kept), so the run still counts as never having happened and the next report
+prints the note under FLOOR NOTES. After the return to the Undercroft it says the floor close's own line, "Noted. It goes out with
+your next run report." A new call of an existing line: no baked key is reworded, and no number moves.
+
+MEASURED. Check 15.10 deploys at seed 4242, sets the raid clock to zero, opens the pause box, types a distinctive note and clicks
+the YES confirm. Controls: before the click the raid is an instant quit (clock, distance, containers, shots); after it the close
+has banked the note into the raid, the run ended as an abandon, G is null and the run log did not grow. It then requires the note
+under the floor notes, filed after the unchanged run count, and the noted line. It restores the profile through the loader. It
+fails on v15.09.
+
+Not verified: the Undercroft toast and the FLOOR NOTES line of a real report by eye; a note typed with a pad; a quit with several
+notes banked in one pause.

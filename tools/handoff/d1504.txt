@@ -1,0 +1,21 @@
+## v15.04 - BUYING THE LIMITED TIME OFFER IS NOT LOGGED AS A GAMBLE ROLL
+
+Wirt audit finding (LOW). THE GAMBLE lists the last eight rolls from P.gambleLog, or "Nothing rolled yet. $2,500 per roll." when
+there are none. The Buy handler of the Limited Time Offer (renderWirtLot) banked the whole lot, then pushed the lot's first item
+onto that same log. Steps: a profile with at least $10,000 and no rolls; THE GAMBLE reads "Nothing rolled yet." Buy the Limited
+Time Offer. THE GAMBLE now lists the lot's headline gun and its value as if a $2,500 roll had produced it, and the rest of the lot
+(the plate and medkit that come with the DMR or LMG lot, for example) is not listed. He never rolled, and a $10,000 purchase sits
+in the roll history.
+
+THE BUILD. The two lines that pushed the lot onto P.gambleLog, and capped it at 40, are gone from the Buy handler. The Gamble
+button's own push still records every real roll, and nothing else reads the log. No player text changes and no price, odds or
+pool moves. Lot entries already saved in a profile's history stay until eight real rolls push them off the list.
+
+MEASURED. Check 15.04 cleans the profile, empties the roll history and the stash, clears the bought mark, sets credits to one lot
+plus one roll and draws the panel. Controls: no roll row is listed and the Buy button is live before the click; after the click the
+price was paid and the lot was banked. It requires the roll history still empty and no roll row under THE GAMBLE. It then rolls once
+with the Gamble button and requires exactly that item logged and listed, so real rolls still record. It silences Wirt's line, puts
+back the seeded stream the roll spent, and restores the profile through the loader. It fails on v15.03: the history holds the lot's
+headline item and THE GAMBLE lists it as a roll.
+
+Not verified: THE GAMBLE panel after a real purchase, by eye.

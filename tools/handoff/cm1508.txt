@@ -1,0 +1,9 @@
+v15.08: a cooked frag charge keeps burning through a roll
+
+The roll branch returned before both fuse ticks, so a cooking Frag Charge and
+its COOKING countdown stopped for the whole roll. The fuse now burns through a
+roll and cooks off in hand with the roll cover dropped.
+
+Check 15.08. Fails on v15.07.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
