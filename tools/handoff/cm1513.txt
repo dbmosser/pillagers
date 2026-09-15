@@ -1,0 +1,9 @@
+v15.13: a restore code stays short enough to paste
+
+Since v15.00 the code carried a blank record for every named pillager a save had
+ever seen, so a long save made a code over 6,000 characters. Only records that
+hold something travel now.
+
+Check 15.13. Fails on v15.12.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

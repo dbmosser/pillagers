@@ -1,0 +1,15 @@
+## v15.12 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+WHATSNEW_VER stood at 14.94 against a build at 15.11. The card checks allow fifteen builds of drift, so the corpus on v15.11 went red
+on every card check (9.19, 10.38, 13.66, 14.02, 14.14, 14.27, 14.40, 14.60, 14.72, 14.83, 14.94), and the card said nothing about the
+fixes of v14.95 to v15.11. I let the refresh slip past v15.06, where it was due.
+
+THE BUILD. Two of my own card lines are rewritten in place. The first slot names the grenade, Wirt, gun hover and leaving a raid
+news. The second merges the two older lines, keeping every phrase checks 14.94, 14.83, 14.72, 14.60, 14.40, 14.27, 14.14 and 14.02
+read. Dropped from the card: the gun slot, contract gun, belt drag and Undercroft belt count lines, the shop owned gun line. Every
+line of his and every other line are untouched, so the card still holds thirteen lines. WHATSNEW_VER moves to 15.12.
+
+MEASURED. Check 15.12 requires the card within fifteen builds and naming the grenade news; it fails on v15.11. Every card check was
+run on the dry build.
+
+Not verified: the card read on screen by eye.

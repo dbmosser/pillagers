@@ -1,0 +1,9 @@
+v15.12: the what is new card is current again
+
+The card stood at 14.94, past the drift the card checks allow, so every card
+check went red on v15.11. Two of my own lines are rewritten in place with the
+grenade, Wirt and leaving a raid news, keeping every phrase the checks read.
+
+Check 15.12. Fails on v15.11.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
