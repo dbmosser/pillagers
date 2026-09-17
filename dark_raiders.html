@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.40';
+var VER='15.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24719,7 +24719,13 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
     // all drew the same white cross, so the only way to find out the trigger was
     // dead was to pull it and hear nothing. Your eyes are on the cursor in a
     // firefight, not on the ammo counter, so that is where the answer belongs.
-    var rState=(p.jam>0)?'jam':(p.reloading>0?'reload':(p.ammo<=0?(p.reserve<=0?'dry':'empty'):''));
+    // v15.41, hud audit finding: WITH BARE HANDS UP THE RETICLE NEVER SAYS EMPTY - R OR NO AMMO. The state read only the rounds
+    // loaded, and Bare Hands load none (a magazine of 0). Carrying one gun and pressing 2, or putting the only gun in the
+    // backpack, leaves Bare Hands up with nothing loaded and the gun's rounds still in reserve, so the reticle turned into the
+    // struck-through cross saying EMPTY - R (NO AMMO once the reserve ran out) while the corner read MELEE and the punch worked.
+    // R does nothing there, because a reload needs fewer rounds loaded than the magazine holds and 0 is not below 0. A weapon
+    // with no magazine is never empty now, so Bare Hands keep the plain cross. JAMMED, the reload ring and every gun are unchanged.
+    var rState=(p.jam>0)?'jam':(p.reloading>0?'reload':((p.ammo<=0&&!(p.wep&&p.wep.mag===0))?(p.reserve<=0?'dry':'empty'):''));
     var rCol=rState==='jam'?'rgba(224,72,58,.98)'
             :rState==='dry'?'rgba(224,72,58,.95)'
             :rState==='empty'?'rgba(255,192,74,.95)'
@@ -30479,7 +30485,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.40: THE INCOMING HEAL SHOWS ONLY THE HEALTH THAT WILL ARRIVE. A Bandage landing at 80 drew the green block on the health bar to 100, put 7s over his head and said 6 sec, while the heal stops at 85 in under two seconds and the rest is thrown away. The block, the ring over his head and the Bandage is healing you line now all stop where the heal really stops, and the ring fills with the health that arrives. Check 15.40 lands a Bandage at 80 and reads the drawn block, the seconds, the line and the ring, with 50 and the heal ceilings off as controls; it fails on v15.39',
+  now:'v15.41: WITH BARE HANDS UP THE RETICLE NEVER SAYS EMPTY - R OR NO AMMO. Carrying one gun and pressing 2 brought Bare Hands up with nothing loaded, and the reticle turned into the struck-through cross saying EMPTY - R, or NO AMMO once the reserve ran out, while the corner read MELEE, the punch worked and R did nothing. A weapon with no magazine is never empty now, so Bare Hands keep the plain cross and every gun still warns as before. Check 15.41 presses key 2 with one gun carried, presses R and reads the drawn HUD with rounds in reserve and with none, the empty gun on key 1 as the control; it fails on v15.40',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
