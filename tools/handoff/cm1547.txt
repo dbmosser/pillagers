@@ -1,0 +1,11 @@
+v15.47: each run in your stats counts its listener, pillbox and warden kills
+
+Bodies audit finding. The Every run list under Your stats added six of the
+nine kill counts a run keeps, so a run whose only kill was a Listener, a
+Pillbox or the Warden said 1 kill on its end card and in the Average kills
+per run card, and 0k on its own line in the list. Each line now adds every
+kill count the run keeps, the same sum the average card takes.
+
+Check 15.47. Fails on v15.46.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

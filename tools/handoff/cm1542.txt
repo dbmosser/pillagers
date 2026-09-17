@@ -1,0 +1,12 @@
+v15.42: crouched beside your hire or a downed pillager, the readout says hidden
+
+HUD audit finding. Crouched in a quiet spot with his hire following, the
+plate read PARTLY HIDDEN, TOO CLOSE in amber, because the hire and any
+downed pillager counted as someone close enough to see him, though neither
+can give him away and the crouch rule was hiding him from everything else.
+The plate now counts only bodies that can, so it reads HIDDEN, CROUCHED
+there, and a standing pillager inside 170 still warns as before.
+
+Check 15.42. Fails on v15.41.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

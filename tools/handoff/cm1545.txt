@@ -1,0 +1,13 @@
+v15.45: a round into a pillager you downed keeps your kill when he bleeds out
+
+Bodies audit finding. Any round of yours that did not kill cleared the mark
+that credits you with a kill, so one more round into a pillager you had
+downed, fired while he was still on the floor, took the kill away: when he
+bled out there was no kill in the run report, no contract tick and no
+grudge. A killing round still marks him yours and a round into a standing
+man still clears it, but a round into a downed man that does not finish him
+now leaves the mark with whoever downed him.
+
+Check 15.45. Fails on v15.44.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

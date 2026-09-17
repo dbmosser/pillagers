@@ -1,0 +1,12 @@
+v15.50: the controller menu button pauses at the peddler stall
+
+Pause audit finding 10. On a controller, Menu at the open Peddler stall did
+nothing: the stall branch of the pad poll returned before Menu was turned
+into P, so the raid clock and the waves ran on with no way to pause short
+of walking away with X, while keyboard P at the same stall pauses. A fresh
+Menu at the open stall now opens the pause box over it, one change per
+press, and the stall is still open behind the box.
+
+Check 15.50. Fails on v15.49.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

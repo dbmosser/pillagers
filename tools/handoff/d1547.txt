@@ -1,0 +1,48 @@
+## v15.47 - EACH RUN IN YOUR STATS COUNTS ITS LISTENER, PILLBOX AND WARDEN KILLS
+
+Bodies audit finding (LOW).
+
+Destroy a Listener, a Pillbox or the Warden and walk out. The run keeps nine kill counts (sentry, crawler, raider, snitch, warden,
+listener, howler, bulwark, choir, where choir is the Pillbox), and the death path in updateEnts fills whichever one matches the kind
+that died by your fire (T.kills[e.kind]++). The end card adds every count (the v8.42 fix) and so does statSummary, which feeds the
+Average kills per run card on the Your stats tab. But fmtRun, which draws each line of the EVERY RUN, NEWEST FIRST list on that same
+tab, added six by hand: sentry, crawler, raider, snitch, howler and bulwark. So a run whose only kill was a Listener, a Pillbox or
+the Warden said 1 kill on its end card and counted in the average above, and read 0k on its own line in the list. No comment says
+the gap is on purpose and it moves no number in the game.
+
+THE BUILD. One line in fmtRun: the hand-listed sum becomes
+  var kills=0; if(r.kills) for(var _fk in r.kills) kills+=(r.kills[_fk]||0);
+the same loop statSummary uses. A run logged before the newer counts existed adds the four it carries, and a run with no kill
+record reads 0k as before. This is the finding's fix as written; the verdict found it correct and gave no correctedFix. The line
+still prints the figure as Nk in the same place. No player text, no number, no dial, no loot table and no seeded draw moved. The
+Export for Claude report line (buildExport) has the same six-count list, but that report is for Claude, not the player, and is
+left for its own finding.
+
+OLDER CHECKS. None needed restaging. Check 12.90 calls fmtRun on a run with four zero kill counts and reads only the tag it prints.
+Check 12.96 reads statSummary, which is not touched. No older check reads the kill figure on a run line or the #loglist text.
+
+MEASURED. Check 15.47 deploys a raid at seed 4242. Controls: the live raid record keeps a number for sentry, listener, warden and
+choir, and holds no kills on landing. contractKill is set aside for the one frame (read back, else SKIP) so no saved kill contract
+ticks, and put back after. It stages mkSentry, mkListener, mkWarden and mkChoir 60 units around the player as the only entities,
+each at 0 health, marked as killed by the player, and runs one updateEnts(0.016) down the ordinary death path. Controls: all four
+left the raid, the record counted exactly one of each and four in all. The raid's entities go back, the raid record is given 40
+units walked, and the raid is abandoned through __endRaid, which writes the run to the log. The 40 units matter: endRaid throws
+away an abandon with under 1.5 seconds on the clock, under 8 units walked, nothing searched and nothing fired as an instant quit
+and logs nothing (checks 15.10 and 15.11 rely on a fresh deploy being exactly that), so without them the log control below would
+SKIP on both builds and the check could never fail. Controls: the newest run in the log is a new record, this abandon with those
+four kills, and
+statSummary over that run counts 4 (the Average kills per run card). The #loglist element is emptied and renderHub draws the list
+the way the hub does. Controls: the first line reads ABN# and this run number, and it prints a kill figure. The figure must be 4k;
+on v15.46 it reads 1k (only the sentry), so the check fails there for the finding's own reason. Kept, on both builds: fmtRun on a
+run logged with only sentry, crawler, raider and snitch counts and two raider kills reads 2k, and on a run with no kill record
+reads 0k. In finally: contractKill put back, the raid's entities restored, the raid abandoned if still running, the run log and
+the lifetime kill tally P.kills put back to what they held before the check (the logged run banks its four kills there, and a
+Warden kill unlocks the Cracked Visor and the other warden:1 cosmetics), then __topClear, __resetCfg, __cleanProfile (which saves)
+and a renderHub to redraw the list.
+
+Dry run on scratch copies of dark_raiders.html (at 15.39) and mkfixture.ps1: p1540 to p1550 and f1540 to f1550 applied in order,
+every anchor a whole line matching once; VER reads 15.47 after p1547 and one DEVNOW now line starts v15.47. The patched fmtRun and
+the new check entry both parse in JScript.
+
+Not verified: check 15.47 has not been run in a browser, and no real raid has been played to a Listener, Pillbox or Warden kill and
+the Your stats list read by hand.

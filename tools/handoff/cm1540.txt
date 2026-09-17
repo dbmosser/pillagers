@@ -1,0 +1,12 @@
+v15.40: the incoming heal shows only the health that will arrive
+
+HUD audit finding. A Bandage landing at 80 drew the green incoming heal
+block on the health bar to 100, put 7s over his head and said it was
+healing him for 6 sec, while the heal stops at 85 in under two seconds and
+the rest is thrown away. The block, the seconds over his head, the line
+and the ring now all stop where the heal really stops, so the screen never
+promises health past 85 that only a Medkit can give.
+
+Check 15.40. Fails on v15.39.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

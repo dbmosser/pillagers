@@ -1,0 +1,12 @@
+v15.48: while the site burns or a death plays out, the pause box offers no abandon and no extract
+
+Pause audit finding 8. Paused in the first second of the burn after the
+clock ran out, the box offered Abandon run, which turned a certain timer
+death into an abandon that kept the armoury guns and counted no death. Over
+the death beat, and down in the burn, it read BLEEDING OUT and said he can
+extract while downed. The burn now hides and refuses Abandon run, and only a
+real downed player outside the burn is told he is bleeding out.
+
+Check 15.48. Fails on v15.47.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

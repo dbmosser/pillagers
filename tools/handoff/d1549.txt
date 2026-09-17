@@ -1,0 +1,43 @@
+## v15.49 - HOLDING ESC OR P DOES NOT FLICKER THE PAUSE BOX
+
+Pause audit finding 9 (MEDIUM).
+
+In a raid, hold P for longer than the keyboard's repeat delay. The first keydown opens the pause box. Every key repeat after it
+also reaches raidKey: the main keydown listener drops repeats only on its Backquote, Backspace and TAB lines, the pause lockout at
+the top of raidKey lets P, ESC and TAB through, and the toggle line tested repeat only for TAB. So the box flipped open and shut
+on every repeat, each opening wiped keys and mouse.down, and when P was let go the box was open or shut by chance. Holding ESC did
+the same by a two-step loop: with the box open, the capture-phase ESC and TAB listener shut it on a repeat (it skipped only TAB
+repeats, v13.44), and the next repeat reached raidKey with the box shut and opened it again. Holding the ESC that closes the map
+ends the same way, because the map and backpack line takes only a fresh press and every repeat falls through to the toggle. On the
+Undercroft floor the floor branch already requires a fresh press, but a held ESC still opened the box and its first repeat, caught
+by the capture listener, shut it again. v13.44 fixed exactly this for TAB and left ESC and P.
+
+THE BUILD. Two lines. In raidKey the pause toggle now reads (code==='Escape'||code==='KeyP'||code==='Tab')&&!repeat, so a key
+repeat of any of the three does nothing there. In the capture listener the v13.44 line becomes if(ev.repeat) return, still after
+its stopPropagation and preventDefault, so while the box is open every repeated ESC or TAB is swallowed and neither the raid keys
+nor the floor branch can reopen it. A fresh press of ESC, P or TAB toggles the box exactly as before. The gamepad calls raidKey
+with repeat false from its edge-detected taps, so the pad is unchanged. No player text, no number, no dial and no seeded draw
+moved.
+
+MEASURED. Check 15.49 deploys a raid at seed 4242 with the map, backpack, emote bar and stall shut and the box down. Control: a
+fresh raidKey P opens the box and a second closes it. Then a fresh P opens it and five raidKey P repeats follow; the box must not
+flip and must rest open. On v15.48 it flips five times and rests shut, so the check fails there for the finding's own reason.
+Then the map is opened and a fresh raidKey ESC is pressed; control: the map closed and the box stayed shut. Four raidKey ESC
+repeats follow; the box must not flip and must rest shut (v15.48 flips four times). Then the page path: control that the page is
+in the raid state, P opens the box, and a fresh ESC keydown dispatched on document.body (so the capture listener on window runs
+first, as for a real key) closes it. P opens it again and four repeated ESC keydowns are dispatched on the body; the box must not
+flip and must rest open (on v15.48 the first repeat shuts it through the capture listener and the next opens it through raidKey,
+four flips). Last, fresh raidKey TAB presses still open and close the box on both builds. Keys and mouse.down are cleared around
+every press; the box is shut, the map, backpack, emote bar, stall and drag are put back and the raid is abandoned in finally.
+
+Older fixture checks: none restaged. No check in mkfixture.ps1 sends a key repeat (no repeat:true event and no raidKey call with
+repeat true), and every pause check toggles the box with fresh presses, which still toggle. Check 13.44 presses TAB fresh through
+window, and a fresh TAB still toggles the box.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.39 applied): p1540 and f1540, p1541 and f1541,
+p1542 and f1542, p1544 and f1544, p1545 and f1545, p1546 and f1546 applied in version order, with VER and the DEVNOW now line
+moved on by hand and a stand-in newest fixture entry added for 1543 and 1547, which were not yet written; then p1548 and f1548,
+p1549 and f1549 (and after them p1550 and f1550), every script printing OK and every anchor a whole line block matching once. The
+edited raidKey, the edited capture listener and the check all parse in JScript.
+
+Not verified: a real raid by hand, holding P and ESC on a real keyboard. The check itself has not been run in a browser yet.

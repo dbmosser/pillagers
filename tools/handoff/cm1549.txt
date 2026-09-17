@@ -1,0 +1,12 @@
+v15.49: holding esc or p does not flicker the pause box
+
+Pause audit finding 9. Held down in a raid, P flipped the pause box open
+and shut on every key repeat and left it open or shut by chance, and a held
+ESC did the same, even the ESC held after it closed the map. Only a held TAB
+was ignored. Key repeats of ESC, P and TAB are now ignored for that toggle,
+and the open box swallows repeated ESC and TAB, so a held key opens or
+closes the box once.
+
+Check 15.49. Fails on v15.48.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

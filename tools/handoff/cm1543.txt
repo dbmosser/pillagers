@@ -1,0 +1,13 @@
+v15.43: the raid clock reads 0:10 when ten seconds is said, and 0:00 only when it is out
+
+HUD audit finding. The raid clock rounded its seconds down, so TEN SECONDS
+was said and the first tick played with 0:09 on screen, the last tick
+played as it turned 0:00, a whole second then passed at 0:00 before the
+site began to burn, and through the burn it read -1:0-1. It now rounds up
+like every other countdown and stops at zero, so each warning lands on the
+figure it names, 0:00 means the clock is out, and red still starts at 0:44.
+The warnings themselves fire at the same moments as before.
+
+Check 15.43. Fails on v15.42.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

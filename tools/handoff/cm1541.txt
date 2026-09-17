@@ -1,0 +1,12 @@
+v15.41: with bare hands up the reticle never says EMPTY - R or NO AMMO
+
+HUD audit finding. Carrying one gun and pressing 2 brought Bare Hands up
+with nothing loaded, and the reticle turned into the struck-through cross
+saying EMPTY - R, or NO AMMO once the reserve ran out, while the corner
+read MELEE, the punch worked and R did nothing. A weapon with no magazine
+is never empty now, so Bare Hands keep the plain cross, and every gun
+still warns exactly as before.
+
+Check 15.41. Fails on v15.40.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

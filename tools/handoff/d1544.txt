@@ -1,0 +1,64 @@
+## v15.44 - A PILLAGER WHO SWITCHES GUNS NEVER LEAVES TWO COPIES OF HIS OLD GUN ON HIS BODY
+
+Bodies audit finding (HIGH).
+
+mkRaider puts a copy of the gun in his hands into his pack (r.bag.push('gun_'+wk)), and the death path counts that copy as the
+held gun: v8.44 adds the held gun to the body only when no copy of it is already in the pack. raiderUseKit runs for every pillager
+every frame and kitT starts unset, so the swap test runs on his first frame. When it found a better gun in the pack it took the new
+gun out (splice) and pushed a fresh copy of the old one, so the old gun now sat in the pack twice. Kill him and the body paid both
+copies plus the new gun, which the death path adds because its copy was spliced out. Example: a Scav Pistol pillager whose pack
+rolled a Compact SMG (the body and locker tables both hold one) swapped at once and died with two Scav Pistols and the SMG, though
+he only ever had one pistol. A gun he looted later did the same. Every pillager who swapped paid out one extra gun.
+
+THE BUILD. The verdict's correctedFix. The two lines in the EQUIP block of raiderUseKit become one:
+  if(old&&old.id!=='fists'&&e.bag.indexOf('gun_'+old.id)<0) e.bag.push('gun_'+old.id);
+Nothing is spliced out any more. The new gun's copy stays in the pack and stands for the gun in his hands, the same way the spawn
+copy does, so the death path pays it once, and a man carrying two of the better gun still pays both. When the old gun already has
+its copy (every pillager holding the gun he spawned with) nothing moves at all: the copy stays as the gun he put away and the pack
+length is what it always was. When the old gun has no copy (an elite, whose gun blessElite hands him after the spawn copy is
+pushed) it is pushed as before, so all his guns pay once; that pack is one longer after the swap than it was, because the new
+gun's copy is no longer taken out. No player text, no number, no dial and no loot table moved.
+
+Why not keep the splice for the no-copy case, as the first draft of this build did to hold the pack length: an elite carrying two
+of the better gun then kept only one copy for two guns and his body paid one Longshot where he had two, and a pillager who had been
+revived for the gun in his hands (the copy gone, v9.10) and later swapped lost the new gun from his body. The correctedFix pays
+both. What the one extra pack slot touches: the extraction call skips a pillager carrying 5 or more things (and the rnd draws that
+send him to investigate), and drawOp fills the pack on his back by length over 7. A no-copy swap is rare: at spawn it needs an elite
+whose pack rolled a gun that outranks his blessed one, and only the safe table carries one, which only a medium or heavy rig rolls,
+and that pack already holds 5 or more; later it needs an elite, or a pillager revived for the gun in his hands, looting a better
+gun. So a seeded draw can move only in a raid where that happens.
+
+What reads the pack and now reads it right: the hire's extraction cut (10 percent of what his pack is worth) and the roster value
+stamped when a pillager extracts counted the old gun twice after a swap and the gun in his hands not at all; they now count each
+gun he has once, as they already did for a pillager who never swapped.
+
+OLDER CHECKS. One restaged. Check 15.16 stages a plain pillager holding a Scav Pistol with a pack of only an Auto Rifle (no copy of
+the pistol) and its control counts every gun in his hands and pack and wants 2. With the correctedFix the rifle's copy stays in the
+pack beside the pistol, so that count reads 3 and the check would SKIP from here on. f1544 restages its guns helper to count each
+gun kind once, in his hands or his pack: rifle and pistol, 2 on v15.43 and on v15.44, and the friend half of the check is untouched
+(an imported friend skips the swap). Check 9.10 (revive pays out, then kill) reads the first gun in his pack and whether the body
+repeats it; a pillager holding his spawn gun takes the nothing-moves path, so it reads the same. Check 9.24 only needs the revive to
+pay a gun, and the spawn copy is still first in the pack.
+
+MEASURED. Check 15.44 deploys a raid at seed 4242 and stages five pillagers from mkRaider (IDENTITIES[0], simBuild on, so no
+profile record is touched), each with a named body tag, full health, no heal queued, kitT 0 and an exact pack: A holds the Scav
+Pistol with [gun_pistol, gun_smg]; B the same with a second SMG; C is an elite holding the Marksman Rifle with [gun_pistol,
+gun_sniper]; D holds the pistol with [gun_pistol, scrap]; E is the elite of C with [gun_pistol, gun_sniper, gun_sniper].
+raiderUseKit runs once on each. Controls: A and B hold the SMG, C and E the Longshot and D still the pistol. Kept on both builds:
+the packs of A, B and D did not change length. Then all five are set dead (hp 0, finished, not by the player), made the only
+entities, and one updateEnts(0.016) runs the ordinary death path. Controls: all five left a body named for them, and D's body holds
+exactly one Scav Pistol (the ruler: the held gun pays once). The finding: A's body must hold one pistol and one SMG (v15.43 gives
+two pistols), B's one pistol and two SMGs (v15.43 gives two pistols and one SMG, the case a fix that only skips the push would also
+get wrong), C's one pistol, one Marksman Rifle and one Longshot on both builds, and E's one pistol, one Marksman Rifle and two
+Longshots (v15.43 gives one Longshot, as would a fix that keeps the splice). So the check fails on v15.43 for the finding's own
+reason. The staged bodies are removed, the raid's entities put back, and the raid is abandoned.
+
+Dry run on scratch copies of dark_raiders.html (at 15.39) and mkfixture.ps1: p1540 to p1550 and f1540 to f1550 applied in order,
+every anchor a whole line block matching once, the 15.16 restage included. The patched raiderUseKit, the new check entry and the
+restaged 15.16 helper parse under JScript. A JScript model of the swap with the v8.44 death rule gave, with the correctedFix: A
+pistol + SMG, B pistol + SMG x2, C pistol + dmr + sniper (pack 2 to 3), D pistol, E pistol + dmr + sniper x2 (pack 3 to 4); with
+the old swap A and B pistol x2 + SMG and E one sniper; with the first draft's guarded splice E one sniper as well. The 15.16 plain
+pillager counts 2 gun kinds on both builds, and 3 by the old every-copy count with the correctedFix.
+
+Not verified: check 15.44 and the restaged check 15.16 have not been run in a browser, and no real raid has been played to a swap
+and a kill by hand.

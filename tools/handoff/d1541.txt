@@ -1,0 +1,35 @@
+## v15.41 - WITH BARE HANDS UP THE RETICLE NEVER SAYS EMPTY - R OR NO AMMO
+
+HUD audit finding (MEDIUM).
+
+Deploy carrying one gun. The second gun slot starts as Bare Hands, which have a magazine of 0 (buildRaid gives sec=WEAPONS.fists
+and secAmmo=0). Press 2: setHot calls swapGuns, so Bare Hands come up with nothing loaded while p.reserve still holds the gun's
+rounds. The reticle state in drawHUD read only the rounds loaded, so it went to the amber struck-through cross with EMPTY - R under
+it, and to the red NO AMMO once the reserve was gone. At the same moment the corner readout said MELEE (it checks the magazine size
+first) and the punch worked. Pressing R did nothing, because the reload in updatePlayer needs fewer rounds loaded than the magazine
+holds, and 0 is not below 0. Putting the only gun into the backpack ends the same way, since bagHeldGun leaves Bare Hands in hand
+with 0 loaded. The cursor told him his hands were out of ammo and to press a key that does nothing.
+
+THE BUILD. One line in drawHUD, the reticle state: a weapon with no magazine (p.wep.mag===0) is never empty or dry. With Bare Hands
+up the reticle is the plain cross, and the round count ring already skipped a zero magazine. JAMMED still shows if a jam timer
+carries over the swap, which is true, because the punch also waits for the jam to clear. The reload ring and every gun's warnings
+are unchanged. No player text, no number, no dial and no seeded draw moved.
+
+MEASURED. Check 15.41 deploys a raid at seed 4242 with the default dials, puts the mouse mid-screen with the backpack and map shut,
+and wraps the HUD canvas fillText to record every string one drawHUD hands it (before any text edit, compared whole). If the raid did
+not start with one gun and Bare Hands, it hands him a pistol with Bare Hands in slot 2. The reserve is set to 37. Controls: key 1 is
+the gun in his hands and key 2 is Bare Hands, a real gun cell and not the vacant one. With the gun and nothing loaded the drawn HUD
+carries EMPTY - R, and with the reserve at 0 it carries NO AMMO (both needles are assembled, never written whole). Then setHot(1),
+the way key 2 takes it. Controls: Bare Hands are up with 0 loaded, 37 in reserve, no reload, no jam and key 2 lit; one updatePlayer
+frame with R held starts no reload. THE FIX: the drawn HUD must not carry EMPTY - R; on v15.40 it does, so the check fails there for
+the finding's own reason. Control: the corner reads MELEE in that frame. With the reserve at 0 the drawn HUD must not carry NO AMMO
+(on v15.40 it does). Last control, on both builds: setHot(0) brings the gun back, and with 0 loaded it still draws EMPTY - R, and
+NO AMMO with no reserve, so the fix did not silence the gun. The fillText wrapper, the keys, the mouse, key 1 and every weapon and
+ammo field it moved are put back, and the raid is abandoned. No older fixture check reads the reticle text, so none is restaged.
+Dry run on scratch copies of dark_raiders.html (at 15.39) and mkfixture.ps1: p1540 and f1540 applied, then p1541 made 2 edits
+(the reticle line and VER) plus DEVNOW and f1541 1 edit, every anchor a whole line matching once, and a second p1541 run refuses.
+The check and the edited drawHUD parse in JScript. The new reticle line replayed in JScript gives no warning for Bare Hands with 37
+in reserve or none, empty and dry for a gun with a 12 round magazine, and still JAMMED for Bare Hands with a jam timer.
+
+Not verified: a real raid by hand, pressing 2 with one gun carried and putting the only gun in the backpack (the backpack path
+shares the fixed line but the check drives only key 2). The check itself has not been run in a browser yet.

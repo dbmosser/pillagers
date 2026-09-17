@@ -1,0 +1,43 @@
+## v15.42 - CROUCHED BESIDE YOUR HIRE OR A DOWNED PILLAGER, THE READOUT SAYS HIDDEN
+
+HUD audit finding (MEDIUM).
+
+Hire a pillager. He starts on FOLLOW, and under FOLLOW he walks back toward you whenever he is more than 120 away
+(if(dF>120) navSeek), so he spends the raid inside the 170 units of the crouch rule. Crouch somewhere quiet with every hostile far
+off. The concealment plate in drawHUD finds the nearest body and says PARTLY HIDDEN, TOO CLOSE in amber when it is within
+crouchHide (170), else HIDDEN, CROUCHED in green. Its loop skipped only dead bodies, the Peddler and a survivor, so the hire counted
+as someone too close, and the plate named a danger that does not exist while the hard crouch rule in updateEnts (sees=false past
+CHID) was hiding him from every machine and pillager. A hire cannot give him away: the branch in updateEnts that acts on a body
+seeing him opens with if(sees&&!(e.merc&&!e.downed&&(...||true))), so a hire never enters it, and a hire is never downed (the
+downing needs !e.merc). A pillager lying downed near him did the same, although the
+downed branch in updateEnts continues before any sight test, so he sees nothing. The one readout that exists to teach crouch told
+him his strongest stealth state was not working. It is not always, since a hire on FOLLOW can wander to a crate or go fight, but
+it is the normal state of a crouch with a hire along.
+
+THE BUILD. One line in drawHUD, the concealment loop: it also skips a body with merc, downed or finished set. finished bodies are
+cleared on the next frame through the hp<=0 path, so skipping them only spares the last frame. With the hire following and nothing
+hostile inside 170 the plate reads HIDDEN, CROUCHED; a standing pillager or machine inside 170 still reads PARTLY HIDDEN, TOO CLOSE,
+with or without the hire beside him. The crouch rule, the 170 dial, every word on the plate, every colour and every number are
+unchanged. No player text, no dial and no seeded draw moved.
+
+MEASURED. Check 15.42 deploys a raid at seed 4242 with the default dials (it skips unless crouchHide is between 100 and 400), shuts
+the backpack and map, lifts every ent, builds a standing hostile pillager and a hire with mkRaider the way buildRaid builds one
+(merc 1, hostile false, grudge false, friendly 1), and wraps the HUD canvas fillText to record every string one drawHUD hands it,
+compared whole (both needles assembled, the too close one from pieces). Before each draw only the named bodies are in G.ents, each
+put east of him, with G.pCrouch true and G.pBush false. Controls: with nobody near the plate reads HIDDEN, CROUCHED; with the
+standing pillager 60 away it reads the too close warning; with the hire 400 away it reads HIDDEN, CROUCHED. THE FIX: with the hire
+60 away the plate must read HIDDEN, CROUCHED and not the warning; on v15.41 it reads the warning, so the check fails there for the
+finding's own reason. THE FIX: the same pillager staged downed (downed 1, state down, the bleed clock and raiderDownHp, the fields
+the real downing sets) 60 away must read HIDDEN, CROUCHED; on v15.41 it reads the warning. Last control, on both builds: the hire at
+60 with the standing pillager at 100 still reads the warning, so the hire never hides a real one. The fillText wrapper, G.ents, the
+crouch and bush flags, the backpack and map flags and the pillager's staged fields are put back, and the raid is abandoned. No older
+fixture check reads the concealment plate, so none is restaged.
+
+Dry run on scratch copies of dark_raiders.html (at 15.39) and mkfixture.ps1: p1540 and f1540, p1541 and f1541 applied in order,
+then p1542 made 2 edits (the loop line and VER) plus DEVNOW and f1542 1 edit, every anchor a whole line matching once, and a second
+p1542 run refuses. The check and the edited drawHUD parse in JScript. The old and new loop lines replayed in JScript give: nobody,
+hidden on both; standing pillager at 60, too close on both; hire at 400, hidden on both; hire at 60 and downed pillager at 60, too
+close on the old line and hidden on the new; hire at 60 with a standing pillager at 100, too close on both.
+
+Not verified: a real raid by hand, crouched with a hire following and beside a downed pillager. The check itself has not been run in
+a browser yet.

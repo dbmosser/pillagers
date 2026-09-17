@@ -1,0 +1,13 @@
+v15.46: reviving a pillager never loses the gun in his hands
+
+Bodies audit finding. A revive pays the first gun in a pillager's pack and
+marked the gun in his hands as paid whatever it paid. An elite holds a gun
+his pack does not carry, so an elite holding a Marksman Rifle paid the Scav
+Pistol he spawned with, and when he died later the rifle was on no body and
+in no backpack. The mark is set now only when the gun paid is the gun in his
+hands, so that gun still pays once and a different gun in his hands goes on
+his body when he dies.
+
+Check 15.46. Fails on v15.45.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

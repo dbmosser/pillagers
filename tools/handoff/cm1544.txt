@@ -1,0 +1,14 @@
+v15.44: a pillager who switches guns never leaves two copies of his old gun on his body
+
+Bodies audit finding. A pillager who swapped to a better gun from his pack
+put a second copy of his old gun back in it, next to the copy he spawned
+with, so his body paid the old gun twice: a Scav Pistol pillager carrying a
+Compact SMG died with two pistols and the SMG. The swap now takes nothing
+out of the pack, so the new gun's copy stands for the gun in his hands, and
+the old gun goes in only when it has no copy there, as an elite's does.
+Every gun he carries pays once, two of the better gun included. Check 15.16
+counts each gun kind once now, since the rifle's copy stays in the pack.
+
+Check 15.44. Fails on v15.43.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -40024,6 +40024,47 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.40 - THE INCOMING HEAL SHOWS ONLY THE HEALTH THAT WILL ARRIVE
+
+HUD audit finding (HIGH).
+
+Get down to 80 health with no Medkit running and put on a Bandage. When it lands, the green incoming heal block on the health bar
+ran from 80 to 100, the ring over his head read 7s and the line said Bandage is healing you, 6 sec. What really happens: tickHeal
+stops him at 85 about a second and a half later, clears the queue, and the block, the ring and the seconds all vanish with 15 of the
+promised points never arriving. His ruling of 2026-09-16 is that bandages only get him to 85 and only a Medkit gets him back to 100,
+and the screen was promising the opposite. It happened with every Bandage used between 65 and 85. It also happened with a Bandage
+over a nearly spent Medkit: from 74.6 with 1.4 of the Medkit left, the block reached 96 while the heal stops at 86.4. All three read
+the queue, which is everything poured in and knows nothing of the ceilings the drain obeys. The AUDIT.md row for v15.26 logged the
+block as OPEN; the ring and the line had the same fault and were not on that row.
+
+THE BUILD. Four places, all reading healReach, the one reader of where a running heal really stops that the drain and every refusal
+already use since v15.26.
+- drawHUD: the green block ends at healReach instead of health plus the queue.
+- render2D, the call that draws him: what is left and the seconds over his head are healReach less his health, over the rate.
+- tickPrepSlot: the seconds in the Bandage is healing you line are the same. The sentence itself is unchanged.
+- applyHeal: healAmt0, which only the ring reads as its total, now stores healReach less his health after the item is queued,
+  instead of everything poured in. Without this the ring would start three quarters full for a Bandage at 80 (5 left of 20).
+No number, dial, ceiling, rate or loot table moved; the queue and the drain are untouched. No player text changed except the seconds
+the existing line reports.
+
+MEASURED. Check 15.40 deploys a raid at seed 4242 with the default dials and lands Bandages through tickPrepSlot, the path F and the
+belt use. It wraps the HUD canvas fillRect to read the width of the green block (fill rgba 111,224,160), the world canvas fillText
+to read the seconds over his head (fill #dff3e8, used only there) and the world canvas arc to read how full the heal ring is (radius
+9, from the top, #7fc4a0 at width 3). Controls: full health 100, Bandage ceiling 85, Medkit ceiling 100. From 50 on both builds: the
+block is 72 of 360, the line says 6 sec, 7s is drawn over his head, the ring is empty and the heal ends at 70. THE FIX from 80: the
+queue is 20 and healReach 85 on both builds (control); the block must be 18 wide (72 on v15.39), the line must say 2 sec (6 sec on
+v15.39), the seconds over his head must read 2s (7s on v15.39); after 20 ticks of 0.05 he is at 83.2 and the ring must be 64 percent
+full (16 percent on v15.39); the heal must end at 85 (control). A Bandage over the last 1.5 of a Medkit from 30: the block must end
+at healReach, 86.4, where the heal ends (control), not at 96 as on v15.39. Heal ceilings off from 80: the block is 72 and the heal
+ends at 100 on both builds. Everything it wraps and every heal field it moved is put back, the dials reset and the raid abandoned.
+No older fixture check reads the green block, the ring, the seconds or healAmt0, so none is restaged.
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand with p1539 and f1539 applied: p1540 made 5 edits plus
+DEVNOW and f1540 1 edit, every anchor a whole line matching once, and a second p1540 run refuses. The check and the edited applyHeal,
+tickPrepSlot, drawHUD and render2D parse in JScript. The heal math was replayed in JScript with the real applyHeal, tickPrepSlot,
+tickHeal and healReach of both builds and the drawn block and ring formulas: v15.39 gives block 72, 6 sec, 7s, fill 0.16 and medkit
+block 77.2; v15.40 gives 18, 2 sec, 2s, fill 0.64 and 42.7, equal to what the check wants, with every control the same on both.
+
+Not verified: a real raid by hand with a Bandage at 80. The check itself has not been run in a browser yet.
 ## v15.39 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 WHATSNEW_VER stood at 15.27 against a build at 15.38, due for its refresh, and the card said nothing about the fixes of v15.28 to

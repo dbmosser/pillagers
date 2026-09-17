@@ -1,0 +1,60 @@
+## v15.46 - REVIVING A PILLAGER NEVER LOSES THE GUN IN HIS HANDS
+
+Bodies audit finding (MEDIUM).
+
+Pick a downed pillager up with E and he pays you out of his own kit: the payout closure in updatePlayer takes the first gun_ item in
+his pack, on the belief written above it that this is the gun in his hands, and then sets downRdr.paidRevive=1 whatever it paid. The
+death path adds the held gun to the body only when paidRevive is unset (and the pack does not already carry it), so the flag was
+written to stop a revive-then-kill paying the same gun twice. The belief does not hold for an elite, ever: mkRaider pushes the gun
+he spawned with (pistol, SMG, rifle, carbine or scattergun) into his pack first, and blessElite then puts a Marksman Rifle, Support
+MG, Magnum, Whisper, Longshot or Meridian Lance in his hands without touching the pack. The two lists share nothing. So an elite
+holding a Marksman Rifle, picked up, said he puts his Scav Pistol (field) in your hands, the flag went on, and when he died later
+(he turns on you, or a machine gets him) his body held no Marksman Rifle. The gun you watched him fire was never paid and never
+dropped. Elites are on by default (eliteRate 0.08, eliteGuns 1, raiderDown 1). An elite who swapped his blessed gun away and an
+imported friend (applyGhost swaps e.wep and leaves the pack) reach the same mismatch.
+
+THE BUILD. One line in the revive payout closure in updatePlayer, under the v9.10 THE BODY MUST NOT PAY IT AGAIN comment:
+  if(_rpk==='gun_'+(downRdr.wep&&downRdr.wep.id)) downRdr.paidRevive=1;
+The flag goes on only when the gun paid is the gun in his hands. Paid from the pack, or from his hands by the empty-pack fallback:
+flag set, so that gun still pays once and a second revive still pays nothing from his hands (v13.88). A different gun paid, or a
+non-gun item: no flag, so the death path puts the gun in his hands on his body, and its own indexOf test still stops a duplicate
+when the pack carries a copy. A man with no gun in his hands matches nothing. This is the finding's fix as written; the verdict
+found it correct and gave no correctedFix. No player text, no number, no dial, no loot table and no seeded draw moved.
+
+OLDER CHECKS. None needed restaging. Check 9.10 revives and kills the first pillager in the seed 4242 raid and fails only if the
+gun paid is also on the body; with the fix a different gun in his hands can reach the body, never the one paid. Check 13.88
+revives an empty-packed SMG holder twice: the fallback pays the SMG in his hands, which matches, so the flag is set and the second
+revive pays nothing, as before. Check 15.07 pays a Medkit and a Frag Charge and never kills the man. Check 11.64 reads only the kill
+mark. No older check reads a body after a revive that paid a gun other than the one in his hands.
+
+MEASURED. Check 15.46 deploys a raid at seed 4242. Unopened containers within 90 of the landing spot are marked opened for the check
+(so E has nothing else to open) and put back after. Each arm stages one mkRaider pillager (IDENTITIES[0], simBuild on) 24 units from
+the player as the only entity: a probe name, off the ledger (ident null, so the revive writes no standing), downed with 30 health,
+the named gun in his hands and exactly the named pack. E is pressed for one updatePlayer(0.016) on the play path with the backpack
+emptied first; then he is killed down the ordinary death path by nobody (hp 0, finished, byPlayer false, one updateEnts(0.016)),
+and the check reads what reached the backpack and the body named for him.
+  A (control, then kept): holding the Scav Pistol with a pack of Scav Pistol and scrap. Controls: he is picked up, the revive paid
+  one Scav Pistol, he died and left a named body holding his scrap (else SKIP). Kept: the body holds no Scav Pistol, so the gun in
+  his hands pays once; a fix that drops the flag would pay it twice. Same on both builds.
+  B (the finding): an elite holding the Marksman Rifle with a pack of Scav Pistol and scrap. Controls: picked up, the revive paid
+  the Scav Pistol and no Marksman Rifle, he still holds the Marksman Rifle, he died and left a named body with his scrap. Must be one
+  Marksman Rifle and no Scav Pistol on the body. v15.45 leaves no Marksman Rifle anywhere, so the check fails there for the
+  finding's own reason.
+  C (kept): holding the Compact SMG with an empty pack. Controls: picked up, the revive paid one Compact SMG from his hands, he died.
+  Any body he left must hold no Compact SMG, on both builds, which guards against a fix that stops flagging the empty-pack payout.
+In finally: keys and the mouse cleared, the revive lock and the revive prompt target cleared, the containers put back as they were,
+the probe bodies removed, the raid's entities, backpack and revive tallies restored, the player's invulnerability restored, the raid
+abandoned, then __topClear, __resetCfg and __cleanProfile.
+
+Dry run on scratch copies of dark_raiders.html (at 15.39) and mkfixture.ps1: p1540 and f1540, p1541 and f1541 applied, then the
+version line, DEVNOW and the newest fixture entry moved to 15.43 to stand in for builds 1542 and 1543, then p1544 and f1544, p1545
+and f1545, then p1546 and f1546, every anchor a whole line matching once. The patched updatePlayer and the new check entry both
+parse in JScript.
+
+Not covered, a separate case: a pillager revived for the gun in his hands has no copy of that gun left in his pack, so if he later
+loots a better gun and swaps to it, the v15.44 swap pushes a copy of the paid gun back in (it has no copy) and his body pays that
+gun a second time. The new gun's own copy stays in his pack, so the new gun does reach his body. The flag records that a revive
+paid, not which gun; that is left for its own finding.
+
+Not verified: check 15.46 has not been run in a browser, and no real raid has been played to an elite downed, picked up and killed
+by hand.
