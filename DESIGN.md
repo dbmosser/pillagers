@@ -40024,6 +40024,49 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.50 - THE CONTROLLER MENU BUTTON PAUSES AT THE PEDDLER STALL
+
+Pause audit finding 10 (LOW).
+
+On a controller, open the Peddler's stall with X and press Menu. Nothing happened. pollPad asks padMenu first, but padOpenModal
+looks only for an open .modal, the pause box, the title and the Undercroft screen, and the stall is none of them: drawTrade paints
+it on the canvas. So padMenu returned false and the raid reached the stall branch, if(G.trade&&!G.over). That branch reads only
+D-UP, D-DOWN, A and X, stamps PAD.prev and returns, before the tap loop further down where PADTAP turns button 9 into KeyP. No
+other line reads button 9 in a raid. The stall is not a pause on purpose (v12.34: the raid clock, the machines, the extraction
+clocks and the waves all run on behind it), so a pad player could not stop the raid until he walked away with X. Keyboard P at the
+same stall reaches raidKey, passes the stall block (which closes only on ESC, E, TAB, I and B) and opens the pause box. The v13.49
+line "nothing else on the pad acts behind the panel" is about world actions, and pausing is not one of them.
+
+THE BUILD. One line in the stall branch of pollPad, after the X line and before PAD.prev is stamped: a fresh Menu press calls
+raidKey('KeyP',false,null) and lets KeyP go, exactly what the tap loop does in the rest of the raid. The pause box opens over the
+open stall and the stall is still open behind it. On the next poll padOpenModal finds the box, so padMenu owns the pad, and its
+tap(9) sees PAD.prev[9] already true, so the same held Menu does not resume the run at once; Menu or B then resumes it with the
+stall still open. If X and Menu land on the same poll, the stall shuts and the box opens, the same as E then P on the keyboard.
+No player text, no number, no dial and no seeded draw moved.
+
+MEASURED. Check 15.50 deploys a raid at seed 4242 with the map, backpack, emote bar, stall and drag cleared and the box shut, and
+fakes one connected controller (17 buttons, 4 zero axes) through navigator.getGamepads. It takes the raid's own Peddler, or makes
+one beside him if the map has none; G.ents is not touched. Controls: two idle polls leave the box shut; a fresh Menu with the stall
+shut opens the box through the raid tap loop, so the faked Menu reaches the game; the box shut again and an idle poll keep it shut;
+with G.trade set to the Peddler an idle poll leaves the stall open and the box shut; keyboard raidKey P at the open stall opens the
+box and leaves the stall open, so a pause at the stall is offered; shut again with the stall still open. Then a fresh Menu at the
+open stall must open the box. On v15.49 the stall branch returns without reading button 9 and the box stays shut, so the check
+fails there for the finding's own reason. When it opens, the stall must still be open behind it, and one more poll with the same
+Menu held must leave the box open. In finally the box is shut, the pad is disconnected with one poll, the pad focus is cleared and
+padRelease run, navigator.getGamepads is put back, PAD.aSpent, PAD.xAfterTrade and PAD.announced are restored, keys and mouse.down
+are cleared, the map, backpack, emote bar, stall, stall lock, stall marker and drag are put back and the raid is abandoned.
+
+Older fixture checks: none restaged. The only fixture check that presses Menu on a faked controller is 13.47, on the Undercroft
+floor. The stall checks 13.49, 13.72, 14.19 and 14.20 press D-DOWN, A and X at the stall and never Menu, and 14.23 presses D-UP and
+B on a box already open, which padMenu handles before the stall branch.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.39 applied): p1540 and f1540, p1541 and f1541,
+p1542 and f1542, p1544 and f1544, p1545 and f1545, p1546 and f1546 applied in version order, with VER and the DEVNOW now line
+moved on by hand and a stand-in newest fixture entry added for 1543 and 1547, which were not yet written; then p1548 and f1548,
+p1549 and f1549, p1550 and f1550, every script printing OK and every anchor a whole line block matching once. The edited pollPad
+and the check both parse in JScript.
+
+Not verified: a real raid by hand with a real controller at the stall. The check itself has not been run in a browser yet.
 ## v15.49 - HOLDING ESC OR P DOES NOT FLICKER THE PAUSE BOX
 
 Pause audit finding 9 (MEDIUM).

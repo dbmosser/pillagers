@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.49';
+var VER='15.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11945,6 +11945,15 @@ function pollPad(){
     if(pressed(13)&&!PAD.prev[13]) G.pedSel=(G.pedSel+1)%_pn;
     if(pressed(0)&&!PAD.prev[0]){ var _pk='Digit'+(G.pedSel+1); raidKey(_pk,false,null); keys[_pk]=false; }
     if(pressed(2)&&!PAD.prev[2]){ raidKey('KeyE',false,null); keys['KeyE']=false; G.pedSel=0; PAD.xAfterTrade=1; }
+    // v15.50, pause audit finding 10: THE CONTROLLER MENU BUTTON PAUSES AT THE PEDDLER STALL. The stall is painted on the canvas,
+    // so padMenu finds no panel and hands the pad to this branch, and this branch returned before the tap loop that turns Menu
+    // into P. So on a controller Menu at the open stall did nothing, while the stall is not a pause (v12.34: the raid clock, the
+    // machines, the extraction clocks and the waves all run on behind it) and keyboard P at the same stall opens the pause box.
+    // A pad player could not pause until he walked away with X. Menu now sends P from here on a fresh press, the way the tap
+    // loop does, so the box opens over the stall and the stall is still open behind it on resume. PAD.prev is stamped below,
+    // so on the next poll the box owns the pad and reads the same held Menu as already down: one press, one change. Pausing is
+    // not an act behind the panel, so the v13.49 rule above still holds. No player text, no number and no seeded draw moved.
+    if(pressed(9)&&!PAD.prev[9]){ raidKey('KeyP',false,null); keys['KeyP']=false; }
     for(var _tb=0;_tb<bt.length;_tb++) PAD.prev[_tb]=pressed(_tb);
     return;
   }
@@ -30547,7 +30556,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.49: HOLDING ESC OR P DOES NOT FLICKER THE PAUSE BOX. Held down in a raid, P flipped the pause box open and shut on every key repeat and left it open or shut by chance, and a held ESC did the same, even the ESC held after it closed the map; only a held TAB was ignored. Key repeats of ESC, P and TAB are now ignored for that toggle, so a held key opens or closes the box once. Check 15.49 holds P over five repeats, holds the ESC that closed the map, sends held ESC repeats to the open box through the page, and still opens and closes the box with fresh presses of P, ESC and TAB; it fails on v15.48',
+  now:'v15.50: THE CONTROLLER MENU BUTTON PAUSES AT THE PEDDLER STALL. With the stall open on a controller, Menu did nothing, so the raid clock and the waves ran on with no way to pause short of walking away with X, while keyboard P at the same stall pauses. Menu at the open stall now opens the pause box over it, one change per press, and the stall is still open behind the box. Check 15.50 presses Menu on a faked controller with the stall shut and with it open, and keyboard P at the open stall; it fails on v15.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
