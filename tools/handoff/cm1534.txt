@@ -1,0 +1,12 @@
+v15.34: standing in any landed extraction point shows the extract prompt
+
+Extraction audit: with one point landed and a later call still inbound at
+another, standing in the landed point drew no prompt to hold E, because the
+prompt followed the point called last, yet holding E there still extracted
+him. The prompt now reads the point he stands in, as the downed screen
+already does, and a single call reads exactly as before. Checks 9.08 and
+10.79 staged that prompt on the mirrors alone and now land the point too.
+
+Check 15.34. Fails on v15.33.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

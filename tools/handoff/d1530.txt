@@ -1,0 +1,31 @@
+## v15.30 - AN AUTOMATIC GUN THAT RUNS DRY ON A HELD TRIGGER CLICKS ONCE
+
+Sound audit finding (LOW). Since v10.56 an empty gun plays one dull dry click and says "Out of ammo." when the trigger is
+pulled with nothing left in the backpack. In updatePlayer the empty-magazine branch lets a pull in with
+if(!p.fired||p.wep.auto), so automatics get in on every rate-of-fire tick, but the click itself was gated on !p.fired. An
+automatic sets p.fired on every round it fires and only letting go of the trigger clears it. So holding the trigger of the
+Sputter, the Chatter, the Compact SMG or any other automatic through its last rounds with no ammo in the backpack just stopped
+the gun: no click, no line, only the NO AMMO text by the crosshair. A single shot gun was never affected, because it needs a
+fresh pull, and an automatic with spare ammo reloads on the held trigger. Only the empty automatic was silent.
+
+THE BUILD. The click keeps its own flag now, p.dryTold. The empty branch plays the click and the line when the flag is off and
+sets it; letting go of the trigger clears it, next to p.fired. So an automatic run dry on a held trigger clicks and says Out of
+ammo once, neither repeats while the trigger stays held, and the next pull clicks again. A single shot gun still clicks once on
+each pull, as before: its way into the branch is unchanged. The same sound, the same line (not reworded), no new text, no
+dial, no balance number and no seeded draw. The flag starts unset on a new player, which counts as off.
+
+MEASURED. Check 15.30 deploys a raid, empties the entity list and puts a copy of an automatic in his hands (his own gun if it
+is one, else the Sputter) with the jam roll off, no ammo in the magazine and none in the backpack, and records every blip and
+every line said. It drives updatePlayer with the trigger held, staging the rate-of-fire clock as run out on each frame.
+Controls: the selected belt cell is a gun cell; a fresh pull held three frames clicks and says Out of ammo (exactly once, or
+it fails); two rounds loaded and held for six frames fire both and leave the magazine empty with no reload. Then the four
+empty held frames must give exactly one dry click and one Out of ammo line; on v15.29 they give none, so the check fails there.
+After letting go, a fresh pull must click once again. Everything it changes (blip, say, the trigger and keys, the entity list,
+the selected cell, the gun and the player fields, the raid) is put back in finally.
+A JScript run of the real fire block cut from scratch copies of v15.29 and the build, with a stand-in player: v15.29 fails on
+the held run dry, the build passes; a mutant that clicks every frame fails (4 clicks), a mutant that never clears the flag
+fails; a single shot gun gives the same result on both builds (last round held: no click; each later pull: one click and one
+line). Dry run on scratch copies of v15.27: p1528 and f1528, p1529 and f1529, then p1530 and f1530, all applied, every anchor
+whole lines matching once, and the new check compiles.
+
+Not verified: a live raid by ear, holding an automatic through its last magazine.

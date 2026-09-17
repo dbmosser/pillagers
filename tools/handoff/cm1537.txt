@@ -1,0 +1,11 @@
+v15.37: a crate on the far side of a wall never blocks the stall
+
+Peddler audit finding 9. An unopened crate, cache or body within reach but
+behind a thin wall kept the Peddler stall shut and the plate asked for the
+crate first, while the search needs a clear line and could not reach it, so
+E did nothing. The stall now asks the search its own question: only a crate
+he can search from where he stands keeps E from the stall.
+
+Check 15.37. Fails on v15.36.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

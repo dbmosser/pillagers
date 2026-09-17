@@ -1,0 +1,33 @@
+## v15.32 - ON A CONTROLLER THE EXTRACT PROMPT NAMES THE X BUTTON
+
+Extraction audit finding. On a controller the X button holds E in a raid (PADHOLD 2, and pollPad holds E whenever no search is
+starting), and keyLabel turns KeyE into X while a pad is connected. Every call prompt already asks keyLabel: HOLD X TO CALL FOR
+EXTRACTION standing and down, and the ring badge reads [X] EXTRACT. Two extraction lines did not, and said E on every input:
+- the centre banner in drawHUD, drawn standing in a landed ring. The ring badge is skipped for the ring he stands in (v6.57), so
+  this was the only verb on screen, and on a pad it named a key the pad does not have, for the same button he had just called
+  with.
+- the downedVerb line, drawn at the huge size down in a landed ring with automatic pickup off (hauledAboard 0, the shipped
+  default). The ring badge is not drawn while he is down, so nothing on screen named X there either.
+Neither line is a key in the TXSHIP table, and nothing rewrites it.
+
+THE BUILD. Both lines build the verb as 'HOLD '+keyLabel('KeyE','E')+' TO EXTRACT', the same helper and the same fallback the
+call prompts use. On the keyboard keyLabel returns E, so the keyboard text is exactly what it was, and the existing checks that
+look for the E line with no pad still see it. No balance number, dial, loot table or sound moves.
+
+Left alone, outside this finding: HOLD E TO CUT THE SEAL is hard-coded the same way, and the two say() lines at the landing and
+the missed window ("Hold E to extract", "Hold E to call for another") still name E on a pad.
+
+MEASURED. Check 15.32 deploys a raid, fakes a connected pad with every button up through navigator.getGamepads and one pollPad,
+stages the ring (every ring quiet, this one landed with beaconT -1 and a 20 s window, or uncalled), puts him in the middle of it,
+runs tickExtractPoints(0) so the HUD mirrors come from the ring, and records every string drawHUD passes to ctx.fillText.
+Controls: the pad turns padOn on and labels KeyE as X; standing in an uncalled ring the HUD draws HOLD X TO CALL FOR EXTRACTION,
+and down in one the downed screen does too, on either build; the landed ring reaches G.beaconT and G.shipHold. The finding:
+standing in the landed ring, and down in it, the HUD must draw HOLD X TO EXTRACT and never the E line; v15.31 draws the E line in
+both, so the check fails there. The keyboard: with the pad let go, the same landed ring still draws the E line standing and down.
+The needles are assembled from words, so the check never matches its own source. Dry run on scratch copies of the page and the
+fixture (1527 already in both): p1528 to p1537 and f1528 to f1537 applied in version order, every anchor a whole line matching
+once, the version and DEVNOW moved to 15.32 and on, and the patched drawHUD and the new check compiled under JScript. The check
+still passes over v15.34, which moves the standing verb onto the point he stands in: it stages that point landed, not only the
+mirrors.
+
+Not verified: check 15.32 has not been run in a browser, and no real controller has stood or lain in a landed ring.

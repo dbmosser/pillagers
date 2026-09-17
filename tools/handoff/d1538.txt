@@ -1,0 +1,30 @@
+## v15.38 - DOWNED AT THE STALL, THE PEDDLER PLATE STOPS OFFERING A DEAL
+
+Peddler audit finding 10 (LOW).
+
+Stand at the Peddler, where the plate over him reads THE PEDDLER [E] DEAL, and get shot to the floor there, for example by a
+pillager in a fight near the stall. v13.73 already shuts an open stall when he goes down. But the plate reads two fields,
+G.nearPed and G.pedBlocked, and both are written in exactly one place, the stall block on the standing path of updatePlayer. The
+downed branch returns long before that block, so the two kept the values from his last standing frame. The plate went on saying
+[E] DEAL ([X] DEAL on a controller) for the whole bleed-out and even after he crawled away, while E on the floor only reaches the
+extraction pull and nothing could open. The downed screen only tints the world, so the stale offer stayed readable. v14.08 cleared
+G.nearDoor on the same going-down lines for the same frozen-prompt reason; this pair was missed.
+
+THE BUILD. One line in damagePlayer, in the going-down block, right after the line that shuts the stall: G.nearPed=null and
+G.pedBlocked=0. While he is down the plate falls back to plain THE PEDDLER, the same thing it says when he is not beside the stall.
+The first standing frame after a self-revive or a hire pulling him up finds the stall again and offers the deal. The stale "search
+the crate first" plate is cleared by the same line. No player text, no number, no dial and no seeded draw moved.
+
+MEASURED. Check 15.38 deploys a raid at seed 4242, takes the raid's own Peddler and a spot 40 units from him on open ground with a
+clear line to him, away from the extraction rings, the seal and the locked doors (if there is none it puts a Peddler on open
+ground instead). Every other ent is lifted and unopened containers within 60 of him are shut for the check. Controls: a frame with
+no key leaves him where he stands, finds the Peddler and reads the stall free, and one drawn frame paints a plate starting THE
+PEDDLER that carries the deal (the needle is assembled, never written whole). Then he takes a 999 hit and goes down, and ten downed
+frames run with E pressed on the fifth. Controls: he stays down, E on the floor opened nothing, and the drawn frame still paints
+the Peddler plate. The plate must not carry the deal; on v15.37 it still reads THE PEDDLER [E] DEAL, so the check fails there for
+the finding's own reason. Last control: after selfRevive and one standing frame the plate offers the deal again on both builds.
+Everything it moved is put back and the raid is abandoned. Dry run on scratch copies of dark_raiders.html (at 15.27) and
+mkfixture.ps1: p1528 to p1537 and f1528 to f1537 applied in order, then p1538 and f1538, every anchor a whole line matching once;
+the check and the edited damagePlayer both parse in JScript.
+
+Not verified: a real raid by hand, downed beside the stall. The check itself has not been run in a browser yet.

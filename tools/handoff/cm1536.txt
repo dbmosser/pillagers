@@ -1,0 +1,11 @@
+v15.36: selling found bandages never turns issued bandages into found ones
+
+Peddler audit finding 8. The stall keeps the two issued Bandages and buys
+only found ones, but the frame after the sale read the drop in Bandages as
+the issued pair being spent, so the loaners then counted as found: a second
+press sold them and an extraction banked them. The sale now moves the
+Bandage count that frame reads, the way a drop already does.
+
+Check 15.36. Fails on v15.35.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

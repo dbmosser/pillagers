@@ -1,0 +1,11 @@
+v15.32: on a controller the extract prompt names the X button
+
+Extraction audit: standing in a landed extraction point, or down in one, the
+line telling him how to leave said to hold E on a controller too, a key the
+pad does not have, while the call prompts already said X and the ring badge
+is hidden in both cases. Both lines now ask keyLabel, the helper the call
+prompts use, and the keyboard still reads E.
+
+Check 15.32. Fails on v15.31.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

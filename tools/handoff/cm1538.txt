@@ -1,0 +1,11 @@
+v15.38: downed at the stall, the peddler plate stops offering a deal
+
+Peddler audit finding 10. Shot to the floor beside the Peddler, the plate
+over him kept its last standing frame and went on offering [E] DEAL for the
+whole bleed-out and after he crawled away, while E on the floor could open
+nothing. Going down now clears what the plate reads, so it says only THE
+PEDDLER until he stands, and the deal is offered again once he is up.
+
+Check 15.38. Fails on v15.37.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,11 @@
+v15.30: an automatic gun that runs dry on a held trigger clicks once
+
+Holding the trigger of an automatic through its last rounds with no ammo
+left in the backpack just stopped the gun, with no dry click and no Out of
+ammo line, because both waited for a fresh pull. The click keeps its own flag
+now, cleared when the trigger is let go, so an empty automatic clicks and says
+Out of ammo once and neither repeats while the trigger is held.
+
+Check 15.30. Fails on v15.29.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

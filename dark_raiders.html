@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.27';
+var VER='15.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14928,8 +14928,14 @@ function raiderThrow(e,foe,fd,dt){
   // HIM and his friends on exactly the same terms.
   // v8.23: HIS charge, not the player's. Same list, same terms, but the blast
   // is now attributable - see explodeFrag.
-  G.frags.push({x:foe.x+rnd(-26,26),y:foe.y+rnd(-26,26),t:0,fuse:FRAG_FUSE,by:e});
-  if(!G.sim) sfx('clank',e.x,e.y);
+  // v15.28, sound audit finding: A GRENADE A PILLAGER THROWS SOUNDS WHERE IT LANDS. His charge does not fly: it appears within
+  // 26 units of his target with a 1.1 second fuse, and the only sound was a quiet clank at his own hand, 242 to 520 units away,
+  // the same clank a bullet makes on a wall. Nothing sounded where the charge lay until the boom. The rising charge warning,
+  // the one a machine winds up with and lightning marks its strike with, now plays at the charge itself. The two scatter
+  // draws are taken in the same order as before, so the seeded stream does not move, and sfx draws nothing from it.
+  var _rf={x:foe.x+rnd(-26,26),y:foe.y+rnd(-26,26),t:0,fuse:FRAG_FUSE,by:e};
+  G.frags.push(_rf);
+  if(!G.sim){ sfx('clank',e.x,e.y); sfx('charge',_rf.x,_rf.y); }
   return true;
 }
 function tickRaiderWaves(dt){
@@ -30381,7 +30387,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.27: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 15.12 against 15.26, one build from the fifteen the card checks allow, and the card said nothing about the healing ruling, the raid clock siren, the belt gun slot or the hire fixes. Two of my own card lines are rewritten in place, keeping what checks 15.12, 14.94, 14.83, 14.72, 14.60, 14.40, 14.27, 14.14 and 14.02 read, and WHATSNEW_VER moves to 15.27. Check 15.27 requires the card current and naming the healing news; it fails on v15.26',
+  now:'v15.28: A GRENADE A PILLAGER THROWS SOUNDS WHERE IT LANDS. A pillager Frag Charge does not fly: it appears beside you with a 1.1 second fuse, and the only sound was a quiet clank at his hand up to 520 units away, the same clank a bullet makes on a wall. The rising charge warning now plays at the charge itself, and the two scatter draws keep their order so the seeded stream does not move. Check 15.28 pins the draws, has a pillager throw from his band and requires the warning at the charge beside the clank at his hand; it fails on v15.27',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

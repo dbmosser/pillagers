@@ -1,0 +1,11 @@
+v15.35: a mouse click on the open stall never fires the gun behind it
+
+Peddler audit finding 7. The stall panel never claimed a left click the way
+the map, the backpack and the HUD panels do, so a click on it fired the gun
+through the panel, spent a round and could hit the Peddler, and a trigger
+held while the stall opened kept an automatic firing. A left click on the
+open stall now does nothing, and opening the stall lets go of the trigger.
+
+Check 15.35. Fails on v15.34.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

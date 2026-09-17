@@ -1,0 +1,33 @@
+## v15.31 - A HELD X ON A CONTROLLER SEARCHES ONE BOX, THEN CALLS OR EXTRACTS
+
+Extraction audit finding. On a controller, X in an extraction point searches first (v13.48) and, with no search started 0.35 s
+into the press, holds E for the call or the extraction (v13.51). A search that has started in the hold keeps X "until the box is
+done", through a latch, PAD.xSearched. That latch was only cleared by letting go of X. So when the box was done the same hold went
+on to search the next box in reach, then the next, and only held E when nothing was left: fight a siege from inside the ring, two
+crawlers die at his feet, hold X when EXTRACT NOW shows, and he searches both wrecks (about a second each) before the 1.4 s hold
+even starts. With the window nearly shut, or the raid clock at zero, he searches instead of leaving. The 1.6 s call in an uncalled
+ring waited the same way. A second path: a backpack that filled part way through a hold refused the next search, and the latch
+kept X on that refusal for as long as the button was held, so he could not call at all. The keyboard was never affected, because
+E and X are separate keys there.
+
+THE BUILD. One line in pollPad. While X is held and no search is running, a latch that was set means a search in this hold has
+ended, so the latch is spent and the 0.35 s grace with it (PAD.xDownAt goes far into the past), and the same hold turns to E: the
+call or the extraction hold starts, the way the keyboard E would. The press frame is unchanged, since the latch is not set yet,
+so X still searches the box in reach first. The full backpack grace from v13.51 is unchanged, since that path never sets the
+latch. Letting go still resets both, so a fresh press searches the next box first, as v13.51 intends. No balance number, dial,
+loot table or player text moves.
+
+MEASURED. Check 15.31 deploys a raid, fakes a pad through navigator.getGamepads, lands the ring (beaconT -1, a 20 s window,
+G.active on it), clears the map of machines and boxes, and steps pollPad and updatePlayer at 60 frames a second. Control: one
+Scrap Metal wreck (0.6 s search) at his feet; X held opens it, and half a second later the extraction hold is running (above
+0.3 s of 1.4), on either build. Control: a second wreck 30 units off is found in reach on its own. The finding: both wrecks, X
+held; the nearer opens, and half a second later the second wreck must be untouched and the extraction hold running. On v15.30 the
+second wreck is half searched and the hold has not started, so the check fails there. Kept from v13.51: let go and pressed again,
+X searches the second wreck. Dry run on scratch copies of the page and the fixture (1527 already in both): p1528 to p1537 and
+f1528 to f1537 applied in version order, every anchor a whole line matching once, and the patched pollPad and the new check both
+compiled under JScript. The existing pad checks 13.48 and 13.51 hold X for a few frames over one box or a refused one, so the
+latch never ends a search inside their holds and they read as before. A JScript model of the latch and the search with the check's own sequence gave, on
+the old code, the second wreck at 0.50 of its search with no hold, and on the new code the second wreck untouched with the hold
+at 0.50 s; both controls passed on both.
+
+Not verified: check 15.31 has not been run in a browser, and no real controller has held X over two wrecks in a live ring.

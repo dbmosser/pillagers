@@ -1,0 +1,29 @@
+## v15.29 - A PILLAGER GOING DOWN SOUNDS WHERE HE FALLS
+
+Sound audit finding (MEDIUM). A pillager who takes lethal damage goes down (raiderDown, on by default), and the downed branch
+in updateEnts draws the DOWNED label out in the world and called blip('hit') with no distance and no pan. blip plays a call
+with no distance at full volume and a call with no pan centred, so this was the square 240 to 70 Hz hit at gain 0.10: the
+same call damagePlayer makes when you are hit. Machines fight pillagers anywhere on the map (machVsRaider, on by default, and
+machHuntRaider has no check on distance from you), so a sentry dropping a pillager 2000 units away played your own hit sound
+with nothing on screen and no health lost. It taught you to ignore the one sound that means you are being hit.
+
+THE BUILD. The hit sound now plays at his distance and pan from you, read with earsOf, the helper the enemy voices already
+use (it returns d, the distance from the player, and pan, dx/520 clamped to -1..1). blip fades it with distance and it goes
+silent past about 880 units, so a man downed beside you is still heard, on his side, and one downed out of earshot is not.
+The DOWNED label, the sound itself, the downed rules and every number are unchanged, and it stays inside the existing !G.sim
+guard with no seeded draw. It stays blip with earsOf rather than sfx, because sfx would also leave a noise ring, which is a
+separate change. One side effect: a pillager you down yourself at range is now quieter by his distance (about half volume at
+450 units), where it was always full volume before.
+
+MEASURED. Check 15.29 deploys a raid, takes one pillager, leaves him alone in the entity list and records every hit sound.
+Near arm: at no health 60 units west of the player, one entity update. Controls, on either build: he goes down, the player
+loses no health, and exactly one hit sound is heard. That sound must carry a distance of about 60 and a pan to the left. Far
+arm: 1400 units east, the same controls for going down and health; a hit sound, if any, must be at 882 units or more (silent)
+and on the right. On v15.28 both arms fail: the hit sound carries no distance and no pan. A JScript run of the check against
+the old and new downed branch with a stand-in raid failed on v15.28 and passed on the build; a sound with no distance, no pan,
+a flipped pan or a zero distance all fail; leaving the far sound out entirely passes; a build with no downed sound at all
+skips on the recorder control. Everything it changes (blip, the entity list, the pillager, the raid) is put back in finally.
+Dry run on scratch copies of v15.27: p1528 and f1528, then p1529 and f1529, all applied, every anchor a whole line matching
+once.
+
+Not verified: a live raid by ear, a machine downing a pillager out of sight.

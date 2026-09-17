@@ -1,0 +1,11 @@
+v15.31: a held X on a controller searches one box, then calls or extracts
+
+Extraction audit: on a controller, holding X in an extraction point searched
+the box in reach and then every other box in reach before the call or the
+extraction hold, so two wrecks at his feet after a siege cost about two
+seconds of the window. A search that has ended in the hold now turns the same
+hold to E; a fresh press still searches the next box first.
+
+Check 15.31. Fails on v15.30.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

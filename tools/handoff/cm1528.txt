@@ -1,0 +1,10 @@
+v15.28: a grenade a pillager throws sounds where it lands
+
+A pillager Frag Charge does not fly: it appears beside you with a 1.1 second
+fuse, and the only sound was a quiet clank at his hand, the same clank a bullet
+makes on a wall. The rising charge warning now plays at the charge itself, and
+the two scatter draws keep their order, so the seeded stream does not move.
+
+Check 15.28. Fails on v15.27.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

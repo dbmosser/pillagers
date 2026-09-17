@@ -1,0 +1,12 @@
+v15.33: a missed extraction offers another call only when one can arrive
+
+Extraction audit: when a landed window ran out, the line always told him to
+hold E and call for another, even when the raid clock would end the raid
+before a new call could arrive, or the point was past its closing time and
+shut in that same tick. With too little clock left it now says a call cannot
+beat the raid clock, past the closing time it leaves the news to the point
+closed line, and every other miss still offers the call.
+
+Check 15.33. Fails on v15.32.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,10 @@
+v15.29: a pillager going down sounds where he falls
+
+A pillager put on the floor anywhere on the map played the hit sound you hear
+when you are hit, at full volume and centred, so a machine downing one far
+away sounded like a hit on you with nothing on screen. It now plays at his
+distance and pan from you: heard beside you, silent out of earshot.
+
+Check 15.29. Fails on v15.28.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,27 @@
+## v15.28 - A GRENADE A PILLAGER THROWS SOUNDS WHERE IT LANDS
+
+Sound audit finding (HIGH). A pillager carrying a Frag Charge throws it from 242 to 520 units away (at the default blast
+radius of 190). His charge does not fly: raiderThrow puts it straight into the frag list within 26 units of his target, with
+the 1.1 second fuse. The only sound was sfx('clank') at his own hand, a quiet triangle blip (gain 0.03) that at those distances plays
+at about three quarters down to two fifths of that, and the same clank every bullet makes hitting a wall, plus smoke, decoys and
+dropped items. Nothing sounded where the charge lay until the boom, and on screen it is a small blinking dot. In a firefight
+he could not hear a grenade land beside him or tell it from bullets on the walls.
+
+THE BUILD. The clank at his hand stays, and the rising charge warning now plays at the charge itself. It is the sound the game
+already uses for "about to hit you here": a machine winds up with it and lightning marks its strike with it. It plays at the
+exact spot the charge lies, not at the target, which can be up to about 37 units away. The two scatter draws are taken in the
+same order as before (x, then y), so the seeded stream does not move, and sfx draws nothing from it (blip uses Math.random).
+It stays out of the sim like every other sound. As a positioned sound it also leaves the usual noise ring when the charge lands
+somewhere he cannot see, behind him or past a wall. No dial, number or damage changes.
+
+MEASURED. Check 15.28 deploys a raid, hands a healthy long-armed pillager one charge, stands him 342 units east of the player
+(the blast radius plus 152) and pins the two scatter draws to 0.125 then 0.875, so the charge must land 19.5 west and 19.5
+south of the player. Controls: he throws exactly one live charge of his own, the pinned draws are taken, and the sound recorder
+hears the clank at his hand. Then the charge must land at exactly that spot (two draws, in order) and a charge warning must
+play within half a unit of it. On v15.27 it fails: the charge lands 27.6 units away with a 1.1 second fuse and the only sound is
+the clank 342 units away. A JScript run of the check against the old and new raiderThrow with a stand-in raid gave that failure
+on v15.27 and a pass on the build; a warning at the target instead of the charge fails (27.6 units off), and a swapped draw order
+fails. Every change it makes (the draw and sound stubs, the pillager, the new charge, the raid) is put back in finally. Dry run
+on scratch copies: p1528 and f1528 applied after p1527 and f1527, every anchor a whole line matching once.
+
+Not verified: a live raid by ear, a pillager throwing a charge at the player in a firefight.

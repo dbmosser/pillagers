@@ -1,0 +1,41 @@
+## v15.33 - A MISSED EXTRACTION OFFERS ANOTHER CALL ONLY WHEN ONE CAN ARRIVE
+
+Extraction audit finding. When a landed extraction window runs out with him within 1400 units, tickExtractPoints clanks and says
+"Extraction left without you. Hold E to call for another, 0:25 out." It said that on every missed window, and in two cases the
+call it offers cannot work:
+- THE CLOCK. The window is clamped to the raid clock (z.hold is at most timeLeft-1), so a call made with 0:50 left lands at 0:25
+  with a 24 s window that ends with 0:01 on the clock. A new call takes extractWait (25 s by default), and the frame loop ends the
+  raid on the timer long before it could arrive. The call line already knows this case and warns that the raid clock runs out
+  first. Every missed window that ends with less than extractWait on the clock hit this, which is any call made with under about
+  80 s left.
+- THE CLOSING. A point past its closing time stays open only while it is called. The missed-window branch clears the call, so the
+  close loop later in the same tickExtractPoints shuts the point in that same tick and queues "Extraction A is closed." behind the
+  wrong line. Holding E there only gets "This point is CLOSED."
+Neither sentence is a key in the TXSHIP table.
+
+THE BUILD. The line keeps its first sentence, "Extraction left without you.", and then:
+- past the point's closing time (closeAt set and timeLeft at or under it), nothing more, so the queued closed line that follows is
+  the news and he does not read it twice;
+- with the raid clock on and less than extractWait left, " Another call cannot beat the raid clock.";
+- otherwise the old " Hold E to call for another, 0:25 out." exactly as before.
+closeAt is undefined with the clock off (buildRaid), so a raid with no clock always gets the old line. The clank, the counters and
+the clearing of the window are untouched. No balance number, dial, loot table or sound moves.
+
+Left alone, outside this finding: "Hold E" in this line still names E on a controller (listed open at v15.32).
+
+MEASURED. Check 15.33 deploys a raid, clears the machines, records say, sayWhenFree and blip, and stages one point at a time: every
+point quiet, this one landed (beaconT -1) with 0.01 s of window left, him 300 units off its middle, the raid clock set, and one
+tickExtractPoints(0.05). Controls: the raid clock is on; at 200 s on a point with no closing time the window ends (window cleared,
+clank, the point still open) and the missed extraction line is said, on either build; past a closing time the point is shut in the
+same tick and its closed line queued. Kept: at 200 s the line still offers another call. The finding: with half an extraction wait
+on the clock (12 s) the line must not offer a call and must name the raid clock; 5 s past another point's closing time it must
+offer no call and not blame the clock. v15.32 offers the call in both, so the check fails there. The needles are assembled from
+words, so the check never matches its own source. Everything staged (zones, the pointer and mirrors, the clock, the message and
+its queue, the machines, his position, the missed-window counter) is put back in finally before the raid is abandoned.
+
+Dry run on scratch copies of the page and the fixture (1527 is already applied to both): p1528 to p1533 and f1528 to f1533 applied
+in order, every anchor a whole line matching once, the version and DEVNOW moved to 15.33, and the patched block and the new check
+parsed under JScript.
+
+Not verified: check 15.33 has not been run in a browser, and no real raid has missed a window with the clock short or at a closing
+point.
