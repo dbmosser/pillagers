@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.27 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+WHATSNEW_VER stood at 15.12 against a build at 15.26, one build short of the fifteen the card checks allow, and the card said
+nothing about the fixes since: his healing ruling (Bandages and resting stop at 85, only a Medkit past it), the raid clock siren,
+a raid keeping its own clock, the belt gun slot, and the hire fixes. Refreshed before it went red this time.
+
+THE BUILD. Two of my own card lines are rewritten in place. The first slot names the healing, raid clock and hire news. The second
+merges the two older lines, keeping every phrase checks 15.12, 14.94, 14.83, 14.72, 14.60, 14.40, 14.27, 14.14 and 14.02 read. Dropped
+from the card: Q and throwables on the belt, the revive grenade, the gun hover rate, the Wirt countdown, the abandon XP line and the
+pause note. Every line of his and every other line are untouched, so the card still holds thirteen lines. WHATSNEW_VER moves to 15.27.
+
+MEASURED. Check 15.27 requires the card within fifteen builds and naming the healing news; it fails on v15.26. Every card check,
+13.34 among them, was run on the dry build.
+
+Not verified: the card read on screen by eye.
 ## v15.26 - A BANDAGE ON A RUNNING MEDKIT STOPS AT 85
 
 His ruling of 2026-09-16, verbatim: "bandages should only let players heal to 85 HP -- only medkit gets player back to 100".

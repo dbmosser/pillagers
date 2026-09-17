@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.26';
+var VER='15.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,12 +1361,12 @@ var VER='15.26';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='15.12';
+var WHATSNEW_VER='15.27';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'YOUR GRENADES, WIRT AND LEAVING A RAID. A cooked Frag Charge keeps burning through a roll, Q only picks grenades on your belt, and a grenade a pillager pays for a revive can be thrown. The gun hover shows the real rate of fire, and the offer at Wirt counts down while you watch. The card after an abandon shows the XP it cost, and a note typed in the pause box is kept when you quit at once.',
-  'BELT KEYS, STASH, WARDROBE, SAVES, STORMS AND CONTROLLERS. A heal on a key no longer stops Medical using your other heals, and a controller packs from the stash with A. SURPRISE ME takes a worn suit off, and erasing a save erases its UNDO copy. Lightning no longer hits you through a wall or under a roof. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
+  'HEALING, THE RAID CLOCK AND YOUR HIRE. Bandages and resting stop at 85, and only a Medkit takes you past 85. The raid clock has its own siren before it runs out, a raid keeps the clock it started with, and gun slot 1 no longer goes black. Your hire leaves the crate you are searching alone and never turns up as a stranger.',
+  'GRENADES, BELT KEYS, STASH, WARDROBE, SAVES AND STORMS. A cooked Frag Charge keeps burning through a roll, a heal on a key no longer stops Medical using your other heals, and a controller packs from the stash with A. SURPRISE ME takes a worn suit off, erasing a save erases its UNDO copy, and lightning no longer hits you through a wall. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
   'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
   'A CONTROLLER WORKS ON THE UNDERCROFT FLOOR AND IN EVERY RAID. View opens your backpack and Menu pauses, you can search and call for extraction from inside an extraction point, you can trade with the peddler, and the prompts name your buttons. The menus also fit the 1280 by 720 window itch opens the game at.',
@@ -30381,7 +30381,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.26: A BANDAGE ON A RUNNING MEDKIT STOPS AT 85, HIS RULING OF 2026-09-16. A Bandage put on while a Medkit was still healing shared the Medkit ceiling of 100, so from 30 the two ended near 96 where the Medkit and then a Bandage stop near 91. Past 85 only the health a Medkit brought goes on now, and every Already healing refusal reads the same reach. Check 15.26 stacks Bandages and Medkits from 30, 50, 60 and 70 with ceilings on and off; it fails on v15.25',
+  now:'v15.27: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 15.12 against 15.26, one build from the fifteen the card checks allow, and the card said nothing about the healing ruling, the raid clock siren, the belt gun slot or the hire fixes. Two of my own card lines are rewritten in place, keeping what checks 15.12, 14.94, 14.83, 14.72, 14.60, 14.40, 14.27, 14.14 and 14.02 read, and WHATSNEW_VER moves to 15.27. Check 15.27 requires the card current and naming the healing news; it fails on v15.26',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

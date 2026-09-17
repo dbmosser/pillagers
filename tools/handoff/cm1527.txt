@@ -1,0 +1,9 @@
+v15.27: the what is new card is current again
+
+The card stood at 15.12, one build from the drift the card checks allow, and said
+nothing about the healing ruling, the raid clock siren, the gun slot or the hire
+fixes. Two of my own lines are rewritten in place, keeping every checked phrase.
+
+Check 15.27. Fails on v15.26.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
