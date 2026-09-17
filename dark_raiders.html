@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.13';
+var VER='15.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5603,9 +5603,16 @@ function tod(){ return (G&&G.tod)||TODS[2]; }
 // v9.35: with the clock off, timeLeft never moves, so the subtraction below would
 // report every raid as having taken no time at all. G.t counts up on its own and
 // is the honest answer in both cases.
+// v15.14, dials audit finding 6: A RAID KEEPS THE CLOCK IT STARTED WITH. The raid timer dial in the tuning console is marked
+// NEXT RAID, but every live reader of the clock asked CFG.raidSec, which the console, Reset all and a preset all write at once.
+// On a raid built with the clock OFF (timeLeft 0), moving that dial to any number, or Reset all, or a preset, made the first
+// unpaused frame read an expired clock: the site burned, he went down and came back empty. The other way, a running 540 raid
+// moved to OFF stopped its clock and froze the closing rings. G.raidLen is set once, in buildRaid beside timeLeft, and nothing
+// changes it after, so it says whether THIS raid has a clock. CFG.raidSec is asked only when no raid carries one.
+function raidClockOn(){ return (G&&typeof G.raidLen==='number')?G.raidLen>0:CFG.raidSec>0; }
 function elapsed(){
   if(!G) return 0;
-  if(CFG.raidSec<=0) return G.t||0;
+  if(!raidClockOn()) return G.t||0;
   return (G.raidLen===undefined?CFG.raidSec:G.raidLen)-G.timeLeft;
 }
 // BLACKOUT PROTOCOL WAS PAYING 25 PERCENT FOR NOTHING, FOUR RAIDS IN TEN, v3.44.
@@ -14667,8 +14674,10 @@ function tryExtractTick(dt,wantCall){
       var _why=(_g>=0.66)?' They heard THAT: you are carrying too much to be quiet about it.'
               :((_g>=0.33)?' That is a heavy backpack to be standing still with.'
                           :' A light backpack brings the fewest of them.');
+      // v15.14, dials audit finding 6: A RAID KEEPS THE CLOCK IT STARTED WITH. The pull line asks this raid, not the dial, so a
+      // dial moved mid-raid cannot warn of a clock the raid does not have, or stay quiet about one it does.
       say('Pulled. Inbound '+fmtMS(CFG.extractWait)+
-          ((CFG.raidSec>0&&G.timeLeft<CFG.extractWait)?'. The raid clock runs out first.':', then hold E to extract.')+   // v12.24: not with the clock OFF
+          ((raidClockOn()&&G.timeLeft<CFG.extractWait)?'. The raid clock runs out first.':', then hold E to extract.')+   // v12.24: not with the clock OFF
           ' THE SIEGE: about '+_sc+' machines are coming to this ring.'+_why);
     }
     return;
@@ -15096,7 +15105,9 @@ var nm=rr()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
     // never promise more than the raid clock has left, since saying thirty and
     // then killing him on the timer at twelve is a lie.
     if(z.hold===null||z.hold===undefined){
-z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
+    // v15.14, dials audit finding 6: A RAID KEEPS THE CLOCK IT STARTED WITH. The 30 second window asks this raid, not the dial:
+    // a raid with no clock moved to 540 mid-raid read its resting 0 as time running out and gave a three second window.
+z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: with the clock OFF (v9.35) there is nothing to run out; timeLeft sits at 0 and used to read as one second left, so extraction left after three
     // v12.44, 2026-09-07 audit: AND THE FLOOR OBEYS THE CLOCK. The comment above
     // promises that the hold can never say more than the raid has left, and the
     // three second floor broke that promise at the end of a raid: call with 27
@@ -15106,7 +15117,8 @@ z.hold=(CFG.raidSec>0)?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
     // showing. Half a second is kept underneath so the window is never a zero
     // that reads as no window at all; if that is all the raid has left then that
     // is the truth, and an unwinnable second is better than a promised three.
-    if(CFG.raidSec>0&&z.hold>G.timeLeft) z.hold=Math.max(0.5,G.timeLeft);
+    // v15.14, dials audit finding 6: and the clamp to the clock left asks the same raid, for the same reason.
+    if(raidClockOn()&&z.hold>G.timeLeft) z.hold=Math.max(0.5,G.timeLeft);
     z.holdMax=z.hold;
       // v4.17: HIS QUESTION TWO reads "the crowd at your extraction is the
       // map you woke on the way there, not the siege" - a claim measured long
@@ -24647,7 +24659,9 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
   // v9.35: with the clock off there is nothing to count down to, so the readout
   // counts UP instead. Leaving it frozen at the starting figure would have looked
   // like a broken timer rather than an absent one.
-  var _noClk=(CFG.raidSec<=0);
+  // v15.14, dials audit finding 6: A RAID KEEPS THE CLOCK IT STARTED WITH. The readout counts up only on a raid built with no
+  // clock; a dial moved mid-raid used to flip a running countdown into a count up, and a count up into a negative countdown.
+  var _noClk=!raidClockOn();
   var _tSrc=_noClk?(G.t||0):G.timeLeft;
   var mm=Math.floor(_tSrc/60),ss=Math.floor(_tSrc%60);
   ctx.fillStyle=(!_noClk&&G.timeLeft<45)?'#ff5a4a':'#cdd6dd';
@@ -29726,7 +29740,9 @@ function loop(ts){
     // v9.35, HIS 6: a clock set to zero does not run. Everything below this line
     // is driven by timeLeft falling, so holding it still turns off the warnings,
     // the burning of the site, and the rings closing, all in one place.
-    if(CFG.raidSec>0) G.timeLeft-=dt;
+    // v15.14, dials audit finding 6: A RAID KEEPS THE CLOCK IT STARTED WITH. This asked the NEXT RAID dial live, so a raid built
+    // with the clock OFF started counting down from zero the frame the console closed, and a running clock moved to OFF stopped.
+    if(raidClockOn()) G.timeLeft-=dt;
     var tlNow=Math.ceil(G.timeLeft);
     if(G.lastWarn===undefined) G.lastWarn=-1;
     if(tlNow!==G.lastWarn){
@@ -29744,11 +29760,13 @@ function loop(ts){
     // v13.79, downed and extraction audit: a boarding hold already running in a landed ring
     // finishes. The clock rests at zero while he pulls; let go, and the next frame ends it.
     var _bz=standingRing(), _boarding=!!(_bz&&ringLanded(_bz)&&(_bz.pullT||0)>0&&dist(G.player,_bz)<_bz.r);
-    if(_boarding&&CFG.raidSec>0&&G.timeLeft<0) G.timeLeft=0;
-    if(CFG.raidSec>0&&G.timeLeft<=0&&!G.nuking&&!_boarding&&(G.sim||G.beaconT!==null)){
+    // v15.14, dials audit finding 6: AND ONLY A CLOCK THE RAID HAS CAN RUN OUT. These asked the dial too, so on that same frame a
+    // raid with no clock found 0 minus a frame, burned the site and downed him (with a beacon called it ended dead at once).
+    if(_boarding&&raidClockOn()&&G.timeLeft<0) G.timeLeft=0;
+    if(raidClockOn()&&G.timeLeft<=0&&!G.nuking&&!_boarding&&(G.sim||G.beaconT!==null)){
       // Sim, or a beacon already called: end exactly as before.
       G.timeLeft=0; G.tel.deathKiller='timer'; G.player.pendKiller='timer'; endRaid('dead');
-    } else if(CFG.raidSec>0&&G.timeLeft<=0&&!G.nuking&&!_boarding){
+    } else if(raidClockOn()&&G.timeLeft<=0&&!G.nuking&&!_boarding){
       G.timeLeft=0; G.nuking=1; G.nukeT=0;
       G.tel.deathKiller='timer'; G.player.pendKiller='timer';
       say('MERIDIAN IS BURNING THE SITE.');
@@ -30211,7 +30229,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.13: A RESTORE CODE STAYS SHORT ENOUGH TO PASTE. Since v15.00 the code carried every named pillager record, and a blank record exists for each one a raid ever names, so a long save made a code over 6,000 characters and check 11.03 went red. Only records that hold something travel now; a missing record is created blank when read. Check 15.13 makes a code over seventy blank records and one real one; it fails on v15.12',
+  now:'v15.14: A RAID KEEPS THE CLOCK IT STARTED WITH. The raid timer dial in the tuning console says NEXT RAID, but a running raid read it live, so on a raid with the clock off, moving that dial, Reset all or a preset started burning the site on the next frame and killed you, and moving a running clock to off stopped it. The raid now asks the clock it was built with for the countdown, the burn, the HUD readout, the run length and the extraction window. Check 15.14 ascends with the clock off, moves the dial to 540 through the console and steps the raid; it fails on v15.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

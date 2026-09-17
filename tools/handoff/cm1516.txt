@@ -1,0 +1,9 @@
+v15.16: an imported friend keeps their favourite gun for the raid
+
+A friend imported at the Mainframe was handed their favourite gun, then on the
+first frame swapped it for any better gun the pillager body carried, so a Scav
+Pistol favourite fought all raid with the body gun. The swap now skips them.
+
+Check 15.16. Fails on v15.15.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

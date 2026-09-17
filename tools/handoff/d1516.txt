@@ -1,0 +1,27 @@
+## v15.16 - AN IMPORTED FRIEND KEEPS THEIR FAVOURITE GUN FOR THE RAID
+
+Mainframe audit finding 1 (MEDIUM). Import a friend's run report at the Mainframe where most runs used the Scav Pistol. The
+import line says they favour the Scav Pistol, and the Mainframe hint promises a pillager with their favourite gun. Ascend.
+applyGhost takes the first pillager that is not your hire, renames it and hands it the pistol, but mkRaider already pushed that
+body's own rolled gun into e.bag as 'gun_'+wk, and that roll is an SMG, Auto Rifle, carbine or scattergun six times in nine. On
+the first updateEnts frame raiderUseKit runs for every pillager (raiderKit defaults to 1). kitT starts unset, so the equip test
+runs at once, finds a gun of a higher WTIER than the pistol, equips it and drops the pistol into the bag. The friend then
+fights the whole raid with the body's gun: its damage, range, sound and tracer. An SMG favourite on a tier-3 body goes the
+same way, as does any favourite beaten by a gun the friend loots later.
+
+THE BUILD. The equip test in raiderUseKit now opens with !e.ghost, so the imported friend never swaps guns. Only the equip block
+is skipped: it closes before the HEAL section, so the friend still heals from what they carry, and raiderThrow is a separate
+function, so they still throw. The body's gun stays in e.bag and is still worth taking off the friend's body. applyGhost is the
+only other path that sets a ghost's gun, and blessElite runs at build time before it. Your hire and every other pillager swap
+exactly as before. No player text changes and no number moves.
+
+MEASURED. Check 15.16 imports a friend favouring the Scav Pistol and ascends at seed 4242 through __deploy (controls: the kit dial
+is on, the friend was placed holding the Scav Pistol, and a plain pillager is in the raid). It stages the friend carrying an
+Auto Rifle and a Bandage at 40 percent health, and the plain pillager holding a Scav Pistol and carrying an Auto Rifle, both with
+kitT at zero, then runs one updateEnts frame (controls: the plain pillager now holds the Auto Rifle with two guns between hand
+and carry, so the swap ran on that frame; the friend is still in the raid and up). The friend must still hold the Scav Pistol,
+still carry the Auto Rifle, and have started the Bandage. It restores the profile through the loader and puts the ghost back.
+It fails on v15.15.
+
+Not verified: a real imported report walked by eye; a friend who loots a better gun mid-raid, which the same test covers but no
+arm drives; the sim, where applyGhost never runs.

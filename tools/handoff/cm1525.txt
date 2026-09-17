@@ -1,0 +1,10 @@
+v15.25: key 1 never goes black while you hold a gun
+
+A gun on a tactical belt key that you were holding blanked the gun cell
+showing the same gun, so taking a gun from the backpack with its key turned
+key 1 (or key 2) black. Keys 1 and 2 always show the guns in your hands; the
+raid still starts on, and empty cells still name, the key you bound.
+
+Check 15.25. Fails on v15.24.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

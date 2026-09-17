@@ -1,0 +1,9 @@
+v15.22: the hire is never also a stranger
+
+On THE COLD MILE at Standard or Many more strangers spawn than there are names,
+so one wore the hire's identity, and killing him made the hire refuse work for
+good. The hired identity now leaves the pool.
+
+Check 15.22. Fails on v15.21.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,32 @@
+## v15.14 - A RAID KEEPS THE CLOCK IT STARTED WITH
+
+Dials audit finding 6 (HIGH). In the tuning console (SHIFT and the backquote key) drag Raid timer (s) to OFF and ascend: buildRaid
+sets timeLeft and raidLen to 0 and the HUD counts up. Mid-raid, open the console again (the raid pauses under it), drag the same
+dial, which is marked NEXT RAID, to any number and close it. Reset all or any preset does the same, since each puts CFG.raidSec
+above 0. Every live reader of the clock asked CFG.raidSec rather than the raid, so the first unpaused frame took 0 minus a frame as
+an expired clock: MERIDIAN IS BURNING THE SITE, tickNuke downs him at 1.15 s, the raid ends dead with the timer as the killer and
+he comes back empty (with a beacon called, endRaid runs on that same frame). The other way, a running 540 raid with the dial moved
+to OFF stopped its clock, froze the closing rings and turned the HUD readout to counting up.
+
+THE BUILD. A new raidClockOn() beside elapsed() answers from G.raidLen, which buildRaid sets once beside timeLeft and nothing
+changes after, and falls back to CFG.raidSec only when no raid carries one. It replaces CFG.raidSec in the live loop (the
+countdown, the clamp to zero while a pull hold is running, and both expiry branches), in elapsed(), in the HUD count-up switch,
+and in the three extraction readers (the Pulled line, the 30 second extraction window and its clamp to the clock left). The name
+keeps it apart from the clockOn parameter in check 12.44. The bot's simStep, the unused total in the ring closures and the SHORT
+WINDOW board text read before a raid are unchanged. No player text changes and no number moves.
+
+CHECK 12.44. Its clock-off arm deployed a 540 raid and wrote CFG.raidSec=0 into it, which is the live read of the dial this build
+removes, so after this build that arm would read a 540 raid with 0 left and get a 0.5 s window. f1514 also sets g.raidLen=0 in
+that arm, as check 12.24 already does for its clock-on arm. On v15.13 the added line changes nothing that arm reads.
+
+MEASURED. Check 15.14 claims the raid timer in the console and sets it to 0, then ascends at seed 4242 (control: raidLen and
+timeLeft are 0). It opens the console over the raid (controls: the console is on, the raid is paused, and the row found is the
+raid timer by its maximum), sets that range to 540 and fires its input event so the console's own handler writes the dial, and
+closes the console (controls: CFG.raidSec reads 540 and the raid is running). It steps the live loop 12 frames at 16.7 ms from a
+timestamp past the last frame (control: G.t rose by more than 0.1 s). The site must not be burning, the raid not over, the player
+up with health, timeLeft still 0, and elapsed() equal to G.t. It restores CFG, the console and the profile through the loader. It
+fails on v15.13: the first frame starts the burn with the timer as the killer, and timeLeft falls below 0 after it.
+
+Not verified: the reverse direction (a 540 raid with the dial moved to OFF keeps counting down) by reading only, since the check
+has one deploy; Reset all and a preset mid-raid, which write the same CFG value; the Settings Raid length row mid-raid; the HUD
+readout by eye.

@@ -1,0 +1,9 @@
+v15.15: the superhot key redraws an open settings row
+
+With Settings open, the backquote key turned Superhot on or off but the
+Superhot row kept its old word, so a click meant to turn it on turned it off
+and looked like it did nothing. The key now redraws an open Settings window.
+
+Check 15.15. Fails on v15.14.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

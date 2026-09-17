@@ -1,0 +1,9 @@
+v15.18: build a rack says when it takes packed parts out of the backpack
+
+Packed parts count toward a rack, and building one unpacked the ones loose parts
+could not cover with nothing said, so the backpack came up short at the ascent.
+The rack line now says how many packed parts it used. Spending is unchanged.
+
+Check 15.18. Fails on v15.17.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

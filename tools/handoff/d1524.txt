@@ -1,0 +1,34 @@
+## v15.24 - THE RAID CLOCK WARNS IN ITS OWN VOICE
+
+His note: "i got kileld by the timer and i never got any type of sound warning". The raid clock warnings at five, four, three,
+two and one minute and at thirty seconds each say a line and play blip('alarm'): a 0.3 s sawtooth at gain 0.06, the same sound
+sfx('alarm') plays when a machine or a pillager raises an alarm, and the one a call for extraction plays as the siege is
+roused. In a fight a clock warning sounded like one more machine, the line sits on screen 3.2 s and any
+other line writes over it, and from thirty seconds to zero nothing else sounds until MERIDIAN IS BURNING THE SITE. The warnings
+also fired only when Math.ceil(timeLeft) EQUALLED a mark. The loop caps a frame at 0.05 s, so a live frame cannot skip a whole
+second today; the equality test is a latent gap, not the cause of his death.
+
+THE BUILD. blip gains two voices. clockwarn: three rising square sweeps, 520 to 1040 Hz, 0.3 s apart over 0.9 s, lowpassed at
+2600 Hz, at gain 0.12 (twice the alarm), centred, through the same OUT bus. clocktick: one 0.1 s square knock at 1320 Hz, gain
+0.09. The warning block in the loop moves to tickClockWarn(prev, now) beside outHint, called once per raid frame with G.warnPrev
+(the clock at the end of the last frame, written on every call) and G.timeLeft. A mark in 300, 240, 180, 120, 60, 30 fires when
+prev > mark >= now; for a whole number mark this is exactly the old rule on every frame of a falling clock (checked by simulating
+a 540 s raid at 60 fps through both: same lines on the same frames), and a frame that jumps past a mark still fires it. The
+latest mark crossed speaks with the same say lines as before, unchanged, and plays clockwarn in place of the alarm. Each whole
+second from 10 to 1 that is crossed plays one clocktick, and crossing 10 also says TEN SECONDS. followed by outHint(1), the same
+hint the thirty second line uses. On the first frame of a raid prev is taken as one whole second above now, which keeps the old
+rule of warning when a raid starts on a mark. G.lastWarn is gone; nothing else read it. The bot sim never calls it (the sim
+steps the clock in its own path, and blip returns in a sim). No number moves: raid length, the burn and ring timings are as they
+were. Player text: one new line, TEN SECONDS. and the hint; no existing sentence changes.
+
+MEASURED. Check 15.24 deploys at seed 4242 (control: the raid runs a clock) and wraps say and blip to record, then steps real
+frames of 0.016 s through the loop, staging the clock the frame before (G.warnPrev on this build, G.lastWarn on the old one).
+Control: a frame at 100 s runs the clock and records no siren, no tick and no thirty second line. Control: a frame from 30.02 to
+29.99 says the thirty second line on either build. The fix: that line plays clockwarn, not the alarm; a frame from 31.2 to 28.9
+says the thirty second line and plays clockwarn; a frame from 10.4 to 9.6 plays clocktick and says TEN SECONDS. Then, on a
+stand-in audio context through the real blip (control: the alarm starts at 0.06), clockwarn builds sound sources and starts at
+least 1.5 times the alarm level, and clocktick builds a sound source. A control that cannot run after a failure keeps the failure.
+It restores say, blip and the audio holders, ends the raid and cleans the profile. It fails on v15.23.
+
+Not verified: the siren and the tick by ear, against music and gunfire at his volume settings; a whole raid run down to zero by
+hand; the minute marks were not stepped by the check (same function, same path as thirty).

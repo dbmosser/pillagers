@@ -1,0 +1,17 @@
+## v15.22 - THE HIRE IS NEVER ALSO A STRANGER
+
+Hire audit, refiled and verified (MEDIUM). Raid pillagers take identities from a shuffled pool of 28 names; past that they take
+numbered names. v13.92 kept the hired identity off the map by moving it to the back of the pool, which works only while a map
+draws 28 strangers or fewer. THE COLD MILE is large: at Standard it draws 33 strangers and at Many 49, so stranger 28 wore the
+hire's exact identity, name and look. A kill on a named pillager is recorded against his identity, and a hire with a recorded kill
+refuses to work ("will not work for you"), for good. Few, and every setting on COLD STORAGE, never reach 28 and were unaffected.
+
+THE BUILD. The hired identity is removed from the pool instead of moved to its back. Stranger 28 onward takes the numbered names
+the pool already falls back to, which never equal a hire's identity. No random draw is spent, so the seeded stream, the counts and
+the 28 names are unchanged.
+
+MEASURED. Check 15.22 deploys THE COLD MILE at Standard with no hire (control: more strangers than names, and exactly one wears the
+followed identity), then with that identity hired: no stranger may wear it. It restores the profile and the setting. It fails on
+v15.21.
+
+Not verified: a real hire on THE COLD MILE at Standard by hand.

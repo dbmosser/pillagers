@@ -1,0 +1,9 @@
+v15.23: only a medkit gets him back to 100
+
+His ruling: bandages heal only to 85 and only a Medkit reaches 100. Out of combat
+regen crept all the way to 100, so a Bandage and a minute of quiet did what only
+a Medkit may. Regen now stops at 85.
+
+Check 15.23. Fails on v15.22.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

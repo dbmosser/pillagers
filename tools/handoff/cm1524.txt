@@ -1,0 +1,10 @@
+v15.24: the raid clock warns in its own voice
+
+The clock warnings played the same short quiet alarm a machine or a pillager
+makes, so they were lost in a fight, and the last ten seconds made no sound.
+They now play a louder rising siren, the last ten seconds tick, and a warning
+fires when the clock crosses its mark.
+
+Check 15.24. Fails on v15.23.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

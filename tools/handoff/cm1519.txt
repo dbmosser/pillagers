@@ -1,0 +1,9 @@
+v15.19: your hire takes the crate you are searching
+
+Under FOLLOW your hire took any unopened crate near him, so a crate you were
+holding X on was marked opened and its best items went into his pack. He now
+leaves any crate with search progress on it.
+
+Check 15.19. Fails on v15.18.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

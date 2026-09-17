@@ -1,0 +1,28 @@
+## v15.21 - A SELF-REVIVE LEAVES YOUR HIRE HALF WAY THROUGH HIS PICKUP
+
+Hire audit finding (LOW). Hire someone and ascend, then go down with him close by: the game says "<name> is coming for you." and
+he kneels beside you for his 3.2 second pickup. Press F before he finishes. selfRevive stands you up, and the hire pickup branch
+of updateEnts, gated on p.downed, stops running with e.revSaid still 1 and e.revProgP at whatever his clock had reached, say 2.8.
+Nothing else writes either field: the only clear was inside a pickup that finished, selfRevive and the down in damagePlayer never
+touch the hire, and a hire is only built fresh by mkRaider at the start of a raid. Go down again, with the self-revive spent so he
+is the only way up. The line is skipped because revSaid is still 1, and if he is still within 44 (under FOLLOW he only moves once
+you are past 120) his clock carries on from 2.8, so he pulls you up after about 0.4 seconds instead of 3.2.
+
+THE BUILD. One line at the loop-body level of updateEnts, after the chase and investigate chain closes and just above the v8.24b
+hire-shoots-first block: a hire who runs a frame while you are on your feet has revSaid and revProgP cleared. A standing hire
+reaches that line (the seen-you block skips him, and the earlier continues he can hit are brief: a roll, his own down and a mortar
+ring). The next down then says his line and starts his clock at zero, as the first down does; his line replacing the DOWN toast
+through say() is what the first down already does. No player text changes, and the 3.2 seconds and the 40 percent stand-up are
+untouched.
+
+MEASURED. Check 15.21 deploys at seed 4242 and stages one hire built by mkRaider 30 units from you beside an open ring, on FOLLOW,
+with nobody else on the map and no crates, and wraps say to read the lines. It downs you through damagePlayer and steps updateEnts
+50 frames of 0.05 (controls: you are down beside a named hire, he stayed on the stage, he said he was coming and his clock read at
+least 2.4). selfRevive stands you up and two frames run (controls: the revive took, you stayed up, and he is still on the stage
+within 44 of you). damagePlayer downs you a second time (control: the down took) and one frame runs: he must say he is coming,
+read with an assembled needle, and his clock must read no more than 0.06. Nineteen more frames run: one second in, you must still
+be down and he must not have said he pulls you up. A control that cannot run after a failure keeps the failure. It restores the
+entity list, crates and order, and the profile through the loader. It fails on v15.20.
+
+Not verified: by eye in a live raid; a second down that comes while the hire is still down himself, where the clear waits until
+he stands; the self-revive from a pad.

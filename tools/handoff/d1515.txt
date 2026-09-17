@@ -1,0 +1,28 @@
+## v15.15 - THE SUPERHOT KEY REDRAWS AN OPEN SETTINGS ROW
+
+Dials audit finding 7 (LOW). In the Undercroft open Settings (the SETTINGS station, or T at the DEV BOX): Superhot mode reads Off.
+With Settings still open, press the backquote key. The Backquote branch of the window keydown handler runs
+cycleGameOpt('superhot'), which writes CFG.superhot=1 through applyGameOpts and saves, and the toast says SUPERHOT ON. The Settings
+rows are drawn only by renderSettings and nothing on that path called it, so the button still read Off. Closed on that word, his
+next raid ran in Superhot and time stopped whenever he stood still. Clicked to turn it on, the row handler steps from the live dial
+(gameOptLive reads On), so the click turned Superhot off and the row redrew as Off: the click looked like it did nothing. The same
+held the other way, a row still reading On after the key had turned Superhot off.
+
+THE BUILD. Right after cycleGameOpt in the Backquote branch, renderSettings runs when #settingsmodal carries on, inside a try: the
+guard toggleTune already uses when the console closes over Settings (hudSizeStep also redraws inside a try). SHIFT and the
+backquote key (the tuning console) are untouched, and nothing redraws while Settings is closed. No player text changes and no
+number moves.
+
+MEASURED. Check 15.15 skips on a live raid. It stages Superhot and the word editor off in P.gameOpts and applies them (control: the
+dials read 0), then opens Settings through openSettings('display') (controls: the window is on, the go_superhot row exists and
+reads Off). It clicks the row twice (controls: the dial goes to 1 with the row reading On, then back to 0 reading Off), so the id
+and the redraw are live. It dispatches one keydown with code Backquote on window only, with say and say2 wrapped (controls: the
+dial is 1, the game said SUPERHOT ON, and Settings is still open); the row must read On. It clicks the row (control: the dial is 0
+and the row reads Off); the word must have changed. It clicks the row on again (control: On with the dial at 1) and presses the key
+(control: the dial is 0 and it said SUPERHOT OFF); the row must read Off. A control that cannot run after a failure keeps the
+failure. It restores say, say2, the windows that were open, CFG and the profile through the loader. It fails on v15.14: the row
+reads Off after the key turned Superhot on, the click after it leaves Off reading Off, and the row reads On after the key turned
+it off.
+
+Not verified: the key pressed over Settings during a raid (the say branch), which the check does not reach; the row's amber
+not-default colour by eye.

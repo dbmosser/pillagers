@@ -1,0 +1,9 @@
+v15.14: a raid keeps the clock it started with
+
+The raid timer dial says NEXT RAID, but a running raid read it live, so on a
+raid with the clock off a drag, Reset all or a preset burned the site and
+killed you. The raid now asks the clock it was built with.
+
+Check 15.14. Fails on v15.13.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

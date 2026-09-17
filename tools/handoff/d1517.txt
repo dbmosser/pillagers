@@ -1,0 +1,29 @@
+## v15.17 - A RESTOCKED CRATE OR LOCKER DROPS OFF THE DATA CORE KEY MARKS
+
+Mainframe audit finding 2 (MEDIUM). Slot a Data Core at RACKS (or Arm it on the ascent check) and ascend. startRaid burns the
+core and fills G.intelKeys once with every container holding a key_ item, and the sector map (M) draws a gold KEY on each entry
+that is not opened. The locked room guarantee skips only caches, strongboxes and containers inside the room, so the key can sit
+in a crate or locker. Open that crate, or let a pillager loot it: opened goes true and the mark hides, as intended. About 170 s
+later the restock loop in updateEnts rebuilds the crate in place through mkContainer, which rolls only LOOT.crate or LOOT.locker,
+and neither table holds a KEY entry. It sets opened back to false, and nothing ever took the crate off G.intelKeys, so the KEY
+mark came back on a crate with no key in it and sent him across the map for nothing. The same happened when he opened the crate
+and left the key inside: the restock throws that loot away.
+
+THE BUILD. The restock branch in updateEnts, right after it rebuilds the loot and shuts the container, takes that container off
+G.intelKeys with indexOf and splice. The guard skips raids with no core burned, where G.intelKeys is unset. The restock rebuilds
+the same object, so the reference pushed at the ascent is the one found. The draw loop runs in a different function, so removing
+an entry here never skips one mid-draw. Containers opened but not yet restocked, and shut containers holding a key, stay on the
+list exactly as before. No player text changes and no number moves.
+
+MEASURED. Check 15.17 arms a core and ascends at seed 4242 through __deploy (control: the raid carries intel, the key list is an
+array, and the profile core was spent). It takes the first shut crate and the first shut locker, plus a third shut container
+apart from both, preferring one the game already listed, gives each a key id the game placed and puts each on the list. The crate
+and the locker are opened 200 s back on the raid clock, past the 170 s restock, and one updateEnts frame runs (controls: both got
+new loot, shut again with the clock cleared and no key rolled; the third is still shut with its key). Neither restocked container
+may be on the list, and the third must still be on it. Then the sector map is drawn once with every KEY label recorded where it
+is placed (control: a KEY sits on the third container, so the intel marks were drawn); no KEY may sit on the restocked crate or
+locker. A control that cannot run after a failure keeps the failure. It restores mapLabel and the profile through the loader. It
+fails on v15.16.
+
+Not verified: the sector map by eye after a real three-minute wait; a key crate looted by a pillager rather than opened by hand,
+which sets the same opened flag the restock reads.

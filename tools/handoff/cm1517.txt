@@ -1,0 +1,9 @@
+v15.17: a restocked crate or locker drops off the Data Core key marks
+
+With a Data Core burned, the sector map marks KEY on each container holding a
+locked room key. A crate or locker restocks with loot that never holds a key but
+stayed on that list, so its KEY mark came back. A restock now takes it off.
+
+Check 15.17. Fails on v15.16.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

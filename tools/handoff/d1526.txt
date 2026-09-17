@@ -1,0 +1,33 @@
+## v15.26 - A BANDAGE ON A RUNNING MEDKIT STOPS AT 85
+
+His ruling of 2026-09-16, verbatim: "bandages should only let players heal to 85 HP -- only medkit gets player back to 100".
+
+v15.23 closed the biggest way past the Bandage ceiling (out-of-combat regen) and left this one for its own build. A heal runs
+over seconds, and since v11.82 a second item put on while one is still running adds its health to the queue, takes the faster
+rate and the higher ceiling. So a Bandage put on while a Medkit was still healing shared the Medkit's ceiling of 100: from 30,
+a Medkit and then a Bandage with about 6 of the Medkit left ended near 96, where the Medkit alone stops near 76 and a Bandage
+after it can only add up to 85 plus those 6 (about 91).
+
+THE BUILD. Stacking, the faster rate, the higher ceiling, every heal amount and rate, and the 85 and 100 ceilings all stay. The
+queue now also remembers the lowest ceiling in it (a Bandage's 85) and how much of it may go past that ceiling (the health a
+Medkit brought). Past 85 only that Medkit health goes on; once it is spent, whatever is left of the queue cannot raise him and
+is dropped. In practice: a Bandage over a running Medkit ends at 85 plus what the Medkit still had to give, capped at 100 and at
+what was actually queued, which is the same place a Bandage put on first and a Medkit after it would end. A Medkit over a
+Bandage still reaches 100. Going down clears the new fields with the rest of the queue.
+
+The four places that ask how high a running heal will go before refusing an item (the heal verb's "Already healing", the item
+picker, and the two belt-key refusals) now read one helper, healReach, which gives the same answer as the drain. Without it a
+Medkit could be refused as "Already healing" by a queue that would really stop at 91. The refusal sentences are unchanged.
+
+With the heal ceilings dial off every ceiling is full health, so nothing is tracked and healing stacks exactly as before.
+
+MEASURED. Check 15.26 deploys a raid and drives applyHeal and tickHeal directly: three Bandages from 50 end at 85 (control); a
+Medkit from 60 ends at 100; a Medkit from 30 drained to about 6 left, then a Bandage, must end no higher than 85 plus what was
+left (it ends near 96 on v15.25, so the check fails there); a Bandage from 70, part spent, then a Medkit still reaches 100; and
+with the ceilings off the Medkit then Bandage case stacks past 85 plus the remainder again. Dry run on scratch copies: p1514 to
+p1523 and their f scripts, then p1526 and f1526 with the version anchors pointed at 15.23 (1524 and 1525 were not drafted yet),
+all applied, every anchor a whole line matching once; a JScript run of the old and new heal code gave 96.00 on v15.25 and 90.91 (limit 90.91) on the
+build, and over 32,000 random stacked heals behind the game's refusals the helper matched where the drain ended to within 0.001.
+
+Not verified: a real raid by hand, a Medkit then a Bandage from low health. Also left alone: the green incoming-heal block on the
+health bar still draws health plus the whole queue, and has never stopped at a ceiling, Bandage alone included.

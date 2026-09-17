@@ -1,0 +1,9 @@
+v15.21: a self-revive leaves your hire half way through his pickup
+
+Getting up on F while your hire was pulling you up left his pickup half done,
+so on your next down he said nothing and pulled you up early. Each frame you
+stand now clears it, so every down gets his line and a fresh 3.2 seconds.
+
+Check 15.21. Fails on v15.20.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

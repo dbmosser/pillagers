@@ -1,0 +1,45 @@
+## v15.25 - KEY 1 NEVER GOES BLACK WHILE HE HOLDS A GUN
+
+His note, verbatim: "when i pick up a gun from the hotbar in game, the other gun in spot 1 goes black for some reason -- is this
+intended behavior". It was not. hotbarSlots builds cells 1 and 2 from the two guns in his hands, and a gun bound to a belt key
+that he is holding is drawn on that key as the equipped gun (v6.70). A second pass (v6.70) then blanked any
+derived cell showing the same thing as a bound key, and for guns that meant the gun cell showing that gun. Press a key holding a
+gun from the backpack with two guns carried: equipFromBag puts it in his hands in place of the gun on cell 1, cell 1 now shows
+it, the key shows it too, and the pass turned cell 1 into an Empty slot while he held the gun. With one gun carried the new gun
+goes to the empty second slot and comes up, and cell 2 went black instead. A stowed gun bound to a key blanked its cell the same
+way, so key 2 answered Empty slot for a gun he was carrying.
+
+THE BUILD. The gun branch of the dedupe pass is removed; heals, plates and throwables keep theirs. Cells 1 and 2 always show the
+two guns in his hands. A key he bound to a gun he holds keeps drawing it, so that gun shows twice, which matches the rule that
+keys he set never move.
+
+WHAT ELSE LEANED ON THE BLANK CELL, AND IS KEPT. Two loops found the gun in his hands as the first gun cell marked in hand, and
+with the derived cell blanked that was always the key he bound:
+  gunCell (v12.31, v13.42): the raid starts on the gun cell, and every empty cell says Press N for your gun. With the gun on key 5
+  it said Press 5 and the raid started on key 5; without a change it would have become cell 1.
+  swapGuns (v8.31): the highlight follows the gun. Pressing key 5 to bring up a stowed gun bound there kept the highlight on key 5;
+  without a change it would have jumped to cell 2.
+Both now go through heldGunCell, which takes a key he bound holding the gun in his hands first and the first cell holding it
+second, so both answer exactly what they answered while the cell was blank. swapGuns also leaves the highlight on the pressed
+cell when that cell holds the gun that came up, which is what makes key 2, newly usable for a bound stowed gun, keep its own
+highlight. Nothing else reads the blank: the drag code tells the two gun cells apart by gunA and gunB and treats a bound key as
+an ordinary belt slot either way (v8.14, v11.97), and the belt draw and the trigger read the cell kind, which is now gun. A drop
+of a gun from the backpack onto cell 1 was, while cell 1 was blank, an ordinary binding over the gun slot; it is the weapon slot
+drop again (v3.21). Two comments that said the dedupe blanks a gun cell (setHot, autoBelt) are annotated.
+
+TWO CHECKS ASSERTED THE BLANK AND ARE REPAIRED. Check 12.31 required cell 1 to be Empty with the held gun on key 5 as its premise,
+and its ARM A clicked the blank cell 1 and required no shot and Press 5. The premise now requires cell 1 to show the gun in his
+hands, and ARM A requires a click on cell 1 to fire and keep cell 1 (the same staging as check 13.42 ARM D). Its ARMS B and C are
+unchanged and still require Press 5, the key he bound. Check 13.42 ARM E required cell 1 to be Empty as staging; it now requires
+key 5 to hold the gun in his hands, and still requires the raid to start on key 5.
+
+MEASURED. Check 15.25 deploys at seed 4242 with a pistol in his hands. ONE: a carbine stowed and the SMG in the backpack on key 3
+(controls: cell 1 is the pistol and key 3 the backpack SMG), equipped the way the key does it with equipFromBag (controls: the
+SMG is in his hands and key 3 shows it); cell 1 must show the SMG. TWO: one gun carried, key 3 pressed through setHot (control:
+the SMG is up and the pistol stowed); cell 2 must show the SMG and the highlight stay on key 3. THREE: the carbine stowed on key 5
+(control: key 5 shows it); cell 2 must show the carbine, and key 5 must bring it up (control) with the highlight left on key 5.
+FOUR: the same room, and key 2 brings the carbine up with the highlight left on key 2. A control that cannot run after a failure
+keeps the failure. It fails on v15.24, where cells 1 and 2 are Empty slots.
+
+Not verified: by eye in a raid; a controller walking the belt with the bumpers; the Undercroft belt, which builds the same cells
+from the equipped guns and now shows a bound equipped gun on cell 1 as well.

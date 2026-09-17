@@ -1,0 +1,27 @@
+## v15.20 - THE CARD SAYS A HIRE WHO GOT OUT FIRST WAS LEFT OUT THERE
+
+Hire audit finding (LOW). Hire someone and ascend, then press O twice (FOLLOW, HOLD, LOOT). On LOOT neither hire branch of
+updateEnts catches him, so he runs the ordinary pillager chain: below 30 percent health he flees and extracts, the game says he
+extracted with the goods, his roster row is stamped out=true with his haul and he is spliced from G.ents. G.mercDead stays 0. You
+then die, or abandon. In endRaid the mercDead branch is skipped, mercEnt is null so the extraction branch is skipped, and in the
+roster branch _mrow.out is true but the paid line needs how==='extract' and the never-made-the-ramp line needs mercEnt. It fell to
+the last line, which said he was left out there, though he got out before you. The money was right: no cut, because the v6.72
+rule says the cut needs you both out. Only the sentence was wrong, and the comment above it and the What's New entry both say a
+hire who gets out earlier should no longer read that way.
+
+THE BUILD. One branch in the endRaid hire settle, between the never-made-the-ramp line and the left-out-there line: a roster row
+stamped out prints "<name> made it out on his own. No cut." It only catches a death or an abandon, because an extraction with the
+row out is already taken by the paid branch above. The wording is the audit verdict's correction ("got out before you" would say
+you got out afterwards, which is false on a death) and echoes "makes his own way out" in the paid line. The left-out-there line
+stays for a hire still on the map. Neither sentence is a TXSHIP key. New player text only, no money moves and no number moves.
+
+MEASURED. Check 15.20 hires the first identity and deploys at seed 4242 (controls: the identity has a name, the hire spawned and
+has his roster row). It stamps the row out with val 4321, splices him from the entity list and clears mercDead, as his own
+extraction leaves it, then ends the raid as a death (controls: the run ended as dead, the card is drawn, the contract was settled,
+and a card span starts with his name and is not the death benefit line; the last such span is taken, so the hit list above the
+lines cannot stand in for it). That line must not carry the left-out-there words and must say he made it out on his own, read
+with assembled needles; credits must not rise by exactly his 432 cut. It restores the profile through the loader. It fails on
+v15.19.
+
+Not verified: by eye in a live raid; a real low-health flee and extraction under LOOT (the row is stamped by hand, the way check
+11.62 stages it); the abandon ending, which takes the same branch but is not driven.

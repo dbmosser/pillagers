@@ -1,0 +1,10 @@
+v15.26: a bandage on a running medkit stops at 85
+
+His ruling: bandages heal only to 85 and only a Medkit reaches 100. A Bandage
+put on while a Medkit was still healing shared the Medkit ceiling of 100, so
+the two ended near 96. Past 85 only the health the Medkit brought goes on now,
+and every Already healing refusal reads the same reach as the heal.
+
+Check 15.26. Fails on v15.25.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
