@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.30';
+var VER='15.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11976,7 +11976,13 @@ function pollPad(){
   // let go. Still held on the next frame, it held E here and the stall opened again.
   if(PAD.xAfterTrade){ if(_xDown) _xDown=false; else PAD.xAfterTrade=0; }
   if(!_xDown){ PAD.xDownAt=null; PAD.xSearched=false; }
-  else { if(PAD.xDownAt==null) PAD.xDownAt=G.t; if(G.searching) PAD.xSearched=true; }
+  // v15.31, extraction audit finding: A HELD X ON A CONTROLLER SEARCHES ONE BOX, THEN CALLS OR EXTRACTS. The latch that keeps X
+  // on a search was only cleared by letting go, so when the box was done the same hold went on to search the next box in reach,
+  // and the next, and held E only when none was left: two wrecks at his feet after a siege put two seconds of searching in front
+  // of the call or the 1.4 s hold while the window closed, and a backpack that filled part way through held X on the refusal for
+  // as long as he held the button. A search that has ended in this hold now spends the latch and the grace, so the same hold
+  // turns to E, the key the keyboard calls with; letting go and pressing again still searches the next box first (v13.51).
+  else { if(PAD.xDownAt==null) PAD.xDownAt=G.t; if(G.searching) PAD.xSearched=true; else if(PAD.xSearched){ PAD.xSearched=false; PAD.xDownAt=-1e9; } }
   var _xSearch=!!(G.nearPad&&G.nearContainer&&(PAD.xSearched||PAD.xDownAt==null||(G.t-PAD.xDownAt)<0.35));
   for(var h in PADHOLD){
     var hn=+h;
@@ -30400,7 +30406,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.30: AN AUTOMATIC GUN THAT RUNS DRY ON A HELD TRIGGER CLICKS ONCE. Holding the trigger of an automatic through its last rounds with no ammo left in the backpack just stopped the gun, with no dry click and no Out of ammo line, because both waited for a fresh pull. The click keeps its own flag now, cleared when the trigger is let go, so an empty automatic clicks and says Out of ammo once and neither repeats while held. Check 15.30 holds an automatic through its last two rounds and four empty frames and requires one dry click and one line, and a fresh pull after letting go clicks again; it fails on v15.29',
+  now:'v15.31: A HELD X ON A CONTROLLER SEARCHES ONE BOX, THEN CALLS OR EXTRACTS. Holding X in an extraction point searched the box in reach and then every other box in reach before it called or extracted, so two wrecks at his feet after a siege cost two seconds of the window. The same hold now turns to the call or the extraction once one box is done, and a fresh press still searches the next. Check 15.31 holds X over two wrecks in a landed ring; it fails on v15.30',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
