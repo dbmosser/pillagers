@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.16';
+var VER='15.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17092,6 +17092,13 @@ if(G.prints){
       var _rt=mkContainer(_rc.x,_rc.y,_rc.type,_rc.d);
       _rc.loot=_rt.loot; _rc.opened=false; _rc.openedAt=null;
       _rc.prog=0; _rc.pulled=0; _rc.best=_rt.best;
+      // v15.17, mainframe audit finding 2: A RESTOCKED CRATE OR LOCKER DROPS OFF THE DATA CORE KEY MARKS. A burned core lists
+      // every container holding a locked room key once, at the ascent, and the sector map draws KEY on each one still shut.
+      // The locked room guarantee can put that key in a crate or locker, and this restock rebuilds it in place from LOOT.crate
+      // or LOOT.locker, which hold no key, and shuts it again. Nothing took it off the list, so the KEY mark came back on a
+      // crate with no key in it and sent him across the map for nothing, even when he had left the key inside, because the
+      // restock throws that loot away. It leaves the list now; G.intelKeys is unset on a raid with no core burned.
+      if(G.intelKeys){ var _ikr=G.intelKeys.indexOf(_rc); if(_ikr>=0) G.intelKeys.splice(_ikr,1); }
       if(!G.sim&&dist(_rc,G.player)<700) say('Something restocked nearby.');
     }
   }
@@ -30241,7 +30248,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.16: AN IMPORTED FRIEND KEEPS THEIR FAVOURITE GUN FOR THE RAID. A friend imported at the Mainframe was handed the gun their report used most, and on the first frame they swapped it for any better gun the pillager body they walk in was carrying, so a Scav Pistol favourite fought all raid with a rifle or a scattergun. The friend now keeps their favourite gun and still heals, and the body gun stays on them as loot. Check 15.16 stages a pistol favourite carrying an Auto Rifle beside a plain pillager holding the same pair and runs one frame; it fails on v15.15',
+  now:'v15.17: A RESTOCKED CRATE OR LOCKER DROPS OFF THE DATA CORE KEY MARKS. A burned Data Core marks KEY on the sector map over every container holding a locked room key, and a crate or locker that was opened and later restocked came back marked KEY with no key inside, sending you across the map for nothing. A restock now takes that container off the key marks, and a container still holding its key keeps its mark. Check 15.17 burns a core at seed 4242, stages a key in a crate, a locker and a third container, restocks the opened crate and locker on one frame and draws the sector map; it fails on v15.16',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
