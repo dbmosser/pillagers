@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.31';
+var VER='15.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25821,7 +25821,10 @@ var _slp=w2s(p.x,66,p.y);
             :(_dz.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined);
     var _ir=dist(p,_dz)<_dz.r;
     if(_ir&&_sd&&CFG.hauledAboard!==0) return {msg:'THEY HAVE YOU',sub:'Pulling you out',col:'#4de3d0'};
-    if(_ir&&_sd) return {msg:'HOLD E TO EXTRACT',sub:'Extracting while downed is permitted',col:'#4de3d0'};
+    // v15.32, extraction audit finding: ON A CONTROLLER THE EXTRACT PROMPT NAMES THE X BUTTON. Down in a landed ring this huge
+    // line said E on a pad too, a key the pad does not have, and the ring badge is not drawn while he is down, so nothing on
+    // screen named X, the button that extracts him. It asks keyLabel, as the call row under it does; the keyboard still reads E.
+    if(_ir&&_sd) return {msg:'HOLD '+keyLabel('KeyE','E')+' TO EXTRACT',sub:'Extracting while downed is permitted',col:'#4de3d0'};
     if(_ir) return {msg:'EXTRACTION INBOUND',sub:'Extracting while downed is permitted',col:'#ffc04a'};
     if((dist(p,_dz)-_dz.r)<=300)
       return {msg:'CRAWL TO THE RING',
@@ -25959,7 +25962,10 @@ var _slp=w2s(p.x,66,p.y);
       // v6.57: no countdown here. The bottom strip has stated it for the whole window
       // and this line exists to say what to DO, which is the split the comment above
       // already describes.
-      _msg='HOLD E TO EXTRACT';
+      // v15.32, extraction audit finding: ON A CONTROLLER THE EXTRACT PROMPT NAMES THE X BUTTON. This line said E on a pad too.
+      // Standing in the landed ring he just called with X, the ring badge is skipped for the ring he stands in (v6.57), so this
+      // was the only verb on screen and it named a key the pad does not have. It asks keyLabel, as both call prompts do.
+      _msg='HOLD '+keyLabel('KeyE','E')+' TO EXTRACT';
       _sub=null;
     }
     // The plain "it is open" status deliberately does NOT appear here any more.
@@ -30406,7 +30412,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.31: A HELD X ON A CONTROLLER SEARCHES ONE BOX, THEN CALLS OR EXTRACTS. Holding X in an extraction point searched the box in reach and then every other box in reach before it called or extracted, so two wrecks at his feet after a siege cost two seconds of the window. The same hold now turns to the call or the extraction once one box is done, and a fresh press still searches the next. Check 15.31 holds X over two wrecks in a landed ring; it fails on v15.30',
+  now:'v15.32: ON A CONTROLLER THE EXTRACT PROMPT NAMES THE X BUTTON. Standing in a landed extraction point, or down in one, the line telling him how to leave said to hold E on a controller too, a key the pad does not have, while the call prompts already said X. Both lines now ask the same button name helper the call prompts use, and the keyboard still reads E. Check 15.32 draws the HUD with a fake pad, standing and down in a landed ring; it fails on v15.31',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
