@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.19';
+var VER='15.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19828,6 +19828,13 @@ silentExit:T.silentExit||0,
         // v6.72, his rule: the cut needs BOTH of you out. Alive in the field when the
         // ship left is not out, so there is nothing to settle.
         lines.push('<span style="color:var(--ash)">'+mname+' never made the ramp. No cut.</span>');
+      } else if(_mrow&&_mrow.out){
+        // v15.20, hire audit finding: THE CARD SAYS A HIRE WHO GOT OUT FIRST WAS LEFT OUT THERE. On the LOOT order a hire
+        // who runs low flees and extracts on his own: his extraction stamps his roster row out and takes him off the map, so
+        // mercEnt is null here. When you extract too, the row pays your cut above; when you died or abandoned instead, neither
+        // branch caught him and he fell to the line below, which said he was left out there though he got out before you.
+        // No cut is still right (v6.72: the cut needs you both out) and no number moves; only the words were wrong.
+        lines.push('<span style="color:var(--ash)">'+mname+' made it out on his own. No cut.</span>');
       } else {
         lines.push('<span style="color:var(--ash)">'+mname+' was left out there.</span>');
       }
@@ -30265,7 +30272,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.19: YOUR HIRE TAKES THE CRATE YOU ARE SEARCHING. Under FOLLOW, the default order, your hire took any unopened crate near him, so while you held X on one he marked it opened after two seconds and kept everything still inside, the best items your search had not reached yet, and your search bar vanished. He now leaves any crate with search progress on it, the one you are searching and one you started and walked away from. Check 15.19 stands him beside a part searched crate, before and after he picked it, and beside an untouched crate he still loots; it fails on v15.18',
+  now:'v15.20: THE CARD SAYS A HIRE WHO GOT OUT FIRST WAS LEFT OUT THERE. If your hire ran low, fled and extracted on his own and you then died or abandoned, the outcome card said he was left out there, though he got out before you. The money was already right, since the cut needs you both out; the card now says he made it out on his own, no cut. Check 15.20 stamps the hire out through his roster row, takes him off the map, dies and reads his line on the card; it fails on v15.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

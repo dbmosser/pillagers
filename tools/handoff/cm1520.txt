@@ -1,4 +1,4 @@
-v15.20: the card says a hire who got out first was left out there
+v15.20: the card no longer says a hire who got out first was left out there
 
 A hire who fled low and extracted on his own was read as left out there when
 you then died or abandoned. The card now says he made it out on his own, with

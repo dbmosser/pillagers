@@ -1,4 +1,4 @@
-v15.21: a self-revive leaves your hire half way through his pickup
+v15.21: a self-revive resets your hire pickup
 
 Getting up on F while your hire was pulling you up left his pickup half done,
 so on your next down he said nothing and pulled you up early. Each frame you
