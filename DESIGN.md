@@ -40024,6 +40024,34 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.19 - YOUR HIRE TAKES THE CRATE YOU ARE SEARCHING
+
+Hire audit finding (MEDIUM). Hire someone and ascend: he starts on FOLLOW, the default order, and stays within 120 of you. Hold X
+on a crate with three or more items; staged pulls take them out one at a time, worst first. The FOLLOW branch of updateEnts
+picked any crate that was not opened, locked or mine within 160 of him and 420 of you, and nothing asked about search progress.
+He walked over, and after 2 seconds within 30 he set opened and copied everything still inside into his own pack. On the next
+frame your search skips opened crates, so the bar vanished with no message, and the best items, the ones staged pulls leave for
+last, were his. His pack cannot be searched since v6.72, and at extraction you only get his ten percent cut. A crate you started
+and walked away from, whose progress SPEC 7.4 keeps waiting for you, was taken the same way.
+
+THE BUILD. Two guards in the FOLLOW branch, nothing else in the AI. A crate he has already picked is dropped when it has search
+progress (prog above 0), beside the existing opened and distance drops, so he lets go the moment you start on it. The pick loop
+skips a crate with progress, so he never chooses one you are searching or one you started. Only the player search adds to prog;
+the finished search and the restock set it to 0, and the bot never writes it. The LOOT order still runs the ordinary pillager
+branch, which has the same gap and is left alone: LOOT is the freelancer order, like a rival crew. No player text changes and no
+number moves.
+
+MEASURED. Check 15.19 deploys at seed 4242, finds clear ground beside a ring, and stages a hire made with mkRaider as the only
+entity, with the order on FOLLOW, you 30 to the left of a crate holding two Scrap Metal and a Data Core, and him 20 to its right,
+so no walk or fight is involved. Each arm steps updateEnts at 0.05. Control: an untouched crate with nobody searching it, 60 steps;
+he must open it and hold the Data Core, or the check skips. Arm one: the crate at prog 0.3 with G.searching on it and no crate
+picked, 60 steps; it must stay unopened with the Data Core out of his pack. Arm two: the same, but he had already been working it
+for 1.5 seconds when you started, 20 steps; same test. A control that cannot run after a failure keeps the failure. It restores
+the entity list, the crate list, the order and the search, abandons the raid and restores the profile through the loader. It
+fails on v15.18.
+
+Not verified: by eye in a live raid with a hired man; a hire that must walk to the crate (the stage puts him within reach); the
+LOOT order, which is unchanged.
 ## v15.18 - BUILD A RACK SAYS WHEN IT TAKES PACKED PARTS OUT OF THE BACKPACK
 
 Mainframe audit finding 3 (LOW). Hold exactly the rack cost in the stash (12 Scrap Metal, 9 Copper Wire, 6 Cracked Cell and 6
