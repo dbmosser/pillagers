@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.24';
+var VER='15.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14058,9 +14058,12 @@ function swapGuns(){
   (function(){
     try{
       var _sl=hotbarSlots();
-      for(var _si=0;_si<_sl.length;_si++){
-        if(_sl[_si].kind==='gun'&&_sl[_si].inHand){ G.hot=_si; return; }
-      }
+      // v15.25, his note: KEY 1 NEVER GOES BLACK WHILE HE HOLDS A GUN, so the gun that came up can show on cell 1 or 2 and on
+      // the key he bound. The highlight stays on the cell he pressed when that cell holds it, and otherwise goes where it went
+      // while the gun cell was blank: the key he bound first (heldGunCell).
+      if(_sl[G.hot]&&_sl[G.hot].kind==='gun'&&_sl[G.hot].inHand) return;
+      var _hg=heldGunCell(_sl);
+      if(_hg>=0){ G.hot=_hg; return; }
       // No cell for the gun in your hands - he has assigned items over both
       // derived gun slots, which v6.61 explicitly allows. Leave the highlight
       // where it is rather than dropping it on whatever happens to sit at 0 or
@@ -14147,6 +14150,7 @@ function autoBelt(key){
   // v8.04, audit: a duplicate of the gun in your HANDS never takes a slot.
   // The equipped-gun overlay would render your live gun on the pinned cell
   // and the dedupe pass would blank slot 1 or 2 under you mid-fight.
+  // v15.25: the dedupe no longer blanks a gun cell; a pinned copy would still show the gun twice.
   if(it.use==='gun'&&it.gk){
     var _pb=G.player;
     if((_pb.wep&&_pb.wep.id===it.gk)||(_pb.sec&&_pb.sec.id===it.gk)) return;
@@ -14323,7 +14327,11 @@ function hotbarSlots(){
       if(ai2.use==='heal'&&dsl.k==='heal'){ if(!unkeyedHeals()) dupe=true; }
       else if(ai2.use==='armor'&&dsl.k==='plate') dupe=true;
       else if(dsl.k==='throw:'+ak2) dupe=true;
-      else if(ai2.use==='gun'&&(dsl.k==='gunA'||dsl.k==='gunB')&&dsl.icon===ai2.gk) dupe=true;
+      // v15.25, his note: KEY 1 NEVER GOES BLACK WHILE HE HOLDS A GUN. A gun on a belt key that he was holding blanked the gun
+      // cell showing the same gun, so taking a gun from the backpack with its key put it in his hands and turned cell 1 black
+      // (cell 2 when it went to the empty second slot) while he held it. Cells 1 and 2 are the two guns in his hands and always
+      // show them. The key he bound keeps showing it too, because keys he set never move; gunCell and swapGuns still pick his
+      // key first, as they did while the gun cell was blank.
       if(dupe) break;
     }
     if(dupe) out[di]={k:'empty:'+di,name:'Empty slot',kind:'empty',count:0,c:'#4d5762'};
@@ -14372,10 +14380,19 @@ function hotSel(){ return clamp(G.hot||0,0,hotbarSlots().length-1); }
 // the dedupe blanks cell 1, so a fall-back to 0 by number landed on an empty
 // cell and the trigger died there. The same loop swapGuns uses; 0 when no
 // cell holds the gun at all (items assigned over both), which is the old answer.
+// v15.25, his note: KEY 1 NEVER GOES BLACK WHILE HE HOLDS A GUN. With the dedupe no longer blanking the gun cell, a gun he
+// holds that is bound to key 5 shows on cell 1 as well, and the first cell holding it would have become cell 1. A key he bound
+// comes first, so a raid still starts on key 5 and an empty cell still says Press 5, exactly as while cell 1 was blank.
+// -1 when no cell holds the gun in his hands.
+function heldGunCell(sl){
+  var i;
+  for(i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='gun'&&sl[i].inHand&&sl[i].assigned) return i;
+  for(i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='gun'&&sl[i].inHand) return i;
+  return -1;
+}
 function gunCell(){
-  var sl=hotbarSlots();
-  for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='gun'&&sl[i].inHand) return i;
-  return 0;
+  var i=heldGunCell(hotbarSlots());
+  return i<0?0:i;
 }
 function setHot(i){
   var sl=hotbarSlots();
@@ -14409,7 +14426,8 @@ function setHot(i){
       var _gk=ITEMS[s2.itemKey]&&ITEMS[s2.itemKey].gk;
       if(_gk&&G.player.wep.id!==_gk&&G.player.sec&&G.player.sec.id===_gk) swapGuns();
       // The highlight stays on the pressed cell: once the gun is in hand the
-      // derived gun cell is blanked by the dedupe, so pointing at it read EMPTY.
+      // derived gun cell was blanked by the dedupe, so pointing at it read EMPTY.
+      // v15.25: that cell shows the gun now; the pressed cell is still the key he chose.
     }
     _hinted=true;
   }
@@ -30330,7 +30348,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.24: THE RAID CLOCK WARNS IN ITS OWN VOICE. His note: killed by the timer with no sound warning. The minute warnings and the thirty second warning played the short quiet alarm a machine or a pillager makes when it raises an alarm, so in a fight they sounded like one more machine, and the last ten seconds made no sound before the site burned. They now play a louder rising siren of their own, each of the last ten seconds ticks with TEN SECONDS said at ten, and a warning fires when the clock crosses its mark rather than only when a whole second lands on it. No timings change. Check 15.24 steps live frames over thirty seconds, over a jump from 31.2 to 28.9 and over ten seconds, and reads the siren level; it fails on v15.23',
+  now:'v15.25: KEY 1 NEVER GOES BLACK WHILE YOU HOLD A GUN, HIS NOTE. A gun on a tactical belt key that you were holding blanked the gun cell showing the same gun, so taking a gun from the backpack with its key put it in your hands and turned key 1 black (key 2 when it went to your empty second slot). Keys 1 and 2 now always show the two guns in your hands, and the key you set shows it too. Check 15.25 takes the SMG from the backpack with key 3 over two guns and over one and reads keys 1 and 2, then brings a stowed carbine on key 5 up with key 5 and with key 2 and reads the highlight; it fails on v15.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
