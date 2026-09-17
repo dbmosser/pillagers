@@ -40024,6 +40024,40 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.37 - A CRATE ON THE FAR SIDE OF A WALL NEVER BLOCKS THE STALL
+
+Peddler audit finding 9 (MEDIUM).
+
+Stand beside the Peddler (within 74 units) with a thin wall or a stall slab next to you, and on its far side, within 46 units of
+you, an unopened crate, cache or pillager body. Bodies from a fight near the stall and the loot at his landmark both make this
+likely. The plate over him read THE PEDDLER (search the crate first), and E did nothing at all. Since the v8.x fix for his note "i
+cant search a casher right next to the peddler", a crate within 46 units takes E from the stall, on the reasoning that the rule
+clears itself: search the crate, it is marked opened, and the next E opens the stall. But that stall test was distance and nothing
+else, while the search has also needed a clear line to the box since v4.06 ("i just looted through a wall"). Behind a wall the
+stall test said a crate was underfoot and the search could not see it, so the stall refused, no search started, and the prompt
+pointed at a box that cannot be opened from where he stands. The two tests stopped agreeing when the search got its sight test.
+
+THE BUILD. One line in updatePlayer, the crate-underfoot scan before the stall opens. It now asks the search's own question: the
+same 46 units and the same losClear on G.vseg. Only a crate, cache or body the search can reach from where he stands keeps E from
+the stall; one on his side of the wall still wins E, as the v8.x rule intends. The plate reads G.pedBlocked, so it stops asking for
+a crate he cannot search. The sight test only runs for a box already inside 46 units, so the cost is nothing. No player text, no
+number, no dial and no seeded draw moved; the sentence on the plate is unchanged.
+
+MEASURED. Check 15.37 deploys a raid at seed 4242 and picks the first solid wall (not a window, deck edge, door, tree or map edge)
+8 to 19 thick and at least 90 long with open ground 13 units off both long faces, away from the extraction rings, the seal and the
+locked doors, where the wall blocks the line across it. He stands 13 off one face; every other ent is lifted and a Peddler put 40
+units out on his side; unopened containers within 60 of him are shut for the check. Controls: a frame with no key leaves him where
+he stands, finds the Peddler and reads the stall free; E with no crate near opens the stall. Then a crate goes on his own side at
+the same distance the far face will be, with a clear line: control, the search reaches it; guard, the stall reads blocked and E
+starts the search rather than the stall (true on both builds). The same crate then moves 13 units past the far face: control, it is
+inside 46 units with the wall across the line, the Peddler is still found and the search reaches nothing. The stall must not read
+blocked and E must open it; on v15.36 the stall reads blocked and E does nothing, so the check fails there for the finding's own
+reason. Everything it moved is put back and the raid is abandoned. Dry run on scratch copies of dark_raiders.html (at 15.27) and
+mkfixture.ps1: p1528 to p1536 and f1528 to f1536 applied in order, then p1537 and f1537, every anchor a whole line matching once, and the check and the edited scan loop both parse in JScript.
+
+Not verified: a real raid by hand, a crate behind a wall beside the stall. The check itself has not been run in a browser yet.
+Left alone: standing on an extraction ring, a crate he can see still blocks the stall while E belongs to the ring and X does the
+search; that is a separate case and not this finding.
 ## v15.36 - SELLING FOUND BANDAGES NEVER TURNS ISSUED BANDAGES INTO FOUND ONES
 
 Peddler audit finding 8 (MEDIUM).
