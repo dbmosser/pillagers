@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.21';
+var VER='15.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10360,7 +10360,11 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   for(var ip=idPool.length-1;ip>0;ip--){ var jp=ri(0,ip),tp=idPool[ip]; idPool[ip]=idPool[jp]; idPool[jp]=tp; }
   // v13.92, contracts audit: the man he hired is not also a stranger on the map. His identity goes to
   // the back of the pool, after the draws above, so the seeded stream is untouched.
-  if(!sim&&P&&P.merc){ for(var _mi=0;_mi<idPool.length;_mi++) if(idPool[_mi].id===P.merc){ idPool.push(idPool.splice(_mi,1)[0]); break; } }
+  // v15.22, hire audit: AND NOT AT THE BACK EITHER. Moving him to the back of the 28 names kept him out only while a map drew fewer
+  // than 28 strangers. THE COLD MILE draws 33 at Standard and 49 at Many, so stranger 28 wore the hire's own identity, and killing
+  // that stranger recorded a kill that makes the hire refuse to work for him for good. The hired identity leaves the pool; stranger
+  // 28 onward takes the numbered names the pool already falls back to. No draw is spent, so the seeded stream is untouched.
+  if(!sim&&P&&P.merc){ for(var _mi=0;_mi<idPool.length;_mi++) if(idPool[_mi].id===P.merc){ idPool.splice(_mi,1); break; } }
   for(i=0;i<N_RAIDER;i++){
     var s3=far(freeSpot(map,30),1190);
     // MORE RAIDERS THAN NAMES, found v3.38 and it predates the waves I first
@@ -30279,7 +30283,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.21: A SELF-REVIVE LEAVES YOUR HIRE HALF WAY THROUGH HIS PICKUP. If you went down beside your hire and got up on F before he pulled you up, he kept his half done pickup, so on your next down he never said he was coming for you and could pull you up well short of the usual 3.2 seconds. Every down now gets his line and a fresh pickup. Check 15.21 downs you beside him, self-revives part way through his pickup, downs you again and times the second pickup; it fails on v15.20',
+  now:'v15.22: THE HIRE IS NEVER ALSO A STRANGER. His identity was only moved to the back of the 28 names, so on THE COLD MILE at Standard or Many, where more than 28 strangers spawn, one stranger wore it, and killing him made the hire refuse work for good. The hired identity now leaves the pool. Check 15.22 deploys THE COLD MILE at Standard with and without a hire; it fails on v15.21',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
