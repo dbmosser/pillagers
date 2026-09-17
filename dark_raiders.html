@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.35';
+var VER='15.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9412,7 +9412,7 @@ function pedSellAll(){
   // responsible for having put it next to a peddler first.
   if(!G||(!G.trade&&!G.sim)) return;
   if(!G.sim&&G.player&&G.player.downed) return;   // v13.73: nothing is traded from the floor
-  var i,tot=0,full=0,n=0,kept=[];
+  var i,tot=0,full=0,n=0,kept=[],_soldB=0;   // v15.36, peddler audit finding 8: _soldB, the found Bandages this sale takes
   var _cl=pedBeltClaims(), _iss=G.issuedBandages||0;
   for(i=0;i<G.bag.length;i++){
     var k=G.bag[i];
@@ -9425,10 +9425,17 @@ function pedSellAll(){
     // v13.71, hire and peddler audit: nor does he buy the issued Bandages, a loaner that is
     // never banked (v13.54); 33 each was free money every raid.
     if(k==='bandage'&&_iss>0){ _iss--; kept.push(k); continue; }
-    tot+=Math.round(ival(k)*pedBuyRate()); full+=ival(k); n++;
+    tot+=Math.round(ival(k)*pedBuyRate()); full+=ival(k); n++; if(k==='bandage') _soldB++;   // v15.36, peddler audit finding 8: a found Bandage he buys
   }
   if(!n){ if(!G.sim) say('Nothing in your backpack he wants.'); return; }
-  G.bag=kept;
+  // v15.36, peddler audit finding 8: SELLING FOUND BANDAGES NEVER TURNS ISSUED BANDAGES INTO FOUND ONES. Since v13.71 the stall
+  // keeps the issued Bandages and buys only the found ones, but the sale left G.bandSeen where the last frame put it. On the
+  // next frame trackIssuedBandages saw the Bandage count fall by the number sold and, by the older v13.67 rule that every fall
+  // spends issued ones first, took that many off G.issuedBandages. The loaners the stall had just refused to buy then counted
+  // as found: the panel priced them, a second press sold them (the free money v13.71 took away), and an extraction banked them
+  // against v13.54. The sale now moves what the count last saw by the found Bandages it took, as dropItem does for a drop
+  // (v13.90), so the frame reads no fall. A use or a drop after the sale is still counted. No seeded draw, no price changed.
+  G.bag=kept; if(G.bandSeen!==undefined) G.bandSeen-=_soldB;
   // v7.62, his order: stall money is CARRIED, not banked. It rides the raid on
   // G.pedCarry, pays out only if you walk out, and dies where you fall. This is
   // also sim-safe for free - nothing touches P until the extract branch.
@@ -30438,7 +30445,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.35: A MOUSE CLICK ON THE OPEN STALL NEVER FIRES THE GUN BEHIND IT. The Peddler stall panel never claimed a left click the way the map, the backpack and the HUD panels do, so a click on it fired the gun toward the cursor, spent a round and could hit the Peddler, and a trigger held while the stall opened kept an automatic firing behind it. A left click on the open stall now does nothing, and opening the stall lets go of the trigger. Check 15.35 clicks the open stall with the Scav Pistol and holds a Compact SMG trigger into it; it fails on v15.34',
+  now:'v15.36: SELLING FOUND BANDAGES NEVER TURNS ISSUED BANDAGES INTO FOUND ONES. The stall keeps the two issued Bandages and buys only found ones, but on the frame after the sale the game read the drop in Bandages as the issued pair being spent, so the loaners then counted as found: a second press sold them and an extraction banked them. The sale now moves the Bandage count that frame reads, the way a drop already does. Check 15.36 sells three found Bandages beside the issued pair at the open stall, presses again, uses one and extracts; it fails on v15.35',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

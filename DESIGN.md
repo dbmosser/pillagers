@@ -40024,6 +40024,43 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.36 - SELLING FOUND BANDAGES NEVER TURNS ISSUED BANDAGES INTO FOUND ONES
+
+Peddler audit finding 8 (MEDIUM).
+
+Go up with no heal packed and the raid issues two Bandages, a loaner that is never banked (v13.54). Loot two or more Bandages,
+open the Peddler's stall and press 1 (or A on the pad). Since v13.71 SELL BACKPACK keeps the issued pair and buys only the found
+ones, which is right. But the issued count is also kept honest by a frame tick, trackIssuedBandages, which compares the Bandages
+in the backpack with the number it saw last frame and, by the v13.67 rule, treats every fall as issued Bandages spent first. The
+sale left that last-seen number alone, so on the very next frame (tickHeal runs it even with the stall open) the tick saw the
+count fall by the number sold and took that many off the issued count. The two loaners the stall had just refused to buy now
+counted as found: the panel read SELL BACKPACK (2) with a price, a second press sold them (the free money v13.71 took away), and
+an extraction handed none back and banked them into the stash, against v13.54. dropItem already avoids this for a drop by moving
+the last-seen number with it (v13.90); the sale did not.
+
+THE BUILD. One function, pedSellAll, three lines. It counts the found Bandages the sale takes and, when it replaces the backpack,
+lowers the last-seen number by that count, exactly as dropItem does. The next frame then reads no fall and the issued count stays
+where it was. A use or a drop after the sale is still a fall and still spends an issued Bandage first. A Bandage picked up since
+the last frame and sold in the same frame leaves the last-seen number below the real count, which the tick reads as a rise and
+ignores, so it stays correct. The bot sells through the same function under the sim and gets the same honest count. No price, no
+dial, no loot table and no player text moved; no seeded draw added.
+
+MEASURED. Check 15.36 deploys a raid with nothing packed (control: two Bandages, both issued), leaves only a Peddler 40 units
+away and opens the stall with a real E frame (control: open). Every step after that is a real updatePlayer frame and key 1 goes
+through raidKey, as the keyboard sends it. Control: three plain finds sold at the stall leave both Bandages issued on the next
+frame, on either build. Then three found Bandages go in (control: the frame reads five and still two issued) and key 1 is pressed
+(control: two Bandages kept, three paid for). The frame after must still count two issued; on v15.35 it counts none. A second
+press must sell nothing; on v15.35 it sells both loaners. Guard: a Bandage used after the sale spends one issued. Last, a plain
+find goes in and the raid is extracted: the find must be banked (control) and no Bandage; on v15.35 the issued one left is banked.
+So the check fails on v15.35 for the finding's own reason. The profile is restored through the loader afterwards. Dry run on
+scratch copies of dark_raiders.html (at 15.27) and mkfixture.ps1, with p1528 to p1535 and f1528 to f1535 applied in order
+first: every anchor a whole line matching once, the edited pedSellAll and the check both parse in JScript, and a JScript run of the
+old and new sale with the real tick through the check's steps gave issued 0, a second sale of 2 and 1 Bandage banked on v15.35,
+and issued 2, nothing sold, issued 1 after the use and 0 banked on the build.
+
+Not verified: a real raid by hand, selling found Bandages beside the issued pair and extracting. The check itself has not been
+run in a browser yet. Left alone: the v13.67 comment above trackIssuedBandages still lists a sale to the peddler among the falls
+it counts; the new comment in pedSellAll says why a sale no longer reads as one.
 ## v15.35 - A MOUSE CLICK ON THE OPEN STALL NEVER FIRES THE GUN BEHIND IT
 
 Peddler audit finding 7 (HIGH).
