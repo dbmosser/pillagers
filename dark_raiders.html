@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.32';
+var VER='15.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15265,8 +15265,15 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
       // v5.75, his note. PULL is the boarding verb everywhere else, so "pull it
       // again" pointed at a ship that is no longer there. Name the real action
       // and its price.
+      // v15.33, extraction audit finding: A MISSED EXTRACTION OFFERS ANOTHER CALL ONLY WHEN ONE CAN ARRIVE. This line told him to
+      // hold E and call for another on every missed window, and two of those calls cannot work. A window the raid clock clamped
+      // above ends with less than extractWait left, so a new call would arrive after the timer has ended the raid, which the call
+      // line itself already warns of. And a point past its closing time stays open only while it is called: the call is cleared
+      // just above, so the close loop below shuts it in this same tick and queues its closed line, and holding E there is refused
+      // as CLOSED. Past the closing time the line now stops at its first sentence and leaves the news to that queued line; with
+      // too little clock left it says a call cannot beat the clock; every other miss still offers the call and its wait.
       if(dist(p,z)<1400){ blip('clank');
-        say('Extraction left without you. Hold E to call for another, '+fmtMS(CFG.extractWait)+' out.'); }
+        say('Extraction left without you.'+((z.closeAt!==undefined&&G.timeLeft<=z.closeAt)?'':((raidClockOn()&&G.timeLeft<CFG.extractWait)?' Another call cannot beat the raid clock.':(' Hold E to call for another, '+fmtMS(CFG.extractWait)+' out.')))); }
     }
   }
   // THE MIRRORS ARE A VIEW, NOT A CACHE, v2.29. G.beaconT, G.shipHold and
@@ -30412,7 +30419,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.32: ON A CONTROLLER THE EXTRACT PROMPT NAMES THE X BUTTON. Standing in a landed extraction point, or down in one, the line telling him how to leave said to hold E on a controller too, a key the pad does not have, while the call prompts already said X. Both lines now ask the same button name helper the call prompts use, and the keyboard still reads E. Check 15.32 draws the HUD with a fake pad, standing and down in a landed ring; it fails on v15.31',
+  now:'v15.33: A MISSED EXTRACTION OFFERS ANOTHER CALL ONLY WHEN ONE CAN ARRIVE. When a landed window ran out the line always said to hold E and call for another, even when the raid clock would end the raid before a new call could arrive, or the point was past its closing time and shut in that same moment. With too little clock left it now says a call cannot beat the raid clock, past the closing time it leaves the news to the point closed line, and every other miss still offers the call. Check 15.33 runs a staged window out at 200 s, at half an extraction wait and just past a closing time; it fails on v15.32',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
