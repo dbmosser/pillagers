@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.51 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+WHATSNEW_VER stood at 15.39 against a build at 15.50, due for its refresh, and the card said nothing about the fixes of v15.40 to
+v15.50: the pause box flicker and the controller Menu at the stall, pillager bodies and revives, and the raid clock reading.
+
+THE BUILD. Only my first card line is rewritten in place. It names the pause box, pillager and raid clock news and keeps the grenade
+and healing phrases checks 15.39 and 15.27 read. The second card line, which carries every older checked phrase, and every line of
+his are untouched, so the card still holds thirteen lines. Dropped from the card: the controller extraction and stall click lines.
+WHATSNEW_VER moves to 15.51.
+
+MEASURED. Check 15.51 requires the card within fifteen builds and naming the pause box news; it fails on v15.50. Every card check was
+run on the dry build.
+
+Not verified: the card read on screen by eye.
 ## v15.50 - THE CONTROLLER MENU BUTTON PAUSES AT THE PEDDLER STALL
 
 Pause audit finding 10 (LOW).

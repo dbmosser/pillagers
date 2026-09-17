@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.50';
+var VER='15.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,11 +1361,11 @@ var VER='15.50';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='15.39';
+var WHATSNEW_VER='15.51';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'GRENADES, EXTRACTION, THE PEDDLER AND HEALING. A pillager grenade sounds where it lands, and on a controller X calls or extracts from any landed ring. A click on the open stall never fires your gun. Bandages and resting stop at 85, only a Medkit takes you past 85, and the raid clock has its own siren.',
+  'THE PAUSE BOX, PILLAGERS, GRENADES AND HEALING. Holding ESC or P no longer flickers the pause box, and a controller Menu pauses at the stall. A revived pillager keeps his gun and one you downed stays your kill. A pillager grenade sounds where it lands, only a Medkit takes you past 85, and the raid clock reads 0:10 when it says ten seconds.',
   'GRENADES, BELT KEYS, STASH, WARDROBE, SAVES AND STORMS. A cooked Frag Charge keeps burning through a roll, a heal on a key no longer stops Medical using your other heals, and a controller packs from the stash with A. SURPRISE ME takes a worn suit off, erasing a save erases its UNDO copy, and lightning no longer hits you through a wall. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
   'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
@@ -30556,7 +30556,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.50: THE CONTROLLER MENU BUTTON PAUSES AT THE PEDDLER STALL. With the stall open on a controller, Menu did nothing, so the raid clock and the waves ran on with no way to pause short of walking away with X, while keyboard P at the same stall pauses. Menu at the open stall now opens the pause box over it, one change per press, and the stall is still open behind the box. Check 15.50 presses Menu on a faked controller with the stall shut and with it open, and keyboard P at the open stall; it fails on v15.49',
+  now:'v15.51: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 15.39 against 15.50, due for its refresh, and the card said nothing about the pause box, pillager body and raid clock fixes. My first card line is rewritten in place, keeping what checks 15.27 and 15.39 read, and WHATSNEW_VER moves to 15.51. Check 15.51 requires the card current and naming the pause box news; it fails on v15.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

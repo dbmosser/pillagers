@@ -1,0 +1,9 @@
+v15.51: the what is new card is current again
+
+The card stood at 15.39 and said nothing about the pause box, pillager body
+and raid clock fixes. My first card line is rewritten in place, keeping the
+grenade and healing phrases its checks read.
+
+Check 15.51. Fails on v15.50.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
