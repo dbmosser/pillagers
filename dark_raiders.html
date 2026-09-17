@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.37';
+var VER='15.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13056,6 +13056,14 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     // v13.73, downed audit: and the stall shuts. Its only closer is on the standing path, so
     // it stayed open and trading over the DOWN screen for the whole bleed-out.
     if(G.trade){ G.trade=null; G.pedLock=1; }
+    // v15.38, peddler audit finding 10: DOWNED AT THE STALL, THE PEDDLER PLATE STOPS OFFERING A DEAL. The plate over him reads
+    // G.nearPed and G.pedBlocked, and both are written only on the standing path of updatePlayer, which the downed branch
+    // returns before. So shot to the floor beside the Peddler, they kept the last standing frame and the plate went on saying
+    // [E] DEAL (the pad button on a controller) for the whole bleed-out and after he crawled away, while E on the floor only
+    // reaches the extraction and nothing could open. v14.08 cleared the door prompt below for the same frozen-prompt reason and
+    // this pair was missed. Cleared here, the plate reads plain THE PEDDLER while he is down, and the first standing frame after
+    // a revive finds the stall and offers the deal again. No player text, no number and no seeded draw moved.
+    G.nearPed=null; G.pedBlocked=0;
     p.reloading=0;   // v13.83, combat audit: a reload does not wait on the floor to finish after he stands
     G.mapOpen=false; G.bagOpen=false; G.drag=null;   // v14.07, HUD audit: nothing covers the downed screen
     G.searching=null; G.searchT=0; G.nearDoor=null;   // v14.08, HUD audit: no search bar or door prompt frozen over the floor
@@ -30452,7 +30460,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.37: A CRATE ON THE FAR SIDE OF A WALL NEVER BLOCKS THE STALL. An unopened crate, cache or body within reach but behind a thin wall kept the Peddler stall shut and the plate asked for the crate to be searched first, while the search needs a clear line and could not reach it, so E did nothing. Only a crate the search can reach from where he stands keeps E from the stall now. Check 15.37 puts a crate just past a thin wall beside the Peddler and presses E; it fails on v15.36',
+  now:'v15.38: DOWNED AT THE STALL, THE PEDDLER PLATE STOPS OFFERING A DEAL. Shot to the floor beside the Peddler, the plate over him kept the last standing frame and went on reading [E] DEAL for the whole bleed-out and after he crawled away, while E on the floor could open nothing. Going down now clears what the plate reads, so it says only THE PEDDLER until he stands and the deal is offered again. Check 15.38 downs him 40 units from the Peddler, presses E on the floor and reads the drawn plate before, while down and after a self-revive; it fails on v15.37',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
