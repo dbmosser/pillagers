@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.25';
+var VER='15.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13030,7 +13030,7 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     // remainder of a Medkit survived a catastrophe it should not. v2.46 left
     // "should damage interrupt a heal" open as his design call, and ordinary
     // hits still do not; being SHOT TO THE FLOOR is not an ordinary hit.
-    p.healQ=0; p.healRate=0; p.healCap=undefined;
+    p.healQ=0; p.healRate=0; p.healCap=undefined; p.healHi=0; p.healLo=undefined;   // v15.26: and what may pass a Bandage ceiling goes with it
     // v13.73, downed audit: and the stall shuts. Its only closer is on the standing path, so
     // it stayed open and trading over the DOWN screen for the whole bleed-out.
     if(G.trade){ G.trade=null; G.pedLock=1; }
@@ -13432,6 +13432,15 @@ function healCeil(it){
   if(CFG.healCaps===0) return mx;
   return (it&&typeof it.capHp==='number')?Math.min(mx,it.capHp):mx;
 }
+// v15.26, his ruling of 2026-09-16: HOW HIGH A RUNNING HEAL WILL REALLY TAKE HIM. The drain stops at the queue ceiling
+// (healCap) and, past the lowest ceiling in the queue (healLo, a Bandage 85), lets on only the health a Medkit brought
+// (healHi). Every refusal that asks what is already on its way reads this, so none of them disagrees with the drain.
+function healReach(p){
+  var q=p.healQ||0;
+  if(!(q>0)) return p.hp;
+  var r=Math.min((p.healCap===undefined?p.maxhp:p.healCap),p.hp+q);
+  return (p.healLo===undefined)?r:Math.min(r,Math.max(p.hp,p.healLo)+Math.min(p.healHi||0,q));
+}
 function applyHeal(key){
   var it=ITEMS[key]; if(!it) return 0;
   var amt=healAmt(it);
@@ -13451,17 +13460,26 @@ function applyHeal(key){
     // while the prior one is still healing; a second item ADDS its health and
     // takes the faster of the two rates and the higher of the two ceilings.
     // The healSolo dial that gated the refusal is gone with it.
-    var _rate=amt/(hot*(CFG.healSlow===undefined?1.6:CFG.healSlow)), _cap=healCeil(it);
+    // v15.26, his ruling of 2026-09-16: ONLY A MEDKIT GETS HIM BACK TO 100. "bandages should only let players heal to 85 HP --
+    // only medkit gets player back to 100". The higher ceiling is shared by the whole queue, so a Bandage put on while a Medkit
+    // was still running rode the Medkit up to 100: from 30, about 96, where the Medkit and then a Bandage stop near 91. Stacking
+    // and the higher ceiling stay. The queue also carries the lowest ceiling in it (healLo) and how much of it may go past that
+    // ceiling (healHi, the health a Medkit brought); the drain lets only healHi past healLo. With the heal ceilings dial off
+    // every ceiling is full health, healLo stays unset and nothing changes.
+    var _rate=amt/(hot*(CFG.healSlow===undefined?1.6:CFG.healSlow)), _cap=healCeil(it), _hi=(_cap>=p.maxhp)?amt:0;
     if((p.healQ||0)>0){
       p.healQ+=amt; p.healAmt0=p.healQ;
       p.healRate=Math.max(p.healRate||0,_rate);
       p.healCap=Math.max((p.healCap===undefined)?0:p.healCap,_cap);
+      p.healHi=(p.healHi||0)+_hi;
+      if(_cap<p.maxhp) p.healLo=Math.min((p.healLo===undefined)?_cap:p.healLo,_cap);
     } else {
       p.healQ=amt; p.healAmt0=amt;
       p.healRate=_rate;
       // v9.62: the ceiling travels with the heal, because the drain runs for
       // seconds afterwards and has no idea which item started it.
       p.healCap=_cap;
+      p.healHi=_hi; p.healLo=(_cap<p.maxhp)?_cap:undefined;
     }
     return 0;
   }
@@ -13501,7 +13519,8 @@ function useMedical(){
   // What the queue can DELIVER, not what was poured in: a running heal stops
   // at its own ceiling (healCap), so a Medkit over two Bandages that end at
   // 85 is not refused as Already healing.
-  var _reach=Math.min(p.hp+(p.healQ||0),(p.healCap===undefined?p.maxhp:p.healCap));
+  // v15.26: and a Bandage over a Medkit stops at 85 plus what the Medkit had left, so the reach is the drain's own, healReach.
+  var _reach=healReach(p);
   if(_reach>=p.maxhp){
     say((p.healQ>0)?'Already healing.':'Already at full');
     return false;
@@ -13602,10 +13621,22 @@ function tickHeal(dt){
   var room=((p.healCap===undefined)?p.maxhp:p.healCap)-p.hp;
   // v13.63, in-raid audit: the ceiling goes with the queue, as it does when the queue runs
   // out below. Left behind, a Bandage's 85 made every later test read full health as 85.
-  if(room<=0){ p.healQ=0; p.healRate=0; p.healCap=undefined; return; }
+  if(room<=0){ p.healQ=0; p.healRate=0; p.healCap=undefined; p.healHi=0; p.healLo=undefined; return; }
   if(give>room) give=room;
+  // v15.26, his ruling of 2026-09-16: ONLY A MEDKIT GETS HIM BACK TO 100. Past the lowest ceiling in the queue (a Bandage 85)
+  // only the health a Medkit brought goes on. Once that is spent, what is left of the queue cannot raise him and goes. The
+  // queue is only emptied when that limit cut this step to nothing, so a step with no time in it never loses a heal.
+  if(p.healLo!==undefined){
+    var _ov=p.hp+give-Math.max(p.hp,p.healLo), _h=p.healHi||0;
+    if(_ov>_h){
+      give-=_ov-_h; _ov=_h;
+      if(give<=1e-6){ p.healQ=0; p.healRate=0; p.healCap=undefined; p.healHi=0; p.healLo=undefined; return; }
+    }
+    if(_ov>0) p.healHi=_h-_ov;
+  }
   p.hp+=give; p.healQ-=give;
-  if(p.healQ<=0.001){ p.healQ=0; p.healRate=0; p.healCap=undefined; }
+  if(p.healHi>p.healQ) p.healHi=p.healQ;
+  if(p.healQ<=0.001){ p.healQ=0; p.healRate=0; p.healCap=undefined; p.healHi=0; p.healLo=undefined; }
 }
 // Which pickup voice a haul deserves. Takes the BEST thing in the container,
 // because that is the thing you will remember finding.
@@ -13701,7 +13732,8 @@ function findHeal(){
     // so with his ceiling in place it would otherwise reach for a Bandage at 90
     // health, find it useless and report that he has no medical supplies while a
     // Medkit sat in the bag.
-    if(G.player&&Math.min(G.player.hp+(G.player.healQ||0),(G.player.healCap===undefined?G.player.maxhp:G.player.healCap))>=healCeil(it)) continue;   // v12.04: what is inbound counts, up to what the running heal can deliver
+    // v15.26: the reach is the drain's own, so a Bandage over a Medkit counts as stopping at 85 plus what the Medkit had left.
+    if(G.player&&healReach(G.player)>=healCeil(it)) continue;   // v12.04: what is inbound counts, up to what the running heal can deliver
     var amt=it.amt||0,val=ival(G.bag[i]);
     if(amt<bestAmt||(amt===bestAmt&&val<bestVal)){ best=i; bestAmt=amt; bestVal=val; }
   }
@@ -14493,13 +14525,14 @@ function useHot(){
       // one-heal-at-a-time refusal is gone from both, on his note.
       // v13.65, in-raid audit: the same reach as useMedical. A queue that stops at a
       // Bandage's 85 does not make a Medkit on its own key Already healing.
-      if(Math.min(_pp.hp+(_pp.healQ||0),(_pp.healCap===undefined?_pp.maxhp:_pp.healCap))>=_pp.maxhp){
+      // v15.26: nor does a Bandage over a Medkit, which stops at 85 plus what the Medkit had left: the drain's own reach.
+      if(healReach(_pp)>=_pp.maxhp){
         say((_pp.healQ>0)?'Already healing.':'Already at full'); return;
       }
       // v12.04: and the item's own ceiling, counting what is inbound. The
       // generic verb has had this since v9.62; a named Bandage above 85 was
       // spent for nothing while the toast said it was healing you.
-      if(Math.min(_pp.hp+(_pp.healQ||0),(_pp.healCap===undefined?_pp.maxhp:_pp.healCap))>=healCeil(ait)){ say(ait.name+' will not take you past '+Math.round(healCeil(ait))+'.'); return; }
+      if(healReach(_pp)>=healCeil(ait)){ say(ait.name+' will not take you past '+Math.round(healCeil(ait))+'.'); return; }
       if(_pp.prep){ say('Already applying '+(ITEMS[_pp.prep.key]?ITEMS[_pp.prep.key].name:'something')+'.'); return; }
       G.bag.splice(ix,1); startPrep('heal',s2.itemKey); blip('pick');
       say('Applying '+ait.name+'...');
@@ -30348,7 +30381,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.25: KEY 1 NEVER GOES BLACK WHILE YOU HOLD A GUN, HIS NOTE. A gun on a tactical belt key that you were holding blanked the gun cell showing the same gun, so taking a gun from the backpack with its key put it in your hands and turned key 1 black (key 2 when it went to your empty second slot). Keys 1 and 2 now always show the two guns in your hands, and the key you set shows it too. Check 15.25 takes the SMG from the backpack with key 3 over two guns and over one and reads keys 1 and 2, then brings a stowed carbine on key 5 up with key 5 and with key 2 and reads the highlight; it fails on v15.24',
+  now:'v15.26: A BANDAGE ON A RUNNING MEDKIT STOPS AT 85, HIS RULING OF 2026-09-16. A Bandage put on while a Medkit was still healing shared the Medkit ceiling of 100, so from 30 the two ended near 96 where the Medkit and then a Bandage stop near 91. Past 85 only the health a Medkit brought goes on now, and every Already healing refusal reads the same reach. Check 15.26 stacks Bandages and Medkits from 30, 50, 60 and 70 with ceilings on and off; it fails on v15.25',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
