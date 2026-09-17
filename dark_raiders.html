@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.43';
+var VER='15.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14891,8 +14891,16 @@ function raiderUseKit(e,dt){
     if(bestIx>=0){
       var gk=ITEMS[e.bag[bestIx]].gk, old=e.wep;
       var g={}; for(var k in WEAPONS[gk]) g[k]=WEAPONS[gk][k];
-      e.bag.splice(bestIx,1);
-      if(old&&old.id!=='fists') e.bag.push('gun_'+old.id);
+      // v15.44, bodies audit finding: A PILLAGER WHO SWITCHES GUNS NEVER LEAVES TWO COPIES OF HIS OLD GUN ON HIS BODY. mkRaider
+      // pushes 'gun_'+wk, a copy of the gun in his hands, and the death path counts that copy as the held gun (v8.44). This swap
+      // took the new gun out of the pack and pushed a fresh copy of the old one, so the old gun sat in the pack twice and the body
+      // paid it twice: a Scav Pistol pillager whose pack rolled a Compact SMG swapped on his first frame and died with two pistols
+      // and the SMG, and a looted gun did the same later. Nothing is taken out of the pack now: the new gun's copy stays and
+      // stands for the gun in his hands, as the spawn copy did, so the death path pays it once and a man carrying two of the
+      // better gun still pays both. The old gun goes into the pack only when it has no copy there (an elite's blessed gun, which
+      // blessElite hands him after the spawn copy is pushed), so that pack is one longer after the swap; with a copy nothing
+      // moves at all and the pack length is what it always was.
+      if(old&&old.id!=='fists'&&e.bag.indexOf('gun_'+old.id)<0) e.bag.push('gun_'+old.id);
       // v8.22, audit: the SAME cap blessElite applies at 6230, and for the same
       // stated reason - never open fire from outside his sight. This path had no
       // cap at all, so a raider who picked up a Longshot engaged at 648 against
@@ -30502,7 +30510,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.43: THE RAID CLOCK READS 0:10 WHEN TEN SECONDS IS SAID, AND 0:00 ONLY WHEN IT IS OUT. The clock rounded its seconds down, so TEN SECONDS was said with 0:09 on screen, the last tick played as it turned 0:00, a whole second then passed at 0:00 before the site began to burn, and through the burn it read -1:0-1. It now rounds up like every other countdown and stops at zero, so each warning lands on the figure it names and red still starts at 0:44. Check 15.43 crosses one minute, thirty, ten and one second through the clock warning and reads the drawn clock on the frames either side, with whole seconds and the count up as controls; it fails on v15.42',
+  now:'v15.44: A PILLAGER WHO SWITCHES GUNS NEVER LEAVES TWO COPIES OF HIS OLD GUN ON HIS BODY. A pillager who swapped to a better gun from his pack put a second copy of his old gun back in it, so his body paid the old gun twice. The swap now leaves the new gun copy in the pack to stand for the gun in his hands and adds the old gun only when it has no copy there, so every gun he carries pays once. Check 15.44 swaps five staged pillagers, kills them in one frame and counts every gun on each body; it fails on v15.43',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
