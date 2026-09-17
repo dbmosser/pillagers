@@ -40024,6 +40024,52 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.43 - THE RAID CLOCK READS 0:10 WHEN TEN SECONDS IS SAID, AND 0:00 ONLY WHEN IT IS OUT
+
+HUD audit finding (LOW).
+
+Let the raid clock run down. The clock at the top of the HUD rounded its seconds down (Math.floor of G.timeLeft), while the
+v15.24 warnings in tickClockWarn fire on the frame the clock crosses a mark (prev above it, now at or below it). So on the frame
+that says TEN SECONDS and plays the first tick the clock is at something like 9.98 and the figure read 0:09. THIRTY SECONDS came
+with 0:29 on screen and 1 minute left with 0:59. The last tick played as the figure turned 0:00, and then a whole second passed at
+0:00 before the site began to burn, because the burn waits for G.timeLeft<=0. Once it burns, the loop keeps taking the frame time
+off the clock, and the floor of a negative figure drew -1:0-1, then -1:0-2 and -1:0-3, for the rest of the burn (read from the
+code: mm and ss both floor to negative numbers and the zero pad is added in front of the minus sign). Every other countdown on
+screen already rounds up: extractNowLine, INBOUND Ns and the closes in line on the map. An extraction window clamped to the clock
+(z.hold=G.timeLeft=2.4) therefore read EXTRACT NOW! 3S LEFT beside a raid clock of 0:02.
+
+THE BUILD. Three lines in drawHUD, the clock block. The countdown figure is now Math.ceil(Math.max(0,G.timeLeft)), so it turns to
+0:10 on the same frame TEN SECONDS is said, to 0:30, 1:00 and 0:01 on the frames of their warnings, reads 0:01 through the last
+live second, and reads 0:00 only once the clock is out, including through the burn. The red colour now tests the figure shown
+(_tSrc<45) instead of the raw clock; testing the raw clock would have turned it red while the rounded figure still read 0:45, so
+red still starts at 0:44 exactly as before. This is the verdict's corrected fix; the proposed one-line fix missed the colour. The
+count up on a raid built with no clock is untouched (the other arm of the same line), and so are tickClockWarn, every warning
+line, every sound, the burn and every number. No player text, no dial and no seeded draw moved.
+
+MEASURED. Check 15.43 deploys a raid at seed 4242 with the default dials (it skips unless raidClockOn is true and the raid length is
+above 0), wraps the HUD canvas fillText to record each string with its fillStyle and textAlign, and takes the clock as the centred
+string shaped like a clock (a minus sign allowed, so the old burn figure is still found). say and blip are replaced by recorders.
+Controls on both builds: exactly 10 seconds draws 0:10, exactly 45 draws 0:45 in the plain colour and exactly 44 draws 0:44 in red.
+THE FIX: for each of one minute, thirty seconds, ten seconds and the last second it calls tickClockWarn across the mark (60.02 to
+59.98, 30.02 to 29.98, 10.02 to 9.98, 1.02 to 0.98). Control on both builds: that call says 1 minute left., THIRTY SECONDS. and TEN
+SECONDS. and plays clockwarn, clockwarn, clocktick and clocktick, so the warnings still fire at the same moments. It then draws the
+clock at both sides of the frame and requires 1:01 to 1:00, 0:31 to 0:30, 0:11 to 0:10 and 0:02 to 0:01. On v15.42 these read
+1:00 to 0:59, 0:30 to 0:29, 0:10 to 0:09 and 0:01 to 0:00, so the check fails there for the finding's own reason. THE FIX: 0.02
+seconds left draws 0:01 (0:00 on v15.42), and 44.5 seconds draws 0:45 in the plain colour (0:44 in red on v15.42; a fix that
+rounded up but kept the raw colour test would draw 0:45 in red and fail too). Control on both builds: exactly 0 draws 0:00. THE
+FIX: the clock run on to -0.4, as the burn leaves it, draws 0:00 (-1:0-1 on v15.42). Last, on both builds: with the raid length set
+to 0 the clock is off, and 65.7 seconds up draws 1:05 in the plain colour. The fillText wrapper, say, blip, the raid length, G.t,
+G.timeLeft and G.warnPrev are put back, and the raid is abandoned. No older fixture check reads the clock figure or its colour
+(check 9.56 only finds where the clock is drawn, and its figure still matches a whole-seconds clock), so none is restaged.
+
+Dry run on scratch copies of dark_raiders.html (at 15.39) and mkfixture.ps1: p1540 and f1540, p1541 and f1541, p1542 and f1542
+applied in order, then p1543 made 2 edits (the clock block and VER) plus DEVNOW and f1543 1 edit, every anchor a whole line
+matching once, and a second p1543 run refuses. The check and the edited drawHUD parse in JScript. The old and new clock lines and
+the real tickClockWarn replayed in JScript give exactly the figures above: the four crossings say and play the same on both, the
+old figures run one second behind at every mark, 44.5 reads 0:44 red against 0:45 plain, -0.4 and -2.5 read -1:0-1 and -1:0-3
+against 0:00, and the count up reads 1:05 on both.
+
+Not verified: a real raid by hand, watching the clock run out. The check itself has not been run in a browser yet.
 ## v15.42 - CROUCHED BESIDE YOUR HIRE OR A DOWNED PILLAGER, THE READOUT SAYS HIDDEN
 
 HUD audit finding (MEDIUM).

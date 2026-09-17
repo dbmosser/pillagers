@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.42';
+var VER='15.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24871,9 +24871,18 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
   // v15.14, dials audit finding 6: A RAID KEEPS THE CLOCK IT STARTED WITH. The readout counts up only on a raid built with no
   // clock; a dial moved mid-raid used to flip a running countdown into a count up, and a count up into a negative countdown.
   var _noClk=!raidClockOn();
-  var _tSrc=_noClk?(G.t||0):G.timeLeft;
+  // v15.43, hud audit finding: THE RAID CLOCK READS 0:10 WHEN TEN SECONDS IS SAID, AND 0:00 ONLY WHEN IT IS OUT. The countdown
+  // rounded its seconds down, and tickClockWarn fires on the frame the clock crosses a mark. So TEN SECONDS was said and the
+  // first tick played with 0:09 on screen, THIRTY SECONDS with 0:29 and 1 minute left with 0:59; the last tick played as the
+  // figure turned 0:00, and a whole second then passed at 0:00 before the site began to burn. Once it burns the loop runs the
+  // clock on below zero, and the floor of a negative figure drew -1:0-1, then -1:0-2 and -1:0-3. Every other countdown rounds
+  // up (EXTRACT NOW, INBOUND, the closes in line on the map), so an extraction window clamped to the clock read 3S LEFT beside
+  // 0:02. The countdown now rounds up and stops at zero: each figure turns on the same frame as its warning, 0:00 means the
+  // clock is out, and red tests the figure shown, so it still starts at 0:44. The count up with the clock off, tickClockWarn
+  // and every number are unchanged.
+  var _tSrc=_noClk?(G.t||0):Math.ceil(Math.max(0,G.timeLeft));
   var mm=Math.floor(_tSrc/60),ss=Math.floor(_tSrc%60);
-  ctx.fillStyle=(!_noClk&&G.timeLeft<45)?'#ff5a4a':'#cdd6dd';
+  ctx.fillStyle=(!_noClk&&_tSrc<45)?'#ff5a4a':'#cdd6dd';
   ctx.fillText(mm+':'+(ss<10?'0':'')+ss,W/2,_yClk);
   // HIS NOTE, 2026-08-26: "can you make it point to the NEAREST extraction instead,
   // and make it switch any time the player finds a nearer extraction -- also ...
@@ -30493,7 +30502,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.42: CROUCHED BESIDE YOUR HIRE OR A DOWNED PILLAGER, THE READOUT SAYS HIDDEN. Crouched in a quiet spot with his hire following, the plate read PARTLY HIDDEN, TOO CLOSE in amber, because the hire and any downed pillager counted as someone close enough to see him, though neither can give him away. The plate now counts only bodies that can, so it reads HIDDEN, CROUCHED there and still warns TOO CLOSE for a standing pillager. Check 15.42 crouches with a hire and then a downed pillager 60 units away and reads the drawn plate, a standing pillager at 60, the hire at 400 and the hire beside a standing pillager as controls; it fails on v15.41',
+  now:'v15.43: THE RAID CLOCK READS 0:10 WHEN TEN SECONDS IS SAID, AND 0:00 ONLY WHEN IT IS OUT. The clock rounded its seconds down, so TEN SECONDS was said with 0:09 on screen, the last tick played as it turned 0:00, a whole second then passed at 0:00 before the site began to burn, and through the burn it read -1:0-1. It now rounds up like every other countdown and stops at zero, so each warning lands on the figure it names and red still starts at 0:44. Check 15.43 crosses one minute, thirty, ten and one second through the clock warning and reads the drawn clock on the frames either side, with whole seconds and the count up as controls; it fails on v15.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
