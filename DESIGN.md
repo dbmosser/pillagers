@@ -40024,6 +40024,58 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.34 - STANDING IN ANY LANDED EXTRACTION POINT SHOWS THE EXTRACT PROMPT
+
+Extraction audit finding. Two extraction points can be called at once, and the window at a landed point is shared, so leaving on
+whichever lands first is intended play. Calling a point moves the pointer (G.active) to it (v12.57), and standing in a point does
+not move the pointer back while the point it names still has a live call. So with point A called and still inbound, then point B
+called, the pointer sits on B. When A lands first and he stands in it:
+- tryExtractTick finds him in A, whose window is running, and returns from the hold branch before any pointer change.
+- the mirror in tickExtractPoints keeps G.active on B because B still has a call, and sets G.beaconT to B's inbound clock and
+  G.shipHold to null.
+- the centre verb in drawHUD read those mirrors: _shipDown (G.beaconT<=0 and G.shipHold set) was false and _inRing measured B, so
+  the prompt to hold E and extract was never drawn.
+A hold of E there still extracted him at A, so the key did something the screen never offered. The downed screen has read the
+point he lies in since v12.94 (standingRing), and the uncalled-point prompt since v14.13; the standing verb was the one reader
+left on the pointer.
+
+THE BUILD. The two tests read the point he stands in: _sr=standingRing(), _shipDown=ringLanded(_sr), _inRing=!!_sr and his
+distance to _sr under its radius. standingRing returns the open point he is inside and falls back to the pointer when he is in
+none, so a single call, and standing outside every point, read exactly as before. ringLanded needs beaconT at or under 0 and a
+window above 0, which matches the old test, including the 0.01 window a hold in progress keeps. A called point cannot close
+mid-window, so A is still found. The outer guard (G.beaconT not null) still passes, because B's call keeps the mirror set. The
+verb text is untouched, still 'HOLD '+keyLabel('KeyE','E')+' TO EXTRACT' from v15.32; no player text changes, nothing is a
+TXSHIP key, and no balance number, dial, loot table or sound moves.
+
+Left alone, outside this finding: the bottom strip (EXTRACT B INCOMING with its arrow and metres, var inRing=dist(p,G.active)) and
+the compass still follow the pointer, so in this state they still name and point at the inbound point.
+
+MEASURED. Check 15.34 deploys a raid, clears the machines, turns pillager waves off for the check (restored), picks two points
+that do not overlap, and stages them: every point quiet, A landed (beaconT -1, a 20 s window), B inbound at 12 s or quiet, the
+pointer set, him standing in the middle of one, then one tryExtractTick(0,false) down the real path. It records every string
+drawHUD paints through txRecord. Controls: with one landed call at A and him in it, the pointer and mirrors reach A (window 20)
+and the prompt is drawn, on either build; with B called after A, the tick leaves the pointer on B with its clock above 0 and no
+window, A still landed, and standingRing on A. The finding: standing in A there, the prompt must be drawn; v15.33 draws none, so
+the check fails there. Kept: standing in inbound B with A landed elsewhere draws no prompt. The needle is assembled from words
+with keyLabel, so the check never matches its own source. Zones, the pointer and mirrors, the message and its queue, the
+machines, his position, the wave dial and the text recorder are put back in finally before the raid is abandoned.
+
+TWO OLDER CHECKS STAGED THE MIRRORS ALONE. Check 9.08 (its standing control, "the standing prompt is not drawing at all") and
+check 10.79 (the standing extract prompt pulse, judged against its floor) stand him in the ring after a few frames and then set
+only G.shipHold=8 and G.beaconT=0, with the point itself never called. The old verb read those mirrors and drew; this build reads
+the point he stands in, which has not landed, so both would have gone red on v15.34 for a state the game cannot be in (the
+mirrors are copied off the pointed point every tick). f1534 also lands the point in both (beaconT 0, hold 8, holdMax 30) beside
+the same mirror lines, the way v12.94 restaged the surrender check on the ring. The old verb still reads the mirrors, so both pass
+on v15.33 as before; the ring badge is skipped for the point he stands in, so the measured box should read the same on v15.34.
+Neither restaged check has been run in a browser.
+
+Dry run on scratch copies of the page and the fixture (1527 is already applied to both): p1528 to p1537 and f1528 to f1537
+applied in version order, every anchor a whole line matching once, the version and DEVNOW moved to 15.34 and on to 15.37;
+pollPad, drawHUD, tickExtractPoints and tryExtractTick from the patched page, the new check and the two restaged checks parsed
+under JScript.
+
+Not verified: check 15.34 has not been run in a browser, and no real raid has stood in a landed point while a second call was
+inbound.
 ## v15.33 - A MISSED EXTRACTION OFFERS ANOTHER CALL ONLY WHEN ONE CAN ARRIVE
 
 Extraction audit finding. When a landed extraction window runs out with him within 1400 units, tickExtractPoints clanks and says
