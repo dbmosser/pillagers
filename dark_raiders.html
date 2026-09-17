@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.47';
+var VER='15.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12118,14 +12118,23 @@ function togglePauseBox(on){
     // G.over, so for the whole seventeen second bleed-out the box happily offered
     // a way to turn a death into an abandon, which kept both guns the death would
     // have taken and cost only the XP fee.
-    var _bleed=!!(G&&G.player&&(G.player.downed||G.player.hp<=0||(G.deathBeat||0)>0));
+    // v15.48, pause audit finding 8: WHILE THE SITE BURNS OR A DEATH PLAYS OUT, THE PAUSE BOX OFFERS NO ABANDON AND NO EXTRACT.
+    // Once the clock runs out with no call made, G.nuking burns the site and the raid can only end in death, but tickNuke puts
+    // him down only after 1.15 seconds of it. Paused in that first second this test read false, so the box offered Abandon run
+    // and a certain timer death became an abandon that kept the armoury guns and counted no death, the very swap v9.37 closed for
+    // the bleed-out. And over the death beat (hp 0, not downed) and later in the burn the box read BLEEDING OUT and said he can
+    // extract while downed, when he is dead or burning and cannot. The burn now counts here, so Abandon run stays hidden for all
+    // of it, and only a real downed player outside the burn is told he is bleeding out. No player text, no number and no seeded
+    // draw moved.
+    var _bleed=!!(G&&(G.nuking||(G.player&&(G.player.downed||G.player.hp<=0||(G.deathBeat||0)>0))));
+    var _downNow=!!(_bleed&&!G.nuking&&G.player.downed);
     var _h3=document.querySelector('#pausebox h3');
-    if(_h3) _h3.textContent=_inRaid?(_bleed?'BLEEDING OUT':'RAID PAUSED'):'PAUSED';
+    if(_h3) _h3.textContent=_inRaid?(_downNow?'BLEEDING OUT':'RAID PAUSED'):'PAUSED';
     var _ab=document.getElementById('abandonbtn'), _ca=document.getElementById('confirmabandon');
     if(_ab) _ab.style.display=(_inRaid&&!_bleed)?'':'none';
     if(_ca&&(!_inRaid||_bleed)) _ca.style.display='none';
     var _bl=document.getElementById('pausebleed');
-    if(_bl) _bl.style.display=(_inRaid&&_bleed)?'':'none';
+    if(_bl) _bl.style.display=(_inRaid&&_downNow)?'':'none';
     // v10.96, HIS NOTE: his two choices, in his words. Closing the box IS
     // returning to the Undercroft, so the resume button carries the first one; a
     // separate button that only closed the box would be two controls for one act.
@@ -30528,7 +30537,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.47: EACH RUN IN YOUR STATS COUNTS ITS LISTENER, PILLBOX AND WARDEN KILLS. The Every run list under Your stats added six of the nine kill counts a run keeps, so a run whose only kill was a Listener, a Pillbox or the Warden said 1 kill on its end card and 0k on its own line. Each line now adds every kill count the run keeps, the same sum the Average kills per run card takes. Check 15.47 destroys a sentry, a Listener, a Warden and a Pillbox in one frame, abandons the raid and reads the new line in the list; it fails on v15.46',
+  now:'v15.48: WHILE THE SITE BURNS OR A DEATH PLAYS OUT, THE PAUSE BOX OFFERS NO ABANDON AND NO EXTRACT. Paused in the first second of the burn after the clock ran out, the box offered Abandon run, which turned a certain timer death into an abandon that kept the armoury guns, and over the death beat or later in the burn it read BLEEDING OUT and said he can extract while downed. The burn now hides and refuses Abandon run, and only a real downed player outside the burn is told he is bleeding out. Check 15.48 pauses with P on his feet, downed, in the first frame of the burn, down in the burn and over the death beat, pressing Abandon run each time; it fails on v15.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34194,9 +34203,13 @@ document.getElementById('resumebtn').onclick=function(){
 document.getElementById('abandonbtn').onclick=function(){
   // v9.37: the handler refuses as well as the button hiding. Presentation is not
   // a rule, and the box can already be open when you go down.
-  if(G&&G.player&&(G.player.downed||G.player.hp<=0||(G.deathBeat||0)>0)){
+  // v15.48, pause audit finding 8: WHILE THE SITE BURNS OR A DEATH PLAYS OUT, THE PAUSE BOX OFFERS NO ABANDON AND NO EXTRACT.
+  // This refused only a player already down, so a press in the first second of the burn armed the confirm. The burn refuses
+  // here too, and the downed line comes up only for a real downed player outside the burn: over the death beat or the burn it
+  // told a dead or burning man he can extract while downed.
+  if(G&&(G.nuking||(G.player&&(G.player.downed||G.player.hp<=0||(G.deathBeat||0)>0)))){
     var _blq=document.getElementById('pausebleed');
-    if(_blq) _blq.style.display='';
+    if(_blq&&!G.nuking&&G.player&&G.player.downed) _blq.style.display='';
     return;
   }
   var cb=document.getElementById('confirmabandon');

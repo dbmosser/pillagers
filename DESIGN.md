@@ -40024,6 +40024,56 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.48 - WHILE THE SITE BURNS OR A DEATH PLAYS OUT, THE PAUSE BOX OFFERS NO ABANDON AND NO EXTRACT
+
+Pause audit finding 8 (MEDIUM).
+
+Let the raid clock run out with no extraction called. The loop sets G.nuking, says MERIDIAN IS BURNING THE SITE, and from then on
+runs tickNuke in place of updatePlayer, so there is no way out: tickNuke puts him down at 1.15 seconds and ends the raid with
+endRaid('dead') at 2.6. But the pause box and the Abandon run handler only asked whether he was down, hp 0 or in the death beat,
+and for the first 1.15 seconds of the burn he is none of those. ESC, P, TAB or the pad Menu button in that second froze the burn
+and offered Abandon run, and its confirm ran endRaid('abandon'): the armoury guns the death would have taken were kept and no death
+was counted. That is the same death-into-abandon swap v9.37 closed for the bleed-out; the burn was missed. Coming back empty
+stands: a timer death stays a death.
+
+The same test also chose the title and the downed line. killPlayer leaves hp 0 with downed false for a 1.5 second death beat, and
+G.over is not set, so ESC still opens the box. Over that beat the box read BLEEDING OUT and showed YOU ARE DOWNED, You can extract
+while downed, over a dead man, and pressing Abandon run brought that line up again. Later in the burn, when tickNuke has put him
+down, the box said the same thing while nothing could be extracted.
+
+THE BUILD. Two places, same rule. In togglePauseBox the bleed test also counts G.nuking, so Abandon run is hidden and a primed
+confirm is put away for the whole burn; a second flag, set only for a real downed player outside the burn, now picks the BLEEDING
+OUT title and the downed line, so the burn and the death beat read RAID PAUSED with no line. The Abandon run handler refuses on the
+same widened test and brings up the downed line only for a real downed player outside the burn. The confirm handler needs nothing:
+an open box pauses the clock, so the box cannot already be armed when the burn starts. Being downed is unchanged: BLEEDING OUT,
+the downed line and no Abandon run. On his feet Abandon run is offered and arms as before. The words of the title and the downed
+line are untouched (neither is a TXSHIP key). No player text, no number, no dial and no seeded draw moved.
+
+MEASURED. Check 15.48 deploys a raid at seed 4242, lifts every ent and presses P through raidKey to open and close the box, reading
+its title, Abandon run and the downed line, then pressing Abandon run once and reading the confirm and the line again, and putting
+the button back to sleep. Controls: the raid has a clock, no call made, is fresh and on his feet; on his feet the box reads RAID
+PAUSED, offers Abandon run with no line and the press arms the confirm; really downed (downed, hp 0) it reads BLEEDING OUT with the
+line and no Abandon run and the press arms nothing. Then one live frame through __loop with 0.01 seconds left; control: that frame
+started the burn on its own branch and he is not down yet. In that first frame of the burn the box must not offer Abandon run and
+the press must not arm the confirm; on v15.47 it offers it and arms YES, ABANDON THIS RUN, so the check fails there for the
+finding's own reason. Then tickNuke(1.2), the game's own burn step; control: he is down, the burn still running, the raid not
+over. Down in the burn the box must not read BLEEDING OUT or show the line, before or after the press; v15.47 shows both. Then the
+burn is cleared and killPlayer opens the death beat; control: hp 0, not downed, beat running, not over. Over the beat the box must
+not read BLEEDING OUT or show the line, before or after the press; v15.47 shows both. Everything it moved (keys, lastTs, the burn
+flags, the death beat, the clock, the killer and med flags, hp, downed, dying, ents) is put back and the raid is abandoned.
+
+Older fixture checks: none restaged. Check 9.37 stages a real downed player (downed, hp 0), which the fix still treats as bleeding
+out, so its downed stage and its standing control read as before. Check 10.41 reads the words of the downed line, which are
+unchanged. No check reads BLEEDING OUT or opens the box during the burn or the death beat.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.39 applied): p1540 and f1540, p1541 and f1541,
+p1542 and f1542, p1544 and f1544, p1545 and f1545, p1546 and f1546 applied in version order, with VER and the DEVNOW now line
+moved on by hand and a stand-in newest fixture entry added for 1543 and 1547, which were not yet written; then p1548 and f1548
+(and after them p1549, f1549, p1550 and f1550), every script printing OK and every anchor a whole line block matching once. The
+edited togglePauseBox, the edited Abandon run handler and the check all parse in JScript.
+
+Not verified: a real raid by hand, pausing in the first second of the burn and over the death beat. The check itself has not been
+run in a browser yet.
 ## v15.47 - EACH RUN IN YOUR STATS COUNTS ITS LISTENER, PILLBOX AND WARDEN KILLS
 
 Bodies audit finding (LOW).
