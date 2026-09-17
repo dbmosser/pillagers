@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.23';
+var VER='15.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4383,6 +4383,27 @@ function blip(type,d,pan){
     gc2.gain.setValueAtTime(.075*vol,t+.11);
     gc2.gain.exponentialRampToValueAtTime(.001,t+.26);
     oc2.connect(gc2); gc2.connect(OUT); oc2.start(t); oc2.stop(t+.27);
+  } else if(type==='clockwarn'){
+    // v15.24, HIS NOTE: "i got kileld by the timer and i never got any type of sound warning". THE RAID CLOCK HAS A VOICE OF
+    // ITS OWN. The clock warnings borrowed the alarm below, a 0.3 s saw at 0.06 that every machine and pillager also plays
+    // when it raises an alarm, so a warning in a fight sounded like one more machine. Three rising square sweeps, 0.3 s apart
+    // over 0.9 s, at twice that level and centred: nothing else in the game climbs like this, so it cannot pass for a machine.
+    for(var cwi=0;cwi<3;cwi++){
+      var cwt=t+cwi*.3, cwo=a.createOscillator(), cwf=a.createBiquadFilter(), cwg=a.createGain();
+      cwo.type='square';
+      cwo.frequency.setValueAtTime(520,cwt); cwo.frequency.exponentialRampToValueAtTime(1040,cwt+.24);
+      cwf.type='lowpass'; cwf.frequency.value=2600;
+      cwg.gain.setValueAtTime(.12*vol,cwt); cwg.gain.setValueAtTime(.12*vol,cwt+.2);
+      cwg.gain.exponentialRampToValueAtTime(.001,cwt+.27);
+      cwo.connect(cwf); cwf.connect(cwg); cwg.connect(OUT); cwo.start(cwt); cwo.stop(cwt+.28);
+    }
+  } else if(type==='clocktick'){
+    // v15.24, HIS NOTE: each of the last ten seconds on the raid clock. One short high square knock, so the count down is
+    // heard without looking at the clock.
+    var cko=a.createOscillator(),ckg=a.createGain();
+    cko.type='square'; cko.frequency.setValueAtTime(1320,t);
+    ckg.gain.setValueAtTime(.09*vol,t); ckg.gain.exponentialRampToValueAtTime(.001,t+.09);
+    cko.connect(ckg); ckg.connect(OUT); cko.start(t); cko.stop(t+.1);
   } else if(type==='alarm'){
     var o3=a.createOscillator(),g5=a.createGain();
     o3.type='sawtooth'; o3.frequency.setValueAtTime(920,t); o3.frequency.setValueAtTime(660,t+.09);
@@ -29039,6 +29060,35 @@ function compass8(dx,dy){
   var a=Math.atan2(dy,dx)*180/Math.PI; if(a<0) a+=360;
   return ['east','south east','south','south west','west','north west','north','north east'][Math.round(a/45)%8];
 }
+// v15.24, HIS NOTE: "i got kileld by the timer and i never got any type of sound warning". THE RAID CLOCK WARNINGS, moved
+// here out of the loop. They played blip('alarm'), the sound a machine or a pillager makes when it raises an alarm, so they
+// were lost in any fight, and the last ten seconds made no sound at all. They now play the clock siren, and each of the last
+// ten seconds ticks, with TEN SECONDS said at ten. A mark also fires when the clock CROSSES it (prev above it, now at or below
+// it) where it used to fire only when the whole second EQUALLED it. The loop caps a frame at 0.05 s, so a live frame cannot
+// skip a whole second today; the crossing test means nothing that ever moves the clock further can skip a warning either.
+// prev is the clock at the end of the last raid frame, now is the clock after this one. On the first frame of a raid there is
+// no prev, and it is taken as one whole second above now, which keeps the old rule of warning when a raid starts on a mark.
+// The words are the lines the loop said before, unchanged. Called once per raid frame from loop; the bot sim never calls it.
+function tickClockWarn(prev,now){
+  if(!G) return;
+  if(typeof prev!=='number') prev=Math.ceil(now)+1;
+  G.warnPrev=now;
+  if(!(prev>now)) return;
+  var MARKS=[300,240,180,120,60,30], tlNow=0, i;
+  // The latest mark crossed speaks. A real frame never crosses two.
+  for(i=0;i<MARKS.length;i++) if(prev>MARKS[i]&&MARKS[i]>=now) tlNow=MARKS[i];
+  if(tlNow===30){ say('THIRTY SECONDS. '+outHint(1)); blip('clockwarn'); }
+  else if(tlNow>0){
+    say((tlNow/60)+' minute'+(tlNow===60?'':'s')+' left.'+(tlNow<=180?('  '+outHint(0)):''));
+    blip('clockwarn');
+  }
+  var tick=0;
+  for(i=10;i>=1;i--) if(prev>i&&i>=now) tick=i;
+  if(tick){
+    if(prev>10&&10>=now) say('TEN SECONDS. '+outHint(1));
+    blip('clocktick');
+  }
+}
 function outHint(urgent){
   // v12.93, audit finding 7: A LIVE BEACON OWNS THIS SENTENCE. Everything below
   // used to read distance and nothing else, so at thirty seconds the game told a
@@ -29793,18 +29843,10 @@ function loop(ts){
     // v15.14, dials audit finding 6: A RAID KEEPS THE CLOCK IT STARTED WITH. This asked the NEXT RAID dial live, so a raid built
     // with the clock OFF started counting down from zero the frame the console closed, and a running clock moved to OFF stopped.
     if(raidClockOn()) G.timeLeft-=dt;
-    var tlNow=Math.ceil(G.timeLeft);
-    if(G.lastWarn===undefined) G.lastWarn=-1;
-    if(tlNow!==G.lastWarn){
-      var warned=false;
-      if(tlNow===30){ say('THIRTY SECONDS. '+outHint(1)); warned=true; }
-      else if(tlNow>0&&tlNow<=300&&tlNow%60===0){
-        say((tlNow/60)+' minute'+(tlNow===60?'':'s')+' left.'+(tlNow<=180?('  '+outHint(0)):''));
-        warned=true;
-      }
-      if(warned){ blip('alarm'); }
-      G.lastWarn=tlNow;
-    }
+    // v15.24, HIS NOTE: killed by the timer with no sound warning. The clock warnings are in tickClockWarn beside outHint.
+    // They fired when the whole second EQUALLED a mark and played the machine alarm; they now fire when the clock crosses a
+    // mark, play a clock siren of their own, and tick through the last ten seconds.
+    tickClockWarn(G.warnPrev,G.timeLeft);
     // v9.35: both branches ask whether there IS a clock before asking whether it
     // has run out, for the same reason as the sim path above.
     // v13.79, downed and extraction audit: a boarding hold already running in a landed ring
@@ -30288,7 +30330,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.23: ONLY A MEDKIT GETS HIM BACK TO 100, HIS RULING OF 2026-09-16. Out of combat health crept back one point every three seconds all the way to 100, so a Bandage to 85 and a minute of quiet did what only a Medkit may. Regen now stops at the Bandage ceiling of 85. Check 15.23 runs regen from 80 with ceilings on and off; it fails on v15.22',
+  now:'v15.24: THE RAID CLOCK WARNS IN ITS OWN VOICE. His note: killed by the timer with no sound warning. The minute warnings and the thirty second warning played the short quiet alarm a machine or a pillager makes when it raises an alarm, so in a fight they sounded like one more machine, and the last ten seconds made no sound before the site burned. They now play a louder rising siren of their own, each of the last ten seconds ticks with TEN SECONDS said at ten, and a warning fires when the clock crosses its mark rather than only when a whole second lands on it. No timings change. Check 15.24 steps live frames over thirty seconds, over a jump from 31.2 to 28.9 and over ten seconds, and reads the siren level; it fails on v15.23',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
