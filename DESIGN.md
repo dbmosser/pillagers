@@ -40024,6 +40024,40 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.35 - A MOUSE CLICK ON THE OPEN STALL NEVER FIRES THE GUN BEHIND IT
+
+Peddler audit finding 7 (HIGH).
+
+Walk up to the Peddler, press E, and his stall panel opens in the middle of the screen, over you and him. Its rows answer the
+number keys and pad A; the panel is only drawn and takes no mouse input. The canvas mousedown handler already keeps a left click
+away from the trigger when it lands on the map, a backpack tile, the open backpack, a belt cell or a HUD panel (the v3.64 rule,
+a click on furniture does not pull the trigger), but nothing asked whether the stall was open. So a click on the panel set the
+fire flag, and updatePlayer runs its fire and cook code before the stall's own early return. The gun fired toward the cursor
+through the panel: a round spent and noise made, a Frag Charge cooked if its cell was selected, and with the cursor on his side
+the round hit the Peddler, who bolts ("No trade while he is bleeding") and the stall shuts. Held on an automatic it could kill
+him, a permanent point of Notoriety. Holding the trigger while pressing E did the same for the whole trade. The F strike
+(meleeStrike checks G.trade) and pad A (v14.20, padRelease) were already blocked; only the mouse got through.
+
+THE BUILD. Two lines, no numbers and no player text moved.
+- The mousedown handler returns on a left click while the stall is open, right after the map block and before the right click
+  line. The map still comes first, a right click still only aims and cannot fire, and a click on a belt cell no longer changes
+  the selection behind the panel, which is what the pad already did. The canvas click listener still wakes the audio.
+- Opening the stall lets go of the trigger (mouse.down=false), the way padRelease lets go of pad A. The next frame ends the
+  hold, and a grenade being cooked is thrown, as on the pad since v14.20, rather than left to cook off in his hand.
+
+MEASURED. Check 15.35 deploys a raid, leaves only a Peddler 40 units away, puts a fresh Scav Pistol in his hands with the
+highlight on its cell, and picks a click point on the left half of the stall panel that no HUD panel or belt cell claims. It
+drives the real mousedown and mouseup events and real updatePlayer frames, and takes every round fired out of the air before
+it can move. Control: with the stall shut the click spends one round. The stall is opened with E the way he opens it (control:
+it is open). A left click on the open stall must spend no round and leave it open; on v15.34 it spends one. Then, stall shut,
+a Compact SMG trigger held and E pressed: the round on the opening frame is the control, and three more frames with the stall
+open must spend nothing; on v15.34 they spend three. So the check fails on v15.34 for the finding's own reason. It puts the
+mouse position back afterwards. Dry run on scratch copies of dark_raiders.html (at 15.27) and mkfixture.ps1: p1528 to p1534 and
+f1528 to f1534 applied in order, then p1535 and f1535, every anchor a whole line matching once; the check and the edited
+mousedown handler both parse in JScript.
+
+Not verified: a real raid by hand, clicking the stall rows and holding the trigger into the stall. The check itself has not
+been run in a browser yet.
 ## v15.34 - STANDING IN ANY LANDED EXTRACTION POINT SHOWS THE EXTRACT PROMPT
 
 Extraction audit finding. Two extraction points can be called at once, and the window at a landed point is shared, so leaving on
