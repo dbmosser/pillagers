@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.28';
+var VER='15.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17327,7 +17327,13 @@ if(e.state==='possum'){
           // were "IS DOWN" and "DOWN", which is the same word for a man who can
           // be picked back up and a man who cannot.
           label(e.x,e.y-16,(e.name||'PILLAGER')+' DOWNED','#ffc04a',0,true);
-          blip('hit');
+          // v15.29, sound audit finding: A PILLAGER GOING DOWN SOUNDS WHERE HE FALLS. The hit sound here was played with no
+          // distance and no pan, which blip plays at full volume and centred: the very sound damagePlayer makes when you are
+          // hit. Machines fight pillagers anywhere on the map (machVsRaider), so a sentry dropping one 2000 units away played
+          // your own hit with nothing on screen and no health lost, and taught you to ignore the one sound that means you are
+          // being hit. It now plays at his distance and pan from you (earsOf), so a man downed beside you is still heard and
+          // one downed out of earshot, past about 880 units, is not. The DOWNED label and everything else are unchanged.
+          var _dnE=earsOf(e.x,e.y); blip('hit',_dnE.d,_dnE.pan);
         }
         continue;
       }
@@ -30387,7 +30393,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.28: A GRENADE A PILLAGER THROWS SOUNDS WHERE IT LANDS. A pillager Frag Charge does not fly: it appears beside you with a 1.1 second fuse, and the only sound was a quiet clank at his hand up to 520 units away, the same clank a bullet makes on a wall. The rising charge warning now plays at the charge itself, and the two scatter draws keep their order so the seeded stream does not move. Check 15.28 pins the draws, has a pillager throw from his band and requires the warning at the charge beside the clank at his hand; it fails on v15.27',
+  now:'v15.29: A PILLAGER GOING DOWN SOUNDS WHERE HE FALLS. A pillager put on the floor anywhere on the map played the hit sound you hear when you are hit, at full volume and centred, so a machine downing one far away sounded like a hit on you with nothing on screen. It now plays at his distance and pan from you, so one downed beside you is still heard and one out of earshot is not. Check 15.29 downs a pillager 60 units west and then 1400 units east in one entity update each and requires the hit sound at his distance and on his side; it fails on v15.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
