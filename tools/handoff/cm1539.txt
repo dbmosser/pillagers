@@ -1,0 +1,9 @@
+v15.39: the what is new card is current again
+
+The card stood at 15.27 and said nothing about the grenade sound, the controller
+extraction or the stall fixes. My first card line is rewritten in place, keeping
+the healing phrase its check reads.
+
+Check 15.39. Fails on v15.38.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

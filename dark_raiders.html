@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.38';
+var VER='15.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,11 +1361,11 @@ var VER='15.38';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='15.27';
+var WHATSNEW_VER='15.39';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'HEALING, THE RAID CLOCK AND YOUR HIRE. Bandages and resting stop at 85, and only a Medkit takes you past 85. The raid clock has its own siren before it runs out, a raid keeps the clock it started with, and gun slot 1 no longer goes black. Your hire leaves the crate you are searching alone and never turns up as a stranger.',
+  'GRENADES, EXTRACTION, THE PEDDLER AND HEALING. A pillager grenade sounds where it lands, and on a controller X calls or extracts from any landed ring. A click on the open stall never fires your gun. Bandages and resting stop at 85, only a Medkit takes you past 85, and the raid clock has its own siren.',
   'GRENADES, BELT KEYS, STASH, WARDROBE, SAVES AND STORMS. A cooked Frag Charge keeps burning through a roll, a heal on a key no longer stops Medical using your other heals, and a controller packs from the stash with A. SURPRISE ME takes a worn suit off, erasing a save erases its UNDO copy, and lightning no longer hits you through a wall. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
   'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
@@ -30460,7 +30460,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.38: DOWNED AT THE STALL, THE PEDDLER PLATE STOPS OFFERING A DEAL. Shot to the floor beside the Peddler, the plate over him kept the last standing frame and went on reading [E] DEAL for the whole bleed-out and after he crawled away, while E on the floor could open nothing. Going down now clears what the plate reads, so it says only THE PEDDLER until he stands and the deal is offered again. Check 15.38 downs him 40 units from the Peddler, presses E on the floor and reads the drawn plate before, while down and after a self-revive; it fails on v15.37',
+  now:'v15.39: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 15.27 against 15.38, due for its refresh, and the card said nothing about the grenade sound, the controller extraction or the stall fixes. My first card line is rewritten in place, keeping what check 15.27 reads, and WHATSNEW_VER moves to 15.39. Check 15.39 requires the card current and naming the grenade news; it fails on v15.38',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

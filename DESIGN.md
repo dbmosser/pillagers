@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.39 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+WHATSNEW_VER stood at 15.27 against a build at 15.38, due for its refresh, and the card said nothing about the fixes of v15.28 to
+v15.38: a pillager grenade sounding where it lands, the controller extraction button and prompt, and the stall click that fired the
+gun.
+
+THE BUILD. Only my first card line is rewritten in place. It names the grenade, extraction and Peddler news and keeps the healing
+phrase check 15.27 reads. The second card line, which carries every older checked phrase, and every line of his are untouched, so
+the card still holds thirteen lines. Dropped from the card: a raid keeping its clock, the gun slot and the two hire lines.
+WHATSNEW_VER moves to 15.39.
+
+MEASURED. Check 15.39 requires the card within fifteen builds and naming the grenade news; it fails on v15.38. Every card check was
+run on the dry build.
+
+Not verified: the card read on screen by eye.
 ## v15.38 - DOWNED AT THE STALL, THE PEDDLER PLATE STOPS OFFERING A DEAL
 
 Peddler audit finding 10 (LOW).

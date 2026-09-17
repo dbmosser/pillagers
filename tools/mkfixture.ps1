@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'15.39',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the grenade news of v15.28, still opening with the alpha line',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
+     var all=L.join(' ').toUpperCase();
+     var NEWS=['a pillager grenade','sounds where it lands'].join(' ').toUpperCase();
+     if(all.indexOf(NEWS)<0) bad.push('the card does not mention the grenade news of v15.28');
+     if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+     return bad.length?bad.join('; '):null; }},
   {v:'15.38',what:'downed at the stall, the Peddler plate stops offering a deal: shot to the floor 40 units from the Peddler, ten frames down with E pressed on one of them, the drawn plate over him reads THE PEDDLER with no deal while the stall stays shut, and standing there before the hit and after a self-revive it offers the deal (peddler audit finding 10)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__textTrace)) return 'SKIP: this fixture cannot deploy and read the drawn text';
