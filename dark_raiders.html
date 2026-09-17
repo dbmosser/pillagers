@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.46';
+var VER='15.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30528,7 +30528,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.46: REVIVING A PILLAGER NEVER LOSES THE GUN IN HIS HANDS. A revive pays the first gun in his pack and marked the gun in his hands as paid whatever it paid, so an elite holding a Marksman Rifle paid the Scav Pistol he spawned with and the rifle was on no body when he died. The mark is set now only when the gun paid is the gun in his hands, so that gun still pays once and a different gun in his hands goes on his body. Check 15.46 revives three staged pillagers, kills each and reads what the revive paid and what the body holds; it fails on v15.45',
+  now:'v15.47: EACH RUN IN YOUR STATS COUNTS ITS LISTENER, PILLBOX AND WARDEN KILLS. The Every run list under Your stats added six of the nine kill counts a run keeps, so a run whose only kill was a Listener, a Pillbox or the Warden said 1 kill on its end card and 0k on its own line. Each line now adds every kill count the run keeps, the same sum the Average kills per run card takes. Check 15.47 destroys a sentry, a Listener, a Warden and a Pillbox in one frame, abandons the raid and reads the new line in the list; it fails on v15.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32839,7 +32839,14 @@ function fmtRun(r){
   o.className='o '+(r.outcome==='extract'?'o-ext':(r.outcome==='dead'?'o-dead':'o-aban'));
   o.textContent=r.outcome==='extract'?'EXT':(r.outcome==='dead'?'KIA':'ABN');
   var body=document.createElement('div');
-  var kills=r.kills?(r.kills.sentry+r.kills.crawler+r.kills.raider+(r.kills.snitch||0)+(r.kills.howler||0)+(r.kills.bulwark||0)):0;
+  // v15.47, bodies audit finding: EACH RUN IN YOUR STATS COUNTS ITS LISTENER, PILLBOX AND WARDEN KILLS. This line added six
+  // kill counts by hand (sentry, crawler, raider, snitch, howler, bulwark) and a run record keeps nine: the death path fills
+  // T.kills[e.kind] for whatever kind died by your fire, so warden, listener and choir (the Pillbox) are counted there and were
+  // left out here. A run whose only kill was a Listener, a Pillbox or the Warden said 1 kill on its end card and in the Average
+  // kills per run card above, and 0k on its own line in the Every run list. v8.42 fixed the same hand list on the end card and
+  // this one was missed. Every count the record keeps is added now, the way statSummary adds them for the average, so a run
+  // logged before the newer counts existed adds what it has. No number, no player text and no seeded draw moved.
+  var kills=0; if(r.kills) for(var _fk in r.kills) kills+=(r.kills[_fk]||0);
   var s='#'+r.n+' ['+(r.preset||'?')+'] $'+(r.haul||0).toLocaleString()+
         ' &middot; '+statMMSS(r.dur)+' &middot; '+kills+'k &middot; '+r.acc+'%';
   if(r.downs) s+=' &middot; downs '+r.downs;
