@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.29';
+var VER='15.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15856,11 +15856,17 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // is still interruptible, so nothing about the cost of running dry changes,
       // only the extra keystroke. With no reserve at all it says so, because then
       // there is genuinely nothing to do about it.
+      // v15.30, sound audit finding: AN AUTOMATIC GUN THAT RUNS DRY ON A HELD TRIGGER CLICKS ONCE. The dry click and Out of
+      // ammo below waited for a fresh pull (!p.fired), and an automatic keeps p.fired set from its last round until the trigger
+      // is let go, so holding the trigger through the last rounds with nothing left in the backpack just stopped the gun: no
+      // click, no line, only NO AMMO by the crosshair. The click keeps its own flag now (dryTold), set when it plays and cleared
+      // on release, so an empty automatic clicks and says it once per pull, as a single shot gun always did on its pull, and
+      // neither repeats while the trigger stays held. The same sound and the same line; no seeded draw.
 if(!p.fired||p.wep.auto){
         if(p.reserve>0&&p.reloading<=0){
           p.reloading=p.wep.reload; T.reloads++;
           if(!G.sim){ say('Reloading...'); blip('reload'); }   // v10.56
-        } else if(p.reserve<=0&&!p.fired){ say('Out of ammo.'); if(!G.sim) blip('dry'); }   // v10.56: an empty gun clicks
+        } else if(p.reserve<=0&&!p.dryTold){ p.dryTold=1; say('Out of ammo.'); if(!G.sim) blip('dry'); }   // v10.56: an empty gun clicks
         p.fired=true;
       }
       p.lastShot=now;
@@ -15874,6 +15880,7 @@ if(!p.fired||p.wep.auto){
       releaseCook();   // v13.42, HIS RULING: the last one thrown leaves its cell selected; he brings the gun up himself
     }
     p.fired=false;
+    p.dryTold=0;   // v15.30, sound audit finding: AN AUTOMATIC GUN THAT RUNS DRY ON A HELD TRIGGER CLICKS ONCE. Let go, and the next pull on an empty gun clicks again.
   }
 
   // v11.27: the held-F heal is gone. F is the melee strike (v10.64) and a
@@ -30393,7 +30400,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.29: A PILLAGER GOING DOWN SOUNDS WHERE HE FALLS. A pillager put on the floor anywhere on the map played the hit sound you hear when you are hit, at full volume and centred, so a machine downing one far away sounded like a hit on you with nothing on screen. It now plays at his distance and pan from you, so one downed beside you is still heard and one out of earshot is not. Check 15.29 downs a pillager 60 units west and then 1400 units east in one entity update each and requires the hit sound at his distance and on his side; it fails on v15.28',
+  now:'v15.30: AN AUTOMATIC GUN THAT RUNS DRY ON A HELD TRIGGER CLICKS ONCE. Holding the trigger of an automatic through its last rounds with no ammo left in the backpack just stopped the gun, with no dry click and no Out of ammo line, because both waited for a fresh pull. The click keeps its own flag now, cleared when the trigger is let go, so an empty automatic clicks and says Out of ammo once and neither repeats while held. Check 15.30 holds an automatic through its last two rounds and four empty frames and requires one dry click and one line, and a fresh pull after letting go clicks again; it fails on v15.29',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
