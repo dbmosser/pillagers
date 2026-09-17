@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.44';
+var VER='15.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19248,7 +19248,16 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // below turn him hostile - this is the only frame that can tell
               // he was not fighting you.
               notoAggress(en);
-              en.byPlayer=en.hp<=0;
+              // v15.45, bodies audit finding: A ROUND INTO A PILLAGER YOU DOWNED KEEPS YOUR KILL WHEN HE BLEEDS OUT. This line was
+              // byPlayer=hp<=0, so every round of yours that did not kill wrote the kill mark back to false. Your round that downs a
+              // pillager marks him, and the down carries that mark through the bleed-out so the death path credits you (both revives
+              // clear it for exactly that reason, v11.64 and v13.98). One more round into him on the floor that left him breathing
+              // wiped it, and when he bled out there was no kill in the run report, no contract tick, no grudge and no grudge line,
+              // where holding fire would have kept all four. Frags, fists, enemy rounds and lightning only ever write the mark on a
+              // killing blow. Now a killing round marks him yours, a round into a standing man that does not kill him clears it as
+              // before, and a round into a downed man that does not finish him leaves the mark with whoever downed him.
+              // No number, no player text and no seeded draw moved.
+              if(en.hp<=0) en.byPlayer=true; else if(!en.downed) en.byPlayer=false;
               en.pHitT=.3;   // v11.37: YOUR round, so it may provoke and it may earn a grudge
               // v9.25, HIS NOTE: pillagers "just stood there after getting
               // attacked". Being shot now turns a peaceful pillager hostile on
@@ -30510,7 +30519,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.44: A PILLAGER WHO SWITCHES GUNS NEVER LEAVES TWO COPIES OF HIS OLD GUN ON HIS BODY. A pillager who swapped to a better gun from his pack put a second copy of his old gun back in it, so his body paid the old gun twice. The swap now leaves the new gun copy in the pack to stand for the gun in his hands and adds the old gun only when it has no copy there, so every gun he carries pays once. Check 15.44 swaps five staged pillagers, kills them in one frame and counts every gun on each body; it fails on v15.43',
+  now:'v15.45: A ROUND INTO A PILLAGER YOU DOWNED KEEPS YOUR KILL WHEN HE BLEEDS OUT. Any round of yours that did not kill cleared the mark that credits you, so one more round into a pillager you had downed, fired while he was still on the floor, lost the kill, the contract tick and the grudge when he bled out. A round into a downed man that does not finish him now leaves the mark with whoever downed him. Check 15.45 downs three staged pillagers and bleeds them out, one shot again on the floor after your down and one after a down that was not yours; it fails on v15.44',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

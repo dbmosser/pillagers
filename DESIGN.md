@@ -40024,6 +40024,58 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.45 - A ROUND INTO A PILLAGER YOU DOWNED KEEPS YOUR KILL WHEN HE BLEEDS OUT
+
+Bodies audit finding (MEDIUM).
+
+Down a hostile pillager with your gun and he is marked as yours: the player-round hit branch of updateBullets wrote
+en.byPlayer=en.hp<=0, the down in updateEnts leaves the mark alone, and when he bleeds out the death path reads it (if(e.byPlayer))
+to count the kill in the run report, tick a pillager kill contract, write the grudge into P.rivals and say the grudge line. Both
+revives clear the mark (v11.64 for yours, v13.98 for a crewmate's) precisely because it is meant to carry through the down. But that
+same line wrote the mark on every round of yours, killing or not, so one more round into him on the floor that left him breathing
+(50 down to 40 or so) set it back to false. He crawls for cover (v10.15), or you turn to deal with his crewmate, and he bleeds out:
+no kill, no contract progress, no grudge and no grudge line, where holding fire would have kept all four. Frags (only on a lethal
+blast), fists, enemy rounds and lightning only ever write the mark on a killing blow; this line was the one writer that cleared it
+without a kill. The death path's own comment says the last hit wins, as the flag was set at the killing blow, and a floor round that
+does not finish him is not a killing blow.
+
+THE BUILD. One line in updateBullets, the player-round hit branch right after notoAggress(en):
+  if(en.hp<=0) en.byPlayer=true; else if(!en.downed) en.byPlayer=false;
+A killing round marks him yours exactly as before. A round into a standing man that does not kill him clears the mark as before
+(and a standing man never holds the mark with health left, since only the two revives stand a man back up and both clear it). A
+round into a downed man that does not finish him now leaves the mark with whoever downed him: yours stays yours, and a man downed by
+a machine, a pillager round or lightning stays not yours. A finishing round on the floor still makes him yours (check 13.38). Only
+non-hire pillagers are ever downed, so nothing else reaches the new branch. This is the finding's fix as written; the verdict found
+it correct and gave no correctedFix. No player text, no number, no dial, no loot table and no seeded draw moved.
+
+OLDER CHECKS. None needed restaging. Checks 9.91 and 10.04 fire non-lethal rounds into a downed pillager but read only his health
+and whether he is still there. Check 13.38 fires a finishing round into a downed man whose mark is false and needs it true, the
+same on both builds. Checks 11.64 and 13.98 stage the mark by hand around a revive, and check 9.10 sets it by hand before a kill.
+No check reads the kill tally or a grudge after a round on the floor.
+
+MEASURED. Check 15.45 deploys a raid at seed 4242 and finds open ground (no wall within 40, well inside the world) 150 to 900 units
+from the landing spot. Each arm stages one hostile mkRaider pillager there as the only entity: IDENTITIES[0] with simBuild on, then
+a probe name and a probe rival id no identity carries, one health, no armour, empty pack, no roll, facing the round. A round of
+yours in the fire path's shape is pushed 8 units short of him and resolved by updateBullets(0.001); his clock is run out with downT
+0.01, updateEnts(0.05) and updateEnts(0.016), and the check reads the change in G.tel.kills.raider and in the probe record's kills.
+The profile's contracts are set aside for the check so a credited kill pays nothing.
+  A (control): your 19 round downs him (downed, 50 health), he bleeds out, he is gone from the raid, one kill and one grudge. Both
+  builds; if not, SKIP.
+  B (the finding): your 19 round downs him, a 10 round lands on the floor (spent on him, still down, health lower but above 0:
+  controls), he bleeds out and is gone (control). Must be one kill and one grudge. v15.44 gives none of either, so the check fails
+  there for the finding's own reason.
+  C (kept): a lethal round that was not yours downs him (hp 0 and the mark false, what the enemy bullet path writes), your 10 round
+  lands on the floor (controls as in B), he bleeds out and is gone. Must be no kill and no grudge, on both builds, which guards
+  against a fix that credits you for any round on the floor.
+In finally: bullets and entities put back, the probe bodies removed, the kill tally, hits and elite kills restored, the contracts
+put back, the probe rival record deleted and the profile saved, the raid abandoned, then __topClear, __resetCfg and __cleanProfile.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.39 applied): p1540 and f1540 applied, then the
+version line, DEVNOW and the newest fixture entry moved to 15.43 to stand in for builds 1541 to 1543, then p1544 and f1544, then
+p1545 and f1545, every anchor a whole line matching once. The patched updateBullets and the new check entry both parse in JScript.
+
+Not verified: check 15.45 has not been run in a browser, and no real raid has been played to a down, a round on the floor and a
+bleed-out by hand.
 ## v15.44 - A PILLAGER WHO SWITCHES GUNS NEVER LEAVES TWO COPIES OF HIS OLD GUN ON HIS BODY
 
 Bodies audit finding (HIGH).
