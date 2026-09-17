@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.41';
+var VER='15.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25560,7 +25560,15 @@ var by=H-34;
   var _cr=!!G.pCrouch, _nearD=1e9;
   if(_cr) for(var _ci=0;_ci<G.ents.length;_ci++){
     var _ce=G.ents[_ci];
-    if(_ce.dead||_ce.kind==='peddler'||_ce.kind==='stray') continue;
+    // v15.42, hud audit finding: CROUCHED BESIDE YOUR HIRE OR A DOWNED PILLAGER, THE READOUT SAYS HIDDEN. The nearest body here
+    // skipped only the Peddler and a survivor, so your own hire counted as someone standing too close to hide from. He starts on
+    // FOLLOW and walks back whenever he is more than 120 away, inside the 170 of the crouch rule, so crouched in a quiet spot with
+    // every hostile far off the plate read PARTLY HIDDEN, TOO CLOSE in amber while nothing could find him: updateEnts never lets a
+    // hire into the branch that turns a body that sees him on him, and its crouch rule already hides him from everything past 170.
+    // A pillager lying downed did the same, though the downed branch there skips his sight entirely, and a finished one did for
+    // its last frame. All three are skipped now, so TOO CLOSE names only a body that can give him away. The crouch rule, the 170,
+    // every word on the plate and every number are unchanged.
+    if(_ce.dead||_ce.merc||_ce.downed||_ce.finished||_ce.kind==='peddler'||_ce.kind==='stray') continue;
     var _cd=dist(_ce,G.player); if(_cd<_nearD) _nearD=_cd;
   }
   var _chid=(CFG.crouchHide===undefined?170:CFG.crouchHide);
@@ -30485,7 +30493,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.41: WITH BARE HANDS UP THE RETICLE NEVER SAYS EMPTY - R OR NO AMMO. Carrying one gun and pressing 2 brought Bare Hands up with nothing loaded, and the reticle turned into the struck-through cross saying EMPTY - R, or NO AMMO once the reserve ran out, while the corner read MELEE, the punch worked and R did nothing. A weapon with no magazine is never empty now, so Bare Hands keep the plain cross and every gun still warns as before. Check 15.41 presses key 2 with one gun carried, presses R and reads the drawn HUD with rounds in reserve and with none, the empty gun on key 1 as the control; it fails on v15.40',
+  now:'v15.42: CROUCHED BESIDE YOUR HIRE OR A DOWNED PILLAGER, THE READOUT SAYS HIDDEN. Crouched in a quiet spot with his hire following, the plate read PARTLY HIDDEN, TOO CLOSE in amber, because the hire and any downed pillager counted as someone close enough to see him, though neither can give him away. The plate now counts only bodies that can, so it reads HIDDEN, CROUCHED there and still warns TOO CLOSE for a standing pillager. Check 15.42 crouches with a hire and then a downed pillager 60 units away and reads the drawn plate, a standing pillager at 60, the hire at 400 and the hire beside a standing pillager as controls; it fails on v15.41',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
