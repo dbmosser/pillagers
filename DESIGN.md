@@ -40024,6 +40024,34 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.18 - BUILD A RACK SAYS WHEN IT TAKES PACKED PARTS OUT OF THE BACKPACK
+
+Mainframe audit finding 3 (LOW). Hold exactly the rack cost in the stash (12 Scrap Metal, 9 Copper Wire, 6 Cracked Cell and 6
+Circuit Board) and pack the 6 cells for the next ascent. Packing only lists a key in P.kit, so packed copies stay in P.stash:
+stashCounts counts them, rackAfford passes, the cost line reads 6 held and BUILD A RACK is live. Click it. spendHeld spends loose
+copies first and unpacks the packed ones it still needs through unpackSome (the v13.59 rule), and returns how many it unpacked so
+the caller can say so. buildRack threw that number away, and the only line was Rack 1 hums to life with the pay. The ascent check
+then came up 6 items short with nothing said. The crafting bench, which spends through the same spendHeld, already says Used N
+packed ... out of your backpack.
+
+THE BUILD. buildRack keeps spendHeld's count per part in _usedPacked, as the crafting bench does, and the rack line appends one
+sentence after the pay: Used 4 packed Cracked Cell, 1 packed Circuit Board out of your backpack. It rides the same say call, so it
+lands in the same Undercroft toast; a second toast would have written over the first. Nothing is appended when no packed part was
+used. Which parts are spent does not change (loose copies first), no number moves, and neither rack sentence is a TXSHIP key, so
+the two sentences before the new one are unchanged.
+
+MEASURED. Check 15.18 runs with no live raid (control) and reads the rack line through a wrapped say, which in the Undercroft is
+the toast text word for word; a raid an earlier check ended leaves G set, and say then writes G.msg instead of the toast. Arm one:
+the rack cost held loose with nothing packed; control: the rack was built and said Rack 1; the line must say nothing of packed
+parts or the backpack. Arm two: the cost plus 2 scrap and 2 boards, with 2 scrap, 4 cells and 3 boards packed; control: the
+packing took (2, 4, 3) and the rack is affordable; control: the rack was built and said Rack 1. The packed count taken per part
+is measured as packed before minus packed after and must equal what the loose copies could not cover (no scrap, no wire, 4 cells,
+1 board), so the v13.59 order is held; control: some packed part was taken. The line must carry " 4 packed Cracked Cell" and
+" 1 packed Circuit Board" and the word backpack, and must not name packed scrap or wire. The distinctive packing makes the counts
+differ from both the packed count and the cost. A control that cannot run after a failure keeps the failure. It restores say and
+the profile through the loader. It fails on v15.17 with the rack line saying only the pay.
+
+Not verified: the toast by eye at the Mainframe; a rack built from a pad; the long toast wrapping at 1080p.
 ## v15.17 - A RESTOCKED CRATE OR LOCKER DROPS OFF THE DATA CORE KEY MARKS
 
 Mainframe audit finding 2 (MEDIUM). Slot a Data Core at RACKS (or Arm it on the ascent check) and ascend. startRaid burns the
