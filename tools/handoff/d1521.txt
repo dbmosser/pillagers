@@ -1,4 +1,4 @@
-## v15.21 - A SELF-REVIVE LEAVES YOUR HIRE HALF WAY THROUGH HIS PICKUP
+## v15.21 - A SELF-REVIVE RESETS YOUR HIRE PICKUP
 
 Hire audit finding (LOW). Hire someone and ascend, then go down with him close by: the game says "<name> is coming for you." and
 he kneels beside you for his 3.2 second pickup. Press F before he finishes. selfRevive stands you up, and the hire pickup branch
