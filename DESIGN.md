@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.23 - ONLY A MEDKIT GETS HIM BACK TO 100
+
+His ruling of 2026-09-16, verbatim: "bandages should only let players heal to 85 HP -- only medkit gets player back to 100".
+
+The Bandage ceiling of 85 has existed since v9.62 (ITEMS.bandage capHp 85 through healCeil, heal ceilings dial on by default),
+and every Bandage use path goes through it. The biggest way past it was out-of-combat regen: after 10 seconds without firing or
+being hit, health crept back one point every 3 seconds, all the way to 100. A Bandage to 85 and about a minute of quiet did what
+only a Medkit may.
+
+THE BUILD. Regen stops at the Bandage ceiling (85). It never takes health away: at 92 after a Medkit it simply does nothing. With
+the heal ceilings dial off it runs to 100 as it did. The regen delay and rate are unchanged.
+
+A second, smaller leak is left for its own build: a Bandage put on while a Medkit heal is still running shares the Medkit's
+ceiling, so their shared total can end above what the Medkit alone would reach (from 30, about 96 where the Medkit alone gives 91).
+
+MEASURED. Check 15.23 deploys a raid and runs regen from 80 for two minutes of quiet: with the ceilings off it reaches 100
+(control); with them on it must stop at 85, and from 92 it must not move. It fails on v15.22.
+
+Not verified: a real raid, Bandage to 85 and a minute of quiet, by hand.
 ## v15.22 - THE HIRE IS NEVER ALSO A STRANGER
 
 Hire audit, refiled and verified (MEDIUM). Raid pillagers take identities from a shuffled pool of 28 names; past that they take

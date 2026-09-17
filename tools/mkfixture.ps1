@@ -5718,6 +5718,36 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'15.23',what:'only a Medkit gets him back to 100: out of combat, regen from 80 stops at 85 with the heal ceilings on, and runs to 100 with them off (his ruling of 2026-09-16)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof tickRegen!=='function'||typeof healCeil!=='function'||!ITEMS.bandage) return 'SKIP: no regen or heal ceiling in this build';
+     var bad=[], g=null, keepCaps=CFG.healCaps, p=null, keep=null;
+     function regenFrom(hp){ p.hp=hp; p.combatT=999; p.regenAcc=0; p.downed=false; for(var i=0;i<240;i++) tickRegen(0.5); return p.hp; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
+       p=g.player; keep={hp:p.hp,combatT:p.combatT,regenAcc:p.regenAcc};
+       // CONTROL: with the ceilings off, regen from 80 runs to full, so a rise is visible.
+       CFG.healCaps=0;
+       var free=regenFrom(80);
+       if(free<p.maxhp) return 'SKIP: regen from 80 reached only '+free+' with the ceilings off here';
+       CFG.healCaps=keepCaps;
+       var top=healCeil(ITEMS.bandage);
+       var capped=regenFrom(80);
+       if(capped>top) bad.push('out of combat, regen from 80 reached '+capped+', past the '+top+' only a Medkit may go beyond');
+       if(capped<top) bad.push('out of combat, regen from 80 stopped at '+capped+', short of '+top);
+       var high=regenFrom(92);
+       if(high!==92) bad.push('regen moved health that was already at 92 to '+high);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       CFG.healCaps=keepCaps;
+       try{ if(p&&keep){ p.hp=keep.hp; p.combatT=keep.combatT; p.regenAcc=keep.regenAcc; } }catch(_k){}
+       try{ if(g&&!g.over) __endRaid('abandon'); }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'15.22',what:'the hire is never also a stranger: on THE COLD MILE at Standard, with no hire one stranger wears a given identity, and with that identity hired no stranger wears it (hire audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__applyLoaded)||typeof FIXED_MAPS==='undefined'||typeof IDENTITIES==='undefined'||!IDENTITIES.length) return 'SKIP: this fixture cannot deploy';
