@@ -40024,6 +40024,72 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.71 - WITH THE FREEBIE KIT TAKEN, A CONTROLLER CANNOT PACK OR UNPACK IN THE GREYED OUT STASH AND BACKPACK
+
+Grid audit finding (LOW), entry 10 of the confirmed list (index 9).
+
+TAKE THE FREEBIE KIT (renderFreeKit) adds the class freekit to #hub (the Stash screen) and #stagemodal (the ascent check), and
+the v6.44 rule "#stagemodal.freekit .hubgrid, #hub.freekit .hubgrid{ opacity:.28; pointer-events:none; ... }" greys the stash,
+the backpack and the tactical belt out so the mouse cannot touch them; its comment says the only live things left are the
+banner and ASCEND. Both freebie hosts (#freekit, #hubfreekit) sit outside .hubgrid. padFocusables, the list the controller
+highlight walks, dropped only display none, visibility hidden and disabled controls, so the D-pad walked from the freebie button
+into the greyed out cells, and padMenu's A (PAD.focus.click(), a script click that pointer-events does not stop) acted on them.
+On the Stash screen a stash cell takes a detail-0 click as a pad press and packs one (v14.74, _packSome(1), P.kit.push); on the
+ascent check a stash cell's invCell act(1) packs one and a kit cell unpacks one. The dimmed backpack and LOADOUT counted it going
+up, but commitKit's freebie branch sets P.kit=[] and USE MY OWN GEAR (freeKitRestore) puts P.kit back from P.kitSaved, so the
+extra pack came to nothing. No comment or ruling makes this deliberate, and it is not balance.
+
+THE BUILD. One code edit in padFocusables, the verdict's fix as proposed (no corrected fix was given), plus VER and DEVNOW: the
+skip test also drops a control whose computed pointer-events is none. pointer-events is inherited and nothing in the file sets it
+back to auto (no pointer-events:auto rule, no style.pointerEvents), so every cell, tab and button inside a greyed out .hubgrid
+leaves the list, and nothing else in a pad panel does: the other pointer-events:none elements (#hcv, #topright, the toast, .avnum,
+.cnt spans, the drag ghost) sit outside every pad panel or are not in the selector list. With the freebie kit taken the Stash
+screen list is CLOSE and USE MY OWN GEAR, and the ascent check list is the freebie button, ASCEND and CLOSE. The v14.22 index
+restore still lands on the freebie button after A rebuilds it (index clamped to 1 on the Stash screen, index 0 on the ascent
+check). With no freebie kit taken nothing changes. No player text was added or reworded (nothing near a TXSHIP key), no ruling is
+touched, and no number, dial, loot table or seeded draw moved. Map building is not touched, so the seed 4242 fingerprint in
+__verifySafe (ents 85/374, containers 165/593) cannot move.
+
+ANCHORS (whole-line blocks, each matching once after p1567 to p1570):
+- the two padFocusables lines "    var el=q[i],cs=getComputedStyle(el);" and
+  "    if(cs.display==='none'||cs.visibility==='hidden'||el.disabled) continue;" (touched by no p-script from 1562 to 1570);
+- var VER='15.70'; and the DEVNOW line starting "  now:'v15.70:" (both written by p1570).
+Fixture anchor: the line prefix "  {v:'15.70',what:" (written by f1570).
+
+MEASURED. Check 15.71 clears the card, resets CFG, cleans the profile, snapshots it and the pad fields it touches (aSpent,
+announced, ax, mrep), enters the floor with __hubEnter, shuts any open window, stages one Medkit in the stash, nothing packed, no
+belt key, freeKit 0 and the ALL tab, draws the Stash screen with renderHub and turns #hub on. navigator.getGamepads is stubbed
+with one faked connected controller (17 buttons, 4 zero axes), and every press is a poll with the button down and a poll with it
+up, through pollPad and padMenu.
+- CONTROL: the pad reads as on and padOpenModal() is #hub. With no freebie kit taken #hub has no freekit class, elementFromPoint
+  at the Medkit cell centre hits that cell, and padFocusables(#hub) holds it, on either build.
+- The highlight is put on TAKE THE FREEBIE KIT (#hubfreekit .fkbtn) and must stay there after a poll, then A. CONTROL: P.freeKit
+  is 1, #hub has freekit, nothing is packed, and elementFromPoint at the new Medkit cell centre no longer hits it (the mouse is
+  shut out), on either build.
+- ONE: padFocusables(#hub) must hold no control inside the greyed out .hubgrid, and must still hold USE MY OWN GEAR and CLOSE.
+  On v15.70 it holds the Medkit and every other greyed out control, the finding's own reason.
+- TWO: from USE MY OWN GEAR, up to three D-pad up taps must never land the highlight inside .hubgrid. On v15.70 the greyed out
+  panel sits between the button and CLOSE, so a tap is expected to land in it; the failure names the control it landed on.
+- THREE: the highlight put on the Medkit cell must leave the greyed out panel at the next poll. On v15.70 it stays, and the check
+  then presses A there, as a hand would, and reports the packed Medkit count before and after (0 to 1 expected, the v14.74 pack)
+  while the freebie kit is taken. On the new build no A is pressed in this step.
+In finally the pad list is emptied and polled once, the highlight, focus index and focus panel are cleared and padRelease runs,
+navigator.getGamepads is restored, aSpent, announced, ax and mrep are put back, keys are cleared, the profile is restored through
+window.__applyLoaded(snapshot), renderFreeKit and renderStage redraw both freebie hosts and the ascent check from it, #hub is
+put back on or off as it was, then __topClear, __resetCfg and __cleanProfile.
+
+Older fixture checks: none restaged. No check drives the pad with the freebie kit taken. The pad checks that call padFocusables
+(15.57 the outcome card, 15.52 the Mainframe, 14.26 the title) work panels with no pointer-events rule, and 14.22 works a probe
+window. 14.74 presses a stash cell with a direct click(), not through padFocusables, on a profile with no freebie kit. The
+freebie kit checks (15.58, 15.54, 14.65, 14.01, 13.06, 12.87, 12.82, 12.26, 12.16, 12.03) never touch the pad.
+
+Dry run on scratch copies of dark_raiders.html (15.66, p1562 to p1566 applied) and mkfixture.ps1 as they stand: p1567 and f1567,
+p1568 and f1568, p1569 and f1569, p1570 and f1570 (all OK), then p1571 (OK, 2 edits plus DEVNOW, VER 15.71, one now line) and
+f1571 (OK, 1 edit). A second p1571 on the result fails on its first anchor, so it cannot apply twice. The edited padFocusables
+and the new check entry parse in JScript. All five files are ASCII only.
+
+Not verified: the Stash screen and the ascent check by hand with a real controller. The check itself has not been run in a
+browser yet.
 ## v15.70 - A KEY DRAGGED ONTO A FILLED KEY ON THE STASH SCREEN BELT SWAPS THE TWO KEYS, AND A KEY ON THE GUN IN HIS HANDS CAN BE MOVED LIKE ANY OTHER
 
 Grid audit finding (LOW), entry 9 of the confirmed list (index 8).

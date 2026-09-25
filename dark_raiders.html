@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.70';
+var VER='15.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11809,7 +11809,16 @@ function padFocusables(root){
   var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,input,select');
   for(var i=0;i<q.length;i++){
     var el=q[i],cs=getComputedStyle(el);
-    if(cs.display==='none'||cs.visibility==='hidden'||el.disabled) continue;
+    // v15.71, grid audit finding: WITH THE FREEBIE KIT TAKEN, A CONTROLLER CANNOT PACK OR UNPACK IN THE GREYED OUT STASH AND
+    // BACKPACK. TAKE THE FREEBIE KIT greys the stash, the backpack and the tactical belt out on the Stash screen and on the
+    // ascent check (#hub.freekit .hubgrid and #stagemodal.freekit .hubgrid, pointer-events:none, v6.44), so the mouse cannot
+    // touch them, but this list read only display, visibility and disabled. The D-pad walked into the greyed out cells, and A,
+    // a script click that pointer-events does not stop, packed one (the v14.74 detail-0 click on a stash cell) or unpacked
+    // one: the dimmed backpack and LOADOUT showed it going up, while commitKit empties P.kit for the freebie kit and USE MY OWN
+    // GEAR drops it. A control the mouse cannot reach is now out of reach of the pad too. pointer-events is inherited and
+    // nothing in the file sets it back to auto, so only the greyed out panels leave the list: on the Stash screen the pad keeps
+    // CLOSE and USE MY OWN GEAR, on the ascent check the freebie button, ASCEND and CLOSE. No number and no seeded draw moved.
+    if(cs.display==='none'||cs.visibility==='hidden'||cs.pointerEvents==='none'||el.disabled) continue;   // a panel greyed out for the mouse is greyed out for the pad
     var r=el.getBoundingClientRect();
     if(r.width<4||r.height<4) continue;
     out.push(el);
@@ -30776,7 +30785,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.70: A KEY DRAGGED ONTO A FILLED KEY ON THE STASH SCREEN BELT SWAPS THE TWO KEYS, AND A KEY ON THE GUN IN HIS HANDS CAN BE MOVED LIKE ANY OTHER. On the tactical belt of the Stash screen, a key dragged onto a filled key took that key and left its own empty, so what the other key held lost its key, and a key on the gun in his hands could not be moved at all, or packed a spare of that gun. The two keys now swap, as they do on the floor and in a raid, and a key on the gun in his hands moves like any other and packs nothing. Check 15.70 drags keys on the Stash screen belt onto a filled key and an empty key; it fails on v15.69',
+  now:'v15.71: WITH THE FREEBIE KIT TAKEN, A CONTROLLER CANNOT PACK OR UNPACK IN THE GREYED OUT STASH AND BACKPACK. With the freebie kit taken the stash, the backpack and the tactical belt grey out and the mouse cannot touch them, but a controller could still walk into them and press A, which packed or unpacked items the freebie kit then threw away. The controller highlight now skips whatever the mouse cannot touch, so only the freebie button, CLOSE and, on the ascent check, ASCEND are in reach. Check 15.71 takes the freebie kit with a faked controller on the Stash screen and tries to reach the Medkit in the stash; it fails on v15.70',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
