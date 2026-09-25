@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.69';
+var VER='15.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30776,7 +30776,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.69: A CLICK ON THE MEDICAL KEY OF THE UNDERCROFT BELT NEVER BINDS A BANDAGE. With only Medkits packed, a click on the Medical key of the tactical belt in the Undercroft backpack bound a Bandage he does not carry to that key and saved it, so the key went grey and Medical was gone. A release on the key it came from is now a click as in a raid, the Medical key drags only a heal the backpack holds, and a click that slips just off a key no longer unbinds it. Check 15.69 clicks and drags the Medical key on the floor with Medkits packed and with a Bandage packed; it fails on v15.68',
+  now:'v15.70: A KEY DRAGGED ONTO A FILLED KEY ON THE STASH SCREEN BELT SWAPS THE TWO KEYS, AND A KEY ON THE GUN IN HIS HANDS CAN BE MOVED LIKE ANY OTHER. On the tactical belt of the Stash screen, a key dragged onto a filled key took that key and left its own empty, so what the other key held lost its key, and a key on the gun in his hands could not be moved at all, or packed a spare of that gun. The two keys now swap, as they do on the floor and in a raid, and a key on the gun in his hands moves like any other and packs nothing. Check 15.70 drags keys on the Stash screen belt onto a filled key and an empty key; it fails on v15.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32432,8 +32432,20 @@ try{ renderFreeKit(); }catch(_fk){}
           saveProfile(); try{ sfx('pick'); }catch(e){}
           renderHub(); return;
         }
-        var why=(from==='rack')?rackPut(ix,key):planPut(ix,key);   // v11.95: a rack gun, like any item
+        // v15.70, grid audit finding: A KEY DRAGGED ONTO A FILLED KEY ON THE STASH SCREEN BELT SWAPS THE TWO KEYS, AND A KEY ON
+        // THE GUN IN HIS HANDS CAN BE MOVED LIKE ANY OTHER. A key dragged off another key went through planPut, which never read
+        // what the target key held: Medkit on key 3 dropped on Frag on key 4 took key 4, left key 3 empty and the Frag lost its
+        // key, where the floor backpack (v14.25) and the raid (v8.04) swap the two. And planPut counts only the stash, so a key
+        // on gun 1 or gun 2 (rackPut binds it alone and the gun stays on the rack) could not move: it was refused as not in the
+        // stash with a clank, or, with a spare of that gun in the stash, the spare was packed unasked and went up the lift. A key
+        // on a gun in his hands now moves through rackPut, which binds it alone, and after a put that took, what the target key
+        // held goes back onto the key the drag came from. A drop from the stash, the backpack or the rack is unchanged.
+        var _fk=(typeof from==='string'&&from.indexOf('plan:')===0)?+from.slice(5):-1;   // the key it was dragged off
+        var _was=(P.hotAssign||{})[ix];
+        var _inHand=(_fk>=0&&String(key).indexOf('gun_')===0&&(P.equipped===String(key).slice(4)||P.equippedSec===String(key).slice(4)));
+        var why=(from==='rack'||_inHand)?rackPut(ix,key):planPut(ix,key);   // v11.95: a rack gun, like any item
         if(why){ say2(why); try{ sfx('clank'); }catch(e){} return; }
+        if(_fk>=0&&_was&&_was!==key){ P.hotAssign[_fk]=_was; saveProfile(); }   // a key dropped on a filled key swaps, as on the floor (v14.25)
         try{ sfx('pick'); }catch(e){}
         renderHub();
       });

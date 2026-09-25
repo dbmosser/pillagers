@@ -40024,6 +40024,76 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.70 - A KEY DRAGGED ONTO A FILLED KEY ON THE STASH SCREEN BELT SWAPS THE TWO KEYS, AND A KEY ON THE GUN IN HIS HANDS CAN BE MOVED LIKE ANY OTHER
+
+Grid audit finding (LOW), entry 9 of the confirmed list (index 8).
+
+On the Stash screen every tactical belt key in #hotplanwrap is a drag source (grabbable(el,_pk,'plan:'+ix,...), v8.72) and a
+drop target. After the v14.17 same-key guard, the drop ran var why=(from==='rack')?rackPut(ix,key):planPut(ix,key), so a key
+dragged off another key always went through planPut.
+Case A: Medkit on key 3, Frag Charge on key 4, drag key 3 onto key 4. planPut deletes every key holding Medkit and writes key 4 =
+Medkit. It never reads what key 4 held, so the Frag Charge loses its key (it shows again in the backpack grid) and key 3 is
+empty. The floor backpack swaps the two (v14.25, whose comment calls the overwrite a bug) and so does the raid (v8.04).
+Case B: a key on gun 1 or gun 2. The armoury row drags with from 'rack', and rackPut binds the key alone for a gun in his hands
+(rackToStash returns null for P.equipped and P.equippedSec, so the gun never enters the stash). Drag that key to another key and
+from is 'plan:N', so planPut counts the stash, finds no gun_smg and refuses with the line "That is not in your stash any more."
+and a clank; with a spare field SMG in the stash it packs the spare instead, and the spare goes up the lift unasked.
+dropDeadKeys (v14.85) already counts the two equipped guns as live keys, so a key on a gun in his hands is a supported state.
+The ascent check belt (renderStage) registers no drag sources, so a plan: drag cannot happen there. Nothing in the file calls
+the overwrite or the refusal deliberate, and it is not balance.
+
+THE BUILD. One code edit in the renderHub belt dropzone, the verdict's fix as proposed (no corrected fix was given), plus VER and
+DEVNOW. Before the put it reads _fk, the key the drag came from (from 'plan:N', else -1), and _was, what the target key holds. A
+key dragged off another key whose item is gun_ plus P.equipped or P.equippedSec goes through rackPut, which binds the key alone
+and packs nothing; everything else goes where it went before. After a put that took, if the drag came off a key and the target
+held something else, that item goes back onto the key the drag came from and the profile is saved, the v14.25 and v8.04 swap.
+_fk can never equal ix, because the v14.17 guard returns first, and the put has already taken the dragged item off _fk. A drop
+from the stash, the backpack or the rack is unchanged, and a refused put still says why and clanks exactly as before.
+No word of player text was added or reworded (the refusal lines are untouched, nothing near a TXSHIP key), no ruling is touched,
+and no number, dial, loot table or seeded draw moved. Map building is not touched, so the seed 4242 fingerprint in __verifySafe
+(ents 85/374, containers 165/593) cannot move. Not changed here: a stash item dropped on a filled key still takes that key, and
+the item that held it stays packed with no key, as before; the finding is only the key to key drag.
+
+ANCHORS (whole-line blocks, each matching once after p1568 and p1569):
+- the four lines "          renderHub(); return;" / "        }" (the end of the v14.17 same-key guard) with
+  "        var why=(from==='rack')?rackPut(ix,key):planPut(ix,key);   // v11.95: a rack gun, like any item" and
+  "        if(why){ say2(why); try{ sfx('clank'); }catch(e){} return; }". The var why and if(why) lines also appear in renderStage,
+  but the guard lines above them exist only in renderHub, so the block matches once;
+- var VER='15.69'; and the DEVNOW line starting "  now:'v15.69:" (both written by p1569).
+Fixture anchor: the line prefix "  {v:'15.69',what:" (written by f1569).
+
+MEASURED. Check 15.70 clears the card, resets CFG, cleans the profile, snapshots it, enters the floor with __hubEnter, shuts any
+open window and stubs say2 to record what the drop says. Each arm stages P.stash, P.kit, P.hotAssign, freeKit 0, the armoury
+(Scav Pistol and Compact SMG) and the gun in his hands, draws the Stash screen with renderHub and turns #hub on. A drag is the
+real press on the #hotplanwrap key (mousedown on the cell, which must arm GRAB from 'plan:N'), a mousemove and a mouseup on
+document at the centre of the target key, when both keys are on screen and on top; otherwise the target key's __grabDrop is
+handed the item and the 'plan:N' label the press carries, the same function the mouseup calls.
+- CONTROL: Medkit on key 3 and Frag Charge on key 4, both packed (the plan and packedCount read back, else SKIP). Key 3 dragged
+  onto the empty key 7 must give {"3":"frag","6":"medkit"} on either build, else SKIP: a drag between keys is live.
+- Case A, restaged: key 3 dragged onto the Frag Charge on key 4 must give {"2":"frag","3":"medkit"} with one of each still
+  packed. On v15.69 it gives {"3":"medkit"}, the finding's own reason.
+- Case B: the Compact SMG in his hands, empty stash and kit, a key on it on key 5 (CONTROL: the drawn screen keeps {"4":"gun_smg"},
+  else SKIP, keeping any failure already found, so v15.69 still fails on case A).
+  Key 5 dragged to key 7 must give {"6":"gun_smg"}, pack nothing and leave the SMG in his hands. On v15.69 it stays
+  {"4":"gun_smg"} and says the refusal line, which the failure quotes.
+- Case B with a spare field SMG in the stash (same control, same SKIP): the key must move to key 7 and packedCount('gun_smg') must
+  be 0, with the spare still in the stash and the SMG still in his hands. On v15.69 the spare is packed.
+In finally say2 is put back, any drag is ended, GRABSKIP (v15.68) is cleared, mouse.down is false, the profile is restored
+through window.__applyLoaded(snapshot), #hub is put back on or off as it was, then __topClear, __resetCfg and __cleanProfile.
+
+Older fixture checks: none restaged. No check drags one belt key onto another on the Stash screen. 14.17 drops a key on its own
+cell (the v14.17 guard, which returns before this edit); 11.69 drops a key on the stash grid and 9.82 drags one into the
+backpack and to the stash, never onto another key; 11.95 drops rack guns with from 'rack' (unchanged); 11.96 calls planPut
+directly; 15.68 drags in the backpack grid. The floor backpack and raid drags (14.25, 8.04 and later) use other handlers.
+
+Dry run (review pass) on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand now (15.66 committed, so p1562 to
+p1566 are already in them): p1567 (OK, 3 edits plus DEVNOW) and f1567 (OK, 1 edit), p1568 (OK, 6 edits plus DEVNOW) and f1568
+(OK, 1 edit), p1569 (OK, 4 edits plus DEVNOW) and f1569 (OK, 1 edit), then p1570 (OK, 2 edits plus DEVNOW) and f1570 (OK, 1
+edit), and p1571 and f1571 after it. p1567 to p1569 touch none of this build's code anchors. The whole patched game script and
+the new check entry parse in Chakra (cscript with reserved-word property names quoted, since the committed file already uses
+.catch). All five files are ASCII only.
+
+Not verified: the Stash screen belt by hand with the mouse. The check itself has not been run in a browser yet.
 ## v15.69 - A CLICK ON THE MEDICAL KEY OF THE UNDERCROFT BELT NEVER BINDS A BANDAGE
 
 Grid audit finding (MEDIUM), entry 8 of the confirmed list (index 7).
