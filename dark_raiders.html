@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.63';
+var VER='15.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15714,7 +15714,16 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // so Shift while crouched did nothing. Sprint wins: the toggle clears and
   // the stance follows this same frame. Movement input is required, the same
   // rule sprint itself has, so a held Shift while standing still changes nothing.
-  if(_shHeld&&mg>0&&G.crouchTog&&!p.downed){ G.crouchTog=false; crouch=false; }
+  // v15.64, stealth audit finding: C CROUCHES WITH SHIFT HELD WHEN NO SPRINT CAN START. This line asked only for Shift and
+  // movement, so it took the crouch off every frame Shift was held, even when the sprint lines below then refused the sprint:
+  // out of breath (the v8.73 release latch keeps a held Shift from sprinting until the key is let go), aiming (p.ads) or
+  // wading in deep water. Fleeing with Shift and W still down he pressed C, raidKey turned the toggle on and this line turned
+  // it off the next frame, so he jogged on at full height with no sprint, no crouch, full footstep noise and no word why:
+  // the key looked broken exactly when he needed it to break the chase. His note is that activating sprint stops crouching;
+  // where no sprint can start there is nothing to activate. The line now asks the same questions the sprint does (breath
+  // above 2, no lock, no latch, not aiming, not in deep water at the same wading edge used below), so sprint still wins
+  // whenever it can start. inWaterDeep only reads the map. No number, dial or seeded draw moved.
+  if(_shHeld&&mg>0&&G.crouchTog&&!p.downed&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!p.ads&&!inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset))){ G.crouchTog=false; crouch=false; }
 var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   // v12.71, 2026-09-07 audit: THE SCENT GOES DOWN BELOW THE CANCELS NOW. It was
   // laid here, above both of them, so Shift held while aiming or while wading
@@ -30682,7 +30691,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.63: BACKING OUT OF THE LOADOUT QUESTION RETURNS TO THE SECTOR PAGE. On What are you taking up, raised by ASCEND TO THIS SECTOR, ESC, TAB or Not yet left him on the bare floor, and walking back to the lift for the page put his NIGHT pick back to DAY. Backing out now puts the sector page back as he left it, NIGHT still picked, and MY LOADOUT and FREEBIE KIT still ascend. Check 15.63 backs out by TAB, ESC and Not yet with NIGHT picked, then ascends by both answers; it fails on v15.62',
+  now:'v15.64: C CROUCHES WITH SHIFT HELD WHEN NO SPRINT CAN START. Out of breath with Shift still held, or aiming, or wading in deep water, pressing C to break a chase did nothing: the sprint-cancels-crouch line took the crouch off the next frame although no sprint could start. That line now asks the same questions the sprint does, so C crouches there and Shift still stands him up whenever a sprint can start. Check 15.64 steps one frame crouched with Shift and W held out of breath, aiming and wading, and once with full breath as the control; it fails on v15.63',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
