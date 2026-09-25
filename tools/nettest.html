@@ -13,7 +13,7 @@
   .frames div{flex:1;min-width:480px}
   iframe{width:100%;height:420px;border:1px solid #3a3028;background:#000}
 </style>
-<h1>PILLAGERS net test, multiplayer builds 1 and 2</h1>
+<h1>PILLAGERS net test, multiplayer builds 1, 2 and 3</h1>
 <p class="dim">The live half of checks 15.74 and 15.75, run by hand. Two copies of the fixture load below, one with ?netslot=A and
 one with ?netslot=B, each playing a save of its own, and RUN links them for real on this PC: A hosts through its own PARTY window
 buttons, B joins with the invite code, A lets B in with the reply code, and both rosters must show two within five seconds. Then
@@ -24,9 +24,18 @@ copy spoken for by this page tries to join on the wrong version and must be turn
 this tab in front while it runs: a hidden tab stops both floors. Serve the tools folder on a shard port and open
 http://localhost:8805/nettest.html (never :8802, his play profile, and never :8803, the dry chain). Add ?f=fxdry75.html to test a
 dry fixture instead of fixture.html. The two net saves are separate from every other save on this origin.</p>
+<p class="dim">RUN SAME MACHINE is the live half of check 15.76 (build 3): copy A presses its own 2 PLAYER CO-OP (SAME MACHINE) row. The
+window it asks for is stood in for by this page, which loads the address A asks for (this page, ?p2=1, the mode and the pair
+code) into copy C below, so the popup blocker does not decide the test; C is otherwise the real player 2 window, on the
+permanent player 2 save. The two must pair by themselves over the real channel between windows and both rosters show two
+within twenty seconds; C must name the mode in its PARTY window; each must draw the other on the floor where it stands; the
+player 2 save must be under its own key with the main save and the save pointer untouched; and when A ends the party C must
+hear it. To see the real popup, click the co-op row inside copy A by hand (a click from this page cannot open a window for it);
+allow the popup for this origin if the browser blocks it, and RETRY on the title says so.</p>
 <div>
   <button id="run" disabled>RUN</button>
-  <button id="wipe">WIPE THE TWO NET SAVES</button>
+  <button id="runsame" disabled>RUN SAME MACHINE</button>
+  <button id="wipe">WIPE THE TWO NET SAVES AND THE PLAYER 2 SAVE</button>
   <button id="reload">RELOAD THE TWO COPIES</button>
 </div>
 <div id="result" class="dim">loading the two copies...</div>
@@ -34,14 +43,15 @@ dry fixture instead of fixture.html. The two net saves are separate from every o
 <div class="frames">
   <div><div class="dim">copy A (host)</div><iframe id="fa"></iframe></div>
   <div><div class="dim">copy B (joins)</div><iframe id="fb"></iframe></div>
+  <div><div class="dim">copy C (the player 2 window, opened by A on RUN SAME MACHINE)</div><iframe id="fc"></iframe></div>
 </div>
 <script>
 (function(){
   'use strict';
   var FIX=(location.search.match(/[?&]f=([^&]+)/)||[])[1];
   FIX=FIX?decodeURIComponent(FIX):'fixture.html';
-  var fa=document.getElementById('fa'), fb=document.getElementById('fb');
-  var logEl=document.getElementById('log'), resEl=document.getElementById('result'), runB=document.getElementById('run');
+  var fa=document.getElementById('fa'), fb=document.getElementById('fb'), fc=document.getElementById('fc');
+  var logEl=document.getElementById('log'), resEl=document.getElementById('result'), runB=document.getElementById('run'), runS=document.getElementById('runsame');
   var TAG='PTY1', raw=[], runs=0;
   function log(t){ logEl.textContent+=t+'\n'; logEl.scrollTop=logEl.scrollHeight; }
   function W(f){ return f.contentWindow; }
@@ -62,7 +72,7 @@ dry fixture instead of fixture.html. The two net saves are separate from every o
   // A fixture without the ?netslot override would boot twice on ONE save and write it from both copies, so its source is read
   // first and nothing is loaded unless the override is in it.
   function load(){
-    runB.disabled=true; resEl.className='dim'; resEl.textContent='reading '+FIX+'...';
+    runB.disabled=true; runS.disabled=true; fc.src='about:blank'; resEl.className='dim'; resEl.textContent='reading '+FIX+'...';
     if(location.protocol!=='http:'&&location.protocol!=='https:'){ refuse('open this page from a local server (a tools shard port such as http://localhost:8805/nettest.html), not from a file.'); return; }
     fetch(FIX,{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status+' for '+FIX); return r.text(); }).then(function(t){
       if(t.indexOf('function netSlotOf(')<0){ refuse(FIX+' has no ?netslot override (a build before v15.74), so two copies of it would share one save. Nothing was loaded.'); return; }
@@ -76,6 +86,9 @@ dry fixture instead of fixture.html. The two net saves are separate from every o
     wait(function(){ return W(fa)&&W(fa).__net&&W(fb)&&W(fb).__net; },30000,'both copies to boot with the net test handle').then(function(){
       runB.disabled=false; resEl.textContent='ready: press RUN';
       log('loaded '+FIX+': copy A save '+W(fa).__net.key+', copy B save '+W(fb).__net.key+', both on v'+W(fa).__net.ver);
+      // BUILD 3: the same machine pair needs the mode menu and the net handle that reads the mode (v15.76 and later).
+      if(typeof W(fa).__net.same==='function'&&el(fa,'modecoop')) runS.disabled=false;
+      else log('(no RUN SAME MACHINE: copy A has no mode menu, a build before v15.76)');
     },function(e){
       resEl.className='bad'; resEl.textContent='FAIL: '+e.message+'. A build before v15.74 has no net section; a copy opened without ?netslot has no handle.';
       document.title='FAIL net test';
@@ -268,15 +281,99 @@ dry fixture instead of fixture.html. The two net saves are separate from every o
       runB.disabled=false;
     });
   }
+  // BUILD 3: THE SAME MACHINE PAIR. Copy A picks 2 PLAYER CO-OP (SAME MACHINE) through its own row. Its window.open is stood in
+  // for by this page, which loads the address A asks for into copy C and hands A that window, so the popup blocker does not
+  // decide the test. C is the real player 2 window otherwise: the same page with ?p2=1, the mode and the pair code, on the
+  // permanent player 2 save. The two must pair by themselves over the real channel between windows.
+  function runSame(){
+    runB.disabled=true; runS.disabled=true; logEl.textContent=''; resEl.className='dim'; resEl.textContent='running the same machine pair...';
+    var A=W(fa), C=null, bad=[], rep={}, t0=0, ls0=null, opened=null, rngA0=null, rngC0=null;
+    var MAIN='salvagerun:profile', AS='salvagerun:activeSlot', P2K='salvagerun:profile:p2';
+    function ls(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+    function finish(){
+      try{ delete A.open; }catch(e){}
+      try{ A.__net.reset(); if(C&&C.__net) C.__net.reset(); }catch(e){}
+      var pass=!bad.length;
+      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16)'+(pass?'':('; '+bad.join('; ')));
+      resEl.className=pass?'ok':'bad'; resEl.textContent=line; log(line);
+      document.title=(pass?'PASS':'FAIL')+' net test';
+      window.__NETTEST_SAME={pass:pass,bad:bad,rep:rep,line:line};
+      runB.disabled=false; runS.disabled=false;
+    }
+    try{ A.__net.reset(); }catch(e){}
+    if(typeof A.__net.same!=='function'||!el(fa,'modecoop')){ bad.push('copy A has no mode menu (a build before v15.76)'); finish(); return; }
+    fc.src='about:blank';
+    ls0={main:ls(MAIN),as:ls(AS),p2:ls(P2K)};
+    log('before: main save '+(ls0.main?(ls0.main.length+' chars'):'none')+', save pointer '+ls0.as+', player 2 save '+(ls0.p2?(ls0.p2.length+' chars'):'none'));
+    // The stand-in window: the address A asks for goes into copy C, and C is the window A is handed.
+    A.open=function(url,name,feat){ opened={url:String(url),name:name,feat:feat}; log('A asked for a window: '+url+' ('+feat+')'); fc.src=url; return fc.contentWindow; };
+    try{ if(A.__hubEnter) A.__hubEnter(); }catch(e){}
+    rngA0=A.__net.rngs();
+    t0=Date.now();
+    try{ click(fa,'modecoop'); }catch(e){ bad.push(e.message); finish(); return; }
+    var sm=A.__net.same();
+    log('A after the co-op row: '+JSON.stringify(sm)+', links made '+st(fa).made);
+    if(sm.same!=='host'||sm.mode!=='coop'||!sm.chan) bad.push('after the co-op row copy A is not the host in co-op with a channel open: '+JSON.stringify(sm));
+    if(!opened) bad.push('the co-op row did not ask for a second window');
+    else if(!(/[?&]p2=1(&|$)/).test(opened.url)||!(/[?&]mode=coop(&|$)/).test(opened.url)||opened.url.indexOf('pair='+sm.pair)<0||opened.url.indexOf(location.origin)!==0) bad.push('the second window address is wrong: '+opened.url);
+    wait(function(){ return W(fc)&&W(fc).__net&&W(fc).__net.p2; },30000,'copy C to boot as the player 2 window').then(function(){
+      C=W(fc); rngC0=C.__net.rngs(); rep.key=C.__net.key;
+      log('C booted as player 2 on save '+C.__net.key+', '+(Date.now()-t0)+' ms after the row; its window title reads '+(C.document.title||'?')+'; its same machine state '+JSON.stringify(C.__net.same()));
+      if(C.__net.key!==P2K) bad.push('the player 2 window plays '+C.__net.key+', not '+P2K);
+      if(C.__net.key===A.__net.key) bad.push('both windows play the same save');
+      var p2l=el(fc,'p2line'), mc=el(fc,'modecoop');
+      if(!p2l||p2l.style.display==='none'||p2l.textContent.indexOf('PLAYER 2')<0) bad.push('the player 2 window does not say it is player 2 on its title');
+      if(mc&&mc.offsetParent!==null&&getComputedStyle(mc).display!=='none') bad.push('the player 2 window still offers the mode rows');
+      return wait(function(){ return st(fa).roster.length===2&&st(fc).roster.length===2; },20000,'both rosters to show two');
+    }).then(function(){
+      rep.linkMs=Date.now()-t0;
+      // The stream is sampled here, once both are on the floor: entering the Undercroft draws from it by design (1 PLAYER
+      // moves it the same way), so the span measured is the party on the floor, the saves and the end of the party.
+      rngA0=A.__net.rngs();
+      log('both rosters show two, '+rep.linkMs+' ms after the co-op row; A roster '+JSON.stringify(st(fa).roster)+'; C seat '+st(fc).seat+'; links made A '+st(fa).made+', C '+st(fc).made);
+      var cs=C.__net.same();
+      if(cs.mode!=='coop'||cs.same!=='p2') bad.push('copy C does not know it is player 2 in co-op: '+JSON.stringify(cs));
+      C.__net.open();
+      var ml=el(fc,'partymode');
+      log('C PARTY window mode line: '+(ml?ml.textContent:'none'));
+      if(!ml||ml.style.display==='none'||ml.textContent.indexOf('CO-OP')<0||ml.textContent.indexOf('SAME MACHINE')<0) bad.push('the PARTY window on copy C does not name the mode');
+      A.__net.open();
+      var mla=el(fa,'partymode');
+      if(!mla||mla.style.display==='none'||mla.textContent.indexOf('CO-OP')<0) bad.push('the PARTY window on copy A does not name the mode');
+      // THE FLOOR: each draws the other where it stands.
+      try{ if(C.__hubEnter) C.__hubEnter(); }catch(e){}
+      rngC0=C.__net.rngs();
+      clearFloor(fa); clearFloor(fc);
+      var sa=A.__net.me().seat, sc=C.__net.me().seat;
+      return wait(function(){ var v=view(fc,sa), w=view(fa,sc); return (v&&v.shown&&gap(v,A.__net.me())<=16&&w&&w.shown&&gap(w,C.__net.me())<=16)?[v,w]:null; },5000,'each window to draw the other where it stands').then(function(vw){
+        rep.gapA=Math.round(gap(vw[0],A.__net.me())*10)/10; rep.gapC=Math.round(gap(vw[1],C.__net.me())*10)/10;
+        log('floor: C draws A at '+xy(vw[0])+' (A stands at '+xy(A.__net.me())+'); A draws C at '+xy(vw[1])+' (C stands at '+xy(C.__net.me())+'); fast channels open A '+A.__net.fast()+', C '+C.__net.fast());
+      },function(e){ var v=view(fc,sa), w=view(fa,sc); bad.push('floor: '+e.message+' (C draws A at '+xy(v)+', A draws C at '+xy(w)+')'); });
+    }).then(function(){
+      // THE SAVES: player 2 wrote its own key and nothing else moved.
+      var p2=ls(P2K), d=null; try{ d=JSON.parse(p2); }catch(e){}
+      if(!d||typeof d.credits!=='number') bad.push('the player 2 window wrote no readable save under '+P2K);
+      if(ls(MAIN)!==ls0.main) bad.push('the main save changed while the player 2 window ran');
+      if(ls(AS)!==ls0.as) bad.push('the save pointer changed while the player 2 window ran');
+      log('saves: player 2 save '+(p2?(p2.length+' chars'):'none')+' under '+P2K+'; main save and save pointer '+((ls(MAIN)===ls0.main&&ls(AS)===ls0.as)?'unchanged':'CHANGED'));
+      if(A.__net.rngs()!==rngA0||C.__net.rngs()!==rngC0) bad.push('the seeded stream moved in one of the windows while the party stood on the floor');
+      // THE END: A ends the party and C hears it.
+      A.__net.reset();
+      return wait(function(){ return !st(fc).on&&st(fc).roster.length===0; },5000,'copy C to hear the party end').then(function(){ log('A ended the party and C is off: '+JSON.stringify(st(fc))); },function(e){ bad.push('end: '+e.message); });
+    }).then(null,function(e){ bad.push(e.message); }).then(finish);
+  }
   function wipe(){
     ['A','B'].forEach(function(s){
       var k='salvagerun:profile:net'+s;
       [k,k+':prerestore',k+':precrash',k+':unreadable'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
     });
-    log('wiped the two net saves; reloading the copies');
+    // BUILD 3: and the permanent player 2 save this page makes on this origin.
+    (function(k){ [k,k+':prerestore',k+':precrash',k+':unreadable'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} }); })('salvagerun:profile:p2');
+    log('wiped the two net saves and the player 2 save; reloading the copies');
     load();
   }
   runB.onclick=run;
+  runS.onclick=runSame;
   document.getElementById('wipe').onclick=wipe;
   document.getElementById('reload').onclick=load;
   load();

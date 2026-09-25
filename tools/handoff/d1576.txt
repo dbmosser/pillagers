@@ -1,0 +1,162 @@
+## v15.76 - THE MODE MENU AND SAME MACHINE PAIRING
+
+His order of 2026-09-25: native multiplayer, and the way he will play it first: two players on the SAME PC in two game windows on
+two screens, player 2 on a controller, with a START MENU at the beginning carrying exactly these rows, in this order and wording:
+1 PLAYER; 2 PLAYER CO-OP (SAME MACHINE); 2 PLAYER CO-OP (SERVER) (greyed, coming later); 2 PLAYER PVP (SAME MACHINE); PVP
+(SERVER) (greyed, coming later). This is phase 1, build 3 of tools/multiplayer/plan.md (section E) with the corrections in
+critique.md. Raids stay solo, no voice yet, and the PvP rules are a later build: this build carries the mode value only.
+
+THE BUILD.
+- THE MENU. The title opens on the five rows, one under the other, all centred (#modemenu). 1 PLAYER is the old start button
+  under its old id, #titlestart, so the pad focus (v14.26), ENTER (v14.42) and every check that finds the button by its id still
+  do, and it runs exactly what the start button ran: go(), nothing else. The two SERVER rows are disabled, with coming later
+  beside them out of the flow, so the rows stay centred and a controller stepping down the column lands on the next row and not
+  on CREATE A NEW SAVE off to one side (padStep scores drift across the push at 2.2 to 1, so a two-column layout sent D-down
+  from 1 PLAYER to the centred save button; measured in the stand-in layout, not on screen).
+  Mouse: a click on a row. Keyboard: ArrowDown, ArrowUp, W and S move the highlight down the rows (netTitleMove, the pad
+  highlight padSetFocus, so it is the same amber outline the controller shows), skipping the greyed rows and wrapping; ENTER or
+  SPACE presses the highlighted row (netTitleEnter), and with nothing highlighted starts 1 PLAYER, as ENTER always did.
+  Controller: padMenu already treats the title as a panel; the focus lands on 1 PLAYER, the D-pad steps down the column, A
+  presses, B does nothing on the title (v14.26). ESC on the title does nothing (the title is a .screen, not a .modal).
+- TWO WINDOWS. A same machine row (netSamePick) makes this window player 1 and the host. Inside the click it opens a second
+  window of the same page (window.open, named pillagers_p2, a popup nine tenths of the screen, so he can drag it to his second
+  screen) with ?p2=1&mode=coop|pvp&pair=<code> on its address, and then runs the title start. The pair code is the v15.74
+  session id (netSess, the one Math.random the net section allows itself). If the browser returns no window the title stays up
+  with the sentence "The browser blocked the second window. Allow popups for this page, then press RETRY." and a RETRY button
+  that picks the same mode again inside its own click; no mode is set and no channel is made while blocked.
+- THE PLAYER 2 WINDOW plays the permanent player 2 save, salvagerun:profile:p2 (netP2Key), read at the save key exactly as the
+  v15.74 ?netslot override is: var NETP2, SKEY set from it, the boot crash list beside it. ?netslot wins if both are on the
+  address, since it is the explicit test override. Never the main save, never a numbered save, never the test net saves, and
+  never salvagerun:activeSlot: both title writes of the save pointer now ask netSaveLocked(), which is true for a ?netslot copy
+  or a player 2 window. On its title the mode rows are hidden, the start button reads ENTER THE UNDERCROFT, a line says PLAYER 2,
+  that this window links up with the player 1 window on its own, to drag it to the second screen, and the mode; the window
+  title reads PILLAGERS, PLAYER 2, so the two windows can be told apart on the taskbar.
+- THE PAIRING is the v15.74 handshake, unchanged, carried on a BroadcastChannel named pillagers:same:<this page path> on this
+  origin, which only two windows of the same page on the same PC can share; every word on it carries the pair code and a word
+  with another pair code is ignored. The player 2 window posts ready at boot (netSameBootP2). The host makes its invite code
+  with netHost and posts it as offer (netSameHostDone), and posts it again when a ready arrives with the code already made; a
+  ready before the code is made waits for it, and a ready with no code in hand (a reloaded player 2 window) makes a new one.
+  Player 2 takes the offer with netJoin and posts its reply code as answer (netSameJoinDone), or fail. The host takes the
+  answer with netAccept; the data channel opens, hello and welcome as before, and both rosters show two. Player 2 adopts the
+  mode the host says. The ICE list is the v15.74 one, so on one PC the host candidates link the two windows and the STUN
+  servers stay for the later server builds. Both then stand in the Undercroft as a party of two, seeing each other as v15.75
+  draws them. END THE PARTY on the host closes the channel and clears the mode (netReset calls netSameStop); a player 2 window
+  keeps its channel and mode across a netReset, so the host can offer again. A player 2 window that reloads re-pairs on its
+  own; a closed one drops off the roster as any lost link does.
+- NET gains mode, pick, same (host or p2), pair, bc, p2win, p2url, sameBusy and start. The PARTY window names the mode on a
+  line of its own (#partymode, MODE: 2 PLAYER CO-OP (SAME MACHINE) or MODE: 2 PLAYER PVP (SAME MACHINE)), and NET.status says it
+  is waiting for the player 2 window while it links. The ?netslot test handle window.__net is on a player 2 window as well
+  (p2:true), and gains same() and pick(mode), for tools/nettest.html.
+
+SOLO PLAY UNTOUCHED. 1 PLAYER is the old start under its old id and runs no net code: check 15.76 clicks it and holds the net
+section off, no window opened, no channel made and no peer connection made (the __pcBoot counter of check 15.74). Nothing new
+runs at boot in an ordinary copy: netTitleInit only wires the rows and returns unless the page was opened with ?p2=1. The net
+code never calls rr, rnd, ri, pick or rollTable and never reads G; map building is not touched, so the seed 4242 fingerprint
+in __verifySafe (ents 85/374, containers 165/593) has no way to move. No number, dial, loot table or seeded draw moved.
+WHATSNEW_VER stays 15.72 (drift 0.04). Every new player-facing line was checked against his vocabulary (no ship, boarding,
+touchdown, hotbar, bag, inventory); the five rows are his words exactly; no apostrophe inside any JS string; no TXSHIP key is
+touched. The title still auto-fits (v9.53 measures the column and reduces the zoom until it fits), so four more rows shrink the
+title a little at 1080p rather than scroll it; the size on screen is not measured here.
+
+ANCHORS (whole lines, each matching once in v15.75):
+- "  #partymodal textarea{ font-family:ui-monospace,Consolas,monospace; font-size:12px; word-break:break-all; }" (CSS after it);
+- the two lines "    <button class="deploy" id="titlestart"" and "      style="margin-top:26px;...">ENTER THE UNDERCROFT</button>"
+  (replaced by the menu block);
+- "  <div class="msub" id="partystat" style="color:var(--amber);font-weight:700"></div>" (the mode line after it);
+- "var VER='15.75';";
+- "if(NETSLOT) SKEY=netSlotKey(NETSLOT);" (the player 2 key block in its place);
+- "var PLOADED=false, PRECRASH=NETSLOT?(SKEY+':precrash'):'salvagerun:precrash';   // v15.74: ..." (NETP2 added);
+- "  floor:[],hubAcc:0,hubN:0,lkSent:''};   // v15.75: ..." (the mode and window fields);
+- "function netSlotKey(s){ return 'salvagerun:profile:net'+s; }" (netP2Of, netP2Key, netModeOf, netPairOf, netSaveLocked after it);
+- "  NET.floor=[]; NET.hubAcc=0; NET.hubN=0; NET.lkSent='';   // v15.75: nobody is left standing on the floor" (netSameStop after it);
+- "  er.textContent=NET.err||''; er.style.display=NET.err?'':'none';" (the mode line in renderParty after it);
+- "// THE PARTY WINDOW." (the same machine section before it);
+- "if(NETSLOT){", "    window.__net={slot:NETSLOT,key:SKEY,ver:VER,proto:NET.proto," and the "      fast:function(){ ... }};" line
+  (the test handle);
+- the two save pointer lines "          try{ if(!NETSLOT) localStorage.setItem('salvagerun:activeSlot',sn); }catch(e){}   // v15.74: ..."
+  and the same with key (netSaveLocked);
+- "    document.getElementById('titlestart').onclick=go;" (netTitleInit after it);
+- "      if(t.classList.contains('on')&&(e.code==='Enter'||e.code==='Space')){ e.preventDefault(); go(); }" (ENTER and the arrows);
+- the DEVNOW line starting "  now:'v15.75:".
+SubRx makes the lines it adds LF, whatever the endings of the .ps1 on disk. A second p1576 on the result fails on its second
+anchor (the CSS anchor survives its own edit) before anything is written; f1576 refuses to run if "  {v:'15.76',what:" is there.
+Fixture anchor: the line prefix "  {v:'15.75',what:" (written by f1575).
+
+MEASURED. Check 15.76 is synchronous (the runner does not await a promise) and never opens a window or makes a connection:
+window.open, BroadcastChannel and the three code makers (netHost, netJoin, netAccept) are stand-ins for the length of the check,
+the channel words are fed to the real netSameOnMsg (once through the channel onmessage, to prove the wiring), and the roster
+of two comes through the real hello and welcome handlers. Everything is put back in finally: the stand-ins, NET.start, NETP2,
+SKEY and the player 2 key, the blocked sentence, the pad, the keys, the player, the title on-state, say2.
+- ONE: five rows under #modemenu, texts exactly his, rows 3 and 5 disabled with coming later beside them, row 1 is #titlestart,
+  #modecoop and #modepvp carry their modes; the sentence, RETRY and the PARTY mode line exist.
+- TWO: 1 PLAYER clicked takes the title down, state is hub, NET off with no role, mode, same or pair, no window, no channel, no
+  code made, NET.made and __pcBoot.made unmoved. ENTER with nothing highlighted does the same.
+- THREE: with window.open returning null the co-op pick says blocked, sets no mode, keeps the title, runs no start, shows a
+  sentence naming the popup and RETRY, makes no channel. RETRY with a window says opened: the address is this page with p2=1,
+  mode=coop and pair=<the pair code>, recorded on NET.p2url; this copy is host in co-op with the window on NET.p2win; one
+  channel with a listener; the invite code made once; the start run once; the sentence and RETRY gone; the PARTY window names
+  CO-OP and SAME MACHINE. END THE PARTY lets go of the mode, the pair code and the channel (closed). The PVP row sets pvp and
+  the PARTY window names it.
+- FOUR, host side: the code made goes out as offer with the pair code and the mode; a ready with another pair code (through the
+  channel onmessage) is ignored; a ready with the code in hand sends it again; an answer with another pair code is ignored, one
+  with this pair code is taken with netAccept and the code matches, one that is not a code is bad; a hello then makes a roster
+  of two; a fail from player 2 is shown; END THE PARTY closes the channel.
+- FIVE, player 2 side: booted with a pair code and coop it is ready, one channel, ready posted with the pair code; an offer from
+  another pair is ignored; this pair's offer is taken with netJoin and the mode the host says (pvp) is adopted; the reply code
+  goes back as answer, a failure as fail; the welcome reads seat 1 of two. RNGS unmoved.
+- SIX: netP2Of reads ?p2=1 and nothing else, netModeOf and netPairOf read theirs; the player 2 key is its own beside the main
+  key and not a net key; the save pointer lock holds with NETP2 true and not for an ordinary copy; a save under the player 2 key
+  is readable and leaves the main save, the pointer and the save in play byte for byte (SKIP here on a page itself opened with
+  ?netslot or ?p2=1, as check 15.74 does).
+- SEVEN: ArrowDown moves the highlight to the co-op row (drawn highlighted), again past the greyed row to pvp, again wraps to
+  1 PLAYER, ArrowUp wraps back, W steps up; ENTER on the highlighted co-op row picks co-op with the right address. A faked
+  controller lands on 1 PLAYER, D-down lands on the co-op row, B changes nothing, A picks co-op (when the title is laid out for
+  the pad, else that part is passed over as check 15.74 does). ESC on the document leaves the title up and nothing open. RNGS
+  unmoved.
+- On v15.75 it FAILS on its first line (no #modemenu, no netSamePick), before any SKIP.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as committed (v15.75): p1576 OK, 18 edits plus DEVNOW; f1576
+OK, 1 edit; a second run of each refuses before writing. Built with mkfixture from the scratch copies: fxdry76 (patched game
+and patched fixture) and fxctl76 (the v15.75 game with the patched fixture), in the scratchpad, not in tools. The parsecheck
+gates run in cscript (Chakra) with parsecheck's own balance and dupes code: parens, braces and brackets 0, no duplicate
+top-level function, DEVNOW names v15.76 on one now line, WHATSNEW drift 0.04, no mojibake, on the patched game and both
+fixtures (a planted extra brace fails the same gate). The whole patched game script and the new check entry compile in Chakra
+(reserved-word property names quoted; a planted syntax error in the check fails the same harness). All handoff files ASCII.
+Run, not just parsed, under cscript with stubs for the browser (a small DOM built by parsing the real title and PARTY window
+markup out of the patched file, a keyboard event queue, a fake localStorage, a channel and window.open stand-ins): the REAL
+save key block, pad menu (padOpenModal to pollPad), net section with the same machine code, and the title IIFE with its start
+and key listeners, cut from the patched game, and check 15.76 cut from the patched fixture. It PASSES on v15.76 and FAILS on
+v15.75 with its first-line message, and puts the net section, SKEY, window.open, BroadcastChannel, getGamepads, the pad focus
+and the title state back. Sixteen single mutations of the patched code each fail it with the matching message: row 2 reworded,
+a server row not greyed, a blocked window treated as opened, the pair code ignored on both sides, the arrows stepping onto a
+greyed row, the player 2 key equal to the main key, the pointer lock ignoring NETP2, ENTER not pressing the highlighted row,
+player 2 ignoring the mode the host says, 1 PLAYER running the pick, the address without p2=1, netReset not letting go of the
+channel, player 2 not saying ready, the host not re-sending its code on ready, the answer not taken with netAccept, the
+blocked sentence left up; renaming the start button id breaks the title boot itself. The harness carries no main game keydown
+handler and no ESC capture handler, so their staying out of the way of the title keys is by reading (the v11.45 title guard
+and the no-modal return), not by this run.
+
+THE LIVE TEST, tools/nettest.html (edited, by hand, on a shard port, http://localhost:8805/nettest.html, never :8802 or :8803;
+?f=fxdry76.html for the dry fixture). The build 1 and 2 steps are kept. RUN SAME MACHINE: copy A (?netslot=A) presses its own
+2 PLAYER CO-OP (SAME MACHINE) row; the page stands in for A's window.open, loads the address A asks for into a third iframe C
+and hands A that window, so the popup blocker does not decide the test. C boots as the real player 2 window (?p2=1, the mode,
+the pair code, on salvagerun:profile:p2, __net.p2 true) and must say PLAYER 2 on its title with no mode rows; the two must
+pair over the real channel and both rosters show two within twenty seconds; both PARTY windows name the mode; both draw each
+other within 16 units of where each stands; the player 2 save is readable under its key with the main save and the save pointer
+unchanged; RNGS of both unmoved; A ends the party and C hears it within five seconds. WIPE also removes the player 2 save. The
+real popup is tested by clicking the row inside copy A by hand.
+
+Not verified: nothing here has run in a browser. The check has not been run on fxdry76 or fxctl76, __verifySafe (and so the
+seed 4242 counts) and parsecheck.html have not been run in a browser, and nettest.html has not been run, so no real window
+opened, no real channel pairing, no real popup blocker path, no measured link time, and no look at the title at 1920x1080 with
+the four extra rows (the v9.53 fit reduces the zoom; check 9.18 will say if it scrolls). The main keydown handler and the ESC
+capture handler are checked by reading only. Two risks for the next builds, by reading: Chrome hands gamepad input only to the
+focused window, so player 2 on a controller in the second window while player 1 plays the keyboard in the first needs a live
+test on his two screens; and a script click on the row (an old check presses every title button) opens no window without a
+user gesture, which is the blocked path, so no harm there.
+
+RESTAGED. Check 10.98 presses every button on the title screen; its skip list now also holds the mode rows and RETRY, because a
+press on a same machine row calls window.open, which in the Browser pane opens the player 2 window in the same tab and ends the
+run. Check 15.76 covers those rows with window.open stubbed.
+The release gate __verifySafe enters the Undercroft through the title button it finds by the words ENTER or UNDERCROFT; that
+button now reads 1 PLAYER, so the gate also accepts #titlestart and the words 1 PLAYER (fixture only).

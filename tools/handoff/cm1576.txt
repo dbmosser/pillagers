@@ -1,0 +1,18 @@
+v15.76: the title opens on a mode menu, and two windows on one PC pair up
+
+Multiplayer build 3. The first thing a player picks is the mode, five
+rows in his order and wording: 1 PLAYER, 2 PLAYER CO-OP (SAME MACHINE),
+2 PLAYER CO-OP (SERVER), 2 PLAYER PVP (SAME MACHINE) and PVP (SERVER),
+the two server rows greyed and coming later; mouse, arrows and ENTER, or
+a controller. 1 PLAYER is the old start button under its old id and runs
+no net code. A same machine row makes this window player 1 and the host,
+opens a second window of the game as player 2 on a permanent save of its
+own, and the two pair by themselves over a channel between windows that
+carries the v15.74 handshake, so both stand in the Undercroft as a party
+of two. A blocked second window is said on the title with RETRY. The
+mode is kept and named in the PARTY window; PvP rules are a later build.
+The live pair test is RUN SAME MACHINE in tools/nettest.html.
+
+Check 15.76. Fails on v15.75.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
