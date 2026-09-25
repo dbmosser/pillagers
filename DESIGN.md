@@ -40024,6 +40024,64 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.57 - THE END-OF-RAID CARD CAN BE LEFT WITH A CONTROLLER
+
+First run audit finding (HIGH), entry 5 of the confirmed list.
+
+Play with only a controller: take the welcome pack, ascend, then extract or die. endRaid puts .on on #outcome, whose class is
+outcome, not modal, and leaves state at 'raid' with G.over set. On every frame after that pollPad asks padMenu first, and
+padOpenModal looked only for an open .modal, the pause box, the title and #hub, so it returned null and padMenu returned false.
+The pad fell through to the raid branch, where every way to act is shut once the raid is over: A does not fire (rtOn needs
+!G.over), B taps Space and tryRoll needs !G.over, Menu taps P and the pause line needs !G.over, and togglePauseBox returns at once
+when G.over is set. Nothing else presses #oc_btn: its onclick is the only way off the card, and PAD.focus and .padfocus are set
+only inside padMenu. So a pad player's first extraction or first death left him on the card until he picked up the mouse.
+v14.23 closed the same gap for the pause box and v14.26 for the title screen; this third panel that is not a .modal was missed.
+hubModalOpen already counts the card as a panel.
+
+THE BUILD. Two lines in padOpenModal, after the pause box and before the title: an #outcome with .on is returned as the open
+panel. padFocusables finds Log run and return first and Copy report second (the run feel tags are .tag divs and the note is a
+textarea, neither a pad control), so the focus lands on Log run and return and A presses it. B's way-out search,
+leave|close|not yet|back|done|return, matches Log run and return before Copy report, so B presses the same button; both run the
+button's own onclick, so the run is logged, the tags and note go with it, and the page goes back to the Undercroft exactly as a
+click does. An A held through the death does not press it: every raid frame stamps PAD.prev for every button, so tap(0) sees a
+held A as already down. Checked after the windows, which still win, and after the pause box, which endRaid shuts before the card
+goes up. No player text, no number, no dial and no seeded draw moved; map building is not touched.
+
+MEASURED. Check 15.57 snapshots the profile and fakes one connected controller (17 buttons, 4 zero axes) through
+navigator.getGamepads. Each arm deploys a raid at seed 4242 with autoExport off. Controls in each raid: no window open over the
+raid; two idle polls leave the pause box and the card down; togglePauseBox(true) opens the box and B on the faked controller shuts
+it again, so the stub reaches padMenu. Then the raid is ended, and the controls are: G.over is the outcome asked for and the card
+is up; the page is still in the raid with the same G; no window and no pause box over the card; Log run and return is among
+padFocusables of the card. Extraction arm: an idle poll leaves the card up, then B must leave it, meaning the card is down, state
+is 'hub' and G is null (taking .on off without the button's handler does not count). Death arm: before endRaid, A is held with
+PAD.aSpent set, and the control is that the raid frame recorded it and did not fire; after endRaid the same held A must leave the
+card up; A let go keeps it up (control); a fresh A must leave the card the same way. When a pad press fails to leave, a plain
+#oc_btn.click() must leave the card, or the check returns SKIP, so the failure is only ever the missing pad route. On v15.56
+padOpenModal returns null, B and A reach the finished raid, the card stays up and state stays 'raid', so both arms fail for the
+finding's own reason. In finally the pause box is shut, the pad is disconnected with one poll, the pad focus is cleared and
+padRelease run, navigator.getGamepads is put back, PAD.aSpent, PAD.xAfterTrade and PAD.announced are restored, keys and
+mouse.down are cleared, a live raid is abandoned, any window a return to the Undercroft opened is shut, the profile snapshot is
+put back through __applyLoaded, and the card, CFG and profile are cleaned.
+
+Older fixture checks: none restaged. No fixture check called padOpenModal or padMenu with the card up. The pad checks that call
+pollPad (12.91, 12.92, 13.36, 13.37, 13.47, 13.48, 13.49, 13.51, 13.72, 14.19 to 14.24, 14.26, 15.31, 15.32, 15.50, and 15.52 in
+this chain) end their raids by abandon in finally, after the pad is disconnected; 13.37 surrenders into a death with the pad
+connected, but its frame loop stops at the death and the next thing it does is deploy again or disconnect the pad, so no pad is
+polled with the card up; 13.48 and 13.51 hold X on a ring for at most half a second, which calls and does not extract. Every
+check that ends a raid and reads the card (10.27, 10.65, 10.72, 10.74, 11.01, 11.65, 13.04, 13.15, 15.11, 15.20 and the card text
+checks) leaves it by oc_btn.click() or __topClear, with no pad polled.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.51 applied): p1552 and f1552 through p1556 and
+f1556 applied in version order, all of them written, then p1557 and f1557, every script printing OK and every anchor a whole line
+block matching once (p1557: 2 edits plus DEVNOW; f1557: 1 edit). The whole game script after p1557 and the new check both parse
+(Chakra through cscript, with reserved-word property names masked). The two pause box lines in padOpenModal are touched by no
+p-script from 1552 to 1556.
+
+Worth a look later, not changed here (his call): a pad player tapping A to fire as he dies now presses Log run and return with
+his next tap, so the card can go by unread; and the pad remembers its place per panel, so a B pressed with the focus on Copy
+report starts the next card on Copy report unless another panel took the pad in between.
+
+Not verified: a real raid by hand with a real controller to the card. The check itself has not been run in a browser yet.
 ## v15.56 - A DOOR KEY IS NEVER HIDDEN IN THE VAULT CASE OR BEHIND ANOTHER LOCKED DOOR
 
 Keys audit finding 4 (LOW).

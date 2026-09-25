@@ -1,0 +1,9 @@
+v15.61: the what is new card is current again
+
+The card stood at 15.51 and said nothing about the end of raid card on a
+controller, the rack highlight or the door keys. My first card line is
+rewritten in place, keeping the phrases its checks read.
+
+Check 15.61. Fails on v15.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

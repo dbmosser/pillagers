@@ -1,0 +1,14 @@
+## v15.61 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+WHATSNEW_VER stood at 15.51 against a build at 15.60, near its refresh, and the card said nothing about the fixes of v15.52 to
+v15.60: the end of raid card on a controller, the rack highlight and the door keys.
+
+THE BUILD. Only my first card line is rewritten in place. It names the end of raid card, rack and key news and keeps the pause box,
+grenade and healing phrases checks 15.51, 15.39 and 15.27 read. The second card line and every line of his are untouched, so the card
+still holds thirteen lines. Dropped from the card: the controller Menu at the stall, pillager revives and kills, and the raid clock
+reading. WHATSNEW_VER moves to 15.61.
+
+MEASURED. Check 15.61 requires the card within fifteen builds and naming the end of raid card news; it fails on v15.60. Every card
+check was run on the dry build.
+
+Not verified: the card read on screen by eye.
