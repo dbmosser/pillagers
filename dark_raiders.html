@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.57';
+var VER='15.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20252,7 +20252,19 @@ var _cdone=contractExtract(G.bag,haul);
       if(P.weapons.indexOf(_kw.id)<0) P.weapons.push(_kw.id);
       else if(!_ks[i][2]&&ITEMS['gun_'+_kw.id]) P.stash.push('gun_'+_kw.id);
     }
-    if(kept.length) P.equipped=kept[0].id;
+    // v15.58, first run audit finding: EXTRACTING WITH THE FREEBIE KIT KEEPS THE GUN YOU CHOSE IN GUN 1. The kit puts its Scav
+    // Pistol in his hand not flagged issued, so that an extraction keeps it, and carriedGuns therefore lists it as a carried
+    // gun: this line then put it in gun 1. A fresh player who chose Equip as your gun on the Compact SMG, as the loaner line
+    // tells him to, took the kit, extracted, and was quietly moved off the SMG: the sector page said he was going up with the
+    // Scav Pistol, and the next raid took his own armoury pistol up, where it wears and can be lost. A character on fists was
+    // moved to the pistol the same way, undoing the v2.80 rolled starter that v2.82 keeps on the death path. What is New
+    // promises that taking the kit does not change the gun he goes up with. The kit pistol is still kept exactly as before
+    // (the loop above banks it); it is only never equipped, the way the death path already treats it as the kit's loaner
+    // (_egFree): on a freebie raid, a gun of FREEKIT_GUN's id in either hand that did not come out of the armoury. A gun found
+    // in the raid still takes gun 1 by the tier sort. This keeps his own choice; it is not a switch to a gun. No player text,
+    // no number and no seeded draw moved.
+    var _keq=kept.filter(function(w){ return !(G.freeKit&&w.id===FREEKIT_GUN&&((w===_kp.wep&&!_kp.wepFromArmory)||(w===_kp.sec&&!_kp.secFromArmory))); });
+    if(_keq.length) P.equipped=_keq[0].id;
     // v12.38, audit gun-slot-reconcile: SLOT TWO IS RECONCILED WITH SLOT ONE.
     // The line above rewrites gun 1 from the tier sort, so a run where the
     // better gun rode in slot 2 leaves BOTH slots naming it. The ascent check
@@ -20265,8 +20277,12 @@ var _cdone=contractExtract(G.bag,haul);
     // carried takes slot 2, and where there is no other gun the slot is
     // honestly empty. Two distinct slots are left untouched. Same rule the
     // armoury menu applies when a gun is put into a slot it already sits in.
-    if(kept.length&&(P.equippedSec||'none')===P.equipped)
-      P.equippedSec=(kept.length>1&&kept[1].id!==P.equipped)?kept[1].id:'none';
+    // v15.58, first run audit finding: AND THE KIT PISTOL NEVER FILLS GUN 2 EITHER. This repair read the raw list, so with his
+    // own Burst Carbine in gun 2 and a field Carbine carried out beside the kit pistol, gun 1 became the Carbine by the tier
+    // sort and this line put the kit pistol in gun 2. It reads the same filtered list as gun 1 now, so the slot takes another
+    // gun he really carried or is honestly empty, the v12.38 rule.
+    if(_keq.length&&(P.equippedSec||'none')===P.equipped)
+      P.equippedSec=(_keq.length>1&&_keq[1].id!==P.equipped)?_keq[1].id:'none';
     // v14.79, gun audit finding 2: AN EXTRACTION LEAVES BOTH SLOTS ON GUNS HE OWNS. Only the collision above was repaired here.
     // A gun put in the backpack from its belt key leaves the armoury, and if it was then dropped or given away he extracted
     // empty-handed with gun 1 still naming it: the sector page and the ascent check said it was going up, a raid handed him a
@@ -30626,7 +30642,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.57: THE END-OF-RAID CARD CAN BE LEFT WITH A CONTROLLER. The card after an extraction or a death is not a window, so a controller found nothing to press on it, and a pad player stayed on the card after his first extraction or death until he picked up the mouse. The card now takes the controller the way the pause box does: the focus lands on Log run and return, A or B presses it, and an A still held from the raid does not. Check 15.57 leaves an extraction card with B and a death card with A on a faked controller; it fails on v15.56',
+  now:'v15.58: EXTRACTING WITH THE FREEBIE KIT KEEPS THE GUN YOU CHOSE IN GUN 1. Walking out of a raid on the freebie kit put its Scav Pistol in gun 1, so a Compact SMG you had equipped was quietly taken off and your next raid went up with your own pistol, where it can be lost, and a character with nothing in gun 1 was moved onto the pistol the same way. You still keep the kit pistol, but gun 1 and gun 2 now stay on what you chose, and a gun you find in the raid still takes gun 1 as before. Check 15.58 extracts on the freebie kit with the SMG in gun 1, with nothing in gun 1, and with a field Burst Carbine beside the kit pistol; it fails on v15.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

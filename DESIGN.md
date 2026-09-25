@@ -40024,6 +40024,70 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.58 - EXTRACTING WITH THE FREEBIE KIT KEEPS THE GUN YOU CHOSE IN GUN 1
+
+First run audit finding (MEDIUM), entry 6 of the confirmed list.
+
+Fresh profile: weapons ['pistol'], equipped 'fists'. Take the welcome pack, open the stash and choose Equip as your gun on the
+Compact SMG, as the loaner line tells you to (P.weapons ['pistol','smg'], P.equipped 'smg'). At the lift answer FREEBIE KIT
+(P.freeKit=1). buildRaid loads the SMG from P.equipped, moves the flag onto the raid (g.freeKit=1), then replaces the gun with
+WEAPONS[FREEKIT_GUN] and sets wepIssued=false and wepFromArmory=false, so that an extraction keeps the kit (v6.88, his spec), and
+gun 2 becomes issued fists. Extract. carriedGuns skips only issued guns and fists, so kept=[pistol]. The per-hand loop finds
+'pistol' already owned and not from the armoury and puts a gun_pistol in the stash, which is the kit being kept, as intended.
+Then "if(kept.length) P.equipped=kept[0].id;" set gun 1 to 'pistol'. Nothing put it back: the v14.79 repair below it only acts on
+a gun he does not own, and the gun slot snapshot went at v13.06. His SMG was quietly unequipped, the sector page said Going up
+with: Scav Pistol, and the next raid took his own armoury pistol up, where it wears and can be lost. A character still on fists
+was moved to the pistol the same way, which undoes the v2.80 rolled starter that v2.82 protects on the death path. What is New
+(the v13.06 line) promises that what you go up with comes from the gun you have equipped, which taking the kit does not change,
+and the death path already treats this pistol as the kit's loaner rather than his gun (_egFree, v12.03). The v12.38 comment
+calls this line the best carried gun going in gun 1; no comment or ruling applies that to the kit's gun.
+
+The verdict found the proposed fix incomplete: the gun 2 collision repair below also read the raw list. His own SMG in gun 1 and
+his own Burst Carbine in gun 2, kit taken, a Carbine picked up in the raid, extract: kept=[carbine,pistol], gun 1 became the
+Carbine by the tier sort, gun 2 collided with it, and the repair put kept[1], the kit pistol, in gun 2.
+
+THE BUILD. Two edits in the extract branch of endRaid, from the verdict's corrected fix. The line that sets gun 1 now reads a
+filtered list, _keq: kept without a gun whose id is FREEKIT_GUN, held in either hand (compared by object with _kp.wep or
+_kp.sec, _kp being G.player from the loop above) and not from the armoury, on a raid with G.freeKit set. That is the death
+path's _egFree test. If _keq is empty, gun 1 is left as he set it. The gun 2 collision repair reads _keq in both places too.
+The kit pistol is still kept exactly as before: the per-hand loop that banks it is untouched. A gun found in the raid still
+takes gun 1 by the tier sort. This keeps his own choice; it is not an automatic switch to a gun (his ruling of 2026-09-13
+stands). A Scav Pistol found in the raid on a freebie run, not from the armoury, is treated as the kit pistol here, the same
+approximation _egFree makes on the death path. A character on fists who extracts on the kit now stays on fists and goes up with
+a rolled loaner next time, as a fresh character does, and if he owned no pistol the kit pistol still goes to his armoury.
+No player text, no number, no dial, no loot table and no seeded draw moved; map building is not touched, so the seed 4242
+fingerprint in __verifySafe cannot move.
+
+MEASURED. Check 15.58 snapshots the profile and runs three raids at seed 4242, each set up by the same helper: __topClear,
+__resetCfg, __pinDefaults(0), __cleanProfile, then the guns and slots for that arm, an empty stash, kit, belt and safe pocket, no
+set-aside packing, devKit 0, autoExport off and freeKit 1, then saveProfile, commitKit and __startRaid, the route the lift takes
+(not __deploy, which clears the flag). Controls in every raid: a live raid on the freebie kit (G.freeKit 1), the kit's own Scav
+Pistol in hand, not issued and not from the armoury, and gun 2 fists. ONE: weapons pistol and smg, gun 1 smg, gun 2 none;
+extract; controls: G.over is extract and the stash holds exactly one more gun_pistol, so the kit is still kept; then gun 1 must
+still be smg and gun 2 still none. On v15.57 gun 1 reads pistol, so the check fails there for the finding's own reason. TWO:
+weapons pistol, gun 1 fists; extract; control: extracted and one more gun_pistol; gun 1 must still be fists (v15.57: pistol).
+THREE: weapons pistol, smg and carbine, gun 1 smg, gun 2 carbine; WEAPONS.carbine put in the empty second hand with secIssued and
+secFromArmory false, as a pickup into an empty hand sets them; extract; controls: extracted with exactly one more gun_carbine,
+and gun 1 is carbine, so a found gun still takes gun 1 on a freebie raid and the slots collided; gun 2 must not be the kit
+pistol (v15.57: pistol). A control that cannot run after a failure keeps the failure, so the old build fails rather than
+skips. In finally a live raid is abandoned, the profile snapshot is put back through __applyLoaded, and the card, CFG and profile
+are cleaned.
+
+Older fixture checks: none restaged. No fixture check extracts on the freebie kit and reads gun 1 as the pistol. 13.06 extracts
+on the kit with the first gun in WEAPONS, which is pistol, in gun 1, and asserts gun 1 is still that gun: it passes before and
+after. 12.13 and 12.26 extract a freebie raid only in finally and then restore equipped; 12.03, 12.87 and 15.11 end freebie raids
+dead or abandoned, which this build does not touch (12.03 and 12.87 extract in finally only a raid still live); 14.01
+abandons. The extraction checks that read gun 1 after the tier sort, 12.38 (the Longshot into gun 1) and 14.79, set freeKit 0,
+and G.freeKit gates the filter.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.51 applied): p1552 and f1552 through p1557 and
+f1557 applied in version order, all of them written, then p1558 and f1558, every script printing OK and every anchor a whole line
+block matching once (p1558: 3 edits plus DEVNOW; f1558: 1 edit). The whole game script after p1558 and the new check both parse
+(Chakra through cscript, with reserved-word property names masked). The two endRaid anchor blocks are touched by no p-script from
+1552 to 1557.
+
+Not verified: a real raid by hand, taking the welcome pack, equipping the SMG, taking the freebie kit and extracting. The check
+itself has not been run in a browser yet.
 ## v15.57 - THE END-OF-RAID CARD CAN BE LEFT WITH A CONTROLLER
 
 First run audit finding (HIGH), entry 5 of the confirmed list.
