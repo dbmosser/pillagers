@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.64';
+var VER='15.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11080,7 +11080,15 @@ function raidKey(code,repeat,ev){
   if(code==='KeyM'&&G&&!G.over&&!repeat){ G.mapOpen=!G.mapOpen; }
   // v10.07, his answers 33 and 35: crouch and sprint are toggles, and they
   // exclude each other.
+  // v15.65, stealth audit finding: CTRL WITH THE MOUSE WHEEL SIZES THE HUD WITHOUT TOGGLING CROUCH. Ctrl is crouch (v9.92) and
+  // Ctrl with the wheel sizes the HUD (v9.95), and since crouch became a toggle (v10.07) the Ctrl press that starts the HUD
+  // gesture flipped the stance here and letting go never flipped it back. Sizing the HUD standing left him crouched at .52
+  // speed with no word; sizing it crouched to hide stood him up and gave the hide away. The stance before a keyboard Ctrl press
+  // is kept in G.ctrlUndo, and the canvas wheel listener gives it back when the press turns into Ctrl with the wheel. C and the
+  // controller right stick click (ev is null) are never a modifier and keep nothing; letting go of Ctrl or losing the keys
+  // forgets it. A plain Ctrl press still crouches at once, one change per press. No number, dial or seeded draw moved.
   if((code==='ControlLeft'||code==='ControlRight'||code==='KeyC')&&G&&!G.over&&!G.sim&&!repeat){
+    G.ctrlUndo=(ev&&code!=='KeyC')?G.crouchTog:null;
     G.crouchTog=!G.crouchTog;
   }
   // v10.87, HIS NOTE: sprint is HELD, not toggled, so there is no keydown
@@ -11269,7 +11277,14 @@ cv.addEventListener('wheel',function(e){
   e.preventDefault();
   // v9.95, HIS NOTE: ctrl and the wheel size the HUD, as - and = do. One notch
   // is one step, whatever the device reports for a notch.
-  if(e.ctrlKey){ if(e.deltaY!==0) hudSizeStep(e.deltaY<0?1:-1); return; }
+  // v15.65, stealth audit finding: CTRL WITH THE MOUSE WHEEL SIZES THE HUD WITHOUT TOGGLING CROUCH. The Ctrl press that began
+  // this gesture flipped the crouch in raidKey, so the first notch gives back the stance he had before that press, once, and
+  // forgets it; later notches only size. Only while a keyboard Ctrl is really held: a trackpad pinch sends ctrlKey with no
+  // Ctrl key down and leaves the stance alone. The HUD step itself is unchanged.
+  if(e.ctrlKey){
+    if(G.ctrlUndo!=null&&(keys['ControlLeft']||keys['ControlRight'])) G.crouchTog=G.ctrlUndo;
+    G.ctrlUndo=null;
+    if(e.deltaY!==0) hudSizeStep(e.deltaY<0?1:-1); return; }
   // Normalise the three delta modes browsers use, or the same gesture zooms at
   // three different speeds depending on the device. Then step geometrically off
   // the TARGET, not the eased current value, so spinning fast accumulates
@@ -11278,7 +11293,10 @@ cv.addEventListener('wheel',function(e){
   if(e.deltaMode===1) dy*=16; else if(e.deltaMode===2) dy*=100;
   setZoom(zoomTarget()*Math.exp(-clamp(dy,-140,140)*0.0015));
 },{passive:false});
-window.addEventListener('keyup',function(e){ keys[e.code]=false; });
+// v15.65, stealth audit finding: CTRL WITH THE MOUSE WHEEL SIZES THE HUD WITHOUT TOGGLING CROUCH. A Ctrl let go with no wheel
+// was a plain crouch press, so the stance kept for the wheel is forgotten here, and a later Ctrl with the wheel cannot give
+// back the stance from an older press.
+window.addEventListener('keyup',function(e){ keys[e.code]=false; if((e.code==='ControlLeft'||e.code==='ControlRight')&&G) G.ctrlUndo=null; });
 cv.addEventListener('click',function(){ ac(); });
 cv.addEventListener('mousemove',function(e){
   var r=cv.getBoundingClientRect();
@@ -29989,6 +30007,9 @@ function releaseAllKeys(){
   // The reticle also hides for an open bag, and alt-tabbing with the bag open
   // left that panel latched too. Cleared with the keys, for the same reason.
   if(G){ G.bagOpen=false; G.drag=null; }
+  // v15.65, stealth audit finding: CTRL WITH THE MOUSE WHEEL SIZES THE HUD WITHOUT TOGGLING CROUCH. A Ctrl held when the
+  // window loses focus never sends its keyup here, so the stance kept for Ctrl with the wheel is forgotten with the keys.
+  if(G) G.ctrlUndo=null;
   // v14.48, floor audit finding 4: AND THE FLOOR BACKPACK'S DRAG. Alt-tabbing mid-drag in the Undercroft backpack left its
   // drag set with the icon stuck to the cursor, and the next click anywhere bound that item to the belt key under it, or
   // deleted the key it came from, and saved it. The drag is dropped with the keys; the backpack stays open.
@@ -30691,7 +30712,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.64: C CROUCHES WITH SHIFT HELD WHEN NO SPRINT CAN START. Out of breath with Shift still held, or aiming, or wading in deep water, pressing C to break a chase did nothing: the sprint-cancels-crouch line took the crouch off the next frame although no sprint could start. That line now asks the same questions the sprint does, so C crouches there and Shift still stands him up whenever a sprint can start. Check 15.64 steps one frame crouched with Shift and W held out of breath, aiming and wading, and once with full breath as the control; it fails on v15.63',
+  now:'v15.65: CTRL WITH THE MOUSE WHEEL SIZES THE HUD WITHOUT TOGGLING CROUCH. Holding Ctrl and rolling the wheel to size the HUD also flipped the crouch on the Ctrl press, and letting go did not flip it back, so he was left crouched without asking, or stood up out of a hide. The first wheel notch with Ctrl held now gives back the stance he had before that press, and a plain Ctrl press still crouches. Check 15.65 sizes the HUD with Ctrl and the wheel standing and crouched, with a plain Ctrl press and a trackpad pinch as controls; it fails on v15.64',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
