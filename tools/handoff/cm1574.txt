@@ -1,0 +1,12 @@
+v15.74: two copies of the game link up by invite code
+
+Multiplayer build 1, text only. F at the lift opens the PARTY window:
+HOST A PARTY makes an invite code, JOIN A PARTY takes it and makes a
+reply code, the host lets them in and both rosters show who is in, up
+to four. Nothing links until HOST or JOIN is pressed, nothing asks for
+the microphone, and every raid is still solo. ?netslot=A or B gives a
+test copy a save of its own. The live link test is tools/nettest.html.
+
+Check 15.74. Fails on v15.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,104 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.74 - TWO COPIES OF THE GAME LINK UP BY INVITE CODE
+
+His order of 2026-09-25: native multiplayer, co-op first, up to four, invite codes first. This is phase 1, build 1 of
+tools/multiplayer/plan.md (section E), with the corrections in tools/multiplayer/critique.md. Text only: no voice and nobody drawn
+on the floor yet. Raids stay solo.
+
+THE BUILD.
+- F at the lift opens a PARTY window. F is free at the lift (its acts are E go up, R quick ascent, T the terms; F is the melee key
+  only inside a raid, and the other stations that use F are the Shop's hire and the Mainframe's racks). On a controller F is Y on
+  the floor (PADLABEL_HUB), so the lift line reads [E] go up [R] quick ascent [T] the terms [F] party, or [A] [X] [RB] [Y] on a pad.
+- The window: HOST A PARTY (makes an invite code, shown in a box with its length, INVITE CODE, N CHARACTERS, and COPY CODE), a paste
+  box and JOIN A PARTY (makes a reply code to send back, shown the same way), a paste box and LET THEM IN on the host, the roster
+  (seat, name, HOST, YOU), NEW INVITE CODE for the next friend, END THE PARTY or QUIT THE PARTY, and CLOSE. ESC (the document rule),
+  TAB (backOut) and controller B (padMenu looks for leave, close, not yet, back, done or return) all press CLOSE: no other button
+  carries one of those words. Closing the window keeps the party. Check 10.10 (the first way out reads CLOSE) holds, and the
+  window scrolls inside itself (overflow-y auto), so check 10.78 cannot find content cut off.
+- ?netslot=A or ?netslot=B on the address plays a save of its own: salvagerun:profile:netA or :netB, with its undo copy and its boot
+  crash list beside it. salvagerun:profile and every save slot keep their keys and their format, and a copy opened this way never
+  writes salvagerun:activeSlot (both writes on the title save list are guarded; picking a numbered save there just reloads the same
+  net copy). Without the override SKEY is exactly what it was.
+- One new NET section, after the Terms close handler, at the top level of the game closure:
+  NET={on:false,proto:1,max:4,role,seat,peers,roster,pend,made,...}; netHost(), netJoin(code), netAccept(code); sdpPack and
+  sdpUnpack (async, deflate-raw through CompressionStream when the browser has it, else plain) over sdpPackPlain and sdpUnpackPlain
+  (sync); netSend, netBroadcast and netOnMsg; netDrop and netReset.
+  A star, host authoritative, up to four: the host is seat 0 and holds one peer connection per friend (seats 1 to 3); friends never
+  link to each other. The host offer has one negotiated data channel (id 0, reliable, ordered) and no audio, and is packed after
+  ICE gathering completes (or after 5 seconds). The code is PTY1, then o (invite) or a (reply), then z (packed) or p (plain), then
+  base64url; PTY1 is not PIL1, the restore code. A chat window that breaks the code over lines or puts words round it changes
+  nothing. STUN only: stun:stun.cloudflare.com:3478 with stun:stun.l.google.com:19302 behind it.
+  Messages are JSON: hello {proto,ver,pid,name} from the friend when the channel opens; welcome {you,roster}, reject {why:'version'
+  or 'full'} or roster from the host; bye from either side. The host turns away a copy on another VER or protocol and says which
+  version it is on; the friend is told both versions. pid is 8 hex of an FNV hash of the install id, or of a session id when the
+  save has none. Timeouts: 30 seconds for the link after LET THEM IN, 3 minutes for a reply code to be used, 10 seconds for a hello.
+  A failed link says one of the routers may be blocking a direct link and to try a new code or another network.
+- ?netslot copies alone get window.__net (state, rngs, open, reset), the handle tools/nettest.html reads. A copy opened any other way
+  sets nothing on window.
+
+SOLO PLAY UNTOUCHED. Nothing runs at boot: no peer connection, no network request and no microphone until HOST A PARTY or JOIN A
+PARTY is pressed (NET.made counts every peer connection the net code makes). The net code never calls rr, rnd, ri, pick or
+rollTable and never reads or writes G; its only chance is Math.random, once, for the session id. Who joined or left is said on the
+floor only (say2, when state is hub and there is no G). Map building is not touched, so the seed 4242 fingerprint in __verifySafe
+(ents 85/374, containers 165/593) has no way to move. No number, dial, loot table or seeded draw moved. The what is new card is left
+alone (WHATSNEW_VER 15.72, drift 0.02): build 1 is a test of the link, and the card can announce co-op when it plays. Every new
+player-facing line was checked against his vocabulary: no ship, boarding, touchdown, hotbar or bag. No TXSHIP key is touched.
+
+ANCHORS (whole lines, each matching once in v15.73):
+- "  #termsmodal .plist{ flex:0 1 auto; }" (CSS, the party window rules after it);
+- the four lines from "    <button id="termsclear" ...>Sign nothing</button>" to the "</div>" closing #termsmodal (the window after it);
+- "var VER='15.73';";
+- "var SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT);" (the netslot override after it);
+- "           KeyT:['the terms',function(){ renderTerms(); openModal('termsmodal'); }]}}," (KeyF party after it);
+- "var PLOADED=false, PRECRASH='salvagerun:precrash';";
+- the three lines of "document.getElementById('closeterms').onclick=function(){" (the NET section after them);
+- "          try{ localStorage.setItem('salvagerun:activeSlot',sn); }catch(e){}" and the same line with key;
+- the DEVNOW line starting "  now:'v15.73:".
+Fixture anchor: the line prefix "  {v:'15.73',what:" (written by f1573).
+
+MEASURED. The fixture runner does not await a promise: __regress and __regressBg take r=t.run() as it is, and a promise would be a
+truthy non-SKIP answer, recorded as a failure. So check 15.74 is synchronous and never makes a real connection:
+- Its pcBoot property runs when the fixture loads, before the game boots, and wraps window.RTCPeerConnection in a counting Proxy
+  and navigator.mediaDevices.getUserMedia in a counter (window.__pcBoot). The check requires NET present and off, NET.made 0 and no
+  peer connection or microphone ask in the page. v15.73 has no NET and FAILS on the first line, before any SKIP.
+- A sample offer and answer (CRLF, three candidates, a TEST-NET address) round-trip exactly through sdpPackPlain and
+  sdpUnpackPlain, also broken every 60 characters with words round it; CONTROLS: a restore code (PIL1), the code cut to 60
+  characters and plain words are not read as codes.
+- Through the real hello handler with stand-in links (never a real connection): v0.01 and protocol 2 are turned away with
+  reject why version; CONTROL: the same VER and protocol is let in as seat 1 with a roster of two, sent to it and kept by the host.
+  The window length line names the code length. After the party ends NET is off again. A joining copy handed that welcome reads
+  seat 1 and a roster of two, and one turned away for v0.01 leaves the party with an error naming 0.01.
+- RNGS is the same before and after all of it, and after the window opens and closes.
+- netSlotOf reads A and B and nothing else; saving with SKEY set to the netA key writes a readable save there and leaves
+  salvagerun:profile, salvagerun:activeSlot and the save in play byte for byte; the key is restored or removed in finally.
+- F on the lift through updateHubWorld opens #partymodal with nothing linked; TAB on window, ESC on document and B on a faked
+  controller (when the window is laid out) each close it; CONTROL: the lift keeps go up, quick ascent and the terms.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as committed (v15.73): p1574 OK, 9 edits plus DEVNOW; f1574 OK,
+1 edit. The parse gate balance counter reads parens, braces and brackets 0 on the patched game, the dry fixture and the control
+fixture, and the NET section and the netslot lines sit at brace depth 1 (the top level of the game closure). The patched game
+script and the new check parse in Chakra (cscript, reserved-word property names quoted, since the committed file already uses
+.catch); both fixtures parse too once their ES5 accessors are rewritten for that engine, which the committed fixture needs as well.
+The net section itself was run under Chakra with stubbed browser parts: the code round trips, the version and protocol turn-away,
+the welcome and roster, seats filling to four with a fifth told full, a bye freeing its seat and sending the roster on, timers
+dropping turned-away links, the joiner reading welcome, roster, bye and reject, the length line, RNGS unmoved and NET.made 0: all
+pass. Invite code length, estimated with raw deflate on this PC: about 690 characters for an offer with three candidates on one
+network, about 950 with eight candidates on three networks and IPv6; the plain fallback would be 1130 and 2080. Under the 2000 a
+Discord message holds, packed.
+
+THE LIVE TEST, tools/nettest.html (new), by hand: serve the tools folder on a shard port, http://localhost:8805/nettest.html, never
+:8802 or :8803. It reads the fixture source first and loads nothing unless the ?netslot override is in it, then two iframes of
+fixture.html (or ?f=fxdry74.html) with ?netslot=A and B. RUN drives the real window buttons: A hosts, B joins with the invite code,
+A lets B in with the reply code, and both rosters must show two within 5 seconds. Then a bare peer connection on this page joins
+through NEW INVITE CODE saying v0.01 and must hear reject why version with the host roster still two; the control joins on the
+same version and must be welcomed with both rosters at three. RNGS of both copies must not move. The result line gives both code
+lengths and the link time; WIPE removes the two net saves.
+
+Not verified: nothing here has run in a browser. The check has not been run on fxdry74 or fxctl74, __verifySafe and parsecheck.html
+have not been run, nettest.html has not been run, so no real link, CompressionStream path or measured code length yet. Two real PCs,
+home routers and the itch page are for later builds.
 ## v15.73 - CHECK 9.63 MEASURES THE SHOT MARK ALONE AGAIN
 
 The v15.72 corpus went red on check 9.63 (a pillager you cannot see, shooting, leaves a red mark you can), alone as well as in the
