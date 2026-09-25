@@ -24,7 +24,7 @@ check). With no freebie kit taken nothing changes. No player text was added or r
 touched, and no number, dial, loot table or seeded draw moved. Map building is not touched, so the seed 4242 fingerprint in
 __verifySafe (ents 85/374, containers 165/593) cannot move.
 
-ANCHORS (whole-line blocks, each matching once after p1566 and p1568 to p1570):
+ANCHORS (whole-line blocks, each matching once after p1567 to p1570):
 - the two padFocusables lines "    var el=q[i],cs=getComputedStyle(el);" and
   "    if(cs.display==='none'||cs.visibility==='hidden'||el.disabled) continue;" (touched by no p-script from 1562 to 1570);
 - var VER='15.70'; and the DEVNOW line starting "  now:'v15.70:" (both written by p1570).
@@ -57,11 +57,10 @@ Older fixture checks: none restaged. No check drives the pad with the freebie ki
 window. 14.74 presses a stash cell with a direct click(), not through padFocusables, on a profile with no freebie kit. The
 freebie kit checks (15.58, 15.54, 14.65, 14.01, 13.06, 12.87, 12.82, 12.26, 12.16, 12.03) never touch the pad.
 
-Dry run on scratch copies of dark_raiders.html (15.65, p1562 to p1565 applied) and mkfixture.ps1 as they stand: p1566 (OK, 4
-edits plus DEVNOW) and f1566 (OK, 1 edit), then VER and the DEVNOW line stepped to 15.67 and the 15.66 check entry renamed 15.67
-as stand-ins for 1567, which is not in the queue yet, then p1568, f1568, p1569, f1569, p1570 and f1570 (all OK), then p1571 (OK,
-2 edits plus DEVNOW) and f1571 (OK, 1 edit). A second p1571 on the result fails on its first anchor, so it cannot apply twice.
-The edited padFocusables and the new check entry parse in JScript. All five files are ASCII only.
+Dry run on scratch copies of dark_raiders.html (15.66, p1562 to p1566 applied) and mkfixture.ps1 as they stand: p1567 and f1567,
+p1568 and f1568, p1569 and f1569, p1570 and f1570 (all OK), then p1571 (OK, 2 edits plus DEVNOW, VER 15.71, one now line) and
+f1571 (OK, 1 edit). A second p1571 on the result fails on its first anchor, so it cannot apply twice. The edited padFocusables
+and the new check entry parse in JScript. All five files are ASCII only.
 
 Not verified: the Stash screen and the ascent check by hand with a real controller. The check itself has not been run in a
 browser yet.

@@ -1,0 +1,14 @@
+v15.67: red noise marks for unseen sounds are drawn above the darkness and fog of war sheets
+
+Stealth audit finding. The red ring that marks a sound he cannot see
+was drawn on the ground before the darkness and the fog of war were
+laid over the world, and it only ever marks ground under the fog, so
+by night it reached the screen at about a quarter of its strength and
+a grenade landing out of sight behind him was a faint smudge. The
+marks now draw above both sheets with the other sound rings, in the
+same colour, size and fade, and ringsOnTop 0 still puts both back in
+the old order.
+
+Check 15.67. Fails on v15.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

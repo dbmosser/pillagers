@@ -22,7 +22,7 @@ SubRx @'
   // on the ground where the noise happened and scales with his zoom.
   // v15.67, stealth audit finding: RED NOISE MARKS FOR UNSEEN SOUNDS ARE DRAWN ABOVE THE DARKNESS AND FOG OF WAR SHEETS. This
   // pass lies under both sheets, and noiseMark keeps only sounds he cannot see, which is ground the fog of war sheet covers,
-  // so every mark was buried exactly where it is shown. The marks now draw after the fog, just below the v4.05 ping pass;
+  // so every mark was buried exactly where it is shown. The marks now draw after the fog, straight after the v4.05 ping pass;
   // this old place runs only when ringsOnTop is dialled off, the same way back to the old order the pings have.
   if(G.noiseRings&&CFG.ringsOnTop===0) for(i=0;i<G.noiseRings.length;i++){
 '@
@@ -68,7 +68,7 @@ var VER='15.67';
 $pat = "(?m)^  now:'v15\.66:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v15.67: RED NOISE MARKS FOR UNSEEN SOUNDS ARE DRAWN ABOVE THE DARKNESS AND FOG OF WAR SHEETS. The red ring that marks a sound he cannot see was drawn on the ground under the darkness and the fog of war, so by night it reached the screen at about a quarter of its strength, and a grenade landing out of sight behind him was a faint smudge. The marks now draw above both sheets with the gunfire rings, in the same colour, size and fade. Check 15.67 records the draw order of one raid frame with a mark and a gunfire ring 300 units behind him; it fails on v15.66',"
+$new = "  now:'v15.67: RED NOISE MARKS FOR UNSEEN SOUNDS ARE DRAWN ABOVE THE DARKNESS AND FOG OF WAR SHEETS. The red ring that marks a sound he cannot see was drawn on the ground under the darkness and the fog of war, so by night it reached the screen at about a quarter of its strength, and a grenade landing out of sight behind him was a faint smudge. The marks now draw above both sheets with the other sound rings, in the same colour, size and fade. Check 15.67 records the draw order of one raid frame with a mark and a gunfire ring 300 units behind him; it fails on v15.66',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s

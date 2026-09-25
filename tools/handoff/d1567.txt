@@ -1,0 +1,73 @@
+## v15.67 - RED NOISE MARKS FOR UNSEEN SOUNDS ARE DRAWN ABOVE THE DARKNESS AND FOG OF WAR SHEETS
+
+Stealth audit finding (LOW), index 5 of the confirmed list in audit-wfxd2t8x2.json. The verdict found it real with no corrected
+fix; the build is the auditor's fix plus the verdict's own optional refinement (keep the old place behind the ringsOnTop dial).
+
+The v9.07 noise marks (G.noiseRings, the red #ff5a4a ring for a sound he cannot see) were drawn in the world pass of render2D,
+inside wc.save(); wc.scale(Z,Z); wc.translate(-ox,-oy); after the puffs and before the throws. After that pass render2D lays the
+darkness sheet (wc.drawImage(litC,0,0); NIGHT_SHEET, about 0.30 by night) and then the fog of war sheet
+(wc.drawImage(fogC,0,0); about 0.46 by day and 0.60 by night) over the whole world. noiseMark returns early on
+if(canSee(p.x,p.y,p.face,wx,wy,G.vseg)) return;, so a mark only ever exists where he cannot see, which is ground under the fog
+sheet (the small ambient cutout around him aside). Both sheets were laid over every mark: by night a mark reached the screen at
+roughly 28 percent of its alpha. This is the fault the v4.05 note names for the pings ("the rings were being buried exactly
+where they mattered"), fixed then by the ringsOnTop pass that draws G.pings after the fog; the v9.07 marks came later and went
+back under the sheets, and their own comment gives world space as the only reason for the place. Gunshots also get a ping ring
+on top, but some sounds have only this mark: the charge warning where a pillager grenade lands (v15.28), the Listener and Crier
+windups, and the extraction inbound, landing and last call sounds. By night a grenade landing out of sight behind him showed as
+a faint smudge. CFG.noiseSee is 1, so the marks are on. Draw order only, not balance.
+
+THE BUILD. Two code edits plus VER and DEVNOW.
+1. The world pass block (near 24027): if(G.noiseRings) for(...) becomes if(G.noiseRings&&CFG.ringsOnTop===0) for(...). The body
+   is untouched, so with ringsOnTop dialled to 0 the marks are drawn exactly where and how they were, with the pings, which is
+   what the v4.05 comment promises ("ringsOnTop 0 restores the old order"). This is the verdict's optional refinement.
+2. The same block, word for word in its drawing (colour #ff5a4a, lineWidth 2.2, radius 6+nf*r, the trailing ring past nf 0.22
+   at 0.55 of the alpha, y-10), is added after the ringsOnTop ping pass's closing wc.restore(); } and before the weather
+   comment, inside its own wc.save(); wc.scale(Z,Z); wc.translate(-ox,-oy); ... wc.globalAlpha=1; wc.restore(); and gated
+   if(CFG.ringsOnTop!==0&&G.noiseRings&&G.noiseRings.length). At that point the canvas is in source-over at alpha 1 (the
+   wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; after the warm glows), the transform is the absolute DPR reset
+   plus the same world scale and translate the pings use, i is the function's shared var and nr and nf are declared inside, so
+   nothing else moves. The marks now sit above the darkness and the fog and below the rain, like the pings.
+No number changed: every alpha, radius, width, life and the NOISEMARK table are as they were. No player text was added or
+reworded (no TXSHIP key touched), no dial default, loot table or balance number moved. render2D draws no seeded random here,
+and map building is not touched, so the seed 4242 fingerprint in __verifySafe (ents 85/374, containers 165/593) cannot move.
+The sim never draws, so no paired number moves.
+
+MEASURED. Check 15.67 records draw order rather than pixels. It cleans the card and profile, resets dials, snapshots the
+profile, deploys map 0 at seed 4242, requires a sized pane and ringsOnTop on after the reset, pins his facing to PI/2 and takes
+a spot 300 units directly behind him. The mark and a control ping are told apart by a fraction of a unit no map place is given
+(x+0.3125 for the mark, x+0.6875 for the ping). CONTROL: canSee says he cannot see either place. It wraps wc.drawImage (records
+the darkness sheet litC and the fog sheet fogC) and wc.arc (records arcs at the two test x values with radius, composite,
+alpha, stroke colour and getTransform), and draws one frame with render2D(0) holding only G.noiseRings=[{t:0.35,life:1.15,r:60,
+a0:0.65}] and G.pings=[{src:'robot',typ:'fire',s:500,occ:1,t:0.3,life:1.1}]. CONTROL: the frame laid the darkness sheet and then
+the fog sheet. CONTROL: the ping ring is drawn after the fog sheet on either build (the v4.05 pass), so a ring above the fog is
+seen by the recording. THE FINDING: the mark must be drawn, as exactly two rings (the ring and its trailing ring at this age),
+both after the fog sheet; on v15.66 both are drawn before the darkness sheet and the check fails for the finding's own reason.
+It also holds the mark to what it always was: #ff5a4a, source-over, alpha 0.65*(1-nf) and 0.55 of that, radius 6+nf*60 and
+6+(nf-0.22)*60, and the same transform as the ping on the same ground (all true on either build). THE DIAL: with ringsOnTop 0
+(CONTROL: the ping is then drawn before the darkness sheet) the mark must be two rings, both before the darkness sheet; true on
+either build. Controls that cannot run after a failure keep the failure (skip helper, as in 15.64). In finally the wrapped
+methods are put back (deleted if they were not own properties), ringsOnTop, G.noiseRings, G.pings and his facing are put back,
+the raid is abandoned, the profile snapshot is restored with __applyLoaded, and the card, dials and profile are cleaned.
+
+Older fixture checks: none restaged. 9.07 counts pixels changed by a ring at birth against the floor ring 60 in __FLOORS and
+expects none from a seen noise; drawn above the sheets the ring changes the same pixels or a few more, and a seen noise still
+makes no mark. 10.79 judges the same reading (live 120) against floor 60 and fails if a quarter of it clears the floor, that is
+at 240 or more. The ring at birth is radius 6 at zoom 1, an antialiased footprint of about 135 pixels, and under the sheets
+nearly every touched pixel already changed (diffE counts any change), so the reading can rise only by the faintest edge pixels
+and should stay well under 240. If a dry run shows 10.79 red on the ring, the ring floor in __FLOORS wants re-measuring, not
+this build reverting. 11.59 checks only that marks are made. The two checks that wrap arc (the heal ring at r 9 in #7fc4a0, the
+strike ring near radius 118 on the prototype) filter on radius and colour and drew noise marks on the old build too; the move
+changes when a mark is drawn, not whether.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (v15.66 applied, check 15.66 on top): p1567
+printed OK, 3 edits applied plus DEVNOW, and f1567 printed OK, 1 edits applied; every anchor a whole line block matching once.
+render2D as patched (and as it stands) and the new check parse in JScript. Anchors: the v9.07 comment block and its loop line
+(  // v9.07: A NOISE YOU CANNOT SEE. ... through   if(G.noiseRings) for(i=0;i<G.noiseRings.length;i++){, four lines); the close
+of the ringsOnTop ping pass and the weather comment (    wc.restore(); /   } /   // Weather sits ON TOP of the fog, because rain
+falls between you and the world, three lines); var VER='15.66';; the DEVNOW now key for v15.66; the fixture line
+{v:'15.66',what:. None of them is touched by p1562 to p1566 or by the queued p1568 to p1571. Review re-run on scratch copies
+of the committed v15.66 files: p1567 OK (3 edits plus DEVNOW), f1567 OK (1 edit), then p1568 to p1571 and f1568 to f1571 all
+OK on top; both fixtures (the fix and the old build with the new check) build, and the check and render2D balance to 0 0 0.
+
+Not verified: the check has not been run in a browser yet, and 9.07 and 10.79 have not been re-read on the patched build. Not
+looked at by hand: a grenade landing out of sight behind him at night.

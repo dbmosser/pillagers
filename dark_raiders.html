@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.66';
+var VER='15.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24024,7 +24024,11 @@ var b=G.bullets[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   // v9.07: A NOISE YOU CANNOT SEE. An expanding red ring at the place the sound
   // came from, fading as it grows. Drawn here so it is in world space: it sits
   // on the ground where the noise happened and scales with his zoom.
-  if(G.noiseRings) for(i=0;i<G.noiseRings.length;i++){
+  // v15.67, stealth audit finding: RED NOISE MARKS FOR UNSEEN SOUNDS ARE DRAWN ABOVE THE DARKNESS AND FOG OF WAR SHEETS. This
+  // pass lies under both sheets, and noiseMark keeps only sounds he cannot see, which is ground the fog of war sheet covers,
+  // so every mark was buried exactly where it is shown. The marks now draw after the fog, straight after the v4.05 ping pass;
+  // this old place runs only when ringsOnTop is dialled off, the same way back to the old order the pings have.
+  if(G.noiseRings&&CFG.ringsOnTop===0) for(i=0;i<G.noiseRings.length;i++){
     var nr=G.noiseRings[i], nf=clamp(nr.t/nr.life,0,1);
     wc.globalAlpha=clamp(nr.a0*(1-nf),0,1);
     wc.strokeStyle='#ff5a4a';
@@ -24361,6 +24365,30 @@ wc.drawImage(fogC,0,0);
       wc.beginPath(); wc.arc(pn.x,pn.y-_pl,pr,0,6.2832); wc.stroke();
     }
     wc.restore();
+  }
+  // v15.67, stealth audit finding: RED NOISE MARKS FOR UNSEEN SOUNDS ARE DRAWN ABOVE THE DARKNESS AND FOG OF WAR SHEETS. The
+  // v9.07 marks were drawn in the world pass, under the darkness sheet (litC) and the fog of war sheet (fogC), and noiseMark
+  // keeps only sounds whose place canSee says he cannot see, which is always ground under the fog sheet. So both sheets were
+  // laid over every mark: by night about 0.30 and then about 0.60, and a mark reached the screen at roughly 28 percent of its
+  // alpha. It is the v4.05 fault the pass above fixed for the pings, repeated for these marks, and some sounds have only this
+  // mark: a pillager grenade landing (v15.28), the Listener and Crier windups and the extraction sounds. By night a grenade
+  // landing out of sight behind him was a faint smudge. The marks now draw here, after the pings, above the darkness and
+  // below the rain, in the same world transform, colour, size and fade; ringsOnTop 0 puts them back in the world pass with
+  // the pings. Draw order only: no number, dial or seeded draw moved.
+  if(CFG.ringsOnTop!==0&&G.noiseRings&&G.noiseRings.length){
+    wc.save(); wc.scale(Z,Z); wc.translate(-ox,-oy);
+    for(i=0;i<G.noiseRings.length;i++){
+      var nr=G.noiseRings[i], nf=clamp(nr.t/nr.life,0,1);
+      wc.globalAlpha=clamp(nr.a0*(1-nf),0,1);
+      wc.strokeStyle='#ff5a4a';
+      wc.lineWidth=2.2;
+      wc.beginPath(); wc.arc(nr.x,nr.y-10,6+nf*nr.r,0,6.2832); wc.stroke();
+      if(nf>0.22){
+        wc.globalAlpha=clamp(nr.a0*(1-nf)*0.55,0,1);
+        wc.beginPath(); wc.arc(nr.x,nr.y-10,6+(nf-0.22)*nr.r,0,6.2832); wc.stroke();
+      }
+    }
+    wc.globalAlpha=1; wc.restore();
   }
   // Weather sits ON TOP of the fog, because rain falls between you and the world
   // rather than behind the darkness. Drawn in screen space at a fixed count, so
@@ -30732,7 +30760,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.66: PILLAGERS SEE A DOWNED OR ROLLING PLAYER AT THEIR NORMAL RANGE. Shot down while crouched, the body stayed crouched to every pillager for the whole bleed-out, so nothing past 170 could see it or shoot it, and a roll out of a crouch hid him the same way until the roll ended. Going down and rolling now leave the crouch, and on the floor the body is seen and concealed as a man lying there. Check 15.66 stands one hostile pillager 200 away and watches him take aim at a player shot down from a crouch and rolling out of one, with standing, crouched and downed standing controls; it fails on v15.65',
+  now:'v15.67: RED NOISE MARKS FOR UNSEEN SOUNDS ARE DRAWN ABOVE THE DARKNESS AND FOG OF WAR SHEETS. The red ring that marks a sound he cannot see was drawn on the ground under the darkness and the fog of war, so by night it reached the screen at about a quarter of its strength, and a grenade landing out of sight behind him was a faint smudge. The marks now draw above both sheets with the other sound rings, in the same colour, size and fade. Check 15.67 records the draw order of one raid frame with a mark and a gunfire ring 300 units behind him; it fails on v15.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -23,6 +23,8 @@ SubRx @'
      var hub=document.getElementById('hub');
      if(!hub||!document.getElementById('hotplanwrap')) return 'SKIP: no Stash screen or tactical belt in the page';
      var bad=[], snap=null, hubWas=hub.classList.contains('on'), s2Was=say2, said=[];
+     // A later control that cannot run keeps a failure already found, so the old build fails rather than skips.
+     var skip=function(m){ return bad.length?(bad.join('; ')+' (then SKIP: '+m+')'):('SKIP: '+m); };
      function plan(){ return JSON.stringify(__P().hotAssign||{}); }
      function stage(o){
        var q=__P(); q.stash=o.stash.slice(); q.kit=o.kit.slice(); q.hotAssign=JSON.parse(JSON.stringify(o.hot)); q.freeKit=0;
@@ -76,7 +78,8 @@ SubRx @'
        }
        // THE FINDING, case B: the key on the Compact SMG in his hands, dragged from key 5 to key 7, moves and packs nothing.
        stage({stash:[],kit:[],hot:{4:'gun_smg'},eq:'smg'});
-       if(plan()!=='{"4":"gun_smg"}') bad.push('control: the key on the SMG in his hands did not stay on key 5 when the Stash screen was drawn (plan '+plan()+')');
+       // CONTROL: the drawn Stash screen keeps the key on the gun in his hands (dropDeadKeys counts both guns in his hands, v14.85).
+       if(plan()!=='{"4":"gun_smg"}') return skip('the key on the SMG in his hands did not stay on key 5 when the Stash screen was drawn (plan '+plan()+')');
        else {
          var w2=drag(4,6);
          if(w2) bad.push('the key on the gun in his hands could not be driven: '+w2);
@@ -88,7 +91,8 @@ SubRx @'
        }
        // THE FINDING, case B with a spare field SMG in the stash: the key moves and the spare stays unpacked.
        stage({stash:['gun_smg'],kit:[],hot:{4:'gun_smg'},eq:'smg'});
-       if(plan()!=='{"4":"gun_smg"}') bad.push('control: with a spare SMG in the stash the key on the SMG in his hands did not stay on key 5 (plan '+plan()+')');
+       // CONTROL: the same, with the spare in the stash.
+       if(plan()!=='{"4":"gun_smg"}') return skip('with a spare SMG in the stash the key on the SMG in his hands did not stay on key 5 (plan '+plan()+')');
        else {
          var w3=drag(4,6);
          if(w3) bad.push('the key on the gun in his hands, with a spare in the stash, could not be driven: '+w3);

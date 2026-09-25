@@ -50,12 +50,13 @@ re-rendered when on), then __topClear, __resetCfg and __cleanProfile.
 Older fixture checks: none restaged. The checks that drive the DOM drag (8.72, 9.82, 9.89, 14.17) never click the dragged cell
 after it: 8.72, 9.82 and 9.89 release elsewhere and read the profile or the toast, and 14.17 presses and releases a belt key with
 no movement, which sets no GRABSKIP. The only programmatic clicks on grid cells (14.74, c.click()) have detail 0 and are never
-dropped. No fixture or chain script reads the shape of GRAB.
+dropped. No fixture or chain script reads the shape of GRAB beyond GRAB.from (check 15.70), which is unchanged.
 
-Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.61), with VER set to 15.67, a stand-in v15.67
-DEVNOW line and the 15.61 check entry renamed 15.67 so the anchors of this build exist: p1568 printed OK, 6 edits applied plus
-DEVNOW, and f1568 printed OK, 1 edits applied. Every code anchor is a whole-line block matching once in the committed file, and
-p1562 and p1564 (the other builds of this chain written so far) touch none of them. The edited pointer drag block, the edited
-invCell and the new check entry each parse in JScript.
+Dry run (review pass) on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand now (15.66 committed, so p1562 to
+p1566 are already in them): p1567 (OK, 3 edits plus DEVNOW) and f1567 (OK, 1 edit), then p1568 (OK, 6 edits plus DEVNOW) and
+f1568 (OK, 1 edit), then p1569 to p1571 and f1569 to f1571 on top, all OK. Every code anchor is a whole-line block matching once,
+and p1567 (the noise ring draw order) touches none of them. A second p1568 on the result fails on its third anchor before
+anything is written, so it cannot apply twice. The whole patched game script and the new check entry parse in Chakra (cscript,
+with reserved-word property names quoted, since the committed file already uses .catch). All five files are ASCII only.
 
 Not verified: the drag by hand on the Stash screen and at the ascent check. The check itself has not been run in a browser yet.

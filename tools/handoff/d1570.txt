@@ -46,25 +46,25 @@ handed the item and the 'plan:N' label the press carries, the same function the 
   onto the empty key 7 must give {"3":"frag","6":"medkit"} on either build, else SKIP: a drag between keys is live.
 - Case A, restaged: key 3 dragged onto the Frag Charge on key 4 must give {"2":"frag","3":"medkit"} with one of each still
   packed. On v15.69 it gives {"3":"medkit"}, the finding's own reason.
-- Case B: the Compact SMG in his hands, empty stash and kit, a key on it on key 5 (CONTROL: the drawn screen keeps {"4":"gun_smg"}).
+- Case B: the Compact SMG in his hands, empty stash and kit, a key on it on key 5 (CONTROL: the drawn screen keeps {"4":"gun_smg"},
+  else SKIP, keeping any failure already found, so v15.69 still fails on case A).
   Key 5 dragged to key 7 must give {"6":"gun_smg"}, pack nothing and leave the SMG in his hands. On v15.69 it stays
   {"4":"gun_smg"} and says the refusal line, which the failure quotes.
-- Case B with a spare field SMG in the stash (same control): the key must move to key 7 and packedCount('gun_smg') must be 0,
-  with the spare still in the stash and the SMG still in his hands. On v15.69 the spare is packed.
+- Case B with a spare field SMG in the stash (same control, same SKIP): the key must move to key 7 and packedCount('gun_smg') must
+  be 0, with the spare still in the stash and the SMG still in his hands. On v15.69 the spare is packed.
 In finally say2 is put back, any drag is ended, GRABSKIP (v15.68) is cleared, mouse.down is false, the profile is restored
 through window.__applyLoaded(snapshot), #hub is put back on or off as it was, then __topClear, __resetCfg and __cleanProfile.
 
 Older fixture checks: none restaged. No check drags one belt key onto another on the Stash screen. 14.17 drops a key on its own
 cell (the v14.17 guard, which returns before this edit); 11.69 drops a key on the stash grid and 9.82 drags one into the
-backpack and to the stash, never onto another key; 11.95 drops
-rack guns with from 'rack' (unchanged); 11.96 calls planPut directly; 15.68 drags in the backpack grid. The floor backpack and
-raid drags (14.25, 8.04 and later) use other handlers.
+backpack and to the stash, never onto another key; 11.95 drops rack guns with from 'rack' (unchanged); 11.96 calls planPut
+directly; 15.68 drags in the backpack grid. The floor backpack and raid drags (14.25, 8.04 and later) use other handlers.
 
-Dry run on scratch copies of dark_raiders.html (15.65, p1562 to p1565 applied) and mkfixture.ps1 as they stand: VER and the
-DEVNOW line stepped to 15.67 and the 15.65 check entry renamed 15.67 as stand-ins for 1566 and 1567, which are not in the queue
-yet, then p1568 (OK, 6 edits plus DEVNOW), f1568 (OK, 1 edit), p1569 (OK, 4 edits plus DEVNOW), f1569 (OK, 1 edit), p1570
-(OK, 2 edits plus DEVNOW) and f1570 (OK, 1 edit). A second p1570 on the result fails on its first anchor, so it cannot apply
-twice. p1562 to p1569 touch none of this build's code anchors. The edited dropzone callback and the new check entry each parse in
-JScript. All five files are ASCII only.
+Dry run (review pass) on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand now (15.66 committed, so p1562 to
+p1566 are already in them): p1567 (OK, 3 edits plus DEVNOW) and f1567 (OK, 1 edit), p1568 (OK, 6 edits plus DEVNOW) and f1568
+(OK, 1 edit), p1569 (OK, 4 edits plus DEVNOW) and f1569 (OK, 1 edit), then p1570 (OK, 2 edits plus DEVNOW) and f1570 (OK, 1
+edit), and p1571 and f1571 after it. p1567 to p1569 touch none of this build's code anchors. The whole patched game script and
+the new check entry parse in Chakra (cscript with reserved-word property names quoted, since the committed file already uses
+.catch). All five files are ASCII only.
 
 Not verified: the Stash screen belt by hand with the mouse. The check itself has not been run in a browser yet.
