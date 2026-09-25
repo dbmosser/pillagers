@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.55';
+var VER='15.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9991,6 +9991,18 @@ while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
   // than a handout, and extra keys from the loot tables still roll on top.
   (function(){
     var LK=map.locked||[];
+    // v15.56, keys audit finding 4: A DOOR KEY IS NEVER HIDDEN IN THE VAULT CASE OR BEHIND ANOTHER LOCKED DOOR. The promise
+    // below only asked whether a box stood inside the room THIS key opens, so two kinds of box it must never use were legal.
+    // THE VAULT CASE (v4.40) is a jackpot with no cache flag and already stands when this runs, so a door's only key could go
+    // into the one box the map never marks (his v4.40 answer: not on the map, not marked), and with a Data Core burned the
+    // sector map then drew KEY on it. And an ordinary crate, locker or safe standing inside a DIFFERENT locked room, which the
+    // v2.12 reach pass leaves where it is on purpose, was legal too, so a door could need a second key first, and two rooms
+    // could hold each other's keys with nothing saying so. sealedAny asks the same 40 unit question of every locked room.
+    var sealedAny=function(CC){
+      for(var _lq=0;_lq<LK.length;_lq++){ var _L=LK[_lq];
+        if(CC.x>_L.x-40&&CC.x<_L.x+_L.w+40&&CC.y>_L.y-40&&CC.y<_L.y+_L.h+40) return true; }
+      return false;
+    };
     for(var lk=0;lk<LK.length;lk++){
       var kid='key_'+LK[lk].id, LR4=LK[lk];
       // A key that rolled INSIDE the room it opens does not count. That was a hole in my
@@ -10001,10 +10013,14 @@ while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
         return !(CC.x>LR4.x-40&&CC.x<LR4.x+LR4.w+40&&
                  CC.y>LR4.y-40&&CC.y<LR4.y+LR4.h+40);
       };
-      var have=false;
-      for(var ci3=0;ci3<containers.length&&!have;ci3++)
-        if(containers[ci3].loot.indexOf(kid)>=0&&outside(containers[ci3])) have=true;
-      if(have) continue;
+      // v15.56, keys audit finding 4: A DOOR KEY IS NEVER HIDDEN IN THE VAULT CASE OR BEHIND ANOTHER LOCKED DOOR. A key that
+      // rolled into a safe or cache inside ANOTHER locked room kept the promise here and no reachable key was placed. Only a
+      // copy clear of every locked room keeps it now (haveOpen). have still records the old answer, any copy outside this
+      // room, because it decides below whether the draw is taken, and that must not move.
+      var have=false, haveOpen=false;
+      for(var ci3=0;ci3<containers.length&&!haveOpen;ci3++)
+        if(containers[ci3].loot.indexOf(kid)>=0&&outside(containers[ci3])){ have=true; if(!sealedAny(containers[ci3])) haveOpen=true; }
+      if(haveOpen) continue;
       // Somewhere unopened, not inside the door it opens, and not a cache, so the key is
       // found by searching the world rather than by winning the jackpot you already want.
       var cands=[];
@@ -10015,7 +10031,18 @@ while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
         cands.push(CC);
       }
       if(!cands.length) continue;
-      var pickC=cands[ri(0,cands.length-1)];
+      // v15.56, keys audit finding 4: A DOOR KEY IS NEVER HIDDEN IN THE VAULT CASE OR BEHIND ANOTHER LOCKED DOOR. The list and
+      // the one ri draw are exactly as they were, so every seed takes the same draws in the same order and every key that
+      // already landed in an open box stays in that box. Only a pick that is THE VAULT CASE or stands inside a locked room walks
+      // on through the same list to the next box clear of every locked room. When a copy behind another door satisfied the old
+      // test no draw was ever taken here, so none is taken now: that walk starts at the raid seed instead. No box, no count, no
+      // loot table and no draw moved, so the seed 4242 fingerprint holds.
+      var _kat=have?((seed>>>0)%cands.length):ri(0,cands.length-1), pickC=null;
+      for(var _kstep=0;_kstep<cands.length&&!pickC;_kstep++){
+        var _kbox=cands[(_kat+_kstep)%cands.length];
+        if(_kbox.type!=='jackpot'&&!sealedAny(_kbox)) pickC=_kbox;
+      }
+      if(!pickC) continue;
       pickC.loot.push(kid);
       pickC.loot.sort(function(a,b){ return ival(a)-ival(b); });
       pickC.best=bestRarity(pickC.loot);
@@ -30588,7 +30615,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.55: THE INTEL KEY MARK LEAVES A CONTAINER ONCE ITS KEY IS TAKEN OUT. With a Data Core burned, a safe or locker searched part way gave up its key first, since loot comes out worst first, and its gold KEY stayed on the sector map for the rest of the raid with the key already in the backpack. The mark now goes as soon as no key is left inside, and a box still holding its key keeps it. Check 15.55 holds X beside a staged box until the key comes out and draws the map; it fails on v15.54',
+  now:'v15.56: A DOOR KEY IS NEVER HIDDEN IN THE VAULT CASE OR BEHIND ANOTHER LOCKED DOOR. The rule that every locked door has a key somewhere on the map could put that key in the unmarked Vault Case, or in a box inside a different locked room, so one door needed another key first. The key now goes to an ordinary box clear of every locked room, and a key that already landed in one stays exactly where it was. Check 15.56 stages a Foreman Office key inside the Blast Freezer on COLD STORAGE and reads where both door keys land; it fails on v15.55',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
