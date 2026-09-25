@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.73 - CHECK 9.63 MEASURES THE SHOT MARK ALONE AGAIN
+
+The v15.72 corpus went red on check 9.63 (a pillager you cannot see, shooting, leaves a red mark you can), alone as well as in the
+corpus. No game fault: since v15.67 the noise ring of a hidden shot is drawn above the darkness, as the stealth audit asked, and it
+reddens the arm of 9.63 that switches the shot mark off (712 red pixels), so the control that needs the mark to triple the red failed.
+
+THE BUILD. No game code changes. The fixture clears the noise ring right after the shot in check 9.63, so both arms measure the
+shot mark alone.
+
+MEASURED. Check 9.63 failed on v15.72 alone and in the corpus, and passes twice with the fixture change. Check 15.73 requires 9.63 to pass;
+being fixture only, it passes on the v15.72 control fixture too, which carries the same restaged 9.63.
+
+Not verified: nothing beyond the fixture.
 ## v15.72 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 WHATSNEW_VER stood at 15.61 against a build at 15.71, due for its refresh, and the card said nothing about the fixes of v15.62 to

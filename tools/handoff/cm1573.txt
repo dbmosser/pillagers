@@ -1,0 +1,9 @@
+v15.73: check 9.63 measures the shot mark alone again
+
+Since v15.67 the noise ring of a hidden shot shows above the darkness and
+reddened the mark-off arm of check 9.63. The fixture clears it before
+measuring. No game code changes.
+
+Check 15.73. Fixture only: the unchanged 9.63 failed on v15.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

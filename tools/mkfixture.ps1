@@ -5721,6 +5721,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'15.73',what:'check 9.63 measures the shot mark alone again: with the noise ring of a hidden shot drawn above the darkness since v15.67, the red a pillager shot leaves is still told apart from the mark being off',
+   run:function(){
+     var c=null, i;
+     for(i=0;i<__REGRESS.length;i++) if(__REGRESS[i].v==='9.63'){ c=__REGRESS[i]; break; }
+     if(!c) return 'SKIP: check 9.63 is not in this fixture';
+     var r=c.run();
+     if(r===null) return null;
+     if((/^SKIP/).test(String(r))) return r;
+     return 'check 9.63 fails: '+r; }},
   {v:'15.72',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the crouch news of v15.64, still opening with the alpha line',
    run:function(){
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
@@ -33531,6 +33540,9 @@ window.__REGRESS=[
        g.pings.length=0;
        __gun.fire(R,__gun.weapons.pistol,p.x,p.y,false);
        var made=g.pings.length;
+       // v15.73: since v15.67 the noise ring of this same shot is drawn above the darkness too, in the same reds, and it does not
+       // follow the shot mark dial. Clear it so both arms measure the shot mark alone.
+       if(g.noiseRings) g.noiseRings.length=0;
        __frame(0.016);
        var sp=__w2s(R.x,R.y);
        var bx=Math.max(0,Math.round(sp.x-170)), by=Math.max(0,Math.round(sp.y-170));
