@@ -40024,6 +40024,68 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.68 - DRAGGING A BACKPACK STACK AND LETTING GO ON ITS OWN CELL MOVES NOTHING
+
+Grid audit finding (MEDIUM), entry 7 of the confirmed list (index 6).
+
+On the Stash screen, pack two Medkits so the backpack shows Medkit x2. Press on the Medkit stack, drag it toward the stash,
+change your mind, bring it back and let go on the same cell. The backpack drop (renderKitCol's dropzone on kitcol) takes only
+from the stash, so for from 'kit' it returns at if(from!=='stash') return; and nothing is re-rendered. That part is right. But the
+browser then sends a click to the cell, because the press and the release were both on it, and invCell's guard
+if(GRAB) return; (a drag ending on this cell is not a click) can never fire: the document mouseup listener runs grabEnd, which
+sets GRAB to null, while the mouseup is still being dispatched, and the click comes only after it. So the click runs opt.act(1):
+P.kit.splice, clearKeysFor, saveProfile, sfx and renderHub, with no say2. The backpack reads Medkit x1 and one Medkit went home
+with no word. The ascent check has the same cells: a kit cell dragged out and back ran click: put one back, and a stash cell
+dragged out and back ran click: carry one. Nothing in the file calls this deliberate (the guard's own comment says the opposite);
+the v14.17 rule that a belt key picked up and let go on itself is a clear belongs to the belt-key drop handler, which does not use
+invCell. It is not balance.
+
+THE BUILD. Five code edits in the pointer drag and one in invCell's click, plus VER and DEVNOW.
+- var GRAB=null; gains a neighbour, var GRABSKIP=null;: the cell a drag that really moved started on.
+- grabbable's mousedown keeps the cell and the press point, GRAB={key,from,el,x,y}, and clears GRABSKIP, so a new press always
+  forgets the last drag.
+- The document mousemove sets GRAB.moved once the pointer is more than 6 pixels (x plus y) from the press. A plain click with a
+  shaky hand still moves less than that.
+- The document mouseup, before grabEnd, sets GRABSKIP to the pressed cell when the drag moved and to null when it did not.
+- invCell's click, after the old guard (left in place), reads GRABSKIP and clears it; if it named this cell and the click is a
+  mouse click (detail not 0) the click is dropped. A controller A press is el.click(), detail 0 (the rule check 14.74 relies on),
+  and is never a drag, so it still acts.
+This differs from the audit's proposed fix on purpose. The audit set a GRABMOVED flag on mouseup and cleared it with
+setTimeout(0). __regress runs every check in one synchronous loop, so that timer never fires between checks: a check that drags
+with movement (8.72 belt to stash, 9.82 belt to backpack, 9.89 off the belt message) would leave the flag up and the next check's
+mouse click on any backpack or ascent check cell would be eaten. A flag named for one cell and cleared by the next press cannot
+leak that way; at worst a stale name points at a cell that has been re-rendered away, and a press on any cell clears it. No word
+of player text was added or reworded (nothing near a TXSHIP key), and no number, dial, loot table or seeded draw moved. Map
+building is not touched, so the seed 4242 fingerprint in __verifySafe (ents 85/374, containers 165/593) cannot move.
+Not changed here: the stash screen's own stash cells use a separate click handler (plain mouse click does nothing there), and the
+belt keys have their own drop rules; neither reads invCell.
+
+MEASURED. Check 15.68 clears the card, resets CFG (so the text editor cannot eat clicks) and cleans the profile, snapshots it,
+enters the floor with __hubEnter, shuts any open window (a fresh profile opens the welcome window), and stages two Medkits in the
+stash and both packed, with no belt keys and freeKit 0, then renderHub and #hub on. It aims only at the Medkit stack in #kitgrid
+when its centre is on screen and elementFromPoint there is that cell, else SKIP. CONTROL: packedCount('medkit') is 2 and the
+stash holds 2; a plain mousedown, mouseup and click (detail 1) at the centre leaves 1 packed, so the click verb and its handler
+are live, on either build. Then the stack is staged again and pressed, the pointer moved to the middle of #stashgrid and back,
+and released on the cell. CONTROLS: the press armed GRAB, the release cleared it, and the release alone moved nothing (still 2).
+Then the click on that cell: packedCount must still be 2 and the stash must still hold 2. On v15.67 the click unpacks one and
+the check fails with 1 packed, the finding's own reason. Then, on a pass, a plain press and click on the same cell must leave 1
+packed, so the next real click after a drag is not swallowed. In finally: grabEnd if GRAB is still set, GRABSKIP cleared where it
+exists, mouse.down cleared, the profile restored through window.__applyLoaded(snapshot), #hub put back on or off as it was (and
+re-rendered when on), then __topClear, __resetCfg and __cleanProfile.
+
+Older fixture checks: none restaged. The checks that drive the DOM drag (8.72, 9.82, 9.89, 14.17) never click the dragged cell
+after it: 8.72, 9.82 and 9.89 release elsewhere and read the profile or the toast, and 14.17 presses and releases a belt key with
+no movement, which sets no GRABSKIP. The only programmatic clicks on grid cells (14.74, c.click()) have detail 0 and are never
+dropped. No fixture or chain script reads the shape of GRAB beyond GRAB.from (check 15.70), which is unchanged.
+
+Dry run (review pass) on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand now (15.66 committed, so p1562 to
+p1566 are already in them): p1567 (OK, 3 edits plus DEVNOW) and f1567 (OK, 1 edit), then p1568 (OK, 6 edits plus DEVNOW) and
+f1568 (OK, 1 edit), then p1569 to p1571 and f1569 to f1571 on top, all OK. Every code anchor is a whole-line block matching once,
+and p1567 (the noise ring draw order) touches none of them. A second p1568 on the result fails on its third anchor before
+anything is written, so it cannot apply twice. The whole patched game script and the new check entry parse in Chakra (cscript,
+with reserved-word property names quoted, since the committed file already uses .catch). All five files are ASCII only.
+
+Not verified: the drag by hand on the Stash screen and at the ascent check. The check itself has not been run in a browser yet.
 ## v15.67 - RED NOISE MARKS FOR UNSEEN SOUNDS ARE DRAWN ABOVE THE DARKNESS AND FOG OF WAR SHEETS
 
 Stealth audit finding (LOW), index 5 of the confirmed list in audit-wfxd2t8x2.json. The verdict found it real with no corrected

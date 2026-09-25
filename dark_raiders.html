@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.67';
+var VER='15.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30760,7 +30760,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.67: RED NOISE MARKS FOR UNSEEN SOUNDS ARE DRAWN ABOVE THE DARKNESS AND FOG OF WAR SHEETS. The red ring that marks a sound he cannot see was drawn on the ground under the darkness and the fog of war, so by night it reached the screen at about a quarter of its strength, and a grenade landing out of sight behind him was a faint smudge. The marks now draw above both sheets with the other sound rings, in the same colour, size and fade. Check 15.67 records the draw order of one raid frame with a mark and a gunfire ring 300 units behind him; it fails on v15.66',
+  now:'v15.68: DRAGGING A BACKPACK STACK AND LETTING GO ON ITS OWN CELL MOVES NOTHING. A stack in the backpack pressed, dragged toward the stash and let go back on its own cell unpacked one item with no word, because the drag ended before its click arrived and the click still counted; at the ascent check the same move put one back or packed one. A drag that moved now ends with no click on its cell, and a plain click still moves one. Check 15.68 drags a packed Medkit stack out and back on the Stash screen; it fails on v15.67',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32163,6 +32163,15 @@ function invCell(k,count,opt){
     // Arc Raiders'' bar: SHIFT quick move, ALT split stack. Plain click moves one.
     cell.onclick=function(ev){
       if(GRAB) return;                       // a drag ending on this cell is not a click
+      // v15.68, grid audit finding: DRAGGING A BACKPACK STACK AND LETTING GO ON ITS OWN CELL MOVES NOTHING. The line above
+      // never fired: the document mouseup runs grabEnd, which sets GRAB to null, and the browser sends the click only after
+      // that mouseup is done. So a stack pressed, dragged toward the stash and let go on its own cell ran act(1) here: on the
+      // Stash screen one Medkit left the backpack with no word (the backpack drop takes only from the stash and does nothing),
+      // and at the ascent check a kit cell put one back and a stash cell packed one. The mouseup now names the cell of a drag
+      // that moved (GRABSKIP), and the click on that cell is dropped. A controller A press is a click with detail 0 and is
+      // never a drag, so it still acts; any new press clears GRABSKIP, so the next real click on the cell acts as before.
+      var _gs=(GRABSKIP===cell); GRABSKIP=null;
+      if(_gs&&ev.detail!==0) return;
       if(ev.altKey) opt.act(Math.max(1,Math.floor(count/2)));
       else opt.act(ev.shiftKey?count:1);
     };
@@ -35036,6 +35045,10 @@ function ascendNow(){
 // GRAB.key is what is being dragged. GRAB.from is where it came from, so a drop
 // can tell "took it out of the stash" from "put it back".
 var GRAB=null;
+// v15.68, grid audit finding: DRAGGING A BACKPACK STACK AND LETTING GO ON ITS OWN CELL MOVES NOTHING. GRABSKIP is the cell a
+// drag that really moved started on. The click the browser sends after a mouseup lands on that cell only when the drag was
+// let go on it, and that click is the end of the drag, not a click. invCell reads it and clears it; a new press clears it.
+var GRABSKIP=null;
 function grabGhost(text){
   var g=document.getElementById('grabghost');
   if(!g){
@@ -35063,7 +35076,9 @@ function grabbable(el,key,from,label){
   el.addEventListener('mousedown',function(ev){
     if(ev.button!==0) return;
     ev.preventDefault();
-    GRAB={key:key,from:from};
+    // v15.68, grid audit finding: DRAGGING A BACKPACK STACK AND LETTING GO ON ITS OWN CELL MOVES NOTHING. The cell and the
+    // press point are kept so the mousemove below can tell a drag from a click, and a new press forgets the last drag.
+    GRAB={key:key,from:from,el:el,x:ev.clientX,y:ev.clientY}; GRABSKIP=null;
     var g=grabGhost(label||key);
     // v12.25: a zoomed fixed element takes its offsets in its own zoomed pixels.
     var _gz=parseFloat(g.style.zoom)||1;
@@ -35078,6 +35093,9 @@ function dropzone(el,fn){
 }
 document.addEventListener('mousemove',function(ev){
   if(!GRAB) return;
+  // v15.68, grid audit finding: DRAGGING A BACKPACK STACK AND LETTING GO ON ITS OWN CELL MOVES NOTHING. Every press arms a
+  // drag, so movement is the only difference between a click and a drag: more than 6 pixels from the press is a drag.
+  if(Math.abs(ev.clientX-GRAB.x)+Math.abs(ev.clientY-GRAB.y)>6) GRAB.moved=1;
   var g=document.getElementById('grabghost');
   if(g){ var _gz2=parseFloat(g.style.zoom)||1; g.style.left=((ev.clientX+12)/_gz2)+'px'; g.style.top=((ev.clientY+12)/_gz2)+'px'; }   // v12.25: zoomed pixels
   // light up whatever is under the cursor, so a target reads as a target
@@ -35089,6 +35107,10 @@ document.addEventListener('mousemove',function(ev){
 document.addEventListener('mouseup',function(ev){
   if(!GRAB) return;
   var held=GRAB;
+  // v15.68, grid audit finding: DRAGGING A BACKPACK STACK AND LETTING GO ON ITS OWN CELL MOVES NOTHING. grabEnd below clears
+  // GRAB while this mouseup is still running, so the invCell guard if(GRAB) return; could never see the drag when its click
+  // arrived. The cell of a drag that moved is remembered here, for that one click; a plain click leaves nothing behind.
+  GRABSKIP=held.moved?(held.el||null):null;
   var t=document.elementFromPoint(ev.clientX,ev.clientY);
   var z=t&&t.closest?t.closest('[data-drop]'):null;
   grabEnd();
