@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.54';
+var VER='15.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28278,7 +28278,16 @@ function drawMapOverlay(){
   if(G.intel){
     for(i=0;i<(G.intelKeys||[]).length;i++){
       var IKC=G.intelKeys[i];
-      if(IKC.opened) continue;
+      // v15.55, keys audit finding 3: THE INTEL KEY MARK LEAVES A CONTAINER ONCE ITS KEY IS TAKEN OUT. The mark asked only
+      // whether the box was opened, and opened turns true only when the whole search bar fills. The staged pulls hand loot out
+      // one item at a time, worst first, and a 600 to 750 key ranks below a Titanium Cell, a better gun or a Black Box, so a safe or
+      // locker searched part way gave up its key first and kept its gold KEY for the rest of the raid, with the key already in
+      // his backpack and no key left in the box, even after the key was spent at the door. With several locked rooms that sent
+      // him back across the map for a second key that was not there: the same wrong mark v15.17 took off restocked boxes,
+      // reached by an ordinary search broken off early. A box now keeps its mark only while a key_ item is still in its loot,
+      // the same test startRaid used to list it, so a box that held two keys keeps it until both are out. Crates never showed
+      // this (their key is always their last item). No player text, no number and no seeded draw moved.
+      if(IKC.opened||!(IKC.loot||[]).some(function(_k){ return String(_k).indexOf('key_')===0; })) continue;
       var ikx=ox+IKC.x*sc,iky=oy+IKC.y*sc;
       ctx.fillStyle='#ffc04a';
       ctx.beginPath(); ctx.arc(ikx,iky-3,2.6,0,6.2832); ctx.fill();
@@ -30579,7 +30588,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.54: WITH THE FREEBIE KIT TAKEN, BUILD A RACK NAMES THE PACKED PARTS IT USES. With Circuit Boards packed and the freebie kit taken, a rack counted every board as loose, used the packed ones without a word, and the lift question still counted them while MY LOADOUT took up fewer. A rack now treats the packing set aside as packed: loose parts still go first, set-aside parts it uses come off that list and are named in the rack line, and the lift counts what goes up. Check 15.54 builds a rack with packed boards, without and with the freebie kit taken, then asks the lift question; it fails on v15.53',
+  now:'v15.55: THE INTEL KEY MARK LEAVES A CONTAINER ONCE ITS KEY IS TAKEN OUT. With a Data Core burned, a safe or locker searched part way gave up its key first, since loot comes out worst first, and its gold KEY stayed on the sector map for the rest of the raid with the key already in the backpack. The mark now goes as soon as no key is left inside, and a box still holding its key keeps it. Check 15.55 holds X beside a staged box until the key comes out and draws the map; it fails on v15.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

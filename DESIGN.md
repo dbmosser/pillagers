@@ -40024,6 +40024,58 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.55 - THE INTEL KEY MARK LEAVES A CONTAINER ONCE ITS KEY IS TAKEN OUT
+
+Keys audit finding 3 (MEDIUM).
+
+Slot a Data Core and ascend. startRaid lists every container whose loot holds a key_ item in G.intelKeys, and the sector map draws
+a gold KEY on each. The mark asked one thing, if(IKC.opened) continue, and opened turns true only in the full open, when the whole
+search bar fills. Live play empties a box through the staged pulls in updatePlayer: near.loot.shift() then openContainer(near,[_k]),
+which returns through grantLoot before ct.opened=true. Loot is sorted worst first (the locked room guarantee re-sorts after it
+pushes the key, and setLoot and mkContainer sort the same way), and a key is worth 600 to 750, so a safe or locker that also holds
+a Titanium Cell, a better gun or a Black Box gives up its key first. Let go of X or E before the bar fills, or be pulled into a
+fight, and the key is in the backpack while the box stays shut with no key in it. The KEY stayed on it for the rest of the raid,
+even after the key was spent at the door, and with several locked rooms it sent him back across the map for a second key that was
+not there. Nothing else ever took the box off the list: restock skips unopened boxes and the merc skips half searched ones. This is
+the same wrong mark v15.17 took off restocked boxes, reached by an ordinary search broken off early. The map header calls keys live
+intel, so it is a bug, not a rule. Crates never showed it: a crate's key is its last item and lands on the frame opened is set.
+
+THE BUILD. One line in drawMapOverlay, the INTEL block: a listed container is skipped when it is opened or when nothing in its loot
+starts with key_, the same test startRaid used to put it on the list. A box that held two keys keeps its mark until both are out.
+The loot is read as (IKC.loot||[]) so a container without a loot array can never throw the whole map; the finding's fix read
+IKC.loot directly and every container has one today. The v15.17 restock splice is left in place: it is now redundant for the mark
+but harmless. Map only, drawn on the frame: no player text, no number, no dial, no loot table and no seeded draw moved, and map
+building is untouched, so the seed 4242 fingerprint (ents 85/374, containers 165/593) cannot move.
+
+MEASURED. Check 15.55 burns a Data Core (P.intel=1 before __deploy at seed 4242, map 0) and requires the ascent to have set G.intel,
+built G.intelKeys and spent the core. It takes a shut container the game listed that holds its key and has a spot in search reach
+(24, 32, 40 or 16 units out, no wall within his radius plus 1.5, clear line on G.vseg), else any shut non-strongbox with such a
+spot; the key is its own, else a listed one, else key_ of the first locked room. It stages that box with setLoot as the key plus a
+Meridian Black Box and wants the game's own sort to put the key first (else SKIP), with the search at zero. He is put on the spot
+with the map, backpack, drag, stall and waves cleared and iv 99, and any other shut container within 60 is marked opened for the
+check. Controls: one frame of updatePlayer with no key down leaves him within 0.5 of the spot, finds that box as G.nearContainer and
+searches nothing; with G.intelKeys set to that box alone the sector map calls mapLabel with KEY exactly once (calls are counted, so
+the same-word merge cannot hide one). Then the play path: X held, updatePlayer(1/30) a frame at a time until no key is left in the
+box (900 frames at most), X let go. Controls: the raid is live and he is up, the backpack holds one more of that key, the box is
+still not opened, and its loot is the Black Box alone. Then the map is drawn again with that box alone on the list and must write
+no KEY. On v15.54 it writes one, so the check fails there for the finding's own reason. Last, a second shut container still holding
+a key (a listed one, else the first shut container, given the key) alone on the list must still get exactly one KEY; that holds on
+both builds. In finally mapLabel is put back, keys and mouse.down are cleared, the containers marked opened are shut again,
+G.intelKeys and G.ents are put back, his position, speed, iv, roll and auto jog are restored, the map, backpack, drag, stall, stall
+lock, search and wave clock are restored, the raid is abandoned, the profile snapshot goes back through __applyLoaded and the
+fixture is cleaned.
+
+Older fixture checks: none restaged. Check 15.17 is the only one that draws the intel marks. Its crate and locker restock with no
+key and leave the list, and its third container still holds its key, so it draws the same marks on v15.55 as on v15.54. No other
+check reads G.intelKeys or the drawMapOverlay source near the INTEL block.
+
+Dry run on fresh scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.51 applied): p1552 and f1552, p1553 and
+f1553, p1554 and f1554, then p1555 and f1555, in version order with nothing moved by hand, every script printing OK and every anchor
+a whole line block matching once; p1556 to p1559 and f1556 to f1559 then applied on top, also OK. A second p1555 run was refused
+with the anchor matching 0 times and left the file unchanged. None of p1552 to p1554 touches the INTEL block. The edited
+drawMapOverlay and the check entry both parse in JScript.
+
+Not verified: the check has not been run in a browser, and no real raid has been played to a half searched key box by hand.
 ## v15.54 - WITH THE FREEBIE KIT TAKEN, BUILD A RACK NAMES THE PACKED PARTS IT USES
 
 Rack audit finding (LOW).
