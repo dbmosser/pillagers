@@ -1,0 +1,19 @@
+v15.77: each window on one PC gets a controller of its own
+
+Multiplayer build 4. A browser hands the keyboard, the mouse and the
+controllers to the window in front only, so player 2 at the second
+window had no controller while player 1 played the first. Now the window
+in front reads every connected controller each frame and hands the other
+window the state of the controller that window plays, over the channel
+the two windows already share, about sixty times a second; the window
+not in front plays that state, and in front it plays its own. The host
+plays the keyboard and mouse unless it picks a controller; player 2 plays
+the controller it picks, or the first one the host has not taken. A
+CONTROLLER row in the PARTY window picks it for each window and the pick
+is kept for next time. Neither window ever plays the other one. Solo
+play and the invite code party are untouched. The live test is the
+controller step of RUN SAME MACHINE in tools/nettest.html.
+
+Check 15.77. Fails on v15.76.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

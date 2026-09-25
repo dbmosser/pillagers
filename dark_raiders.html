@@ -807,6 +807,12 @@
   <div class="msub">Up to four pillagers, linked by invite code. The others in your party walk the Undercroft floor with you, with their names over their heads, and every raid is still played alone.</div>
   <div class="msub" id="partystat" style="color:var(--amber);font-weight:700"></div>
   <div class="msub" id="partymode" style="display:none;color:var(--bone);letter-spacing:.14em"></div>
+  <!-- v15.77: in a same machine mode each window plays a controller of its own; this row picks it. No word here that
+       controller B looks for (leave, close, back, done, return). -->
+  <div class="msub" id="partypad" style="display:none">
+    <button id="partypadbtn" style="padding:6px 16px">THIS WINDOW: NO CONTROLLER, KEYBOARD AND MOUSE</button>
+    <span id="partypadnote" style="margin-left:10px;color:var(--ash)"></span>
+  </div>
   <div class="msub" id="partyerr" style="color:var(--hazard);font-weight:700;display:none"></div>
   <div class="plist" id="partyroster" style="border:1px solid var(--steel-hi);display:none"></div>
   <div class="pbox" id="partystart" style="display:flex;gap:14px;margin-top:10px;align-items:flex-start;flex-wrap:wrap">
@@ -1412,7 +1418,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.76';
+var VER='15.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12035,7 +12041,12 @@ function padRelease(){
 function pollPad(){
   if(!navigator.getGamepads) return;
   var gps=navigator.getGamepads(),gp=null;
-  for(var i=0;i<gps.length;i++){ if(gps[i]&&gps[i].connected){ gp=gps[i]; break; } }
+  // v15.77, HIS ORDER OF 2026-09-25 (multiplayer, build 4): EACH WINDOW ON ONE PC PLAYS A CONTROLLER OF ITS OWN. In a same
+  // machine mode the pad this window plays comes from netPadTick (the net section): in front, its own pick out of every
+  // connected pad, while it hands the other window the state of that window's pad; not in front, the state the window in
+  // front handed over. Outside those modes the first connected pad, as ever, and nothing below this line is asked.
+  if(typeof NET!=='undefined'&&NET&&NET.same) gp=netPadTick(gps);
+  else for(var i=0;i<gps.length;i++){ if(gps[i]&&gps[i].connected){ gp=gps[i]; break; } }
   if(!gp){ if(PAD.on) padRelease(); PAD.on=false; PAD.prev=[]; PAD.mx=0; PAD.my=0; return; }   // v8.39
   PAD.held=PAD.held||{};
   function padHold(code,down){
@@ -30875,7 +30886,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.76: THE MODE MENU AND SAME MACHINE PAIRING. Multiplayer build 3. The title opens on five rows in his order: 1 PLAYER, 2 PLAYER CO-OP (SAME MACHINE), 2 PLAYER CO-OP (SERVER), 2 PLAYER PVP (SAME MACHINE) and PVP (SERVER), the two server rows greyed and coming later, picked by mouse, by the arrows and ENTER, or by a controller. 1 PLAYER is the old start button under its old id and runs no net code. A same machine row makes this window player 1 and the host, opens a second window of the game as player 2 on a permanent save of its own, and the two pair by themselves over a channel between windows carrying the v15.74 handshake, so both stand in the Undercroft as a party of two. A blocked second window is said on the title with RETRY. The mode is kept and named in the PARTY window; the PvP rules are a later build. Solo play is untouched and the seed 4242 fingerprint has no way to move. Check 15.76 fails on v15.75',
+  now:'v15.77: EACH WINDOW ON ONE PC GETS A CONTROLLER OF ITS OWN. Multiplayer build 4. A browser hands the keyboard, the mouse and the controllers to the window in front only, so player 2 at the second window had no controller while player 1 played the first. Now the window in front reads every connected controller each frame and hands the other window the state of the controller that window plays, over the channel the two windows already share, about sixty times a second; the window not in front plays that state, and in front it plays its own. The host plays the keyboard and mouse unless it picks a controller; player 2 plays the controller it picks, or the first one the host has not taken. A CONTROLLER row in the PARTY window picks it for each window and the pick is kept for next time. Neither window ever plays the other one. Solo play and the invite code party are untouched: nothing is handed over, nothing new is read, and the seed 4242 fingerprint has no way to move. Check 15.77 fails on v15.76',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34295,7 +34306,8 @@ document.getElementById('closeterms').onclick=function(){
 var NET={on:false,proto:1,max:4,role:null,seat:-1,pid:'',name:'',sess:'',peers:[],roster:[],pend:null,made:0,sid:0,
   code:'',reply:'',codeLen:0,busy:false,status:'',err:'',
   floor:[],hubAcc:0,hubN:0,lkSent:'',   // v15.75: who stands where on the floor, by seat, and the send clock
-  mode:'',pick:'',same:'',pair:'',bc:null,p2win:null,p2url:'',sameBusy:false,start:null};   // v15.76: the mode, and the two windows on one PC
+  mode:'',pick:'',same:'',pair:'',bc:null,p2win:null,p2url:'',sameBusy:false,start:null,   // v15.76: the mode, and the two windows on one PC
+  padIx:-1,padOther:-1,padFwd:null,padSent:0,padGot:0};   // v15.77: this window's controller pick, the other window's, and the state it handed over
 var NET_ICE=[{urls:'stun:stun.cloudflare.com:3478'},{urls:'stun:stun.l.google.com:19302'}];
 var NET_TAG='PTY1', NET_WAIT_ICE=5000, NET_WAIT_HELLO=10000, NET_WAIT_HOST=30000, NET_WAIT_JOIN=180000, NET_MSG_MAX=16384;
 // The ?netslot override (read at the save key above, long before this section runs; both are hoisted declarations).
@@ -34837,6 +34849,7 @@ function netSamePost(m){ if(!NET.bc) return false; try{ NET.bc.postMessage(m); r
 function netSameStop(){
   if(NET.bc){ try{ NET.bc.onmessage=null; NET.bc.close(); }catch(e){} }
   NET.bc=null; NET.same=''; NET.pair=''; NET.mode=''; NET.p2win=null; NET.sameBusy=false;
+  NET.padFwd=null; NET.padOther=-1;   // v15.77: the handed-over state and the other window's pick go with the channel; this window's own pick stays
 }
 // The address of the player 2 window: this page, with p2=1, the mode and the pair code and nothing else.
 function netP2Url(mode,pair){
@@ -34870,6 +34883,7 @@ function netSamePick(mode,startFn){
   if(!NET.role) netStartHost();
   NET.status='Waiting for the player 2 window to link up.';
   netSameChan();
+  netPadInit();   // v15.77: this window's controller pick, kept from last time, and told to the player 2 window
   netSameHostLink();
   if(typeof go==='function') go();
   return 'opened';
@@ -34907,8 +34921,12 @@ function netSameAcceptDone(r){ if(r&&r.err){ NET.err=r.err; netRefresh(); return
 function netSameOnMsg(m){
   if(!m||typeof m!=='object'||typeof m.t!=='string') return 'bad';
   if(!NET.same||!NET.pair||m.pair!==NET.pair) return 'ignored';
+  // v15.77: the two controller words, read on either side: a pad state handed over by the window in front, and a pick.
+  if(m.t==='pad') return netPadRecv(m);
+  if(m.t==='padpick'){ NET.padOther=netPadIxOk(m.ix); return 'padpick'; }
   if(NET.same==='host'){
     if(m.t==='ready'){
+      netPadPost();   // v15.77: a player 2 window that just booted, or reloaded, is told this window's controller pick
       if(NET.pend&&NET.pend.state==='offer'){ if(NET.code){ netSamePost({t:'offer',pair:NET.pair,mode:NET.mode,code:NET.code}); return 'offer'; } return 'wait'; }
       netSameHostLink();
       return 'wait';
@@ -34943,6 +34961,7 @@ function netSameBootP2(pair,mode){
   if(typeof BroadcastChannel!=='function'||!netSupported()){ NET.err='This browser cannot link two windows of the game.'; netRefresh(); return 'unsupported'; }
   if(!NET.pair){ NET.err='This window was opened without a pair code. Close it and pick the mode again in the player 1 window.'; netRefresh(); return 'nopair'; }
   if(!netSameChan()){ NET.err='Could not open the link to the player 1 window.'; netRefresh(); return 'nochan'; }
+  netPadInit();   // v15.77: the player 2 controller pick, kept from last time, told to the player 1 window; ready stays the last word of the boot
   netSamePost({t:'ready',pair:NET.pair});
   return 'ready';
 }
@@ -34959,7 +34978,7 @@ function netTitleInit(startFn){
   for(i=0;i<hide.length;i++){ el=g(hide[i]); if(!el) continue; if(el.parentNode&&el.parentNode.className==='modelater') el=el.parentNode; el.style.display='none'; }
   if(st) st.textContent='ENTER THE UNDERCROFT';
   r=netSameBootP2();
-  if(pl){ pl.textContent='PLAYER 2. This window links up with the player 1 window on its own. Drag it to your second screen. MODE: '+netModeName(NET.mode)+'.'; pl.style.display=''; }
+  if(pl){ pl.textContent='PLAYER 2. This window links up with the player 1 window on its own. Drag it to your second screen. Your controller works here whether this window is in front or not. MODE: '+netModeName(NET.mode)+'.'; pl.style.display=''; }   // v15.77: the controller sentence
   try{ document.title='PILLAGERS, PLAYER 2'; }catch(e){}
   return r;
 }
@@ -34992,6 +35011,115 @@ function netTitleEnter(startFn){
   if(typeof startFn==='function') startFn();
   return 'start';
 }
+// v15.77, HIS ORDER OF 2026-09-25: MULTIPLAYER, BUILD 4 OF PHASE 1. EACH WINDOW ON ONE PC GETS A CONTROLLER OF ITS OWN.
+//   THE PROBLEM. A browser hands the keyboard, the mouse and (in Chrome) the controllers to the window in front only: in a
+//   window that is not in front navigator.getGamepads returns nothing, or a state that never moves. Player 1 plays the window
+//   in front on the keyboard and mouse, or on a pad; player 2 sits at the second window with a controller, and that window
+//   is not in front. So the window in front reads every connected pad each frame and hands the other window the state of
+//   that window's pad over the channel the two windows already share (netSamePost, a word {t:'pad'}), about sixty times a
+//   second while that pad is plugged in. The window not in front plays the handed-over state in place of its own read; in
+//   front, it plays its own pad. The channel between windows carries it and not the data channel of the link: the channel is
+//   open from the pick and from the player 2 boot (so the pad works on the player 2 title, before the two are linked), it
+//   survives END THE PARTY on the player 2 side, and on one PC it is a message between two windows of one browser, well
+//   under a millisecond, where the data channel goes out through the network stack and back.
+//   WHOSE PAD IS WHOSE. Each window has a pick (NET.padIx; -1 is none picked; the CONTROLLER row in the PARTY window changes
+//   it, and it is kept under salvagerun:samepad:host or :p2 for next time). The host plays the keyboard and mouse unless it
+//   picked a pad. Player 2 plays the pad it picked, or, with none picked, the first connected pad the host has not taken. A
+//   pick both windows made goes to the host. Each window tells the other its pick ({t:'padpick'}), and every handed-over
+//   state names the pad it came from and the sender's own pick, so a state from the other window's own pad, or from a pad
+//   this window did not pick, is never played: player 1's pad never moves player 2 and player 2's never moves player 1. A
+//   handed-over state older than NET_PAD_STALE is dropped, so an unplugged pad, or a window that stopped handing over, lets go.
+// SOLO PLAY AND THE INVITE CODE PARTY ARE UNTOUCHED. pollPad asks netPadTick only while NET.same is set (a same machine mode);
+// otherwise it reads the first connected pad as it always did, asks nothing about focus and hands nothing over. Nothing here
+// draws from the seeded stream (rr, rnd, ri, pick, rollTable) or reads G.
+var NET_PAD_STALE=0.25, NET_PAD_MAX=4;
+function netPadNow(){ return ((typeof performance!=='undefined'&&performance&&performance.now)?performance.now():Date.now())/1000; }
+function netPadFocused(){ try{ return (typeof document!=='undefined'&&document&&typeof document.hasFocus==='function')?!!document.hasFocus():true; }catch(e){ return true; } }
+function netPadIxOk(v){ return (typeof v==='number'&&v===(v|0)&&v>=0&&v<NET_PAD_MAX)?v:-1; }
+function netPadKey(side){ return 'salvagerun:samepad:'+((side==='p2')?'p2':'host'); }
+// The pad index a side plays on, from its own pick, the other side's pick and the pads connected: -1 for none. The host
+// plays only a pad it picked; player 2 plays its pick unless the host picked the same, else the first free pad.
+function netPadFor(side,pick,taken,gps){
+  var i, n=(gps&&gps.length)||0;
+  pick=netPadIxOk(pick); taken=netPadIxOk(taken);
+  if(side!=='p2') return (pick>=0&&pick<n&&gps[pick]&&gps[pick].connected)?pick:-1;
+  if(pick>=0&&pick!==taken) return (pick<n&&gps[pick]&&gps[pick].connected)?pick:-1;
+  for(i=0;i<n;i++) if(i!==taken&&gps[i]&&gps[i].connected) return i;
+  return -1;
+}
+// The pad this window will take from the window in front: its pick; for player 2 with no pick (or a pick the host holds)
+// any pad but the sender's own (-2); for the host with no pick, none (-1).
+function netPadWant(){
+  if(NET.same==='host') return netPadIxOk(NET.padIx);
+  if(NET.same==='p2') return (netPadIxOk(NET.padIx)>=0&&NET.padIx!==NET.padOther)?NET.padIx:-2;
+  return -1;
+}
+// THE PICK: kept for next time under this side's key, and told to the other window.
+function netPadLoad(){
+  var v=null;
+  try{ v=localStorage.getItem(netPadKey(NET.same)); }catch(e){ v=null; }
+  NET.padIx=(v===null||v===undefined||v==='')?-1:netPadIxOk(parseInt(v,10));
+  return NET.padIx;
+}
+function netPadPost(){ return netSamePost({t:'padpick',pair:NET.pair,ix:NET.padIx}); }
+function netPadSet(ix){
+  NET.padIx=netPadIxOk(ix);
+  try{ if(NET.padIx>=0) localStorage.setItem(netPadKey(NET.same),String(NET.padIx)); else localStorage.removeItem(netPadKey(NET.same)); }catch(e){}
+  netPadPost();
+  netRefresh();
+  return NET.padIx;
+}
+function netPadInit(){ netPadLoad(); NET.padOther=-1; NET.padFwd=null; netPadPost(); return NET.padIx; }
+// The CONTROLLER row: none, then controller 1 to 4, then none again.
+function netPadCycle(){ return netPadSet((NET.padIx>=NET_PAD_MAX-1)?-1:(NET.padIx+1)); }
+function netPadLabel(ix,side){
+  ix=netPadIxOk(ix);
+  if(ix>=0) return 'CONTROLLER '+(ix+1);
+  return (side==='p2')?'THE FIRST FREE CONTROLLER':'NO CONTROLLER, KEYBOARD AND MOUSE';
+}
+// One pad's state, handed to the other window: which pad, this window's own pick, the buttons (down, and how far) and the
+// sticks. Returns whether it went out.
+function netPadSend(g,ix){
+  var p=[], v=[], a=[], i, b, bt=(g&&g.buttons)||[], ax=(g&&g.axes)||[];
+  for(i=0;i<bt.length&&i<32;i++){ b=bt[i]; p.push((b&&(b.pressed||b.value>0.5))?1:0); v.push(b?(Math.round(((b.value!==undefined)?+b.value:(b.pressed?1:0))*100)/100):0); }
+  for(i=0;i<ax.length&&i<8;i++) a.push(Math.round((+ax[i]||0)*1000)/1000);
+  if(!netSamePost({t:'pad',pair:NET.pair,ix:ix,own:NET.padIx,p:p,v:v,a:a})) return false;
+  NET.padSent++;
+  return true;
+}
+// A state handed over by the window in front. Kept only if it is the pad this window plays on, and never the sender's own.
+// Returns what it did, so a check can read the answer.
+function netPadRecv(m){
+  var ix=netPadIxOk(m.ix), own=netPadIxOk(m.own), want, i, n, v, bts=[], a=[];
+  if(typeof m.own==='number') NET.padOther=own;
+  want=netPadWant();
+  if(ix<0){ NET.padFwd=null; return 'padnone'; }
+  if(want===-1) return 'padnone';
+  if(ix===own) return 'padown';
+  if(want>=0&&ix!==want) return 'padnot';
+  if(!m.p||!m.v||!m.a||typeof m.p.length!=='number'||m.p.length!==m.v.length||m.p.length>32||m.a.length>8) return 'bad';
+  n=m.p.length;
+  for(i=0;i<n;i++){ v=+m.v[i]; v=isFinite(v)?clamp(v,0,1):0; bts.push({pressed:!!m.p[i],value:v,touched:!!m.p[i]}); }
+  for(i=0;i<m.a.length;i++){ v=+m.a[i]; a.push(isFinite(v)?clamp(v,-1,1):0); }
+  NET.padFwd={ix:ix,at:netPadNow(),gp:{connected:true,index:ix,id:'controller handed over by the other window',mapping:'standard',timestamp:0,axes:a,buttons:bts}};
+  NET.padGot++;
+  return 'pad';
+}
+// Called by pollPad with what navigator.getGamepads gave, in a same machine mode only. In front: hands the other window its
+// pad and returns this window's own, or null. Not in front: returns the state handed over while it is fresh, else null.
+function netPadTick(gps){
+  var focused=netPadFocused(), mine, other, fwd=NET.padFwd;
+  gps=gps||[];
+  if(focused){
+    NET.padFwd=null;
+    other=netPadFor((NET.same==='host')?'p2':'host',NET.padOther,NET.padIx,gps);
+    if(other>=0) netPadSend(gps[other],other);
+    mine=netPadFor(NET.same,NET.padIx,NET.padOther,gps);
+    return (mine>=0)?gps[mine]:null;
+  }
+  if(fwd&&fwd.gp&&(netPadNow()-fwd.at)<=NET_PAD_STALE) return fwd.gp;
+  return null;
+}
 // THE PARTY WINDOW.
 function openParty(){ renderParty(); openModal('partymodal'); }
 function renderParty(){
@@ -35002,6 +35130,9 @@ function renderParty(){
   st.textContent=NET.status||(role?'':'You are not in a party. Host one, or paste an invite code from a friend who is hosting.');
   er.textContent=NET.err||''; er.style.display=NET.err?'':'none';
   var mo=g('partymode'); if(mo){ mo.textContent=NET.mode?('MODE: '+netModeName(NET.mode)):''; mo.style.display=NET.mode?'':'none'; }   // v15.76: the mode picked on the title
+  // v15.77: the controller this window plays on, in a same machine mode; the other window's pick beside it.
+  var pr=g('partypad'), pb=g('partypadbtn'), pn=g('partypadnote');
+  if(pr){ pr.style.display=NET.same?'':'none'; if(NET.same){ if(pb) pb.textContent='THIS WINDOW: '+netPadLabel(NET.padIx,NET.same); if(pn) pn.textContent='Press to change. The other window is on '+netPadLabel(NET.padOther,(NET.same==='host')?'p2':'host').toLowerCase()+'. Each window keeps its own controller, in front or not.'; } }
   sb.style.display=role?'none':'flex';
   cb.style.display=code?'':'none';
   g('partylen').textContent=code?(((role==='host')?'INVITE CODE, ':'REPLY CODE, ')+code.length+' CHARACTERS'):'';
@@ -35045,6 +35176,7 @@ function netCopyOld(t,done){
   // A paste box keeps the keyboard until it is let go, and the floor ignores every key while one has it.
   var blurIn=function(){ var a=document.activeElement, m=g('partymodal'); if(a&&m&&m.contains(a)&&a.blur) a.blur(); };
   g('closeparty').onclick=function(){ blurIn(); g('partymodal').classList.remove('on'); };
+  if(g('partypadbtn')) g('partypadbtn').onclick=function(){ netPadCycle(); };   // v15.77: the CONTROLLER row
   g('partyhost').onclick=function(){ netUi(netHost,'Making an invite code. This takes a few seconds.'); };
   g('partyinvite').onclick=function(){ netUi(netHost,'Making a new invite code. This takes a few seconds.'); };
   g('partyjoin').onclick=function(){
@@ -35076,7 +35208,10 @@ if(NETSLOT||NETP2){   // v15.76: and the player 2 window, so the test page can r
       fast:function(){ var c=0, j; for(j=0;j<NET.peers.length;j++) if(NET.peers[j].fc&&NET.peers[j].fc.readyState==='open') c++; return c; },
       // v15.76: the mode and the two windows on one PC, and the same machine pick driven from a test page (no title start).
       same:function(){ return {mode:NET.mode,pick:NET.pick,same:NET.same,pair:NET.pair,p2url:NET.p2url,chan:!!NET.bc,busy:NET.sameBusy,p2win:!!NET.p2win}; },
-      pick:function(mode){ return netSamePick(mode,function(){}); }};
+      pick:function(mode){ return netSamePick(mode,function(){}); },
+      // v15.77: the controller this window plays on, the state the other window handed over, and the buttons the reader holds down.
+      pad:function(){ var d=[], i; for(i=0;i<((PAD&&PAD.prev)||[]).length;i++) if(PAD.prev[i]) d.push(i); return {on:!!(PAD&&PAD.on),ix:NET.padIx,other:NET.padOther,fwd:NET.padFwd?{ix:NET.padFwd.ix,age:Math.round((netPadNow()-NET.padFwd.at)*1000)}:null,down:d,sent:NET.padSent,got:NET.padGot,front:netPadFocused()}; },
+      padSet:function(ix){ return netPadSet(ix); }};
   }catch(e){}
 }
 document.getElementById('termsclear').onclick=function(){

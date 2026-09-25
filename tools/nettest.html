@@ -13,7 +13,7 @@
   .frames div{flex:1;min-width:480px}
   iframe{width:100%;height:420px;border:1px solid #3a3028;background:#000}
 </style>
-<h1>PILLAGERS net test, multiplayer builds 1, 2 and 3</h1>
+<h1>PILLAGERS net test, multiplayer builds 1 to 4</h1>
 <p class="dim">The live half of checks 15.74 and 15.75, run by hand. Two copies of the fixture load below, one with ?netslot=A and
 one with ?netslot=B, each playing a save of its own, and RUN links them for real on this PC: A hosts through its own PARTY window
 buttons, B joins with the invite code, A lets B in with the reply code, and both rosters must show two within five seconds. Then
@@ -22,7 +22,7 @@ after it stops B must draw A within 16 units of where A stands; A must draw B to
 copy spoken for by this page tries to join on the wrong version and must be turned away, and on the right version must be let in
 (the control). Last, B quits the party and A must take B off its floor. The seeded stream of both copies must not move. Keep
 this tab in front while it runs: a hidden tab stops both floors. Serve the tools folder on a shard port and open
-http://localhost:8805/nettest.html (never :8802, his play profile, and never :8803, the dry chain). Add ?f=fxdry75.html to test a
+http://localhost:8805/nettest.html (never :8802, his play profile, and never :8803, the dry chain). Add ?f=fxdry77.html to test a
 dry fixture instead of fixture.html. The two net saves are separate from every other save on this origin.</p>
 <p class="dim">RUN SAME MACHINE is the live half of check 15.76 (build 3): copy A presses its own 2 PLAYER CO-OP (SAME MACHINE) row. The
 window it asks for is stood in for by this page, which loads the address A asks for (this page, ?p2=1, the mode and the pair
@@ -32,6 +32,11 @@ within twenty seconds; C must name the mode in its PARTY window; each must draw 
 player 2 save must be under its own key with the main save and the save pointer untouched; and when A ends the party C must
 hear it. To see the real popup, click the co-op row inside copy A by hand (a click from this page cannot open a window for it);
 allow the popup for this origin if the browser blocks it, and RETRY on the title says so.</p>
+<p class="dim">Build 4, the controller handed over (check 15.77), is a step inside RUN SAME MACHINE: copy A stands in for the window in
+front (its focus faked true, copy C's faked false) with two faked controllers, controller 1 with LB down and controller 2 with A
+down; A picks controller 1 through its own CONTROLLER row in the PARTY window, so controller 2 is handed to C over the real
+channel between windows, and within 200 ms C must report its pad button 0 down and never button 4, player 1's own. When the
+faked controllers are taken away C must let go within 400 ms.</p>
 <div>
   <button id="run" disabled>RUN</button>
   <button id="runsame" disabled>RUN SAME MACHINE</button>
@@ -281,6 +286,43 @@ allow the popup for this origin if the browser blocks it, and RETRY on the title
       runB.disabled=false;
     });
   }
+  // BUILD 4: THE CONTROLLER HANDED OVER. Copy A stands in for the window in front: its getGamepads is stubbed with two pads,
+  // controller 1 with LB down (player 1's own, once A picks it through its CONTROLLER row) and controller 2 with A down, and
+  // its focus is faked true; copy C's focus is faked false. Within 200 ms C must report its pad button 0 down through the
+  // real channel between windows, and never button 4 (player 1's pad). Then the stubs come off, A's pick goes back to none,
+  // and C must let go within 400 ms.
+  function padStep(A,C,bad,rep){
+    if(typeof A.__net.pad!=='function'||typeof C.__net.pad!=='function'||typeof A.__net.padSet!=='function'||!el(fa,'partypadbtn')){
+      bad.push('this fixture has no controller hand-over in its net handle (a build before v15.77), so the controller step cannot run');
+      return Promise.resolve();
+    }
+    function mkPad(ix,down){ var b=[], q; for(q=0;q<17;q++) b.push({pressed:down.indexOf(q)>=0,value:down.indexOf(q)>=0?1:0,touched:down.indexOf(q)>=0}); return {connected:true,id:'test pad '+ix,index:ix,mapping:'standard',timestamp:1,axes:[0,0,0,0],buttons:b}; }
+    var t0=0, before=C.__net.pad(), NGA=A.navigator.getGamepads;
+    log('controller: before the hand-over C holds buttons ['+before.down.join(',')+'], its pick '+before.ix+', the host pick as C knows it '+before.other+', in front '+before.front);
+    try{ A.document.hasFocus=function(){ return true; }; C.document.hasFocus=function(){ return false; }; }catch(e){ bad.push('controller: the focus of the copies cannot be faked: '+e.message); return Promise.resolve(); }
+    A.navigator.getGamepads=function(){ return [mkPad(0,[4]),mkPad(1,[0])]; };
+    // A picks controller 1 through its own row, so C is handed controller 2.
+    A.__net.open();
+    click(fa,'partypadbtn');
+    var sa=A.__net.pad();
+    log('controller: A picked '+sa.ix+' through its CONTROLLER row, which reads '+(el(fa,'partypadbtn')?el(fa,'partypadbtn').textContent:'?'));
+    if(sa.ix!==0) bad.push('controller: one press on the CONTROLLER row in A did not pick controller 1 (pick '+sa.ix+')');
+    clearFloor(fa);
+    t0=Date.now();
+    return wait(function(){ var p=C.__net.pad(); return (p.down.indexOf(0)>=0)?p:null; },200,'copy C to report its pad button 0 down').then(function(p){
+      rep.padMs=Date.now()-t0;
+      log('controller: C reports buttons ['+p.down.join(',')+'] down '+rep.padMs+' ms after A was given the pads; handed over from pad '+(p.fwd?p.fwd.ix:'?')+', A sent '+A.__net.pad().sent+', C got '+p.got+', the host pick as C knows it '+p.other);
+      if(p.down.indexOf(4)>=0) bad.push('controller: C plays button 4, which is down on player 1 own controller');
+      if(!p.fwd||p.fwd.ix!==1) bad.push('controller: C was handed pad '+(p.fwd?p.fwd.ix:'none')+', not controller 2');
+      var pa=A.__net.pad();
+      if(!pa.on||pa.down.indexOf(4)<0||pa.down.indexOf(0)>=0) bad.push('controller: A does not play its own controller 1 alone (on '+pa.on+', down ['+pa.down.join(',')+'])');
+    },function(e){ var p=C.__net.pad(); bad.push('controller: '+e.message+' (C holds ['+p.down.join(',')+'], handed '+(p.fwd?('pad '+p.fwd.ix+' '+p.fwd.age+' ms ago'):'nothing')+', A sent '+A.__net.pad().sent+', C got '+p.got+', the host pick as C knows it '+p.other+')'); }).then(function(){
+      try{ A.navigator.getGamepads=NGA; }catch(e){}
+      try{ delete A.document.hasFocus; delete C.document.hasFocus; }catch(e){}
+      try{ A.__net.padSet(-1); }catch(e){}
+      return sleep(400).then(function(){ var p=C.__net.pad(); log('controller: 400 ms after the pads were taken away C holds ['+p.down.join(',')+'], on '+p.on); if(p.on||p.down.length) bad.push('controller: C still plays a pad 400 ms after the window in front stopped handing one over'); });
+    });
+  }
   // BUILD 3: THE SAME MACHINE PAIR. Copy A picks 2 PLAYER CO-OP (SAME MACHINE) through its own row. Its window.open is stood in
   // for by this page, which loads the address A asks for into copy C and hands A that window, so the popup blocker does not
   // decide the test. C is the real player 2 window otherwise: the same page with ?p2=1, the mode and the pair code, on the
@@ -294,7 +336,7 @@ allow the popup for this origin if the browser blocks it, and RETRY on the title
       try{ delete A.open; }catch(e){}
       try{ A.__net.reset(); if(C&&C.__net) C.__net.reset(); }catch(e){}
       var pass=!bad.length;
-      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16)'+(pass?'':('; '+bad.join('; ')));
+      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200)'+(pass?'':('; '+bad.join('; ')));
       resEl.className=pass?'ok':'bad'; resEl.textContent=line; log(line);
       document.title=(pass?'PASS':'FAIL')+' net test';
       window.__NETTEST_SAME={pass:pass,bad:bad,rep:rep,line:line};
@@ -350,6 +392,9 @@ allow the popup for this origin if the browser blocks it, and RETRY on the title
         log('floor: C draws A at '+xy(vw[0])+' (A stands at '+xy(A.__net.me())+'); A draws C at '+xy(vw[1])+' (C stands at '+xy(C.__net.me())+'); fast channels open A '+A.__net.fast()+', C '+C.__net.fast());
       },function(e){ var v=view(fc,sa), w=view(fa,sc); bad.push('floor: '+e.message+' (C draws A at '+xy(v)+', A draws C at '+xy(w)+')'); });
     }).then(function(){
+      // BUILD 4: the controller handed over from the window in front. A failure here is written down and the run goes on.
+      return padStep(A,C,bad,rep).then(null,function(e){ bad.push('controller: '+e.message); });
+    }).then(function(){
       // THE SAVES: player 2 wrote its own key and nothing else moved.
       var p2=ls(P2K), d=null; try{ d=JSON.parse(p2); }catch(e){}
       if(!d||typeof d.credits!=='number') bad.push('the player 2 window wrote no readable save under '+P2K);
@@ -369,7 +414,9 @@ allow the popup for this origin if the browser blocks it, and RETRY on the title
     });
     // BUILD 3: and the permanent player 2 save this page makes on this origin.
     (function(k){ [k,k+':prerestore',k+':precrash',k+':unreadable'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} }); })('salvagerun:profile:p2');
-    log('wiped the two net saves and the player 2 save; reloading the copies');
+    // BUILD 4: and the two controller picks kept for next time.
+    ['salvagerun:samepad:host','salvagerun:samepad:p2'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
+    log('wiped the two net saves, the player 2 save and the controller picks; reloading the copies');
     load();
   }
   runB.onclick=run;

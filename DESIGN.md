@@ -40024,6 +40024,149 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.77 - EACH WINDOW ON ONE PC GETS A CONTROLLER OF ITS OWN
+
+His order of 2026-09-25: native multiplayer, played first as two players on the SAME PC in two game windows on two screens,
+player 2 on a controller. This is phase 1, build 4 of tools/multiplayer/plan.md (section E) with the corrections in critique.md,
+on the risk d1576 named: a browser hands the keyboard, the mouse and (in Chrome) the controllers to the window in front only.
+In a window that is not in front navigator.getGamepads returns nothing, or a state that never moves. Player 1 plays the window
+in front on the keyboard and mouse or on a pad; player 2 sits at the second window with a controller, and that window is not
+in front, so until this build player 2 had no controller.
+
+THE BUILD.
+- THE HAND-OVER. In a same machine mode (NET.same set, host or p2) pollPad asks netPadTick for the pad to play instead of
+  taking the first connected pad. The window in front (document.hasFocus, read through netPadFocused) reads every connected
+  pad in the one navigator.getGamepads call pollPad always made, hands the other window the state of that window's pad
+  (netPadSend: which pad, the sender's own pick, every button as down or not and how far, every stick to three places) as a
+  word {t:'pad'} on the channel between windows, once a frame while that pad is plugged in, about sixty times a second, and
+  plays its own pick. The window not in front plays the last state handed over (netPadRecv keeps it on NET.padFwd as a
+  gamepad-shaped object; pollPad fills PAD from it exactly as from a real pad: PAD.on, the sticks, the held keys, PAD.prev)
+  and never its own read; a state older than NET_PAD_STALE (0.25 s) is dropped, so an unplugged pad or a window that
+  stopped handing over lets go through the normal padRelease path.
+- THE CHANNEL. The BroadcastChannel the two windows already share (v15.76, netSamePost), not the fast data channel of the
+  link. Three reasons: it is open from the pick on the host and from the boot on player 2, so the controller works on the
+  player 2 title before the two are linked and if the link fails; it survives END THE PARTY on the player 2 side; and on one
+  PC it is a message between two windows of one browser, well under a millisecond, where the data channel goes out through
+  DTLS and SCTP on the loopback and back. The pair code is on every word, so a third window is ignored as before.
+- WHOSE PAD IS WHOSE. Each window has a pick, NET.padIx (-1 none). The host plays the keyboard and mouse unless it picked a
+  pad (default none). Player 2 plays the pad it picked, or with none picked the first connected pad the host has not taken
+  (netPadFor). A pick both windows made goes to the host; player 2 then falls to the first free pad. A pick of a pad that is
+  not plugged in plays nothing and is handed nothing. Each window tells the other its pick ({t:'padpick'}, NET.padOther on
+  the receiver) at the host pick (netSamePick, through netPadInit), at the player 2 boot (netSameBootP2, before ready, so
+  ready stays the last word of the boot as check 15.76 reads it), again when a ready arrives on the host (a reloaded player
+  2 window), and on every change. Every handed state names the pad it came from and the sender's own pick, and the receiver
+  (netPadWant) refuses a state from the sender's own pad, from a pad it did not pick, from another pair, or of a bad shape:
+  player 1's pad never moves player 2 and player 2's never moves player 1.
+- THE ROW. The PARTY window gains a CONTROLLER row (#partypad, #partypadbtn, #partypadnote), shown only in a same machine
+  mode: THIS WINDOW: NO CONTROLLER, KEYBOARD AND MOUSE (host, none) or THE FIRST FREE CONTROLLER (player 2, none) or
+  CONTROLLER 1 to 4; a press cycles none, 1, 2, 3, 4, none (netPadCycle), the note names the other window's pick and says
+  each window keeps its own controller, in front or not. The pick is kept under salvagerun:samepad:host or :p2 for next
+  time, beside the saves and not in the profile, so saveProfile is untouched. No word on the row that controller B looks
+  for (leave, close, back, done, return). The player 2 title line adds: Your controller works here whether this window is
+  in front or not.
+- NET gains padIx, padOther, padFwd, padSent, padGot; netSameStop lets go of padFwd and padOther and keeps padIx. The
+  ?netslot and ?p2 test handle window.__net gains pad() (on, pick, other, the handed state and its age, the buttons the
+  reader holds down, sent, got, front) and padSet(ix), for tools/nettest.html.
+
+SOLO PLAY AND THE INVITE CODE PARTY UNTOUCHED. pollPad asks netPadTick only while NET.same is set; otherwise it takes the
+first connected pad from the same one getGamepads call as before, never reads document.hasFocus and hands nothing over (the
+check holds all three). The controller code never calls rr, rnd, ri, pick or rollTable and never reads G; map building is
+not touched, so the seed 4242 fingerprint in __verifySafe (ents 85/374, containers 165/593) has no way to move. No number,
+dial, loot table or seeded draw moved. WHATSNEW_VER stays 15.72 (drift 0.05). Every new player-facing line was checked
+against his vocabulary (no ship, boarding, touchdown, hotbar, bag, inventory); no apostrophe inside any JS string; no
+TXSHIP key is touched.
+
+ANCHORS (whole lines, each matching once in v15.76):
+- "var VER='15.76';";
+- the two lines "  var gps=navigator.getGamepads(),gp=null;" and "  for(var i=0;i<gps.length;i++){ if(gps[i]&&gps[i].connected){ gp=gps[i]; break; } }"
+  (pollPad; the same machine branch between them);
+- "  mode:'',pick:'',same:'',pair:'',bc:null,p2win:null,p2url:'',sameBusy:false,start:null};   // v15.76: ..." (the pad fields on NET);
+- "  NET.bc=null; NET.same=''; NET.pair=''; NET.mode=''; NET.p2win=null; NET.sameBusy=false;" (netSameStop, the pad fields after it);
+- the two lines "  netSameChan();" and "  netSameHostLink();" (netSamePick; netPadInit between them);
+- the two lines "  netSamePost({t:'ready',pair:NET.pair});" and "  return 'ready';" (netSameBootP2; netPadInit before the ready);
+- the two lines "  if(!NET.same||!NET.pair||m.pair!==NET.pair) return 'ignored';" and "  if(NET.same==='host'){" (netSameOnMsg; the two
+  controller words between them);
+- "    if(m.t==='ready'){" (the host ready branch; netPadPost first);
+- the player 2 title line "  if(pl){ pl.textContent='PLAYER 2. This window links up ..." (the controller sentence);
+- "// THE PARTY WINDOW." (the controller section before it);
+- "  <div class="msub" id="partymode" style="display:none;color:var(--bone);letter-spacing:.14em"></div>" (the row after it);
+- "  var mo=g('partymode'); if(mo){ ... }   // v15.76: the mode picked on the title" (renderParty; the row drawn after it);
+- "  g('closeparty').onclick=function(){ blurIn(); g('partymodal').classList.remove('on'); };" (the row wired after it);
+- "      pick:function(mode){ return netSamePick(mode,function(){}); }};" (the test handle);
+- the DEVNOW line starting "  now:'v15.76:".
+None of these lines is one of the 158 CRLF lines in the file (158 before and after); SubRx makes the lines it adds LF, whatever
+the endings of the .ps1 on disk. A second p1577 on the result fails on its first anchor before anything is written; f1577
+refuses to run if "  {v:'15.77',what:" is there. Fixture anchor: the line prefix "  {v:'15.76',what:" (written by f1576).
+
+MEASURED. Check 15.77 is synchronous (the runner does not await a promise) and never opens a window, makes a channel or makes
+a connection: the channel between windows is a stand-in that records what is posted, navigator.getGamepads and
+document.hasFocus are stubbed (SKIP if either will not take a stub), the words are fed to the real netSameOnMsg, which hands
+them to the real netPadRecv, and the real pollPad reads them on the Undercroft floor with no panel open (SKIP if one is).
+The pick arm stands in window.open, BroadcastChannel and netHost for the real netSamePick and netSameBootP2, as check 15.76
+does. Everything is put back in finally: the net section, the pad fields and picks, the two storage keys, hasFocus, the
+stand-ins, getGamepads, the pad, the keys, the player, say2. SKIP if a party is on in the copy.
+- THE ROW: hidden outside a same machine mode, shown in one, named; one press picks controller 1, tells the other window
+  and keeps it under salvagerun:samepad:host; four presses reach controller 4, a fifth comes round to none and the key goes.
+- THE PICK IS TOLD: the real pick with controller 3 kept from last time reads it and tells the player 2 window; a ready is
+  answered with it again; END THE PARTY lets go of the channel and the other pick; the real player 2 boot with controller 2
+  kept reads it and tells the host, with ready still the last word of the boot.
+- THE HOST IN FRONT (two pads: controller 1 with Y down, controller 2 with A and RB down, LT part way, sticks 0.6,-0.4):
+  with no pick it plays no pad, holds no key and hands player 2 controller 1 (the first connected); with controller 1
+  picked it plays it (F held, button 3 down and nothing else) and hands over controller 2 with A and RB, the trigger at 0.4
+  and the sticks, one state a frame, three in three frames; player 2 picking controller 1 too is handed controller 2 and
+  the host keeps it; player 2 picking controller 3 (not plugged in) is handed nothing; a pick from another pair is ignored;
+  player 2 picking controller 2 is handed it. THE HOST NOT IN FRONT hands nothing over, plays no read, then plays a state
+  player 2 handed over (R held, button 2, stick 0.5 in the pad fields), refuses one from player 2's own pad and one from a
+  pad it did not pick, drops one a second old, and with no pick takes none.
+- PLAYER 2 NOT IN FRONT (its own pad with X down): plays no read; a state handed over (A and Y down, sticks 0.6,-0.4) fills
+  the pad fields, holds E and F and not R, shows buttons 0 and 3 and not 2; nothing is handed back; a state from the host's
+  own pad, from another pair or of a bad shape is refused. PLAYER 2 IN FRONT (controller 1 with LB down, controller 2 with X
+  down): plays controller 2 (R held), drops the state handed earlier and hands the host controller 1 with LB and nothing of
+  its own; picking controller 2 keeps it under salvagerun:samepad:p2, tells the host and reads CONTROLLER 2; picking the
+  host's controller 1 still plays controller 2; not in front with that pick it refuses controller 1 and plays controller 2.
+- CONTROL, no same machine mode: the first connected pad is read as before (F held), nothing is handed over, focus is asked
+  zero times, a state handed over is not kept. RNGS unmoved.
+- On v15.76 it FAILS on its first line (no netPadTick and no CONTROLLER row), before any SKIP.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as committed (v15.76): p1577 OK, 14 edits plus DEVNOW;
+f1577 OK, 1 edit; a second run of each refuses before writing. Both handoff scripts are ASCII. Built with mkfixture from
+the scratch copies: fxdry77 (patched game and patched fixture) and fxctl77 (the v15.76 game with the patched fixture), in
+the scratchpad, not in tools. The parsecheck gates run in cscript (Chakra) with parsecheck's own balance and dupes code:
+parens, braces and brackets 0, no duplicate top-level function, DEVNOW names v15.77 on one now line, WHATSNEW drift 0.05,
+no mojibake, on the patched game and both fixtures. The whole patched game script, both whole fixture scripts (ES5 accessors
+in the fixture's audio fake rewritten for that engine, as for v15.75), the check entry alone and nettest.html compile in
+Chakra. Run, not just parsed, under cscript with stubs for the browser (a small DOM built by parsing the real PARTY window
+markup out of the patched file, a fake localStorage, a settable clock): the REAL save key block, the REAL pad reader from
+PAD to the end of pollPad (padMenu, padAxis, padRelease included) and the REAL net section with the controller code, cut
+from the patched game, with check 15.77 cut from the patched fixture. It PASSES on v15.77 and FAILS on v15.76 with its
+first-line message, and puts back the net section, the pad fields, the storage keys, getGamepads, hasFocus, PAD.on, the
+keys and the row. Eighteen single mutations of the patched code each fail it with the matching message: pollPad ignoring
+the mode, the reader ignoring focus, the sender's own pad kept, the pick ignored on receipt, no staleness, the host playing
+the first pad with no pick, the host handing over its own pad, the pick not kept, the row always shown, the pad word
+ignored, the window not in front handing over, a colliding pick kept by player 2, focus asked outside the modes, the
+sticks not handed, padpick ignored, a bad shape kept, the pick not told on ready, the pick not read at the host pick.
+Check 15.76 run the same way (its own harness) still PASSES on the patched game: the player 2 boot posts the pick before
+ready, so ready is still its last word.
+
+THE LIVE TEST, tools/nettest.html (edited by hand, one write, on a shard port, http://localhost:8805/nettest.html, never
+:8802 or :8803; ?f=fxdry77.html for the dry fixture). The build 1, 2 and 3 steps are kept. RUN SAME MACHINE gains a
+controller step after the floor step: copy A stands in for the window in front (its document.hasFocus faked true, copy C's
+faked false) with its getGamepads stubbed to two pads, controller 1 with LB down and controller 2 with A down; A presses its
+own CONTROLLER row once, so it plays controller 1 and hands C controller 2 over the real channel between windows; within
+200 ms C must report its pad button 0 down through the test handle, never button 4 (player 1's own), the state handed from
+pad 1, and A must play controller 1 alone. Then the stubs come off, A's pick goes back to none through the handle, and 400
+ms later C must hold nothing. The result line adds how long C took to get its controller. WIPE also removes the two pick
+keys. A controller failure is written down and the run goes on.
+
+Not verified: nothing here has run in a browser. The check has not been run on fxdry77 or fxctl77, __verifySafe (and so the
+seed 4242 counts) and parsecheck.html have not been run in a browser, and nettest.html has not been run, so no real
+channel carried a pad state, no rate or lag of the hand-over was measured, and the pane's own focus was not in play. Three
+things only his two screens can show: whether document.hasFocus in the popup and in its opener follow the window he
+clicks into; whether Chrome exposes player 2's pad in the player 1 window at all before a button on that pad is pressed
+while the player 1 window is in front (Chrome hides a pad until a button is pressed on it with the page in front; if so,
+player 2 presses any button once while player 1's window is in front, then the hand-over runs); and whether a visible
+window on the second screen that is not in front keeps its frames at full rate (it should: only a hidden window is slowed).
+The row is measured for its words and its state, not its layout at 1920x1080.
 ## v15.76 - THE MODE MENU AND SAME MACHINE PAIRING
 
 His order of 2026-09-25: native multiplayer, and the way he will play it first: two players on the SAME PC in two game windows on
