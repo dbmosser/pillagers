@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.72 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+WHATSNEW_VER stood at 15.61 against a build at 15.71, due for its refresh, and the card said nothing about the fixes of v15.62 to
+v15.71: ESC and TAB on the end of raid card, crouching with Shift held, and dragging a stack back onto its own cell.
+
+THE BUILD. Only my first card line is rewritten in place. It names the crouch, dragging and end of raid card news and keeps the
+controller, pause box, grenade and healing phrases checks 15.61, 15.51, 15.39 and 15.27 read. The second card line and every line of
+his are untouched, so the card still holds thirteen lines. Dropped from the card: the rack highlight and the door keys.
+WHATSNEW_VER moves to 15.72.
+
+MEASURED. Check 15.72 requires the card within fifteen builds and naming the crouch news; it fails on v15.71. Every card check was run
+on the dry build.
+
+Not verified: the card read on screen by eye.
 ## v15.71 - WITH THE FREEBIE KIT TAKEN, A CONTROLLER CANNOT PACK OR UNPACK IN THE GREYED OUT STASH AND BACKPACK
 
 Grid audit finding (LOW), entry 10 of the confirmed list (index 9).

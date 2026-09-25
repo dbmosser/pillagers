@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'15.72',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the crouch news of v15.64, still opening with the alpha line',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
+     var all=L.join(' ').toUpperCase();
+     var NEWS=['c crouches even','with shift held'].join(' ').toUpperCase();
+     if(all.indexOf(NEWS)<0) bad.push('the card does not mention the crouch news of v15.64');
+     if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+     return bad.length?bad.join('; '):null; }},
   {v:'15.71',what:'with the freebie kit taken a controller cannot pack or unpack in the greyed out stash and backpack: on the Stash screen with one Medkit in the stash and nothing packed, A on a faked controller over TAKE THE FREEBIE KIT greys the stash and backpack out so the mouse cannot touch the Medkit, and then no greyed out control is in reach of the controller highlight, D-pad up from USE MY OWN GEAR does not walk into them, a highlight put on the Medkit moves off it and nothing is packed, while USE MY OWN GEAR and CLOSE stay in reach, and with no freebie kit taken the Medkit is in reach of the mouse and the controller as before (grid audit finding)',
    run:function(){
      if(typeof pollPad!=='function'||typeof padMenu!=='function'||typeof padSetFocus!=='function'||typeof padFocusables!=='function'||typeof padOpenModal!=='function'||typeof PAD==='undefined') return 'SKIP: no pad menu in this build';

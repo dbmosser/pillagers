@@ -1,0 +1,9 @@
+v15.72: the what is new card is current again
+
+The card stood at 15.61 and said nothing about the crouch, dragging and end of
+raid card key fixes. My first card line is rewritten in place, keeping the
+phrases its checks read.
+
+Check 15.72. Fails on v15.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
