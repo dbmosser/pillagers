@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.52';
+var VER='15.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30433,11 +30433,18 @@ function slotCore(){
   if(P.intel){ say('A core is already slotted. It burns on your next ascent.'); return; }
   var ix=P.stash.indexOf('core');
   if(ix<0){ say('No Data Core in the stash. They come off rare shelves and elite pillagers.'); return; }
-  P.stash.splice(ix,1);
+  // v15.53, rack audit finding: SLOT A DATA CORE SAYS WHEN IT TAKES A PACKED CORE OUT OF THE BACKPACK. Packing leaves an item
+  // in the stash, so a core packed for the next ascent still lit this button, and a bare splice took a core out of the stash
+  // whether or not a loose one was left. With every core he held packed, the backpack lost its core with no word: the kit was
+  // only trimmed when stageKitLive next read it, and a belt key bound to the core was left pointing at nothing. BUILD A RACK,
+  // two buttons up, has spent through spendHeld and named what it took out of the backpack since v15.18. The core now goes
+  // the same way: a loose core first (v13.59), else the packed one is unpacked properly, which lets its belt key go, and one
+  // sentence naming it is added after the core line, which is unchanged. No number moved.
+  var _cp=spendHeld('core',1);   // v13.59: loose copies first, a packed one unpacked properly (kit and belt key)
   P.intel=1;
   saveProfile();
   blip('pick');
-  say('Core slotted. Your next ascent carries intel.');
+  say('Core slotted. Your next ascent carries intel.'+(_cp?' Used '+_cp+' packed Data Core out of your backpack.':''));
   renderMainframe(); try{ renderHub(); }catch(e){}
 }
 function renderMainframe(){
@@ -30572,7 +30579,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.52: BUILD A RACK KEEPS THE CONTROLLER HIGHLIGHT WHEN IT GREYS OUT. On a controller, the last rack you could afford greyed BUILD A RACK out and the highlight slid onto SLOT A DATA CORE, or after the tenth rack onto FOLD 10 RACKS INTO AN ARRAY, so the next A spent a Data Core or folded the wall. A control that greys out under the highlight now keeps it, and A on it does nothing, the same as a mouse click on it. Check 15.52 presses A twice on BUILD A RACK with a faked controller, with parts for two racks, for one rack and a Data Core, and at nine racks; it fails on v15.51',
+  now:'v15.53: SLOT A DATA CORE SAYS WHEN IT TAKES A PACKED CORE OUT OF THE BACKPACK. With every Data Core you held packed for the next ascent, SLOT A DATA CORE took one out of the backpack without a word and left its belt key pointing at nothing. A loose core still goes first; a packed one is now unpacked properly, its belt key let go, and the core line adds Used 1 packed Data Core out of your backpack, the way BUILD A RACK does. Check 15.53 slots a core with one loose and one packed, then with only a packed one, and arms one on the ascent check; it fails on v15.52',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34968,11 +34975,15 @@ function renderStage(prefill){
   var L=document.getElementById('stageload'); L.innerHTML='';
   // v5.99: the Backpack row is gone. It advertised a carry discount off PACKPEN,
   // whose three tiers are the same number, on a screen where carrying is unlimited.
+  // v15.53, rack audit finding: ARM ON THE ASCENT CHECK SAYS WHEN IT TAKES A PACKED CORE OUT OF THE BACKPACK. The Intel row
+  // had the same bare splice as SLOT A DATA CORE, so with every core packed it emptied the backpack of its core in silence and
+  // left the belt key on nothing. It spends through spendHeld the same way now, and names a packed core it had to take.
   L.appendChild(stageRow('Intel',
     P.intel?'A Data Core is armed. Keys and elites show on the map.':'No core armed.',
     (!P.intel&&P.stash.indexOf('core')>=0)?'Arm':null,
     function(){ var ix=P.stash.indexOf('core');
-      if(ix<0) return; P.stash.splice(ix,1); P.intel=1; saveProfile(); renderStage(); },'var(--coolant)'));
+      if(ix<0) return; var _cp=spendHeld('core',1); P.intel=1; saveProfile();
+      if(_cp) say2('Used '+_cp+' packed Data Core out of your backpack.'); renderStage(); },'var(--coolant)'));
 
   // ---- the kit
   var kit=stageKitLive();
