@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.59';
+var VER='15.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29880,6 +29880,15 @@ function drawHubHUD(ox,oy){
   // v10.93, HIS NOTE: this was rgba(140,152,163,.75).
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#aab6c2';
   ctx.textAlign='center';
+  // v15.60, first run audit finding: ON A CONTROLLER THE UNDERCROFT BOTTOM LINE NAMES THE PAD BUTTONS. The line below is the
+  // only place the floor controls are taught (v11.58), and it had no controller branch, so with a pad connected it still said
+  // WASD to walk, SHIFT to jog and E to use a station, in the same frame as a station prompt that says [A] (keyLabel reads
+  // PADLABEL_HUB on the floor). The pad has no E: on the floor it walks on the left stick (updateHubWorld reads PAD.mx and
+  // PAD.my), jogs on the left stick click (padHold ShiftLeft on button 10) and works a station with A (padHold KeyE on button
+  // 0). The raid swaps its legends for LEGEND_MINI_PAD and LEGEND_PAD; this line never had a pad version. With a pad on it now
+  // draws the pad words in the raid legend's own terms, L STICK and LS, with A from the same keyLabel the prompt uses, and
+  // returns. The keyboard line below is untouched word for word. No number and no seeded draw moved.
+  if(padOn()){ ctx.fillText('L STICK WALK  \u00b7  LS JOG  \u00b7  '+keyLabel('KeyE','E')+' USE STATION',W/2,H-16); ctx.textAlign='left'; return; }
   ctx.fillText('WASD WALK  ·  SHIFT JOG  ·  E USE STATION',W/2,H-16);
   ctx.textAlign='left';
 }
@@ -30651,7 +30660,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.59: THE UNDERCROFT BACKPACK NAMES ONLY KEYS THAT WORK ON THE FLOOR. Opened on the Undercroft floor, the backpack told you to move with the arrows, drop with Z and equip a gun with ENTER, and none of those keys does anything down here, so only the mouse drag onto the tactical belt worked. On the floor it now names only the drag, and with a controller it names no D-pad button, while the raid backpack keeps its full hint. Check 15.59 draws the backpack with a gun selected in a raid and on the floor, and presses the arrows, Z and ENTER on the floor; it fails on v15.58',
+  now:'v15.60: ON A CONTROLLER THE UNDERCROFT BOTTOM LINE NAMES THE PAD BUTTONS. With a controller on the Undercroft floor, the line along the bottom still taught WASD to walk, SHIFT to jog and E to use a station, in the same frame as a station prompt that says A, and a controller has no E. With a controller connected the line now reads L STICK WALK, LS JOG and A USE STATION, and the keyboard line is unchanged. Check 15.60 draws the floor at the lift with a faked controller and without one; it fails on v15.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

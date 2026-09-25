@@ -40024,6 +40024,57 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.60 - ON A CONTROLLER THE UNDERCROFT BOTTOM LINE NAMES THE PAD BUTTONS
+
+First run audit finding (LOW), entry 8 of the confirmed list.
+
+Connect a controller and come down to the Undercroft; pollPad sets PAD.on. Walk up to the lift. The station prompt in drawHubHUD
+is '['+keyLabel('KeyE','E')+']  '+s.label, and keyLabel reads PADLABEL_HUB on the floor, so it says [A]  ENTER RAID!. The line
+along the bottom of the same frame, the last fillText in drawHubHUD, had no controller branch and still said WASD WALK, SHIFT
+JOG, E USE STATION. A controller has no E. On the floor pollPad's hub branch holds KeyE on button 0 (A works a station) and
+ShiftLeft on button 10 (the left stick click jogs), and updateHubWorld walks on PAD.mx and PAD.my, the left stick. The raid swaps
+its legends for LEGEND_MINI_PAD and LEGEND_PAD; this floor line never had a pad version, and the v11.58 note says it is the only
+place the floor controls are taught. The line is not a TXSHIP key (the table holds no WASD, JOG or STATION), no ruling or comment
+calls it keyboard only on purpose, and it is not balance.
+
+THE BUILD. One edit at the end of drawHubHUD, the verdict's corrected fix in effect: with a controller connected the bottom line
+reads L STICK WALK, LS JOG and A USE STATION, in the terms LEGEND_MINI_PAD already uses (L STICK, LS), with A taken from the same
+keyLabel('KeyE','E') the station prompt uses. Without one it draws exactly what it drew before. The corrected fix is a one-line
+ternary on the fillText line itself, but that line holds a literal middle dot, and a patch script cannot anchor on it: PowerShell
+5.1 reads the .ps1 as ANSI and the escaped anchor never matches. So the script anchors on the three ASCII lines above it (the
+v10.93 colour note, the font and fill, the centre alignment) and adds if(padOn()){ fillText the pad line at W/2,H-16; textAlign
+left; return; } before it. The keyboard line is the last draw in the function and the return also sets the alignment back, so the
+two are the same behaviour, and the keyboard line is left byte for byte. The new line writes its dots as the escape
+backslash-u00b7, the way the credits line in the same function does, so the script stays ASCII. No word of existing player text
+was reworded, the new words use none of the retired words, and no number, dial, loot table or seeded draw moved; map building is
+not touched, so the seed 4242 fingerprint in __verifySafe cannot move. The H CONTROLS panel on the floor is also keyboard only on
+a controller; that is outside this finding and is not changed here.
+
+MEASURED. Check 15.60 clears the card and profile, opens the floor with __hubEnter, requires state 'hub' and the stations, shuts
+any open window (a fresh profile opens the welcome window), puts the lift in front of him (HB.near), shuts the H panel and counts
+the what is new card as seen so only the prompt and the bottom line are drawn where it reads. It stubs navigator.getGamepads and
+wraps ctx.fillText to record each string with its y, then calls drawHubHUD(0,0) directly and reads the strings drawn at H-16
+(the bottom line) and H-58 (the station prompt). CONTROL: with no controller (an empty pad list, polled) padOn() is false, the
+bottom line is the keyboard line word for word and the prompt starts [E]. Then one faked connected controller, 17 buttons all up
+and 4 zero axes, is polled on the floor. CONTROL: padOn() is true and the prompt drawn in the same frame starts [A], so the pad is
+seen and the floor button table is live. Then the bottom line must not contain E USE STATION, WASD or SHIFT, and must contain A
+USE STATION, L STICK and LS JOG. On v15.59 the keyboard line is drawn there, so the check fails for the finding's own reason.
+CONTROL: the controller taken away again and polled, padOn() is false and the bottom line is the keyboard line word for word. The
+needles for words the pad line must not draw are assembled from pieces. In finally fillText is put back (deleted if it was not
+an own property), the pad list is emptied and polled once, navigator.getGamepads is restored, PAD.announced, HB.near, HB.legend,
+WNSEEN, _curNow and the canvas cursor are put back, keys are cleared, and the card and profile are cleaned.
+
+Older fixture checks: none restaged. No fixture check reads the floor bottom line: no check or chain fixture script contains
+WASD, E USE or USE STATION. The checks that fake a controller on the floor (13.47) read only the backpack and the pause box, and
+the floor text sweeps (his baked edits, the sign, 10.23 and 10.93 station names) run with no controller connected, where the
+line is unchanged.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.51 applied): p1552 and f1552 through p1559 and
+f1559 applied in version order, then p1560 and f1560, every script printing OK and every anchor a whole line block matching once
+(p1560: 2 edits plus DEVNOW; f1560: 1 edit). The edited drawHubHUD and the new check both parse in JScript. The end of drawHubHUD
+is touched by no p-script from 1552 to 1559.
+
+Not verified: the Undercroft floor by hand with a real controller. The check itself has not been run in a browser yet.
 ## v15.59 - THE UNDERCROFT BACKPACK NAMES ONLY KEYS THAT WORK ON THE FLOOR
 
 First run audit finding (LOW), entry 7 of the confirmed list.
