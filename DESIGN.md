@@ -40024,6 +40024,86 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.69 - A CLICK ON THE MEDICAL KEY OF THE UNDERCROFT BELT NEVER BINDS A BANDAGE
+
+Grid audit finding (MEDIUM), entry 8 of the confirmed list (index 7).
+
+Pack two Medkits and nothing else, with no belt keys set, and press I on the Undercroft floor. hubBagState builds the floor
+player at hp 100 of 100, so findHeal skips both heals (healReach 100 is at or over the Bandage ceiling of 85 and the Medkit
+ceiling of 100) and returns -1. hotbarSlots then builds the Medical cell on key 6 with the fallback icon 'bandage' and count 2
+(countHeals). Click it, press and release without moving: the floor branch of the cv mousedown gave _sdk='bandage' (kind heal,
+ITEMS.bandage exists, count over 0) and started G.drag={key:'bandage',fromHot:5}. The window mouseup floor branch found the
+release on the same cell; its v14.25 if(d.fromHot!==_H.i) only guards the move and swap, and G.hotAssign[5]='bandage' ran anyway,
+then P.hotAssign took it and saveProfile ran. Key 6 now held a greyed Bandage on the floor belt and a red 0 on the Stash screen's
+tactical belt, and Medical was gone. With one Medkit packed, the Bandage issued at the ascent kept the pin alive in the raid and
+his Medkit had no key. Dragging the Medical cell to another key bound a Bandage he may not have. With a Bandage packed, a plain
+click on Medical pinned the Bandage there too. And a click on any belt key released a few pixels off the belt unbound it,
+because the floor drag had no press point and no distance test. The raid has had the same-cell rule since v8.14
+(if(d.fromHot===HC.i){ dropped=true; break; }) and the 24-unit click threshold since v14.61. Nothing in the file calls the floor
+behaviour deliberate, it is not balance, and it touches no player text.
+
+THE BUILD. Three code edits in the floor mouse handlers, the verdict's fix as proposed (no corrected fix was given), plus VER and
+DEVNOW. A click on Medical on the floor now does what it does in a raid and on the ascent check plan: it binds nothing.
+- cv mousedown, floor branch: a derived heal cell drags only when G.bag (the kit, inside withHubBag) holds the item it shows,
+  G.bag.indexOf(_sl.icon)>=0 in place of _sl.count>0, so the Bandage fallback over Medkits starts no drag and the press does
+  nothing. A cell he bound himself (itemKey) drags exactly as before. The drag also keeps its press point, px and py, as the
+  raid's belt drag does.
+- window mouseup, floor branch, over a belt cell: if(d.fromHot===_H.i) return; before anything is written. A release on the key
+  it came from is a click. The early return is inside the withHubBag callback, so the write-through of P.kit and P.hotAssign and
+  the save still run, unchanged. A key he bound himself stays bound (the old write put the same value back); a derived grenade,
+  plate or Medical key clicked no longer pins what it shows. The v14.25 if(d.fromHot!==_H.i) is now always true there and is
+  left alone.
+- window mouseup, floor branch, off the belt: the unbind needs the release to be more than 24 units from the press, the raid's
+  v14.61 test written the same way; a drag with no press point (a staged one) unbinds as before.
+No word of player text was added or reworded (nothing near a TXSHIP key), no ruling is touched, and no number, dial, loot table or
+seeded draw moved. Map building is not touched, so the seed 4242 fingerprint in __verifySafe (ents 85/374, containers 165/593)
+cannot move. Not changed here: the raid's Medical cell drag uses the same count>0 test, so at full health with only Medkits its
+drag to another key would bind a Bandage too; the raid's click on its own key is already guarded, and that drag is outside this
+floor finding.
+
+ANCHORS (all whole-line blocks, each matching once after p1568):
+- the two floor mousedown lines starting "          var _sdk=_sl?(_sl.itemKey||" and "          if(_sl&&_sdk&&!(_sl.k==='gunA'";
+- "          G.hotAssign=G.hotAssign||{};" followed by the first line of the v14.25 Undercroft audit finding 4 comment;
+- the two comment lines "      // Dropped off the belt entirely: ..." and "      // back to being just something in the backpack, ..." with
+  the line "      if(d.fromHot!==undefined&&G.hotAssign) delete G.hotAssign[d.fromHot];";
+- var VER='15.68'; and the DEVNOW line starting "  now:'v15.68:" (both written by p1568).
+Fixture anchor: the line prefix "  {v:'15.68',what:" (written by f1568).
+
+MEASURED. Check 15.69 clears the card, runs __runPrep, resets CFG (so the text editor cannot eat the press) and cleans the
+profile, snapshots it, drops any floor backpack without its commit, enters the floor with __hubEnter (SKIP unless state is
+'hub'), shuts any open window, stages the kit as two Medkits with no keys, opens the floor backpack with hubBagOpenSet(true) and
+draws it with drawHubBag. It requires 9 belt cells, the Medical cell (hotbarSlots k 'heal'), empty keys 8 and 9, keys drawn big
+enough to tell a drag from a click, and the state of the finding: Medical shows 'bandage' and the kit holds no Bandage, else SKIP.
+The mouse handlers read mouse.x and mouse.y, so the check places the pointer and dispatches the press on cv and the release on
+window. CONTROL: the Medkit tile pressed and released on key 8 binds Medkit on key 8 in hubBagG and the profile, so the floor
+press and drop are live. CONTROL: key 8 holding a Medkit, pressed at its centre and released 4 cell heights above the belt, loses
+the Medkit, so the off-the-belt release is live. Then, restaged each time:
+- a press and release on Medical with two Medkits (CONTROL: mouse.down stays false, so the floor belt claimed the press) must
+  leave no key bound and no drag held; on v15.68 it binds {"5":"bandage"} and saves it, the finding's own reason;
+- a press on Medical released on key 9 must bind nothing; on v15.68 it binds a Bandage to key 9;
+- key 8 holding a Medkit, pressed 3 units below its top edge and released 9 units above it (12 units of travel, off the belt),
+  must keep the Medkit; on v15.68 it is taken off;
+- with a Bandage and a Medkit packed, a press on Medical (CONTROL: it arms a Bandage drag from key 6 on either build, so this arm
+  measures the same-key release by itself) and a release on it must bind nothing; on v15.68 it binds {"5":"bandage"}.
+A later control that cannot run keeps the failures already found. In finally the floor backpack is shut without its commit,
+mouse.x, mouse.y and mouse.down are put back, any window opened on the way is shut, the profile is restored through
+window.__applyLoaded(snapshot), then __topClear, __resetCfg and __cleanProfile.
+
+Older fixture checks: none restaged. 8.96 drags belt key 8 to the first backpack cell, far more than 24 units, so it still
+unbinds, and its other drag starts in the backpack; 9.32 sets the drag directly and never releases; 14.25 stages drags with no
+press point and releases them on another key, which none of the new rules touches; 14.48 only clears a held drag; 8.84, 8.95,
+9.13, 9.88, 12.11, 12.95, 13.44, 13.45, 14.46 and 15.59 open or draw the floor backpack but press and release nothing. The raid
+checks (8.66, 11.91, 11.97, 14.56, 14.58, 14.61) use the raid branch, which is not changed. No fixture check presses a derived
+cell on the floor belt.
+
+Dry run (review pass) on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand now (15.66 committed, so p1562 to
+p1566 are already in them): p1567 (OK, 3 edits plus DEVNOW) and f1567 (OK, 1 edit), p1568 (OK, 6 edits plus DEVNOW) and f1568
+(OK, 1 edit), then p1569 (OK, 4 edits plus DEVNOW) and f1569 (OK, 1 edit), and p1570, f1570, p1571 and f1571 after it, all OK.
+A second p1569 on the result fails on its first anchor, so it cannot apply twice. p1567 and p1568 touch none of this build's
+code anchors. The whole patched game script and the new check entry parse in Chakra (cscript, with reserved-word property names
+quoted, since the committed file already uses .catch). All five files are ASCII only.
+
+Not verified: the floor backpack by hand with the mouse. The check itself has not been run in a browser yet.
 ## v15.68 - DRAGGING A BACKPACK STACK AND LETTING GO ON ITS OWN CELL MOVES NOTHING
 
 Grid audit finding (MEDIUM), entry 7 of the confirmed list (index 6).
