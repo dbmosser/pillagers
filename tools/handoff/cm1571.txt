@@ -1,0 +1,14 @@
+v15.71: with the freebie kit taken, a controller cannot pack or unpack in the greyed out stash and backpack
+
+Grid audit finding. With the freebie kit taken, the stash, the backpack
+and the tactical belt grey out and the mouse cannot touch them, but a
+controller could still walk its highlight into them and press A, which
+packed or unpacked items that the freebie kit then threw away, while
+the greyed out backpack counted them as going up. The controller
+highlight now skips whatever the mouse cannot touch, so with the
+freebie kit taken only the freebie button, CLOSE and, on the ascent
+check, ASCEND are in reach, the same as for the mouse.
+
+Check 15.71. Fails on v15.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

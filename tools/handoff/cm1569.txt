@@ -1,10 +1,10 @@
 v15.69: a click on the medical key of the undercroft belt never binds a bandage
 
 Grid audit finding. On the Undercroft floor, with only Medkits packed, a
-click on the Medical key of the belt in the open backpack bound a Bandage
-he does not carry to that key and saved it: the key went grey, the Stash
-screen showed a red 0 and Medical was gone. A release on the key it came
-from is now a click, as it is in a raid, the Medical key drags only a
+click on the Medical key of the tactical belt in the open backpack bound a
+Bandage he does not carry to that key and saved it: the key went grey, the
+Stash screen showed a red 0 and Medical was gone. A release on the key it
+came from is now a click, as it is in a raid, the Medical key drags only a
 heal the backpack really holds, and a click that slips just off a key no
 longer takes the item off it. A real drag still binds and unbinds.
 

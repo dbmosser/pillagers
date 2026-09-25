@@ -1,0 +1,80 @@
+## v15.66 - PILLAGERS SEE A DOWNED OR ROLLING PLAYER AT THEIR NORMAL RANGE
+
+Stealth audit finding (MEDIUM), index 4 of the confirmed list in audit-wfxd2t8x2.json. The verdict found it real and gave a
+corrected fix, which is the build as written.
+
+Crouch behind cover, get found by a pillager inside 170 and shot down. G.pCrouch, the flag every sight rule reads for his stance,
+is written in exactly two places: G.pCrouch=!!botCrouch in updateBot and G.pCrouch=!!crouch at the bottom of updatePlayer. Both
+early returns in updatePlayer sit above that line: the downed branch (if(p.downed){ ... tryExtractTick(dt,!!keys['KeyE']);
+return; }) and the roll branch (if(p.roll>0){ ... tryExtractTick(dt); return; }). The going-down line in damagePlayer,
+p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null;, touched neither G.crouchTog nor
+G.pCrouch, and neither did tickDowned, giveUpTick or selfRevive. So for the whole bleed-out (up to 17 seconds) the body kept the
+stance, the bush and the concealment of his last standing frame. The hard crouch rule in updateEnts,
+if(sees&&G.pCrouch&&!WDC&&CHID>0&&!onYou&&dist(e,p)>CHID&&(!G.sim||HARDC)) sees=false;, then blinded every pillager further than
+170, so his acqT never built and he never fired at the body, although each hit on a downed player costs 3 seconds of bleed
+(p.downT-=3 in damagePlayer). A man downed standing at the same spot was shot as intended. The very next line in updateEnts,
+if(sees&&p.downed&&e.kind!=='raider') sees=false;, blinds only machines, so pillagers are meant to keep seeing a downed man.
+Crouched in a bush, G.pConceal stayed at the crouched value (concealAt 0.10 still, against 0.40 for a man lying still), which
+multiplies every sight range through pcon, and the plate under the red wash read HIDDEN, CROUCHED. The sim already disagrees
+with the live game here: updateBot guards if(CRN>0&&!p.downed) before it crouches the bot. The roll did the same for 0.38s:
+tryRoll's G.crouchTog=false (his v11.53 note, rolling stops crouching) left G.pCrouch true until the roll returned, so a roll out
+of a crouch stayed hidden past 170 with the HIDDEN plate up while the status read ROLLING. Stale state, not a dial: no comment or
+ruling calls it deliberate.
+
+THE BUILD. Three code edits plus VER and DEVNOW, the verdict's corrected fix word for word in code:
+1. damagePlayer, the going-down line (near 13138): G.crouchTog=false; G.pCrouch=false; appended. Going down takes the crouch
+   toggle off, so after a revive he gets up standing unless C was pressed on the floor.
+2. updatePlayer, the downed branch, directly after the crawl line (near 15605):
+   G.pBush=inBush(p.x,p.y); G.pCrouch=false; G.pConceal=concealAt(p.x,p.y,mg0>0,false,false);
+   every downed frame, so a body lying still reads as a man lying still (1 in the open, 0.40 in a bush) and a crawl as a man
+   moving (0.62 in a bush), which is how updateBot reads its own downed frames.
+3. tryRoll, the v11.53 line (near 12336): G.crouchTog=false; G.pCrouch=false; G.pConceal=concealAt(p.x,p.y,true,false,false);
+   the roll leaves the crouch for the sight rules the moment it starts, as a man moving on his feet, and the bottom of
+   updatePlayer takes over again when the roll ends.
+No sight range number changed: the 170 of the crouch rule, every enemy range and cone, and every concealAt value are untouched.
+No player text was added or reworded (no TXSHIP key is touched), no dial, loot table or balance number moved. inBush and
+concealAt only read the map and CFG, so no seeded draw was added or reordered, and map building is not touched, so the seed 4242
+fingerprint in __verifySafe (ents 85/374, containers 165/593) cannot move. The sim is unchanged: simStep calls updateBot and never
+updatePlayer or tryRoll, G.crouchTog is read only by crouchHeld inside updatePlayer, and under the fixture defaults (simCrouch 0)
+updateBot writes G.pCrouch=false every step, so the new G.pCrouch=false in damagePlayer is a no-op there and no paired number
+moves. Not changed, outside the corrected fix: the C key on the floor still flips G.crouchTog (raidKey has no downed guard), so a
+press while down still picks the stance he gets up in; p.moving and G.sprinting also keep their last standing values on the
+floor (the pillager aim spread reads them); neither decides whether the body is seen.
+
+MEASURED. Check 15.66 cleans the card and profile, snapshots the profile, deploys map 0 at seed 4242 and takes the first
+non-hire, standing pillager on the raid as the only entity. It refreshes the sight segments and picks a spot outside any bush
+with a clear line 230 units long (where he lands first, then the map spawn points), and pins the pillager 200 units out along
+it every frame: facing him, hostile, in chase, alert 2, full health, no roll, cooldown 9 so he never fires, kit clock held so
+he never changes gun. 200 is past the 170 of the crouch rule and inside every pillager gun range at his alert. Each measured arm
+is 8 frames of updatePlayer(1/60) then updateEnts(1/60), the order the raid loop runs them, with the player put back on the
+spot, and reads the longest acqT the pillager built (his aim time, which only grows while he sees the player). CONTROL: standing
+upright he is seen (acqT above 0) on either build, so the line and the range hold. CONTROL: crouched on his feet (G.pCrouch
+true after one frame) he is not seen, so the crouch rule is what decides this range. CONTROL: shot down standing
+(damagePlayer(999) with p.iv 0; p.downed true) the body is seen, so pillagers do see a downed man. THE FINDING: shot down from a
+crouch the body must be seen and not count as crouched; on v15.65 G.pCrouch stays true, acqT stays 0 and the check fails for
+the finding's own reason. THE ROLL: crouched, then tryRoll with full breath (CONTROL: p.roll above 0 and the toggle off, his
+v11.53 note; CONTROL: still rolling after the 8 frames), he must be seen during the roll; on v15.65 he is not. THE BUSH: the
+first bush of the first 40 where he stands crouched inside and G.pConceal is below concealAt for a man lying still there
+(CONTROL: the bush and the concealment dial are live), then shot down and one downed frame: G.pConceal must equal
+concealAt(p.x,p.y,false,false,false); on v15.65 it stays at the crouched value. If no such bush exists that arm does not run and
+the arms above still decide. Controls that cannot run after a failure keep the failure (skip helper, as in 15.64). In finally
+the keys and the mouse are put back, G.ents is refilled from the copy, the player's place, health, breath and roll are put back
+and he is stood up, the crouch toggle, sprint and G.pCrouch are cleared, the raid is abandoned, the profile snapshot is restored
+with __applyLoaded, and the card, dials and profile are cleaned.
+
+Older fixture checks: none restaged. 11.53 (a roll leaves the crouch) still passes: tryRoll still clears G.crouchTog. 15.42
+sets G.pCrouch by hand and draws the HUD, never downing him or rolling. 15.64 and 15.65 step standing frames only. 11.10 and the
+other bot checks run under simCrouch 0, where updateBot writes G.pCrouch every step. No check downs a crouched player, rolls
+out of a crouch and reads the stance, or reads the concealment plate on the floor.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (v15.65 committed, check 15.65 on top): p1566
+printed OK, 4 edits applied plus DEVNOW, and f1566 printed OK, 1 edits applied; every anchor a whole line block matching once.
+tryRoll, damagePlayer and updatePlayer as patched, and the new check, all parse in JScript. Anchors: the going-down line
+p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null; in damagePlayer (column 0); the crawl
+line if(mg0>0){ p.x+=(mx0/mg0)*30*dt; p.y+=(my0/mg0)*30*dt; collide(p,G.map.walls); } in the downed branch of updatePlayer; the
+v11.53 line G.crouchTog=false;   // v11.53, HIS NOTE: "rolling should automatically stop crouching" in tryRoll; var VER='15.65';;
+the DEVNOW now key for v15.65; the fixture line {v:'15.65',what:. None of them is touched by p1562 to p1565 (already in the
+working file) or by the queued p1568 and p1569.
+
+Not verified: the check has not been run in a browser yet. Not played by hand: shot down crouched with a pillager past 170, and a
+roll out of a crouch in view of one.

@@ -1,0 +1,14 @@
+v15.70: a key dragged onto a filled key on the stash screen belt swaps the two keys, and a key on the gun in his hands can be moved like any other
+
+Grid audit finding. On the tactical belt of the Stash screen, a key
+dragged onto a filled key took that key and left its own empty, so the
+item on the other key lost its key, where the floor backpack and the
+raid swap the two. A key on the gun in his hands could not be moved at
+all: it was refused as not in the stash, or, with a spare of that gun
+in the stash, the spare was packed and went up the lift unasked. The
+two keys now swap, and a key on the gun in his hands moves like any
+other and packs nothing.
+
+Check 15.70. Fails on v15.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

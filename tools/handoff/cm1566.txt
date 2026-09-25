@@ -1,0 +1,13 @@
+v15.66: pillagers see a downed or rolling player at their normal range
+
+Stealth audit finding. Shot down while crouched, the body stayed crouched
+to every pillager for the whole bleed-out, because the stance the sight
+rules read is only written below the downed return, so nothing past 170
+could see the body or shoot it, while a man downed standing was shot as
+intended. A roll out of a crouch hid him the same way until it ended.
+Going down and rolling now leave the crouch, and on the floor the body
+is seen and concealed as a man lying there. No sight range number moved.
+
+Check 15.66. Fails on v15.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
