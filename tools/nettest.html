@@ -13,7 +13,7 @@
   .frames div{flex:1;min-width:480px}
   iframe{width:100%;height:420px;border:1px solid #3a3028;background:#000}
 </style>
-<h1>PILLAGERS net test, multiplayer builds 1 to 4</h1>
+<h1>PILLAGERS net test, multiplayer builds 1 to 5</h1>
 <p class="dim">The live half of checks 15.74 and 15.75, run by hand. Two copies of the fixture load below, one with ?netslot=A and
 one with ?netslot=B, each playing a save of its own, and RUN links them for real on this PC: A hosts through its own PARTY window
 buttons, B joins with the invite code, A lets B in with the reply code, and both rosters must show two within five seconds. Then
@@ -23,7 +23,7 @@ copy spoken for by this page tries to join on the wrong version and must be turn
 (the control). Last, B quits the party and A must take B off its floor. The seeded stream of both copies must not move. Keep
 this tab in front while it runs: a hidden tab stops both floors. Serve the tools folder on a shard port and open
 http://localhost:8805/nettest.html (never :8802, his play profile, and never :8803, the dry chain). Add ?f=fxdry77.html to test a
-dry fixture instead of fixture.html. The two net saves are separate from every other save on this origin.</p>
+dry fixture instead of fixture.html (fxdry78.html for build 5). The two net saves are separate from every other save on this origin.</p>
 <p class="dim">RUN SAME MACHINE is the live half of check 15.76 (build 3): copy A presses its own 2 PLAYER CO-OP (SAME MACHINE) row. The
 window it asks for is stood in for by this page, which loads the address A asks for (this page, ?p2=1, the mode and the pair
 code) into copy C below, so the popup blocker does not decide the test; C is otherwise the real player 2 window, on the
@@ -37,6 +37,11 @@ front (its focus faked true, copy C's faked false) with two faked controllers, c
 down; A picks controller 1 through its own CONTROLLER row in the PARTY window, so controller 2 is handed to C over the real
 channel between windows, and within 200 ms C must report its pad button 0 down and never button 4, player 1's own. When the
 faked controllers are taken away C must let go within 400 ms.</p>
+<p class="dim">Build 5, world sound from one window only (check 15.78), is a step inside RUN SAME MACHINE after the controller step: copy C
+(the player 2 window) must report its sound off and copy A on through the test handle, each knowing what the other does; A
+presses its own SOUND row in the PARTY window, and within 200 ms the note in C's PARTY window must say the other window has
+its sound off; A presses again and C must hear its sound is on. The fixture blocks the audio context (it is silent by
+construction), so the switch is read there and the master gain only where a context exists; the log says which.</p>
 <div>
   <button id="run" disabled>RUN</button>
   <button id="runsame" disabled>RUN SAME MACHINE</button>
@@ -323,6 +328,46 @@ faked controllers are taken away C must let go within 400 ms.</p>
       return sleep(400).then(function(){ var p=C.__net.pad(); log('controller: 400 ms after the pads were taken away C holds ['+p.down.join(',')+'], on '+p.on); if(p.on||p.down.length) bad.push('controller: C still plays a pad 400 ms after the window in front stopped handing one over'); });
     });
   }
+  // BUILD 5: WORLD SOUND FROM ONE WINDOW ONLY. After the pair, copy C (the player 2 window) must report its sound off and copy
+  // A (the host) on through the test handle, each knowing what the other does; A presses its own SOUND row, and within 200 ms
+  // the note in C's PARTY window must say the other window has its sound off (the word goes over the real channel between
+  // windows); then A presses again and C must hear its sound is on. The fixture blocks the audio context, so the master gain
+  // is read only where a context exists; otherwise the switch alone is read, and the log says so.
+  function sndStep(A,C,bad,rep){
+    if(typeof A.__net.snd!=='function'||typeof C.__net.snd!=='function'||typeof A.__net.sndSet!=='function'||!el(fa,'partysndbtn')){
+      bad.push('this fixture has no sound switch in its net handle (a build before v15.78), so the sound step cannot run');
+      return Promise.resolve();
+    }
+    var sa=A.__net.snd(), sc=C.__net.snd(), t0=0;
+    log('sound: A reports '+JSON.stringify(sa)+'; C reports '+JSON.stringify(sc));
+    if(!sa.ctx&&!sc.ctx) log('sound: neither copy has an audio context (the fixture is silent by construction), so the switch is read and not the gain');
+    if(sa.on!==true) bad.push('sound: the host window does not report its sound on ('+JSON.stringify(sa)+')');
+    if(sc.on!==false) bad.push('sound: the player 2 window does not report its sound off ('+JSON.stringify(sc)+')');
+    if(sa.ctx&&sa.gain!==null&&sa.gain!==1) bad.push('sound: the host master gain is '+sa.gain+', not 1');
+    if(sc.ctx&&sc.gain!==null&&sc.gain!==0) bad.push('sound: the player 2 master gain is '+sc.gain+', not 0');
+    if(sc.state==='suspended') bad.push('sound: the player 2 audio context is suspended, so its sound would come back out of step');
+    if(sa.other!==0) bad.push('sound: A does not know C has its sound off (other '+sa.other+')');
+    if(sc.other!==1) bad.push('sound: C does not know A has its sound on (other '+sc.other+')');
+    A.__net.open(); C.__net.open();
+    var n0=el(fc,'partysndnote')?el(fc,'partysndnote').textContent:'';
+    log('sound: the note in C before A presses: '+n0);
+    if(!(/sound on/i).test(n0)) bad.push('sound: the note in C does not say the other window has its sound on: '+n0);
+    click(fa,'partysndbtn');
+    var s1=A.__net.snd();
+    log('sound: A pressed its SOUND row, which reads '+(el(fa,'partysndbtn')?el(fa,'partysndbtn').textContent:'?')+'; A reports '+JSON.stringify(s1));
+    if(s1.on!==false) bad.push('sound: one press on the SOUND row in A did not switch it off ('+JSON.stringify(s1)+')');
+    if(s1.ctx&&s1.gain!==null&&s1.gain!==0) bad.push('sound: switched off, the host master gain is '+s1.gain+', not 0');
+    t0=Date.now();
+    return wait(function(){ var s=C.__net.snd(), n=el(fc,'partysndnote')?el(fc,'partysndnote').textContent:''; return (s.other===0&&(/sound off/i).test(n))?n:null; },200,'copy C to hear that A switched its sound off').then(function(n){
+      rep.sndMs=Date.now()-t0;
+      log('sound: C heard it in '+rep.sndMs+' ms; the note in C reads: '+n);
+    },function(e){ bad.push('sound: '+e.message+' (C reports '+JSON.stringify(C.__net.snd())+', the note in C reads: '+(el(fc,'partysndnote')?el(fc,'partysndnote').textContent:'?')+')'); }).then(function(){
+      click(fa,'partysndbtn');
+      return wait(function(){ var s=C.__net.snd(); return (s.other===1)?s:null; },200,'copy C to hear that A switched its sound back on').then(function(){
+        log('sound: A pressed again and C heard its sound is on; A reports '+JSON.stringify(A.__net.snd()));
+      },function(e){ bad.push('sound: '+e.message); });
+    });
+  }
   // BUILD 3: THE SAME MACHINE PAIR. Copy A picks 2 PLAYER CO-OP (SAME MACHINE) through its own row. Its window.open is stood in
   // for by this page, which loads the address A asks for into copy C and hands A that window, so the popup blocker does not
   // decide the test. C is the real player 2 window otherwise: the same page with ?p2=1, the mode and the pair code, on the
@@ -336,7 +381,7 @@ faked controllers are taken away C must let go within 400 ms.</p>
       try{ delete A.open; }catch(e){}
       try{ A.__net.reset(); if(C&&C.__net) C.__net.reset(); }catch(e){}
       var pass=!bad.length;
-      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200)'+(pass?'':('; '+bad.join('; ')));
+      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200), C heard A switch its sound in '+(rep.sndMs===undefined?'?':rep.sndMs)+' ms (limit 200)'+(pass?'':('; '+bad.join('; ')));
       resEl.className=pass?'ok':'bad'; resEl.textContent=line; log(line);
       document.title=(pass?'PASS':'FAIL')+' net test';
       window.__NETTEST_SAME={pass:pass,bad:bad,rep:rep,line:line};
@@ -395,6 +440,9 @@ faked controllers are taken away C must let go within 400 ms.</p>
       // BUILD 4: the controller handed over from the window in front. A failure here is written down and the run goes on.
       return padStep(A,C,bad,rep).then(null,function(e){ bad.push('controller: '+e.message); });
     }).then(function(){
+      // BUILD 5: world sound from one window only. A failure here is written down and the run goes on.
+      return sndStep(A,C,bad,rep).then(null,function(e){ bad.push('sound: '+e.message); });
+    }).then(function(){
       // THE SAVES: player 2 wrote its own key and nothing else moved.
       var p2=ls(P2K), d=null; try{ d=JSON.parse(p2); }catch(e){}
       if(!d||typeof d.credits!=='number') bad.push('the player 2 window wrote no readable save under '+P2K);
@@ -416,7 +464,9 @@ faked controllers are taken away C must let go within 400 ms.</p>
     (function(k){ [k,k+':prerestore',k+':precrash',k+':unreadable'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} }); })('salvagerun:profile:p2');
     // BUILD 4: and the two controller picks kept for next time.
     ['salvagerun:samepad:host','salvagerun:samepad:p2'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
-    log('wiped the two net saves, the player 2 save and the controller picks; reloading the copies');
+    // BUILD 5: and the two sound switches kept for next time.
+    ['salvagerun:samesound:host','salvagerun:samesound:p2'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
+    log('wiped the two net saves, the player 2 save, the controller picks and the sound switches; reloading the copies');
     load();
   }
   runB.onclick=run;

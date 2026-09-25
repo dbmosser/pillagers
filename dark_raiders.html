@@ -813,6 +813,12 @@
     <button id="partypadbtn" style="padding:6px 16px">THIS WINDOW: NO CONTROLLER, KEYBOARD AND MOUSE</button>
     <span id="partypadnote" style="margin-left:10px;color:var(--ash)"></span>
   </div>
+  <!-- v15.78: in a same machine mode world sound comes from one window only; this row switches this window. No word here
+       that controller B looks for (leave, close, back, done, return). -->
+  <div class="msub" id="partysnd" style="display:none">
+    <button id="partysndbtn" style="padding:6px 16px">THIS WINDOW: SOUND ON</button>
+    <span id="partysndnote" style="margin-left:10px;color:var(--ash)"></span>
+  </div>
   <div class="msub" id="partyerr" style="color:var(--hazard);font-weight:700;display:none"></div>
   <div class="plist" id="partyroster" style="border:1px solid var(--steel-hi);display:none"></div>
   <div class="pbox" id="partystart" style="display:flex;gap:14px;margin-top:10px;align-items:flex-start;flex-wrap:wrap">
@@ -1418,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.77';
+var VER='15.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3426,7 +3432,7 @@ function bus(){
   var a=ac(); if(!a) return null;
   if(!BUS){
     BUS=a.createGain(); BUS.gain.value=1;
-    BUS.connect(a.destination);
+    BUS.connect(netSndOut(a));   // v15.78: through the master gain in a same machine mode (the net section); the destination otherwise
     PAN_OK=!!a.createStereoPanner;
     // Everything the game plays is now also sent to a reverb whose size is the
     // room you are standing in. See verb() below.
@@ -3462,7 +3468,7 @@ function verb(){
     d.connect(wet);
     cells.push({d:d,lp:lp,fb:fb});
   }
-  wet.connect(a.destination);
+  wet.connect(netSndOut(a));   // v15.78: as BUS: the master gain in a same machine mode, the destination otherwise
   REV={send:send,wet:wet,pre:pre,cells:cells};
   return REV;
 }
@@ -3700,7 +3706,7 @@ function tickMusic(){
     MUS.lp=a.createBiquadFilter(); MUS.lp.type='lowpass';
     MUS.lp.frequency.value=musLpHz();
     MUS.g=a.createGain(); MUS.g.gain.value=0;
-    MUS.g.connect(MUS.lp); MUS.lp.connect(a.destination);
+    MUS.g.connect(MUS.lp); MUS.lp.connect(netSndOut(a));   // v15.78: as BUS: the master gain in a same machine mode, the destination otherwise
   }
   MUS.i=0;
   var lvl=0.17*(CFG.musicVol===undefined?1:CFG.musicVol);
@@ -30886,7 +30892,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.77: EACH WINDOW ON ONE PC GETS A CONTROLLER OF ITS OWN. Multiplayer build 4. A browser hands the keyboard, the mouse and the controllers to the window in front only, so player 2 at the second window had no controller while player 1 played the first. Now the window in front reads every connected controller each frame and hands the other window the state of the controller that window plays, over the channel the two windows already share, about sixty times a second; the window not in front plays that state, and in front it plays its own. The host plays the keyboard and mouse unless it picks a controller; player 2 plays the controller it picks, or the first one the host has not taken. A CONTROLLER row in the PARTY window picks it for each window and the pick is kept for next time. Neither window ever plays the other one. Solo play and the invite code party are untouched: nothing is handed over, nothing new is read, and the seed 4242 fingerprint has no way to move. Check 15.77 fails on v15.76',
+  now:'v15.78: IN A SAME MACHINE MODE, WORLD SOUND COMES FROM ONE WINDOW ONLY. Multiplayer build 5. Two windows of the game on one PC both played the Undercroft ambience, the music, the footsteps and the blips through the same speakers a few milliseconds apart, so everything was heard twice. Now one master gain sits between everything the game plays and the speakers in a same machine mode, and a SOUND row in the PARTY window switches it for each window: the player 1 window defaults to SOUND ON and the player 2 window to SOUND OFF, the choice is kept for next time, and each window is told what the other does. A window switched off keeps every sound and schedule running behind the gain, so switching it on is instant and in step; the audio context is never suspended for it. The menu blips go through the same gain, so a window switched off is silent. Solo play and the invite code party are untouched: no node is added outside the same machine modes, nothing new is read, and the seed 4242 fingerprint has no way to move. Check 15.78 fails on v15.77',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34307,7 +34313,8 @@ var NET={on:false,proto:1,max:4,role:null,seat:-1,pid:'',name:'',sess:'',peers:[
   code:'',reply:'',codeLen:0,busy:false,status:'',err:'',
   floor:[],hubAcc:0,hubN:0,lkSent:'',   // v15.75: who stands where on the floor, by seat, and the send clock
   mode:'',pick:'',same:'',pair:'',bc:null,p2win:null,p2url:'',sameBusy:false,start:null,   // v15.76: the mode, and the two windows on one PC
-  padIx:-1,padOther:-1,padFwd:null,padSent:0,padGot:0};   // v15.77: this window's controller pick, the other window's, and the state it handed over
+  padIx:-1,padOther:-1,padFwd:null,padSent:0,padGot:0,   // v15.77: this window's controller pick, the other window's, and the state it handed over
+  sndOn:true,sndOther:-1,sndG:null,sndAc:null};   // v15.78: this window's sound switch, the other window's word (-1 not said), and the master gain
 var NET_ICE=[{urls:'stun:stun.cloudflare.com:3478'},{urls:'stun:stun.l.google.com:19302'}];
 var NET_TAG='PTY1', NET_WAIT_ICE=5000, NET_WAIT_HELLO=10000, NET_WAIT_HOST=30000, NET_WAIT_JOIN=180000, NET_MSG_MAX=16384;
 // The ?netslot override (read at the save key above, long before this section runs; both are hoisted declarations).
@@ -34850,6 +34857,7 @@ function netSameStop(){
   if(NET.bc){ try{ NET.bc.onmessage=null; NET.bc.close(); }catch(e){} }
   NET.bc=null; NET.same=''; NET.pair=''; NET.mode=''; NET.p2win=null; NET.sameBusy=false;
   NET.padFwd=null; NET.padOther=-1;   // v15.77: the handed-over state and the other window's pick go with the channel; this window's own pick stays
+  netSndRelease();   // v15.78: the master gain goes back to 1 and the other window's word is forgotten; this window's own switch stays
 }
 // The address of the player 2 window: this page, with p2=1, the mode and the pair code and nothing else.
 function netP2Url(mode,pair){
@@ -34884,6 +34892,7 @@ function netSamePick(mode,startFn){
   NET.status='Waiting for the player 2 window to link up.';
   netSameChan();
   netPadInit();   // v15.77: this window's controller pick, kept from last time, and told to the player 2 window
+  netSndInit();   // v15.78: this window's sound switch, kept from last time (the host defaults to on), applied and told to the player 2 window
   netSameHostLink();
   if(typeof go==='function') go();
   return 'opened';
@@ -34924,9 +34933,11 @@ function netSameOnMsg(m){
   // v15.77: the two controller words, read on either side: a pad state handed over by the window in front, and a pick.
   if(m.t==='pad') return netPadRecv(m);
   if(m.t==='padpick'){ NET.padOther=netPadIxOk(m.ix); return 'padpick'; }
+  if(m.t==='snd'){ NET.sndOther=(m.on===1||m.on===true)?1:0; netRefresh(); return 'snd'; }   // v15.78: the other window says whether its sound is on
   if(NET.same==='host'){
     if(m.t==='ready'){
       netPadPost();   // v15.77: a player 2 window that just booted, or reloaded, is told this window's controller pick
+      netSndPost();   // v15.78: and whether this window's sound is on
       if(NET.pend&&NET.pend.state==='offer'){ if(NET.code){ netSamePost({t:'offer',pair:NET.pair,mode:NET.mode,code:NET.code}); return 'offer'; } return 'wait'; }
       netSameHostLink();
       return 'wait';
@@ -34962,6 +34973,7 @@ function netSameBootP2(pair,mode){
   if(!NET.pair){ NET.err='This window was opened without a pair code. Close it and pick the mode again in the player 1 window.'; netRefresh(); return 'nopair'; }
   if(!netSameChan()){ NET.err='Could not open the link to the player 1 window.'; netRefresh(); return 'nochan'; }
   netPadInit();   // v15.77: the player 2 controller pick, kept from last time, told to the player 1 window; ready stays the last word of the boot
+  netSndInit();   // v15.78: the player 2 sound switch, kept from last time (player 2 defaults to off), told to the player 1 window before ready
   netSamePost({t:'ready',pair:NET.pair});
   return 'ready';
 }
@@ -34978,7 +34990,7 @@ function netTitleInit(startFn){
   for(i=0;i<hide.length;i++){ el=g(hide[i]); if(!el) continue; if(el.parentNode&&el.parentNode.className==='modelater') el=el.parentNode; el.style.display='none'; }
   if(st) st.textContent='ENTER THE UNDERCROFT';
   r=netSameBootP2();
-  if(pl){ pl.textContent='PLAYER 2. This window links up with the player 1 window on its own. Drag it to your second screen. Your controller works here whether this window is in front or not. MODE: '+netModeName(NET.mode)+'.'; pl.style.display=''; }   // v15.77: the controller sentence
+  if(pl){ pl.textContent='PLAYER 2. This window links up with the player 1 window on its own. Drag it to your second screen. Your controller works here whether this window is in front or not. World sound plays from the player 1 window; the SOUND row in the PARTY window switches it. MODE: '+netModeName(NET.mode)+'.'; pl.style.display=''; }   // v15.77: the controller sentence; v15.78: the sound sentence
   try{ document.title='PILLAGERS, PLAYER 2'; }catch(e){}
   return r;
 }
@@ -35120,6 +35132,80 @@ function netPadTick(gps){
   if(fwd&&fwd.gp&&(netPadNow()-fwd.at)<=NET_PAD_STALE) return fwd.gp;
   return null;
 }
+// v15.78, HIS ORDER OF 2026-09-25: MULTIPLAYER, BUILD 5 OF PHASE 1. IN A SAME MACHINE MODE, WORLD SOUND COMES FROM ONE WINDOW ONLY.
+//   THE PROBLEM. Two windows of the game on one PC both play the Undercroft ambience, the music, the footsteps and the blips
+//   through the same speakers, a few milliseconds apart, so everything is heard twice with a smear on it.
+//   THE MUTE. One master gain, NET.sndG, between everything the game plays and the speakers. The three nodes that reach the
+//   destination (BUS, which carries every sound in the world and feeds the room reverb; the reverb's wet return; the music's
+//   lowpass) connect to netSndOut(a) instead: that gain in a same machine mode, made on first use, and a.destination
+//   otherwise, so outside the modes the chain is what it was, with no node added. A window switched off sets the gain to 0
+//   and nothing else: every oscillator, buffer and schedule keeps running behind it and the context clock keeps counting, so
+//   switching back on is instant and in step with the other window. Never AC.suspend: a suspended context stops its clock,
+//   and the music would come back mid-bar and out of step. The host plays frames on the title before the pick, so its three
+//   nodes may already sit on the destination; netSndRoute moves them behind the gain once, at the pick. The player 2 window
+//   sets its mode at boot, before any node exists. The menu blips go through it too: a menu click plays the same pick voice
+//   a pickup does, through BUS, so there is no clean way to leave the blips audible in a window switched off; it is silent.
+//   THE SWITCH. THIS WINDOW: SOUND ON or SOUND OFF, a row in the PARTY window shown in a same machine mode only. The host
+//   defaults to on and the player 2 window to off; the choice is kept under salvagerun:samesound:host or :p2 for next time
+//   and told to the other window ({t:'snd'}) at the pick, at the player 2 boot, again on ready and on every change, so each
+//   window can say what the other does. END THE PARTY puts the gain back to 1 and forgets the other window's word; the node
+//   stays, at 1, which changes nothing.
+// SOLO PLAY AND THE INVITE CODE PARTY ARE UNTOUCHED: netSndOut returns a.destination while NET.same is unset, nothing new is
+// read, and nothing here draws from the seeded stream (rr, rnd, ri, pick, rollTable) or reads G.
+function netSndKey(side){ return 'salvagerun:samesound:'+((side==='p2')?'p2':'host'); }
+function netSndDefault(side){ return side!=='p2'; }
+// The node the world connects to: the master gain in a same machine mode, made once per context; else the destination.
+function netSndOut(a){
+  if(!a) return null;
+  if(!NET.same) return a.destination;
+  if(!NET.sndG||NET.sndAc!==a){
+    try{ NET.sndG=a.createGain(); NET.sndG.gain.value=NET.sndOn?1:0; NET.sndG.connect(a.destination); NET.sndAc=a; }
+    catch(e){ NET.sndG=null; NET.sndAc=null; return a.destination; }
+  }
+  return NET.sndG;
+}
+function netSndApply(){ if(NET.sndG){ try{ NET.sndG.gain.value=NET.sndOn?1:0; }catch(e){} } return NET.sndOn; }
+// The nodes that reach the destination move behind the master gain, once each. Returns how many moved.
+function netSndRoute(){
+  var a=(AC&&AC.destination)?AC:null, g, list, i, n, moved=0;
+  if(!a||!NET.same) return 0;
+  g=netSndOut(a);
+  if(!g||g===a.destination) return 0;
+  list=[BUS||null,(REV&&REV.wet)||null,(MUS&&MUS.lp)||null];
+  for(i=0;i<list.length;i++){
+    n=list[i]; if(!n||n===g||n.__sndOut===g) continue;
+    try{ n.disconnect(a.destination); }catch(e){}
+    try{ n.connect(g); n.__sndOut=g; moved++; }catch(e2){}
+  }
+  return moved;
+}
+// THE SWITCH: kept for next time under this side's key, applied at once, and told to the other window.
+function netSndLoad(){
+  var v=null;
+  try{ v=localStorage.getItem(netSndKey(NET.same)); }catch(e){ v=null; }
+  NET.sndOn=(v==='1')?true:((v==='0')?false:netSndDefault(NET.same));
+  return NET.sndOn;
+}
+function netSndPost(){ return netSamePost({t:'snd',pair:NET.pair,on:NET.sndOn?1:0}); }
+function netSndSet(on){
+  NET.sndOn=!!on;
+  try{ localStorage.setItem(netSndKey(NET.same),NET.sndOn?'1':'0'); }catch(e){}
+  netSndApply();
+  netSndPost();
+  netRefresh();
+  return NET.sndOn;
+}
+function netSndToggle(){ return netSndSet(!NET.sndOn); }
+function netSndInit(){ netSndLoad(); NET.sndOther=-1; netSndRoute(); netSndApply(); netSndPost(); return NET.sndOn; }
+function netSndRelease(){ NET.sndOther=-1; if(NET.sndG){ try{ NET.sndG.gain.value=1; }catch(e){} } return true; }
+function netSndLabel(on){ return on?'SOUND ON':'SOUND OFF'; }
+function netSndOtherLabel(){ return (NET.sndOther===1)?'sound on':((NET.sndOther===0)?'sound off':'not said yet'); }
+// What a test page reads: the switch, the other window's word, and the master gain as the game holds it.
+function netSndView(){
+  var v=null;
+  try{ v=localStorage.getItem(netSndKey(NET.same)); }catch(e){ v=null; }
+  return {on:NET.sndOn,other:NET.sndOther,gain:(NET.sndG&&NET.sndG.gain)?NET.sndG.gain.value:null,routed:!!NET.sndG,ctx:!!AC,state:(AC&&AC.state)||'',kept:v};
+}
 // THE PARTY WINDOW.
 function openParty(){ renderParty(); openModal('partymodal'); }
 function renderParty(){
@@ -35133,6 +35219,9 @@ function renderParty(){
   // v15.77: the controller this window plays on, in a same machine mode; the other window's pick beside it.
   var pr=g('partypad'), pb=g('partypadbtn'), pn=g('partypadnote');
   if(pr){ pr.style.display=NET.same?'':'none'; if(NET.same){ if(pb) pb.textContent='THIS WINDOW: '+netPadLabel(NET.padIx,NET.same); if(pn) pn.textContent='Press to change. The other window is on '+netPadLabel(NET.padOther,(NET.same==='host')?'p2':'host').toLowerCase()+'. Each window keeps its own controller, in front or not.'; } }
+  // v15.78: whether this window plays the world sound, in a same machine mode; what the other window said beside it.
+  var sr=g('partysnd'), sb2=g('partysndbtn'), sn=g('partysndnote');
+  if(sr){ sr.style.display=NET.same?'':'none'; if(NET.same){ if(sb2) sb2.textContent='THIS WINDOW: '+netSndLabel(NET.sndOn); if(sn) sn.textContent='Press to change. The other window: '+netSndOtherLabel()+'. Two windows on one PC play the same world sound twice, so one of them is switched off. A window switched off keeps every sound running and comes straight back when switched on.'; } }
   sb.style.display=role?'none':'flex';
   cb.style.display=code?'':'none';
   g('partylen').textContent=code?(((role==='host')?'INVITE CODE, ':'REPLY CODE, ')+code.length+' CHARACTERS'):'';
@@ -35177,6 +35266,7 @@ function netCopyOld(t,done){
   var blurIn=function(){ var a=document.activeElement, m=g('partymodal'); if(a&&m&&m.contains(a)&&a.blur) a.blur(); };
   g('closeparty').onclick=function(){ blurIn(); g('partymodal').classList.remove('on'); };
   if(g('partypadbtn')) g('partypadbtn').onclick=function(){ netPadCycle(); };   // v15.77: the CONTROLLER row
+  if(g('partysndbtn')) g('partysndbtn').onclick=function(){ netSndToggle(); };   // v15.78: the SOUND row
   g('partyhost').onclick=function(){ netUi(netHost,'Making an invite code. This takes a few seconds.'); };
   g('partyinvite').onclick=function(){ netUi(netHost,'Making a new invite code. This takes a few seconds.'); };
   g('partyjoin').onclick=function(){
@@ -35211,7 +35301,10 @@ if(NETSLOT||NETP2){   // v15.76: and the player 2 window, so the test page can r
       pick:function(mode){ return netSamePick(mode,function(){}); },
       // v15.77: the controller this window plays on, the state the other window handed over, and the buttons the reader holds down.
       pad:function(){ var d=[], i; for(i=0;i<((PAD&&PAD.prev)||[]).length;i++) if(PAD.prev[i]) d.push(i); return {on:!!(PAD&&PAD.on),ix:NET.padIx,other:NET.padOther,fwd:NET.padFwd?{ix:NET.padFwd.ix,age:Math.round((netPadNow()-NET.padFwd.at)*1000)}:null,down:d,sent:NET.padSent,got:NET.padGot,front:netPadFocused()}; },
-      padSet:function(ix){ return netPadSet(ix); }};
+      padSet:function(ix){ return netPadSet(ix); },
+      // v15.78: whether this window plays the world sound, what the other window said, and the master gain as the game holds it.
+      snd:function(){ return netSndView(); },
+      sndSet:function(on){ return netSndSet(!!on); }};
   }catch(e){}
 }
 document.getElementById('termsclear').onclick=function(){

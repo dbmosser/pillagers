@@ -1,0 +1,20 @@
+v15.78: in a same machine mode, world sound comes from one window only
+
+Multiplayer build 5. Two windows of the game on one PC both played the
+Undercroft ambience, the music, the footsteps and the blips through the
+same speakers a few milliseconds apart, so everything was heard twice.
+Now one master gain sits between everything the game plays and the
+speakers in a same machine mode, and a SOUND row in the PARTY window
+switches it for each window: the player 1 window defaults to SOUND ON
+and the player 2 window to SOUND OFF, the choice is kept for next time,
+and each window is told what the other does. A window switched off keeps
+every sound and schedule running behind the gain, so switching it on is
+instant and in step; the audio context is never suspended for it. The
+menu blips go through the same gain, so a window switched off is silent.
+Solo play and the invite code party are untouched: no node is added
+outside the same machine modes. The live test is the sound step of RUN
+SAME MACHINE in tools/nettest.html.
+
+Check 15.78. Fails on v15.77.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

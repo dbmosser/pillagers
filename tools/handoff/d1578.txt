@@ -1,0 +1,141 @@
+## v15.78 - IN A SAME MACHINE MODE, WORLD SOUND COMES FROM ONE WINDOW ONLY
+
+His order of 2026-09-25: native multiplayer, played first as two players on the SAME PC in two game windows on two screens,
+player 2 on a controller. This is phase 1, build 5 of tools/multiplayer/plan.md (section E) with the corrections in critique.md.
+The problem this build solves: two windows on one PC both play the world sound (the Undercroft ambience, the music, the
+footsteps, the blips) through the same speakers, a few milliseconds apart, so everything is heard twice with a smear on it.
+Player voices are not part of this build.
+
+WHERE THE MUTE SITS. The game reaches the speakers through exactly three nodes, and nowhere else (every .destination in the
+file): BUS (bus(), the shared output every sfx, blip, machine voice and the ambient bed connect to, which also feeds the room
+reverb send), the reverb's wet return (verb(), REV.wet) and the music's lowpass (tickMusic(), MUS.lp; the music is dry, by
+design, and never on BUS). The fourth .destination in the file, blip's OUT=bus()||a.destination, is a fallback that can only
+be taken when there is no context at all, so it is left alone. Those three lines now connect to netSndOut(a): in a same
+machine mode (NET.same set) one master gain, NET.sndG, made on first use per context and connected to a.destination; outside
+the modes a.destination itself, so no node is added and the chain is what v15.77 had. A window switched OFF sets that gain to
+0 and nothing else: every oscillator, buffer, ramp and scheduled note keeps running behind it, the context clock keeps
+counting, the music scheduler keeps filling its window, so switching back ON is instant and in step with the other window.
+Never AC.suspend: a suspended context stops its clock, and the music would come back mid-bar and out of step (the
+visibilitychange handler that suspends a hidden tab is untouched; a visible window that is not in front is not hidden).
+The fixture overrides say, sfx and blip at the source (mkfixture), so the mute sits below them, at the output. The menu
+blips go through it too: a menu click plays the same 'pick' voice a pickup does, through BUS, so there is no clean way to
+leave the blips audible in a window switched off; it is silent, and the PARTY window says so.
+THE HOST already plays frames on the title before it picks the mode (tickVerb and tickMusic run every frame from load), so
+its three nodes may already sit on the destination at the pick; netSndRoute moves them behind the gain once (disconnect from
+the destination, connect to the gain, a marker on the node so a second pick does nothing), leaving the BUS feed to the reverb
+send in place. The player 2 window sets NET.same at boot, before any node exists, so its nodes are made behind the gain.
+
+THE SWITCH. THIS WINDOW: SOUND ON or SOUND OFF, a row in the PARTY window (#partysnd, #partysndbtn, #partysndnote) under the
+CONTROLLER row, shown in a same machine mode only; a press flips it (netSndToggle). The host defaults to ON, the player 2
+window to OFF (netSndDefault); the choice is kept under salvagerun:samesound:host or :p2 ('1' or '0'), beside the pad pick and
+not in the profile, so saveProfile is untouched; and it is told to the other window as {t:'snd',pair,on} at the host pick
+(netSamePick, netSndInit after netPadInit), at the player 2 boot (netSameBootP2, before ready, so ready stays the last word
+of the boot as checks 15.76 and 15.77 read it), again when a ready arrives on the host (a reloaded player 2 window), and on
+every change; the receiver keeps it on NET.sndOther (-1 not said) and the note reads: Press to change. The other window:
+sound on / sound off / not said yet. Two windows on one PC play the same world sound twice, so one of them is switched off. A
+window switched off keeps every sound running and comes straight back when switched on. END THE PARTY (netSameStop, via
+netReset on the host) puts the gain back to 1 and forgets the other window's word (netSndRelease); the node stays, at 1,
+which changes nothing. A player 2 window keeps its mode and channel across netReset as before, so its switch stays. The
+player 2 title line adds: World sound plays from the player 1 window; the SOUND row in the PARTY window switches it. No word
+on the row that controller B looks for (leave, close, back, done, return).
+- NET gains sndOn, sndOther, sndG, sndAc. The ?netslot and ?p2 test handle window.__net gains snd() (on, other, gain as the
+  node holds it or null, routed, ctx, state, kept) and sndSet(on), for tools/nettest.html.
+
+SOLO PLAY AND THE INVITE CODE PARTY UNTOUCHED. netSndOut returns a.destination unless NET.same is set: no gain node in the
+chain, nothing new read, nothing suspended. netSndRelease runs inside netSameStop on every netReset and does nothing without
+a gain. The sound code never calls rr, rnd, ri, pick or rollTable and never reads G; map building is not touched, so the seed
+4242 fingerprint in __verifySafe (ents 85/374, containers 165/593) has no way to move. No number, dial, loot table or seeded
+draw moved. WHATSNEW_VER stays 15.72 (drift 0.06). Every new player-facing line was checked against his vocabulary (no ship,
+boarding, touchdown, hotbar, bag, inventory); no apostrophe inside any JS string; no TXSHIP key is touched.
+
+ANCHORS (whole lines, each matching once in v15.77):
+- "var VER='15.77';";
+- "    BUS.connect(a.destination);" (bus); "  wet.connect(a.destination);" (verb); "    MUS.g.connect(MUS.lp); MUS.lp.connect(a.destination);" (tickMusic);
+- "  padIx:-1,padOther:-1,padFwd:null,padSent:0,padGot:0};   // v15.77: ..." (the sound fields on NET after it);
+- "  NET.padFwd=null; NET.padOther=-1;   // v15.77: ..." (netSameStop; netSndRelease after it);
+- "  netPadInit();   // v15.77: this window's controller pick, kept from last time, and told to the player 2 window" (netSamePick; netSndInit after it);
+- "  netPadInit();   // v15.77: the player 2 controller pick, kept from last time, told to the player 1 window; ready stays ..." (netSameBootP2; netSndInit after it, before ready);
+- "  if(m.t==='padpick'){ NET.padOther=netPadIxOk(m.ix); return 'padpick'; }" (netSameOnMsg; the snd word after it);
+- "      netPadPost();   // v15.77: a player 2 window that just booted, or reloaded, is told this window's controller pick" (the ready branch; netSndPost after it);
+- the player 2 title line "  if(pl){ pl.textContent='PLAYER 2. This window links up ..." (the sound sentence);
+- "// THE PARTY WINDOW." (the sound section before it);
+- the two lines "    <span id="partypadnote" ...></span>" and "  </div>" (the SOUND row after them);
+- the renderParty CONTROLLER row line "  if(pr){ pr.style.display=NET.same?'':'none'; ..." (the SOUND row drawn after it);
+- "  if(g('partypadbtn')) g('partypadbtn').onclick=function(){ netPadCycle(); };   // v15.77: the CONTROLLER row" (the row wired after it);
+- "      padSet:function(ix){ return netPadSet(ix); }};" (the test handle);
+- the DEVNOW line starting "  now:'v15.77:".
+None of these lines is one of the 158 CRLF lines in the file (158 before and after); SubRx makes the lines it adds LF, whatever
+the endings of the .ps1 on disk. A second p1578 on the result fails on its first anchor before anything is written; f1578
+refuses to run if "  {v:'15.78',what:" is there. Fixture anchor: the line prefix "  {v:'15.77',what:" (written by f1577).
+
+MEASURED. Check 15.78 is synchronous (the runner does not await a promise) and never opens a window, makes a channel, makes a
+connection or makes a sound: the fixture blocks the audio context, so a recording stand-in is put in AC for the length of the
+check (as checks 10.58 and 9.68 do; every node keeps the list of what it connects to, one entry per target as the browser
+keeps one connection per pair, disconnect(x) throws when x is not there as the browser does, every start is written down,
+suspend and resume are counted) and the real bus(), verb(), tickMusic() (musicWanted stood in as true) and the real blip
+(_realBlip under the fixture stub) build their nodes on it; the channel between windows is a stand-in that records what is
+posted, the words are fed to the real netSameOnMsg; the pick arm stands in window.open, BroadcastChannel and netHost for the
+real netSamePick and netSameBootP2, as checks 15.76 and 15.77 do. Everything is put back in finally: AC, BUS, REV, PAN_OK,
+every MUS field, musicWanted, G.sim, the net section, the sound fields, the two storage keys, the stand-ins, say2, the row.
+SKIP if a party is on in the copy.
+- CONTROL, no same machine mode: the row is hidden, BUS, the reverb return and the music connect straight to the destination,
+  no master gain is made, a blip starts a voice, nothing is suspended; the gain nodes bus() makes (the bus and the reverb,
+  seven) are the measure the same machine arm is held to plus one.
+- THE HOST at the pick with those nodes already on the destination: defaults to ON, the master gain is made at 1 on the
+  destination, all three nodes move behind it and BUS still feeds the reverb send, a second routing moves nothing, the other
+  window is told on:1, the handle reads on with the gain at 1; the row shows and reads SOUND ON, the note says not said yet;
+  a player 2 word off then on updates the note, another pair code is ignored; one press switches it OFF at once (gain 0, row
+  SOUND OFF, kept '0', told on:0), a blip still starts its voice and the music still schedules its notes behind the gain,
+  nothing is suspended, the world still runs through the gain, the handle reads off with the gain at 0; a second press is
+  back at 1 at once and kept '1'; a ready from player 2 is answered with the switch; END THE PARTY puts the gain back to 1
+  and forgets the other word.
+- PLAYER 2, a fresh window with no node yet: defaults to OFF and tells the host on:0; the first bus() builds the master gain
+  at 0 on the destination with BUS, the reverb return and the music behind it, exactly one gain node more than the plain
+  bus(); the music still schedules and a blip still starts a voice; nothing is suspended; the row reads SOUND OFF; a press
+  ON is at 1 at once, kept under :p2 and told; OFF again is at 0.
+- THE REAL PICK with '0' kept under :host reads it, is muted at the pick and tells the player 2 window on:0; END THE PARTY
+  puts the gain back; THE REAL PLAYER 2 BOOT with '1' kept under :p2 reads it, tells the host on:1, and ready is still the
+  last word of the boot.
+- CONTROL after the modes: a new bus goes straight to the destination, no gain made; the context was never suspended by
+  this code; RNGS unmoved.
+- On v15.77 it FAILS on its first line (no netSndOut and no SOUND row), before any SKIP.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as committed (v15.77): p1578 OK, 16 edits plus DEVNOW;
+f1578 OK, 1 edit; a second run of each refuses before writing. Both handoff scripts are ASCII. Built with mkfixture from
+the scratch copies: fxdry78 (patched game and patched fixture) and fxctl78 (the v15.77 game with the patched fixture), in
+the scratchpad, not in tools. cscript is no use on this machine now (the Chakra engine is blocked for Windows Script Host,
+and JScript 5.8 has no JSON, forEach or defineProperty), so the gates and the check ran in the MSHTML engine instead (the
+htmlfile COM object in IE11 document mode, Chakra, a real DOM, no Promise, no localStorage, no audio; the source handed over
+in a textarea). The parsecheck gates with parsecheck's own balance and dupes code: parens, braces and brackets 0, no duplicate
+top-level function, DEVNOW names v15.78 on one now line, WHATSNEW drift 0.06, no mojibake, whole script compiles (new
+Function), on the patched game and both fixtures. Run, not just parsed, with stubs for the browser (a small Promise, Math.imul,
+a localStorage object, a stub RTCPeerConnection so netSupported holds, the real PARTY window markup cut from the patched file
+into the real DOM): the REAL audio section from the audio banner to spaceAt (ac, bus, verb, the music tables, musPick,
+tickMusic, musNote, musVoice), the REAL blip and the REAL net section with the sound code, cut from the patched game, with
+check 15.78 cut from the patched fixture. It PASSES on v15.78 and FAILS on v15.77 with its first-line message, and puts back
+AC, BUS, REV, the music, the net section, the sound fields, the storage keys, the stand-ins and the row (read back after the
+run). Nineteen single mutations of the patched code each fail it with the matching message: no master gain made (netSndOut
+always the destination), a gain made outside the modes too, the mute not applied, the routing skipped, BUS cut from the
+reverb on routing, player 2 defaulting to on, the switch not kept, one key for both sides, the press not told, the snd word
+ignored on receipt, the note ignoring the other word, the row always shown, the switch not read at the pick, not read at
+the boot, not told on ready, the gain not put back at END THE PARTY, OFF done as AC.suspend, OFF stopping the blip, OFF
+stopping the music scheduler. Checks 15.76 and 15.77 were not re-run here (their harnesses need the pad reader and the
+floor); by reading, the player 2 boot now posts padpick, snd, ready in that order, so ready stays the last word both read.
+
+THE LIVE TEST, tools/nettest.html (edited by hand, one write, on a shard port, http://localhost:8805/nettest.html, never
+:8802 or :8803; ?f=fxdry78.html for the dry fixture). The build 1 to 4 steps are kept. RUN SAME MACHINE gains a sound step
+after the controller step: copy C (the player 2 window) must report its sound off and copy A on through the test handle,
+each knowing what the other does and C's note saying the other window has its sound on; A presses its own SOUND row in the
+PARTY window, and within 200 ms the note in C's PARTY window must say the other window has its sound off (the word over the
+real channel between windows); then A presses again and C must hear its sound is on. The fixture blocks the audio context (it
+is silent by construction), so the gain is read only where a context exists and the log says the switch alone was read.
+The result line adds how long C took to hear the change. WIPE also removes the two sound keys. A sound failure is written
+down and the run goes on.
+
+Not verified: nothing here has run in a browser. The check has not been run on fxdry78 or fxctl78 in a browser, __verifySafe
+(and so the seed 4242 counts) and parsecheck.html have not been run in a browser, and nettest.html has not been run, so no
+real channel carried the sound word and no real AudioContext held the master gain: the three real disconnect/connect calls
+at the host pick, the click-free step of a gain set straight to 0 and back (a hard step on a master gain can tick; a short
+ramp was not used because the check reads the gain value at once), and whether Chrome keeps the audio of a visible window
+that is not in front at full rate are for his two screens. The row is measured for its words and its state, not its layout
+at 1920x1080. Under the MSHTML engine the check ran against the real code but not the real Web Audio nodes.
