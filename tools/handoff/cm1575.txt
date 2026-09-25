@@ -1,0 +1,13 @@
+v15.75: the party sees each other on the Undercroft floor
+
+Multiplayer build 2. Every copy in a party sends where its man stands
+about ten times a second on a second channel that never resends, the
+host passes each friend on to the others, and each of the others is
+drawn on the floor with the body the crowd uses, dressed from his own
+racks, eased between packets and named over his head. A bye or a lost
+link takes him off the floor. A solo floor frame draws, sends and
+changes nothing new. The live walk test is in tools/nettest.html.
+
+Check 15.75. Fails on v15.74.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -1,0 +1,123 @@
+## v15.75 - THE PARTY SEES EACH OTHER ON THE UNDERCROFT FLOOR
+
+His order of 2026-09-25: native multiplayer, co-op first, up to four. This is phase 1, build 2 of tools/multiplayer/plan.md
+(section E), with the corrections in tools/multiplayer/critique.md. Raids stay solo and there is no voice yet (build 3).
+
+THE BUILD.
+- Every copy in a party sends where its man stands on the Undercroft floor about ten times a second: x, y, facing, walking or
+  not, and what is left of a roll. What he is wearing (one rack id per kind: hair, hat, skin, fit, cut, beard, eyes, face,
+  boots, gloves, pack, patch, tattoo, outfit) rides in his first packet, then once a second and whenever it changes. The message
+  is JSON {t:'st',x,y,f,m,r,lk}; a friend sends it to the host; the host sends its own with s:0 and passes each friend on to the
+  others with s set to that friend's seat, never back to him. The host files a friend under the seat it gave his link and never
+  reads a seat a friend claims.
+- THE CHANNEL. A second data channel on every link, negotiated like the first as id 1, unordered with maxRetransmits 0, so a lost
+  packet is replaced by the next one a tenth of a second later instead of holding up the queue. Negotiated channels are not
+  written into the offer, so the invite code does not grow. A link whose fast channel is not open uses the reliable channel
+  (id 0), which is what a stand-in link in the check has. The fast channel closes with its link.
+- netHubTick(dt), called from updateHubWorld while NET.on, AHEAD of the window test: a man reading the PARTY window at the lift
+  is still seen. It eases each of the others toward where he last said he stood (1 - e^(-12 dt) a frame, about 14 units behind
+  the last spot a walking man sent), turns him on the shortest arc, runs his walk cycle while he said he was walking, takes anyone whose
+  seat left the roster off the floor list, and every 0.1 s sends where this man stands to every link that is in.
+- netDrawPeers(DR), called from drawHubWorld while NET.on, puts each of the others into the floor's y-sorted list, so walls,
+  posts, the crowd and the player cover him and are covered by him as they do each other; the list draws him with netDrawPeer,
+  which is drawOp, the body the crowd and the pillagers use: hero 0, his coat from his fit, every other rack from his look,
+  walking, standing or rolling as he said. netDrawTags(S,ox,oy), called after the station names, paints his name over his head
+  in amber on a dark plate, above the darkness like the station names.
+- The first word from a man, a jump past 160 units, or a word after 3 seconds of silence puts him where he said at once. Nobody
+  is drawn who is not in the roster, nobody on this copy's own seat, and nobody who has said nothing for 3 seconds (up top in a
+  raid, or his window hidden); he comes back when he speaks. A bye or a lost link takes his seat out of the roster and he is
+  gone from the next frame; netReset clears the floor list.
+- A look off the wire keeps only ids the racks know, each under its own kind (cosFind(id).kind), so nothing another copy sends
+  reaches drawOp but a real rack id. Ownership is not checked: a copy that wears a rack it has not earned shows it to the others,
+  which is cosmetic only. Positions must be numbers and are clamped to the room (700 by 470); a facing outside -100 to 100 is 0.
+- The PARTY window blurb now says the others walk the floor with you, with their names over their heads, and every raid is still
+  played alone. That sentence was new in v15.74 and is in none of his edits; no TXSHIP key is touched.
+- The ?netslot test handle window.__net gains me() (where this copy stands, and its seat), floor() (who it draws, where, and
+  whether shown) and fast() (how many fast channels are open), for tools/nettest.html.
+
+SOLO PLAY UNTOUCHED. Every new call site is behind NET.on: updateHubWorld calls netHubTick, and drawHubWorld calls netDrawPeers
+and netDrawTags, only while a party is on, and the DR loop's new branch runs only for an entry netDrawPeers put there. A solo
+floor frame draws, sends and changes nothing new. The floor code never calls rr, rnd, ri, pick or rollTable and never reads G;
+map building is not touched, so the seed 4242 fingerprint in __verifySafe (ents 85/374, containers 165/593) has no way to move.
+No number, dial, loot table or seeded draw moved. WHATSNEW_VER stays 15.72 (drift 0.03). Every new player-facing line (the
+blurb and the DEVNOW line) was checked against his vocabulary: no ship, boarding, touchdown, hotbar or bag.
+
+ANCHORS (whole lines, each matching once in v15.74):
+- "  <div class="msub">Up to four pillagers, linked by invite code. This first step only links your copies ..." (the blurb);
+- "var VER='15.74';";
+- "  if(hubModalOpen()){ p.moving=false; HB.near=null; return; }" (netHubTick before it);
+- the two lines "  DR.push({k:p.y-((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y)*0.5:0),pl:1});" and
+  "  DR.sort(function(a,b){return a.k-b.k;});" (netDrawPeers between them; the sort line alone matches twice);
+- the two lines "    } else {" and "      // THE CROWD, v6.54. Behind him in the draw order and idle: a slow bob, and the" (the peer branch
+  before them; "    } else {" alone matches 25 times);
+- "  hubStationNames(S,ox,oy);" (netDrawTags after it);
+- "  code:'',reply:'',codeLen:0,busy:false,status:'',err:''};" (the floor fields on NET);
+- "  peer.dc.onclose=function(){ netDrop(peer,'closed'); };" (the fast channel after it);
+- "  try{ if(peer.dc){ peer.dc.onopen=null; ... peer.dc.close(); } }catch(e){}" (the fast channel closed after it);
+- "  if(!m||typeof m!=='object'||typeof m.t!=='string') return 'bad';" ('st' handed to netOnState after it);
+- "  NET.pend=null; NET.on=false; NET.role=null; ... NET.busy=false;" (the floor list cleared after it, in netReset);
+- "function netRefresh(){ var m=document.getElementById('partymodal'); ... }" (the floor code after it);
+- "      reset:function(){ netReset(); }};" (me, floor and fast on the test handle);
+- the DEVNOW line starting "  now:'v15.74:".
+None of these lines is one of the 158 CRLF lines in the file; SubRx makes the lines it adds LF to match, whatever the endings of
+the .ps1 on disk. A second p1575 on the result fails on its first anchor before anything is written.
+Fixture anchor: the line prefix "  {v:'15.74',what:" (written by f1574); f1575 refuses to run if "  {v:'15.75',what:" is there
+already, since its own anchor survives its edit. The lines it adds are LF, like the checks round them.
+
+MEASURED. Check 15.75 is synchronous (the runner does not await a promise) and never makes a real connection: stand-in links
+speak the protocol through the real netOnMsg, and the floor is driven through the real updateHubWorld and drawHubWorld. The
+frames are held still (dt 0, tickHubCrowd stubbed for the length of the check; a first frame settles the floor, the second is
+the solo frame), so frames compare operator by operator; drawOp, wc.fillText and the four floor functions are spied and put
+back in finally, with the player, HB.t, HB.near, HB.eLock, HUBSAY_T, say2 and the net section.
+- SOLO: with no party a floor frame calls none of the floor code. A friend staged through the real hello and st handlers and then
+  left in the list with the party switched off: two floor updates never call netHubTick, send nothing and ease nobody; the frame
+  draws exactly the solo operators and not his name; netDrawPeers and netHubTick called straight add and send nothing.
+- HOST, two stand-in friends let in as seats 1 and 2 (seat 1 with an open stand-in fast channel): a position of 1e999, one of
+  "300" as a string, and one from a link that never said hello are refused and file nothing. Seat 1 claiming seat 3 is filed
+  under seat 1, where he said (300,200); his look keeps fit moss and hair red and drops a hat id the racks do not know; seat 2
+  is sent him with s 1 and the cleaned look, and he is never sent back to himself. A new spot (340,230) does not jump him; one
+  tick puts him part way; a second of ticks puts him within 1 unit. Over that second the host sends 8 to 11 positions on seat 1's
+  fast channel and none on its reliable one, seat 0 at the staged 123.4,234.5 facing 0.77 and walking, the first carrying his
+  fit and hair; seat 2, with no fast channel, gets them on the reliable one. The frame draws seat 1 exactly once, hero 0, at
+  340,230, with coat FITCOL.moss and hair red, sorted before or after the player by y, his name painted and seat 2's not, and
+  every other operator exactly as the solo frame. updateHubWorld ticks netHubTick once, and once more with #partymodal open.
+  A bye takes him off the frame, his name off the canvas, and his entry off the list at the next tick; CONTROL: seat 2 is drawn
+  once after he speaks, then a lost link (netDrop closed) takes him off the same way.
+- JOINING COPY on seat 1 with a roster of three: the host (seat 0, look rust and white) and seat 2 are filed where they said;
+  its own seat coming back, seat 3 (not in the roster) and a position with no seat are not. It sends the host 111.1,222.2 facing
+  -1.25, standing. It draws the host and seat 2 once each, the host in rust and white, names both, and not its own name. A roster
+  without seat 2 takes him off the frame and the list; CONTROL: the host stays. The host's bye leaves the net section off with
+  nobody on the list, and the frame is the solo frame again. RNGS is the same before and after all of it.
+- On v15.74 it FAILS on its second line (no netHubTick, netDrawPeers or netDrawPeer), before any SKIP.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as committed (v15.74): p1575 OK, 13 edits plus DEVNOW; f1575
+OK, 1 edit. Built with mkfixture from the scratch copies: fxdry75 (patched game and patched fixture) and fxnew74 (the v15.74 game
+with the patched fixture). The parsecheck gates, run in cscript (Chakra) with parsecheck's own balance and dupes code: parens,
+braces and brackets 0, no duplicate top-level function, DEVNOW names v15.75 (two apostrophes on its line), WHATSNEW drift 0.03,
+on the patched game and both fixtures. The patched game script and both fixtures compile in Chakra (wrapped in a function never
+called, reserved-word property names quoted and ES5 accessors rewritten for that engine; a planted syntax error in the same
+harness fails with its line). All five handoff files are ASCII.
+Run, not just parsed: under cscript with stubs for the browser and the parts of the game the checks do not reach, the REAL net
+section, updateHubWorld, hubScale, hubCam and drawHubWorld cut from the patched game, with the real COSMETICS, FITCOL and cosWorn,
+and check 15.75 cut from the patched fixture: it PASSES on v15.75 and FAILS on v15.74 with "this build draws nobody else on the
+Undercroft floor". Seventeen single mutations of the patched code each make it fail with the matching message: the draw guard
+removed, netShown ignoring NET.on and the roster, netDrawPeers ignoring NET.on, the relay echoing back, snapping instead of
+easing, the fast channel never used, netHubTick after the window test, the peer branch removed, the host trusting a claimed seat,
+no roster prune, no look cleaning, netReset not clearing the floor, no look sent, the tick ungated, the peer drawn as hero, no
+name tags, a joiner filing its own seat. Check 15.74 run the same way gives the same answer on v15.74 and v15.75 (clean up to its
+TAB press, where the harness has no KeyboardEvent).
+
+THE LIVE TEST, tools/nettest.html (edited, by hand, on a shard port, http://localhost:8805/nettest.html, never :8802 or :8803;
+?f=fxdry75.html for the dry fixture). The build 1 steps are kept. After both rosters show two: B must draw A within 16 units of
+where A stands; A's PARTY window is closed through its own CLOSE (and any other window over its floor), a real W keydown and
+keyup 300 ms apart is dispatched on copy A's window (S if W moves it under 8 units), and 300 ms after the keyup B must draw A
+within 16 units of where A stands; A must draw B, whose PARTY window stays open. The log names how many fast channels are open
+on each copy. Then the wrong version and the control as before (the third copy, a bare peer connection, has only channel 0, so
+the floor packets the host sends it on channel 1 are dropped by its browser). Last, B presses QUIT THE PARTY and A must stop
+drawing B within 3 seconds, and B keep nobody on its own floor. The result line adds how far A walked and how far off B drew it.
+A floor failure is written down and the run goes on. The tab must stay in front: a hidden tab stops both floors.
+
+Not verified: nothing here has run in a browser. The check has not been run on fxdry75 or fxctl74, __verifySafe (and so the seed
+4242 counts) and parsecheck.html have not been run, and nettest.html has not been run, so no real fast channel, no measured lag
+or smoothing on screen, no look of the name plate at 1920x1080, and no check that the invite code length is unchanged. The
+drawing of a friend in a raid or with his window hidden going stale is by reading, not by test. Two real PCs are for later.

@@ -13,13 +13,16 @@
   .frames div{flex:1;min-width:480px}
   iframe{width:100%;height:420px;border:1px solid #3a3028;background:#000}
 </style>
-<h1>PILLAGERS net test, multiplayer build 1</h1>
-<p class="dim">The live half of check 15.74, run by hand. Two copies of the fixture load below, one with ?netslot=A and one with
-?netslot=B, each playing a save of its own, and RUN links them for real on this PC: A hosts through its own PARTY window buttons,
-B joins with the invite code, A lets B in with the reply code, and both rosters must show two within five seconds. Then a third
+<h1>PILLAGERS net test, multiplayer builds 1 and 2</h1>
+<p class="dim">The live half of checks 15.74 and 15.75, run by hand. Two copies of the fixture load below, one with ?netslot=A and
+one with ?netslot=B, each playing a save of its own, and RUN links them for real on this PC: A hosts through its own PARTY window
+buttons, B joins with the invite code, A lets B in with the reply code, and both rosters must show two within five seconds. Then
+the floor (build 2): B must draw A where A stands, A walks on a real W held on its own window (S if a wall stops W), and 300 ms
+after it stops B must draw A within 16 units of where A stands; A must draw B too, whose PARTY window stays open. Then a third
 copy spoken for by this page tries to join on the wrong version and must be turned away, and on the right version must be let in
-(the control). The seeded stream of both copies must not move. Serve the tools folder on a shard port and open
-http://localhost:8805/nettest.html (never :8802, his play profile, and never :8803, the dry chain). Add ?f=fxdry74.html to test a
+(the control). Last, B quits the party and A must take B off its floor. The seeded stream of both copies must not move. Keep
+this tab in front while it runs: a hidden tab stops both floors. Serve the tools folder on a shard port and open
+http://localhost:8805/nettest.html (never :8802, his play profile, and never :8803, the dry chain). Add ?f=fxdry75.html to test a
 dry fixture instead of fixture.html. The two net saves are separate from every other save on this origin.</p>
 <div>
   <button id="run" disabled>RUN</button>
@@ -130,6 +133,66 @@ dry fixture instead of fixture.html. The two net saves are separate from every o
   function hostCode(prev){
     return wait(function(){ var c=el(fa,'partycode'); return (c&&c.value.indexOf('PTY1o')===0&&c.value!==prev)?c.value:null; },20000,'copy A to show an invite code');
   }
+  // BUILD 2: THE FLOOR. What one copy draws of another, read through the net test handle (v15.75 and later).
+  function sleep(ms){ return new Promise(function(res){ setTimeout(res,ms); }); }
+  function view(f,seat){ var v=W(f).__net.floor(), i; for(i=0;i<v.length;i++) if(v[i].seat===seat) return v[i]; return null; }
+  function xy(o){ return o?(o.x.toFixed(1)+','+o.y.toFixed(1)):'nowhere'; }
+  function gap(a,b){ return (a&&b)?Math.sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y)):-1; }
+  // Nothing may be open over a floor that has to walk, or the floor ignores its keys: the PARTY window (closed by its own
+  // CLOSE, which lets go of a paste box), a welcome window on a fresh save, the pause box.
+  function clearFloor(f){
+    try{ click(f,'closeparty'); }catch(e){}
+    var d=D(f); if(!d) return;
+    [].forEach.call(d.querySelectorAll('.modal.on'),function(m){ m.classList.remove('on'); });
+    var pb=d.getElementById('pausebox'); if(pb) pb.classList.remove('on');
+  }
+  // A real key held on the copy window (never its document: a key sent there reaches the window too and acts twice).
+  function hold(f,code,key,ms){
+    var w=W(f), K=w.KeyboardEvent||KeyboardEvent;
+    w.dispatchEvent(new K('keydown',{code:code,key:key,bubbles:true,cancelable:true}));
+    return sleep(ms).then(function(){ w.dispatchEvent(new K('keyup',{code:code,key:key,bubbles:true,cancelable:true})); });
+  }
+  function floorStep(A,B,bad,rep){
+    if(typeof A.__net.floor!=='function'||typeof B.__net.floor!=='function'||typeof A.__net.me!=='function'||typeof B.__net.me!=='function'){
+      bad.push('this fixture has no floor view in its net handle (a build before v15.75), so the floor step cannot run');
+      return Promise.resolve();
+    }
+    var sa=A.__net.me().seat, sb=B.__net.me().seat, a0=null, used='W';
+    clearFloor(fa);
+    a0=A.__net.me();
+    return wait(function(){ var v=view(fb,sa); return (v&&v.shown&&gap(v,A.__net.me())<=16)?v:null; },3000,'copy B to draw copy A where it stands').then(function(v){
+      log('floor: A (seat '+sa+') stands at '+xy(A.__net.me())+' and B draws it at '+xy(v)+'; fast channels open: A '+A.__net.fast()+', B '+B.__net.fast());
+      return hold(fa,'KeyW','w',300);
+    }).then(function(){
+      var m=gap(A.__net.me(),a0);
+      if(m<8){ log('W moved copy A '+m.toFixed(1)+' units (a wall in the way?), so S is held instead'); used='S'; return hold(fa,'KeyS','s',300); }
+    }).then(function(){
+      var m=gap(A.__net.me(),a0);
+      rep.walked=Math.round(m);
+      if(m<8){ bad.push('copy A did not walk on a held '+used+' (it moved '+m.toFixed(1)+' units), so the floor step proves nothing; is something open over its floor?'); return; }
+      return sleep(300).then(function(){
+        var me=A.__net.me(), v=view(fb,sa), d=gap(v,me);
+        rep.floorGap=(d>=0)?Math.round(d*10)/10:null;
+        log('floor: A walked '+m.toFixed(1)+' units on '+used+' to '+xy(me)+'; 300 ms later B draws it at '+xy(v)+(d>=0?(', '+d.toFixed(1)+' units off'):''));
+        if(!v||!v.shown) bad.push('300 ms after copy A walked, copy B does not draw it at all');
+        else if(d>16) bad.push('300 ms after copy A walked, copy B draws it '+d.toFixed(1)+' units from where it stands (the limit is 16)');
+        var vb=view(fa,sb), bm=B.__net.me(), db=gap(vb,bm);
+        log('floor: B (seat '+sb+', PARTY window open) stands at '+xy(bm)+' and A draws it at '+xy(vb));
+        if(!vb||!vb.shown||db>16) bad.push('copy A does not draw copy B where it stands ('+(vb?(db.toFixed(1)+' units off'):'not drawn')+'), with the PARTY window open on B');
+      });
+    }).then(function(){ A.__net.open(); },function(e){ A.__net.open(); throw e; });
+  }
+  // After B quits, A takes it off its floor, and B keeps nobody on its own.
+  function byeStep(A,B,bad){
+    if(typeof A.__net.floor!=='function') return Promise.resolve();
+    var sb=B.__net.me().seat, was=view(fa,sb);
+    if(!(was&&was.shown)) bad.push('control: before copy B quit, copy A did not draw it');
+    click(fb,'partyquit');
+    return wait(function(){ var v=view(fa,sb); return !(v&&v.shown); },3000,'copy A to take copy B off its floor after its bye').then(function(){
+      log('bye: B quit and A no longer draws seat '+sb+'; B keeps '+B.__net.floor().length+' on its own floor');
+      if(B.__net.floor().length) bad.push('copy B still keeps '+B.__net.floor().length+' on its floor after it quit');
+    });
+  }
   function run(){
     runB.disabled=true; logEl.textContent=''; resEl.className='dim'; resEl.textContent='running...';
     var A=W(fa), B=W(fb), bad=[], rep={}, rngA0, rngB0, invite, reply, t0;
@@ -161,6 +224,9 @@ dry fixture instead of fixture.html. The two net saves are separate from every o
       rep.linkMs=Date.now()-t0; log('both rosters show two, '+rep.linkMs+' ms after LET THEM IN');
       log('A roster: '+JSON.stringify(st(fa).roster)); log('B roster: '+JSON.stringify(st(fb).roster)+', B seat '+st(fb).seat);
       if(A.__net.rngs()!==rngA0||B.__net.rngs()!==rngB0) bad.push('the seeded stream moved across the handshake');
+      // BUILD 2: the two copies see each other on the floor. A failure here is written down and the run goes on.
+      return floorStep(A,B,bad,rep).then(null,function(e){ bad.push('floor: '+e.message); });
+    }).then(function(){
       // The wrong version is turned away.
       click(fa,'partyinvite');
       return hostCode(invite);
@@ -187,13 +253,15 @@ dry fixture instead of fixture.html. The two net saves are separate from every o
       if(o.m.t!=='welcome') bad.push('control: a copy on the same version v'+A.__net.ver+' was not let in');
       return wait(function(){ return st(fa).roster.length===3&&st(fb).roster.length===3; },5000,'both rosters to show three').then(function(){ return true; },function(e){ bad.push('control: '+e.message); return false; });
     }).then(function(){
-      if(A.__net.rngs()!==rngA0||B.__net.rngs()!==rngB0) bad.push('the seeded stream moved while the third copy knocked');
+      if(A.__net.rngs()!==rngA0||B.__net.rngs()!==rngB0) bad.push('the seeded stream moved while A walked or the third copy knocked');
       rep.madeA=st(fa).made; rep.madeB=st(fb).made;
+      // BUILD 2: B quits, and A takes it off its floor.
+      return byeStep(A,B,bad).then(null,function(e){ bad.push('bye: '+e.message); });
     }).then(null,function(e){ bad.push(e.message); }).then(function(){
       try{ A.__net.reset(); B.__net.reset(); }catch(e){}
       raw.forEach(function(J){ try{ J.pc.close(); }catch(e){} }); raw=[];
       var pass=!bad.length;
-      var line=(pass?'PASS':'FAIL')+': invite code '+(rep.invite||'?')+' characters, reply code '+(rep.reply||'?')+' characters, linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 5000), copy A made '+(rep.madeA===undefined?'?':rep.madeA)+' links and copy B '+(rep.madeB===undefined?'?':rep.madeB)+(pass?'':('; '+bad.join('; ')));
+      var line=(pass?'PASS':'FAIL')+': invite code '+(rep.invite||'?')+' characters, reply code '+(rep.reply||'?')+' characters, linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 5000), A walked '+(rep.walked===undefined?'?':rep.walked)+' units and B drew it '+((rep.floorGap===undefined||rep.floorGap===null)?'?':rep.floorGap)+' units off (limit 16), copy A made '+(rep.madeA===undefined?'?':rep.madeA)+' links and copy B '+(rep.madeB===undefined?'?':rep.madeB)+(pass?'':('; '+bad.join('; ')));
       resEl.className=pass?'ok':'bad'; resEl.textContent=line; log(line);
       document.title=(pass?'PASS':'FAIL')+' net test';
       window.__NETTEST={pass:pass,bad:bad,rep:rep,line:line};
