@@ -1,0 +1,25 @@
+v15.79: the party ascends together into one surface and sees each other up top
+
+Multiplayer phase 2, build 1: the smallest slice of the shared raid.
+When the host ascends, its raid is built as always and the party is told
+the seed, the sector, the hour, the weather, whether a loaner gun was
+drawn, the terms, the hire, the dials that differ from default and a
+fingerprint of the built world. Every linked window in the Undercroft
+builds the same raid through the real startRaid on its own save and kit:
+the host world fields go in for the length of the build and its own come
+back after, nothing is saved while they are in, the intel core is not
+spent, and the loaner draw follows the host word so the seeded stream
+stays in step. The built world is held against the host fingerprint
+before a frame is drawn; a mismatch stays in the Undercroft with the kit
+put back and the PARTY window saying so. Up top each player sends where
+it stands ten times a second, the host relays, and each window draws the
+others at their depth with their own body drawing and a name over their
+head; a raid that ends hides its player at once. No shared pillagers,
+loot, bullets or extraction yet: each window still runs its own pillagers
+and extracts, dies or abandons on its own. Solo play is untouched: every
+call is behind NET.on and the seed 4242 fingerprint has no way to move.
+The live test is the RUN RAID step of RUN SAME MACHINE in tools/nettest.html.
+
+Check 15.79. Fails on v15.78.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

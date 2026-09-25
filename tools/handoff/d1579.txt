@@ -1,0 +1,191 @@
+## v15.79 - THE PARTY ASCENDS TOGETHER INTO ONE SURFACE AND SEES EACH OTHER UP TOP
+
+His order of 2026-09-25: native multiplayer, co-op first. This is phase 2, build 1 of tools/multiplayer/plan.md with the corrections
+in critique.md: the smallest slice of the shared raid. No shared pillagers, machines, loot, bullets or extraction yet. Each window
+still runs its own pillagers and machines locally (host snapshots replace them in the next slices), and each player still extracts,
+dies or abandons on its own, coming back empty on its own save as today. His rulings hold: no team damage of any kind (nobody up
+top is a target for anything yet, and nobody collides); the host dropping mid-raid does not end the others in THIS slice (the
+abandon-for-everyone ruling is the next slice, once the world is the host's); revives later; numbers frozen.
+
+THE BUILD.
+- ASCEND TOGETHER. The host ascends as always: the sector page (ASCEND TO THIS SECTOR), the loadout question (MY LOADOUT or
+  FREEBIE KIT), ascendNow, startRaid; or quick ascent (R at the lift), which also ends in startRaid. Right after buildRaid returns
+  in startRaid, the party is told on the reliable channel (netUpAnnounce, behind NET.on and the host role):
+    {t:'raid',seed,mapIx,cond,wx,iss,terms,merc,cfg,fp}
+  seed is G.seed; mapIx the sector; cond 'day' or 'night' (P.cond, which buildRaid reads through isDay for the night counts); wx the
+  id of the weather the host got (pickWeather is one seeded draw whose ANSWER a pinned pick replaces, so the linked window pins it
+  to the host answer and the draw still happens); iss 1 or 0, whether the host drew a loaner from the seeded stream (G.issDraw,
+  stamped in the raid literal from the draw site); terms the host terms (hasTerm('silence') places a Listener and blackout moves
+  the hour); merc the host hire id (P.merc splices the identity pool and adds a body); cfg every key of CFG that differs from DEF
+  (the Settings rows and console overrides; the fixture pins are such keys); fp the fingerprint of the built world (below).
+- THE LINKED WINDOW (netUpTake on a join role, from the real netOnMsg): if it is not on the Undercroft floor past the title with no
+  raid in hand (up top already, on the title, still on the run card) it is told in the PARTY window that the party went up without
+  it and why, and the host is told {t:'up',st:'no',why} and names it in its status line; the word is otherwise ignored. In the
+  Undercroft, netUpStart: a JSON snapshot of P is taken; commitKit runs (its own packed kit, exactly as MY LOADOUT commits it,
+  saved under its own dials); its CFG is copied aside and the host world fields go in: every DEF key reset to its default, the
+  host cfg on top (keys of DEF only, scalars only), P.mapIx, P.cond, P.terms, P.merc, P.wxPick=wx, P.intel=0; NET.upHold is set
+  and NET.upIss=iss; pendSeed=seed; startRaid() runs, the real one. In finally the guard comes off, pendSeed is cleared, CFG comes
+  back whole, and P.terms, P.merc, P.intel and P.wxPick come back. P.mapIx and P.cond stay the host ones: the fog saves under
+  P.mapIx (critique 4.2), and the hour is the hour of this raid.
+  saveProfile returns at once while NET.upHold is set (the one line added to it): buildRaid saves inside its kit block and
+  startRaid saves when it spends the intel core, and either would have written P.cfg=CFG with the host dials in (critique A.6 and
+  A.7). Once the world fields are out the build is saved once, so the kit that went up, the sector and the hour are on disk under
+  its own dials. The intel core is not spent (P.intel is 0 for the build and comes back), and G.intel is not set, so a linked
+  window gets no key marks off a core it keeps (the plan: clients' intel is off in v1).
+- THE LOANER DRAW. buildRaid draws WEAPONS[pick(STARTERS)] only when the player has no gun equipped, one seeded draw before the
+  spawn and population rolls (net.md 2: a client building with its own kit would place a different population). In a party build
+  (NET.upHold) buildRaid reads NET.upIss: a window that would draw when the host did not draws its loaner with RNGS saved and put
+  back round the draw; a window that would not draw when the host did makes the same draw and drops it. Outside a party build the
+  local is null and the block is what it was. The population lands where the host put it, and the window keeps its own gun or gets
+  its loaner as before.
+- THE FINGERPRINT (netUpFp): the counts of bodies, containers and walls, the weather id, and an FNV-1a hash (Math.imul, never the
+  seeded stream) over every wall by x, y, w, h, every body by kind, x, y and every container by x, y, rounded. It is computed on
+  the host right after the build and on the linked window right after its own, and compared field by field (netUpFpSame). A
+  mismatch, or a throw inside startRaid, never plays a different surface: G is dropped and keys cleared, showScreen('hub'), the P
+  snapshot is put back in place (netUpPutP writes into the same object every closure holds, deleting keys the snapshot lacks) and
+  saved, the PARTY window says which world each side built and that this window stays in the Undercroft, the floor says so in one
+  line, and the host is told {t:'up',st:'no',why:'surface'}. The kit committed for the ascent is back in the stash.
+- SEE EACH OTHER. The loop's raid branch calls netUpTick(dt) while NET.on, ahead of the pause and superhot branches so a paused
+  or frozen player is still seen where he stands. It eases everyone on NET.up as the floor does (1 - e^(-12 dt), shortest arc,
+  the walk cycle while he said he was walking, the roll running down), takes off anyone whose seat left the roster, and every 0.1 s
+  sends the v15.75 word from up top on the fast channel (the reliable one where the fast is not open):
+    {t:'st',k:'r',sd,x,y,f,m,r,c,sp,dn,w[,lk][,s]}
+  k:'r' marks a word from up top; sd is the seed of the raid the sender is in; c crouched, sp sprinting, dn downed, w the id of
+  the gun in hand; lk the look as on the floor, in the first word, once a second and on change; the host names its seat 0, a
+  friend names none. netOnState files a word with k r on NET.up (clamped to a 20000 by 20000 surface, not the 700 by 470 floor),
+  never on NET.floor, keeps c, sp, dn, w and sd on the entry, and the host passes it on to the other links as it came, never back
+  to the sender. render2D pushes each shown entry into the depth list right after the player, keyed by y minus the deck lift
+  (netUpDraw), and the list draws it with netUpDrawOne: drawOp as the player is drawn up top, hero 0, his fit colour, his racks
+  from his look, his gun from w (own carries the gun and the hair lag, as any body), mode down, roll, crouch, none (no gun) or
+  standing, walking and sprinting as he said, lifted by the deck he stands on, wrapped so a fault in one body never costs the
+  frame. netUpTags paints his name in amber on a dark plate over his head, in the world pass right before the pillager
+  nameplates, so it sits where those do. Shown means: said something, said it in the last 3 s, not this seat, in the roster, and
+  the same seed as this raid (a word from another seed is filed and not drawn, so a window still in an old raid never draws into
+  a new one).
+- ENDINGS. endRaid, right after G.over is set and while NET.on, calls netUpEnd: NET.up is emptied, the seed and fingerprint let go,
+  and every link is told {t:'up',st:'out',how}. On receipt (netUpWord) the seat's entry is dropped at once, so a player whose raid
+  ended is hidden the same frame; the host passes up words on under the seat of the link they came from. A bye or a lost link takes
+  the seat out of the roster and the next tick takes him off. netReset clears NET.up with the floor list. The host ending its own
+  raid does not end anyone else's in this slice.
+- NET gains up (the list by seat), upAcc, upN (the send clock), upSeed, upFp, upHold (the party build guard) and upIss (the loaner
+  word). The ?netslot and ?p2 test handle window.__net gains up(): whether this window is up top and whether its raid is over, the
+  seed and fingerprint it holds, where its player stands, and the list with each entry's seat, name, place, target, seed and shown.
+
+SOLO PLAY UNTOUCHED. Every new call sits behind NET.on: the announce in startRaid (and the host role), the tick in loop, the three
+draw calls in render2D, the end word in endRaid. The loaner draw in buildRaid reads NET.upHold, which only netUpStart sets, so a
+solo build and a sim build make exactly the draws they made. saveProfile returns early only under the same guard. Nothing in the
+net section draws from the seeded stream (rr, rnd, ri, pick, rollTable): the fingerprint is an FNV hash over numbers. The seed
+4242 fingerprint reads ents 85/374 and containers 165/593 on the patched game and the previous one alike (measured, below). No
+number, dial, loot table or seeded draw moved. WHATSNEW_VER stays 15.72 (drift 0.07). Every new player-facing line was checked
+against his vocabulary (surface and up top, never the map as a place; Undercroft; sector; the run card; no ship, boarding,
+touchdown, hotbar, bag, inventory); no apostrophe inside any JS string; no TXSHIP key is touched.
+
+ANCHORS (whole lines, each matching once in v15.78):
+- "var VER='15.78';";
+- "function saveProfile(){ P.cfg=CFG; P.cfgv=18; storeSet(JSON.stringify(P));" (the guard);
+- the four lines from "  var wep=WEAPONS[P.equipped],wepIssued=false;" to "    wep=WEAPONS[pick(STARTERS)]; wepIssued=true;" and the closing
+  "  }" (the loaner draw block in buildRaid);
+- "    spawnDbg:_spDbg," (issDraw on the raid literal);
+- "  G.carriedKit=(G.bag||[]).slice();   // v13.55: ..." (startRaid; the announce after it);
+- "  G.over=how;" (endRaid; the end word after it);
+- "  DR.push({k:p.y-drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0),pl:1});" (render2D; the list call after it; the
+  floor's line carries *0.5 and does not match);
+- the two lines "      drawContS(it.c);" and "    } else if(it.pl){" (the up branch between them);
+- "  // nameplates over anything you can currently see" (the tags call before it);
+- "  if(state!=='raid'||!G||G.sim) return;" (loop; the tick after it);
+- "  sndOn:true,sndOther:-1,sndG:null,sndAc:null};   // v15.78: ..." (the up fields on NET);
+- "  if(m.t==='st') return netOnState(peer,m);" (netOnMsg; raid and up handed on after it);
+- "  NET.floor=[]; NET.hubAcc=0; NET.hubN=0; NET.lkSent='';   // v15.75: ..." (netReset);
+- in netOnState: "  var s, x, y, f, g, lk, out, i;", "  x=clamp(m.x,0,HUBW); y=clamp(m.y,0,HUBH);", "  g=NET.floor[s]||null;",
+  "  if(!g){ g={seat:s,x:x,y:y,f:f,tx:x,ty:y,tf:f,mv:0,roll:0,bob:0,age:0,n:0,lk:null}; NET.floor[s]=g; }",
+  "  g.tx=x; g.ty=y; g.tf=f; g.mv=m.m?1:0; g.roll=clamp(+m.r||0,0,0.38); g.age=0; g.n++;" and
+  "    out={t:'st',s:s,x:+x.toFixed(1),y:+y.toFixed(1),f:+f.toFixed(2),m:g.mv,r:+g.roll.toFixed(2)};";
+- "// THE PARTY WINDOW." (the up top section before it);
+- "      sndSet:function(on){ return netSndSet(!!on); }};" (the test handle);
+- the DEVNOW line starting "  now:'v15.78:".
+21 edits plus DEVNOW. None of these lines is one of the 158 CRLF lines in the file (158 before and after); SubRx makes the lines it
+adds LF, whatever the endings of the .ps1 on disk. A second p1579 on the result fails on its first anchor before anything is
+written; f1579 refuses to run if "  {v:'15.79',what:" is there. Fixture anchor: the line prefix "  {v:'15.78',what:" (written by
+f1578).
+
+MEASURED. Check 15.79 is synchronous (the runner does not await a promise) and never makes a connection: the party is two stand-in
+links (three on the host arm) whose channel writes down what the game sends, the words are fed to the real netOnMsg, the host
+ascends through the real ascent path (__deploy: commitKit and startRaid), the linked window through the real netUpTake and
+startRaid, and the raid frame is the real render2D with drawOp and wc.fillText spied. Four raids are built (the host, the dial
+control, the linked window, the mismatch) and every one is ended in finally (__endRaid('abandon'), then __topClear, __resetCfg,
+__cleanProfile), with the spies, storeSet, the guard, pendSeed, the net section, the title, P.equipped, P.weapons, P.intel,
+P.terms and P.wxPick put back. SKIP if a party is on in the copy, or the fixture cannot ascend.
+- THE HOST, a stand-in party of three, __deploy on sector 0 at seed 4242 under the fixture pins (which equip the SMG, so no
+  loaner is drawn): the built world is 85 bodies and 165 containers; each link gets exactly one raid word carrying seed 4242,
+  mapIx 0, day, the weather the host got, iss agreeing with G.issDraw (and with what the host holds), dials, terms and the built
+  fingerprint; the host holds its seed and fingerprint. The word again by hand and a word from up top move the seeded stream
+  nothing. The frame with the party off is the v15.78 frame; a word from up top (seat 1, 30 units right of the player, walking,
+  with the tacker) is filed on NET.up and not on the floor list, passed on to the third seat as it came (k r, seat 1, the seed, the
+  gun, crouch) and never back; the next frame draws exactly one operator more, once at his place, with the tacker in hand, his
+  name painted; with the party off again the frame is the control frame with no name. One tick past a tenth of a second sends one
+  word from up top to each link, under seat 0, with the seed. An out word takes him off the frame and his name off the canvas;
+  a word again shows him, crouched; a word from another seed is filed and not drawn, and one from this seed draws him again; a bye
+  takes him off the frame and the list. The host takes no raid word. Two raid frames through the real loop send where the host
+  stands. Ending the raid tells the party out with how, empties the list and the seed, and comes down to the Undercroft.
+- CONTROL: this window with no pillagers dialled builds fewer than 85 bodies at seed 4242.
+- THE LINKED WINDOW, on seat 1 with a stand-in host link, its dial still moved (no pillagers), the loaner draw the other way round
+  from the host (no gun, since the pinned host has one), a core, its own term, a stash of three and one packed item: the raid
+  word takes it up; it holds seed 4242 up top; the built world is 85 and 165 with the same fingerprint and the same weather as the
+  host word; P is the same object; it went up with a loaner and its packed item; its own dial is back; the saved profile holds its
+  own dial and the save was written zero times while the host dials were in and once when they were out; the core is not spent
+  and not used; its own term is back; the sector and the hour are the host ones; pendSeed and the guard are clear; the host was
+  told in. A second raid word while up top is refused, the host told why, the raid in hand untouched. The host word from up top
+  under seat 0 draws it once at its place, sprinting, named; a word with no seat from the host is bad; its out word takes it off
+  the frame; the seeded stream is unmoved by the words. Ending the raid tells the host out.
+- THE MISMATCH: the same word without the loaner hint (so this window draws its loaner from the main stream) is refused before a
+  frame: state hub, no raid, the stash and the packed kit as they were, the core and the gun slot as they were, the PARTY window
+  naming the surface and the Undercroft, the host told the surface could not be built, the own dial back.
+- ON THE TITLE: told it was left behind and ignored; the host names who and why, passes the word on to the third seat under seat
+  1 and never back.
+- On v15.78 it FAILS on its first line (no netUpAnnounce, netUpTake or netUpFp), before any SKIP.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as committed (v15.78): p1579 OK, 21 edits plus DEVNOW; f1579
+OK, 1 edit; a second run of each refuses before writing. Both handoff scripts are ASCII; CRLF 158 before and after. Built with
+mkfixture from the scratch copies: fxdry79 (patched game and patched fixture) and fxctl79 (the v15.78 game with the patched
+fixture), in the scratchpad, not in tools. cscript is dead on this machine, so the gates and the check ran in the MSHTML engine
+(the htmlfile COM object, IE11 document mode, Chakra). The parsecheck gates with parsecheck's own balance and dupes code: parens,
+braces and brackets 0, no duplicate top-level function, DEVNOW names v15.79 on one now line, WHATSNEW drift 0.07, no mojibake,
+whole script compiles (new Function), on the patched game and both fixtures.
+NEW THIS BUILD: THE WHOLE FIXTURE BOOTED IN THAT ENGINE. A prelude of stubs (storage objects defined through defineProperty, a small
+Promise, Math.imul and hypot, canvas ellipse, roundRect and resetTransform, closest, NodeList forEach, a fetch that rejects, a
+peer connection stand-in, getGamepads, no rAF so the loop never starts) and an error trap go in front of fxdry79.html, the two
+canvases are given a 1920 by 1080 rect by hand (the htmlfile has no layout, and resize reads getBoundingClientRect), and the page
+is written into the htmlfile document: 706 checks registered, no uncaught error at boot. Check 15.79 is then run as __regress runs
+it (__runPrep, t.run()): it PASSES on fxdry79, twice in one page (1.8 s, four raids built with the real ground bake at 1920x1080
+on a real canvas), and FAILS on fxctl79 with its first-line message. The seed 4242 fingerprint read through the fixture in that
+engine is ents {0:85,1:374} and containers {0:165,1:593} on fxdry79 and fxctl79 alike. Twenty-three single mutations of the
+patched game each fail the check with the matching line: the raid word not sent, the loaner hint ignored, the host dials not put
+in, the own dials not put back, the save not held during the build, the intel core used up top, the fingerprint not compared, the
+draw ignoring NET.on, the out word ignored, a word from another seed drawn, no name over his head, a window up top taking the
+word, a word from up top filed on the floor, a seat that left kept, the word from up top not passed on as it came, endRaid telling
+nobody, the window up top not saying so, the save not put back on a mismatch, the loop not ticking, the mismatch playing on, the
+other side not told why, the up word not passed on, the weather pick not the host one. Checks 15.75, 15.77 and 15.78 PASS on
+fxdry79 in the same engine; 15.74 and 15.76 throw there on fxdry79 and fxctl79 alike at a KeyboardEvent the engine has no
+constructor for (the harness, not this build). The check does not measure the chosen sector or the hour beyond day on sector 0.
+By reading: the announce runs on the quick ascent path too (it ends in startRaid); a linked window that takes the word from the
+PARTY window at the lift has that window closed by showScreen('raid').
+
+THE LIVE TEST, tools/nettest.html (edited by hand, one write, on a shard port, http://localhost:8805/nettest.html, never :8802 or
+:8803; ?f=fxdry79.html for the dry fixture). The build 1 to 5 steps are kept. RUN SAME MACHINE gains the RUN RAID step after the
+saves and the stream are checked (a raid build moves the stream by design): copy A ascends through the real sector page path (the
+lift station fired from the fixture handle, ASCEND TO THIS SECTOR, MY LOADOUT), or through __deploy on sector 0 at seed 4242 when
+the station cannot be fired; copy C must be up top within 5 s on the same seed with the same fingerprint (the log prints both and
+C's PARTY status); A walks on a real W held on its own window (S if a wall stops W) and 300 ms after it stops C must draw A within
+16 units of where A stands, and A must draw C; then A abandons, C's raid must go on in this slice (what C does is written down)
+and C must stop drawing A within 3 s; both come down before the party ends. The main save and the pointer are held unchanged
+across it. The result line adds how long C took to go up, how far A walked up top and how far off C drew it. The page script
+compiles in the MSHTML engine.
+
+Not verified: nothing here has run in a real browser. The check has not been run on fxdry79 or fxctl79 in the pane, __verifySafe
+and parsecheck.html have not been run there, and nettest.html has not been run, so no real channel carried the raid word or a word
+from up top, no two-window frame timing, no lag of a body up top measured on screen, and no look at a party body, its gun and its
+name plate at 1920x1080 (the name is drawn before the pillager nameplates and may sit under one when two stand close). Only two
+real PCs can show the raid word and the fast channel over home routers, two raids at two frame rates, and whether the fingerprint
+holds across two different browsers (the build is seeded, so it should; the hash is over rounded positions). The host dropping
+mid-raid is left as it is in this slice: the others play on with their own pillagers; his ruling that it counts as abandon for
+everyone lands with the shared world.

@@ -13,7 +13,7 @@
   .frames div{flex:1;min-width:480px}
   iframe{width:100%;height:420px;border:1px solid #3a3028;background:#000}
 </style>
-<h1>PILLAGERS net test, multiplayer builds 1 to 5</h1>
+<h1>PILLAGERS net test, multiplayer builds 1 to 6</h1>
 <p class="dim">The live half of checks 15.74 and 15.75, run by hand. Two copies of the fixture load below, one with ?netslot=A and
 one with ?netslot=B, each playing a save of its own, and RUN links them for real on this PC: A hosts through its own PARTY window
 buttons, B joins with the invite code, A lets B in with the reply code, and both rosters must show two within five seconds. Then
@@ -23,7 +23,7 @@ copy spoken for by this page tries to join on the wrong version and must be turn
 (the control). Last, B quits the party and A must take B off its floor. The seeded stream of both copies must not move. Keep
 this tab in front while it runs: a hidden tab stops both floors. Serve the tools folder on a shard port and open
 http://localhost:8805/nettest.html (never :8802, his play profile, and never :8803, the dry chain). Add ?f=fxdry77.html to test a
-dry fixture instead of fixture.html (fxdry78.html for build 5). The two net saves are separate from every other save on this origin.</p>
+dry fixture instead of fixture.html (fxdry78.html for build 5, fxdry79.html for build 6). The two net saves are separate from every other save on this origin.</p>
 <p class="dim">RUN SAME MACHINE is the live half of check 15.76 (build 3): copy A presses its own 2 PLAYER CO-OP (SAME MACHINE) row. The
 window it asks for is stood in for by this page, which loads the address A asks for (this page, ?p2=1, the mode and the pair
 code) into copy C below, so the popup blocker does not decide the test; C is otherwise the real player 2 window, on the
@@ -42,6 +42,14 @@ faked controllers are taken away C must let go within 400 ms.</p>
 presses its own SOUND row in the PARTY window, and within 200 ms the note in C's PARTY window must say the other window has
 its sound off; A presses again and C must hear its sound is on. The fixture blocks the audio context (it is silent by
 construction), so the switch is read there and the master gain only where a context exists; the log says which.</p>
+<p class="dim">Build 6, the party ascends together (check 15.79), is the RUN RAID step inside RUN SAME MACHINE, after the saves are checked:
+copy A ascends through the real sector page path (the lift station fired from the handle, ASCEND TO THIS SECTOR, MY LOADOUT;
+__deploy on sector 0 at seed 4242 when the station cannot be fired), copy C must be up top within 5 s on the same seed with
+the same fingerprint, A walks on a real W held on its own window (S if a wall stops W) and 300 ms after it stops C must draw A
+within 16 units of where A stands, and A must draw C. Then A abandons: in this slice C's raid goes on (what C does is written
+down) and C must stop drawing A within 3 s. Both come back down before the party ends. Only two real PCs can show the raid
+word and the fast channel over a home router, the frame rate of two raids on two PCs, and whether the fingerprint holds across
+two different browsers.</p>
 <div>
   <button id="run" disabled>RUN</button>
   <button id="runsame" disabled>RUN SAME MACHINE</button>
@@ -368,6 +376,77 @@ construction), so the switch is read there and the master gain only where a cont
       },function(e){ bad.push('sound: '+e.message); });
     });
   }
+  // BUILD 6: THE PARTY ASCENDS TOGETHER. Copy A ascends through the real sector page path when the lift station can be fired
+  // from the handle (the lift, ASCEND TO THIS SECTOR, MY LOADOUT), else through __deploy on sector 0 at seed 4242; copy C must
+  // be up top within 5 s on the same seed with the same fingerprint; A walks on a real W held on its own window and 300 ms
+  // after it stops C must draw A within 16 units of where A stands, and A must draw C; then A abandons, and in this slice
+  // C's raid goes on (what C does is written down) while C stops drawing A within 3 s. Both come back down after.
+  function upView(f,seat){ var u=W(f).__net.up(), i; for(i=0;i<u.list.length;i++) if(u.list[i].seat===seat) return u.list[i]; return null; }
+  function comeDown(A,C){
+    try{ if(A.__net.up().on) A.__endRaid('abandon'); }catch(e){}
+    try{ if(C.__net.up().on) C.__endRaid('abandon'); }catch(e){}
+    try{ A.__topClear(); C.__topClear(); }catch(e){}
+    try{ if(A.__hubEnter) A.__hubEnter(); if(C.__hubEnter) C.__hubEnter(); }catch(e){}
+  }
+  function raidStep(A,C,bad,rep){
+    if(typeof A.__net.up!=='function'||typeof C.__net.up!=='function'||typeof A.__endRaid!=='function'||typeof A.__deploy!=='function'){
+      bad.push('this fixture has no up top view in its net handle (a build before v15.79), so the raid step cannot run');
+      return Promise.resolve();
+    }
+    var t0=0, used='W', a0=null, how='', sa=st(fa).seat, sc=st(fc).seat, ua=null;
+    clearFloor(fa); clearFloor(fc);
+    function ascend(){
+      try{
+        if(typeof A.__station==='function'){
+          var r=A.__station('lift','KeyE');
+          if(r&&r.fired){
+            var sd=el(fa,'sectordeploy'), ay=null;
+            if(sd){ sd.click(); ay=el(fa,'askyes'); }
+            if(ay){ ay.click(); how='the sector page (the lift, ASCEND TO THIS SECTOR, MY LOADOUT)'; return; }
+          }
+        }
+      }catch(e){}
+      clearFloor(fa);
+      A.__deploy({kit:[],safe:null,mapIx:0,seed:4242}); how='__deploy on sector 0 at seed 4242';
+    }
+    t0=Date.now();
+    ascend();
+    ua=A.__net.up();
+    log('raid: A went up through '+how+'; A up top '+ua.on+', seed '+ua.seed+', fingerprint '+JSON.stringify(ua.fp));
+    if(!ua.on) bad.push('raid: copy A is not up top after ascending ('+JSON.stringify({on:ua.on,seed:ua.seed})+')');
+    return wait(function(){ var u=C.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top on the same seed').then(function(uc){
+      rep.raidMs=Date.now()-t0;
+      log('raid: C is up top '+rep.raidMs+' ms after A ascended, seed '+uc.seed+', fingerprint '+JSON.stringify(uc.fp)+'; C PARTY status: '+(st(fc).status||'')+' '+(st(fc).err||''));
+      if(!uc.fp||!ua.fp||uc.fp.h!==ua.fp.h||uc.fp.e!==ua.fp.e||uc.fp.c!==ua.fp.c||uc.fp.w!==ua.fp.w||uc.fp.wx!==ua.fp.wx) bad.push('raid: the fingerprints differ (A '+JSON.stringify(ua.fp)+', C '+JSON.stringify(uc.fp)+')');
+      a0=A.__net.up().me;
+      return hold(fa,'KeyW','w',300);
+    },function(e){ var uc=C.__net.up(); throw new Error(e.message+' (C up top '+uc.on+', seed '+uc.seed+', C PARTY status: '+(st(fc).status||'')+' '+(st(fc).err||'')+')'); }).then(function(){
+      var m=gap(A.__net.up().me,a0);
+      if(m<8){ log('W moved copy A '+m.toFixed(1)+' units up top (a wall in the way?), so S is held instead'); used='S'; return hold(fa,'KeyS','s',300); }
+    }).then(function(){
+      var me=A.__net.up().me, m=gap(me,a0);
+      rep.raidWalked=Math.round(m);
+      if(m<8) bad.push('raid: copy A did not walk up top on a held '+used+' (it moved '+m.toFixed(1)+' units); is something open over it?');
+      return sleep(300).then(function(){
+        var me2=A.__net.up().me, v=upView(fc,sa), d=gap(v,me2);
+        rep.raidGap=(d>=0)?Math.round(d*10)/10:null;
+        log('raid: A walked '+m.toFixed(1)+' units on '+used+' to '+xy(me2)+'; 300 ms later C draws it at '+xy(v)+(d>=0?(', '+d.toFixed(1)+' units off'):'')+(v?(', shown '+v.shown):''));
+        if(!v||!v.shown) bad.push('raid: 300 ms after copy A walked up top, copy C does not draw it at all');
+        else if(d>16) bad.push('raid: copy C draws A '+d.toFixed(1)+' units from where it stands up top (the limit is 16)');
+        var w=upView(fa,sc), mc=C.__net.up().me, dc=gap(w,mc);
+        log('raid: C stands at '+xy(mc)+' and A draws it at '+xy(w)+(w?(', shown '+w.shown):''));
+        if(!w||!w.shown||dc>16) bad.push('raid: copy A does not draw copy C where it stands up top ('+(w?(dc.toFixed(1)+' units off'):'not drawn')+')');
+      });
+    }).then(function(){
+      // A abandons. In this slice C's raid goes on; A is no longer drawn on C.
+      A.__endRaid('abandon'); try{ A.__topClear(); }catch(e){}
+      return wait(function(){ var v=upView(fc,sa); return !(v&&v.shown); },3000,'copy C to stop drawing A after A abandoned').then(function(){
+        var uc=C.__net.up();
+        log('raid: A abandoned; C is '+(uc.on?'still up top':'not up top')+(uc.over?(' and its raid is over ('+uc.over+')'):'')+', and no longer draws A; C PARTY status: '+(st(fc).status||''));
+        if(!uc.on||uc.over) bad.push('raid: A abandoning ended C raid in this slice ('+JSON.stringify({on:uc.on,over:uc.over})+')');
+      },function(e){ bad.push('raid: '+e.message); });
+    }).then(function(){ comeDown(A,C); A.__net.open(); C.__net.open(); },function(e){ comeDown(A,C); A.__net.open(); C.__net.open(); throw e; });
+  }
   // BUILD 3: THE SAME MACHINE PAIR. Copy A picks 2 PLAYER CO-OP (SAME MACHINE) through its own row. Its window.open is stood in
   // for by this page, which loads the address A asks for into copy C and hands A that window, so the popup blocker does not
   // decide the test. C is the real player 2 window otherwise: the same page with ?p2=1, the mode and the pair code, on the
@@ -381,7 +460,7 @@ construction), so the switch is read there and the master gain only where a cont
       try{ delete A.open; }catch(e){}
       try{ A.__net.reset(); if(C&&C.__net) C.__net.reset(); }catch(e){}
       var pass=!bad.length;
-      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200), C heard A switch its sound in '+(rep.sndMs===undefined?'?':rep.sndMs)+' ms (limit 200)'+(pass?'':('; '+bad.join('; ')));
+      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200), C heard A switch its sound in '+(rep.sndMs===undefined?'?':rep.sndMs)+' ms (limit 200), C went up top '+(rep.raidMs===undefined?'?':rep.raidMs)+' ms after A (limit 5000), A walked '+(rep.raidWalked===undefined?'?':rep.raidWalked)+' units up top and C drew it '+((rep.raidGap===undefined||rep.raidGap===null)?'?':rep.raidGap)+' units off (limit 16)'+(pass?'':('; '+bad.join('; ')));
       resEl.className=pass?'ok':'bad'; resEl.textContent=line; log(line);
       document.title=(pass?'PASS':'FAIL')+' net test';
       window.__NETTEST_SAME={pass:pass,bad:bad,rep:rep,line:line};
@@ -450,6 +529,13 @@ construction), so the switch is read there and the master gain only where a cont
       if(ls(AS)!==ls0.as) bad.push('the save pointer changed while the player 2 window ran');
       log('saves: player 2 save '+(p2?(p2.length+' chars'):'none')+' under '+P2K+'; main save and save pointer '+((ls(MAIN)===ls0.main&&ls(AS)===ls0.as)?'unchanged':'CHANGED'));
       if(A.__net.rngs()!==rngA0||C.__net.rngs()!==rngC0) bad.push('the seeded stream moved in one of the windows while the party stood on the floor');
+    }).then(function(){
+      // BUILD 6: the party ascends together. After the stream is sampled, since a raid build moves it by design. A failure
+      // here is written down and the run goes on.
+      return raidStep(A,C,bad,rep).then(null,function(e){ bad.push('raid: '+e.message); });
+    }).then(function(){
+      if(ls(MAIN)!==ls0.main) bad.push('the main save changed while the party went up top');
+      if(ls(AS)!==ls0.as) bad.push('the save pointer changed while the party went up top');
       // THE END: A ends the party and C hears it.
       A.__net.reset();
       return wait(function(){ return !st(fc).on&&st(fc).roster.length===0; },5000,'copy C to hear the party end').then(function(){ log('A ended the party and C is off: '+JSON.stringify(st(fc))); },function(e){ bad.push('end: '+e.message); });

@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.78';
+var VER='15.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2665,7 +2665,8 @@ function syncTopRight(){
   _trLast=s;
   el.innerHTML=c+' <small>CREDITS</small> '+x+' <small>XP</small>';   // spaces, so the text reads right when copied
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=18; storeSet(JSON.stringify(P));
+function saveProfile(){ if(typeof NET==='object'&&NET&&NET.upHold) return;   // v15.79: nothing is written while a party build has the host world dials in; the build is saved once they are out
+  P.cfg=CFG; P.cfgv=18; storeSet(JSON.stringify(P));
   try{ syncTopRight(); }catch(_tr){}   // v11.52: every path that moves credits or XP saves
   var _mOpen=document.querySelector('.modal.on');
   if(_mOpen) stampBalance(_mOpen);
@@ -9782,10 +9783,17 @@ function buildRaid(sim){
     return wc2;
   }
   var wep=WEAPONS[P.equipped],wepIssued=false;
+  // v15.79: THE ONE SEEDED DRAW IN THE BUILD THAT DEPENDS ON THE PLAYER. In a party build (NET.upHold) the host says whether it
+  // drew a loaner (NET.upIss): a window that would draw when the host did not draws its loaner off a saved and restored
+  // stream, and one that would not draw when the host did makes the same draw and drops it, so the population lands where
+  // the host put it. Outside a party build _upIss is null and this block is what it always was.
+  var _upIss=(typeof NET==='object'&&NET&&NET.upHold)?NET.upIss:null;
   if(wep&&wearable(P.equipped)) wep=bakeWear(P.equipped);
   if(!wep||wep.id==='fists'||!P.weapons||P.weapons.indexOf(P.equipped)<0){
-    wep=WEAPONS[pick(STARTERS)]; wepIssued=true;
-  }
+    if(_upIss===false){ var _upR=RNGS; wep=WEAPONS[pick(STARTERS)]; RNGS=_upR; }
+    else wep=WEAPONS[pick(STARTERS)];
+    wepIssued=true;
+  } else if(_upIss===true){ pick(STARTERS); }
   // Secondary: YOURS if you have chosen one and still own it, otherwise the
   // issued Scav Pistol. Swap with X. An issued sidearm is a loaner and is never
   // taken from the armoury nor lost from it; one you chose rides the same rules
@@ -10751,7 +10759,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   if(CFG.decks!==1){ map.plats=[]; map.ramps=[]; }   // v13.41: emptied before the ground bake below, which draws nothing from them
   var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wingrid:buildSegGrid(map.wsegs||[],WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
     nMach:N_SENTRY+N_CRAWLER,map:map,vegPal:mkVegPal(map),ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),raidLen:Math.round(CFG.raidSec*termClock),paused:false,
-    spawnDbg:_spDbg,
+    spawnDbg:_spDbg,issDraw:wepIssued,   // v15.79: whether a loaner was drawn from the stream, told to the party so their builds make the same draw
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
       // The sim wears a FIXED Scav Rig rather than whatever he happens to have
       // equipped. Raiders now carry armour, so a bare sim player was measuring a
@@ -10935,6 +10943,7 @@ function startRaid(){
   try{ G.hot=gunCell(); }catch(_gh){}   // v13.42: a raid starts with the gun in hand selected, wherever his belt put it
   G.carriedIn=bagValue();
   G.carriedKit=(G.bag||[]).slice();   // v13.55: WHICH items came up, so an item contract counts only what was found   // v10.27: what the lift carried in, valued as the haul is
+  if(NET.on&&NET.role==='host'&&!G.sim) netUpAnnounce(G);   // v15.79: the party is told to ascend into this world (the net section)
   // THE CORE BURNS, v3.81. One core, one raid: armed intel is consumed the
   // moment the lift moves, and the raid carries the flag plus the live list
   // of which containers hold the locked-room keys, computed here because the
@@ -20106,6 +20115,7 @@ var DEATH_FEED_HTML='';
 function endRaid(how){
   if(G.over) return;
   G.over=how;
+  if(NET.on&&!G.sim){ try{ netUpEnd(how); }catch(_ue){} }   // v15.79: the party is told this raid ended, and nobody is drawn up top any more
   G.drag=null;   // v14.56: a drag held as the raid ends ends with it
   // v14.03, save audit: the raid is being settled here, and G.spliced drives the settling; the saved record of
   // guns taken out of the armoury is only for a raid that never reaches this line.
@@ -23144,6 +23154,7 @@ var SHD=G.shells[i];
     DR.push({k:CW.y,cr:CW});
   }
   DR.push({k:p.y-drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0),pl:1});
+  if(NET.on) netUpDraw(DR);   // v15.79: the others in the party, sorted into the same list at the depth of where they stand
   DR.sort(function(a,b){return a.k-b.k;});
   var crouchP=crouchHeld();
   // His run #3, v1.01: "character not rendering". He was moving and shooting
@@ -23725,6 +23736,8 @@ var SHD=G.shells[i];
       wc.fillRect(wl2.x,wl2.y+wl2.h-1,wl2.w,1);
     } else if(it.c){
       drawContS(it.c);
+    } else if(it.up){
+      netUpDrawOne(it.up);   // v15.79: one of the party up top, drawn as this body is drawn below
     } else if(it.pl){
       // SPEC 4.6: standing on a deck lifts the sprite by that deck's height.
       // The y-sort key was computed from the same lift, so a body on the
@@ -23947,6 +23960,7 @@ var SHD=G.shells[i];
       wc.globalAlpha=1;
     }
   }
+  if(NET.on) netUpTags();   // v15.79: the party names over their heads, beside the pillager nameplates
   // nameplates over anything you can currently see
   for(i=0;i<VIS.length;i++){
     var ne=VIS[i];
@@ -30364,6 +30378,7 @@ function loop(ts){
     return;
   }
   if(state!=='raid'||!G||G.sim) return;
+  if(NET.on) netUpTick(dt);   // v15.79: where the party stands up top, eased in and sent out, whatever the frame does below
   // v6.73, his note; rewritten v7.23: time stops DEAD unless an input is live -
   // any held key, the mouse button, pad input, or an action already in flight.
   if(CFG.superhot&&G.player&&!G.over&&!G.paused){
@@ -30892,7 +30907,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.78: IN A SAME MACHINE MODE, WORLD SOUND COMES FROM ONE WINDOW ONLY. Multiplayer build 5. Two windows of the game on one PC both played the Undercroft ambience, the music, the footsteps and the blips through the same speakers a few milliseconds apart, so everything was heard twice. Now one master gain sits between everything the game plays and the speakers in a same machine mode, and a SOUND row in the PARTY window switches it for each window: the player 1 window defaults to SOUND ON and the player 2 window to SOUND OFF, the choice is kept for next time, and each window is told what the other does. A window switched off keeps every sound and schedule running behind the gain, so switching it on is instant and in step; the audio context is never suspended for it. The menu blips go through the same gain, so a window switched off is silent. Solo play and the invite code party are untouched: no node is added outside the same machine modes, nothing new is read, and the seed 4242 fingerprint has no way to move. Check 15.78 fails on v15.77',
+  now:'v15.79: THE PARTY ASCENDS TOGETHER INTO ONE SURFACE AND SEES EACH OTHER UP TOP. Multiplayer phase 2 build 1, the smallest slice of the shared raid. When the host ascends, the party is told the seed, the sector, the hour, the weather, the loaner draw, the terms, the hire and the dials, and every linked window in the Undercroft builds the same raid through the real startRaid on its own save and kit: the host world fields go in for the build and come out after, nothing is saved while they are in, and the built world is fingerprinted against the host before a frame is drawn; a mismatch stays in the Undercroft with the kit put back. Up top each player sends where it stands ten times a second, the host relays, and each window draws the others with its own body drawing at their depth with a name over their head; a raid that ends hides its player at once. No shared pillagers, loot, bullets or extraction yet; each window still runs its own pillagers and extracts, dies or abandons on its own. Solo play untouched: every call is behind NET.on and the seed 4242 fingerprint has no way to move. Check 15.79 fails on v15.78',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34314,7 +34329,8 @@ var NET={on:false,proto:1,max:4,role:null,seat:-1,pid:'',name:'',sess:'',peers:[
   floor:[],hubAcc:0,hubN:0,lkSent:'',   // v15.75: who stands where on the floor, by seat, and the send clock
   mode:'',pick:'',same:'',pair:'',bc:null,p2win:null,p2url:'',sameBusy:false,start:null,   // v15.76: the mode, and the two windows on one PC
   padIx:-1,padOther:-1,padFwd:null,padSent:0,padGot:0,   // v15.77: this window's controller pick, the other window's, and the state it handed over
-  sndOn:true,sndOther:-1,sndG:null,sndAc:null};   // v15.78: this window's sound switch, the other window's word (-1 not said), and the master gain
+  sndOn:true,sndOther:-1,sndG:null,sndAc:null,   // v15.78: this window's sound switch, the other window's word (-1 not said), and the master gain
+  up:[],upAcc:0,upN:0,upSeed:0,upFp:null,upHold:false,upIss:null};   // v15.79: who stands where up top by seat, the send clock, this raid seed and fingerprint, the party build guard and the loaner word
 var NET_ICE=[{urls:'stun:stun.cloudflare.com:3478'},{urls:'stun:stun.l.google.com:19302'}];
 var NET_TAG='PTY1', NET_WAIT_ICE=5000, NET_WAIT_HELLO=10000, NET_WAIT_HOST=30000, NET_WAIT_JOIN=180000, NET_MSG_MAX=16384;
 // The ?netslot override (read at the save key above, long before this section runs; both are hoisted declarations).
@@ -34570,6 +34586,8 @@ function netOnMsg(peer,data){
   if(!m||typeof m!=='object'||typeof m.t!=='string') return 'bad';
   // v15.75 (multiplayer, build 2): where one of the party stands, on either side of the star. The roles below never see it.
   if(m.t==='st') return netOnState(peer,m);
+  if(m.t==='raid') return netUpTake(peer,m);   // v15.79: the host ascended; a linked window in the Undercroft builds the same raid
+  if(m.t==='up') return netUpWord(peer,m);   // v15.79: a window went up, could not, or its raid ended
   if(NET.role==='host'){
     if(m.t==='hello'){
       if(peer.state!=='open') return 'ignored';
@@ -34664,6 +34682,7 @@ function netReset(keepErr){
   for(i=0;i<ps.length;i++){ if(ps[i].state==='in'||ps[i].state==='open') netSend(ps[i],{t:'bye'}); netClose(ps[i]); }
   NET.pend=null; NET.on=false; NET.role=null; NET.seat=-1; NET.roster=[]; NET.code=''; NET.reply=''; NET.codeLen=0; NET.busy=false;
   NET.floor=[]; NET.hubAcc=0; NET.hubN=0; NET.lkSent='';   // v15.75: nobody is left standing on the floor
+  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;   // v15.79: and nobody up top
   // v15.76: the host lets go of the window channel and the mode; the player 2 window keeps both, so the host can offer again.
   if(!(typeof NETP2!=='undefined'&&NETP2)) netSameStop();
   NET.status='';
@@ -34722,7 +34741,7 @@ function netSendFast(peer,msg){
 // A position: from a friend, on the host, filed under the seat of his link and passed on to the others; or passed on by the
 // host, on a friend, filed under the seat it names. Returns what it did, so a check can read the answer.
 function netOnState(peer,m){
-  var s, x, y, f, g, lk, out, i;
+  var s, x, y, f, g, lk, out, i, up, L;
   if(peer.state!=='in') return 'ignored';
   if(typeof m.x!=='number'||typeof m.y!=='number'||!isFinite(m.x)||!isFinite(m.y)) return 'bad';
   if(NET.role==='host') s=peer.seat;
@@ -34731,17 +34750,19 @@ function netOnState(peer,m){
     s=m.s;
   } else return 'off';
   if(s<0||s>=NET.max||s===NET.seat||netSeatName(s)===null) return 'ignored';
-  x=clamp(m.x,0,HUBW); y=clamp(m.y,0,HUBH);
+  up=(m.k==='r'); x=clamp(m.x,0,up?NET_UP_MAX:HUBW); y=clamp(m.y,0,up?NET_UP_MAX:HUBH);   // v15.79: k r is a word from up top, where the surface is far bigger than the floor
   f=(typeof m.f==='number'&&isFinite(m.f)&&m.f>-100&&m.f<100)?m.f:0;
   f=f-6.2832*Math.floor(f/6.2832);
   lk=(m.lk!==undefined)?netLookClean(m.lk):null;
-  g=NET.floor[s]||null;
-  if(!g){ g={seat:s,x:x,y:y,f:f,tx:x,ty:y,tf:f,mv:0,roll:0,bob:0,age:0,n:0,lk:null}; NET.floor[s]=g; }
+  L=up?NET.up:NET.floor; g=L[s]||null;   // v15.79: up top and the floor are two lists; a word from up top never moves a man on the floor
+  if(!g){ g={seat:s,x:x,y:y,f:f,tx:x,ty:y,tf:f,mv:0,roll:0,bob:0,age:0,n:0,lk:null,cr:0,sp:0,dn:0,w:'',sd:0,wep:null}; L[s]=g; }   // v15.79: filed on the list the word names
   else if(g.age>=NET_HUB_STALE||Math.sqrt((x-g.x)*(x-g.x)+(y-g.y)*(y-g.y))>NET_HUB_SNAP){ g.x=x; g.y=y; g.f=f; }
   g.tx=x; g.ty=y; g.tf=f; g.mv=m.m?1:0; g.roll=clamp(+m.r||0,0,0.38); g.age=0; g.n++;
+  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in
   if(lk) g.lk=lk;
   if(NET.role==='host'){
     out={t:'st',s:s,x:+x.toFixed(1),y:+y.toFixed(1),f:+f.toFixed(2),m:g.mv,r:+g.roll.toFixed(2)};
+    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; }   // v15.79: passed on as it came
     if(lk) out.lk=lk;
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSendFast(NET.peers[i],out);
   }
@@ -35206,6 +35227,251 @@ function netSndView(){
   try{ v=localStorage.getItem(netSndKey(NET.same)); }catch(e){ v=null; }
   return {on:NET.sndOn,other:NET.sndOther,gain:(NET.sndG&&NET.sndG.gain)?NET.sndG.gain.value:null,routed:!!NET.sndG,ctx:!!AC,state:(AC&&AC.state)||'',kept:v};
 }
+// v15.79, HIS ORDER OF 2026-09-25: MULTIPLAYER, BUILD 1 OF PHASE 2. THE PARTY ASCENDS TOGETHER INTO ONE SURFACE AND SEES EACH
+// OTHER UP TOP. The smallest slice of the shared raid (tools/multiplayer/plan.md, phase 2, with the corrections in critique.md):
+// no shared pillagers, machines, loot, bullets or extraction yet. Each window still runs its own pillagers and machines (host
+// snapshots replace them in the next slices), and each player still extracts, dies or abandons on its own, coming back empty
+// on its own save as today. The host dropping mid-raid does not end the others in this slice.
+//   ASCEND TOGETHER. When the host ascends (the sector page, the loadout question, ascendNow, startRaid) its raid is built as
+//   always, and right after the build the party is told {t:'raid'} on the reliable channel (netUpAnnounce): the seed, the
+//   sector (mapIx), the hour (cond, DAY or NIGHT), the weather the host got (wx), whether the host drew a loaner gun from the
+//   seeded stream (iss), the terms, the hire (merc), every Settings dial and console override that differs from its default
+//   (cfg) and a fingerprint of what was built (fp). Each linked window in the Undercroft (netUpTake, netUpStart) builds the
+//   same raid from those values through the real commitKit and startRaid, on its OWN save and kit: the host world fields
+//   (mapIx, cond, terms, merc, the weather pick, the dials on top of the defaults) go in for the length of the build and its
+//   own come back after; saveProfile writes nothing while they are in (NET.upHold) and the build is saved once they are out,
+//   so the host dials never reach this save; the intel core is not spent. The sector and the hour stay, since the fog saves
+//   under the sector he is on. The loaner draw is the one seeded draw in the build that depends on the player, so the host
+//   says whether it drew (buildRaid reads NET.upIss under NET.upHold): a window that would draw when the host did not draws
+//   its loaner off a saved and restored stream, one that would not draw when the host did makes the same draw and drops it,
+//   and the population lands where the host put it. The built world is fingerprinted (netUpFp: the counts, the weather, an
+//   FNV hash over every wall, body and container by place and kind) and held against the host fingerprint. A mismatch never
+//   plays a different surface: the raid is torn down before a frame, the save is put back from a snapshot taken before the
+//   kit was committed, the PARTY window says so and the host is told. A window that is not in the Undercroft (up top
+//   already, on the title, still on the run card) is told it was left behind, and the host is told why.
+//   SEE EACH OTHER. Up top every player sends where it stands ten times a second on the fast channel (netUpTick), the v15.75
+//   word with k:'r', the seed, crouched, sprinting, downed and the gun in hand; the host relays as it does on the floor, and
+//   netOnState files a word from up top on NET.up, never on the floor list. Each window eases the others as the floor does,
+//   sorts them into the raid depth list with the deck lift (netUpDraw) and draws each with drawOp exactly as its own body is
+//   drawn up top, in his fit and racks with his gun (netUpDrawOne), named over his head beside the pillager nameplates
+//   (netUpTags). Nobody up top is a target for anything yet and nobody collides. A window whose raid ends says {t:'up',
+//   st:'out'} (netUpEnd, from endRaid) and is hidden at once; a bye or a lost link takes his seat out as before; a word from
+//   another seed is filed and not drawn.
+// SOLO PLAY IS UNTOUCHED. Every call in here is behind NET.on; the loaner draw in buildRaid reads NET.upHold, which only a party
+// build sets; nothing here draws from the seeded stream (rr, rnd, ri, pick, rollTable): the fingerprint is an FNV hash.
+var NET_UP_MAX=20000;
+function netUpTerms(list){ var out=[], i, v; if(!list||typeof list.length!=='number') return out; for(i=0;i<list.length&&out.length<12;i++){ v=netClean(list[i],24); if(v) out.push(v); } return out; }
+// Every Settings dial and console override that differs from its default: what another window needs to build this world.
+function netUpCfgDiff(){ var out={}, k; for(k in DEF) if(Object.prototype.hasOwnProperty.call(DEF,k)&&CFG[k]!==DEF[k]) out[k]=CFG[k]; return out; }
+// The fingerprint of a built world: the counts, the weather, and an FNV hash over every wall, body and container by place.
+function netUpFp(g){
+  var h=0x811c9dc5, i, w, e, c;
+  function mix(v){ var s=String(v)+'|', q; for(q=0;q<s.length;q++){ h=(h^s.charCodeAt(q))>>>0; h=Math.imul(h,0x01000193)>>>0; } }
+  if(!g||!g.map||!g.map.walls||!g.ents||!g.containers) return null;
+  for(i=0;i<g.map.walls.length;i++){ w=g.map.walls[i]; mix(Math.round(w.x)); mix(Math.round(w.y)); mix(Math.round(w.w)); mix(Math.round(w.h)); }
+  for(i=0;i<g.ents.length;i++){ e=g.ents[i]; mix(e.kind); mix(Math.round(e.x)); mix(Math.round(e.y)); }
+  for(i=0;i<g.containers.length;i++){ c=g.containers[i]; mix(Math.round(c.x)); mix(Math.round(c.y)); }
+  return {e:g.ents.length,c:g.containers.length,w:g.map.walls.length,h:('0000000'+h.toString(16)).slice(-8),wx:(g.wx&&g.wx.id)||''};
+}
+function netUpFpSame(a,b){ return !!a&&!!b&&a.e===b.e&&a.c===b.c&&a.w===b.w&&a.h===b.h&&a.wx===b.wx; }
+function netUpFpText(f){ return f?(f.e+' bodies, '+f.c+' containers, '+f.w+' walls, '+f.h+(f.wx?(', '+f.wx):'')):'nothing'; }
+// THE HOST, right after its raid is built: the party is told what to build. Returns the word, or null outside a party.
+function netUpAnnounce(g){
+  var m;
+  if(!NET.on||NET.role!=='host'||!g||g.sim) return null;
+  m={t:'raid',seed:g.seed>>>0,mapIx:clamp((P&&P.mapIx)|0,0,FIXED_MAPS.length-1),cond:(P&&P.cond==='night')?'night':'day',wx:(g.wx&&g.wx.id)||'',
+     iss:g.issDraw?1:0,terms:netUpTerms(termsOn()),merc:(P&&typeof P.merc==='string')?P.merc:'',cfg:netUpCfgDiff(),fp:netUpFp(g)};
+  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=m.seed; NET.upFp=m.fp;
+  netBroadcast(m);
+  return m;
+}
+// Why this window cannot go up right now, or nothing when it can: on the Undercroft floor, past the title, no raid in hand.
+function netUpBusy(){
+  var t=document.getElementById('title');
+  if(typeof G!=='undefined'&&G) return G.over?'still on the run card':'up top already';
+  if(typeof state!=='undefined'&&state==='raid') return 'up top already';
+  if(t&&t.classList.contains('on')) return 'on the title';
+  return '';
+}
+function netUpSnapP(){ try{ return JSON.stringify(P); }catch(e){ return null; } }
+// The save put back as it was, in place: P is the one object every closure holds.
+function netUpPutP(js){
+  var o=null, k;
+  try{ o=JSON.parse(js); }catch(e){ o=null; }
+  if(!o||typeof o!=='object') return false;
+  for(k in P) if(Object.prototype.hasOwnProperty.call(P,k)&&!Object.prototype.hasOwnProperty.call(o,k)) delete P[k];
+  for(k in o) if(Object.prototype.hasOwnProperty.call(o,k)) P[k]=o[k];
+  return true;
+}
+// A LINKED WINDOW IN THE UNDERCROFT: the same raid from the host word, on its own save and kit. Returns what happened.
+function netUpStart(m){
+  var keepCfg={}, keep, k, snap, fp, threw=null, hostFp=(m.fp&&typeof m.fp==='object')?m.fp:null, seed=(+m.seed)>>>0;
+  snap=netUpSnapP();
+  try{ commitKit(); }catch(e0){}   // its own packed kit, as MY LOADOUT commits it, saved under its own dials
+  for(k in CFG) if(Object.prototype.hasOwnProperty.call(CFG,k)) keepCfg[k]=CFG[k];
+  keep={terms:P.terms,merc:P.merc,intel:P.intel,wxPick:P.wxPick};
+  NET.upHold=true; NET.upIss=(m.iss===1)?true:((m.iss===0)?false:null);
+  try{
+    for(k in DEF) if(Object.prototype.hasOwnProperty.call(DEF,k)) CFG[k]=DEF[k];
+    if(m.cfg&&typeof m.cfg==='object') for(k in m.cfg) if(Object.prototype.hasOwnProperty.call(DEF,k)&&(typeof m.cfg[k]==='number'||typeof m.cfg[k]==='string'||typeof m.cfg[k]==='boolean')) CFG[k]=m.cfg[k];
+    P.mapIx=clamp((m.mapIx|0),0,FIXED_MAPS.length-1); P.cond=(m.cond==='night')?'night':'day';
+    P.terms=netUpTerms(m.terms); P.merc=netClean(m.merc,24)||null; P.intel=0; P.wxPick=netClean(m.wx,16)||'any';
+    pendSeed=seed;
+    startRaid();
+  }catch(e){ threw=netErrText(e); }
+  finally{
+    NET.upHold=false; NET.upIss=null; pendSeed=null;
+    for(k in keepCfg) if(Object.prototype.hasOwnProperty.call(keepCfg,k)) CFG[k]=keepCfg[k];
+    P.terms=keep.terms; P.merc=keep.merc; P.intel=keep.intel; P.wxPick=keep.wxPick;
+  }
+  fp=(!threw&&G&&!G.sim&&G.seed===seed)?netUpFp(G):null;
+  if(threw||!fp||!netUpFpSame(fp,hostFp)){
+    // Never a different surface: torn down before a frame, the save put back as it was before the kit was committed.
+    G=null; keys={};
+    try{ showScreen('hub'); }catch(e2){}
+    if(snap) netUpPutP(snap);
+    try{ saveProfile(); }catch(e3){}
+    NET.err=threw?('This window could not build the surface your party went up to ('+threw+'), so it stays in the Undercroft.')
+                 :('This window could not build the same surface as your host (the host built '+netUpFpText(hostFp)+'; this window built '+netUpFpText(fp)+'). Both copies need the same build and the same Settings dials. This window stays in the Undercroft.');
+    netSay('Your party went up without you: this window could not build the same surface. Open the PARTY window at the lift.');
+    netBroadcast({t:'up',st:'no',why:'surface'});
+    netRefresh();
+    return 'mismatch';
+  }
+  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=seed; NET.upFp=fp;
+  try{ saveProfile(); }catch(e4){}   // the kit that went up, the sector and the hour, under its own dials
+  NET.status='Your party ascended together.'; NET.err='';
+  netBroadcast({t:'up',st:'in'});
+  return 'up';
+}
+// The host word, on a linked window: taken when this window is in the Undercroft, else told and ignored.
+function netUpTake(peer,m){
+  var why;
+  if(!peer||peer.state!=='in'||NET.role!=='join') return 'ignored';
+  if(typeof m.seed!=='number'||!isFinite(m.seed)) return 'bad';
+  why=netUpBusy();
+  if(why){ NET.err='Your party went up without you: this window was '+why+'.'; netBroadcast({t:'up',st:'no',why:why}); netRefresh(); return 'busy'; }
+  return netUpStart(m);
+}
+function netUpWhyText(w){
+  w=netClean(w,24);
+  if(w==='surface') return 'it could not build the same surface';
+  if(w==='up top already') return 'it was up top already';
+  if(w==='on the title') return 'it was on the title';
+  if(w==='still on the run card') return 'it was still on the run card';
+  return 'it could not go up';
+}
+// A window went up (in), could not (no) or its raid ended (out): from a friend, on the host, filed under the seat of his link
+// and passed on to the others; or passed on by the host, on a friend, under the seat it names.
+function netUpWord(peer,m){
+  var s, st, out, i, nm;
+  if(!peer||peer.state!=='in') return 'ignored';
+  st=(m.st==='in'||m.st==='out'||m.st==='no')?m.st:'';
+  if(!st) return 'bad';
+  if(NET.role==='host') s=peer.seat;
+  else if(NET.role==='join'){ if(typeof m.s!=='number'||m.s!==(m.s|0)) return 'bad'; s=m.s; }
+  else return 'off';
+  if(s<0||s>=NET.max||s===NET.seat) return 'ignored';
+  if(st!=='in') NET.up[s]=null;
+  nm=netSeatName(s)||'PILLAGER';
+  if(st==='no'){ NET.status=nm+' could not go up with you: '+netUpWhyText(m.why)+'.'; netRefresh(); }
+  if(NET.role==='host'){
+    out={t:'up',s:s,st:st}; if(m.why!==undefined) out.why=netClean(m.why,24); if(m.how!==undefined) out.how=netClean(m.how,12);
+    for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSend(NET.peers[i],out);
+  }
+  return 'up:'+st;
+}
+// This raid ended, however it ended: the party is told, and nobody is drawn up top any more.
+function netUpEnd(how){
+  if(!NET.on) return false;
+  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;
+  netBroadcast({t:'up',st:'out',how:netClean(how,12)});
+  return true;
+}
+// Called from loop while a party is on and a raid is in hand, every frame. Eases the others toward where they last said
+// they stood, takes anyone who left the roster off, and about ten times a second sends where this player stands.
+function netUpTick(dt){
+  if(!NET.on||typeof G==='undefined'||!G||G.sim) return 0;
+  if(!isFinite(dt)||dt<0) dt=0;
+  var k=1-Math.exp(-NET_HUB_EASE*dt), i, g, dx, dy, da, sp, p, msg, lk, ls, sent=0;
+  for(i=0;i<NET.up.length;i++){
+    g=NET.up[i]; if(!g) continue;
+    if(g.seat===NET.seat||netSeatName(g.seat)===null){ NET.up[i]=null; continue; }
+    g.age+=dt;
+    dx=(g.tx-g.x)*k; dy=(g.ty-g.y)*k;
+    g.x+=dx; g.y+=dy;
+    da=g.tf-g.f;
+    if(da>Math.PI) da-=6.2832; else if(da<-Math.PI) da+=6.2832;
+    g.f+=da*k; g.f=g.f-6.2832*Math.floor(g.f/6.2832);
+    sp=(dt>0)?Math.sqrt(dx*dx+dy*dy)/dt:0;
+    g.bob+=dt*(g.mv?((sp>200)?15:9):1.2);
+    if(g.roll>0) g.roll=Math.max(0,g.roll-dt);
+  }
+  p=G.player;
+  if(G.over||!p||!netInCount()) return 0;
+  NET.upAcc+=dt;
+  if(NET.upAcc<NET_HUB_STEP) return 0;
+  NET.upAcc=Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP);
+  msg={t:'st',k:'r',sd:NET.upSeed>>>0,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.roll>0)?+(+p.roll).toFixed(2):0,
+       c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):''};
+  if(NET.role==='host') msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link
+  lk=netLook(); ls=JSON.stringify(lk);
+  if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }
+  NET.upN++;
+  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&netSendFast(NET.peers[i],msg)) sent++;
+  return sent;
+}
+function netUpShown(g){ return !!g&&g.n>0&&g.age<NET_HUB_STALE&&g.seat!==NET.seat&&netSeatName(g.seat)!==null&&!!NET.upSeed&&g.sd===(NET.upSeed>>>0); }
+// Called from render2D while a party is on: each of the others goes into the raid depth list with the deck lift, and the
+// list draws him with netUpDrawOne. Returns how many went in.
+function netUpDraw(DR){
+  var i, g, n=0;
+  if(!NET.on||!DR||typeof G==='undefined'||!G) return 0;
+  for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(netUpShown(g)){ DR.push({k:g.y-drawLift((G.map&&G.map.liftAt)?G.map.liftAt(g.x,g.y):0),up:g}); n++; } }
+  return n;
+}
+// One of the party up top: drawOp as this window draws its own body up top, in his fit and racks with his gun, crouched,
+// rolling, sprinting or down as he said, lifted by the deck he stands on. Wrapped, because a fault in one body must never
+// cost the frame.
+function netUpDrawOne(g){
+  var lk, fit, lift=0, mode, wp=null;
+  try{
+    lk=g.lk||{}; fit=FITCOL[lk.fit]||FITCOL.slate;
+    if(g.w&&Object.prototype.hasOwnProperty.call(WEAPONS,g.w)&&WEAPONS[g.w]&&WEAPONS[g.w].id) wp=WEAPONS[g.w];
+    g.wep=wp;   // read by drawOp off own, as the gun in hand; the hair lag lives on the entry too, as it does on any body
+    lift=drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(g.x,g.y):0);
+    if(lift>0){ wc.save(); wc.translate(0,-lift); }
+    mode=g.dn?'down':((g.roll>0)?'roll':(g.cr?'crouch':(wp?'':'none')));
+    drawOp(g.x,g.y,g.f,(g.roll>0)?(1-g.roll/0.38)*12.6:g.bob,fit[1],0,0,mode,0,
+      {hero:0,own:g,moving:!!g.mv,sprint:!!g.sp,ads:false,hurt:0,rl:0,bulk:0,
+       skin:lk.skin,hair:lk.hair,hat:lk.hat,cut:lk.cut,beard:lk.beard,eyes:lk.eyes,faceMark:lk.face,boots:lk.boots,
+       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit});
+  }catch(e){}
+  if(lift>0){ try{ wc.restore(); }catch(e2){} }
+}
+// Their names over their heads, drawn in the world beside the pillager nameplates.
+function netUpTags(){
+  var i, g, nm, tw, n=0;
+  if(!NET.on||typeof G==='undefined'||!G) return 0;
+  try{
+    wc.font=FS(TYPE.micro);
+    for(i=0;i<NET.up.length;i++){
+      g=NET.up[i]; if(!netUpShown(g)) continue;
+      nm=netSeatName(g.seat)||'PILLAGER';
+      tw=wc.measureText(nm).width;
+      wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(g.x-tw/2-4,g.y-62,tw+8,13);
+      wc.fillStyle='#ffc04a'; wc.fillText(nm,g.x-tw/2,g.y-52);
+      n++;
+    }
+  }catch(e){}
+  return n;
+}
+// Where the others stand up top, and this raid, for the test page handle.
+function netUpView(){
+  var out=[], i, g, up=!!(typeof G!=='undefined'&&G&&!G.sim&&typeof state!=='undefined'&&state==='raid');
+  for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(g) out.push({seat:g.seat,name:netSeatName(g.seat),x:g.x,y:g.y,tx:g.tx,ty:g.ty,n:g.n,sd:g.sd,shown:netUpShown(g)}); }
+  return {on:up,over:!!(typeof G!=='undefined'&&G&&G.over),seed:NET.upSeed,fp:NET.upFp,me:(up&&G.player)?{x:G.player.x,y:G.player.y,face:G.player.face||0,seat:NET.seat}:null,list:out};
+}
 // THE PARTY WINDOW.
 function openParty(){ renderParty(); openModal('partymodal'); }
 function renderParty(){
@@ -35304,7 +35570,9 @@ if(NETSLOT||NETP2){   // v15.76: and the player 2 window, so the test page can r
       padSet:function(ix){ return netPadSet(ix); },
       // v15.78: whether this window plays the world sound, what the other window said, and the master gain as the game holds it.
       snd:function(){ return netSndView(); },
-      sndSet:function(on){ return netSndSet(!!on); }};
+      sndSet:function(on){ return netSndSet(!!on); },
+      // v15.79: whether this window is up top, the seed and fingerprint of its raid, where it stands, and where it draws the others.
+      up:function(){ return netUpView(); }};
   }catch(e){}
 }
 document.getElementById('termsclear').onclick=function(){
