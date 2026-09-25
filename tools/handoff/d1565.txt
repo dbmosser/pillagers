@@ -1,0 +1,71 @@
+## v15.65 - CTRL WITH THE MOUSE WHEEL SIZES THE HUD WITHOUT TOGGLING CROUCH
+
+Stealth audit finding (MEDIUM), index 3 of the confirmed list in audit-wfxd2t8x2.json. The verdict found it real and gave a
+corrected fix, which is the build, with two small additions named below.
+
+In a raid, standing, hold Ctrl and roll the wheel: that is his v9.95 HUD size gesture (and every browser's zoom gesture, which
+the canvas listener already prevents). The Ctrl keydown reaches raidKey first, and the v9.92/v10.07 crouch line
+if((code==='ControlLeft'||code==='ControlRight'||code==='KeyC')&&G&&!G.over&&!G.sim&&!repeat){ G.crouchTog=!G.crouchTog; }
+flipped the toggle. The canvas wheel listener then ran if(e.ctrlKey){ if(e.deltaY!==0) hudSizeStep(...); return; }, which sized
+the HUD and never touched the stance, and the keyup listener only cleared the key. Crouch has been a toggle since v10.07, so
+letting go of Ctrl did not undo it: sizing the HUD standing left him crouched at .52 speed with the HIDDEN plate up, and sizing
+it while crouched in a bush stood him up and dropped the 170 hide rule. The only message was hudSizeStep's HUD size line;
+nothing said the stance changed. The two features come from two separate notes of his (v9.92 Ctrl or C crouches, v9.95 Ctrl
+and the wheel size the HUD); no comment or ruling mentions the clash. An input bug, not balance.
+
+THE BUILD. Four code edits plus VER and DEVNOW.
+1. raidKey, the crouch line (near 11083): before the flip, G.ctrlUndo=(ev&&code!=='KeyC')?G.crouchTog:null; keeps the stance
+   from before a keyboard Ctrl press. C is never a modifier and keeps nothing. ADDITION ONE: the controller right stick click
+   (v13.36) reaches raidKey as raidKey('ControlLeft',false,null) from pollPad, with ev null, so it keeps nothing either; the
+   verdict's version would have kept a stance for a press with no Ctrl key behind it. The flip itself is unchanged, so a plain
+   Ctrl press still crouches at once, one change per press (his v13.36 rule).
+2. The canvas wheel listener (near 11258): inside if(e.ctrlKey), when G.ctrlUndo is set and a keyboard Ctrl is really held
+   (keys ControlLeft or ControlRight), the crouch toggle is given back its stance from before that press; G.ctrlUndo is then
+   cleared on every Ctrl wheel, so only the first notch restores and later notches only size. The keys test means a trackpad
+   pinch, which sends ctrlKey wheel events with no Ctrl keydown, changes no stance. The HUD step line is unchanged.
+3. The window keyup listener (near 11267): a Ctrl keyup also clears G.ctrlUndo, so a Ctrl let go with no wheel stays a plain
+   crouch press and a later Ctrl with the wheel cannot give back a stance from an older press.
+4. ADDITION TWO, releaseAllKeys (near 29956): if(G) G.ctrlUndo=null; beside the existing bag and drag clear. A Ctrl held when
+   the window loses focus (Ctrl+Tab to another browser tab is the common case) never sends its keyup to the game, and the
+   verdict names a stale value as the thing to avoid.
+Restoring the old stance rather than flipping a second time is the verdict's point: holding Ctrl and then rolling or sprinting
+(both set crouchTog=false) before the wheel does not crouch him again from standing. Known gaps, both small: he is crouched for
+the few frames between the Ctrl press and the first notch (avoiding it would move crouch to the key release and change when
+crouch happens), and if he started crouched, pressed Ctrl, rolled while holding it and then rolled the wheel, the restore puts
+him back crouched where the roll alone would have left him standing. No player text was added or reworded (no TXSHIP key is
+touched), no number, dial or loot table moved, and no seeded draw was added or reordered; map building is not touched, so the
+seed 4242 fingerprint in __verifySafe (ents 85/374, containers 165/593) cannot move. G.ctrlUndo lives on the raid object, so a
+new raid starts with none.
+
+MEASURED. Check 15.65 cleans the card and profile, snapshots the profile, deploys map 0 at seed 4242 and requires state 'raid'
+with no pause box. It sets the HUD size to the middle UISCALES step so a step either way is possible. Keys are dispatched as
+KeyboardEvents at window only (the raid key listener hears them once); wheel notches are cancelable WheelEvents on cv with
+ctrlKey set. After each gesture one updatePlayer(1/60) frame is stepped standing still with every key up, so G.pCrouch shows
+the stance. CONTROL: a plain Ctrl keydown flips the toggle on (else SKIP), and after the keyup and a frame he is still crouched
+with G.pCrouch true, on either build. THE FINDING, standing: Ctrl down (CONTROL: the toggle flipped), a notch up (CONTROL: the
+HUD moved exactly one step up), a notch down (CONTROL: back on the same step), Ctrl up, a frame: he must be standing, toggle off
+and G.pCrouch false. THE FINDING, crouched: the toggle on and a frame, Ctrl down (CONTROL: stood up), a notch down (CONTROL: one
+step down) and a notch up, Ctrl up, a frame: he must still be crouched. CONTROL: a controller right stick click, raised the way
+pollPad raises it (raidKey('ControlLeft',false,null) and the key cleared), crouches him; a Ctrl wheel with no Ctrl key held,
+the way a trackpad pinch arrives, still sizes the HUD a step and leaves him crouched. On v15.64 both finding arms end in the
+flipped stance while every control holds, so the check fails for the finding's own reason; a control that cannot run after a
+failure keeps the failure (skip helper, as in 15.64). In finally the keys and the mouse are put back, the position, the crouch
+toggle, G.pCrouch and G.ctrlUndo are cleared, the raid is abandoned, the profile snapshot is restored with __applyLoaded (the
+HUD size and menu size with it), the card, dials and profile are cleaned and applyMenuZoom runs.
+
+Older fixture checks: none restaged. 9.95 rolls a Ctrl wheel on cv with no Ctrl key held in a fresh raid, where G.ctrlUndo is
+unset and the keys test fails, so it sizes exactly as before. 9.92 presses Ctrl (dispatched on document, keydown then keyup at
+once) and walks: the keyup clears G.ctrlUndo and the crouch stands, as before. 13.36 raises the right stick click through
+pollPad with ev null, which keeps nothing and flips as before. The 10.07 C toggle checks never use the wheel.
+No check holds a Ctrl key while rolling the wheel.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (v15.61): p1562 and f1562 applied, then VER, the
+DEVNOW now key and the top check renamed to 15.63 to stand in for build 1563, then p1564 and f1564, then p1565 and f1565, every
+script printing OK (p1565: 5 edits applied plus DEVNOW; f1565: 1 edits applied), every anchor a whole line block matching once.
+The edited raidKey, the wheel and keyup listeners and releaseAllKeys (old and new) and the new check all parse in JScript.
+Anchors: the v10.07 comment's two lines plus the crouch if and its body in raidKey; the v9.95 wheel comment's two lines plus
+the if(e.ctrlKey) line; the window keyup line; the releaseAllKeys bag comment's two lines plus if(G){ G.bagOpen=false;
+G.drag=null; }; var VER='15.64';; the DEVNOW now key for v15.64; the fixture line {v:'15.64',what:. None of them is touched by
+p1562 or p1564. Build 1563 must not touch these lines; if it does, re-anchor this build on its result.
+
+Not verified: the check has not been run in a browser yet. Not played by hand: Ctrl with a real wheel, standing and in a bush.

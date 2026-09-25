@@ -1,0 +1,56 @@
+## v15.64 - C CROUCHES WITH SHIFT HELD WHEN NO SPRINT CAN START
+
+Stealth audit finding (MEDIUM), index 2 of the confirmed list in audit-wfxd2t8x2.json. The verdict found it real and gave no
+corrected fix, so the finding's own fix is the build.
+
+Sprint away from a pillager holding Shift and W until the bar hits 0. The stamina lines at the end of updatePlayer set p.stamLock
+and p.stamRelease (v4.24 and v8.73), and the release latch is cleared only when Shift is let go (if(!_shHeld) p.stamRelease=0),
+so a held Shift cannot saw sprint on and off. Still holding Shift and W, which is what a man fleeing does, press C to crouch and
+break the chase. raidKey turns G.crouchTog on. On the next frame the v11.53 line just above var sprint=,
+if(_shHeld&&mg>0&&G.crouchTog&&!p.downed){ G.crouchTog=false; crouch=false; }, turned it off again: it asked only that Shift was
+held and he was moving. The sprint line below it then refused the sprint for the stamina flags anyway. He jogged on at full height,
+no sprint, no crouch, footstep noise at the standing interval instead of none, no crouched bush cover, and no word why: C looked
+broken exactly when he needed it. The same happened aiming (p.ads cancels the sprint at if(p.ads) sprint=false;) and wading in
+deep water (if(wading) sprint=false;): Shift stood him up and he did not sprint. The v11.53 comment quotes his note, "activating
+sprint should automatically stop crouching", and says movement is required, the same rule sprint itself has, so the line was meant
+to follow sprint's own rules and missed the breath, aim and water ones. Where no sprint starts his note does not apply, and no
+ruling says Shift alone should stand him up. Not balance: no number moves.
+
+THE BUILD. One edit in updatePlayer: the cancel line now also asks p.stam>2, !p.stamLock, !p.stamRelease, !p.ads and
+!inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset)), the same questions the sprint lines below ask, with the same
+wading edge as the var wading= line. So whenever a sprint can start, Shift with movement still stands him up and he sprints, which
+is his v11.53 note untouched; when none can start, C keeps him crouched. p.ads is a lasting flag (the right mouse button and the
+pad's aim both set it before updatePlayer runs), and inWaterDeep only reads the map. The stim still clears the crouch for a sprint:
+it holds the bar at 100 and never sets the lock or the latch. No stamina, speed or noise number, dial or loot table moved, no
+player text was touched (no TXSHIP key), and no seeded draw was added or reordered; map building is not touched, so the seed 4242
+fingerprint in __verifySafe (ents 85/374, containers 165/593) cannot move. The bot crouches on its own flag and never reads this
+line.
+
+MEASURED. Check 15.64 cleans the card and profile, snapshots the profile and deploys map 0 at seed 4242. At the spawn (required
+dry; if deep water the check skips) it steps updatePlayer(1/60) once per case with every key cleared, then Shift and W held,
+G.crouchTog on, no roll, not downed, auto-jog off and the mouse up, and reads G.crouchTog, G.pCrouch and G.sprinting.
+CONTROL: full breath (stam 100, no lock, no latch), not aiming: the crouch clears and he sprints, on either build, else SKIP.
+THE FINDING: stam 0 with the lock and the latch set: CONTROL that he did not sprint, then he must still be crouched (toggle on
+and G.pCrouch true). Aiming at full breath: CONTROL that he did not sprint, then still crouched. Wading: the middle of the first
+water rectangle more than 2*wadeInset+40 across both ways where inWaterDeep answers true, at full breath: not sprinting and still
+crouched; if the map has no such pool this case is left out. CONTROL again: the full breath frame at the spawn still clears the
+crouch and sprints. On v15.63 the out of breath and the aiming frames both leave him standing and not sprinting, so the check
+fails for the finding's own reason. In finally the keys are cleared, the mouse, position, stamina, lock, latch and aim put back,
+the crouch and sprint flags cleared, the raid abandoned, the profile snapshot restored with __applyLoaded, and the card, dials
+and profile cleaned.
+
+Older fixture checks: none restaged. 11.53 holds Shift and W crouched with stam 100, no lock, no latch and not aiming at this same
+seed 4242 spawn and requires the crouch cleared and a sprint: every new condition is true there, so it stays green (it already
+requires a sprint, which already requires dry ground). 10.87 toggles crouch with no Shift held and runs the exhausted latch
+standing, so it never reaches the changed line with the crouch on. 13.36 crouches on the right stick and walks on the stick with
+no Shift. 9.92 walks crouched with no Shift. No check holds Shift while crouched and out of breath, aiming or wading.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (v15.61), with VER, the DEVNOW now key and the top
+check renamed to 15.63 to stand in for builds 1562 and 1563: p1564 printed OK, 2 edits applied plus DEVNOW, and f1564 printed
+OK, 1 edits applied; every anchor a whole line block matching once. The edited updatePlayer (old and new) and the new check both
+parse in JScript. Anchors: the v11.53 comment's last line plus the cancel line (unique in v15.61), var VER='15.63';, the DEVNOW
+now key for v15.63, and the fixture line {v:'15.63',what:. Builds 1562 and 1563 are other areas and must not touch the cancel
+line or its comment line; if one does, re-anchor this build on its result.
+
+Not verified: the check has not been run in a browser yet. Not played by hand: running dry from a pillager and pressing C with
+Shift still held.

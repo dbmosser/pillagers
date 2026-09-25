@@ -1,0 +1,13 @@
+v15.62: esc and tab leave the end of raid card through its own button
+
+Menus audit finding. On the card after an extraction, a death or an
+abandon, ESC and TAB did nothing: the card is not a window, and every
+ESC and TAB line in a raid waits for the raid not to be over. Only the
+mouse or controller B could leave it, against his rule that every menu
+closes on ESC. A fresh ESC or TAB on the card now presses Log run and
+return, so the run is logged once with its tags and note, exactly as a
+click logs it.
+
+Check 15.62. Fails on v15.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

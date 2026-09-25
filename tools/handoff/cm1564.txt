@@ -1,0 +1,13 @@
+v15.64: c crouches with shift held when no sprint can start
+
+Stealth audit finding. Out of breath with Shift still held, or aiming,
+or wading in deep water, pressing C to crouch did nothing: the line
+that lets a sprint cancel the crouch took it off again the next frame,
+although no sprint could start, so he jogged on standing and loud. That
+line now asks the same questions the sprint does, so C crouches there,
+and Shift with movement still stands him up whenever a sprint can
+start. No stamina or speed number moved.
+
+Check 15.64. Fails on v15.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

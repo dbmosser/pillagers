@@ -1,0 +1,13 @@
+v15.63: backing out of the loadout question returns to the sector page
+
+Menus audit finding. After ASCEND TO THIS SECTOR, backing out of What
+are you taking up? by ESC, TAB, controller B or Not yet left him on the
+bare floor, and walking back to the lift for the page put his NIGHT
+pick back to DAY. The question now names the sector page to come back
+to, the way the Hire nobody question names the bench, so backing out
+puts the page back as he left it. MY LOADOUT and FREEBIE KIT still
+ascend.
+
+Check 15.63. Fails on v15.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

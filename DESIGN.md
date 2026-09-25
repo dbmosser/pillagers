@@ -40024,6 +40024,64 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.62 - ESC AND TAB LEAVE THE END OF RAID CARD THROUGH ITS OWN BUTTON
+
+Menus audit finding (MEDIUM), entry 0 of the confirmed list in audit-wfxd2t8x2.json.
+
+Extract, die, or abandon a run with at least one shot fired (that skips the instant quit branch), and the EXTRACTED, KILLED or
+ABANDONED card comes up. ESC and TAB did nothing on it. The card is <div class="outcome" id="outcome">, not a .modal, so the
+document capture listener (escCloseTopModal) returned at its '.modal.on' test. endRaid sets G.over and shuts the pause box, but
+state stays 'raid' until oc_btn's onclick calls showScreen('hub'), so the main window listener handed the key to raidKey, and
+every ESC and TAB branch there (the emote bar, the stall, the map and backpack line, the pause toggle) waits on !G.over. TAB went
+through backOut first, and backOut's raid branch sits behind if(G&&!G.over), so it returned false. TAB is also in raidKey's
+preventDefault list, so it could not even move the focus to the button. The only ways off the card were the mouse on Log run and
+return, or controller B, which padMenu finds by its word return since v15.57. That broke his rule that every menu closes on ESC
+(his 50 answers of 2026-09-03) and the TAB ruling of 2026-09-13 that TAB closes whatever is in front. No comment or ruling says
+the card should ignore ESC.
+
+THE BUILD. One edit in raidKey, the finding's fix as written (the verdict's corrected fix is empty): just after the v12.89 map and
+backpack ESC line and before the v15.49 comment over the pause toggle, a fresh ESC or TAB (not a key repeat) with G.over set and
+#outcome .on presses the card's own oc_btn and returns. oc_btn's onclick runs ocCommit, takes the card down, lets G go and shows
+the Undercroft, so the run is logged exactly as a click logs it: the tags and the note are read into the run endRaid already
+banked (v8.17), and commitRun's _committed guard keeps it to one row. The return stops raidKey touching G after it is nulled;
+if(ev) covers a pad call, where ev is null (the pad never gets here with the card up, since padOpenModal returns the card first).
+A press while the note box has the focus is still dropped by the main listener's TEXTAREA bail-out, the same as every other
+window. The anchor is whole lines: the last three lines of the v12.89 block and the first line of the v15.49 comment, matching
+once. VER moves to 15.62 and the DEVNOW now line is replaced.
+
+No player text was added or reworded, no TXSHIP key is touched, and no number, dial, loot table or seeded draw moved. Map
+building and key placement are not touched, so the seed 4242 fingerprint in __verifySafe (ents 85/374, containers 165/593)
+cannot move. His rulings stand: nothing about healing, what comes back from a death or an abandon, raid music or the gun changes.
+
+MEASURED. Check 15.62 cleans the card and profile, takes a snapshot of P, then for each arm deploys a raid at seed 4242 on map 0
+with no kit and autoExport off, requires a live raid in state 'raid' with no window or pause box open, puts one shot on
+G.tel.shots and calls endRaid('abandon'). CONTROL: G.over is 'abandon', the card is .on, the page is still in the raid with the
+same G, a run waits in pendingRun, and nothing is open over the card. It clicks the Too dark tag (CONTROL: selTags holds it) and
+types zq-tab-probe-7 into #oc_note. Arm one dispatches a fresh TAB keydown at window. It then requires the card down, state 'hub'
+and no raid, and the run logged the way the button logs it: pendingRun null, committedRun the run just played, its note
+zq-tab-probe-7, its tags holding Too dark, the run in P.log exactly once, and P.log one row longer than before the raid ended
+(capped at 60). Arm two does the same on a second card with ESC dispatched on document.body, the real path (window capture
+first, then the key listener), and also requires the pause box still shut. TAB carries the main assertion because a synthetic
+ESC dispatched at window reaches the pause box closer late; the ESC arm goes through the body instead of waiting, so the check
+stays synchronous. On v15.61 both keys leave the card up with the page in the raid and the run waiting, so the check fails for
+the finding's own reason. CONTROL, only when a key did not leave: a plain click on Log run and return must leave the card and,
+after TAB, log the tag and the note as above, or the check reports SKIP rather than blaming the build. In finally the keys and
+the mouse are cleared, the pause box is shut, a live raid is abandoned, any window opened on the return is shut, P is restored
+from the snapshot through __applyLoaded, pendingRun, committedRun and selTags are put back, the note box is emptied, and the card,
+dials and profile are cleaned.
+
+Older fixture checks: none restaged. No check presses ESC or TAB while the card is up with the page still in the raid. The checks
+that dispatch ESC or TAB in a raid (12.89, 13.17, 13.44, 13.45, 15.49, 15.59) end their raids only in finally, or strip the card
+with __topClear (15.59), or set G to null and show the Undercroft (13.17, 13.44, 13.45) before they press anything more. The new
+branch needs the page in the raid, G set with G.over, and the card .on, so it cannot fire in any of them.
+Check 15.57 (B and A on the card with a controller) goes through padMenu, which returns before raidKey, so it is unchanged.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.61 committed): p1562 printed OK, 2 edits plus
+DEVNOW, and f1562 printed OK, 1 edit, every anchor a whole line block matching once. The patched raidKey and the new check both
+parse in JScript. No other build in this chain precedes 1562.
+
+Not verified: the card by hand with a real ESC and TAB, and ESC inside the itch fullscreen page, where the browser spends it on
+leaving fullscreen. The check itself has not been run in a browser yet.
 ## v15.61 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 WHATSNEW_VER stood at 15.51 against a build at 15.60, near its refresh, and the card said nothing about the fixes of v15.52 to

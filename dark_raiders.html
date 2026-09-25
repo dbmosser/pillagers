@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.61';
+var VER='15.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11114,6 +11114,20 @@ function raidKey(code,repeat,ev){
     if(G.mapOpen) G.mapOpen=false;
     else { G.bagOpen=false; G.drag=null; }
     return;
+  }
+  // v15.62, menus audit finding: ESC AND TAB LEAVE THE END OF RAID CARD THROUGH ITS OWN BUTTON. The card that comes up after
+  // an extraction, a death or an abandon is an .outcome, not a .modal, so the document ESC listener (escCloseTopModal) never
+  // saw it. The page stays in state 'raid' with G.over set until the card is left, and every ESC and TAB line in here, the
+  // pause toggle below among them, and backOut's raid branch all wait on !G.over, so both keys did nothing on the card. TAB is
+  // also in the preventDefault list above, so it could not even move the focus to the button. Only the mouse on Log run and
+  // return and controller B (v15.57) left the card, against his rule that every menu closes on ESC and the TAB line that says
+  // it closes whatever is in front. A fresh ESC or TAB with the card up now presses the card's own Log run and return, so
+  // ocCommit logs the run once with its tags and note exactly as a click does, and the return stops this function touching G
+  // after the button has let it go. A key repeat does nothing, and a press while the note box has the focus still goes to the
+  // note, as in every other window. No player text, no number and no seeded draw moved.
+  if((code==='Escape'||code==='Tab')&&!repeat&&G&&G.over){
+    var _ocw=document.getElementById('outcome');
+    if(_ocw&&_ocw.classList.contains('on')){ if(ev) ev.preventDefault(); document.getElementById('oc_btn').click(); return; }
   }
   // v15.49, pause audit finding 9: HOLDING ESC OR P DOES NOT FLICKER THE PAUSE BOX. Only TAB ignored a key repeat here, so a
   // held P flipped the box open and shut on every repeat, wiping the keys and the mouse each time it opened, and it came to
@@ -30660,7 +30674,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.61: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 15.51 against 15.60, near its refresh, and the card said nothing about the end of raid card on a controller, the rack highlight or the door keys. My first card line is rewritten in place, keeping what checks 15.27, 15.39 and 15.51 read, and WHATSNEW_VER moves to 15.61. Check 15.61 requires the card current and naming the end of raid card news; it fails on v15.60',
+  now:'v15.62: ESC AND TAB LEAVE THE END OF RAID CARD THROUGH ITS OWN BUTTON. On the card after an extraction, a death or an abandon, ESC and TAB did nothing, so only the mouse or controller B could leave it, against his rule that every menu closes on ESC. A fresh ESC or TAB on the card now presses Log run and return, so the run is logged once with its tags and note, exactly as a click logs it. Check 15.62 leaves one card by TAB and a second by ESC, each with a tag chosen and a note typed; it fails on v15.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

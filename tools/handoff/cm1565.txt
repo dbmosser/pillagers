@@ -1,0 +1,13 @@
+v15.65: ctrl with the mouse wheel sizes the hud without toggling crouch
+
+Stealth audit finding. Holding Ctrl and rolling the wheel sizes the HUD,
+but the Ctrl press that starts it also flipped the crouch, and letting
+go did not flip it back, so sizing the HUD left him crouched without
+asking, or stood him up out of a hide. The first wheel notch with Ctrl
+held now gives back the stance he had before that press, a trackpad
+pinch changes nothing, and a plain Ctrl press still crouches at once.
+No number moved.
+
+Check 15.65. Fails on v15.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

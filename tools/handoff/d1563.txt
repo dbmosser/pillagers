@@ -1,0 +1,57 @@
+## v15.63 - BACKING OUT OF THE LOADOUT QUESTION RETURNS TO THE SECTOR PAGE
+
+Menus audit finding (LOW), entry 1 of the confirmed list in audit-wfxd2t8x2.json.
+
+At the lift, press E: the lift act runs liftResetDay, renderSector and openModal('sectormodal'). Pick NIGHT and press ASCEND TO
+THIS SECTOR. The #sectordeploy handler takes #sectormodal down and calls askKit, the only caller of askKit in the file, which
+raises What are you taking up? with openModal('askmodal'). askKit never set ASKBACK. ESC and TAB (the document capture listener,
+and for TAB also backOut on window) and controller B all reach escCloseTopModal, which finds no data-esc or close button on the
+card and presses #askno, the Not yet button. #askno runs askRestore, which returns at if(!ASKBACK), so he was left on the bare
+floor. Getting the page back meant walking to the lift and pressing E again, and that act runs liftResetDay, which puts P.cond
+back to 'day', so the NIGHT he had picked was lost. The v12.68 rule written above var ASKYES=null, ASKALT=null, ASKBACK=null says
+a card that closes the window it asks about names that window to restore; the Hire nobody card follows it with
+ASKBACK='tradermodal'. No comment or ruling exempts the loadout question, and it is not balance.
+
+THE BUILD. One edit in askKit, the finding's fix as written (the verdict's corrected fix is empty): ASKBACK='sectormodal'; on the
+line immediately before openModal('askmodal');, with the v15.63 comment above it. The anchor is the last four lines of askKit
+(the askyes and askalt lookup, MY LOADOUT, FREEBIE KIT and the openModal line), whole lines matching once. Backing out by ESC, TAB,
+controller B or Not yet now puts the sector page back exactly as he left it, NIGHT and the weather still picked, because the page
+is only hidden and shown again, never redrawn. MY LOADOUT and FREEBIE KIT still ascend: #askyes and #askalt run askRestore before
+their callbacks, both callbacks end in ascendNow, and ascendNow takes #sectormodal down before startRaid (showScreen('raid') also
+shuts every window). askRestore clears ASKBACK on every answer. If the card is ever shut without an answer, the next card to be
+raised sets ASKBACK itself (only askKit and #mercclear raise it), so a stale name cannot reach a different question. VER moves to
+15.63 and the DEVNOW now line is replaced.
+
+No player text was added or reworded, no TXSHIP key is touched, and no number, dial, loot table or seeded draw moved. Map building
+and key placement are not touched, so the seed 4242 fingerprint in __verifySafe (ents 85/374, containers 165/593) cannot move.
+His rulings stand: nothing about healing, what comes back from a death or an abandon, raid music or the gun changes.
+
+MEASURED. Check 15.63 cleans the card, dials and profile, takes a snapshot of P and turns autoExport off. CONTROL A, on either
+build: on the floor with every window shut, P.merc staged to IDENTITIES[0].id, openTrader('hire') opens the bench, #mercclear
+swaps it for its question, and a TAB dispatched at window takes the question down and puts #tradermodal back. This proves the
+restore and the TAB path work here, so only the loadout question went without them; if not, SKIP. P.merc is then put back. THE
+FINDING, three arms: each raises the question the way he does (the floor with every window shut and the pause box down, the lift
+act through __station('lift'), with the sector page open at DAY as a CONTROL, #condnight clicked with P.cond 'night' as a
+CONTROL, #sectordeploy clicked with #askmodal .on, #sectormodal down and the question reading taking up as a CONTROL), then backs
+out by TAB dispatched at window, by a click on Not yet, and by ESC dispatched on document.body (the real path: the capture
+listener takes it and stops it). CONTROL per arm: the question is down, on either build. Then #sectormodal must be .on, P.cond
+still 'night', no other window open, and ASKBACK null again. On v15.62 every arm leaves #sectormodal down, so the check fails for
+the finding's own reason. CONTROL B: the question raised again, #askyes (MY LOADOUT) and then, on a fresh raise, #askalt (FREEBIE
+KIT) are clicked; each must leave the page in state 'raid' with a live raid, #sectormodal down and no window open over it. Each
+raid is abandoned at once, which endRaid throws away as an instant quit with no card. A later control that cannot run keeps the
+failures already found, so the old build fails rather than skips. In finally the keys are cleared, a live raid is abandoned, the
+pause box and every window are shut, ASKYES, ASKALT and ASKBACK are put back, P is restored from the snapshot through
+__applyLoaded, and the card, dials and profile are cleaned.
+
+Older fixture checks: none restaged. No check backs out of the loadout question and expects the bare floor. The checks that call
+askKit directly (15.54, 14.77, 14.65, 12.26, 12.13) read its text or call ASKALT or the stash button, and strip #askmodal or
+ascend; none presses Not yet, ESC or TAB on it. Check 9.97 presses ASCEND TO THIS SECTOR and then strips both windows by hand.
+Check 12.68 raises its own question with #mercclear, which sets ASKBACK to the bench before either answer, and its last control
+(a card raised by nothing closes onto the floor) runs after askRestore has cleared ASKBACK, and reads only the bench.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.61 committed): p1562 and f1562, then p1563 and
+f1563, every script printing OK (p1563: 2 edits plus DEVNOW; f1563: 1 edit), every anchor a whole line block matching once. The
+patched askKit, the new DEVNOW line and the new check all parse in JScript. p1562 edits raidKey only and does not touch askKit.
+
+Not verified: the lift by hand with a real ESC, TAB and controller B, and ESC inside the itch fullscreen page, where the browser
+spends it on leaving fullscreen. The check itself has not been run in a browser yet.

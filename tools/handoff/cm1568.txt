@@ -1,0 +1,13 @@
+v15.68: dragging a backpack stack and letting go on its own cell moves nothing
+
+Grid audit finding. On the Stash screen, a stack in the backpack pressed,
+dragged toward the stash and let go back on its own cell unpacked one item
+with no word: the drag ended before its click arrived, so the guard meant
+to ignore that click never saw the drag. At the ascent check the same move
+put one back or packed one. The cell of a drag that moved is now
+remembered for that one click, so letting go where it started moves
+nothing, and a plain click or a controller A press still moves one.
+
+Check 15.68. Fails on v15.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
