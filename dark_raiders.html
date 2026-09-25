@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.58';
+var VER='15.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28081,7 +28081,16 @@ function drawBag(){
       _ry+=LH(11);
     }
     ctx.fillStyle='#9aa8d0';
-    ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop'
+    // v15.59, first run audit finding: THE UNDERCROFT BACKPACK NAMES ONLY KEYS THAT WORK ON THE FLOOR. drawHubBag draws this
+    // same panel on the floor with G swapped to the Undercroft backpack, and this line printed the raid hint there too: the
+    // arrows to move, Z to drop one, and on a gun ENTER to equip and SHIFT+ENTER to put it on the back. The floor branch of the
+    // keydown listener returns before raidKey, where all of those live, and nothing else on the floor reads them for the
+    // backpack, so down here the arrows moved nothing, Z dropped nothing and ENTER equipped nothing, right after the stash told
+    // a new player to equip his gun. With a controller the line named the D-pad, and the floor branch of the pad poll reads no
+    // D-pad. Only the mouse drag onto the tactical belt works on the floor, so on the floor the line names only that, and with a
+    // controller it names nothing. state is 'raid' in a raid, so the raid hint is untouched. No number and no seeded draw moved.
+    ctx.fillText((state==='hub')?((PAD&&PAD.on)?'':'drag to tactical belt')
+      :(PAD&&PAD.on)?'DPAD select   DPAD L drop'
       :('ARROWS move   Z drop one   drag to tactical belt'
         +(isGun?'   ENTER equip   SHIFT+ENTER to back':'')
         ),x+11,_ry+LH(3));
@@ -30642,7 +30651,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.58: EXTRACTING WITH THE FREEBIE KIT KEEPS THE GUN YOU CHOSE IN GUN 1. Walking out of a raid on the freebie kit put its Scav Pistol in gun 1, so a Compact SMG you had equipped was quietly taken off and your next raid went up with your own pistol, where it can be lost, and a character with nothing in gun 1 was moved onto the pistol the same way. You still keep the kit pistol, but gun 1 and gun 2 now stay on what you chose, and a gun you find in the raid still takes gun 1 as before. Check 15.58 extracts on the freebie kit with the SMG in gun 1, with nothing in gun 1, and with a field Burst Carbine beside the kit pistol; it fails on v15.57',
+  now:'v15.59: THE UNDERCROFT BACKPACK NAMES ONLY KEYS THAT WORK ON THE FLOOR. Opened on the Undercroft floor, the backpack told you to move with the arrows, drop with Z and equip a gun with ENTER, and none of those keys does anything down here, so only the mouse drag onto the tactical belt worked. On the floor it now names only the drag, and with a controller it names no D-pad button, while the raid backpack keeps its full hint. Check 15.59 draws the backpack with a gun selected in a raid and on the floor, and presses the arrows, Z and ENTER on the floor; it fails on v15.58',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
