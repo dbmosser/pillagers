@@ -1,0 +1,55 @@
+## v15.59 - THE UNDERCROFT BACKPACK NAMES ONLY KEYS THAT WORK ON THE FLOOR
+
+First run audit finding (LOW), entry 7 of the confirmed list.
+
+Fresh profile. Take the welcome pack. At the stash, right-click the Compact SMG (field) and pick Equip, which packs it into the
+backpack. On the floor press I; the floor legend says B or I opens your things. The hub frame runs if(hubBagOpen) drawHubBag(),
+and drawHubBag swaps G to hubBagG and calls drawBag, the raid's own panel. Its selected-stack hint line had no idea which screen
+it was on and printed the raid hint: the arrows to move, Z to drop one, drag to the tactical belt, and on a gun ENTER to equip and
+SHIFT+ENTER to put it on the back. The floor branch of the keydown listener (if(state==='hub')) only records these keys and ends
+in return before raidKey, where the arrow, Z and ENTER handling lives behind G.bagOpen, and on the floor G is not the backpack.
+Nothing else on the floor reads them for hubBagG, and the open backpack freezes updateHubWorld, so the arrows do not even walk.
+So the arrows moved nothing, Z dropped nothing and ENTER equipped nothing, right after the stash told a new player to equip the
+gun. With a controller the line read the D-pad select and D-pad left drop, and the floor branch of pollPad reads only the A, X,
+Y, RB, LS, View and Menu buttons; padMenu does not take the canvas backpack either. Only the mouse drag onto a belt cell works on
+the floor (the mousedown and mouseup handlers for the Undercroft backpack). The line is not a TXSHIP key (it appears only at this
+spot), no ruling or comment calls it deliberate, and it is not balance.
+
+THE BUILD. One edit to that line in drawBag, the finding's fix (the verdict made no correction): when state is 'hub' the line
+draws drag to tactical belt, or nothing with a controller, and otherwise exactly what it drew before. state is the global var
+state, which is 'raid' for the whole raid and 'hub' on the floor, and drawHUD, the only other caller of drawBag, runs only when
+state is 'raid', so the raid hint is untouched. No word of player text was reworded; the floor line is the existing drag words
+alone. A blank line on the floor with a controller matches the raid pad hint, which does not mention the drag either. No number,
+no dial, no loot table and no seeded draw moved; map building is not touched, so the seed 4242 fingerprint in __verifySafe
+cannot move.
+
+MEASURED. Check 15.59 snapshots the profile, stubs say and blip, clears PAD.on and wraps ctx.fillText to record what is drawn.
+THE RAID: a raid at seed 4242 with the backpack set to a Bandage and the Compact SMG, the belt keys cleared, the backpack open,
+the map, stall, emote bar and drag cleared, and the gun's stack selected. Controls: G is that raid and state is 'raid'; drawBag
+draws the gun's name and the drag words, so the hint line is read. It must still name the arrows, Z to drop and ENTER to equip
+(a regression guard), and with PAD.on set it must still name the D-pad drop. CONTROL: raidKey KeyZ drops the selected gun (the
+backpack goes down to the Bandage), so the raid hint is true. The containers list and the backpack fields are put back and the
+raid is abandoned. THE FLOOR: __hubEnter, state 'hub', P.kit set to the same two things and no belt keys, hubBagOpenSet(true),
+and the gun's stack selected through withHubBag and bagStacks. CONTROL: ArrowRight, KeyZ and Enter each dispatched as keydown
+and keyup on window leave the backpack contents, the selection, gun 1 and gun 2 unchanged and the backpack open, so the keys
+really are dead down here. CONTROL: drawHubBag draws the gun's name and the drag words (drawHubBag swallows a throw, so the words
+are looked for). Then the floor line must name none of the arrows, Z to drop or ENTER to equip. On v15.58 it names all three, so
+the check fails there for the finding's own reason. CONTROL: with PAD.on set the floor header reads VIEW to close, so the flag
+reached the draw; then the floor line must not name the D-pad drop (v15.58 names it). The needles are assembled from pieces. A
+later control that cannot run keeps a failure already found. In finally keys are cleared, fillText, say, blip, PAD.on and
+WNSEEN (an Enter on the floor can set it) are put back, a live raid's fields are restored and the raid abandoned, the floor
+backpack is shut without its commit, any window the way to the floor opened (a fresh profile's welcome window) is shut, the
+profile snapshot goes back through __applyLoaded, and the card, CFG and profile are cleaned.
+
+Older fixture checks: none restaged. No fixture check reads this hint line: no check contains the arrows, Z, ENTER or D-pad hint
+words. The checks that open the floor backpack, 11.50, 12.11, 14.25, 14.46 and 14.48, drive commits, ESC, belt drags, SPACE, H
+and focus loss, and never read the line; 13.47 presses View on a faked controller and reads only whether the backpack opened.
+9.90 reads the raid legend and HUD words, not this line.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.51 applied): p1552 and f1552 through p1558
+and f1558 applied in version order, all of them written, then p1559 and f1559, every script printing OK and every anchor a whole
+line block matching once (p1559: 2 edits plus DEVNOW; f1559: 1 edit). The edited drawBag and the new check both parse in
+JScript. The four hint lines are touched by no p-script from 1552 to 1558.
+
+Not verified: the floor backpack by hand with the keyboard and with a controller. The check itself has not been run in a
+browser yet.

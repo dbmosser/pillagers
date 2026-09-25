@@ -1,0 +1,14 @@
+v15.58: extracting with the freebie kit keeps the gun you chose in gun 1
+
+First run audit finding. The freebie kit's Scav Pistol is kept on an
+extraction, so the extraction counted it as a carried gun and put it in
+gun 1: a player who had equipped the Compact SMG came back on the pistol,
+and his next raid took his own pistol up, where it can be lost. A
+character with nothing in gun 1 was moved onto the pistol the same way,
+and the gun 2 repair could hand it the kit pistol too. The kit pistol is
+still kept, but it no longer fills gun 1 or gun 2; a gun found in the
+raid still takes gun 1 as before.
+
+Check 15.58. Fails on v15.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

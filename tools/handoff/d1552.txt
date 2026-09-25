@@ -1,0 +1,56 @@
+## v15.52 - BUILD A RACK KEEPS THE CONTROLLER HIGHLIGHT WHEN IT GREYS OUT
+
+Rack audit finding (MEDIUM).
+
+On a controller, open THE MAINFRAME on its RACKS tab with exactly one rack's worth of parts in the stash and a Data Core, put
+the highlight on BUILD A RACK and press A. The rack goes up, "Rack 1 hums to life", and renderMainframe greys the button out
+because the parts are gone. padFocusables leaves out disabled controls, so on the next poll BUILD A RACK was no longer in the
+list, and the v14.22 recovery in padMenu (a rebuilt panel keeps the pad's place) put the focus on list[PAD.focusIx], the same
+index, which is now SLOT A DATA CORE. The stick never moved. The next A, say to try another rack, ran slotCore: the core left the
+stash and P.intel went to 1, and nothing unslots it. At nine racks the same thing happened with the tenth rack: BUILD A RACK
+became THE WALL IS FULL (disabled), FOLD 10 RACKS INTO AN ARRAY went live right after it in page order and took the highlight,
+and the next A folded all ten racks into an Array without being asked. A mouse click never moves anything, and the v14.22 line
+was written for panels that rebuild their controls, not for a control that stays put and greys out. The same jump as the v14.22
+bug that moved focus onto TAKE THE FREEBIE KIT.
+
+THE BUILD. Two lines in padMenu.
+1. Before the recovery: if the focused control is disabled, still inside the same panel, measures at least 4 by 4 and is not
+   display none or visibility hidden, the pad stays on it and the recovery does not run. A on a disabled button does nothing,
+   exactly as a mouse click on it does (HTMLElement.click returns at once on a disabled control). padStep reads only the current
+   control's rectangle, so the D-pad still steps off it from where it sits, and the highlight stays drawn where he left it.
+   A panel that rebuilds its controls still recovers as v14.22 set it, because the old control has left the panel, and a
+   control hidden with its tab measures 0 by 0 and hands the pad on as before.
+2. PAD.focusIx is written only when the focus is in the list, so a disabled control kept under the pad does not overwrite the
+   place it last held with -1.
+No player text, no number, no dial, no loot table and no seeded draw moved. The map build is not touched, so the seed 4242
+fingerprint (ents 85/374, containers 165/593) cannot move.
+
+MEASURED. Check 15.52 runs in the Undercroft (it skips while a raid is live), snapshots the profile, stubs say, and fakes one
+connected controller (17 buttons, 4 zero axes) through navigator.getGamepads. Each arm stages P.racks, P.arrays 0, P.intel 0,
+nothing packed and the parts loose in the stash, opens the Mainframe with openOps('mf'), polls once, puts the highlight on BUILD A
+RACK with padSetFocus and polls again, then A down, A up, one idle poll, A down, A up.
+- CONTROL: parts for two racks and a Data Core. BUILD A RACK is still live after the first rack, so both presses must build a
+  rack, with no core slotted and the core still in the stash. This proves the faked A reaches the highlighted button and that
+  the highlight stays while the button is live. It holds on both builds; if not, SKIP. Also SKIP if BUILD A RACK is not in
+  padFocusables (a 0x0 pane) or the highlight will not stay on it.
+- ARM A: parts for one rack and a Data Core. Control: P.racks is 1. Then the core must still be in the stash with P.intel 0, and
+  the highlight must still be on BUILD A RACK. On v15.51 the second A slots the core (P.intel 1, no core left), so the check
+  fails there for the finding's own reason.
+- ARM B: ARRAY_RACKS-1 racks (nine) and parts for one. Control: racks plus ten for each Array equals ten, a conserved count that
+  proves the tenth rack went up whether or not a fold followed. Then P.arrays must be 0 and P.racks 10. On v15.51 it ends with
+  0 racks and 1 Array.
+A later control that cannot run keeps a failure already found, so the old build fails rather than skips. In finally say is put
+back, the pad is disconnected with one poll, the pad focus, focusIx and focusMd are cleared and padRelease run,
+navigator.getGamepads is restored, PAD.aSpent and PAD.announced are restored, the Mainframe window is shut if it was shut before,
+the profile snapshot goes back through window.__applyLoaded and the Mainframe is redrawn from it, keys are cleared, then
+__topClear and __cleanProfile.
+
+Older fixture checks: none restaged. 14.22 is the only check of the recovery, and its probe window rebuilds every button, so the
+old control leaves the panel and the recovery still runs. 14.21, 14.23, 14.26 and 15.50 never press A on a control that greys
+out; 14.19, 14.20 and 14.24 press A in a raid, not in a panel. No other check drives the Mainframe buttons with a pad.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.51 applied): p1552 printed OK, 3 edits plus
+DEVNOW, and f1552 printed OK, 1 edit, every anchor a whole line block matching once. The edited padMenu and the check both parse
+in JScript. Both scripts are ASCII only.
+
+Not verified: a real controller at THE MAINFRAME by hand. The check itself has not been run in a browser yet.

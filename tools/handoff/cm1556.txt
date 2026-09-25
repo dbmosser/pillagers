@@ -1,0 +1,13 @@
+v15.56: a door key is never hidden in the vault case or behind another locked door
+
+Keys audit finding 4. The rule that every locked door has a key somewhere
+on the map could put that key in THE VAULT CASE, the one box the map never
+marks, or in a box inside a different locked room, so one door needed
+another key first. The key now goes to an ordinary box clear of every
+locked room. The same draws are taken on every seed and a key that
+already sat in an open box stays in that box, so the seed 4242 counts
+hold.
+
+Check 15.56. Fails on v15.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

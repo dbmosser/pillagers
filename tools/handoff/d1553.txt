@@ -1,0 +1,56 @@
+## v15.53 - SLOT A DATA CORE SAYS WHEN IT TAKES A PACKED CORE OUT OF THE BACKPACK
+
+Rack audit finding (LOW).
+
+At the Stash, pack your only Data Core into the backpack (drag it in, or Equip). Packing leaves the item in P.stash, so THE
+MAINFRAME RACKS tab still says "One is in the stash." and SLOT A DATA CORE is live. Press it: "Core slotted. Your next ascent
+carries intel." slotCore spliced the first core out of P.stash with no look at the packing, so with every core he held packed
+the backpack lost its core with no word. P.kit still named it until stageKitLive next read it and trimmed it quietly, and a belt
+key bound to the core stayed pointing at nothing until dropDeadKeys ran after a raid. BUILD A RACK, two buttons up in the same
+tab, has spent through spendHeld since v13.59 and named the packed parts it took out of the backpack since v15.18. With a loose
+core left over the old splice did no harm, because the packed copy stayed live. The Arm button on the Intel row of the ascent
+check (renderStage) had the same bare splice.
+
+THE BUILD. Two edits, both the corrected fix from the audit verdict.
+1. slotCore: P.stash.splice(ix,1) becomes var _cp=spendHeld('core',1). A loose core goes first (the v13.59 rule); only when
+   every core is packed does spendHeld call unpackSome, which takes the core off P.kit and, through clearKeysFor, lets its belt
+   key go, and then the stash copy is spent. The core line is unchanged and one sentence is added after it when a packed core
+   was taken: "Used 1 packed Data Core out of your backpack.", the same words BUILD A RACK uses. One toast, because a second
+   would write over the first.
+2. renderStage, the Intel row: the Arm handler spends through spendHeld the same way, and when it had to take a packed core it
+   says "Used 1 packed Data Core out of your backpack." through say2, the Undercroft answer line the rest of that screen uses.
+   No route opens the ascent check today (every way up goes through ascendNow since v6.18, and nothing adds on to #stagemodal),
+   so this edit only keeps the two ways to spend a core one rule.
+"Core slotted. Your next ascent carries intel." is not a key in TXSHIP, and no sentence in TXSHIP was reworded; the new
+sentence is new text. No number, no dial, no loot table and no seeded draw moved. The map build is not touched, so the seed 4242
+fingerprint (ents 85/374, containers 165/593) cannot move. The v14.99 core hint and the button label are untouched.
+
+MEASURED. Check 15.53 runs in the Undercroft (it skips while a raid is live), snapshots the profile after __topClear and
+__cleanProfile, and stubs say and say2 so both lines are read from the calls themselves (a raid an earlier check ended leaves G
+set, and say then writes G.msg rather than the toast). Each arm stages P.intel 0, no freebie kit and no set-aside packing
+(P.freeKit 0, P.kitSaved null, so the check does not lean on what the profile holds), P.stash with that many cores, P.kit with
+that many packed and, when one is packed, belt key 4 (P.hotAssign[3]) on the core, and reads the staging back through
+heldCount, packedCount and the key before it acts.
+- CONTROL: two cores, one packed. slotCore must slot (P.intel set, "Core slotted" said), or SKIP. Then one core must be left, the
+  packed one still live, belt key 4 still on it, and nothing said of packed or the backpack. This holds on both builds and
+  proves the loose copy still goes first.
+- ARM ONE: one core, packed. Control: slotted, no core left, "Core slotted" said. Then the line must contain "1 packed Data Core"
+  and "backpack", and belt key 4 must be empty. On v15.52 the line is the bare core line and the key still names the core, so
+  the check fails there for the finding's own reason.
+- ARM TWO: the same staging, renderStage drawn, and the Arm button found by its text inside #stageload (SKIP if the ascent check
+  will not draw or offers no Arm). Its onclick runs. Control: armed and no core left. Then say2 must have said "1 packed Data
+  Core" and "backpack", and belt key 4 must be empty. On v15.52 nothing is said and the key stays.
+A later control that cannot run keeps a failure already found, so the old build fails rather than skips. In finally say and say2
+are put back, the profile snapshot goes back through window.__applyLoaded, the Mainframe and the ascent check are redrawn from
+it, then __topClear and __cleanProfile.
+
+Older fixture checks: none restaged. 15.52 stages the core loose and asserts that no core is slotted, so spendHeld spends the
+same loose copy the splice did. 14.99 reads only the Mainframe core hint, 15.17 sets P.intel by hand, 13.61 checks that a
+restored code clears an armed core, and 10.97 only lists the core as wanted because slotCore exists. No other check calls slotCore
+or presses Arm.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.51 applied): p1552 and f1552, then p1553
+printed OK, 3 edits plus DEVNOW, and f1553 printed OK, 1 edit, every anchor a whole line block matching once. The edited slotCore,
+the whole edited renderStage and the check parse in JScript. All five files are ASCII only.
+
+Not verified: SLOT A DATA CORE and the belt by hand in the real game. The check itself has not been run in a browser yet.

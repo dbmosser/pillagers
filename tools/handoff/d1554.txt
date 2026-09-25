@@ -1,0 +1,55 @@
+## v15.54 - WITH THE FREEBIE KIT TAKEN, BUILD A RACK NAMES THE PACKED PARTS IT USES
+
+Rack audit finding (LOW).
+
+At the Stash, with 7 Circuit Boards and enough of the other three parts, pack 3 Circuit Boards, then press TAKE THE FREEBIE KIT.
+The button keeps the packing aside, P.kitSaved={kit:(P.kit||[]).slice(),hot:...}, and then sets P.kit=[] (v12.16), and the
+panel says "Your own packing is kept for when you switch back." At THE MAINFRAME, press BUILD A RACK. spendHeld counted packed
+copies through packedCount, which walks stageKitLive, which reads only P.kit, so it found 0 packed and all 7 boards loose:
+free=7, fromPacked=0. Six boards came out of the stash, spendHeld returned 0, and the rack line had no backpack sentence (v15.18
+adds one only when that number is above 0). Nothing updates P.kitSaved when parts are spent, so the set-aside list still named 3
+boards. At the lift, askKit counts that list raw (v14.65) and said "the 3 items you packed"; MY LOADOUT and USE MY OWN GEAR both
+run freeKitRestore, which trims the list against the stash, so he went up with 1 board and nothing had said why. Without the
+freebie kit the same rack says "Used 2 packed Circuit Board out of your backpack." The crafting bench spends through spendHeld
+too, and since v15.53 so do SLOT A DATA CORE and Arm on the ascent check, so all of them had the same gap.
+
+THE BUILD. One edit, spendHeld, the corrected fix from the audit verdict. When P.freeKit is set and P.kitSaved.kit is a list, the
+copies of that item on the set-aside list are counted as packed, capped at what the stash holds beyond P.kit's live packing (the
+same test freeKitRestore makes, so a set-aside list longer than the stash is not over-counted). Loose copies still go first
+(v13.59). Any set-aside copies still needed come off the set-aside list from the end, and once none of that item are left on it,
+a set-aside belt key bound to that item is let go, the way clearKeysFor does for live packing (dropDeadKeys still runs in
+freeKitRestore). With no freebie kit taken, or no set-aside list, the old path runs unchanged: unpackSome on P.kit. The return
+value is the number of packed copies used either way, so buildRack, the bench, SLOT A DATA CORE and Arm name them with their
+existing sentences, and askKit's raw count now matches what freeKitRestore gives back. The Stash grid is greyed and takes no
+pointer while the freebie kit is on, so P.kit stays empty there. No player text was added or reworded, no TXSHIP key touched, and
+no number, dial, loot table or seeded draw moved. The map build is not touched, so the seed 4242 fingerprint (ents 85/374,
+containers 165/593) cannot move.
+
+MEASURED. Check 15.54 runs in the Undercroft (it skips while a raid is live), snapshots the profile after __topClear and
+__cleanProfile, and stubs say so the rack line is read from the call itself. Each arm stages P.racks 0, P.arrays 0, no freebie
+kit, no set-aside list, no belt key, the rack cost in the stash plus one extra Circuit Board and one Medkit, and packs 3 boards
+and the Medkit, so the loose boards cover all but 2 (EXP, computed from RACK_COST).
+- CONTROL, no freebie kit: the staging reads back (7 held, 3 packed, rack affordable), buildRack builds rack 1, the line names
+  " 2 packed Circuit Board" and 1 board is left packed. This holds on both builds and proves the rack names packed parts here.
+- THE FIX: the same staging, then renderFreeKit and the real .fkbtn onclick. Control: the kit is taken, the set-aside list holds
+  3 boards and the Medkit, nothing is live-packed, 7 boards are held and a rack is affordable. buildRack must build rack 1
+  (control), and then the line must contain " 2 packed Circuit Board" and "backpack", the set-aside list must hold 1 board and
+  still the Medkit. Then askKit is drawn and "the N items you packed" is read from #asksub, and freeKitRestore runs. Control: MY
+  LOADOUT gives back 2 (the board still held and the Medkit), which holds on both builds. The lift count N must equal it.
+On v15.53 the rack line has no backpack sentence, the set-aside list still holds 3 boards, and the lift says 4 items while 2 go
+up, so the check fails there for the finding's own reason. A later control that cannot run keeps a failure already found. In
+finally say, ASKYES and ASKALT are put back, the lift question is closed, the profile snapshot goes back through
+window.__applyLoaded, the freebie kit panel and the Mainframe are redrawn from it, then __topClear and __cleanProfile.
+
+Older fixture checks: none restaged. 15.18 and 14.98 build racks and 15.52 presses BUILD A RACK with no freebie kit taken and no
+set-aside list, and 15.53 slots a core the same way, so spendHeld takes the old path in all of them. 14.65, 12.26, 12.82, 12.87,
+13.06 and 15.11 take the freebie kit or set packing aside but spend nothing from the stash. No check crafts with the freebie kit on.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.51 applied): p1552 and f1552, p1553 and f1553,
+then p1554 printed OK, 2 edits plus DEVNOW, and f1554 printed OK, 1 edit, every anchor a whole line block matching once. The
+edited spendHeld and the check parse in JScript. A JScript model of the old and new spendHeld with this staging gave: no freebie
+kit, both builds use 2 packed boards and 2 go up; freebie kit taken, the old one uses 0 and leaves 4 set aside while 2 go up, the
+new one uses 2 and leaves 2 set aside (1 board and the Medkit, its belt key kept) and 2 go up. All five files are ASCII only.
+
+Not verified: BUILD A RACK with the freebie kit taken by hand in the real game. The check itself has not been run in a browser
+yet.

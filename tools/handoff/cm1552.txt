@@ -1,0 +1,13 @@
+v15.52: build a rack keeps the controller highlight when it greys out
+
+Rack audit finding. On a controller, building the last rack you could
+afford greyed BUILD A RACK out, and the highlight slid onto SLOT A DATA
+CORE, so the next A spent the Data Core for good. After the tenth rack it
+slid onto FOLD 10 RACKS INTO AN ARRAY, so the next A folded the wall. A
+control that greys out under the highlight now keeps it, and A on it does
+nothing, the same as a mouse click on it. The D-pad still moves off it,
+and a panel that rebuilds its controls still keeps the pad's place.
+
+Check 15.52. Fails on v15.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

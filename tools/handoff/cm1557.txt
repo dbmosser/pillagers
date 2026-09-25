@@ -1,0 +1,13 @@
+v15.57: the end-of-raid card can be left with a controller
+
+First run audit finding. The card after an extraction or a death is not a
+window, so the pad menu found nothing on it and the controller fell through
+to the finished raid, where A, B and Menu do nothing: a pad player's first
+extraction or first death left him on the card until he picked up the
+mouse. The card is now a panel the controller owns, like the pause box and
+the title: the focus lands on Log run and return, A or B presses it, and an
+A still held from the raid does not.
+
+Check 15.57. Fails on v15.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

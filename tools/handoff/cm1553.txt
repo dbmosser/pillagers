@@ -1,0 +1,13 @@
+v15.53: slot a data core says when it takes a packed core out of the backpack
+
+Rack audit finding. With every Data Core you held packed for the next
+ascent, SLOT A DATA CORE took one out of the backpack without a word and
+left its belt key pointing at nothing, while BUILD A RACK in the same tab
+names the packed parts it takes. A loose core still goes first; a packed
+one is now unpacked properly, its belt key let go, and the core line adds
+"Used 1 packed Data Core out of your backpack." Arm on the ascent check
+spends a core the same way.
+
+Check 15.53. Fails on v15.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

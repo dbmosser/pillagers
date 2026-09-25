@@ -1,0 +1,76 @@
+## v15.56 - A DOOR KEY IS NEVER HIDDEN IN THE VAULT CASE OR BEHIND ANOTHER LOCKED DOOR
+
+Keys audit finding 4 (LOW).
+
+Every locked room is promised one key on the map (v1.75): the guarantee in buildRaid looks for a copy of the key outside the room it
+opens, and if there is none it pushes the key into a random container from a list that leaves out caches, the strongbox and boxes
+inside THAT room. Two kinds of box it must never use were still on the list. THE VAULT CASE (v4.40) is built just above the
+guarantee as type jackpot with no cache flag, so it was a legal pick. LOOT.jackpot has no KEY, so a key in the case can only come
+from here, and his v4.40 answer says the case is not on the map and not marked; with a Data Core burned, startRaid lists every box
+holding a key_ item and the sector map drew KEY on it. The finding estimates about one raid in 70 to 80 (not measured). And outside()
+only tests the room this key opens, so an ordinary crate, locker or safe standing inside a DIFFERENT locked room was legal too: the
+v2.12 reach pass leaves those in place on purpose (49 across 20 maps). The door then needs a second key first and nothing says so,
+and if two rooms' keys land in each other's rooms neither door opens unless a spare key rolls or the Peddler stocks one. The
+verdict found the same hole in the have test: a KEY that rolled naturally (LOOT.safe or LOOT.cache) into a safe or cache inside
+another locked room counted as the promise kept, so no reachable key was placed.
+
+THE BUILD. Three edits inside the guarantee IIFE, all existing comments kept.
+1. sealedAny(CC), defined once before the room loop: true when the box is within 40 units of ANY locked room, the same 40 unit test
+   outside() uses for one room.
+2. The have test now records two answers in the same pass: have, any copy outside this room (the old answer), and haveOpen, a copy
+   clear of every locked room. Only haveOpen skips the room.
+3. The candidate list and the single ri(0,cands.length-1) draw are exactly as before. If the drawn box is THE VAULT CASE or
+   sealedAny, the pick walks forward through the same list, wrapping, to the next box that is neither. When have was true (the old
+   code took no draw at all, because a copy behind another door satisfied it) no draw is taken now either: the walk starts at
+   (seed>>>0)%cands.length, buildRaid's own seed. If no box on the list qualifies, no key is placed, as when the list was empty.
+
+WHY NOT THE VERDICT'S correctedFix AS WRITTEN. It filters the jackpot and every sealed box out of the list BEFORE the draw. A shorter
+list turns the same drawn number into a different box, so on seeds where the old key already sat in a perfectly good box it would
+move, and on the seeds where a natural key sat behind another door it adds one ri draw and shifts everything drawn after it. Both
+break the seed fingerprint rule. This build does the same thing for the broken cases and nothing at all for the rest: on every seed
+the guarantee takes the same draws in the same order, and every key the old code put in an open box stays in that box. Only a key
+the old code put in THE VAULT CASE or behind a locked door, or never placed because of a sealed natural copy, lands somewhere new.
+Nothing after the guarantee reads which box holds a key until startRaid builds G.intelKeys (checked: no later line in buildRaid
+draws from container loot or best), no container is added or removed, and no loot table, number, dial or player text moved, so the
+seed 4242 counts (ents 85/374, containers 165/593) cannot move. If seed 4242 was itself one of the broken cases on either map, a key
+there moves box; the counts still hold.
+
+MEASURED. No browser. The old and new guarantee blocks were cut out of the real file and run side by side in JScript (cscript) over
+6000 synthetic layouts with 1 to 4 locked rooms, up to 43 boxes, a quarter of them set inside a room, caches, strongboxes, natural
+keys in 12 percent of boxes and a Vault Case sometimes inside a room, far more broken cases than a real map has: draws taken and the
+RNG state after were identical in all 6000; 11566 keys the old code put in an open box stayed in exactly that box; all 2554 broken
+old placements (1032 of them the sealed natural copy) went to a box clear of every room and not the case; and whenever a legal box
+existed every room had a copy clear of every room.
+
+Check 15.56 runs two ascents on COLD STORAGE (map 0, rooms BLAST FREEZER and FOREMAN OFFICE) at seed 4242 with mkContainer wrapped
+for the ascent only. The wrapper takes every key_ item out of every box it builds, sets the first ordinary box (crate, locker, safe
+or body) down in the middle of the Blast Freezer holding a Foreman Office Key, moves THE VAULT CASE to the middle of the map if it was
+built within 40 of a locked room, and gives every other box the strongbox flag, which keeps it out of the key draw. Ascent two also
+leaves alone the next ordinary box built 240 clear of every locked room (more than a pad push can move it). Controls on each ascent:
+a live raid whose map carries the authored rooms in order at the authored spot; the staged boxes are in G.containers with the box
+in the freezer before THE VAULT CASE; the jackpot is tagged THE VAULT CASE and stands clear of every room; the freezer box is still
+strictly inside the freezer, not strong, not a cache, and still holds its Foreman Office Key; on ascent two the open box is in the
+list before the case and not strong; and no other box built before THE VAULT CASE (the boxes the draw saw) is out of the strongbox
+or cache flags. Ascent one: THE VAULT CASE must hold no key and the freezer box exactly one. On v15.55 the office key is kept by
+the freezer box, and the freezer key has only the case to go to, so it goes into THE VAULT CASE and the check fails for the
+finding's own reason. Ascent two: the open box must hold both keys, and the case none. On v15.55 the office key is again kept by
+the box behind the freezer door and no office key reaches the open box, so it fails there too; on v15.56 the office key walks from
+the seed to the open box and the freezer key from its draw. A control that cannot run after a failure keeps the failure. The same
+staging was run against both blocks in JScript over 3000 random draws and seeds: the old block failed both ascents 3000 times, the
+new block passed both 3000 times. In finally mkContainer is put back (also after each ascent), the raid is abandoned, the profile
+snapshot goes back through __applyLoaded and the fixture is cleaned.
+
+Older fixture checks: none restaged. No check reads which box the guarantee chose. Check 15.17 takes whichever listed box holds a
+key at seed 4242 and stages its own when there is none; 15.55 stages its own key box. __verify counts containers and entities only.
+
+Dry run on fresh scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.51 applied): p1552 and f1552, p1553 and
+f1553, p1554 and f1554, p1555 and f1555, then p1556 and f1556, in version order with nothing moved by hand, every script printing OK
+and every anchor a whole line block matching once; a second p1556 run was refused with the first anchor matching 0 times. The
+chained guarantee block and the check entry both parse in JScript. None of p1552 to p1555 touches the guarantee. p1557 anchors on
+var VER='15.56', which this build writes, and p1557 to p1559 with f1557 to f1559 applied on top, all OK. Rechecked in review with a
+fresh JScript run of the real old and new blocks over 8000 other synthetic layouts: 0 RNG state differences, 6558 good placements
+unmoved and 0 moved, 2986 broken old placements and not one new key put in the case or inside a locked room, and every room on a
+layout with a legal box had a copy clear of every room; the check's staging over 3000 seeds failed both ascents on the old block every time and passed both on the new.
+
+Not verified: the check has not been run in a browser, the seed 4242 counts were not re-read on a built fixture, and no real raid
+has been played to a door whose key used to sit in THE VAULT CASE.

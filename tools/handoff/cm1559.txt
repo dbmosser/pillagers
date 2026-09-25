@@ -1,0 +1,14 @@
+v15.59: the undercroft backpack names only keys that work on the floor
+
+First run audit finding. The backpack on the Undercroft floor is the raid
+backpack drawn again, and its hint line told you to move with the arrows,
+drop with Z and equip a gun with ENTER. The floor never hands those keys
+to the backpack, so none of them did anything, right after the stash told
+a new player to equip his gun, and with a controller it named D-pad
+buttons the floor does not read. On the floor the line now names only
+the drag onto the tactical belt, the one thing that works there, and
+nothing with a controller. The raid backpack keeps its full hint.
+
+Check 15.59. Fails on v15.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

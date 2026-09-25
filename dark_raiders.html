@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.51';
+var VER='15.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11770,7 +11770,21 @@ function padMenu(pressed){
   // A emptied the backpack and the belt plan and ASCEND sent him up with the freebie instead of his own gear; in Settings
   // every change jumped back to the first tab. The focus now returns to the same place in the rebuilt panel, and only a
   // different panel starts at its first control.
-  if(!PAD.focus||list.indexOf(PAD.focus)<0||!md.contains(PAD.focus)){
+  // v15.52, rack audit finding: BUILD A RACK KEEPS THE CONTROLLER HIGHLIGHT WHEN IT GREYS OUT. padFocusables leaves out a
+  // disabled control, so a button that greyed out under the pad dropped off the list on the next poll, and the v14.22 line
+  // below put the focus on whatever now stood at its place in the list. Building the last rack you could afford greys BUILD A
+  // RACK out, and SLOT A DATA CORE slid into its place, so the next A spent the Data Core for good; building the tenth rack
+  // greys it out and makes FOLD 10 RACKS INTO AN ARRAY live in its place, so the next A folded all ten racks. A mouse click
+  // never moves anything. A control that goes disabled while it is still laid out in the same panel now keeps the pad: A on it
+  // does nothing, the same as a click on a disabled button, and the D-pad still steps off it from where it sits. A rebuilt
+  // panel still finds its place as v14.22 set it, because the old control has left the panel, and a control hidden with its
+  // tab measures nothing and hands the pad on as before.
+  var _pdf=PAD.focus, _pdStay=false;
+  if(_pdf&&_pdf.disabled&&md.contains(_pdf)){
+    var _pdr=_pdf.getBoundingClientRect(), _pdc=getComputedStyle(_pdf);
+    _pdStay=(_pdr.width>=4&&_pdr.height>=4&&_pdc.display!=='none'&&_pdc.visibility!=='hidden');
+  }
+  if(!_pdStay&&(!PAD.focus||list.indexOf(PAD.focus)<0||!md.contains(PAD.focus))){
     var _pfi=(PAD.focusMd===md&&typeof PAD.focusIx==='number'&&PAD.focusIx>=0)?Math.min(PAD.focusIx,list.length-1):0;
     padSetFocus(list[_pfi]);
   }
@@ -11786,7 +11800,9 @@ function padMenu(pressed){
     PAD.mrep=0.20;
   }
   if(mv){ var nx=padStep(list,PAD.focus,mv[0],mv[1]); if(nx) padSetFocus(nx); }
-  PAD.focusIx=list.indexOf(PAD.focus); PAD.focusMd=md;
+  // v15.52, rack audit finding: BUILD A RACK KEEPS THE CONTROLLER HIGHLIGHT WHEN IT GREYS OUT. A disabled control kept under
+  // the pad is not in the list, so the place it last held is kept for the panel rather than written over with -1.
+  var _pix=list.indexOf(PAD.focus); if(_pix>=0) PAD.focusIx=_pix; PAD.focusMd=md;
   // v14.21, controller audit finding 3: AN A THAT CLICKS A MENU BUTTON IS SPENT UNTIL IT IS LET GO. The click happens on the
   // press, and ASCEND switches to the raid on the spot, so on the next poll no menu was open and the same held A reached the
   // raid as the trigger: every pad ascent fired a shot at the spawn point. A mouse click on the button never did, since the
@@ -30556,7 +30572,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.51: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 15.39 against 15.50, due for its refresh, and the card said nothing about the pause box, pillager body and raid clock fixes. My first card line is rewritten in place, keeping what checks 15.27 and 15.39 read, and WHATSNEW_VER moves to 15.51. Check 15.51 requires the card current and naming the pause box news; it fails on v15.50',
+  now:'v15.52: BUILD A RACK KEEPS THE CONTROLLER HIGHLIGHT WHEN IT GREYS OUT. On a controller, the last rack you could afford greyed BUILD A RACK out and the highlight slid onto SLOT A DATA CORE, or after the tenth rack onto FOLD 10 RACKS INTO AN ARRAY, so the next A spent a Data Core or folded the wall. A control that greys out under the highlight now keeps it, and A on it does nothing, the same as a mouse click on it. Check 15.52 presses A twice on BUILD A RACK with a faked controller, with parts for two racks, for one rack and a Data Core, and at nine racks; it fails on v15.51',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

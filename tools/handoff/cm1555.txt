@@ -1,0 +1,12 @@
+v15.55: the intel key mark leaves a container once its key is taken out
+
+Keys audit finding 3. With a Data Core burned, the gold KEY on the sector
+map went only when a box was fully opened. Loot comes out worst first, so
+a safe or locker searched part way gave up its key first and kept its
+KEY for the rest of the raid, with the key already in the backpack. The
+mark now goes as soon as no key is left inside, and a box still holding
+its key keeps it.
+
+Check 15.55. Fails on v15.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

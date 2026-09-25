@@ -1,0 +1,13 @@
+v15.54: with the freebie kit taken, build a rack names the packed parts it uses
+
+Rack audit finding. With Circuit Boards packed and the freebie kit taken,
+BUILD A RACK counted every board in the stash as loose, used the packed
+ones without a word, and the lift question still counted them while MY
+LOADOUT took up fewer. The packing set aside for the freebie kit now
+counts as packed: loose parts still go first, set-aside parts a rack uses
+come off that list and are named in the rack line, and the lift counts
+what goes up. The crafting bench and SLOT A DATA CORE spend the same way.
+
+Check 15.54. Fails on v15.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

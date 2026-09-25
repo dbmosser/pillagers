@@ -1,0 +1,12 @@
+v15.60: on a controller the undercroft bottom line names the pad buttons
+
+First run audit finding. With a controller on the Undercroft floor, the
+line along the bottom still taught WASD to walk, SHIFT to jog and E to
+use a station, in the same frame as a station prompt that says [A], and
+a controller has no E. With a controller connected the line now reads
+L STICK WALK, LS JOG and A USE STATION, in the words the raid's own pad
+legend uses, and without one it is the keyboard line exactly as before.
+
+Check 15.60. Fails on v15.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
