@@ -40024,6 +40024,60 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.96 - A RESTORE CODE CARRIES THE IMPORTED FRIEND
+
+Ghost audit finding (MEDIUM), entry 4 of the confirmed list.
+
+In the Mainframe he types a name and IMPORTs A FRIEND from a run report; parseGhost builds a small object (tag, wep, wepName,
+runs, ext, rate, avgHaul), importGhost writes it to P.ghost, applyGhost dresses one pillager as that friend at every raid build, and
+renderMainframe prints '<name> walks your raids: ...'. P.ghost is written in that one place and cleared nowhere. restoreMake wrote
+every other row of the Mainframe into the code (v,n,c,x,l,r,e,d,b,no,pk,ra,ar,cs,sc,ki,cb,j,mi,cd,wq,ne,rv,cc,w,s,g) and nothing
+for the friend, and restoreApply cleared the hire, contracts, seals, kit, Wirt's lot and explored maps of the character being
+replaced (v13.61, v14.04, v15.00 to v15.02) but never touched P.ghost; then saveProfile stored P whole. So a code pasted over a
+character who had imported a friend kept that friend, on the Mainframe and in the raids, while the panel promises the code
+REPLACES the save; and a code made by a character with a friend, pasted on a fresh browser, came up with the import prompt and the
+report file was needed again. The finishRestore comment says the backup file and UNDO paths replace the whole profile, so only the
+code path leaked. No ruling or comment calls the friend browser-local on purpose; the v14.04 list simply missed it. Not balance,
+not a TXSHIP key, no player text moves.
+
+THE BUILD. Two edits, the finding's fix as written (the verdict corrected nothing). In restoreMake the object literal gets one
+field after cc: gh, the P.ghost object when it is an object with a tag, else null. In restoreApply, one line after the v14.04
+clear line: P.ghost takes the code's gh when it is an object with a string tag, else null. So a code with a friend brings the
+friend, a code made with none clears the replaced character's, and a code from before this build, which has no gh key at all,
+clears it the same way, the rule v15.00 set for the named pillager records. applyGhost already guards the gun by
+WEAPONS[P.ghost.wep], so a gun this build does not know leaves the friend unarmed with a claim rather than throwing. THE SIZE: the
+friend block adds about 135 characters to the pasteable code for a typical friend (a nine letter tag and Scav Pistol), under 185
+at the longest tag (18) and the longest gun name, and 14 characters (gh:null) for a character with none. Check 11.03 holds the
+code under 4000 and its staged profile has no friend, so it is unchanged; check 15.13 (72 blank records and one real one) likewise.
+No number, dial, loot table or seeded draw moved; map building is not touched, so the seed 4242 fingerprint in __verifySafe
+cannot move. No player text was added or reworded.
+
+MEASURED. Check 15.96 clears the card and profile, snapshots the profile, sets distinctive credits (773311) and one named pillager
+record, sets P.ghost to a friend called ZQXFRIEND (Scav Pistol, 4 runs, 25 percent), makes a code with restoreCode, reads it back
+with restoreRead (SKIP if either fails), requires it under 4000 characters, nulls the friend, changes the credits and records, and
+applies the code. CONTROL: the credits and the named pillager record are the code's own after the apply, or SKIP. ARM A: P.ghost is
+an object tagged ZQXFRIEND carrying the pistol, rate 25 and 4 runs, and renderMainframe then prints ZQXFRIEND walks your raids in
+the friend line (when the line exists in the page). On v15.95 the code has no gh and the apply leaves the null, so the check fails
+for the finding's own reason. ARM B: a second code made with P.ghost null (credits 664422), applied over a friend called OLDONE;
+CONTROL the credits round-trip; P.ghost must be null (on v15.95 OLDONE survives, fails). ARM C: the second code's object with the
+gh key deleted, an older code, applied over OLDONE again; CONTROL the credits; P.ghost must be null. In finally the snapshot goes
+back through the loader (__applyLoaded), the Mainframe friend line is redrawn from the real profile, and the card and profile are
+cleaned. restoreApply calls saveProfile and never reloads on its own (the reload lives in finishRestore and the panel handler),
+so nothing here arms RESTORE_TIMER.
+
+Older fixture checks: none restaged. Every check that makes or applies a restore code (11.03, 11.06, 11.71, 12.98, 13.63, 14.04,
+14.05, 14.73, 15.00, 15.01, 15.02, 15.13) either never sets P.ghost or restores the profile through the loader, and none asserts
+that a friend survives a restore. The three checks that set P.ghost (12.55, 13.93 and the v15.44 friend swap check) never apply a code, and they put the
+old value back themselves.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (v15.82 in the working copy, the version line and
+the DEVNOW now line faked to 15.95 so the chain anchors can be tried): p1596 printed OK, 3 edits applied plus DEVNOW, every anchor
+a whole line block matching once; f1596 printed OK, 1 edit. The patched restoreMake and restoreApply, and the new check entry,
+each parse in JScript (cscript). The new now line holds no apostrophe. Both scripts are ASCII only. Anchors used: the two lines
+cc:P.cdone||0 and w:{},s:{}}; closing the restoreMake literal (once); the v14.04 clear line P.merc=null; P.contracts=[]; ... in
+restoreApply (once); var VER='15.95'; and the now:'v15.95: line. No p-script from 1580 to 1593 touches restoreMake or restoreApply.
+
+Not verified: the check has not been run in a browser; a code pasted by hand through the Settings panel with a friend imported.
 ## v15.95 - THE BACKPACK PANEL PRINTS THE PRICE WITH THE THOUSANDS SEPARATOR
 
 Credits audit finding (LOW), entry 3 of the confirmed list.

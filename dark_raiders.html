@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.95';
+var VER='15.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31058,7 +31058,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.95: THE BACKPACK PANEL PRINTS THE PRICE WITH THE THOUSANDS SEPARATOR. With an item worth 1,000 or more selected in the backpack, the price line under the grid printed 2600 each for a Meridian Reactor Core while the stash hover, the tag-junk hint and the Peddler panel print the same price as 2,600. The line now prints the price the way every other price surface does, and nothing under 1,000 changes. Check 15.95 draws the raid backpack with a Meridian Reactor Core selected and reads the price line; it fails on v15.94',
+  now:'v15.96: A RESTORE CODE CARRIES THE IMPORTED FRIEND. A friend imported at the Mainframe from a run report never travelled in a restore code, and a code pasted over a character who had one kept that friend on the Mainframe and in the raids. The code now carries the friend, and a code with none, or an older code, leaves none. Check 15.96 makes a code with a friend and one without and restores each over the other; it fails on v15.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33465,6 +33465,12 @@ function restoreMake(){
          // v15.88, sector audit finding: THE SECTOR CARD COUNTS EVERY RUN HE HAS MADE THERE. His lifetime runs per map, which
          // the log, kept out of the code, could not restate past sixty runs anyway.
          mr:P.mapRunN||null,
+         // v15.96, ghost audit finding: A RESTORE CODE CARRIES THE IMPORTED FRIEND. P.ghost is the one row of the Mainframe the
+         // code never wrote, so a friend imported from a run report (importGhost) never travelled with the character: a code
+         // pasted on a fresh browser came up with the import prompt and the report file was needed again. The friend is the
+         // object parseGhost made, seven small fields, so the code grows by under two hundred characters (check 11.03 holds the
+         // code under 4000). A character with no friend writes null, which restoreApply reads as none.
+         gh:(P.ghost&&typeof P.ghost==='object'&&P.ghost.tag)?P.ghost:null,
          w:{},s:{}};
   // What they are wearing. The RACKS themselves are derived from the numbers
   // above by cosOwned, so nothing here has to list what they have unlocked.
@@ -33557,6 +33563,13 @@ function restoreApply(o){
   // v14.04, save audit: and the rest the code does not carry. A hire he paid for, a contract board half done, cutting on
   // a sealed door, an explored map and signed Terms all belonged to the character being replaced.
   P.merc=null; P.contracts=[]; P.seals={}; P.mapSeen={}; P.discover={}; P.terms=[]; P.notExt=0;
+  // v15.96, ghost audit finding: A RESTORE CODE CARRIES THE IMPORTED FRIEND. The friend imported at the Mainframe (P.ghost) was
+  // neither carried by the code nor cleared here, so a code pasted over a character who had imported one kept that friend: the
+  // Mainframe still said they walk your raids and applyGhost still dressed a pillager as them on the restored character's raids,
+  // while the panel promises the code REPLACES the save. The code's friend now comes through, and a code with none, or one made
+  // before this build with no friend field, leaves none, the same rule v15.00 set for the named pillager records. applyGhost
+  // already guards the gun by WEAPONS[P.ghost.wep]. No number and no seeded draw moved.
+  P.ghost=(o.gh&&typeof o.gh==='object'&&typeof o.gh.tag==='string'&&o.gh.tag)?o.gh:null;
   // v15.02, save audit finding 3: AND WIRT'S OFFER IS OPEN TO THE RESTORED CHARACTER. The lot bought this period belonged to the
   // character being replaced, and it kept the offer hidden from a character who had bought nothing until the period turned.
   P.freeKit=0; P.kitChosen=0; P.dropKit=[]; P.wirtLotBought=null;
