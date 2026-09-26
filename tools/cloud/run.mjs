@@ -58,7 +58,9 @@ try {
   } else if (cmd === 'range') {
     await load(file);
     console.log(await page.evaluate(([a, b]) => __regressBg(+a, +b), [a3, a4]));
-    await page.waitForFunction(() => window.__PROG && window.__PROG.finished, null, { timeout: 0, polling: 2000 });
+    let last = ''; page.on('console', m => { const t = m.text(); if (t.startsWith('REGRESS start')) last = t; });
+    try { await page.waitForFunction(() => window.__PROG && window.__PROG.finished, null, { timeout: +(process.env.RANGE_MS || 900000), polling: 2000 }); }
+    catch (e) { const pr = await page.evaluate(() => window.__PROG ? { done: __PROG.done, cur: __PROG.cur } : null).catch(() => null); console.log('STUCK at ' + last + ' ' + JSON.stringify(pr)); throw e; }
     const r = await page.evaluate(() => __PROG.res);
     console.log(r.summary); r.fail.forEach(f => console.log('  ' + f.slice(0, 400))); ok = r.pass;
   } else if (cmd === 'eval') {

@@ -40024,6 +40024,36 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.06 - THE HOST OWNS THE RAID CLOCK, THE WEATHER, THE LIGHTNING AND THE EXTRACTION RINGS
+
+Multiplayer, plan phase 2 (world snapshots: rings, timers, weather) and phase 3 (the beacon is shared by the party).
+
+Before this each window ran its own clock, weather, bolts and rings. The weather turned on each window's own seeded stream,
+so two players could stand in rain and in fog; the clocks drifted; a host bolt could land on a teammate (netAreaHitPeers,
+v15.80) who never saw its warning ring; and a beacon one player called existed on his window alone.
+
+THE BUILD. Twice a second (every fifth up-top tick) the host sends {t:'wd'}: the seed, time left, the sky, the sky it is turning
+to and how far, the live bolts by number, the active ring, and for every ring whether it is open, the beacon countdown, the
+hold, the hold length and when it closes (netWorldSend). A linked window on that seed (netWorldTake) takes the clock when it
+is more than 0.3 s off, the sky outright (it runs no wxTick of its own), the rings and the active ring, and each new bolt as a
+warning ring that flashes and cracks when it lands but never hits there: the host lands the hit by the roof and wall rules. A
+linked window makes no bolts of its own; the host centres each bolt on the next member of the party up top in turn
+(netStrikeAt), with the same two draws, so the storm reaches everyone. A beacon called on a linked window goes to the host
+({t:'bcn'}, netBeaconCalled) and is called there for the party (netBeaconTake, with NAME called the extraction. on the host);
+the linked window keeps its own call for 1.5 s so the next word cannot cancel it in flight. Bolts are numbered on the host
+(G.strikeN), no draw. Each player still boards, extracts, dies or abandons alone. Solo play is untouched: every path needs a
+shared raid. No number, dial or loot table moved; map building untouched.
+
+Check 15.79 restaged: since v15.91 the host out word ends a linked raid as abandon (his ruling, check 15.91), so its step that
+drew a frame after that word now draws only if a raid is left, and the out word this window sends is read from that moment.
+
+MEASURED. Check 16.06: the host word carries the clock, the sky, the live bolt and every ring; a beacon a teammate calls is
+called on the host; the linked window takes the clock, the sky and ring 0's beacon, draws the host bolt, is not hit by it
+while it flashes, and runs no weather turn of its own through the loop. Passes twice; fails on v16.05. Checks 15.79, 15.80,
+15.91, 16.04 and 16.05 pass on the dry build; nettest RUN SAME MACHINE passes.
+
+Not verified: two real PCs; a beacon called from player 2 by hand.
+
 ## v16.05 - TEAMMATE REVIVES
 
 Multiplayer, his ruling of 2026-09-25: teammate revives in the first co-op version.

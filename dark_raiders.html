@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.05';
+var VER='16.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5610,13 +5610,14 @@ function strikeTick(dt){
   if(!W2||!W2.lightning){ G.strikes=[]; return; }
   var p=G.player;
   G.strikeAt=(G.strikeAt===undefined?rnd(4,10):G.strikeAt)-dt;
-  if(G.strikeAt<=0){
+  if(G.strikeAt<=0&&!netEntsPeer()){   // v16.06: a linked window makes no bolts of its own; the host bolts come in its world word
     G.strikeAt=rnd(5,13);
     // Near enough to matter, never on top of you: a strike you cannot react to is a
     // dice roll rather than a decision.
     var ang=rr()*6.2832, rad=180+rr()*620;
-    var sx=clamp(p.x+Math.cos(ang)*rad,80,WORLD_W-80);
-    var sy=clamp(p.y+Math.sin(ang)*rad,80,WORLD_H-80);
+    var _sc=netStrikeAt(p);   // v16.06: the host takes each party member up top in turn as the centre; alone it is always him (no draw)
+    var sx=clamp(_sc.x+Math.cos(ang)*rad,80,WORLD_W-80);
+    var sy=clamp(_sc.y+Math.sin(ang)*rad,80,WORLD_H-80);
     // v11.56, HIS NOTE: "lightning shouldn't strike inside buildings". A point
     // under a roof is walked out through its nearest wall (the crier's own
     // deterministic step, no random draw), up to three times in case it
@@ -5627,7 +5628,7 @@ function strikeTick(dt){
       var _so=outOfBuilding(_sb,sx,sy,40);
       sx=clamp(_so.x,80,WORLD_W-80); sy=clamp(_so.y,80,WORLD_H-80);
     }
-    G.strikes.push({x:sx,y:sy,t:STRIKE_WARN,hit:0});
+    G.strikes.push({x:sx,y:sy,t:STRIKE_WARN,hit:0,id:(G.strikeN=(G.strikeN||0)+1)});   // v16.06: numbered, so the party draws the same bolt once
     if(!G.sim) sfx('charge',sx,sy);   // v11.59, HIS NOTE: a positioned sound marks itself
   }
   for(var i=G.strikes.length-1;i>=0;i--){
@@ -5636,6 +5637,7 @@ function strikeTick(dt){
     if(S.t>0) continue;
     // THE BOLT. Everything below happens once, on the frame it lands.
     G.strikes.splice(i,1);
+    if(S.rm){ G.lightning=0.34; if(!G.sim) sfx('alarm',S.x,S.y); continue; }   // v16.06: a host bolt on a linked window: the flash and the crack only; the host lands the hit (netAreaHitPeers)
     G.lightning=0.34;                       // the flash the renderer has always had
     var d=dist(p,S);
     if(!G.sim) sfx('alarm',S.x,S.y);
@@ -15090,6 +15092,7 @@ function tryExtractTick(dt,wantCall){
       z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=null; z.pullN=0; z.pinged=0;
       G.active=z;   // v12.57: calling it MOVES the pointer, which standing in it no longer does
       G.beaconT=z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0;
+      netBeaconCalled(z);   // v16.06: a linked window asks the host, which owns the rings, to call it for the party
       T.beaconCalls=(T.beaconCalls||0)+1;
       blip('beacon');
       // The price has to be legible BEFORE the wait, or it is not a decision, it is an
@@ -30675,7 +30678,7 @@ function loop(ts){
       tickMachineVoices(dt);
       tickVerb(dt);
       tickPlayerSteps(dt);
-      wxTick(dt); strikeTick(dt);
+      if(!netEntsPeer()) wxTick(dt); strikeTick(dt);   // v16.06: on a linked window the weather comes from the host (netWorldTake)
       G.seenT=Math.max(0,(G.seenT||0)-dt);
       G.emoteCd=Math.max(0,(G.emoteCd||0)-dt);
       if(G.bubbles) for(var bi2=G.bubbles.length-1;bi2>=0;bi2--){
@@ -31112,7 +31115,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.05: TEAMMATE REVIVES. Multiplayer, his ruling. Up top, hold E beside a downed teammate for 3.2 seconds, the time a hire takes, and he gets up with 40 percent health exactly as a hire picks you up. Letting go starts it again. The word goes through the host, and the downed window checks he is down and the teammate is beside him. His one self-revive is untouched. No new number. Check 16.05 fails on v16.04',
+  now:'v16.06: THE HOST OWNS THE RAID CLOCK, THE WEATHER, THE LIGHTNING AND THE EXTRACTION RINGS. Multiplayer. Each window ran its own, so two players could stand in different weather, their clocks drifted, a host bolt could hit a teammate who never saw its warning, and a beacon one player called existed for him alone. Twice a second the host now tells the party the clock, the sky, the live bolts and every ring; a linked window follows it, draws the host bolts, and asks the host to call a beacon for the party. The storm now centres on each of the party in turn. Each player still extracts alone. Solo untouched. No number moved. Check 16.06 fails on v16.05',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34826,6 +34829,8 @@ function netOnMsg(peer,data){
   if(m.t==='hit') return netHitTake(peer,m);   // v15.80: a blow on this player, from the host, taken through its own damagePlayer
   if(m.t==='shot') return netShotTake(peer,m);   // v15.80: a round, blade or charge from one of the party on a body the host runs
   if(m.t==='kill') return netKillTake(peer,m);   // v15.80: a kill credited to this seat, from the host
+  if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
+  if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
   if(m.t==='rev') return netRevTake(peer,m);   // v16.05: a teammate picked this player up, or (on the host) passes it on
   if(m.t==='srch') return (NET.role==='host')?netSrchTake(peer,m):netSrchAnswer(peer,m);   // v15.91: a search request from one of the party, or the host answer to one
   if(m.t==='loot') return netLootTake(peer,m);   // v15.91: loot from the host list, into this window own backpack
@@ -35686,6 +35691,7 @@ function netUpTick(dt){
   NET.upN++;
   if(NET.role==='host') netEntsTick();   // v15.80: on the same clock, where every body stands, and every body that arrived or left since the last tick
   if(NET.role==='host') netContTick();   // v15.91: on the same clock, every container that arrived, opened or shut since the last tick
+  if(NET.role==='host'&&NET.upN%5===0) netWorldSend();   // v16.06: twice a second, the raid clock, the weather, the bolts and the rings
   for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&netSendFast(NET.peers[i],msg)) sent++;
   return sent;
 }
@@ -35794,6 +35800,81 @@ function netPausedStep(dt){
   keys={}; if(md) mouse.down=false; if(pm){ PAD.mx=0; PAD.my=0; }
   try{ updatePlayer(dt); }
   finally{ keys=k; if(md) mouse.down=md; if(pm){ PAD.mx=pm[0]; PAD.my=pm[1]; } }
+}
+// v16.06, MULTIPLAYER: THE HOST OWNS THE RAID CLOCK, THE WEATHER, THE LIGHTNING AND THE EXTRACTION RINGS. Before this each window
+// ran its own: the weather turned on its own seeded stream, so two players could stand in rain and in fog; the clocks drifted;
+// a bolt the host made could land on a teammate who never saw its warning ring; and a beacon one player called existed on his
+// window alone. Twice a second the host sends {t:'wd'}: the seed, time left, the sky, the sky it is turning to and how far, the
+// live bolts by number, the active ring, and for every ring whether it is open, the beacon countdown, the hold and when it
+// closes. A linked window on that seed takes the clock when it is more than 0.3 s off, the sky outright (it runs no wxTick of its
+// own), the rings, and each new bolt as a warning ring that flashes and cracks but never hits: the host lands the hit through
+// netAreaHitPeers by the roof and wall rules. A linked window makes no bolts of its own; the host centres each bolt on the next
+// member of the party up top in turn, so the storm reaches everyone, with the same two draws. A beacon called on a linked window
+// goes to the host ({t:'bcn'}) and is called there for the party; the linked window keeps its own call for 1.5 s so the next
+// word cannot cancel it on the way. Each player still boards, extracts, dies or abandons alone. Solo play is untouched.
+function netWxOf(id){ var i; if(typeof WEATHER==='undefined') return null; for(i=0;i<WEATHER.length;i++) if(WEATHER[i].id===id) return WEATHER[i]; return null; }
+function netNum(v){ return (typeof v==='number'&&isFinite(v))?+v.toFixed(2):null; }
+function netStrikeAt(p){
+  var L=[p], i, g;
+  if(!netEntsHost()||!netInCount()) return p;
+  for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(g&&g.seat!==NET.seat&&!g.dn&&g.sd===(NET.upSeed>>>0)&&netSeatName(g.seat)!==null) L.push(g); }
+  G.strikeWho=((G.strikeWho|0)+1)%L.length;
+  return L[G.strikeWho]||p;
+}
+function netWorldSend(){
+  var z=[], s=[], i, Z, S, m, n=0;
+  if(!netEntsHost()) return 0;
+  for(i=0;i<(G.zones||[]).length;i++){ Z=G.zones[i]; z.push([(Z.open===undefined)?null:Z.open,netNum(Z.beaconT),netNum(Z.hold),netNum(Z.holdMax),netNum(Z.closeAt)]); }
+  for(i=0;i<(G.strikes||[]).length;i++){ S=G.strikes[i]; if(S.id&&!S.rm&&S.t>0) s.push([S.id,Math.round(S.x),Math.round(S.y),netNum(S.t)]); }
+  m={t:'wd',sd:G.seed>>>0,tl:netNum(G.timeLeft),wx:(G.wx&&G.wx.id)||'',wn:(G.wxNext&&G.wxNext.id)||'',wt:netNum(G.wxT)||0,ai:(G.zones||[]).indexOf(G.active),z:z,s:s};
+  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&netSendFast(NET.peers[i],m)) n++;
+  return n;
+}
+function netWorldTake(peer,m){
+  var i, a, Z, w, k, S, have;
+  if(!peer||peer.state!=='in'||NET.role!=='join') return 'ignored';
+  if(!netEntsPeer()||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other';
+  if(typeof m.tl==='number'&&isFinite(m.tl)&&Math.abs((G.timeLeft||0)-m.tl)>0.3) G.timeLeft=m.tl;
+  w=netWxOf(m.wx); if(w) G.wx=w;
+  G.wxNext=netWxOf(m.wn); G.wxT=(typeof m.wt==='number'&&isFinite(m.wt))?clamp(m.wt,0,1):0;
+  if(m.z&&typeof m.z.length==='number') for(i=0;i<m.z.length&&i<(G.zones||[]).length;i++){
+    a=m.z[i]; Z=G.zones[i]; if(!a||!Z) continue;
+    if(typeof Z.netCallAt==='number'&&G.t-Z.netCallAt<1.5&&a[1]===null) continue;
+    Z.open=(a[0]===null)?undefined:a[0]; Z.beaconT=a[1]; Z.hold=a[2]; if(a[3]!==null) Z.holdMax=a[3]; Z.closeAt=a[4];
+  }
+  if(typeof m.ai==='number'&&m.ai>=0&&G.zones&&G.zones[m.ai]){ G.active=G.zones[m.ai]; G.beaconT=G.active.beaconT; }
+  if(m.s&&typeof m.s.length==='number') for(i=0;i<m.s.length&&i<12;i++){
+    a=m.s[i]; if(!a||typeof a[0]!=='number') continue;
+    have=false; for(k=0;k<G.strikes.length;k++) if(G.strikes[k].rid===a[0]) have=true;
+    if(have||(G.netBolts&&G.netBolts[a[0]])) continue;
+    (G.netBolts=G.netBolts||{})[a[0]]=1;
+    S={x:+a[1]||0,y:+a[2]||0,t:Math.max(0.05,+a[3]||0.05),hit:0,rm:1,rid:a[0]}; G.strikes.push(S);
+    if(!G.sim) sfx('charge',S.x,S.y);
+  }
+  return 'wd';
+}
+// A beacon called on this window: a linked window asks the host for the party. Returns whether it asked.
+function netBeaconCalled(z){
+  var i, ix;
+  if(!netEntsPeer()) return false;
+  ix=G.zones.indexOf(z); if(ix<0) return false;
+  z.netCallAt=G.t;
+  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'bcn',i:ix});
+  return true;
+}
+// On the host: a teammate called the beacon at ring i; it is called here, where the rings live, as his own call makes it.
+function netBeaconTake(peer,m){
+  var Z;
+  if(!peer||peer.state!=='in'||NET.role!=='host') return 'ignored';
+  if(!netEntsHost()||typeof m.i!=='number') return 'off';
+  Z=G.zones[m.i|0]; if(!Z) return 'bad';
+  if(Z.beaconT!==null&&Z.beaconT!==undefined) return 'called already';
+  if(Z.open===false) return 'closed';
+  Z.beaconT=CFG.extractWait; Z.hold=null; Z.siegeSpawned=0; Z.siegeSpawnT=0; Z.siegeGreed=null; Z.pullN=0; Z.pinged=0;
+  G.active=Z; G.beaconT=Z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0;
+  if(G.tel) G.tel.beaconCalls=(G.tel.beaconCalls||0)+1;
+  blip('beacon'); say((netSeatName(peer.seat)||'Your teammate')+' called the extraction. Inbound '+Math.ceil(Z.beaconT)+'s.');
+  return 'called';
 }
 function netEntsHost(){ return !!(NET.on&&NET.role==='host'&&typeof G!=='undefined'&&G&&!G.sim&&!G.over&&NET.upSeed&&(G.seed>>>0)===(NET.upSeed>>>0)); }
 // Every body numbered at the build, in list order. Returns how many.

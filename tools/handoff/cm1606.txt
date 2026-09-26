@@ -1,0 +1,13 @@
+v16.06: the host owns the raid clock, the weather, the lightning and the rings
+
+Multiplayer. Each window ran its own clock, weather, lightning and
+extraction rings, so two players could stand in different weather,
+their clocks drifted, a bolt could hit a teammate who never saw it
+coming, and a beacon one player called was his alone. The host now
+tells the party all of it twice a second, draws its bolts on every
+window, spreads the storm over the whole party, and calls a beacon
+for everyone when a teammate calls it. Each player still extracts
+alone. No number moved.
+
+Check 16.06. Fails on v16.05. Check 15.79 restaged for the v15.91 host
+leaving ruling.
