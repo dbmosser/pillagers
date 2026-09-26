@@ -1,0 +1,11 @@
+v15.93: the gamble history at Wirt prints what the item is worth
+
+Credits audit finding. With How much is out there set to Lean or Rich,
+each row under THE GAMBLE printed the table value of the rolled item,
+$520 for a Data Core, while the stash hover and Sell one said $364 or
+$702. The rows now print the same price every other price surface
+prints, through ival(), and on Standard nothing changes.
+
+Check 15.93. Fails on v15.92.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

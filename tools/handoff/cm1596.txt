@@ -1,0 +1,11 @@
+v15.96: a restore code carries the imported friend
+
+Ghost audit finding. A friend imported at the Mainframe from a run report
+never travelled in a restore code, and a code pasted over a character who
+had one kept that friend on the Mainframe and in the raids, while the panel
+promises the code replaces the save. The code now carries the friend, and
+a code with none, or one from before this build, leaves none.
+
+Check 15.96. Fails on v15.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

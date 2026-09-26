@@ -1,0 +1,12 @@
+v15.97: your rival is always a pillager, never the imported friend
+
+Ghost audit finding. Killing the friend imported from a run report twice
+put their own record ahead of every pillager on the ledger, and from then
+on no pillager wore the rival star, the rival warning never played and the
+run report lost its rival line, until the player out-killed his own
+friend. The rival is now chosen among the pillagers alone, and the friend
+keeps their own record as before.
+
+Check 15.97. Fails on v15.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

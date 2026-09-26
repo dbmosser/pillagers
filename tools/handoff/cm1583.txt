@@ -1,0 +1,12 @@
+v15.83: the sector map never sits over the open stall
+
+Trade audit finding. Pressing M at the open Peddler stall put the sector
+map over it, and E with the map up opened the stall under the map, so
+the stall was hidden while ESC, TAB and the number keys still acted on
+it, and 1 sold the whole backpack unseen. M now does nothing while the
+stall is open, and opening the stall shuts the map, so every key acts on
+what is on screen. The controller already kept the two apart.
+
+Check 15.83. Fails on v15.82.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

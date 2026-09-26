@@ -1,0 +1,58 @@
+## v15.87 - AT NIGHT THE SECTOR MAP HEADER NAMES A NIGHT HOUR
+
+Sector audit finding (MEDIUM), entry 5 of the confirmed list.
+
+On the sector page press NIGHT (the hint reads You go up in the dark, the button reads SURFACE: NIGHT), ascend, and open the map
+with M or D-UP. buildRaid rolls G.tod with pickTod on every raid, night included (tod:pickTod(WX_ROLL)), so the seeded stream
+stays the same; pickTod draws from TODS, DAWN, 8am, noon, 6pm and 8pm, and nothing in it asks isDay. Every use of that hour is
+gated on isDay(): wx().lights*(isDay()?tod().lights:1), the TD.add tint, the TD.dim, and lampBase returns 1 when it is not day
+(the verdict notes rain alpha and fog damping still read tod() ungated, which does not touch the header). But the sector map
+header in drawMapOverlay printed tod().name+'  '+wx().name with no gate, so three rolls in five put noon, 8am or 6pm over a raid
+that went up in the dark, and DAWN or 8pm on the other two: the same contradiction as his v3.59 note that golden hour should not
+happen at night. The verdict found a second place: the CONDITIONS row in drawHUD prints MT.name+'   '+MW.name from the same
+tod() with no gate either. syncCond already says SURFACE: NIGHT and the run record stores night separately from tod. Text only,
+not balance, and no TXSHIP key holds any hour name (the table has no noon, 8am, 6pm, DAWN or 8pm).
+
+THE BUILD. Two edits, the verdict's corrected fix in both places. In drawMapOverlay the header prints
+(isDay()?tod().name:'night')+'  '+wx().name+ and in the CONDITIONS block of drawHUD the row key is
+(isDay()?MT.name:'night')+'   '+MW.name. Each carries a v15.87 comment in the file's style. In daylight both lines are byte for
+byte what they were; at night both say night beside the weather, in the same colour and place. The weather-change arrow, the
+effects list under the row, the colours and the map itself are untouched. The label night is lower case like noon and 8am, the
+two labels it stands beside most often. No word of existing player text was reworded, no number, dial, loot table or seeded draw
+moved; map building is not touched, so the seed 4242 fingerprint in __verifySafe (ents 85/374, containers 165/593) cannot move.
+
+MEASURED. Check 15.87 clears the card, runs __runPrep, __resetCfg, __pinDefaults(0) and __cleanProfile, snapshots the profile
+and deploys a live raid at seed 4242 on map 0. It stages G.tod as TODS[2] (noon, read off the table, never written in the check),
+clears G.wxNext and G.wxT so both lines end in the weather name alone, shuts the map flag and unfolds the CONDITIONS panel
+(P.hud.cond.c). Every string drawn by one call is recorded through __textTrace, which patches the canvas prototype and restores
+it itself; the header is the one string ending in two spaces plus the weather name, the row the one ending in three spaces plus
+the weather name. CONTROL: with P.cond day, drawMapOverlay draws the header reading noon beside the weather and drawHUD draws the
+row reading noon beside the weather, else SKIP with what was drawn, which proves the trace sees both lines on either build. THE
+FIX: with P.cond night, and isDay() false, the header must not contain noon and must read night beside the weather, and the row
+the same. On v15.86 both lines read noon beside the weather at night, so the check fails for the finding's own reason with two
+sentences. KEPT: with P.cond back to day the header reads noon beside the weather again. In finally G.tod, G.wxNext, G.wxT and
+G.mapOpen are put back, the raid is abandoned, the profile is restored through __applyLoaded (P.cond and P.hud with it), and the
+card, dials and profile are cleaned.
+
+Older fixture checks: none restaged. No fixture check reads the hour label at night: 10.46 stages noon in fog for a sprite
+reading and never reads the header; 11.88 reads the CONDITIONS panel text in daylight for contract verdicts, where the row is
+unchanged; 14.66 stubs isDay for the sector page weather hint, not the raid; the checks that call drawMapOverlay (15.55 and the
+restock check) count KEY marks and building labels. Neither hour label is in any check's needle.
+
+Dry run in the scratchpad on copies of dark_raiders.html and mkfixture.ps1 as they stand on disk (v15.82; builds 1583 to 1585
+are not on disk, so the copies were staged to the state the chain will leave: VER and the DEVNOW now line moved to 15.85 and a
+stub 15.85 check entry put above 15.82). p1586: OK, 2 edits applied plus DEVNOW. f1586: OK, 1 edit. p1587: OK, 3 edits applied
+plus DEVNOW; VER 15.87 once, one now key, the new header line once and the old gone, the new row line once and the old gone.
+f1587: OK, 1 edit; the 15.87 entry once above the 15.86 line. mkfixture built a fixture from the patched copy (written: True)
+and from the control copy. The new check entry, the patched drawMapOverlay and the patched drawHUD each parse in JScript
+(cscript) as definitions, and so do the two control functions. All five handoff files are ASCII; the DEVNOW now line holds no
+apostrophe; the check holds no return followed by a bare regex.
+
+Anchors: the four-line block from the comment conditions belong on the map, since they change how far you can see through
+ctx.fillText(tod().name+'  '+wx().name+ (once in v15.82); the three-line block from if(MW.lightning) wv.push('lightning shows
+you'); through the c: line of the rows.push (once); var VER='15.86'; (made by p1586); the DEVNOW regex ^  now:'v15\.86:.*$
+(made by p1586); and in mkfixture the line   {v:'15.86',what: (made by f1586). p1586 touches only padFocusables and p1589 only
+navReachable and the FOLLOW pick in updateEnts, so neither anchor moves; if any of p1583 to p1585 touches the end of the map
+header block in drawMapOverlay or the weather rows of the CONDITIONS block, re-check the first two anchors.
+
+Not verified: a night raid by hand. The check itself has not been run in a browser yet.

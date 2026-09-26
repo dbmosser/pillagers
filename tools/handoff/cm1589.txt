@@ -1,0 +1,14 @@
+v15.89: your hire on follow keeps following past a locked room
+
+Doors audit finding. Under FOLLOW your hire picked any shut box within
+160 of him, and the caches inside a locked room passed that test, so
+walking past BLAST FREEZER or FOREMAN OFFICE he aimed at a box no route
+reaches, ground along its wall and stopped following you until you
+moved away or spent the key, and then he took the cache first. A box
+inside a room whose door is still shut is no longer picked; once the
+key opens the room he takes its boxes as before. No text, number or
+seeded draw moved.
+
+Check 15.89. Fails on v15.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

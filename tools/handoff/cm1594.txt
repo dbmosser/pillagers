@@ -1,0 +1,13 @@
+v15.94: the hire death line decides you are in debt only after the run money has landed
+
+Credits audit finding. With money banked, a dead hire and stall money or
+hazard pay coming home with you, the extraction card said the death
+benefit put you in debt while the money line of the same card and the
+Undercroft showed a positive balance: the clause was decided before the
+stall money and the hazard pay landed further down endRaid. It is now
+decided on what the extraction is about to bank, and says you are in debt
+only when the settled balance is below zero. No number moves.
+
+Check 15.94. Fails on v15.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

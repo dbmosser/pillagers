@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.82';
+var VER='15.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11175,7 +11175,15 @@ function raidKey(code,repeat,ev){
     }
   }
   // v6.41, his note: M is a toggle, not a hold.
-  if(code==='KeyM'&&G&&!G.over&&!repeat){ G.mapOpen=!G.mapOpen; }
+  // v15.83, trade audit finding: THE SECTOR MAP NEVER SITS OVER THE OPEN STALL. This toggle ran before the open-stall block
+  // below and had no stall test, so M at the Peddler opened the map; drawMapOverlay is the last draw in the frame and fills
+  // the screen at .94, so the stall vanished behind it while it still owned the keys. ESC in the stall block and TAB through
+  // backOut (G.trade is tested before G.mapOpen there) shut the hidden stall and left the map up, and the digits still sold
+  // the whole backpack and bought stock behind the map, unseen. The open stall owns the keys (v13.49), so M now does nothing
+  // while it is open; the other way in, E with the map already up, is closed in updatePlayer where the stall opens. The
+  // controller was already right: its stall branch in pollPad returns before the D-UP toggle. No number, no player text and
+  // no seeded draw moved.
+  if(code==='KeyM'&&G&&!G.over&&!G.trade&&!repeat){ G.mapOpen=!G.mapOpen; }
   // v10.07, his answers 33 and 35: crouch and sprint are toggles, and they
   // exclude each other.
   // v15.65, stealth audit finding: CTRL WITH THE MOUSE WHEEL SIZES THE HUD WITHOUT TOGGLING CROUCH. Ctrl is crouch (v9.92) and
@@ -16453,7 +16461,11 @@ if(!p.fired||p.wep.auto){
     // kept firing through its magazine behind the panel. The stall lets go of it the way padRelease lets go of pad A (v14.20):
     // the next frame ends the hold, and a grenade being cooked is thrown rather than left to cook off in his hand.
     if(!pedOpen()) say('He has heard what you did to the last one. No deal.');
-    else { G.trade=ped; mouse.down=false; blip('pick'); }
+    // v15.83, trade audit finding: THE SECTOR MAP NEVER SITS OVER THE OPEN STALL. Nothing here read mapOpen, so E with the map
+    // up (or pad X, which padHold turns into E) opened the stall underneath the map, hidden, with its keys live. The map shuts
+    // as the stall opens, the way the downed screen clears it (v14.07), so the panel he just opened is the one in front and
+    // ESC, TAB and the number row act on what he sees. Paired with the M guard in raidKey.
+    else { G.trade=ped; G.mapOpen=false; mouse.down=false; blip('pick'); }
   }
   if(!keys['KeyE']) G.pedLock=0;
   if(G.trade){
@@ -30925,7 +30937,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.82: HOLDING E AT THE PEDDLER KEEPS THE STALL OPEN. Holding E beside the Peddler opened the stall and the first key repeat about half a second later shut it again with nothing said, and it stayed shut until the key was let go. A key repeat of E, ESC, TAB, I or B at the open stall now does nothing, and a fresh press still closes it. Check 15.82 holds E at a Peddler beside him and sends the key repeat, direct and through the page; it fails on v15.81',
+  now:'v15.83: THE SECTOR MAP NEVER SITS OVER THE OPEN STALL. Pressing M at the open Peddler stall put the sector map over it, and E with the map up opened the stall under the map, so the stall was hidden while ESC, TAB and the number keys still acted on it, and 1 sold the whole backpack unseen. M now does nothing while the stall is open, and opening the stall shuts the map, so every key acts on what is on screen. Check 15.83 opens the stall beside a Peddler and presses M, direct and through the page, then opens the stall with the map up; it fails on v15.82',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

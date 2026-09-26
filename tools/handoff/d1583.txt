@@ -1,0 +1,54 @@
+## v15.83 - THE SECTOR MAP NEVER SITS OVER THE OPEN STALL
+
+Trade audit finding (MEDIUM), entry 1 of the confirmed list.
+
+Walk up to the Peddler, press E so the stall panel is up, and press M. In raidKey the map toggle, if(code==='KeyM'&&G&&
+!G.over&&!repeat){ G.mapOpen=!G.mapOpen; }, sits above the open-stall block and had no stall test, so the map opened. In
+render the stall is drawn early (if(G.trade) drawTrade();) and the map last (if(G.mapOpen) drawMapOverlay();), and
+drawMapOverlay begins by filling the whole screen at .94, so the stall vanished behind the map while it still owned the keys.
+ESC then went to the stall block, which runs before the v12.89 map line, so the hidden stall shut and the map stayed up; TAB
+goes through backOut, which tests G.trade before G.mapOpen, so it did the same. The digits still belonged to the stall: 1 ran
+pedSellAll and sold every eligible backpack item at the stall rate behind the map, with the panel unseen, and 2 to 9 bought
+stock. The other way in was open too: nothing in updatePlayer read mapOpen (its only mapOpen line is the downed reset), so E
+with the map already up opened the stall underneath it, and pad X does the same because padHold turns it into KeyE. On a
+controller M itself could not do this: the stall branch in pollPad (v13.49) returns before the D-UP toggle. Nothing marks the
+stacking as deliberate; the v15.35 note that the map comes first describes the mouse handlers. Not a TXSHIP key, not balance.
+
+THE BUILD. Two edits, the finding's own fix. The M toggle in raidKey carries !G.trade, so a fresh M while the stall is open
+does nothing (it falls through the stall block, which does not name M, to the preventDefault list, and nothing further down
+answers M). The stall-open line in updatePlayer reads G.trade=ped; G.mapOpen=false; mouse.down=false; blip('pick');, so
+opening the stall, by E or by pad X, shuts the map in the same frame, the way the downed screen clears it (v14.07). Those are
+the only two places that set mapOpen true apart from the pad D-UP toggle, which cannot run while the stall is open, so no path
+leaves the map over the stall. No number, no dial, no loot table and no word of player text moved, and map building is not
+touched, so the seed 4242 fingerprint in __verifySafe cannot move.
+
+MEASURED. Check 15.83 clears the card and profile, snapshots the profile, deploys at seed 4242 on map 0, clears the keys and
+the open things, empties G.ents and marks every unopened container within 60 units opened (put back in finally), and makes a
+Peddler 40 units to his right. CONTROL: a frame with no key finds the Peddler (G.nearPed) with nothing else claiming E
+(pedBlocked, nearContainer). CONTROL: with the stall shut, raidKey('KeyM',false,null) opens the map and a second M shuts it,
+on either build, so the key path is live; with state raid the same pair is sent as keydown M through window, and if that pair
+does not toggle the map the page arms are left out rather than failing for a reason that is not the finding. CONTROL: a frame
+with E let go then a frame with E held opens the stall (G.trade is the Peddler), on either build. THE FIX, ONE: a fresh M at
+the open stall must leave the map shut and the stall open; on v15.82 mapOpen goes true, so the check fails for the finding's
+own reason. THE FIX, TWO: the stall reopened, a keydown M through window must leave the map shut. GUARD: the stall reopened, a
+fresh raidKey('Escape',false,null) still shuts it. THE FIX, THREE, the other way in: the stall shut and E let go for a frame,
+G.mapOpen set true, then a frame with E held: the stall must open and the map must be shut; on v15.82 the map stays open, so
+this arm also fails. Each reopen that cannot happen skips while keeping any failure already found. In finally the keys and
+the mouse are cleared, G.trade, pedLock, mapOpen, nearPed, pedBlocked and the search are reset, the shut containers are
+reopened, G.ents is put back, the player position and iv are put back, the raid is abandoned, the profile snapshot is
+restored through __applyLoaded, and the card, dials and profile are cleaned.
+
+Older fixture checks: none restaged. Every fixture check that sets mapOpen true (the pause box ESC repeats, the pad A under
+the map, the downed screen, TAB and B ordering, the map draw checks, __mapShot) also sets G.trade null or never opens the
+stall, and no check presses M with the stall open (the only stall keys sent are E, ESC, TAB, I, B, P and the digits). The
+stall checks 15.35 to 15.37 and 15.82 set mapOpen false before they open it.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand with v15.82 already applied by the chain
+(VER 15.82 and the repeat guard from p1582 in place when the copies were taken; a first attempt that reapplied p1582 on top
+found its anchor gone, which is how that was noticed): p1583 printed OK, 3 edits applied plus DEVNOW, and f1583 printed OK,
+1 edit. In the copy the guarded M line and the new stall-open line are each in once, the old M line is gone, VER is 15.83
+and there is one now key in DEVNOW. mkfixture built the drafted fixture from the copy (VER 15.83, check 15.83 once) and a
+control fixture from the live v15.82 game (check 15.83 once against VER 15.82). The new check and both edited lines compile
+clean under the JScript compiler, which catches a deliberately broken function next to them. All five files are ASCII.
+
+Not verified: the stall and the map by hand; the check has not been run in a browser yet.

@@ -1,0 +1,14 @@
+v15.99: the sector map names the weather it is leaving, and the conditions row says night at night
+
+Weather audit finding. From half way through a weather turn the sector
+map header named the coming weather on both sides of the arrow,
+Storming then Storming, while the CONDITIONS row still said Rainy; the
+left of the arrow is now the weather the turn is leaving. The
+CONDITIONS row keeps the night word 15.87 gave it, in the same word as
+the sector map header, and stands on its own if 15.87 is parked; by
+day it names the rolled hour as before. The header hour at night is
+15.87's and is not redone here.
+
+Check 15.99. Fails on v15.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

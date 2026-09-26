@@ -1,0 +1,12 @@
+v15.87: at night the sector map header names a night hour
+
+Sector audit finding. The game rolls an hour of the day for every raid,
+and at night that hour does nothing, but the sector map header and the
+CONDITIONS row printed it anyway, so a raid that went up in the dark
+could say noon, 8am or 6pm beside the weather. At night both lines now
+say night beside the weather, and in daylight they name the rolled hour
+as before.
+
+Check 15.87. Fails on v15.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

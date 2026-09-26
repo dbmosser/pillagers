@@ -1,0 +1,15 @@
+v15.84: net lifetime earnings count stall money carried out
+
+Trade audit finding. The Mainframe card Net lifetime earnings promises
+everything extracted minus everything carried in, but money made by
+selling a backpack at the Peddler stall and carrying it out never
+counted: the sale had already left the backpack when the haul was
+valued, so a run that sold at the stall and walked out added nothing,
+and a run that sold the kit it carried up went down by the whole
+carried-in value while the money was banked. The run row already
+records the sale, so it now counts on extraction, and stall money lost
+to death or abandonment still does not. No price moved.
+
+Check 15.84. Fails on v15.83.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

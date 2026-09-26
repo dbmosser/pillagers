@@ -1,0 +1,69 @@
+## v15.89 - YOUR HIRE ON FOLLOW KEEPS FOLLOWING PAST A LOCKED ROOM
+
+Doors audit finding (MEDIUM), entry 7 of the confirmed list.
+
+Hire a pillager; FOLLOW is the default order. Under FOLLOW, when no fight is on and you are within 420 of him, he picks any
+container within 160 of him and 420 of you, walks to it, and after two seconds within 30 of it marks it opened and copies its
+loot into his pack (updateEnts, the v15.19 pick loop). The filter on that pick was _CT.opened||_CT.locked||_CT.mine||prog>0,
+and nothing in the file ever sets .locked or .mine on a container: mkContainer returns none, and the only .locked in the game
+is the map's room list. The three caches inside each locked room are marked inLocked (the room placer), the strongbox is put
+in a random locked room by spotIn, and ordinary crates that land inside one are kept there on purpose by the reach pass. All
+of them passed the filter. On COLD STORAGE, BLAST FREEZER and FOREMAN OFFICE are 230 by 230 and their caches sit inside the
+room, so walking past the south side of either, or standing at its door prompt, put him within 160 of one. He picked it.
+navPath returns null when start and goal are in different regions (its own v3.71 note names this case), so seekPoint steered
+him straight at the cache and he ground along the shell wall. The drop line lets go only when the box is opened, searched by
+you or more than 280 away, which a 230 room never allows from outside its wall, and the FOLLOW walk sits in the else of the
+goal branch, so he stood there and stopped following for as long as you stayed within 420 of him. When you spent the key he
+was already aimed at the cache, got a route, walked in and took the vault cache into his pack before you reached it. Doors
+cannot be destroyed (noDes, lockWall and door walls all refuse), and the key spend in updatePlayer is the only thing that sets
+a room's open flag, so the room's own flag is the right thing to test. Not a TXSHIP key, not balance, no ruling covers it.
+
+THE BUILD. Two edits, the finding's fix as written (the verdict corrected nothing). One new function, shutRoomAt(map,x,y),
+beside navReachable: the first room in map.locked that is not open and strictly contains the point, else null, the same strict
+inside test the reach pass uses. And the pick filter now reads _CT.opened||_CT.mine||prog>0||shutRoomAt(G.map,_CT.x,_CT.y);
+the dead _CT.locked test goes. A box inside a room whose door is still shut is never picked; the moment the key opens the room
+its caches, the strongbox and any stray crate are picked as before, and a room never shuts again, so the drop line needs no
+change. Rooms are at most nine on a map, so the extra test per box per frame costs nothing. No player text is added or changed,
+no number, dial or loot table moves, and no seeded draw moves: shutRoomAt runs only inside updateEnts at raid time and the
+map build is untouched, so the seed 4242 fingerprint in __verifySafe (ents 85/374, containers 165/593) cannot move.
+
+MEASURED. Check 15.89 deploys COLD STORAGE at seed 4242 on a clean profile, then finds a stage: a room that is still shut with
+its door wall in place, the cache inside it (inLocked, strictly inside) nearest its south wall, your hire 22 below the outer
+face of that wall under the cache and you 40 below it at the door, both spots clear of every wall (spotFree at 14), the hire
+within 160 of the cache and the door prompt within reach (48 of doorX, doorY, under 52). It tries BLAST FREEZER first, then
+FOREMAN OFFICE, and skips if neither gives a stage. Nobody else is on the map and that cache is the only container; the hire is
+a fresh mkRaider made a hire the way 15.19 makes one, on FOLLOW, at 1000 health, and the wave clock is parked. CONTROL: the
+room is shut, the cache is a shut box inside it, and the hire and you are within the pick ranges. One frame of updateEnts is
+the pick; 99 more are five seconds, the nearest he gets to the cache recorded. On v15.88 his goal is the cache from frame one,
+and the check fails with that sentence, naming the room, how far he stood from the cache, whether he was still aimed at it
+after five seconds and how near he got. On v15.89 his goal stays null. Either way the cache must stay shut and his pack empty.
+Then the CONTROL that the stage can produce a pick, the door opened the real way: the room's key pushed into the backpack, E
+held for one frame of updatePlayer at the door, then the room must read open, its door wall gone and the key spent, else the
+check skips (a failure already found is kept in front of the skip, so v15.88 fails rather than skips). The same stage again:
+on the first frame his goal must be the cache, or the check fails, because that would mean the new test shuts him out of an
+open room; then he is stepped for up to 15 seconds until the cache reads opened, and if it never does the check skips. Names
+and message words the check must not find are not involved; the messages name what was measured. In finally the keys are
+cleared, the key taken out of the backpack if still there, the entity list, containers, order, hold point, search and wave
+clock put back, the raid abandoned, the profile restored through the loader, and the card, dials and profile cleaned.
+
+Older fixture checks: none restaged. No check stages a hire beside a locked room: 15.19 and 15.21 stage him on open ground
+beside a ring with a crate the check makes, the LOOT order revive check runs under order loot, and the sector map and restock
+checks that name locked rooms only read their keys. The 15.19 pick on open ground is unchanged, since shutRoomAt is null
+outside every room.
+
+Dry run in the scratchpad on copies of dark_raiders.html and mkfixture.ps1 as they stand (v15.82, build 1582 already applied
+to the working file while this was written; p1586 and f1586 exist and touch padFocusables and the sector page only), staged
+as v15.88 by rewriting the VER line, the DEVNOW now line and the top fixture check to 15.88: p1589 OK, 3 edits plus DEVNOW;
+f1589 OK, 1 edit; a second run of p1589 refuses before writing. shutRoomAt is defined once, the old filter line is gone and
+the new one present once, VER reads 15.89, one now line and it is v15.89. Both handoff scripts are ASCII with LF endings; the
+game keeps its 159 CRLF lines and gains no non-ASCII byte, the fixture script gains none. In the MSHTML engine at document
+mode 11 (the htmlfile COM object, the way 1580 was gated): the whole patched game script compiles with new Function, as does
+the unpatched game as a control, and the new check compiles as an array entry. shutRoomAt run on a toy map in that engine
+answers the shut room for a point inside it, null for a point inside an open room, null outside every room, null for a null
+map and for a map with no rooms, and null on a room's exact edge. Anchors used by p1589: the two comment lines above
+navReachable plus its signature (the new function goes in front of them); the pick filter line plus the dist line under it;
+var VER='15.88'; the DEVNOW now line for v15.88. Anchor used by f1589: the line {v:'15.88',what:.
+
+Not verified: nothing here has run in a browser. The check has not been run on a dry or control fixture, so the two stage
+spots at seed 4242 are not confirmed clear of scattered wrecks (the check skips if they are not), and the hire's walk through
+the opened door to the cache within 15 seconds is by reading only. The finding by hand with a real hire is not verified.
