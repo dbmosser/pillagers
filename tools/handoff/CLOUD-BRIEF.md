@@ -40,7 +40,7 @@ v15.85 to v16.10. 1591 folded in his playtest bug (a guest took the lift alone i
 lightning shows you to them at FLASH_SEE=2 times their sight (his order), 16.04 pause/Superhot/death beat in co-op, 16.05
 teammate revives, 16.06 host owns clock, weather, bolts and rings (beacon for the party), 16.07 card, 16.08 party on the map,
 16.09 voice (host hears all, friends hear the host; friend to friend needs a host relay), 16.10 voice by distance.
-Next: voice relay for 3 or 4, lift radio, then the two-PC items in plan.md (60 vs 144 Hz, drift, host load). Card due by 16.22.
+HIS ORDER 2026-09-26: no more voice work (no relay, no lift radio); the game itself comes first. Card due by 16.22.
 
 ## Queue at the move (ship in this order)
 - 1585 emote bar while downed (drafted, check it is complete), 1586 a controller can choose a sector (HIGH), 1587 night hour on the sector map, 1588 sector run count, 1589 hire never walks to a cache behind a locked door, 1590 pillagers never spawn in a locked room (verify the seed fingerprint). Findings: `tools/handoff/audit-wvw8zcvyw.json`.
