@@ -1,0 +1,13 @@
+v16.00: rain and fog draw at night strength on every night raid
+
+Weather audit finding. Every raid rolls a daylight hour, and at NIGHT
+that hour is hidden and does nothing, except that the rain hairlines
+and the fog haze still took their brightness from it: on a NIGHT raid
+whose hour rolled 8am or noon they drew at full noon strength over the
+darkest scene in the game, and on an 8pm hour at little more than half
+that. At night both now use the darkness figure the lamps use, so every
+night raid in rain or fog draws the same, and by day nothing changes.
+
+Check 16.00. Fails on v15.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

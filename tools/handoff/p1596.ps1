@@ -15,10 +15,10 @@ function SubRx([string]$old, [string]$new) {
 # report (P.ghost), and restoreApply neither took it from the code nor cleared it, so a restored character inherited the replaced
 # character's friend or silently lost their own. One field in the maker, one line in the applier.
 SubRx @'
-         cc:P.cdone||0,   // v15.01, save audit finding 2: the contracts he completed, beside the standing it already carries
+         mr:P.mapRunN||null,
          w:{},s:{}};
 '@ @'
-         cc:P.cdone||0,   // v15.01, save audit finding 2: the contracts he completed, beside the standing it already carries
+         mr:P.mapRunN||null,
          // v15.96, ghost audit finding: A RESTORE CODE CARRIES THE IMPORTED FRIEND. P.ghost is the one row of the Mainframe the
          // code never wrote, so a friend imported from a run report (importGhost) never travelled with the character: a code
          // pasted on a fresh browser came up with the import prompt and the report file was needed again. The friend is the

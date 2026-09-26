@@ -1,0 +1,14 @@
+v15.85: the emote bar closes when he goes down and its keys say why while he is down
+
+Trade audit finding. Shot down with the emote bar up, the bar stayed
+drawn over the downed screen with its caption and its four boxes, V
+opened it again while he was down, and 1 to 4 did nothing and said
+nothing. Going down now shuts the bar with the map and the backpack, V
+while he is down opens nothing and says Not while you are down, the
+line the belt already uses from the floor, and a digit pressed on the
+bar in a roll says Not while you are rolling and leaves the bar up for
+the press after the roll. No number moved.
+
+Check 15.85. Fails on v15.84.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

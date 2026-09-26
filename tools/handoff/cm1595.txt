@@ -1,0 +1,13 @@
+v15.95: the backpack panel prints the price with the thousands separator
+
+Credits audit finding. With an item worth 1,000 or more selected in the
+backpack, the price line under the grid printed $2600 each for a Meridian
+Reactor Core while the stash hover, the tag-junk hint and the Peddler panel
+print the same price as $2,600. The line now prints the price the way
+every other price surface does, on the raid panel and on the Undercroft
+backpack that draws through the same function, and nothing under 1,000
+changes. Display only: no number moves.
+
+Check 15.95. Fails on v15.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

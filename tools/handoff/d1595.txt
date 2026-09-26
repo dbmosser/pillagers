@@ -1,0 +1,55 @@
+## v15.95 - THE BACKPACK PANEL PRINTS THE PRICE WITH THE THOUSANDS SEPARATOR
+
+Credits audit finding (LOW), entry 3 of the confirmed list.
+
+In a raid, pick up a Meridian Reactor Core (or anything worth $1,000 or more) and press I. Select it: the line under the grid
+read '$2600 each'. In drawBag the selected-stack line is ctx.fillText('$'+ival(sst.key)+' each',x+PW-11,hintY); and ival is
+function ival(k){ return Math.round((ITEMS[k]?ITEMS[k].val:0)*CFG.lootMult); }, a plain Number, so the concatenation prints
+the bare digits. ITEMS.reactor is val 2600, so an item over $999 exists. Every sibling print goes through toLocaleString: the
+stash hover prints '$'+ival(k).toLocaleString()+' each' and the item-menu tag-junk hint prints '$'+ival(key).toLocaleString()
++' each', the identical wording with the comma; the Peddler panel one keypress away prints '+'+'$'+tot.toLocaleString() and
+'Carried home: '+'$'+fullv.toLocaleString(). The v15.05 gamble-button fix was exactly this class (display only, the price
+unchanged). drawHubBag draws the same panel on the Undercroft floor with G swapped to the Undercroft backpack, so the floor
+read the same bare number. No comment marks the bare number as deliberate, the line is not a TXSHIP key (the table's only
+' each' is inside "They fight each other and the machines as well as you."), and it is not balance: the price is the same
+number, spelled with the comma.
+
+THE BUILD. One edit on the selected-stack line of drawBag, the finding's own fix (the verdict corrected nothing): the line
+now reads ctx.fillText('$'+ival(sst.key).toLocaleString()+' each',x+PW-11,hintY); with a v15.95 comment above it in the
+file's style. The anchor is the three-line block of the right alignment, the price line and the left alignment, which
+matches the file once. Under 1,000 toLocaleString prints the same digits, so the Data Core still reads $520 each. The
+Undercroft backpack is covered by the same line through drawHubBag. No number, dial default, loot table or word of player
+text moved; the ' each' wording is unchanged and no new player text was added; map building is not touched, so the seed
+4242 fingerprint in __verifySafe (ents {0:85,1:374}, containers {0:165,1:593}) cannot move.
+
+MEASURED. Check 15.95 clears the card, preps the run, resets the dials, pins the defaults and cleans the profile, snapshots
+the profile, and reads the two prices as the game computes them: ival('reactor') must be at or above 1,000 and
+ival('core') below it, else SKIP, and the browser must print the big number with a separator (big.toLocaleString() differs
+from String(big)), else SKIP, so the two spellings can be told apart. Then a fresh __deploy (kit [], map 0, seed 4242),
+G must be the live raid in state 'raid', and ctx.fillText is wrapped to record every string. The backpack is staged as
+one Data Core with no belt claims and it selected, drawBag() is called directly. CONTROL: the Data Core's name is drawn
+and a price line equal to '$'+520+' each' is drawn, on either build (no separator under 1,000), else SKIP: the line is
+found where the check reads. THE FINDING: the backpack staged as one Meridian Reactor Core, selected, drawn again; its
+name must be drawn (else SKIP) and a price line equal to '$'+ival('reactor').toLocaleString()+' each' must be among the
+strings. On v15.94 the line drawn is the bare '$2600 each', which the check names in its failure sentence, so it fails
+for the finding's own reason. The expected strings are computed from ival and toLocaleString at run time, never written
+out. In finally fillText is put back (deleted if it was not an own property), the raid's backpack list, belt claims, bagOpen,
+bagSel and drag are put back, a live raid is abandoned, the profile snapshot is restored through the loader, and the card,
+dials and profile are cleaned.
+
+Older fixture checks: none restaged. No fixture check and no f-script of this chain reads a backpack price line ending in
+' each' (the only ' each' strings in mkfixture.ps1 are prose in comments and unrelated check text); 15.59 reads the hint
+line of the same panel and matches the gun's name and the key words, never the price.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand at v15.84 (the chain from 1585 to 1594 is
+drafts in the queue), with the version stamps stood in at 15.92 for the chain: p1593 (OK, 2 edits plus DEVNOW), f1593
+(OK, 1 edit), p1594 (OK, 2 edits plus DEVNOW), f1594 (OK, 1 edit), then p1595 printed OK, 2 edits applied plus DEVNOW, and
+f1595 printed OK, 1 edits applied. The toLocaleString line is in the copy once and the bare line is gone, VER is 15.95, one
+now key in DEVNOW with no apostrophe inside, check 15.95 in the fixture source once above 15.94. mkfixture built both the
+drafted fixture (check 15.95 once, the new line once) and the control fixture from the stood-in v15.94 game with the
+drafted fixture script (check 15.95 once, the new line absent, the bare line present). The new check and the edited block
+both parse in JScript (cscript). Both scripts are ASCII. The anchor block is touched by no p-script from 1580 to 1599:
+none of them names sst.key, hintY or the ' each' line (grep), and p1593 and p1594 touch only renderGamble, endRaid and the
+stamps.
+
+Not verified: the panel by hand with a real Meridian Reactor Core; the check has not been run in a browser yet.
