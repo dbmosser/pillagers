@@ -13,7 +13,7 @@
   .frames div{flex:1;min-width:480px}
   iframe{width:100%;height:420px;border:1px solid #3a3028;background:#000}
 </style>
-<h1>PILLAGERS net test, multiplayer builds 1 to 7</h1>
+<h1>PILLAGERS net test, multiplayer builds 1 to 8</h1>
 <p class="dim">The live half of checks 15.74 and 15.75, run by hand. Two copies of the fixture load below, one with ?netslot=A and
 one with ?netslot=B, each playing a save of its own, and RUN links them for real on this PC: A hosts through its own PARTY window
 buttons, B joins with the invite code, A lets B in with the reply code, and both rosters must show two within five seconds. Then
@@ -23,7 +23,7 @@ copy spoken for by this page tries to join on the wrong version and must be turn
 (the control). Last, B quits the party and A must take B off its floor. The seeded stream of both copies must not move. Keep
 this tab in front while it runs: a hidden tab stops both floors. Serve the tools folder on a shard port and open
 http://localhost:8805/nettest.html (never :8802, his play profile, and never :8803, the dry chain). Add ?f=fxdry77.html to test a
-dry fixture instead of fixture.html (fxdry78.html for build 5, fxdry79.html for build 6, fxdry80.html for build 7). The two net saves are separate from every other save on this origin.</p>
+dry fixture instead of fixture.html (fxdry78.html for build 5, fxdry79.html for build 6, fxdry80.html for build 7, fxdry91.html for build 8). The two net saves are separate from every other save on this origin.</p>
 <p class="dim">RUN SAME MACHINE is the live half of check 15.76 (build 3): copy A presses its own 2 PLAYER CO-OP (SAME MACHINE) row. The
 window it asks for is stood in for by this page, which loads the address A asks for (this page, ?p2=1, the mode and the pair
 code) into copy C below, so the popup blocker does not decide the test; C is otherwise the real player 2 window, on the
@@ -46,14 +46,21 @@ construction), so the switch is read there and the master gain only where a cont
 copy A ascends through the real sector page path (the lift station fired from the handle, ASCEND TO THIS SECTOR, MY LOADOUT;
 __deploy on sector 0 at seed 4242 when the station cannot be fired), copy C must be up top within 5 s on the same seed with
 the same fingerprint, A walks on a real W held on its own window (S if a wall stops W) and 300 ms after it stops C must draw A
-within 16 units of where A stands, and A must draw C. Then A abandons: in this slice C's raid goes on (what C does is written
-down) and C must stop drawing A within 3 s. Both come back down before the party ends. Only two real PCs can show the raid
-word and the fast channel over a home router, the frame rate of two raids on two PCs, and whether the fingerprint holds across
-two different browsers.</p>
+within 16 units of where A stands, and A must draw C. Then A abandons: from build 8 (v15.91) C's raid must end as ABANDONED
+within 2 s with the host left line on its run card, his ruling (before that slice C's raid went on and C only stopped drawing
+A). Both come back down before the party ends. Only two real PCs can show the raid word and the fast channel over a home
+router, the frame rate of two raids on two PCs, and whether the fingerprint holds across two different browsers.</p>
 <p class="dim">Build 7, one set of enemies run by the host (check 15.80), is the enemy step inside RUN RAID, right after both copies are up
 top: the body nearest player A in copy A (every body carries the number it was given at the build, the same on both copies)
 must be held by copy C within 500 ms within 16 units of where A runs it, and after 2 s of frames both copies must still agree
 on that body within 24 units. Copy A must say it runs its bodies for the party and copy C that it watches the host run them.</p>
+<p class="dim">Build 8, loot per player and the host leaving ends the run for everyone (check 15.91), is the loot step inside RUN RAID, right
+after the enemy step: copy C is stood beside the nearest unopened box it holds (every box carries the number it was given at the
+build, the same on both copies; the stand is a test only teleport on the net handle) and holds E for real on its own window for
+the time the box takes. The loot must land in C's own backpack, on its own raid on the player 2 save, one item at a time as the
+bar fills, and both copies must draw that box searched, with the last item in C, within 500 ms of each other; A's own backpack
+must not gain. Copy A must say it owns the boxes for the party and copy C that it searches through the host. Then A abandons and
+C must end as ABANDONED within 2 s with the host left line on its run card.</p>
 <div>
   <button id="run" disabled>RUN</button>
   <button id="runsame" disabled>RUN SAME MACHINE</button>
@@ -383,8 +390,8 @@ on that body within 24 units. Copy A must say it runs its bodies for the party a
   // BUILD 6: THE PARTY ASCENDS TOGETHER. Copy A ascends through the real sector page path when the lift station can be fired
   // from the handle (the lift, ASCEND TO THIS SECTOR, MY LOADOUT), else through __deploy on sector 0 at seed 4242; copy C must
   // be up top within 5 s on the same seed with the same fingerprint; A walks on a real W held on its own window and 300 ms
-  // after it stops C must draw A within 16 units of where A stands, and A must draw C; then A abandons, and in this slice
-  // C's raid goes on (what C does is written down) while C stops drawing A within 3 s. Both come back down after.
+  // after it stops C must draw A within 16 units of where A stands, and A must draw C; then A abandons, and from build 8 C's
+  // raid must end as ABANDONED within 2 s with the host left line on its run card. Both come back down after.
   function upView(f,seat){ var u=W(f).__net.up(), i; for(i=0;i<u.list.length;i++) if(u.list[i].seat===seat) return u.list[i]; return null; }
   function comeDown(A,C){
     try{ if(A.__net.up().on) A.__endRaid('abandon'); }catch(e){}
@@ -416,6 +423,48 @@ on that body within 24 units. Copy A must say it runs its bodies for the party a
       if(!c||!a) bad.push('enemies: 2 s later one copy no longer holds body '+near.id+' (A '+!!a+', C '+!!c+')');
       else if(d2>24) bad.push('enemies: 2 s later the copies disagree on body '+near.id+' by '+d2.toFixed(1)+' units (the limit is 24)');
     });
+  }
+  // BUILD 8: LOOT PER PLAYER. Right after the enemy step, copy C is stood beside the nearest unopened box it holds (a test only
+  // teleport on its handle; the box carries the number it was given at the build, the same on both copies) and holds E for real
+  // on its own window for the time the box takes. The loot must land in C's own backpack, on its own raid on the player 2 save;
+  // both copies must draw the box searched, with the last item in C, within 500 ms of each other; A's own backpack must not gain.
+  function boxOf(f,cid){ var v=W(f).__net.cont(), i; for(i=0;i<v.list.length;i++) if(v.list[i].cid===cid) return v.list[i]; return null; }
+  function lootStep(A,C,bad,rep){
+    if(typeof A.__net.cont!=='function'||typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'){ bad.push('this fixture has no container view in its net handle (a build before v15.91), so the loot step cannot run'); return Promise.resolve(); }
+    var vc=C.__net.cont(), va=A.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, t0=0, tA=null, tC=null, tBag=null, bagC0=0, bagA0=0, n=0, ba=null;
+    log('loot: A holds '+va.n+' boxes ('+va.numbered+' numbered, owns them for the party: '+va.host+'); C holds '+vc.n+' ('+vc.numbered+' numbered, searches through the host: '+vc.peer+')');
+    if(!va.host) bad.push('loot: copy A does not own the boxes for the party');
+    if(!vc.peer) bad.push('loot: copy C does not search through the host');
+    for(i=0;i<vc.list.length;i++){ b=vc.list[i]; if(b.cid<0||b.op||b.by>=0) continue; if(b.ty!=='crate'&&b.ty!=='locker'&&b.ty!=='safe'&&b.ty!=='body') continue; d=gap(b,me); if(d<bd){ bd=d; box=b; } }
+    if(!box){ bad.push('loot: copy C holds no unopened numbered box to search'); return Promise.resolve(); }
+    ba=boxOf(fa,box.cid); n=ba?ba.n:0;
+    log('loot: the nearest unopened box to C is number '+box.cid+' ('+box.ty+') at '+xy(box)+', '+Math.round(bd)+' units off; A lists '+n+' items in it, '+(ba?ba.tm:'?')+' s to search');
+    if(!ba||!n){ bad.push('loot: copy A lists no items in box '+box.cid); return Promise.resolve(); }
+    bagC0=vc.bag.length; bagA0=va.bag.length;
+    C.__net.stand(box.x+6,box.y);
+    clearFloor(fc);
+    // C's next word tells A where it now stands, so the request is not refused as far away.
+    return sleep(250).then(function(){
+      var holdMs=Math.round((ba.tm||1)*1200+600), held, watch;
+      t0=Date.now();
+      held=hold(fc,'KeyE','e',holdMs);
+      watch=wait(function(){
+        var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid), bc=C.__net.cont().bag.length;
+        if(a&&a.op&&tA===null) tA=Date.now();
+        if(c&&c.op&&tC===null) tC=Date.now();
+        if(bc>=bagC0+n&&tBag===null) tBag=Date.now();
+        return (tA!==null&&tC!==null&&tBag!==null)?true:null;
+      },holdMs+1500,'the box to read searched on both copies with the loot in C');
+      return Promise.all([held,watch]);
+    }).then(function(){
+      var vc2=C.__net.cont(), va2=A.__net.cont(), bc=vc2.bag.length-bagC0, a=boxOf(fa,box.cid);
+      rep.lootItems=bc; rep.lootMs=Math.max(Math.abs(tA-tBag),Math.abs(tC-tBag),Math.abs(tA-tC));
+      log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C own backpack '+JSON.stringify(vc2.bag)+'; A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
+      if(bc!==n) bad.push('loot: '+bc+' items landed in C, not the '+n+' A listed');
+      if(rep.lootMs>500) bad.push('loot: the copies took '+rep.lootMs+' ms to agree the box is searched with the loot in C (the limit is 500)');
+      if(va2.bag.length!==bagA0) bad.push('loot: copy A own backpack gained '+(va2.bag.length-bagA0)+' from C search');
+      if(a&&a.n) bad.push('loot: A still lists '+a.n+' items in the box');
+    },function(e){ var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid); throw new Error(e.message+' (A: '+JSON.stringify(a)+', C: '+JSON.stringify(c)+', C backpack '+JSON.stringify(C.__net.cont().bag)+', C asked '+JSON.stringify(C.__net.cont().srch)+', A holds '+JSON.stringify(A.__net.cont().holds)+')'); });
   }
   function raidStep(A,C,bad,rep){
     if(typeof A.__net.up!=='function'||typeof C.__net.up!=='function'||typeof A.__endRaid!=='function'||typeof A.__deploy!=='function'){
@@ -449,6 +498,10 @@ on that body within 24 units. Copy A must say it runs its bodies for the party a
       if(!uc.fp||!ua.fp||uc.fp.h!==ua.fp.h||uc.fp.e!==ua.fp.e||uc.fp.c!==ua.fp.c||uc.fp.w!==ua.fp.w||uc.fp.wx!==ua.fp.wx) bad.push('raid: the fingerprints differ (A '+JSON.stringify(ua.fp)+', C '+JSON.stringify(uc.fp)+')');
       // BUILD 7: the enemies, before A walks. A failure here is written down and the step goes on.
       return entStep(A,C,bad,rep).then(null,function(e){ bad.push('enemies: '+e.message); }).then(function(){
+        // BUILD 8: C searches a box beside it through the host. A failure here is written down and the step goes on.
+        return lootStep(A,C,bad,rep).then(null,function(e){ bad.push('loot: '+e.message); });
+      }).then(function(){
+        clearFloor(fa);
         a0=A.__net.up().me;
         return hold(fa,'KeyW','w',300);
       });
@@ -470,13 +523,15 @@ on that body within 24 units. Copy A must say it runs its bodies for the party a
         if(!w||!w.shown||dc>16) bad.push('raid: copy A does not draw copy C where it stands up top ('+(w?(dc.toFixed(1)+' units off'):'not drawn')+')');
       });
     }).then(function(){
-      // A abandons. In this slice C's raid goes on; A is no longer drawn on C.
+      // BUILD 8: A abandons, and C must end as ABANDONED within 2 s with the host left line on its run card (his ruling: the
+      // host leaving counts as abandon for everyone; before v15.91 C's raid went on and C only stopped drawing A).
+      var tq=Date.now();
       A.__endRaid('abandon'); try{ A.__topClear(); }catch(e){}
-      return wait(function(){ var v=upView(fc,sa); return !(v&&v.shown); },3000,'copy C to stop drawing A after A abandoned').then(function(){
-        var uc=C.__net.up();
-        log('raid: A abandoned; C is '+(uc.on?'still up top':'not up top')+(uc.over?(' and its raid is over ('+uc.over+')'):'')+', and no longer draws A; C PARTY status: '+(st(fc).status||''));
-        if(!uc.on||uc.over) bad.push('raid: A abandoning ended C raid in this slice ('+JSON.stringify({on:uc.on,over:uc.over})+')');
-      },function(e){ bad.push('raid: '+e.message); });
+      return wait(function(){ var u=C.__net.up(), t=el(fc,'oc_title'), s=el(fc,'oc_sub'); return (u.over==='abandon'&&t&&t.textContent==='ABANDONED'&&s&&(/HOST/).test(s.textContent))?s.textContent:null; },2000,'copy C to end as ABANDONED with the host left line after A abandoned').then(function(line){
+        rep.hostLeftMs=Date.now()-tq;
+        log('raid: A abandoned; C ended as ABANDONED '+rep.hostLeftMs+' ms later with the line: '+line+'; C PARTY status: '+(st(fc).status||''));
+        var v=upView(fc,sa); if(v&&v.shown) bad.push('raid: C still draws A after both raids ended');
+      },function(e){ var u=C.__net.up(); bad.push('raid: '+e.message+' (C up top '+u.on+', over '+u.over+', card title '+(el(fc,'oc_title')?el(fc,'oc_title').textContent:'?')+', line '+(el(fc,'oc_sub')?el(fc,'oc_sub').textContent:'?')+')'); });
     }).then(function(){ comeDown(A,C); A.__net.open(); C.__net.open(); },function(e){ comeDown(A,C); A.__net.open(); C.__net.open(); throw e; });
   }
   // BUILD 3: THE SAME MACHINE PAIR. Copy A picks 2 PLAYER CO-OP (SAME MACHINE) through its own row. Its window.open is stood in
@@ -492,7 +547,7 @@ on that body within 24 units. Copy A must say it runs its bodies for the party a
       try{ delete A.open; }catch(e){}
       try{ A.__net.reset(); if(C&&C.__net) C.__net.reset(); }catch(e){}
       var pass=!bad.length;
-      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200), C heard A switch its sound in '+(rep.sndMs===undefined?'?':rep.sndMs)+' ms (limit 200), C went up top '+(rep.raidMs===undefined?'?':rep.raidMs)+' ms after A (limit 5000), A walked '+(rep.raidWalked===undefined?'?':rep.raidWalked)+' units up top and C drew it '+((rep.raidGap===undefined||rep.raidGap===null)?'?':rep.raidGap)+' units off (limit 16), the body nearest A was held by C in '+(rep.entMs===undefined?'?':rep.entMs)+' ms (limit 500) '+(rep.entGap===undefined?'?':rep.entGap)+' units off (limit 16) and '+((rep.entGap2===undefined||rep.entGap2===null)?'?':rep.entGap2)+' units off after 2 s (limit 24)'+(pass?'':('; '+bad.join('; ')));
+      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200), C heard A switch its sound in '+(rep.sndMs===undefined?'?':rep.sndMs)+' ms (limit 200), C went up top '+(rep.raidMs===undefined?'?':rep.raidMs)+' ms after A (limit 5000), A walked '+(rep.raidWalked===undefined?'?':rep.raidWalked)+' units up top and C drew it '+((rep.raidGap===undefined||rep.raidGap===null)?'?':rep.raidGap)+' units off (limit 16), the body nearest A was held by C in '+(rep.entMs===undefined?'?':rep.entMs)+' ms (limit 500) '+(rep.entGap===undefined?'?':rep.entGap)+' units off (limit 16) and '+((rep.entGap2===undefined||rep.entGap2===null)?'?':rep.entGap2)+' units off after 2 s (limit 24), C searched a box and '+(rep.lootItems===undefined?'?':rep.lootItems)+' items landed in its own backpack with both copies agreeing it is searched within '+(rep.lootMs===undefined?'?':rep.lootMs)+' ms (limit 500), and C ended as abandoned '+(rep.hostLeftMs===undefined?'?':rep.hostLeftMs)+' ms after A left (limit 2000)'+(pass?'':('; '+bad.join('; ')));
       resEl.className=pass?'ok':'bad'; resEl.textContent=line; log(line);
       document.title=(pass?'PASS':'FAIL')+' net test';
       window.__NETTEST_SAME={pass:pass,bad:bad,rep:rep,line:line};
@@ -562,8 +617,8 @@ on that body within 24 units. Copy A must say it runs its bodies for the party a
       log('saves: player 2 save '+(p2?(p2.length+' chars'):'none')+' under '+P2K+'; main save and save pointer '+((ls(MAIN)===ls0.main&&ls(AS)===ls0.as)?'unchanged':'CHANGED'));
       if(A.__net.rngs()!==rngA0||C.__net.rngs()!==rngC0) bad.push('the seeded stream moved in one of the windows while the party stood on the floor');
     }).then(function(){
-      // BUILD 6: the party ascends together. After the stream is sampled, since a raid build moves it by design. A failure
-      // here is written down and the run goes on.
+      // BUILD 6, 7 and 8: the party ascends together, the enemies, the loot and the host leaving. After the stream is sampled,
+      // since a raid build moves it by design. A failure here is written down and the run goes on.
       return raidStep(A,C,bad,rep).then(null,function(e){ bad.push('raid: '+e.message); });
     }).then(function(){
       if(ls(MAIN)!==ls0.main) bad.push('the main save changed while the party went up top');

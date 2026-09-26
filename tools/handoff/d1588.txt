@@ -1,0 +1,74 @@
+## v15.88 - THE SECTOR CARD COUNTS EVERY RUN HE HAS MADE THERE
+
+Sector audit finding (LOW), entry 6 of the confirmed list.
+
+Open the sector page after a long career. Each card prints a facts line that opens with you: N runs here, or YOU HAVE NEVER
+RAIDED HERE when N is 0, and renderSector got N by walking P.log and counting the records whose mapName is the card's map.
+commitRun, the one writer of the log, does P.log.push(rec) and then if(P.log.length>60) P.log.shift(): the oldest record is
+thrown away for good once the log passes sixty. So eighty raids on COLD STORAGE read you: 60 runs here, and twenty early raids on
+THE COLD MILE followed by sixty on COLD STORAGE made the Mile card say YOU HAVE NEVER RAIDED HERE. He was at 53 or more raids
+when this was found. The v12.97 note on netEarn in restoreMake already records that the log keeps only the last sixty runs, and
+P.runs and P.netEarn are kept as lifetime counters for exactly that reason; nothing kept a lifetime count per map. Every
+committed run carries a map name (mapName:FIXED_MAPS[clamp(...)].name) and bot-sim runs never reach commitRun, so nothing else
+skews the count. The Clear recorder button (P.log=[]) made every card say never raided the same way. A wrong fact on the card,
+not balance; the sentence templates do not change, and the TXSHIP keys that mention you: 2 runs here and YOU HAVE NEVER RAIDED
+HERE are the old long facts lines with first contact and median haul in them, which the card has not printed since v13.26 and
+which are exact-only by the v11.51 rule, so no key is reworded or newly matched.
+
+THE BUILD. Four code edits, the verdict's corrected fix. In commitRun, before the push: if P.mapRunN does not exist it is built
+once from whatever the log still holds (so an old save keeps the count it could already show), then the record's map gets one
+more. In renderSector, after the loop that counts the log, the card takes the tally when it is larger:
+if(P.mapRunN&&(P.mapRunN[M.name]|0)>_myR) _myR=P.mapRunN[M.name]|0; so a save with no tally yet reads the log as before and
+the count can never go down. saveProfile writes the whole of P, so the tally is saved and loaded with no other change (the loader
+takes P=d wholesale). The verdict found the case the finding's own fix missed: restoreApply resets per-character state and does
+not touch the log, so a restored character would have worn the replaced character's tally, the mistake v15.00 to v15.02 fixed
+for rivals and contracts. restoreMake now carries mr:P.mapRunN||null beside cc, and restoreApply sets P.mapRunN from o.mr when
+it is a plain object and to null otherwise, so an older code starts clean and the next commit reseeds from the log. Clear
+recorder still empties the log and leaves the tally alone, which also fixes the never-raided message after a clear. The name
+mapRunN was used nowhere before. Each edit carries a v15.88 comment in the file's style. No word of player text was reworded,
+no number, dial, loot table or seeded draw moved; map building is not touched, so the seed 4242 fingerprint in __verifySafe
+(ents 85/374, containers 165/593) cannot move.
+
+MEASURED. Check 15.88 clears the card and profile, snapshots the profile, then stages the log itself: sixty records, the two
+oldest on the second sector (FIXED_MAPS[1].name) and fifty-eight on the first, and deletes any tally so the first commit must seed
+one from the log. It draws the cards with renderSector() directly, the way check 13.26 does, and reads each card's textContent
+with the whitespace folded. CONTROL: under the cap the first card contains you: 58 runs here and the second you: 2 runs here,
+on either build, else SKIP with what was drawn; this proves the counting and the render path. Then three fresh records for the
+first sector go through commitRun, the real path (addProgress, the push, the shift, saveProfile), else SKIP if commitRun refuses
+one. CONTROL: the log holds exactly sixty records and none on the second sector, else SKIP; this proves the aging happened on
+either build. THE FIX: the first card must contain you: 61 runs here and the second you: 2 runs here. On v15.87 the first reads
+you: 60 runs here and the second YOU HAVE NEVER RAIDED HERE, so the check fails for the finding's own reason with two sentences
+(the second names the never-raided sentence when it sees it; that needle is assembled from pieces). THE FIX, CARRIED: a code is
+made with restoreMake, the tally is overwritten with 5 on the first sector, and the code is applied with restoreApply; the tally
+must read 61 again. On v15.87 the code carries no tally and the restore leaves 5, a third sentence. In finally the profile is
+restored through __applyLoaded (the log, the tally, the XP and credits addProgress moved, and everything restoreApply reset, all
+with it), renderSector redraws from the restored profile, and the card and profile are cleaned. No raid, no pad, no stub: only
+P, the log and the card.
+
+Older fixture checks: none restaged. Check 13.26 sets P.log to nothing and then to one record per map and reads the cards only
+for the robot rate line and the three figures he cut, never the run count, and with no tally in a clean profile the count is
+the log's anyway. The Clear recorder check clears the log and reads P.log. The restore code checks (12.97, 14.69, 15.00 to
+15.02, 15.13 and the read-back check) make a code with restoreMake and apply it; none enumerates the code's keys, and mr adds
+ten characters as null to the 15.13 length budget of 4,000. Every check that reaches commitRun goes through a real raid with a
+fresh log, where the seeded tally equals the log.
+
+Dry run in the scratchpad on copies of dark_raiders.html and mkfixture.ps1 as they stand on disk (v15.83, top check 15.83;
+the 1584 handoff files exist but are not on disk and 1585 is not written, so the copies were staged to the state the chain will
+leave: p1584 and f1584 applied, then VER and the DEVNOW now line moved to 15.85 and a stub 15.85 check entry put above 15.84).
+p1586: OK, 2 edits plus DEVNOW. p1587: OK, 3 edits plus DEVNOW. p1588: OK, 5 edits applied plus DEVNOW; VER 15.88 once, one now
+key, the seed line once, the card line once, mr:P.mapRunN||null once, the restoreApply line once, the push and shift block
+still once and mapRunN eleven times in the game (comments included). f1586, f1587, f1588: OK, 1 edit each; the 15.88 entry once
+and above the 15.87 line. mkfixture built a fixture from the patched copy (written: True, VER 15.88, the 15.88 entry once). The
+patched commitRun, renderSector, restoreMake and restoreApply and the new check entry parse in JScript (cscript) as definitions.
+All five handoff files are ASCII; the DEVNOW now line holds no apostrophe; the check holds no return followed by a bare regex.
+
+Anchors: the three-line block   addProgress(rec); /   P.log.push(rec); /   if(P.log.length>60) P.log.shift(); in commitRun
+(once); the two-line block var _myR=0; (at column 0, as the file has it) / the for(var _mr=0;...) line in renderSector (once);
+the two-line block          cc:P.cdone||0,   // v15.01, ... /          w:{},s:{}}; in restoreMake (once); the two-line block
+  P.cdone=o.cc|0; /   var k; in restoreApply (once); var VER='15.87'; (made by p1587); the DEVNOW regex ^  now:'v15\.87:.*$
+(made by p1587); and in mkfixture the line   {v:'15.87',what: (made by f1587). p1584 touches runEarnings and VER, p1586 only
+padFocusables, p1587 drawMapOverlay and the CONDITIONS rows of drawHUD, p1589 navReachable and the FOLLOW pick in updateEnts, so
+none of the four code anchors moves; if 1585 touches commitRun, the run count in renderSector or the cc lines of the restore
+code, re-check those anchors.
+
+Not verified: a long career by hand. The check itself has not been run in a browser yet.

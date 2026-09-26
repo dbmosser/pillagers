@@ -1,0 +1,16 @@
+v15.90: pillagers never spawn inside a locked room
+
+Doors audit finding. A pillager placed at the drop or arriving in a
+wave could land on the open floor inside BLAST FREEZER or FOREMAN
+OFFICE, because the free spot finder only asks whether a point is
+clear of walls and nothing looked at the point afterwards. He took
+the room's caches before you had found the key, the sector map read
+LOOTED on a room you could not enter, and he stayed trapped there
+with his name on the board for the whole raid. One placed there at
+the drop now stands outside its door instead, and a wave passes over
+any spot inside a room whose door is still shut. No seeded draw
+moved, so the maps are what they were.
+
+Check 15.90. Fails on v15.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

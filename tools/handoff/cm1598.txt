@@ -1,0 +1,13 @@
+v15.98: the imported friend remembers what you did to him
+
+Ghost audit finding. Killing the friend imported from a run report wrote
+a kill on his own record and the game said he will remember that, but
+every raid after built him friendly again with the FRIENDLY plate, and
+his nod or his watching came from the standing of the pillager whose body
+he took. His own record is now read when the raid is built: a kill on it
+makes him hostile with a grudge and his standing is his own, while with
+no kill he is friendly as before.
+
+Check 15.98. Fails on v15.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

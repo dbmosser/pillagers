@@ -1,0 +1,12 @@
+v15.88: the sector card counts every run he has made there
+
+Sector audit finding. The sector page counted your runs on a map from
+the run log, which keeps only the last sixty runs, so past sixty raids
+the card showed too few, and a map whose raids had all aged out of the
+log said YOU HAVE NEVER RAIDED HERE. Each map now keeps its own lifetime
+tally, seeded once from the log and carried in a restore code, and the
+card shows the larger of the two.
+
+Check 15.88. Fails on v15.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

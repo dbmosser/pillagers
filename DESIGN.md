@@ -40024,6 +40024,66 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.84 - NET LIFETIME EARNINGS COUNT STALL MONEY CARRIED OUT
+
+Trade audit finding (LOW), entry 2 of the confirmed list.
+
+Sell a backpack of found loot at the Peddler stall, say for $5,500, and extract. pedSellAll sets G.bag to what he kept, adds
+the sale to G.pedCarry and G.pedSold, and copies it to G.tel.pedSold; endRaid values the haul afterwards (haul is the sum of
+ival over G.bag, so the sold items are no longer in it), pays P.credits+=G.pedCarry on extraction (v7.62) and the outcome card
+says Stall money carried out, banked. But runEarnings, the one sum behind the Mainframe card Net lifetime earnings (addProgress
+through commitRun for every new run, netEarnFromLog once for a profile from before the counter), read only
+((rec.outcome==='extract')?(rec.haul||0):0)-(rec.carriedIn||0). So that run added $0 to a card whose text promises everything
+you have extracted, minus everything you carried in, and a run that sold the kit it carried up went down by the whole
+carried-in value while the money was banked. The stall already takes part in the bookkeeping the other way: since v13.91 a
+purchase adds to G.carriedIn and is subtracted here, so a purchase lowers the figure but a sale never raised it. The run row
+already carries the figure: pendingRun takes pedSold:T.pedSold||0, and pedSellAll is the only writer of pedCarry and pedSold
+and adds the same amount to both. runEarnings dates from v10.27, later than v7.62 when stall money became carried money, and
+no comment or ruling leaves the sale out on purpose. It is a displayed counter only: no Credits, XP, dial or loot table reads
+it, no player text is a TXSHIP key here, and no text is changed.
+
+THE BUILD. One edit, the finding's own fix (the verdict corrected nothing): runEarnings counts
+(rec.haul||0)+(rec.pedSold||0) on extraction, minus (rec.carriedIn||0) as before. The stall money counts only where the game
+pays it out: on death or abandonment the outcome card says it was lost where he fell or left behind, and the row sums exactly
+as it did. An old row with no pedSold reads 0 for it and sums as it did, so a profile from before the stall figure resums to
+the same number. The edit carries a v15.84 comment above the function in the style of the file. No price, no dial, no loot
+table, no seeded draw and no word of player text moved, and map building is not touched, so the seed 4242 fingerprint in
+__verifySafe cannot move.
+
+MEASURED. Check 15.84 first reads the sum on rows shaped the way endRaid writes them. CONTROL, on either build: an extraction
+of 4000 with 1000 carried in earns 3000, a row with only a haul of 500 earns 500 (or the check skips, since the sum cannot be
+read). CONTROL, on either build: dead or abandoned with 5500 sold earns 0, dead with 3000 carried in and 7150 sold earns
+-3000, because stall money dies with him. THE FIX: an extraction with an empty backpack, nothing carried in and 5500 sold must
+earn 5500, and one with 200 left, 3000 carried in and 7150 sold must earn 4350; on v15.83 they earn 0 and -2800, so the check
+fails for the finding's own reason. Then the play path: the card and profile cleaned, the profile snapshotted, a deploy at
+seed 4242 on map 0, G.ents emptied and put back in finally, a Peddler made beside him with mkPeddler, three Titanium Cells
+pushed into the backpack beside whatever the lift issued, the stall opened (G.trade set to the Peddler, the way E opens it)
+and pedSellAll called. CONTROL: the sale put money on him (G.pedCarry above 0), G.pedSold and G.tel.pedSold carry the same
+figure, and the cells are gone from the backpack; any of these failing skips while keeping a failure already found. The check
+values the backpack left and reads G.carriedIn, then __endRaid('extract'). CONTROL: the last row of P.log is an extraction
+whose pedSold is that figure and whose haul and carriedIn are what the check valued, and P.credits rose by at least the stall
+money, so the money did walk out. THE FIX: P.netEarn must have moved by haul minus carriedIn plus the stall money. On v15.83
+it moves by haul minus carriedIn alone, so this arm also fails. In finally G.ents is put back, the raid is abandoned if still
+live, pendingRun is cleared, the profile snapshot is restored through __applyLoaded, and the card, dials and profile are
+cleaned. Nothing else is stubbed.
+
+Older fixture checks: none restaged. Check 10.27 stages three runs and an old log and never sells at the stall, so every row
+it sums has no pedSold and its expected values stand. The checks that do sell (13.70, 13.71, 12.74) abandon afterwards and
+never read P.netEarn, and no other fixture check reads runEarnings, netEarnFromLog or netEarn beyond the restore-code check,
+which sets the field directly.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand with v15.83 applied by the chain (the dry1583
+copies: VER 15.83, the 15.83 check in mkfixture once): p1584 printed OK, 2 edits applied plus DEVNOW, and f1584 printed OK,
+1 edit. Before the run the old runEarnings line, var VER='15.83'; and the v15.83 now line were each in the copy once and the
+15.83 check entry once in mkfixture; after it the old line is gone, the new line and its v15.84 comment are in once, VER is
+15.84, there is one now key in DEVNOW with no apostrophe inside it, and mkfixture holds the 15.84 entry once above the 15.83
+entry. mkfixture built the drafted fixture from the copy (VER 15.84, check 15.84 once, the new function in it) and a control
+fixture from the untouched v15.83 game (VER 15.83, check 15.84 once, the old function). The check entry and the new function
+compile clean under the JScript compiler with the closure names declared, and the same compiler catches a deliberately broken
+function beside them. All five files are ASCII, none writes return followed by a regex, and the only retired words in them
+are the code names G.bag and rec fields, not player text.
+
+Not verified: the card by hand after a real stall sale; the check has not been run in a browser yet.
 ## v15.83 - THE SECTOR MAP NEVER SITS OVER THE OPEN STALL
 
 Trade audit finding (MEDIUM), entry 1 of the confirmed list.
