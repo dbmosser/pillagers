@@ -23,10 +23,24 @@ Each build NNNN (version V = NNNN/100, e.g. 1585 = 15.85; 1600 = 16.00) has five
 3. `bash tools/handoff/ship.sh start PREV NEW` applies the build to the real files and rebuilds `tools/fixture.html`.
 4. On fixture.html: the new check passes twice, and `__verifySafe()` returns pass true with ents {0:85,1:374} and containers {0:165,1:593} (the seed 4242 fingerprint; a change means a seeded draw moved).
 5. `bash tools/handoff/ship.sh commit NEW cmNEW.txt` commits (its butler step does nothing without his key), then push to origin.
-- These scripts are Windows PowerShell 5.1: in the cloud install `pwsh` or port them. Patch scripts must stay ASCII.
+- These scripts are Windows PowerShell 5.1. In the cloud use tools/cloud (added 2026-09-26): install pwsh 7 to /opt/pwsh, then
+  `tools/cloud/shipone.sh PREV NEW` runs the whole gated ship (dry run, parse, new check x2 on dry, FAIL on control, apply,
+  parse, check x2 and fingerprint on fixture.html, node --check, commit with this session's attribution, push). Pieces:
+  `dryrun.sh`, `ship.sh start|commit`, `ps.sh` (runs a handoff .ps1 with its C:\ paths mapped), `run.mjs parse|check|verify|seq|
+  range|net|eval` (headless Chromium 1920x1080, own http server; `seq FILE A B` runs the corpus one check at a time, use at most
+  3 shards on 4 cores or heavy checks time out; `net FILE run|runsame`, NETQ='&voice=1' adds the voice step), and `gen.py` with
+  bNNNN.py files that write pNNNN/fNNNN in the house format. Never pipe dryrun.sh into head: SIGPIPE kills it before the control
+  fixture is built. Patch scripts must stay ASCII.
 - The fixture runner does NOT await promises: checks are synchronous. Parse gate: write `return (/re/).test(x)`, never `return /re/.test(x)`.
 - Tests need a browser: serve the repo root and `tools/` over http (locally :8802 play, :8800 and :8803-8810 serve tools/) and drive headless Chromium at 1920x1080. 17 checks always fail in a full hidden-pane corpus and pass alone: 13.23 12.94 12.89 12.80 12.79 12.74 12.21 12.05 11.92 11.85 11.65 11.63 11.39 10.52 10.44 9.93 9.71. A real headless run may differ; rerun any red alone before believing it.
 - Two-window multiplayer live test: `tools/nettest.html?f=fxdryNN.html` (RUN and RUN SAME MACHINE buttons).
+
+## Shipped in the cloud session of 2026-09-26
+v15.85 to v16.10. 1591 folded in his playtest bug (a guest took the lift alone into another raid). New since the queue: 16.03
+lightning shows you to them at FLASH_SEE=2 times their sight (his order), 16.04 pause/Superhot/death beat in co-op, 16.05
+teammate revives, 16.06 host owns clock, weather, bolts and rings (beacon for the party), 16.07 card, 16.08 party on the map,
+16.09 voice (host hears all, friends hear the host; friend to friend needs a host relay), 16.10 voice by distance.
+Next: voice relay for 3 or 4, lift radio, then the two-PC items in plan.md (60 vs 144 Hz, drift, host load). Card due by 16.22.
 
 ## Queue at the move (ship in this order)
 - 1585 emote bar while downed (drafted, check it is complete), 1586 a controller can choose a sector (HIGH), 1587 night hour on the sector map, 1588 sector run count, 1589 hire never walks to a cache behind a locked door, 1590 pillagers never spawn in a locked room (verify the seed fingerprint). Findings: `tools/handoff/audit-wvw8zcvyw.json`.
