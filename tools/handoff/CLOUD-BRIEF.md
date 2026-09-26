@@ -13,7 +13,7 @@ Written 2026-09-26 when the session moved to the cloud. The local session kept t
 - Bandages and resting heal only to 85; only a Medkit reaches 100 (2026-09-16).
 - Coming back empty: death or abandon returns with nothing; loadout goes back to the stash.
 - No automatic switch to a gun. No raid music. Hills, verticality and woods are vetoed.
-- Multiplayer (2026-09-25): co-op first, PvP later; up to 4; invite codes first, server later; push-to-talk and open mic with per-teammate mute, proximity chat for PvP enemies. Co-op: NO team damage at all; host dropping mid-raid counts as ABANDON for everyone; teammate revives in the first co-op version. Same-PC play: two windows on two screens, player 2 on a controller, title mode menu with his five rows (two SERVER rows greyed "coming later").
+- Multiplayer (2026-09-25): co-op first, PvP later; up to 4; invite codes first, server later; push-to-talk and open mic with per-teammate mute, proximity chat for PvP enemies. Co-op: NO team damage at all; host dropping mid-raid (ending the party, losing the link) counts as ABANDON for everyone; the host extracting, dying or abandoning makes the host SPECTATE (2026-09-26, v16.14): the raid runs on in the host window until every friend is out; teammate revives in the first co-op version. Same-PC play: two windows on two screens, player 2 on a controller, title mode menu with his five rows (two SERVER rows greyed "coming later").
 - Keep reports short and plain.
 
 ## Ship flow (tools/handoff)
@@ -40,7 +40,7 @@ v15.85 to v16.10. 1591 folded in his playtest bug (a guest took the lift alone i
 lightning shows you to them at FLASH_SEE=2 times their sight (his order), 16.04 pause/Superhot/death beat in co-op, 16.05
 teammate revives, 16.06 host owns clock, weather, bolts and rings (beacon for the party), 16.07 card, 16.08 party on the map,
 16.09 voice (host hears all, friends hear the host; friend to friend needs a host relay), 16.10 voice by distance.
-HIS ORDER 2026-09-26: no more voice work (no relay, no lift radio); the game itself comes first. Card due by 16.22.
+v16.11 to v16.14: backcheck fixes and the host spectates. HIS ORDER 2026-09-26: no more voice work (no relay, no lift radio); the game itself comes first. Card due by 16.22.
 
 ## Queue at the move (ship in this order)
 - 1585 emote bar while downed (drafted, check it is complete), 1586 a controller can choose a sector (HIGH), 1587 night hour on the sector map, 1588 sector run count, 1589 hire never walks to a cache behind a locked door, 1590 pillagers never spawn in a locked room (verify the seed fingerprint). Findings: `tools/handoff/audit-wvw8zcvyw.json`.
