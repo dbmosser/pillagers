@@ -5721,6 +5721,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'15.92',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the shared pillagers of v15.80, still opening with the alpha line',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
+     var all=L.join(' ').toUpperCase();
+     if(['one set for everyone','they go for whoever is nearest'].some(function(w){ return all.indexOf(w.toUpperCase())<0; })) bad.push('the card does not mention the shared pillagers of v15.80');
+     if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+     return bad.length?bad.join('; '):null; }},
   {v:'15.91',what:'a party guest is held at the lift and never goes up alone (his playtest: the two of them went up into different raids): in the Undercroft, linked to a host, ascendNow, the quick ascent and startRaid each leave this window on the floor with no raid built, the kit uncommitted, and say Your host takes the party up; control, with the link gone the same window ascends alone as ever',
    run:function(){
      if(!window.__hubEnter||!window.__endRaid||!window.__cleanProfile||typeof NET!=='object'||!NET||typeof ascendNow!=='function'||typeof startRaid!=='function'||typeof netInCount!=='function')

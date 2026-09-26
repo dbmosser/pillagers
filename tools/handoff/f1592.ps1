@@ -12,7 +12,7 @@ function SubRx([string]$old, [string]$new) {
 }
 
 SubRx @'
-  {v:'15.91',what:
+  {v:'15.91',what:'a party guest is held at the lift
 '@ @'
   {v:'15.92',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the shared pillagers of v15.80, still opening with the alpha line',
    run:function(){
@@ -23,11 +23,10 @@ SubRx @'
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
-     var NEWS=['one set for everyone','they go for whoever is nearest'].join(' ').toUpperCase();
-     if(all.indexOf(NEWS)<0) bad.push('the card does not mention the shared pillagers of v15.80');
+     if(['one set for everyone','they go for whoever is nearest'].some(function(w){ return all.indexOf(w.toUpperCase())<0; })) bad.push('the card does not mention the shared pillagers of v15.80');
      if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
      return bad.length?bad.join('; '):null; }},
-  {v:'15.91',what:
+  {v:'15.91',what:'a party guest is held at the lift
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

@@ -40024,6 +40024,19 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.92 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+WHATSNEW_VER stood at 15.81 against a build at 15.91, near its refresh, and the card said nothing about the shared pillagers
+(v15.80) or the loot and host rules (v15.91).
+
+THE BUILD. Only my first card line is rewritten in place. It names the shared pillagers and keeps the phrases checks 15.81, 15.72,
+15.61, 15.51, 15.39 and 15.27 read. The second card line and every line of his are untouched, so the card still holds thirteen
+lines. WHATSNEW_VER moves to 15.92.
+
+MEASURED. Check 15.92 requires the card within fifteen builds and naming the shared pillagers; it fails on v15.91. Every card check
+was run on the dry build.
+
+Not verified: the card read on screen by eye.
 ## v15.91 - LOOT PER PLAYER, THE HOST LEAVING ENDS THE RUN, AND THE PARTY GOES UP TOGETHER
 
 Multiplayer, phase 3, build 1 (tools/multiplayer/plan.md phase 3 with critique.md), his order of 2026-09-25 and his rulings.
