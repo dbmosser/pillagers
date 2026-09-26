@@ -5721,6 +5721,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.16',what:'plain game language, the larger pass: the rewritten lines are in the build, the rulebook versions are gone,',
+   run:function(){
+     var src='', bad=[], i, OLD, NEW;
+     try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
+     var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
+     if(src.length<100000) return 'SKIP: the build cannot read its own script';
+     OLD=['No throwable you carry is on your','No legs left to roll with','Auto-jog arms from a standstill','Type what to call them first','Everyone with the','Point at an item in the stash, then press','Let go too soon','Hold it down for a second','Linked. Saying hello to the host'];
+     NEW=['No throwable on your tactical belt.','Too tired to roll.','Stop first, then tap CAPS to auto-jog.','Enter a name first.','Released too early. Hold for one second.','Hold for one second to confirm.','Connected. Joining the host.'];
+     for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the old line with "'+OLD[i]+'" is still in the build');
+     for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.15',what:'plain game language for co-op: the lines added for co-op, the storm and voice read the way a game says them, and none of the old rulebook sentences is left in the build',
    run:function(){
      var src='', bad=[], i, OLD, NEW;
@@ -26622,7 +26633,7 @@ window.__REGRESS=[
        said.length=0;
        var L=mkListener(p.x+300,p.y+40); L.hp=0; g.ents.push(L);
        __ents(0.1);
-       if(!said.some(function(t){ return /destroyed\. It has stopped listening/.test(t); })) bad.push('the Pillbox death line does not say destroyed (said: '+said.join(' | ').slice(0,90)+')');
+       if(!said.some(function(t){ return /destroyed\. It dropped a cache/.test(t); })) bad.push('the Pillbox death line does not say destroyed (said: '+said.join(' | ').slice(0,90)+')');
        // THREE: the self-revive, spent and pressed, and the down line.
        said.length=0; p.downed=true; p.revived=true; selfRevive();
        if(!said.some(function(t){ return t==='Self-revive spent. One per raid.'; })) bad.push('the spent revive does not say one per raid (said: '+said.join(' | ').slice(0,90)+')');
@@ -33642,7 +33653,7 @@ window.__REGRESS=[
      if(html.indexOf('Net lifetime earnings')<0) bad.push('the card is not called Net lifetime earnings');
      if(/Net carried out/.test(html)) bad.push('the old card name is still there');
      if(html.indexOf((-plate+scrap).toLocaleString())<0) bad.push('the card does not show '+(-plate+scrap));
-     if(!/extracted, minus everything you carried in/.test(html)) bad.push('the card does not explain itself');
+     if(!/extracted minus value carried in/.test(html)) bad.push('the card does not explain itself');
      // FIVE: a profile from before the counter sums its log, old records counting their haul alone.
      P2.log=[{outcome:'extract',haul:500},{outcome:'dead',haul:900},{outcome:'extract',haul:300,carriedIn:120}];
      if(netEarnFromLog()!==500+300-120) bad.push('an old log sums to '+netEarnFromLog()+', not 680');

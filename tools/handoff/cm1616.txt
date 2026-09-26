@@ -1,0 +1,9 @@
+v16.16: plain game language, the larger pass
+
+His order. About eighty on-screen lines that explained mechanics like
+a rulebook now read the way a game says them: raid messages, the stash
+and loadout screens, the Mainframe, the cards, the PARTY window and
+the Settings hints. His TXSHIP sentences, the barks, the lore and the
+tutorial tips are untouched. Text only.
+
+Check 16.16. Fails on v16.15. Checks 10.27 and 11.94 restaged.

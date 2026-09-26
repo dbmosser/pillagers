@@ -1430,7 +1430,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.15';
+var VER='16.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8070,7 +8070,7 @@ function doEmote(ix){
   if(E.k!=='hail'&&E.k!=='stand') return;
   var down=weaponDown();
   if(!down){
-    if(E.k==='hail') say('Nobody parleys with a raised gun.');
+    if(E.k==='hail') say('Lower your weapon to talk.');
     return;
   }
   var reached=0;
@@ -9400,8 +9400,8 @@ function notoName(n){
 function notoBite(n){
   n=n||0;
   // v11.68: the stall never shuts (pedOpen, his v8.28 ruling); this said it did.
-  if(n>=2) return 'Hiring costs more and pillagers are slower to trust you. Word has got round.';
-  return 'Hiring costs more and pillagers are slower to trust you.';
+  if(n>=2) return 'Word has spread. Hires cost more and pillagers trust you less.';
+  return 'Hires cost more and pillagers trust you less.';
 }
 function mkPeddler(x,y,map){
   var pool=PED_STOCK.slice(),stock=[],q,ik;
@@ -9515,7 +9515,7 @@ function strayGive(e){
   var c=strayReveal();
   if(c){
     c.revealed=1;
-    say('He tells you where a cache is. It is on your map.'+_tail);
+    say('He marks a cache on your map.'+_tail);
     label(e.x,e.y-20,'CACHE MARKED','#e6b4ff',0,true);
   } else {
     say('He has nothing left to tell you, so he gives you what he has.'+_tail);
@@ -9612,7 +9612,7 @@ function pedBuy(ix){
   // in the reserve take no room in a backpack, and a full backpack must not stop
   // a man buying ammunition.
   var _pAmmo=!!(ITEMS[st.k]&&ITEMS[st.k].use==='ammo');
-  if(!_pAmmo&&bagWeight()+wt>cap){ say('No room in the backpack for that.'); return; }
+  if(!_pAmmo&&bagWeight()+wt>cap){ say('Backpack full.'); return; }
   P.credits-=st.price; saveProfile();
   st.sold=true; G.trade.traded=1;
   if(_pAmmo){ var _pp=G.player; _pp.reserve=(_pp.reserve||0)+(ITEMS[st.k].amt||0); }
@@ -11025,7 +11025,7 @@ if(G.wx.id!=='clear'&&G.wx.line) say(G.wx.line);
   // after the weather line, never over it.
   try{
     if(!G.sim&&G.player&&G.player.wepIssued&&(P.stash||[]).some(function(k){ var it=ITEMS[k]; return it&&it.use==='gun'&&it.gk&&WEAPONS[it.gk]; })){
-      var _loanLn='You are carrying a loaner. Your own gun waits in your stash: choose Equip as your gun on it there before your next ascent.';
+      var _loanLn='You are carrying a loaner. Equip your own gun from the stash before your next ascent.';
       sayWhenFree(_loanLn);   // v13.33: through the queue, so nothing writes over it
     }
   }catch(_loan0){}
@@ -12517,7 +12517,7 @@ function cycleThrow(){
       return;
     }
   }
-  say(_unkeyed?'No throwable you carry is on your tactical belt.':'No throwables');
+  say(_unkeyed?'No throwable on your tactical belt.':'No throwables');
 }
 // His playtest, 2026-08-22: "the roll, it rolls too far, and it should take a
 // lot of stamina to do it." Both, as one change, because they are the same
@@ -12542,7 +12542,7 @@ function tryRoll(){
     G.rollSayT=(G.rollSayT||0);
     if(G.rollSayT<=0){
       G.rollSayT=1.5;
-      if(!G.sim){ say('No legs left to roll with.'); blip('clank'); }
+      if(!G.sim){ say('Too tired to roll.'); blip('clank'); }
     }
     return;
   }
@@ -14162,7 +14162,7 @@ function openContainer(ct,onlyKeys){
       ct.hotPaid=1; T.hotOpened=(T.hotOpened||0)+1;
       // v13.40: KEPT HERE, SAID AFTER THE GRANT BELOW. grantLoot writes the Found line in
       // this same call and say() holds one line, so said here it was never on screen.
-      var _hotLine=G.sim?'':'Hot ground. There is more in here than there should be.';
+      var _hotLine=G.sim?'':'Hot ground. Extra loot in here.';
     }
   }
   ct.opened=true; T.containers++;
@@ -14441,7 +14441,7 @@ function bagHeldGun(slot){
   var sw=!!p.swapped;
   var isHand=(slot==='gunA')?!sw:sw;
   var g=isHand?p.wep:p.sec, issued=isHand?p.wepIssued:p.secIssued, arm=isHand?p.wepFromArmory:p.secFromArmory;
-  if(!g||g.id==='fists'||g.mag===0){ say('Nothing there to put in your backpack.'); return false; }   // v14.78: his word
+  if(!g||g.id==='fists'||g.mag===0){ say('Nothing to pick up.'); return false; }   // v14.78: his word
   if(issued){ say(g.name+' is issued kit; it stays in your hands.'); return false; }
   if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in your backpack.'); return false; }
   G.bag.push('gun_'+g.id);
@@ -15005,7 +15005,7 @@ function tryExtractTick(dt,wantCall){
       // it every second frame and a downed man could never board at all, which
       // is exactly the lock-out he hit.
       z.pullT=null; z.boardT=0; z.pullFloor=0;
-      say('Knocked down. The hold is lost, start again.');
+      say('Knocked down. Extraction hold lost.');
       return;
     }
     if(p.downed&&CFG.hauledAboard!==0){
@@ -15151,9 +15151,9 @@ function tryExtractTick(dt,wantCall){
       // step, and Standard divides by 1 and does not move.
       var _siv=(8-4.6*_g)/(CFG.siegeVol===undefined?1:CFG.siegeVol);
       var _sc=Math.max(1,Math.min(_scap,Math.floor(CFG.extractWait/Math.max(0.1,_siv))));
-      var _why=(_g>=0.66)?' They heard THAT: you are carrying too much to be quiet about it.'
-              :((_g>=0.33)?' That is a heavy backpack to be standing still with.'
-                          :' A light backpack brings the fewest of them.');
+      var _why=(_g>=0.66)?' Heavy backpack: they heard that.'
+              :((_g>=0.33)?' Your backpack is heavy. Expect company.'
+                          :' Light backpack. Fewer will come.');
       // v15.14, dials audit finding 6: A RAID KEEPS THE CLOCK IT STARTED WITH. The pull line asks this raid, not the dial, so a
       // dial moved mid-raid cannot warn of a clock the raid does not have, or stay quiet about one it does.
       say('Pulled. Inbound '+fmtMS(CFG.extractWait)+
@@ -15427,7 +15427,7 @@ function tickRaiderWaves(dt){
   G.ents.push(NR);
   G.roster.push({ref:NR,name:NR.name,crew:NR.crew,val:0,out:false});
   G.waveN++;
-  if(!G.sim) say('Another wave of pillagers has entered.');
+  if(!G.sim) say('More pillagers have entered the area.');
 }
 function tickExtractPoints(dt){
   var p=G.player,T=G.tel;
@@ -15799,7 +15799,7 @@ function selfRevive(){
   // of these and it is gone once used, so the decision is WHEN to spend it rather
   // than whether the bag happens to hold a bandage at the moment you go down.
   p.hp=40; p.downed=false; p.revived=true; p.iv=2; p.pendKiller=null;
-  G.tel.revives++; blip('pick'); say('Back on your feet. That was your one.');
+  G.tel.revives++; blip('pick'); say('Back on your feet. Self-revive used.');
   return true;
 }
 
@@ -15953,7 +15953,7 @@ var mg=Math.sqrt(mx*mx+my*my);
     // v8.05, audit: arming while holding a movement key toggled on and off in
     // the same frame, and the only message left standing was 'Auto-jog off.'
     // for a jog that was never on. Arming now asks for a standstill instead.
-    if(!p.autoJog&&mg>0){ if(!G.sim) say('Auto-jog arms from a standstill. Stop first, then tap CAPS.'); }
+    if(!p.autoJog&&mg>0){ if(!G.sim) say('Stop first, then tap CAPS to auto-jog.'); }
     else { p.autoJog=!p.autoJog; if(!G.sim) say(p.autoJog?'Auto-jog on. Tap CAPS or move to stop.':'Auto-jog off.'); }
   }
   p._cpPrev=_cpNow;
@@ -16588,7 +16588,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
         // v4.14: he reported this glitch and the camera was built for him, so
         // when it finally clicks he should hear the shutter, not find out from
         // a report line days later.
-        say('Wall glitch caught and recorded, the run report has the exact spot.');
+        say('Wall glitch logged in your run report.');
         break;
       }
     }
@@ -17823,7 +17823,7 @@ if(e.state==='possum'){
           label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true);
           notoStamp('YOU SHOT AN UNARMED SURVIVOR');
         } else if(!G.sim){
-          say('Someone shot the survivor. Not your doing, not your notoriety.');
+          say('Someone shot the survivor. Not on you.');
         }
         decal(e.x,e.y,'#6e1c15',rnd(16,26));
         G.ents.splice(i,1); continue;
@@ -17919,7 +17919,7 @@ if(e.state==='possum'){
         var cl2=setLoot(mkContainer(e.x,e.y,'cache'),
           [pick(['core','titan','coil']),pick(['optic','servo','board']),'cell']);
         cl2.time=1.3; G.containers.push(cl2);
-        if(!G.sim) say(e.name+' destroyed. It has stopped listening, and it dropped a cache.');   // v11.94, HIS NOTE: he could not tell this was a death
+        if(!G.sim) say(e.name+' destroyed. It dropped a cache.');   // v11.94, HIS NOTE: he could not tell this was a death
       // AMMUNITION COMES BACK OFF THE THINGS THAT MADE YOU SPEND IT, v1.68.
       // Measured over 40 raids on v1.67: the player fires 202 rounds a raid and 40
       // percent of raids run COMPLETELY DRY, spending an average of 98 seconds unable
@@ -18123,7 +18123,7 @@ if(e.kind==='stray'){
           else e._stuckT=0;
           if(e._stuckT>3){
             e._stuckT=0; e._back=0; e.tx=e.x; e.ty=e.y; e.face=1.57;
-            if(!G.sim) say('The Peddler sets up a new pitch where he stands.');
+            if(!G.sim) say('The Peddler has set up shop here.');
           } else {
             e.face=Math.atan2(e.ty-e.y,e.tx-e.x);
             e.step=(e.step||0)+dt*5;
@@ -18497,8 +18497,8 @@ if(e.state==='alarm'){
           sfx('alarm',e.x,e.y);
           ping(e.markX,e.markY,620,true,false,'robot','fire');
           G.marked=2.2; T.marked=(T.marked||0)+1;
-say(sees?'The Crier raised the alarm. It kept eyes on you: they know exactly where you are.'   // v11.94, HIS NOTE: name the Crier
-                 :'The Crier raised the alarm. They are coming to where it LAST saw you.');
+say(sees?'The Crier raised the alarm. They know exactly where you are.'   // v11.94, HIS NOTE: name the Crier
+                 :'The Crier raised the alarm. They are heading to where it last saw you.');
           // Reinforcements converge on the MARKED position, not your current
           // one, which is what makes repositioning the counterplay.
           for(var sb=0;sb<G.ents.length;sb++){
@@ -19895,7 +19895,7 @@ var TERMS=[
   {id:'blackout',name:'BLACKOUT PROTOCOL',pay:0.25,
    desc:'Every lamp on the map stays dark.'},
   {id:'patrols', name:'HEAVY PATROLS',pay:0.30,
-   desc:'Forty percent more of everything out there: machines, pillagers and criers alike.'},
+   desc:'40% more machines, pillagers and criers.'},
   // v8.19, audit: computed, not quoted. The old line named 400 and 600 seconds
   // from a raid clock retired at cfgv 15; the real pair is ~356 and 540, and a
   // hand-typed number here has now been wrong for six versions.
@@ -19905,7 +19905,7 @@ var TERMS=[
      // every other reader treats as no clock, but 0 read as unset here, so the board promised about 356 seconds instead of 540
      // on a raid with no clock at all.
      var full=(CFG&&typeof CFG.raidSec==='number')?CFG.raidSec:DEF.raidSec;
-     if(full<=0) return 'The raid clock is off, so there is no clock to cut.';
+     if(full<=0) return 'No effect: the raid clock is off.';
      return 'The whole raid clock is cut by a third: about '+Math.round(full*0.66)+
             ' seconds instead of '+full+'.';
    }},
@@ -19914,9 +19914,9 @@ var TERMS=[
   // for no change at all. If safeSlots ever goes back to 1, this term comes back
   // with it.
   {id:'known',   name:'THEY KNOW YOU',pay:0.30,
-   desc:'Every pillager out there is hostile and already looking.'},
+   desc:'Every pillager is hostile and already searching for you.'},
   {id:'silence', name:'SILENT RUNNING',pay:0.30,
-   desc:'One more Listener, and they all hear half again as far.'}
+   desc:'One extra Listener. All Listeners hear 50% farther.'}
 ];
 function termsOn(){ if(!Array.isArray(P.terms)) P.terms=[]; return P.terms; }
 function hasTerm(id){ return termsOn().indexOf(id)>=0; }
@@ -26485,7 +26485,7 @@ var _slp=w2s(p.x,66,p.y);
     ctx.font=_fD; ctx.fillStyle='#e8d5d2';
     // v8.87, his wording. The old line opened with what he had just used up.
     // This opens with what he can still do about it.
-    ctx.fillText(p.revived?'You are bleeding out. Crawl to an open extraction point if possible.':
+    ctx.fillText(p.revived?'Bleeding out. Crawl to an open extraction point.':
       '['+keyLabel('KeyF','F')+'] SELF-REVIVE, one per raid',W/2,_rowY);
     // v9.71: the surrender, offered only in the state he described. It lights up
     // as he holds it and the bar is the same 200 wide as the bleed bar above, so
@@ -26716,7 +26716,7 @@ var _slp=w2s(p.x,66,p.y);
     var etw=EMOTES.length*ebw+(EMOTES.length-1)*egap;
     var ex0=Math.round(W/2-etw/2),ey0=H-LH(112);
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
-    ctx.fillText(weaponDown()?'weapon down, they will listen':'lower your weapon first, or it is just noise',
+    ctx.fillText(weaponDown()?'weapon down, they will listen':'lower your weapon first',
       W/2,ey0-LH(8));
     ctx.textAlign='left';
     for(var eq=0;eq<EMOTES.length;eq++){
@@ -29740,7 +29740,7 @@ function askKit(){
   var autoN=0; if(!kitN){ try{ autoN=standardKit().length; }catch(_sk){ autoN=0; } }
   if(ss) ss.innerHTML='<b>Your loadout</b>: '+
     (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current tactical belt and backpack.')
-         :(autoN?('nothing is packed, so '+autoN+' item'+(autoN===1?' goes':'s go')+' up from your stash, picked for you: grenades first, then plates, ammo and heals. Anything that goes up can be lost.')
+         :(autoN?('nothing is packed, so '+autoN+' item'+(autoN===1?' goes':'s go')+' auto-packed from your stash: grenades, plates, ammo and heals. Anything you take up can be lost.')
                 :'your current tactical belt and backpack.'))+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
   ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v12.16: MY LOADOUT gets his packing back too
@@ -30914,7 +30914,7 @@ function parseGhost(txt,name){
 function importGhost(){
   var nm=(document.getElementById('mfghostname')||{}).value||'';
   nm=nm.trim();
-  if(!nm){ say('Type what to call them first.'); return; }
+  if(!nm){ say('Enter a name first.'); return; }
   var inp=document.createElement('input');
   inp.type='file'; inp.accept='.txt';
   inp.onchange=function(){
@@ -30976,9 +30976,9 @@ function applyGhost(){
   }
 }
 function slotCore(){
-  if(P.intel){ say('A core is already slotted. It burns on your next ascent.'); return; }
+  if(P.intel){ say('A core is already slotted for your next raid.'); return; }
   var ix=P.stash.indexOf('core');
-  if(ix<0){ say('No Data Core in the stash. They come off rare shelves and elite pillagers.'); return; }
+  if(ix<0){ say('No Data Core in your stash. Find them in rare containers or on elite pillagers.'); return; }
   // v15.53, rack audit finding: SLOT A DATA CORE SAYS WHEN IT TAKES A PACKED CORE OUT OF THE BACKPACK. Packing leaves an item
   // in the stash, so a core packed for the next ascent still lit this button, and a bare splice took a core out of the stash
   // whether or not a loose one was left. With every core he held packed, the backpack lost its core with no word: the kit was
@@ -30990,7 +30990,7 @@ function slotCore(){
   P.intel=1;
   saveProfile();
   blip('pick');
-  say('Core slotted. Your next ascent carries intel.'+(_cp?' Used '+_cp+' packed Data Core out of your backpack.':''));
+  say('Core slotted. Your next raid starts with intel.'+(_cp?' Used '+_cp+' packed Data Core out of your backpack.':''));
   renderMainframe(); try{ renderHub(); }catch(e){}
 }
 function renderMainframe(){
@@ -31027,7 +31027,7 @@ function renderMainframe(){
     ?(P.ghost.tag+' walks your raids: '+P.ghost.rate+'% extract over '+P.ghost.runs+' runs'+(P.ghost.wepName?(', favours the '+P.ghost.wepName):'')+'. Import another file to replace them.')
     :'A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.'; }
   if(sh2){ sh2.textContent=P.intel
-    ?'Your next raid deploys with intel: every locked-room key and every elite, live on your map. One core, one raid.'
+    ?'Next raid: every locked-room key and every elite shown live on your map. One core per raid.'
     :(P.stash.indexOf('core')>=0
       ?('Spend a Data Core ($'+ival('core').toLocaleString()+' on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. One is in the stash.')
       :'Spend a Data Core ($520 on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. None in the stash right now.'); }   // v14.99
@@ -31057,7 +31057,7 @@ function stashCounts(){
 // NOW is for things genuinely open and genuinely HIS, because that is what the
 // board is for: it is the one place the game tells him what it is waiting on.
 var ROADMAP=[
-  ['DONE','The Mainframe: junk builds racks that pay on extraction, cores buy next-raid intel'],
+  ['DONE','The Mainframe: build racks that pay on extraction, or spend cores on intel'],
   ['DONE','DECIDED on his delegation: hard maps stay hard. The extract spread is character, not a bug.'],
   ['NEXT','DECIDED: MOVE while it lands. The beacon banner now teaches it; deeper coaching to follow if the telemetry does not move.'],
   ['DONE','DECIDED: FOLDED. Level is the one number; proficiency lives on only as the Net carried out stat card.'],
@@ -31125,7 +31125,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.15: PLAIN GAME LANGUAGE FOR CO-OP. His note: the co-op lines read like a rulebook. Every line added for co-op, the storm and voice now reads the way a game says it: Reviving NAME, Revived by NAME, Host has left the raid, Your party is still in the raid, Only the host can start the raid, Connection to host lost, and the storm, CONDITIONS row and voice lines in the same plain style. Text only. Check 16.15 fails on v16.14',
+  now:'v16.16: PLAIN GAME LANGUAGE, THE LARGER PASS. His order. About eighty on-screen lines that explained mechanics like a rulebook now read the way a game says them: raid messages, the stash and loadout screens, the Mainframe, the terms, the reputation card, the PARTY window, Settings hints. His TXSHIP sentences, the pillager and hire barks, the lore and every line a check reads word for word are untouched. Text only. Check 16.16 fails on v16.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32109,7 +32109,7 @@ function renderKitCol(){
     // stash as its item form and is packed; a figure gun goes up already.
     if(from==='rack'){
       var _rg=key.slice(4);
-      if(P.equipped===_rg||P.equippedSec===_rg){ say2('That one goes up in your hands already.'); return; }
+      if(P.equipped===_rg||P.equippedSec===_rg){ say2('That gun is already equipped.'); return; }
       var _rw=rackToStash(key); if(_rw){ say2(_rw); try{ sfx('clank'); }catch(e){} return; }
       var _pw=packSome(key,1); if(_pw){ say2(_pw); return; }
       try{ sfx('pick'); }catch(e){} renderHub(); return;
@@ -32125,7 +32125,7 @@ function renderKitCol(){
     if(typeof from==='string'&&from.indexOf('plan:')===0){
       if(!key||!ITEMS[key]) return;
       var _bs=+from.slice(5);
-      if(!P.hotAssign||P.hotAssign[_bs]!==key){ say2('That is not on that key any more.'); return; }
+      if(!P.hotAssign||P.hotAssign[_bs]!==key){ say2('That item is no longer on that key.'); return; }
       delete P.hotAssign[_bs];
       // Defensive only: planPut should make a binding without a kit copy
       // impossible, but if one exists the item must not vanish on the way back.
@@ -32243,7 +32243,7 @@ function spendHeld(key,n){
 }
 function packSome(key,want){
   var room=heldCount(key)-packedCount(key),q;
-  if(room<=0) return 'Every one of those is already packed.';
+  if(room<=0) return 'All of those are already packed.';
   for(q=0;q<want&&q<room;q++) P.kit.push(key);
   saveProfile(); return null;
 }
@@ -32624,7 +32624,7 @@ function planPut(slot,key){
   // any slot, as many guns as he wants.
   var live=stageKitLive();
   var held=0; for(var i=0;i<P.stash.length;i++) if(P.stash[i]===key) held++;
-  if(!held) return 'That is not in your stash any more.';
+  if(!held) return 'That item is no longer in your stash.';
   var picked=0; for(var j=0;j<live.length;j++) if(live[j]===key) picked++;
   // Only claim another inventory slot if this item is not already coming.
   // v11.96, HIS ORDER: half the stack, not one. A key on a stack of six
@@ -32765,7 +32765,7 @@ try{ renderFreeKit(); }catch(_fk){}
         if((P.hotAssign||{})[ix]!==undefined){
           delete P.hotAssign[ix]; saveProfile(); renderHub();
         } else {
-          say2('Point at an item in the stash, then press its key number on the tactical belt below.');
+          say2('Hover an item in the stash and press a number key to put it on your tactical belt.');
         }
       };
       // v8.72, HIS REPORT: you can drag an item OFF the belt now. These cells have
@@ -32828,7 +32828,7 @@ try{ renderFreeKit(); }catch(_fk){}
     // into the stash as its item form (rackToStash); the stash now does the same, and a gun in his hands says why it stays.
     if(from==='rack'||from==='weapons'){
       var _sg=String(key).slice(4);
-      if(P.equipped===_sg||P.equippedSec===_sg){ say2('That one goes up in your hands already.'); try{ sfx('clank'); }catch(e){} return; }
+      if(P.equipped===_sg||P.equippedSec===_sg){ say2('That gun is already equipped.'); try{ sfx('clank'); }catch(e){} return; }
       var _sw=rackToStash(key); if(_sw){ say2(_sw); try{ sfx('clank'); }catch(e){} return; }
       try{ sfx('pick'); }catch(e){}
       say2((ITEMS[key]?ITEMS[key].name:key)+' is in the stash.');
@@ -33414,7 +33414,7 @@ function renderStatCards(){
   })();
   // v10.27, his note: the card is NET LIFETIME EARNINGS, and it says what it is.
   h+=card('Net lifetime earnings', '$'+(P.netEarn||0).toLocaleString(),
-          'everything you have extracted, minus everything you carried in, over every run. A run that died or was abandoned lost what it carried in.');
+          'Total value extracted minus value carried in, across all runs. Deaths and abandons count what you lost.');
   h+=card('Experience', 'Level '+(P.xpLevel||1),
           (P.xp||0).toLocaleString()+' XP earned');
   // NOTORIETY, v8.26, his order: visible, and in words that mean something.
@@ -33429,7 +33429,7 @@ function renderStatCards(){
     var _bits=[];
     if(_n<=0){
       _bits.push('Nobody out there has a problem with you.');
-      _bits.push('Starting a fight with someone who was not fighting you is what earns it: the Peddler, an unarmed survivor, or a pillager who had not raised a hand to you.');
+      _bits.push('You earn it by attacking someone who was not a threat: the Peddler, an unarmed survivor, or a pillager who had not fought you.');
     } else {
       // v8.28, his ruling: the Peddler trades whatever you have done, so the
       // card no longer threatens a closure that cannot happen.
@@ -33813,7 +33813,7 @@ if(r.ghostIn) line+=' ghost:1';
   // find, so a friend who loses a save can be handed one line and get it back.
   L.push('');
   L.push('--- RESTORE CODE ---');
-  L.push('One line. Paste it into Settings to rebuild this character.');
+  L.push('Paste this code into Settings to restore this character.');
   L.push(restoreCode());
   L.push('');
   L.push('=== END RECORDER ===');
@@ -34311,7 +34311,7 @@ try{ window.addEventListener('mouseup',function(){
   // v12.32, HIS NOTE: letting go before the second is up cancelled in silence,
   // which is the same dead press from his side. It says so, once, and only for
   // a press that had really started; a completed hold has cleared itself above.
-  if(craftHold&&craftHold.t>0.12&&craftHold.t<CRAFT_HOLD){ try{ say2('Let go too soon. Hold it for a full second.'); }catch(_cu){} }
+  if(craftHold&&craftHold.t>0.12&&craftHold.t<CRAFT_HOLD){ try{ say2('Released too early. Hold for one second.'); }catch(_cu){} }
   craftHoldCancel();
 }); }catch(_chm){}
 function renderCraftDetail(rows){
@@ -34371,7 +34371,7 @@ function renderCraftDetail(rows){
     // 1 or more and still spends nothing, the hold is its way.
     // v12.32, HIS NOTE: a real mouse click still spends nothing, his v11.75
     // rule, but it used to return in silence, so the bench looked broken.
-    b.onclick=function(e){ if(e&&e.detail){ try{ say2('Hold it down for a second. A click on its own spends nothing.'); }catch(_cs){} return; } btn.click(); };
+    b.onclick=function(e){ if(e&&e.detail){ try{ say2('Hold for one second to confirm.'); }catch(_cs){} return; } btn.click(); };
     b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' ('+CRAFT_HOLD+' second'+(CRAFT_HOLD===1?'':'s')+')';
   }
   d.appendChild(b);
@@ -34768,7 +34768,7 @@ function netHost(){
       if(peer.state!=='offer'||NET.pend!==peer) return {err:'That invite code was replaced.'};
       if(!code) return {err:'The browser made no invite code.'};
       NET.code=code; NET.codeLen=code.length;
-      NET.status='Send this invite code to one friend. When they send a reply code back, paste it below and press LET THEM IN.';
+      NET.status='Send this invite code to a friend. Paste their reply code below, then press LET THEM IN.';
       return {code:code};
     },function(e){ netDrop(peer,'failed'); return {err:'Could not make an invite code: '+netErrText(e)}; });
 }
@@ -34809,8 +34809,8 @@ function netJoin(code){
         if(NET.role!=='join'||peer.state==='gone') return {err:'The link was closed.'};
         if(!rc) return {err:'The browser made no reply code.'};
         NET.reply=rc; NET.codeLen=rc.length;
-        NET.status='Send this reply code back to your host. You are linked a few seconds after they paste it in.';
-        netLater(peer,NET_WAIT_JOIN,function(){ if(peer.state==='answer'){ NET.err='No link three minutes after the reply code was made. Ask your host for a new invite code, or try from another network.'; netDrop(peer,'timeout'); } });
+        NET.status='Send this reply code to your host. You will connect a few seconds after they enter it.';
+        netLater(peer,NET_WAIT_JOIN,function(){ if(peer.state==='answer'){ NET.err='Connection timed out. Ask your host for a new invite code, or try another network.'; netDrop(peer,'timeout'); } });
         return {code:rc};
       });
   }).then(null,function(e){ if(NET.role==='join') netReset(true); return {err:'That invite code did not work: '+netErrText(e)}; });
@@ -34821,11 +34821,11 @@ function netDcOpen(peer){
   peer.state='open';
   try{ if(NET.micTrack) voiceSend(peer); }catch(_vs){}   // v16.09: a mic already on reaches a link made after it
   if(NET.role==='join'){
-    NET.status='Linked. Saying hello to the host.';
+    NET.status='Connected. Joining the host.';
     netSend(peer,{t:'hello',proto:NET.proto,ver:VER,pid:NET.pid,name:NET.name});
-    netLater(peer,NET_WAIT_HELLO,function(){ if(peer.state==='open'){ NET.err='The host never answered.'; netDrop(peer,'silent'); } });
+    netLater(peer,NET_WAIT_HELLO,function(){ if(peer.state==='open'){ NET.err='The host did not respond.'; netDrop(peer,'silent'); } });
   } else {
-    NET.status='Linked. Waiting for their hello.';
+    NET.status='Connected. Waiting for them to join.';
     netLater(peer,NET_WAIT_HELLO,function(){ if(peer.state==='open') netDrop(peer,'silent'); });
   }
   netRefresh();
@@ -34864,7 +34864,7 @@ function netOnMsg0(peer,data){
         netSend(peer,{t:'reject',why:'version',ver:VER,proto:NET.proto});
         peer.state='rejected';
         NET.err=(m.ver!==VER)?('A copy on v'+netClean(m.ver,12)+' tried to join. Both copies need to be on the same version, v'+VER+'.')
-               :'A copy that links up a different way tried to join. Both copies need to be the same build.';
+               :'A player on a different build tried to join. Both players need the same build.';
         netLater(peer,1500,function(){ netDrop(peer,'rejected'); });
         netRefresh();
         return 'reject';
@@ -34911,8 +34911,8 @@ function netOnMsg0(peer,data){
     }
     if(m.t==='reject'){
       NET.err=(m.why==='version')?((m.ver!==VER)?('The host is on v'+netClean(m.ver,12)+' and you are on v'+VER+'. Both copies need to be on the same version.')
-                                                  :'The host copy links up a different way. Both copies need to be the same build.')
-             :((m.why==='full')?'That party is full. Four is the most.':'The host turned the link down.');
+                                                  :'The host is on a different build. Both players need the same build.')
+             :((m.why==='full')?'That party is full. Four is the most.':'The host declined.');
       netReset(true);
       return 'rejected';
     }
@@ -34929,7 +34929,7 @@ function netDrop(peer,why){
   netClose(peer);
   if(NET.pend===peer) NET.pend=null;
   if(NET.role==='join'){
-    if(!NET.err) NET.err=(was==='in')?'The link to the host was lost.':'Could not link up with the host. One of your routers may be blocking a direct link; ask for a new invite code, or try from another network.';
+    if(!NET.err) NET.err=(was==='in')?'Connection to host lost.':'Could not link up with the host. One of your routers may be blocking a direct link; ask for a new invite code, or try from another network.';
     if(was==='in') netHostGone('lost');   // v15.91: a raid up top on the party seed ends as abandon, his ruling; the section resets right after
     netReset(true);
     return;
@@ -34942,7 +34942,7 @@ function netDrop(peer,why){
       NET.status=peer.name+' left your party.';
       netSay(NET.status);
     } else if(why==='failed'||why==='timeout'||why==='silent'){
-      NET.err='No link to your friend. One of your routers may be blocking a direct link. Make a new invite code, or try from another network.';
+      NET.err='Could not connect. A router may be blocking the connection. Make a new invite code, or try another network.';
     }
   }
   netRefresh();
@@ -35179,7 +35179,7 @@ function netSamePick(mode,startFn){
   mode=(mode==='pvp')?'pvp':'coop';
   NET.pick=mode;
   if(NET.same==='p2'||NET.role==='join'){ netModeMsg('This window is player 2 already.'); return 'p2'; }
-  if(typeof BroadcastChannel!=='function'||!netSupported()){ netModeMsg('This browser cannot link two windows of the game. 1 PLAYER still plays.'); return 'unsupported'; }
+  if(typeof BroadcastChannel!=='function'||!netSupported()){ netModeMsg('This browser cannot run two game windows. 1 PLAYER still works.'); return 'unsupported'; }
   if(!NET.pair) NET.pair=netSess();
   url=netP2Url(mode,NET.pair); NET.p2url=url;
   try{ w=window.open(url,'pillagers_p2',netP2Features()); }catch(e){ w=null; }
@@ -35267,7 +35267,7 @@ function netSameBootP2(pair,mode){
   NET.pair=(typeof pair==='string'&&pair)?netPairOf('?pair='+pair):netPairOf(q);
   NET.same='p2';
   if(typeof BroadcastChannel!=='function'||!netSupported()){ NET.err='This browser cannot link two windows of the game.'; netRefresh(); return 'unsupported'; }
-  if(!NET.pair){ NET.err='This window was opened without a pair code. Close it and pick the mode again in the player 1 window.'; netRefresh(); return 'nopair'; }
+  if(!NET.pair){ NET.err='This window is missing its pair code. Close it and pick the mode again in the player 1 window.'; netRefresh(); return 'nopair'; }
   if(!netSameChan()){ NET.err='Could not open the link to the player 1 window.'; netRefresh(); return 'nochan'; }
   netPadInit();   // v15.77: the player 2 controller pick, kept from last time, told to the player 1 window; ready stays the last word of the boot
   netSndInit();   // v15.78: the player 2 sound switch, kept from last time (player 2 defaults to off), told to the player 1 window before ready
@@ -36848,7 +36848,7 @@ function renderParty(){
   var st=g('partystat'), er=g('partyerr'), ro=g('partyroster'), sb=g('partystart'), cb=g('partycodebox'), rb=g('partyreplybox');
   if(!st||!er||!ro||!sb||!cb||!rb) return;
   var role=NET.role, code=(role==='host')?NET.code:((role==='join')?NET.reply:''), r=NET.roster||[], i, row, nm;
-  st.textContent=NET.status||(role?'':'You are not in a party. Host one, or paste an invite code from a friend who is hosting.');
+  st.textContent=NET.status||(role?'':'Not in a party. Host one, or paste an invite code from a friend.');
   er.textContent=NET.err||''; er.style.display=NET.err?'':'none';
   var mo=g('partymode'); if(mo){ mo.textContent=NET.mode?('MODE: '+netModeName(NET.mode)):''; mo.style.display=NET.mode?'':'none'; }   // v15.76: the mode picked on the title
   // v15.77: the controller this window plays on, in a same machine mode; the other window's pick beside it.
@@ -36856,7 +36856,7 @@ function renderParty(){
   if(pr){ pr.style.display=NET.same?'':'none'; if(NET.same){ if(pb) pb.textContent='THIS WINDOW: '+netPadLabel(NET.padIx,NET.same); if(pn) pn.textContent='Press to change. The other window is on '+netPadLabel(NET.padOther,(NET.same==='host')?'p2':'host').toLowerCase()+'. Each window keeps its own controller, in front or not.'; } }
   // v15.78: whether this window plays the world sound, in a same machine mode; what the other window said beside it.
   var sr=g('partysnd'), sb2=g('partysndbtn'), sn=g('partysndnote');
-  if(sr){ sr.style.display=NET.same?'':'none'; if(NET.same){ if(sb2) sb2.textContent='THIS WINDOW: '+netSndLabel(NET.sndOn); if(sn) sn.textContent='Press to change. The other window: '+netSndOtherLabel()+'. Two windows on one PC play the same world sound twice, so one of them is switched off. A window switched off keeps every sound running and comes straight back when switched on.'; } }
+  if(sr){ sr.style.display=NET.same?'':'none'; if(NET.same){ if(sb2) sb2.textContent='THIS WINDOW: '+netSndLabel(NET.sndOn); if(sn) sn.textContent='Press to change. The other window: '+netSndOtherLabel()+'. Only one window should play world sound, or you hear everything twice.'; } }
   var vr=g('partyvoice');   // v16.09: the voice row, for a party linked by code (a same machine pair shares one room already)
   if(vr){ vr.style.display=(role&&!NET.same)?'':'none';
     if(g('partymicbtn')) g('partymicbtn').textContent=NET.micTrack?'MIC: ON':'MIC: OFF';
@@ -36916,12 +36916,12 @@ function netCopyOld(t,done){
   if(g('partysndbtn')) g('partysndbtn').onclick=function(){ netSndToggle(); };   // v15.78: the SOUND row
   if(g('partymicbtn')) g('partymicbtn').onclick=function(){ if(NET.micTrack){ voiceMicOff(); renderParty(); } else netUi(function(){ return voiceMicOn(); },'Requesting microphone access.'); };   // v16.09
   if(g('partymicmode')) g('partymicmode').onclick=function(){ NET.micMode=(NET.micMode==='open')?'ptt':'open'; voiceGate(); renderParty(); };   // v16.09
-  g('partyhost').onclick=function(){ netUi(netHost,'Making an invite code. This takes a few seconds.'); };
-  g('partyinvite').onclick=function(){ netUi(netHost,'Making a new invite code. This takes a few seconds.'); };
+  g('partyhost').onclick=function(){ netUi(netHost,'Creating invite code.'); };
+  g('partyinvite').onclick=function(){ netUi(netHost,'Creating a new invite code.'); };
   g('partyjoin').onclick=function(){
     var v=g('partyin').value; blurIn();
     if(!String(v||'').replace(/\s+/g,'')){ NET.err='Paste the invite code your host sent you into the box first.'; renderParty(); return; }
-    netUi(function(){ return netJoin(v); },'Reading the invite code and making your reply code. This takes a few seconds.');
+    netUi(function(){ return netJoin(v); },'Creating your reply code.');
   };
   g('partyaccept').onclick=function(){
     var v=g('partyreplyin').value; blurIn();
@@ -37779,7 +37779,7 @@ function syncSectorKit(){
   // v13.31: since his ruling the pack guns wait in the stash with nothing equipped.
   // Say he owns one, and how to take it, on the last screen before the lift.
   if(!w&&(P.stash||[]).some(function(k){ var it=ITEMS[k]; return it&&it.use==='gun'&&it.gk&&WEAPONS[it.gk]; }))
-    line+='<div style="margin-top:5px">You have a gun of your own in your stash. To take it up, close this and choose Equip as your gun on it at the stash.</div>';
+    line+='<div style="margin-top:5px">Your own gun is in your stash. Close this and choose Equip as your gun on it to take it up.</div>';
   // v10.13, his answer 7: the armour warning lives here, on the way up. It
   // used to be copied off the stash screen's readiness line, which v9.98
   // removed, so it had been nowhere since. Same numbers as the line had.
@@ -37956,7 +37956,7 @@ function renderStage(prefill){
   var M=FIXED_MAPS[clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1)];
   document.getElementById('stagehead').textContent='ASCENT CHECK  \u00b7  '+M.name;
   document.getElementById('stagewhere').textContent=
-    'Last stop before the lift. Everything on this page can still be changed. '+
+    'Final check before the lift. You can still change anything here. '+
     'Nothing leaves your stash until you press ASCEND.';
   document.getElementById('stagecred').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
   renderFreeKit();
@@ -38083,7 +38083,7 @@ function renderStage(prefill){
   dropzone(document.getElementById('stagekit'),function(key,from){
     if(from==='rack'){   // v11.95: a rack gun, like any item
       var _rg2=key.slice(4);
-      if(P.equipped===_rg2||P.equippedSec===_rg2){ say2('That one goes up in your hands already.'); return; }
+      if(P.equipped===_rg2||P.equippedSec===_rg2){ say2('That gun is already equipped.'); return; }
       var _rw2=rackToStash(key); if(_rw2){ say2(_rw2); try{ sfx('clank'); }catch(e){} return; }
       var _pw2=packSome(key,1); if(_pw2){ say2(_pw2); return; }
       try{ sfx('pick'); }catch(e){} renderStage(); return;
@@ -38175,7 +38175,7 @@ function renderStage(prefill){
   // not about this run at all.
   if(P.freeKit){ W.style.display='none'; return; }
   if(warn.length){ W.style.display='block';
-    W.innerHTML='<b>Going up with '+escHtml(warn.join(', '))+'.</b> That is allowed, and it is how short raids happen.'; }
+    W.innerHTML='<b>Going up with '+escHtml(warn.join(', '))+'.</b> You can still go up.'; }
   else W.style.display='none';
 }
 document.getElementById('stageback').onclick=function(){
@@ -38202,7 +38202,7 @@ function renderFreeKit(){
   // fixes: getElementById only ever reached the copy on a screen that no longer opens.
   var html='<div class="fkbox">'+
     '<b>FREEBIE KIT</b>'+
-    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText())+(P.kitSaved?' Your own packing is kept for when you switch back.':''):
+    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText())+(P.kitSaved?' Your own loadout is saved for when you switch back.':''):
       'Go up with issued gear instead of your own. '+escHtml(freeKitText()))+'</span>'+
     '<button class="deploy ghost fkbtn">'+(on?'USE MY OWN GEAR':'TAKE THE FREEBIE KIT')+'</button>'+
     '</div>';
@@ -38640,7 +38640,7 @@ function renderSettings(){
     // screen he simplified.
     '<div class="row"><div style="flex:1"><b>Stash layout</b><div class="hint">Ten arrangements of the stash and backpack grids. Lower numbers are roomier cells and fewer of them; higher numbers pack more items on screen. 6 is the default.</div></div>'+
     '<button id="set_layout" style="padding:6px 12px;min-width:110px">'+clamp(P.stashLayout||6,1,10)+' of 10</button></div>'+
-    '<div class="row"><div style="flex:1"><b>Music</b><div class="hint">A faint 16-bit loop, five pieces, one picked at random each time you come back down. UNDERCROFT plays it, OFF is silence. The surface is deliberately silent either way.</div></div>'+
+    '<div class="row"><div style="flex:1"><b>Music</b><div class="hint">A quiet 16-bit loop in the Undercroft. OFF turns it off. There is no music on the surface.</div></div>'+
     '<button id="set_music" style="padding:6px 12px;min-width:110px">'+MUSIC_NAMES[musicMode()]+'</button></div>'+
     // v8.75: it is every SECOND raid, not every raid, and on this machine the
     // report goes to the local collector instead while it is running.
@@ -38656,9 +38656,9 @@ function renderSettings(){
       ?'ON sends the same run report you can already export yourself, as each raid ends: your raids, loadouts and any notes you type, plus an anonymous install id, and nothing else about you. OFF keeps it in your Downloads.'
       :'There is no upload address in this build, so nothing is sent anywhere and this switch changes nothing yet. When one exists, turning this on would send the same run report you can already export yourself: your raids, loadouts and any notes you type, plus an anonymous install id, and nothing else about you.')+'</div></div>'+
     '<button id="set_share" style="padding:6px 12px">'+(P.shareRuns?'ON':'OFF')+'</button></div>'+
-    '<div class="row"><div style="flex:1"><b>Back up your progress</b><div class="hint">Everything you own lives in this browser, and one browser cleanup erases it forever. This saves it all to a file in your Downloads. Do it once in a while.</div></div>'+
+    '<div class="row"><div style="flex:1"><b>Back up your progress</b><div class="hint">Your progress lives in this browser. Clearing browser data erases it. This saves a backup file to your Downloads.</div></div>'+
     '<button id="set_backup" style="padding:6px 12px">SAVE FILE</button></div>'+
-    '<div class="row"><div style="flex:1"><b>Restore from a backup</b><div class="hint">Pick a backup file and your profile becomes what it was when you saved it. The profile you are on right now is kept until the next restore, so if you pick the wrong file, UNDO puts it back.</div></div>'+
+    '<div class="row"><div style="flex:1"><b>Restore from a backup</b><div class="hint">Load a backup file to restore your profile. UNDO brings back the profile you replaced.</div></div>'+
     '<button id="set_restore" style="padding:6px 12px">PICK FILE</button>'+
     // v12.85, 2026-09-11 audit: THE WAY BACK, which the sentence above has been
     // promising since v8.75 and which did not exist. The outgoing profile was
@@ -38668,10 +38668,10 @@ function renderSettings(){
     '</div>'+
     '<div class="row"><div style="flex:1"><b>Controls legend</b><div class="hint">H in a raid cycles compact, full and off. Compact is the default.</div></div>'+
     '<span class="hint">H</span></div>'+
-    '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you are aiming and returns with the backpack. BACKSPACE forces it back at any time.</div></div>'+
+    '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you aim and shows with the backpack open. BACKSPACE brings it back.</div></div>'+
     '<span class="hint">BKSP</span></div>'+
     // v10.28, his note: the console is a window option here, not a secret key.
-    '<div class="row"><div style="flex:1"><b>Tuning console</b><div class="hint">Every dial the rows above set, and the rest of them, as live sliders. A slider you move is yours until you click its row again. SHIFT and the backquote key open it too.</div></div>'+
+    '<div class="row"><div style="flex:1"><b>Tuning console</b><div class="hint">Every setting as a live slider. A slider you move stays set until you click its row again. SHIFT and backquote also open it.</div></div>'+
     '<button id="set_tune" style="padding:6px 12px">OPEN</button></div>'+
     // v10.30, his note: the cheat box is a switch here, locked until one extraction,
     // and only on a local build; anything served from itch never shows the row.
@@ -39116,7 +39116,7 @@ function renderAvPicker(pickHost,host){
   if(!slot&&pid==='appavatarpicker'){ renderCosmetics(box,null,hid,pid); return; }
   if(!slot){
     box.innerHTML='<div class="hint" style="font-size:11px;line-height:1.4">'+
-      'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>';
+      'Click a slot to change it. Headgear and hair are cosmetic and earned through play.';
     return;
   }
   if(slot==='outfit'||slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'||slot==='tattoo'){   // v10.54: outfit

@@ -1,0 +1,19 @@
+## v16.16 - PLAIN GAME LANGUAGE, THE LARGER PASS
+
+His order of 2026-09-26, after v16.15: the on-screen text as a whole reads like a rulebook, not a game.
+
+THE PASS. Every player-visible string in the game was pulled out by script (806 after the what is new entries past the thirteen
+the card draws, the DEVNOW lines and dev-only report and sim text were set aside). Left untouched on purpose: every TXSHIP key
+(his baked edits match whole sentences; one candidate, the hire card paragraph, turned out to be a key, since his edit shows
+Buy a friend. in its place, and was put back), the pillager, hire and Wirt barks, the lore, the weather lines, the multi-line
+tutorial tips, sentence fragments stitched to numbers, and the dev and report screens. 76 lines that explained mechanics were
+rewritten short and plain: raid messages (Backpack full., Too tired to roll., Hot ground. Extra loot in here., Knocked down.
+Extraction hold lost., the siege greed lines, the Crier alarm, the terms), the stash and loadout screens, the Mainframe, the
+reputation and earnings cards, the PARTY window and link errors, and the Settings hints. None uses a retired word. Text only.
+
+Checks restaged for the new words: 10.27 (the earnings card) and 11.94 (the Listener death line). Every other check that
+quotes 24 or more characters of a changed line (9.25, 12.83, 13.11, 14.99, 15.52, 15.78, 15.91) passes unchanged.
+
+MEASURED. Check 16.16 reads the game's own code: a sample of the old lines is gone and their new lines are there. Passes twice;
+fails on v16.15. Not yet run: the full corpus on this build.
+
