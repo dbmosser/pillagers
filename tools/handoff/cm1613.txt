@@ -1,0 +1,9 @@
+v16.13: three backcheck fixes
+
+A restore code with no tally starts a clean one, and the sector card
+reads the tally, so a restored character no longer shows the runs of
+the character it replaced. A pillager a friend kills is remembered
+again. A beacon a friend calls is sized by his backpack and wakes the
+map as the host's own call does. No number moved.
+
+Check 16.13. Fails on v16.12.

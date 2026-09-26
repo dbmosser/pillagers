@@ -1,0 +1,21 @@
+## v16.13 - THREE BACKCHECK FIXES: THE RESTORED TALLY, A FRIEND'S KILL, A FRIEND'S BEACON
+
+1. THE RESTORED TALLY (v15.88). A restore code with no tally (any code from before v15.88, or from a character who had not
+finished a raid since) set P.mapRunN to null, so the next commitRun seeded the tally from the replaced character's run log and
+kept those runs for good; and the sector card showed the larger of the log count and the tally, so a restored character showed
+the replaced character's runs until sixty new runs pushed them out. restoreApply now starts a clean tally ({}) when the code has
+none, and once a tally exists the card reads it alone (it is seeded from the log, so never below the character's own log count);
+the log is read only before a tally exists.
+2. A FRIEND'S KILL (v15.80). The host sends the gone word before the kill word on the same ordered channel, so the kill word found
+no body and a pillager a friend killed was never remembered (kills, standing, met, the will remember that line). The gone word
+now keeps the last forty bodies it took off (NET.entDead) for the kill word.
+3. A FRIEND'S BEACON (v16.06). The host sized a friend's siege by the host's own backpack, while the friend's window promised a
+siege by his; and a friend's call was quiet on the host. The beacon word now carries the caller's greed, which sets the ring's
+siegeGreed, and the host pings by it and alerts and sends to the ring everything within 2200, never overwriting a hunt, as the
+local call does, with no jitter drawn (the net code draws nothing seeded).
+
+No number, dial or loot table moved; map building untouched. Solo play meets only fix 1.
+
+MEASURED. Check 16.13 passes twice and fails on v16.12 in every arm. Checks 15.88, 15.96, 15.80, 16.06 and 16.11 pass on the
+dry build.
+
