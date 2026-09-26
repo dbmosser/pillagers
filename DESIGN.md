@@ -40024,6 +40024,13 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.18 - HIS WORDS: EXTRACTION ATTEMPT RESET
+
+His wording for the v16.17 line. Knocked down while holding E to extract now says Knocked down. Extraction attempt reset.
+Hold E to try again. Text only. Check 16.17 restaged to the new words.
+
+MEASURED. Check 16.18 passes twice and fails on v16.17; check 16.17 passes.
+
 ## v16.17 - KNOCKED DOWN WHILE EXTRACTING SAYS WHAT HAPPENED
 
 His note on v16.16: he had no idea what an extraction hold is. The line fires when he is holding E to extract, the bar is

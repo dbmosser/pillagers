@@ -1,0 +1,6 @@
+v16.18: extraction attempt reset
+
+His wording. Knocked down while extracting now says: Knocked down.
+Extraction attempt reset. Hold E to try again. Text only.
+
+Check 16.18. Fails on v16.17. Check 16.17 restaged.

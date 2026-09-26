@@ -1,0 +1,1 @@
+| HIS WORDS: EXTRACTION ATTEMPT RESET | v16.18 | HIS WORDING for the v16.17 line: Knocked down. Extraction attempt reset. Hold E to try again. Text only; check 16.17 restaged. MEASURED: check 16.18 passes twice, fails on v16.17 |
