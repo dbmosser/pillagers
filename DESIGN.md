@@ -40024,6 +40024,69 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.00 - RAIN AND FOG DRAW AT NIGHT STRENGTH ON EVERY NIGHT RAID
+
+Weather audit finding (MEDIUM), entry 8 of the confirmed list. Two render alphas, no text.
+
+THE FAULT. tod() returns G.tod, and buildRaid rolls G.tod with pickTod on every raid, night included, so the seeded stream
+stays in step; pickTod draws uniformly from the five TODS entries with no P.cond gate, and 8am and noon carry lights 0, 6pm
+0.25, dawn 0.7 and 8pm 1. isDay() (P.cond==='day') is the night switch, and every other reader of tod().lights asks it first:
+the lamp pass reads wx().lights*(isDay()?tod().lights:1), so do the two later lamp readers, and lampBase returns 1 at night
+under the comment that at night the lamps are the light. The hour tint in the same render pass is gated if(isDay()&&TD.add).
+The TODS header says every entry is DAYLIGHT; the night surface came later and two lines inherited an ungated read: the rain
+block's _rl, feeding (0.20+_rr*0.09)*(1-0.45*_rl), and the fog haze's _fl, feeding _fa=_fg*(1-0.40*_fl). The rain block's own
+comment calls tod().lights the darkness figure, which is only true by day. So on a NIGHT raid whose hidden hour rolled 8am or
+noon (two raids in five) the hairlines drew at 0.29, the full noon strength v3.58 was written to cut ("rain at night is still
+too distracting"), over the darkest scene the game has (the night sheet is blitted onto wc before the rain and the fog draw,
+so it does not darken them), and on an 8pm hour night the same rain drew at 0.16: two night rain raids nearly twice apart in
+brightness with nothing on screen to explain it. The haze the same, 0.09 against 0.054. Not balance (a render alpha), not a
+TXSHIP key (no text), and no ruling or comment makes it deliberate.
+
+THE BUILD. Two edits, the finding's fix as written (the verdict added no correction; it noted lampBase() would be equivalent,
+and the finding's form is kept because it is the shape every other gated reader in this pass uses), plus the version bump and
+DEVNOW. _rl and _fl each become isDay()?(the old expression):1. By day both lines are byte for byte what they were; at night
+the darkness figure is 1, the figure the lamps use, so the rain draws at 55 percent of its noon alpha and the haze at 60
+percent, whatever the hidden hour. isDay is a hoisted global already called in this pass. No player text, no number, no
+dial, no loot table and no seeded draw moved; map building is not touched, so the seed 4242 fingerprint in __verifySafe
+cannot move.
+
+ANCHORS. Two two-line blocks, whole lines: the _rl line with the strokeStyle line under it, and the _fl line with the _fa line
+under it. Each matches once in the file as it stands, and no p-script from 1584 to 1599 touches either (a grep of the queue
+for _rl=, _fl=(typeof, 176,196,232 and _fa=_fg finds none; the chain scripts p1593, p1594, p1596, p1597 and p1599 were read).
+VER 15.99 to 16.00, the DEVNOW now line v15.99 to v16.00 (the version crosses to 16.00: the VER anchor is 15.99, the DEVNOW
+anchor is v15\.99, and f1600 anchors on the 15.99 check entry). The scaffolding is p1560's, unchanged.
+
+MEASURED. Check 16.00 stages a live raid at seed 4242 with the profile snapshotted, reads rain, fog, noon and 8pm off the
+WEATHER and TODS tables (SKIP if any is missing or 8pm is not darker than noon in the table), and wraps wc.stroke and
+wc.fillRect so each records the alpha of its style at the moment it is drawn when the style is the rain colour (176,196,232)
+or the fog colour (200,210,222), parsed with a pattern tolerant of the spaced form the canvas hands a style back in. Each
+frame sets P.cond, G.tod, G.wx (G.wxNext null, G.wxT 0) and calls render2D(0.016) once. By day at noon under rain: the rain
+stroke must be found (SKIP if not). CONTROL: by day at 8pm the rain draws clearly dimmer (under 80 percent of noon), on
+either build, so the darkness figure is read where the check looks (SKIP if not). THE FIX, ONE: at NIGHT (isDay() false,
+checked) on the noon hour the rain must draw within 12 percent of the 8pm figure; on v15.99 it draws at the noon figure,
+0.29 against 0.16, and the check fails naming both numbers and saying it is the full noon daylight strength. THE FIX, TWO:
+the same under fog for the flat haze fill, noon 0.09 and 8pm 0.054 by day (CONTROL: dimmer, else SKIP keeping any rain
+failure already found), then at NIGHT on the noon hour the haze must be within 12 percent of the 8pm figure; on v15.99 it
+draws at 0.09 and fails. CONTROL: back by day at noon the rain is at its full figure again. The 12 percent covers the canvas
+rounding an alpha to a byte and nothing else; the two figures being told apart are 45 and 40 percent apart. No render
+constant is written into the check: it compares frames against frames. In finally wc.stroke and wc.fillRect are put back
+(deleted if they were not own properties), G.tod, G.wx, G.wxNext and G.wxT are restored, the raid is abandoned, the profile
+snapshot is applied through the loader, and the card, CFG and profile are cleaned.
+
+Older fixture checks: none restaged. No check in mkfixture.ps1 reads the rain stroke or the fog haze style: no check holds
+176,196,232 or 200,210,222, 0.45*, or a reader of _rl or _fl (the only _fl in the fixture is the floors object in the
+container bar check). The checks that stage a night profile under fog or storm (the restore code checks) read the code
+fields, not the picture, and 14.32 stages weathers and draws frames but reads G.lightning only.
+
+Dry run on scratch copies of dark_raiders.html (as it stands at v15.84, stamped 15.99 with a stand-in now line) and
+mkfixture.ps1 (with a stand-in 15.99 entry): p1600 printed OK, 3 edits applied plus DEVNOW; f1600 printed OK, 1 edit; every
+anchor once, one now key left, both edited lines whole with the v16.00 note above each and no old line left; mkfixture then
+built a fixture from the scratch copy (written: True). The new check and the two edited lines parse in the .NET JScript
+compiler (fast mode off, with a deliberately broken snippet caught beside them as a control). Both scripts are ASCII only
+and hold no bare return-slash and no backslash-b. 1595 and 1598 were not in the folder when this was drafted, so the version
+chain was stamped rather than applied.
+
+Not verified: the rain and fog at night by eye, and the check in a browser.
 ## v15.99 - THE SECTOR MAP NAMES THE WEATHER IT IS LEAVING, AND THE CONDITIONS ROW SAYS NIGHT AT NIGHT
 
 Weather audit finding (HIGH), entry 7 of the confirmed list. Two labels, both text only. The finding has two halves; the second

@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.99';
+var VER='16.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24689,7 +24689,15 @@ wc.drawImage(fogC,0,0);
     // time of day actually is: full strength at noon, a bit over half in the
     // dead of night. tod().lights is already "how much the lamps are needed",
     // which is the darkness figure.
-    var _rl=(typeof tod==='function'&&tod())?tod().lights:0;
+    // v16.00, weather audit finding: RAIN AND FOG DRAW AT NIGHT STRENGTH ON EVERY NIGHT RAID. The darkness figure read here
+    // was tod().lights with no isDay() gate, and tod() is the DAYLIGHT hour: pickTod rolls it on every raid, night included,
+    // so the seeded stream stays in step, and at NIGHT it is a dead roll everywhere else (the cast and the dim above ask
+    // isDay() first, and every lamp reads wx().lights*(isDay()?tod().lights:1), which is 1 at night). So on a NIGHT raid
+    // whose hidden hour rolled 8am or noon (lights 0, two raids in five) the hairlines drew at 0.29, the full noon strength
+    // v3.58 was written to cut, over the darkest scene the game has, and on an 8pm hour night the same rain drew at 0.16:
+    // two night rain raids nearly twice apart in brightness with nothing on screen to explain it. At night the darkness
+    // figure is 1, the figure the lamps use. By day this is byte for byte what it was. No number and no seeded draw moved.
+    var _rl=isDay()?((typeof tod==='function'&&tod())?tod().lights:0):1;
     wc.strokeStyle='rgba(176,196,232,'+((0.20+_rr*0.09)*(1-0.45*_rl)).toFixed(3)+')';
     wc.lineWidth=WX.rain>1?1.4:1;
     wc.beginPath();
@@ -24711,7 +24719,10 @@ wc.drawImage(fogC,0,0);
   var _fg=WX.fog||0;
   if(_fg>0.01){
     var _ft=(G.t||0)*0.05;
-    var _fl=(typeof tod==='function'&&tod())?tod().lights:0;
+    // v16.00, weather audit finding: RAIN AND FOG DRAW AT NIGHT STRENGTH ON EVERY NIGHT RAID. The same fault as the rain
+    // above: the haze read the daylight hour with no isDay() gate, so at NIGHT on an 8am or noon hour it drew at its full
+    // noon strength and on an 8pm hour at 60 percent of that. At night the darkness figure is 1. By day nothing changes.
+    var _fl=isDay()?((typeof tod==='function'&&tod())?tod().lights:0):1;
     var _fa=_fg*(1-0.40*_fl);
     wc.fillStyle='rgba(200,210,222,'+(0.09*_fa).toFixed(3)+')';
     wc.fillRect(0,0,W,H);
@@ -31089,7 +31100,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.99: THE SECTOR MAP NAMES THE WEATHER IT IS LEAVING, AND THE CONDITIONS ROW SAYS NIGHT AT NIGHT. From half way through a weather turn the sector map header named the coming weather on both sides of the arrow, Storming then Storming, while the CONDITIONS row still said Rainy; the left of the arrow is now the weather the turn is leaving. The CONDITIONS row keeps the night word 15.87 gave it, in the same word as the sector map header, and by day it names the rolled hour as before. Check 15.99 draws the header three quarters through a turn and the row at night; it fails on v15.98',
+  now:'v16.00: RAIN AND FOG DRAW AT NIGHT STRENGTH ON EVERY NIGHT RAID. Every raid rolls a daylight hour, and at NIGHT that hour is hidden and does nothing, except that the rain hairlines and the fog haze still took their brightness from it: on a NIGHT raid whose hour rolled 8am or noon they drew at full noon strength over the darkest scene in the game, and on an 8pm hour at little more than half that, so two night raids in the same rain looked nearly twice apart in brightness. At night both now use the darkness figure the lamps use, so every night raid in rain or fog draws the same, and by day nothing changes. Check 16.00 draws rain and fog by day on the noon and 8pm hours and at night on the noon hour; it fails on v15.99',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
