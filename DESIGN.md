@@ -40024,6 +40024,73 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.90 - PILLAGERS NEVER SPAWN INSIDE A LOCKED ROOM
+
+Doors audit finding (MEDIUM), entry 8 of the confirmed list.
+
+A locked room is four 16 unit strips and a door strip that only its key removes. freeSpot asks one question of a point, whether
+it is clear of every wall rect by the pad, and the open floor inside a room is clear: at pad 30 a 230 room leaves about 138 by
+138 of legal ground. Two places hand a pillager a freeSpot point and never look at it again. The opening roster in buildRaid
+does var s3=far(freeSpot(map,30),1190) and then mkRaider(s3.x,s3.y,...); _capHouses only moves crawlers, the v2.12 reach pass only
+walks containers, mkRaider takes the point as given. tickRaiderWaves takes the farthest of 24 free spots from you with
+if(_cd>bd){ bd=_cd; sp=_c; } and gates only on bd<900. With you in the south west of COLD STORAGE, FOREMAN OFFICE at (3820,250)
+is exactly the far corner where the farthest candidate lands. A pillager born inside starts in loot; the loot pick filters only
+opened and skipped boxes, so he opens the room's three caches (and the strongbox when it was placed there), the sector map
+reads LOOTED on a room whose key you have not found, and with the door wall in place no route leaves, so his name sits on the
+board for the whole raid. The verdict corrected two things in the claim: he does not switch to extract after three boxes
+(raiderHaul is 7), he stays in loot and drops each outside box after its pathFail, still trapped; and the odds are a few
+percent per wave with you in the far corner, not likely. The audit's fix named a shutRoomAt helper that did not exist; v15.89
+has since added it beside navReachable for the hire, and this build uses that one. No ruling or comment makes this deliberate,
+it is placement, not balance, and no player text is involved.
+
+THE BUILD. Two edits, the verdict's corrected fix with the helper already in place. Opening roster: directly after the s3 line,
+_lr3=shutRoomAt(map,s3.x,s3.y); if he is inside a shut room he is projected out below its door face, the first point of six
+walking down from y+h+34 in steps of 20 that spotFree clears at pad 14, else the first point as it is. Same shape as the v9.04
+crier fix: projected, not re-rolled. Waves: the pick line is now if(_cd>bd&&!shutRoomAt(G.map,_c.x,_c.y)){ bd=_cd; sp=_c; }, so
+a candidate inside a room whose door is still shut is passed over; the existing bd<900 return already covers the wave where
+every candidate was inside one. THE SEEDED MAP: spotFree and shutRoomAt draw nothing, the roster edit runs after far() has
+returned and adds no freeSpot call, and all 24 wave draws still happen whether the spot is taken or not. mkRaider is still
+called once per roster turn and once per landed wave, so the count of pillagers is what it was and only where one stands can
+change; the ents 85 and 374 and containers 165 and 593 at seed 4242 cannot move. A room that has been opened is not a shut room
+to the helper, so once the key is spent both places treat its floor as ground again. The hire ring around the drop, the merc
+fallback and the machine spawns (siege at 700, reinforcements at 800) are not pillager spawns and are untouched. No word of
+player text, no number, dial, loot table or seeded draw moved.
+
+MEASURED. Check 15.90 clears the card and profile, pins defaults for map 0, snapshots P, deploys COLD STORAGE at seed 4242 and
+requires a live raid with a roster, waves on at the pinned defaults and a locked room. The stage: a shut room (door wall still
+in the wall list) with a point on its floor that spotFree clears at pad 30, so freeSpot itself could hand that point out; you
+at the corner of the map farthest from that point; and one clear point outside the room on the line from the inside point
+towards you, so it is nearer to you than the inside point and past the 900 wave floor (a SKIP if the stage does not hold).
+G.ents, G.roster, waveT, waveN, waveAt and your position are kept, then freeSpot is stood in for by a function that counts its
+calls and answers from a plan (a SKIP if the stand-in did not take). One forced wave: the map emptied so the wave is urgent
+and both ceilings are waived, waveT past the gap, waveAt cleared so the once-a-frame guard passes, tickRaiderWaves(0.05)
+called directly. CONTROL: every candidate the clear point; the wave must ask the stand-in exactly 24 times and land a pillager
+on that point, on either build, else SKIP. THE FINDING: every candidate the inside point; on v15.89 the wave lands him inside
+the room and the check fails for the finding's own reason; on v15.90 nobody lands. Then one clear point among 24 inside
+points: on v15.89 the inside point is farther from you and wins, so he lands inside again; on v15.90 he lands on the clear
+point, which proves the wave passes the room over rather than declining. In finally freeSpot is put back, the kept ents,
+roster, wave clock and your position are restored, the raid is abandoned if still live, the profile snapshot is put back
+through __applyLoaded, and the card, dials and profile are cleaned. The check makes no text search, so no needle is needed.
+
+The roster half is not driven by the check: far() is a closure inside buildRaid and the only way to force a roster pillager
+into a room is to stand in for freeSpot across a whole build, which would also move every container and machine the build
+places and hangs on any unbounded draw loop. It is the same helper and the same strict inside test as the wave half, read
+rather than run, and the audit's own 300 seed roster scan stays a hand job.
+
+Older fixture checks: none restaged. No check reads where a wave lands or whether a roster pillager stands inside a locked
+room: the fixture holds no freeSpot call and its only tickRaiderWaves line is the profiler wrap; the checks that read
+map.locked (15.57, 15.56, 15.40, 15.38, 15.19, 11.25, 10.42, 9.81, 9.79, 9.74) read keys, walls, panels and the hire, and the
+checks that stage pillagers (15.89 among them) place them by hand and hold the wave clock at -1e9.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (15.83 applied): p1584 and f1584, a stand-in
+for 1585 (its files are not in the folder yet, so only its version bump, DEVNOW line and fixture entry were faked), p1586 to
+p1589 and f1586 to f1589 in version order, then p1590 and f1590, every script printing OK and every anchor a whole line block
+matching once (p1590: 3 edits plus DEVNOW; f1590: 1 edit). The edited tickRaiderWaves, the roster block and the new check
+parse in JScript. Neither anchor is touched by p1580 to p1589; p1589 supplies shutRoomAt, which this build calls in two new
+places (four call sites in the file after the dry run: the helper, the hire pick, the roster, the wave).
+
+Not verified: the seed 4242 counts in a browser, a real wave landing by hand on either map, and the roster half at all. The
+check itself has not been run in a browser yet.
 ## v15.89 - YOUR HIRE ON FOLLOW KEEPS FOLLOWING PAST A LOCKED ROOM
 
 Doors audit finding (MEDIUM), entry 7 of the confirmed list.
