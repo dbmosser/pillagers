@@ -1430,7 +1430,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.14';
+var VER='16.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1445,7 +1445,7 @@ var WHATSNEW_VER='16.12';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'YOUR PARTY GOES UP TOGETHER AND SHARES ONE SURFACE. The mode menu opens a second window for your other screen with its own controller, and world sound plays from one of the two. In a party only the host takes the lift: the party ascends together and sees each other up top. The pillagers and machines are one set for everyone: they go for whoever is nearest, your hits and kills count in your own tally, and nobody in your party can hurt you. One of you searches a box at a time and the loot goes to whoever searched it. Hold E beside a downed teammate to pull them up. The clock, the weather, the lightning and the extraction points are the same for everyone, and a beacon any of you calls comes for the party. If the host leaves the party, the run ends as abandoned for everyone; if the host extracts or dies, the raid runs on until the rest of you are out. Pause no longer stops the world in co-op. C crouches even with Shift held when you are out of breath, a controller leaves the end of raid card with B, holding ESC or P no longer flickers the pause box, a pillager grenade sounds where it lands, a lightning flash shows you to the enemy from farther off, and only a Medkit takes you past 85.',
+  'YOUR PARTY GOES UP TOGETHER AND SHARES ONE SURFACE. The mode menu opens a second window for your other screen with its own controller, and world sound plays from one of the two. In a party only the host takes the lift: the party ascends together and sees each other up top. The pillagers and machines are one set for everyone: they go for whoever is nearest, your hits and kills count in your own tally, and nobody in your party can hurt you. One of you searches a box at a time and the loot goes to whoever searched it. Hold E next to a downed teammate to revive them. The clock, the weather, the lightning and the extraction points are the same for everyone, and a beacon any of you calls comes for the party. If the host leaves the party, the run ends as abandoned for everyone; if the host extracts or dies, the rest of the party keeps playing. Pause no longer stops the world in co-op. C crouches even with Shift held when you are out of breath, a controller leaves the end of raid card with B, holding ESC or P no longer flickers the pause box, a pillager grenade sounds where it lands, a lightning flash shows you to the enemy from farther off, and only a Medkit takes you past 85.',
   'GRENADES, BELT KEYS, STASH, WARDROBE, SAVES AND STORMS. A cooked Frag Charge keeps burning through a roll, a heal on a key no longer stops Medical using your other heals, and a controller packs from the stash with A. SURPRISE ME takes a worn suit off, erasing a save erases its UNDO copy, and lightning no longer hits you through a wall. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
   'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
@@ -5513,7 +5513,7 @@ var WEATHER=[
   {id:'blackout',name:'Blackout',view:1,noise:1,lights:0.18,rain:0,
    line:'Grid is down. Every lamp on the map is dead.'},
   {id:'storm',name:'Storming',view:0.80,noise:0.48,lights:0.55,rain:2,lightning:true,
-   line:'Storm. Lightning strikes, and every flash shows you the map and shows you to them from farther off.'}   // v16.03, his order: the flash shows you to them, farther, not across the whole map
+   line:'Storm. Lightning lights up the map, and every flash makes you visible from farther away.'}   // v16.03, his order: the flash shows you to them, farther, not across the whole map
 ];
 // WEATHER THAT TURNS. It was rolled once at the drop and then it was a fact
 // about the raid, which meant it was a difficulty modifier you read on the
@@ -25532,7 +25532,7 @@ _tgt=G.active; _lbl='EXTRACTION';
     if(MW.noise!==1) wv.push(MW.noise<1?('everyone is '+Math.round((1-MW.noise)*100)+'% quieter')
                                        :('everyone is '+Math.round((MW.noise-1)*100)+'% louder'));
     if(MW.lights<1) wv.push('lamps '+Math.round((1-MW.lights)*100)+'% out');
-    if(MW.lightning) wv.push('lightning strikes, and a flash shows you to them from farther');   // v16.03: the flash lifts the fog for you and doubles how far they see you
+    if(MW.lightning) wv.push('lightning strikes: flashes reveal you from farther away');   // v16.03: the flash lifts the fog for you and doubles how far they see you
     // v15.87, sector audit finding: AT NIGHT THE SECTOR MAP HEADER NAMES A NIGHT HOUR. The same hour label as the sector map
     // header, printed here with no isDay() gate, so at night this row read noon or 8am beside the weather while the surface
     // button on the sector page said NIGHT. It says night now when the surface is night, and names the rolled hour in daylight
@@ -31125,7 +31125,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.14: THE HOST SPECTATES. His ruling. When the host extracts, dies or abandons with a friend still up top, the host run ends for the host as always, and the raid keeps running in the host window for the party until the last friend is out: the enemies, the boxes, shots and beacons all work, the host is nobody target, and it makes no sound there. The host cannot go up again until then. The host ending the party or losing the link still ends everyone as abandon. The what is new card says so. No number moved. Check 16.14 fails on v16.13',
+  now:'v16.15: PLAIN GAME LANGUAGE FOR CO-OP. His note: the co-op lines read like a rulebook. Every line added for co-op, the storm and voice now reads the way a game says it: Reviving NAME, Revived by NAME, Host has left the raid, Your party is still in the raid, Only the host can start the raid, Connection to host lost, and the storm, CONDITIONS row and voice lines in the same plain style. Text only. Check 16.15 fails on v16.14',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35571,9 +35571,9 @@ function netUpAnnounce(g){
 // lift with a line that says so, before its kit is committed or a window shut, and goes up when the host word comes
 // (netUpStart sets NET.upHold, which this lets through). A guest whose link is gone is not in a party and ascends alone as ever.
 function netGuestHeld(){
-  if(typeof NET==='object'&&NET&&NET.specG){ netSay('Your party is still up top. The lift waits until they are out.'); return true; }   // v16.14: a spectating host does not go up again
+  if(typeof NET==='object'&&NET&&NET.specG){ netSay('Cannot ascend while your party is still in the raid.'); return true; }   // v16.14: a spectating host does not go up again
   if(typeof NET!=='object'||!NET||!NET.on||NET.role!=='join'||NET.upHold||!netInCount()) return false;
-  netSay('Your host takes the party up. Stay here and you go up together.');
+  netSay('Only the host can start the raid. You ascend with them.');
   return true;
 }
 function netUpBusy(){
@@ -35666,7 +35666,7 @@ function netUpWord(peer,m){
   if(s<0||s>=NET.max||s===NET.seat) return 'ignored';
   if(st!=='in') NET.up[s]=null;
   if(NET.role==='join'&&st==='out'&&s===0) netHostGone('out');   // v15.91: the host raid ended with nobody left to run it: abandon for the whole party
-  if(NET.role==='join'&&st==='spec'&&s===0){ NET.status='Your host is out. The raid runs on until you are out.'; try{ if(typeof G!=='undefined'&&G&&!G.over) sayWhenFree('Your host is out. The raid runs on until you are out.'); }catch(_sw){} }   // v16.14, his ruling
+  if(NET.role==='join'&&st==='spec'&&s===0){ NET.status='Host has left the raid. Extract to finish your run.'; try{ if(typeof G!=='undefined'&&G&&!G.over) sayWhenFree('Host has left the raid. Extract to finish your run.'); }catch(_sw){} }   // v16.14, his ruling
   nm=netSeatName(s)||'PILLAGER';
   if(st==='no'){ NET.status=nm+' could not go up with you: '+netUpWhyText(m.why)+'.'; netRefresh(); }
   if(NET.role==='host'){
@@ -35913,7 +35913,7 @@ function netBeaconTake(peer,m){
   }catch(_wk){}
   if(!(G.active&&G.active!==Z&&G.active.beaconT!==null&&G.active.beaconT!==undefined)){ G.active=Z; G.beaconT=Z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0; }   // v16.11: never taken off a call of the host's own (v12.57)
   if(G.tel) G.tel.beaconCalls=(G.tel.beaconCalls||0)+1;
-  blip('beacon'); say((netSeatName(peer.seat)||'Your teammate')+' called the extraction. Inbound '+Math.ceil(Z.beaconT)+'s.');
+  blip('beacon'); say((netSeatName(peer.seat)||'Your teammate')+' called extraction. Inbound in '+Math.ceil(Z.beaconT)+'s.');
   return 'called';
 }
 // v16.08, MULTIPLAYER: THE PARTY ON THE SECTOR MAP (plan phase 4, map dots). The sector map drew only you, so a teammate out of
@@ -35966,18 +35966,18 @@ function voiceGate(){ if(NET.micTrack) NET.micTrack.enabled=(NET.micMode==='open
 function voiceMicOn(){
   var md=(typeof navigator!=='undefined')?navigator.mediaDevices:null;
   if(NET.micTrack) return Promise.resolve(true);
-  if(!md||typeof md.getUserMedia!=='function') return Promise.resolve({err:'This browser cannot use a microphone here.'});
+  if(!md||typeof md.getUserMedia!=='function') return Promise.resolve({err:'Voice chat is not available in this browser.'});
   NET.micAsks=(NET.micAsks||0)+1;
   if(!NET.micMode) NET.micMode=(typeof PAD!=='undefined'&&PAD&&PAD.on)?'open':'ptt';
   return md.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(function(s){
     var i;
     NET.micStream=s; NET.micTrack=(s&&s.getAudioTracks)?(s.getAudioTracks()[0]||null):null;
-    if(!NET.micTrack) return {err:'The browser gave no microphone.'};
+    if(!NET.micTrack) return {err:'No microphone found.'};
     voiceGate();
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'||NET.peers[i].state==='open') voiceSend(NET.peers[i]);
-    NET.status=(NET.micMode==='open')?'Mic on. Everyone linked hears you.':'Mic on. Hold Y to talk.';
+    NET.status=(NET.micMode==='open')?'Mic on. Open mic.':'Mic on. Hold Y to talk.';
     return true;
-  },function(e){ return {err:'The microphone was not allowed ('+netErrText(e)+'). Emotes still work.'}; });
+  },function(e){ return {err:'Microphone access was blocked ('+netErrText(e)+').'}; });
 }
 function voiceMicOff(){
   var i, t=NET.micStream&&NET.micStream.getTracks?NET.micStream.getTracks():[];
@@ -36048,7 +36048,7 @@ function netEntsHost(){ return !!(NET.on&&NET.role==='host'&&typeof G!=='undefin
 // clock, the bodies, the bullets and throwables, and the words out to the party (bodies, boxes, the world word without the
 // rings, which each friend runs himself). The host is nobody's target. Every word that comes in is handled against that world
 // (netOnMsg), so shots, searches and beacons go on working, and it makes no sound in the host window. The party is told spec, not
-// out, so nobody is ended; a friend hears Your host is out. The raid runs on until you are out. It stops when no friend is up
+// out, so nobody is ended; a friend hears Host has left the raid. Extract to finish your run. It stops when no friend is up
 // top any more (out, dead, abandoned or gone) for a second and a half, and then the party is told out as before. The host
 // cannot go up again meanwhile. The host ending the party or losing the link still ends every friend as ABANDON, his ruling of
 // 2026-09-25. Solo play never reaches any of it.
@@ -36060,7 +36060,7 @@ function netSpecStart(how){
   NET.specG=G; NET.specHow=String(how||'extract'); NET.specAcc=0; NET.specIdle=0;
   if(G.player) G.player.specOut=1;
   netBroadcast({t:'up',st:'spec',how:netClean(how,12)});
-  NET.status='Your party is still up top. The raid runs on until they are out.';
+  NET.status='Your party is still in the raid. Waiting for them to finish.';
   return true;
 }
 function netSpecTick(dt){
@@ -36084,7 +36084,7 @@ function netSpecEnd(){
   var keep=G, S=NET.specG, how=NET.specHow||'extract';
   NET.specG=null; NET.specHow=''; NET.specTick=false;
   G=S; try{ netUpEnd(how); }catch(e){} finally{ G=keep; }
-  NET.status='Your party is back down. The raid is over.';
+  NET.status='Your party is back. Raid over.';
   netRefresh();
   return 0;
 }
@@ -36440,13 +36440,13 @@ function netRevHold(p,dt){
   if(s<0||!keys['KeyE']||p.roll>0){ if(G.netRevT){ G.netRevT=0; G.netRevS=-1; } return false; }
   if(G.netRevS!==s){ G.netRevS=s; G.netRevT=0; }
   nm=netSeatName(s)||'PILLAGER';
-  if(!G.netRevT) say('Picking up '+nm+'. Keep holding '+keyLabel('KeyE','E')+'.');
+  if(!G.netRevT) say('Reviving '+nm+'. Hold '+keyLabel('KeyE','E')+'.');
   G.netRevT=(G.netRevT||0)+dt;
   if(G.netRevT<NET_REV_T) return true;
   G.netRevT=0; G.netRevS=-1; G.netRevDone=s;
   if(NET.role==='host') netRevPass(s,NET.seat);
   else for(var i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'rev',s:s});
-  say('You pull '+nm+' up.'); blip('pick');
+  say(nm+' revived.'); blip('pick');
   return true;
 }
 // On the host: a pick-up for its own player, or passed on to the seat it names.
@@ -36473,8 +36473,8 @@ function netRevApply(by){
   if(!g||Math.hypot(g.x-p.x,g.y-p.y)>NET_REV_R*1.5) return 'far';
   p.downed=false; p.hp=Math.round(p.maxhp*0.4); p.iv=2; p.pendKiller=null;
   if(G.tel) G.tel.revives=(G.tel.revives||0)+1;
-  blip('pick'); say((netSeatName(by)||'Your teammate')+' pulls you up.');
-  label(p.x,p.y-22,'PICKED UP','#4de3d0',0,true);
+  blip('pick'); say('Revived by '+(netSeatName(by)||'a teammate')+'.');
+  label(p.x,p.y-22,'REVIVED','#4de3d0',0,true);
   return 'up';
 }
 function netKillTake(peer,m){
@@ -36821,10 +36821,10 @@ function netContMake(cid,m){
 function netHostGone(why){
   if(typeof G==='undefined'||!G||G.sim||G.over) return false;
   if(!netContPeer()) return false;
-  G.netLeft=(why==='out')?'YOUR HOST LEFT THE SURFACE. THE RUN ENDS AS ABANDONED FOR THE WHOLE PARTY.'
-                         :'THE LINK TO YOUR HOST WAS LOST. THE RUN ENDS AS ABANDONED FOR THE WHOLE PARTY.';
-  NET.status=(why==='out')?'Your host left the surface. The run counts as abandoned for the whole party.'
-                          :'The link to your host was lost. The run counts as abandoned for the whole party.';
+  G.netLeft=(why==='out')?'HOST LEFT THE RAID. RUN ABANDONED.'
+                         :'CONNECTION TO HOST LOST. RUN ABANDONED.';
+  NET.status=(why==='out')?'Host left the raid. Run abandoned.'
+                          :'Connection to host lost. Run abandoned.';
   try{ endRaid('abandon'); }catch(_eg){}
   return true;
 }
@@ -36861,7 +36861,7 @@ function renderParty(){
   if(vr){ vr.style.display=(role&&!NET.same)?'':'none';
     if(g('partymicbtn')) g('partymicbtn').textContent=NET.micTrack?'MIC: ON':'MIC: OFF';
     if(g('partymicmode')) g('partymicmode').textContent=(NET.micMode==='open')?'OPEN MIC':'HOLD Y TO TALK';
-    if(g('partyvoicenote')) g('partyvoicenote').textContent=NET.micTrack?((NET.micMode==='open')?'Everyone linked hears you. Wear a headset.':'Hold Y to talk. Wear a headset.'):'Press MIC to talk to your party. The browser asks first.'; }
+    if(g('partyvoicenote')) g('partyvoicenote').textContent=NET.micTrack?((NET.micMode==='open')?'Open mic: your party can hear you. Headset recommended.':'Hold Y to talk. Headset recommended.'):'Turn on MIC to use voice chat.'; }
   sb.style.display=role?'none':'flex';
   cb.style.display=code?'':'none';
   g('partylen').textContent=code?(((role==='host')?'INVITE CODE, ':'REPLY CODE, ')+code.length+' CHARACTERS'):'';
@@ -36914,7 +36914,7 @@ function netCopyOld(t,done){
   g('closeparty').onclick=function(){ blurIn(); g('partymodal').classList.remove('on'); };
   if(g('partypadbtn')) g('partypadbtn').onclick=function(){ netPadCycle(); };   // v15.77: the CONTROLLER row
   if(g('partysndbtn')) g('partysndbtn').onclick=function(){ netSndToggle(); };   // v15.78: the SOUND row
-  if(g('partymicbtn')) g('partymicbtn').onclick=function(){ if(NET.micTrack){ voiceMicOff(); renderParty(); } else netUi(function(){ return voiceMicOn(); },'Asking the browser for the microphone.'); };   // v16.09
+  if(g('partymicbtn')) g('partymicbtn').onclick=function(){ if(NET.micTrack){ voiceMicOff(); renderParty(); } else netUi(function(){ return voiceMicOn(); },'Requesting microphone access.'); };   // v16.09
   if(g('partymicmode')) g('partymicmode').onclick=function(){ NET.micMode=(NET.micMode==='open')?'ptt':'open'; voiceGate(); renderParty(); };   // v16.09
   g('partyhost').onclick=function(){ netUi(netHost,'Making an invite code. This takes a few seconds.'); };
   g('partyinvite').onclick=function(){ netUi(netHost,'Making a new invite code. This takes a few seconds.'); };

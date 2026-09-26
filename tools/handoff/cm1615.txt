@@ -1,0 +1,8 @@
+v16.15: plain game language for co-op
+
+His note: the new co-op lines read like a rulebook. They now read the
+way a game says them: Reviving NAME, Revived by NAME, Host has left
+the raid, Only the host can start the raid, Connection to host lost,
+and the storm and voice lines in the same plain style. Text only.
+
+Check 16.15. Fails on v16.14.

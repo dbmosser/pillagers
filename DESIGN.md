@@ -40024,6 +40024,32 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.15 - PLAIN GAME LANGUAGE FOR CO-OP
+
+His note: the new co-op lines read like a rulebook, not like a game. Every line added this session for co-op, the storm and
+voice is rewritten the way a game says it. Text only.
+
+Spectating: Host has left the raid. Extract to finish your run. / Your party is still in the raid. Waiting for them to finish. /
+Your party is back. Raid over. / Cannot ascend while your party is still in the raid.
+The lift for a guest: Only the host can start the raid. You ascend with them.
+Revives: Reviving NAME. Hold E. / NAME revived. / Revived by NAME. / REVIVED over the head.
+The host leaving: HOST LEFT THE RAID. RUN ABANDONED. / CONNECTION TO HOST LOST. RUN ABANDONED. (card) and Host left the raid.
+Run abandoned. / Connection to host lost. Run abandoned. (party window)
+A friend's beacon on the host: NAME called extraction. Inbound in Ns.
+Storm: Storm. Lightning lights up the map, and every flash makes you visible from farther away. / CONDITIONS row: lightning
+strikes: flashes reveal you from farther away.
+Voice: Turn on MIC to use voice chat. / Hold Y to talk. Headset recommended. / Open mic: your party can hear you. Headset
+recommended. / Mic on. Open mic. / Requesting microphone access. / Microphone access was blocked. / No microphone found. / Voice
+chat is not available in this browser.
+Card: Hold E next to a downed teammate to revive them; if the host extracts or dies, the rest of the party keeps playing.
+
+None is a TXSHIP key; the hire's own pick-up line (pulls you up. That is what you paid for.) is his older text and is untouched.
+Checks restaged: the lift check (15.91) and the card check (16.07) read the new words; nettest reads the new status lines.
+
+MEASURED. Check 16.15 reads the game's own code (comments left out): none of the old sentences is left and every new one is
+there. Passes twice; fails on v16.14. Checks 13.34, 15.81, 15.91, 15.92, 16.01, 16.03, 16.05, 16.07, 16.11, 16.12, 16.14 pass;
+nettest RUN SAME MACHINE passes.
+
 ## v16.14 - THE HOST SPECTATES
 
 His ruling of 2026-09-26, replacing the v15.91 behaviour for the host's own extraction, death or abandon.

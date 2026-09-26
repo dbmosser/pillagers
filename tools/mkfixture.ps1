@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.15',what:'plain game language for co-op: the lines added for co-op, the storm and voice read the way a game says them, and none of the old rulebook sentences is left in the build',
+   run:function(){
+     var src='', bad=[], i, OLD, NEW;
+     try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
+     if(src.length<100000) return 'SKIP: the build cannot read its own script';
+     // the game's own code only: the fixture hooks start at window.__frame, and comment lines are history, not text on screen
+     var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
+     src=src.split('\n').filter(function(l){ return !(/^\s*\/\//).test(l); }).map(function(l){ var k=l.indexOf('   // '); return k>=0?l.slice(0,k):l; }).join('\n');
+     OLD=['The raid runs on until','still up top. The','back down. The raid','takes the party up. Stay','Keep holding','pulls you up.'+String.fromCharCode(39)+');','LEFT THE SURFACE. THE RUN','THE WHOLE PARTY.'+String.fromCharCode(39),'every flash shows you the map and','Wear a headset','The browser asks first','Emotes still work'];
+     NEW=['Host has left the raid','Waiting for them to finish','Only the host can start the raid','Reviving ','Revived by ','CONNECTION TO HOST LOST','every flash makes you visible','Headset recommended'];
+     for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the rulebook line with "'+OLD[i]+'" is still in the build');
+     for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.14',what:'the host spectates: with a friend up top the host extracting keeps the raid, tells the party spec and not out, runs the world on with the host back in the Undercroft, targets the friend and not the host, calls a beacon a friend asks for, holds the host at the lift, and when the friend is gone ends and tells the party out; a friend told spec runs on; control, with nobody up top the host ending tells out at once',
    run:function(){
      if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile&&window.__hubEnter&&window.__loop)||typeof NET!=='object'||!NET||typeof netOnMsg!=='function'||typeof endRaid!=='function') return 'SKIP: this fixture cannot stage a party raid';
@@ -5997,7 +6010,7 @@ window.__REGRESS=[
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      if(!L[0]||String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
      var t=String(L[1]||'').toUpperCase();
-     ['GOES UP TOGETHER','WHOEVER SEARCHED','PULL THEM UP','IF THE HOST LEAVES'].forEach(function(w){ if(t.indexOf(w)<0) bad.push('the second card line does not say '+w.toLowerCase()); });
+     ['GOES UP TOGETHER','WHOEVER SEARCHED','REVIVE THEM','IF THE HOST LEAVES'].forEach(function(w){ if(t.indexOf(w)<0) bad.push('the second card line does not say '+w.toLowerCase()); });
      return bad.length?bad.join('; '):null; }},
   {v:'16.06',what:'the host owns the raid clock, the weather, the lightning and the rings: the host world word carries the clock, the sky, the live bolts and every ring; a linked window takes them, draws a host bolt that never hits it, runs no weather turn of its own, and a beacon a teammate calls is called on the host',
    run:function(){
@@ -6682,7 +6695,7 @@ window.__REGRESS=[
          said.length=0;
          try{ st[i][1](); }catch(e){ bad.push(st[i][0]+' threw: '+e); }
          if(G){ bad.push('linked to a host, '+st[i][0]+' built a raid of its own (seed '+(G.seed>>>0)+'), so this window went up alone into a different raid than the host'); try{ __endRaid('abandon'); }catch(_e1){} G=null; keys={}; __hubEnter(); NET.on=true; NET.role='join'; NET.peers=[peer]; }
-         else if(!said.some(function(t){ return (/Your host takes the party up/).test(t); })) bad.push('linked to a host, '+st[i][0]+' left him on the floor and said nothing ("'+said.join(' / ')+'")');
+         else if(!said.some(function(t){ return (/Only the host can start the raid/).test(t); })) bad.push('linked to a host, '+st[i][0]+' left him on the floor and said nothing ("'+said.join(' / ')+'")');
          if(state!=='hub') bad.push('after '+st[i][0]+' the screen is '+state+', not the Undercroft');
        }
        if(JSON.stringify(P.kit||[])!==keepKit) bad.push('held at the lift, the packed kit was committed anyway');
