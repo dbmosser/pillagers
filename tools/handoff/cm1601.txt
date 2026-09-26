@@ -1,0 +1,9 @@
+v16.01: the storm says what the lightning does
+
+Weather audit finding. The storm line said the lightning will show you
+to everything out there, and nothing on the map reads the flash: it
+lifts the fog for you and nothing more. The storm line and the
+CONDITIONS row now say that. Whether a flash should show you to the
+machines is a question for him. No number moved.
+
+Check 16.01. Fails on v16.00.

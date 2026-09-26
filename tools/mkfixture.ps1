@@ -5721,6 +5721,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.01',what:'the storm says what the lightning does: the storm line and the CONDITIONS row no longer promise that the flash shows you to the machines, which no sight rule reads, and still say it strikes',
+   run:function(){
+     if(typeof WEATHER==='undefined'||typeof drawHUD!=='function') return 'SKIP: this build cannot report its weather words';
+     var bad=[], st=null, i, hud=String(drawHUD);
+     for(i=0;i<WEATHER.length;i++) if(WEATHER[i].id==='storm') st=WEATHER[i];
+     if(!st) return 'SKIP: no storm in this build';
+     if((/show you to everything/i).test(st.line)) bad.push('the storm line still says the lightning will show you to everything out there: '+st.line);
+     if(!(/lightning/i).test(st.line)) bad.push('the storm line no longer names the lightning: '+st.line);
+     if((/lightning shows you'/).test(hud)) bad.push('the CONDITIONS row still says lightning shows you');
+     if(!(/lightning strikes/).test(hud)) bad.push('the CONDITIONS row no longer names the lightning');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.00',what:'rain and fog draw at night strength on every night raid: in a live raid staged under rain and then under fog, by day on the noon hour the rain hairlines and the fog haze draw at their full strength, by day on the 8pm hour each draws clearly dimmer, at NIGHT on the same noon hour each draws at that same 8pm figure and not at the full noon strength of the hidden hour, and back by day at noon the rain is at full strength again (weather audit finding)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy';

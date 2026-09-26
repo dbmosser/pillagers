@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.00';
+var VER='16.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5506,7 +5506,7 @@ var WEATHER=[
   {id:'blackout',name:'Blackout',view:1,noise:1,lights:0.18,rain:0,
    line:'Grid is down. Every lamp on the map is dead.'},
   {id:'storm',name:'Storming',view:0.80,noise:0.48,lights:0.55,rain:2,lightning:true,
-   line:'Storm. The lightning will show you to everything out there.'}
+   line:'Storm. Lightning strikes, and every flash shows you the whole map for a moment.'}   // v16.01, weather audit finding: the old line promised the flash shows you to everything out there, and nothing on the map reads it
 ];
 // WEATHER THAT TURNS. It was rolled once at the drop and then it was a fact
 // about the raid, which meant it was a difficulty modifier you read on the
@@ -24788,8 +24788,8 @@ wc.drawImage(fogC,0,0);
   if(WX.lightning){
     // Render layer, never reached headless. Same reason as the puff roll above.
     if(G.lightning>0){
-      // a hard flash that shows the whole street for a moment, which cuts both
-      // ways: it reveals the map to you and you to anything looking
+      // a hard flash that shows the whole street for a moment: it lifts the fog sheet
+      // for you (above). Nothing on the map reads it; whether it should is his call (v16.01)
       var lf=G.lightning>0.26?(0.34-G.lightning)/0.08:G.lightning/0.26;
       wc.globalCompositeOperation='lighter';
       wc.fillStyle='rgba(150,170,220,'+(0.40*clamp(lf,0,1))+')';
@@ -25511,7 +25511,7 @@ _tgt=G.active; _lbl='EXTRACTION';
     if(MW.noise!==1) wv.push(MW.noise<1?('everyone is '+Math.round((1-MW.noise)*100)+'% quieter')
                                        :('everyone is '+Math.round((MW.noise-1)*100)+'% louder'));
     if(MW.lights<1) wv.push('lamps '+Math.round((1-MW.lights)*100)+'% out');
-    if(MW.lightning) wv.push('lightning shows you');
+    if(MW.lightning) wv.push('lightning strikes, and a flash shows you the map');   // v16.01: the flash lifts the fog for you; nothing on the map reads it
     // v15.87, sector audit finding: AT NIGHT THE SECTOR MAP HEADER NAMES A NIGHT HOUR. The same hour label as the sector map
     // header, printed here with no isDay() gate, so at night this row read noon or 8am beside the weather while the surface
     // button on the sector page said NIGHT. It says night now when the surface is night, and names the rolled hour in daylight
@@ -31100,7 +31100,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.00: RAIN AND FOG DRAW AT NIGHT STRENGTH ON EVERY NIGHT RAID. Every raid rolls a daylight hour, and at NIGHT that hour is hidden and does nothing, except that the rain hairlines and the fog haze still took their brightness from it: on a NIGHT raid whose hour rolled 8am or noon they drew at full noon strength over the darkest scene in the game, and on an 8pm hour at little more than half that, so two night raids in the same rain looked nearly twice apart in brightness. At night both now use the darkness figure the lamps use, so every night raid in rain or fog draws the same, and by day nothing changes. Check 16.00 draws rain and fog by day on the noon and 8pm hours and at night on the noon hour; it fails on v15.99',
+  now:'v16.01: THE STORM SAYS WHAT THE LIGHTNING DOES. Weather audit finding 9. The storm line said the lightning will show you to everything out there and the CONDITIONS row said lightning shows you, and no sight rule reads the flash: it lifts the fog for you and nothing more. The two lines now say what it does (every flash shows you the whole map for a moment). Neither is a TXSHIP key. Whether a flash should show you to the machines is parked as a question for him. No number moved. Check 16.01 fails on v16.00',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

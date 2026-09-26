@@ -40024,6 +40024,25 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.01 - THE STORM SAYS WHAT THE LIGHTNING DOES
+
+Weather audit finding 9 (MEDIUM), its corrected fix: fix the words, not the machines.
+
+The storm line said Storm. The lightning will show you to everything out there., and the CONDITIONS row said lightning
+shows you. No sight rule reads the flash: G.lightning is set by the bolt and read only by render2D, which lifts the fog sheet
+for the player. The bolt ping is at the strike point, not at him. So through every flash nothing was looking, and the text
+lied. Neither line is a TXSHIP key.
+
+THE BUILD. The storm line reads Storm. Lightning strikes, and every flash shows you the whole map for a moment., the row reads
+lightning strikes, and a flash shows you the map, and the render comment that claimed it cuts both ways now says nothing on
+the map reads it. No number, dial, loot table or seeded draw moved; map building untouched.
+
+PARKED FOR HIM: should a lightning flash show you to the machines? The storm line said so since v0.94 and nothing ever read
+it. If yes, the rule goes after the downed sight rule in updateEnts with a range and the blind rule, plus a countdown in
+simStep (render2D never runs headless).
+
+MEASURED. Check 16.01 passes twice on the dry build and fails on v16.00 on the storm line and the row.
+
 ## v16.00 - RAIN AND FOG DRAW AT NIGHT STRENGTH ON EVERY NIGHT RAID
 
 Weather audit finding (MEDIUM), entry 8 of the confirmed list. Two render alphas, no text.

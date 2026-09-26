@@ -1,0 +1,8 @@
+v16.02: partly cloudy does not hold
+
+Weather audit finding. When the last weather turn of a raid went into
+Partly Cloudy it said This will not hold, and then held to
+extraction. A turn into partly now keeps one turn back, so the rain or
+storm break it announces still comes. No number moved.
+
+Check 16.02. Fails on v16.01.
