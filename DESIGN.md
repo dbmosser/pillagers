@@ -40024,6 +40024,70 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.94 - THE HIRE DEATH LINE DECIDES YOU ARE IN DEBT ONLY AFTER THE RUN MONEY HAS LANDED
+
+Credits audit finding (LOW), entry 2 of the confirmed list.
+
+Hire someone and go up with, say, $1,000 banked. He dies. Sell about $5,500 of loot at the Peddler, so $3,000 rides home with
+you, and extract. The hire line on the extraction card read '<name> died. Death benefit $3,400 owed, you are in debt.' while
+the money line of the same card and the Undercroft header showed $600 banked. In endRaid the merc settle does
+P.credits-=MERC_DEATH and, on the very next line, decides the clause from the running balance: ' owed'+(P.credits<0?', you are
+in debt':''). Only rack pay (P.credits+=_mfPay, extract only) lands before that line. Two extract-only credits land further
+down the same function: hazard pay, P.credits+=bonus where bonus=Math.round(Math.max(0,haul-(G.carriedIn||0))*tPay) under
+how==='extract'&&tPay>0, and the stall money, if(G.pedCarry&&!G.sim){ P.credits+=G.pedCarry; } inside the extract branch. The
+stall money really is not banked at the sale: pedSell does G.pedCarry=(G.pedCarry||0)+tot under the v7.62 note that stall
+money is carried, not banked, and nothing touches P until the extract branch. No other P.credits write exists between the
+clause and the end of endRaid (every credits writer in the file was listed: the others are the shop, Wirt, the hire desk, the
+stash sale, contracts and the season rewards, which are claimed by hand at the board and not paid inside endRaid). So with
+$1,000 banked, a dead hire and $3,000 riding on pedCarry, the line printed you are in debt at -2,400 while the run settled at
+$600. On a death or an abandon nothing lands after the clause, so it was only ever wrong on an extraction, and only in the
+debt-when-none direction. Not balance (no number moves, only the condition of the clause), not deliberate (the SPEC 3.5 note
+above it says only that a bad hire run can genuinely put you in debt), and the sentence is not a TXSHIP key (the table holds
+no 'died', 'Death benefit' or 'in debt').
+
+THE BUILD. One edit in the merc settle of endRaid, the finding's own fix (the verdict corrected nothing): after
+P.credits-=MERC_DEATH a new var _mdIn=P.credits+((how==='extract')?((G.pedCarry||0)+Math.round(Math.max(0,haul-
+(G.carriedIn||0))*termsPay())):0); and the clause reads _mdIn<0 instead of P.credits<0. haul is in scope from the top of
+endRaid (the backpack's value), termsPay() is pure and equals the tPay computed thirty lines below, the pedCarry and hazard
+terms reproduce the two landings exactly and are both zero when absent, G.sim is already excluded by the enclosing
+if(P.merc&&!G.sim), and _mdIn is used nowhere else in the file. The amount owed, the balance and every number are unchanged;
+no dial default, no loot table and no word of player text moved, and map building is not touched, so the seed 4242 fingerprint
+in __verifySafe (ents {0:85,1:374}, containers {0:165,1:593}) cannot move. The comment above the new line is in the file's
+style and carries the finding's title.
+
+MEASURED. Check 15.94 clears the card, preps the run, resets the dials, pins the defaults and cleans the profile, snapshots
+the profile, then ends three staged extractions with a dead hire, each on a fresh __deploy (kit [], map 0, seed 4242). The
+hire is staged after the lift lands (P.merc=IDENTITIES[0].id, G.mercDead=1) so no hire is spawned and only the settle reads
+him; racks and arrays are set to zero so nothing lands before the death benefit but what was banked; the terms are set at the
+settle, not at the deploy, so the map draws are untouched. Arm one, nothing landing: $1,000 banked, no stall money, no terms,
+an empty backpack, settling at -$2,400. Arm two, stall money riding home: $1,000 banked and G.pedCarry=G.pedSold=3000,
+settling at $600. Arm three, hazard pay alone: MERC_DEATH-1 banked, THEY KNOW YOU on the terms and one Data Core in the
+backpack, so the benefit alone leaves -$1 and the hazard pay (Math.round(520*0.30)=156, computed from ival and termsPay at
+run time) lifts it to $155. CONTROL per arm: the raid ended as an extraction, the card was drawn, the hire contract was
+settled (P.merc null), and P.credits equals the staged balance exactly (start minus MERC_DEATH plus stall money plus the
+hazard pay), else SKIP; and the card carries a span that starts with the hire's tag and names the death benefit, else SKIP.
+Then the clause 'you are in debt' (assembled from pieces) must be on the line exactly when the settled balance is below zero:
+arm one must carry it on either build, arms two and three must not. On v15.93 arm two reads the clause at -2,400 beside a
+run settled at $600, and arm three reads it at -1 beside $155, so the check fails for the finding's own reason. In finally
+mercDead is cleared and a live raid abandoned, the profile snapshot is restored through the loader (__applyLoaded, which
+also puts back credits, merc, rivals, racks, arrays, terms, the stash and the run counters the three extractions moved), and
+the card, dials and profile are cleaned.
+
+Older fixture checks: none restaged. No fixture check and no f-script in this chain contains 'in debt', 'Death benefit' or
+MERC_DEATH. The hire-line check 15.20 reads the hire line on a death card and SKIPs if that line says died, so it never reads
+the death benefit line; 13.69 and 13.68 clear mercDead on their way out and never end a raid with a dead hire.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand at v15.82 (the chain from 1583 to 1593 is
+drafts in the queue), with the version stamps stood in at 15.93 for the chain: p1594 printed OK, 2 edits applied plus
+DEVNOW, and f1594 printed OK, 1 edits applied; the _mdIn line and the clause on _mdIn are in the copy once each, the old
+clause on P.credits is gone, VER is 15.94, one now key in DEVNOW with no apostrophe inside, and check 15.94 is in the fixture
+source once. mkfixture built both the drafted fixture (check 15.94 once, _mdIn once) and the control fixture from the
+stood-in v15.93 game (check 15.94 once, _mdIn absent). The new block and the new check both parse in JScript (cscript). Both
+scripts are ASCII. The anchor block (the P.credits-=MERC_DEATH line and the death benefit lines.push line in endRaid) matches
+the live file once and is touched by no p-script of this chain; p1593 touches only renderGamble and the stamps, and none of
+p1583 to p1599 names MERC_DEATH or the clause.
+
+Not verified: the extraction card by hand with a real hire death; the check has not been run in a browser yet.
 ## v15.93 - THE GAMBLE HISTORY AT WIRT PRINTS WHAT THE ITEM IS WORTH
 
 Credits audit finding (LOW), entry 1 of the confirmed list.
