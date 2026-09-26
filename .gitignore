@@ -14,3 +14,4 @@ backups/
 exports/run-*.txt
 tools/fx[0-9]*.html
 tools/prev[0-9]*.html
+tools/cloud/__pycache__/

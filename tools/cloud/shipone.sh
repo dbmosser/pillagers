@@ -19,5 +19,6 @@ echo "$vs" | grep -q '"ents":{"0":85,"1":374},"containers":{"0":165,"1":593}' ||
 python3 -c "import re;s=open('dark_raiders.html',encoding='utf-8').read();open('/tmp/g.js','w').write('\n;\n'.join(re.findall(r'<script\b[^>]*>([\s\S]*?)</script>',s)))"
 node --check /tmp/g.js || { echo "GATE: node --check"; exit 1; }
 tools/cloud/ship.sh commit $NEW cm$NEW.txt
-for i in 1 2 3 4; do git push -q origin master && break; sleep $((2**i)); done
+pushed=0; for i in 1 2 3 4; do git push -q origin master && { pushed=1; break; }; sleep $((2**i)); done
+[ $pushed = 1 ] || { echo "GATE: committed v$V but the push failed four times; push by hand"; exit 1; }
 echo "SHIPPED v$V"

@@ -28,14 +28,13 @@ def v(t): t = str(t); return t[:2] + '.' + t[2:]
 def sub(old, new): return "SubRx @'\n%s\n'@ @'\n%s\n'@\n\n" % (old.rstrip('\n'), new.rstrip('\n'))
 def w(name, text):
     text.encode('ascii')
-    assert "'@" not in text.replace("\n'@", '').replace("@'\n", '') or True
     open(os.path.join(H, name), 'w', encoding='ascii', newline='\n').write(text)
 def patch(new, edits, now, head=''):
     pv, nv = v(new - 1), v(new)
     out = TOP % 'dark_raiders.html' + '\n' + head + '\n'
     for o, n_ in edits: out += sub(o, n_)
     out += sub("var VER='%s';" % pv, "var VER='%s';" % nv)
-    assert "'" not in now.replace("\\'", '') or True
+    assert "'" not in now and '"' not in now, 'DEVNOW now text must carry no quote marks'
     out += '$pat = "(?m)^  now:\'v%s:.*$"\n' % pv.replace('.', '\\.')
     out += '$c = ([regex]::Matches($s, $pat)).Count\nif ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }\n'
     out += '$new = "  now:\'v%s: %s\',"\n' % (nv, now)
