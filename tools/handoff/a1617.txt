@@ -1,0 +1,1 @@
+| KNOCKED DOWN WHILE EXTRACTING SAYS WHAT HAPPENED | v16.17 | HIS NOTE: extraction hold meant nothing to him. FIX: Knocked down. Extraction reset. Hold E to try again. Text only. MEASURED: check 16.17 passes twice, fails on v16.16 |

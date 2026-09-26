@@ -5721,6 +5721,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.17',what:'knocked down while extracting says what happened: Extraction reset. Hold E to try again, not the extraction hold line',
+   run:function(){
+     var src='', i;
+     try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
+     var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
+     if(src.length<100000) return 'SKIP: the build cannot read its own script';
+     if(src.indexOf('Extraction hold lost')>=0) return 'the knocked down line still says Extraction hold lost';
+     if(src.indexOf('Knocked down. Extraction reset. Hold E to try again.')<0) return 'the knocked down line does not say Extraction reset. Hold E to try again.';
+     return null; }},
   {v:'16.16',what:'plain game language, the larger pass: the rewritten lines are in the build, the rulebook versions are gone,',
    run:function(){
      var src='', bad=[], i, OLD, NEW;

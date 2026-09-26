@@ -1,0 +1,7 @@
+v16.17: knocked down while extracting says what happened
+
+His note: "extraction hold" meant nothing to him. Knocked down while
+holding E to extract now says: Knocked down. Extraction reset. Hold E
+to try again. Text only.
+
+Check 16.17. Fails on v16.16.

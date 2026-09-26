@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.17 - KNOCKED DOWN WHILE EXTRACTING SAYS WHAT HAPPENED
+
+His note on v16.16: he had no idea what an extraction hold is. The line fires when he is holding E to extract, the bar is
+filling, and he is knocked down: the progress resets (downResetsPull). It said Knocked down. Extraction hold lost.; it now says
+Knocked down. Extraction reset. Hold E to try again. Text only.
+
+MEASURED. Check 16.17 passes twice and fails on v16.16.
+
 ## v16.16 - PLAIN GAME LANGUAGE, THE LARGER PASS
 
 His order of 2026-09-26, after v16.15: the on-screen text as a whole reads like a rulebook, not a game.
