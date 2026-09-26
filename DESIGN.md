@@ -40024,6 +40024,80 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.99 - THE SECTOR MAP NAMES THE WEATHER IT IS LEAVING, AND THE CONDITIONS ROW SAYS NIGHT AT NIGHT
+
+Weather audit finding (HIGH), entry 7 of the confirmed list. Two labels, both text only. The finding has two halves; the second
+half is this build's own, the first half is shared with build 1587 (sector audit), which was drafted in a parallel chain and
+landed while this was being written.
+
+ONE, THE ARROW. wx() returns wxMix(G.wx,G.wxNext,G.wxT) while a turn runs, and wxMix sets WXBLEND.name to the destination once
+t>=0.5. That is right for every reader that wants the nearer state, but the sector map header wants the two ends of the turn,
+and it read wx().name on the left of the arrow: from 7 seconds after The weather is turning is heard (WX_TURN is 14) it printed
+Storming  ->  Storming  71% instead of Rainy  ->  Storming  71%, while the CONDITIONS row, which reads G.wx, still said Rainy,
+so the two surfaces disagreed with each other for the back half of every turn. Build 1587 does not touch this.
+
+TWO, THE HOUR. buildRaid rolls G.tod with pickTod on every raid, night included, so the seeded stream stays in step, and every
+visual reader of that hour is gated on isDay(): the cast and the dim in the render, and every lamp reads
+wx().lights*(isDay()?tod().lights:1). At NIGHT the hour is a dead roll. The CONDITIONS row in drawHUD printed it anyway,
+rows.push({k:MT.name+'   '+MW.name,...}) with MT=tod(), so a raid he sent up in the dark read noon   Clear, 8am   Foggy or
+6pm   Rainy for the whole raid. p1587 (read after this was drafted) fixes this row and the sector map header together, putting
+(isDay()?tod().name:'night') in the hour slot of both, and check 15.87 reads both. So with 1587 in, this half is already true on
+v15.98; this build keeps it (see ANCHORS) and does not redo the header hour.
+
+THE BUILD. Two edits, the finding's fix as written (the verdict added no correction), plus the version bump and DEVNOW.
+(1) drawMapOverlay, the header: wx().name on the left of the arrow is G.wx.name, the weather the turn is leaving. G is only ever
+built by buildRaid, which always sets wx, and drawMapOverlay runs only from the raid HUD, so G.wx is never missing there. The
+hour part of the line (1587's) is carried over exactly as it stands, the colour line above it still reads wx().id, and every
+other reader of wx() is unchanged.
+(2) drawHUD, the CONDITIONS row: k is (isDay()?MT.name:<night word>)+'   '+MW.name. With p1587 in, this re-states the line
+1587 wrote, word for word (night), and adds only the note; if 1587 is parked the row says NIGHT and this is the fix. By day the
+row is byte for byte what it was.
+No player sentence was reworded (the TXSHIP table holds no NIGHT, noon or hour label), no number, dial, loot table or seeded
+draw moved, and map building is not touched, so the seed 4242 fingerprint in __verifySafe cannot move. The rain and fog alpha
+that read tod().lights without the isDay() gate are finding 8 of the same audit and are not touched here.
+
+ANCHORS FOUND BY SHAPE. p1587 edits the same header line this build edits and the same CONDITIONS row, anchored on three-line
+blocks around each, and p1587 did not exist when this was drafted. So p1599 does not carry either old block as literal text: a
+LineBy helper reads each whole line out of the file by a shape that must match exactly once (the rows.push line ending in
++'   '+MW.name,v:(wv.length?wv.join(', '):''), and the ctx.fillText line ending in +'  '+wx().name+) and hands it to the
+unchanged SubRx, which still requires the whole line to match exactly once. The script therefore applies whether 1587 has
+landed on both lines (the expected case), on one, or on neither. The word on the CONDITIONS row follows the header: if a night
+word sits in the header's hour slot, the row uses that same word so the two surfaces agree, otherwise NIGHT, the sector page
+word (the NIGHT button, SURFACE: NIGHT). The edit-count assert counts SubRx call lines rather than here-string calls, since two
+old blocks are variables. Everything else in the script is the p1560 scaffolding. The first draft built the new blocks with a
+PowerShell array literal, which split a concatenation across three elements and wrote the night word on a line of its own; the
+dry run caught it, and the blocks are plain concatenations now.
+
+MEASURED. Check 15.99 stages a live raid at seed 4242 with the profile snapshotted, opens the CONDITIONS panel (P.hud.cond.c
+off), wraps ctx.fillText to record every string, and stages noon under rain with no turn running, by day. CONTROL: a drawHUD
+frame with the map shut draws a row starting with the noon hour, three spaces and Rainy, so the row is found where the check
+reads. THE ROW: P.cond night (isDay() false, checked), one more frame: a row starting with the noon hour and Rainy fails; a row
+starting night, three spaces and Rainy must be there (case-insensitive, so it agrees with whichever word the header carries).
+CONTROL: back by day the noon row is drawn again. THE TURN: G.wxNext storm, G.wxT 0.25, one drawMapOverlay frame. CONTROL: the
+string holding the arrow is exactly noon, Rainy, arrow, Storming, 25% on either build. Then G.wxT 0.75. CONTROL: wx().name is
+already Storming, the name the old header printed, so the turn staging took. THE FIX: the arrow string must be noon, Rainy,
+arrow, Storming, 75%; on v15.98 it starts noon, Storming, arrow, and the check fails for the finding's own reason. On v15.98
+with 1587 in, the row half passes and the arrow half fails; with 1587 parked both halves fail; either way the check fails on the
+previous build. The night word is assembled from pieces; the hour and the weathers are read off TODS and WEATHER, not written
+into the check. In finally fillText is put back (deleted if it was not an own property), G.tod, G.wx, G.wxNext, G.wxT and
+G.mapOpen are restored, the raid is abandoned, the profile snapshot is applied through the loader, and the card, CFG and
+profile are cleaned.
+
+Older fixture checks: none restaged. Check 15.87 reads the header and the row with no weather change coming (G.wxNext null),
+where G.wx.name and wx().name are the same string, so it stays green. No other check reads the CONDITIONS row's hour or the
+sector map header during a turn: no check in mkfixture.ps1 contains the arrow escape, TURNING, MT.name or a three-space
+hour-and-weather needle; 10.46 sets G.tod to noon only to read jersey pixels; 9.97 and 12.61 test NIGHT on the sector page and
+after the ascent, not the HUD label; the two checks that call drawMapOverlay (15.55 and the restock check) count KEY marks only.
+
+Dry run on scratch copies of dark_raiders.html (as it stands at v15.82, stamped 15.98) and mkfixture.ps1 (with a stand-in
+15.98 entry): p1599 applied in four shapes of the two lines, 1587 absent, 1587 on the header only, 1587 on both lines, and the
+real p1587.ps1 applied first (stamped 15.86, OK, 3 edits), every run printing OK, 3 edits applied plus DEVNOW, every shape
+matching once, one now key left, and the two edited lines whole in each; f1599 printed OK, 1 edit. The new check and the two
+edited lines parse in JScript (with the one arguments token, which JScript.NET does not take inside a class, swapped for an
+empty list for the parse only). The check holds no double quote inside a string, no bare return /re/ and no backslash-b.
+p1593 and p1596, the builds of this chain drafted so far, touch neither line.
+
+Not verified: the row and the header on screen by eye, and the check in a browser.
 ## v15.98 - THE IMPORTED FRIEND REMEMBERS WHAT YOU DID TO HIM
 
 Ghost audit finding (LOW), entry 6 of the confirmed list.

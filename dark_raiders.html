@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.98';
+var VER='15.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25505,6 +25505,12 @@ _tgt=G.active; _lbl='EXTRACTION';
     // header, printed here with no isDay() gate, so at night this row read noon or 8am beside the weather while the surface
     // button on the sector page said NIGHT. It says night now when the surface is night, and names the rolled hour in daylight
     // as before. The effects list under it is unchanged.
+    // v15.99, weather audit finding: THE CONDITIONS ROW SAYS NIGHT AT NIGHT. G.tod is rolled by pickTod on every raid, night
+    // included, so the seeded stream stays in step, and every visual reader of it (the cast, the dim, the lamps) is gated on
+    // isDay(), so at NIGHT the hour is a dead roll. This row printed it anyway: a raid he sent up in the dark read noon, 8am or
+    // 6pm beside the weather for the whole raid. v15.87 put the night word here first; this build keeps the row in the same
+    // word as the sector map header, and stands on its own if 15.87 is parked. By day the row is unchanged. No number and no
+    // seeded draw moved.
     rows.push({k:(isDay()?MT.name:'night')+'   '+MW.name,v:(wv.length?wv.join(', '):''),
       c:MW.id==='clear'?'#9aa8d0':'#4de3d0'});
     for(var _tq=0;_tq<TERMS.length;_tq++){
@@ -28578,7 +28584,13 @@ function drawMapOverlay(){
   // hour should not happen at night. At night the header now says night beside the weather; in daylight it names the rolled
   // hour as before. The CONDITIONS row in drawHUD is gated the same way. No number, no seeded draw and no existing sentence
   // moved.
-  ctx.fillText((isDay()?tod().name:'night')+'  '+wx().name+
+  // v15.99, weather audit finding: THE SECTOR MAP NAMES THE WEATHER IT IS LEAVING. wx() is the live blend while a turn runs,
+  // and wxMix hands the blend the destination name once the turn is half way (t>=0.5), which is right for every reader that
+  // wants the nearer state. This header wants the two ends of the turn, and from 7 seconds after The weather is turning is
+  // heard it named the coming weather on both sides of the arrow (Storming, arrow, Storming 71%), while the CONDITIONS row,
+  // which reads G.wx, still said Rainy. The left of the arrow is G.wx, the weather the turn is leaving, which buildRaid always
+  // sets. The colour above and every other reader of wx() are unchanged. No number and no seeded draw moved.
+  ctx.fillText((isDay()?tod().name:'night')+'  '+G.wx.name+
     (G.wxNext?('  \u2192 '+G.wxNext.name+'  '+Math.round(G.wxT*100)+'%'):''),
     ox+WORLD_W*sc,oy-10);
   ctx.textAlign='left';
@@ -31077,7 +31089,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.98: THE IMPORTED FRIEND REMEMBERS WHAT YOU DID TO HIM. Killing the friend imported from a run report wrote a kill on his own record and the game said he will remember that, but every raid after built him friendly again with the FRIENDLY plate, and his nod or his watching came from the standing of the pillager whose body he took. His own record is now read when the raid is built: a kill on it makes him hostile with a grudge, and his standing is his own, while with no kill he is friendly as before. Check 15.98 stages his record at one kill, at a revive with no kill, and at nothing, and builds a raid on each; it fails on v15.97',
+  now:'v15.99: THE SECTOR MAP NAMES THE WEATHER IT IS LEAVING, AND THE CONDITIONS ROW SAYS NIGHT AT NIGHT. From half way through a weather turn the sector map header named the coming weather on both sides of the arrow, Storming then Storming, while the CONDITIONS row still said Rainy; the left of the arrow is now the weather the turn is leaving. The CONDITIONS row keeps the night word 15.87 gave it, in the same word as the sector map header, and by day it names the rolled hour as before. Check 15.99 draws the header three quarters through a turn and the row at night; it fails on v15.98',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
