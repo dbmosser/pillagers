@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.84';
+var VER='15.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8027,7 +8027,13 @@ function doEmote(ix){
   if(!G||G.over||G.sim) return;
   var E=EMOTES[ix]; if(!E) return;
   var p=G.player;
-  if(p.downed||p.roll>0) return;
+  // v15.85, trade audit finding: THE EMOTE BAR CLOSES WHEN HE GOES DOWN AND ITS KEYS SAY WHY WHILE HE IS DOWN. A digit that
+  // reached here on the floor or in a roll returned with nothing said, so a working key read as a broken one (his v13.19
+  // report on the silent roll). Down, it says the line the belt uses from the floor; in a roll, the same shape. The bar
+  // stays up for the press after the roll. The cooldown below stays silent: it is under a second after an emote he just
+  // watched. No number and no seeded draw moved.
+  if(p.downed){ say('Not while you are down.'); return; }
+  if(p.roll>0){ say('Not while you are rolling.'); return; }
   if((G.emoteCd||0)>0) return;
   G.emoteCd=0.9;
   G.emoteBar=false;
@@ -11200,11 +11206,17 @@ function raidKey(code,repeat,ev){
   // v10.87, HIS NOTE: sprint is HELD, not toggled, so there is no keydown
   // handler for it at all. updatePlayer reads the key itself. Crouch is
   // untouched and stays a toggle, which is still his answer 33.
-  if(code==='KeyV'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat){
+  // v15.85, trade audit finding: THE EMOTE BAR CLOSES WHEN HE GOES DOWN AND ITS KEYS SAY WHY WHILE HE IS DOWN. This toggle
+  // had no downed test, unlike the backpack rule below (v14.57), so V on the floor opened the bar over the downed screen, and
+  // 1 to 4 then went to doEmote, which returned on the floor with nothing said. Down or in the death fade V opens nothing;
+  // down, it says so, in the words the belt already uses from the floor (useHot). Closing is untouched: the emote bar block
+  // above still shuts an open bar on V, ESC or TAB before this line runs. No number and no seeded draw moved.
+  if(code==='KeyV'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat&&!(G.player&&(G.player.downed||G.player.dying))){
     if(ev) ev.preventDefault();
     G.emoteBar=!G.emoteBar;
     return;
   }
+  if(code==='KeyV'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat&&G.player&&G.player.downed&&!G.player.dying){ if(ev) ev.preventDefault(); say('Not while you are down.'); return; }
   // The open stall owns the number row, so buying never also swaps your hotbar
   // slot out from under you.
   if(G&&!G.over&&G.trade){
@@ -13340,6 +13352,13 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     G.nearPed=null; G.pedBlocked=0;
     p.reloading=0;   // v13.83, combat audit: a reload does not wait on the floor to finish after he stands
     G.mapOpen=false; G.bagOpen=false; G.drag=null;   // v14.07, HUD audit: nothing covers the downed screen
+    // v15.85, trade audit finding: THE EMOTE BAR CLOSES WHEN HE GOES DOWN AND ITS KEYS SAY WHY WHILE HE IS DOWN. The line
+    // above shuts the map and the backpack so that nothing covers the downed screen, and the emote bar was missed: V opens it
+    // (say, to hail a pillager at range), a shot puts him on the floor, and drawHUD draws the bar after the red downed wash
+    // with no downed test of its own, so HAIL, STAND DOWN, POINT and THANKS sat over the bleed-out under the caption weapon
+    // down, they will listen, while 1 to 4 went to doEmote, which returns on the floor. Shut here with the other panels; the
+    // first standing V after a revive opens it again. No number, no player text and no seeded draw moved.
+    G.emoteBar=false;
     G.searching=null; G.searchT=0; G.nearDoor=null;   // v14.08, HUD audit: no search bar or door prompt frozen over the floor
     // v8.58, audit: it does NOT need medical. selfRevive requires none and
     // consumes none, by his v6.45 order, and the function's own comment says so.
@@ -30946,7 +30965,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.84: NET LIFETIME EARNINGS COUNT STALL MONEY CARRIED OUT. The Mainframe card Net lifetime earnings promises everything extracted minus everything carried in, but money made by selling a backpack at the Peddler stall and carrying it out never counted, so a run that sold the kit it carried up went down by the full carried-in value while the money was banked. Stall money carried out now counts, and stall money lost to death or abandonment still does not. Check 15.84 sums run rows with stall money on them, then sells a backpack at the stall and extracts; it fails on v15.83',
+  now:'v15.85: THE EMOTE BAR CLOSES WHEN HE GOES DOWN AND ITS KEYS SAY WHY WHILE HE IS DOWN. Shot down with the emote bar up, the bar stayed drawn over the downed screen with its caption and its four boxes, V opened it again while he was down, and 1 to 4 did nothing and said nothing. Going down now shuts the bar with the map and the backpack, V while he is down opens nothing and says Not while you are down, and a digit pressed on the bar in a roll says so too. Check 15.85 opens the bar, shoots him down and presses V on the floor, then presses a digit on the bar in a roll; it fails on v15.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

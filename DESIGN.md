@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.85 - THE EMOTE BAR CLOSES WHEN HE GOES DOWN AND ITS KEYS SAY WHY WHILE HE IS DOWN
+
+Trade audit finding (LOW).
+
+The going-down block in damagePlayer (the v14.07 line G.mapOpen=false; G.bagOpen=false; G.drag=null;) shut the map and the
+backpack and never touched G.emoteBar, and drawHUD draws the emote bar after the red downed wash with no downed test of its
+own. So a bar opened with V before the shot that put him down stayed drawn over the bleed-out, HAIL, STAND DOWN, POINT and
+THANKS under the caption weapon down, they will listen. 1 to 4 went through the emote bar block in raidKey to doEmote, which
+returned on p.downed with nothing said, and the V toggle in raidKey had no downed test, unlike the backpack rule (v14.57), so
+V opened the bar while he was already down. doEmote also returned in a roll with nothing said. None of the emote text, the
+downed line or the belt line is a TXSHIP key, and this is not balance.
+
+THE BUILD. The going-down block sets G.emoteBar=false with the other panels. The V toggle carries
+!(G.player&&(G.player.downed||G.player.dying)), and a fresh V while down, outside the death fade, says Not while you are down,
+the line the belt already uses from the floor (useHot). doEmote says the same line on the floor and Not while you are rolling
+in a roll, and returns before the bar shuts, so the bar waits for the press after the roll; the cooldown return stays silent.
+Closing is unchanged: V, ESC or TAB still shut an open bar. No number, dial, loot table, seeded draw or reworded text moved,
+and map building is not touched, so the seed 4242 fingerprint cannot move.
+
+MEASURED. Check 15.85 deploys at seed 4242 on map 0 with a profile snapshot. On his feet a fresh V opens the bar (control);
+with the map open, damagePlayer(999) puts him down and shuts the map (control, the going-down branch ran), and the bar must be
+shut. A fresh V on the floor must leave the bar shut and say Not while you are down; V still shuts a bar that is open on the
+floor (guard). Back on his feet, V opens the bar, p.roll is set to 0.3, and Digit1 must say Not while you are rolling and leave
+the bar up; with the roll over and the cooldown cleared, Digit3 does POINT, says You point and shuts the bar (control). No
+older check restaged: none presses V or a digit on the emote bar while down or in a roll.
+
+Cloud run (headless Chromium 1920x1080): parse check PASS on the dry build, check 15.85 PASS twice on the dry build and FAIL on
+the v15.84 control in the going-down arm, the V arm and the roll arm.
+
+Not verified: the bar by hand over a real down.
+
 ## v15.84 - NET LIFETIME EARNINGS COUNT STALL MONEY CARRIED OUT
 
 Trade audit finding (LOW), entry 2 of the confirmed list.
