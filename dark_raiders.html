@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.03';
+var VER='16.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30574,7 +30574,7 @@ function loop(ts){
   if(NET.on) netUpTick(dt);   // v15.79: where the party stands up top, eased in and sent out, whatever the frame does below
   // v6.73, his note; rewritten v7.23: time stops DEAD unless an input is live -
   // any held key, the mouse button, pad input, or an action already in flight.
-  if(CFG.superhot&&G.player&&!G.over&&!G.paused){
+  if(CFG.superhot&&G.player&&!G.over&&!G.paused&&!netUpShared()){   // v16.04: Superhot is off in a shared co-op raid (one world cannot stop for one player)
     var _shp=G.player;
     var _shAny=false;
     for(var _shk in keys){ if(keys[_shk]){ _shAny=true; break; } }
@@ -30589,16 +30589,16 @@ function loop(ts){
   // pause opens, and tickAmbience ramps it back by itself on resume.
   if(G.paused&&!G.over){ if(!G._ambDuck){ G._ambDuck=1; try{ ambienceOff(); }catch(_ap){} } }
   else if(G._ambDuck){ G._ambDuck=0; }
-  if(!G.paused&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
+  if((!G.paused||netUpShared())&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
     // the death beat: the world keeps moving underwater-slow, you do not
     G.deathBeat-=dt;
-    var bdt=dt*0.25;
+    var bdt=netUpShared()?dt:dt*0.25;   // v16.04: in a shared co-op raid the slow-down is not put on the world the party is still playing in
     G.t+=bdt;
     refreshVseg(); updateEnts(bdt); updateBullets(bdt); updateThrowables(bdt);
     if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
     if(G.deathBeat<=0){ endRaid('dead'); }
   }
-  else if(!G.paused&&!G.over){
+  else if((!G.paused||netUpShared())&&!G.over){   // v16.04: in a shared co-op raid pause is an overlay: the world and the clock run on
     G.t+=dt;
     // v9.35, HIS 6: a clock set to zero does not run. Everything below this line
     // is driven by timeLeft falling, so holding it still turns off the warnings,
@@ -30630,7 +30630,8 @@ function loop(ts){
       tickNuke(dt);
     } else {
       refreshVseg();
-      updatePlayer(dt);
+      if(G.paused&&netUpShared()) netPausedStep(dt);   // v16.04: paused in a shared co-op raid, he stands still while the world runs on
+      else updatePlayer(dt);
       if(!G.over){ updateEnts(dt); }
       if(!G.over){ updateBullets(dt); updateThrowables(dt); }
       try{ tickHot(dt); }catch(e){}
@@ -31110,7 +31111,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.03: A LIGHTNING FLASH SHOWS YOU TO THEM FROM FARTHER. His order. While a flash is up, anything looking your way sees you out to twice its own sight, through its own cone and walls, not under a roof, and crouching does not hide you inside that range. Not the whole map. The flash counts down in the sim too. The storm line and the CONDITIONS row say so. Map building untouched. Check 16.03 fails on v16.02',
+  now:'v16.04: PAUSE, SUPERHOT AND THE DEATH SLOW-DOWN IN CO-OP. Multiplayer, the plan phase 2 rules. In a shared co-op raid Superhot never freezes time, the pause menu opens over a world that keeps running with the raid clock, your player stands still while paused, and the death slow-down does not slow the world the party plays in. Solo play untouched. No number moved. Check 16.04 fails on v16.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35779,6 +35780,19 @@ var NET_ENT_STATES=['patrol','chase','alarm','investigate','loot','extract','hun
 var NET_ENT_R={sentry:22,crawler:15,raider:11,snitch:11,listener:14,bulwark:24,howler:20,warden:30,choir:26,peddler:12,stray:11};
 // Whether this window watches a raid the host runs (a linked window up top on the host seed), or runs one for the party.
 function netEntsPeer(){ return !!(NET.on&&NET.role==='join'&&typeof G!=='undefined'&&G&&!G.sim&&!G.over&&NET.upSeed&&(G.seed>>>0)===(NET.upSeed>>>0)); }
+// v16.04, MULTIPLAYER: PAUSE, SUPERHOT AND THE DEATH SLOW-DOWN IN CO-OP (tools/multiplayer/plan.md phase 2: Superhot is off, pause
+// becomes an overlay, and the death slow-down is local to the dying player). One world is shared by the party, so no one window
+// can stop or slow it: in a shared raid (this window on the party seed with someone linked) Superhot never freezes time, the
+// pause menu and the tuning console open over a world that keeps running (the raid clock included), and the death beat plays at
+// full speed. Paused, his player takes no input: keys, the mouse button and the pad stick are held off for his own step only,
+// so bleeding, regen and every timer on him still run. Solo play is untouched: netUpShared is false without a party.
+function netUpShared(){ return !!((netEntsHost()||netEntsPeer())&&netInCount()>0); }
+function netPausedStep(dt){
+  var k=keys, md=(typeof mouse!=='undefined'&&mouse)?mouse.down:false, pm=(typeof PAD!=='undefined'&&PAD)?[PAD.mx,PAD.my]:null;
+  keys={}; if(md) mouse.down=false; if(pm){ PAD.mx=0; PAD.my=0; }
+  try{ updatePlayer(dt); }
+  finally{ keys=k; if(md) mouse.down=md; if(pm){ PAD.mx=pm[0]; PAD.my=pm[1]; } }
+}
 function netEntsHost(){ return !!(NET.on&&NET.role==='host'&&typeof G!=='undefined'&&G&&!G.sim&&!G.over&&NET.upSeed&&(G.seed>>>0)===(NET.upSeed>>>0)); }
 // Every body numbered at the build, in list order. Returns how many.
 function netEntsInit(g){

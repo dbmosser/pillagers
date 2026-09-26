@@ -1,0 +1,18 @@
+## v16.04 - PAUSE, SUPERHOT AND THE DEATH SLOW-DOWN IN CO-OP
+
+Multiplayer, the phase 2 rules in tools/multiplayer/plan.md: Superhot is off, pause becomes an overlay, and the death
+slow-down is local to the dying player. One world is shared by the party, so no one window may stop or slow it.
+
+THE BUILD. netUpShared is true when this window is up top on the party seed (the host world or a linked window) with someone
+linked. In loop: Superhot never zeroes dt in a shared raid; the pause menu and the tuning console (G.paused) no longer stop
+the world or the raid clock there, and his own step runs through netPausedStep, which holds off keys, the mouse button and the
+pad stick for that step only, so bleeding, regen and every timer on him still run while he stands still; and the death beat
+runs the world at full speed rather than a quarter. Solo play is untouched: netUpShared is false without a party. No number,
+dial or seeded draw moved; map building untouched.
+
+MEASURED. Check 16.04: alone (control) Superhot with no input and pause each hold the world still; as a party host with one
+linked seat, Superhot with no input lets the world run, paused the world runs on while W held moves him nowhere, and the death
+beat runs the world at full speed. Passes twice; fails on v16.03 in all three party arms. Live: nettest RUN SAME MACHINE.
+
+Not verified: two real PCs; the pause menu by hand over a running co-op raid.
+

@@ -1,0 +1,9 @@
+v16.04: pause, Superhot and the death slow-down in co-op
+
+Multiplayer. In a shared co-op raid no one window can stop the world:
+Superhot never freezes time, the pause menu opens over a world that
+keeps running with the raid clock while your player stands still, and
+the death slow-down does not slow the world the party plays in. Solo
+play is untouched. No number moved.
+
+Check 16.04. Fails on v16.03.
