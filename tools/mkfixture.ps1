@@ -5721,6 +5721,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.12',what:'the what is new card fits again and says what is true: the co-op entry says world sound plays from one window, not that the second has its own; the lightning line names the enemy',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[], all=L.join(' ').toUpperCase();
+     if(all.indexOf('WITH ITS OWN CONTROLLER AND SOUND')>=0) bad.push('the card still says the second window has its own sound');
+     if(all.indexOf('SOUND PLAYS FROM ONE OF THE TWO')<0) bad.push('the card does not say world sound plays from one window');
+     if(all.indexOf('SHOWS YOU TO THE ENEMY')<0) bad.push('the lightning line does not name who the flash shows you to');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.11',what:'co-op fixes from the backcheck: a shared-raid pause lets the storm land its bolt; YES, ABANDON refuses a player who went down after arming it; holding E over a downed teammate inside an open ring calls no extraction, and E held on after the pick-up sends nothing more; the host world word leaves a never-closing ring open-ended, leaves a pull this player began alone and does not move his called ring; the link to the host learns the host id',
    run:function(){
      if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile)||typeof NET!=='object'||!NET||typeof netOnMsg!=='function'||typeof updatePlayer!=='function') return 'SKIP: this fixture cannot stage a party raid';

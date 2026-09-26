@@ -40024,6 +40024,21 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.12 - THE WHAT IS NEW CARD FITS AGAIN AND SAYS WHAT IS TRUE
+
+Backcheck findings. The v16.07 card line went in as a new entry after the alpha line, which pushed the welcome pack entry to 14th,
+below the thirteen the card draws, so check 13.34 has failed since v16.07 (v16.07 said every older card check passed; that list
+missed 13.34). The party line (v15.92) said the second window has its own controller and sound, but world sound plays from one
+window only and player 2 starts with it off (v15.78). The v16.07 line said a flash shows you to them, with no one named.
+
+THE BUILD. The co-op line and the party line are one entry, keeping every phrase the older card checks read (the party ascends
+together and sees each other, one set for everyone, they go for whoever is nearest, the alpha line first) and every item of the
+old party line; it now says world sound plays from one of the two windows, and a lightning flash shows you to the enemy from
+farther off. WHATSNEW_VER is 16.12. No number moved.
+
+MEASURED. Check 16.12 passes twice and fails on v16.11 on all three claims. Checks 13.34, 15.81, 15.92 and 16.07 pass on the dry
+build, and every other check that reads the card (30 in all) passed.
+
 ## v16.11 - CO-OP FIXES FROM THE BACKCHECK
 
 A backcheck of this session's builds found these in the co-op code (v16.04, v16.05, v16.06, v16.09). Each is fixed here.

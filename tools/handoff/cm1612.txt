@@ -1,0 +1,9 @@
+v16.12: the what's new card fits again and says what is true
+
+The v16.07 line pushed the welcome pack entry off the card (check 13.34
+had failed since). The co-op and party lines are one entry now; it
+says world sound plays from one window, not that the second window has
+its own, and that a lightning flash shows you to the enemy. No number
+moved.
+
+Check 16.12. Fails on v16.11.
