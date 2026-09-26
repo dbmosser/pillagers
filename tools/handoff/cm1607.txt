@@ -1,0 +1,9 @@
+v16.07: the what's new card is current again
+
+A new card line after the alpha line says what co-op gained: the
+party goes up together, loot goes to whoever searched, hold E to pull
+a teammate up, one clock, sky and set of extraction points, the host
+leaving ends the run, pause in co-op, and the lightning flash. Every
+older line is kept. No number moved.
+
+Check 16.07. Fails on v16.06.

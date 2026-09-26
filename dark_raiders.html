@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.06';
+var VER='16.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1435,10 +1435,11 @@ var VER='16.06';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='15.92';
+var WHATSNEW_VER='16.07';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'YOUR PARTY GOES UP TOGETHER AND SHARES ONE SURFACE. In a party only the host takes the lift, and everyone goes up with them. One of you searches a box at a time and the loot goes to whoever searched it. Hold E beside a downed teammate to pull them up. The clock, the weather, the lightning and the extraction points are the same for everyone, and a beacon any of you calls comes for the party. If the host leaves, the run ends as abandoned for everyone. Pause no longer stops the world in co-op, and a lightning flash shows you to them from farther off.',
   'YOUR PARTY FIGHTS ONE SET OF PILLAGERS. The mode menu opens a second window for your other screen with its own controller and sound, the party ascends together and sees each other up top, and the pillagers and machines are one set for everyone: they go for whoever is nearest, your hits and kills count in your own tally, and nobody in your party can hurt you. C crouches even with Shift held when you are out of breath, a controller leaves the end of raid card with B, holding ESC or P no longer flickers the pause box, a pillager grenade sounds where it lands, and only a Medkit takes you past 85.',
   'GRENADES, BELT KEYS, STASH, WARDROBE, SAVES AND STORMS. A cooked Frag Charge keeps burning through a roll, a heal on a key no longer stops Medical using your other heals, and a controller packs from the stash with A. SURPRISE ME takes a worn suit off, erasing a save erases its UNDO copy, and lightning no longer hits you through a wall. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
   'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
@@ -31115,7 +31116,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.06: THE HOST OWNS THE RAID CLOCK, THE WEATHER, THE LIGHTNING AND THE EXTRACTION RINGS. Multiplayer. Each window ran its own, so two players could stand in different weather, their clocks drifted, a host bolt could hit a teammate who never saw its warning, and a beacon one player called existed for him alone. Twice a second the host now tells the party the clock, the sky, the live bolts and every ring; a linked window follows it, draws the host bolts, and asks the host to call a beacon for the party. The storm now centres on each of the party in turn. Each player still extracts alone. Solo untouched. No number moved. Check 16.06 fails on v16.05',
+  now:'v16.07: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 15.92 against 16.06. A new card line after the alpha line says what co-op gained since: the party goes up together, loot per player, teammate revives, one clock, sky and set of extraction points, the host leaving ends the run, pause in co-op, and the lightning flash. Every older line is kept as it was. No number moved. Check 16.07 fails on v16.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

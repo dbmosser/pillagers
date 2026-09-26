@@ -1,0 +1,12 @@
+## v16.07 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+WHATSNEW_VER stood at 15.92 against a build at 16.06, at the edge of the fifteen-build rule. WHATSNEW_VER is 16.07 and a new
+card line goes in right after the alpha line: YOUR PARTY GOES UP TOGETHER AND SHARES ONE SURFACE, naming what co-op gained
+since v15.91 (the host takes the lift, one searcher per box and the loot to whoever searched, pulling a downed teammate up
+with E, one clock, sky, lightning and set of extraction points, a beacon for the party, the host leaving ends the run as
+abandoned, pause no longer stops the world in co-op, and the lightning flash). Every older line is kept word for word. No
+number moved.
+
+MEASURED. Check 16.07 passes twice and fails on v16.06 on the new line. All 22 older checks that read the card (9.19 to 15.92)
+pass on the dry build.
+

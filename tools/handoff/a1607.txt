@@ -1,0 +1,1 @@
+| THE WHAT IS NEW CARD IS CURRENT AGAIN | v16.07 | CARD RULE (within fifteen builds): WHATSNEW_VER 15.92 against 16.06. FIX: WHATSNEW_VER 16.07 and a new line after the alpha line on the co-op builds v15.91 to v16.06; older lines kept word for word. MEASURED: check 16.07 passes twice, fails on v16.06; the 22 older card checks pass |

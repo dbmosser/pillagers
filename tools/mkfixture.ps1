@@ -5721,6 +5721,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.07',what:'the what is new card is current again: its version is within fifteen builds of the build, it still opens with the alpha line, and the line after it says what co-op gained (going up together, loot to whoever searched, pulling a teammate up, the host leaving)',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0, vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
+     if(!L[0]||String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+     var t=String(L[1]||'').toUpperCase();
+     ['GOES UP TOGETHER','WHOEVER SEARCHED','PULL THEM UP','IF THE HOST LEAVES'].forEach(function(w){ if(t.indexOf(w)<0) bad.push('the second card line does not say '+w.toLowerCase()); });
+     return bad.length?bad.join('; '):null; }},
   {v:'16.06',what:'the host owns the raid clock, the weather, the lightning and the rings: the host world word carries the clock, the sky, the live bolts and every ring; a linked window takes them, draws a host bolt that never hits it, runs no weather turn of its own, and a beacon a teammate calls is called on the host',
    run:function(){
      if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile&&window.__loop)||typeof NET!=='object'||!NET||typeof netOnMsg!=='function'||typeof WEATHER==='undefined') return 'SKIP: this fixture cannot stage a party raid';
