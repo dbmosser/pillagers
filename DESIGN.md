@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.03 - A LIGHTNING FLASH SHOWS YOU TO THEM FROM FARTHER
+
+His order, answering the question parked at v16.01: lightning should make you visible to enemies at a greater distance, but
+not across the whole map.
+
+THE BUILD. In updateEnts, after every other sight rule (crouch, downed), while the flash is up (G.lightning, set by the bolt)
+a pillager or machine that does not see him asks canSee again at FLASH_SEE times its own sight and ambient range, through its
+own cone and the wall list, when neither he nor it is under a roof. FLASH_SEE is 2, a new constant beside canSee; the number
+is his to change. Crouching does not hide him inside that range in the flash; blinding still cuts it (wkSight is in the
+range); nobody sees him down. simStep now counts G.lightning down as render2D does live, since render2D never runs headless.
+The storm line reads Storm. Lightning strikes, and every flash shows you the map and shows you to them from farther off., and
+the CONDITIONS row reads lightning strikes, and a flash shows you to them from farther. Neither is a TXSHIP key. No draw is made
+by the rule; a machine that now sees him may act and draw later, in storms only. Map building untouched, so the seed 4242
+fingerprint cannot move.
+
+MEASURED. Check 16.03 stages a raid, a sentry alone facing him on open ground with the wall list emptied: at 1.6 times its
+sight it does not see him without a flash (control) and must in a flash; at 3 times its sight it must not see him even in a
+flash; a sim step must count the flash down. Passes twice; fails on v16.02 in the flash arm and the sim arm.
+
+Not verified: the feel in a real storm. Watch for: storms getting noticeably harder to sneak through.
+
 ## v16.02 - PARTLY CLOUDY DOES NOT HOLD
 
 Weather audit finding 10 (LOW), its own fix.

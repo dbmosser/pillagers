@@ -1,0 +1,8 @@
+v16.03: a lightning flash shows you to them from farther
+
+His order. While a lightning flash is up, anything looking your way
+sees you out to twice its own sight, through its own view and walls,
+not under a roof, and crouching does not hide you inside that range.
+Not the whole map. The storm line and the CONDITIONS row say so.
+
+Check 16.03. Fails on v16.02.

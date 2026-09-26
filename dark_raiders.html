@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.02';
+var VER='16.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5506,7 +5506,7 @@ var WEATHER=[
   {id:'blackout',name:'Blackout',view:1,noise:1,lights:0.18,rain:0,
    line:'Grid is down. Every lamp on the map is dead.'},
   {id:'storm',name:'Storming',view:0.80,noise:0.48,lights:0.55,rain:2,lightning:true,
-   line:'Storm. Lightning strikes, and every flash shows you the whole map for a moment.'}   // v16.01, weather audit finding: the old line promised the flash shows you to everything out there, and nothing on the map reads it
+   line:'Storm. Lightning strikes, and every flash shows you the map and shows you to them from farther off.'}   // v16.03, his order: the flash shows you to them, farther, not across the whole map
 ];
 // WEATHER THAT TURNS. It was rolled once at the drop and then it was a fact
 // about the raid, which meant it was a difficulty modifier you read on the
@@ -7982,6 +7982,7 @@ function conePoly(px,py,face,half,range,segs,rays){
 // awareness at v0.68 also handed every machine 50 percent more rear detection,
 // 100 units to 150, while the note claimed machine vision was untouched. It was
 // not. The two are separate now: CFG.ambient is his, CFG.eAmbient is theirs.
+var FLASH_SEE=2;   // v16.03, his order: how many times farther a machine or pillager sees you while a lightning flash is up
 function canSee(px,py,face,tx,ty,segs,far,cone,amb){
   var dx=tx-px,dy=ty-py,d=Math.sqrt(dx*dx+dy*dy);
   var chh=cone===undefined?CH():cone;
@@ -18327,6 +18328,11 @@ if(e.kind==='howler'&&e.hearT>0){
     var onYou=(!CBC&&e.state==='chase');
     if(sees&&(p.net?p.cr:G.pCrouch)&&!WDC&&CHID>0&&!onYou&&dist(e,p)>CHID&&(!G.sim||HARDC)) sees=false;   // v15.80: the crouch of whichever player it looks at
 if(sees&&p.downed&&e.kind!=='raider') sees=false;
+    // v16.03, HIS ORDER: A LIGHTNING FLASH SHOWS YOU TO THEM FROM FARTHER, NOT ACROSS THE WHOLE MAP. While the flash is up
+    // (G.lightning, set by the bolt) anything looking your way sees you out to FLASH_SEE times its own sight, through its own
+    // cone and walls (canSee), and not under a roof on either side. Crouching does not hide you in the flash inside that range.
+    // Blinding still cuts it (wkSight is in _fSee). Nobody sees you down. No draw is made here.
+    if(!sees&&G.lightning>0&&!p.downed&&!roofAt(p.x,p.y)&&!roofAt(e.x,e.y)) sees=canSee(e.x,e.y,e.face,p.x,p.y,G.vseg,_fSee*FLASH_SEE,e.cone,_aSee*FLASH_SEE);
     // v3.97: nothing here can see the player, so ask whether it can see anyone
     // else. Placed after every sight rule above, so crouch, fog, blinding and
     // concealment all still decide the player question first and this only ever
@@ -21042,7 +21048,7 @@ function simStep(dt){
   // moved in a headless run and no machine was ever dragged to a new centre -
   // while the loot bonus inside the disc fired all the same. Guarded because this
   // runs thousands of times a batch and a throw here would take the batch with it.
-  wxTick(dt); strikeTick(dt); try{ tickHot(dt); }catch(_th){}
+  wxTick(dt); strikeTick(dt); if(G.lightning>0) G.lightning=Math.max(0,G.lightning-dt); try{ tickHot(dt); }catch(_th){}   // v16.03: the flash counts down headless too (render2D, its only countdown, never runs in the sim), or a sim bolt would show the bot for the rest of the storm
   G.t+=dt; G.timeLeft-=dt;
   // v9.35: no clock, no expiry. raidSec 0 starts timeLeft at 0, so this tested
   // true on the first frame of a raid that was never meant to be timed.
@@ -24793,7 +24799,7 @@ wc.drawImage(fogC,0,0);
     // Render layer, never reached headless. Same reason as the puff roll above.
     if(G.lightning>0){
       // a hard flash that shows the whole street for a moment: it lifts the fog sheet
-      // for you (above). Nothing on the map reads it; whether it should is his call (v16.01)
+      // for you (above), and updateEnts reads it: they see you FLASH_SEE times farther while it is up (v16.03, his order)
       var lf=G.lightning>0.26?(0.34-G.lightning)/0.08:G.lightning/0.26;
       wc.globalCompositeOperation='lighter';
       wc.fillStyle='rgba(150,170,220,'+(0.40*clamp(lf,0,1))+')';
@@ -25515,7 +25521,7 @@ _tgt=G.active; _lbl='EXTRACTION';
     if(MW.noise!==1) wv.push(MW.noise<1?('everyone is '+Math.round((1-MW.noise)*100)+'% quieter')
                                        :('everyone is '+Math.round((MW.noise-1)*100)+'% louder'));
     if(MW.lights<1) wv.push('lamps '+Math.round((1-MW.lights)*100)+'% out');
-    if(MW.lightning) wv.push('lightning strikes, and a flash shows you the map');   // v16.01: the flash lifts the fog for you; nothing on the map reads it
+    if(MW.lightning) wv.push('lightning strikes, and a flash shows you to them from farther');   // v16.03: the flash lifts the fog for you and doubles how far they see you
     // v15.87, sector audit finding: AT NIGHT THE SECTOR MAP HEADER NAMES A NIGHT HOUR. The same hour label as the sector map
     // header, printed here with no isDay() gate, so at night this row read noon or 8am beside the weather while the surface
     // button on the sector page said NIGHT. It says night now when the surface is night, and names the rolled hour in daylight
@@ -31104,7 +31110,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.02: PARTLY CLOUDY DOES NOT HOLD. Weather audit finding 10. A weather turn into Partly Cloudy said This will not hold, and when it was the last turn of the raid it held to extraction. A turn into partly now keeps one turn back, so the rain or storm break it announces still comes. No number moved and map building is untouched. Check 16.02 fails on v16.01',
+  now:'v16.03: A LIGHTNING FLASH SHOWS YOU TO THEM FROM FARTHER. His order. While a flash is up, anything looking your way sees you out to twice its own sight, through its own cone and walls, not under a roof, and crouching does not hide you inside that range. Not the whole map. The flash counts down in the sim too. The storm line and the CONDITIONS row say so. Map building untouched. Check 16.03 fails on v16.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

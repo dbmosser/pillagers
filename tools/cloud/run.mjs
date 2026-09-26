@@ -3,6 +3,7 @@
 //   node tools/cloud/run.mjs check FILE V [N]      runs every __REGRESS entry with v===V, N times (default 2)
 //   node tools/cloud/run.mjs verify FILE           __verifySafe(): pass, ents, containers
 //   node tools/cloud/run.mjs range FILE A B        __regressBg(A,B) slice, prints summary and fails
+//   node tools/cloud/run.mjs eval FILE 'JS'       runs JS in the loaded page, prints the result
 //   node tools/cloud/run.mjs net FILE [run|runsame] nettest.html?f=FILE, presses RUN or RUN SAME MACHINE, prints the result and log
 // FILE is a name inside tools/. Exit code 0 only when the result is PASS.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path';
@@ -60,6 +61,8 @@ try {
     await page.waitForFunction(() => window.__PROG && window.__PROG.finished, null, { timeout: 0, polling: 2000 });
     const r = await page.evaluate(() => __PROG.res);
     console.log(r.summary); r.fail.forEach(f => console.log('  ' + f.slice(0, 400))); ok = r.pass;
+  } else if (cmd === 'eval') {
+    await load(file); const r = await page.evaluate(a3); console.log(typeof r === 'string' ? r : JSON.stringify(r)); ok = true;
   } else if (cmd === 'net') {
     const btn = '#' + (a3 || 'run');
     page.on('popup', p => p.setViewportSize({ width: 1920, height: 1080 }).catch(() => {}));
