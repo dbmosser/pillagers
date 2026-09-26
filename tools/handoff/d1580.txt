@@ -1,0 +1,207 @@
+## v15.80 - ONE SET OF ENEMIES, RUN BY THE HOST, SEEN AND FELT BY EVERYONE
+
+His order of 2026-09-25: native multiplayer, co-op first. This is phase 2, build 2 of tools/multiplayer/plan.md with the corrections
+in critique.md. Until v15.79 each window in a shared raid ran its OWN pillagers and machines, so two players up top on one seed
+saw two different worlds. Now the host runs them all and the linked windows watch. His rulings hold: NO team damage of any kind;
+numbers frozen (no dial, count, damage or table moved); coming back empty on death or abandon stays per player. Loot, searching,
+revives, extraction, the raid clock, the weather and the bullets themselves stay with each window in this slice.
+
+THE BUILD.
+- NUMBERS. Every body gets a number (e.nid) at the build, in list order: netEntsInit(g) runs on the host from netUpAnnounce
+  (right after buildRaid, before the raid word goes out) and on a linked window from netUpStart right after its fingerprint
+  matched. The populations match by the fingerprint, so number 12 is the same crawler on every window and nothing about a
+  body needs to be sent to name it. A body that arrives later on the host (a wave, a reinforcement, a siege arrival, anything
+  pushed onto G.ents) is numbered on the next tick from G.nidN and told to the party with what the drawing needs. A solo raid
+  numbers nobody (netEntsInit is only reached through the two party paths).
+- THE HOST, ten times a second (netEntsTick, called from netUpTick on the clock that already sends where the host stands,
+  behind NET.on and the host role, only while a raid is up on the party seed):
+    {t:'en',sd,n,e:[[nid,kind,x,y,face,state,health,flags],...]}   on the fast channel, to every link that is in
+  kind and state are indexes into NET_ENT_KINDS and NET_ENT_STATES, x and y whole units, face two decimals, health in
+  twentieths of maxhp, flags a bit set of what the drawing, the nameplates and the pillager board read (downed, finished,
+  alert, moving, hostile, friendly, hit, muzzle, seen you, windup, vent, crouched, rolling, steady, reviving, shooting,
+  looting, healing, sprinting, helped, grudge, parley, blind). Only bodies within NET_ENT_RANGE (1600) of any player go in:
+  the host player or one of the party up top on this seed, where his window last said he stood. At most NET_ENT_MAX (200)
+  rows a packet; more than that and the rest go on the next tick, round robin. A body that left G.ents since the last tick is
+  told to every link at once on the reliable channel, {t:'ent',op:'gone',id,how:'dead'|'out',n} (n is the snapshot that
+  follows, so a late fast packet naming it is known for what it is); a dead body one of the party killed is credited to that
+  seat, {t:'kill',seat,id,k,el}. A body numbered on a tick is announced first, {t:'ent',op:'new',id,k,x,y,n,r,mh,hp,el,ho} plus
+  coat, crew, identity, gun, rig and hire for a pillager.
+  MEASURED at seed 4242 in the MSHTML engine, JSON on the wire: sector 0 (85 bodies) with the host player and a stand-in
+  friend 300 units apart, 21 bodies in reach, 635 characters a packet; every body (reach lifted) 85 rows, 2436 characters;
+  sector 1 (374 bodies) 32 in reach, 958 characters, the cap of 200 rows 5838 characters. One row is about 28 characters.
+  A new word 117 characters, a hit word 91, a shot word 76. The message cap is 16384. At ten a second the near packets are
+  6 to 10 KB/s per link on either sector; a whole sector 0 packet ten times a second would be 24 KB/s.
+- THE NEAREST PLAYER. In updateEnts every body picks its target afresh each frame, p=netTargetFor(e) (behind NET.on; with the
+  party off p is G.player as it always was): the host player or one of the party up top on this seed, a standing man before
+  a downed one, the nearest of those; a hired man keeps the host (netUpBody hands the AI a body with x, y, r 11, face, downed,
+  moving, crouched and sprinting from the last word his window sent). Where the AI read the host crouch, sprint or bush cover
+  (the Listener ear, the hard crouch rule, the pillager aim error twice, the concealment factor) it now reads the target
+  (p.net?p.cr:G.pCrouch and so on; one of the party has no bush cover here, since only his window knows it). navSeek asks
+  the nearest player for its earshot rule, feudEngage for its engage-near gate, and the wave spawn stands its arrival far from
+  every player; the 24 draws of that spawn and every other seeded draw are unchanged in count and order.
+- A BLOW ON ONE OF THE PARTY: the host never touches his health. netHitPlayer(p,amt,src,name,x,y) takes the host player
+  through damagePlayer exactly as before and tells one of the party {t:'hit',seat,dmg,kind,name,x,y} on the reliable channel;
+  his window takes it through its own damagePlayer (netHitTake), so his armour, his downed rules and his death stay his own
+  and his own How hard they hit dial applies. The three updateEnts sites (Listener, twice, and the crawler bite) go through
+  it; enemy rounds test the party after the host player (netBulletPeer, in the enemy branch of updateBullets only); a
+  pillager charge (never your own), a Howler shell and a bolt reach the party by the same radius, roof and wall rules
+  (netAreaHitPeers). NO TEAM DAMAGE: player rounds, fists and charges test G.ents only, as they always did, and one of the
+  party is never in G.ents; the host charge branch never reaches the peers test.
+- A LINKED WINDOW UP TOP (netEntsPeer: role join, a raid in hand on the party seed, not over): updateEnts returns at its
+  first line into netEntsEase(dt), which slides each body toward where the host last put it (1 - e^(-12 dt), the v15.75
+  easing; shortest arc; the walk cycle while the host says it moves; the hit, muzzle, roll, windup, vent and shooting timers
+  running down; crawler and Listener legs), takes off any body the host has said nothing about for NET_ENT_STALE (3) seconds,
+  and any body this window made on its own (nothing the host numbered: a local siege arrival, say). tickRaiderWaves returns
+  on such a window. netEntsApply files each row on its body by number (the first row, a row after three seconds of silence or
+  a jump past 160 units puts the body there at once, as the floor does); an older snapshot than the last applied is dropped
+  (the fast channel is unordered), one from another seed too; a row naming a body never seen makes it on the spot with what
+  the drawing needs (netEntMake) and the new word fills it (name, health, coat, crew, gun, rig, the pillager look from
+  raiderLook off the identity and the spawn spot, no seeded draw). A gone word takes the body off the list and the map with
+  the spark, the puff and the label the host frame shows (netEntDeathFx; what it drops is the host world, later); an out word
+  marks a pillager EXTRACTED on the board. A kill word counts the kill, the contract and the grudge on this window as its
+  own kill would (netKillTake, saveProfile on its own save). Its rounds (updateBullets), fists (fireWeapon) and charges
+  (explodeFrag) on a body send the host {t:'shot',id,dmg,x,y,a,wk} through netShotSend, with the damage worked out here
+  (weak point, shield, armour and the back shot) and change nothing on the body themselves; the host applies it if the body
+  is alive (netShotTake): the weak point effect, the damage, the seat mark by the v15.45 rule (a killing or downing blow
+  marks the seat, a blow a standing man survives clears it; the enemy round, frag and bolt kill sites clear it too), the man
+  turned hostile and onto the shooter as a host round turns him, the crier alarm (wound 3.5 seconds flat, where a host round
+  draws it, so the net code never draws), the v3.94 dodge roll off the bearing the shooter sent. Not the host hire.
+- NET gains entMap (every body by number), entGone (bodies lately gone, by number, with the snapshot they left before), entN
+  (the snapshot count), entRot (the round robin) and entLast (the last snapshot a linked window applied); netReset and
+  netUpEnd clear them. netOnMsg routes en, ent, hit, shot and kill. The ?netslot and ?p2 test handle window.__net gains
+  ents(): whether this window runs its bodies for the party or watches the host run them, how many it holds and how many are
+  numbered, and each by number, kind, place, state and health.
+
+SOLO PLAY UNTOUCHED. Every new call sits behind NET.on: the target and the tick in updateEnts and netUpTick, the peers tests in
+updateBullets, explodeFrag, howlerImpact and strikeTick, the guards in navSeek, feudEngage and tickRaiderWaves. The crouch,
+sprint and cover reads test p.net, which is undefined on the player. Nothing in the net section draws from the seeded stream
+(rr, rnd, ri, pick, rollTable). The seed 4242 fingerprint reads ents {0:85,1:374} and containers {0:165,1:593} on the patched
+game and the previous one alike, and a solo raid numbers no body (measured, below). No number, dial, loot table or seeded
+draw moved. WHATSNEW_VER stays 15.72 (drift 0.08). No new player-facing line in the game (the kill line and the labels a
+linked window shows are the ones the host frame shows); no apostrophe inside any JS string; no TXSHIP key is touched.
+
+ANCHORS (whole lines, each matching once in v15.79):
+- "var VER='15.79';";
+- navSeek: "  if(CFG.lodR>0&&G.player&&!e.merc&&dist(e,G.player)>CFG.lodR){";
+- feudEngage: "  if(CFG.engageNear!==0&&dist(e,p)>=CFG.engageNear) return false;";
+- howlerImpact: "    damagePlayer(SH.dmg*(1-dp/R)+6,'howler','HOWLER',SH.tx,SH.ty);" (the peers line after it);
+- explodeFrag: "    damagePlayer(80*(1-dp/R)+18,_fSrc,_fName,f.x,f.y);   // v11.77: ..." (the peers line after it),
+  "      e.hp-=115*(1-Math.max(0,de-e.r)/R)+25; e.hitT=.2;   // v11.77: was 85 and 15" (the request on a linked window) and
+  "      if(e.hp<=0) e.byPlayer=!!_fMine;" (the seat mark cleared);
+- strikeTick: "    ping(S.x,S.y,900,false,false,'env','fire');" (the peers line after it) and the long bolt line
+  "      if(dist(E,S)<STRIKE_R&&!roofAt(E.x,E.y)&&losClear(...)){ E.hp-=STRIKE_DMG; ... }   // v14.31: the same roof and wall";
+- fireWeapon: "        _me.hp-=_mdm; _me.hitT=.16; _me.pHitT=.3;   // v11.37: your strike provokes";
+- tickRaiderWaves: "  if(CFG.raiderWaves===0||!G||G.over||!G.roster) return;" and "    var _c=freeSpot(G.map,30), _cd=dist(_c,G.player);";
+- updateEnts: "function updateEnts(dt){" (the linked window guard after it); the three lines "    var e=G.ents[i];",
+  "    e.moving=false;", "    if(e.hitT>0) e.hitT-=dt;" (the target between the first two; the first line alone matches 16
+  times); "        if(CFG.listenLive!==0&&!p.downed&&p.moving&&!G.pCrouch){"; "            damagePlayer(e.dmg,'listener',e.name,e.x,e.y); e.cd=0.85;";
+  "              damagePlayer(e.dmg,'listener',e.name,e.x,e.y);"; "    var pcon=(G.pConceal===undefined)?1:G.pConceal;";
+  "    if(sees&&G.pCrouch&&!WDC&&CHID>0&&!onYou&&dist(e,p)>CHID&&(!G.sim||HARDC)) sees=false;"; the crawler bite line
+  "        else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg*(...),'crawler',e.name,e.x,e.y); e.cd=.7; }";
+  "            var _rmv=(p.moving?(G.sprinting?0.030:0.018):0);"; "          var _rgj=Math.max(18,_rgd*_rgk*(0.062+(p.moving?(G.sprinting?0.030:0.018):0)));";
+- updateBullets: "              en.hp-=edmg; en.hitT=.16;" (the request on a linked window); the enemy round line
+  "          if(!_mOwn&&dist(b,p)<p.r+3){ damagePlayer(b.dmg,...); spark(...); hit=true; }" (the peers line after it);
+  "              if(en3.hp<=0) en3.byPlayer=false;" (the seat mark cleared);
+- "  up:[],upAcc:0,upN:0,upSeed:0,upFp:null,upHold:false,upIss:null};   // v15.79: ..." (the ent fields on NET);
+- "  if(m.t==='up') return netUpWord(peer,m);   // v15.79: ..." (the five routes after it);
+- "  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;   // v15.79: and nobody up top" (netReset);
+- "  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=m.seed; NET.upFp=m.fp;" (netUpAnnounce; netEntsInit after it);
+- "  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=seed; NET.upFp=fp;" (netUpStart; netEntsInit after it);
+- the two lines "  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;" and "  netBroadcast({t:'up',st:'out',how:netClean(how,12)});"
+  (netUpEnd; the first alone matches twice, with the netReset line);
+- "  NET.upN++;" (netUpTick; the tick after it);
+- "// THE PARTY WINDOW." (the section before it);
+- "      up:function(){ return netUpView(); }};" (the test handle);
+- the DEVNOW line starting "  now:'v15.79:".
+34 edits plus DEVNOW. None of these lines is one of the 158 CRLF lines in the file (158 before and after); SubRx makes the lines
+it adds LF, whatever the endings of the .ps1 on disk. A second p1580 on the result fails on its first anchor before anything is
+written; f1580 refuses to run if "  {v:'15.80',what:" is there. Fixture anchor: the line prefix "  {v:'15.79',what:" (written by
+f1579). Both handoff scripts are ASCII.
+
+MEASURED. Check 15.80 is synchronous (the runner does not await a promise) and never makes a connection: the party is a stand-in
+link whose channel writes down what the game sends, the words are fed to the real netOnMsg, the host ascends through the real
+ascent path (__deploy: commitKit and startRaid), the linked window through the real netUpTake and startRaid, the frames are the
+real loop (__loop, ten and six at a time, updatePlayer, updateEnts, updateBullets and render2D included) and the rounds the real
+updateBullets, with damagePlayer spied. Three raids are built (the host, the solo control, the linked window) and every one is
+ended in finally (__endRaid('abandon'), then __topClear, __resetCfg, __cleanProfile), with the spy, the reach, the net section,
+P.equipped, P.weapons, P.intel, P.terms and P.wxPick put back. SKIP if a party is on in the copy, or the fixture cannot ascend.
+- THE HOST, a stand-in friend on seat 1, __deploy on sector 0 at seed 4242 under the fixture pins: 85 bodies and 165 containers,
+  the raid word sent, every body numbered 1 to 85 in list order and number 1 the first body. A hostile pillager with open
+  ground 60 units beside it (a clear line, 14 units free) is found by the check, the host player stood at the ring farthest
+  from it (over 700 away), and the friend filed up top on that spot; ten frames of the real loop post four snapshots on the
+  fast channel and put that pillager in chase with e.tx,e.ty on the spot to the hundredth (control: before the friend stood
+  there the pillager steered elsewhere; mutation M2 shows it steering by 964,1075 against 1007,1117 with the target line
+  gone). A host tick by hand posts one snapshot on seed 4242 naming that pillager at its rounded place, kind raider, state
+  chase; with the reach lifted every one of the 85 bodies is in one packet, 2436 characters against the 16384 cap; two ticks
+  move the seeded stream nothing. An enemy round through the real updateBullets on the spot posts one hit word to seat 1,
+  damage 9, kind raider, the pillager named, and the host player keeps his health with damagePlayer never called; a round from
+  the host player on the same spot posts nothing and hurts nobody. A shot request of 10 from seat 1 lowers a crawler by 10,
+  leaves no mark (seat 0, not the player) and turns it onto the shooter; a request of 300 kills it and marks seat 1; one frame
+  of the loop takes it off the list without counting it for the host; the next tick posts a gone word (dead) and a kill word
+  to seat 1; a request on the body that left comes back gone; the requests move the seeded stream nothing. A sentry pushed
+  onto the list mid raid is numbered 86 and told to the party with its name on the next tick, and told gone when it leaves,
+  with no kill credited. Ending the raid comes down to the Undercroft.
+- CONTROL, the party off: the solo build is 85 bodies, none numbered, a tick posts nothing, and 74 or so bodies move on their
+  own over six frames (so the freeze test on the linked window proves something).
+- THE LINKED WINDOW on seat 1 with a stand-in host link takes the host raid word up (the same pins, so the same draw), is
+  told it watches the host run its bodies, numbers the same 85 the same way with number 1 the first body; six frames of the
+  real loop move none of them (mutation M3: 74 move) and change the list by nothing; a first snapshot puts a crawler 100 units
+  over at once, in chase and moving; a second 100 further does not jump it and six frames slide it there within 8 units while
+  every other body stands still (M17: it stays 100 short); an older snapshot and one from another seed are dropped; a new
+  word makes a named sentry with its 150 health where it says; a row for number 901, never seen, makes a crawler of radius 15
+  on the spot; a gone word (dead) takes the crawler off the list and the map (M18: still on the list at 14), and a late packet
+  from before that word names it again without bringing it back while its other rows apply (M20); an out word marks a pillager
+  EXTRACTED on the board; the snapshots and words move the seeded stream nothing. A hit word of 12 (crawler) lowers this
+  player through its own damagePlayer, once, with 12 and crawler on the call; one for seat 2 is ignored and hurts nothing.
+  This window own round on a crawler (faced away, so no back shot) posts one shot request naming it with damage 7, a bearing
+  and where this player stands, leaves the crawler at its health here (M13: lowered 7), and the round flies no further; a kill
+  word for that crawler counts one crawler on this run and one for seat 2 counts nothing.
+- On v15.79 it FAILS on its first line (no netEntsTick, netEntsApply, netTargetFor or netHitPlayer), before any SKIP.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as committed (v15.79): p1580 OK, 34 edits plus DEVNOW; f1580
+OK, 1 edit; a second run of each refuses before writing. Both handoff scripts are ASCII; CRLF 158 before and after in the game,
+0 in the fixture script. Built with mkfixture from the scratch copies: fxdry80 (patched game and patched fixture) and fxctl80
+(the v15.79 game with the patched fixture), in the scratchpad, not in tools. cscript is dead on this machine, so the gates and
+the check ran in the MSHTML engine as the 1579 author ran them (the htmlfile COM object, IE11 document mode, the same prelude
+of stubs and a real canvas given 1920 by 1080 by hand). The parsecheck gates with parsecheck's own balance and dupes code:
+parens, braces and brackets 0, no duplicate top-level function, DEVNOW names v15.80 on one now line, WHATSNEW drift 0.08, no
+mojibake, whole script compiles (new Function), on the patched game and both fixtures. The whole dry fixture booted in that
+engine with 707 checks registered and no uncaught error. Check 15.80 PASSES on fxdry80, twice in one page (2.0 s, three raids
+built with the real ground bake at 1920x1080), and FAILS on fxctl80 with its first-line message. Checks 15.75, 15.77, 15.78 and
+15.79 PASS on fxdry80 in the same engine (15.74 and 15.76 throw there on any build at a KeyboardEvent the engine lacks). The
+seed 4242 fingerprint read through the page hooks in that engine is ents {0:85,1:374} and containers {0:165,1:593} on fxdry80
+and fxctl80 alike, with no number on any body of a solo raid. Twenty-two single mutations of the patched game each fail the
+check with the matching line: no snapshot sent, every body keeping the host player, the linked window still running its own
+bodies, a blow on one of the party going through the host damagePlayer, enemy rounds passing through the party, a shot request
+lowering nothing, the kill not marked for the seat, the gone word not sent, the kill word not sent, a body that arrived not
+told, a snapshot from another seed applied, the linked window lowering the body itself, a hit word hurting nobody, a kill word
+counting nothing, the linked window numbering nobody, the bodies not sliding, a gone word leaving the body on the list, the
+host numbering nobody at the build, a late packet bringing a gone body back, the tick off the loop clock, an older snapshot
+applied, and a player round routed into the peers test with that test made to take it (team damage, caught by the control
+line). One mutation is NOT caught alone: making netBulletPeer take player rounds changes nothing by itself, because a player
+round never reaches it (it sits in the enemy branch of updateBullets); the two-part mutation above is the one that makes team
+damage real, and it is caught.
+
+THE LIVE TEST, tools/nettest.html (edited by hand, one write, on a shard port, http://localhost:8805/nettest.html, never :8802 or
+:8803; ?f=fxdry80.html for the dry fixture). The build 1 to 6 steps are kept. RUN RAID gains the enemy step right after both
+copies are up top and the fingerprints agree, before A walks: the body nearest player A in copy A (its number the same on both
+copies) must be held by copy C within 500 ms within 16 units of where A runs it, and after 2 s of frames both copies must still
+agree on it within 24 units; copy A must say it runs its bodies for the party and copy C that it watches the host run them.
+The log names both counts and the body. The result line adds how long C took to hold it and how far off, then and after 2 s.
+The page script compiles in the MSHTML engine.
+
+Not verified: nothing here has run in a real browser. The check has not been run on fxdry80 or fxctl80 in the pane, __verifySafe
+and parsecheck.html have not been run there, and nettest.html has not been run, so no real channel carried a snapshot, a hit
+word or a shot request, no two-window frame timing, no measured lag of a body on the linked window, no look at a body the
+linked window made from a row before its word came (it stands unnamed in a plain coat until the word arrives), and no look at
+the pillager board on a linked window. By reading: a linked window sees no enemy rounds (bullets are not shared, so a sentry
+shooting at him shows no tracer; the hit still lands through the hit word); a pillager charge thrown by the host near one of
+the party is not drawn on his window either; the hit he takes uses his own How hard they hit dial and his own armour; the
+armour a linked window round strips off its mirror is not stripped on the host (the next round from that window is worked
+out against a mirror with less armour than the host body has); the host hears the stinger and the lines a pillager says on
+acquiring one of the party; the host window may print a kill label the party member could see and the host could not; a
+pillager the party member downs and a machine finishes is the machine kill (no word); when the host raid ends the bodies on
+the linked windows stop and go after three seconds (his ruling that it counts as abandon for everyone is still the next slice);
+the linked window own raid clock, weather, lightning and siege arrivals still run on its own (a local arrival is taken off
+again by the ease); a linked window in the Undercroft still receives the snapshots and drops them. Only two real PCs can show
+the fast channel carrying 600 to 2500 character packets ten times a second over home routers.

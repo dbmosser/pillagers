@@ -1,0 +1,8 @@
+v15.81: the what is new card is current again
+
+The card stood at 15.72 and said nothing about two players on one PC. My
+first card line is rewritten in place, keeping the phrases its checks read.
+
+Check 15.81. Fails on v15.80.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

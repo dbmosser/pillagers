@@ -13,7 +13,7 @@
   .frames div{flex:1;min-width:480px}
   iframe{width:100%;height:420px;border:1px solid #3a3028;background:#000}
 </style>
-<h1>PILLAGERS net test, multiplayer builds 1 to 6</h1>
+<h1>PILLAGERS net test, multiplayer builds 1 to 7</h1>
 <p class="dim">The live half of checks 15.74 and 15.75, run by hand. Two copies of the fixture load below, one with ?netslot=A and
 one with ?netslot=B, each playing a save of its own, and RUN links them for real on this PC: A hosts through its own PARTY window
 buttons, B joins with the invite code, A lets B in with the reply code, and both rosters must show two within five seconds. Then
@@ -23,7 +23,7 @@ copy spoken for by this page tries to join on the wrong version and must be turn
 (the control). Last, B quits the party and A must take B off its floor. The seeded stream of both copies must not move. Keep
 this tab in front while it runs: a hidden tab stops both floors. Serve the tools folder on a shard port and open
 http://localhost:8805/nettest.html (never :8802, his play profile, and never :8803, the dry chain). Add ?f=fxdry77.html to test a
-dry fixture instead of fixture.html (fxdry78.html for build 5, fxdry79.html for build 6). The two net saves are separate from every other save on this origin.</p>
+dry fixture instead of fixture.html (fxdry78.html for build 5, fxdry79.html for build 6, fxdry80.html for build 7). The two net saves are separate from every other save on this origin.</p>
 <p class="dim">RUN SAME MACHINE is the live half of check 15.76 (build 3): copy A presses its own 2 PLAYER CO-OP (SAME MACHINE) row. The
 window it asks for is stood in for by this page, which loads the address A asks for (this page, ?p2=1, the mode and the pair
 code) into copy C below, so the popup blocker does not decide the test; C is otherwise the real player 2 window, on the
@@ -50,6 +50,10 @@ within 16 units of where A stands, and A must draw C. Then A abandons: in this s
 down) and C must stop drawing A within 3 s. Both come back down before the party ends. Only two real PCs can show the raid
 word and the fast channel over a home router, the frame rate of two raids on two PCs, and whether the fingerprint holds across
 two different browsers.</p>
+<p class="dim">Build 7, one set of enemies run by the host (check 15.80), is the enemy step inside RUN RAID, right after both copies are up
+top: the body nearest player A in copy A (every body carries the number it was given at the build, the same on both copies)
+must be held by copy C within 500 ms within 16 units of where A runs it, and after 2 s of frames both copies must still agree
+on that body within 24 units. Copy A must say it runs its bodies for the party and copy C that it watches the host run them.</p>
 <div>
   <button id="run" disabled>RUN</button>
   <button id="runsame" disabled>RUN SAME MACHINE</button>
@@ -388,6 +392,31 @@ two different browsers.</p>
     try{ A.__topClear(); C.__topClear(); }catch(e){}
     try{ if(A.__hubEnter) A.__hubEnter(); if(C.__hubEnter) C.__hubEnter(); }catch(e){}
   }
+  // BUILD 7: ONE SET OF ENEMIES. Right after both are up top, the body nearest player A in copy A must be held by copy C within
+  // 500 ms within 16 units of where A runs it (its number is the same on both copies, given at the build in list order), and
+  // after 2 s of frames both copies must still agree on it within 24 units.
+  function entOf(f,id){ var v=W(f).__net.ents(), i; for(i=0;i<v.list.length;i++) if(v.list[i].id===id) return v.list[i]; return null; }
+  function entStep(A,C,bad,rep){
+    if(typeof A.__net.ents!=='function'||typeof C.__net.ents!=='function'){ bad.push('this fixture has no enemy view in its net handle (a build before v15.80), so the enemy step cannot run'); return Promise.resolve(); }
+    var ea=A.__net.ents(), ec=C.__net.ents(), me=A.__net.up().me, near=null, nd=1e9, i, d, t0=Date.now();
+    for(i=0;i<ea.list.length;i++){ if(!ea.list[i].id) continue; d=gap(ea.list[i],me); if(d<nd){ nd=d; near=ea.list[i]; } }
+    log('enemies: A runs '+ea.n+' bodies ('+ea.numbered+' numbered, runs them for the party: '+ea.host+'); C holds '+ec.n+' ('+ec.numbered+' numbered, watches the host: '+ec.peer+')');
+    if(!ea.host) bad.push('enemies: copy A does not run its bodies for the party');
+    if(!ec.peer) bad.push('enemies: copy C does not watch the host run its bodies');
+    if(!near){ bad.push('enemies: copy A runs no numbered body'); return Promise.resolve(); }
+    log('enemies: the body nearest A is number '+near.id+' ('+near.k+(near.name?(' '+near.name):'')+') at '+xy(near)+', '+Math.round(nd)+' units off');
+    return wait(function(){ var c=entOf(fc,near.id), a=entOf(fa,near.id); return (c&&a&&gap(c,a)<=16)?{c:c,a:a}:null; },500,'copy C to hold the body nearest A within 16 units of where A runs it').then(function(o){
+      rep.entMs=Date.now()-t0; rep.entGap=Math.round(gap(o.c,o.a)*10)/10;
+      log('enemies: C holds number '+near.id+' at '+xy(o.c)+' against A at '+xy(o.a)+', '+rep.entGap+' units off, '+rep.entMs+' ms after both were up top');
+      return sleep(2000);
+    },function(e){ var c=entOf(fc,near.id), a=entOf(fa,near.id); throw new Error(e.message+' (C holds it at '+xy(c)+', A runs it at '+xy(a)+')'); }).then(function(){
+      var c=entOf(fc,near.id), a=entOf(fa,near.id), d2=gap(c,a);
+      rep.entGap2=(d2>=0)?Math.round(d2*10)/10:null;
+      log('enemies: 2 s later C holds number '+near.id+' at '+xy(c)+' against A at '+xy(a)+(d2>=0?(', '+d2.toFixed(1)+' units off'):''));
+      if(!c||!a) bad.push('enemies: 2 s later one copy no longer holds body '+near.id+' (A '+!!a+', C '+!!c+')');
+      else if(d2>24) bad.push('enemies: 2 s later the copies disagree on body '+near.id+' by '+d2.toFixed(1)+' units (the limit is 24)');
+    });
+  }
   function raidStep(A,C,bad,rep){
     if(typeof A.__net.up!=='function'||typeof C.__net.up!=='function'||typeof A.__endRaid!=='function'||typeof A.__deploy!=='function'){
       bad.push('this fixture has no up top view in its net handle (a build before v15.79), so the raid step cannot run');
@@ -418,8 +447,11 @@ two different browsers.</p>
       rep.raidMs=Date.now()-t0;
       log('raid: C is up top '+rep.raidMs+' ms after A ascended, seed '+uc.seed+', fingerprint '+JSON.stringify(uc.fp)+'; C PARTY status: '+(st(fc).status||'')+' '+(st(fc).err||''));
       if(!uc.fp||!ua.fp||uc.fp.h!==ua.fp.h||uc.fp.e!==ua.fp.e||uc.fp.c!==ua.fp.c||uc.fp.w!==ua.fp.w||uc.fp.wx!==ua.fp.wx) bad.push('raid: the fingerprints differ (A '+JSON.stringify(ua.fp)+', C '+JSON.stringify(uc.fp)+')');
-      a0=A.__net.up().me;
-      return hold(fa,'KeyW','w',300);
+      // BUILD 7: the enemies, before A walks. A failure here is written down and the step goes on.
+      return entStep(A,C,bad,rep).then(null,function(e){ bad.push('enemies: '+e.message); }).then(function(){
+        a0=A.__net.up().me;
+        return hold(fa,'KeyW','w',300);
+      });
     },function(e){ var uc=C.__net.up(); throw new Error(e.message+' (C up top '+uc.on+', seed '+uc.seed+', C PARTY status: '+(st(fc).status||'')+' '+(st(fc).err||'')+')'); }).then(function(){
       var m=gap(A.__net.up().me,a0);
       if(m<8){ log('W moved copy A '+m.toFixed(1)+' units up top (a wall in the way?), so S is held instead'); used='S'; return hold(fa,'KeyS','s',300); }
@@ -460,7 +492,7 @@ two different browsers.</p>
       try{ delete A.open; }catch(e){}
       try{ A.__net.reset(); if(C&&C.__net) C.__net.reset(); }catch(e){}
       var pass=!bad.length;
-      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200), C heard A switch its sound in '+(rep.sndMs===undefined?'?':rep.sndMs)+' ms (limit 200), C went up top '+(rep.raidMs===undefined?'?':rep.raidMs)+' ms after A (limit 5000), A walked '+(rep.raidWalked===undefined?'?':rep.raidWalked)+' units up top and C drew it '+((rep.raidGap===undefined||rep.raidGap===null)?'?':rep.raidGap)+' units off (limit 16)'+(pass?'':('; '+bad.join('; ')));
+      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200), C heard A switch its sound in '+(rep.sndMs===undefined?'?':rep.sndMs)+' ms (limit 200), C went up top '+(rep.raidMs===undefined?'?':rep.raidMs)+' ms after A (limit 5000), A walked '+(rep.raidWalked===undefined?'?':rep.raidWalked)+' units up top and C drew it '+((rep.raidGap===undefined||rep.raidGap===null)?'?':rep.raidGap)+' units off (limit 16), the body nearest A was held by C in '+(rep.entMs===undefined?'?':rep.entMs)+' ms (limit 500) '+(rep.entGap===undefined?'?':rep.entGap)+' units off (limit 16) and '+((rep.entGap2===undefined||rep.entGap2===null)?'?':rep.entGap2)+' units off after 2 s (limit 24)'+(pass?'':('; '+bad.join('; ')));
       resEl.className=pass?'ok':'bad'; resEl.textContent=line; log(line);
       document.title=(pass?'PASS':'FAIL')+' net test';
       window.__NETTEST_SAME={pass:pass,bad:bad,rep:rep,line:line};

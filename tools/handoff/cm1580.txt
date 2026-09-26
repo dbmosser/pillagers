@@ -1,0 +1,28 @@
+v15.80: one set of enemies, run by the host, seen and felt by everyone
+
+Multiplayer phase 2, build 2. Up top the host runs every pillager and
+machine and the linked windows watch. Every body is numbered at the
+build, in list order, on every window alike, so one number names one
+body everywhere. Ten times a second the host sends where every body near
+any player stands on the fast channel, and tells the party at once on the
+reliable channel about a body that arrived or left, with the kill
+credited to the seat that made it. A linked window runs no pillager or
+machine of its own: it slides each body to where the host put it, makes
+and names one it has never seen, and takes a body off when the host says
+it is gone or after three seconds of silence. On the host every body
+picks the nearest player, the host player or one of the party up top, a
+standing man before a downed one, in updateEnts, navSeek, feudEngage and
+the wave spawn. A blow on one of the party (a bite, an enemy round, a
+pillager charge, a Howler shell, a bolt) is a hit word to his window,
+taken through his own damagePlayer, so the host never touches his health.
+No team damage anywhere: player rounds, fists and charges test the bodies
+only, never the party. A round, blade or charge from one of the party on
+a body is a request the host applies, with the kill credited back as a
+word. Loot, searching, revives, extraction, the clock and the weather stay
+with each window in this slice. Solo play is untouched: every call is
+behind NET.on and the seed 4242 fingerprint has no way to move. The live
+test is the enemy step of RUN RAID in tools/nettest.html.
+
+Check 15.80. Fails on v15.79.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
