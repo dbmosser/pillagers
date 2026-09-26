@@ -40024,6 +40024,56 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.97 - YOUR RIVAL IS ALWAYS A PILLAGER, NEVER THE IMPORTED FRIEND
+
+Ghost audit finding (MEDIUM), entry 5 of the confirmed list.
+
+In the Mainframe he IMPORTs A FRIEND from a run report; applyGhost dresses one pillager as that friend at every raid build and, since
+v13.93, keys the body as ghost_<tag> (e.ident='ghost_'+String(P.ghost.tag).slice(0,24)) so the ledger writes for killing, reviving
+or shooting him land on him and not on the pillager whose body he took. The death path (rr2=idRec(e.ident); rr2.kills++) and the
+linked-window kill path have no friend guard, so each kill of the friend climbs P.rivals['ghost_<tag>'].kills, and rivalsForCode
+carries any non-zero record through a restore code, so the record persists. myRival walks every key of P.rivals with a strict f>bs
+from bs=1, so two kills on the friend made 'ghost_<tag>' the answer whenever that count beat every pillager's. Its only consumer is
+mkRaider's rival:(!simBuild&&ident.id===myRival())?1:0, and ident only ever comes from IDENTITIES or the suffixed clones buildRaid
+and the waves make from it; no id begins ghost_, and applyGhost only re-dresses a body after the roll (and sets e.rival=0 on it). So
+no body on any map could match: the star on the pillager board vanished, the 'YOUR RIVAL is out here' line after the drop never
+played, G.tel.rivalMet was never set and rivalMet:1 dropped out of the run report line. A player who had a rival at two kills lost
+him the moment the friend's count passed it, and got him back only by out-killing his own friend. The v13.93 note wants the kill on
+the friend's own record, so the exclusion belongs in the chooser, not the ledger. Not balance, not a TXSHIP key, no player text
+moves.
+
+THE BUILD. One edit, the finding's fix as written (the verdict corrected nothing): in myRival's loop a key that begins ghost_ is
+skipped before its count is read. The friend's record stays on the ledger as v13.93 wanted, still travels in a restore code, and
+never wins the choice. With only the friend on the ledger myRival returns null, nobody, rather than a key no body carries, so the
+board, the warning and the report all read as no rival, which is the truth. No number, dial, loot table or seeded draw moved:
+myRival draws nothing, and mkRaider draws its rolls unconditionally before the rival field is read, so the seed 4242 fingerprint in
+__verifySafe cannot move. No player text was added or reworded. His rulings are untouched.
+
+MEASURED. Check 15.97 snapshots P.rivals as JSON and the seeded stream state (RNGS), takes real=IDENTITIES[0], and stages records
+that no play could produce (a friend tagged ZQXFRIEND). CONTROL: the pillager at two kills alone: myRival() is real.id, else SKIP;
+and a body built for him by mkRaider(100,100,real,false), the same call buildRaid makes for every stranger and with the same
+simBuild false, carries rival 1, else SKIP (the world path reads the choice at build; the body is never pushed anywhere). ARM A:
+the pillager at two kills beside the friend's record at three: myRival() must be real.id (on v15.96 it is ghost_ZQXFRIEND, the
+finding's own reason, fails) and a body built for him must carry rival 1 (on v15.96 it is 0, fails). ARM B: only the friend's record
+on the ledger, at three kills: myRival() must be null (on v15.96 it is the ghost key, fails). In finally P.rivals goes back from the
+snapshot with saveProfile, and RNGS is put back so a raid live during the run keeps its stream. mkRaider reads nothing from G, so
+the check needs no raid; older checks (the plate check, the floor check) already call it directly the same way. The paper arms
+were also run in JScript against the old and the patched loop: v15.96 answers ghost_ZQXFRIEND on arm A and arm B, v15.97 answers
+the pillager and null.
+
+Older fixture checks: none restaged. 13.94 stages IDENTITIES ids only; 13.93 counts kills on IDENTITIES only and the friend's own
+record still takes the kill as before; 15.96 stages a record keyed zqxfriendly, not a ghost_ key; the restore code checks stage zqx
+keys with no ghost_ prefix. No check asserts that a ghost_ key is ever the rival.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (v15.82 in the working copy, the version line, the
+DEVNOW now line and the fixture's top entry faked to 15.96 so the chain anchors can be tried): p1597 printed OK, 2 edits applied
+plus DEVNOW, every anchor a whole line block matching once; f1597 printed OK, 1 edit. The patched myRival and the new check entry
+each parse in JScript (cscript). One now line remains. The new now line holds no apostrophe. Both scripts are ASCII only. Anchors
+used: the two lines for(var id in (P.rivals||{})){ and var r=P.rivals[id],f=(r.kills||0); with its v13.94 comment, at the top of
+myRival's loop (once); var VER='15.96'; and the now:'v15.96: line, both written by p1596. p1592, p1593 and p1596 touch neither
+myRival nor P.rivals.
+
+Not verified: the check has not been run in a browser; a friend killed twice by hand and the board star on the raid after.
 ## v15.96 - A RESTORE CODE CARRIES THE IMPORTED FRIEND
 
 Ghost audit finding (MEDIUM), entry 4 of the confirmed list.
