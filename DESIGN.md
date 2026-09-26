@@ -40024,6 +40024,36 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.14 - THE HOST SPECTATES
+
+His ruling of 2026-09-26, replacing the v15.91 behaviour for the host's own extraction, death or abandon.
+
+The host window runs the pillagers, the machines and the boxes for the party, so from v15.91 the host extracting, dying or
+abandoning ended every friend up top as ABANDON, and they came back with nothing. Asked, he chose spectator.
+
+THE BUILD. When the host run ends (endRaid) with a friend up top on the party seed, netSpecStart keeps the raid world
+(NET.specG) and the host run ends for the host as always (his card, his save). netSpecTick runs that world every frame whatever
+the host window shows (the run card, the Undercroft): the clock, updateEnts, the bullets and throwables, and the words out to
+the party (bodies, boxes, and the world word without the rings, which each friend runs himself, since the ring timers live in
+each player's extraction step). The host is marked specOut and is nobody's target (netTargetFor, netNearDist, netPlayersList).
+Every word that comes in is handled against that world (netOnMsg wraps netOnMsg0), so shots, searches, pick-ups and beacons go
+on working; the world makes no sound in the host window (sfx returns while it steps). The party is told spec, not out, so no
+friend is ended; a friend is told Your host is out. The raid runs on until you are out. It stops when no friend has been up top
+for a second and a half (out, dead, abandoned or gone), and then the party is told out as before and the host's PARTY window
+says Your party is back down. The raid is over. The host cannot go up again meanwhile (netGuestHeld says The lift waits until
+they are out). The host ending the party or losing the link still ends every friend as ABANDON (his ruling of 2026-09-25). The
+what is new card now says so. Solo play never reaches any of it; no number moved; no seeded draw added by the net code (the
+world it keeps running draws as the raid always did).
+
+MEASURED. Check 16.14: with nobody up top the host ending tells out at once (control); with a friend up top the host
+extracting keeps the raid, tells spec and not out, runs the world on with the host back in the Undercroft, targets the friend
+and not the host, calls a beacon the friend asks for, holds the host at the lift, and once the friend is gone ends and tells
+out; a friend told spec runs on. Passes twice; fails on v16.13. Checks 15.79, 15.80, 15.91, 16.04 to 16.07, 16.11 to 16.13 pass.
+Live: nettest RUN SAME MACHINE, its last step rewritten for the ruling, passes (C keeps playing when A abandons and is told the
+host is out; A stops spectating once C abandons).
+
+Not verified: two real PCs; the host's frame rate while the Undercroft and the raid both run.
+
 ## v16.13 - THREE BACKCHECK FIXES: THE RESTORED TALLY, A FRIEND'S KILL, A FRIEND'S BEACON
 
 1. THE RESTORED TALLY (v15.88). A restore code with no tally (any code from before v15.88, or from a character who had not

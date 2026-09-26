@@ -46,9 +46,7 @@ construction), so the switch is read there and the master gain only where a cont
 copy A ascends through the real sector page path (the lift station fired from the handle, ASCEND TO THIS SECTOR, MY LOADOUT;
 __deploy on sector 0 at seed 4242 when the station cannot be fired), copy C must be up top within 5 s on the same seed with
 the same fingerprint, A walks on a real W held on its own window (S if a wall stops W) and 300 ms after it stops C must draw A
-within 16 units of where A stands, and A must draw C. Then A abandons: from build 8 (v15.91) C's raid must end as ABANDONED
-within 2 s with the host left line on its run card, his ruling (before that slice C's raid went on and C only stopped drawing
-A). Both come back down before the party ends. Only two real PCs can show the raid word and the fast channel over a home
+within 16 units of where A stands, and A must draw C. Then A abandons: from v16.14 A spectates (his ruling), so C must keep playing and be told the host is out, and once C abandons A must stop spectating within 3 s. Both come back down before the party ends. Only two real PCs can show the raid word and the fast channel over a home
 router, the frame rate of two raids on two PCs, and whether the fingerprint holds across two different browsers.</p>
 <p class="dim">Build 7, one set of enemies run by the host (check 15.80), is the enemy step inside RUN RAID, right after both copies are up
 top: the body nearest player A in copy A (every body carries the number it was given at the build, the same on both copies)
@@ -59,8 +57,7 @@ after the enemy step: copy C is stood beside the nearest unopened box it holds (
 build, the same on both copies; the stand is a test only teleport on the net handle) and holds E for real on its own window for
 the time the box takes. The loot must land in C's own backpack, on its own raid on the player 2 save, one item at a time as the
 bar fills, and both copies must draw that box searched, with the last item in C, within 500 ms of each other; A's own backpack
-must not gain. Copy A must say it owns the boxes for the party and copy C that it searches through the host. Then A abandons and
-C must end as ABANDONED within 2 s with the host left line on its run card.</p>
+must not gain. Copy A must say it owns the boxes for the party and copy C that it searches through the host. Then A abandons: from v16.14 A spectates (his ruling), so C must keep playing and be told the host is out, and once C abandons A must stop spectating within 3 s.</p>
 <div>
   <button id="run" disabled>RUN</button>
   <button id="runsame" disabled>RUN SAME MACHINE</button>
@@ -546,15 +543,21 @@ C must end as ABANDONED within 2 s with the host left line on its run card.</p>
         if(!w||!w.shown||dc>16) bad.push('raid: copy A does not draw copy C where it stands up top ('+(w?(dc.toFixed(1)+' units off'):'not drawn')+')');
       });
     }).then(function(){
-      // BUILD 8: A abandons, and C must end as ABANDONED within 2 s with the host left line on its run card (his ruling: the
-      // host leaving counts as abandon for everyone; before v15.91 C's raid went on and C only stopped drawing A).
+      // BUILD 8, v16.14 (his ruling of 2026-09-26: the host spectates): A abandons with C up top, so A keeps the raid running.
+      // C must NOT be ended, must be told the host is out and must stop drawing A; then C abandons, and A must stop spectating
+      // (its PARTY status says the party is back down) within 3 s. Before v16.14 C was ended as ABANDONED here (v15.91).
       var tq=Date.now();
       A.__endRaid('abandon'); try{ A.__topClear(); }catch(e){}
-      return wait(function(){ var u=C.__net.up(), t=el(fc,'oc_title'), s=el(fc,'oc_sub'); return (u.over&&t&&t.textContent==='ABANDONED'&&s&&(/HOST/).test(s.textContent))?s.textContent:null; },2000,'copy C to end as ABANDONED with the host left line after A abandoned').then(function(line){
-        rep.hostLeftMs=Date.now()-tq;
-        log('raid: A abandoned; C ended as ABANDONED '+rep.hostLeftMs+' ms later with the line: '+line+'; C PARTY status: '+(st(fc).status||''));
-        var v=upView(fc,sa); if(v&&v.shown) bad.push('raid: C still draws A after both raids ended');
-      },function(e){ var u=C.__net.up(); bad.push('raid: '+e.message+' (C up top '+u.on+', over '+u.over+', card title '+(el(fc,'oc_title')?el(fc,'oc_title').textContent:'?')+', line '+(el(fc,'oc_sub')?el(fc,'oc_sub').textContent:'?')+')'); });
+      return sleep(1500).then(function(){
+        var u=C.__net.up(), cs=st(fc).status||'', v=upView(fc,sa);
+        log('raid: A abandoned; 1.5 s later C is up top '+u.on+', over '+u.over+'; C PARTY status: '+cs);
+        if(!u.on||u.over) bad.push('raid: C was ended when A abandoned with C up top; the host should spectate');
+        if(!/host is out/i.test(cs)) bad.push('raid: C was not told the host is out ('+cs+')');
+        if(v&&v.shown) bad.push('raid: C still draws A after A left the surface');
+        C.__endRaid('abandon'); try{ C.__topClear(); }catch(e){}
+        return wait(function(){ return /back down/i.test(st(fa).status||'')?true:null; },3000,'copy A to stop spectating after C abandoned');
+      }).then(function(){ rep.hostLeftMs=Date.now()-tq; log('raid: C abandoned and A stopped spectating; A PARTY status: '+(st(fa).status||'')); },
+        function(e){ bad.push('raid: '+e.message); });
     }).then(function(){ comeDown(A,C); A.__net.open(); C.__net.open(); },function(e){ comeDown(A,C); A.__net.open(); C.__net.open(); throw e; });
   }
   // BUILD 3: THE SAME MACHINE PAIR. Copy A picks 2 PLAYER CO-OP (SAME MACHINE) through its own row. Its window.open is stood in
@@ -570,7 +573,7 @@ C must end as ABANDONED within 2 s with the host left line on its run card.</p>
       try{ delete A.open; }catch(e){}
       try{ A.__net.reset(); if(C&&C.__net) C.__net.reset(); }catch(e){}
       var pass=!bad.length;
-      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200), C heard A switch its sound in '+(rep.sndMs===undefined?'?':rep.sndMs)+' ms (limit 200), C went up top '+(rep.raidMs===undefined?'?':rep.raidMs)+' ms after A (limit 5000), A walked '+(rep.raidWalked===undefined?'?':rep.raidWalked)+' units up top and C drew it '+((rep.raidGap===undefined||rep.raidGap===null)?'?':rep.raidGap)+' units off (limit 16), the body nearest A was held by C in '+(rep.entMs===undefined?'?':rep.entMs)+' ms (limit 500) '+(rep.entGap===undefined?'?':rep.entGap)+' units off (limit 16) and '+((rep.entGap2===undefined||rep.entGap2===null)?'?':rep.entGap2)+' units off after 2 s (limit 24), C searched a box and '+(rep.lootItems===undefined?'?':rep.lootItems)+' items landed in its own backpack with both copies agreeing it is searched within '+(rep.lootMs===undefined?'?':rep.lootMs)+' ms (limit 500), and C ended as abandoned '+(rep.hostLeftMs===undefined?'?':rep.hostLeftMs)+' ms after A left (limit 2000)'+(pass?'':('; '+bad.join('; ')));
+      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200), C heard A switch its sound in '+(rep.sndMs===undefined?'?':rep.sndMs)+' ms (limit 200), C went up top '+(rep.raidMs===undefined?'?':rep.raidMs)+' ms after A (limit 5000), A walked '+(rep.raidWalked===undefined?'?':rep.raidWalked)+' units up top and C drew it '+((rep.raidGap===undefined||rep.raidGap===null)?'?':rep.raidGap)+' units off (limit 16), the body nearest A was held by C in '+(rep.entMs===undefined?'?':rep.entMs)+' ms (limit 500) '+(rep.entGap===undefined?'?':rep.entGap)+' units off (limit 16) and '+((rep.entGap2===undefined||rep.entGap2===null)?'?':rep.entGap2)+' units off after 2 s (limit 24), C searched a box and '+(rep.lootItems===undefined?'?':rep.lootItems)+' items landed in its own backpack with both copies agreeing it is searched within '+(rep.lootMs===undefined?'?':rep.lootMs)+' ms (limit 500), and A spectated until C was out, '+(rep.hostLeftMs===undefined?'?':rep.hostLeftMs)+' ms in all'+(pass?'':('; '+bad.join('; ')));
       resEl.className=pass?'ok':'bad'; resEl.textContent=line; log(line);
       document.title=(pass?'PASS':'FAIL')+' net test';
       window.__NETTEST_SAME={pass:pass,bad:bad,rep:rep,line:line};

@@ -1,0 +1,11 @@
+v16.14: the host spectates
+
+His ruling. When the host extracts, dies or abandons with a friend
+still up top, the host's run ends for the host as always, and the raid
+keeps running in the host's window for the party until the last friend
+is out: enemies, boxes, shots and beacons all keep working, the host
+is nobody's target, and it makes no sound there. The host cannot go up
+again until then. Ending the party or losing the link still ends
+everyone as abandon. The what's new card says so. No number moved.
+
+Check 16.14. Fails on v16.13. Live test updated for the ruling.
