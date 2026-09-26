@@ -1,0 +1,10 @@
+v16.09: voice
+
+Multiplayer, his rulings. Press MIC in the PARTY window (the browser
+asks first, never at load), then hold Y to talk, or pick OPEN MIC; a
+controller player starts on open mic. Every link carries a voice line
+from the start, so no new code is needed. MUTE beside a name silences
+that teammate on this PC. For now the host hears everyone and each
+friend hears the host. No number moved.
+
+Check 16.09. Fails on v16.08. Live voice step in nettest (?voice=1).

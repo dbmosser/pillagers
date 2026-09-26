@@ -224,6 +224,26 @@ C must end as ABANDONED within 2 s with the host left line on its run card.</p>
       });
     }).then(function(){ A.__net.open(); },function(e){ A.__net.open(); throw e; });
   }
+  // v16.09: VOICE, only with ?voice=1 (it asks for a microphone; the cloud runs Chromium with a fake one). A switches its mic on;
+  // B must get A's voice line, play it and take in voice bytes from it; holding Y must open A's mic and letting go shut it. (A
+  // held track is not told apart by bytes here: Chromium's fake mic is a short beep, so the gate is read off A itself.)
+  function voiceStep(A,B,bad){
+    if(!/[?&]voice=1(&|$)/.test(location.search)) return Promise.resolve();
+    if(typeof A.__net.mic!=='function'){ bad.push('voice: this fixture has no voice in its net handle (a build before v16.09)'); return Promise.resolve(); }
+    var e0=0, e1=0, e2=0;
+    return Promise.resolve(A.__net.mic()).then(function(r){
+      if(r!==true) throw new Error('A could not switch its mic on: '+JSON.stringify(r));
+      log('voice: A mic '+JSON.stringify(A.__net.voice())+'; B '+JSON.stringify(B.__net.voice()));
+      return wait(function(){ return B.__net.voice().heard>0?true:null; },5000,'copy B to play the voice of copy A');
+    }).then(function(){ return sleep(1500); }).then(function(){ return B.__net.energy(); }).then(function(e){ e0=e; return sleep(1500); })
+    .then(function(){ return B.__net.energy(); }).then(function(e){ e1=e; return Promise.all([hold(fa,'KeyY','y',1500),sleep(200).then(function(){ var v=A.__net.voice(); if(!v.live) bad.push('voice: holding Y on copy A did not open its mic'); })]); })
+    .then(function(){ return B.__net.energy(); }).then(function(e){ e2=e;
+      var quiet=e1-e0, loud=e2-e1;
+      log('voice: B takes in '+quiet+' voice bytes over 1.5 s with Y up and '+loud+' over 1.5 s with Y held on A');
+      if(!(quiet>500&&loud>500)) bad.push('voice: copy B took in almost no voice from copy A ('+quiet+' bytes with Y up, '+loud+' held): the voice line is not carrying sound');
+      if(A.__net.voice().live) bad.push('voice: copy A mic stayed open after Y was let go');
+    });
+  }
   // After B quits, A takes it off its floor, and B keeps nobody on its own.
   function byeStep(A,B,bad){
     if(typeof A.__net.floor!=='function') return Promise.resolve();
@@ -297,8 +317,8 @@ C must end as ABANDONED within 2 s with the host left line on its run card.</p>
     }).then(function(){
       if(A.__net.rngs()!==rngA0||B.__net.rngs()!==rngB0) bad.push('the seeded stream moved while A walked or the third copy knocked');
       rep.madeA=st(fa).made; rep.madeB=st(fb).made;
-      // BUILD 2: B quits, and A takes it off its floor.
-      return byeStep(A,B,bad).then(null,function(e){ bad.push('bye: '+e.message); });
+      // BUILD 2: B quits, and A takes it off its floor. v16.09: first, with ?voice=1, the voice step.
+      return voiceStep(A,B,bad).then(null,function(e){ bad.push('voice: '+e.message); }).then(function(){ return byeStep(A,B,bad).then(null,function(e){ bad.push('bye: '+e.message); }); });
     }).then(null,function(e){ bad.push(e.message); }).then(function(){
       try{ A.__net.reset(); B.__net.reset(); }catch(e){}
       raw.forEach(function(J){ try{ J.pc.close(); }catch(e){} }); raw=[];

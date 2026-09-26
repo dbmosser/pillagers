@@ -20,7 +20,7 @@ const srv = http.createServer((q, r) => {
 await new Promise(ok => srv.listen(0, '127.0.0.1', ok));
 const base = 'http://127.0.0.1:' + srv.address().port + '/tools/';
 const [cmd, file, a3, a4] = process.argv.slice(2);
-const browser = await pw.chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--autoplay-policy=no-user-gesture-required'] });
+const browser = await pw.chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--autoplay-policy=no-user-gesture-required', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] });
 const page = await (await browser.newContext({ viewport: { width: 1920, height: 1080 } })).newPage();
 page.on('pageerror', e => console.log('pageerror: ' + e.message));
 let ok = false;
@@ -63,12 +63,24 @@ try {
     catch (e) { const pr = await page.evaluate(() => window.__PROG ? { done: __PROG.done, cur: __PROG.cur } : null).catch(() => null); console.log('STUCK at ' + last + ' ' + JSON.stringify(pr)); throw e; }
     const r = await page.evaluate(() => __PROG.res);
     console.log(r.summary); r.fail.forEach(f => console.log('  ' + f.slice(0, 400))); ok = r.pass;
+  } else if (cmd === 'seq') {
+    // one check per evaluate, each with its own time limit, so a stalled check is named and the rest still run
+    await load(file); await page.evaluate(() => __runPrep());
+    const n = await page.evaluate(() => __REGRESS.length), a = +a3 || 0, b = Math.min(a4 === undefined ? n : +a4, n);
+    const fails = []; let skip = 0, ran = 0;
+    for (let i = a; i < b; i++) {
+      const r = await Promise.race([page.evaluate(i => { __topClear(); const t = __REGRESS[i]; let r; try { r = t.run(); } catch (e) { r = 'threw: ' + (e && e.stack || e); } return { v: t.v, r: r ? String(r) : null }; }, i),
+        new Promise(ok => setTimeout(() => ok({ v: '?', r: 'TIMEOUT at index ' + i }), +(process.env.CHECK_MS || 120000)))]);
+      ran++;
+      if (r.r && r.r.startsWith('SKIP: ')) skip++; else if (r.r) { fails.push('v' + r.v + ' [' + i + '] ' + r.r.slice(0, 300)); if (r.r.startsWith('TIMEOUT')) break; }
+    }
+    console.log((fails.length ? 'FAIL x' + fails.length : 'PASS') + ', ' + ran + ' run, ' + skip + ' skipped [' + a + ',' + b + ')'); fails.forEach(f => console.log('  ' + f)); ok = !fails.length;
   } else if (cmd === 'eval') {
     await load(file); const r = await page.evaluate(a3); console.log(typeof r === 'string' ? r : JSON.stringify(r)); ok = true;
   } else if (cmd === 'net') {
     const btn = '#' + (a3 || 'run');
     page.on('popup', p => p.setViewportSize({ width: 1920, height: 1080 }).catch(() => {}));
-    await page.goto(base + 'nettest.html?f=' + encodeURIComponent(file), { waitUntil: 'load' });
+    await page.goto(base + 'nettest.html?f=' + encodeURIComponent(file) + (process.env.NETQ || ''), { waitUntil: 'load' });
     await page.waitForFunction(b => { const e = document.querySelector(b); return e && !e.disabled; }, btn, { timeout: 180000 });
     await page.click(btn);
     await page.waitForFunction(() => /^(PASS|FAIL)/.test(document.title), null, { timeout: 600000, polling: 1000 });

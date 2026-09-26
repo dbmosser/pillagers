@@ -40024,6 +40024,32 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.09 - VOICE
+
+Multiplayer, his rulings of 2026-09-25 (push-to-talk and open mic, per-teammate mute); plan.md build 3 and net.md section 4.
+
+THE BUILD. The PARTY window gains a voice row for a party linked by code: MIC (the microphone is asked for only on this press,
+never at load, with echo cancellation, noise suppression and auto gain) and the mode, HOLD Y TO TALK or OPEN MIC; a window
+with a controller in use starts on open mic, since a pad has no free button. Y has no other use; it is read before anything
+else sees it, never in a text box, and let go on blur or when the page hides. Every link carries one audio line from the
+moment it is made (the host adds it in netPeerNew, the joiner takes it in netJoin), so the mic switched on later goes down
+every link with no new code (voiceSend); a link made after the mic is on gets it when its channel opens. What arrives plays
+through a muted audio element (Chromium feeds Web Audio silence without one) into a context of the voice's own (VAC, taken
+from the constructor as the page loaded it), so the game muting its own sound when the page hides never cuts a friend off.
+MUTE beside each name in the roster sets that voice to nothing on this PC only, kept in the save as P.netMute by player id.
+Leaving the party lets the microphone go. In this first version the host hears everyone and each friend hears the host;
+friends in a party of three or four do not yet hear each other (the host must relay). Solo play never touches any of it.
+
+The invite code grows from about 570 to about 1,100 characters with the audio line in it: still one paste.
+
+MEASURED. Check 16.09: the mic was never asked for before MIC; MIC asks once and sends the track down the link; with HOLD Y
+the track is live only while Y is held and shuts on blur; OPEN MIC keeps it live; MUTE and UNMUTE set the voice to 0 and 1;
+off lets the mic go; alone, Y does nothing. Passes twice; fails on v16.08. Live, two real WebRTC windows in the cloud
+(nettest.html RUN with ?voice=1 and Chromium's fake microphone): B gets A's voice line, plays it and takes in about 2.7 KB of
+voice every 1.5 s; holding Y opens A's mic and letting go shuts it. RUN SAME MACHINE still passes.
+
+Not verified: real voices on two PCs, echo without a headset.
+
 ## v16.08 - THE PARTY ON THE SECTOR MAP
 
 Multiplayer, plan phase 4 (map dots). The sector map drew only you, so a teammate out of sight was nowhere on it, and one who
