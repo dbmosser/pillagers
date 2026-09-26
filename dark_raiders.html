@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.97';
+var VER='15.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30898,7 +30898,17 @@ function applyGhost(){
     // v13.93, contracts audit: the ghost's own identity, keyed outside IDENTITIES, so the ledger writes
     // for killing, reviving or shooting him land on him and not on the pillager whose body he took.
     e.ident='ghost_'+String(P.ghost.tag).slice(0,24); e.rival=0;
-    e.hostile=false; e.friendlyPC=1; e.grudge=false;
+    // v15.98, ghost audit finding: THE IMPORTED FRIEND REMEMBERS WHAT YOU DID TO HIM. The three ledger writers (the death path,
+    // the revive and the friendly-shot flip) key on e.ident, so since v13.93 they land on this ghost_ record, and the game says
+    // he will remember that; but nothing ever read the record back. The line below used to set him friendly with no grudge
+    // every raid, and e.standing stayed as mkRaider rolled it from the BODY's own identity, so a friend you killed walked up
+    // again with the FRIENDLY plate and nodded at you or watched you by a stranger's standing. His record is now read the way
+    // mkRaider reads a pillager's: a kill on it makes him hostile with a grudge, shoot on sight the way a parleyed man you
+    // killed is, and his own standing drives the nods at you line; with no kill he is friendly as before. idRec draws nothing
+    // from the seeded stream and applyGhost bails on G.sim, so the map fingerprint is untouched. No number moved.
+    var _gr=idRec(e.ident); e.standing=_gr.standing||0;
+    if(_gr.kills>0){ e.hostile=true; e.grudge=true; e.friendlyPC=0; }
+    else { e.hostile=false; e.friendlyPC=1; e.grudge=false; }
     // v12.55, 2026-09-07 audit: THE RANGE COMES WITH THE GUN. A gun, its damage
     // and its engagement range are one thing in three fields, and both other
     // re-gun paths move all three with the same 580 cap; this one moved only the
@@ -31067,7 +31077,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.97: YOUR RIVAL IS ALWAYS A PILLAGER, NEVER THE IMPORTED FRIEND. Killing the friend imported from a run report twice put their record ahead of every pillager on the ledger, and from then on no pillager wore the rival star, the rival warning never played and the run report lost its rival line. The rival is now chosen among the pillagers alone and the friend keeps their own record. Check 15.97 puts the friend record at three kills beside a pillager at two and asks who the rival is and whether a body built for that pillager gets the mark; it fails on v15.96',
+  now:'v15.98: THE IMPORTED FRIEND REMEMBERS WHAT YOU DID TO HIM. Killing the friend imported from a run report wrote a kill on his own record and the game said he will remember that, but every raid after built him friendly again with the FRIENDLY plate, and his nod or his watching came from the standing of the pillager whose body he took. His own record is now read when the raid is built: a kill on it makes him hostile with a grudge, and his standing is his own, while with no kill he is friendly as before. Check 15.98 stages his record at one kill, at a revive with no kill, and at nothing, and builds a raid on each; it fails on v15.97',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

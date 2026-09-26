@@ -40024,6 +40024,70 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.98 - THE IMPORTED FRIEND REMEMBERS WHAT YOU DID TO HIM
+
+Ghost audit finding (LOW), entry 6 of the confirmed list.
+
+In the Mainframe he IMPORTs A FRIEND from a run report; applyGhost dresses one pillager as that friend at every raid build and, since
+v13.93, keys the body as ghost_<tag> (e.ident='ghost_'+String(P.ghost.tag).slice(0,24)) so the ledger writes land on him and not on
+the pillager whose body he took. Three writers key on e.ident: the death path (rr2=idRec(e.ident); rr2.kills++; standing-2; met++;
+sayWhenFree '<name> will remember that.'), the same in the linked-window kill path, the revive (rrv.standing+3; met++; say '<name>
+is back on his feet. He will remember that.') and the friendly-shot flip (rb.standing=Math.min(rb.standing-3,-1)). Nothing read the
+record back. mkRaider builds the body from the BODY's own identity (rec=idRec(ident.id); grudge:rec.kills>0, standing:rec.standing,
+hostile from kills, standing and the roll), then applyGhost set e.hostile=false, e.friendlyPC=1, e.grudge=false unconditionally and
+never opened idRec('ghost_<tag>'). So a friend you killed came up in the next raid with the [FRIENDLY] plate (the plate reads
+friendlyPC), the parley loop skipped him, the friendly-shot flip guarded him, and the line at 180 units said he nods at you or is
+watching you by e.standing, which was a stranger's. The revive's +3 was likewise written and never read. The v3.83 rule in DESIGN.md
+is friendly the way a parleyed raider is friendly, and a parleyed man you killed is shoot on sight next run (mkRaider gives any
+identity with a kill hostile true and grudge true; the parley refuses on e.grudge); the v13.93 note wanted the writes to land on him
+so they would count. Not balance, not a TXSHIP key, no player text moves.
+
+THE BUILD. One edit in applyGhost, the finding's fix as written (the verdict corrected nothing): after e.ident and e.rival are set,
+var _gr=idRec(e.ident) reads his own record and e.standing=_gr.standing||0 carries his standing; with _gr.kills>0 he is built
+hostile=true, grudge=true, friendlyPC=0, the pair mkRaider gives any identity with a kill on it; otherwise the old line stands, friendly
+with no grudge. The revive still flips a hostile friend friendly for the raid he is revived in and writes +3, and the next build reads
+the kill again, exactly as it does for a pillager. A shot on him without a kill leaves standing -3 and kills 0, so he stays friendly
+but watches you rather than nodding, which is what mkRaider does with negative standing and no kill; the verdict leaves that as his
+call and this build does not go further. No number, dial, loot table or seeded draw moved: idRec draws nothing, applyGhost runs after
+buildRaid and bails on G.sim, and no entity is added or removed, so the seed 4242 fingerprint in __verifySafe (ents 85/374, containers
+165/593) cannot move. No player text was added or reworded. His rulings are untouched.
+
+MEASURED. Check 15.98 clears the card, CFG and profile, snapshots the profile as JSON and keeps P.ghost, then builds one live raid per
+arm through build(rec): any live raid abandoned, __topClear, __runPrep, __resetCfg, __pinDefaults(0), __cleanProfile, P.ghost set to
+a friend called ZQXFRIEND (Scav Pistol, 4 runs, 25 percent), P.rivals cleared and the one record staged at ghost_ZQXFRIEND, then
+__deploy({kit:[],safe:null,mapIx:0,seed:4242}), the same play path 13.93 and 15.16 use, which runs applyGhost inside __startRaid; the
+friend is found by e.ghost (applyGhost called once more if the deploy left none), and his ident, hostile, friendlyPC, grudge and
+standing are read as the build left them, before any frame runs. CONTROL: with no record he is keyed ghost_ZQXFRIEND (else SKIP: the
+staged record would not be the one his writes land on) and is friendlyPC 1, grudge false, hostile false (else SKIP: the import path
+cannot be read), on either build. ARM A: the record as the death path leaves it after one kill, kills 1, met 1, standing -2. CONTROL:
+the record is still on the ledger with kills 1 after the build, else SKIP. He must be hostile true, friendlyPC 0, grudge true (on
+v15.97 he is hostile false, friendlyPC 1, grudge false, the finding's own reason, fails) and standing -2 (on v15.97 it is 0, the
+cleared body record, fails). ARM B: the record as the revive leaves it, kills 0, met 1, standing 3: he must be friendlyPC 1, grudge
+false, hostile false (both builds) and standing 3 (on v15.97 it is 0, fails). In finally the live raid is abandoned, the snapshot goes
+back through the loader (__applyLoaded), P.ghost is put back, and the card, CFG and profile are cleaned. Coming back empty on abandon
+touches only the fixture profile, which the snapshot replaces.
+
+Older fixture checks: none restaged. 13.93 (kills the friend PROBE_GHOST_NINE) clears P.rivals before its deploy and restores it
+after, so the friend is built with a blank record and friendly as before; 12.55 (GHOST SEVEN) reads only the gun, range and damage;
+15.16 (QX_GHOST_7) deploys with no ghost_ record on the ledger and reads the kit swap; 15.96 stages a friend for a restore code and
+never deploys; 15.97 stages ghost_ZQXFRIEND at three kills for myRival only and restores P.rivals in finally. No check asserts that
+a friend with a kill on his own record is placed friendly. The rival chooser fix in 15.97 skips ghost_ keys, so the record this build
+reads never makes him the rival.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand (v15.84 in the working copy when the run was made,
+a parallel chain landing builds under it; the version line, the DEVNOW now line and the fixture's 15.84 entry faked to 15.95 so the
+chain anchors can be tried): p1596, f1596, p1597 and f1597 applied in version order, then p1598 and f1598, every script printing OK
+and every anchor a whole line block matching once (p1598: 2 edits plus DEVNOW; f1598: 1 edit). The patched applyGhost and the new
+check entry each parse in JScript (cscript). The three arms were also run on paper in JScript against the old and the patched
+applyGhost with a stub idRec and one body: the old one answers friendly, no grudge, standing 0 on every arm; the patched one answers
+hostile, grudge, standing -2 on arm A, friendly, no grudge, standing 3 on arm B, and both answer friendly at standing 0 on the
+control. One now line remains. The new now line holds no apostrophe. All five files are ASCII only and hold none of the retired
+words. Anchors used: the two lines e.ident='ghost_'+String(P.ghost.tag)
+.slice(0,24); e.rival=0; and e.hostile=false; e.friendlyPC=1; e.grudge=false; in applyGhost (once; the revive sets the same three
+fields on downRdr in another order and does not match); var VER='15.97'; and the now:'v15.97: line, both written by p1597; in the
+fixture the line {v:'15.97',what: written by f1597. p1593, p1596, p1597 and p1599 touch neither applyGhost nor mkRaider.
+
+Not verified: the check has not been run in a browser; a friend killed by hand and the raid after, and his nod after a revive.
 ## v15.97 - YOUR RIVAL IS ALWAYS A PILLAGER, NEVER THE IMPORTED FRIEND
 
 Ghost audit finding (MEDIUM), entry 5 of the confirmed list.
