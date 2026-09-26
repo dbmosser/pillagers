@@ -1,0 +1,8 @@
+v15.92: the what is new card is current again
+
+The card stood at 15.81 and said nothing about the shared pillagers. My first
+card line is rewritten in place, keeping the phrases its checks read.
+
+Check 15.92. Fails on v15.91.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

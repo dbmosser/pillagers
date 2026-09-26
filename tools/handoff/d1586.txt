@@ -1,0 +1,58 @@
+## v15.86 - A CONTROLLER CAN CHOOSE A SECTOR
+
+Sector audit finding (HIGH), entry 4 of the confirmed list.
+
+Play with only a controller. Walk to the lift and press A (go up), or press the map button on the floor: both call renderSector()
+and openModal('sectormodal'), and the sector page opens with COLD STORAGE and THE COLD MILE listed, both offered (BETA_ONE_MAP is
+true and both maps carry beta:1). With a panel up, pollPad hands the pad to padMenu, which moves the highlight only between the
+controls padFocusables lists and presses A only as PAD.focus.click(). padFocusables built its list from
+'button,.cell,.vcell,.crow,.invtab,.scard,.vpill,input,select', and renderSector builds each sector card as
+<div class="row sectorpick" data-map=...>: a plain div whose classes match none of those (.crow is a different class). So the
+D-pad and the stick moved only between DAY, NIGHT, the six weather buttons, ASCEND TO THIS SECTOR and CLOSE; the highlight could
+never land on a sector card and A could never press one. The card's onclick is the only thing that sets P.mapIx, so a pad-only
+player always went up to whatever P.mapIx already held, COLD STORAGE on a new profile; THE COLD MILE was unreachable and the
+page's own question, Where are you going?, could not be answered. No comment or ruling says this is deliberate, it is not
+balance, and no TXSHIP key is involved.
+
+THE BUILD. One edit in padFocusables, the finding's own fix: .sectorpick joins the selector list, between .vpill and input, with
+a v15.86 comment at the top of the function. The cards are display:block and visible, pointer-events is never none on them, and
+a div is never disabled, so they pass every filter the function applies; the .padfocus rule is an outline, so it draws on a div;
+A runs the same onclick a mouse click runs (mapOffered, P.mapIx, saveProfile, syncMapBtn, renderSector); and when that click
+rebuilds the cards the v14.22 place keeping in padMenu puts the highlight back on the card at the same place in the list, because
+the cards come first in the panel in document order and their count does not change. The list is scoped to the open panel and
+.sectorpick exists only inside #sectorlist on the sector page, so no other panel gains a control. No word of player text was
+touched, no number, dial, loot table or seeded draw moved; map building is not touched, so the seed 4242 fingerprint in
+__verifySafe (ents 85/374, containers 165/593) cannot move.
+
+MEASURED. Check 15.86 clears the card, runs __runPrep and __cleanProfile, snapshots the profile, sets P.mapIx to 0 and the surface
+to day, and lays the page out through its own renderer and opener, renderSector() and openModal('sectormodal'). CONTROL: the
+sector page is the panel on top (padOpenModal) and it laid out two cards, else SKIP. It stubs navigator.getGamepads with one
+connected 17-button pad, every button up and the sticks at rest, polls once and requires PAD.on. CONTROL: NIGHT, a button on the
+same page, is in padFocusables(sectormodal), which shows the list is live and the page is laid out; else SKIP. CONTROL: the
+highlight put on NIGHT stays through an idle poll, and one A poll (button 0 down, then up) sets P.cond to night, which proves the
+pad A path works on this page; else SKIP. THE FIX, ONE: every laid-out card is in the list (2 of 2). THE FIX, TWO: the highlight
+put on the second card stays through an idle poll, the A poll sets P.mapIx to 1, the rebuilt second card reads ASCENDING HERE and
+the first does not, and KEPT: after the rebuild the highlight is back on the card with data-map 1. On v15.85 no card is in the
+list, the highlight put on the second card is moved back to NIGHT by the next poll, and the A leaves P.mapIx at 0, so the check
+fails for the finding's own reason with three sentences. The needle for the card text is assembled from pieces. In finally the pad
+list is emptied and polled once, the highlight is cleared, padRelease runs, navigator.getGamepads is put back, PAD.aSpent,
+PAD.announced, PAD.focusIx and PAD.focusMd are restored, the page is shut if it was shut before, the profile is restored through
+__applyLoaded (P.mapIx and P.cond with it), renderSector and syncMapBtn redraw from the restored profile, keys are cleared, and
+the card and profile are cleaned.
+
+Older fixture checks: none restaged. No fixture check lists padFocusables on the sector page or polls a pad with it open: the
+checks that call padFocusables look at the title (14.2x and the party rows), the stash screen (15.71), the outcome card (15.57)
+and the Mainframe (15.52); the checks that read the sector page (the loadout question raise, the day and night colours, the
+weather hint, the ESC sweep at 10.0x and the his-wording sweep of the card text) click its buttons directly or read its text and
+never poll a pad. The card text, order and count are unchanged.
+
+Dry run in the scratchpad on copies of dark_raiders.html and mkfixture.ps1 as they stand (v15.81; builds 1582 to 1585 are not on
+disk yet, so the copies were staged to the state the chain will leave: VER and the DEVNOW now line moved to 15.85 and a stub
+15.85 check entry put above 15.81). p1586: OK, 2 edits applied plus DEVNOW, one VER line at 15.86, one now key, the .sectorpick
+selector line once and the old line gone. f1586: OK, 1 edit, the 15.86 entry once above the 15.85 line. mkfixture built a fixture
+from the patched copy and from the control copy. The patched padFocusables and the new check entry parse in JScript (cscript) as
+definitions. Anchors: the two-line block function padFocusables(root){ plus its querySelectorAll line (unique in v15.81);
+var VER='15.85';; the DEVNOW regex ^  now:'v15\.85:.*$; and in mkfixture the line   {v:'15.85',what:. If any of p1582 to p1585
+touches the head of padFocusables, re-check the first anchor.
+
+Not verified: the sector page by hand with a real controller. The check itself has not been run in a browser yet.

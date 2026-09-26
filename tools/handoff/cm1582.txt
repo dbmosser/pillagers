@@ -1,0 +1,11 @@
+v15.82: holding E at the Peddler keeps the stall open
+
+Trade audit finding. Holding E beside the Peddler opened the stall and
+the first key repeat, about half a second later, shut it again with
+nothing said, and it stayed shut until the key was let go. A key repeat
+of E, ESC, TAB, I or B at the open stall now does nothing, and a fresh
+press still closes it and holds the key. The controller is unchanged.
+
+Check 15.82. Fails on v15.81.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

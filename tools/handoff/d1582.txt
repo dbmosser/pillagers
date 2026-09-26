@@ -1,0 +1,45 @@
+## v15.82 - HOLDING E AT THE PEDDLER KEEPS THE STALL OPEN
+
+Trade audit finding (MEDIUM), entry 0 of the confirmed list.
+
+Walk up to the Peddler so the plate reads THE PEDDLER [E] DEAL, and press and hold E, the way the game trains you to for every
+crate search and for HOLD E TO EXTRACT. On the first frame updatePlayer opens the stall (ped, no crate underfoot, keys KeyE,
+no pedLock: G.trade=ped, G.pedLock=1). About half a second later, at the Windows key-repeat delay, the browser sends keydown E
+with repeat true; the window listener has no repeat filter for E and ends in raidKey(e.code,e.repeat,e). The open-stall block
+in raidKey, if(code==='Escape'||code==='KeyE'||code==='Tab'||code==='KeyI'||code==='KeyB'){ G.trade=null; G.pedLock=1;
+return; }, had no repeat test, so the repeat shut the stall, and because E was still down pedLock (cleared only when the key
+is up, updatePlayer) kept it shut. The panel flashed open and vanished with nothing said, and he had to let go and tap E
+again. Every other one-press toggle in raidKey ignores repeats (v15.49), and the Digit line right under this one already
+did. The controller is not affected: pad X calls raidKey('KeyE',false,null) on a fresh press only. Nothing here is a TXSHIP
+key, no comment calls the old behaviour deliberate, and it is not balance.
+
+THE BUILD. One edit in raidKey, the finding's own fix: the closing line reads if(!repeat){ G.trade=null; G.pedLock=1; }
+return;. A key repeat of E, ESC, TAB, I or B at the open stall now returns with no effect, which also keeps it from the
+number row and the preventDefault list below. A fresh E, ESC, I or B still closes the stall and holds the key; a fresh TAB is
+taken earlier by backOut, as before. No number, no dial, no loot table and no word of player text moved, and map building is
+not touched, so the seed 4242 fingerprint in __verifySafe cannot move.
+
+MEASURED. Check 15.82 clears the card and profile, snapshots the profile, deploys at seed 4242 on map 0, clears the keys and
+the open things, empties G.ents and marks every unopened container within 60 units opened (put back in finally), and makes a
+Peddler 40 units to his right. CONTROL: a frame with no key finds the Peddler (G.nearPed) with nothing else claiming E
+(pedBlocked, nearContainer). CONTROL: a frame with E let go then a frame with E held opens the stall (G.trade is the
+Peddler), on either build. THE FIX, ONE: with E still down, raidKey('KeyE',true,null), the repeat as the listener hands it
+over; the stall must still be open, and so must it be a frame later with E still down. On v15.81 the repeat sets G.trade null,
+so the check fails for the finding's own reason. THE FIX, TWO, on the real path: with state raid, the stall reopened the same
+way, a fresh keydown E dispatched at window (repeat false) must close the stall and hold the key (GUARD, and it proves the
+page path reaches the raid keys); the stall reopened again, a keydown E dispatched at window with repeat true must leave it
+open. GUARD: the stall reopened, a fresh raidKey('Escape',false,null) still closes it. Each reopen that cannot happen skips
+while keeping any failure already found. In finally the keys and the mouse are cleared, G.trade, pedLock, nearPed, pedBlocked
+and the search are reset, the shut containers are reopened, G.ents is put back, the player position and iv are put back, the
+raid is abandoned, the profile snapshot is restored through __applyLoaded, and the card, dials and profile are cleaned.
+
+Older fixture checks: none restaged. No check sends a repeat of E, ESC, TAB, I or B with the stall open: the fixture has no
+raidKey('KeyE',true and no keydown with repeat true beside 15.49, which holds ESC and P with G.trade null. The stall checks
+(15.35, 15.36, 15.37) open and close it with held keys through updatePlayer and fresh raidKey presses, which are unchanged.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand at v15.81: p1582 printed OK, 2 edits applied
+plus DEVNOW, and f1582 printed OK, 1 edit; the guard line is in the copy once and the old line is gone, VER is 15.82, one now
+key in DEVNOW, and mkfixture built both the drafted and the control fixture with check 15.82 in them once. The new check and
+the edited raidKey both parse in JScript. Both scripts are ASCII.
+
+Not verified: the stall by hand with a held E; the check has not been run in a browser yet.

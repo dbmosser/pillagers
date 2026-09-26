@@ -1,0 +1,13 @@
+v15.86: a controller can choose a sector
+
+Sector audit finding. With only a controller, the sector page listed
+COLD STORAGE and THE COLD MILE but the highlight could only move between
+DAY, NIGHT, the weather buttons, ASCEND TO THIS SECTOR and CLOSE: the
+sector cards were never in the list of controls the pad can reach, so a
+pad player always went up to the sector already set. The cards are in
+that list now: the highlight lands on either card and A picks it, the
+same as a click, and the highlight stays on that card after the pick.
+
+Check 15.86. Fails on v15.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
