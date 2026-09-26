@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'15.81',what:'the what is new card is current again: its version is within fifteen builds of the build and it names the multiplayer news of v15.79, still opening with the alpha line',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
+     var all=L.join(' ').toUpperCase();
+     var NEWS=['the party ascends together','and sees each other'].join(' ').toUpperCase();
+     if(all.indexOf(NEWS)<0) bad.push('the card does not mention the multiplayer news of v15.79');
+     if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+     return bad.length?bad.join('; '):null; }},
   {v:'15.80',what:'one set of enemies run by the host, seen and felt by everyone: at the build the host numbers its 85 bodies in list order; with one of the party filed up top beside a hostile pillager and the host player far away, a few frames of the real loop post snapshots at ten a second and put that pillager in chase on the party member spot (the field the AI steers by), a host tick posts one snapshot on the fast channel naming that pillager at its rounded place and in chase, with the reach lifted every body fits one packet under the message cap, an enemy round through the real updateBullets on the party member spot posts a hit word to his seat with its damage and its shooter and the host player health is untouched with damagePlayer never called, a host round on that spot posts nothing and hurts nobody (no team damage), a shot request from that seat lowers a crawler by what it says and clears its mark while it stands, a second request that kills it marks the seat, the next frame takes it off the list without counting it for the host, and the next tick posts a gone word and a kill word to that seat; a body pushed mid raid is numbered and told to the party with its name on the next tick and told gone when it leaves; the seeded stream never moves through the ticks and the requests; CONTROL with the party off: no body is numbered, a tick posts nothing, and the bodies move on their own over six frames; THE LINKED WINDOW up top on the host word numbers the same bodies the same way, its own updateEnts moves none of them over six frames, a first snapshot puts a crawler where the host says at once and in chase, a second slides it there over six frames while the others stand still, an older snapshot and one from another seed are dropped, a new word makes a named sentry with its health, a snapshot row for a body never seen makes it on the spot, a gone word takes a body off the list and the map and a late packet from before it does not bring the body back, an out word marks a pillager extracted on the board, a hit word lowers this player through its own damagePlayer and one for another seat does not, its own round on a crawler posts a shot request with the damage it worked out and leaves the crawler untouched here, and a kill word counts the crawler on its own run (multiplayer phase 2 build 2)',
    run:function(){
      // THE SHARED ENEMIES ARE THERE. Without them each window runs its own, so the old build fails here rather than skips.

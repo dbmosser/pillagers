@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.80';
+var VER='15.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1435,11 +1435,11 @@ var VER='15.80';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='15.72';
+var WHATSNEW_VER='15.81';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'CROUCHING, DRAGGING AND THE END OF RAID CARD. A controller leaves the end of raid card with B, ESC and TAB close it too, and C crouches even with Shift held when you are out of breath. Letting a dragged stack go on its own cell moves nothing. Holding ESC or P no longer flickers the pause box, a pillager grenade sounds where it lands, and only a Medkit takes you past 85.',
+  'TWO PLAYERS ON ONE PC, AND CROUCHING. The title opens on a mode menu: 2 PLAYER CO-OP (SAME MACHINE) opens a second window for your other screen, pairs it by itself, gives each window its own controller and plays sound from one, and the party ascends together and sees each other up top. C crouches even with Shift held when you are out of breath, a controller leaves the end of raid card with B, holding ESC or P no longer flickers the pause box, a pillager grenade sounds where it lands, and only a Medkit takes you past 85.',
   'GRENADES, BELT KEYS, STASH, WARDROBE, SAVES AND STORMS. A cooked Frag Charge keeps burning through a roll, a heal on a key no longer stops Medical using your other heals, and a controller packs from the stash with A. SURPRISE ME takes a worn suit off, erasing a save erases its UNDO copy, and lightning no longer hits you through a wall. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
   'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
@@ -30918,7 +30918,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.80: ONE SET OF ENEMIES, RUN BY THE HOST, SEEN AND FELT BY EVERYONE. Multiplayer phase 2 build 2. Up top the host runs every pillager and machine and the linked windows watch: every body is numbered at the build, in list order, on every window alike; ten times a second the host sends where every body near any player stands on the fast channel, and tells the party at once on the reliable channel about a body that arrived or left; a linked window runs no pillager or machine of its own and slides each body to where the host put it, made and named on first sight if it arrived later. Every body picks the nearest player, the host player or one of the party up top, a standing man before a downed one; a blow on one of the party is a hit word to his window, taken through his own damagePlayer, so the host never touches his health; no team damage anywhere. A round, blade or charge from one of the party on a body is a request the host applies, with the kill credited to that seat as a word back. Loot, searching, revives, extraction, the clock and the weather stay with each window in this slice. Solo play untouched: every call is behind NET.on and the seed 4242 fingerprint has no way to move. Check 15.80 fails on v15.79',
+  now:'v15.81: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 15.72 against 15.80, near its refresh, and the card said nothing about two players on one PC. My first card line is rewritten in place, keeping what checks 15.27, 15.39, 15.51, 15.61 and 15.72 read, and WHATSNEW_VER moves to 15.81. Check 15.81 requires the card current and naming the party ascending together; it fails on v15.80',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

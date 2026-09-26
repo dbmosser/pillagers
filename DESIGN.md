@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.81 - THE WHAT IS NEW CARD IS CURRENT AGAIN
+
+WHATSNEW_VER stood at 15.72 against a build at 15.80, near its refresh, and the card said nothing about two players on one PC:
+the mode menu, the second window, its controller and sound, and the party ascending together (v15.74 to v15.80).
+
+THE BUILD. Only my first card line is rewritten in place. It names the multiplayer news and keeps the crouch, end of raid card,
+pause box, grenade and healing phrases checks 15.72, 15.61, 15.51, 15.39 and 15.27 read. The second card line and every line of
+his are untouched, so the card still holds thirteen lines. Dropped from the card: ESC and TAB on the end of raid card, and the
+dragged stack. WHATSNEW_VER moves to 15.81.
+
+MEASURED. Check 15.81 requires the card within fifteen builds and naming the party ascending together; it fails on v15.80. Every
+card check was run on the dry build.
+
+Not verified: the card read on screen by eye.
 ## v15.80 - ONE SET OF ENEMIES, RUN BY THE HOST, SEEN AND FELT BY EVERYONE
 
 His order of 2026-09-25: native multiplayer, co-op first. This is phase 2, build 2 of tools/multiplayer/plan.md with the corrections
