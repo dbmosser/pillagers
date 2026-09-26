@@ -40024,6 +40024,50 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.93 - THE GAMBLE HISTORY AT WIRT PRINTS WHAT THE ITEM IS WORTH
+
+Credits audit finding (LOW), entry 1 of the confirmed list.
+
+OPTIONS, How much is out there, set to Lean; its own hint promises it moves what everything is WORTH, including the stash you
+have already banked. At Wirt, press Gamble $2,500 and roll, say, a Data Core. The history row under THE GAMBLE read $520. Hover
+the same Data Core in the stash: $364 each; Sell one pays $364 and 364 XP. Rich shows the reverse, $520 in the history against
+$702 everywhere else. renderGamble printed each row with it.val.toLocaleString(), where it=ITEMS[log[i]], the raw table value
+(Data Core val 520). ival(k) is Math.round(ITEMS[k].val*CFG.lootMult), and the OPTIONS row sets lootMult Rich 1.35, Standard 1,
+Lean 0.7; its v8.75 comment says lootMult is read once, inside ival(), and moves what the banked stash sells for. Every sibling
+price surface goes through ival(): the stash hover ($ each), the tag-junk hint, Sell one (P.credits and P.xp both take ival(k)),
+the Peddler price and panel, the shelf line at the Mainframe, the stash canvas hint. This history row was the only display
+reading .val directly. No comment near it, in the gamble button handler or in the v15.03 to v15.05 wirt audit notes calls the
+raw value deliberate; the v15.05 comment right below concerns only the comma on the button. The row is not a TXSHIP key, and it
+is not balance: the value credited on a sale was already ival().
+
+THE BUILD. One edit in renderGamble, the finding's own fix: the row prints '$'+ival(log[i]).toLocaleString(). log and i are
+live on that line and ival returns a rounded number, so toLocaleString is safe. On Standard the two numbers are the same, so
+nothing changes there; on Lean and Rich the history now agrees with the stash hover and with what Sell one pays. No number, no
+dial default, no loot table and no word of player text moved, and map building is not touched, so the seed 4242 fingerprint in
+__verifySafe cannot move.
+
+MEASURED. Check 15.93 clears the card and profile, snapshots the profile and puts one Data Core in P.gambleLog, then draws the
+panel with renderGamble and reads the first row's price span under THE GAMBLE (gamblelist, .row .vl). CONTROL: with
+CFG.lootMult at 1 (Standard) the row reads $520, the table value, on either build, so the row is found and read. Then Lean (0.7)
+and Rich (1.35) in turn: CONTROL: ival('core') is off 520, so the setting moves the price the stash hover and Sell one use; the
+row must read that price. On v15.92 the row reads $520 on both settings while ival says $364 and $702, so the check fails for
+the finding's own reason. Nothing is searched for by text, so no needle can match the fixture's own source. In finally
+CFG.lootMult is put back, the profile snapshot is restored through __applyLoaded, the panel is redrawn, wirtLotTick runs, and
+the card and profile are cleaned.
+
+Older fixture checks: none restaged. No check reads the price on a history row: the fixture has no .vl selector, and the Wirt
+checks (15.05 the button comma, 15.04 the lot purchase not logged, 9.94 the two counters, the list scroll check) count rows or
+read the money line and the lot card, which are unchanged. The lot card's Worth line is drawn by renderWirtLot, not this row.
+
+Dry run on scratch copies of dark_raiders.html and mkfixture.ps1 as they stand at v15.82 (p1582 applied to the live file while
+this was drafted), with the version stamps stood in at 15.92 for the chain: p1593 printed OK, 2 edits applied plus DEVNOW, and
+f1593 printed OK, 1 edit; the new price line is in the copy once and the old it.val line is gone, VER is 15.93, one now key in
+DEVNOW, and mkfixture built both the drafted and the control fixture with check 15.93 in them once. The edited renderGamble and
+the new check both parse in JScript. Both scripts are ASCII with no apostrophe in the DEVNOW line. The anchor block (the
+if(!it) continue line and the two-line row string in renderGamble) matches the live file once and is touched by no p-script of
+this chain; builds 1582 to 1592 touch the Peddler stall keys, the sector page, the run report, doors and the net code.
+
+Not verified: the panel by hand on Lean or Rich; the check has not been run in a browser yet.
 ## v15.92 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 WHATSNEW_VER stood at 15.81 against a build at 15.91, near its refresh, and the card said nothing about the shared pillagers

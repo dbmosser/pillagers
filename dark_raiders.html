@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.92';
+var VER='15.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31041,7 +31041,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.92: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 15.81 against 15.91, near its refresh, and the card said nothing about the shared pillagers. My first card line is rewritten in place, keeping what checks 15.27, 15.39, 15.51, 15.61, 15.72 and 15.81 read, and WHATSNEW_VER moves to 15.92. Check 15.92 requires the card current and naming the shared pillagers; it fails on v15.91',
+  now:'v15.93: THE GAMBLE HISTORY AT WIRT PRINTS WHAT THE ITEM IS WORTH. With How much is out there set to Lean or Rich, each row under THE GAMBLE printed the table value of the rolled item, 520 for a Data Core, while the stash hover and Sell one said 364 or 702. The rows now print the same price every other price surface prints, and on Standard nothing changes. Check 15.93 rolls a Data Core into the history on Lean and Rich and reads its row; it fails on v15.92',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31741,8 +31741,14 @@ function renderGamble(){
   for(var i=0;i<log.length;i++){
     var it=ITEMS[log[i]];
     if(!it) continue;
+    // v15.93, credits audit finding: THE GAMBLE HISTORY AT WIRT PRINTS WHAT THE ITEM IS WORTH. This row printed it.val, the raw
+    // table value, while every other price surface (the stash hover, the tag-junk hint, the Peddler panel, the shelf line at the
+    // Mainframe, and Sell one itself) prints ival(), which is the table value scaled by CFG.lootMult, the OPTIONS row How much is
+    // out there, whose own hint promises it moves what everything is worth. So on Lean a rolled Data Core read $520 here while the
+    // stash hover said $364 each and Sell one paid $364; on Rich, $520 here against $702 everywhere else. Display only: on Standard
+    // the two numbers are the same, the value credited on a sale was already ival(), and no dial, table or seeded draw moves.
     h+='<div class="row">'+iconImgHTML(log[i],22)+'<span class="nm" style="color:'+(RCOL[dispR(log[i])||it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
-       '<span class="vl">'+'$'+it.val.toLocaleString()+'</span></div>';
+       '<span class="vl">'+'$'+ival(log[i]).toLocaleString()+'</span></div>';
   }
   el.innerHTML=h;
   var b=document.getElementById('gamblebtn');
