@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.01';
+var VER='16.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5583,6 +5583,10 @@ function wxTick(dt){
   }
   G.wxNext=nw; G.wxT=0;
   G.wxTurnsLeft--;
+  // v16.02, weather audit finding 10: PARTLY CLOUDY DOES NOT HOLD. A turn INTO partly with no turn left said This will not hold
+  // and then held to extraction, since the rain-or-storm break above runs only when partly is the current sky. Partly exists to
+  // turn, so a turn into it keeps one turn back for that break. No draw is added here; the break draws as it always has.
+  if(nw.id==='partly'&&G.wxTurnsLeft<1) G.wxTurnsLeft=1;
   G.wxTurned=(G.wxTurned||0)+1;
   // Next turn, if there is one, lands somewhere in the back half.
   G.wxAt=rnd(120,220);
@@ -31100,7 +31104,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.01: THE STORM SAYS WHAT THE LIGHTNING DOES. Weather audit finding 9. The storm line said the lightning will show you to everything out there and the CONDITIONS row said lightning shows you, and no sight rule reads the flash: it lifts the fog for you and nothing more. The two lines now say what it does (every flash shows you the whole map for a moment). Neither is a TXSHIP key. Whether a flash should show you to the machines is parked as a question for him. No number moved. Check 16.01 fails on v16.00',
+  now:'v16.02: PARTLY CLOUDY DOES NOT HOLD. Weather audit finding 10. A weather turn into Partly Cloudy said This will not hold, and when it was the last turn of the raid it held to extraction. A turn into partly now keeps one turn back, so the rain or storm break it announces still comes. No number moved and map building is untouched. Check 16.02 fails on v16.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

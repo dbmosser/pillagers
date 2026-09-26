@@ -40024,6 +40024,22 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.02 - PARTLY CLOUDY DOES NOT HOLD
+
+Weather audit finding 10 (LOW), its own fix.
+
+A weather turn into Partly Cloudy says The weather is turning. Partly cloudy. This will not hold. The rain-or-storm break in
+wxTick runs only when partly is the CURRENT sky, and seven raids in ten start with one turn, so when the last turn went into
+partly the count fell to 0 and the sky held to extraction, against the line and against the sector comment that partly
+exists to turn.
+
+THE BUILD. After G.wxTurnsLeft--, a turn into partly with no turn left keeps one, so the next expiry takes the break (rain or
+storm, never partly) and the count then falls to 0. No draw is added by the line; the break draws as it always has, later in
+the raid. Map building untouched, so the seed 4242 fingerprint cannot move. No number, dial or loot table moved.
+
+MEASURED. Check 16.02 stages a raid, stubs pickWeather and turns the last turn: into rain leaves 0 turns (control, both
+builds); into partly must leave 1 (v16.01 leaves 0).
+
 ## v16.01 - THE STORM SAYS WHAT THE LIGHTNING DOES
 
 Weather audit finding 9 (MEDIUM), its corrected fix: fix the words, not the machines.
