@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.85';
+var VER='15.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11931,7 +11931,18 @@ function padOpenModal(){
   return null;
 }
 function padFocusables(root){
-  var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,input,select');
+  // v15.86, sector audit finding: A CONTROLLER CAN CHOOSE A SECTOR. renderSector builds each sector card as a plain div with
+  // the classes row and sectorpick, and this list named buttons, cells, .crow rows, tabs, cards, pills and fields but never
+  // .sectorpick, so on the sector page the D-pad and the stick moved only between DAY, NIGHT, the six weather buttons, ASCEND
+  // TO THIS SECTOR and CLOSE: the highlight could never land on a sector card and A could never press one. The only thing that
+  // sets P.mapIx is the card's onclick, so a pad-only player always went up to whatever P.mapIx already held, COLD STORAGE on
+  // a new profile, and THE COLD MILE was out of reach although both sectors are offered: the page's own question, Where are
+  // you going?, could not be answered. The cards are in the list now. They are laid out, visible, never disabled and not
+  // greyed out, so they pass every filter below; the .padfocus outline draws on a div; A runs the same onclick a mouse click
+  // runs; and after that click rebuilds the cards the v14.22 place keeping in padMenu puts the highlight back on the same
+  // card, because the cards come first in the panel and their count does not change. .sectorpick exists only inside
+  // #sectorlist, so no other panel gains a control. No player text, no number and no seeded draw moved.
+  var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,.sectorpick,input,select');
   for(var i=0;i<q.length;i++){
     var el=q[i],cs=getComputedStyle(el);
     // v15.71, grid audit finding: WITH THE FREEBIE KIT TAKEN, A CONTROLLER CANNOT PACK OR UNPACK IN THE GREYED OUT STASH AND
@@ -30965,7 +30976,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.85: THE EMOTE BAR CLOSES WHEN HE GOES DOWN AND ITS KEYS SAY WHY WHILE HE IS DOWN. Shot down with the emote bar up, the bar stayed drawn over the downed screen with its caption and its four boxes, V opened it again while he was down, and 1 to 4 did nothing and said nothing. Going down now shuts the bar with the map and the backpack, V while he is down opens nothing and says Not while you are down, and a digit pressed on the bar in a roll says so too. Check 15.85 opens the bar, shoots him down and presses V on the floor, then presses a digit on the bar in a roll; it fails on v15.84',
+  now:'v15.86: A CONTROLLER CAN CHOOSE A SECTOR. On the sector page the two sector cards were never in the list of controls a controller can reach, so the highlight moved only between DAY, NIGHT, the weather buttons, ASCEND TO THIS SECTOR and CLOSE, and a pad player always went up to the sector already set. The cards are in that list now: the highlight lands on either card and A picks it, exactly as a click does. Check 15.86 puts a faked controller highlight on the second card and presses A; it fails on v15.85',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
