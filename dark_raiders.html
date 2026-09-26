@@ -1430,7 +1430,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.09';
+var VER='16.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31123,7 +31123,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.09: VOICE. Multiplayer, his rulings. Press MIC in the PARTY window (the browser asks first, never at load), then hold Y to talk, or pick OPEN MIC; a controller player starts on open mic. Every link carries a voice line from the start, so no new code is needed. MUTE beside a name silences that teammate on this PC. For now the host hears everyone and each friend hears the host. Solo play never touches it. No number moved. Check 16.09 fails on v16.08',
+  now:'v16.10: VOICES CARRY BY DISTANCE UP TOP. Multiplayer. When you and a teammate are both up top, his voice is full out to 120, falls to about a thirtieth by 900, is gone past 1,100, and is halved with a wall between you. In the Undercroft voices stay full. Mute still wins. No number moved in the game. Check 16.10 fails on v16.09',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35668,6 +35668,7 @@ function netUpWord(peer,m){
 // This raid ended, however it ended: the party is told, and nobody is drawn up top any more.
 function netUpEnd(how){
   if(!NET.on) return false;
+  setTimeout(function(){ try{ voiceProxAll(); }catch(_vp){} },0);   // v16.10: back to full voices once the raid is let go
   NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;
   NET.entMap={}; NET.entGone={}; NET.entN=0; NET.entRot=0; NET.entLast=-1;   // v15.80: the bodies of this raid are let go
   NET.contMap={}; NET.contN=0; NET.contN0=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;   // v15.91: and the containers
@@ -35698,6 +35699,7 @@ function netUpTick(dt){
   if(NET.role==='host') netSrchTick(dt); else if(NET.role==='join') netSrchSync();   // v15.91: the host runs every search one of the party holds; a linked window tells the host when its own hold ended
   NET.upAcc+=dt;
   if(NET.upAcc<NET_HUB_STEP) return 0;
+  try{ voiceProxAll(); }catch(_vp){}   // v16.10: voices by distance, on the same clock
   NET.upAcc=Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP);
   msg={t:'st',k:'r',sd:NET.upSeed>>>0,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.roll>0)?+(+p.roll).toFixed(2):0,
        c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):''};
@@ -35962,7 +35964,26 @@ function voiceMicOff(){
   for(i=0;i<NET.peers.length;i++) voiceSend(NET.peers[i]);
   return true;
 }
-function voiceVol(peer){ if(peer&&peer.vGain&&peer.vGain.gain) peer.vGain.gain.value=(P&&P.netMute&&peer.pid&&P.netMute[peer.pid])?0:1; }
+function voiceVol(peer){ if(peer&&peer.vGain&&peer.vGain.gain) peer.vGain.gain.value=(P&&P.netMute&&peer.pid&&P.netMute[peer.pid])?0:voiceProx(peer); }
+// v16.10, MULTIPLAYER: VOICES CARRY BY DISTANCE UP TOP (plan.md: in the raid, voices get quieter with distance; net.md section 4
+// gives the curve). When this player and the teammate are both up top on the party seed, his voice is full out to 120, falls
+// to -30 dB at 900 on a straight decibel line, fades out by 1,100, and is halved with a wall between them. Anywhere else (the
+// Undercroft, one of them still below) it is full, as before. Every window works it out for itself ten times a second from the
+// state words (netUpTick) and again when a raid ends; MUTE still wins.
+function voiceProx(peer){
+  var g, p, d, v;
+  if(typeof G==='undefined'||!G||G.sim||!G.player||!NET.upSeed||(G.seed>>>0)!==(NET.upSeed>>>0)||!peer) return 1;
+  g=NET.up[peer.seat];
+  if(!g||g.sd!==(NET.upSeed>>>0)||!(g.n>0)) return 1;
+  p=G.player; d=Math.hypot(g.x-p.x,g.y-p.y);
+  if(d<=120) v=1;
+  else if(d<=900) v=Math.pow(10,(-30*(d-120)/780)/20);
+  else if(d<1100) v=Math.pow(10,-1.5)*(1100-d)/200;
+  else v=0;
+  try{ if(v>0&&G.map&&G.map.segs&&!losClear(p.x,p.y,g.x,g.y,G.map.segs)) v*=0.5; }catch(e){}
+  return v;
+}
+function voiceProxAll(){ var i; for(i=0;i<NET.peers.length;i++) voiceVol(NET.peers[i]); }
 function voiceAttach(peer,stream){
   var ac=voiceCtx(), el;
   if(!ac||!stream) return false;

@@ -40024,6 +40024,22 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.10 - VOICES CARRY BY DISTANCE UP TOP
+
+Multiplayer, plan.md (in the raid, voices get quieter with distance) with the curve in net.md section 4.
+
+THE BUILD. voiceVol now multiplies by voiceProx: when this player and the teammate are both up top on the party seed, his voice
+is full out to 120, falls on a straight decibel line to -30 dB at 900, fades to nothing by 1,100, and is halved with a wall
+between them (losClear on the wall list). Anywhere else (the Undercroft, or one of them still below) it is full, as in v16.09.
+Every window works it out for itself ten times a second in netUpTick from the state words, and once more after a raid ends;
+MUTE still wins. The game's own numbers are untouched; the curve is the design note's.
+
+MEASURED. Check 16.10 stages a party raid with the wall list emptied: 60 away is full, 500 is quieter, 1,200 is silent, a muted
+teammate beside him is silent, and with no raid in hand he is full. Passes twice; fails on v16.09. Check 16.09 and the live
+voice step still pass.
+
+Not verified: how it sounds on two PCs.
+
 ## v16.09 - VOICE
 
 Multiplayer, his rulings of 2026-09-25 (push-to-talk and open mic, per-teammate mute); plan.md build 3 and net.md section 4.

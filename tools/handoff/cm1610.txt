@@ -1,0 +1,8 @@
+v16.10: voices carry by distance up top
+
+Multiplayer. When you and a teammate are both up top, his voice is
+full close by, fades with distance, is gone past 1,100, and is halved
+with a wall between you. In the Undercroft voices stay full. Mute
+still wins. No game number moved.
+
+Check 16.10. Fails on v16.09.

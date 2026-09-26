@@ -1,0 +1,1 @@
+| VOICES CARRY BY DISTANCE UP TOP | v16.10 | MULTIPLAYER, plan and net.md curve: up top a teammate's voice is full to 120, -30 dB at 900, silent past 1,100, halved through a wall; full in the Undercroft; mute wins. MEASURED: check 16.10 passes twice, fails on v16.09. NOT VERIFIED: the sound on two PCs |
