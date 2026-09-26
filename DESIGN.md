@@ -40024,6 +40024,20 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.08 - THE PARTY ON THE SECTOR MAP
+
+Multiplayer, plan phase 4 (map dots). The sector map drew only you, so a teammate out of sight was nowhere on it, and one who
+went down across the sector could not be found to pull up (v16.05).
+
+THE BUILD. drawMapOverlay calls netMapDots after your own marker when a party is on: each of the party up top on this raid
+seed (netUpShown, from his state words) is a blue dot with a line for where he faces and his name over it; one who is down is
+red, with DOWN under his name. Drawing only: nothing moves and nothing draws from the seeded stream. Solo untouched.
+
+MEASURED. Check 16.08 opens the map in a staged party raid and reads what it writes: alone it names nobody else (control); a
+teammate up top is named; a downed one is named with DOWN. Passes twice; fails on v16.07.
+
+Not verified: how it looks. Watch for: the name over the dot overlapping a ring label.
+
 ## v16.07 - THE WHAT IS NEW CARD IS CURRENT AGAIN
 
 WHATSNEW_VER stood at 15.92 against a build at 16.06, at the edge of the fifteen-build rule. WHATSNEW_VER is 16.07 and a new

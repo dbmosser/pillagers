@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.07';
+var VER='16.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28997,6 +28997,7 @@ if(G.trail&&G.trail.length>1){
   ctx.beginPath(); ctx.moveTo(_pmx,_pmy);
   ctx.lineTo(_pmx+Math.cos(p.face)*24*_pmz,_pmy+Math.sin(p.face)*24*_pmz); ctx.stroke();
   ctx.lineWidth=1;
+  try{ if(NET.on) netMapDots(ox,oy,sc,_pmz); }catch(_nmd){}   // v16.08: the party on the sector map (the net section)
   // SURVEYED. Bottom left of the map, out of the way of every marker on it.
   (function(){
     var f=0; try{ f=fogFrac(); }catch(e){ return; }
@@ -31116,7 +31117,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.07: THE WHAT IS NEW CARD IS CURRENT AGAIN. WHATSNEW_VER stood at 15.92 against 16.06. A new card line after the alpha line says what co-op gained since: the party goes up together, loot per player, teammate revives, one clock, sky and set of extraction points, the host leaving ends the run, pause in co-op, and the lightning flash. Every older line is kept as it was. No number moved. Check 16.07 fails on v16.06',
+  now:'v16.08: THE PARTY ON THE SECTOR MAP. Multiplayer. The sector map drew only you, so a teammate out of sight was nowhere and one who went down across the sector could not be found. Each of the party up top is now a blue dot on the map with his name and where he faces, and red with DOWN when he is down. Drawing only. No number moved. Check 16.08 fails on v16.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35876,6 +35877,26 @@ function netBeaconTake(peer,m){
   if(G.tel) G.tel.beaconCalls=(G.tel.beaconCalls||0)+1;
   blip('beacon'); say((netSeatName(peer.seat)||'Your teammate')+' called the extraction. Inbound '+Math.ceil(Z.beaconT)+'s.');
   return 'called';
+}
+// v16.08, MULTIPLAYER: THE PARTY ON THE SECTOR MAP (plan phase 4, map dots). The sector map drew only you, so a teammate out of
+// sight was nowhere, and one who went down across the sector could not be found to pull up. Each of the party up top on this
+// raid seed (netUpShown, from his state words) is drawn on the map as a blue dot with a line for where he faces and his name
+// over it; one who is down is drawn red with DOWN under his name. Drawing only: nothing here moves or draws from the seeded stream.
+function netMapDots(ox,oy,sc,z){
+  var i, g, x, y, nm, n=0;
+  z=(z>0)?z:1;
+  for(i=0;i<NET.up.length;i++){
+    g=NET.up[i]; if(!netUpShown(g)) continue;
+    x=ox+g.x*sc; y=oy+g.y*sc; nm=netSeatName(g.seat)||'PILLAGER';
+    ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(x,y,9*z,0,6.2832); ctx.fill();
+    ctx.fillStyle=g.dn?'#e2564a':'#6fb8ff'; ctx.beginPath(); ctx.arc(x,y,6*z,0,6.2832); ctx.fill();
+    if(!g.dn){ ctx.strokeStyle='rgba(111,184,255,.85)'; ctx.lineWidth=2*z; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+Math.cos(g.f)*18*z,y+Math.sin(g.f)*18*z); ctx.stroke(); ctx.lineWidth=1; }
+    ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+    ctx.fillStyle=g.dn?'#ff8a80':'#bfe0ff'; ctx.fillText(nm,x,y-13*z);
+    if(g.dn) ctx.fillText('DOWN',x,y+20*z);
+    ctx.textAlign='left'; n++;
+  }
+  return n;
 }
 function netEntsHost(){ return !!(NET.on&&NET.role==='host'&&typeof G!=='undefined'&&G&&!G.sim&&!G.over&&NET.upSeed&&(G.seed>>>0)===(NET.upSeed>>>0)); }
 // Every body numbered at the build, in list order. Returns how many.

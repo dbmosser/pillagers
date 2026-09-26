@@ -1,0 +1,1 @@
+| THE PARTY ON THE SECTOR MAP | v16.08 | MULTIPLAYER, plan phase 4: the sector map drew only you, so a downed teammate could not be found. FIX: netMapDots draws each of the party up top as a named blue dot facing his way, red with DOWN when down. Drawing only. MEASURED: check 16.08 passes twice, fails on v16.07. NOT VERIFIED: the look |
