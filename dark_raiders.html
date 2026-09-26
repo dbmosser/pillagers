@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.86';
+var VER='15.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25427,7 +25427,11 @@ _tgt=G.active; _lbl='EXTRACTION';
                                        :('everyone is '+Math.round((MW.noise-1)*100)+'% louder'));
     if(MW.lights<1) wv.push('lamps '+Math.round((1-MW.lights)*100)+'% out');
     if(MW.lightning) wv.push('lightning shows you');
-    rows.push({k:MT.name+'   '+MW.name,v:(wv.length?wv.join(', '):''),
+    // v15.87, sector audit finding: AT NIGHT THE SECTOR MAP HEADER NAMES A NIGHT HOUR. The same hour label as the sector map
+    // header, printed here with no isDay() gate, so at night this row read noon or 8am beside the weather while the surface
+    // button on the sector page said NIGHT. It says night now when the surface is night, and names the rolled hour in daylight
+    // as before. The effects list under it is unchanged.
+    rows.push({k:(isDay()?MT.name:'night')+'   '+MW.name,v:(wv.length?wv.join(', '):''),
       c:MW.id==='clear'?'#9aa8d0':'#4de3d0'});
     for(var _tq=0;_tq<TERMS.length;_tq++){
       if(!hasTerm(TERMS[_tq].id)) continue;
@@ -28487,7 +28491,14 @@ function drawMapOverlay(){
   // conditions belong on the map, since they change how far you can see
   ctx.textAlign='right';
   ctx.fillStyle=wx().id==='clear'?'#9aa8d0':'#4de3d0';
-  ctx.fillText(tod().name+'  '+wx().name+
+  // v15.87, sector audit finding: AT NIGHT THE SECTOR MAP HEADER NAMES A NIGHT HOUR. buildRaid rolls G.tod with pickTod on
+  // every raid, night included, so the seeded stream stays the same, and every use of that hour is gated on isDay() (the lamp
+  // level, the tint, the dim, lampBase), so at night it does nothing; but this header printed it with no gate, and three rolls
+  // in five put noon, 8am or 6pm over a raid that went up in the dark, the same contradiction as his v3.59 note that golden
+  // hour should not happen at night. At night the header now says night beside the weather; in daylight it names the rolled
+  // hour as before. The CONDITIONS row in drawHUD is gated the same way. No number, no seeded draw and no existing sentence
+  // moved.
+  ctx.fillText((isDay()?tod().name:'night')+'  '+wx().name+
     (G.wxNext?('  \u2192 '+G.wxNext.name+'  '+Math.round(G.wxT*100)+'%'):''),
     ox+WORLD_W*sc,oy-10);
   ctx.textAlign='left';
@@ -30976,7 +30987,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.86: A CONTROLLER CAN CHOOSE A SECTOR. On the sector page the two sector cards were never in the list of controls a controller can reach, so the highlight moved only between DAY, NIGHT, the weather buttons, ASCEND TO THIS SECTOR and CLOSE, and a pad player always went up to the sector already set. The cards are in that list now: the highlight lands on either card and A picks it, exactly as a click does. Check 15.86 puts a faked controller highlight on the second card and presses A; it fails on v15.85',
+  now:'v15.87: AT NIGHT THE SECTOR MAP HEADER NAMES A NIGHT HOUR. The game rolls an hour of the day for every raid, and at night that hour does nothing, but the sector map header and the CONDITIONS row printed it anyway, so a raid that went up in the dark could say noon, 8am or 6pm beside the weather. At night both now say night beside the weather, and in daylight they name the rolled hour as before. Check 15.87 draws the sector map and the CONDITIONS panel with noon rolled, in daylight and at night; it fails on v15.86',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
