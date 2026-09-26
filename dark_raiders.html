@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.87';
+var VER='15.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19791,6 +19791,16 @@ function commitRun(rec){
   if(!rec||rec._committed) return false;
   rec._committed=1;
   addProgress(rec);
+  // v15.88, sector audit finding: THE SECTOR CARD COUNTS EVERY RUN HE HAS MADE THERE. The log below keeps only the last sixty
+  // runs (the v12.97 note on netEarn says so), and renderSector counted his runs on a map from that log alone, so past sixty
+  // committed raids the card showed too few (eighty raids on COLD STORAGE read you: 60 runs here), and a map whose raids had
+  // all aged out of the log read YOU HAVE NEVER RAIDED HERE. P.runs and P.netEarn are lifetime counters for exactly that
+  // reason; nothing kept a lifetime count per map. This tally does: seeded once from whatever the log still holds, so an old
+  // save keeps the count it could show, and bumped before every push. Clear recorder empties the log and leaves the tally
+  // alone. It is saved with the whole of P, and restoreMake and restoreApply carry it in a restore code. No number, no seeded
+  // draw and no sentence moved.
+  if(!P.mapRunN){ P.mapRunN={}; for(var _mq=0;_mq<P.log.length;_mq++){ var _mqn=P.log[_mq]&&P.log[_mq].mapName; if(_mqn) P.mapRunN[_mqn]=(P.mapRunN[_mqn]||0)+1; } }
+  if(rec.mapName) P.mapRunN[rec.mapName]=(P.mapRunN[rec.mapName]||0)+1;
   P.log.push(rec);
   if(P.log.length>60) P.log.shift();
   saveProfile();
@@ -30987,7 +30997,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.87: AT NIGHT THE SECTOR MAP HEADER NAMES A NIGHT HOUR. The game rolls an hour of the day for every raid, and at night that hour does nothing, but the sector map header and the CONDITIONS row printed it anyway, so a raid that went up in the dark could say noon, 8am or 6pm beside the weather. At night both now say night beside the weather, and in daylight they name the rolled hour as before. Check 15.87 draws the sector map and the CONDITIONS panel with noon rolled, in daylight and at night; it fails on v15.86',
+  now:'v15.88: THE SECTOR CARD COUNTS EVERY RUN HE HAS MADE THERE. The sector page counted your runs on a map from the run log, which keeps only the last sixty runs, so past sixty raids the card showed too few, and a map whose raids had all aged out of the log said YOU HAVE NEVER RAIDED HERE. Each map now keeps its own lifetime tally, seeded once from the log, carried in a restore code, and the card shows the larger of the two. Check 15.88 fills the log with sixty runs, commits three more and restores a code; it fails on v15.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33385,6 +33395,9 @@ function restoreMake(){
          // on sight and who will take his money as a hire, and the code carried none of it.
          rv:rivalsForCode(),   // v15.13: only the records that hold something
          cc:P.cdone||0,   // v15.01, save audit finding 2: the contracts he completed, beside the standing it already carries
+         // v15.88, sector audit finding: THE SECTOR CARD COUNTS EVERY RUN HE HAS MADE THERE. His lifetime runs per map, which
+         // the log, kept out of the code, could not restate past sixty runs anyway.
+         mr:P.mapRunN||null,
          w:{},s:{}};
   // What they are wearing. The RACKS themselves are derived from the numbers
   // above by cosOwned, so nothing here has to list what they have unlocked.
@@ -33451,6 +33464,10 @@ function restoreApply(o){
   // printed on the board but not the count printed beside it, so the board read the replaced character's count against the
   // restored character's standing.
   P.cdone=o.cc|0;
+  // v15.88, sector audit finding: THE SECTOR CARD COUNTS EVERY RUN HE HAS MADE THERE. The per-map run tally is the restored
+  // character's, the same mistake v15.00 to v15.02 fixed for rivals and contracts: left alone, a restored character wore the
+  // replaced character's counts on the sector page. An older code carries none, and the next commit reseeds from the log.
+  P.mapRunN=(o.mr&&typeof o.mr==='object'&&!Array.isArray(o.mr))?o.mr:null;
   var k;
   // v14.69, wardrobe audit finding 2: A RESTORE CODE REPLACES THE CLOTHES TOO. A slot the restored character never changed comes
   // through empty, and an empty slot was skipped, so the replaced character's clothes stayed on; and the saved looks and the
@@ -36726,6 +36743,11 @@ function renderSector(){
     var MS=SECTOR_MEAS[i]||{};
 var _myR=0;
     for(var _mr=0;_mr<P.log.length;_mr++) if(P.log[_mr].mapName===M.name) _myR++;
+    // v15.88, sector audit finding: THE SECTOR CARD COUNTS EVERY RUN HE HAS MADE THERE. The loop above counts only the sixty
+    // runs the log still holds, so a long career read too few here, or YOU HAVE NEVER RAIDED HERE on a map whose raids had
+    // all aged out. The per-map tally commitRun keeps outlives the log, and the card shows the larger of the two; a save
+    // with no tally yet reads the log as before.
+    if(P.mapRunN&&(P.mapRunN[M.name]|0)>_myR) _myR=P.mapRunN[M.name]|0;
     var facts=[(_myR>0?('you: '+_myR+' run'+(_myR===1?'':'s')+' here'):'YOU HAVE NEVER RAIDED HERE'),
                // v8.58, audit: metres, and the right magnitude. This divided by
                // 100 where U_PER_M is 10, and labelled a DIMENSION with an area
