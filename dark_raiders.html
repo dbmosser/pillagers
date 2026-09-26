@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='15.88';
+var VER='15.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5464,6 +5464,17 @@ function navReach(map,fx,fy){
     if(cy<gh-1){ nid=id+gw; if(!seen[nid]&&!blk[nid]){seen[nid]=1;q.push(nid);} }
   }
   map.reachGrid=seen; return seen;
+}
+// v15.89, doors audit finding: YOUR HIRE ON FOLLOW KEEPS FOLLOWING PAST A LOCKED ROOM. The room, if any, that is still
+// shut around a point. A locked room is four walls and a door wall that only its key removes (the walls are pushed in the
+// map build, the spend is in updatePlayer), so until its open flag is set no route reaches anything inside it. The FOLLOW
+// pick in updateEnts tested _CT.locked, which nothing ever sets on a container: the three caches inside a room are marked
+// inLocked, the strongbox sits there by spotIn, and stray crates land there by design (the reach pass keeps them). This is
+// the same strict inside test that pass uses. The rooms list is short, so it is cheap to ask per box. No seeded draw.
+function shutRoomAt(map,x,y){
+  var L=(map&&map.locked)||[];
+  for(var i=0;i<L.length;i++){ var R=L[i]; if(!R.open&&x>R.x&&x<R.x+R.w&&y>R.y&&y<R.y+R.h) return R; }
+  return null;
 }
 // Tests the cell and its eight neighbours, because a container sits at a point
 // while a body needs a cell next to it, and a 16 unit grid rounds hard.
@@ -18948,7 +18959,17 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
               var _CT=G.containers[_mc];
               // v15.19, hire audit finding: AND HE DOES NOT PICK A CRATE YOU STARTED. A crate you searched part way and walked
               // away from keeps its progress for you (SPEC 7.4), and this pick took it the same way as one under your hands.
-              if(_CT.opened||_CT.locked||_CT.mine||(_CT.prog||0)>0) continue;
+              // v15.89, doors audit finding: YOUR HIRE ON FOLLOW KEEPS FOLLOWING PAST A LOCKED ROOM. The _CT.locked test
+              // here was dead: no container ever carries it, so the caches inside BLAST FREEZER or FOREMAN OFFICE passed
+              // this filter. Walking past the south side of a shut room put him within 160 of one, he picked it, navPath
+              // gave no route into another region, seekPoint steered him straight at it and he ground along the shell
+              // wall. The drop line above lets go only at 280 from the box, which a 230 room never allows, and the FOLLOW
+              // walk below never runs while a goal is held, so he stood there and stopped following for as long as you
+              // stayed within 420 of him; when you spent the key he was already aimed at the cache and took it first. A
+              // box inside a room whose door is still shut is skipped now (shutRoomAt, beside navReachable); once the key
+              // opens the room its boxes are picked as before, and a room never shuts again. No text, number or seeded
+              // draw moved.
+              if(_CT.opened||_CT.mine||(_CT.prog||0)>0||shutRoomAt(G.map,_CT.x,_CT.y)) continue;
               if(dist(e,_CT)<160&&dist(p,_CT)<420){ e.mgoal=_CT; e.mlootT=0; break; }
             }
           }
@@ -30997,7 +31018,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v15.88: THE SECTOR CARD COUNTS EVERY RUN HE HAS MADE THERE. The sector page counted your runs on a map from the run log, which keeps only the last sixty runs, so past sixty raids the card showed too few, and a map whose raids had all aged out of the log said YOU HAVE NEVER RAIDED HERE. Each map now keeps its own lifetime tally, seeded once from the log, carried in a restore code, and the card shows the larger of the two. Check 15.88 fills the log with sixty runs, commits three more and restores a code; it fails on v15.87',
+  now:'v15.89: YOUR HIRE ON FOLLOW KEEPS FOLLOWING PAST A LOCKED ROOM. Under FOLLOW your hire picked any shut box within 160 of him, and the caches inside a locked room passed that test, so walking past BLAST FREEZER or FOREMAN OFFICE he aimed at a box no route reaches, ground along its wall and stopped following you until you moved 420 away or spent the key, and then he took the cache first. A box inside a room whose door is still shut is no longer picked, and once the key opens the room he takes its boxes as before. Check 15.89 stages him outside a shut room and again with its door opened by the key; it fails on v15.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
