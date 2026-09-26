@@ -40024,6 +40024,13 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.19 - HIS WORDS: EXTRACTION PROGRESS BAR RESET
+
+His wording, replacing v16.18. Knocked down while holding E to extract now says Knocked down. Extraction progress bar reset.
+Hold E to try again. Text only. Checks 16.17 and 16.18 restaged to the new words.
+
+MEASURED. Check 16.19 passes twice and fails on v16.18; checks 16.17 and 16.18 pass.
+
 ## v16.18 - HIS WORDS: EXTRACTION ATTEMPT RESET
 
 His wording for the v16.17 line. Knocked down while holding E to extract now says Knocked down. Extraction attempt reset.

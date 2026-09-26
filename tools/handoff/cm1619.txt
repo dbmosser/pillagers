@@ -1,0 +1,6 @@
+v16.19: extraction progress bar reset
+
+His wording. Knocked down while extracting now says: Knocked down.
+Extraction progress bar reset. Hold E to try again. Text only.
+
+Check 16.19. Fails on v16.18. Check 16.18 restaged.

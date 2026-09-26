@@ -1,0 +1,1 @@
+| HIS WORDS: EXTRACTION PROGRESS BAR RESET | v16.19 | HIS WORDING, replacing v16.18: Knocked down. Extraction progress bar reset. Hold E to try again. Text only; check 16.18 restaged. MEASURED: check 16.19 passes twice, fails on v16.18 |

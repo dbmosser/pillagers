@@ -1,0 +1,7 @@
+## v16.19 - HIS WORDS: EXTRACTION PROGRESS BAR RESET
+
+His wording, replacing v16.18. Knocked down while holding E to extract now says Knocked down. Extraction progress bar reset.
+Hold E to try again. Text only. Checks 16.17 and 16.18 restaged to the new words.
+
+MEASURED. Check 16.19 passes twice and fails on v16.18; checks 16.17 and 16.18 pass.
+
