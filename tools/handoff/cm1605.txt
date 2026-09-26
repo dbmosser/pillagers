@@ -1,0 +1,8 @@
+v16.05: teammate revives
+
+Multiplayer, his ruling. Up top, hold E beside a downed teammate for
+3.2 seconds, the time a hire takes, and he gets up with 40 percent
+health, exactly as a hire picks you up. Letting go starts it again.
+His one self-revive is untouched. No new number.
+
+Check 16.05. Fails on v16.04.

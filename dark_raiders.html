@@ -1424,7 +1424,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.04';
+var VER='16.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16408,6 +16408,7 @@ if(!p.fired||p.wep.auto){
   // Checked before the stall and before crates so that a man bleeding at your feet
   // outranks shopping, which is the correct priority for a key that does several
   // things.
+  netRevHold(p,dt);   // v16.05: holding E beside a downed teammate picks him up (the net section)
   var downRdr=null;
   for(var dr=0;dr<G.ents.length;dr++){
     var DE=G.ents[dr];
@@ -31111,7 +31112,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.04: PAUSE, SUPERHOT AND THE DEATH SLOW-DOWN IN CO-OP. Multiplayer, the plan phase 2 rules. In a shared co-op raid Superhot never freezes time, the pause menu opens over a world that keeps running with the raid clock, your player stands still while paused, and the death slow-down does not slow the world the party plays in. Solo play untouched. No number moved. Check 16.04 fails on v16.03',
+  now:'v16.05: TEAMMATE REVIVES. Multiplayer, his ruling. Up top, hold E beside a downed teammate for 3.2 seconds, the time a hire takes, and he gets up with 40 percent health exactly as a hire picks you up. Letting go starts it again. The word goes through the host, and the downed window checks he is down and the teammate is beside him. His one self-revive is untouched. No new number. Check 16.05 fails on v16.04',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34825,6 +34826,7 @@ function netOnMsg(peer,data){
   if(m.t==='hit') return netHitTake(peer,m);   // v15.80: a blow on this player, from the host, taken through its own damagePlayer
   if(m.t==='shot') return netShotTake(peer,m);   // v15.80: a round, blade or charge from one of the party on a body the host runs
   if(m.t==='kill') return netKillTake(peer,m);   // v15.80: a kill credited to this seat, from the host
+  if(m.t==='rev') return netRevTake(peer,m);   // v16.05: a teammate picked this player up, or (on the host) passes it on
   if(m.t==='srch') return (NET.role==='host')?netSrchTake(peer,m):netSrchAnswer(peer,m);   // v15.91: a search request from one of the party, or the host answer to one
   if(m.t==='loot') return netLootTake(peer,m);   // v15.91: loot from the host list, into this window own backpack
   if(m.t==='cont') return netContWord(peer,m);   // v15.91: a container arrived, is held, is free, opened or shut, from the host
@@ -36111,6 +36113,67 @@ function netShotTake(peer,m){
   return 'shot';
 }
 // A kill credited to this seat, from the host: the count, the contract and the grudge, as this window own kill would be.
+// v16.05, HIS RULING OF 2026-09-25: TEAMMATE REVIVES IN THE FIRST CO-OP VERSION. Up top, a player on his feet who holds E within
+// NET_REV_R of a teammate who is down (the dn flag of his state word, on this raid seed) fills a pick-up for NET_REV_T seconds,
+// the time a hire takes to pick you up; letting go or stepping away starts it again. When it fills, the word {t:'rev',s:seat}
+// goes to the host, which applies it to itself or passes it to that seat with by:the reviver. The downed window checks it is
+// down, not already finished, and that the reviver stands within reach as it last heard, then gets up exactly as a hire picks
+// him up: health 40 percent, two seconds of cover, no killer pending, a revive on his tally. His one self-revive is untouched.
+// No new number: 64 is the reach of the pillager pick-up and 3.2 the hire pick-up time. Nothing here draws from the seeded stream.
+var NET_REV_R=64, NET_REV_T=3.2;
+function netMateDown(p){
+  var i, g, best=-1, bd=NET_REV_R, d;
+  if(!NET.on||!netUpShared()||!p||p.downed||!NET.upSeed) return -1;
+  for(i=0;i<NET.up.length;i++){
+    g=NET.up[i];
+    if(!g||!g.dn||g.seat===NET.seat||netSeatName(g.seat)===null||g.sd!==(NET.upSeed>>>0)) continue;
+    d=Math.hypot(g.x-p.x,g.y-p.y); if(d<=bd){ bd=d; best=g.seat; }
+  }
+  return best;
+}
+function netRevHold(p,dt){
+  var s=-1, nm;
+  try{ s=netMateDown(p); }catch(e){ s=-1; }
+  if(s<0||!keys['KeyE']||p.roll>0){ if(G.netRevT){ G.netRevT=0; G.netRevS=-1; } return false; }
+  if(G.netRevS!==s){ G.netRevS=s; G.netRevT=0; }
+  nm=netSeatName(s)||'PILLAGER';
+  if(!G.netRevT) say('Picking up '+nm+'. Keep holding '+keyLabel('KeyE','E')+'.');
+  G.netRevT=(G.netRevT||0)+dt;
+  if(G.netRevT<NET_REV_T) return false;
+  G.netRevT=0; G.netRevS=-1;
+  if(NET.role==='host') netRevPass(s,NET.seat);
+  else for(var i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'rev',s:s});
+  say('You pull '+nm+' up.'); blip('pick');
+  return true;
+}
+// On the host: a pick-up for its own player, or passed on to the seat it names.
+function netRevPass(s,by){
+  var i;
+  if(s===NET.seat) return netRevApply(by);
+  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&NET.peers[i].seat===s) return netSend(NET.peers[i],{t:'rev',s:s,by:by})?'passed':'lost';
+  return 'nobody';
+}
+function netRevTake(peer,m){
+  if(!peer||peer.state!=='in') return 'ignored';
+  if(typeof m.s!=='number'||m.s!==(m.s|0)) return 'bad';
+  if(NET.role==='host') return netRevPass(m.s,peer.seat);
+  if(NET.role==='join'){ if(m.s!==NET.seat) return 'ignored'; return netRevApply((typeof m.by==='number')?(m.by|0):0); }
+  return 'off';
+}
+// This player is picked up by seat by, if he is down and that teammate stands within reach of him as this window last heard.
+function netRevApply(by){
+  var p, g;
+  if(typeof G==='undefined'||!G||G.over||G.sim||!G.player) return 'no raid';
+  p=G.player;
+  if(!p.downed||(G.deathBeat!==undefined&&G.deathBeat!==null)) return 'not down';
+  g=NET.up[by];
+  if(!g||Math.hypot(g.x-p.x,g.y-p.y)>NET_REV_R*1.5) return 'far';
+  p.downed=false; p.hp=Math.round(p.maxhp*0.4); p.iv=2; p.pendKiller=null;
+  if(G.tel) G.tel.revives=(G.tel.revives||0)+1;
+  blip('pick'); say((netSeatName(by)||'Your teammate')+' pulls you up.');
+  label(p.x,p.y-22,'PICKED UP','#4de3d0',0,true);
+  return 'up';
+}
 function netKillTake(peer,m){
   var e, k, T, rr2;
   if(!peer||peer.state!=='in'||NET.role!=='join') return 'ignored';

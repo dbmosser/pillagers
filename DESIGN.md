@@ -40024,6 +40024,26 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.05 - TEAMMATE REVIVES
+
+Multiplayer, his ruling of 2026-09-25: teammate revives in the first co-op version.
+
+THE BUILD. Up top in a shared raid, a player on his feet who holds E within NET_REV_R (64, the reach of the pillager pick-up)
+of a teammate whose state word says he is down fills a pick-up for NET_REV_T (3.2 s, the time a hire takes to pick you up);
+letting go, rolling or stepping away starts it again. The line Picking up NAME. Keep holding E. shows when it starts and You
+pull NAME up. when it fills. The pick-up goes to the host ({t:'rev',s}), which applies it to its own player or passes it to
+that seat with the reviver named. The downed window checks it is down and not in the death beat, and that the reviver stood
+within one and a half reaches of it as it last heard, then gets up exactly as a hire picks him up: health 40 percent, two
+seconds of cover, no killer pending, one more revive on his tally, NAME pulls you up. and PICKED UP over his head. His one
+self-revive is untouched. No new number; nothing draws from the seeded stream; solo play untouched (netMateDown needs a shared
+raid).
+
+MEASURED. Check 16.05: as the host, a teammate on his feet is never picked up (control), E held 1.5 s sends nothing, E held
+3.5 s beside a downed teammate sends one pick-up for his seat; as the linked window, down, a pick-up from a teammate 500 away
+leaves him down and one from beside him stands him up at 40 percent. Passes twice; fails on v16.04.
+
+Not verified: two real PCs; a pick-up held beside a container also searches it.
+
 ## v16.04 - PAUSE, SUPERHOT AND THE DEATH SLOW-DOWN IN CO-OP
 
 Multiplayer, the phase 2 rules in tools/multiplayer/plan.md: Superhot is off, pause becomes an overlay, and the death
