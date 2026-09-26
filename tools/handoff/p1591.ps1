@@ -132,6 +132,12 @@ SubRx @'
 '@
 
 SubRx @'
+  else if(NET.role==='join'){ if(typeof m.s!=='number'||m.s!==(m.s|0)) return 'bad'; s=m.s; }
+'@ @'
+  else if(NET.role==='join'){ if(m.s===undefined) s=0; else if(typeof m.s!=='number'||m.s!==(m.s|0)) return 'bad'; else s=m.s; }   // v15.91: the host own word (netUpEnd) names no seat: it is seat 0. Refused as bad before, so the host leaving never reached a linked window
+'@
+
+SubRx @'
   if(st!=='in') NET.up[s]=null;
 '@ @'
   if(st!=='in') NET.up[s]=null;
@@ -198,7 +204,7 @@ SubRx @'
 //   same grant the staged pull makes (its own belt, its own gun slots, its own Took line and loot voice); the done word
 //   counts the box on its own run and its own contracts, as its own open would.
 //   THE HOST LEAVING, HIS RULING. When the host raid ends for any reason (extract, death, abandon) every link is told
-//   {t:'up',st:'out'} under seat 0 as v15.79 tells it; a linked window up top on that seed takes that word, a bye from the
+//   {t:'up',st:'out'} with no seat named (netUpEnd), which a linked window files under seat 0; a linked window up top on that seed takes that word, a bye from the
 //   host or a lost host link through netHostGone: its raid ends as ABANDON through its own endRaid, so it comes back empty
 //   on its own save as any abandon does, with the host left line on its run card. A linked window own extraction, death or
 //   abandon stays its own and ends nobody else.
@@ -523,10 +529,51 @@ SubRx @'
       stand:function(x,y){ if(typeof G==='undefined'||!G||!G.player) return false; G.player.x=+x; G.player.y=+y; return true; }};
 '@
 
+SubRx @'
+function startRaid(){
+  G=buildRaid(false);
+'@ @'
+function startRaid(){
+  if(netGuestHeld()) return false;   // v15.91: in a party only the host takes the lift; a guest goes up on the host word (the net section)
+  G=buildRaid(false);
+'@
+
+SubRx @'
+function ascendNow(){
+  commitKit();
+'@ @'
+function ascendNow(){
+  if(netGuestHeld()) return false;   // v15.91: before the kit is committed or a window shut, so a guest held at the lift loses nothing
+  commitKit();
+'@
+
+SubRx @'
+           KeyR:['quick ascent',function(){ liftResetDay(); commitKit(); ac(); startRaid(); }],   // v12.61: day by default here too, which is his answer 24
+'@ @'
+           KeyR:['quick ascent',function(){ if(netGuestHeld()) return; liftResetDay(); commitKit(); ac(); startRaid(); }],   // v12.61: day by default here too, which is his answer 24; v15.91: a party guest is held
+'@
+
+SubRx @'
+function netUpBusy(){
+'@ @'
+// v15.91, HIS PLAYTEST: THE TWO OF THEM WENT UP INTO DIFFERENT RAIDS. A linked window could take the lift on its own: ascendNow,
+// the quick ascent and startRaid had no party test, so a guest who walked to the lift beside the host built its own raid on its
+// own seed, and the host word that came after found it up top already (netUpBusy) and was turned away. Two players, two
+// surfaces, and neither could see the other. In a party the host takes everyone up: a guest linked to a host is held at the
+// lift with a line that says so, before its kit is committed or a window shut, and goes up when the host word comes
+// (netUpStart sets NET.upHold, which this lets through). A guest whose link is gone is not in a party and ascends alone as ever.
+function netGuestHeld(){
+  if(typeof NET!=='object'||!NET||!NET.on||NET.role!=='join'||NET.upHold||!netInCount()) return false;
+  netSay('Your host takes the party up. Stay here and you go up together.');
+  return true;
+}
+function netUpBusy(){
+'@
+
 $pat = "(?m)^  now:'v15\.90:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v15.91: LOOT PER PLAYER, AND THE HOST LEAVING ENDS THE RUN FOR EVERYONE. Multiplayer phase 3 build 1. Every container is numbered at the build on every window alike and the host owns container state. On a linked window a held E on a box is a request to the host, which grants it if nobody else is searching that box (one searcher per box, so two players never double the search speed), runs the search timer itself with the staged pulls the play path makes and sends each item to the searcher window as it comes out, where it goes into that window own backpack through the same grant; the host marks the box open and tells everyone, so both windows draw it searched and neither searches it again; a box the host opened before a window came up is told open to it, a restocked box is told shut, a box the host made mid raid is told new, and the KEY mark follows the host list. The host raid ending for any reason, a bye from the host or a lost host link ends every linked window up top on that seed as ABANDON through its own endRaid, with the host left line on the run card, his ruling; a linked window own extraction, death or abandon stays its own. Solo play untouched: every call is behind NET.on and nothing here draws from the seeded stream. Check 15.91 fails on v15.90',"
+$new = "  now:'v15.91: LOOT PER PLAYER, AND THE HOST LEAVING ENDS THE RUN FOR EVERYONE. Multiplayer phase 3 build 1. Every container is numbered at the build on every window alike and the host owns container state. On a linked window a held E on a box is a request to the host, which grants it if nobody else is searching that box (one searcher per box, so two players never double the search speed), runs the search timer itself with the staged pulls the play path makes and sends each item to the searcher window as it comes out, where it goes into that window own backpack through the same grant; the host marks the box open and tells everyone, so both windows draw it searched and neither searches it again; a box the host opened before a window came up is told open to it, a restocked box is told shut, a box the host made mid raid is told new, and the KEY mark follows the host list. The host raid ending for any reason, a bye from the host or a lost host link ends every linked window up top on that seed as ABANDON through its own endRaid, with the host left line on the run card, his ruling; a linked window own extraction, death or abandon stays its own. And from his playtest: a guest linked to a host is held at the lift (Your host takes the party up), so the two of them can no longer go up into different raids. Solo play untouched: every call is behind NET.on and nothing here draws from the seeded stream. Check 15.91 fails on v15.90',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s

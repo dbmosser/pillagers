@@ -22,6 +22,45 @@ function SubRx([string]$old, [string]$new) {
 SubRx @'
   {v:'15.90',what:
 '@ @'
+  {v:'15.91',what:'a party guest is held at the lift and never goes up alone (his playtest: the two of them went up into different raids): in the Undercroft, linked to a host, ascendNow, the quick ascent and startRaid each leave this window on the floor with no raid built, the kit uncommitted, and say Your host takes the party up; control, with the link gone the same window ascends alone as ever',
+   run:function(){
+     if(!window.__hubEnter||!window.__endRaid||!window.__cleanProfile||typeof NET!=='object'||!NET||typeof ascendNow!=='function'||typeof startRaid!=='function'||typeof netInCount!=='function')
+       return 'SKIP: this fixture cannot stage a party at the lift';
+     var bad=[], said=[], _s2=say2, keepKit=null, peer={state:'in',seat:0,name:'HOST',timers:[],dc:{readyState:'open',send:function(){}}}, i, st;
+     try{
+       __cleanProfile(); if(G){ G=null; keys={}; } __hubEnter();
+       NET.on=true; NET.role='join'; NET.seat=1; NET.upHold=false; NET.peers=[peer];
+       NET.roster=[{seat:0,name:'HOST',host:true},{seat:1,name:'YOU'}];
+       if(netInCount()!==1) return 'SKIP: the stand-in link does not count as in the party';
+       say2=function(t){ said.push(String(t)); return _s2(t); };
+       keepKit=JSON.stringify(P.kit||[]);
+       st=[['ascendNow',function(){ ascendNow(); }],['startRaid',function(){ startRaid(); }]];
+       // the quick ascent is the R key at the lift station, fired through the station wiring as the key fires it
+       if(window.__station) st.push(['the quick ascent',function(){ var r=__station('lift','KeyR'); if(r&&r.err) throw new Error(r.err); }]);
+       for(i=0;i<st.length;i++){
+         said.length=0;
+         try{ st[i][1](); }catch(e){ bad.push(st[i][0]+' threw: '+e); }
+         if(G){ bad.push('linked to a host, '+st[i][0]+' built a raid of its own (seed '+(G.seed>>>0)+'), so this window went up alone into a different raid than the host'); try{ __endRaid('abandon'); }catch(_e1){} G=null; keys={}; __hubEnter(); NET.on=true; NET.role='join'; NET.peers=[peer]; }
+         else if(!said.some(function(t){ return (/Your host takes the party up/).test(t); })) bad.push('linked to a host, '+st[i][0]+' left him on the floor and said nothing ("'+said.join(' / ')+'")');
+         if(state!=='hub') bad.push('after '+st[i][0]+' the screen is '+state+', not the Undercroft');
+       }
+       if(JSON.stringify(P.kit||[])!==keepKit) bad.push('held at the lift, the packed kit was committed anyway');
+       // CONTROL: the link gone, the same window is not in a party and goes up alone.
+       peer.state='gone'; said.length=0;
+       try{ ascendNow(); }catch(e2){ bad.push('with the link gone ascendNow threw: '+e2); }
+       if(!G) bad.push('with the link gone this window could not ascend at all ("'+said.join(' / ')+'")');
+     }
+     finally{
+       try{ say2=_s2; }catch(_s2e){}
+       try{ keys={}; if(G) __endRaid('abandon'); }catch(_er){}
+       try{ if(G){ G=null; keys={}; } }catch(_g0){}
+       try{ NET.on=false; NET.upHold=false; NET.upIss=null; NET.peers=[]; netReset(); }catch(_nr){}
+       try{ if(typeof state==='undefined'||state!=='hub') __hubEnter(); }catch(_he){}
+       try{ __topClear(); }catch(_c){}
+       try{ __resetCfg(); }catch(_rc){}
+       try{ __cleanProfile(); }catch(_cp){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'15.91',what:'loot per player and the host leaving ends the run for everyone: at the build the host numbers its 165 containers in list order; a search request from one of the party on a box is granted with the count of the host list and told held to the others, a second request on the same box from another seat is refused as held while the first runs, a request from a seat filed far from the box is refused as far, the host own E on a box one of the party holds starts nothing and says who holds it while on a free box it starts (control), frames of the real loop run the search on the host and post the loot to the requesting seat in the order of the host list one stage at a time with the last word saying done, the box is told open to everyone with the seat that searched it and refuses every request after, the host own backpack, stash, credits and container tally gain nothing, a box holding a locked room key keeps the KEY mark test the sector map makes until one of the party pulls the key out and loses it before the box opens, a hold let go keeps its progress and frees the box and a second request resumes from that bar, a body the host made mid raid is numbered and told new on the next tick and told open and shut as it changes, a seat that comes up is told which boxes are open, the seeded stream never moves through the requests, the words and the ticks; CONTROL with the party off: nothing is numbered, a held E empties the box into the backpack from the local list and the net section holds no search; THE LINKED WINDOW up top on the host word numbers the same boxes, a held E on a box asks the host once and grants nothing from its own list, the bar stands until the host grants it and then fills from where the host has it and stops at the top with the box still shut and the backpack unchanged, a loot word puts the items in this window own backpack and the done word closes the box and counts it on this run, an open word marks a box searched so a held E starts nothing and asks nothing (control: before the word it asks), letting go tells the host, a held word keeps a held E off the box and a free word lets it ask, a shut word puts a searched box back, a new word makes a body the host made that a held E asks for, an all word marks open and held boxes, and the seeded stream never moves through the words; THE HOST LEAVING: an out word from another seat and a roster without it end nothing, an out word from seat 0 ends this raid as abandon through endRaid with the host left line on the run card and in the PARTY status, and up again on the same word a lost host link ends it the same way and the party is off (multiplayer phase 3 build 1)',
    run:function(){
      // THE SHARED CONTAINERS ARE THERE. Without them each window searches its own copy of every box, so the old build fails here rather than skips.
@@ -289,7 +328,7 @@ SubRx @'
        var o2=netOnMsg(H,js({t:'up',s:2,st:'out',how:'dead'}));
        var rw2=netOnMsg(H,js({t:'roster',roster:[{seat:0,pid:'zqxseat0',name:'ZQX HOST',host:true},{seat:1,pid:NET.pid,name:NET.name,host:false}]}));
        if(o2!=='up:out'||rw2!=='roster'||erCalls.length||!G||G.over) bad.push('control: another seat leaving ended this raid ('+o2+', '+rw2+', '+js(erCalls)+', over '+(G?G.over:'no raid')+')');
-       var o0=netOnMsg(H,js({t:'up',s:0,st:'out',how:'extract'}));
+       var o0=netOnMsg(H,js({t:'up',st:'out',how:'extract'}));   // the word exactly as netUpEnd on the host sends it: no seat named
        var sub=g('oc_sub')?String(g('oc_sub').textContent||''):'', ttl=g('oc_title')?String(g('oc_title').textContent||''):'', card=!!(g('outcome')&&g('outcome').classList.contains('on'));
        if(o0!=='up:out'||js(erCalls)!==js(['abandon'])||!G||G.over!=='abandon') bad.push('the host out word did not end this raid as abandon through endRaid ('+o0+', '+js(erCalls)+', over '+(G?G.over:'no raid')+')');
        if(!card||ttl!=='ABANDONED'||sub.indexOf('HOST')<0||sub.indexOf('ABANDON')<0) bad.push('the run card does not say the host left (card '+card+', title '+ttl+', line: '+sub+')');

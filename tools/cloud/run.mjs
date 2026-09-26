@@ -3,6 +3,7 @@
 //   node tools/cloud/run.mjs check FILE V [N]      runs every __REGRESS entry with v===V, N times (default 2)
 //   node tools/cloud/run.mjs verify FILE           __verifySafe(): pass, ents, containers
 //   node tools/cloud/run.mjs range FILE A B        __regressBg(A,B) slice, prints summary and fails
+//   node tools/cloud/run.mjs net FILE [run|runsame] nettest.html?f=FILE, presses RUN or RUN SAME MACHINE, prints the result and log
 // FILE is a name inside tools/. Exit code 0 only when the result is PASS.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -59,6 +60,15 @@ try {
     await page.waitForFunction(() => window.__PROG && window.__PROG.finished, null, { timeout: 0, polling: 2000 });
     const r = await page.evaluate(() => __PROG.res);
     console.log(r.summary); r.fail.forEach(f => console.log('  ' + f.slice(0, 400))); ok = r.pass;
-  } else { console.log('usage: parse|check|verify|range'); }
+  } else if (cmd === 'net') {
+    const btn = '#' + (a3 || 'run');
+    page.on('popup', p => p.setViewportSize({ width: 1920, height: 1080 }).catch(() => {}));
+    await page.goto(base + 'nettest.html?f=' + encodeURIComponent(file), { waitUntil: 'load' });
+    await page.waitForFunction(b => { const e = document.querySelector(b); return e && !e.disabled; }, btn, { timeout: 180000 });
+    await page.click(btn);
+    await page.waitForFunction(() => /^(PASS|FAIL)/.test(document.title), null, { timeout: 600000, polling: 1000 });
+    ok = (await page.title()).startsWith('PASS');
+    console.log(await page.textContent('#result')); console.log((await page.textContent('#log')).split('\n').slice(-80).join('\n'));
+  } else { console.log('usage: parse|check|verify|range|net'); }
 } catch (e) { console.log('driver error: ' + e.message); }
 await browser.close(); srv.close(); process.exit(ok ? 0 : 1);

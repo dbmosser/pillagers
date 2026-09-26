@@ -40024,6 +40024,41 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v15.91 - LOOT PER PLAYER, THE HOST LEAVING ENDS THE RUN, AND THE PARTY GOES UP TOGETHER
+
+Multiplayer, phase 3, build 1 (tools/multiplayer/plan.md phase 3 with critique.md), his order of 2026-09-25 and his rulings.
+
+HIS PLAYTEST. He saw his partner in the Undercroft, and the two of them went up into different raids. ascendNow, the quick
+ascent and startRaid had no party test, so a guest who took the lift built its own raid on its own seed, and the host word
+that followed found it up top already (netUpBusy) and was turned away. Now a guest linked to a host is held at the lift
+(netGuestHeld) before its kit is committed or a window shut, with the line Your host takes the party up. Stay here and you go
+up together, and goes up on the host word (netUpStart sets NET.upHold, which the guard lets through). A guest whose link is
+gone ascends alone as ever.
+
+LOOT PER PLAYER. Every container is numbered at the build on every window alike (netContInit) and the host owns container
+state. A held E on a numbered box on a linked window asks the host ({t:'srch'}); the host grants it when nobody else holds
+the box (one searcher per box), runs the search on the searcher slow factor with the staged pulls the play path makes, and
+sends each item to that seat ({t:'loot'}), which lands through openContainer on that window, in its own backpack, belt and
+gun slots. The box then reads open for everyone ({t:'cont'}). A window that comes up late is told the whole state. The hot
+ground bonus is not rolled for a search one of the party makes: it is a seeded draw the net code must not make.
+
+THE HOST LEAVING, HIS RULING. When the host raid ends for any reason, a bye from the host, or a lost host link, a linked window
+up top on that seed ends as ABANDON through its own endRaid, coming back empty on its own save, with YOUR HOST LEFT THE
+SURFACE. THE RUN ENDS AS ABANDONED FOR THE WHOLE PARTY. on its run card. A linked window's own extraction, death or abandon
+ends nobody else. Found live: the host's own out word (netUpEnd) names no seat, and netUpWord on a linked window refused a word
+with no seat as bad, so the host leaving never reached it; a word with no seat is now seat 0.
+
+Solo play untouched: every new line is behind NET.on, and nothing draws from the seeded stream. No number moved.
+
+MEASURED. Check 15.91 (loot and host leaving) and check 15.91 (the lift) pass twice and fail on v15.90; the lift check's
+control arm reproduced his bug (ascendNow, startRaid and the quick ascent each built a raid of their own on a new seed).
+Live, headless Chromium in the cloud: nettest.html RUN passes; RUN SAME MACHINE passes 5 of 5 (up top on the same seed and
+fingerprint, loot from a real E hold lands only in player 2, both copies agree the box is searched, and player 2 ends as
+ABANDONED 88 ms after the host abandons). The nettest loot step now counts items granted (G.tel.items) rather than backpack
+length, since ammo and guns do not go to the backpack.
+
+Not verified: two real PCs over the internet.
+
 ## v15.90 - PILLAGERS NEVER SPAWN INSIDE A LOCKED ROOM
 
 Doors audit finding (MEDIUM), entry 8 of the confirmed list.

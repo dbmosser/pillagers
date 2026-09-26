@@ -431,7 +431,10 @@ C must end as ABANDONED within 2 s with the host left line on its run card.</p>
   function boxOf(f,cid){ var v=W(f).__net.cont(), i; for(i=0;i<v.list.length;i++) if(v.list[i].cid===cid) return v.list[i]; return null; }
   function lootStep(A,C,bad,rep){
     if(typeof A.__net.cont!=='function'||typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'){ bad.push('this fixture has no container view in its net handle (a build before v15.91), so the loot step cannot run'); return Promise.resolve(); }
-    var vc=C.__net.cont(), va=A.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, t0=0, tA=null, tC=null, tBag=null, bagC0=0, bagA0=0, n=0, ba=null;
+    var vc=C.__net.cont(), va=A.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, t0=0, tA=null, tC=null, tBag=null, bagC0=0, bagA0=0, itC0=0, n=0, ba=null;
+    // Items granted to C are counted on its own run tally (G.tel.items, one per item grantLoot hands over), not its backpack
+    // length: ammo goes to the reserve and a gun to a weapon slot, so a box of ammo landed in C with its backpack unchanged.
+    function itemsC(){ try{ var g=C.__state(); return (g&&g.tel)?(g.tel.items|0):0; }catch(e){ return 0; } }
     log('loot: A holds '+va.n+' boxes ('+va.numbered+' numbered, owns them for the party: '+va.host+'); C holds '+vc.n+' ('+vc.numbered+' numbered, searches through the host: '+vc.peer+')');
     if(!va.host) bad.push('loot: copy A does not own the boxes for the party');
     if(!vc.peer) bad.push('loot: copy C does not search through the host');
@@ -440,7 +443,7 @@ C must end as ABANDONED within 2 s with the host left line on its run card.</p>
     ba=boxOf(fa,box.cid); n=ba?ba.n:0;
     log('loot: the nearest unopened box to C is number '+box.cid+' ('+box.ty+') at '+xy(box)+', '+Math.round(bd)+' units off; A lists '+n+' items in it, '+(ba?ba.tm:'?')+' s to search');
     if(!ba||!n){ bad.push('loot: copy A lists no items in box '+box.cid); return Promise.resolve(); }
-    bagC0=vc.bag.length; bagA0=va.bag.length;
+    bagC0=vc.bag.length; bagA0=va.bag.length; itC0=itemsC();
     C.__net.stand(box.x+6,box.y);
     clearFloor(fc);
     // C's next word tells A where it now stands, so the request is not refused as far away.
@@ -449,17 +452,17 @@ C must end as ABANDONED within 2 s with the host left line on its run card.</p>
       t0=Date.now();
       held=hold(fc,'KeyE','e',holdMs);
       watch=wait(function(){
-        var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid), bc=C.__net.cont().bag.length;
+        var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid), bc=itemsC()-itC0;
         if(a&&a.op&&tA===null) tA=Date.now();
         if(c&&c.op&&tC===null) tC=Date.now();
-        if(bc>=bagC0+n&&tBag===null) tBag=Date.now();
+        if(bc>=n&&tBag===null) tBag=Date.now();
         return (tA!==null&&tC!==null&&tBag!==null)?true:null;
       },holdMs+1500,'the box to read searched on both copies with the loot in C');
       return Promise.all([held,watch]);
     }).then(function(){
-      var vc2=C.__net.cont(), va2=A.__net.cont(), bc=vc2.bag.length-bagC0, a=boxOf(fa,box.cid);
+      var vc2=C.__net.cont(), va2=A.__net.cont(), bc=itemsC()-itC0, a=boxOf(fa,box.cid);
       rep.lootItems=bc; rep.lootMs=Math.max(Math.abs(tA-tBag),Math.abs(tC-tBag),Math.abs(tA-tC));
-      log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C own backpack '+JSON.stringify(vc2.bag)+'; A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
+      log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C (its backpack now '+JSON.stringify(vc2.bag)+'); A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
       if(bc!==n) bad.push('loot: '+bc+' items landed in C, not the '+n+' A listed');
       if(rep.lootMs>500) bad.push('loot: the copies took '+rep.lootMs+' ms to agree the box is searched with the loot in C (the limit is 500)');
       if(va2.bag.length!==bagA0) bad.push('loot: copy A own backpack gained '+(va2.bag.length-bagA0)+' from C search');
@@ -527,7 +530,7 @@ C must end as ABANDONED within 2 s with the host left line on its run card.</p>
       // host leaving counts as abandon for everyone; before v15.91 C's raid went on and C only stopped drawing A).
       var tq=Date.now();
       A.__endRaid('abandon'); try{ A.__topClear(); }catch(e){}
-      return wait(function(){ var u=C.__net.up(), t=el(fc,'oc_title'), s=el(fc,'oc_sub'); return (u.over==='abandon'&&t&&t.textContent==='ABANDONED'&&s&&(/HOST/).test(s.textContent))?s.textContent:null; },2000,'copy C to end as ABANDONED with the host left line after A abandoned').then(function(line){
+      return wait(function(){ var u=C.__net.up(), t=el(fc,'oc_title'), s=el(fc,'oc_sub'); return (u.over&&t&&t.textContent==='ABANDONED'&&s&&(/HOST/).test(s.textContent))?s.textContent:null; },2000,'copy C to end as ABANDONED with the host left line after A abandoned').then(function(line){
         rep.hostLeftMs=Date.now()-tq;
         log('raid: A abandoned; C ended as ABANDONED '+rep.hostLeftMs+' ms later with the line: '+line+'; C PARTY status: '+(st(fc).status||''));
         var v=upView(fc,sa); if(v&&v.shown) bad.push('raid: C still draws A after both raids ended');

@@ -1,0 +1,11 @@
+v15.91: loot per player, the host leaving ends the run, and the party goes up together
+
+From his playtest: a party guest could take the lift alone and went
+up into a different raid than the host. A guest linked to a host is
+now held at the lift and goes up on the host word. Boxes are owned by
+the host, one searcher per box, and the loot lands with whoever
+searched. The host leaving ends the run as abandoned for the whole
+party, which never reached a linked window live because the host out
+word names no seat. No number moved.
+
+Check 15.91 (two entries). Fails on v15.90. Live same machine test 5 of 5.
