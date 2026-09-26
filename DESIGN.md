@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.11 - CO-OP FIXES FROM THE BACKCHECK
+
+A backcheck of this session's builds found these in the co-op code (v16.04, v16.05, v16.06, v16.09). Each is fixed here.
+
+1. A SHARED PAUSE STOPPED THE STORM. v16.04 made a pause in a shared raid an overlay, but strikeTick still returned on
+G.paused, so a paused window held its bolts; since v16.06 a paused host held them for the whole party, which then saw a bolt land
+late with no warning ring. strikeTick now runs through a shared pause.
+2. YES, ABANDON COULD TURN A DEATH INTO AN ABANDON IN CO-OP. ABANDON refused a downed or dying player but the confirm did not; in
+solo nothing can put him down between the two presses, in a shared raid the world runs on under the box. The confirm now refuses
+the same states and shows the bleeding line.
+3. THE PICK-UP DID NOT TAKE E. netRevHold ran and every other E act still saw E, so a pick-up held inside an open ring called the
+extraction after 1.6 s (or searched a box); and after the pick-up was sent, E held on started a fresh one over the You pull line.
+netRevHold now returns true while E works a pick-up, the caller takes E off for that step and the loop hands it back, and after a
+pick-up E held on stays on that teammate (G.netRevDone) until let go.
+4. THE HOST WORD (v16.06) sent a ring that never closes as closeAt null, which the ring code reads as a closing time of 0 (a
+warning at two minutes and a countdown); it now stays undefined. It cut a pull this player had begun, against the v11.98 order;
+a ring this player is pulling in is now left alone. And it moved the ring pointer off this player's own call (the v12.57 bug);
+the pointer now moves only when this window has no call running, on the host too.
+5. MUTE BESIDE THE HOST DID NOTHING on a friend's window: the link to the host had no player id. The welcome now gives it one.
+
+Check 16.05 restaged: its hold now runs the way the loop runs (a pick-up takes E, the loop gives it back) and lets go between
+holds, so it now also tests that letting go restarts the pick-up.
+
+No number, dial, loot table or seeded draw moved; map building untouched; solo play meets only fix 2, the same rule ABANDON keeps.
+
+MEASURED. Check 16.11 passes twice and fails on v16.10 in seven arms (storm held, confirm while down, extraction called, closeAt
+null, pull cut, pointer moved, host id). Checks 15.79, 15.80, 15.91, 16.04, 16.05, 16.06, 16.09 pass on the dry build; nettest
+RUN SAME MACHINE passes.
+
 ## v16.10 - VOICES CARRY BY DISTANCE UP TOP
 
 Multiplayer, plan.md (in the raid, voices get quieter with distance) with the curve in net.md section 4.

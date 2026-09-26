@@ -1,0 +1,11 @@
+v16.11: co-op fixes from the backcheck
+
+A shared pause no longer holds the storm. YES, ABANDON refuses a
+player who went down after arming it. Holding E over a downed teammate
+takes E, so it no longer calls the extraction or searches a box, and
+holding on after the pick-up sends nothing twice. The host word no
+longer cuts your pull, no longer makes a ring that never closes look
+like it closes, and no longer moves your called ring. MUTE beside the
+host works. No number moved.
+
+Check 16.11. Fails on v16.10. Check 16.05 restaged to the real loop.
