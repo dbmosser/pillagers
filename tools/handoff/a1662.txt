@@ -1,0 +1,1 @@
+| PLAYER 2 CANNOT REVIVE A PILLAGER THE HOST RUNS | v16.62 | STABILITY (co-op hunt 2026-09-27, confirmed 2 of 2). FIX: the downed pillager scan in updatePlayer skips net copies. MEASURED: 16.62 passes, fails on v16.61 |

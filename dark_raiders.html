@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.61';
+var VER='16.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16475,7 +16475,10 @@ if(!p.fired||p.wep.auto){
   var downRdr=null;
   for(var dr=0;dr<G.ents.length;dr++){
     var DE=G.ents[dr];
-    if(DE.kind==='raider'&&DE.downed&&dist(p,DE)<64){ downRdr=DE; break; }
+    // v16.62, stability (co-op hunt): a body on a linked window is a copy of one the host runs (net). Picking it up happened on
+    // that window alone: the child was paid the gun in the man's hands (so it existed twice), his standing and revive tally
+    // went up and were saved, and the next word from the host put the man back down. Copies are no longer picked up here.
+    if(DE.kind==='raider'&&DE.downed&&!DE.net&&dist(p,DE)<64){ downRdr=DE; break; }
   }
   G.nearDown=downRdr;
   if(downRdr&&keys['KeyE']&&!G.revLock){
@@ -31221,7 +31224,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.61: PINGING TWICE MARKS DANGER, AS THE CONTROLS LEGEND SAYS. Stability pass before a co-op session. The legend says a second ping in quick succession marks danger, but a limit of one ping each half second stood in front of it and threw the second press away, so danger never came. The double press is now read first. Check 16.61 fails on v16.60',
+  now:'v16.62: PLAYER 2 CANNOT REVIVE A PILLAGER THE HOST RUNS. Stability pass before a co-op session. On the player 2 window a downed pillager is a copy of the one the host runs, and picking him up happened on that window alone: the child was handed the gun in the man hands (so the gun existed twice), his standing and revive count went up and were saved, and the man fell back down a moment later. The REVIVE prompt no longer shows on those copies. Check 16.62 fails on v16.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

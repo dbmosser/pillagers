@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.62',what:'on a linked window a downed pillager copy run by the host is not offered for pick up, while a downed pillager of its own still is',
+   run:function(){
+     if(typeof updatePlayer!=='function'||typeof netEntMake!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no body copies';
+     var bad=[], cp=null, loc=null, k0=null;
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       k0=keys; keys={};
+       cp=netEntMake(990001,'raider',G.player.x+20,G.player.y); cp.downed=1;
+       G.ents.push(cp); G.nearDown=null; updatePlayer(0.016);
+       if(G.nearDown===cp) bad.push('a downed pillager copy the host runs is offered for pick up on this window');
+       G.ents.splice(G.ents.indexOf(cp),1);
+       loc=netEntMake(990002,'raider',G.player.x+20,G.player.y); loc.downed=1; delete loc.net;
+       G.ents.push(loc); G.nearDown=null; updatePlayer(0.016);
+       if(G.nearDown!==loc) return 'SKIP: staging: a downed pillager of this window was not offered either, so the scan did not run';
+       G.ents.splice(G.ents.indexOf(loc),1);
+     } finally { try{ if(k0) keys=k0; if(G&&G.ents){ if(cp&&G.ents.indexOf(cp)>=0) G.ents.splice(G.ents.indexOf(cp),1); if(loc&&G.ents.indexOf(loc)>=0) G.ents.splice(G.ents.indexOf(loc),1); G.nearDown=null; } __endRaid('abandon'); __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.61',what:'pinging twice in quick succession marks the ping as danger, as the controls legend says, and a third press does nothing more',
    run:function(){
      if(typeof netPingMake!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no ping';

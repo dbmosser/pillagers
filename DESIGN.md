@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.62 - PLAYER 2 CANNOT REVIVE A PILLAGER THE HOST RUNS
+
+Stability pass before his co-op session (co-op hunt, confirmed by two verifiers). On a linked window every body is a copy the
+host runs (netEntMake, net:1). The downed pillager scan in updatePlayer did not skip them, so the REVIVE prompt showed and
+X (E) picked the copy up on that window alone: the child was paid the gun in the man hands (the gun then existed twice),
+his standing and revive tallies rose and were saved, and the next host word put the man back down. The scan now skips net
+copies; the host and solo play are unchanged. A real pick up by player 2 needs a word to the host and is later work.
+
+MEASURED. Check 16.62 passes, and fails on v16.61.
 ## v16.61 - PINGING TWICE MARKS DANGER, AS THE CONTROLS LEGEND SAYS
 
 The controls legend says DPAD UP ping (twice: danger), but netPingMake answered every press inside 0.5 s with nothing

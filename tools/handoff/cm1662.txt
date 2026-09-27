@@ -1,0 +1,9 @@
+v16.62: player 2 cannot revive a pillager the host runs
+
+On the player 2 window a downed pillager is a copy; picking him up
+happened there alone, paid the child a copy of the gun and was undone at
+once. The prompt no longer shows on copies.
+
+Check 16.62. Fails on v16.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
