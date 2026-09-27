@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.71 - THE WHAT IS NEW CARD CARRIES THE REST OF THE STABILITY PASS
+
+The card was written at v16.54 and had fallen sixteen builds behind (check 16.54 failed on the fifteen build rule). Its
+STEADIER CO-OP line now also names the later fixes: a teammate on his run card goes up with the party, searches and enemy
+sounds go on after the host leaves, a pick up is called revived only once it took, pinging twice marks danger, and B backs
+out of the map and the backpack.
+
+MEASURED. Check 16.71 passes, and fails on v16.70.
 ## v16.70 - A SPECTATING HOST BACK IN THE UNDERCROFT NEVER LETS THE RAID GO
 
 Stability pass before his co-op session. The host lets the kept raid go only when netSpecTick finds nobody up top, and it decides that with netUpShown, which needs the teammate's age to be under NET_HUB_STALE (3 s). That age is reset by each position word in netOnState. The only place it goes up is netUpTick, and the loop calls netUpTick only when state is raid and G is set and not a sim (inside netUpTick the test is G and not G.sim). On his run card the host still has G, so words age there and a quiet teammate goes stale after 3 s. Once he presses the card button, G is null and state is hub, and after that nothing ages NET.up. The netUpWord handler clears an entry only on a spec word, an out word or a no word, and a dropped link is covered by netSeatName and netInCount. So an entry that stays set after his run has ended stays fresh for good. One way that happens: his last position word goes on the fast channel, which is unordered with no resends, and can arrive after his out word on the reliable channel. netOnState then files him again with age 0 and the raid seed, because NET.upSeed is not cleared while the host spectates. Another way: a teammate window that stops drawing. Either way NET.specG is never let go, and every later ascent hits netGuestHeld: Cannot ascend while your party is still in the raid.

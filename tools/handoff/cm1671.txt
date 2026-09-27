@@ -1,0 +1,8 @@
+v16.71: the what is new card carries the rest of the stability pass
+
+It had fallen sixteen builds behind; its STEADIER CO-OP line now names
+the later fixes too.
+
+Check 16.71. Fails on v16.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

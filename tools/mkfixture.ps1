@@ -5721,6 +5721,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.71',what:'the what is new card is current again: within fifteen builds, and its STEADIER CO-OP line carries the rest of the stability pass',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vCard>16.71+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
+     if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
+     var b=String(L[3]||'').toUpperCase();
+     ['RUN CARD GOES UP WITH THE PARTY','ENEMIES STAY AUDIBLE','REVIVED ONLY ONCE IT TOOK','TWICE MARKS DANGER','SEARCH KEEPS RUNNING','PAUSE BOX SHUTS','SHUTS THE MAP','GREYED OUT'].forEach(function(w){ if(b.indexOf(w)<0) bad.push('the stability line does not say '+w.toLowerCase()); });
+     if(String(L[1]||'').toUpperCase().indexOf('YOUR PARTY GOES UP TOGETHER')<0) bad.push('the co-op line is no longer second');
+     if(String(L[2]||'').toUpperCase().indexOf('CHOOSES A KIT')<0) bad.push('the party line is no longer third');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.70',what:'a spectating host back in the Undercroft lets the kept raid go once his teammate stops sending, as he already did on his run card, so a later ascent is not refused for good',
    run:function(){
      if(typeof netSpecTick!=='function'||typeof netSpecStart!=='function'||typeof netOnState!=='function'||typeof netUpTick!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no spectating host';

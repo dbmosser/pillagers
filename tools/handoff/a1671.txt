@@ -1,0 +1,1 @@
+| THE WHAT IS NEW CARD CARRIES THE REST OF THE STABILITY PASS | v16.71 | CARD (0.16 behind). STEADIER CO-OP line extended. MEASURED: 16.71 passes, fails on v16.70 |

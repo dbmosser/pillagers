@@ -1,0 +1,8 @@
+## v16.71 - THE WHAT IS NEW CARD CARRIES THE REST OF THE STABILITY PASS
+
+The card was written at v16.54 and had fallen sixteen builds behind (check 16.54 failed on the fifteen build rule). Its
+STEADIER CO-OP line now also names the later fixes: a teammate on his run card goes up with the party, searches and enemy
+sounds go on after the host leaves, a pick up is called revived only once it took, pinging twice marks danger, and B backs
+out of the map and the backpack.
+
+MEASURED. Check 16.71 passes, and fails on v16.70.
