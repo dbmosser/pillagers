@@ -1,0 +1,7 @@
+v16.86: a teammate who has left is never waited for
+
+A TEAMMATE WHO HAS LEFT IS NEVER WAITED FOR. From his report during his co-op session (player 1 could not get out after player 2 had extracted). After player 2 extracted, a last position word from his window could arrive after his extraction word and make the host think he was still up top, so the host was parked watching the raid for a teammate who had already gone. A teammate whose extraction word has arrived is now never waited for, and the host run ends outright.
+
+Check 16.86. Fails on v16.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

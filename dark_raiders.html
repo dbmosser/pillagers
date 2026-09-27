@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.85';
+var VER='16.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31385,7 +31385,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.85: A PICKS UP, A PLACES ON THE STASH SCREEN. His report during his co-op session: on the Stash screen a controller could only move things between the backpack and the stash, and the tactical belt was out of reach. Now A picks up the item under the highlight, the D-pad walks the highlight to a backpack cell, a stash cell or a belt key, and A there places it, exactly as a mouse drag does; B lets it go. Check 16.85 fails on v16.84',
+  now:'v16.86: A TEAMMATE WHO HAS LEFT IS NEVER WAITED FOR. From his report during his co-op session (player 1 could not get out after player 2 had extracted). After player 2 extracted, a last position word from his window could arrive after his extraction word and make the host think he was still up top, so the host was parked watching the raid for a teammate who had already gone. A teammate whose extraction word has arrived is now never waited for, and the host run ends outright. Check 16.86 fails on v16.85',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35278,6 +35278,7 @@ function netReset(keepErr){
   NET.pend=null; NET.on=false; NET.role=null; NET.seat=-1; NET.roster=[]; NET.code=''; NET.reply=''; NET.codeLen=0; NET.busy=false;
   NET.floor=[]; NET.hubAcc=0; NET.hubN=0; NET.lkSent='';   // v15.75: nobody is left standing on the floor
   NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;   // v15.79: and nobody up top
+  NET.upOut={};   // v16.86: and no seat is marked out
   netShDrop();   // v16.74, his order: the Superhot dial goes back to this window own word when the party ends
   NET.entMap={}; NET.entGone={}; NET.entN=0; NET.entRot=0; NET.entLast=-1;   // v15.80: and no body is numbered
   NET.contMap={}; NET.contN=0; NET.contN0=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;   // v15.91: and no container is numbered or held
@@ -36065,6 +36066,15 @@ function netUpWord(peer,m){
   else return 'off';
   if(s<0||s>=NET.max||s===NET.seat) return 'ignored';
   if(st!=='in') NET.up[s]=null;
+  // v16.86, HIS REPORT (two players, one PC): the host could not extract while downed after player 2 had extracted. His
+  // pull on the floor is the same pull as standing and nothing the out word does touches the rings; the one party test in
+  // the host extraction is netSpecStart, which keeps the raid running for a teammate still up top. A last position word
+  // from the window whose raid ended can land after its out word (the fast channel is unordered, v16.70 saw it) and files
+  // that seat up top again for NET_HUB_STALE seconds, so a host extraction inside that window was parked spectating for a
+  // party that had already left. The seat is marked out on this raid seed; netSpecStart waits for nobody so marked
+  // (netUpGone) until he comes up again (in), and the end of the raid or of the party clears the marks.
+  if(!NET.upOut) NET.upOut={};
+  NET.upOut[s]=(st==='in')?0:(NET.upSeed>>>0);
   if(NET.role==='join'&&st==='out'&&s===0) netHostGone('out');   // v15.91: the host raid ended with nobody left to run it: abandon for the whole party
   // v16.74, his order: the host is not gone when he spectates (v16.14): his run ended and he keeps the raid running for the
   // party. A friend read Host has left the raid while the host was still on his KILLED IN ACTION card. Now the party status
@@ -36092,6 +36102,7 @@ function netUpEnd(how){
   NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;
   NET.entMap={}; NET.entGone={}; NET.entN=0; NET.entRot=0; NET.entLast=-1;   // v15.80: the bodies of this raid are let go
   NET.contMap={}; NET.contN=0; NET.contN0=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;   // v15.91: and the containers
+  NET.upOut={};   // v16.86: the raid is let go, and with it every seat marked out on it
   netBroadcast({t:'up',st:'out',how:netClean(how,12)});
   return true;
 }
@@ -36135,6 +36146,9 @@ function netUpTick(dt){
   return sent;
 }
 function netUpShown(g){ return !!g&&g.n>0&&g.age<NET_HUB_STALE&&g.seat!==NET.seat&&netSeatName(g.seat)!==null&&!!NET.upSeed&&g.sd===(NET.upSeed>>>0); }
+// v16.86: a seat whose raid on this seed ended (its out word came) and that has not come up again since. A last position
+// word of his landing after the out word still draws him for a moment (check 15.79 counts on that); he is nobody to wait for.
+function netUpGone(g){ return !!g&&!!NET.upOut&&!!NET.upOut[g.seat]&&NET.upOut[g.seat]===(g.sd>>>0); }
 // v16.38, HIS NOTE: the host screen should clearly say You are hosting, do not quit. Is this window hosting a raid its party is in?
 // Then the pause box says so, and closing the window asks first (the browser's own leave page question).
 function netHostHolds(){
@@ -36984,6 +36998,7 @@ function netSpecStart(how){
   var i, n=0;
   if(NET.role!=='host'||typeof G==='undefined'||!G||G.sim||!NET.upSeed||(G.seed>>>0)!==(NET.upSeed>>>0)||!netInCount()) return false;
   for(i=0;i<NET.up.length;i++) if(netUpShown(NET.up[i])) n++;
+  for(i=0;i<NET.up.length;i++) if(netUpShown(NET.up[i])&&netUpGone(NET.up[i])) n--;   // v16.86: a teammate whose out word came on this seed is not waited for, whatever his last position word filed
   if(!n) return false;
   NET.specG=G; NET.specHow=String(how||'extract'); NET.specAcc=0; NET.specIdle=0; NET.specErr=0;
   if(G.player) G.player.specOut=1;

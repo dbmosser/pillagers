@@ -1,0 +1,1 @@
+| A TEAMMATE WHO HAS LEFT IS NEVER WAITED FOR | v16.86 | STABILITY (drafted and reviewed by agents 2026-09-27). MEASURED: 16.86 passes, fails on v16.85 |
