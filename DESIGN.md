@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.32 - PLAYER 2 SEARCH BAR COUNTS ITEMS
+
+His note of 2026-09-27: player 2 looting shows no item names. The live two window test (tools/nettest.html, now recording what
+player 2 reads while it searches) shows the Took lines naming each item do reach player 2. What player 2 lacked was the count over
+the search bar ("2 items left"): its copy of a box is made from the host word and holds no list. The host already sent the count
+with each box and each granted search; player 2 now keeps it, lowers it as each item comes out, and the bar reads it.
+
+MEASURED. Check 16.32 passes and fails on v16.31. The live net test passes with the Took lines on player 2.
 ## v16.31 - CHECK 15.24 FOLLOWS HIS NEWER NOTE
 
 Correction. v16.30 made the clock alarms quieter on his note of 2026-09-27, but check 15.24 (his v15.24 note: the clock warning must

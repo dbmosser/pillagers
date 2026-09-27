@@ -448,7 +448,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
   function boxOf(f,cid){ var v=W(f).__net.cont(), i; for(i=0;i<v.list.length;i++) if(v.list[i].cid===cid) return v.list[i]; return null; }
   function lootStep(A,C,bad,rep){
     if(typeof A.__net.cont!=='function'||typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'){ bad.push('this fixture has no container view in its net handle (a build before v15.91), so the loot step cannot run'); return Promise.resolve(); }
-    var vc=C.__net.cont(), va=A.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, t0=0, tA=null, tC=null, tBag=null, bagC0=0, bagA0=0, itC0=0, n=0, ba=null;
+    var vc=C.__net.cont(), va=A.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, t0=0, tA=null, tC=null, tBag=null, bagC0=0, bagA0=0, itC0=0, n=0, ba=null, msgs=[];
     // Items granted to C are counted on its own run tally (G.tel.items, one per item grantLoot hands over), not its backpack
     // length: ammo goes to the reserve and a gun to a weapon slot, so a box of ammo landed in C with its backpack unchanged.
     function itemsC(){ try{ var g=C.__state(); return (g&&g.tel)?(g.tel.items|0):0; }catch(e){ return 0; } }
@@ -465,11 +465,12 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     clearFloor(fc);
     // C's next word tells A where it now stands, so the request is not refused as far away.
     return sleep(250).then(function(){
-      var holdMs=Math.round((ba.tm||1)*1200+600), held, watch;
+      var holdMs=Math.round((ba.tm||1)*1200+600), held, watch; msgs=[];
       t0=Date.now();
       held=hold(fc,'KeyE','e',holdMs);
       watch=wait(function(){
-        var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid), bc=itemsC()-itC0;
+        var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid), bc=itemsC()-itC0, gm;
+        try{ gm=C.__state(); if(gm&&gm.msg&&msgs.indexOf(gm.msg)<0) msgs.push(gm.msg); }catch(_m){}
         if(a&&a.op&&tA===null) tA=Date.now();
         if(c&&c.op&&tC===null) tC=Date.now();
         if(bc>=n&&tBag===null) tBag=Date.now();
@@ -478,6 +479,8 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       return Promise.all([held,watch]);
     }).then(function(){
       var vc2=C.__net.cont(), va2=A.__net.cont(), bc=itemsC()-itC0, a=boxOf(fa,box.cid);
+      rep.lootMsgs=msgs; log('loot: C read these lines while it searched: '+JSON.stringify(msgs));
+      if(!msgs.some(function(q){ return (/^Took /).test(q); })) bad.push('loot: C never read a Took line naming what it pulled');
       rep.lootItems=bc; rep.lootMs=Math.max(Math.abs(tA-tBag),Math.abs(tC-tBag),Math.abs(tA-tC));
       log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C (its backpack now '+JSON.stringify(vc2.bag)+'); A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
       if(bc!==n) bad.push('loot: '+bc+' items landed in C, not the '+n+' A listed');

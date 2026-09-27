@@ -1431,7 +1431,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.31';
+var VER='16.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25988,7 +25988,7 @@ ctx.fillStyle='#4de3d0';
       // gamble is whether the time is worth it. The bar keeps a neutral amber
       // instead of glowing with what is still in the box.
       var _sc=G.searching;
-      var _left=_sc.loot?_sc.loot.length:0;
+      var _left=(_sc.net&&typeof _sc.netLeft==='number')?_sc.netLeft:(_sc.loot?_sc.loot.length:0);   // v16.32: a box on a linked window holds no list, only the count the host sends
       var _bc='#ffc04a';
       bar(s2.x-30,s2.y-8,60,6,G.searchT/_sc.time,_bc);
       if(_left>0){
@@ -31143,7 +31143,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.31: CHECK 15.24 FOLLOWS HIS NEWER NOTE. v16.30 made the clock alarms quieter on his note; check 15.24 still demanded they be louder than the machine alarm, and v16.30 shipped with it failing, which its notes wrongly said passed. The check now reads what keeps the warning distinct, its three rising sweeps, and that it is quieter than it was. No game change beyond a comment. Check 16.31 fails on v16.30',
+  now:'v16.32: PLAYER 2 SEARCH BAR COUNTS ITEMS. His note: player 2 looting shows no item names. The live two window test shows the Took lines do reach player 2; what player 2 lacked was the count over the search bar (2 items left), because its copy of a box holds no list. The host now sends the count with each box and each granted search, and it falls as each item comes out. Check 16.32 fails on v16.31',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36804,7 +36804,7 @@ function netSrchAnswer(peer,m){
   if(!netContPeer()) return 'down';
   if(!s||s.cid!==(m.cid|0)) return 'stale';
   ct=netContOf(s.cid);
-  if(m.ok){ s.ok=1; if(ct&&typeof m.prog==='number'&&isFinite(m.prog)) ct.prog=clamp(m.prog,0,ct.time||1); return 'srch:ok'; }
+  if(m.ok){ s.ok=1; if(ct&&typeof m.prog==='number'&&isFinite(m.prog)) ct.prog=clamp(m.prog,0,ct.time||1); if(ct&&typeof m.n==='number'&&m.n>=0) ct.netLeft=m.n|0; return 'srch:ok'; }
   NET.srch=null;
   if(ct&&G.searching===ct){ G.searching=null; G.searchT=0; }
   why=netClean(m.why,12);
@@ -36948,6 +36948,7 @@ function netLootTake(peer,m){
   at=ct||{x:G.player.x,y:G.player.y};
   if(items.length){
     where=openContainer(at,items);
+    if(ct&&typeof ct.netLeft==='number') ct.netLeft=Math.max(0,ct.netLeft-items.length);   // v16.32: the count on the bar falls as each item comes out
     if(!G.sim){
       say('Took '+items.map(function(q){ return ITEMS[q].name; }).join(', ')+'.');
       if(where) sayWhenFree(where);
@@ -37010,6 +37011,7 @@ function netContMake(cid,m){
   ct={cid:cid,net:1,x:clamp(x,-9000,NET_UP_MAX),y:clamp(y,-9000,NET_UP_MAX),r:15,type:ty,d:(typeof m.d==='number'&&m.d>=0)?(m.d|0):-1,loot:[],opened:!!m.op,
       time:(isFinite(tm)&&tm>0)?clamp(tm,0.2,20):1,best:'common',rot:0,pulled:0,prog:0,netBy:-1};
   if(m.ca) ct.cache=1; if(m.sg) ct.strong=1; if(m.cp) ct.camp=1; if(m.dr) ct.dropped=1;
+  if(typeof m.n==='number'&&m.n>=0) ct.netLeft=m.n|0;   // v16.32, his note: player 2 search bar shows how many items are left, as player 1 does
   if(typeof m.tag==='string'&&m.tag) ct.tag=netClean(m.tag,24);
   return ct;
 }

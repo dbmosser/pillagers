@@ -5721,6 +5721,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.32',what:'player 2 search bar counts the items left: a box made from the host word keeps the count, and a loot word lowers it',
+   run:function(){
+     if(typeof netContMake!=='function') return 'SKIP: no net containers in this build';
+     var ct=netContMake(99001,{ty:'crate',x:10,y:10,tm:1,n:3});
+     if(!ct) return 'netContMake refused a plain crate word';
+     if(ct.netLeft!==3) return 'a box made from a host word with n 3 holds count '+ct.netLeft+', not 3';
+     var src='', i;
+     try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
+     var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
+     if(src.indexOf("ct.netLeft=Math.max(0,ct.netLeft-items.length)")<0) return 'a loot word does not lower the count';
+     if(src.indexOf("(_sc.net&&typeof _sc.netLeft==='number')?_sc.netLeft")<0) return 'the search bar does not read the count on a linked window';
+     return null; }},
   {v:'16.31',what:'check 15.24 follows his newer note: the clock warning is distinct by its three rising sweeps and quieter than the old .12',
    run:function(){
      var src='', i;

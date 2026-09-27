@@ -1,0 +1,1 @@
+| PLAYER 2 SEARCH BAR COUNTS ITEMS | v16.32 | HIS NOTE: player 2 looting shows no item names. FOUND: Took lines reach player 2 (live net test); the items-left count over the bar did not (no list on player 2's copy). FIX: keep the host count, lower it per item. MEASURED: 16.32 passes, fails on v16.31; net test PASS |

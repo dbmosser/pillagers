@@ -1,0 +1,8 @@
+v16.32: player 2 search bar counts items left
+
+Player 2 copy of a box holds no list, so the items-left count over
+the search bar never showed. It now keeps the count the host sends
+and lowers it as each item comes out. The live net test also records
+the lines player 2 reads while it searches.
+
+Check 16.32. Fails on v16.31.
