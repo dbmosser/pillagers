@@ -70,7 +70,7 @@ c. [done v16.30] The 5-minutes-left alarm (and the other clock alarms) are far t
 d. [warning done v16.38; host migration not built] Host leaving: either player 2 takes over as host, or the host's screen clearly says You are hosting. Quitting ends the raid for
    your party. (Do the warning first; host migration is large.)
 e. Something blocks player 2's face in the Undercroft: not found yet (name tag uses the station camera; ask him for a screenshot).
-f. One hit of blotter should be less intense; blotter and liquor should affect the menu screens too.
+f. [done v16.39] One hit of blotter should be less intense; blotter and liquor should affect the menu screens too.
 g. Frame rate: improve it without losing anything (profile render2D and updateEnts at 4K).
 h. Item 6 (end-of-raid party summary) is his pick for next of the original list.
 Player text: plain game language (his note), no retired words.
