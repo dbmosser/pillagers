@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.66';
+var VER='16.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31228,7 +31228,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.66: IN A RAID, B NEVER CLOSES A HIDDEN UNDERCROFT BACKPACK. Stability pass before a co-op session. A teammate carried up with his Undercroft backpack open kept it open out of sight, so his first B in the raid shut that unseen backpack, saved its old packing plan, and left the map or backpack in front of him open. B now closes the Undercroft backpack only in the Undercroft. Check 16.66 fails on v16.65',
+  now:'v16.67: PLAYER 2 KEEPS HEARING THE ENEMIES AFTER THE HOST LEAVES HIS RUN CARD. Stability pass before a co-op session. Every sound the raid makes reaches the party in a word the host sends from his raid frame, and once the host left his run card for the Undercroft while his teammate was still up top, no raid frame ran: the teammate stopped hearing the enemies and lost their red sound rings. The raid the host keeps for the party now sends that word itself when he is not looking at it. Check 16.67 fails on v16.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36654,6 +36654,11 @@ function netSpecTick(dt){
     netSrchTick(wdt);
     NET.specAcc=(NET.specAcc||0)+dt;
     if(NET.specAcc>=NET_HUB_STEP){ NET.specAcc=0; NET.upN++; netEntsTick(); netContTick(); if(NET.upN%5===0) netWorldSend(); }
+    // v16.67, stability: every sound the kept raid makes is queued for the party (netFxNoise), and the queue went out only in
+    // netFxStep, which runs in a raid frame. Once the host left his run card for the Undercroft no raid frame ran, so a teammate
+    // still up top stopped hearing the enemies and lost their red sound rings. With the host off the kept raid the queue goes
+    // out from here, in the same word on the same beat; on the run card the raid frame still sends it, so it never goes twice.
+    if(keep!==S){ NET.fxAcc=(NET.fxAcc||0)+dt; if(NET.fxAcc>=NET_HUB_STEP&&NET.fxQ&&NET.fxQ.length){ NET.fxAcc=0; var fm={t:'fx',k:'n',s:NET.seat,n:NET.fxQ.slice(0,16)}; NET.fxQ=[]; for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSendFast(NET.peers[i],fm); } }
   }catch(e){
     // v16.59, stability (co-op review): a fault here froze the enemies, rounds and searches for the party still up top, and
     // was swallowed without a word, so nothing in any run report said why. It is written into the host run report once.

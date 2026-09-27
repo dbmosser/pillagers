@@ -1,0 +1,7 @@
+v16.67: player 2 stops hearing the enemies once the host leaves his run card
+
+PLAYER 2 KEEPS HEARING THE ENEMIES AFTER THE HOST LEAVES HIS RUN CARD. Stability pass before a co-op session. Every sound the raid makes reaches the party in a word the host sends from his raid frame, and once the host left his run card for the Undercroft while his teammate was still up top, no raid frame ran: the teammate stopped hearing the enemies and lost their red sound rings. The raid the host keeps for the party now sends that word itself when he is not looking at it.
+
+Check 16.67. Fails on v16.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

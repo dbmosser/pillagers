@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.67 - PLAYER 2 STOPS HEARING THE ENEMIES ONCE THE HOST LEAVES HIS RUN CARD
+
+Stability pass before his co-op session. Every positioned sound in a shared raid goes through sfx, which calls netFxNoise and pushes it onto NET.fxQ. The host running the kept raid does this too: inside netSpecTick G is swapped to NET.specG, so netUpShared() stays true and the enemies' sounds are queued. The only flush is in netFxStep, the {t:'fx',k:'n'} word sent every NET_HUB_STEP. The main loop only calls netFxStep after `if(state!=='raid'||!G||G.sim) return;`. On the run card state is still raid and G is the kept raid, so the flush still runs. When the host presses the card button (oc_btn sets G=null and calls showScreen('hub')), netSpecTick keeps running every frame, but the loop returns at the hub branch and netFxStep never runs again. The queue fills to its cap of 16 and stays there. Player 2 runs no enemies of his own (updateEnts returns early for a linked window), so he only hears enemies through this word: from then on he hears none of them and gets no red sound rings. The fix sends the same word, on the same NET_HUB_STEP beat, from inside netSpecTick. It only does this when the host window is not showing the kept raid (keep!==S), so on the run card the raid frame is still the only sender.
+
+MEASURED. Check 16.67 passes, and fails on v16.66.
 ## v16.66 - IN A RAID, B NEVER CLOSES A HIDDEN UNDERCROFT BACKPACK
 
 From the review of v16.58. backOut closed the Undercroft backpack (hubBagOpen) before anything in the raid. A teammate carried

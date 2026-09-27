@@ -1,0 +1,1 @@
+| PLAYER 2 STOPS HEARING THE ENEMIES ONCE THE HOST LEAVES HIS RUN CARD | v16.67 | STABILITY (drafted and reviewed by agents 2026-09-27). MEASURED: 16.67 passes, fails on v16.66 |
