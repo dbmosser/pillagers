@@ -1,0 +1,1 @@
+| THE PARTY SEES EACH OTHER'S DAMAGE NUMBERS | v16.22 | HIS NOTE: a teammate's damage numbers did not show. FIX: each number sent to the party and drawn with its colour and kill mark. MEASURED: check 16.22 passes twice, fails on v16.21 |

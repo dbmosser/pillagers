@@ -1,0 +1,6 @@
+v16.22: the party sees each other's damage numbers
+
+His note. In co-op every damage number a player puts up shows on every
+window, same colour, same kill mark. No number moved.
+
+Check 16.22. Fails on v16.21.

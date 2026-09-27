@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.22 - THE PARTY SEES EACH OTHER'S DAMAGE NUMBERS
+
+His note of 2026-09-27: he should see the damage numbers when the other player does damage. Every number a player's round puts
+up (updateBullets, v8.35) is now sent to the party on the fast channel (netFxDmg; the host passes it on) and drawn there by dmgNum
+with the same colour, weak point or back shot, and the same kill mark. Damage numbers off in Settings stays off. No number moved.
+
+MEASURED. Check 16.22 passes twice; fails on v16.21. Check 16.21 passes.
+
 ## v16.21 - THE PARTY SEES AND HEARS EACH OTHER'S FIGHT, AND THE REVIVE HAS A BAR
 
 His notes of 2026-09-27: the second player could not see the first player's bullets or the red sound rings; the revive had no
