@@ -1,0 +1,7 @@
+v16.39: blotter gentler, and the menus feel it
+
+One hit of Blotter draws at half strength; two or more as before.
+Open menu panels blur and sway with Liquor and shift colour with
+Blotter.
+
+Check 16.39. Fails on v16.38.

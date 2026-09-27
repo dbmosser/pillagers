@@ -1,0 +1,1 @@
+| BLOTTER GENTLER, MENUS FEEL IT | v16.39 | HIS NOTES: one hit less intense; Liquor and Blotter reach menus. FIX: one-dose Blotter at half strength (2+ unchanged); open panels blur/sway (Liquor) and shift colour (Blotter). MEASURED: 16.39 passes, fails on v16.38 |

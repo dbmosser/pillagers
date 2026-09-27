@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.39 - BLOTTER GENTLER, AND THE MENUS FEEL IT
+
+His notes of 2026-09-27: one hit of blotter should be less intense; blotter and liquor should impact menu screens. One hit of
+Blotter now draws at half strength at its peak (the strength is scaled by min(1, 0.5 x level + 0.5 x (level - 1))), so two hits
+and more draw as before and ten stays at the old ceiling. The open panels (every menu window that is up, and the pause box) now
+blur and sway with Liquor and shift colour with Blotter, at the world's strength but gentler, so text stays readable. The effect
+is written only when it changes and cleared when the buzz wears off. No price, duration or XP moved.
+
+MEASURED. Check 16.39 passes and fails on v16.38.
 ## v16.38 - YOU ARE HOSTING
 
 His note of 2026-09-27: if player 1 leaves, player 2 should pick up the host, or player 1's screen should clearly say you are
