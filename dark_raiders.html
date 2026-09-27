@@ -1430,7 +1430,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.19';
+var VER='16.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5612,7 +5612,7 @@ function strikeLabel(S){
   return 'LIGHTNING INCOMING '+Math.max(1,Math.ceil((S&&S.t)||0))+'S';
 }
 function strikeTick(dt){
-  if(!G||G.over||(G.paused&&!netUpShared())) return;   // v16.11, backcheck: a pause in a shared raid is an overlay (v16.04), so the storm runs on
+  if(!G||G.over||(G.paused&&!netPauseLive())) return;   // v16.11: a pause in a shared raid is an overlay (v16.04), so the storm runs on; v16.20: unless the whole party is paused
   var W2=wx();
   if(!W2||!W2.lightning){ G.strikes=[]; return; }
   var p=G.player;
@@ -30602,7 +30602,7 @@ function loop(ts){
   // pause opens, and tickAmbience ramps it back by itself on resume.
   if(G.paused&&!G.over){ if(!G._ambDuck){ G._ambDuck=1; try{ ambienceOff(); }catch(_ap){} } }
   else if(G._ambDuck){ G._ambDuck=0; }
-  if((!G.paused||netUpShared())&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
+  if((!G.paused||netPauseLive())&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
     // the death beat: the world keeps moving underwater-slow, you do not
     G.deathBeat-=dt;
     var bdt=netUpShared()?dt:dt*0.25;   // v16.04: in a shared co-op raid the slow-down is not put on the world the party is still playing in
@@ -30611,7 +30611,7 @@ function loop(ts){
     if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
     if(G.deathBeat<=0){ endRaid('dead'); }
   }
-  else if((!G.paused||netUpShared())&&!G.over){   // v16.04: in a shared co-op raid pause is an overlay: the world and the clock run on
+  else if((!G.paused||netPauseLive())&&!G.over){   // v16.04: in a shared co-op raid pause is an overlay: the world and the clock run on; v16.20: everyone paused stops it
     G.t+=dt;
     // v9.35, HIS 6: a clock set to zero does not run. Everything below this line
     // is driven by timeLeft falling, so holding it still turns off the warnings,
@@ -30643,7 +30643,7 @@ function loop(ts){
       tickNuke(dt);
     } else {
       refreshVseg();
-      if(G.paused&&netUpShared()) netPausedStep(dt);   // v16.04: paused in a shared co-op raid, he stands still while the world runs on
+      if(G.paused&&netPauseLive()) netPausedStep(dt);   // v16.04: paused in a shared co-op raid, he stands still while the world runs on
       else updatePlayer(dt);
       if(G&&G.netRevEat){ G.netRevEat=0; keys['KeyE']=true; }   // v16.11: E given back after the step a pick-up took it (netRevHold)
       if(!G.over){ updateEnts(dt); }
@@ -31125,7 +31125,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.19: HIS WORDS: EXTRACTION PROGRESS BAR RESET. Knocked down while holding E to extract now says Knocked down. Extraction progress bar reset. Hold E to try again. Text only. Check 16.19 fails on v16.18',
+  now:'v16.20: WHEN THE WHOLE PARTY PAUSES, THE GAME PAUSES. His order. In co-op one player pausing still leaves the world running for the others, but when every player in the raid is paused the world, the clock and the storm stop, as in solo. Any one unpausing starts it again. No number moved. Check 16.20 fails on v16.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35034,11 +35034,11 @@ function netOnState(peer,m){
   if(!g){ g={seat:s,x:x,y:y,f:f,tx:x,ty:y,tf:f,mv:0,roll:0,bob:0,age:0,n:0,lk:null,cr:0,sp:0,dn:0,w:'',sd:0,wep:null}; L[s]=g; }   // v15.79: filed on the list the word names
   else if(g.age>=NET_HUB_STALE||Math.sqrt((x-g.x)*(x-g.x)+(y-g.y)*(y-g.y))>NET_HUB_SNAP){ g.x=x; g.y=y; g.f=f; }
   g.tx=x; g.ty=y; g.tf=f; g.mv=m.m?1:0; g.roll=clamp(+m.r||0,0,0.38); g.age=0; g.n++;
-  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in
+  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused
   if(lk) g.lk=lk;
   if(NET.role==='host'){
     out={t:'st',s:s,x:+x.toFixed(1),y:+y.toFixed(1),f:+f.toFixed(2),m:g.mv,r:+g.roll.toFixed(2)};
-    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; }   // v15.79: passed on as it came
+    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; }   // v15.79: passed on as it came
     if(lk) out.lk=lk;
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSendFast(NET.peers[i],out);
   }
@@ -35713,7 +35713,7 @@ function netUpTick(dt){
   try{ voiceProxAll(); }catch(_vp){}   // v16.10: voices by distance, on the same clock
   NET.upAcc=Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP);
   msg={t:'st',k:'r',sd:NET.upSeed>>>0,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.roll>0)?+(+p.roll).toFixed(2):0,
-       c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):''};
+       c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):'',pz:G.paused?1:0};   // v16.20: pz, this player is paused
   if(NET.role==='host') msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link
   lk=netLook(); ls=JSON.stringify(lk);
   if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }
@@ -35824,6 +35824,16 @@ function netEntsPeer(){ return !!(NET.on&&NET.role==='join'&&typeof G!=='undefin
 // full speed. Paused, his player takes no input: keys, the mouse button and the pad stick are held off for his own step only,
 // so bleeding, regen and every timer on him still run. Solo play is untouched: netUpShared is false without a party.
 function netUpShared(){ return !!((netEntsHost()||netEntsPeer())&&netInCount()>0); }
+// v16.20, HIS ORDER: WHEN THE WHOLE PARTY PAUSES, THE GAME PAUSES. A pause in a shared raid is an overlay (v16.04) so one player
+// cannot stop the world on the others; when this player is paused and every teammate up top on the party seed says he is paused
+// too (pz in his state word), nobody is playing, so the world, the clock and the storm stop as in solo. Any one unpausing starts it.
+function netAllPaused(){
+  var i, g, n=0;
+  if(typeof G==='undefined'||!G||!G.paused) return false;
+  for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(!netUpShown(g)) continue; if(!g.pz) return false; n++; }
+  return n>0;
+}
+function netPauseLive(){ return netUpShared()&&!netAllPaused(); }
 function netPausedStep(dt){
   var k=keys, md=(typeof mouse!=='undefined'&&mouse)?mouse.down:false, pm=(typeof PAD!=='undefined'&&PAD)?[PAD.mx,PAD.my]:null;
   keys={}; if(md) mouse.down=false; if(pm){ PAD.mx=0; PAD.my=0; }

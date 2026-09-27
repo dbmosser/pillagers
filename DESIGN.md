@@ -40024,6 +40024,18 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.20 - WHEN THE WHOLE PARTY PAUSES, THE GAME PAUSES
+
+His order of 2026-09-27. In a shared co-op raid a pause is an overlay (v16.04), so one player cannot stop the world on the
+others. Now the state word each player sends carries whether he is paused (pz), the host relays it, and when this player is
+paused and every teammate up top on the party seed is paused too (netAllPaused), the world, the raid clock and the storm stop
+as in solo (netPauseLive replaces netUpShared at the four pause sites). Any one unpausing starts it again. No number moved.
+
+MEASURED. Check 16.20: the state word carries the pause; with both paused the world stands still; with the teammate playing it
+runs on (control). Passes twice; fails on v16.19. Checks 15.79, 15.80, 16.04, 16.11 pass; nettest RUN SAME MACHINE passes.
+
+Not verified: two real windows both paused by hand.
+
 ## v16.19 - HIS WORDS: EXTRACTION PROGRESS BAR RESET
 
 His wording, replacing v16.18. Knocked down while holding E to extract now says Knocked down. Extraction progress bar reset.

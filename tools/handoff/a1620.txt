@@ -1,0 +1,1 @@
+| WHEN THE WHOLE PARTY PAUSES, THE GAME PAUSES | v16.20 | HIS ORDER: in co-op, everyone paused should pause the game. FIX: pz in the state word, relayed; netAllPaused stops the world, clock and storm when every player up top is paused; any one unpausing resumes. MEASURED: check 16.20 passes twice, fails on v16.19; co-op checks and nettest pass |

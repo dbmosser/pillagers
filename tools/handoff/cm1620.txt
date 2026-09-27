@@ -1,0 +1,8 @@
+v16.20: when the whole party pauses, the game pauses
+
+His order. In co-op one player pausing still leaves the world running
+for the others, but when every player in the raid is paused the world,
+the clock and the storm stop. Any one unpausing starts it again. No
+number moved.
+
+Check 16.20. Fails on v16.19.
