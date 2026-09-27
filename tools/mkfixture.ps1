@@ -5721,6 +5721,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.60',what:'every run report says which window it came from: player 1 or player 2, and its place in the party',
+   run:function(){
+     if(typeof buildExport!=='function'||typeof NETP2==='undefined') return 'SKIP: this build has no run report or no player 2 window';
+     var k2=NETP2, a, b;
+     try{
+       NETP2=false; a=String(buildExport());
+       NETP2=true; b=String(buildExport());
+     } finally { NETP2=k2; }
+     if(a.indexOf('Window: player 1')<0) return 'the player 1 report does not say Window: player 1';
+     if(b.indexOf('Window: player 2')<0) return 'the player 2 report does not say Window: player 2';
+     if(a.indexOf('Party: none')<0) return 'a solo report does not say Party: none';
+     return null; }},
   {v:'16.59',what:'a fault in the raid the spectating host keeps running is written into the host run report once, not swallowed',
    run:function(){
      if(typeof netSpecTick!=='function'||typeof netSpecStart!=='function'||!window.__P||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no spectating host';

@@ -1,0 +1,8 @@
+v16.60: every run report says which window it came from
+
+Both co-op windows write a report at the end of every raid; each now
+says player 1 or player 2 and its place in the party.
+
+Check 16.60. Fails on v16.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

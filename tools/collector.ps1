@@ -24,8 +24,11 @@ while ($listener.IsListening) {
       $body = $reader.ReadToEnd(); $reader.Close()
       $dir = Join-Path $Root "exports"
       if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
-      $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
-      $file = Join-Path $dir "run-$stamp.txt"
+      # 2026-09-27: two co-op windows can post in the same second; milliseconds, a p2 tag and a counter keep every report.
+      $stamp = Get-Date -Format "yyyyMMdd-HHmmss-fff"
+      $tag = $(if ($body -match "Window: player 2") { "-p2" } else { "" })
+      $file = Join-Path $dir "run-$stamp$tag.txt"; $k = 2
+      while (Test-Path -LiteralPath $file) { $file = Join-Path $dir "run-$stamp$tag-$k.txt"; $k++ }
       Set-Content -Path $file -Value $body -Encoding utf8
       $out = [System.Text.Encoding]::UTF8.GetBytes("saved")
       $res.ContentType = "text/plain"

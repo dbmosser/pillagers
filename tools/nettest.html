@@ -586,6 +586,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
         if(st(fa).roster.length<2||st(fc).roster.length<2) drops++;
         [[A,'A'],[C,'C']].forEach(function(p){ try{ var g=p[0].__state(), m=g?(p[1]+' '+s.toFixed(1)+'s '+(g.over?'[over '+(g.outcome||g.over)+'] ':'')+String(g.msg||'')):(p[1]+' '+s.toFixed(1)+'s no raid'); var k=m.replace(/^\S+ [\d.]+s /,p[1]); if(k!==(soakStep['last'+p[1]]||'')){ soakStep['last'+p[1]]=k; (rep.soakMsgs=rep.soakMsgs||[]).push(m); } }catch(e){} });
         if(s>=1&&Math.floor(s)!==Math.floor(s-0.12)){ ['A','C'].forEach(function(q){ var d=frames[q]-lastF[q]; lastF[q]=frames[q]; if(s>2) minF[q]=Math.min(minF[q],d); if(d<3) stall.push(q+' drew '+d+' frames in second '+Math.floor(s)); }); }
+        [[A,'A'],[C,'C']].forEach(function(p){ try{ var g=p[0].__state(); if(g) soakStep['g'+p[1]]=g; else if(soakStep['g'+p[1]]&&!rep['soakEnd'+p[1]]){ var o=soakStep['g'+p[1]], pl=o.player||{}; rep['soakEnd'+p[1]]={at:+s.toFixed(1),over:o.over,hp:pl.hp,downed:pl.downed,deathBeat:o.deathBeat,t:+(o.t||0).toFixed(1),msg:String(o.msg||''),status:st(p[1]==='A'?fa:fc).status||'',err:st(p[1]==='A'?fa:fc).err||''}; log('soak: '+p[1]+' left the raid: '+JSON.stringify(rep['soakEnd'+p[1]])); } }catch(e){} });
         var over=(!uc.on)?('C is no longer up top (over '+uc.over+')'):((!ua.on&&!/spectat/i.test(st(fa).status||''))?('A is no longer up top'):'');
         if(s>=SOAK||over){
           clearInterval(iv); live=false;

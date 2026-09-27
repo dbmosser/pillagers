@@ -1,0 +1,1 @@
+| EVERY RUN REPORT SAYS WHICH WINDOW IT CAME FROM | v16.60 | TELEMETRY (his order: play locally in two windows so reports are read off this PC). FIX: buildExport adds a Window and Party line. MEASURED: 16.60 passes, fails on v16.59 |

@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.60 - EVERY RUN REPORT SAYS WHICH WINDOW IT CAME FROM
+
+His order 2026-09-27: he plays co-op in two windows on localhost so the run reports can be read straight off this PC. Both
+windows write a report at the end of every raid (autoExport to the collector on :8799, into exports/), and the two looked
+alike. buildExport now adds a line: Window: player 1 or player 2, and Party: none, or host or guest (same machine).
+The collector names each file with milliseconds and a p2 tag so two reports in the same second never overwrite.
+
+MEASURED. Check 16.60 passes, and fails on v16.59.
 ## v16.59 - A FAULT WHILE THE HOST SPECTATES IS WRITTEN INTO THE RUN REPORT
 
 Stability pass before his co-op session. netSpecTick runs the raid the host keeps for the party (v16.14) inside a try whose
