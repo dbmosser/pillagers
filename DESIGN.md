@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.44 - KID MODE
+
+His order of 2026-09-27: a kid mode setting where player 2 incoming damage can be reduced to 1/2, 1/4, 1/5 or 1/10, to make the
+game easier for player 2. Settings has a Kid mode row (OFF, 1/2, 1/4, 1/5, 1/10) on either window, kept on that save. Every hit
+player 2 takes goes through damagePlayer on player 2's window, which now scales it by the lower of player 2's own choice and the
+host's. The host sends its choice with the world word twice a second, so a change mid raid lands at once. Player 1 is never
+changed. Armour and downed rules act on the reduced hit.
+
+MEASURED. Check 16.44 passes and fails on v16.43.
 ## v16.43 - PING
 
 Co-op list of 2026-09-27, item 3. N or the middle mouse button pings; on a controller both bumpers together ping (each bumper

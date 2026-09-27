@@ -1,0 +1,6 @@
+v16.44: kid mode
+
+Player 2 takes 1/2, 1/4, 1/5 or 1/10 of every hit, set in Settings
+on either window, live mid raid. Player 1 is unchanged.
+
+Check 16.44. Fails on v16.43.

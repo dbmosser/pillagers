@@ -1433,7 +1433,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.43';
+var VER='16.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13230,6 +13230,7 @@ function killPlayer(src){
   }
 }
 function damagePlayer(amt,src,srcName,sx,sy){
+  if(typeof NET==='object'&&NET&&NET.on&&NET.role==='join'&&isFinite(amt)) amt*=netKidMul();   // v16.44, his order: kid mode, player 2 takes less
   // v12.36, 2026-09-07 audit (corpse-redown): A DEAD MAN TAKES NO MORE HITS.
   // killPlayer does not end a live raid; it opens a 1.5 second beat and leaves
   // the body in the world with p.downed CLEARED and hp at 0, and the beat in
@@ -31176,7 +31177,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.43: PING. Co-op list item 3. N or the middle mouse button (both bumpers on a controller) marks the point under the cursor for the party, or snaps to the enemy nearest it and follows him while he lives. Everyone sees a pulsing marker with who pinged it and how far it is for 8 seconds, pulled to the screen edge when off screen, with a blip. One ping every half second. Check 16.43 fails on v16.42',
+  now:'v16.44: KID MODE. His order: player 2 incoming damage can be cut to 1/2, 1/4, 1/5 or 1/10 to make the game easier for player 2. A Kid mode row in Settings on either window; the host choice reaches player 2 live with the world word, and player 2 takes the lower of the two. Player 1 is never changed. Check 16.44 fails on v16.43',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36081,6 +36082,25 @@ function netTeamHud(by){
 // v16.42, THE CO-OP LIST (item 4): A KILL FEED. THE HOST, when a player kills a body: NAME killed WHAT, shown on the host and sent
 // to the party. Each window keeps the last four lines for six seconds, drawn at the right edge. Drawing and words only.
 var NET_FEED_T=6;
+// v16.44, HIS ORDER: KID MODE. Player 2 (every window that joined a party) takes a fraction of the damage: all of it, 1/2, 1/4,
+// 1/5 or 1/10. A row in Settings on either window sets it; the host sends its choice with the world word twice a second, so a
+// change on the host lands on player 2 mid raid, and player 2 takes the lower of the two. Player 1 is never touched.
+var KID_OPTS=[[1,'OFF'],[0.5,'1/2'],[0.25,'1/4'],[0.2,'1/5'],[0.1,'1/10']];
+function kidMulOwn(){ var v=(typeof P!=='undefined'&&P)?+P.kidDmg:1; return (isFinite(v)&&v>=0.1&&v<=1)?v:1; }
+function netKidMul(){ var h=(typeof NET.kidHost==='number'&&NET.kidHost>=0.1&&NET.kidHost<=1)?NET.kidHost:1; return Math.min(kidMulOwn(),h); }
+function kidCycle(){
+  var i, v=kidMulOwn(), ix=0;
+  for(i=0;i<KID_OPTS.length;i++) if(Math.abs(KID_OPTS[i][0]-v)<1e-6) ix=i;
+  P.kidDmg=KID_OPTS[(ix+1)%KID_OPTS.length][0];
+  saveProfile();
+  return P.kidDmg;
+}
+function kidRowHtml(){
+  var i, v=kidMulOwn(), lbl='OFF';
+  for(i=0;i<KID_OPTS.length;i++) if(Math.abs(KID_OPTS[i][0]-v)<1e-6) lbl=KID_OPTS[i][1];
+  return '<div class="row"><div style="flex:1"><b>Kid mode</b><div class="hint">Player 2 takes less damage: 1/2, 1/4, 1/5 or 1/10 of every hit. Player 1 is not changed. Either window can set it, and it changes the raid at once.</div></div>'+
+    '<button id="set_kid" style="padding:6px 12px;min-width:92px'+(v<1?';color:var(--amber)':'')+'">'+lbl+'</button></div>';
+}
 // v16.43, THE CO-OP LIST (item 3): A PING. N or the middle mouse button (both bumpers on a controller) marks the point under the
 // cursor for the party, or the enemy nearest it within NET_PING_SNAP. Everyone sees a marker with who pinged it for NET_PING_T
 // seconds, pulled to the screen edge when it is off screen, and hears a blip. One ping every half second.
@@ -36253,6 +36273,7 @@ function netWorldSend(){
   for(i=0;i<(G.strikes||[]).length;i++){ S=G.strikes[i]; if(S.id&&!S.rm&&S.t>0) s.push([S.id,Math.round(S.x),Math.round(S.y),netNum(S.t)]); }
   m={t:'wd',sd:G.seed>>>0,tl:netNum(G.timeLeft),wx:(G.wx&&G.wx.id)||'',wn:(G.wxNext&&G.wxNext.id)||'',wt:netNum(G.wxT)||0,ai:(G.zones||[]).indexOf(G.active),z:z,s:s};
   m.bd=netBoardRows();   // v16.34: the board, for the party
+  m.kd=kidMulOwn();   // v16.44: kid mode as the host has it, live
   for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&netSendFast(NET.peers[i],m)) n++;
   return n;
 }
@@ -36264,6 +36285,7 @@ function netWorldTake(peer,m){
   w=netWxOf(m.wx); if(w) G.wx=w;
   G.wxNext=netWxOf(m.wn); G.wxT=(typeof m.wt==='number'&&isFinite(m.wt))?clamp(m.wt,0,1):0;
   if(m.bd&&typeof m.bd.length==='number') netBoardTake(m.bd);   // v16.34: the host board
+  if(typeof m.kd==='number'&&isFinite(m.kd)) NET.kidHost=clamp(m.kd,0.1,1);   // v16.44: kid mode as the host has it
   if(m.z&&typeof m.z.length==='number') for(i=0;i<m.z.length&&i<(G.zones||[]).length;i++){
     a=m.z[i]; Z=G.zones[i]; if(!a||!Z) continue;
     if(typeof Z.netCallAt==='number'&&G.t-Z.netCallAt<1.5&&a[1]===null) continue;
@@ -39135,7 +39157,7 @@ function renderSettings(){
       '<button id="go_'+_gr.k+'" style="padding:6px 12px;min-width:92px'+
       (_dflt?'':';color:var(--amber)')+'">'+(_gs?_gs.n:'CUSTOM')+'</button></div>';
   }
-  host.innerHTML=_go+
+  host.innerHTML=_go+kidRowHtml()+
     '<div class="row"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
     // v8.77: MUS_THEMES holds FIVE and musPick draws uniformly from all of them.
@@ -39186,6 +39208,7 @@ function renderSettings(){
       '<button id="set_devbox" style="padding:6px 12px;min-width:92px'+(P.devBox?';color:var(--amber)':'')+'"'+(((P.ext||0)>0)?'':' disabled')+'>'+
       (((P.ext||0)>0)?(P.devBox?'ON':'OFF'):'LOCKED')+'</button></div>'):'');
   document.getElementById('set_tune').onclick=function(){ toggleTune(true); };
+  (function(){ var _kb=document.getElementById('set_kid'); if(_kb) _kb.onclick=function(){ kidCycle(); renderSettings(); }; })();   // v16.44
   (function(){ var _db=document.getElementById('set_devbox'); if(!_db) return;
     _db.onclick=function(){
       if((P.ext||0)<1) return;

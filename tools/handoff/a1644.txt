@@ -1,0 +1,1 @@
+| KID MODE | v16.44 | HIS ORDER: player 2 damage cut to 1/2, 1/4, 1/5, 1/10. FIX: Settings row on either window; P2 damagePlayer scales by the lower of own and host (host sent live). MEASURED: 16.44 passes, fails on v16.43 |
