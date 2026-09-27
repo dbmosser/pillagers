@@ -40024,6 +40024,12 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.73 - KID MODE GOES DOWN TO 1/20
+
+His order during his co-op session: the kid mode row in Settings offers 1/20 after 1/10, so player 2 takes a twentieth of
+every hit. A UI option he asked for, not a balance change: the default is unchanged.
+
+MEASURED. Check 16.73 passes, and fails on v16.72.
 ## v16.72 - HIS CONTROLLER LAYOUT, FOR BOTH PLAYERS
 
 His order during his co-op session with his son, the same for both windows: A rolls; B crouches (a toggle, and rolling or

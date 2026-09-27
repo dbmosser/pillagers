@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.72';
+var VER='16.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31262,7 +31262,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.72: HIS CONTROLLER LAYOUT, FOR BOTH PLAYERS. His order during his co-op session: A rolls, B crouches (a toggle; rolling or sprinting stands you up), RT fires or uses the selected item as a mouse click does, LT held or RS click toggled is focus aim, D-LEFT and D-RIGHT set the aim distance, X loots when there is something to loot and reloads otherwise, Y searches inside an extraction circle, a bumper tap walks the tactical belt and a bumper held zooms (LB out, RB in), and holding A while down gives up. The button names in prompts and the controller legend say the same. Check 16.72 fails on v16.71',
+  now:'v16.73: KID MODE GOES DOWN TO 1/20. His order during his co-op session: the kid mode row in Settings now offers 1/20 after 1/10, so player 2 takes a twentieth of every hit. Check 16.73 fails on v16.72',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36258,7 +36258,7 @@ function netWpMapDraw(ox,oy,sc){
 // v16.44, HIS ORDER: KID MODE. Player 2 (every window that joined a party) takes a fraction of the damage: all of it, 1/2, 1/4,
 // 1/5 or 1/10. A row in Settings on either window sets it; the host sends its choice with the world word twice a second, so a
 // change on the host lands on player 2 mid raid, and player 2 takes the lower of the two. Player 1 is never touched.
-var KID_OPTS=[[1,'OFF'],[0.5,'1/2'],[0.25,'1/4'],[0.2,'1/5'],[0.1,'1/10']];
+var KID_OPTS=[[1,'OFF'],[0.5,'1/2'],[0.25,'1/4'],[0.2,'1/5'],[0.1,'1/10'],[0.05,'1/20']];   // v16.73, his order: and 1/20
 function kidMulOwn(){ var v=(typeof P!=='undefined'&&P)?+P.kidDmg:1; return (isFinite(v)&&v>=0.1&&v<=1)?v:1; }
 function netKidMul(){ var h=(typeof NET.kidHost==='number'&&NET.kidHost>=0.1&&NET.kidHost<=1)?NET.kidHost:1; return Math.min(kidMulOwn(),h); }
 function kidCycle(){
