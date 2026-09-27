@@ -1,0 +1,15 @@
+## v16.23 - USE YOUR BANDAGES AND PLATES ON A TEAMMATE
+
+His note of 2026-09-27: he should be able to apply his own bandages and armour to the other player standing next to him.
+
+THE BUILD. Using a heal or an armour plate from the tactical belt (useHot) while a teammate up top on the party seed stands within
+64 (NET_REV_R, the pick-up reach) and you face him within 0.8 of a radian gives it to him (netAidTarget, netAidStart): it comes out
+of your backpack, takes the same wind-up it takes on you (startPrep, marked with his seat), and when that finishes it goes to him
+through the host ({t:'aid'}, netAidFinish, netAidPass); his window applies it by his own rules (netAidApply: applyHeal, so a
+Bandage stops at 85; a plate up to his armour cap). His health and armour now ride in his state word, so a teammate who does not
+need it is told so and nothing is spent; if he has walked off by the end, the item comes back to your backpack. No new number.
+
+MEASURED. Check 16.23 passes twice; fails on v16.22.
+
+Not verified: two real windows.
+
