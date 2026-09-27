@@ -1,0 +1,7 @@
+v16.70: a spectating host back in the undercroft never lets the raid go
+
+A HOST BACK IN THE UNDERCROFT LETS THE RAID GO WHEN HIS TEAMMATE STOPS SENDING. Stability pass before a co-op session. The host keeps the raid running for his party until nobody is up top, judged by how long ago each teammate last sent word, but that clock only ran while the host had a raid of his own in hand. Back in the Undercroft it stopped, so a teammate word left over after his run ended kept the raid alive for good and every later ascent was refused. The clock now runs there too.
+
+Check 16.70. Fails on v16.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
