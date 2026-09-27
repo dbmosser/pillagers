@@ -807,7 +807,7 @@
      controller B looks for (leave, close, back, done, return), so B always closes the window and never ends the party. -->
 <div class="modal" id="partymodal">
   <h3>Party</h3>
-  <div class="msub">Up to four pillagers, linked by invite code. The others in your party walk the Undercroft floor with you, with their names over their heads, and every raid is still played alone.</div>
+  <div class="msub">Up to four pillagers, linked by invite code. The others in your party walk the Undercroft floor with you, with their names over their heads, and when the host takes the party up, everyone ascends into the same raid.</div>
   <div class="msub" id="partystat" style="color:var(--amber);font-weight:700"></div>
   <div class="msub" id="partymode" style="display:none;color:var(--bone);letter-spacing:.14em"></div>
   <!-- v15.77: in a same machine mode each window plays a controller of its own; this row picks it. No word here that
@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.64';
+var VER='16.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1450,9 +1450,9 @@ var WNSEEN=0;          // v6.62, his note: one showing per page load, not per ve
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'YOUR PARTY GOES UP TOGETHER AND PLAYS AS ONE. The mode menu opens a second window for your other screen with its own controller; player 1 sound plays on the left speaker and player 2 on the right. The party shares one surface: the same enemies, clock, weather, lightning and extraction points, and a beacon any of you calls comes for the party. Nobody in your party can hurt you. Your teammates show on the HUD with health and armour, you see their shots and damage numbers and hear their sounds, and you can use your own Bandages and plates on a teammate beside you. Hold E next to a downed teammate to revive them. One of you searches a box at a time and the loot goes to whoever searched it. The game pauses only when every player has paused. If the host extracts or dies, the host watches until the party is out; if the host leaves the party, the run ends as abandoned for everyone. The clock alarms are quieter, and a lightning flash shows you to the enemy from farther off.',
-  'NEW FOR THE PARTY. Every player chooses a kit at the lift. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.',
+  'NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.',
   'STEADIER CO-OP. A search keeps running after the host has left the raid, the pause box shuts when a raid ends under it, a controller tap on the map places your marker and shuts the map, a controller can no longer hand itself to the wrong window from the PARTY window, and the buttons in Settings that would drop you out of a raid are greyed out until you are back in the Undercroft.',
-  'GRENADES, BELT KEYS, STASH, WARDROBE, SAVES AND STORMS. A cooked Frag Charge keeps burning through a roll, a heal on a key no longer stops Medical using your other heals, and a controller packs from the stash with A. SURPRISE ME takes a worn suit off, erasing a save erases its UNDO copy, and lightning no longer hits you through a wall. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
+  'GRENADES, BELT KEYS, STASH, RACKS, SAVES AND STORMS. A cooked Frag Charge keeps burning through a roll, a heal on a key no longer stops Medical using your other heals, and a controller packs from the stash with A. SURPRISE ME takes a worn suit off, erasing a save erases its UNDO copy, and lightning no longer hits you through a wall. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
   'NOTHING FROM NOTHING, AND A FAIRER FIGHT. A pile you drop earns no hot zone bonus and never restocks, issued Bandages stay issued, your hire shoots the pillagers and not you, and going down shuts the stall. Nothing on your belt is used while you are down, a burst stops when you swap guns, and you cannot punch with a grenade cooking in your hand.',
   'HEALING, GRENADES AND CONTRACTS. A Medkit is never wasted at full health or refused on its own key, a grenade you are cooking stays in your hand, and contracts and hazard pay count only what the run found. In the Undercroft a restore code replaces your whole save and crafting takes from your stash first.',
   'A CONTROLLER WORKS ON THE UNDERCROFT FLOOR AND IN EVERY RAID. View opens your backpack and Menu pauses, you can search and call for extraction from inside an extraction point, you can trade with the peddler, and the prompts name your buttons. The menus also fit the 1280 by 720 window itch opens the game at.',
@@ -31228,7 +31228,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.64: A SPECTATING HOST IS STILL HOSTING. Stability pass before a co-op session. Once the host left his run card for the Undercroft while his teammate was still up top, his window still ran the raid for the party, but nothing warned before it closed or reloaded (which abandoned the teammate raid), the pause box stopped saying he was hosting, and Settings offered the buttons that reload the window. All three now hold until the party is out. Check 16.64 fails on v16.63',
+  now:'v16.65: THREE LINES OF PLAYER TEXT TELL THE TRUTH AND USE HIS WORDS. The PARTY window said every raid is still played alone, untrue since the party began to ascend together; it now says the party ascends into the same raid. A what is new line said WARDROBE, a word he retired; it says RACKS. The party line said every player chooses a kit at the lift, but the quick ascent asks nobody; it now says when the party ascends from the sector page. Check 16.65 fails on v16.64',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

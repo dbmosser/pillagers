@@ -5721,6 +5721,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.65',what:'player text tells the truth in his words: the PARTY window says the party ascends into the same raid, and the what is new card uses no retired word',
+   run:function(){
+     var pm=document.getElementById('partymodal'), bad=[], t, all;
+     if(!pm||typeof WHATSNEW==='undefined') return 'SKIP: this build has no PARTY window or no card';
+     t=String(pm.textContent||'');
+     if(t.indexOf('played alone')>=0) bad.push('the PARTY window still says every raid is played alone');
+     if(t.indexOf('same raid')<0) bad.push('the PARTY window does not say the party ascends into the same raid');
+     all=WHATSNEW.slice(0,13).join(' ');   // the thirteen lines the card draws
+     if((/wardrobe/i).test(all)) bad.push('the card says wardrobe, a word he retired');
+     if((/\bbag\b|hotbar|touchdown|boarding|\bship\b/i).test(all)) bad.push('the card uses a retired word');
+     if((/kit at the lift/i).test(all)) bad.push('the card says every player chooses a kit at the lift, which the quick ascent does not do');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.64',what:'a host back in the Undercroft while his party is still up top is still hosting: the leave warning holds and Settings greys the buttons that reload the window',
    run:function(){
      if(typeof netHostHolds!=='function'||typeof netSpecStart!=='function'||typeof renderSettings!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no spectating host';
@@ -5923,7 +5935,7 @@ window.__REGRESS=[
      if(vCard>16.54+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var a=String(L[2]||'').toUpperCase(), b=String(L[3]||'').toUpperCase();
-     ['KIT AT THE LIFT','PING','MARKER','KILL FEED','KID MODE'].forEach(function(w){ if(a.indexOf(w)<0) bad.push('the party line does not say '+w.toLowerCase()); });
+     ['CHOOSES A KIT','PING','MARKER','KILL FEED','KID MODE'].forEach(function(w){ if(a.indexOf(w)<0) bad.push('the party line does not say '+w.toLowerCase()); });
      ['SEARCH KEEPS RUNNING','PAUSE BOX SHUTS','SHUTS THE MAP','GREYED OUT'].forEach(function(w){ if(b.indexOf(w)<0) bad.push('the stability line does not say '+w.toLowerCase()); });
      if(String(L[1]||'').toUpperCase().indexOf('YOUR PARTY GOES UP TOGETHER')<0) bad.push('the co-op line is no longer second');
      if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');

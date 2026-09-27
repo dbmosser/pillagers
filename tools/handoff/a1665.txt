@@ -1,0 +1,1 @@
+| THREE LINES OF PLAYER TEXT TELL THE TRUTH AND USE HIS WORDS | v16.65 | TEXT (review 2026-09-27). FIX: PARTY subtitle, card WARDROBE to RACKS, card kit sentence. None is a TXSHIP key. MEASURED: 16.65 passes, fails on v16.64 |

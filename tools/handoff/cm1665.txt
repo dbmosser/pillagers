@@ -1,0 +1,9 @@
+v16.65: three lines of player text tell the truth in his words
+
+The PARTY window no longer says every raid is played alone; a card line
+says RACKS, not the retired WARDROBE; the party line no longer says every
+player chooses a kit at the lift, which the quick ascent does not do.
+
+Check 16.65. Fails on v16.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

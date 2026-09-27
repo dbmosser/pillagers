@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.65 - THREE LINES OF PLAYER TEXT TELL THE TRUTH AND USE HIS WORDS
+
+From the review of the stability pass. The PARTY window subtitle ended every raid is still played alone, untrue since the
+party began to ascend together (v15.79); it now ends when the host takes the party up, everyone ascends into the same raid.
+A what is new line was headed WARDROBE, a word he retired (vocabulary: never wardrobe in player text); it says RACKS. The
+v16.54 party line said every player chooses a kit at the lift, but the quick ascent on R asks nobody; it now says when the
+party ascends from the sector page, and check 16.54 reads the new words. None of the three is a TXSHIP key.
+
+MEASURED. Check 16.65 passes, and fails on v16.64.
 ## v16.64 - A SPECTATING HOST IS STILL HOSTING
 
 Stability pass before his co-op session (co-op hunt, confirmed by two verifiers; review of v16.50). After the host left his
