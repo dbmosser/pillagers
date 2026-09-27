@@ -52,7 +52,18 @@ numbers both ways, bandages and plates on a teammate, split speakers. NEXT, in o
 4. A kill feed: NAME killed CRAWLER.
 5. [done v16.26] A downed teammate on the HUD with his bleed-out time.
 6. An end-of-raid party summary: each player's kills, loot, out or not.
-7. The what is new card refresh (due by 16.27, WHATSNEW_VER 16.12).
+7. The what is new card refresh (overdue: WHATSNEW_VER 16.12).
+HIS NOTES 2026-09-27, in this order ahead of 2 to 4 and 6 (target: 4K fullscreen; test at 3840x2160):
+a. [done v16.27] Pause when every player is paused; Superhot runs while either acts; teammate rows off the belt.
+b. The HP bar can be folded or pushed under the belt: the vitals block must never fold, and the belt must fit around the vitals
+   and gear blocks as the player has sized and moved them (hudUserZ, hudOff), shrinking slots rather than overlapping.
+c. The 5-minutes-left alarm (and the other clock alarms) are far too loud.
+d. Host leaving: either player 2 takes over as host, or the host's screen clearly says You are hosting. Quitting ends the raid for
+   your party. (Do the warning first; host migration is large.)
+e. Something blocks player 2's face in the Undercroft: not found yet (name tag uses the station camera; ask him for a screenshot).
+f. One hit of blotter should be less intense; blotter and liquor should affect the menu screens too.
+g. Frame rate: improve it without losing anything (profile render2D and updateEnts at 4K).
+h. Item 6 (end-of-raid party summary) is his pick for next of the original list.
 Player text: plain game language (his note), no retired words.
 
 ## Queue at the move (ship in this order)
