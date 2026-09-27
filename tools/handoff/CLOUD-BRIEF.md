@@ -57,7 +57,7 @@ HIS NOTES 2026-09-27, in this order ahead of 2 to 4 and 6 (target: 4K fullscreen
 a. [done v16.27] Pause when every player is paused; Superhot runs while either acts; teammate rows off the belt.
 HIS PRINCIPLE 2026-09-27: in gameplay player 2 must equal player 1 in every way. Asked him: rebuild the core for two real players in
 one simulation (player 2's window a view plus his controller input), or keep patching gaps. Until he answers, patch the gaps below.
-CONTROLLERS (his rule): player 1 plays mouse and keyboard; player 2 takes the first controller; a second controller goes to player 1.
+CONTROLLERS [done v16.35] (his rule): player 1 plays mouse and keyboard; player 2 takes the first controller; a second controller goes to player 1.
 P2 SHOTS: his run reports (v16.25) show player 2 fired 24 shots at 0% accuracy, 0 kills, firstContact none in 339 s of co-op: check
    in a live nettest step that player 2's rounds hit the host's bodies, count as hits, and kill.
 P2. PLAYER 2 FIRST (his notes, 2026-09-27 night): (i) [done v16.29] player 2 hears no audio at all: make SPLIT SPEAKERS the default for a same
