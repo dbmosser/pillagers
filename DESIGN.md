@@ -40024,6 +40024,18 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.28 - THE HP BAR IS ALWAYS THERE AND THE BELT NEVER COVERS IT
+
+His notes of 2026-09-27: player 1's HP bar ran into other text, and then could not be seen at all. The tactical belt placed itself
+between the vitals block (health) and the gear readout by their default sizes (drawBelt: 390 and 252 times HUDZ and hudRes), but
+each block can be resized (hudUserZ) and moved (hudOff), so a vitals block made bigger or moved right went under the slots; and the
+vitals block could be folded away with its [-]. Now the belt reads each block's size and place, the slots shrink to fit the room
+(down to 20 pixels) instead of spilling over either block, and the vitals block never folds (hudOff reports it open). No number
+moved.
+
+MEASURED. Check 16.28 passes twice; fails on v16.27. The 18 older checks that read the belt or HUD offsets pass, except 8.96 and
+9.32 (the Undercroft backpack drag), which fail the same way on v16.27.
+
 ## v16.27 - PAUSE AND SUPERHOT IN CO-OP, AND THE TEAMMATE ROWS MOVED
 
 His notes of 2026-09-27.

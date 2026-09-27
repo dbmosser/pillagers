@@ -5721,6 +5721,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.28',what:'the HP bar is always there and the belt never covers it: the vitals block does not fold; with the vitals block made twice as big the belt slots start right of it and end left of the gear readout',
+   run:function(){
+     if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile)||typeof drawHUD!=='function'||typeof hudOff!=='function') return 'SKIP: this fixture cannot draw the HUD';
+     var bad=[], keepHud=P.hud?JSON.parse(JSON.stringify(P.hud)):undefined, c, z, bR, gL, last;
+     try{
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242}); G.sim=0; G.over=false;
+       P.hud={body:{c:true}}; if(hudOff('body').c) bad.push('the vitals block (health) can still be folded away');
+       P.hud={body:{z:2},gear:{z:1}};
+       try{ drawHUD(); }catch(e){ bad.push('drawHUD threw: '+e); }
+       c=G.hotCells||[]; if(!c.length) return 'SKIP: no belt cells drawn';
+       z=hudRes(); bR=390*(HUDZ.body||1)*z*2; gL=W-252*(HUDZ.gear||1)*z;
+       last=c[c.length-1];
+       if(c[0].x<bR) bad.push('with the vitals block twice as big the first belt slot starts at '+Math.round(c[0].x)+', under the vitals block (which reaches '+Math.round(bR)+')');
+       if(last.x+last.w>gL+1) bad.push('the last belt slot ends at '+Math.round(last.x+last.w)+', under the gear readout (from '+Math.round(gL)+')');
+     }
+     finally{
+       try{ if(keepHud===undefined) delete P.hud; else P.hud=keepHud; }catch(_h){}
+       try{ G=null; }catch(_g){}
+       try{ __resetCfg(); }catch(_rc){}
+       try{ __cleanProfile(); }catch(_cp){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.27',what:'pause and superhot in co-op: paused with the teammate not up top the world stops; paused with the teammate up top and playing it runs; with superhot on and nobody acting time stops, and a teammate acting keeps it running',
    run:function(){
      if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile&&window.__loop)||typeof NET!=='object'||!NET) return 'SKIP: this fixture cannot stage a party raid';

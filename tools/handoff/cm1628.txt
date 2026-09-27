@@ -1,0 +1,8 @@
+v16.28: the HP bar is always there and the belt never covers it
+
+His notes. The health block can no longer be folded away, and the
+tactical belt fits between the health block and the gear readout as you
+have sized and moved them, with smaller slots if it has to. No number
+moved.
+
+Check 16.28. Fails on v16.27.

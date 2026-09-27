@@ -1431,7 +1431,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.26';
+var VER='16.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24998,11 +24998,13 @@ function drawBuzzFx(){
     // the icons grow with the cell.
     var gap=LH(6);
     var _hz=hudRes();
-    var _bR=390*(HUDZ.body||1)*_hz;        // vitals block, inner edge
-    var _gL=W-252*(HUDZ.gear||1)*_hz;      // gear stack, inner edge
+    // v16.28, his note: the HP bar ran under the belt. These edges ignored the size and place he gave each block, so a vitals block
+    // made bigger or moved right went under the slots. They now read both (hudUserZ, hudOff), and the slots shrink to fit.
+    var _bR=390*(HUDZ.body||1)*_hz*hudUserZ('body')+Math.max(0,hudOff('body').dx);        // vitals block, inner edge
+    var _gL=W-252*(HUDZ.gear||1)*_hz*hudUserZ('gear')+Math.min(0,hudOff('gear').dx);      // gear stack, inner edge
     var _room=(_gL-LH(14))-(_bR+LH(14));
     var bw=Math.floor((_room-(sl.length-1)*gap)/sl.length);
-    bw=clamp(bw,LH(52),LH(112));
+    bw=clamp(bw,Math.min(LH(52),Math.max(LH(28),bw)),LH(112));   // v16.28: smaller slots rather than slots over the vitals or the gear
     var tw2=sl.length*bw+(sl.length-1)*gap;
     // Centred in the room, not on the screen. Screen-centred cannot grow here:
     // the left neighbour reaches further in than the right one, so the tighter
@@ -27325,7 +27327,7 @@ function hudHit(mx,my){
 }
 function hudOff(id){
   var o=(P&&P.hud&&P.hud[id])||{};
-  return {dx:o.dx||0,dy:o.dy||0,c:!!o.c};
+  return {dx:o.dx||0,dy:o.dy||0,c:!!o.c&&id!=='body'};   // v16.28, his note: the vitals block (health) never folds away
 }
 function drawRaiderBoard(){
   delete HUDBOX.raiders;
@@ -30603,14 +30605,15 @@ function loop(ts){
   if(NET.on) netFxStep(dt);   // v16.21: the party's tracers fly, and this window's sounds go out
   // v6.73, his note; rewritten v7.23: time stops DEAD unless an input is live -
   // any held key, the mouse button, pad input, or an action already in flight.
-  if(CFG.superhot&&G.player&&!G.over&&!G.paused&&!netUpShared()){   // v16.04: Superhot is off in a shared co-op raid (one world cannot stop for one player)
+  if(CFG.superhot&&G.player&&!G.over&&!G.paused){   // v16.27, his note: in co-op time runs while ANY player up top is acting (v16.04 had it off)
     var _shp=G.player;
     var _shAny=false;
     for(var _shk in keys){ if(keys[_shk]){ _shAny=true; break; } }
     var _shAct=_shAny||(typeof mouse!=='undefined'&&mouse&&mouse.down)||
                (typeof PAD!=='undefined'&&PAD.on&&(PAD.mx||PAD.my||PAD.aiming))||
                (_shp.roll>0)||(_shp.reloading>0)||(!!_shp.prep)||(!!_shp.prepA);
-    if(!_shAct) dt=0;
+    G.shAct=_shAct;
+    if(!_shAct&&!netAnyActing()) dt=0;
   }
   // v10.86, HIS NOTE: the raid update below is gated on !G.paused and
   // tickAmbience lives inside it, so a pause froze the ambient bed at its last
@@ -31141,7 +31144,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.26: YOUR TEAMMATES ON THE HUD. The queue. Above your own health, each teammate in the raid has a row: his name, a health bar and an armour bar, and when he is down a red DOWN with the seconds he has left to be picked up. Drawing only. No number moved. Check 16.26 fails on v16.25',
+  now:'v16.28: THE HP BAR IS ALWAYS THERE AND THE BELT NEVER COVERS IT. His notes. The health block can no longer be folded away, and the tactical belt now fits between the health block and the gear readout as you have sized and moved them, with smaller slots if it has to, instead of drawing over your health. No number moved. Check 16.28 fails on v16.27',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35052,11 +35055,11 @@ function netOnState(peer,m){
   if(!g){ g={seat:s,x:x,y:y,f:f,tx:x,ty:y,tf:f,mv:0,roll:0,bob:0,age:0,n:0,lk:null,cr:0,sp:0,dn:0,w:'',sd:0,wep:null}; L[s]=g; }   // v15.79: filed on the list the word names
   else if(g.age>=NET_HUB_STALE||Math.sqrt((x-g.x)*(x-g.x)+(y-g.y)*(y-g.y))>NET_HUB_SNAP){ g.x=x; g.y=y; g.f=f; }
   g.tx=x; g.ty=y; g.tf=f; g.mv=m.m?1:0; g.roll=clamp(+m.r||0,0,0.38); g.age=0; g.n++;
-  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour
+  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour
   if(lk) g.lk=lk;
   if(NET.role==='host'){
     out={t:'st',s:s,x:+x.toFixed(1),y:+y.toFixed(1),f:+f.toFixed(2),m:g.mv,r:+g.roll.toFixed(2)};
-    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; }   // v15.79: passed on as it came
+    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; out.sa=g.sa; }   // v15.79: passed on as it came
     if(lk) out.lk=lk;
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSendFast(NET.peers[i],out);
   }
@@ -35744,7 +35747,7 @@ function netUpTick(dt){
   NET.upAcc=Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP);
   msg={t:'st',k:'r',sd:NET.upSeed>>>0,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.roll>0)?+(+p.roll).toFixed(2):0,
        c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):'',pz:G.paused?1:0,
-       hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate
+       hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0,sa:(!CFG.superhot||G.shAct)?1:0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate
   if(NET.role==='host') msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link
   lk=netLook(); ls=JSON.stringify(lk);
   if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }
@@ -35992,7 +35995,7 @@ function netTeamHud(by){
   if(typeof G==='undefined'||!G||G.over) return 0;
   for(i=0;i<NET.up.length;i++){
     g=NET.up[i]; if(!netUpShown(g)) continue;
-    y=by-96-n*40; n++;
+    y=Math.round(H*0.30)+n*44; n++;   // v16.27, his note: the rows sat on the belt help line; they now run down the left edge, clear of it
     ctx.fillStyle='rgba(6,9,13,.62)'; ctx.fillRect(x-4,y-15,w+8,36);
     ctx.font=FS(TYPE.label); ctx.textAlign='left';
     ctx.fillStyle=g.dn?'#ff8a80':'#bfe0ff'; ctx.fillText(netSeatName(g.seat)||'PILLAGER',x,y);
@@ -36007,8 +36010,17 @@ function netTeamHud(by){
 function netAllPaused(){
   var i, g, n=0;
   if(typeof G==='undefined'||!G||!G.paused) return false;
+  // v16.27, his note: any time every player is paused the game pauses. A teammate who is not up top (in the Undercroft, on the
+  // run card, out) is not playing, so with nobody up top and unpaused the pause stops the world as in solo.
   for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(!netUpShown(g)) continue; if(!g.pz) return false; n++; }
-  return n>0;
+  return true;
+}
+// v16.27: Superhot in co-op. Is any teammate up top acting (moving, shooting, rolling, reloading) and not paused? Then time runs.
+function netAnyActing(){
+  var i, g;
+  if(typeof NET!=='object'||!NET||!NET.on||!netUpShared()) return false;
+  for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(netUpShown(g)&&g.sa&&!g.pz) return true; }
+  return false;
 }
 function netPauseLive(){ return netUpShared()&&!netAllPaused(); }
 function netPausedStep(dt){
@@ -45174,7 +45186,58 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'dbg',what:'dbg',run:function(){ __runPrep(); __resetCfg(); __pinDefaults(0); __deploy({kit:[],safe:null,mapIx:0,seed:4242}); document.querySelectorAll('.modal.on').forEach(function(m){ m.classList.remove('on'); }); return 'ok '+state+' hp '+(G&&G.player?G.player.hp:'-'); }},
+  {v:'dbg',what:'dbg',run:function(){ __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242}); G.sim=0; P.hud={body:{z:2},gear:{z:1}}; drawHUD(); var c=G.hotCells; return JSON.stringify({W:W,n:c.length,first:c[0],last:c[c.length-1],res:hudRes(),lh:LH(14),hz:HUDZ}); }},
+  {v:'16.28',what:'the HP bar is always there and the belt never covers it: the vitals block does not fold; with the vitals block made twice as big the belt slots start right of it and end left of the gear readout',
+   run:function(){
+     if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile)||typeof drawHUD!=='function'||typeof hudOff!=='function') return 'SKIP: this fixture cannot draw the HUD';
+     var bad=[], keepHud=P.hud?JSON.parse(JSON.stringify(P.hud)):undefined, c, z, bR, gL, last;
+     try{
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242}); G.sim=0; G.over=false;
+       P.hud={body:{c:true}}; if(hudOff('body').c) bad.push('the vitals block (health) can still be folded away');
+       P.hud={body:{z:2},gear:{z:1}};
+       try{ drawHUD(); }catch(e){ bad.push('drawHUD threw: '+e); }
+       c=G.hotCells||[]; if(!c.length) return 'SKIP: no belt cells drawn';
+       z=hudRes(); bR=390*(HUDZ.body||1)*z*2; gL=W-252*(HUDZ.gear||1)*z;
+       last=c[c.length-1];
+       if(c[0].x<bR) bad.push('with the vitals block twice as big the first belt slot starts at '+Math.round(c[0].x)+', under the vitals block (which reaches '+Math.round(bR)+')');
+       if(last.x+last.w>gL+1) bad.push('the last belt slot ends at '+Math.round(last.x+last.w)+', under the gear readout (from '+Math.round(gL)+')');
+     }
+     finally{
+       try{ if(keepHud===undefined) delete P.hud; else P.hud=keepHud; }catch(_h){}
+       try{ G=null; }catch(_g){}
+       try{ __resetCfg(); }catch(_rc){}
+       try{ __cleanProfile(); }catch(_cp){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'16.27',what:'pause and superhot in co-op: paused with the teammate not up top the world stops; paused with the teammate up top and playing it runs; with superhot on and nobody acting time stops, and a teammate acting keeps it running',
+   run:function(){
+     if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile&&window.__loop)||typeof NET!=='object'||!NET) return 'SKIP: this fixture cannot stage a party raid';
+     var bad=[], keepN={on:NET.on,role:NET.role,peers:NET.peers,upSeed:NET.upSeed,seat:NET.seat,up:NET.up,roster:NET.roster}, keepSt=state, TS=11000, t0;
+     function frames(n){ for(var i=0;i<n;i++){ TS+=16; __loop(TS); if(NET.up[1]) NET.up[1].age=0; } }
+     try{
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242}); keys={}; state='raid'; G.sim=0; G.over=false; CFG.superhot=0;
+       NET.on=true; NET.role='host'; NET.seat=0; NET.peers=[{state:'in',seat:1,name:'ZQX',timers:[],dc:{readyState:'open',send:function(){}}}]; NET.upSeed=G.seed>>>0; NET.up=[];
+       NET.roster=[{seat:0,pid:'me',name:'HOST',host:true},{seat:1,pid:'zqxmate',name:'ZQX MATE'}];
+       G.paused=true; t0=G.t; frames(10);
+       if(G.t!==t0) bad.push('paused with the teammate not up top, the world still ran');
+       NET.up[1]={seat:1,x:G.player.x+300,y:G.player.y,f:0,tx:G.player.x+300,ty:G.player.y,tf:0,n:5,age:0,dn:0,sd:NET.upSeed>>>0,pz:0,sa:1};
+       t0=G.t; frames(10);
+       if(!(G.t>t0)) bad.push('control: paused with the teammate up top and playing, the world stopped for him');
+       G.paused=false; CFG.superhot=1; NET.up[1].sa=0;
+       t0=G.t; frames(10);
+       if(G.t!==t0) bad.push('superhot with nobody acting: time still ran');
+       NET.up[1].sa=1; t0=G.t; frames(10);
+       if(!(G.t>t0)) bad.push('superhot with the teammate acting: time stood still');
+     }
+     finally{
+       try{ keys={}; if(G) G.paused=false; CFG.superhot=0; }catch(_k){}
+       try{ NET.on=keepN.on; NET.role=keepN.role; NET.peers=keepN.peers||[]; NET.upSeed=keepN.upSeed; NET.seat=keepN.seat; NET.up=keepN.up||[]; NET.roster=keepN.roster||[]; }catch(_n){}
+       try{ G=null; state=keepSt; }catch(_g){}
+       try{ if(typeof state==='undefined'||state!=='hub') __hubEnter(); }catch(_he){}
+       try{ __resetCfg(); }catch(_rc){}
+       try{ __cleanProfile(); }catch(_cp){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.26',what:'your teammates on the HUD: the state word carries the seconds left when down; in a party raid the HUD names a teammate, and a downed one shows DOWN with his seconds; alone it names nobody',
    run:function(){
      if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile)||typeof NET!=='object'||!NET||typeof drawHUD!=='function'||!ctx) return 'SKIP: this fixture cannot stage a party raid';
@@ -45544,6 +45607,7 @@ window.__REGRESS=[
        if(!W1||!G.zones||!G.zones.length||!ca) return 'SKIP: no storm, rings or confirm button';
        // THE STORM UNDER A SHARED PAUSE
        party('host'); G.wx=W1; G.paused=true; G.strikes=[{x:p.x+900,y:p.y,t:0.05,hit:0,id:5}];
+       NET.roster=[{seat:0,pid:'me',name:'HOST',host:true},{seat:1,pid:'zqxmate',name:'ZQX MATE'}]; NET.up=[]; NET.up[1]={seat:1,x:p.x+300,y:p.y,f:0,tx:p.x+300,ty:p.y,tf:0,n:5,age:0,dn:0,sd:NET.upSeed>>>0,pz:0,sa:1};   // v16.27: a teammate up top and playing
        strikeTick(0.1);
        if(G.strikes.length) bad.push('paused in a shared raid the storm held its bolt, so the party saw it land late or not at all');
        G.paused=false; G.strikes=[];
@@ -45806,6 +45870,7 @@ window.__REGRESS=[
        state='raid'; G.sim=0; G.over=false; G.deathBeat=null; G.paused=false; pauseOpen=false; keys={};
        CFG.superhot=1;
        NET.on=party; NET.role=party?'host':null; NET.seat=0; NET.peers=party?[peer]:[]; NET.upSeed=party?(G.seed>>>0):0;
+       if(party){ NET.roster=[{seat:0,pid:'me',name:'HOST',host:true},{seat:1,pid:'zqxmate',name:'ZQX MATE'}]; NET.up=[]; NET.up[1]={seat:1,x:G.player.x+300,y:G.player.y,f:0,tx:G.player.x+300,ty:G.player.y,tf:0,n:5,age:0,dn:0,sd:NET.upSeed>>>0,pz:0,sa:1}; }   // v16.27: the world runs under a pause only while a teammate is up top and playing; this one is, acting
        frames(2);
      }
      try{

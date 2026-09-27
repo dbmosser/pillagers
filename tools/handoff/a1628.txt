@@ -1,0 +1,1 @@
+| THE HP BAR IS ALWAYS THERE AND THE BELT NEVER COVERS IT | v16.28 | HIS NOTES: the HP bar ran under the belt and could be folded away. FIX: drawBelt reads the vitals and gear blocks as sized and moved, slots shrink to fit; the vitals block never folds. MEASURED: check 16.28 passes twice, fails on v16.27; 8.96 and 9.32 fail before and after |
