@@ -1,0 +1,1 @@
+| PING | v16.43 | CO-OP ITEM 3. FIX: N / middle mouse / both bumpers ping the cursor point or the enemy near it; shown to the party for 8 s, edge-pulled. MEASURED: 16.43 passes, fails on v16.42 |

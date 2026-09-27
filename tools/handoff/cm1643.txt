@@ -1,0 +1,6 @@
+v16.43: ping
+
+N, the middle mouse button or both bumpers ping the spot under the
+cursor, or the enemy near it, for the whole party for 8 seconds.
+
+Check 16.43. Fails on v16.42.

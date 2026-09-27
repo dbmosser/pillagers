@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.43 - PING
+
+Co-op list of 2026-09-27, item 3. N or the middle mouse button pings; on a controller both bumpers together ping (each bumper
+steps the belt one way, so the two steps cancel). A ping marks the point under the cursor for the party, or, with an enemy within
+70 units of it, that enemy, and the marker follows him while he lives. Every window shows a pulsing diamond with who pinged and
+how far it is (an enemy ping names him, in orange) for 8 seconds, pulled to the screen edge when off screen, with a blip. One
+ping every half second. The host passes a teammate ping to the others. The test handle also reads the kill feed and pings.
+
+MEASURED. Check 16.43 passes and fails on v16.42.
 ## v16.42 - KILL FEED
 
 Co-op list of 2026-09-27, item 4. When a player in the party kills a body, the host (which runs every body) makes a line NAME

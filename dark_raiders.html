@@ -1433,7 +1433,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.42';
+var VER='16.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11345,6 +11345,7 @@ function raidKey(code,repeat,ev){
     if(dn>=1&&dn<=9){ setHot(dn-1); if(ev) ev.preventDefault(); }
   }
   if(code==='KeyQ'&&G&&!G.over&&!repeat) cycleThrow();
+  if(code==='KeyN'&&G&&!G.over&&!repeat&&NET.on) netPingMake();   // v16.43: ping for the party
   if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat) useHot();
   // ORDERS, v3.73, partner-merc line two. One key, three states, and the words
   // are the feedback: LOOT is the freelancer he has always been, FOLLOW keeps
@@ -11520,6 +11521,7 @@ cv.addEventListener('mousedown',function(e){
   // (as on the pad), and the canvas click listener still wakes the audio.
   if(e.button===0&&G&&!G.over&&G.trade) return;
   if(e.button===2){ if(G&&!G.over) G.player.ads=true; return; }
+  if(e.button===1){ if(G&&!G.over&&NET.on){ netPingMake(); e.preventDefault(); } return; }   // v16.43: the middle button pings for the party
   // v8.96: on the Undercroft floor the same two handlers below run against the
   // backpack's own state instead of a raid. Answer 11, moving things to and from
   // the hotbar with the backpack open.
@@ -12354,6 +12356,7 @@ function pollPad(){
       if(_rbN&&!PAD.prev[5]) setHot((hotSel()+1)%_slN);
     }
   }
+  if(_lbN&&_rbN&&(!PAD.prev[4]||!PAD.prev[5])&&G&&!G.over&&NET.on) netPingMake();   // v16.43: both bumpers ping; the two belt steps cancel
   PAD.prev[4]=_lbN; PAD.prev[5]=_rbN;
   if(bagNav){
     var dU=pressed(12),dD=pressed(13);
@@ -26223,6 +26226,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
   ctx.fillText('HP  '+Math.round(p.hp),24,by+18);
   try{ if(NET.on) netTeamHud(by); }catch(_nth){}   // v16.26: your teammates, their health and armour, above your own
   try{ if(NET.on) netFeedDraw(); }catch(_nfd){}   // v16.42: the kill feed
+  try{ if(NET.on) netPingDraw(); }catch(_npd){}   // v16.43: the party pings
   // YOUR OWN STATUS, beside the health because that is where you already look.
   // Same verb and same colour the raider board gives them, from the same table,
   // so "FIGHTING" means the same thing about you as it does about the man whose
@@ -31172,7 +31176,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.42: KILL FEED. Co-op list item 4. When a player kills a body the host shows NAME killed WHAT (a pillager by name, a machine by kind, ELITE marked) and sends it to the party; each window shows the last four for six seconds at the right edge, its own kills in amber as YOU. Check 16.42 fails on v16.41',
+  now:'v16.43: PING. Co-op list item 3. N or the middle mouse button (both bumpers on a controller) marks the point under the cursor for the party, or snaps to the enemy nearest it and follows him while he lives. Everyone sees a pulsing marker with who pinged it and how far it is for 8 seconds, pulled to the screen edge when off screen, with a blip. One ping every half second. Check 16.43 fails on v16.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34902,6 +34906,7 @@ function netOnMsg0(peer,data){
   if(m.t==='kitask'||m.t==='kitok') return netKitTake(peer,m);   // v16.37: every player chooses a kit
   if(m.t==='sum') return netSumTake(peer,m);   // v16.40: a teammate's raid result, for the party summary
   if(m.t==='kf') return netFeedTake(peer,m);   // v16.42: a line for the kill feed, from the host
+  if(m.t==='png') return netPingTake(peer,m);   // v16.43: a ping from one of the party
   if(m.t==='fx') return netFxTake(peer,m);   // v16.21: a round or a sound from one of the party, to draw and play
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
@@ -36076,6 +36081,64 @@ function netTeamHud(by){
 // v16.42, THE CO-OP LIST (item 4): A KILL FEED. THE HOST, when a player kills a body: NAME killed WHAT, shown on the host and sent
 // to the party. Each window keeps the last four lines for six seconds, drawn at the right edge. Drawing and words only.
 var NET_FEED_T=6;
+// v16.43, THE CO-OP LIST (item 3): A PING. N or the middle mouse button (both bumpers on a controller) marks the point under the
+// cursor for the party, or the enemy nearest it within NET_PING_SNAP. Everyone sees a marker with who pinged it for NET_PING_T
+// seconds, pulled to the screen edge when it is off screen, and hears a blip. One ping every half second.
+var NET_PING_T=8, NET_PING_SNAP=70;
+function netPingMake(){
+  var w, i, e, bd=NET_PING_SNAP, d, hit=null, m;
+  if(typeof G==='undefined'||!G||G.over||!G.player||!NET.on||!NET.upSeed) return null;
+  if(NET.pingAt&&Date.now()-NET.pingAt<500) return null;
+  NET.pingAt=Date.now();
+  w=mouseWorld();
+  for(i=0;i<G.ents.length;i++){ e=G.ents[i]; if(!e.nid||e.hp<=0||e.merc) continue; d=dist(e,w); if(d<bd){ bd=d; hit=e; } }
+  m={t:'png',x:Math.round(hit?hit.x:w.x),y:Math.round(hit?hit.y:w.y),w:hit?((hit.kind==='raider'&&hit.name)?netClean(hit.name,24):String(hit.kind).toUpperCase()):''};
+  if(hit) m.id=hit.nid;
+  netBroadcast(m);
+  netPingPush(NET.seat,m);
+  return m;
+}
+function netPingTake(peer,m){
+  var s;
+  if(!peer||peer.state!=='in') return 'ignored';
+  if(typeof m.x!=='number'||typeof m.y!=='number'||!isFinite(m.x)||!isFinite(m.y)) return 'bad';
+  if(NET.role==='host') s=peer.seat; else { s=(m.s===undefined)?0:m.s; if(typeof s!=='number'||s!==(s|0)) return 'bad'; }
+  if(s===NET.seat) return 'ignored';
+  var o={x:clamp(m.x,-9000,NET_UP_MAX),y:clamp(m.y,-9000,NET_UP_MAX),w:netClean(m.w,24)};
+  if(typeof m.id==='number') o.id=m.id|0;
+  if(NET.role==='host'){ var i; for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSend(NET.peers[i],{t:'png',s:s,x:o.x,y:o.y,w:o.w,id:o.id}); }
+  netPingPush(s,o);
+  return 'png';
+}
+function netPingPush(s,o){
+  if(!NET.pings) NET.pings=[];
+  NET.pings.push({s:s,x:o.x,y:o.y,w:o.w||'',id:o.id,at:Date.now()});
+  if(NET.pings.length>6) NET.pings.shift();
+  try{ if(typeof G!=='undefined'&&G&&!G.sim) blip('pick'); }catch(_bp){}
+  return NET.pings.length;
+}
+function netPingDraw(){
+  var i, p, now=Date.now(), s, M=LH(30), e, nm, lbl, x, y, n=0, c;
+  if(!NET.pings||!NET.pings.length) return 0;
+  for(i=NET.pings.length-1;i>=0;i--){
+    p=NET.pings[i];
+    if((now-p.at)/1000>NET_PING_T){ NET.pings.splice(i,1); continue; }
+    e=(p.id&&NET.entMap)?NET.entMap[p.id]:null;
+    if(e&&e.hp>0){ p.x=e.x; p.y=e.y; }   // a pinged enemy is followed while it lives
+    s=w2s(p.x,0,p.y); if(!s) continue;
+    x=clamp(s.x,M,W-M); y=clamp(s.y,M,H-M);
+    c=p.w?'#ff8a3c':'#6fe0ff';
+    ctx.save(); ctx.globalAlpha=0.55+0.45*Math.abs(Math.sin(now/180));
+    ctx.strokeStyle=c; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(x,y-LH(12)); ctx.lineTo(x+LH(9),y); ctx.lineTo(x,y+LH(12)); ctx.lineTo(x-LH(9),y); ctx.closePath(); ctx.stroke();
+    ctx.restore();
+    nm=(p.s===NET.seat)?'YOU':(netSeatName(p.s)||'PILLAGER');
+    lbl=nm+(p.w?(': '+p.w):'')+'  '+((G&&G.player)?metres(dist(G.player,p)):0)+'M';
+    ctx.font=FS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=c; ctx.fillText(lbl,clamp(x,LH(60),W-LH(60)),y-LH(16)); ctx.textAlign='left';
+    n++;
+  }
+  return n;
+}
 function netFeedKill(s,e){
   var who=(e.kind==='raider'&&e.name)?netClean(e.name,24):String(e.kind||'').toUpperCase();
   if(e.elite) who='ELITE '+who;
@@ -37402,6 +37465,9 @@ if(NETSLOT||NETP2){   // v15.76: and the player 2 window, so the test page can r
       // test only stand, so the live test can put this player beside a box before it holds E for real.
       cont:function(){ return netContView(); },
       stand:function(x,y){ if(typeof G==='undefined'||!G||!G.player) return false; G.player.x=+x; G.player.y=+y; return true; },
+      feed:function(){ var o=[], i; for(i=0;i<(NET.feed||[]).length;i++) o.push(NET.feed[i].txt); return o; },   // v16.43: the kill feed, for the live test
+      pings:function(){ var o=[], i; for(i=0;i<(NET.pings||[]).length;i++) o.push({s:NET.pings[i].s,x:NET.pings[i].x,y:NET.pings[i].y,w:NET.pings[i].w}); return o; },
+      ping:function(){ return netPingMake(); },
       // v16.09: voice for the live test: switch the mic on, read what this window sends and hears, and the voice bytes it has taken in.
       mic:function(){ return voiceMicOn(); },
       voice:function(){ var h=0, l=0, i; for(i=0;i<NET.peers.length;i++){ if(NET.peers[i].vEl) h++; if(NET.peers[i].at||voiceLineOf(NET.peers[i])) l++; } return {mic:!!NET.micTrack,live:!!(NET.micTrack&&NET.micTrack.enabled),mode:NET.micMode||'',lines:l,heard:h}; },

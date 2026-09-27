@@ -486,6 +486,10 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       else {
         if(r.hp!==null&&!(r.hp<r.hp0)) bad.push('shots: the body C hit lost no health on A');
         if(r.hp===null&&!r.kills) bad.push('shots: C killed body '+r.id+' and its tally counted no kill');
+        if(r.hp===null){ var fA=(A.__state()&&A.__net.feed)?A.__net.feed():null, fC=C.__net.feed?C.__net.feed():null;
+          log('feed: A shows '+JSON.stringify(fA)+'; C shows '+JSON.stringify(fC));
+          if(fA&&!fA.some(function(q){ return /killed/.test(q)&&!/^YOU/.test(q); })) bad.push('feed: A does not show C kill');
+          if(fC&&!fC.some(function(q){ return /^YOU killed/.test(q); })) bad.push('feed: C does not show its own kill as YOU'); }
         if(r.hp!==null) log('shots: body '+r.id+' survived 5 s of fire (aim, not a fault); the kill credit is read on a run where it dies');
       }
     });
