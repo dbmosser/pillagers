@@ -1,0 +1,1 @@
+| IN A RAID, B NEVER CLOSES A HIDDEN UNDERCROFT BACKPACK | v16.66 | STABILITY (review of v16.58, split vote from two lenses). FIX: backOut closes hubBagOpen only when state is hub. MEASURED: 16.66 passes, fails on v16.65 |

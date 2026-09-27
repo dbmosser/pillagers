@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.66',what:'in a raid, backing out never closes an Undercroft backpack left open out of sight; it closes the map in front of the player',
+   run:function(){
+     if(typeof backOut!=='function'||typeof hubBagOpen==='undefined'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no Undercroft backpack to test';
+     var bad=[], kHB=hubBagOpen, kSet=hubBagOpenSet, commits=0;
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       hubBagOpenSet=function(v){ if(!v) commits++; hubBagOpen=!!v; };
+       hubBagOpen=true; G.mapOpen=true;
+       backOut();
+       if(G.mapOpen) bad.push('in a raid backing out shut the unseen Undercroft backpack and left the map open');
+       if(commits) bad.push('in a raid backing out closed and saved the unseen Undercroft backpack');
+     } finally { hubBagOpenSet=kSet; hubBagOpen=kHB; try{ G.mapOpen=false; __endRaid('abandon'); __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.65',what:'player text tells the truth in his words: the PARTY window says the party ascends into the same raid, and the what is new card uses no retired word',
    run:function(){
      var pm=document.getElementById('partymodal'), bad=[], t, all;

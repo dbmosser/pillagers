@@ -1,0 +1,9 @@
+v16.66: in a raid, B never closes a hidden Undercroft backpack
+
+A teammate carried up with his Undercroft backpack open had his first B
+in the raid shut that unseen backpack and save its old packing. B closes
+it only in the Undercroft now.
+
+Check 16.66. Fails on v16.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

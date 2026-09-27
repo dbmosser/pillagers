@@ -1,0 +1,8 @@
+## v16.66 - IN A RAID, B NEVER CLOSES A HIDDEN UNDERCROFT BACKPACK
+
+From the review of v16.58. backOut closed the Undercroft backpack (hubBagOpen) before anything in the raid. A teammate carried
+up by the host with his floor backpack open kept the flag in the raid, so his first B there (v16.58 routes B to backOut)
+shut the unseen backpack through hubBagOpenSet, which saves its old packing plan, and left the map or backpack in front of him
+open. backOut now closes it only when state is hub.
+
+MEASURED. Check 16.66 passes, and fails on v16.65.

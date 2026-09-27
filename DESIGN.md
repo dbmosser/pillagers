@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.66 - IN A RAID, B NEVER CLOSES A HIDDEN UNDERCROFT BACKPACK
+
+From the review of v16.58. backOut closed the Undercroft backpack (hubBagOpen) before anything in the raid. A teammate carried
+up by the host with his floor backpack open kept the flag in the raid, so his first B there (v16.58 routes B to backOut)
+shut the unseen backpack through hubBagOpenSet, which saves its old packing plan, and left the map or backpack in front of him
+open. backOut now closes it only when state is hub.
+
+MEASURED. Check 16.66 passes, and fails on v16.65.
 ## v16.65 - THREE LINES OF PLAYER TEXT TELL THE TRUTH AND USE HIS WORDS
 
 From the review of the stability pass. The PARTY window subtitle ended every raid is still played alone, untrue since the
