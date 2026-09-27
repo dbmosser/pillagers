@@ -1,0 +1,1 @@
+| PLAYER 2 SEES ONLY ITS OWN SAVE | v16.82 | STABILITY (drafted and reviewed by agents 2026-09-27). MEASURED: 16.82 passes, fails on v16.81 |

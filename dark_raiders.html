@@ -1058,7 +1058,7 @@
       <!-- v11.02, HIS NOTE 8: he asked why changing save leaves fullscreen. It
            reloads the game, and a browser always drops fullscreen on a reload.
            Said here, where the click is. -->
-      <div style="margin-top:6px;font-size:10.5px;color:var(--ash);letter-spacing:.06em">Changing save reloads the game, which is why it leaves fullscreen.</div>
+      <div id="slotnote" style="margin-top:6px;font-size:10.5px;color:var(--ash);letter-spacing:.06em">Changing save reloads the game, which is why it leaves fullscreen.</div>
       <div id="fsback" style="display:none;margin-top:6px;font-size:11px;color:var(--amber);letter-spacing:.06em">You were in fullscreen. The reload dropped it, as it always does. GO FULLSCREEN is above.</div>
       <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
         <input id="pnamein" maxlength="16" autocomplete="off" spellcheck="false"
@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.81';
+var VER='16.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31360,7 +31360,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.81: A SPRINT TAKES YOU OUT OF FOCUS AIM. His order during his co-op session: sprinting did nothing while in focus aim, and player 2 on a pad kept hitting it. Holding sprint while moving now drops focus aim, and on a pad it also lets go of the right stick toggle. Check 16.81 fails on v16.80',
+  now:'v16.82: PLAYER 2 SEES ONLY ITS OWN SAVE. His report during his co-op session: the second player loading saves is all messed up. The player 2 window showed the saves of player 1, could erase them, and its rows only reloaded the player 2 save. Its title screen now shows player 2 its own save only, and nothing there can touch a player 1 save. Check 16.82 fails on v16.81',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40388,6 +40388,23 @@ loadProfile().then(function(){
       // v14.44, title and saves audit finding 4: THE FULL SAVES LABEL CLEARS WHEN THE LIST IS DRAWN AGAIN. CREATE A NEW SAVE
       // with all eight saves in use rewrote its own label for good, and nothing put it back after a delete freed a save.
       var _ngl=document.getElementById('newgame'); if(_ngl) _ngl.textContent='CREATE A NEW SAVE';
+      // v16.77, HIS REPORT (player 2 loading saves is all messed up): THE PLAYER 2 WINDOW LISTS NO SAVES. This list is the
+      // player 1 saves (slotKey) with the player 1 pointer (SLOT) highlighted, and the player 2 window plays
+      // salvagerun:profile:p2 whatever the pointer says: so here it listed and highlighted player 1 saves, its DELETE erased
+      // them, and a row or CREATE A NEW SAVE wrote nothing (netSaveLocked) and reloaded the same player 2 save. In the
+      // player 2 window the panel says so in one line and draws no rows, no ERASE and no create; the name box above still
+      // names the player 2 pillager. A save list of its own for player 2 is a later build.
+      var _p2w=!!(typeof NETP2!=='undefined'&&NETP2), _sln=document.getElementById('slotnote');
+      if(_ngl) _ngl.style.display=_p2w?'none':'';
+      if(_sln) _sln.style.display=_p2w?'none':'';
+      if(_p2w){
+        host.innerHTML='';
+        var _p2l=document.createElement('div');
+        _p2l.style.cssText='font-size:11px;color:var(--ash);letter-spacing:.06em';
+        _p2l.textContent='Player 2 plays its own save on this machine.';
+        host.appendChild(_p2l);
+        return;
+      }
       var h='';
       for(var sn=1;sn<=8;sn++){
         var key=String(sn), inf=slotInfo(key);

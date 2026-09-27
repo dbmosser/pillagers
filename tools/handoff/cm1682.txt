@@ -1,0 +1,7 @@
+v16.82: player 2 sees only its own save
+
+PLAYER 2 SEES ONLY ITS OWN SAVE. His report during his co-op session: the second player loading saves is all messed up. The player 2 window showed the saves of player 1, could erase them, and its rows only reloaded the player 2 save. Its title screen now shows player 2 its own save only, and nothing there can touch a player 1 save.
+
+Check 16.82. Fails on v16.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
