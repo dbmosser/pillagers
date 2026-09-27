@@ -81,6 +81,10 @@ Never idle while any of these has work.
      asks, no corpus when he is at the PC (idle.ps1 under 600 s), one check run per gate,
      short reports, no re-reading what is known.
    - Big items are cut into small shippable builds, never skipped for size.
+   - 2026-09-27 14:05 he allowed up to 15% of the weekly FABLE allowance for his playtest fixes (reached 17%).
+   - 2026-09-27 14:58 (his order, on Opus again): over the next ~17 hours (to about 08:00 on 2026-09-28) use no more than 4%
+     more of the weekly allowance: the Weekly all models reading must stay at or under 20% (it read 16% at 14:58).
+     Multi-agent workflows cost about 1% each: none without a clear need; solo, lean, one build per item.
 22. HIS PC DOES THE HEAVY LIFTING. Tests run in the Browser pane on his GPU (AMD RX 7900 XTX,
    D3D11, confirmed 2026-09-27); PowerShell builds, patches and fixtures on his CPU; long
    runs go in background shells while I draft the next build. Tokens go into writing fixes,

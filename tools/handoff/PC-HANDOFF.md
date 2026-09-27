@@ -83,3 +83,10 @@ replaces them.
    instead of ABANDON, behind a check), each with a live test.
 3. Player 2 face blocked in the Undercroft (item e): needs his screenshot; ask him once, then move on.
 4. Keep combing for player 2 parity gaps: anything player 1 sees, hears or can do that player 2 cannot.
+
+## PLAYTEST QUEUE (2026-09-27 afternoon, see memory pillagers-playtest-2026-09-27)
+Shipped 16.72-16.76. Generated, not shipped: p1677 crosshair, p1678 alarm quarter (+check 16.30 retarget), p1679 backpack on a
+pad. Reviewed drafts in tools/handoff/drafts (*-2026-09-27.json; generate with drafts/gen-draft.ps1 -Key after copying to the
+scratchpad as draft-KEY.json): autofire (renumber from 16.76), p2-saves. Drafting when stopped or pending: stash-pad, y-heal,
+pad-liveness, downed-extract; kit-options (random loadout / top gear) was stopped for budget, redo solo. Still to write:
+sprint takes the player out of focus aim. BUDGET: weekly all-models must stay at or under 20% (RULEBOOK rule 21).

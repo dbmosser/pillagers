@@ -499,6 +499,28 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
   // on its own window for the time the box takes. The loot must land in C's own backpack, on its own raid on the player 2 save;
   // both copies must draw the box searched, with the last item in C, within 500 ms of each other; A's own backpack must not gain.
   function boxOf(f,cid){ var v=W(f).__net.cont(), i; for(i=0;i<v.list.length;i++) if(v.list[i].cid===cid) return v.list[i]; return null; }
+  // PAD LOOT (2026-09-27, his report: player 2 looting is broken in real play while a keyboard E on C passes lootStep). C is
+  // stood beside the nearest unopened box it holds and the pad X button is HELD ON THE HOST, as in real play (A in front reads
+  // the pads and forwards them; C plays the forwarded pad), for up to 5 s. The box must open and the loot land in C.
+  function padLootStep(A,C,bad,rep){
+    if(typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'||typeof A.__net.pad!=='function') return Promise.resolve();
+    var vc=C.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, NGA=A.navigator.getGamepads, HFA=A.document.hasFocus, HFC=C.document.hasFocus, t0=0, it0=0, dn=false;
+    function itemsC(){ try{ var g=C.__state(); return (g&&g.tel)?(g.tel.items|0):0; }catch(e){ return 0; } }
+    function mkPad(){ var bt=[],q; for(q=0;q<17;q++) bt.push({pressed:(q===2&&dn),value:(q===2&&dn)?1:0,touched:(q===2&&dn)}); return {connected:true,id:'padloot',index:0,mapping:'standard',timestamp:Date.now(),buttons:bt,axes:[0,0,0,0]}; }
+    function state(){ var g=C.__state(), q=boxOf(fc,box.cid); return 'box '+JSON.stringify(q)+'; C searching '+(g&&g.searching?'yes':'no')+', near box '+(g&&g.nearContainer?'yes':'no')+', pad '+JSON.stringify(C.__net.pad()); }
+    for(i=0;i<vc.list.length;i++){ b=vc.list[i]; if(b.op) continue; d=gap(b,me); if(d<bd){ bd=d; box=b; } }
+    if(!box){ bad.push('pad loot: C holds no unopened box'); return Promise.resolve(); }
+    C.__net.stand(box.x-20,box.y); clearFloor(fa); clearFloor(fc);
+    try{ A.document.hasFocus=function(){ return true; }; C.document.hasFocus=function(){ return false; }; }catch(e){}
+    A.navigator.getGamepads=function(){ return [mkPad()]; };
+    it0=itemsC(); t0=Date.now();
+    return sleep(400).then(function(){ dn=true; return wait(function(){ var q=boxOf(fc,box.cid); return ((q&&q.op)||itemsC()>it0)?1:null; },5000,'the box C stands at to open on a forwarded pad X'); }).then(function(){
+      rep.padLootMs=Date.now()-t0;
+      log('pad loot: C searched box '+box.cid+' with pad X held on the host and forwarded: '+(itemsC()-it0)+' items landed, '+rep.padLootMs+' ms; '+state());
+    },function(e){ bad.push('pad loot: '+e.message+' ('+state()+')'); }).then(function(){
+      dn=false; return sleep(200);
+    }).then(function(){ A.navigator.getGamepads=NGA; A.document.hasFocus=HFA; C.document.hasFocus=HFC; });
+  }
   function lootStep(A,C,bad,rep){
     if(typeof A.__net.cont!=='function'||typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'){ bad.push('this fixture has no container view in its net handle (a build before v15.91), so the loot step cannot run'); return Promise.resolve(); }
     var vc=C.__net.cont(), va=A.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, t0=0, tA=null, tC=null, tBag=null, bagC0=0, bagA0=0, itC0=0, n=0, ba=null, msgs=[];
@@ -654,7 +676,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       // BUILD 7: the enemies, before A walks. A failure here is written down and the step goes on.
       return entStep(A,C,bad,rep).then(null,function(e){ bad.push('enemies: '+e.message); }).then(function(){
         // BUILD 8: C searches a box beside it through the host. A failure here is written down and the step goes on.
-        return lootStep(A,C,bad,rep).then(null,function(e){ bad.push('loot: '+e.message); }).then(function(){ return shotStep(A,C,bad,rep).then(null,function(e){ bad.push('shots: '+e.message); }); }).then(function(){
+        return lootStep(A,C,bad,rep).then(null,function(e){ bad.push('loot: '+e.message); }).then(function(){ return padLootStep(A,C,bad,rep).then(null,function(e){ bad.push('pad loot: '+e.message); }); }).then(function(){ return shotStep(A,C,bad,rep).then(null,function(e){ bad.push('shots: '+e.message); }); }).then(function(){
           // v16.43: C pings and A must hold the ping, named for C's seat, within 500 ms.
           if(typeof C.__net.ping!=='function') return;
           var sc=st(fc).seat, pm=C.__net.ping(), t1=Date.now();
