@@ -1,0 +1,1 @@
+| PLAYER 2 HEARS THE GAME | v16.29 | HIS NOTE: player 2 heard nothing (sound off by default since v15.78). FIX: SPLIT SPEAKERS on by default for a same machine pair. Check 15.78 restaged. MEASURED: check 16.29 passes twice, fails on v16.28 |

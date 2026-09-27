@@ -1,0 +1,11 @@
+## v16.29 - PLAYER 2 HEARS THE GAME
+
+His note of 2026-09-27: player 2 heard no audio at all. v15.78 started the player 2 window with its world sound off, so two windows
+on one PC would not play everything twice; v16.24 added SPLIT SPEAKERS as an option. Now split is the default for a same machine
+pair until switched off (netSndSplitOn reads true when nothing is saved): both windows play, player 1 hard left, player 2 hard
+right. SOUND ON or OFF still applies when split is switched off. No number moved.
+
+Check 15.78 restaged: it reads SOUND ON and OFF with split pinned off, and puts the setting back after.
+
+MEASURED. Check 16.29 passes twice; fails on v16.28. Checks 15.78 and 16.24 pass; nettest RUN SAME MACHINE passes.
+

@@ -1,0 +1,8 @@
+v16.29: player 2 hears the game
+
+His note. Two player co-op on one PC now starts with SPLIT SPEAKERS on:
+both windows play, player 1 in the left speaker and player 2 in the
+right. It can still be switched off in the PARTY window. No number
+moved.
+
+Check 16.29. Fails on v16.28. Check 15.78 restaged.

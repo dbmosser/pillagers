@@ -5721,6 +5721,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.29',what:'player 2 hears the game: with no split setting saved, a same machine pair starts split (player 2 window playing, panned right); switched off it stays off',
+   run:function(){
+     if(typeof NET!=='object'||!NET||typeof netSndOut!=='function'||typeof netSndSplitOn!=='function') return 'SKIP: this build has no split speakers';
+     var bad=[], keep={same:NET.same,sndG:NET.sndG,sndAc:NET.sndAc,sndP:NET.sndP,sndOn:NET.sndOn}, v=null, K='salvagerun:samesound:split';
+     function node(){ return {gain:{value:1},pan:{value:0},connect:function(){}}; }
+     var fake={destination:{},createGain:function(){ return node(); },createStereoPanner:function(){ return node(); }};
+     try{ v=localStorage.getItem(K); }catch(e){}
+     try{
+       try{ localStorage.removeItem(K); }catch(e){}
+       NET.same='p2'; NET.sndOn=false; NET.sndG=null; NET.sndAc=null; NET.sndP=null;
+       netSndOut(fake);
+       if(!NET.sndP) return 'SKIP: no panner was made';
+       if(NET.sndG.gain.value!==1||NET.sndP.pan.value!==1) bad.push('with nothing saved the player 2 window starts silent or unpanned (gain '+NET.sndG.gain.value+', pan '+NET.sndP.pan.value+')');
+       localStorage.setItem(K,'0'); netSndApply();
+       if(NET.sndG.gain.value!==0) bad.push('control: split switched off, the player 2 window with SOUND OFF still plays');
+     }
+     finally{
+       try{ if(v===null) localStorage.removeItem(K); else localStorage.setItem(K,v); }catch(_s){}
+       try{ NET.same=keep.same; NET.sndG=keep.sndG; NET.sndAc=keep.sndAc; NET.sndP=keep.sndP; NET.sndOn=keep.sndOn; }catch(_n){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.28',what:'the HP bar is always there and the belt never covers it: the vitals block does not fold; with the vitals block made twice as big the belt slots start right of it and end left of the gear readout',
    run:function(){
      if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile)||typeof drawHUD!=='function'||typeof hudOff!=='function') return 'SKIP: this fixture cannot draw the HUD';
@@ -8538,7 +8559,8 @@ window.__REGRESS=[
      var ch={posted:[],closed:false,onmessage:null,postMessage:function(m){ this.posted.push(m); },close:function(){ this.closed=true; }};
      function posts(t){ var o=[], q; for(q=0;q<ch.posted.length;q++) if(ch.posted[q]&&ch.posted[q].t===t) o.push(ch.posted[q]); return o; }
      function last(t){ var o=posts(t); return o.length?o[o.length-1]:null; }
-     var fk=fake(), km;
+     var fk=fake(), km, _splitKeep=null;
+     try{ _splitKeep=localStorage.getItem('salvagerun:samesound:split'); localStorage.setItem('salvagerun:samesound:split','0'); }catch(_sk){}   // v16.29: this check reads SOUND ON and OFF with split speakers off
      try{
        __topClear();
        closeAll();
@@ -8707,6 +8729,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ NET.bc=null; NET.same=''; NET.pair=''; NET.mode=''; }catch(_n){}
+       try{ if(_splitKeep===null) localStorage.removeItem('salvagerun:samesound:split'); else localStorage.setItem('salvagerun:samesound:split',_splitKeep); }catch(_sk2){}
        try{ netReset(); }catch(_nr){}
        try{ unspy(); }catch(_us){}
        try{ NET.pick=''; NET.p2url=''; }catch(_np){}
