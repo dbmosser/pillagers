@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.78';
+var VER='16.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11386,6 +11386,7 @@ function raidKey(code,repeat,ev){
   // An open backpack can still be closed.
   if((code==='KeyI'||code==='KeyB')&&G&&!G.over&&!repeat&&(G.bagOpen||!(G.player&&(G.player.downed||G.player.dying)))){
     G.bagOpen=!G.bagOpen; G.bagSel=0; G.drag=null;   // v14.58: and B or I drops a held drag, as ESC, TAB and focus loss do
+    G.bagBelt=false;   // v16.79, his order: the highlight opens in the grid, not where it was left on the belt row
     // v12.09: an arrow still held when the bag opens stops walking too.
     if(G.bagOpen){ keys['ArrowUp']=false; keys['ArrowDown']=false; keys['ArrowLeft']=false; keys['ArrowRight']=false; }
   }
@@ -11400,6 +11401,12 @@ function raidKey(code,repeat,ev){
   // function for every key, so an arrow both moved the selection and moved the
   // operator; browsing the bag walked you off the spot you stopped on. Cleared
   // here for the arrows while the bag is open; WASD still walks, as promised.
+  // v16.79, his order: THE HIGHLIGHT WALKS ONTO THE TACTICAL BELT. With the backpack open, the v14.59 walk of up and down
+  // through the stacks keeps every step but the one that wrapped it round: down past the last stack, or up before the first,
+  // now lands on the belt row (an empty grid lands there at once), left and right walk along the belt, down from it starts
+  // again at the first stack and up climbs back to the last. bagArrow keeps that state (G.bagBelt, G.bagBeltSel) and answers
+  // true when it took the key, so the grid walk below never also moves. The pad sends the same four codes here.
+  if(G&&!G.over&&G.bagOpen&&code.indexOf('Arrow')===0&&bagArrow(code)){ keys[code]=false; if(ev) ev.preventDefault(); return; }
   if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length&&code.indexOf('Arrow')===0) keys[code]=false;
   if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
     // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
@@ -12480,7 +12487,19 @@ function pollPad(){
     if(dU&&!PAD.prev[12]){ raidKey('ArrowUp',false,null); keys['ArrowUp']=false; }
     if(dD&&!PAD.prev[13]){ raidKey('ArrowDown',false,null); keys['ArrowDown']=false; }
     PAD.prev[12]=dU; PAD.prev[13]=dD;
-  } else { PAD.prev[12]=pressed(12); PAD.prev[13]=pressed(13); }
+    // v16.79, his order: PACK AND UNPACK ON A CONTROLLER. With the backpack open D-LEFT and D-RIGHT walk along a row (the arrow
+    // keys, as D-UP and D-DOWN above), A picks up the item under the highlight and A again places it, through the very mouse
+    // press and release a drag uses (bagPadAct), so a belt key, a backpack cell and every rule of the mouse drop are the same.
+    // While a pad drag is held the cursor sits on the highlight, so the ghost, the ringed drop target and the release land
+    // where the mouse would be. These three buttons keep their own last state here: the tap loop above stamps PAD.prev for A,
+    // so an edge read from it this late never fires. An A spent on a menu button (PAD.aSpent) is not a pick-up.
+    var _dL=pressed(14),_dR=pressed(15),_aB=pressed(0),_bpb=PAD.bagBtn||{};
+    if(_dL&&!_bpb.l){ raidKey('ArrowLeft',false,null); keys['ArrowLeft']=false; }
+    if(_dR&&!_bpb.r){ raidKey('ArrowRight',false,null); keys['ArrowRight']=false; }
+    if(_aB&&!_bpb.a&&!PAD.aSpent) bagPadAct();
+    PAD.bagBtn={l:_dL,r:_dR,a:_aB};
+    if(G.drag&&G.drag.pad){ var _bpc=bagPadCell(); if(_bpc){ mouse.x=_bpc.x+_bpc.w/2; mouse.y=_bpc.y+_bpc.h/2; } }
+  } else { PAD.prev[12]=pressed(12); PAD.prev[13]=pressed(13); PAD.bagBtn={l:pressed(14),r:pressed(15),a:pressed(0)}; }
   // v14.19, controller audit finding 1: EVERY BUTTON'S LAST STATE IS RECORDED EVERY RAID FRAME. This line only filled in
   // buttons never seen, so A, X, Y and the stick clicks kept whatever the Undercroft, a menu or the stall last recorded,
   // and the stall compares against exactly that. The first X at the peddler after coming up opened the stall through the
@@ -25187,7 +25206,8 @@ function drawBuzzFx(){
              :((S.kind==='gun'&&S.icon&&WEAPONS[S.icon])?gunRarity(S.icon)
              :((S.icon&&ITEMS[S.icon])?dispR(S.icon):null));
       if(_hr&&!empty){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; ctx.fillRect(bx,hy,bw,bw); } }
-      var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw);
+      var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw)
+        ||(!!G.bagOpen&&!!G.bagBelt&&q===clamp(G.bagBeltSel||0,0,sl.length-1));   // v16.79, his order: the backpack highlight on the belt row rings its key
       ctx.strokeStyle=dragOver?'#ffc04a':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!empty)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
       ctx.lineWidth=(dragOver||on)?2:1;
       ctx.strokeRect(bx+.5,hy+.5,bw-1,bw-1);
@@ -28581,7 +28601,7 @@ function drawBag(){
   // BACKPACK, and inventory means the backpack plus the belt together.
   ctx.fillText('BACKPACK',x+11,cy);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
-  ctx.fillText((PAD&&PAD.on)?'VIEW to close':'B or I to close',x+PW-11,cy); ctx.textAlign='left';
+  ctx.fillText((PAD&&PAD.on)?((state==='hub')?'VIEW to close':'A pick up or place   B close'):'B or I to close',x+PW-11,cy); ctx.textAlign='left';   // v16.79, his order: in a raid a pad packs with A and backs out on B; on the floor A does nothing to the backpack and VIEW still closes it
   cy+=LH(8);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
 
@@ -28636,7 +28656,7 @@ function drawBag(){
       ctx.fillRect(tx,ty,TILE,TILE);
       var _bf=rfill(it?dispR(stacks[si].key):null);
       if(_bf){ ctx.fillStyle=_bf; ctx.fillRect(tx,ty,TILE,TILE); }
-      ctx.strokeStyle=(si===sel)?'#ffc04a':(RCOL[it?dispR(stacks[si].key):null]||'rgba(90,102,116,.6)');
+      ctx.strokeStyle=(si===sel&&!G.bagBelt)?'#ffc04a':(RCOL[it?dispR(stacks[si].key):null]||'rgba(90,102,116,.6)');   // v16.79, his order: the gold ring is on the belt row while the highlight is there
       ctx.lineWidth=(si===sel)?2:1.2;
       ctx.strokeRect(tx+.5,ty+.5,TILE-1,TILE-1);
       drawItemIcon(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2),TILE*0.62);
@@ -28699,7 +28719,7 @@ function drawBag(){
     // D-pad. Only the mouse drag onto the tactical belt works on the floor, so on the floor the line names only that, and with a
     // controller it names nothing. state is 'raid' in a raid, so the raid hint is untouched. No number and no seeded draw moved.
     ctx.fillText((state==='hub')?((PAD&&PAD.on)?'':'drag to tactical belt')
-      :(PAD&&PAD.on)?'DPAD select   DPAD L drop'
+      :(PAD&&PAD.on)?'DPAD move, past the ends to the tactical belt   A pick up or place   B close'   // v16.79, his order: D-LEFT no longer drops on a pad
       :('ARROWS move   Z drop one   drag to tactical belt'
         +(isGun?'   ENTER equip   SHIFT+ENTER to back':'')
         ),x+11,_ry+LH(3));
@@ -31335,7 +31355,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.78: THE CLOCK ALARMS DROP TO A QUARTER. His note: the 5 minutes left alarm and the other clock marks were still too loud after v16.30. The warning tone and the last ten seconds tick now play at a quarter of that level; nothing else moves. Check 16.78 fails on v16.77',
+  now:'v16.79: PACK AND UNPACK ON A CONTROLLER. His order: with the backpack open, A picks up the item under the highlight, D-pad down walks the stacks and past the last one lands on the tactical belt row, D-pad left and right walk the belt keys, and A places the item there or back in the backpack, exactly as a mouse drag does. B still closes the backpack. Check 16.79 fails on v16.78',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31618,6 +31638,53 @@ function toggleCarry(on){
 // same front-most order Escape follows, written once instead of seven times.
 // Returns true if it closed something, which is what lets a B with nothing to
 // close fall through to the merc order it has always had.
+// v16.79, his order: PACK AND UNPACK ON A CONTROLLER. Three helpers, all written against what the mouse already does. bagArrow
+// walks the highlight between the backpack grid and the tactical belt row (G.bagBelt, G.bagBeltSel); bagPadCell is the cell
+// under the highlight, in the rectangles the belt and drawBag recorded this frame; bagPadAct is pad A: with nothing held it is
+// the mouse press that starts a drag from that cell, with something held it is the mouse release that drops it there, so a
+// belt key, a backpack cell, the swap, the click-in-place, the unbind and every word said are the mouse rules, not a copy.
+function bagArrow(code){
+  var HC=G.hotCells||[], hn=HC.length, sn=bagStacks().length, bc=G.bagCols||5;
+  if(!hn) return false;   // no belt drawn yet: the grid walk in raidKey keeps the key
+  if(G.bagBelt){
+    var bs=clamp(G.bagBeltSel||0,0,hn-1);
+    if(code==='ArrowLeft'){ G.bagBeltSel=(bs-1+hn)%hn; return true; }
+    if(code==='ArrowRight'){ G.bagBeltSel=(bs+1)%hn; return true; }
+    if(code!=='ArrowUp'&&code!=='ArrowDown') return false;
+    // the belt row sits between the last stack and the first: down starts the walk again, up climbs back to its end
+    G.bagBelt=false; G.bagSel=(code==='ArrowUp'&&sn)?sn-1:0;
+    return true;
+  }
+  if(code!=='ArrowUp'&&code!=='ArrowDown') return false;
+  var sel=clamp(G.bagSel||0,0,Math.max(0,sn-1));
+  // the v14.59 column walk keeps every step but the one that wrapped it round (down past the last stack, up before the
+  // first); that step, or up or down in an empty grid, lands on the belt, on the key the highlight last held there
+  var wrap=!sn||(code==='ArrowDown'?(sel+bc>=sn&&(sel%bc)+1>=Math.min(bc,sn)):(sel===0));
+  if(!wrap) return false;
+  G.bagBelt=true; G.bagBeltSel=clamp(G.bagBeltSel||0,0,hn-1);
+  return true;
+}
+function bagPadCell(){
+  if(!G||!G.bagOpen) return null;
+  var HC=G.hotCells||[];
+  if(G.bagBelt&&HC.length) return HC[clamp(G.bagBeltSel||0,0,HC.length-1)];
+  var BC=G.bagCells||[], sel=G.bagSel||0;
+  for(var i=0;i<BC.length;i++) if(BC[i].stackIx===sel) return BC[i];
+  return G.bagPanel||null;   // an empty grid: the panel itself, off the belt, so a held belt item still comes off its key
+}
+function bagPadAct(){
+  if(!G||G.over||!G.bagOpen||G.mapOpen||G.trade||(G.player&&(G.player.downed||G.player.dying))) return false;
+  var C=bagPadCell();
+  if(!C) return false;
+  mouse.x=C.x+C.w/2; mouse.y=C.y+C.h/2;
+  var had=!!G.drag;
+  try{
+    if(had) window.dispatchEvent(new MouseEvent('mouseup',{button:0}));
+    else cv.dispatchEvent(new MouseEvent('mousedown',{button:0}));
+  }catch(_pe){}
+  if(!had&&G.drag) G.drag.pad=1;
+  return true;
+}
 function backOut(){
   // A right-click menu is in front of everything, including its own panel.
   var im=document.querySelectorAll('.imenu');

@@ -68,6 +68,13 @@ SubRx @'
   {v:'16.78',what:
 '@
 
+# v16.72 moved the pad drop off D-LEFT (aim distance now); the raid backpack hint no longer names it, and must not.
+SubRx @'
+       if(!has(r2,DN)) bad.push('in a raid with a controller the backpack hint no longer names the D-pad drop, which works there');
+'@ @'
+       if(has(r2,DN)) bad.push('in a raid with a controller the backpack hint still names a D-pad drop, which his v16.72 layout took off D-LEFT');   // v16.79
+'@
+
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
 $want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
 if ($n -ne $want) { throw "expected $want edits, made $n" }
