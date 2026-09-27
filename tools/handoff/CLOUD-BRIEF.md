@@ -55,7 +55,11 @@ numbers both ways, bandages and plates on a teammate, split speakers. NEXT, in o
 7. The what is new card refresh (overdue: WHATSNEW_VER 16.12).
 HIS NOTES 2026-09-27, in this order ahead of 2 to 4 and 6 (target: 4K fullscreen; test at 3840x2160):
 a. [done v16.27] Pause when every player is paused; Superhot runs while either acts; teammate rows off the belt.
-b. The HP bar can be folded or pushed under the belt: the vitals block must never fold, and the belt must fit around the vitals
+P2. PLAYER 2 FIRST (his notes, 2026-09-27 night): (i) player 2 hears no audio at all: make SPLIT SPEAKERS the default for a same
+   machine pair so both windows play (P1 left, P2 right); (ii) player 2's looting shows no item names (the loot word path,
+   netLootTake, should give the same labels and Took lines as a local search); (iii) player 2's CURRENT PILLAGERS board is broken
+   (it is built from bodies the host runs: names and values must come across); (iv) 'extract incoming' wording: use INBOUND.
+b. [done v16.28] The HP bar can be folded or pushed under the belt: the vitals block must never fold, and the belt must fit around the vitals
    and gear blocks as the player has sized and moved them (hudUserZ, hudOff), shrinking slots rather than overlapping.
 c. The 5-minutes-left alarm (and the other clock alarms) are far too loud.
 d. Host leaving: either player 2 takes over as host, or the host's screen clearly says You are hosting. Quitting ends the raid for
