@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.58';
+var VER='16.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31221,7 +31221,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.58: ON A CONTROLLER B BACKS OUT OF THE MAP, THE BACKPACK AND THE STALL. Stability pass before a co-op session. B is the way out on a controller, but with the map or the backpack open it did a dodge roll under the panel, and at the peddler stall it did nothing. B now shuts the map, the backpack and the emote bar and walks away from the stall; with nothing open it still rolls. Check 16.58 fails on v16.57',
+  now:'v16.59: A FAULT WHILE THE HOST SPECTATES IS WRITTEN INTO THE RUN REPORT. Stability pass before a co-op session. When the host keeps the raid running for the party after leaving it, a fault there froze the enemies and searches for everyone still up top and was swallowed without a word. It is now written into the host run report once, so it can be found and fixed. Check 16.59 fails on v16.58',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36605,7 +36605,7 @@ function netSpecStart(how){
   if(NET.role!=='host'||typeof G==='undefined'||!G||G.sim||!NET.upSeed||(G.seed>>>0)!==(NET.upSeed>>>0)||!netInCount()) return false;
   for(i=0;i<NET.up.length;i++) if(netUpShown(NET.up[i])) n++;
   if(!n) return false;
-  NET.specG=G; NET.specHow=String(how||'extract'); NET.specAcc=0; NET.specIdle=0;
+  NET.specG=G; NET.specHow=String(how||'extract'); NET.specAcc=0; NET.specIdle=0; NET.specErr=0;
   if(G.player) G.player.specOut=1;
   G.searching=null; G.searchT=0;   // v16.53: and a box the host was searching when his run ended is let go, not held for ever
   netBroadcast({t:'up',st:'spec',how:netClean(how,12)});
@@ -36636,7 +36636,11 @@ function netSpecTick(dt){
     netSrchTick(wdt);
     NET.specAcc=(NET.specAcc||0)+dt;
     if(NET.specAcc>=NET_HUB_STEP){ NET.specAcc=0; NET.upN++; netEntsTick(); netContTick(); if(NET.upN%5===0) netWorldSend(); }
-  }catch(e){}
+  }catch(e){
+    // v16.59, stability (co-op review): a fault here froze the enemies, rounds and searches for the party still up top, and
+    // was swallowed without a word, so nothing in any run report said why. It is written into the host run report once.
+    if(!NET.specErr){ NET.specErr=1; try{ noteCrash('error','spectate: '+((e&&e.message)||e),crashWhere(e&&e.stack)); }catch(_nc){} }
+  }
   finally{ NET.specTick=false; G=keep; }
   return n;
 }

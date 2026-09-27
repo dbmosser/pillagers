@@ -40024,6 +40024,13 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.59 - A FAULT WHILE THE HOST SPECTATES IS WRITTEN INTO THE RUN REPORT
+
+Stability pass before his co-op session. netSpecTick runs the raid the host keeps for the party (v16.14) inside a try whose
+catch was empty, so a fault there froze the enemies, rounds and searches for everyone still up top and nothing in any run
+report said why. The catch now writes it into the host run report through noteCrash, once per spectate (NET.specErr).
+
+MEASURED. Check 16.59 stages a fault in the kept raid: passes, and fails on v16.58.
 ## v16.58 - ON A CONTROLLER B BACKS OUT OF THE MAP, THE BACKPACK AND THE STALL
 
 Stability pass before his co-op session. B is the way out on a controller (his rule: CLOSE and ESC on every menu), but in
