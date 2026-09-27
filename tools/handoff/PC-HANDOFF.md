@@ -42,7 +42,13 @@ replaces them.
    16.51 pause box shuts when a co-op raid ends under it; 16.52 pad never lands on the PARTY CONTROLLER row or END THE PARTY;
    16.53 searches run while the host spectates; 16.54 card refresh plus stale checks retargeted; 16.55 a teammate on the
    run card goes up with the party; 16.56 a spectating host has no body; 16.57 a paused party is paused while the host
-   spectates; 16.58 B backs out of map, backpack and stall. Found by three read-only review agents; open leftovers: END THE
+   spectates; 16.58 B backs out of map, backpack and stall; 16.59 a spectate fault goes to the run report; 16.60 every run
+   report says Window: player 1 or player 2 (collector names files -fff and -p2); 16.61 ping twice marks danger.
+   HIS PLAY SETUP (his order 10:20): he plays co-op on http://localhost:8802/dark_raiders.html (his saves; no-store, so a
+   refresh loads the newest build), two windows through the mode menu; both windows post run reports to the collector on
+   :8799 into exports/ (run-...-p2.txt is player 2). tools/watch-exports.ps1 in the background wakes the session on each
+   new report. While he plays, do NOT apply builds to dark_raiders.html (the play port serves the working tree): draft and
+   dry-run only, apply after he stops. Found by three read-only review agents; open leftovers: END THE
    PARTY in the P1 window hands the kid pad to P1 (netSameStop at ~35050); a P2 window hidden ~4.5 s while the host is on
    his card is abandoned (netUpShown age test in the spectate counts); a late fast-channel state word can resurrect an up
    entry after out/spec; netSpecTick swallows errors silently (route to noteCrash); danger double ping never fires
