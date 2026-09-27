@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.53 - SEARCHES KEEP RUNNING WHILE THE HOST SPECTATES
+
+Stability pass before his co-op session. The host window runs every search the party makes (netSrchTick), but only inside
+netUpTick, which stops once the host run is over; netSpecTick never called it. So after the host died or extracted, a
+teammate search was granted and never moved: the bar filled and nothing came out, on every box for the rest of the raid. A
+box the host was searching at that moment also stayed held by the host. netSpecTick now runs the searches, and netSpecStart
+drops the host own search so its box is let go.
+
+MEASURED. Check 16.53 passes, and fails on v16.52. Not verified: live in two windows.
 ## v16.52 - A CONTROLLER NEVER LANDS ON THE CONTROLLER ROW OR ON END THE PARTY
 
 Stability pass before his co-op session. The PARTY window opened with the controller highlight on its CONTROLLER row, and

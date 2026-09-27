@@ -1,0 +1,9 @@
+v16.53: searches keep running while the host spectates
+
+After the host died or extracted, a teammate search bar filled and
+nothing came out for the rest of the raid, and a box the host was
+searching stayed held. Both now work while the host spectates.
+
+Check 16.53. Fails on v16.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

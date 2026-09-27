@@ -1,0 +1,1 @@
+| SEARCHES KEEP RUNNING WHILE THE HOST SPECTATES | v16.53 | STABILITY (co-op review 2026-09-27). FIX: netSpecTick runs netSrchTick; netSpecStart drops the host own search. MEASURED: 16.53 passes, fails on v16.52 |
