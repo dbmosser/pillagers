@@ -1,0 +1,9 @@
+v16.50: in a raid, Settings greys out the buttons that leave the raid
+
+PICK FILE, UNDO and the tuning console OPEN are greyed out in a raid:
+they reload the window (a teammate drops out) or open what a controller
+cannot shut. In the Undercroft they work as before.
+
+Check 16.50. Fails on v16.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

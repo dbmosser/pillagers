@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.50 - IN A RAID, SETTINGS GREYS OUT THE BUTTONS THAT LEAVE THE RAID
+
+Stability pass before his co-op session. Settings opens in a raid since v16.45, and three of its buttons do not belong
+there: PICK FILE opens a file window a controller cannot shut, a restore or its UNDO reloads the window (a teammate drops
+out of the party and loses the run), and the tuning console can change the game settings mid raid. In a raid they are
+greyed out; in the Undercroft they work as before.
+
+MEASURED. Check 16.50 passes, and fails on v16.49. Not verified: the look of a greyed button in the panel.
 ## v16.49 - A CONTROLLER TAP ON THE MAP PLACES THE MARKER AND SHUTS THE MAP
 
 Stability pass before his co-op session. Once the right stick had moved the map cursor (v16.47), every D-UP tap placed a

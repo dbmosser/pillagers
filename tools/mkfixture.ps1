@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.50',what:'in a raid Settings greys out PICK FILE, UNDO and the tuning console OPEN, which reload the window or open what a controller cannot shut; in the Undercroft they work',
+   run:function(){
+     if(typeof renderSettings!=='function'||!window.__deploy||!window.__endRaid||!window.__hubEnter) return 'SKIP: this build cannot render Settings here';
+     if(typeof RESTORE_BACKUP_KEY!=='string') return 'SKIP: this build keeps no restore backup';
+     var kk=RESTORE_BACKUP_KEY, was=null, bad=[];
+     function off(id){ var b=document.getElementById(id); return b?(b.disabled?'off':'on'):'none'; }
+     try{
+       try{ was=localStorage.getItem(kk); localStorage.setItem(kk,JSON.stringify({credits:1})); }catch(e){ return 'SKIP: no storage'; }
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       renderSettings();
+       ['set_restore','set_unrestore','set_tune'].forEach(function(id){ if(off(id)!=='off') bad.push('in a raid '+id+' is '+off(id)); });
+       __endRaid('abandon'); __topClear(); __hubEnter();
+       renderSettings();
+       ['set_restore','set_unrestore','set_tune'].forEach(function(id){ if(off(id)!=='on') bad.push('control: in the Undercroft '+id+' is '+off(id)); });
+     } finally { try{ if(was===null) localStorage.removeItem(kk); else localStorage.setItem(kk,was); }catch(e){} try{ renderSettings(); }catch(e){} try{ __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.49',what:'a controller tap with the map cursor moved places the marker and shuts the map, so the map never stays stuck open over a dead gun',
    run:function(){
      if(typeof pollPad!=='function'||typeof netWpFromMap!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no controller map path';

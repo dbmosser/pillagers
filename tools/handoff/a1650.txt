@@ -1,0 +1,1 @@
+| IN A RAID, SETTINGS GREYS OUT THE BUTTONS THAT LEAVE THE RAID | v16.50 | STABILITY (co-op review 2026-09-27). FIX: set_restore, set_unrestore and set_tune render disabled while G is a live raid. MEASURED: 16.50 passes, fails on v16.49 |
