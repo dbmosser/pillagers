@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.52 - A CONTROLLER NEVER LANDS ON THE CONTROLLER ROW OR ON END THE PARTY
+
+Stability pass before his co-op session. The PARTY window opened with the controller highlight on its CONTROLLER row, and
+one press of A cycled the pick: with one pad plugged in, the second press chose a pad that is not there, so player 2 lost all
+input (B could no longer shut the window), the pick was saved for next time, and player 1 took the pad. In a same machine
+pair END THE PARTY was one press with no confirm and split the pair until a reload. The mouse still reaches both; the pad
+no longer lands on them.
+
+MEASURED. Check 16.52 passes, and fails on v16.51. Not verified: with a real pad.
 ## v16.51 - THE PAUSE BOX SHUTS WHEN A CO-OP RAID ENDS UNDER IT
 
 Stability pass before his co-op session. In a shared raid the pause box does not stop the world, so a teammate who pressed

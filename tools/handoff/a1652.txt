@@ -1,0 +1,1 @@
+| A CONTROLLER NEVER LANDS ON THE CONTROLLER ROW OR ON END THE PARTY | v16.52 | STABILITY (controller audit 2026-09-27). FIX: padFocusables skips #partypadbtn, and #partyquit in a same machine pair. MEASURED: 16.52 passes, fails on v16.51 |

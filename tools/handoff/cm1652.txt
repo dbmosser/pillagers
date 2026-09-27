@@ -1,0 +1,9 @@
+v16.52: a controller never lands on the controller row or END THE PARTY
+
+One press on the PARTY window CONTROLLER row could hand player 2 a pad
+that is not plugged in; END THE PARTY split a same machine pair on one
+press. The mouse still reaches both.
+
+Check 16.52. Fails on v16.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
