@@ -5721,6 +5721,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.41',what:'a teammate off screen gets an arrow at the screen edge pointing at him; one on screen gets none',
+   run:function(){
+     if(typeof netMateArrow!=='function') return 'this build draws no arrow to a teammate off screen';
+     if(typeof w2s!=='function'||!(W>0&&H>0)) return 'SKIP: no screen to draw on';
+     var oW=w2s, a, b, bad=[];
+     try{
+       w2s=function(x,h,z){ return {x:x,y:z}; };
+       a=netMateArrow({seat:1,x:W*3,y:H/2,dn:0});
+       b=netMateArrow({seat:1,x:W/2,y:H/2,dn:0});
+     } finally { w2s=oW; }
+     if(!a) bad.push('a teammate far off the right edge got no arrow');
+     else { if(!(a.x>W*0.8&&a.x<=W)) bad.push('the arrow is not at the right edge (x '+Math.round(a.x)+' of '+W+')'); if(Math.abs(a.a)>0.05) bad.push('the arrow does not point right ('+a.a.toFixed(2)+')'); }
+     if(b) bad.push('a teammate on screen got an arrow');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.40',what:'end of raid party summary: each result reaches the party, and the run card lists every player with how it ended, kills and haul',
    run:function(){
      if(typeof netSumTake!=='function'||typeof netSumDraw!=='function'||!document.getElementById('oc_party')) return 'this build has no party summary';

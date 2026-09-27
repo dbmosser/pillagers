@@ -1,0 +1,1 @@
+| AN ARROW TO A TEAMMATE OFF SCREEN | v16.41 | CO-OP ITEM 2. FIX: an edge arrow with name and metres to an off screen teammate, red with DOWN when down. MEASURED: 16.41 passes, fails on v16.40 |

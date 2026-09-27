@@ -40024,6 +40024,13 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.41 - AN ARROW TO A TEAMMATE OFF SCREEN
+
+Co-op list of 2026-09-27, item 2 (he said YES to all six). A teammate up top on the party seed who is off screen now gets an arrow
+at the screen edge, pointing at where he stands, with his name and how far he is in metres. It is red with DOWN when he is down,
+so a teammate to pick up can be found. Nothing is drawn when he is on screen. Drawing only.
+
+MEASURED. Check 16.41 passes and fails on v16.40.
 ## v16.40 - END OF RAID PARTY SUMMARY
 
 His pick from the co-op list of 2026-09-27 (item 6): an end of raid party summary with each player's kills, loot, and whether

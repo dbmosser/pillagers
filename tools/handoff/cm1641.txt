@@ -1,0 +1,6 @@
+v16.41: an arrow to a teammate off screen
+
+A teammate off screen gets an arrow at the screen edge with his name
+and distance, red with DOWN when he is down.
+
+Check 16.41. Fails on v16.40.

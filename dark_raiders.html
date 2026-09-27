@@ -1433,7 +1433,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.40';
+var VER='16.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31171,7 +31171,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.40: END OF RAID PARTY SUMMARY. His pick from the co-op list (item 6). Each window, as its raid ends, tells the party how it ended, its kills and what it brought out (nothing on a death or an abandon). The run card lists every player as EXTRACTED, KILLED, ABANDONED or STILL UP TOP with kills and haul, and fills in as the others finish. Check 16.40 fails on v16.39',
+  now:'v16.41: AN ARROW TO A TEAMMATE OFF SCREEN. Co-op list item 2. A teammate up top who is off screen gets an arrow at the screen edge pointing at him, with his name and how far he is; red with DOWN when he is down. Nothing when he is on screen. Check 16.41 fails on v16.40',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36033,6 +36033,26 @@ function netAidApply(by,key){
 // v16.26, THE QUEUE (his order for the niceties of the genre): YOUR TEAMMATES ON THE HUD. Above your own health, bottom left, one
 // row per teammate up top on the party seed: his name, a health bar and an armour bar from his state word (hp, mh, ar, ac), and
 // when he is down a red DOWN with the seconds he has left to be picked up (dt). Drawing only.
+// v16.41, THE CO-OP LIST (item 2): AN ARROW AT THE SCREEN EDGE TO A TEAMMATE WHO IS OFF SCREEN. The point on screen where he
+// stands is pulled to the edge, inset by a margin; an arrow there points at him with his name and how far he is. Red when he is
+// down. Nothing when he is on screen. Returns the arrow drawn, for a check.
+function netMateArrow(g){
+  var s=w2s(g.x,0,g.y), M=LH(34), cx=W/2, cy=H/2, dx, dy, k, ax, ay, a, nm, d, c;
+  if(!s||(s.x>=M&&s.x<=W-M&&s.y>=M&&s.y<=H-M)) return null;
+  dx=s.x-cx; dy=s.y-cy; if(!dx&&!dy) return null;
+  k=Math.min((W/2-M)/Math.max(1e-6,Math.abs(dx)),(H/2-M)/Math.max(1e-6,Math.abs(dy)));
+  ax=cx+dx*k; ay=cy+dy*k; a=Math.atan2(dy,dx);
+  c=g.dn?'#ff5a4a':'#ffc04a';
+  ctx.save(); ctx.translate(ax,ay); ctx.rotate(a);
+  ctx.fillStyle=c; ctx.strokeStyle='rgba(6,9,13,.9)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(LH(14),0); ctx.lineTo(-LH(8),-LH(9)); ctx.lineTo(-LH(4),0); ctx.lineTo(-LH(8),LH(9)); ctx.closePath(); ctx.stroke(); ctx.fill();
+  ctx.restore();
+  nm=netSeatName(g.seat)||'PILLAGER'; d=(G&&G.player)?metres(dist(G.player,{x:g.x,y:g.y})):0;
+  ctx.font=FS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=c;
+  ctx.fillText(nm+'  '+d+'M'+(g.dn?'  DOWN':''),clamp(ax-Math.cos(a)*LH(30),LH(40),W-LH(40)),clamp(ay-Math.sin(a)*LH(22),LH(14),H-LH(8)));
+  ctx.textAlign='left';
+  return {x:ax,y:ay,a:a};
+}
 function netTeamHud(by){
   var i, g, n=0, x=16, w=150, y, f, t;
   if(typeof G==='undefined'||!G||G.over) return 0;
@@ -36047,6 +36067,7 @@ function netTeamHud(by){
     ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x,y+5,w,7);
     ctx.fillStyle=g.dn?'#8a2a22':(f<0.35?'#e2564a':'#6fe0a0'); ctx.fillRect(x,y+5,w*f,7);
     if(g.ac>0){ ctx.fillStyle='rgba(255,255,255,.10)'; ctx.fillRect(x,y+14,w,4); ctx.fillStyle='#6fb8ff'; ctx.fillRect(x,y+14,w*clamp((g.ar||0)/g.ac,0,1),4); }
+    try{ netMateArrow(g); }catch(_ma){}   // v16.41: an arrow at the screen edge to a teammate off screen
   }
   return n;
 }
