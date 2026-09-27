@@ -1,0 +1,1 @@
+| PING ON D-UP, SHARED MARKERS, DANGER | v16.46 | HIS ORDERS + Fortnite practice. FIX: D-UP tap ping, hold map; map marker shared and persistent; ping on open map sets marker; ping 10 s, on map, double press DANGER. MEASURED: 16.46 passes, fails on v16.45 |

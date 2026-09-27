@@ -1,0 +1,7 @@
+v16.46: ping on d-pad up, shared map markers, danger pings
+
+Tap D-UP pings, hold for the map. Map markers go to the party and
+stay until cleared; pinging on the open map sets the marker. Pings
+last 10 s, show on the map, and pressed twice mark DANGER.
+
+Check 16.46. Fails on v16.45.

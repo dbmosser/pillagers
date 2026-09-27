@@ -1,0 +1,16 @@
+## v16.46 - PING ON D-PAD UP, SHARED MAP MARKERS, DANGER PINGS
+
+His orders of 2026-09-27: ping on d-pad up; if a player sets a marker on the map, say how it meets the ping, and the other
+player should see it; read up on the Fortnite ping and map practice.
+
+Fortnite practice (researched): one mark button; a ping on a spot or item shows to the squad for about 10 seconds; pressed
+twice on an enemy it marks danger; a marker placed on the map is shared with the squad and stays until removed; pinging while
+the map is open places that marker. This build follows it:
+- Controller: tap D-UP pings (in solo, with nobody to ping for, the tap opens and shuts the map as before); hold D-UP 0.4 s to
+  open or shut the map; a tap with the map open shuts it. Both bumpers no longer ping. Keyboard: N or the middle mouse button.
+- Ping: 10 seconds (was 8), shown in the world and now on the map. Pressed twice within 0.4 s it becomes DANGER, in red.
+- Map marker: a click on the map (right click clears), or a ping while the map is open, sets your marker. It goes to the party
+  and shows on their map and in the world with your name and distance, pulled to the screen edge, until you clear it or place
+  another. One marker per player. Your own marker still leads your compass as before.
+
+MEASURED. Check 16.46 passes and fails on v16.45.
