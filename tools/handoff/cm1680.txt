@@ -1,0 +1,7 @@
+v16.80: the controller follows its window, in front or not
+
+THE CONTROLLER FOLLOWS ITS WINDOW, IN FRONT OR NOT. His order during his co-op session: the second player controller always controls his window, even when the PC focus leaves that window. The windows now tell a live controller by its data instead of by which window is in front, a slow frame no longer drops the other player controller, and if neither game window gets controller data for a moment the HUD says CONTROLLER PAUSED and where to click.
+
+Check 16.80. Fails on v16.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

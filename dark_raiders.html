@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.79';
+var VER='16.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26396,6 +26396,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
   try{ if(NET.on) netTeamHud(by); }catch(_nth){}   // v16.26: your teammates, their health and armour, above your own
   try{ if(NET.on) netFeedDraw(); }catch(_nfd){}   // v16.42: the kill feed
   try{ if(NET.on) netPingDraw(); }catch(_npd){}   // v16.43: the party pings
+  try{ if(NET.same) netPadHud(); }catch(_nph){}   // v16.78: the controller paused word, in the window whose pad went quiet
   // YOUR OWN STATUS, beside the health because that is where you already look.
   // Same verb and same colour the raider board gives them, from the same table,
   // so "FIGHTING" means the same thing about you as it does about the man whose
@@ -31355,7 +31356,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.79: PACK AND UNPACK ON A CONTROLLER. His order: with the backpack open, A picks up the item under the highlight, D-pad down walks the stacks and past the last one lands on the tactical belt row, D-pad left and right walk the belt keys, and A places the item there or back in the backpack, exactly as a mouse drag does. B still closes the backpack. Check 16.79 fails on v16.78',
+  now:'v16.80: THE CONTROLLER FOLLOWS ITS WINDOW, IN FRONT OR NOT. His order during his co-op session: the second player controller always controls his window, even when the PC focus leaves that window. The windows now tell a live controller by its data instead of by which window is in front, a slow frame no longer drops the other player controller, and if neither game window gets controller data for a moment the HUD says CONTROLLER PAUSED and where to click. Check 16.80 fails on v16.79',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35633,7 +35634,7 @@ function netTitleEnter(startFn){
 // SOLO PLAY AND THE INVITE CODE PARTY ARE UNTOUCHED. pollPad asks netPadTick only while NET.same is set (a same machine mode);
 // otherwise it reads the first connected pad as it always did, asks nothing about focus and hands nothing over. Nothing here
 // draws from the seeded stream (rr, rnd, ri, pick, rollTable) or reads G.
-var NET_PAD_STALE=0.25, NET_PAD_MAX=4;
+var NET_PAD_STALE=0.6, NET_PAD_MAX=4, NET_PAD_LIVE=0.15, NET_PAD_DEAD=1.5;   // v16.78: a handed-over state rides out a slow frame on the sender; the live hold spans a frame between two browser samples; the pause word after this long with nothing
 function netPadNow(){ return ((typeof performance!=='undefined'&&performance&&performance.now)?performance.now():Date.now())/1000; }
 function netPadFocused(){ try{ return (typeof document!=='undefined'&&document&&typeof document.hasFocus==='function')?!!document.hasFocus():true; }catch(e){ return true; } }
 function netPadIxOk(v){ return (typeof v==='number'&&v===(v|0)&&v>=0&&v<NET_PAD_MAX)?v:-1; }
@@ -35713,19 +35714,64 @@ function netPadRecv(m){
   NET.padGot++;
   return 'pad';
 }
-// Called by pollPad with what navigator.getGamepads gave, in a same machine mode only. In front: hands the other window its
+// v16.78, HIS ORDER OF 2026-09-27: THE CONTROLLER FOLLOWS ITS WINDOW WHETHER OR NOT THAT WINDOW IS IN FRONT. Liveness is read
+// off the DATA and not off focus alone. Chrome feeds the window it holds in front, and a fed window sees the timestamp of a
+// connected pad move poll to poll; a window Chrome stopped feeding sees the same timestamps every poll, or no pads at all.
+// So a window is live while a connected pad timestamp moved within NET_PAD_LIVE (a hold that rides out a frame between two
+// browser samples), or while it is in front. A live window plays its own pad and hands the other window its pad; a window
+// that is not live plays the state handed over while it is fresh, and NET_PAD_STALE now rides out a slow frame on the sender.
+// Neither window live (he clicked another app, a dialog or the desktop) is the one case a page cannot mend: after
+// NET_PAD_DEAD seconds with neither live data nor a fresh state handed over, a window that has played a pad says so on the HUD.
+function netPadLive(gps){
+  var i, n=(gps&&gps.length)||0, g, ts, now=netPadNow(), moved=false;
+  if(!NET.padTs) NET.padTs={};
+  for(i=0;i<n&&i<NET_PAD_MAX;i++){
+    g=gps[i]; if(!g||!g.connected) continue;
+    ts=+g.timestamp; if(!isFinite(ts)) continue;
+    if(NET.padTs[i]!==undefined&&ts>NET.padTs[i]) moved=true;
+    NET.padTs[i]=ts;
+  }
+  if(moved) NET.padLiveAt=now;
+  return moved||(NET.padLiveAt!==undefined&&(now-NET.padLiveAt)<=NET_PAD_LIVE)||netPadFocused();
+}
+// What netPadTick hands pollPad, noted: when this window last had a controller (live, or a fresh state handed over), and
+// whether it ever played one, so the pause word never shows in a window that never had a pad.
+function netPadOut(gp,live){
+  if(live||gp) NET.padOkAt=netPadNow();
+  if(gp) NET.padHad=true;
+  return gp;
+}
+function netPadDead(){ return !!(NET.same&&NET.padHad&&NET.padOkAt!==undefined&&(netPadNow()-NET.padOkAt)>NET_PAD_DEAD); }
+// The one HUD line, on the plate below the message column, in the window whose controller went quiet. It is drawn under the
+// message scale (hudZoomIn msg: the monitor, and his own size for that plate), so on every screen it sits under the message
+// plate at LH(96)-LH(113) and never across it; a throw after the scale still restores the context. Returns what it drew.
+function netPadHud(){
+  var t, w;
+  if(!netPadDead()) return '';
+  t='CONTROLLER PAUSED: click one of the game windows';
+  try{
+    ctx.save();
+    hudZoomIn('msg',W/2,0);
+    ctx.font=FS(TYPE.label); ctx.textAlign='center'; w=ctx.measureText(t).width;
+    ctx.fillStyle='rgba(6,9,13,.62)'; ctx.fillRect(W/2-w/2-LH(8),LH(120),w+LH(16),LH(17));
+    ctx.fillStyle='#ffc04a'; ctx.fillText(t,W/2,LH(133));
+    ctx.restore();
+  }catch(_e){ try{ ctx.restore(); }catch(_e2){} }
+  return t;
+}
+// Called by pollPad with what navigator.getGamepads gave, in a same machine mode only. Live (v16.78 above): hands the other window its
 // pad and returns this window's own, or null. Not in front: returns the state handed over while it is fresh, else null.
 function netPadTick(gps){
-  var focused=netPadFocused(), mine, other, fwd=NET.padFwd;
+  var focused=netPadLive(gps), mine, other, fwd=NET.padFwd;   // v16.78: live by data or in front, no longer in front alone
   gps=gps||[];
   if(focused){
     NET.padFwd=null;
     other=netPadFor((NET.same==='host')?'p2':'host',NET.padOther,NET.padIx,gps);
     if(other>=0) netPadSend(gps[other],other);
     mine=netPadFor(NET.same,NET.padIx,NET.padOther,gps);
-    return (mine>=0)?gps[mine]:null;
+    return netPadOut((mine>=0)?gps[mine]:null,true);
   }
-  if(fwd&&fwd.gp&&(netPadNow()-fwd.at)<=NET_PAD_STALE) return fwd.gp;
+  if(fwd&&fwd.gp&&(netPadNow()-fwd.at)<=NET_PAD_STALE) return netPadOut(fwd.gp,false);
   return null;
 }
 // v15.78, HIS ORDER OF 2026-09-25: MULTIPLAYER, BUILD 5 OF PHASE 1. IN A SAME MACHINE MODE, WORLD SOUND COMES FROM ONE WINDOW ONLY.
