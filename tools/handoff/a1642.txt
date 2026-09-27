@@ -1,0 +1,1 @@
+| KILL FEED | v16.42 | CO-OP ITEM 4. FIX: the host makes NAME killed WHAT on a player kill and sends it; every window shows the last four for 6 s. MEASURED: 16.42 passes, fails on v16.41 |

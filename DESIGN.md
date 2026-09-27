@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.42 - KILL FEED
+
+Co-op list of 2026-09-27, item 4. When a player in the party kills a body, the host (which runs every body) makes a line NAME
+killed WHAT: a pillager by his name, a machine by its kind, ELITE marked. The host shows it and sends it to the party. Each window
+keeps the last four lines for six seconds, drawn at the right edge and fading out; its own kills read YOU, in amber. Kills by the
+weather or by other enemies are not in the feed. Drawing and words only.
+
+MEASURED. Check 16.42 passes and fails on v16.41.
 ## v16.41 - AN ARROW TO A TEAMMATE OFF SCREEN
 
 Co-op list of 2026-09-27, item 2 (he said YES to all six). A teammate up top on the party seed who is off screen now gets an arrow

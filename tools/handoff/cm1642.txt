@@ -1,0 +1,6 @@
+v16.42: kill feed
+
+A party kill shows as NAME killed WHAT on every window for six
+seconds, the last four lines, your own as YOU.
+
+Check 16.42. Fails on v16.41.
