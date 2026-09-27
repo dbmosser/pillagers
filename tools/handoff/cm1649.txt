@@ -1,0 +1,8 @@
+v16.49: a controller tap on the map places the marker and shuts the map
+
+Once the right stick moved the map cursor, every D-UP tap placed a
+marker and the map stayed open over a dead gun. The tap now shuts it.
+
+Check 16.49. Fails on v16.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

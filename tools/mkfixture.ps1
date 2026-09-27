@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.49',what:'a controller tap with the map cursor moved places the marker and shuts the map, so the map never stays stuck open over a dead gun',
+   run:function(){
+     if(typeof pollPad!=='function'||typeof netWpFromMap!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no controller map path';
+     var NGA=navigator.getGamepads, oS=say, oB=blip, bad=[], dn=false, placed=0, oW=netWpFromMap;
+     function pad(){ var b=[],q; for(q=0;q<17;q++) b.push({pressed:(q===12&&dn),value:(q===12&&dn)?1:0,touched:(q===12&&dn)}); return [{connected:true,id:'check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[0,0,0,0]}]; }
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       say=function(){}; blip=function(){};
+       netWpFromMap=function(){ placed++; return oW.apply(null,arguments); };
+       navigator.getGamepads=pad;
+       dn=false; pollPad();
+       G.mapOpen=true; G.mapCur={x:G.player.x+50,y:G.player.y+50};
+       dn=false; pollPad(); dn=true; pollPad(); dn=false; pollPad();
+       if(!placed) bad.push('the D-UP tap with the map cursor moved placed no marker (open '+G.mapOpen+')');
+       else if(G.mapOpen) bad.push('a D-UP tap with the map cursor moved placed the marker and left the map open');
+     } finally { navigator.getGamepads=NGA; say=oS; blip=oB; netWpFromMap=oW; try{ G.mapOpen=false; G.mapCur=null; __endRaid('abandon'); __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.48',what:'the kit wait never starts a raid from inside a raid: when its timer runs out after the host already went up another way nothing happens, and on the Undercroft floor it still sends the party up',
    run:function(){
      if(typeof netKitGo!=='function') return 'SKIP: this build has no kit wait';

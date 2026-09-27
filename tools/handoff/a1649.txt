@@ -1,0 +1,1 @@
+| A CONTROLLER TAP ON THE MAP PLACES THE MARKER AND SHUTS THE MAP | v16.49 | STABILITY (co-op review 2026-09-27). FIX: the D-UP tap that places the marker at the map cursor also shuts the map (his v16.46 rule). MEASURED: 16.49 passes through pollPad with a stubbed pad, fails on v16.48 |

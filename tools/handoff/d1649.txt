@@ -1,0 +1,7 @@
+## v16.49 - A CONTROLLER TAP ON THE MAP PLACES THE MARKER AND SHUTS THE MAP
+
+Stability pass before his co-op session. Once the right stick had moved the map cursor (v16.47), every D-UP tap placed a
+marker and the map stayed open, with the gun dead under it, until a 0.4 s hold. His rule of v16.46 is that a tap with the
+map open shuts it, so the tap that places the marker now shuts the map as well.
+
+MEASURED. Check 16.49 drives pollPad with a stubbed controller: passes, and fails on v16.48. Not verified: a real pad.
