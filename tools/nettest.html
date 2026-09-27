@@ -702,7 +702,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
         var u=C.__net.up(), cs=st(fc).status||'', v=upView(fc,sa);
         log('raid: A abandoned; 1.5 s later C is up top '+u.on+', over '+u.over+'; C PARTY status: '+cs);
         if(!u.on||u.over) bad.push('raid: C was ended when A abandoned with C up top; the host should spectate');
-        if(!/host has left/i.test(cs)) bad.push('raid: C was not told the host has left ('+cs+')');
+        if(!/host has left|out of this raid|is out of the raid/i.test(cs)) bad.push('raid: C was not told the host is out of the raid ('+cs+')');   // wording changes with the host-out build
         if(v&&v.shown) bad.push('raid: C still draws A after A left the surface');
         C.__endRaid('abandon'); try{ C.__topClear(); }catch(e){}
         return wait(function(){ return /party is back/i.test(st(fa).status||'')?true:null; },3000,'copy A to stop spectating after C abandoned');

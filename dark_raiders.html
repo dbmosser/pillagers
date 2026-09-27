@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.73';
+var VER='16.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31262,7 +31262,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.73: KID MODE GOES DOWN TO 1/20. His order during his co-op session: the kid mode row in Settings now offers 1/20 after 1/10, so player 2 takes a twentieth of every hit. Check 16.73 fails on v16.72',
+  now:'v16.74: THE HOST IS OUT OF THE RAID, NOT GONE. His report during his co-op session: player 1 died and gave up, and player 2 read Host has left the raid while player 1 was still on his KILLED IN ACTION card. The host is not gone: his run ended and he keeps the raid running for the party. Player 2 now reads the host name and how his run ended, killed, extracted or abandoned, and is told to extract to finish his run. Check 16.74 fails on v16.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35840,7 +35840,7 @@ function netUpWhyText(w){
 // A window went up (in), could not (no) or its raid ended (out): from a friend, on the host, filed under the seat of his link
 // and passed on to the others; or passed on by the host, on a friend, under the seat it names.
 function netUpWord(peer,m){
-  var s, st, out, i, nm;
+  var s, st, out, i, nm, hw, ln;   // v16.74, his order: hw and ln carry how the host run ended and the line a friend reads
   if(!peer||peer.state!=='in') return 'ignored';
   st=(m.st==='in'||m.st==='out'||m.st==='no'||m.st==='spec')?m.st:'';   // v16.14: spec, the host is out and keeps the raid running
   if(!st) return 'bad';
@@ -35850,7 +35850,16 @@ function netUpWord(peer,m){
   if(s<0||s>=NET.max||s===NET.seat) return 'ignored';
   if(st!=='in') NET.up[s]=null;
   if(NET.role==='join'&&st==='out'&&s===0) netHostGone('out');   // v15.91: the host raid ended with nobody left to run it: abandon for the whole party
-  if(NET.role==='join'&&st==='spec'&&s===0){ NET.status='Host has left the raid. Extract to finish your run.'; try{ if(typeof G!=='undefined'&&G&&!G.over) sayWhenFree('Host has left the raid. Extract to finish your run.'); }catch(_sw){} }   // v16.14, his ruling
+  // v16.74, his order: the host is not gone when he spectates (v16.14): his run ended and he keeps the raid running for the
+  // party. A friend read Host has left the raid while the host was still on his KILLED IN ACTION card. Now the party status
+  // and the raid line name the host, say he is out of this raid and how his run ended (killed, extracted, abandoned, from the
+  // how the word carries; nothing when it carries none), and Extract to finish your run. Nobody reads left.
+  if(NET.role==='join'&&st==='spec'&&s===0){
+    hw=netClean(m.how,12); hw=(hw==='dead')?'killed':(hw==='extract')?'extracted':(hw==='abandon')?'abandoned':'';
+    ln=(netSeatName(0)||'The host')+' is out of this raid'+(hw?' ('+hw+')':'')+'. Extract to finish your run.';
+    NET.status=ln; netRefresh();
+    try{ if(typeof G!=='undefined'&&G&&!G.over) sayWhenFree(ln); }catch(_sw){}
+  }
   nm=netSeatName(s)||'PILLAGER';
   if(st==='no'){ NET.status=nm+' could not go up with you: '+netUpWhyText(m.why)+'.'; netRefresh(); }
   if(NET.role==='host'){
@@ -36651,7 +36660,8 @@ function netEntsHost(){ return !!(NET.on&&NET.role==='host'&&typeof G!=='undefin
 // clock, the bodies, the bullets and throwables, and the words out to the party (bodies, boxes, the world word without the
 // rings, which each friend runs himself). The host is nobody's target. Every word that comes in is handled against that world
 // (netOnMsg), so shots, searches and beacons go on working, and it makes no sound in the host window. The party is told spec, not
-// out, so nobody is ended; a friend hears Host has left the raid. Extract to finish your run. It stops when no friend is up
+// out, so nobody is ended; a friend hears NAME is out of this raid (killed / extracted / abandoned). Extract to finish your
+// run. (v16.74 wording: the host is out, not gone.) It stops when no friend is up
 // top any more (out, dead, abandoned or gone) for a second and a half, and then the party is told out as before. The host
 // cannot go up again meanwhile. The host ending the party or losing the link still ends every friend as ABANDON, his ruling of
 // 2026-09-25. Solo play never reaches any of it.
