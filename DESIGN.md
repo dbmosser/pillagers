@@ -40024,6 +40024,22 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.27 - PAUSE AND SUPERHOT IN CO-OP, AND THE TEAMMATE ROWS MOVED
+
+His notes of 2026-09-27.
+
+1. ANY TIME EVERY PLAYER IS PAUSED, THE GAME PAUSES. v16.20 counted only teammates up top, so with the other player in the
+Undercroft, on the run card or out, a pause never stopped this window's world. netAllPaused now reads true when every teammate up
+top is paused, including when none is.
+2. SUPERHOT IN CO-OP. v16.04 turned Superhot off in a shared raid. Now time stops only when nobody up top is acting: each state word
+carries whether that player is acting (sa, always 1 for a window with Superhot off), and netAnyActing keeps time running while any
+unpaused teammate is.
+3. The teammate rows (v16.26) sat on the belt help line; they now run down the left edge at 30 percent of the screen height.
+
+Checks 16.04 and 16.11 restaged: their party raids now have a teammate up top and playing, the case in which a pause is an overlay.
+
+MEASURED. Check 16.27 passes twice; fails on v16.26. Checks 16.04, 16.11, 16.20, 16.26 pass.
+
 ## v16.26 - YOUR TEAMMATES ON THE HUD
 
 The queue (his order for the niceties of the genre), items 1 and 5. Above your own health, bottom left, each teammate up top on the

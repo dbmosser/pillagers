@@ -1,0 +1,8 @@
+v16.27: pause and Superhot in co-op, and the teammate rows moved
+
+His notes. Any time every player is paused the game pauses, including
+when your teammate is not in the raid. In Superhot, time runs while any
+player in the raid is acting. The teammate rows moved to the left edge,
+clear of the belt. No number moved.
+
+Check 16.27. Fails on v16.26. Checks 16.04 and 16.11 restaged.

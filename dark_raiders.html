@@ -1431,7 +1431,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.26';
+var VER='16.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30602,14 +30602,15 @@ function loop(ts){
   if(NET.on) netFxStep(dt);   // v16.21: the party's tracers fly, and this window's sounds go out
   // v6.73, his note; rewritten v7.23: time stops DEAD unless an input is live -
   // any held key, the mouse button, pad input, or an action already in flight.
-  if(CFG.superhot&&G.player&&!G.over&&!G.paused&&!netUpShared()){   // v16.04: Superhot is off in a shared co-op raid (one world cannot stop for one player)
+  if(CFG.superhot&&G.player&&!G.over&&!G.paused){   // v16.27, his note: in co-op time runs while ANY player up top is acting (v16.04 had it off)
     var _shp=G.player;
     var _shAny=false;
     for(var _shk in keys){ if(keys[_shk]){ _shAny=true; break; } }
     var _shAct=_shAny||(typeof mouse!=='undefined'&&mouse&&mouse.down)||
                (typeof PAD!=='undefined'&&PAD.on&&(PAD.mx||PAD.my||PAD.aiming))||
                (_shp.roll>0)||(_shp.reloading>0)||(!!_shp.prep)||(!!_shp.prepA);
-    if(!_shAct) dt=0;
+    G.shAct=_shAct;
+    if(!_shAct&&!netAnyActing()) dt=0;
   }
   // v10.86, HIS NOTE: the raid update below is gated on !G.paused and
   // tickAmbience lives inside it, so a pause froze the ambient bed at its last
@@ -31140,7 +31141,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.26: YOUR TEAMMATES ON THE HUD. The queue. Above your own health, each teammate in the raid has a row: his name, a health bar and an armour bar, and when he is down a red DOWN with the seconds he has left to be picked up. Drawing only. No number moved. Check 16.26 fails on v16.25',
+  now:'v16.27: PAUSE AND SUPERHOT IN CO-OP, AND THE TEAMMATE ROWS MOVED. His notes. Any time every player is paused the game pauses, including when your teammate is not in the raid (before, a teammate in the Undercroft kept your world running). In Superhot, time runs while any player in the raid is acting and stops when nobody is. The teammate rows moved to the left edge, clear of the belt help line. No number moved. Check 16.27 fails on v16.26',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35051,11 +35052,11 @@ function netOnState(peer,m){
   if(!g){ g={seat:s,x:x,y:y,f:f,tx:x,ty:y,tf:f,mv:0,roll:0,bob:0,age:0,n:0,lk:null,cr:0,sp:0,dn:0,w:'',sd:0,wep:null}; L[s]=g; }   // v15.79: filed on the list the word names
   else if(g.age>=NET_HUB_STALE||Math.sqrt((x-g.x)*(x-g.x)+(y-g.y)*(y-g.y))>NET_HUB_SNAP){ g.x=x; g.y=y; g.f=f; }
   g.tx=x; g.ty=y; g.tf=f; g.mv=m.m?1:0; g.roll=clamp(+m.r||0,0,0.38); g.age=0; g.n++;
-  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour
+  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour
   if(lk) g.lk=lk;
   if(NET.role==='host'){
     out={t:'st',s:s,x:+x.toFixed(1),y:+y.toFixed(1),f:+f.toFixed(2),m:g.mv,r:+g.roll.toFixed(2)};
-    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; }   // v15.79: passed on as it came
+    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; out.sa=g.sa; }   // v15.79: passed on as it came
     if(lk) out.lk=lk;
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSendFast(NET.peers[i],out);
   }
@@ -35743,7 +35744,7 @@ function netUpTick(dt){
   NET.upAcc=Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP);
   msg={t:'st',k:'r',sd:NET.upSeed>>>0,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.roll>0)?+(+p.roll).toFixed(2):0,
        c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):'',pz:G.paused?1:0,
-       hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate
+       hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0,sa:(!CFG.superhot||G.shAct)?1:0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate
   if(NET.role==='host') msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link
   lk=netLook(); ls=JSON.stringify(lk);
   if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }
@@ -35991,7 +35992,7 @@ function netTeamHud(by){
   if(typeof G==='undefined'||!G||G.over) return 0;
   for(i=0;i<NET.up.length;i++){
     g=NET.up[i]; if(!netUpShown(g)) continue;
-    y=by-96-n*40; n++;
+    y=Math.round(H*0.30)+n*44; n++;   // v16.27, his note: the rows sat on the belt help line; they now run down the left edge, clear of it
     ctx.fillStyle='rgba(6,9,13,.62)'; ctx.fillRect(x-4,y-15,w+8,36);
     ctx.font=FS(TYPE.label); ctx.textAlign='left';
     ctx.fillStyle=g.dn?'#ff8a80':'#bfe0ff'; ctx.fillText(netSeatName(g.seat)||'PILLAGER',x,y);
@@ -36006,8 +36007,17 @@ function netTeamHud(by){
 function netAllPaused(){
   var i, g, n=0;
   if(typeof G==='undefined'||!G||!G.paused) return false;
+  // v16.27, his note: any time every player is paused the game pauses. A teammate who is not up top (in the Undercroft, on the
+  // run card, out) is not playing, so with nobody up top and unpaused the pause stops the world as in solo.
   for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(!netUpShown(g)) continue; if(!g.pz) return false; n++; }
-  return n>0;
+  return true;
+}
+// v16.27: Superhot in co-op. Is any teammate up top acting (moving, shooting, rolling, reloading) and not paused? Then time runs.
+function netAnyActing(){
+  var i, g;
+  if(typeof NET!=='object'||!NET||!NET.on||!netUpShared()) return false;
+  for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(netUpShown(g)&&g.sa&&!g.pz) return true; }
+  return false;
 }
 function netPauseLive(){ return netUpShared()&&!netAllPaused(); }
 function netPausedStep(dt){
