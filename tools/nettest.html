@@ -618,7 +618,11 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
         if(v&&v.shown) bad.push('raid: C still draws A after A left the surface');
         C.__endRaid('abandon'); try{ C.__topClear(); }catch(e){}
         return wait(function(){ return /party is back/i.test(st(fa).status||'')?true:null; },3000,'copy A to stop spectating after C abandoned');
-      }).then(function(){ rep.hostLeftMs=Date.now()-tq; log('raid: C abandoned and A stopped spectating; A PARTY status: '+(st(fa).status||'')); },
+      }).then(function(){ rep.hostLeftMs=Date.now()-tq; log('raid: C abandoned and A stopped spectating; A PARTY status: '+(st(fa).status||''));
+        var pa=el(fa,'oc_party'), pc=el(fc,'oc_party'), ta=pa?String(pa.textContent):'', tc=pc?String(pc.textContent):'';
+        log('summary: A card reads '+JSON.stringify(ta)+'; C card reads '+JSON.stringify(tc));
+        if(pa&&(ta.indexOf('YOUR PARTY')<0||(ta.match(/ABANDONED/g)||[]).length<2)) bad.push('summary: A card does not show both players abandoned');
+        if(pc&&(tc.indexOf('YOUR PARTY')<0||(tc.match(/ABANDONED/g)||[]).length<2)) bad.push('summary: C card does not show both players abandoned'); },
         function(e){ bad.push('raid: '+e.message); });
     }).then(function(){ comeDown(A,C); A.__net.open(); C.__net.open(); },function(e){ comeDown(A,C); A.__net.open(); C.__net.open(); throw e; });
     });
