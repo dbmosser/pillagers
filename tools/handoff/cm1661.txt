@@ -1,0 +1,8 @@
+v16.61: pinging twice marks danger, as the controls legend says
+
+A half second limit stood in front of the double press and threw the
+second press away. The double press is now read first.
+
+Check 16.61. Fails on v16.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

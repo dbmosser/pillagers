@@ -40024,6 +40024,13 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.61 - PINGING TWICE MARKS DANGER, AS THE CONTROLS LEGEND SAYS
+
+The controls legend says DPAD UP ping (twice: danger), but netPingMake answered every press inside 0.5 s with nothing
+before it looked for the 0.4 s double press (v16.46), so danger never came. The double press is now read first; a third
+press inside the window returns the same danger ping and sends nothing more.
+
+MEASURED. Check 16.61 passes, and fails on v16.60.
 ## v16.60 - EVERY RUN REPORT SAYS WHICH WINDOW IT CAME FROM
 
 His order 2026-09-27: he plays co-op in two windows on localhost so the run reports can be read straight off this PC. Both

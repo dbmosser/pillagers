@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.60';
+var VER='16.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31221,7 +31221,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.60: EVERY RUN REPORT SAYS WHICH WINDOW IT CAME FROM. He plays co-op in two windows on this PC so the run reports can be read straight off it. Both windows write a report at the end of every raid, and the two looked alike; each now says player 1 or player 2 and its place in the party. Check 16.60 fails on v16.59',
+  now:'v16.61: PINGING TWICE MARKS DANGER, AS THE CONTROLS LEGEND SAYS. Stability pass before a co-op session. The legend says a second ping in quick succession marks danger, but a limit of one ping each half second stood in front of it and threw the second press away, so danger never came. The double press is now read first. Check 16.61 fails on v16.60',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36231,12 +36231,14 @@ var NET_PING_T=10, NET_PING_SNAP=70;   // v16.46: 10 s, the length Fortnite give
 function netPingMake(){
   var w, i, e, bd=NET_PING_SNAP, d, hit=null, m;
   if(typeof G==='undefined'||!G||G.over||!G.player||!NET.on||!NET.upSeed) return null;
-  if(NET.pingAt&&Date.now()-NET.pingAt<500) return null;
-  if(G.mapOpen) return netWpFromMap();   // v16.46: a ping on the open map is your map marker, as in Fortnite
-  if(NET.pingAt&&Date.now()-NET.pingAt<400){   // v16.46: pressed twice, the last ping becomes DANGER
+  // v16.61, stability (co-op review): the double press is read BEFORE the 0.5 s limit. That limit stood first and answered
+  // every press inside 0.5 s with nothing, so the 0.4 s double press the controls legend promises (twice: danger) never came.
+  if(!G.mapOpen&&NET.pingAt&&Date.now()-NET.pingAt<400){   // v16.46: pressed twice, the last ping becomes DANGER
     if(NET.pingLast&&!NET.pingLast.dg){ NET.pingLast.dg=1; netBroadcast(NET.pingLast); netPingPush(NET.seat,NET.pingLast); }
     return NET.pingLast||null;
   }
+  if(NET.pingAt&&Date.now()-NET.pingAt<500) return null;
+  if(G.mapOpen) return netWpFromMap();   // v16.46: a ping on the open map is your map marker, as in Fortnite
   NET.pingAt=Date.now();
   w=mouseWorld();
   for(i=0;i<G.ents.length;i++){ e=G.ents[i]; if(!e.nid||e.hp<=0||e.merc) continue; d=dist(e,w); if(d<bd){ bd=d; hit=e; } }

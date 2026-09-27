@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.61',what:'pinging twice in quick succession marks the ping as danger, as the controls legend says, and a third press does nothing more',
+   run:function(){
+     if(typeof netPingMake!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no ping';
+     var keep={on:NET.on,upSeed:NET.upSeed,pingAt:NET.pingAt,pingLast:NET.pingLast,pings:NET.pings,seat:NET.seat}, oB=netBroadcast, bad=[], a, b, sent=0;
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       netBroadcast=function(){ sent++; };
+       NET.on=true; NET.upSeed=G.seed>>>0; NET.seat=0; NET.pingAt=0; NET.pingLast=null; NET.pings=[]; G.mapOpen=false;
+       a=netPingMake();
+       if(!a) return 'SKIP: staging: the first ping made nothing';
+       b=netPingMake();
+       if(!b||!b.dg) bad.push('a second ping at once did not mark danger ('+JSON.stringify(b)+')');
+       if(sent!==2) bad.push('the party was told '+sent+' times, not twice, once for the ping and once for danger');
+     } finally { netBroadcast=oB; for(var k in keep) NET[k]=keep[k]; try{ __endRaid('abandon'); __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.60',what:'every run report says which window it came from: player 1 or player 2, and its place in the party',
    run:function(){
      if(typeof buildExport!=='function'||typeof NETP2==='undefined') return 'SKIP: this build has no run report or no player 2 window';

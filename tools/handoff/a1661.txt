@@ -1,0 +1,1 @@
+| PINGING TWICE MARKS DANGER, AS THE CONTROLS LEGEND SAYS | v16.61 | STABILITY (co-op review 2026-09-27). FIX: netPingMake reads the 0.4 s double press before the 0.5 s limit. MEASURED: 16.61 passes, fails on v16.60 |
