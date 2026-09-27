@@ -1,0 +1,9 @@
+v16.58: on a controller B backs out of the map, backpack and stall
+
+With the map or the backpack open B did a dodge roll under the panel, and
+at the peddler stall it did nothing. B now shuts them and walks away from
+the stall; with nothing open it still rolls.
+
+Check 16.58. Fails on v16.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

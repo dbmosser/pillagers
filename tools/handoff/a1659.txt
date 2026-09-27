@@ -1,0 +1,1 @@
+| A FAULT WHILE THE HOST SPECTATES IS WRITTEN INTO THE RUN REPORT | v16.59 | STABILITY (co-op review 2026-09-27). FIX: netSpecTick catch calls noteCrash once per spectate (NET.specErr). MEASURED: 16.59 passes, fails on v16.58 |

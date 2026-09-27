@@ -1,0 +1,1 @@
+| ON A CONTROLLER B BACKS OUT OF THE MAP, THE BACKPACK AND THE STALL | v16.58 | STABILITY (controller audit 2026-09-27). FIX: a fresh B with the map, backpack or emote bar open runs backOut instead of Space; B at the stall walks away. MEASURED: 16.58 passes through pollPad, fails on v16.57 |

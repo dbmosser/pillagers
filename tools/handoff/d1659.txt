@@ -1,0 +1,7 @@
+## v16.59 - A FAULT WHILE THE HOST SPECTATES IS WRITTEN INTO THE RUN REPORT
+
+Stability pass before his co-op session. netSpecTick runs the raid the host keeps for the party (v16.14) inside a try whose
+catch was empty, so a fault there froze the enemies, rounds and searches for everyone still up top and nothing in any run
+report said why. The catch now writes it into the host run report through noteCrash, once per spectate (NET.specErr).
+
+MEASURED. Check 16.59 stages a fault in the kept raid: passes, and fails on v16.58.

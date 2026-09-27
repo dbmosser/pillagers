@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.58 - ON A CONTROLLER B BACKS OUT OF THE MAP, THE BACKPACK AND THE STALL
+
+Stability pass before his co-op session. B is the way out on a controller (his rule: CLOSE and ESC on every menu), but in
+a raid PADTAP sent B as Space, so with the map or the backpack open B did a dodge roll under the panel; at the peddler stall
+B did nothing (X walks away). A fresh B with the map, the backpack or the emote bar open now runs backOut, and B at the stall
+walks away as X does. With nothing open B still rolls.
+
+MEASURED. Check 16.58 drives pollPad with a stubbed controller: passes, and fails on v16.57. Not verified: a real pad.
 ## v16.57 - A PAUSED PARTY IS PAUSED WHILE THE HOST SPECTATES
 
 Stability pass before his co-op session. His rule of v16.27 is that the game pauses whenever every player is paused. While

@@ -37,6 +37,20 @@ replaces them.
    full corpus (reds rerun alone), live nettest RUN SAME MACHINE, and a crash sweep. Fixes only for real crashes, dead
    controls and co-op breakage. The 4K item waits: a pane measure at 3840x2160 is not trustworthy (the emulated 4K pane
    throttles rAF to about 3 fps, and getImageData readback pushes the canvas to software; render2D + readback read 53 ms).
+   STABILITY PASS 2026-09-27 (shipped, each with its own check failing on the build before): 16.48 kit wait never starts a
+   raid inside a raid; 16.49 pad tap on the map shuts it; 16.50 Settings in a raid greys PICK FILE, UNDO, tuning OPEN;
+   16.51 pause box shuts when a co-op raid ends under it; 16.52 pad never lands on the PARTY CONTROLLER row or END THE PARTY;
+   16.53 searches run while the host spectates; 16.54 card refresh plus stale checks retargeted; 16.55 a teammate on the
+   run card goes up with the party; 16.56 a spectating host has no body; 16.57 a paused party is paused while the host
+   spectates; 16.58 B backs out of map, backpack and stall. Found by three read-only review agents; open leftovers: END THE
+   PARTY in the P1 window hands the kid pad to P1 (netSameStop at ~35050); a P2 window hidden ~4.5 s while the host is on
+   his card is abandoned (netUpShown age test in the spectate counts); a late fast-channel state word can resurrect an up
+   entry after out/spec; netSpecTick swallows errors silently (route to noteCrash); danger double ping never fires
+   (netPingMake 500 ms test runs before the 400 ms double test); padOpenModal checks #pausebox before #outcome.
+   TOOLS ADDED: tools/cdp.ps1 (headless Chrome on this PC, -Start/-Open/-Expr; the Browser pane throttles when hidden, so
+   use this), tools/gate.ps1 (-NN -V dry gates; -Fix for fixture.html + fingerprint), nettest.html ?soak=N (random input
+   in both windows, errors, drops and a message trace). Run ONE nettest tab at a time and nothing else: background tabs in
+   headless Chrome starve of frames and every step fails (0 to 1 frames a second).
 1. Frame rate at 4K (item g in the brief). Measure first, on this PC's real GPU: node tools/cloud/prof.mjs fixture.html 3840 2160
    (needs Node and Playwright; serves the repo itself). Then try the drafted layer cap (tools/cloud/b1647.py at commit 45e580e:
    fog and light layers capped at 1920 wide and stretched). Ship only if frames get faster here; headless software raster

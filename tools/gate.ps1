@@ -2,12 +2,12 @@
 #   powershell -File tools\gate.ps1 -NN 48 -V 16.48
 # 1. parsecheck.html?f=fxdryNN.html reads PASS. 2. check V passes twice on fxdryNN. 3. check V FAILS (not SKIP) on fxctlNN.
 # Mode -Fix runs step 2 on fixture.html plus __verifySafe (the seed 4242 fingerprint) after ship.sh start.
-param([string]$NN,[string]$V,[switch]$Fix,[int]$Port=8806)
+param([string]$NN,[string]$V,[switch]$Fix,[int]$Port=8806,[int]$Cdp=9333)
 $c=Join-Path $PSScriptRoot 'cdp.ps1'
-function Ev([string]$m,[string]$e,[int]$t=180){ powershell -NoProfile -ExecutionPolicy Bypass -File $c -Match $m -Expr $e -TimeoutSec $t }
+function Ev([string]$m,[string]$e,[int]$t=180){ powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match $m -Expr $e -TimeoutSec $t }
 function OpenWait([string]$url,[string]$m,[string]$ready){
-  (Invoke-RestMethod http://127.0.0.1:9333/json) | Where-Object { $_.url -like "*$m*" } | ForEach-Object { Invoke-RestMethod ("http://127.0.0.1:9333/json/close/"+$_.id) | Out-Null }
-  $t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:9333/json/new?"+$url); Invoke-RestMethod ("http://127.0.0.1:9333/json/activate/"+$t.id) | Out-Null
+  (Invoke-RestMethod http://127.0.0.1:$Cdp/json) | Where-Object { $_.url -like "*$m*" } | ForEach-Object { Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/close/"+$_.id) | Out-Null }
+  $t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:$Cdp/json/new?"+$url); Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/activate/"+$t.id) | Out-Null
   for($i=0;$i -lt 60;$i++){ Start-Sleep -Milliseconds 500; $r=Ev $m $ready 10; if($r -eq 'true'){ return } }
   Write-Output "TIMEOUT loading $url"
 }

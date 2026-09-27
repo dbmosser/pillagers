@@ -1,0 +1,9 @@
+v16.59: a fault while the host spectates goes into the run report
+
+A fault in the raid the host keeps running for the party froze their
+enemies and searches and was swallowed without a word. It is now written
+into the host run report once.
+
+Check 16.59. Fails on v16.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
