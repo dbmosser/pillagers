@@ -1,0 +1,1 @@
+| KID FIRING FOR PLAYER 2 | v16.83 | STABILITY (drafted and reviewed by agents 2026-09-27). MEASURED: 16.83 passes, fails on v16.82 |

@@ -1,0 +1,7 @@
+v16.83: kid firing for player 2
+
+KID FIRING FOR PLAYER 2. His order during his co-op session: a Settings row beside Kid mode, off out of the box, that player 2 usually turns on himself. With it on, player 2 aims at the nearest enemy in sight and in range and shoots by itself, and the moment he aims with the right stick himself it lets go and he aims, coming back half a second after he rests the stick. Player 1 is never changed.
+
+Check 16.83. Fails on v16.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
