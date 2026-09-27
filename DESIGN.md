@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.34 - PLAYER 2 CURRENT PILLAGERS BOARD
+
+His note of 2026-09-27: player 2 CURRENT PILLAGERS board is broken. Player 2 builds the raid from the same seed, so its board listed
+its own pillagers, but it never runs those bodies: the host bodies replace them. Every row read DEAD and aged off after ten seconds.
+The host now sends its board rows (name, value carried, status, extracted, rival, elite, ghost) with the world word twice a second,
+and player 2 draws those, keeping its own time stamps so names that went out or down age off as they do for player 1.
+
+MEASURED. Check 16.34 passes and fails on v16.33.
 ## v16.33 - THE WHAT IS NEW CARD CATCHES UP ON CO-OP
 
 The card was at v16.12 and the parse gate now refuses a card more than 0.20 behind. The co-op entry is rewritten, shorter than

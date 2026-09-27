@@ -5721,6 +5721,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.34',what:'player 2 CURRENT PILLAGERS board: the host sends its rows with the world word and a linked window keeps them, with names, values and who is out',
+   run:function(){
+     if(typeof netBoardTake!=='function'||typeof netBoardRows!=='function') return 'this build has no shared board';
+     var keep=G, rows, n;
+     try{
+       G={t:5,timeLeft:100,raidLen:540,roster:[],ents:[]};
+       n=netBoardTake([['Kite',420,'LOOTING',1,0,0,0,0],['Van',90,'EXTRACTED',0,1,1,0,0],['Moss',0,'DEAD',2,0,0,1,0]]);
+       rows=G.netBoard;
+     } finally { G=keep; }
+     if(n!==3||!rows||rows.length!==3) return 'three host rows became '+n;
+     if(rows[0].name!=='Kite'||rows[0].val!==420||rows[0].st!=='LOOTING') return 'the first row reads '+JSON.stringify(rows[0]);
+     if(!rows[1].out||rows[1].outAt===undefined||rows[1].name.indexOf('Van')<0) return 'the extracted row lost its stamp or name: '+JSON.stringify(rows[1]);
+     if(rows[2].deadAt===undefined||!rows[2].el) return 'the dead row lost its stamp or elite mark: '+JSON.stringify(rows[2]);
+     var src='', i;
+     try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
+     var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
+     if(src.indexOf('m.bd=netBoardRows();')<0) return 'the host does not send its board with the world word';
+     if(src.indexOf('if(_nb) R=[];')<0) return 'the board does not draw the host rows on a linked window';
+     return null; }},
   {v:'16.33',what:'the what is new card catches up on co-op: split speakers, teammate health on the HUD, your heals on a teammate, pause when every player has paused, the host watching until the party is out',
    run:function(){
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';

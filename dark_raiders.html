@@ -1431,7 +1431,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.33';
+var VER='16.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27330,8 +27330,9 @@ function hudOff(id){
 }
 function drawRaiderBoard(){
   delete HUDBOX.raiders;
-  var R=G.roster;
-  if(!R||!R.length) return;
+  var R=G.roster, _nb=(NET.on&&netEntsPeer()&&G.netBoard)?G.netBoard:null;   // v16.34: a linked window draws the host board
+  if(_nb) R=[];
+  if(!_nb&&(!R||!R.length)) return;
   var live=0,out=0,dead=0,i,rows=[];
   for(i=0;i<R.length;i++){
     var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
@@ -27365,6 +27366,7 @@ function drawRaiderBoard(){
   // Both sink below the living first, so you get a beat to see that a name made
   // it out or went down, then both drop. Entries from before this build carry no
   // stamp and are kept rather than aged out by a time they never recorded.
+  if(_nb) for(i=0;i<_nb.length;i++){ if(_nb[i].out) out++; else if(_nb[i].st==='DEAD') dead++; else live++; rows.push(_nb[i]); }
   var _eNow=elapsed(),_stay=[],_gone=[],_LEAVE=10;
   for(i=0;i<rows.length;i++){
     var _w=rows[i];
@@ -31143,7 +31145,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.33: THE WHAT IS NEW CARD CATCHES UP ON CO-OP. The co-op entry now says what v16.13 to v16.33 gave the party: sound split left and right, teammate health and armour on the HUD, their shots, damage numbers and sounds, your Bandages and plates on a teammate, pause only when every player has paused, the host watching until the party is out, and quieter clock alarms. It no longer says world sound plays from one window. No number moved. Check 16.33 fails on v16.32',
+  now:'v16.34: PLAYER 2 CURRENT PILLAGERS BOARD. His note: player 2 board was broken. It listed the pillagers of its own seed, whose bodies the host bodies replace, so every row read DEAD and then dropped off. The host now sends its board (names, values, status, extracted) with the twice a second world word and player 2 draws that. Check 16.34 fails on v16.33',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36048,12 +36050,42 @@ function netStrikeAt(p){
   G.strikeWho=((G.strikeWho|0)+1)%L.length;
   return L[G.strikeWho]||p;
 }
+// v16.34, HIS NOTE: player 2 CURRENT PILLAGERS board was broken. It listed the pillagers of its own seed, whose bodies it never
+// runs (the host bodies replace them), so every row read DEAD and dropped off. THE HOST: its board rows, sent with the world word.
+function netBoardRows(){
+  var R=G.roster||[], out=[], i, r, e, inE, v, b;
+  for(i=0;i<R.length&&out.length<40;i++){
+    r=R[i]; e=r.ref;
+    if(r.merc||(e&&e.merc)) continue;
+    inE=!!(e&&G.ents.indexOf(e)>=0);
+    if(inE){ v=0; for(b=0;b<(e.bag||[]).length;b++) v+=ival(e.bag[b]); r.val=v; }
+    out.push([netClean(r.name,24),Math.round(r.val||0),r.out?'EXTRACTED':(inE?raiderStatus(e):'DEAD'),r.crew|0,r.out?1:0,(e&&e.rival)?1:0,(e&&e.elite)?1:0,(e&&e.ghost)?1:0]);
+  }
+  return out;
+}
+// A LINKED WINDOW: the host board, with the time each name went out or down kept here so the board ages them off as it does.
+function netBoardTake(bd){
+  var i, a, nm, st, o, row, old={}, rows=[];
+  for(i=0;i<(G.netBoard||[]).length;i++) old[G.netBoard[i].name]=G.netBoard[i];
+  for(i=0;i<bd.length&&i<40;i++){
+    a=bd[i]; if(!a||typeof a.length!=='number'||a.length<5) continue;
+    nm=(a[5]?'\u2605 ':'')+netClean(a[0],24); if(!nm) continue;
+    st=netClean(a[2],24)||'GONE'; o=old[nm];
+    row={name:nm,val:Math.max(0,+a[1]||0),st:st,crew:a[3]|0,out:!!a[4],el:!!a[6],gh:!!a[7]};
+    if(row.out) row.outAt=(o&&o.outAt!==undefined)?o.outAt:elapsed();
+    if(st==='DEAD') row.deadAt=(o&&o.deadAt!==undefined)?o.deadAt:elapsed();
+    rows.push(row);
+  }
+  G.netBoard=rows;
+  return rows.length;
+}
 function netWorldSend(){
   var z=[], s=[], i, Z, S, m, n=0;
   if(!netEntsHost()) return 0;
   if(!G.over) for(i=0;i<(G.zones||[]).length;i++){ Z=G.zones[i]; z.push([(Z.open===undefined)?null:Z.open,netNum(Z.beaconT),netNum(Z.hold),netNum(Z.holdMax),netNum(Z.closeAt)]); }   // v16.14: a spectating host sends no rings: each friend runs his own
   for(i=0;i<(G.strikes||[]).length;i++){ S=G.strikes[i]; if(S.id&&!S.rm&&S.t>0) s.push([S.id,Math.round(S.x),Math.round(S.y),netNum(S.t)]); }
   m={t:'wd',sd:G.seed>>>0,tl:netNum(G.timeLeft),wx:(G.wx&&G.wx.id)||'',wn:(G.wxNext&&G.wxNext.id)||'',wt:netNum(G.wxT)||0,ai:(G.zones||[]).indexOf(G.active),z:z,s:s};
+  m.bd=netBoardRows();   // v16.34: the board, for the party
   for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&netSendFast(NET.peers[i],m)) n++;
   return n;
 }
@@ -36064,6 +36096,7 @@ function netWorldTake(peer,m){
   if(typeof m.tl==='number'&&isFinite(m.tl)&&Math.abs((G.timeLeft||0)-m.tl)>0.3) G.timeLeft=m.tl;
   w=netWxOf(m.wx); if(w) G.wx=w;
   G.wxNext=netWxOf(m.wn); G.wxT=(typeof m.wt==='number'&&isFinite(m.wt))?clamp(m.wt,0,1):0;
+  if(m.bd&&typeof m.bd.length==='number') netBoardTake(m.bd);   // v16.34: the host board
   if(m.z&&typeof m.z.length==='number') for(i=0;i<m.z.length&&i<(G.zones||[]).length;i++){
     a=m.z[i]; Z=G.zones[i]; if(!a||!Z) continue;
     if(typeof Z.netCallAt==='number'&&G.t-Z.netCallAt<1.5&&a[1]===null) continue;
