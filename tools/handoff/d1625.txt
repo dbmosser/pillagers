@@ -1,0 +1,9 @@
+## v16.25 - YOUR TEAMMATE SEES THE DAMAGE YOU TAKE
+
+His note of 2026-09-27: the damage a teammate takes should show on the other player's screen too. In damagePlayer, right after
+the hit lands on health (after armour), a shared raid sends the number to the party (netFxDmg, v16.22) in red over this player,
+with the kill mark if it downs him; the teammate's window draws it with dmgNum. Damage numbers off in Settings stays off. No
+number moved.
+
+MEASURED. Check 16.25 passes twice; fails on v16.24.
+

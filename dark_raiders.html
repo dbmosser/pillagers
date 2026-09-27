@@ -1431,7 +1431,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.24';
+var VER='16.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13322,6 +13322,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // untouched and no PRNG draw is added.
   var _pre=p.hp;
   p.hp-=amt;
+  if(NET.on&&!G.sim&&amt>0.5&&CFG.dmgNumbers!==0){ try{ netFxDmg(p.x,p.y-26,Math.round(amt),'#ff5a4a',p.hp<=0); }catch(_nfd){} }   // v16.25, his note: your teammate sees the damage you take, in red, over you
   // v9.20: now that both numbers are true, this is the row. amt is what got
   // through the multiplier and the plate, and p.hp is what he has left.
   _logHit(amt,Math.max(0,p.hp));
@@ -31138,7 +31139,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.24: SPLIT SPEAKERS. His note. In two player co-op on one PC the PARTY window sound row has SPLIT SPEAKERS: both windows play sound, player 1 in the left speaker and player 2 in the right. Pressing it in either window switches both. No number moved. Check 16.24 fails on v16.23',
+  now:'v16.25: YOUR TEAMMATE SEES THE DAMAGE YOU TAKE. His note. In co-op every hit that gets through your armour shows on your teammate screen as a red number over you. No number moved. Check 16.25 fails on v16.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

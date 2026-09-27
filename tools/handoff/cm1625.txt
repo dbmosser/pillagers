@@ -1,0 +1,6 @@
+v16.25: your teammate sees the damage you take
+
+His note. In co-op every hit that gets through your armour shows on your
+teammate's screen as a red number over you. No number moved.
+
+Check 16.25. Fails on v16.24.

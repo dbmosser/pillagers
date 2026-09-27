@@ -5721,6 +5721,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.25',what:'your teammate sees the damage you take: a hit on this player in a shared raid sends a red damage number to the party; alone nothing is sent',
+   run:function(){
+     if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile)||typeof NET!=='object'||!NET||typeof damagePlayer!=='function') return 'SKIP: this fixture cannot stage a party raid';
+     var bad=[], keepN={on:NET.on,role:NET.role,peers:NET.peers,upSeed:NET.upSeed,seat:NET.seat,up:NET.up,roster:NET.roster}, sent=[], p;
+     try{
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242}); G.sim=0; G.over=false; p=G.player; p.armor=0; p.hp=p.maxhp; p.iv=0;
+       NET.on=true; NET.role='host'; NET.seat=0; NET.peers=[{state:'in',seat:1,name:'ZQX',timers:[],dc:{readyState:'open',send:function(t){ sent.push(JSON.parse(t)); }}}]; NET.upSeed=G.seed>>>0; NET.up=[];
+       NET.roster=[{seat:0,pid:'me',name:'HOST',host:true},{seat:1,pid:'zqxmate',name:'ZQX MATE'}];
+       damagePlayer(12,'crawler','CRAWLER',p.x+50,p.y);
+       var d=sent.filter(function(m){ return m.t==='fx'&&m.k==='d'; });
+       if(!d.length) bad.push('a hit on this player in a shared raid sent no damage number to the party');
+       else if(d[0].d[3]!=='#ff5a4a') bad.push('the damage number for a hit taken is not red ('+d[0].d[3]+')');
+     }
+     finally{
+       try{ NET.on=keepN.on; NET.role=keepN.role; NET.peers=keepN.peers||[]; NET.upSeed=keepN.upSeed; NET.seat=keepN.seat; NET.up=keepN.up||[]; NET.roster=keepN.roster||[]; }catch(_n){}
+       try{ G=null; }catch(_g){}
+       try{ __resetCfg(); }catch(_rc){}
+       try{ __cleanProfile(); }catch(_cp){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.24',what:'split speakers: with it on, player 1 window sound is panned hard left and player 2 window hard right and both play even with SOUND OFF; with it off, no pan and SOUND OFF is silent',
    run:function(){
      if(typeof NET!=='object'||!NET||typeof netSndOut!=='function') return 'SKIP: this build has no same machine sound';

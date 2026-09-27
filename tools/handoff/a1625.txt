@@ -1,0 +1,1 @@
+| YOUR TEAMMATE SEES THE DAMAGE YOU TAKE | v16.25 | HIS NOTE: the damage a teammate takes should show on the other screen. FIX: damagePlayer sends each hit on health to the party as a red damage number. MEASURED: check 16.25 passes twice, fails on v16.24 |

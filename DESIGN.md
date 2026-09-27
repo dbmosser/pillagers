@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.25 - YOUR TEAMMATE SEES THE DAMAGE YOU TAKE
+
+His note of 2026-09-27: the damage a teammate takes should show on the other player's screen too. In damagePlayer, right after
+the hit lands on health (after armour), a shared raid sends the number to the party (netFxDmg, v16.22) in red over this player,
+with the kill mark if it downs him; the teammate's window draws it with dmgNum. Damage numbers off in Settings stays off. No
+number moved.
+
+MEASURED. Check 16.25 passes twice; fails on v16.24.
+
 ## v16.24 - SPLIT SPEAKERS
 
 His note of 2026-09-27: an option to put player one's sound in the left speaker and player two's in the right.
