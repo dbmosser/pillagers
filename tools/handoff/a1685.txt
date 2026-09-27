@@ -1,0 +1,1 @@
+| A PICKS UP, A PLACES: THE TACTICAL BELT ON A CONTROLLER IN THE STASH | v16.85 | STABILITY (drafted and reviewed by agents 2026-09-27). MEASURED: 16.85 passes, fails on v16.84 |

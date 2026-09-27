@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.84';
+var VER='16.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12025,7 +12025,10 @@ function padFocusables(root){
   // runs; and after that click rebuilds the cards the v14.22 place keeping in padMenu puts the highlight back on the same
   // card, because the cards come first in the panel and their count does not change. .sectorpick exists only inside
   // #sectorlist, so no other panel gains a control. No player text, no number and no seeded draw moved.
-  var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,.sectorpick,input,select');
+  // v16.80, his report: A TACTICAL BELT KEY IS A CONTROL. The belt keys on the Stash screen and the ascent check are plain
+  // [data-plan] divs, named nowhere in this list, so the highlight could never land on one and nothing packed could reach the
+  // belt on a controller. They pass the same filters as a cell, and the greyed out freebie kit panel keeps them out (v15.71).
+  var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,.sectorpick,input,select,[data-plan]');
   for(var i=0;i<q.length;i++){
     var el=q[i],cs=getComputedStyle(el);
     // v16.52, stability (controller audit): the PARTY window opens with the pad highlight on its CONTROLLER row, and one press of
@@ -12077,6 +12080,10 @@ function padSetFocus(el){
 }
 function padMenu(pressed){
   var md=padOpenModal();
+  // v16.80, his report: A PAD GRAB DOES NOT OUTLIVE ITS PANEL. Only B and a placing A ended one, so ESC on the Stash screen,
+  // or a window opened over it, with an item picked up left the ghost on the screen and the next mouse release anywhere
+  // dropped a stale item, the v8.14 hole again. No panel, or a different panel on top, lets a pad grab go before anything else.
+  if(GRAB&&GRAB.pad&&(!md||(PAD.focusMd&&md!==PAD.focusMd))) grabEnd();
   if(!md){ if(PAD.focus){ padSetFocus(null); PAD.focus=null; } return false; }
   var list=padFocusables(md);
   if(!list.length) return true;
@@ -12118,7 +12125,7 @@ function padMenu(pressed){
     mv=(Math.abs(lx)>Math.abs(ly))?[lx>0?1:-1,0]:[0,ly>0?1:-1];
     PAD.mrep=0.20;
   }
-  if(mv){ var nx=padStep(list,PAD.focus,mv[0],mv[1]); if(nx) padSetFocus(nx); }
+  if(mv){ var nx=padStep(list,PAD.focus,mv[0],mv[1]); if(nx){ padSetFocus(nx); if(GRAB&&GRAB.pad){ GRAB.moved=1; stashPadGhost(); } } }   // v16.80: a held pad grab moves with the highlight
   // v15.52, rack audit finding: BUILD A RACK KEEPS THE CONTROLLER HIGHLIGHT WHEN IT GREYS OUT. A disabled control kept under
   // the pad is not in the list, so the place it last held is kept for the panel rather than written over with -1.
   var _pix=list.indexOf(PAD.focus); if(_pix>=0) PAD.focusIx=_pix; PAD.focusMd=md;
@@ -12126,7 +12133,11 @@ function padMenu(pressed){
   // press, and ASCEND switches to the raid on the spot, so on the next poll no menu was open and the same held A reached the
   // raid as the trigger: every pad ascent fired a shot at the spawn point. A mouse click on the button never did, since the
   // fire listener is on the canvas. The raid branch ignores A until it has been released once.
-  if(tap(0)&&PAD.focus){ PAD.aSpent=1; PAD.focus.click(); }
+  // v16.80, his report: A PICKS UP AND A PLACES. On the Stash screen and the ascent check A on a cell that can be dragged is
+  // the mouse press that starts a drag (stashPadAct), the highlight is then the cursor, and A on the target is the release:
+  // every backpack cell, stash cell and belt key, every rule and every word are the mouse drop. A control that cannot be
+  // dragged, and A with nothing held on a button, is the click it always was.
+  if(tap(0)&&PAD.focus){ PAD.aSpent=1; if(!stashPadAct(PAD.focus)) PAD.focus.click(); }
   // v14.23: on the pause box B and Menu resume the run. The search for a way out below would click the hidden RETURN TO
   // CHARACTER SELECTION first, which does nothing in a raid.
   // v14.26: B on the title does nothing. The search for a way out below finds no button there and would strip the title's
@@ -12143,6 +12154,7 @@ function padMenu(pressed){
   if(tap(1)){
     // B backs out: the panel's own Leave or Close if it has one, so any cleanup that
     // button does still runs, and only otherwise the blunt instrument.
+    if(GRAB&&GRAB.pad){ grabEnd(); return true; }   // v16.80: B lets a pad grab go, and closes nothing else on that press
     var back=null,bs=md.querySelectorAll('button');
     for(var i=0;i<bs.length;i++) if(/leave|close|not yet|back|done|return/i.test(bs[i].textContent||'')) { back=bs[i]; break; }
     if(back) back.click(); else md.classList.remove('on');
@@ -31373,7 +31385,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.84: HOLD Y NEXT TO A TEAMMATE TO PATCH HIM UP. His ask during his co-op session: players need a way to heal each other with their items. Next to a teammate, Y on a controller or T on the keyboard uses the Bandage, Medkit or armour plate selected on your tactical belt on him, with the usual wind-up, and only that; with anything else selected it says to select one. With nobody in reach Y is the ring search as before. Check 16.84 fails on v16.83',
+  now:'v16.85: A PICKS UP, A PLACES ON THE STASH SCREEN. His report during his co-op session: on the Stash screen a controller could only move things between the backpack and the stash, and the tactical belt was out of reach. Now A picks up the item under the highlight, the D-pad walks the highlight to a backpack cell, a stash cell or a belt key, and A there places it, exactly as a mouse drag does; B lets it go. Check 16.85 fails on v16.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33063,7 +33075,7 @@ try{ renderFreeKit(); }catch(_fk){}
         if((P.hotAssign||{})[ix]!==undefined){
           delete P.hotAssign[ix]; saveProfile(); renderHub();
         } else {
-          say2('Hover an item in the stash and press a number key to put it on your tactical belt.');
+          say2((PAD&&PAD.on)?'Pick an item up with A first, then A on this key puts it there.':'Hover an item in the stash and press a number key to put it on your tactical belt.');   // v16.80: a pad player is told the pad way
         }
       };
       // v8.72, HIS REPORT: you can drag an item OFF the belt now. These cells have
@@ -38983,9 +38995,46 @@ function grabGhost(text){
   return g;
 }
 function grabEnd(){
+  if(GRAB&&GRAB.pad&&GRAB.el) GRAB.el.style.boxShadow='';   // v16.80: the ring a pad grab put on its cell comes off with the grab
   var g=document.getElementById('grabghost'); if(g) g.style.display='none';
   document.querySelectorAll('[data-drop]').forEach(function(z){ z.style.outline=''; });
   GRAB=null;
+}
+// v16.80, his report: A CONTROLLER PACKS, UNPACKS AND BUILDS THE TACTICAL BELT ON THE STASH SCREEN. Two helpers, written
+// against what the mouse already does. stashPadAct is pad A on the highlighted control: with nothing held it is the mouse
+// press that starts a drag from that cell (the very listener grabbable set), and the cell keeps a ring; with something held
+// it is the release on the control under the highlight, through the drop function the mouse release runs (dropzone), so a
+// belt key, the backpack, the stash, the swap, the unbind and every word said are the mouse rules, not a copy. Let go on its
+// own cell without a step between is the click a press and release in place sends, so A twice on a cell still does what
+// one A did before. Only what grabbable marked is ever pressed this way: a button, a dial or a hold-to-craft button never
+// sees a synthetic press, and A on them stays the click it was. A drag the mouse itself holds is left to the mouse. 
+// stashPadGhost puts the ghost on the highlight and lights the target under it, as the mouse move does.
+function stashPadAct(el){
+  if(!el) return false;
+  if(!GRAB){
+    if(el.style.cursor!=='grab') return false;
+    var r=el.getBoundingClientRect();
+    try{ el.dispatchEvent(new MouseEvent('mousedown',{button:0,cancelable:true,clientX:r.left+r.width/2,clientY:r.top+r.height/2})); }catch(_pe){}
+    if(!GRAB) return false;
+    GRAB.pad=1; el.style.boxShadow='inset 0 0 0 2px var(--amber)';
+    stashPadGhost();
+    return true;
+  }
+  if(!GRAB.pad) return false;   // a drag the mouse holds belongs to the mouse: A stays the click it was, the mouse release ends that drag
+  var held=GRAB, z=el.closest?el.closest('[data-drop]'):null;
+  grabEnd();
+  if(el===held.el&&!held.moved){ try{ el.click(); }catch(_pc){} return true; }
+  if(z&&typeof z.__grabDrop==='function') z.__grabDrop(held.key,held.from);
+  return true;
+}
+function stashPadGhost(){
+  var el=PAD.focus, g=document.getElementById('grabghost');
+  if(!GRAB||!GRAB.pad||!el||!g) return;
+  var r=el.getBoundingClientRect(), gz=parseFloat(g.style.zoom)||1;
+  g.style.left=((r.left+r.width*0.6)/gz)+'px'; g.style.top=((r.top+r.height*0.6)/gz)+'px';
+  document.querySelectorAll('[data-drop]').forEach(function(z){ z.style.outline=''; });
+  var z=el.closest?el.closest('[data-drop]'):null;
+  if(z) z.style.outline='1px solid var(--amber)';
 }
 // Make an element draggable by pointer. key is the item, from is a label the drop
 // handler can branch on.

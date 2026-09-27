@@ -1,0 +1,7 @@
+v16.85: a picks up, a places: the tactical belt on a controller in the stash
+
+A PICKS UP, A PLACES ON THE STASH SCREEN. His report during his co-op session: on the Stash screen a controller could only move things between the backpack and the stash, and the tactical belt was out of reach. Now A picks up the item under the highlight, the D-pad walks the highlight to a backpack cell, a stash cell or a belt key, and A there places it, exactly as a mouse drag does; B lets it go.
+
+Check 16.85. Fails on v16.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
