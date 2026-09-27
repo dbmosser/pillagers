@@ -1,0 +1,1 @@
+| THE KIT WAIT NEVER STARTS A RAID FROM INSIDE A RAID | v16.48 | STABILITY (co-op review 2026-09-27). FIX: netKitGo returns unless the host is on the Undercroft floor. MEASURED: 16.48 passes, fails on v16.47 |

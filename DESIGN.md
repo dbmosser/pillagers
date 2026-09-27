@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.48 - THE KIT WAIT NEVER STARTS A RAID FROM INSIDE A RAID
+
+Stability pass before his co-op session. When the host asks the party for its kit, a 15 s timer sends everyone up if a
+teammate is slow to answer. If the host went up another way while it ran (the quick ascent on R at the lift), the timer ran
+out inside the raid and started a second raid on a new seed, with no end to the first and the teammate left on the old one.
+The timer now only ever sends the party up from the Undercroft floor.
+
+MEASURED. Check 16.48 passes and fails on v16.47. Not verified: a live two-window run of the quick ascent during the wait.
 ## v16.47 - A CONTROLLER PLACES A MAP MARKER
 
 The gap left at v16.46: a controller could not place a map marker. With the map open the right stick now moves a cursor

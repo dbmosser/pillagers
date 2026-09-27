@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.48',what:'the kit wait never starts a raid from inside a raid: when its timer runs out after the host already went up another way nothing happens, and on the Undercroft floor it still sends the party up',
+   run:function(){
+     if(typeof netKitGo!=='function') return 'SKIP: this build has no kit wait';
+     var keep={on:NET.on,role:NET.role,status:NET.status}, kS=state, oRef=netRefresh, went=0, bad=[];
+     try{
+       netRefresh=function(){};
+       NET.on=true; NET.role='host';
+       state='raid'; NET.kitWait={f:function(){ went++; },need:1,got:0,tm:0};
+       netKitGo();
+       if(went) bad.push('the kit wait ran out with the host already up top and started a second raid');
+       if(NET.kitWait) bad.push('the kit wait was left standing up top');
+       state='hub'; went=0; NET.kitWait={f:function(){ went++; },need:1,got:0,tm:0};
+       netKitGo();
+       if(went!==1) bad.push('control: on the Undercroft floor the kit wait no longer sends the party up');
+     } finally { netRefresh=oRef; NET.on=keep.on; NET.role=keep.role; NET.status=keep.status; NET.kitWait=null; state=kS; }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.47',what:'a controller places a map marker: the right stick moves a map cursor and a D-UP tap places the marker there',
    run:function(){
      var src='', i;

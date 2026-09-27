@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.47';
+var VER='16.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31199,7 +31199,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.47: A CONTROLLER PLACES A MAP MARKER. The gap left at v16.46: a controller could not place a map marker. With the map open the right stick now moves a cursor across the map and a tap of D-UP places the marker there, shared with the party as a mouse click is; a hold still shuts the map. A mouse on the same window keeps the map until the stick moves. Check 16.47 fails on v16.46',
+  now:'v16.48: THE KIT WAIT NEVER STARTS A RAID FROM INSIDE A RAID. Stability pass before a co-op session. When the host asks the party for its kit, a 15 second timer sends everyone up if a teammate is slow to answer. If the host went up another way while it ran (the quick ascent on R at the lift), the timer ran out inside the raid and started a second raid on a new seed, leaving the teammate on the old one. The timer now only ever sends the party up from the Undercroft floor. Check 16.48 fails on v16.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37077,6 +37077,10 @@ function netKitGo(){
   var w=NET.kitWait;
   if(!w) return false;
   NET.kitWait=null; clearTimeout(w.tm); NET.status=''; netRefresh();
+  // v16.48, stability: the wait only ever sends the party up from the Undercroft floor. If the host went up another way while
+  // it ran (the quick ascent on R at the lift), its 15 s timer ran out inside the raid and started a second raid on a new seed,
+  // with no end to the first and the teammate left behind on the old one.
+  if(typeof state!=='undefined'&&state!=='hub') return false;
   w.f();
   return true;
 }

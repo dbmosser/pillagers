@@ -32,6 +32,11 @@ The cloud wrote pNNNN/fNNNN with Python generators (tools/cloud/bNNNN.py + gen.p
 replaces them.
 
 ## Next, in order
+0. HIS ORDER 2026-09-27 09:15 EDT: GENERAL STABILITY is the focus; HARD DEADLINE 12:15 EDT (he moved it at 09:35) for a stable build he plays co-op
+   with his son. No risky render or feature work before then. Deliver a play link to a build that passed: verify chain,
+   full corpus (reds rerun alone), live nettest RUN SAME MACHINE, and a crash sweep. Fixes only for real crashes, dead
+   controls and co-op breakage. The 4K item waits: a pane measure at 3840x2160 is not trustworthy (the emulated 4K pane
+   throttles rAF to about 3 fps, and getImageData readback pushes the canvas to software; render2D + readback read 53 ms).
 1. Frame rate at 4K (item g in the brief). Measure first, on this PC's real GPU: node tools/cloud/prof.mjs fixture.html 3840 2160
    (needs Node and Playwright; serves the repo itself). Then try the drafted layer cap (tools/cloud/b1647.py at commit 45e580e:
    fog and light layers capped at 1920 wide and stretched). Ship only if frames get faster here; headless software raster

@@ -1,0 +1,8 @@
+v16.48: the kit wait never starts a raid from inside a raid
+
+The 15 s kit timer only sends the party up from the Undercroft floor;
+run out inside a raid it started a second raid on a new seed.
+
+Check 16.48. Fails on v16.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

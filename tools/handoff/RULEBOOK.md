@@ -28,6 +28,7 @@ branches and stale comments. The next fix comes from there.
 3. Compare git log times against the clock; a gap is a stall to own and fix.
 4. Check exports/ and Downloads for his flight recorders.
 5. Set the test tab to 1920x1080 before any layout check.
+6. git pull (the cloud session may have shipped), then read usage (rule 21).
 
 ## Priority order
 His live telemetry and notes > his rulings > the drafted queue > a small hunt item.
@@ -44,7 +45,8 @@ Never idle while any of these has work.
    `Start-Sleep` heartbeat must be running; each wake starts the next. CronCreate ticks did
    not fire overnight on 2026-09-13; never rely on them.
 5. NEVER TEST ON :8802. That is his play port.
-6. REPORTS ARE SHORT AND PLAIN. What changed, what is live on itch, what was not verified.
+6. REPORTS ARE SHORT AND PLAIN. He is not a developer: every line he sees, mid-task notes included, is in
+   everyday words, never tool or code names. What changed, what is live on itch, what was not verified.
 7. HIS PC IS HIS. BIOS, power settings and drives: give him the steps.
 8. HIS RULINGS ARE FINAL. Never re-fix one back: coming back empty, no auto-switch to the
    gun, decks gone, Few defaults, no hills, verticality or woods.
@@ -69,3 +71,17 @@ Never idle while any of these has work.
 19. OWN A MISTAKE IN ONE LINE, then fix it. No long apologies.
 20. PATCH SCRIPTS ARE ASCII, JS strings carry no apostrophes or double quotes, and player text
    uses his vocabulary (memory pillagers-vocabulary).
+21. BUDGET (his order 2026-09-27): no more than 10% of the weekly allocation per 10 hours, AND
+   never stop substantive progress on the game. A cap means work lean, never do less.
+   - Measure, do not guess: at every wake read get_usage (Weekly, all models, percent used)
+     and append one line to tools/handoff/budget.log: time, weekly percent, build shipped.
+   - Pace: at most 1 point of weekly percent per hour on average. Ahead of pace = leaner
+     (smaller reads, fewer screenshots), never a stop.
+   - Lean means: targeted greps and line-range reads, no workflows or subagents unless he
+     asks, no corpus when he is at the PC (idle.ps1 under 600 s), one check run per gate,
+     short reports, no re-reading what is known.
+   - Big items are cut into small shippable builds, never skipped for size.
+22. HIS PC DOES THE HEAVY LIFTING. Tests run in the Browser pane on his GPU (AMD RX 7900 XTX,
+   D3D11, confirmed 2026-09-27); PowerShell builds, patches and fixtures on his CPU; long
+   runs go in background shells while I draft the next build. Tokens go into writing fixes,
+   not into watching runs. No Node on this PC: profile in the pane, not with prof.mjs.
