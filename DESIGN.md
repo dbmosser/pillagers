@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.55 - A TEAMMATE STILL ON THE RUN CARD GOES UP WITH THE PARTY
+
+Stability pass before his co-op session. After every raid each window shows its run card, and a teammate still reading his
+when the host took the lift was left below for the whole raid: netKitTake answered kit:busy and netUpTake refused the host
+word with still on the run card. netCardOff now closes the card the way its own button does (ocCommit logs the run, the
+window goes back to the Undercroft) before both tests, so the teammate is asked for his kit and goes up with the party.
+
+MEASURED. Check 16.55 passes, and fails on v16.54. Not verified: live in two windows.
 ## v16.54 - THE WHAT IS NEW CARD CATCHES UP
 
 The card was last written at v16.33 and had fallen more than fifteen builds behind. Two lines go in under the co-op line:

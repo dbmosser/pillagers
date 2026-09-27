@@ -1,0 +1,9 @@
+v16.55: a teammate still on the run card goes up with the party
+
+A teammate still reading his run card when the host took the lift was
+left below for the whole raid. The kit question now closes the card the
+way its button does and asks him; the host word carries him up.
+
+Check 16.55. Fails on v16.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

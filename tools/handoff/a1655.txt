@@ -1,0 +1,1 @@
+| A TEAMMATE STILL ON THE RUN CARD GOES UP WITH THE PARTY | v16.55 | STABILITY (co-op review 2026-09-27). FIX: netCardOff closes the run card through oc_btn before the kit question and the host word test netUpBusy. MEASURED: 16.55 passes, fails on v16.54 |

@@ -5721,6 +5721,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.55',what:'a teammate still on the run card goes up with the party: the kit question closes the card and asks him, and the host word carries him up instead of leaving him below',
+   run:function(){
+     if(typeof netKitTake!=='function'||typeof netUpTake!=='function'||typeof netUpStart!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no party ascent';
+     var keep={on:NET.on,role:NET.role,peers:NET.peers,status:NET.status,err:NET.err}, oSend=netSend, oStart=netUpStart, oRef=netRefresh, bad=[], r, went=0,
+         oc=document.getElementById('outcome'), mod=document.getElementById('askmodal');
+     function card(){ var o1=NET.on, o2=NET.role; NET.on=false; NET.role=null; try{ __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242}); if(G) __endRaid('dead'); } finally { NET.on=o1; NET.role=o2; } return !!(oc&&oc.classList.contains('on')&&G&&G.over); }
+     try{
+       netSend=function(){ return true; }; netRefresh=function(){}; netUpStart=function(){ went++; return 'up'; };
+       NET.on=true; NET.role='join'; NET.peers=[{state:'in',seat:0}];
+       if(!card()) return 'SKIP: staging: no run card after a death';
+       r=netKitTake({state:'in'},{t:'kitask'});
+       if(r!=='kit:ask') bad.push('the kit question reached a teammate on the run card as '+r+', so he was never asked');
+       if(oc.classList.contains('on')) bad.push('the run card stayed up when the party was asked for kits');
+       if(mod) mod.classList.remove('on');
+       if(!card()) return 'SKIP: staging: no second run card';
+       r=netUpTake({state:'in'},{t:'up',seed:4242});
+       if(r!=='up'||!went) bad.push('the host word left a teammate on the run card below ('+r+')');
+     } finally {
+       netSend=oSend; netUpStart=oStart; netRefresh=oRef;
+       NET.on=keep.on; NET.role=keep.role; NET.peers=keep.peers; NET.status=keep.status; NET.err=keep.err;
+       if(mod) mod.classList.remove('on'); try{ ASKYES=null; ASKALT=null; ASKBACK=null; }catch(e){}
+       try{ __topClear(); }catch(e){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.54',what:'the what is new card is current again: within fifteen builds of the build, the co-op line still second, then the party features since v16.33 and the stability pass',
    run:function(){
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
