@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.62';
+var VER='16.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13289,6 +13289,10 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // bot and no paired number moves. The round still sparks, still counts as a
   // hit and is still consumed, so the bullet stream is untouched.
   if(G&&((G.deathBeat!==undefined&&G.deathBeat!==null)||(G.player&&G.player.dying))) return;
+  // v16.63, stability (review of v16.56): a host who left the raid and is spectating has no body in it. v16.56 let enemy
+  // rounds pass where he stood, but frag blasts, shells and every other hurt still reached him: grunts in his window and red
+  // numbers on empty ground for his teammate. Nothing hurts a spectating host now.
+  if(G&&G.player&&G.player.specOut) return;
   // v4.28: the direction of the hit, stamped for the ring around the body.
   if(G&&sx!==undefined&&G.player) G.player.hitFrom={ang:Math.atan2(sy-G.player.y,sx-G.player.x),at:G.t};
   // v9.69: when he was last hurt, which nothing recorded. v8.52 deleted the two
@@ -31224,7 +31228,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.62: PLAYER 2 CANNOT REVIVE A PILLAGER THE HOST RUNS. Stability pass before a co-op session. On the player 2 window a downed pillager is a copy of the one the host runs, and picking him up happened on that window alone: the child was handed the gun in the man hands (so the gun existed twice), his standing and revive count went up and were saved, and the man fell back down a moment later. The REVIVE prompt no longer shows on those copies. Check 16.62 fails on v16.61',
+  now:'v16.63: A SPECTATING HOST TAKES NO DAMAGE OF ANY KIND. Stability pass before a co-op session. v16.56 let enemy rounds pass where a spectating host stood, but frag blasts, shells and every other hurt still reached his empty body: grunts in his window and red numbers on empty ground for his teammate. Nothing hurts a spectating host now. Check 16.63 fails on v16.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

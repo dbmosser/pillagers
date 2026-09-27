@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.63',what:'a spectating host takes no damage of any kind, blasts included, while a player in the raid still does',
+   run:function(){
+     if(typeof damagePlayer!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no player damage to test';
+     var bad=[], p=null, hp0, oG=null;
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       p=G.player; oG=voxGrunt; voxGrunt=function(){};
+       p.iv=0; p.specOut=1; hp0=p.hp; p.hurtAt=-1;
+       damagePlayer(20,'blast','Frag Charge',p.x+5,p.y);
+       if(p.hp!==hp0||p.hurtAt!==-1) bad.push('a blast hurt a spectating host (hp '+hp0+' to '+p.hp+')');
+       p.specOut=0; p.iv=0; hp0=p.hp;
+       damagePlayer(20,'blast','Frag Charge',p.x+5,p.y);
+       if(!(p.hurtAt!==-1)) return 'SKIP: staging: a blast did not reach a player in the raid either, so this cannot measure a pass';
+     } finally { try{ if(oG) voxGrunt=oG; if(p){ p.specOut=0; } __endRaid('abandon'); __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.62',what:'on a linked window a downed pillager copy run by the host is not offered for pick up, while a downed pillager of its own still is',
    run:function(){
      if(typeof updatePlayer!=='function'||typeof netEntMake!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no body copies';

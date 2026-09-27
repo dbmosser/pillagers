@@ -1,0 +1,1 @@
+| A SPECTATING HOST TAKES NO DAMAGE OF ANY KIND | v16.63 | STABILITY (review of v16.56, split vote from four lenses). FIX: damagePlayer returns for p.specOut after the death guard. MEASURED: 16.63 passes, fails on v16.62 |

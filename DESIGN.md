@@ -40024,6 +40024,13 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.63 - A SPECTATING HOST TAKES NO DAMAGE OF ANY KIND
+
+Stability pass before his co-op session. The review of v16.56 found that only enemy rounds skipped a spectating host; frag
+blasts, shells and every other hurt still went through damagePlayer to his empty body (grunts in his window, red numbers on
+empty ground for his teammate). damagePlayer now returns for a spectating host (p.specOut) right after the death guard.
+
+MEASURED. Check 16.63 passes, and fails on v16.62.
 ## v16.62 - PLAYER 2 CANNOT REVIVE A PILLAGER THE HOST RUNS
 
 Stability pass before his co-op session (co-op hunt, confirmed by two verifiers). On a linked window every body is a copy the
