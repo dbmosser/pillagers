@@ -444,7 +444,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
   // P2 SHOTS (his run report of v16.25: player 2 fired 24 rounds at 0 percent, no kills). Copy C, its frame widened to 1600x900
   // so the HUD panels leave the middle clear, stands 90 units west of a machine A runs, aims with real mouse events on its own
   // canvas and holds fire until the body dies or 5 s pass. The body must lose health on A, the hits must count on C's tally and
-  // the kill must reach C's tally. A body behind a wall takes no rounds, so up to three bodies are tried, nearest first.
+  // the kill must reach C's tally. A body behind a wall takes no rounds, so up to six bodies are tried, nearest first.
   function shotStep(A,C,bad,rep){
     var ea=A.__net.ents(), me=C.__net.up().me, list=[], i, e, fw0=fc.style.width, fh0=fc.style.height, tries=[];
     function kills(g){ var n=0, q, K=g&&g.tel&&g.tel.kills; if(K) for(q in K) n+=(K[q]|0); return n; }
@@ -474,7 +474,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       });
     }
     function next(ix){
-      if(ix>=list.length||ix>=3) return Promise.resolve();
+      if(ix>=list.length||ix>=6) return Promise.resolve();
       return one(list[ix]).then(function(r){ tries.push(r); if(!r.hits) return next(ix+1); });
     }
     return next(0).then(function(){
