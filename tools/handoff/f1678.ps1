@@ -65,7 +65,7 @@ SubRx @'
      if(src.indexOf("ckg.gain.setValueAtTime(.0075*vol,t)")<0) bad.push('the clock tick is not at .0075, a quarter of the v16.30 level');
 '@
 
- = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
 $want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
 if ($n -ne $want) { throw "expected $want edits, made $n" }
 [IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
