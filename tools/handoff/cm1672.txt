@@ -1,0 +1,10 @@
+v16.72: his controller layout, for both players
+
+A rolls, B crouches, RT fires or uses, LT held or RS click toggled is
+focus aim, D-LEFT and D-RIGHT set the aim distance, X loots or reloads,
+Y searches in a ring, a bumper tap walks the belt and a bumper held
+zooms, and holding A while down gives up.
+
+Check 16.72. Fails on v16.71.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

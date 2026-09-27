@@ -1,0 +1,7 @@
+v16.73: kid mode goes down to 1/20
+
+The kid mode row offers 1/20 after 1/10.
+
+Check 16.73. Fails on v16.72.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

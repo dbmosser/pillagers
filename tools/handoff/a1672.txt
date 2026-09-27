@@ -1,0 +1,1 @@
+| HIS CONTROLLER LAYOUT, FOR BOTH PLAYERS | v16.72 | HIS ORDER 2026-09-27 (mid playtest). PADTAP, PADHOLD, PADLABEL, LEGEND_PAD and pollPad remapped; checks 13.36 and 16.58 retargeted, 14.20/14.21/14.24 SKIP (A no longer fires). MEASURED: 16.72 passes through pollPad with a stubbed pad, fails on v16.71 |

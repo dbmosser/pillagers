@@ -1,0 +1,1 @@
+| KID MODE GOES DOWN TO 1/20 | v16.73 | HIS ORDER 2026-09-27 (mid playtest). KID_OPTS gains [0.05, 1/20]. MEASURED: 16.73 passes, fails on v16.72 |

@@ -40024,6 +40024,18 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.72 - HIS CONTROLLER LAYOUT, FOR BOTH PLAYERS
+
+His order during his co-op session with his son, the same for both windows: A rolls; B crouches (a toggle, and rolling or
+sprinting stands you up, as on the keyboard); RT fires or uses the selected item, as a mouse click does (read as a trigger
+past 0.35, never under the open backpack or map); LT held, or a right stick click toggled, is focus aim; D-LEFT and D-RIGHT
+set the aim distance (was LT and RT); X loots when something is in reach to search, pick up, open or call extraction from
+(in a ring with a box at his feet it still searches first, v13.48) and reloads otherwise, decided on the press; Y is the
+second search inside an extraction circle (keyboard X); a bumper tap walks the tactical belt and a bumper held past 0.25 s
+zooms (LB out, RB in); holding A while down gives up. PADLABEL and LEGEND_PAD say the same. Old checks written around A
+as the trigger (14.20, 14.21, 14.24) SKIP under this layout; 13.36 presses B; 16.58 counts B.
+
+MEASURED. Check 16.72 drives pollPad with a stubbed controller: passes, and fails on v16.71. Not verified: a real pad.
 ## v16.71 - THE WHAT IS NEW CARD CARRIES THE REST OF THE STABILITY PASS
 
 The card was written at v16.54 and had fallen sixteen builds behind (check 16.54 failed on the fifteen build rule). Its

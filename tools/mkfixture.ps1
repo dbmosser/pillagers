@@ -5721,6 +5721,63 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.72',what:'his controller layout: A rolls, B crouches, RT fires (never under the open backpack), LT and an RS click toggle focus aim, D-LEFT and D-RIGHT set the aim distance, X loots beside a box and reloads otherwise, Y holds the ring search, and the prompts name those buttons',
+   run:function(){
+     if(typeof pollPad!=='function'||typeof raidKey!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no controller raid path';
+     var NGA=navigator.getGamepads, oRK=raidKey, bad=[], taps=[], down={}, val={}, r0, r1, k0=null;
+     function pad(){ var b=[],q; for(q=0;q<17;q++) b.push({pressed:!!down[q],value:(val[q]!==undefined?val[q]:(down[q]?1:0)),touched:!!down[q]}); return [{connected:true,id:'check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[0,0,0,0]}]; }
+     function poll(){ pollPad(); }
+     function tap(q){ down={}; val={}; poll(); down[q]=1; poll(); down={}; poll(); }
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       k0=keys; keys={};
+       navigator.getGamepads=pad;
+       raidKey=function(code){ taps.push(code); return oRK.apply(null,arguments); };
+       G.bagOpen=false; G.mapOpen=false; poll();
+       taps=[]; tap(0);
+       if(taps.indexOf('Space')<0) bad.push('A did not roll ('+taps.join(',')+')');
+       taps=[]; tap(1);
+       if(taps.indexOf('ControlLeft')<0) bad.push('B did not crouch ('+taps.join(',')+')');
+       down={}; val={7:1}; down[7]=1; poll();
+       if(!mouse.down) bad.push('RT held did not fire');
+       down={}; val={}; poll();
+       down={6:1}; val={6:1}; poll();
+       if(!(G.player&&G.player.ads)) bad.push('LT held did not focus aim');
+       down={}; val={}; poll();
+       r0=PAD.reach; down={15:1}; for(var i=0;i<20;i++) poll(); r1=PAD.reach; down={}; poll();
+       if(!(r1>r0)) bad.push('D-RIGHT held did not push the aim distance out ('+r0+' to '+r1+')');
+       r0=PAD.reach; down={14:1}; for(i=0;i<20;i++) poll(); r1=PAD.reach; down={}; poll();
+       if(!(r1<r0)) bad.push('D-LEFT held did not pull the aim distance in ('+r0+' to '+r1+')');
+       down={3:1}; poll();
+       if(!keys['KeyX']) bad.push('Y held does not hold the ring search');
+       down={}; poll();
+       G.nearContainer=null; G.nearPad=null; G.nearDown=null; G.nearDoor=null; G.nearPed=null;
+       down={2:1}; poll(); poll();
+       if(!keys['KeyR']||keys['KeyE']) bad.push('X held with nothing in reach did not reload');
+       down={}; poll();
+       G.nearContainer=G.containers[0]||{x:0,y:0};
+       down={2:1}; poll(); poll();
+       if(!keys['KeyE']||keys['KeyR']) bad.push('X held beside a box did not search it');
+       down={}; poll(); G.nearContainer=null;
+       var ads0=!!PAD.adsTog; tap(11);
+       if(!!PAD.adsTog===ads0||!(G.player&&G.player.ads)) bad.push('RS click did not toggle focus aim on');
+       tap(11); poll();
+       if(PAD.adsTog) bad.push('a second RS click did not toggle focus aim off');
+       if(typeof zoomTarget==='function'&&typeof hotbarSlots==='function'&&hotbarSlots().length>1){
+         var z0=zoomTarget(), h0=hotSel(), tN=performance.now();
+         down={5:1}; for(i=0;i<2000000&&performance.now()-tN<350;i++) poll();   // pollPad is fast: the hold is timed, not counted
+         down={}; poll();
+         if(!(zoomTarget()>z0)) bad.push('RB held did not zoom in ('+z0.toFixed(3)+' to '+zoomTarget().toFixed(3)+')');
+         if(hotSel()!==h0) bad.push('RB held also changed the belt slot');
+         setZoom(z0); h0=hotSel(); tap(5);
+         if(hotSel()===h0) bad.push('an RB tap did not change the belt slot');
+       }
+       G.bagOpen=true; down={7:1}; val={7:1}; poll();
+       if(mouse.down) bad.push('RT fired under the open backpack');
+       down={}; val={}; poll(); G.bagOpen=false;
+       if(typeof keyLabel==='function'){ var _po=PAD.on; PAD.on=true; if(keyLabel('Space')!=='A'||keyLabel('ControlLeft')!=='B'||keyLabel('KeyG')!=='RT'||keyLabel('KeyR')!=='X'||keyLabel('KeyX')!=='Y') bad.push('the prompts name '+keyLabel('Space')+' for the roll, '+keyLabel('ControlLeft')+' for crouch, '+keyLabel('KeyG')+' for use, '+keyLabel('KeyR')+' for reload and '+keyLabel('KeyX')+' for the ring search'); PAD.on=_po; }
+     } finally { navigator.getGamepads=NGA; raidKey=oRK; try{ down={}; val={}; mouse.down=false; if(G&&G.player) G.player.ads=false; keys=k0||{}; G.crouchTog=false; __endRaid('abandon'); __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.71',what:'the what is new card is current again: within fifteen builds, and its STEADIER CO-OP line carries the rest of the stability pass',
    run:function(){
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
@@ -6031,7 +6088,7 @@ window.__REGRESS=[
      try{
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        navigator.getGamepads=pad;
-       raidKey=function(code){ if(code==='Space') rolls++; return oRK.apply(null,arguments); };
+       raidKey=function(code){ if(code==='Space'||code==='ControlLeft') rolls++; return oRK.apply(null,arguments); };   // v16.72: B crouches now
        tapB(); rolls=0;
        G.mapOpen=true; tapB();
        if(G.mapOpen) bad.push('B left the map open'); if(rolls) bad.push('B rolled under the open map');
@@ -17167,6 +17224,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'14.24',what:'A does not fire under the open map or the open backpack on a pad: A held with the map open, then with the backpack open, leaves the trigger off, while with both shut A sets it (controller audit finding 6)',
    run:function(){
+     if(typeof PADTAP==='object'&&PADTAP[0]==='Space') return 'SKIP: his layout of v16.72 fires on RT, not A; check 16.72 covers the trigger';
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof pollPad!=='function'||typeof PAD==='undefined'||typeof mouse==='undefined') return 'SKIP: no pad poll in this build';
      var NG=navigator.getGamepads;
@@ -17302,6 +17360,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'14.21',what:'an A that clicks a menu button does not fire on arrival: A pressed on a window button and still held when the raid starts leaves the trigger off, and once let go a fresh A fires (controller audit finding 3)',
    run:function(){
+     if(typeof PADTAP==='object'&&PADTAP[0]==='Space') return 'SKIP: his layout of v16.72 fires on RT, not A; check 16.72 covers the trigger';
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof pollPad!=='function'||typeof padMenu!=='function'||typeof PAD==='undefined'||typeof mouse==='undefined') return 'SKIP: no pad menu in this build';
      var NG=navigator.getGamepads;
@@ -17349,6 +17408,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'14.20',what:'the pad lets go when the stall opens: A held to fire through raid frames sets the fire flag and the aim, and on the first frame with the stall open both are off and the pad no longer counts itself as firing (controller audit finding 2)',
    run:function(){
+     if(typeof PADTAP==='object'&&PADTAP[0]==='Space') return 'SKIP: his layout of v16.72 fires on RT, not A; check 16.72 covers the trigger';
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof pollPad!=='function'||typeof mkPeddler!=='function'||typeof raidKey!=='function'||typeof PAD==='undefined'||typeof mouse==='undefined') return 'SKIP: no pad poll or Peddler in this build';
      var NG=navigator.getGamepads;
@@ -20758,7 +20818,7 @@ window.__REGRESS=[
      var bad=[], stubbed=false, annWas=PAD.announced;
      try{ navigator.getGamepads=function(){ return []; }; stubbed=(navigator.getGamepads!==NG); }catch(_s){}
      if(!stubbed){ try{ navigator.getGamepads=NG; }catch(_r0){} return 'SKIP: this browser will not let the pad be faked'; }
-     var T0=performance.now(), RS=11, LS=10;
+     var T0=performance.now(), RS=1, LS=10;   // v16.72, his layout: B crouches
      // One fake pad in the standard layout. down is the one button held, -1 for none.
      function pad(down,ax0,ax1){
        var bts=[],i;
