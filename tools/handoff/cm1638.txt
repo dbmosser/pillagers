@@ -1,0 +1,7 @@
+v16.38: you are hosting
+
+With the party in the host raid, the host pause box says closing the
+window or ending the party ends the raid for the whole party, and
+closing the host window asks first.
+
+Check 16.38. Fails on v16.37.

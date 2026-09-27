@@ -1,0 +1,1 @@
+| YOU ARE HOSTING | v16.38 | HIS NOTE: the host screen clearly says you are hosting. FIX: a pause box line while the party is in the host raid, and a leave page question on closing the host window. Host migration not built. MEASURED: 16.38 passes, fails on v16.37 |

@@ -5721,6 +5721,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.38',what:'the host is told it is hosting: the pause box line shows while its party is in its raid, and closing the host window asks first',
+   run:function(){
+     var el=document.getElementById('pausehost');
+     if(!el||typeof netHostHolds!=='function') return 'this build never tells the host it is hosting';
+     if(String(el.textContent).indexOf('YOU ARE HOSTING')!==0||String(el.textContent).indexOf('ends the raid for your whole party')<0) return 'the hosting line reads: '+el.textContent;
+     var keep={on:NET.on,role:NET.role,peers:NET.peers,upSeed:NET.upSeed}, kG=G, a, b, c, ev={returnValue:null,prevented:0,preventDefault:function(){ this.prevented=1; }};
+     try{
+       G={sim:false,over:false}; NET.on=true; NET.role='host'; NET.peers=[{state:'in',seat:1}]; NET.upSeed=77;
+       a=netHostHolds();
+       NET.peers=[]; b=netHostHolds();
+       NET.peers=[{state:'in',seat:1}]; NET.role='join'; c=netHostHolds();
+     } finally { G=kG; NET.on=keep.on; NET.role=keep.role; NET.peers=keep.peers; NET.upSeed=keep.upSeed; }
+     if(!a) return 'a host with its party in its raid does not read as holding the party';
+     if(b||c) return 'a host with nobody linked, or a teammate, reads as holding the party';
+     var src='', i;
+     try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
+     var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
+     if(src.indexOf("window.addEventListener('beforeunload',function(e){ if(netHostHolds())")<0) return 'closing the host window does not ask first';
+     if(src.indexOf("_hw.style.display=netHostHolds()?'':'none'")<0) return 'the pause box never shows the hosting line';
+     return null; }},
   {v:'16.37',what:'every player chooses a kit: the host waits for each teammate, a teammate is shown MY LOADOUT and FREEBIE KIT, and its answer tells the host',
    run:function(){
      if(typeof netKitGate!=='function'||typeof netKitTake!=='function'||typeof askKit!=='function') return 'this build never asks a teammate for a kit';

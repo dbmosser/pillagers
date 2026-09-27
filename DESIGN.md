@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.38 - YOU ARE HOSTING
+
+His note of 2026-09-27: if player 1 leaves, player 2 should pick up the host, or player 1's screen should clearly say you are
+hosting, do not quit. The warning first (host migration is a large build). What ends the party's raid is the host window closing
+or the host ending the party; abandoning makes the host spectate (his ruling of 2026-09-26). With teammates linked and the party
+in the host's raid, the host pause box now reads: YOU ARE HOSTING. Closing this window or ending the party ends the raid for your
+whole party. Closing the host window in that state raises the browser's own leave page question first.
+
+MEASURED. Check 16.38 passes and fails on v16.37.
 ## v16.37 - EVERY PLAYER CHOOSES A KIT
 
 His note of 2026-09-27: the player who is not starting the raid should get the freebie kit or main kit choice just like always.
