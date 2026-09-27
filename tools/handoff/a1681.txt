@@ -1,0 +1,1 @@
+| A SPRINT TAKES YOU OUT OF FOCUS AIM | v16.81 | HIS ORDER 2026-09-27 (playtest). updatePlayer drops p.ads and the pad toggle when sprint is held while moving; pollPad does not set ads while LS is held and moving. MEASURED: 16.81 passes, fails on v16.80 |

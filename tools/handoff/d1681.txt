@@ -1,0 +1,7 @@
+## v16.81 - A SPRINT TAKES YOU OUT OF FOCUS AIM
+
+His order during his co-op session: sprinting did nothing while in focus aim, and player 2 on a pad kept hitting it. Holding
+sprint while moving now drops focus aim (p.ads) and lets go of the pad right stick toggle and the post-shot settle; pollPad
+does not set focus aim while the sprint button is held and the player is moving. Both players, pad and keyboard.
+
+MEASURED. Check 16.81 passes, and fails on v16.80.

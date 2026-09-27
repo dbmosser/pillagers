@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.80';
+var VER='16.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12377,7 +12377,7 @@ function pollPad(){
   else if(PAD.adsT>0) PAD.adsT-=dtPad();
   if(pressed(11)&&!PAD.prev[11]&&!G.over&&!G.paused) PAD.adsTog=!PAD.adsTog;   // v16.72, his order: RS click toggles focus aim
   if(G.over) PAD.adsTog=false;
-  if(PAD.adsT>0||PAD.adsTog||(trig(6)>0.35&&!G.over&&!G.paused)){ G.player.ads=true; PAD.adsing=1; }   // v16.72, his order: LT held or RS toggled is focus aim
+  if((PAD.adsT>0||PAD.adsTog||(trig(6)>0.35&&!G.over&&!G.paused))&&!(pressed(10)&&G.player&&G.player.moving)){ G.player.ads=true; PAD.adsing=1; }   // v16.81: never while sprinting   // v16.72, his order: LT held or RS toggled is focus aim
   else if(PAD.adsing){ G.player.ads=false; PAD.adsing=0; }
 
   // With the bag open the dpad browses it, the same doubling the arrow keys
@@ -16151,6 +16151,10 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // where no sprint can start there is nothing to activate. The line now asks the same questions the sprint does (breath
   // above 2, no lock, no latch, not aiming, not in deep water at the same wading edge used below), so sprint still wins
   // whenever it can start. inWaterDeep only reads the map. No number, dial or seeded draw moved.
+  // v16.81, his order: A SPRINT TAKES YOU OUT OF FOCUS AIM. Holding sprint while moving did nothing in focus aim (player 2 on a
+  // pad hit it at once, with focus aim on LT and a toggle on the right stick click). Sprint now wins: focus aim drops, and a pad
+  // toggle and the settle after a shot are let go, so a held LT is the only thing that brings it back once the sprint ends.
+  if(_shHeld&&mg>0&&p.ads&&!p.downed&&p.stam>2&&!p.stamLock&&!p.stamRelease){ p.ads=false; if(typeof PAD!=='undefined'&&PAD){ PAD.adsTog=false; PAD.adsT=0; } }
   if(_shHeld&&mg>0&&G.crouchTog&&!p.downed&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!p.ads&&!inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset))){ G.crouchTog=false; crouch=false; }
 var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   // v12.71, 2026-09-07 audit: THE SCENT GOES DOWN BELOW THE CANCELS NOW. It was
@@ -31356,7 +31360,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.80: THE CONTROLLER FOLLOWS ITS WINDOW, IN FRONT OR NOT. His order during his co-op session: the second player controller always controls his window, even when the PC focus leaves that window. The windows now tell a live controller by its data instead of by which window is in front, a slow frame no longer drops the other player controller, and if neither game window gets controller data for a moment the HUD says CONTROLLER PAUSED and where to click. Check 16.80 fails on v16.79',
+  now:'v16.81: A SPRINT TAKES YOU OUT OF FOCUS AIM. His order during his co-op session: sprinting did nothing while in focus aim, and player 2 on a pad kept hitting it. Holding sprint while moving now drops focus aim, and on a pad it also lets go of the right stick toggle. Check 16.81 fails on v16.80',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

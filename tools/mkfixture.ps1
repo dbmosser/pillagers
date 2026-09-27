@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.81',what:'a sprint takes you out of focus aim: holding sprint while moving in focus aim drops it and lets go of the pad toggle, while focus aim standing still with sprint held stays',
+   run:function(){
+     if(typeof updatePlayer!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build cannot step the player';
+     var bad=[], k0=null, p=null;
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       p=G.player; k0=keys; keys={};
+       p.stam=100; p.stamLock=false; p.stamRelease=0; p.downed=false; p.ads=true; PAD.adsTog=true;
+       keys['ShiftLeft']=true;
+       updatePlayer(0.016);
+       if(!p.ads) return 'SKIP: staging: focus aim dropped with sprint held and no movement, so this cannot tell a sprint from something else';
+       keys['KeyW']=true; p.ads=true; PAD.adsTog=true;
+       updatePlayer(0.016);
+       if(p.ads) bad.push('holding sprint while moving left focus aim on');
+       if(PAD.adsTog) bad.push('holding sprint while moving left the pad focus aim toggle on');
+     } finally { try{ keys=k0||{}; if(p) p.ads=false; PAD.adsTog=false; PAD.adsT=0; __endRaid('abandon'); __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.80',what:'the controller follows its window whether or not that window is in front: a window whose pad timestamp moves plays it with focus false and hands the other window its pad, a window whose pad stands still plays only a state handed over, a state handed over 0.4 s ago still plays (a slow host frame no longer drops it) while one 0.8 s old lets go, and after 1.5 s with neither the window that had a pad says CONTROLLER PAUSED on the HUD, under the message scale, and where to click, never a window that had none; outside a same machine mode the first pad is read as before',
    run:function(){
      if(typeof NET==='undefined'||!NET||typeof netPadTick!=='function'||typeof netSameOnMsg!=='function'||typeof pollPad!=='function'||typeof PAD==='undefined'||!PAD||typeof padRelease!=='function'||typeof padOpenModal!=='function'||typeof netReset!=='function') return 'SKIP: this build has no controller hand-over between two windows on one PC';
@@ -24725,7 +24742,7 @@ window.__REGRESS=[
        p.x=homeX; p.y=homeY; reset();
        var A=run(used,true,180,false);
        if(A.ran<20) bad.push('staging: with the aim held he covered only '+Math.round(A.ran)+' units, so this arm never walked anywhere');
-       else if(A.mine>0) bad.push('holding the sprint key while AIMING laid '+A.mine+' scent marks over '+Math.round(A.ran)+' units, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the speed he is slowest');
+       else if(false&&A.mine>0) bad.push('holding the sprint key while AIMING laid '+A.mine+' scent marks over '+Math.round(A.ran)+' units, and everything on patrol within 170 units follows that scent, so he is hunted along a trail he never made at the speed he is slowest');   // v16.81 his order: sprint takes you out of focus aim, so sprint held while aiming IS a sprint and lays scent
        // THE FINDING, WADING. He is PLACED in deep water for this one, which is a
        // placement and not a walk, and it is said plainly in the design entry.
        var wx=-1, wy=-1, sc, cx, cy, W=g.map.cols*g.map.cw, H=g.map.rows*g.map.ch;

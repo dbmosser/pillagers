@@ -1,0 +1,7 @@
+v16.81: a sprint takes you out of focus aim
+
+Holding sprint while moving drops focus aim and lets go of the pad toggle.
+
+Check 16.81. Fails on v16.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
