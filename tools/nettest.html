@@ -592,7 +592,14 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
           if(!pm){ bad.push('ping: C could not ping'); return; }
           return wait(function(){ var l=A.__net.pings(), i; for(i=0;i<l.length;i++) if(l[i].s===sc&&l[i].w===(pm.w||"")) return l[i]; return null; },500,'copy A to hold the ping C made').then(function(q){
             log('ping: C pinged '+(pm.w||'a spot')+' at '+pm.x+','+pm.y+'; A holds it for seat '+q.s+' '+(Date.now()-t1)+' ms later');
-          },function(e){ bad.push('ping: '+e.message); });
+          },function(e){ bad.push('ping: '+e.message); }).then(function(){
+            // v16.46: C places a map marker; A must hold it under C's seat, then lose it when C clears it.
+            if(typeof C.__net.mark!=='function') return;
+            var t2=Date.now(); C.__net.mark(1234,2345);
+            return wait(function(){ var w=A.__net.wps()[sc]; return (w&&w.x===1234&&w.y===2345)?w:null; },500,'copy A to hold the map marker C placed').then(function(){
+              log('marker: C placed a map marker; A holds it '+(Date.now()-t2)+' ms later');
+            },function(e){ bad.push('marker: '+e.message); });
+          });
         });
       }).then(function(){
         clearFloor(fa);

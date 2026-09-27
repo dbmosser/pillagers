@@ -73,6 +73,8 @@ e. Something blocks player 2's face in the Undercroft: not found yet (name tag u
 f. [done v16.39] One hit of blotter should be less intense; blotter and liquor should affect the menu screens too.
 g. Frame rate: improve it without losing anything (profile render2D and updateEnts at 4K).
 h. [done v16.40] Item 6 (end-of-raid party summary) is his pick for next of the original list.
+HIS ORDERS 2026-09-27 midday: [done v16.44] kid mode (player 2 damage 1/2, 1/4, 1/5, 1/10); [done v16.45] Settings in a raid, live;
+[done v16.46] ping on D-UP (tap ping, hold map), shared map markers, danger ping, Fortnite practice. Live test covers ping and marker.
 Player text: plain game language (his note), no retired words.
 
 ## Queue at the move (ship in this order)
