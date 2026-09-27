@@ -55,7 +55,12 @@ numbers both ways, bandages and plates on a teammate, split speakers. NEXT, in o
 7. The what is new card refresh (overdue: WHATSNEW_VER 16.12).
 HIS NOTES 2026-09-27, in this order ahead of 2 to 4 and 6 (target: 4K fullscreen; test at 3840x2160):
 a. [done v16.27] Pause when every player is paused; Superhot runs while either acts; teammate rows off the belt.
-P2. PLAYER 2 FIRST (his notes, 2026-09-27 night): (i) player 2 hears no audio at all: make SPLIT SPEAKERS the default for a same
+HIS PRINCIPLE 2026-09-27: in gameplay player 2 must equal player 1 in every way. Asked him: rebuild the core for two real players in
+one simulation (player 2's window a view plus his controller input), or keep patching gaps. Until he answers, patch the gaps below.
+CONTROLLERS (his rule): player 1 plays mouse and keyboard; player 2 takes the first controller; a second controller goes to player 1.
+P2 SHOTS: his run reports (v16.25) show player 2 fired 24 shots at 0% accuracy, 0 kills, firstContact none in 339 s of co-op: check
+   in a live nettest step that player 2's rounds hit the host's bodies, count as hits, and kill.
+P2. PLAYER 2 FIRST (his notes, 2026-09-27 night): (i) [done v16.29] player 2 hears no audio at all: make SPLIT SPEAKERS the default for a same
    machine pair so both windows play (P1 left, P2 right); (ii) player 2's looting shows no item names (the loot word path,
    netLootTake, should give the same labels and Took lines as a local search); (iii) player 2's CURRENT PILLAGERS board is broken
    (it is built from bodies the host runs: names and values must come across); (iv) 'extract incoming' wording: use INBOUND.
