@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.26 - YOUR TEAMMATES ON THE HUD
+
+The queue (his order for the niceties of the genre), items 1 and 5. Above your own health, bottom left, each teammate up top on the
+party seed has a row (netTeamHud): his name, a health bar (green, red under 35 percent) and an armour bar from his state word, and
+when he is down a red DOWN with the seconds he has left to be picked up. The state word now carries those seconds (dt). Drawing
+only. No number moved.
+
+MEASURED. Check 16.26 passes twice; fails on v16.25. Check 16.23 passes.
+
 ## v16.25 - YOUR TEAMMATE SEES THE DAMAGE YOU TAKE
 
 His note of 2026-09-27: the damage a teammate takes should show on the other player's screen too. In damagePlayer, right after

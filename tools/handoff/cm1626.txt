@@ -1,0 +1,7 @@
+v16.26: your teammates on the HUD
+
+Above your own health, each teammate in the raid has a row: his name, a
+health bar and an armour bar, and when he is down a red DOWN with the
+seconds he has left to be picked up. No number moved.
+
+Check 16.26. Fails on v16.25.
