@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.45',what:'settings in a raid: the pause box opens Settings, and a raid length change moves the running clock at once',
+   run:function(){
+     var b=document.getElementById('pausesetbtn');
+     if(!b||typeof gameOptRaidNow!=='function') return 'the pause box has no way into Settings';
+     var kG=G, kS=CFG.raidSec, kNet=NET.on, r, bad=[], oSay=say;
+     try{
+       say=function(){};
+       NET.on=false;
+       G={over:false,sim:false,raidLen:540,timeLeft:440,t:100};
+       CFG.raidSec=900; r=gameOptRaidNow(540);
+       if(!r||G.raidLen!==900||Math.abs(G.timeLeft-800)>1) bad.push('540 to 900 with 100 s played left '+G.timeLeft+' of '+G.raidLen);
+       G={over:false,sim:false,raidLen:540,timeLeft:100,t:440};
+       CFG.raidSec=360; gameOptRaidNow(540);
+       if(G.timeLeft!==30) bad.push('shortening past the time played left '+G.timeLeft+' s, not the 30 s floor');
+     } finally { G=kG; CFG.raidSec=kS; NET.on=kNet; say=oSay; }
+     try{ b.click(); var m=document.getElementById('settingsmodal'); if(!m||!m.classList.contains('on')) bad.push('the Settings button did not open Settings'); if(m) m.classList.remove('on'); }catch(e){ bad.push('the Settings button threw '+e.message); }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.44',what:'kid mode: player 2 takes the chosen fraction of every hit, the lower of its own and the host setting; player 1 is never changed',
    run:function(){
      if(typeof netKidMul!=='function'||typeof kidCycle!=='function'||typeof kidRowHtml!=='function') return 'this build has no kid mode';

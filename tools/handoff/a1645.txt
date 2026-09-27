@@ -1,0 +1,1 @@
+| SETTINGS IN A RAID | v16.45 | HIS ORDER: Settings in a raid, live. FIX: pause box Settings button; raid length moves the clock at once; counts say next raid; the rest were already live. MEASURED: 16.45 passes, fails on v16.44 |

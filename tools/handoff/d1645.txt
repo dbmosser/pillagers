@@ -1,0 +1,12 @@
+## v16.45 - SETTINGS IN A RAID
+
+His order of 2026-09-27: the Settings menu should be accessible while in a raid and should change the game in real time. The
+pause box now has a Settings button that opens the same Settings window over the raid (it sits above the pause box; closing it
+returns there). What each row does mid raid:
+- How hard they hit, How much is out there, Heat when you call for extraction, Superhot, Kid mode: read as they happen, so they
+  change the raid at once.
+- Raid length: moves the running clock at once, keeping the time already played (never under 30 seconds left). On a teammate
+  window the host's clock rules, as it always has.
+- Other pillagers, Machines: the map is built with its population, so these say they take effect from the next raid.
+
+MEASURED. Check 16.45 passes and fails on v16.44.

@@ -1,0 +1,6 @@
+v16.45: settings in a raid
+
+The pause box opens Settings over the raid. Changes apply at once;
+raid length moves the running clock. Enemy counts apply next raid.
+
+Check 16.45. Fails on v16.44.
