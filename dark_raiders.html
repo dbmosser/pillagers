@@ -1430,7 +1430,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.20';
+var VER='16.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3942,6 +3942,7 @@ function noiseMark(type,wx,wy){
 // browser has no stereo panner.
 function sfx(type,wx,wy,wid){
   if(G&&G.sim) return;
+  if(typeof NET==='object'&&NET&&NET.on&&!NET.fxIn&&wx!==undefined&&wx!==null) netFxNoise(type,wx,wy,wid);   // v16.21: the rest of the party hears it and sees its ring
   if(typeof NET==='object'&&NET&&NET.specTick) return;   // v16.14: the raid a spectating host keeps running for the party makes no sound in his window
   // BEFORE the audio device is asked for, deliberately. If his sound is off, or
   // the tab has never had a click and there is no audio context yet, he should
@@ -13622,6 +13623,7 @@ if(wep.mag===0){
       vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),
       life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
       thru:(wep.id==='lance')?1:0});   // v11.84, HIS NOTE: the Lance travels through crawlers
+    if(NET.on) netFxShot(G.bullets[G.bullets.length-1]);   // v16.21: the rest of the party sees this round
   }
   // A burst weapon fires its extra rounds on a short delay, one per 70ms, each
   // rolled for spread on its own. Queued as world state so the burst finishes
@@ -24293,8 +24295,9 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
 // middle of COLD STORAGE. Per-map dressing belongs behind a def.dressing hook.
   // air pass: bullets, sparks, puffs, throws, smoke
   wc.globalCompositeOperation='lighter';
-  for(i=0;i<G.bullets.length;i++){
-var b=G.bullets[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
+  var _BLS=(G.fxBullets&&G.fxBullets.length)?G.bullets.concat(G.fxBullets):G.bullets;   // v16.21: with the tracers of the rest of the party
+  for(i=0;i<_BLS.length;i++){
+var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
     var _trc=(!isDay()&&!b.owner)?3:1;
     wc.strokeStyle=b.tint; wc.lineWidth=2;
     wc.beginPath(); wc.moveTo(b.x-b.vx/bm*9*_trc,b.y-b.vy/bm*9*_trc-12);
@@ -25956,6 +25959,11 @@ ctx.fillStyle='#4de3d0';
       bar(_rb.x-25,_rb.y-LH(9),50,LH(5),clamp(1-p.reloading/p.wep.reload,0,1),'#ffc04a');
     }
   }
+  try{ if(NET.on&&G.netRevT>0&&G.netRevS>=0&&NET.up[G.netRevS]){   // v16.21, his note: the revive has a bar, like a search
+    var _rg=NET.up[G.netRevS], _rs=w2s(_rg.x,26,_rg.y);
+    if(_rs){ bar(_rs.x-30,_rs.y-8,60,6,Math.min(1,G.netRevT/NET_REV_T),'#4de3d0');
+      ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#4de3d0'; ctx.fillText('REVIVING',_rs.x,_rs.y-14); ctx.textAlign='left'; }
+  } }catch(_rvb){}
   if(G.searching&&!(G.player&&G.player.downed)){   // v14.08: not while down
     var s2=w2s(G.searching.x,26,G.searching.y);
     if(s2){
@@ -30585,6 +30593,7 @@ function loop(ts){
   }
   if(state!=='raid'||!G||G.sim) return;
   if(NET.on) netUpTick(dt);   // v15.79: where the party stands up top, eased in and sent out, whatever the frame does below
+  if(NET.on) netFxStep(dt);   // v16.21: the party's tracers fly, and this window's sounds go out
   // v6.73, his note; rewritten v7.23: time stops DEAD unless an input is live -
   // any held key, the mouse button, pad input, or an action already in flight.
   if(CFG.superhot&&G.player&&!G.over&&!G.paused&&!netUpShared()){   // v16.04: Superhot is off in a shared co-op raid (one world cannot stop for one player)
@@ -31125,7 +31134,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.20: WHEN THE WHOLE PARTY PAUSES, THE GAME PAUSES. His order. In co-op one player pausing still leaves the world running for the others, but when every player in the raid is paused the world, the clock and the storm stop, as in solo. Any one unpausing starts it again. No number moved. Check 16.20 fails on v16.19',
+  now:'v16.21: THE PARTY SEES AND HEARS EACH OTHERS FIGHT, AND THE REVIVE HAS A BAR. His notes. In co-op every round a player or a machine fires now shows as a tracer on every window, and every sound reaches every window with its red ring, so a friend sees and hears the host, the machines and the other friends. Holding E on a downed teammate shows a REVIVING bar over him. Nothing hurts twice: the host still lands every hit. No number moved. Check 16.21 fails on v16.20',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34851,6 +34860,7 @@ function netOnMsg0(peer,data){
   if(m.t==='hit') return netHitTake(peer,m);   // v15.80: a blow on this player, from the host, taken through its own damagePlayer
   if(m.t==='shot') return netShotTake(peer,m);   // v15.80: a round, blade or charge from one of the party on a body the host runs
   if(m.t==='kill') return netKillTake(peer,m);   // v15.80: a kill credited to this seat, from the host
+  if(m.t==='fx') return netFxTake(peer,m);   // v16.21: a round or a sound from one of the party, to draw and play
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
   if(m.t==='rev') return netRevTake(peer,m);   // v16.05: a teammate picked this player up, or (on the host) passes it on
@@ -35827,6 +35837,58 @@ function netUpShared(){ return !!((netEntsHost()||netEntsPeer())&&netInCount()>0
 // v16.20, HIS ORDER: WHEN THE WHOLE PARTY PAUSES, THE GAME PAUSES. A pause in a shared raid is an overlay (v16.04) so one player
 // cannot stop the world on the others; when this player is paused and every teammate up top on the party seed says he is paused
 // too (pz in his state word), nobody is playing, so the world, the clock and the storm stop as in solo. Any one unpausing starts it.
+// v16.21, HIS NOTE: THE SECOND PLAYER COULD NOT SEE THE FIRST PLAYER'S BULLETS OR HIS RED SOUND RINGS. Every window drew only the
+// rounds it made and the sounds it played: a friend never saw the host shoot or the machines fire (the host runs them), and never
+// heard them or got their rings. Now, in a shared raid, every round a window makes is sent to the party on the fast channel as a
+// tracer (netFxShot), and every positioned sound is sent ten times a second (netFxNoise, netFxStep); the host passes each on to the
+// others. A tracer flies on the receiving window until its time runs out or a wall stops it, and hurts nothing (the host lands
+// hits, as before). A sound is played through sfx, which draws its ring by the same rules as your own. Nothing is drawn from the
+// seeded stream. Solo play never sends or takes any of it.
+function netFxShot(b){
+  var i, m;
+  if(!b||!netUpShared()) return false;
+  m={t:'fx',k:'b',s:NET.seat,b:[Math.round(b.x),Math.round(b.y),Math.round(b.vx),Math.round(b.vy),+(+b.life||0).toFixed(3),String(b.tint||'#ffd48a').slice(0,9)]};
+  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSendFast(NET.peers[i],m);
+  return true;
+}
+function netFxNoise(type,x,y,wid){
+  if(!netUpShared()) return false;
+  NET.fxQ=NET.fxQ||[];
+  if(NET.fxQ.length<16) NET.fxQ.push([netClean(type,16),Math.round(x),Math.round(y),wid?netClean(wid,16):'']);
+  return true;
+}
+function netFxStep(dt){
+  var i, b, nx, ny, m;
+  if(typeof G==='undefined'||!G||G.sim) return 0;
+  if(G.fxBullets) for(i=G.fxBullets.length-1;i>=0;i--){
+    b=G.fxBullets[i]; nx=b.x+b.vx*dt; ny=b.y+b.vy*dt; b.life-=dt;
+    if(b.life<=0||(G.map&&G.map.segs&&!losClear(b.x,b.y,nx,ny,G.map.segs))) G.fxBullets.splice(i,1); else { b.x=nx; b.y=ny; }
+  }
+  NET.fxAcc=(NET.fxAcc||0)+dt;
+  if(NET.fxAcc>=NET_HUB_STEP&&NET.fxQ&&NET.fxQ.length){
+    NET.fxAcc=0; m={t:'fx',k:'n',s:NET.seat,n:NET.fxQ.slice(0,16)}; NET.fxQ=[];
+    for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSendFast(NET.peers[i],m);
+  }
+  return G.fxBullets?G.fxBullets.length:0;
+}
+function netFxTake(peer,m){
+  var i, a, q;
+  if(!peer||peer.state!=='in') return 'ignored';
+  if(!netUpShared()) return 'off';
+  if(NET.role==='host') for(i=0;i<NET.peers.length;i++){ q=NET.peers[i]; if(q!==peer&&q.state==='in') netSendFast(q,m); }
+  if(m.k==='b'&&m.b&&m.b.length>=5){
+    a=m.b; G.fxBullets=G.fxBullets||[];
+    if(G.fxBullets.length<80) G.fxBullets.push({x:+a[0]||0,y:+a[1]||0,vx:+a[2]||0,vy:+a[3]||0,life:Math.min(3,Math.max(0,+a[4]||0)),tint:(/^#[0-9a-fA-F]{3,8}$/).test(a[5])?a[5]:'#ffd48a',owner:1,fx:1});
+    return 'fx:b';
+  }
+  if(m.k==='n'&&m.n&&m.n.length){
+    NET.fxIn=true;
+    try{ for(i=0;i<m.n.length&&i<16;i++){ a=m.n[i]; if(a&&typeof a[0]==='string'&&isFinite(a[1])&&isFinite(a[2])) sfx(a[0],+a[1],+a[2],a[3]||undefined); } }
+    finally{ NET.fxIn=false; }
+    return 'fx:n';
+  }
+  return 'bad';
+}
 function netAllPaused(){
   var i, g, n=0;
   if(typeof G==='undefined'||!G||!G.paused) return false;

@@ -40024,6 +40024,22 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.21 - THE PARTY SEES AND HEARS EACH OTHER'S FIGHT, AND THE REVIVE HAS A BAR
+
+His notes of 2026-09-27: the second player could not see the first player's bullets or the red sound rings; the revive had no
+clear bar. Each window drew only the rounds it made and the sounds it played, so a friend never saw the host shoot or the machines
+fire (the host runs them) and never heard them or got their rings.
+
+THE BUILD. In a shared raid every round a window makes goes to the party on the fast channel as a tracer (netFxShot, from the one
+bullet push); every positioned sound is queued and sent ten times a second (netFxNoise from sfx, netFxStep); the host passes both
+on to the others. A tracer flies on the receiving window (G.fxBullets, drawn with the bullets) until its time runs out or a wall
+stops it, and hurts nothing: the host still lands every hit. A sound is played through sfx with the relay off (NET.fxIn), which
+draws its ring by the same rules as your own. Holding E on a downed teammate shows a REVIVING bar over him, filling over the 3.2 s.
+Nothing draws from the seeded stream; solo play sends and takes nothing. No number moved.
+
+MEASURED. Check 16.21 passes twice; fails on v16.20. Checks 15.80, 16.05, 16.11, 16.14, 16.20 pass; nettest RUN SAME MACHINE
+passes. Not verified: how it looks and sounds on two real windows.
+
 ## v16.20 - WHEN THE WHOLE PARTY PAUSES, THE GAME PAUSES
 
 His order of 2026-09-27. In a shared co-op raid a pause is an overlay (v16.04), so one player cannot stop the world on the

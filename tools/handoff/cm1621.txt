@@ -1,0 +1,8 @@
+v16.21: the party sees and hears each other's fight, and the revive has a bar
+
+His notes. In co-op every round a player or a machine fires shows as a
+tracer on every window, and every sound reaches every window with its
+red ring. Holding E on a downed teammate shows a REVIVING bar. The host
+still lands every hit. No number moved.
+
+Check 16.21. Fails on v16.20.
