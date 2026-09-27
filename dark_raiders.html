@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.63';
+var VER='16.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31228,7 +31228,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.63: A SPECTATING HOST TAKES NO DAMAGE OF ANY KIND. Stability pass before a co-op session. v16.56 let enemy rounds pass where a spectating host stood, but frag blasts, shells and every other hurt still reached his empty body: grunts in his window and red numbers on empty ground for his teammate. Nothing hurts a spectating host now. Check 16.63 fails on v16.62',
+  now:'v16.64: A SPECTATING HOST IS STILL HOSTING. Stability pass before a co-op session. Once the host left his run card for the Undercroft while his teammate was still up top, his window still ran the raid for the party, but nothing warned before it closed or reloaded (which abandoned the teammate raid), the pause box stopped saying he was hosting, and Settings offered the buttons that reload the window. All three now hold until the party is out. Check 16.64 fails on v16.63',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35873,7 +35873,10 @@ function netUpShown(g){ return !!g&&g.n>0&&g.age<NET_HUB_STALE&&g.seat!==NET.sea
 // v16.38, HIS NOTE: the host screen should clearly say You are hosting, do not quit. Is this window hosting a raid its party is in?
 // Then the pause box says so, and closing the window asks first (the browser's own leave page question).
 function netHostHolds(){
-  return !!(typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&netInCount()>0&&NET.upSeed&&typeof G!=='undefined'&&G&&!G.sim&&(!G.over||G===NET.specG));
+  // v16.64, stability (co-op hunt): a host back in the Undercroft is still running the raid for the party (NET.specG, v16.14).
+  // This read only the host own raid, so once he left his run card nothing warned before the window closed or reloaded, and
+  // closing it abandoned his teammate raid. The pause box line and the leave warning now hold while he spectates.
+  return !!(typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&netInCount()>0&&(NET.specG||(NET.upSeed&&typeof G!=='undefined'&&G&&!G.sim&&(!G.over||G===NET.specG))));
 }
 window.addEventListener('beforeunload',function(e){ if(netHostHolds()){ e.preventDefault(); e.returnValue=''; return ''; } });
 // Called from render2D while a party is on: each of the others goes into the raid depth list with the deck lift, and the
@@ -39338,7 +39341,7 @@ function renderSettings(){
   // v16.50, stability: Settings opens in a raid since v16.45, and three of its buttons do not belong there. PICK FILE opens a
   // file window a controller cannot shut, and a restore or its UNDO reloads the window, which drops a teammate out of the party
   // and loses the run. In a raid they are greyed out; in the Undercroft they work as before.
-  var _rOff=(typeof G!=='undefined'&&G&&!G.over&&!G.sim)?' disabled':'';
+  var _rOff=((typeof G!=='undefined'&&G&&!G.over&&!G.sim)||(typeof NET==='object'&&NET&&NET.on&&NET.specG))?' disabled':'';   // v16.64: and while the host runs the raid for his party
   host.innerHTML=_go+kidRowHtml()+
     '<div class="row"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+

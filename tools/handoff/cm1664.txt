@@ -1,0 +1,9 @@
+v16.64: a spectating host is still hosting
+
+A host back in the Undercroft while his teammate was up top got no leave
+warning (closing the window abandoned the teammate raid), and Settings
+offered the reload buttons. Both now hold until the party is out.
+
+Check 16.64. Fails on v16.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

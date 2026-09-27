@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.64 - A SPECTATING HOST IS STILL HOSTING
+
+Stability pass before his co-op session (co-op hunt, confirmed by two verifiers; review of v16.50). After the host left his
+run card for the Undercroft (G null) his window still ran the raid for the party (NET.specG, v16.14), but netHostHolds read
+only his own raid: no leave warning before the window closed or reloaded (which abandoned the teammate raid), no hosting
+line in the pause box, and Settings offered PICK FILE and UNDO, which reload. netHostHolds and the Settings grey now also
+hold while NET.specG is set.
+
+MEASURED. Check 16.64 passes, and fails on v16.63.
 ## v16.63 - A SPECTATING HOST TAKES NO DAMAGE OF ANY KIND
 
 Stability pass before his co-op session. The review of v16.56 found that only enemy rounds skipped a spectating host; frag

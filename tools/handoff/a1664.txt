@@ -1,0 +1,1 @@
+| A SPECTATING HOST IS STILL HOSTING | v16.64 | STABILITY (co-op hunt 2026-09-27, confirmed 2 of 2, and review). FIX: netHostHolds true while NET.specG; Settings _rOff also while NET.specG. MEASURED: 16.64 passes, fails on v16.63 |
