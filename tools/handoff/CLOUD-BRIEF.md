@@ -55,10 +55,10 @@ numbers both ways, bandages and plates on a teammate, split speakers. NEXT, in o
 7. [done v16.33] The what is new card refresh.
 HIS NOTES 2026-09-27, in this order ahead of 2 to 4 and 6 (target: 4K fullscreen; test at 3840x2160):
 a. [done v16.27] Pause when every player is paused; Superhot runs while either acts; teammate rows off the belt.
-HIS PRINCIPLE 2026-09-27: in gameplay player 2 must equal player 1 in every way. Asked him: rebuild the core for two real players in
-one simulation (player 2's window a view plus his controller input), or keep patching gaps. Until he answers, patch the gaps below.
+HIS PRINCIPLE 2026-09-27: in gameplay player 2 must equal player 1 in every way. HIS ANSWER 2026-09-27: fix player 2 parity, and do not ask him to confirm what his principle already decides. Kit choice for
+player 2 [done v16.37].
 CONTROLLERS [done v16.35] (his rule): player 1 plays mouse and keyboard; player 2 takes the first controller; a second controller goes to player 1.
-P2 SHOTS: his run reports (v16.25) show player 2 fired 24 shots at 0% accuracy, 0 kills, firstContact none in 339 s of co-op: check
+P2 SHOTS [done v16.36: live test shows P2 hits, damages and kills host bodies; firstContact fixed]: his run reports (v16.25) show player 2 fired 24 shots at 0% accuracy, 0 kills, firstContact none in 339 s of co-op: check
    in a live nettest step that player 2's rounds hit the host's bodies, count as hits, and kill.
 P2. PLAYER 2 FIRST (his notes, 2026-09-27 night): (i) [done v16.29] player 2 hears no audio at all: make SPLIT SPEAKERS the default for a same
    machine pair so both windows play (P1 left, P2 right); (ii) [done v16.32: Took lines already reached P2 (live test); the items-left count did not] player 2's looting shows no item names (the loot word path,
