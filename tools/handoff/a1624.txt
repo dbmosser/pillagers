@@ -1,0 +1,1 @@
+| SPLIT SPEAKERS | v16.24 | HIS NOTE: player 1 sound left, player 2 right. FIX: a stereo panner after each window's master gain; SPLIT SPEAKERS in the PARTY sound row, one setting for the pair, both windows play, P1 hard left, P2 hard right. Check 15.78 restaged. MEASURED: check 16.24 passes twice, fails on v16.23 |

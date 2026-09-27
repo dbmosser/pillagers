@@ -1,0 +1,16 @@
+## v16.24 - SPLIT SPEAKERS
+
+His note of 2026-09-27: an option to put player one's sound in the left speaker and player two's in the right.
+
+THE BUILD. In a same machine mode the master gain each window's world sound runs through (v15.78) now feeds a stereo panner. SPLIT
+SPEAKERS in the PARTY window's sound row turns on one setting for the pair (kept in the browser under salvagerun:samesound:split):
+both windows play, whatever SOUND ON or OFF says, player 1's window panned hard left and player 2's hard right. The other window
+picks the change up at once through the storage event, so pressing it in either window switches both. Off, everything is as
+before (pan 0, SOUND ON or OFF as set). Solo and code-linked play are untouched. No number moved.
+
+Check 15.78 restaged: the master gain may reach the destination through the panner.
+
+MEASURED. Check 16.24 passes twice; fails on v16.23. Check 15.78 passes; nettest RUN SAME MACHINE passes.
+
+Not verified: by ear on his speakers.
+

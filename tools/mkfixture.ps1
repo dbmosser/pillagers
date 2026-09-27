@@ -5721,6 +5721,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.24',what:'split speakers: with it on, player 1 window sound is panned hard left and player 2 window hard right and both play even with SOUND OFF; with it off, no pan and SOUND OFF is silent',
+   run:function(){
+     if(typeof NET!=='object'||!NET||typeof netSndOut!=='function') return 'SKIP: this build has no same machine sound';
+     var bad=[], keep={same:NET.same,sndG:NET.sndG,sndAc:NET.sndAc,sndP:NET.sndP,sndOn:NET.sndOn}, v=null, K='salvagerun:samesound:split';
+     function node(){ var o={gain:{value:1},pan:{value:0},connect:function(){}}; return o; }
+     var fake={destination:{},createGain:function(){ return node(); },createStereoPanner:function(){ return node(); }};
+     try{ v=localStorage.getItem(K); }catch(e){}
+     try{
+       if(typeof netSndSplitOn!=='function') return 'this build has no split speakers';
+       NET.same='host'; NET.sndOn=false; NET.sndG=null; NET.sndAc=null; NET.sndP=null;
+       try{ localStorage.setItem(K,'0'); }catch(e){}
+       netSndOut(fake);
+       if(!NET.sndP) return 'SKIP: no panner was made';
+       if(NET.sndP.pan.value!==0||NET.sndG.gain.value!==0) bad.push('control: split off, player 1 window with SOUND OFF has pan '+NET.sndP.pan.value+' gain '+NET.sndG.gain.value);
+       localStorage.setItem(K,'1'); netSndApply();
+       if(NET.sndP.pan.value!==-1||NET.sndG.gain.value!==1) bad.push('split on, player 1 window has pan '+NET.sndP.pan.value+' gain '+NET.sndG.gain.value+', not hard left and playing');
+       NET.same='p2'; netSndApply();
+       if(NET.sndP.pan.value!==1||NET.sndG.gain.value!==1) bad.push('split on, player 2 window has pan '+NET.sndP.pan.value+' gain '+NET.sndG.gain.value+', not hard right and playing');
+     }
+     finally{
+       try{ if(v===null) localStorage.removeItem(K); else localStorage.setItem(K,v); }catch(_s){}
+       try{ NET.same=keep.same; NET.sndG=keep.sndG; NET.sndAc=keep.sndAc; NET.sndP=keep.sndP; NET.sndOn=keep.sndOn; }catch(_n){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.23',what:'use your bandages and plates on a teammate: facing a hurt teammate beside you picks him, facing away does not; a bandage for him comes out of your backpack, winds up and goes to him; a teammate at full is refused with nothing spent; on his window it heals him and a plate adds armour',
    run:function(){
      if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile)||typeof NET!=='object'||!NET||typeof netOnMsg!=='function'||typeof tickPrep!=='function') return 'SKIP: this fixture cannot stage a party raid';
@@ -8458,7 +8482,7 @@ window.__REGRESS=[
        if(!gH) bad.push('the host made no master gain at the pick');
        else {
          if(gH.gain.value!==1) bad.push('the host master gain is '+gH.gain.value+' at the pick, not 1');
-         if(!has(gH.out,fk.destination)) bad.push('the master gain does not connect to the destination');
+         if(!(has(gH.out,fk.destination)||(gH.out||[]).some(function(n){ return n&&n.out&&has(n.out,fk.destination); }))) bad.push('the master gain does not connect to the destination');   // v16.24: or through the split speakers panner
          if(!has(BUS.out,gH)||has(BUS.out,fk.destination)) bad.push('at the pick BUS did not move behind the master gain (to the gain '+has(BUS.out,gH)+', still to the destination '+has(BUS.out,fk.destination)+')');
          if(!has(REV.wet.out,gH)||has(REV.wet.out,fk.destination)) bad.push('at the pick the reverb return did not move behind the master gain');
          if(!has(MUS.lp.out,gH)||has(MUS.lp.out,fk.destination)) bad.push('at the pick the music did not move behind the master gain');
@@ -8530,7 +8554,7 @@ window.__REGRESS=[
        if(!gP) bad.push('player 2 made no master gain when its first sound was made');
        else {
          if(gP.gain.value!==0) bad.push('the player 2 master gain is '+gP.gain.value+', not 0');
-         if(!has(gP.out,fk.destination)) bad.push('the player 2 master gain does not connect to the destination');
+         if(!(has(gP.out,fk.destination)||(gP.out||[]).some(function(n){ return n&&n.out&&has(n.out,fk.destination); }))) bad.push('the player 2 master gain does not connect to the destination');   // v16.24: or through the split speakers panner
          if(!has(BUS.out,gP)||has(BUS.out,fk.destination)) bad.push('player 2 BUS does not run through the master gain');
          if(!has(REV.wet.out,gP)||has(REV.wet.out,fk.destination)) bad.push('the player 2 reverb return does not run through the master gain');
          if(!MUS.lp||!has(MUS.lp.out,gP)||has(MUS.lp.out,fk.destination)) bad.push('the player 2 music does not run through the master gain');

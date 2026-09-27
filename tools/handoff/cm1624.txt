@@ -1,0 +1,8 @@
+v16.24: split speakers
+
+His note. In two player co-op on one PC, SPLIT SPEAKERS in the PARTY
+window's sound row plays player 1 in the left speaker and player 2 in
+the right. Pressing it in either window switches both. No number
+moved.
+
+Check 16.24. Fails on v16.23. Check 15.78 restaged.

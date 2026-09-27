@@ -817,6 +817,7 @@
        that controller B looks for (leave, close, back, done, return). -->
   <div class="msub" id="partysnd" style="display:none">
     <button id="partysndbtn" style="padding:6px 16px">THIS WINDOW: SOUND ON</button>
+    <button id="partysplitbtn" style="padding:6px 16px;margin-left:8px">SPLIT SPEAKERS: OFF</button>
     <span id="partysndnote" style="margin-left:10px;color:var(--ash)"></span>
   </div>
   <!-- v16.09: voice. The mic is asked for only when MIC is pressed. -->
@@ -1430,7 +1431,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.23';
+var VER='16.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31137,7 +31138,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.23: USE YOUR BANDAGES AND PLATES ON A TEAMMATE. His note. Using a heal or an armour plate from your tactical belt while you face a teammate standing next to you gives it to him: it comes out of your backpack, takes the same time, and heals him by his own rules (a Bandage stops at 85). A teammate who does not need it is told so and nothing is spent. No number moved. Check 16.23 fails on v16.22',
+  now:'v16.24: SPLIT SPEAKERS. His note. In two player co-op on one PC the PARTY window sound row has SPLIT SPEAKERS: both windows play sound, player 1 in the left speaker and player 2 in the right. Pressing it in either window switches both. No number moved. Check 16.24 fails on v16.23',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35470,12 +35471,24 @@ function netSndOut(a){
   if(!a) return null;
   if(!NET.same) return a.destination;
   if(!NET.sndG||NET.sndAc!==a){
-    try{ NET.sndG=a.createGain(); NET.sndG.gain.value=NET.sndOn?1:0; NET.sndG.connect(a.destination); NET.sndAc=a; }
+    try{ NET.sndG=a.createGain(); NET.sndG.gain.value=NET.sndOn?1:0; NET.sndAc=a;
+         // v16.24: through a stereo panner, so SPLIT SPEAKERS can put player 1 on the left and player 2 on the right
+         NET.sndP=null; try{ if(a.createStereoPanner){ NET.sndP=a.createStereoPanner(); NET.sndG.connect(NET.sndP); NET.sndP.connect(a.destination); } }catch(_sp){ NET.sndP=null; }
+         if(!NET.sndP) NET.sndG.connect(a.destination);
+         netSndApply(); }
     catch(e){ NET.sndG=null; NET.sndAc=null; return a.destination; }
   }
   return NET.sndG;
 }
-function netSndApply(){ if(NET.sndG){ try{ NET.sndG.gain.value=NET.sndOn?1:0; }catch(e){} } return NET.sndOn; }
+function netSndApply(){ if(NET.sndG){ try{ NET.sndG.gain.value=(NET.sndOn||netSndSplitOn())?1:0; }catch(e){} } if(NET.sndP){ try{ NET.sndP.pan.value=netSndSplitOn()?((NET.same==='p2')?1:-1):0; }catch(e2){} } return NET.sndOn; }
+// v16.24, HIS NOTE: AN OPTION TO PUT PLAYER ONE'S SOUND IN THE LEFT SPEAKER AND PLAYER TWO'S IN THE RIGHT. SPLIT SPEAKERS in the
+// sound row of the PARTY window, in a same machine mode: both windows play the world sound, player 1's window panned hard left and
+// player 2's hard right, whatever SOUND ON or OFF says. It is one setting for the pair, kept in the browser; the other window picks
+// up the change at once (the storage event), so pressing it in either window switches both. Off, everything is as before.
+var NET_SPLIT_KEY='salvagerun:samesound:split';
+function netSndSplitOn(){ var v=null; if(!NET.same) return false; try{ v=localStorage.getItem(NET_SPLIT_KEY); }catch(e){ v=null; } return v==='1'; }
+function netSndSplitToggle(){ var on=!netSndSplitOn(); try{ localStorage.setItem(NET_SPLIT_KEY,on?'1':'0'); }catch(e){} netSndApply(); try{ renderParty(); }catch(e2){} return on; }
+try{ window.addEventListener('storage',function(ev){ if(ev&&ev.key===NET_SPLIT_KEY&&NET.same){ netSndApply(); try{ renderParty(); }catch(e){} } }); }catch(_se){}
 // The nodes that reach the destination move behind the master gain, once each. Returns how many moved.
 function netSndRoute(){
   var a=(AC&&AC.destination)?AC:null, g, list, i, n, moved=0;
@@ -37008,6 +37021,7 @@ function renderParty(){
   // v15.78: whether this window plays the world sound, in a same machine mode; what the other window said beside it.
   var sr=g('partysnd'), sb2=g('partysndbtn'), sn=g('partysndnote');
   if(sr){ sr.style.display=NET.same?'':'none'; if(NET.same){ if(sb2) sb2.textContent='THIS WINDOW: '+netSndLabel(NET.sndOn); if(sn) sn.textContent='Press to change. The other window: '+netSndOtherLabel()+'. Only one window should play world sound, or you hear everything twice.'; } }
+  if(g('partysplitbtn')) g('partysplitbtn').textContent=netSndSplitOn()?'SPLIT SPEAKERS: ON (P1 LEFT, P2 RIGHT)':'SPLIT SPEAKERS: OFF';   // v16.24
   var vr=g('partyvoice');   // v16.09: the voice row, for a party linked by code (a same machine pair shares one room already)
   if(vr){ vr.style.display=(role&&!NET.same)?'':'none';
     if(g('partymicbtn')) g('partymicbtn').textContent=NET.micTrack?'MIC: ON':'MIC: OFF';
@@ -37065,6 +37079,7 @@ function netCopyOld(t,done){
   g('closeparty').onclick=function(){ blurIn(); g('partymodal').classList.remove('on'); };
   if(g('partypadbtn')) g('partypadbtn').onclick=function(){ netPadCycle(); };   // v15.77: the CONTROLLER row
   if(g('partysndbtn')) g('partysndbtn').onclick=function(){ netSndToggle(); };   // v15.78: the SOUND row
+  if(g('partysplitbtn')) g('partysplitbtn').onclick=function(){ netSndSplitToggle(); };   // v16.24: player 1 left, player 2 right
   if(g('partymicbtn')) g('partymicbtn').onclick=function(){ if(NET.micTrack){ voiceMicOff(); renderParty(); } else netUi(function(){ return voiceMicOn(); },'Requesting microphone access.'); };   // v16.09
   if(g('partymicmode')) g('partymicmode').onclick=function(){ NET.micMode=(NET.micMode==='open')?'ptt':'open'; voiceGate(); renderParty(); };   // v16.09
   g('partyhost').onclick=function(){ netUi(netHost,'Creating invite code.'); };
