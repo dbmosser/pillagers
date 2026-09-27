@@ -1431,7 +1431,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.36';
+var VER='16.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29745,7 +29745,8 @@ function updateHubWorld(dt){
 }
 // v6.88, his spec: the loadout question, asked at the lift. Three answers, and each one
 // says what it costs. Built on the same card as askConfirm so there is one dialog style.
-function askKit(){
+function askKit(then,mate){   // v16.37: then, what an answer leads to; mate, a teammate asked for the party (no sector page to put back)
+  then=then||function(){ netKitGate(ascendNow); };
   // v14.65, ascent audit finding 1: THE LOADOUT QUESTION COUNTS THE PACKING MY LOADOUT WILL TAKE. After TAKE THE FREEBIE KIT at
   // the stash the packing is set aside, so this counted the empty list and said nothing was packed, while MY LOADOUT then
   // restored the set-aside items and ascended with them. It counts the set-aside packing then, and otherwise only the packed
@@ -29763,7 +29764,7 @@ function askKit(){
          :(autoN?('nothing is packed, so '+autoN+' item'+(autoN===1?' goes':'s go')+' auto-packed from your stash: grenades, plates, ammo and heals. Anything you take up can be lost.')
                 :'your current tactical belt and backpack.'))+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
-  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v12.16: MY LOADOUT gets his packing back too
+  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); then(); };   // v12.16: MY LOADOUT gets his packing back too
   ASKALT=function(){
     // v12.13: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
     // belt plan (a key pointing at something you are not carrying is the v5.72
@@ -29783,7 +29784,7 @@ function askKit(){
     P.hotAssign={};
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
     try{ renderStage(); }catch(_e){}
-    ascendNow();
+    then();
   };
   var y=document.getElementById('askyes'), a=document.getElementById('askalt');
   if(y) y.textContent='MY LOADOUT';
@@ -29795,7 +29796,7 @@ function askKit(){
   // liftResetDay, so the NIGHT he had picked went back to DAY. Declining now puts the sector page back as he left it. MY
   // LOADOUT and FREEBIE KIT still ascend: askRestore runs before their callbacks, and ascendNow takes the sector page down
   // before startRaid. No player text, no number and no seeded draw moved.
-  ASKBACK='sectormodal';
+  ASKBACK=mate?null:'sectormodal';
   openModal('askmodal');
 }
 // ASK BEFORE THE DOOR CLOSES, v6.67, his note on the lift. One box for the whole
@@ -31147,7 +31148,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.36: PLAYER 2 FIRST CONTACT. His run reports showed player 2 at firstContact none in every co-op raid: first contact was stamped where the host AI picks its target, which never runs on player 2, and it stamped the host even when the enemy went for player 2. The host now tells the seat an enemy went for, once a raid, and that seat stamps its own. The live two window test now also has player 2 shoot a host body for real: hits, damage and the kill credit all reach player 2. Check 16.36 fails on v16.35',
+  now:'v16.37: EVERY PLAYER CHOOSES A KIT. His note: the player who is not starting the raid should get the freebie kit or main kit choice just like always. The host answering MY LOADOUT or FREEBIE KIT now asks each teammate the same question on its own window and save, and the party ascends once every teammate has answered (or after 15 seconds with the kit each had before). Check 16.37 fails on v16.36',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34874,6 +34875,7 @@ function netOnMsg0(peer,data){
   if(m.t==='shot') return netShotTake(peer,m);   // v15.80: a round, blade or charge from one of the party on a body the host runs
   if(m.t==='kill') return netKillTake(peer,m);   // v15.80: a kill credited to this seat, from the host
   if(m.t==='contact') return netContactTake(peer,m);   // v16.36: an enemy went for this seat first, from the host
+  if(m.t==='kitask'||m.t==='kitok') return netKitTake(peer,m);   // v16.37: every player chooses a kit
   if(m.t==='fx') return netFxTake(peer,m);   // v16.21: a round or a sound from one of the party, to draw and play
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
@@ -36734,6 +36736,41 @@ function netContactTake(peer,m){
   if(typeof m.seat==='number'&&m.seat!==NET.seat) return 'ignored';
   if(G.tel.firstContact===null) G.tel.firstContact=G.t;
   return 'contact';
+}
+// v16.37, HIS NOTE: the player who is not starting the raid gets the freebie kit or main kit choice, just like always. THE HOST,
+// answering MY LOADOUT or FREEBIE KIT with the party linked, asks each teammate the same question and ascends once every one has
+// answered, or after NET_KIT_WAIT seconds with the kit each had chosen before. A TEAMMATE sees the same card on its own save;
+// its answer sets its own kit and tells the host. A teammate already up top or on the title answers at once.
+var NET_KIT_WAIT=15;
+function netKitGate(f){
+  var i, q, n=0;
+  if(typeof NET!=='object'||!NET||!NET.on||NET.role!=='host') return f();
+  if(NET.kitWait){ clearTimeout(NET.kitWait.tm); NET.kitWait=null; }
+  for(i=0;i<NET.peers.length;i++){ q=NET.peers[i]; if(q.state==='in'&&netSend(q,{t:'kitask'})) n++; }
+  if(!n) return f();
+  NET.kitWait={f:f,need:n,got:0,tm:setTimeout(netKitGo,NET_KIT_WAIT*1000)};
+  NET.status='Waiting for your party to choose a kit.'; netRefresh();
+  return 'wait';
+}
+function netKitGo(){
+  var w=NET.kitWait;
+  if(!w) return false;
+  NET.kitWait=null; clearTimeout(w.tm); NET.status=''; netRefresh();
+  w.f();
+  return true;
+}
+function netKitTake(peer,m){
+  if(!peer||peer.state!=='in') return 'ignored';
+  if(m.t==='kitask'){
+    if(NET.role!=='join') return 'ignored';
+    if(netUpBusy()){ netSend(peer,{t:'kitok'}); return 'kit:busy'; }
+    askKit(function(){ netSend(peer,{t:'kitok'}); },true);
+    return 'kit:ask';
+  }
+  if(NET.role!=='host'||!NET.kitWait) return 'ignored';
+  NET.kitWait.got++;
+  if(NET.kitWait.got>=NET.kitWait.need) netKitGo();
+  return 'kit:ok';
 }
 function netKillTake(peer,m){
   var e, k, T, rr2;

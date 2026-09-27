@@ -1,0 +1,7 @@
+v16.37: every player chooses a kit
+
+The host kit answer now asks each teammate MY LOADOUT or FREEBIE KIT
+on its own window; the party ascends when all have answered, or
+after 15 seconds with the kit each had.
+
+Check 16.37. Fails on v16.36.

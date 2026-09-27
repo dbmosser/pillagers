@@ -5721,6 +5721,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.37',what:'every player chooses a kit: the host waits for each teammate, a teammate is shown MY LOADOUT and FREEBIE KIT, and its answer tells the host',
+   run:function(){
+     if(typeof netKitGate!=='function'||typeof netKitTake!=='function'||typeof askKit!=='function') return 'this build never asks a teammate for a kit';
+     var keep={on:NET.on,role:NET.role,peers:NET.peers,status:NET.status}, oSend=netSend, oRef=netRefresh, sent=[], went=0, r, bad=[], mod=document.getElementById('askmodal');
+     try{
+       netSend=function(q,m){ sent.push(m.t); return true; }; netRefresh=function(){};
+       NET.on=true; NET.role='host'; NET.peers=[{state:'in',seat:1}];
+       r=netKitGate(function(){ went++; });
+       if(r!=='wait'||went) bad.push('the host went up without waiting for its teammate ('+r+', '+went+')');
+       if(sent.indexOf('kitask')<0) bad.push('the host did not ask its teammate');
+       netKitTake({state:'in'},{t:'kitok'});
+       if(went!==1) bad.push('the teammate answer did not send the party up');
+       NET.role='join'; sent=[];
+       r=netKitTake({state:'in'},{t:'kitask'});
+       if(r==='kit:ask'){
+         if(!mod||!mod.classList.contains('on')) bad.push('the teammate was not shown the kit card');
+         var y=document.getElementById('askyes'), a=document.getElementById('askalt');
+         if(!y||y.textContent!=='MY LOADOUT'||!a||a.textContent!=='FREEBIE KIT'||a.style.display==='none') bad.push('the teammate card does not offer MY LOADOUT and FREEBIE KIT');
+         if(ASKBACK) bad.push('the teammate card puts back a sector page it never showed');
+         if(typeof ASKYES==='function') ASKYES();
+         if(sent.indexOf('kitok')<0) bad.push('the teammate answer did not tell the host');
+       } else if(r!=='kit:busy') bad.push('a teammate asked for its kit answered '+r);
+     } finally {
+       netSend=oSend; netRefresh=oRef; NET.on=keep.on; NET.role=keep.role; NET.peers=keep.peers; NET.status=keep.status; NET.kitWait=null;
+       if(mod) mod.classList.remove('on'); ASKYES=null; ASKALT=null; ASKBACK=null;
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.36',what:'player 2 first contact: the host tells the seat an enemy went for, and that seat stamps its own first contact',
    run:function(){
      if(typeof netContactTake!=='function'||typeof netContactSend!=='function') return 'this build never tells a seat its first contact';

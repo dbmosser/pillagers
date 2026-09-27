@@ -1,0 +1,1 @@
+| EVERY PLAYER CHOOSES A KIT | v16.37 | HIS NOTE: player 2 gets freebie kit or main kit like always. FIX: the host answer asks each teammate the same card; the party ascends when all answered or after 15 s. MEASURED: 16.37 passes, fails on v16.36; live net test answers on P2 |

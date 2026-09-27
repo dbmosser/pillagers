@@ -564,6 +564,13 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     }
     t0=Date.now();
     ascend();
+    // v16.37: a teammate chooses a kit too. When A asks the party, C's window shows MY LOADOUT and FREEBIE KIT; C answers MY
+    // LOADOUT for real and A goes up once every teammate has answered.
+    return wait(function(){ if(A.__net.up().on) return 'none'; var m=el(fc,'askmodal'), y=el(fc,'askyes'); return (m&&m.classList.contains('on')&&y)?y:null; },3000,'copy C to be asked for its kit').then(function(y){
+      if(y!=='none'){ rep.kitAsked=1; y.click(); log('raid: C was asked MY LOADOUT or FREEBIE KIT and answered MY LOADOUT'); }
+      else if(how.indexOf('sector page')>=0) bad.push('raid: A went up without asking C for its kit');
+      return wait(function(){ return A.__net.up().on?1:null; },2000,'copy A to go up once C answered');
+    }).then(null,function(e){ bad.push('raid: '+e.message); }).then(function(){
     ua=A.__net.up();
     log('raid: A went up through '+how+'; A up top '+ua.on+', seed '+ua.seed+', fingerprint '+JSON.stringify(ua.fp));
     if(!ua.on) bad.push('raid: copy A is not up top after ascending ('+JSON.stringify({on:ua.on,seed:ua.seed})+')');
@@ -614,6 +621,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       }).then(function(){ rep.hostLeftMs=Date.now()-tq; log('raid: C abandoned and A stopped spectating; A PARTY status: '+(st(fa).status||'')); },
         function(e){ bad.push('raid: '+e.message); });
     }).then(function(){ comeDown(A,C); A.__net.open(); C.__net.open(); },function(e){ comeDown(A,C); A.__net.open(); C.__net.open(); throw e; });
+    });
   }
   // BUILD 3: THE SAME MACHINE PAIR. Copy A picks 2 PLAYER CO-OP (SAME MACHINE) through its own row. Its window.open is stood in
   // for by this page, which loads the address A asks for into copy C and hands A that window, so the popup blocker does not

@@ -40024,6 +40024,17 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.37 - EVERY PLAYER CHOOSES A KIT
+
+His note of 2026-09-27: the player who is not starting the raid should get the freebie kit or main kit choice just like always.
+The host still answers MY LOADOUT or FREEBIE KIT at the lift. With the party linked, that answer now asks each teammate the same
+question on its own window, against its own save and packing, and the party ascends once every teammate has answered. A teammate
+who does not answer within 15 seconds goes up with the kit it had chosen before (its stash FREEBIE KIT button, or its own
+loadout). A teammate already up top or on the title answers at once. The card on a teammate window puts nothing back when it
+closes (it never took a sector page down).
+
+MEASURED. Check 16.37 passes and fails on v16.36. The live two window test now has player 2 answer MY LOADOUT for real before
+the host goes up.
 ## v16.36 - PLAYER 2 FIRST CONTACT
 
 His principle of 2026-09-27: in gameplay player 2 equals player 1 in every way. His v16.25 run reports showed player 2 at
