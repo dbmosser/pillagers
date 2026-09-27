@@ -15,6 +15,10 @@ Written 2026-09-26 when the session moved to the cloud. The local session kept t
 - No automatic switch to a gun. No raid music. Hills, verticality and woods are vetoed.
 - Multiplayer (2026-09-25): co-op first, PvP later; up to 4; invite codes first, server later; push-to-talk and open mic with per-teammate mute, proximity chat for PvP enemies. Co-op: NO team damage at all; host dropping mid-raid (ending the party, losing the link) counts as ABANDON for everyone; the host extracting, dying or abandoning makes the host SPECTATE (2026-09-26, v16.14): the raid runs on in the host window until every friend is out; teammate revives in the first co-op version. Same-PC play: two windows on two screens, player 2 on a controller, title mode menu with his five rows (two SERVER rows greyed "coming later").
 - Keep reports short and plain.
+- BUDGETS (his rule, 2026-09-27, applies to every budget or time limit he ever gives): a spend cap or time limit means spend
+  tokens efficiently. It NEVER means slow down, pause, skip work or stop making substantive progress on the game. Stay within
+  the cap by working lean (small reads, targeted greps, no workflows or subagents unless asked, no repeated test loops, short
+  reports), not by doing less. Large items are broken into small shippable steps, never skipped for size.
 
 ## Ship flow (tools/handoff)
 Each build NNNN (version V = NNNN/100, e.g. 1585 = 15.85; 1600 = 16.00) has five files: `pNNNN.ps1` (SubRx whole-line anchors into the game, VER bump, DEVNOW `now:` line), `fNNNN.ps1` (inserts check `{v:'V',...}` above `  {v:'PV',what:` in `tools/mkfixture.ps1`), `dNNNN.txt`, `aNNNN.txt`, `cmNNNN.txt` (commit message ending with the Co-Authored-By line).
