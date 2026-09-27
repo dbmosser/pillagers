@@ -1,0 +1,7 @@
+v16.77: controller crosshair always on screen with a trail
+
+THE CONTROLLER CROSSHAIR IS ALWAYS ON SCREEN, WITH A TRAIL. His order: with a controller the aim crosshair stays on screen when the right stick is untouched, when standing still and when adjusting the aim distance, and it leaves a short fading trail.
+
+Check 16.77. Fails on v16.76.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

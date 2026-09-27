@@ -1,0 +1,7 @@
+v16.76: no hum through a party pause
+
+NO HUM THROUGH A PARTY PAUSE. His report during his co-op session: weird noises when we pause. In a shared raid the pause box does not stop the world until every player is paused, and the sound bed was turned down for the pause and written back up on the same frame, over and over, which came out as a hum. The bed now stays down for the whole pause.
+
+Check 16.76. Fails on v16.75.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

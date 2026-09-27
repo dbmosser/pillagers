@@ -1,0 +1,1 @@
+| CLOCK ALARMS DOWN TO A QUARTER | v16.78 | STABILITY (drafted and reviewed by agents 2026-09-27). MEASURED: 16.78 passes, fails on v16.77 |

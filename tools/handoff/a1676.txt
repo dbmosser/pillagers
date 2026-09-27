@@ -1,0 +1,1 @@
+| NO HUM THROUGH A PARTY PAUSE | v16.76 | STABILITY (drafted and reviewed by agents 2026-09-27). MEASURED: 16.76 passes, fails on v16.75 |

@@ -1,0 +1,7 @@
+v16.75: superhot follows the host for the whole party
+
+SUPERHOT FOLLOWS THE HOST FOR THE WHOLE PARTY. His order during his co-op session: when player 1 turns Superhot on or off it applies to everyone in the party for the rest of the session. Before, each window had its own switch, and with only one of them on time never stopped for anyone. And whenever time stands still in Superhot, so do the extraction clock, the wave clock and the raid the host keeps running for the party.
+
+Check 16.75. Fails on v16.74.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

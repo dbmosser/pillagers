@@ -1,0 +1,7 @@
+v16.78: clock alarms down to a quarter
+
+THE CLOCK ALARMS DROP TO A QUARTER. His note: the 5 minutes left alarm and the other clock marks were still too loud after v16.30. The warning tone and the last ten seconds tick now play at a quarter of that level; nothing else moves.
+
+Check 16.78. Fails on v16.77.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

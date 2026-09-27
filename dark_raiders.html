@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.74';
+var VER='16.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11064,7 +11064,7 @@ window.addEventListener('keydown',function(e){
   if(e.code==='Backquote'){ e.preventDefault();
     if(e.shiftKey){ toggleTune(); return; }
     if(!e.repeat){
-      cycleGameOpt('superhot');
+      if(cycleGameOpt('superhot')===false) return;   // v16.74, his order: on a linked window the host word rules; cycleGameOpt said so, and there is no dial of its own to report
       // v15.15, dials audit finding 7: THE SUPERHOT KEY REDRAWS AN OPEN SETTINGS ROW. The Settings rows are drawn only by
       // renderSettings, and this key moved the dial, saved and said so without calling it, so with Settings open the Superhot
       // row kept its old word. Closed on Off, the next raid ran in Superhot. Clicked to turn it on, the row steps from the live
@@ -30723,13 +30723,14 @@ function loop(ts){
   if(NET.on) netFxStep(dt);   // v16.21: the party's tracers fly, and this window's sounds go out
   // v6.73, his note; rewritten v7.23: time stops DEAD unless an input is live -
   // any held key, the mouse button, pad input, or an action already in flight.
-  if(CFG.superhot&&G.player&&!G.over&&!G.paused){   // v16.27, his note: in co-op time runs while ANY player up top is acting (v16.04 had it off)
+  if(CFG.superhot&&G.player&&!G.over&&(!G.paused||netPauseLive())){   // v16.27, his note: in co-op time runs while ANY player up top is acting (v16.04 had it off); v16.74, his order: a window paused in a shared raid, where the world runs on, still stops time unless a teammate is acting
     var _shp=G.player;
     var _shAny=false;
     for(var _shk in keys){ if(keys[_shk]){ _shAny=true; break; } }
     var _shAct=_shAny||(typeof mouse!=='undefined'&&mouse&&mouse.down)||
                (typeof PAD!=='undefined'&&PAD.on&&(PAD.mx||PAD.my||PAD.aiming))||
                (_shp.roll>0)||(_shp.reloading>0)||(!!_shp.prep)||(!!_shp.prepA);
+    if(G.paused) _shAct=false;   // v16.74, his order: paused in a shared raid this player is not acting, whatever is still held under the box
     G.shAct=_shAct;
     if(!_shAct&&!netAnyActing()) dt=0;
   }
@@ -31262,7 +31263,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.74: THE HOST IS OUT OF THE RAID, NOT GONE. His report during his co-op session: player 1 died and gave up, and player 2 read Host has left the raid while player 1 was still on his KILLED IN ACTION card. The host is not gone: his run ended and he keeps the raid running for the party. Player 2 now reads the host name and how his run ended, killed, extracted or abandoned, and is told to extract to finish his run. Check 16.74 fails on v16.73',
+  now:'v16.75: SUPERHOT FOLLOWS THE HOST FOR THE WHOLE PARTY. His order during his co-op session: when player 1 turns Superhot on or off it applies to everyone in the party for the rest of the session. Before, each window had its own switch, and with only one of them on time never stopped for anyone. And whenever time stands still in Superhot, so do the extraction clock, the wave clock and the raid the host keeps running for the party. Check 16.75 fails on v16.74',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35108,6 +35109,7 @@ function netReset(keepErr){
   NET.pend=null; NET.on=false; NET.role=null; NET.seat=-1; NET.roster=[]; NET.code=''; NET.reply=''; NET.codeLen=0; NET.busy=false;
   NET.floor=[]; NET.hubAcc=0; NET.hubN=0; NET.lkSent='';   // v15.75: nobody is left standing on the floor
   NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;   // v15.79: and nobody up top
+  netShDrop();   // v16.74, his order: the Superhot dial goes back to this window own word when the party ends
   NET.entMap={}; NET.entGone={}; NET.entN=0; NET.entRot=0; NET.entLast=-1;   // v15.80: and no body is numbered
   NET.contMap={}; NET.contN=0; NET.contN0=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;   // v15.91: and no container is numbered or held
   // v15.76: the host lets go of the window channel and the mode; the player 2 window keeps both, so the host can offer again.
@@ -36270,6 +36272,29 @@ function netWpMapDraw(ox,oy,sc){
 var KID_OPTS=[[1,'OFF'],[0.5,'1/2'],[0.25,'1/4'],[0.2,'1/5'],[0.1,'1/10'],[0.05,'1/20']];   // v16.73, his order: and 1/20
 function kidMulOwn(){ var v=(typeof P!=='undefined'&&P)?+P.kidDmg:1; return (isFinite(v)&&v>=0.1&&v<=1)?v:1; }
 function netKidMul(){ var h=(typeof NET.kidHost==='number'&&NET.kidHost>=0.1&&NET.kidHost<=1)?NET.kidHost:1; return Math.min(kidMulOwn(),h); }
+// v16.74, his order: SUPERHOT IS THE HOST SETTING FOR THE WHOLE PARTY. Each window had its own dial (the Settings row, the
+// backquote key), and the state word says a window with the dial off is always acting (sa), so with player 1 on and player 2
+// off time never stopped for either. The host now sends its dial in the world word (netWorldSend, twice a second), and a linked
+// window puts it on its live dial, CFG.superhot: the gate that stops time, the state word, the Settings row and the backquote
+// line all read that one dial, so they use and show the host value. Its own saved word (P.gameOpts) is never written: the first
+// host word keeps the live value it replaced (NET.shOwn) and netReset puts it back when the party ends. applyGameOpts puts the
+// host value back on top after any other Settings row is clicked, and cycleGameOpt refuses the row and the key while a host
+// word rules, with a line that says so. The host window and solo play never reach any of it.
+function netShHost(){ return (typeof NET==='object'&&NET&&NET.on&&NET.role==='join'&&(NET.shHost===0||NET.shHost===1))?NET.shHost:null; }
+function netShTake(v){
+  v=v?1:0;
+  if(NET.shHost!==0&&NET.shHost!==1) NET.shOwn=CFG.superhot?1:0;
+  NET.shHost=v;
+  if((CFG.superhot?1:0)!==v){
+    CFG.superhot=v;
+    try{ var _sm=document.getElementById('settingsmodal'); if(_sm&&_sm.classList.contains('on')) renderSettings(); }catch(_rs){}
+  }
+  return v;
+}
+function netShDrop(){
+  if((NET.shHost===0||NET.shHost===1)&&(NET.shOwn===0||NET.shOwn===1)) CFG.superhot=NET.shOwn;
+  NET.shHost=null; NET.shOwn=null;
+}
 function kidCycle(){
   var i, v=kidMulOwn(), ix=0;
   for(i=0;i<KID_OPTS.length;i++) if(Math.abs(KID_OPTS[i][0]-v)<1e-6) ix=i;
@@ -36466,6 +36491,7 @@ function netWorldSend(){
   m={t:'wd',sd:G.seed>>>0,tl:netNum(G.timeLeft),wx:(G.wx&&G.wx.id)||'',wn:(G.wxNext&&G.wxNext.id)||'',wt:netNum(G.wxT)||0,ai:(G.zones||[]).indexOf(G.active),z:z,s:s};
   m.bd=netBoardRows();   // v16.34: the board, for the party
   m.kd=kidMulOwn();   // v16.44: kid mode as the host has it, live
+  m.sh=CFG.superhot?1:0;   // v16.74, his order: Superhot as the host has it, for the whole party (netShTake on a linked window)
   for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&netSendFast(NET.peers[i],m)) n++;
   return n;
 }
@@ -36478,6 +36504,7 @@ function netWorldTake(peer,m){
   G.wxNext=netWxOf(m.wn); G.wxT=(typeof m.wt==='number'&&isFinite(m.wt))?clamp(m.wt,0,1):0;
   if(m.bd&&typeof m.bd.length==='number') netBoardTake(m.bd);   // v16.34: the host board
   if(typeof m.kd==='number'&&isFinite(m.kd)) NET.kidHost=clamp(m.kd,0.1,1);   // v16.44: kid mode as the host has it
+  if(m.sh===0||m.sh===1) netShTake(m.sh);   // v16.74, his order: Superhot as the host has it, put on this window live dial
   if(m.z&&typeof m.z.length==='number') for(i=0;i<m.z.length&&i<(G.zones||[]).length;i++){
     a=m.z[i]; Z=G.zones[i]; if(!a||!Z) continue;
     if(typeof Z.netCallAt==='number'&&G.t-Z.netCallAt<1.5&&a[1]===null) continue;
@@ -36700,6 +36727,7 @@ function netSpecTick(dt){
   if(_pzAll) wdt=0;
   G=S; NET.specTick=true;
   try{
+    if(CFG.superhot&&!netAnyActing()) wdt=0;   // v16.74, his order: in Superhot the kept raid clock and world stand still unless a teammate up top is acting (the v16.27 rule, which the run card frame keeps and this stepper did not)
     G.t+=wdt; if(raidClockOn()) G.timeLeft=Math.max(0,G.timeLeft-wdt);
     refreshVseg(); updateEnts(wdt); updateBullets(wdt); updateThrowables(wdt);
     // v16.53, stability (co-op review): the host runs every search the party holds, but only in netUpTick, which stops once
@@ -39335,6 +39363,7 @@ function applyGameOpts(){
   // map he had emptied. The pillager row is the one that owns whether pillagers
   // exist at all, so it gets the last word.
   if(gameOptIx('raiders')===3&&!tk.raiderWaves) CFG.raiderWaves=0;
+  if(netShHost()!==null) CFG.superhot=netShHost();   // v16.74, his order: on a linked window the host Superhot word stays on top of every other row click and of a profile load
   // v9.74: the text watcher starts here because this is the one function the
   // game already calls after the profile is loaded and again on every change.
   try{
@@ -39363,6 +39392,11 @@ function cycleGameOpt(k){
   var row=null;
   for(var i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) row=GAMEOPTS[i];
   if(!row) return;
+  if(k==='superhot'&&netShHost()!==null){   // v16.74, his order: player 1 sets Superhot for the party; the row and the key on a linked window say so and stay
+    var _shL='Superhot follows the host while you are in a party.';
+    if(G&&!G.over&&!G.sim) say(_shL); else if(typeof say2==='function') say2(_shL);
+    return false;
+  }
   P.gameOpts=P.gameOpts||{};
   // v10.28: the next option after the one the dials show, so a click always
   // moves the row he is looking at by one step.

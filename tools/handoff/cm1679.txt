@@ -1,0 +1,7 @@
+v16.79: pack and unpack on a controller
+
+PACK AND UNPACK ON A CONTROLLER. His order: with the backpack open, A picks up the item under the highlight, D-pad down walks the stacks and past the last one lands on the tactical belt row, D-pad left and right walk the belt keys, and A places the item there or back in the backpack, exactly as a mouse drag does. B still closes the backpack.
+
+Check 16.79. Fails on v16.78.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
