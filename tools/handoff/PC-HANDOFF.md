@@ -99,3 +99,9 @@ no auto-fire while player 2 moves the right stick himself, and player 2 turns it
 PLUS his rule: only with a Bandage, Medkit or armour plate SELECTED on the tactical belt (use that item); stash-pad (review not
 ok, read it); downed-extract (review: edit 2 breaks check 15.79, fix before use); kit options random/top gear (redo solo).
 Asked him: is the 125% menu zoom Chrome own zoom? (game menus already default to 130%). Gave him the AAA gap list.
+
+## STOPPED AGAIN 2026-09-27 16:25 AT v16.86 (weekly all-models reads 19%; his cap 20% to ~08:00 2026-09-28)
+Shipped since 15:37: 16.83 kid firing (P2 row, right stick takes over), 16.84 hold Y / T heals a teammate with the item
+selected on the tactical belt only, 16.85 stash screen on a pad (A grab, D-pad, A place, B lets go), 16.86 a teammate who has
+left is never waited for (a narrow fix; his downed-extract report may instead be keyboard focus on the P2 window: asked him).
+LEFT: kit options random from stash / top gear (redo solo); his 125% zoom question; his downed-extract answer.
