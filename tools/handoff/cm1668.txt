@@ -1,0 +1,7 @@
+v16.68: a teammate pick up is called revived before it took, and a held e then does nothing
+
+A TEAMMATE PICK UP IS CALLED REVIVED ONLY WHEN IT TOOK. Stability pass before a co-op session. When the pick up bar filled the game said REVIVED at once, but the other window could still refuse it (he was already in the death fade, or it last saw the reviver out of reach), so he stayed down while the reviver was told he was up, and holding E or X on over him then did nothing. The line now waits for his own word to show him up, and a pick up that did not take lets go after three seconds so the hold starts a fresh one.
+
+Check 16.68. Fails on v16.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

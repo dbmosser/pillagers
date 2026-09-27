@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.67';
+var VER='16.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31228,7 +31228,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.67: PLAYER 2 KEEPS HEARING THE ENEMIES AFTER THE HOST LEAVES HIS RUN CARD. Stability pass before a co-op session. Every sound the raid makes reaches the party in a word the host sends from his raid frame, and once the host left his run card for the Undercroft while his teammate was still up top, no raid frame ran: the teammate stopped hearing the enemies and lost their red sound rings. The raid the host keeps for the party now sends that word itself when he is not looking at it. Check 16.67 fails on v16.66',
+  now:'v16.68: A TEAMMATE PICK UP IS CALLED REVIVED ONLY WHEN IT TOOK. Stability pass before a co-op session. When the pick up bar filled the game said REVIVED at once, but the other window could still refuse it (he was already in the death fade, or it last saw the reviver out of reach), so he stayed down while the reviver was told he was up, and holding E or X on over him then did nothing. The line now waits for his own word to show him up, and a pick up that did not take lets go after three seconds so the hold starts a fresh one. Check 16.68 fails on v16.67',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37021,8 +37021,22 @@ function netMateDown(p){
 // extraction or searches a box as well. After a pick-up is sent, E held on stays on that teammate (G.netRevDone) until it is
 // let go, so the line is not written over by a fresh Picking up and a second pick-up is never sent.
 function netRevHold(p,dt){
-  var s=-1, nm;
+  var s=-1, nm, w, g, rose;
   try{ s=netMateDown(p); }catch(e){ s=-1; }
+  // v16.68, stability: A PICK-UP IS CALLED DONE ONLY WHEN IT TOOK. The window of the teammate refuses the word when he is not
+  // down any more or is in the death fade, or it last heard this player out of reach, and the word can fail to reach it; he
+  // stays down, yet this line said he was revived the moment the word went, and E held on stayed on him doing nothing until it
+  // was let go. The line and the blip now wait for his own state word to show him up with health. Still down NET_HUB_STALE
+  // seconds on (the age at which his word counts as stale), or gone from the list, the hold lets go of him, so E held on over
+  // him starts a fresh pick-up. No number moved: reach, pick-up time and the health he gets up on are as they were.
+  if(typeof G.netRevWait==='number'&&G.netRevWait>=0){
+    w=G.netRevWait; g=NET.up[w]; G.netRevW=(G.netRevW||0)+dt;
+    rose=!!(netUpShown(g)&&!g.dn&&g.hp>0);
+    if(rose||!netUpShown(g)||G.netRevW>=NET_HUB_STALE){
+      G.netRevWait=-1; if(G.netRevDone===w) G.netRevDone=-1;
+      if(rose){ say((netSeatName(w)||'PILLAGER')+' revived.'); blip('pick'); }
+    }
+  }
   if(!keys['KeyE']) G.netRevDone=-1;
   if(typeof G.netRevDone==='number'&&G.netRevDone>=0&&keys['KeyE']&&s===G.netRevDone) return true;
   if(s<0||!keys['KeyE']||p.roll>0){ if(G.netRevT){ G.netRevT=0; G.netRevS=-1; } return false; }
@@ -37031,10 +37045,9 @@ function netRevHold(p,dt){
   if(!G.netRevT) say('Reviving '+nm+'. Hold '+keyLabel('KeyE','E')+'.');
   G.netRevT=(G.netRevT||0)+dt;
   if(G.netRevT<NET_REV_T) return true;
-  G.netRevT=0; G.netRevS=-1; G.netRevDone=s;
+  G.netRevT=0; G.netRevS=-1; G.netRevDone=s; G.netRevWait=s; G.netRevW=0;   // v16.68, stability: he is called revived when his word says he is up (above), not here
   if(NET.role==='host') netRevPass(s,NET.seat);
   else for(var i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'rev',s:s});
-  say(nm+' revived.'); blip('pick');
   return true;
 }
 // On the host: a pick-up for its own player, or passed on to the seat it names.
