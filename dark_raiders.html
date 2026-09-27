@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.83';
+var VER='16.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11359,6 +11359,7 @@ function raidKey(code,repeat,ev){
     if(dn>=1&&dn<=9){ setHot(dn-1); if(ev) ev.preventDefault(); }
   }
   if(code==='KeyQ'&&G&&!G.over&&!repeat) cycleThrow();
+  if(code==='KeyT'&&G&&!G.over&&!G.paused&&!repeat&&NET.on&&typeof netAidHold==='function') netAidHold();   // v16.84, his ask: T patches up a teammate in reach with your Bandage or Medkit, the pad Y; T was bound to nothing in a raid (H cycles the legend, X is the ring search)
   if(code==='KeyN'&&G&&!G.over&&!repeat&&NET.on) netPingMake();   // v16.43: ping for the party
   if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat) useHot();
   // ORDERS, v3.73, partner-merc line two. One key, three states, and the words
@@ -12418,7 +12419,18 @@ function pollPad(){
       padHold('KeyE',_xDown&&PAD.xMode==='KeyE'&&!_xSearch);   // in a ring with a box at his feet X still searches first (v13.48), below
       continue;
     }
-    if(hn===3){ padHold('KeyX',(pressed(3)&&!bagNav)||(_xDown&&PAD.xMode==='KeyE'&&_xSearch)); continue; }
+    // v16.84, HIS ASK: HOLD Y TO PATCH UP A TEAMMATE. On the press, with a teammate up top within reach (facing not needed), Y
+    // starts a heal for him (netAidHold: a Bandage under his 85, else a Medkit) and that hold does not search. When no heal
+    // starts (nobody in reach, he needs nothing, nothing to give) Y holds keyboard X, the ring search, as before, so a teammate
+    // standing beside you in the circle never blocks the search; the refusal line is kept quiet when there is a box to search.
+    // Decided on the press and kept for the hold, one start per press; PAD.prev is stamped after this loop, so the press is an edge.
+    if(hn===3){
+      var _yD=pressed(3)&&!bagNav;
+      if(_yD&&!PAD.prev[3]){ var _yA=false; try{ _yA=!!(NET.on&&!G.over&&typeof netAidHold==='function'&&netAidHold(!!G.nearContainer)); }catch(_ye){} PAD.yAid=_yA; }
+      if(!_yD) PAD.yAid=false;
+      padHold('KeyX',(_yD&&!PAD.yAid)||(_xDown&&PAD.xMode==='KeyE'&&_xSearch));
+      continue;
+    }
     // dpad down browses the bag rather than using medical while it is open
     padHold(PADHOLD[h], pressed(hn)&&!(bagNav&&hn===13));
   }
@@ -31361,7 +31373,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.83: KID FIRING FOR PLAYER 2. His order during his co-op session: a Settings row beside Kid mode, off out of the box, that player 2 usually turns on himself. With it on, player 2 aims at the nearest enemy in sight and in range and shoots by itself, and the moment he aims with the right stick himself it lets go and he aims, coming back half a second after he rests the stick. Player 1 is never changed. Check 16.83 fails on v16.82',
+  now:'v16.84: HOLD Y NEXT TO A TEAMMATE TO PATCH HIM UP. His ask during his co-op session: players need a way to heal each other with their items. Next to a teammate, Y on a controller or T on the keyboard uses the Bandage, Medkit or armour plate selected on your tactical belt on him, with the usual wind-up, and only that; with anything else selected it says to select one. With nobody in reach Y is the ring search as before. Check 16.84 fails on v16.83',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36293,18 +36305,39 @@ function netFxTake(peer,m){
 // and when that finishes it goes to him through the host ({t:'aid'}); his window applies it by his own rules (applyHeal, which
 // stops a Bandage at 85; a plate up to his armour cap). His health and armour ride in his state word, so a teammate who does not
 // need it is told so and nothing is spent; if he has walked off by the end, the item comes back to your backpack. No new number.
-function netAidTarget(p){
+function netAidTarget(p,any){   // v16.84: any set skips the facing test (the Y hold); the belt path still faces him
   var i, g, d, a, best=-1, bd=NET_REV_R+1;
   if(!p||p.downed||!netUpShared()) return -1;
   for(i=0;i<NET.up.length;i++){
     g=NET.up[i]; if(!netUpShown(g)||g.dn) continue;
     d=Math.hypot(g.x-p.x,g.y-p.y); if(d>NET_REV_R) continue;
     a=Math.atan2(g.y-p.y,g.x-p.x)-(p.face||0); a=Math.atan2(Math.sin(a),Math.cos(a));
-    if(Math.abs(a)<=0.8&&d<bd){ bd=d; best=g.seat; }
+    if((any||Math.abs(a)<=0.8)&&d<bd){ bd=d; best=g.seat; }
   }
   return best;
 }
-function netAidStart(s,key){
+// v16.84, HIS ASK IN TWO-PLAYER CO-OP ON ONE PC: HOW DOES PLAYER 2 HEAL PLAYER 1 WITH BANDAGES? HOLD Y. Y on a pad and T on the
+// keyboard, with a teammate up top within NET_REV_R (facing him is not needed, unlike the belt path), start a heal for him: a
+// Bandage from your backpack while he is under its 85, else a Medkit if you carry one and he is under full. It takes the belt
+// wind-up (netAidStart: the item leaves the backpack, startPrep runs, and at the end the aid word goes to his window, which
+// applies it by its own rules), and it is refused with a line when he needs nothing or you carry nothing; quiet set keeps that
+// line back (the pad Y beside a box to search). Returns true only when a wind-up started. Nothing new is spent or healed here;
+// no number moved.
+// v16.84, his rule: Y (T on the keyboard) uses the Bandage, Medkit or armour plate SELECTED on your tactical belt, and only that;
+// with anything else selected it says to select one, and nothing is spent.
+function netAidHold(quiet){
+  var p, s, nm, hs=null, key=null;
+  if(typeof G==='undefined'||!G||G.over||G.paused||G.sim||!G.player||!NET.on) return false;
+  p=G.player; if(p.downed||p.dying) return false;
+  s=netAidTarget(p,true); if(s<0) return false;
+  if(!NET.up[s]) return false;
+  nm=netSeatName(s)||'your teammate';
+  try{ hs=hotbarSlots()[hotSel()]; }catch(_hs){ hs=null; }
+  if(hs&&hs.kind==='heal') key=hs.icon;
+  else if(hs&&hs.kind==='armor') key='plate';
+  if(!key||!ITEMS[key]){ if(!quiet) say('Select a Bandage, a Medkit or a plate on your tactical belt to patch up '+nm+'.'); return false; }
+  return !!netAidStart(s,key);   // its own lines refuse a teammate who needs nothing, or an item you have none of
+}function netAidStart(s,key){
   var p=G.player, it=ITEMS[key], g=NET.up[s], nm=netSeatName(s)||'your teammate', bi, arm, ceil;
   if(!it||!g) return false;
   arm=(it.use==='armor');

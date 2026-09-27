@@ -1,0 +1,7 @@
+v16.84: hold y next to a teammate to patch him up with what your belt has selected
+
+HOLD Y NEXT TO A TEAMMATE TO PATCH HIM UP. His ask during his co-op session: players need a way to heal each other with their items. Next to a teammate, Y on a controller or T on the keyboard uses the Bandage, Medkit or armour plate selected on your tactical belt on him, with the usual wind-up, and only that; with anything else selected it says to select one. With nobody in reach Y is the ring search as before.
+
+Check 16.84. Fails on v16.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
