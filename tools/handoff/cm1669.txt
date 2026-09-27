@@ -1,0 +1,7 @@
+v16.69: nothing left open in the undercroft rides up into the raid
+
+NOTHING LEFT OPEN IN THE UNDERCROFT RIDES UP INTO THE RAID. Stability pass before a co-op session. A teammate with the pause box or his Undercroft backpack open when the host took the party up arrived with the pause box over the raid start, holding his controller, and the unseen backpack still open for the whole raid. Both now shut when a raid starts; a note typed in the box is kept as a floor note.
+
+Check 16.69. Fails on v16.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
