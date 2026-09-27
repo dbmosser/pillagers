@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.46';
+var VER='16.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12200,6 +12200,15 @@ function pollPad(){
     var _rr2=(PAD.reach===undefined?200:PAD.reach);
     mouse.x=psx+rx*_rr2*pz; mouse.y=psy+ry*_rr2*pz; mouse.init=true;
   }
+  // v16.47: A CONTROLLER PLACES A MAP MARKER. With the map open, the right stick moves a cursor across the map (from where you
+  // stand, the whole map in about two seconds) and a tap of D-UP places your marker there. The cursor takes over only once the
+  // stick moves, so a mouse on the same window keeps the map.
+  if(G&&!G.over&&G.mapOpen&&G.player&&(rx||ry||G.mapCur)){
+    var _mnow=netPadNow(), _mdt=Math.min(0.05,Math.max(0,_mnow-(PAD.mcT||_mnow))); PAD.mcT=_mnow;
+    if(!G.mapCur) G.mapCur={x:G.player.x,y:G.player.y};
+    G.mapCur.x=clamp(G.mapCur.x+rx*WORLD_W*0.5*_mdt,0,WORLD_W); G.mapCur.y=clamp(G.mapCur.y+ry*WORLD_W*0.5*_mdt,0,WORLD_H);
+    var _MPc=mapProj(); mouse.x=_MPc.ox+G.mapCur.x*_MPc.sc; mouse.y=_MPc.oy+G.mapCur.y*_MPc.sc; mouse.init=true;
+  } else if(G&&!G.mapOpen){ G.mapCur=null; PAD.mcT=0; }
 
   PAD.ax=ax;
   // v6.84: a panel on screen owns the pad. Checked before the hub and raid branches,
@@ -12338,7 +12347,7 @@ function pollPad(){
     if(du&&!PAD.prev[12]){ PAD.duAt=now; PAD.duHeld=0; }
     if(du&&PAD.duAt!=null&&!PAD.duHeld&&now-PAD.duAt>=0.4){ PAD.duHeld=1; G.mapOpen=!G.mapOpen; }
     if(!du&&PAD.prev[12]&&PAD.duAt!=null&&!PAD.duHeld&&G&&!G.over){
-      if(G.mapOpen) G.mapOpen=false; else if(NET.on&&NET.upSeed) netPingMake(); else G.mapOpen=true;
+      if(G.mapOpen&&G.mapCur) netWpFromMap(); else if(G.mapOpen) G.mapOpen=false; else if(NET.on&&NET.upSeed) netPingMake(); else G.mapOpen=true;   // v16.47: with the map cursor moved, a tap places the marker
     }
     if(!du) PAD.duAt=null;
   })();
@@ -31190,7 +31199,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.46: PING ON D-PAD UP, SHARED MAP MARKERS, DANGER PINGS. His orders: ping on d-pad up; a map marker the other player can see; read the Fortnite ping and map practice. Tap D-UP pings (solo: map as before), hold D-UP 0.4 s for the map; both bumpers no longer ping. The map marker (a click on the map, or a ping with the map open) is sent to the party and shown on their map and in the world with the owner name and distance, until cleared or replaced. A ping lasts 10 s, shows on the map too, and pressed twice becomes DANGER in red. Check 16.46 fails on v16.45',
+  now:'v16.47: A CONTROLLER PLACES A MAP MARKER. The gap left at v16.46: a controller could not place a map marker. With the map open the right stick now moves a cursor across the map and a tap of D-UP places the marker there, shared with the party as a mouse click is; a hold still shuts the map. A mouse on the same window keeps the map until the stick moves. Check 16.47 fails on v16.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36124,7 +36133,7 @@ function netWpFromMap(){
   if(!(mouse.x>=MP.ox&&mouse.x<=MP.ox+WORLD_W*MP.sc&&mouse.y>=MP.oy&&mouse.y<=MP.oy+WORLD_H*MP.sc)) return null;
   w=mapScreenToWorld(mouse.x,mouse.y);
   G.waypoint={x:clamp(w.x,0,WORLD_W),y:clamp(w.y,0,WORLD_H)};
-  blip('pick'); say('Marker placed. Your party can see it.');
+  blip('pick'); say((typeof NET==='object'&&NET&&NET.on)?'Marker placed. Your party can see it.':'Waypoint marked');
   netWpSend();
   return G.waypoint;
 }

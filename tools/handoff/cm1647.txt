@@ -1,7 +1,6 @@
-v16.47: frame rate at 4K
+v16.47: a controller places a map marker
 
-The darkness and fog of war layers are capped at 1920 wide and
-stretched onto the screen: unchanged at 1080p, a quarter of the
-fill work at 4K.
+With the map open the right stick moves a cursor and a D-UP tap
+places the shared marker there.
 
 Check 16.47. Fails on v16.46.

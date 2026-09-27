@@ -1,0 +1,1 @@
+| A CONTROLLER PLACES A MAP MARKER | v16.47 | GAP from v16.46. FIX: right stick moves a map cursor with the map open; D-UP tap places the shared marker. MEASURED: 16.47 passes, fails on v16.46 |

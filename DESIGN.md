@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.47 - A CONTROLLER PLACES A MAP MARKER
+
+The gap left at v16.46: a controller could not place a map marker. With the map open the right stick now moves a cursor
+across the map, starting where the player stands and crossing the whole map in about two seconds, and a tap of D-UP places
+the marker there, shared with the party exactly as a mouse click is. A hold of D-UP still shuts the map. The cursor takes
+over only once the stick moves, so a mouse on the same window keeps the map. In solo the line reads Waypoint marked.
+
+MEASURED. Check 16.47 passes and fails on v16.46.
 ## v16.46 - PING ON D-PAD UP, SHARED MAP MARKERS, DANGER PINGS
 
 His orders of 2026-09-27: ping on d-pad up; if a player sets a marker on the map, say how it meets the ping, and the other

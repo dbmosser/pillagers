@@ -1,12 +1,8 @@
-## v16.47 - FRAME RATE AT 4K
+## v16.47 - A CONTROLLER PLACES A MAP MARKER
 
-His note of 2026-09-27: see what you can do to improve frame rate without sacrificing anything; the game will be played mostly
-in 4K fullscreen. A 4K profile of a raid (headless Chromium at 3840x2160, tools/cloud/prof.mjs) puts nearly all the frame in
-canvas fill work, not script. Two of the full screen passes are the darkness sheet (litC) and the fog of war sheet (fogC): each
-is cleared, filled, cut with soft radial gradients and composited over the whole screen every frame. They were the size of the
-screen, so at 4K each was 8.3 million pixels. They are now capped at 1920 pixels wide (LSC, the layer scale) and stretched as
-they are drawn onto the world, so at 1080p nothing changes and at 4K both layers fill a quarter of the pixels. The layers are
-soft by nature; the only visible edge is the fog line along walls, which at 4K is drawn at 1080p detail.
+The gap left at v16.46: a controller could not place a map marker. With the map open the right stick now moves a cursor
+across the map, starting where the player stands and crossing the whole map in about two seconds, and a tap of D-UP places
+the marker there, shared with the party exactly as a mouse click is. A hold of D-UP still shuts the map. The cursor takes
+over only once the stick moves, so a mouse on the same window keeps the map. In solo the line reads Waypoint marked.
 
-MEASURED. Check 16.47 passes and fails on v16.46. Headless frame time at 3840x2160 before and after is in the audit row; the
-headless browser has no GPU, so the absolute numbers are slower than his PC and only the change is meaningful.
+MEASURED. Check 16.47 passes and fails on v16.46.

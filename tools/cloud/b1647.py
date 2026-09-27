@@ -1,48 +1,40 @@
 import os, gen
 from gen import patch, fixture
 patch(1647, [
-("""  fogC.width=W; fogC.height=H;
-  litC.width=W; litC.height=H;""",
-"""  // v16.47, HIS NOTE (frame rate at 4K, lose nothing): the darkness and fog sheets are soft gradients, drawn and composited every
-  // frame at full size. They are capped at 1920 pixels wide and stretched on the way in, so 1080p is unchanged and 4K fills a
-  // quarter of the pixels on both layers.
-  LSC=Math.min(1,1920/Math.max(1,W));
-  fogC.width=Math.round(W*LSC); fogC.height=Math.round(H*LSC);
-  litC.width=Math.round(W*LSC); litC.height=Math.round(H*LSC);"""),
-("""var fogC=document.createElement('canvas'),fx2=fogC.getContext('2d');""",
-"""var fogC=document.createElement('canvas'),fx2=fogC.getContext('2d'), LSC=1;   // v16.47: the scale of the two light layers"""),
-("""  // lighting overlay
-  lx2.globalCompositeOperation='source-over';""",
-"""  // lighting overlay
-  lx2.setTransform(LSC,0,0,LSC,0,0);   // v16.47
-  lx2.globalCompositeOperation='source-over';"""),
-("""  // warm light overlay, no fog: this is home
-  lx2.globalCompositeOperation='source-over';""",
-"""  // warm light overlay, no fog: this is home
-  lx2.setTransform(LSC,0,0,LSC,0,0);   // v16.47
-  lx2.globalCompositeOperation='source-over';"""),
-("""  lx2.setTransform(Z,0,0,Z,-ox*Z,-oy*Z);""", """  lx2.setTransform(Z*LSC,0,0,Z*LSC,-ox*Z*LSC,-oy*Z*LSC);   // v16.47"""),
-("""  fx2.setTransform(Z,0,0,Z,-ox*Z,-oy*Z);""", """  fx2.setTransform(Z*LSC,0,0,Z*LSC,-ox*Z*LSC,-oy*Z*LSC);   // v16.47"""),
-("""  lx2.setTransform(1,0,0,1,0,0);
-  wc.drawImage(litC,0,0);""",
-"""  lx2.setTransform(LSC,0,0,LSC,0,0);
-  wc.drawImage(litC,0,0,W,H);   // v16.47: stretched back to the screen"""),
-("""  fx2.setTransform(1,0,0,1,0,0);""", """  fx2.setTransform(LSC,0,0,LSC,0,0);   // v16.47"""),
-("""wc.drawImage(fogC,0,0);""", """wc.drawImage(fogC,0,0,W,H);   // v16.47: stretched back to the screen"""),
-("""  wc.drawImage(litC,0,0);""", """  wc.drawImage(litC,0,0,W,H);   // v16.47"""),
-], "FRAME RATE AT 4K. His note: improve the frame rate without losing anything; he plays at 4K. The darkness and fog of war sheets are soft gradients filled and composited over the whole screen every frame. They are now capped at 1920 pixels wide and stretched as they are drawn, so 1080p is unchanged and at 4K both layers fill a quarter of the pixels. Check 16.47 fails on v16.46",
-"# FRAME RATE AT 4K (his note: faster, lose nothing).\n")
-fixture(1647, r"""  {v:'16.47',what:'frame rate at 4K: the darkness and fog sheets are capped at 1920 wide and drawn stretched to the screen',
+("""    mouse.x=psx+rx*_rr2*pz; mouse.y=psy+ry*_rr2*pz; mouse.init=true;
+  }""",
+"""    mouse.x=psx+rx*_rr2*pz; mouse.y=psy+ry*_rr2*pz; mouse.init=true;
+  }
+  // v16.47: A CONTROLLER PLACES A MAP MARKER. With the map open, the right stick moves a cursor across the map (from where you
+  // stand, the whole map in about two seconds) and a tap of D-UP places your marker there. The cursor takes over only once the
+  // stick moves, so a mouse on the same window keeps the map.
+  if(G&&!G.over&&G.mapOpen&&G.player&&(rx||ry||G.mapCur)){
+    var _mnow=netPadNow(), _mdt=Math.min(0.05,Math.max(0,_mnow-(PAD.mcT||_mnow))); PAD.mcT=_mnow;
+    if(!G.mapCur) G.mapCur={x:G.player.x,y:G.player.y};
+    G.mapCur.x=clamp(G.mapCur.x+rx*WORLD_W*0.5*_mdt,0,WORLD_W); G.mapCur.y=clamp(G.mapCur.y+ry*WORLD_W*0.5*_mdt,0,WORLD_H);
+    var _MPc=mapProj(); mouse.x=_MPc.ox+G.mapCur.x*_MPc.sc; mouse.y=_MPc.oy+G.mapCur.y*_MPc.sc; mouse.init=true;
+  } else if(G&&!G.mapOpen){ G.mapCur=null; PAD.mcT=0; }"""),
+("""      if(G.mapOpen) G.mapOpen=false; else if(NET.on&&NET.upSeed) netPingMake(); else G.mapOpen=true;""",
+"""      if(G.mapOpen&&G.mapCur) netWpFromMap(); else if(G.mapOpen) G.mapOpen=false; else if(NET.on&&NET.upSeed) netPingMake(); else G.mapOpen=true;   // v16.47: with the map cursor moved, a tap places the marker"""),
+("""  blip('pick'); say('Marker placed. Your party can see it.');""",
+"""  blip('pick'); say((typeof NET==='object'&&NET&&NET.on)?'Marker placed. Your party can see it.':'Waypoint marked');"""),
+], "A CONTROLLER PLACES A MAP MARKER. The gap left at v16.46: a controller could not place a map marker. With the map open the right stick now moves a cursor across the map and a tap of D-UP places the marker there, shared with the party as a mouse click is; a hold still shuts the map. A mouse on the same window keeps the map until the stick moves. Check 16.47 fails on v16.46",
+"# A CONTROLLER PLACES A MAP MARKER (the gap left at v16.46).\n")
+fixture(1647, r"""  {v:'16.47',what:'a controller places a map marker: the right stick moves a map cursor and a D-UP tap places the marker there',
    run:function(){
-     if(typeof LSC!=='number') return 'the light layers are drawn at full size at any resolution';
-     if(!(W>0)) return 'SKIP: no screen';
-     var want=Math.min(1,1920/W);
-     if(Math.abs(LSC-want)>1e-6) return 'the layer scale is '+LSC+' at '+W+' wide, not '+want;
-     if(Math.abs(fogC.width-Math.round(W*LSC))>1||Math.abs(litC.width-Math.round(W*LSC))>1) return 'the layers are '+fogC.width+' and '+litC.width+' wide, not '+Math.round(W*LSC);
      var src='', i;
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
-     if(src.indexOf('wc.drawImage(fogC,0,0,W,H);')<0||src.indexOf('wc.drawImage(litC,0,0,W,H);')<0) return 'a layer is not stretched back to the screen';
-     if((src.match(/drawImage\((fogC|litC),0,0\);/g)||[]).length) return 'a layer is still drawn at its own size';
+     if(src.indexOf('if(G&&!G.over&&G.mapOpen&&G.player&&(rx||ry||G.mapCur)){')<0) return 'the right stick does not move a map cursor';
+     if(src.indexOf('if(G.mapOpen&&G.mapCur) netWpFromMap();')<0) return 'a D-UP tap does not place the marker at the map cursor';
+     if(typeof netWpFromMap!=='function'||typeof mapProj!=='function') return 'no map marker path';
+     var kG=G, oS=say, oB=blip, r;
+     try{
+       say=function(){}; blip=function(){};
+       var MP=mapProj(); G={waypoint:null};
+       mouse.x=MP.ox+100*MP.sc; mouse.y=MP.oy+200*MP.sc;
+       r=netWpFromMap();
+     } finally { G=kG; say=oS; blip=oB; }
+     if(!r||Math.abs(r.x-100)>2||Math.abs(r.y-200)>2) return 'the marker did not land under the map cursor ('+JSON.stringify(r)+')';
      return null; }},
 """)
