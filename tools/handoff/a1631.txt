@@ -1,0 +1,1 @@
+| CHECK 15.24 FOLLOWS HIS NEWER NOTE | v16.31 | CORRECTION: v16.30 shipped with check 15.24 failing (it demanded the clock alarm be louder than the machine alarm); its notes said it passed. FIX: 15.24 now requires the quieter level; the warning stays distinct by its three sweeps. MEASURED: 15.24, 16.30, 16.31 pass |

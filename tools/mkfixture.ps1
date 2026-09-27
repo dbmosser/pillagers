@@ -5721,6 +5721,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.31',what:'check 15.24 follows his newer note: the clock warning is distinct by its three rising sweeps and quieter than the old .12',
+   run:function(){
+     var src='', i;
+     try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
+     var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
+     if(src.indexOf("v16.31: the warning keeps its own rising shape")<0) return 'this build does not carry the v16.31 note';
+     if(src.indexOf("for(var cwi=0;cwi<3;cwi++)")<0) return 'the clock warning lost its three sweeps';
+     return null; }},
   {v:'16.30',what:'quieter clock alarms and inbound: the clock warning plays a triangle tone at .04, the tick at .03, and the extraction banner says INBOUND',
    run:function(){
      var src='', i;
@@ -13624,7 +13632,7 @@ window.__REGRESS=[
        if(Math.abs(al-0.06)>0.0005) return skip('the machine alarm started at '+al+', not 0.06, so a level cannot be read here');
        LOG.length=0; BL('clockwarn'); var cw=loud(), cwv=voices();
        if(!cwv) bad.push('the clock siren makes no sound at all');
-       else if(!(cw>=al*1.5)) bad.push('the clock siren starts at '+cw+', not clearly louder than the machine alarm at '+al);
+       else if(!(cw>0&&cw<0.12)) bad.push('the clock siren starts at '+cw+', not the quieter level of his v16.30 note (under the old 0.12)');   // v16.31: distinct by its rising sweeps, no longer by loudness
        LOG.length=0; BL('clocktick');
        if(!voices()) bad.push('the clock tick makes no sound at all');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }

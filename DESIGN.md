@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.31 - CHECK 15.24 FOLLOWS HIS NEWER NOTE
+
+Correction. v16.30 made the clock alarms quieter on his note of 2026-09-27, but check 15.24 (his v15.24 note: the clock warning must
+not pass for a machine) required the warning to be at least one and a half times louder than the machine alarm, so it failed, and
+v16.30 shipped with it failing while its notes said it passed. The warning stays distinct by its three rising sweeps, which nothing
+else plays; check 15.24 now requires the quieter level of his newer note instead of loudness. A comment in tickClockWarn records it.
+
+MEASURED. Checks 15.24, 16.30 and 16.31 pass.
+
 ## v16.30 - QUIETER CLOCK ALARMS, AND INBOUND
 
 His notes of 2026-09-27: the 5-minutes-left alarm and the rest were far too loud; and use inbound, not incoming. The raid clock

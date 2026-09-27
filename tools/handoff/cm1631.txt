@@ -1,0 +1,7 @@
+v16.31: check 15.24 follows his newer note
+
+v16.30 shipped with check 15.24 failing: it still demanded the clock
+alarm be louder than the machine alarm. The warning stays distinct by
+its three rising sweeps; the check now reads his quieter level.
+
+Check 16.31. Fails on v16.30.
