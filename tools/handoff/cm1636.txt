@@ -1,0 +1,7 @@
+v16.36: player 2 first contact
+
+First contact was stamped only by the host AI, for the host, even
+when an enemy went for player 2. The host now tells that seat.
+Live test: player 2 shots hit, damage the host body and credit the kill.
+
+Check 16.36. Fails on v16.35.

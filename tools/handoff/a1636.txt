@@ -1,0 +1,1 @@
+| PLAYER 2 FIRST CONTACT | v16.36 | HIS PRINCIPLE: P2 equals P1. FOUND: P2 firstContact always none (stamped only by host AI, for the host). FIX: host sends the targeted seat a contact word. Live test: P2 shots hit, damage the host body, and credit the kill. MEASURED: 16.36 passes, fails on v16.35 |

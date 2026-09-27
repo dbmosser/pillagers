@@ -1431,7 +1431,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.35';
+var VER='16.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18651,7 +18651,9 @@ var _rdS=G.shells[_rdi];
       // v11.46: ONCE per acquisition, not every frame. Re-flooring each frame kept
       // a man in extract from ever reaching cd 0, so he never fired at all.
       if(e.kind==='raider'&&e.state!=='chase'&&!e.beat){ e.cd=Math.max(e.cd,e.react||0.5); e.beat=1; }
-      if(e.state!=='chase'&&T.firstContact===null) T.firstContact=G.t;
+      // v16.36, HIS PRINCIPLE (player 2 equals player 1): first contact is stamped for the player this body went for. A body that
+      // went for one of the party tells that seat; before this the host stamped it for itself and player 2 always read none.
+      if(e.state!=='chase'){ if(p&&p.net) netContactSend(p.seat); else if(T.firstContact===null) T.firstContact=G.t; }
       // The shout. Only on the transition, and only from things that have a
       // radio: raiders already have their own flanking and the neutrals have
       // nobody to call.
@@ -31145,7 +31147,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.35: A SECOND CONTROLLER GOES TO PLAYER 1. His rule: player 1 plays keyboard and mouse, player 2 takes the first controller, and a second controller goes to player 1. The host with no pick played no pad at all; it now plays the first connected pad player 2 is not on, in front or handed over. A pick on the CONTROLLER row still wins. Check 15.77 restaged on the two lines that asserted the old rule. Check 16.35 fails on v16.34',
+  now:'v16.36: PLAYER 2 FIRST CONTACT. His run reports showed player 2 at firstContact none in every co-op raid: first contact was stamped where the host AI picks its target, which never runs on player 2, and it stamped the host even when the enemy went for player 2. The host now tells the seat an enemy went for, once a raid, and that seat stamps its own. The live two window test now also has player 2 shoot a host body for real: hits, damage and the kill credit all reach player 2. Check 16.36 fails on v16.35',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34871,6 +34873,7 @@ function netOnMsg0(peer,data){
   if(m.t==='hit') return netHitTake(peer,m);   // v15.80: a blow on this player, from the host, taken through its own damagePlayer
   if(m.t==='shot') return netShotTake(peer,m);   // v15.80: a round, blade or charge from one of the party on a body the host runs
   if(m.t==='kill') return netKillTake(peer,m);   // v15.80: a kill credited to this seat, from the host
+  if(m.t==='contact') return netContactTake(peer,m);   // v16.36: an enemy went for this seat first, from the host
   if(m.t==='fx') return netFxTake(peer,m);   // v16.21: a round or a sound from one of the party, to draw and play
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
@@ -36714,6 +36717,23 @@ function netRevApply(by){
   blip('pick'); say('Revived by '+(netSeatName(by)||'a teammate')+'.');
   label(p.x,p.y-22,'REVIVED','#4de3d0',0,true);
   return 'up';
+}
+// v16.36: THE HOST tells a seat, once a raid, that an enemy first went for it; THE SEAT stamps its own first contact.
+function netContactSend(s){
+  var q;
+  if(!NET.on||NET.role!=='host'||typeof s!=='number') return false;
+  if(!G.netContact) G.netContact={};
+  if(G.netContact[s]) return false;
+  q=netPeerOfSeat(s); if(!q) return false;
+  G.netContact[s]=1;
+  return netSend(q,{t:'contact',seat:s});
+}
+function netContactTake(peer,m){
+  if(!peer||peer.state!=='in'||NET.role!=='join') return 'ignored';
+  if(typeof G==='undefined'||!G||G.sim||!G.tel) return 'down';
+  if(typeof m.seat==='number'&&m.seat!==NET.seat) return 'ignored';
+  if(G.tel.firstContact===null) G.tel.firstContact=G.t;
+  return 'contact';
 }
 function netKillTake(peer,m){
   var e, k, T, rr2;

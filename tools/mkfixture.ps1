@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.36',what:'player 2 first contact: the host tells the seat an enemy went for, and that seat stamps its own first contact',
+   run:function(){
+     if(typeof netContactTake!=='function'||typeof netContactSend!=='function') return 'this build never tells a seat its first contact';
+     var keepG=G, keepR=NET.role, keepS=NET.seat, r1, r2, fc1, fc2;
+     try{
+       G={t:42,sim:false,tel:{firstContact:null}}; NET.role='join'; NET.seat=1;
+       r1=netContactTake({state:'in'},{t:'contact',seat:1}); fc1=G.tel.firstContact;
+       G.t=50; r2=netContactTake({state:'in'},{t:'contact',seat:1}); fc2=G.tel.firstContact;
+     } finally { G=keepG; NET.role=keepR; NET.seat=keepS; }
+     if(r1!=='contact'||fc1!==42) return 'the seat did not stamp its first contact ('+r1+', '+fc1+')';
+     if(fc2!==42) return 'a second word moved the first contact to '+fc2;
+     var src='', i;
+     try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
+     var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
+     if(src.indexOf("if(p&&p.net) netContactSend(p.seat); else if(T.firstContact===null) T.firstContact=G.t;")<0) return 'the host still stamps its own first contact when an enemy goes for a teammate';
+     return null; }},
   {v:'16.35',what:'his controller rule: player 2 takes the first controller and a second controller goes to player 1, who otherwise plays keyboard and mouse',
    run:function(){
      if(typeof netPadFor!=='function'||typeof netPadWant!=='function'||typeof NET==='undefined') return 'SKIP: this build has no same machine controllers';

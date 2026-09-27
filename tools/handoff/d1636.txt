@@ -1,0 +1,12 @@
+## v16.36 - PLAYER 2 FIRST CONTACT
+
+His principle of 2026-09-27: in gameplay player 2 equals player 1 in every way. His v16.25 run reports showed player 2 at
+firstContact none after 339 s of co-op with 24 shots fired. First contact is stamped where the host AI turns a body onto its
+target, which never runs on player 2, and it stamped the host even when the body went for player 2. The host now sends that seat
+a contact word once a raid and the seat stamps its own first contact; the host stamps only contacts aimed at the host.
+
+The live two window test (tools/nettest.html) now has player 2 shoot a host body with real mouse clicks on its own canvas: the
+rounds hit, the body loses health on the host, and the kill reaches player 2's tally (measured: 6 rounds, 4 hits, 1 kill). His
+0 percent came from rounds that never met a body, not from rounds that failed to count.
+
+MEASURED. Check 16.36 passes and fails on v16.35. Live net test PASS.
