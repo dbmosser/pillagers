@@ -52,7 +52,7 @@ numbers both ways, bandages and plates on a teammate, split speakers. NEXT, in o
 4. A kill feed: NAME killed CRAWLER.
 5. [done v16.26] A downed teammate on the HUD with his bleed-out time.
 6. An end-of-raid party summary: each player's kills, loot, out or not.
-7. The what is new card refresh (overdue: WHATSNEW_VER 16.12).
+7. [done v16.33] The what is new card refresh.
 HIS NOTES 2026-09-27, in this order ahead of 2 to 4 and 6 (target: 4K fullscreen; test at 3840x2160):
 a. [done v16.27] Pause when every player is paused; Superhot runs while either acts; teammate rows off the belt.
 HIS PRINCIPLE 2026-09-27: in gameplay player 2 must equal player 1 in every way. Asked him: rebuild the core for two real players in
@@ -61,8 +61,8 @@ CONTROLLERS (his rule): player 1 plays mouse and keyboard; player 2 takes the fi
 P2 SHOTS: his run reports (v16.25) show player 2 fired 24 shots at 0% accuracy, 0 kills, firstContact none in 339 s of co-op: check
    in a live nettest step that player 2's rounds hit the host's bodies, count as hits, and kill.
 P2. PLAYER 2 FIRST (his notes, 2026-09-27 night): (i) [done v16.29] player 2 hears no audio at all: make SPLIT SPEAKERS the default for a same
-   machine pair so both windows play (P1 left, P2 right); (ii) player 2's looting shows no item names (the loot word path,
-   netLootTake, should give the same labels and Took lines as a local search); (iii) player 2's CURRENT PILLAGERS board is broken
+   machine pair so both windows play (P1 left, P2 right); (ii) [done v16.32: Took lines already reached P2 (live test); the items-left count did not] player 2's looting shows no item names (the loot word path,
+   netLootTake, should give the same labels and Took lines as a local search); (iii) [done v16.34, live test PASS] player 2's CURRENT PILLAGERS board is broken
    (it is built from bodies the host runs: names and values must come across); (iv) 'extract incoming' wording: use INBOUND.
 b. [done v16.28] The HP bar can be folded or pushed under the belt: the vitals block must never fold, and the belt must fit around the vitals
    and gear blocks as the player has sized and moved them (hudUserZ, hudOff), shrinking slots rather than overlapping.

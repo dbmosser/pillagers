@@ -479,6 +479,9 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       return Promise.all([held,watch]);
     }).then(function(){
       var vc2=C.__net.cont(), va2=A.__net.cont(), bc=itemsC()-itC0, a=boxOf(fa,box.cid);
+      (function(){ var g=C.__state(), nb=(g&&g.netBoard)||null, live=0, k; if(nb) for(k=0;k<nb.length;k++) if(!nb[k].out&&nb[k].st!=='DEAD') live++;
+        log('board: C holds '+(nb?nb.length:'no')+' host board rows, '+live+' still out there'+(nb&&nb[0]?(', first '+JSON.stringify(nb[0])):''));
+        if(!nb||!nb.length) bad.push('board: C holds no host board rows'); else if(!live) bad.push('board: every host row reads out or dead on C'); })();
       rep.lootMsgs=msgs; log('loot: C read these lines while it searched: '+JSON.stringify(msgs));
       if(!msgs.some(function(q){ return (/^Took /).test(q); })) bad.push('loot: C never read a Took line naming what it pulled');
       rep.lootItems=bc; rep.lootMs=Math.max(Math.abs(tA-tBag),Math.abs(tC-tBag),Math.abs(tA-tC));
