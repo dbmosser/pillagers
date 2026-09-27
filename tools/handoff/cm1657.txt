@@ -1,0 +1,9 @@
+v16.57: a paused party is paused while the host spectates
+
+While the host watched after leaving the raid, a teammate who paused saw
+his screen stop while the pillagers went on shooting him. With every
+teammate paused the kept raid now stands still.
+
+Check 16.57. Fails on v16.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

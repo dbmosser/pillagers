@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.56';
+var VER='16.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31217,7 +31217,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.56: A SPECTATING HOST HAS NO BODY IN THE RAID. Stability pass before a co-op session. When the host died or extracted and stayed on to watch the party, his player was left where he stood and still stopped enemy rounds: red numbers on empty ground for his teammate and rounds that stopped short. Rounds now pass where he stood. Check 16.56 fails on v16.55',
+  now:'v16.57: A PAUSED PARTY IS PAUSED WHILE THE HOST SPECTATES. Stability pass before a co-op session. His rule is that the game pauses whenever every player is paused. While the host watched after leaving the raid, the raid kept running for the party whatever they did, so a teammate who paused saw his screen stop while the pillagers went on shooting him and the clock ran down. Now with every teammate paused the raid stands still. Check 16.57 fails on v16.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36615,14 +36615,21 @@ function netSpecTick(dt){
   if(!n||!netInCount()){ NET.specIdle=(NET.specIdle||0)+dt; if(NET.specIdle>1.5||!netInCount()) return netSpecEnd(); }
   else NET.specIdle=0;
   if(!isFinite(dt)||dt<0) dt=0;
+  // v16.57, stability (co-op review): his rule of v16.27 is that the game pauses whenever every player is paused. While the
+  // host spectated, this ran the kept raid whatever the party did, so a teammate who paused saw his own screen stop while the
+  // pillagers on the host went on shooting him and the clock ran down. With every teammate up top paused the world stands still;
+  // the words still go out.
+  var wdt=dt, _pzAll=true;
+  for(i=0;i<NET.up.length;i++) if(netUpShown(NET.up[i])&&!NET.up[i].pz) _pzAll=false;
+  if(_pzAll) wdt=0;
   G=S; NET.specTick=true;
   try{
-    G.t+=dt; if(raidClockOn()) G.timeLeft=Math.max(0,G.timeLeft-dt);
-    refreshVseg(); updateEnts(dt); updateBullets(dt); updateThrowables(dt);
+    G.t+=wdt; if(raidClockOn()) G.timeLeft=Math.max(0,G.timeLeft-wdt);
+    refreshVseg(); updateEnts(wdt); updateBullets(wdt); updateThrowables(wdt);
     // v16.53, stability (co-op review): the host runs every search the party holds, but only in netUpTick, which stops once
     // the host run is over. So after the host died or extracted, a teammate search was granted and never moved: the bar
     // filled and nothing came out, on every box for the rest of the raid.
-    netSrchTick(dt);
+    netSrchTick(wdt);
     NET.specAcc=(NET.specAcc||0)+dt;
     if(NET.specAcc>=NET_HUB_STEP){ NET.specAcc=0; NET.upN++; netEntsTick(); netContTick(); if(NET.upN%5===0) netWorldSend(); }
   }catch(e){}

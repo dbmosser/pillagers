@@ -40024,6 +40024,16 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.57 - A PAUSED PARTY IS PAUSED WHILE THE HOST SPECTATES
+
+Stability pass before his co-op session. His rule of v16.27 is that the game pauses whenever every player is paused. While
+the host spectated (v16.14), netSpecTick ran the kept raid whatever the party did, so a teammate who paused saw his own
+screen stop while the pillagers on the host went on shooting him and the clock ran down. With every teammate up top paused
+the kept world now steps with 0 (clock, enemies, rounds, throwables, searches); the words still go out.
+
+Tests only: the welcome pack news (13.34) ages off the card once a later card replaces v16.33.
+
+MEASURED. Check 16.57 passes, and fails on v16.56. Not verified: live in two windows.
 ## v16.56 - A SPECTATING HOST HAS NO BODY IN THE RAID
 
 Stability pass before his co-op session. When the host died or extracted and stayed on to watch the party (v16.14), his

@@ -1,0 +1,1 @@
+| A PAUSED PARTY IS PAUSED WHILE THE HOST SPECTATES | v16.57 | STABILITY (co-op review 2026-09-27). FIX: netSpecTick steps the world with 0 when every shown teammate reports pz. 13.34 SKIPs once the card moves past v16.33. MEASURED: 16.57 passes, fails on v16.56 |
