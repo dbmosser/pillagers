@@ -43,7 +43,18 @@ replaces them.
    16.53 searches run while the host spectates; 16.54 card refresh plus stale checks retargeted; 16.55 a teammate on the
    run card goes up with the party; 16.56 a spectating host has no body; 16.57 a paused party is paused while the host
    spectates; 16.58 B backs out of map, backpack and stall; 16.59 a spectate fault goes to the run report; 16.60 every run
-   report says Window: player 1 or player 2 (collector names files -fff and -p2); 16.61 ping twice marks danger.
+   report says Window: player 1 or player 2 (collector names files -fff and -p2); 16.61 ping twice marks danger;
+   16.62 player 2 cannot revive a host-run pillager copy (gun duplicate); 16.63 spectating host takes no damage at all;
+   16.64 spectating host still hosting (leave warning, Settings grey); 16.65 three player-text lines (PARTY subtitle,
+   RACKS not WARDROBE, kit line); 16.66 B never closes a hidden floor backpack in a raid; 16.67 player 2 keeps hearing
+   enemies after the host leaves his card; 16.68 a pick-up is called revived only once it took; 16.69 nothing open in the
+   Undercroft rides up; 16.70 NET.up ages while the host spectates from the Undercroft; 16.71 card refresh. FROZEN at
+   16.71 for his 12:15 session. Found by three workflows (review of my builds: 0 confirmed; hunt: 3 confirmed; drafts).
+   NEXT after his session: tools/handoff/drafts/p2-equip-2026-09-27.json (a pad cannot equip a gun from the stash; a
+   reviewed 6-edit draft, review said not ok as is: re-review before use; generate with drafts/gen-draft.ps1 -Key after
+   copying the json to the scratchpad as draft-KEY.json); check 16.59 is order-sensitive in a batch (its P0 profile handle
+   is taken before __runPrep); split review items: pause note not banked at G.over (12448), netSpecTick noteCrash with G
+   swapped, tuning console hotkey in a raid, PAD.on left by checks 16.49/16.58.
    HIS PLAY SETUP (his order 10:20): he plays co-op on http://localhost:8802/dark_raiders.html (his saves; no-store, so a
    refresh loads the newest build), two windows through the mode menu; both windows post run reports to the collector on
    :8799 into exports/ (run-...-p2.txt is player 2). tools/watch-exports.ps1 in the background wakes the session on each
