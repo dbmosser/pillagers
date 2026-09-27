@@ -1,4 +1,11 @@
-# CLOUD BRIEF (read first in a cloud session)
+# CLOUD BRIEF (read first in a cloud session, and in the PC session that takes over)
+
+## MOVED BACK TO HIS PC (2026-09-27 12:50 UTC, at v16.47)
+He asked for the work to run on his PC. The cloud session stopped at v16.47 (commit 3e099b5) with its hourly routine paused.
+A session on his PC: git pull first, read this whole file, then keep working the queue below with the Windows flow in
+'Ship flow' (dryrun.ps1, parsecheck, ship.sh, push). His rules below all still bind, including BUDGETS. The cloud tools in
+tools/cloud are Linux only; tools/cloud/prof.mjs (the 4K profiler) runs anywhere Node and Playwright are installed, and the
+unshipped 4K layer cap needs a measurement on his real GPU before it ships (see item g).
 
 Written 2026-09-26 when the session moved to the cloud. The local session kept these facts in private memory the cloud cannot see.
 
