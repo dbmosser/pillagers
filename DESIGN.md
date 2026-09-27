@@ -40024,6 +40024,14 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.51 - THE PAUSE BOX SHUTS WHEN A CO-OP RAID ENDS UNDER IT
+
+Stability pass before his co-op session. In a shared raid the pause box does not stop the world, so a teammate who pressed
+Start while downed could bleed out (or the host leave, or the clock run out) with it open. endRaid asked the box to shut
+and togglePauseBox refused on G.over, so the box sat over the end of raid card, and padOpenModal drives the box before the
+card: a controller player could not leave the card. An ended raid now refuses only an opening of the box.
+
+MEASURED. Check 16.51 passes, and fails on v16.50. Not verified: live in two windows.
 ## v16.50 - IN A RAID, SETTINGS GREYS OUT THE BUTTONS THAT LEAVE THE RAID
 
 Stability pass before his co-op session. Settings opens in a raid since v16.45, and three of its buttons do not belong

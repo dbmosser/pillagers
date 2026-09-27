@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.51',what:'the pause box shuts when a raid ends under it, so the end of raid card is what a controller drives; an ended raid still refuses to open the box',
+   run:function(){
+     if(typeof togglePauseBox!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no pause box to test';
+     var pb=document.getElementById('pausebox'), oc=document.getElementById('outcome'), bad=[];
+     if(!pb) return 'SKIP: there is no pause box in this document';
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       togglePauseBox(true);
+       if(!pb.classList.contains('on')) return 'SKIP: staging: the pause box did not open in a raid';
+       __endRaid('dead');
+       if(pb.classList.contains('on')) bad.push('the raid ended with the pause box open and the box stayed over the end of raid card');
+       if(oc&&!oc.classList.contains('on')&&getComputedStyle(oc).display==='none') bad.push('control: no end of raid card came up');
+       togglePauseBox(true);
+       if(pb.classList.contains('on')) bad.push('an ended raid opened the pause box');
+     } finally { try{ togglePauseBox(false); }catch(e){} try{ __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.50',what:'in a raid Settings greys out PICK FILE, UNDO and the tuning console OPEN, which reload the window or open what a controller cannot shut; in the Undercroft they work',
    run:function(){
      if(typeof renderSettings!=='function'||!window.__deploy||!window.__endRaid||!window.__hubEnter) return 'SKIP: this build cannot render Settings here';

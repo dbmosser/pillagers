@@ -1,0 +1,1 @@
+| THE PAUSE BOX SHUTS WHEN A CO-OP RAID ENDS UNDER IT | v16.51 | STABILITY (controller audit 2026-09-27). FIX: togglePauseBox refuses only on at G.over, so endRaid shuts the box. MEASURED: 16.51 passes, fails on v16.50 |

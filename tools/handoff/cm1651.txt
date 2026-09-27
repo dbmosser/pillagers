@@ -1,0 +1,10 @@
+v16.51: the pause box shuts when a co-op raid ends under it
+
+In a shared raid the box does not stop the world; a teammate who bled
+out with it open was left with the box over the end of raid card and a
+controller that could not reach the card. An ended raid now refuses only
+an opening.
+
+Check 16.51. Fails on v16.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

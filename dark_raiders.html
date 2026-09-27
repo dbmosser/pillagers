@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.50';
+var VER='16.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12419,7 +12419,10 @@ function togglePauseBox(on){
   // v8.70, HIS REPORT: ESC pauses in the Undercroft too. This returned on the
   // spot whenever there was no raid, so the floor had no pause at all. syncPause
   // already guards its own write with if(G), so nothing below needs a raid.
-  if(G&&G.over) return;
+  // v16.51, stability: an ended raid refuses only an OPENING. In a shared raid the box does not stop the world, so a teammate
+  // who pressed Start while downed could bleed out (or the host leave, or the clock run out) with it open; endRaid then asked
+  // it to shut and this line refused, leaving the box over the outcome card, and a controller drove the box, not the card.
+  if(on&&G&&G.over) return;
   if(!G&&state!=='hub') return;
   pauseOpen=on;
   // v11.72: a note typed on the floor has no raid to attach to. It used to sit
@@ -31204,7 +31207,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.50: IN A RAID, SETTINGS GREYS OUT THE BUTTONS THAT LEAVE THE RAID. Stability pass before a co-op session. Settings opens in a raid since v16.45, and three of its buttons do not belong there: PICK FILE opens a file window a controller cannot shut, a restore or its UNDO reloads the window (a teammate drops out of the party and loses the run), and the tuning console can change the game settings mid raid. In a raid they are greyed out; in the Undercroft they work as before. Check 16.50 fails on v16.49',
+  now:'v16.51: THE PAUSE BOX SHUTS WHEN A CO-OP RAID ENDS UNDER IT. Stability pass before a co-op session. In a shared raid the pause box does not stop the world, so a teammate could bleed out, or the host leave, with it open. The raid end asked the box to shut and it refused, so it sat over the end of raid card and a controller could not reach the card. An ended raid now refuses only an opening of the box. Check 16.51 fails on v16.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
