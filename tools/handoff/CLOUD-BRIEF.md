@@ -46,11 +46,11 @@ v16.11 to v16.14: backcheck fixes and the host spectates. HIS ORDER 2026-09-26: 
 HIS ORDER: never stop working. An hourly routine (trig_01Nqmjg7sDVCub7Yr9NkN2Se) wakes this session; it stops itself at $190 of
 session spend (his $200 credit). Shipped v16.20 to v16.25: party pause, tracers and sounds shared, revive bar, teammate damage
 numbers both ways, bandages and plates on a teammate, split speakers. NEXT, in order (mark each [done vX.YY] when shipped):
-1. Teammate health and armour bars on the HUD (from the state word hp/mh/ar/ac).
+1. [done v16.26] Teammate health and armour bars on the HUD.
 2. An edge-of-screen arrow to a teammate who is off screen.
 3. A ping key: mark a spot or an enemy for the party.
 4. A kill feed: NAME killed CRAWLER.
-5. A downed teammate on the HUD with his bleed-out time.
+5. [done v16.26] A downed teammate on the HUD with his bleed-out time.
 6. An end-of-raid party summary: each player's kills, loot, out or not.
 7. The what is new card refresh (due by 16.27, WHATSNEW_VER 16.12).
 Player text: plain game language (his note), no retired words.
