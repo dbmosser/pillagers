@@ -1,0 +1,8 @@
+## v16.34 - PLAYER 2 CURRENT PILLAGERS BOARD
+
+His note of 2026-09-27: player 2 CURRENT PILLAGERS board is broken. Player 2 builds the raid from the same seed, so its board listed
+its own pillagers, but it never runs those bodies: the host bodies replace them. Every row read DEAD and aged off after ten seconds.
+The host now sends its board rows (name, value carried, status, extracted, rival, elite, ghost) with the world word twice a second,
+and player 2 draws those, keeping its own time stamps so names that went out or down age off as they do for player 1.
+
+MEASURED. Check 16.34 passes and fails on v16.33.

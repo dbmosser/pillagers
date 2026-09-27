@@ -1,0 +1,7 @@
+v16.33: what is new card catches up on co-op
+
+The co-op entry says what v16.13 to v16.33 gave the party and no
+longer says world sound plays from one window. Check 16.12 now asks
+for the speaker line.
+
+Check 16.33. Fails on v16.32.

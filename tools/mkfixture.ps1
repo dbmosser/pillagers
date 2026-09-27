@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.33',what:'the what is new card catches up on co-op: split speakers, teammate health on the HUD, your heals on a teammate, pause when every player has paused, the host watching until the party is out',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], t=String((wn.lines||[])[1]||'').toUpperCase();
+     ['LEFT SPEAKER','HEALTH AND ARMOUR','ON A TEAMMATE','EVERY PLAYER HAS PAUSED','THE HOST WATCHES'].forEach(function(w){ if(t.indexOf(w)<0) bad.push('the co-op line does not say '+w.toLowerCase()); });
+     if(t.indexOf('ONE OF THE TWO')>=0) bad.push('the co-op line still says world sound plays from one window');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.32',what:'player 2 search bar counts the items left: a box made from the host word keeps the count, and a loot word lowers it',
    run:function(){
      if(typeof netContMake!=='function') return 'SKIP: no net containers in this build';
@@ -6177,7 +6184,7 @@ window.__REGRESS=[
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
      var wn=__words.whatsnew(), bad=[], L=wn.lines||[], all=L.join(' ').toUpperCase();
      if(all.indexOf('WITH ITS OWN CONTROLLER AND SOUND')>=0) bad.push('the card still says the second window has its own sound');
-     if(all.indexOf('SOUND PLAYS FROM ONE OF THE TWO')<0) bad.push('the card does not say world sound plays from one window');
+     if(all.indexOf('LEFT SPEAKER')<0) bad.push('the card does not say where each player sound plays');   // v16.33: split speakers are the default since v16.29
      if(all.indexOf('SHOWS YOU TO THE ENEMY')<0) bad.push('the lightning line does not name who the flash shows you to');
      return bad.length?bad.join('; '):null; }},
   {v:'16.11',what:'co-op fixes from the backcheck: a shared-raid pause lets the storm land its bolt; YES, ABANDON refuses a player who went down after arming it; holding E over a downed teammate inside an open ring calls no extraction, and E held on after the pick-up sends nothing more; the host world word leaves a never-closing ring open-ended, leaves a pull this player began alone and does not move his called ring; the link to the host learns the host id',

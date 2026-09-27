@@ -1,0 +1,7 @@
+v16.34: player 2 CURRENT PILLAGERS board
+
+Player 2 listed its own seed pillagers, whose bodies the host
+replaces, so every row read DEAD and aged off. The host now sends
+its board with the world word and player 2 draws it.
+
+Check 16.34. Fails on v16.33.

@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.33 - THE WHAT IS NEW CARD CATCHES UP ON CO-OP
+
+The card was at v16.12 and the parse gate now refuses a card more than 0.20 behind. The co-op entry is rewritten, shorter than
+before, to say what v16.13 to v16.33 gave the party: player 1 sound on the left speaker and player 2 on the right, teammate health
+and armour on the HUD, their shots, damage numbers and sounds, your own Bandages and plates on a teammate beside you, pause only
+when every player has paused, the host watching until the party is out, and quieter clock alarms. It no longer says world sound
+plays from one window, which split speakers made untrue; check 16.12 now asks for the speaker line instead.
+
+MEASURED. Checks 16.07, 16.12, 13.34 and 16.33 pass; 16.33 fails on v16.32.
 ## v16.32 - PLAYER 2 SEARCH BAR COUNTS ITEMS
 
 His note of 2026-09-27: player 2 looting shows no item names. The live two window test (tools/nettest.html, now recording what

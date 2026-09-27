@@ -1,0 +1,1 @@
+| PLAYER 2 CURRENT PILLAGERS BOARD | v16.34 | HIS NOTE: player 2 board broken. CAUSE: it listed its own seed pillagers, whose bodies the host replaces, so all read DEAD and aged off. FIX: host sends board rows with the world word; player 2 draws them. MEASURED: 16.34 passes, fails on v16.33 |

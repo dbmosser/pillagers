@@ -1,0 +1,1 @@
+| THE WHAT IS NEW CARD CATCHES UP ON CO-OP | v16.33 | CARD at v16.12, over the 0.20 drift the parse gate allows. FIX: co-op entry rewritten (split speakers, teammate HUD, heals on a teammate, party pause, host watches); check 16.12 restaged off the one-window sound claim. MEASURED: 16.07, 16.12, 13.34, 16.33 pass |
