@@ -47,9 +47,9 @@ HIS ORDER: never stop working. An hourly routine (trig_01Nqmjg7sDVCub7Yr9NkN2Se)
 session spend (his $200 credit). Shipped v16.20 to v16.25: party pause, tracers and sounds shared, revive bar, teammate damage
 numbers both ways, bandages and plates on a teammate, split speakers. NEXT, in order (mark each [done vX.YY] when shipped):
 1. [done v16.26] Teammate health and armour bars on the HUD.
-2. An edge-of-screen arrow to a teammate who is off screen.
-3. A ping key: mark a spot or an enemy for the party.
-4. A kill feed: NAME killed CRAWLER.
+2. [done v16.41] An edge-of-screen arrow to a teammate who is off screen.
+3. [done v16.43, live PASS] A ping key: mark a spot or an enemy for the party.
+4. [done v16.42, live PASS] A kill feed: NAME killed CRAWLER.
 5. [done v16.26] A downed teammate on the HUD with his bleed-out time.
 6. [done v16.40, live test PASS] An end-of-raid party summary: each player's kills, loot, out or not.
 7. [done v16.33] The what is new card refresh.

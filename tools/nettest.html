@@ -585,7 +585,15 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       // BUILD 7: the enemies, before A walks. A failure here is written down and the step goes on.
       return entStep(A,C,bad,rep).then(null,function(e){ bad.push('enemies: '+e.message); }).then(function(){
         // BUILD 8: C searches a box beside it through the host. A failure here is written down and the step goes on.
-        return lootStep(A,C,bad,rep).then(null,function(e){ bad.push('loot: '+e.message); }).then(function(){ return shotStep(A,C,bad,rep).then(null,function(e){ bad.push('shots: '+e.message); }); });
+        return lootStep(A,C,bad,rep).then(null,function(e){ bad.push('loot: '+e.message); }).then(function(){ return shotStep(A,C,bad,rep).then(null,function(e){ bad.push('shots: '+e.message); }); }).then(function(){
+          // v16.43: C pings and A must hold the ping, named for C's seat, within 500 ms.
+          if(typeof C.__net.ping!=='function') return;
+          var sc=st(fc).seat, pm=C.__net.ping(), t1=Date.now();
+          if(!pm){ bad.push('ping: C could not ping'); return; }
+          return wait(function(){ var l=A.__net.pings(), i; for(i=0;i<l.length;i++) if(l[i].s===sc&&l[i].w===(pm.w||"")) return l[i]; return null; },500,'copy A to hold the ping C made').then(function(q){
+            log('ping: C pinged '+(pm.w||'a spot')+' at '+pm.x+','+pm.y+'; A holds it for seat '+q.s+' '+(Date.now()-t1)+' ms later');
+          },function(e){ bad.push('ping: '+e.message); });
+        });
       }).then(function(){
         clearFloor(fa);
         a0=A.__net.up().me;
