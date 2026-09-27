@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.40 - END OF RAID PARTY SUMMARY
+
+His pick from the co-op list of 2026-09-27 (item 6): an end of raid party summary with each player's kills, loot, and whether
+they got out. Each window, as its raid ends, sends the party a result word: how it ended, its kills, and the value it brought
+out (nothing on a death or an abandon, which come back empty). The host passes each result to the others. Below the run card
+manifest a YOUR PARTY block lists every player (this one as YOU) as EXTRACTED, KILLED, ABANDONED or STILL UP TOP, with kills and
+haul, and it fills in live as the others finish. Solo runs show nothing new.
+
+MEASURED. Check 16.40 passes and fails on v16.39.
 ## v16.39 - BLOTTER GENTLER, AND THE MENUS FEEL IT
 
 His notes of 2026-09-27: one hit of blotter should be less intense; blotter and liquor should impact menu screens. One hit of

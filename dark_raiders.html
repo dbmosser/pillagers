@@ -686,6 +686,7 @@
   <h1 id="oc_title">EXTRACTED</h1>
   <div class="sub" id="oc_sub"></div>
   <div class="manifest" id="oc_manifest"></div>
+  <div class="manifest" id="oc_party" style="display:none;margin-top:12px"></div>
   <div style="font-size:10.5px;color:var(--ash);letter-spacing:.2em;margin-top:16px">HOW DID THAT RUN FEEL</div>
   <div class="tagwrap" id="tagwrap"></div>
   <textarea id="oc_note" rows="2" style="max-width:520px" placeholder="Anything else? (optional)"></textarea>
@@ -1432,7 +1433,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.39';
+var VER='16.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21047,6 +21048,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   DEATH_FEED_HTML='';
   selTags=[]; buildTags();
   document.getElementById('oc_note').value='';
+  if(NET.on&&!G.sim){ try{ netSumSend(how,(how==='extract')?haul:0); }catch(_ns){} }   // v16.40: the party summary
   document.getElementById('outcome').classList.add('on');
 }
 function buildTags(){
@@ -31169,7 +31171,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.39: BLOTTER GENTLER, AND THE MENUS FEEL IT. His notes: one hit of Blotter should be less intense, and Blotter and Liquor should affect the menu screens too. One hit now draws at half strength; two or more hits are as before. The open panels (stash, sector page, stations, pause box) sway and blur with Liquor and shift colour with Blotter, gentler than the world so text stays readable. Check 16.39 fails on v16.38',
+  now:'v16.40: END OF RAID PARTY SUMMARY. His pick from the co-op list (item 6). Each window, as its raid ends, tells the party how it ended, its kills and what it brought out (nothing on a death or an abandon). The run card lists every player as EXTRACTED, KILLED, ABANDONED or STILL UP TOP with kills and haul, and fills in as the others finish. Check 16.40 fails on v16.39',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -34897,6 +34899,7 @@ function netOnMsg0(peer,data){
   if(m.t==='kill') return netKillTake(peer,m);   // v15.80: a kill credited to this seat, from the host
   if(m.t==='contact') return netContactTake(peer,m);   // v16.36: an enemy went for this seat first, from the host
   if(m.t==='kitask'||m.t==='kitok') return netKitTake(peer,m);   // v16.37: every player chooses a kit
+  if(m.t==='sum') return netSumTake(peer,m);   // v16.40: a teammate's raid result, for the party summary
   if(m.t==='fx') return netFxTake(peer,m);   // v16.21: a round or a sound from one of the party, to draw and play
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
@@ -35624,7 +35627,7 @@ function netUpAnnounce(g){
   if(!NET.on||NET.role!=='host'||!g||g.sim) return null;
   m={t:'raid',seed:g.seed>>>0,mapIx:clamp((P&&P.mapIx)|0,0,FIXED_MAPS.length-1),cond:(P&&P.cond==='night')?'night':'day',wx:(g.wx&&g.wx.id)||'',
      iss:g.issDraw?1:0,terms:netUpTerms(termsOn()),merc:(P&&typeof P.merc==='string')?P.merc:'',cfg:netUpCfgDiff(),fp:netUpFp(g)};
-  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=m.seed; NET.upFp=m.fp;
+  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=m.seed; NET.upFp=m.fp; NET.sum={};
   netEntsInit(g);   // v15.80: every body numbered in list order, the numbers a linked window gives the same bodies
   netContInit(g);   // v15.91: every container numbered in list order, the numbers a linked window gives the same containers
   netBroadcast(m);
@@ -35695,7 +35698,7 @@ function netUpStart(m){
     netRefresh();
     return 'mismatch';
   }
-  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=seed; NET.upFp=fp;
+  NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=seed; NET.upFp=fp; NET.sum={};
   netEntsInit(G);   // v15.80: the same numbers the host gave the same bodies (the populations match by the fingerprint)
   netContInit(G);   // v15.91: the same numbers the host gave the same containers; the host list is the truth from here on
   try{ saveProfile(); }catch(e4){}   // the kit that went up, the sector and the hour, under its own dials
@@ -36769,6 +36772,54 @@ function netContactTake(peer,m){
 // answered, or after NET_KIT_WAIT seconds with the kit each had chosen before. A TEAMMATE sees the same card on its own save;
 // its answer sets its own kit and tells the host. A teammate already up top or on the title answers at once.
 var NET_KIT_WAIT=15;
+// v16.40, HIS PICK (co-op list item 6): AN END OF RAID PARTY SUMMARY. Each window, as its raid ends, tells the party how it ended,
+// its kills and what it brought out (nothing on a death or an abandon, which come back empty). The run card lists every player:
+// EXTRACTED, KILLED, ABANDONED or STILL UP TOP, with kills and haul, and fills in as the others finish.
+function netSumTake(peer,m){
+  var s, e, i;
+  if(!peer||peer.state!=='in') return 'ignored';
+  if(NET.role==='host') s=peer.seat;
+  else if(NET.role==='join'){ s=(m.s===undefined)?0:m.s; if(typeof s!=='number'||s!==(s|0)) return 'bad'; }
+  else return 'off';
+  if(s<0||s>=NET.max||s===NET.seat) return 'ignored';
+  e={how:netClean(m.how,12),k:Math.max(0,m.k|0),v:Math.max(0,Math.round(+m.v||0))};
+  if(!NET.sum) NET.sum={};
+  NET.sum[s]=e;
+  if(NET.role==='host') for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSend(NET.peers[i],{t:'sum',s:s,how:e.how,k:e.k,v:e.v});
+  netSumDraw();
+  return 'sum';
+}
+function netSumSend(how,v){
+  var k=0, q, K=(G&&G.tel&&G.tel.kills)||null, e;
+  if(!NET.on) return false;
+  if(K) for(q in K) if(Object.prototype.hasOwnProperty.call(K,q)) k+=(K[q]|0);
+  e={how:netClean(how,12),k:k,v:Math.max(0,Math.round(v||0))};
+  if(!NET.sum) NET.sum={};
+  NET.sum[NET.seat]=e;
+  netBroadcast({t:'sum',how:e.how,k:e.k,v:e.v});
+  netSumDraw();
+  return true;
+}
+function netSumDraw(){
+  var el=document.getElementById('oc_party'), r=NET.roster||[], h='', i, e, st, c;
+  if(!el) return false;
+  if(!NET.on||r.length<2||!NET.sum){ el.style.display='none'; el.innerHTML=''; return false; }
+  h='<div style="font-size:10.5px;color:var(--ash);letter-spacing:.2em;margin-bottom:4px">YOUR PARTY</div>';
+  for(i=0;i<r.length;i++){
+    e=NET.sum[r[i].seat];
+    if(!e){ st='STILL UP TOP'; c='var(--amber)'; }
+    else if(e.how==='extract'){ st='EXTRACTED'; c='var(--bone)'; }
+    else if(e.how==='dead'){ st='KILLED'; c='var(--rust)'; }
+    else { st='ABANDONED'; c='var(--ash)'; }
+    h+='<div style="display:flex;gap:14px;justify-content:center;font-size:13px">'+
+       '<span style="width:150px;text-align:right">'+escHtml(r[i].seat===NET.seat?'YOU':r[i].name)+'</span>'+
+       '<span style="width:110px;color:'+c+'">'+st+'</span>'+
+       '<span style="width:80px">'+(e?(e.k+(e.k===1?' kill':' kills')):'')+'</span>'+
+       '<span style="width:90px;text-align:right">'+(e?(e.v.toLocaleString()+'c'):'')+'</span></div>';
+  }
+  el.innerHTML=h; el.style.display='';
+  return true;
+}
 function netKitGate(f){
   var i, q, n=0;
   if(typeof NET!=='object'||!NET||!NET.on||NET.role!=='host') return f();

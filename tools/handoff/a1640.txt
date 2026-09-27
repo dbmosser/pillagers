@@ -1,0 +1,1 @@
+| END OF RAID PARTY SUMMARY | v16.40 | HIS PICK (co-op item 6). FIX: each window sends its result (how, kills, haul) at raid end; the run card lists every player, filling in live. MEASURED: 16.40 passes, fails on v16.39 |

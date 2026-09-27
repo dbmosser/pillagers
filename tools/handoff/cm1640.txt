@@ -1,0 +1,7 @@
+v16.40: end of raid party summary
+
+Each window sends its result at raid end; the run card lists every
+player as extracted, killed, abandoned or still up top, with kills
+and haul, filling in as the others finish.
+
+Check 16.40. Fails on v16.39.
