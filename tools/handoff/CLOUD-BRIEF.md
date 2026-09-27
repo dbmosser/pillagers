@@ -42,6 +42,19 @@ teammate revives, 16.06 host owns clock, weather, bolts and rings (beacon for th
 16.09 voice (host hears all, friends hear the host; friend to friend needs a host relay), 16.10 voice by distance.
 v16.11 to v16.14: backcheck fixes and the host spectates. HIS ORDER 2026-09-26: no more voice work (no relay, no lift radio); the game itself comes first. Card due by 16.22.
 
+## Standing order and queue (2026-09-27)
+HIS ORDER: never stop working. An hourly routine (trig_01Nqmjg7sDVCub7Yr9NkN2Se) wakes this session; it stops itself at $190 of
+session spend (his $200 credit). Shipped v16.20 to v16.25: party pause, tracers and sounds shared, revive bar, teammate damage
+numbers both ways, bandages and plates on a teammate, split speakers. NEXT, in order (mark each [done vX.YY] when shipped):
+1. Teammate health and armour bars on the HUD (from the state word hp/mh/ar/ac).
+2. An edge-of-screen arrow to a teammate who is off screen.
+3. A ping key: mark a spot or an enemy for the party.
+4. A kill feed: NAME killed CRAWLER.
+5. A downed teammate on the HUD with his bleed-out time.
+6. An end-of-raid party summary: each player's kills, loot, out or not.
+7. The what is new card refresh (due by 16.27, WHATSNEW_VER 16.12).
+Player text: plain game language (his note), no retired words.
+
 ## Queue at the move (ship in this order)
 - 1585 emote bar while downed (drafted, check it is complete), 1586 a controller can choose a sector (HIGH), 1587 night hour on the sector map, 1588 sector run count, 1589 hire never walks to a cache behind a locked door, 1590 pillagers never spawn in a locked room (verify the seed fingerprint). Findings: `tools/handoff/audit-wvw8zcvyw.json`.
 - 1591 multiplayer: loot per player (host owns containers, one searcher per container) and the host leaving ends the run as abandon for everyone. Only p/f partly drafted: redraft. Design: `tools/multiplayer/plan.md`, `net.md`, `critique.md`; shipped net builds are described in `tools/handoff/d1574.txt` to `d1580.txt`.
