@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.35',what:'his controller rule: player 2 takes the first controller and a second controller goes to player 1, who otherwise plays keyboard and mouse',
+   run:function(){
+     if(typeof netPadFor!=='function'||typeof netPadWant!=='function'||typeof NET==='undefined') return 'SKIP: this build has no same machine controllers';
+     function pd(ix){ return {connected:true,index:ix,id:'probe',buttons:[],axes:[]}; }
+     var two=[pd(0),pd(1)], one=[pd(0)], bad=[], keep=NET.same, keepIx=NET.padIx;
+     if(netPadFor('p2',-1,-1,two)!==0) bad.push('player 2 with no pick is not on the first controller ('+netPadFor('p2',-1,-1,two)+')');
+     if(netPadFor('host',-1,-1,two)!==1) bad.push('player 1 with no pick is not on the second controller ('+netPadFor('host',-1,-1,two)+')');
+     if(netPadFor('host',-1,-1,one)!==-1) bad.push('with one controller player 1 took it from player 2');
+     if(netPadFor('host',-1,1,two)!==0) bad.push('with player 2 on controller 2 by pick, player 1 is not on controller 1');
+     if(netPadFor('host',1,-1,two)!==1) bad.push('a player 1 pick is not kept');
+     try{ NET.same='host'; NET.padIx=-1; if(netPadWant()!==-2) bad.push('player 1 with no pick takes no controller handed over ('+netPadWant()+')'); }
+     finally{ NET.same=keep; NET.padIx=keepIx; }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.34',what:'player 2 CURRENT PILLAGERS board: the host sends its rows with the world word and a linked window keeps them, with names, values and who is out',
    run:function(){
      if(typeof netBoardTake!=='function'||typeof netBoardRows!=='function') return 'this build has no shared board';
@@ -8933,8 +8946,8 @@ window.__REGRESS=[
        pads([P0,P1]); hf.v=true; hf.n=0; ch.posted=[];
        NET.padIx=-1; NET.padOther=-1; NET.padFwd=null;
        frame();
-       if(PAD.on) bad.push('the host with no controller picked plays a pad (buttons down '+downs()+')');
-       if(keys.KeyF||keys.KeyE) bad.push('the host with no controller picked holds a key from a pad (F '+!!keys.KeyF+', E '+!!keys.KeyE+')');
+       if(!PAD.on||!PAD.prev[0]||PAD.prev[3]) bad.push('the host with no controller picked does not play the second controller, his rule of 2026-09-27 (buttons down '+downs()+')');   // v16.35
+       if(keys.KeyF) bad.push('the host with no controller picked holds a key from the player 2 pad (F '+!!keys.KeyF+')');   // v16.35
        var h1=posts('pad');
        if(h1.length!==1) bad.push('one frame of the host in front handed over '+h1.length+' states, not one');
        else if(h1[0].pair!==PAIR||h1[0].ix!==0||h1[0].own!==-1||!h1[0].p||h1[0].p[3]!==1||h1[0].p[0]!==0) bad.push('the host with no pick did not hand player 2 the first connected pad, controller 1 with Y down ('+js(h1[0])+')');
@@ -8981,7 +8994,7 @@ window.__REGRESS=[
        frame();
        if(PAD.on||keys.KeyR) bad.push('a state handed over a second ago is still played (on '+PAD.on+', R '+!!keys.KeyR+')');
        NET.padIx=-1;
-       if(netSameOnMsg(fwd(0,1,[2]))!=='padnone') bad.push('the host with no pick took a state handed over');
+       if(netSameOnMsg(fwd(0,1,[2]))!=='pad') bad.push('the host with no pick refused the second controller player 2 handed over');   // v16.35
 
        // THREE: PLAYER 2. Not in front: its own read is ignored, the state handed over drives the reader and the keys it holds
        // are the ones the buttons handed over hold. In front: its own pad wins and the host is handed its pad.

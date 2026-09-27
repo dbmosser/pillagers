@@ -1,0 +1,1 @@
+| A SECOND CONTROLLER GOES TO PLAYER 1 | v16.35 | HIS RULE: P2 takes the first controller, a second goes to P1. WAS: host with no pick played no pad. FIX: host plays the first pad P2 is not on (in front and handed over). 15.77 restaged. MEASURED: 15.77, 16.35 pass; 16.35 fails on v16.34 |

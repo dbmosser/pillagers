@@ -1,0 +1,7 @@
+v16.35: a second controller goes to player 1
+
+His rule: player 2 takes the first controller and a second one goes
+to player 1. The host with no pick played no pad; it now plays the
+first pad player 2 is not on. Check 15.77 restaged.
+
+Check 16.35. Fails on v16.34.

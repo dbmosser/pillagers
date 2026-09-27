@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.35 - A SECOND CONTROLLER GOES TO PLAYER 1
+
+His rule of 2026-09-27: player 1 plays keyboard and mouse, player 2 takes the first controller, and if a second controller is
+detected it goes to player 1. Before this the host with no pick on the CONTROLLER row played no pad at all. It now plays the first
+connected pad player 2 is not on, both when its window is in front and when player 2 hands it over; with one controller, player 2
+keeps it. A pick on the CONTROLLER row still wins. The row now reads KEYBOARD AND MOUSE, AND A SECOND CONTROLLER. Check 15.77 is
+restaged on the three lines that asserted the old rule.
+
+MEASURED. Checks 15.77 and 16.35 pass; 16.35 fails on v16.34.
 ## v16.34 - PLAYER 2 CURRENT PILLAGERS BOARD
 
 His note of 2026-09-27: player 2 CURRENT PILLAGERS board is broken. Player 2 builds the raid from the same seed, so its board listed

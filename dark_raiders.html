@@ -1431,7 +1431,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.34';
+var VER='16.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31145,7 +31145,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.34: PLAYER 2 CURRENT PILLAGERS BOARD. His note: player 2 board was broken. It listed the pillagers of its own seed, whose bodies the host bodies replace, so every row read DEAD and then dropped off. The host now sends its board (names, values, status, extracted) with the twice a second world word and player 2 draws that. Check 16.34 fails on v16.33',
+  now:'v16.35: A SECOND CONTROLLER GOES TO PLAYER 1. His rule: player 1 plays keyboard and mouse, player 2 takes the first controller, and a second controller goes to player 1. The host with no pick played no pad at all; it now plays the first connected pad player 2 is not on, in front or handed over. A pick on the CONTROLLER row still wins. Check 15.77 restaged on the two lines that asserted the old rule. Check 16.35 fails on v16.34',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35373,7 +35373,14 @@ function netPadKey(side){ return 'salvagerun:samepad:'+((side==='p2')?'p2':'host
 function netPadFor(side,pick,taken,gps){
   var i, n=(gps&&gps.length)||0;
   pick=netPadIxOk(pick); taken=netPadIxOk(taken);
-  if(side!=='p2') return (pick>=0&&pick<n&&gps[pick]&&gps[pick].connected)?pick:-1;
+  if(side!=='p2'){
+    if(pick>=0) return (pick<n&&gps[pick]&&gps[pick].connected)?pick:-1;
+    // v16.35, HIS RULE of 2026-09-27: player 1 plays keyboard and mouse, player 2 takes the first controller, and a second
+    // controller goes to player 1. With no pick the host plays the first connected pad player 2 is not on.
+    taken=netPadFor('p2',taken,-1,gps);
+    for(i=0;i<n;i++) if(i!==taken&&gps[i]&&gps[i].connected) return i;
+    return -1;
+  }
   if(pick>=0&&pick!==taken) return (pick<n&&gps[pick]&&gps[pick].connected)?pick:-1;
   for(i=0;i<n;i++) if(i!==taken&&gps[i]&&gps[i].connected) return i;
   return -1;
@@ -35381,7 +35388,7 @@ function netPadFor(side,pick,taken,gps){
 // The pad this window will take from the window in front: its pick; for player 2 with no pick (or a pick the host holds)
 // any pad but the sender's own (-2); for the host with no pick, none (-1).
 function netPadWant(){
-  if(NET.same==='host') return netPadIxOk(NET.padIx);
+  if(NET.same==='host') return (netPadIxOk(NET.padIx)>=0)?NET.padIx:-2;   // v16.35: with no pick, the second controller player 2 hands over
   if(NET.same==='p2') return (netPadIxOk(NET.padIx)>=0&&NET.padIx!==NET.padOther)?NET.padIx:-2;
   return -1;
 }
@@ -35406,7 +35413,7 @@ function netPadCycle(){ return netPadSet((NET.padIx>=NET_PAD_MAX-1)?-1:(NET.padI
 function netPadLabel(ix,side){
   ix=netPadIxOk(ix);
   if(ix>=0) return 'CONTROLLER '+(ix+1);
-  return (side==='p2')?'THE FIRST FREE CONTROLLER':'NO CONTROLLER, KEYBOARD AND MOUSE';
+  return (side==='p2')?'THE FIRST FREE CONTROLLER':'KEYBOARD AND MOUSE, AND A SECOND CONTROLLER';   // v16.35
 }
 // One pad's state, handed to the other window: which pad, this window's own pick, the buttons (down, and how far) and the
 // sticks. Returns whether it went out.
