@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.56',what:'a host who left the raid and is spectating has no body in it: an enemy round passes where he stood instead of stopping there',
+   run:function(){
+     if(typeof updateBullets!=='function'||typeof damagePlayer!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no rounds to test';
+     var bad=[], p=null, own=null, oDP=damagePlayer, hits=0;
+     function shot(){ G.bullets.length=0; G.bullets.push({x:p.x,y:p.y,vx:0.01,vy:0,dmg:5,life:0.5,player:false,owner:own,tint:'#ffffff',thru:0}); updateBullets(0.001); return G.bullets.length===0; }
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       p=G.player; own=G.ents[0]||null;
+       if(!own) return 'SKIP: staging: no enemy to fire the round';
+       damagePlayer=function(){ hits++; };
+       p.specOut=1;
+       if(shot()||hits) bad.push('a round stopped on the body of a host who left the raid ('+hits+' hits)');
+       p.specOut=0; hits=0;
+       if(!shot()||!hits) return 'SKIP: staging: a round on a player in the raid did not hit him, so this cannot measure a pass';
+     } finally { damagePlayer=oDP; try{ if(p) p.specOut=0; G.bullets.length=0; __endRaid('abandon'); __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.55',what:'a teammate still on the run card goes up with the party: the kit question closes the card and asks him, and the host word carries him up instead of leaving him below',
    run:function(){
      if(typeof netKitTake!=='function'||typeof netUpTake!=='function'||typeof netUpStart!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no party ascent';
@@ -20587,7 +20603,7 @@ window.__REGRESS=[
      if(!(ver>=13.29))
        bad.push('the card still says NEW IN v'+WHATSNEW_VER+', older than his ruling that sends the welcome pack to the stash, so a friend coming back is shown nothing about it');
      var lead=['THE','WELCOME','PACK','GOES','TO','YOUR','STASH'].join(' ');
-     var needle=['Equip','your','own','gun'].join(' ');
+     var needle=['Equip','as','your','gun'].join(' ');
      var idx=-1;
      for(var i=0;i<WHATSNEW.length;i++){ if(String(WHATSNEW[i]).indexOf(lead)===0){ idx=i; break; } }
      if(idx<0)
@@ -20713,7 +20729,7 @@ window.__REGRESS=[
      if(!ITEMS.gun_smg||!WEAPONS.smg) return 'SKIP: this build has no stash gun item to stage';
      var bad=[];
      var keep={equipped:P.equipped,equippedSec:P.equippedSec,weapons:(P.weapons||[]).slice(),stash:(P.stash||[]).slice(),kit:(P.kit||[]).slice(),freeKit:P.freeKit};
-     var needle=['Equip','your','own','gun'].join(' ');
+     var needle=['Equip','as','your','gun'].join(' ');
      function boxText(){ try{ renderSector(); }catch(_s){} return String(K.textContent||''); }
      try{
        // ONE: nothing equipped, and a pack gun waiting in the stash.

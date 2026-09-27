@@ -1434,7 +1434,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.55';
+var VER='16.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19815,7 +19815,10 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
           // v13.68, hire audit: a round your hire fired passes through you, as yours pass
           // through him (v6.72), and it hits a hostile pillager, the man he was aiming at.
           var _mOwn=!!(b.owner&&b.owner.merc);
-          if(!_mOwn&&dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); spark(b.x,b.y,'#ff5a4a',10,200); hit=true; }
+          // v16.56, stability (co-op review): a host who left the raid and is spectating (v16.14) has no body in it. His
+          // player stayed where he fell or extracted and still stopped enemy rounds, so a teammate saw red numbers on empty
+          // ground, a round meant for him stopped short, and the host window played the grunts.
+          if(!_mOwn&&!p.specOut&&dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); spark(b.x,b.y,'#ff5a4a',10,200); hit=true; }
           if(!hit&&!_mOwn&&NET.on&&netBulletPeer(b)){ spark(b.x,b.y,'#ff5a4a',10,200); hit=true; }   // v15.80: an enemy round on one of the party up top is a hit word to his window; a player round never comes down this branch
           if(!hit) for(var e3=0;e3<G.ents.length;e3++){
             var en3=G.ents[e3];
@@ -31214,7 +31217,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.55: A TEAMMATE STILL ON THE RUN CARD GOES UP WITH THE PARTY. Stability pass before a co-op session. After every raid each window shows its run card, and a teammate still reading his when the host took the lift was left below for the whole raid. Now the host asking for kits closes that card the way its own button does (the run is logged) and the teammate is asked for his kit and goes up with the party. Check 16.55 fails on v16.54',
+  now:'v16.56: A SPECTATING HOST HAS NO BODY IN THE RAID. Stability pass before a co-op session. When the host died or extracted and stayed on to watch the party, his player was left where he stood and still stopped enemy rounds: red numbers on empty ground for his teammate and rounds that stopped short. Rounds now pass where he stood. Check 16.56 fails on v16.55',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

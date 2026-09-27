@@ -1,0 +1,1 @@
+| A SPECTATING HOST HAS NO BODY IN THE RAID | v16.56 | STABILITY (co-op review 2026-09-27). FIX: the enemy round test on the player skips p.specOut. Checks 13.31 and 13.34 get back Equip as your gun. MEASURED: 16.56 passes, fails on v16.55 |

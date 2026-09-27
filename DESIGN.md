@@ -40024,6 +40024,16 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.56 - A SPECTATING HOST HAS NO BODY IN THE RAID
+
+Stability pass before his co-op session. When the host died or extracted and stayed on to watch the party (v16.14), his
+player was left where he stood and still stopped enemy rounds: red numbers on empty ground for his teammate, rounds that
+stopped short, and grunts in the host window. The round test on the player now skips a spectating host (p.specOut).
+
+Tests only: v16.54 retargeted three loaner needles; the sector page (13.31) and the card (13.34) still say Equip as your
+gun, so those two get it back.
+
+MEASURED. Check 16.56 passes, and fails on v16.55.
 ## v16.55 - A TEAMMATE STILL ON THE RUN CARD GOES UP WITH THE PARTY
 
 Stability pass before his co-op session. After every raid each window shows its run card, and a teammate still reading his

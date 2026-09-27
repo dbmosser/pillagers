@@ -1,0 +1,9 @@
+v16.56: a spectating host has no body in the raid
+
+A host who died or extracted and stayed on to watch still stopped enemy
+rounds where he stood. Rounds now pass. Checks 13.31 and 13.34 get back
+the wording their screens still use.
+
+Check 16.56. Fails on v16.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
