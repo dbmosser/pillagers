@@ -1,0 +1,1 @@
+| QUIETER CLOCK ALARMS, AND INBOUND | v16.30 | HIS NOTES: the clock alarms were far too loud; inbound, not incoming. FIX: clock warning triangle at .04 (was square at .12), tick .03 (was .09); banner EXTRACT X INBOUND. MEASURED: check 16.30 passes twice, fails on v16.29 |

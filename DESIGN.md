@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.30 - QUIETER CLOCK ALARMS, AND INBOUND
+
+His notes of 2026-09-27: the 5-minutes-left alarm and the rest were far too loud; and use inbound, not incoming. The raid clock
+warning (v15.24's three rising sweeps at 5, 4, 3, 2 and 1 minutes and 30 seconds) now plays a triangle tone at .04 instead of a
+square at .12, a third of the level and softer; the last-ten-seconds tick drops from .09 to .03. The extraction banner reads
+EXTRACT X INBOUND. No game number moved.
+
+MEASURED. Check 16.30 passes twice; fails on v16.29. Check 15.24 passes.
+
 ## v16.29 - PLAYER 2 HEARS THE GAME
 
 His note of 2026-09-27: player 2 heard no audio at all. v15.78 started the player 2 window with its world sound off, so two windows

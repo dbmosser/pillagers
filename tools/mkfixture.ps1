@@ -5721,6 +5721,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.30',what:'quieter clock alarms and inbound: the clock warning plays a triangle tone at .04, the tick at .03, and the extraction banner says INBOUND',
+   run:function(){
+     var src='', i;
+     try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
+     var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
+     if(src.length<100000) return 'SKIP: the build cannot read its own script';
+     var bad=[];
+     if(src.indexOf("cwg.gain.setValueAtTime(.04*vol,cwt)")<0) bad.push('the clock warning is not at .04');
+     if(src.indexOf("ckg.gain.setValueAtTime(.03*vol,t)")<0) bad.push('the clock tick is not at .03');
+     if(src.indexOf("' INBOUND  '")<0||src.indexOf("' INCOMING  '")>=0) bad.push('the extraction banner does not say INBOUND');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.29',what:'player 2 hears the game: with no split setting saved, a same machine pair starts split (player 2 window playing, panned right); switched off it stays off',
    run:function(){
      if(typeof NET!=='object'||!NET||typeof netSndOut!=='function'||typeof netSndSplitOn!=='function') return 'SKIP: this build has no split speakers';

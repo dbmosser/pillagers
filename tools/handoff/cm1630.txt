@@ -1,0 +1,7 @@
+v16.30: quieter clock alarms, and inbound
+
+His notes. The raid clock warnings play a softer tone at a third of the
+old level, and the last ten seconds tick at a third too. The extraction
+banner says INBOUND. No game number moved.
+
+Check 16.30. Fails on v16.29.
