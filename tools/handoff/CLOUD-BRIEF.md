@@ -66,7 +66,7 @@ P2. PLAYER 2 FIRST (his notes, 2026-09-27 night): (i) [done v16.29] player 2 hea
    (it is built from bodies the host runs: names and values must come across); (iv) 'extract incoming' wording: use INBOUND.
 b. [done v16.28] The HP bar can be folded or pushed under the belt: the vitals block must never fold, and the belt must fit around the vitals
    and gear blocks as the player has sized and moved them (hudUserZ, hudOff), shrinking slots rather than overlapping.
-c. The 5-minutes-left alarm (and the other clock alarms) are far too loud.
+c. [done v16.30] The 5-minutes-left alarm (and the other clock alarms) are far too loud.
 d. Host leaving: either player 2 takes over as host, or the host's screen clearly says You are hosting. Quitting ends the raid for
    your party. (Do the warning first; host migration is large.)
 e. Something blocks player 2's face in the Undercroft: not found yet (name tag uses the station camera; ask him for a screenshot).
