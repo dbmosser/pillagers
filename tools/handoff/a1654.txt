@@ -1,0 +1,1 @@
+| THE WHAT IS NEW CARD CATCHES UP | v16.54 | CARD (0.20 behind). Two lines: the party features since v16.33 and the stability pass. Stale checks 16.43, 16.37, 13.32, 11.68 and 10.96 retargeted; superseded card checks SKIP. MEASURED: 16.54 passes, fails on v16.53 |

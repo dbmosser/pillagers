@@ -1,0 +1,9 @@
+v16.54: the what is new card catches up
+
+Two lines under the co-op line: the party features since v16.33 and
+the stability pass. Old checks that tested words the game changed on
+purpose now test the new words, and old card checks step aside.
+
+Check 16.54. Fails on v16.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

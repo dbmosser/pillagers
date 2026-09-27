@@ -40024,6 +40024,17 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.54 - THE WHAT IS NEW CARD CATCHES UP
+
+The card was last written at v16.33 and had fallen more than fifteen builds behind. Two lines go in under the co-op line:
+the party features since then (a kit for every player, ping, map markers on a controller, the kill feed, the teammate
+arrow, the party on the end of raid card, kid mode and Settings in a raid) and the stability pass of 2026-09-27.
+
+Tests only: checks that tested words the game has since changed on purpose now test the new words (16.43 the D-UP ping,
+16.37 stages the Undercroft floor for the v16.48 kit wait, 13.32 the v16.16 loaner line, 11.68 Hires, 10.96 Settings in
+the pause box), and old card checks SKIP once a later card replaced theirs.
+
+MEASURED. Check 16.54 passes, and fails on v16.53.
 ## v16.53 - SEARCHES KEEP RUNNING WHILE THE HOST SPECTATES
 
 Stability pass before his co-op session. The host window runs every search the party makes (netSrchTick), but only inside

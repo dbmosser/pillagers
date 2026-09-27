@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.54',what:'the what is new card is current again: within fifteen builds of the build, the co-op line still second, then the party features since v16.33 and the stability pass',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vCard>16.54+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
+     if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
+     var a=String(L[2]||'').toUpperCase(), b=String(L[3]||'').toUpperCase();
+     ['KIT AT THE LIFT','PING','MARKER','KILL FEED','KID MODE'].forEach(function(w){ if(a.indexOf(w)<0) bad.push('the party line does not say '+w.toLowerCase()); });
+     ['SEARCH KEEPS RUNNING','PAUSE BOX SHUTS','SHUTS THE MAP','GREYED OUT'].forEach(function(w){ if(b.indexOf(w)<0) bad.push('the stability line does not say '+w.toLowerCase()); });
+     if(String(L[1]||'').toUpperCase().indexOf('YOUR PARTY GOES UP TOGETHER')<0) bad.push('the co-op line is no longer second');
+     if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.53',what:'while the host spectates, a teammate search still runs on the host, and a box the host was searching when his run ended is let go',
    run:function(){
      if(typeof netSpecTick!=='function'||typeof netSrchTick!=='function'||typeof netContInit!=='function'||typeof netSpecStart!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no spectating host';
@@ -5925,7 +5940,7 @@ window.__REGRESS=[
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      if(src.indexOf("if(code==='KeyN'&&G&&!G.over&&!repeat&&NET.on) netPingMake();")<0) bad.push('N does not ping');
-     if(src.indexOf("if(_lbN&&_rbN&&(!PAD.prev[4]||!PAD.prev[5])&&G&&!G.over&&NET.on) netPingMake();")<0) bad.push('a controller cannot ping');
+     if(src.indexOf("else if(NET.on&&NET.upSeed) netPingMake();")<0) bad.push('a controller cannot ping');   // v16.46 moved it to a D-UP tap
      return bad.length?bad.join('; '):null; }},
   {v:'16.42',what:'kill feed: a party kill becomes a NAME killed WHAT line on every window, its own as YOU',
    run:function(){
@@ -6018,10 +6033,10 @@ window.__REGRESS=[
   {v:'16.37',what:'every player chooses a kit: the host waits for each teammate, a teammate is shown MY LOADOUT and FREEBIE KIT, and its answer tells the host',
    run:function(){
      if(typeof netKitGate!=='function'||typeof netKitTake!=='function'||typeof askKit!=='function') return 'this build never asks a teammate for a kit';
-     var keep={on:NET.on,role:NET.role,peers:NET.peers,status:NET.status}, oSend=netSend, oRef=netRefresh, sent=[], went=0, r, bad=[], mod=document.getElementById('askmodal');
+     var keep={on:NET.on,role:NET.role,peers:NET.peers,status:NET.status}, oSend=netSend, oRef=netRefresh, sent=[], went=0, r, bad=[], mod=document.getElementById('askmodal'), kS16=state;
      try{
        netSend=function(q,m){ sent.push(m.t); return true; }; netRefresh=function(){};
-       NET.on=true; NET.role='host'; NET.peers=[{state:'in',seat:1}];
+       NET.on=true; NET.role='host'; NET.peers=[{state:'in',seat:1}]; state='hub';
        r=netKitGate(function(){ went++; });
        if(r!=='wait'||went) bad.push('the host went up without waiting for its teammate ('+r+', '+went+')');
        if(sent.indexOf('kitask')<0) bad.push('the host did not ask its teammate');
@@ -6038,7 +6053,7 @@ window.__REGRESS=[
          if(sent.indexOf('kitok')<0) bad.push('the teammate answer did not tell the host');
        } else if(r!=='kit:busy') bad.push('a teammate asked for its kit answered '+r);
      } finally {
-       netSend=oSend; netRefresh=oRef; NET.on=keep.on; NET.role=keep.role; NET.peers=keep.peers; NET.status=keep.status; NET.kitWait=null;
+       netSend=oSend; netRefresh=oRef; NET.on=keep.on; NET.role=keep.role; NET.peers=keep.peers; NET.status=keep.status; NET.kitWait=null; state=kS16;
        if(mod) mod.classList.remove('on'); ASKYES=null; ASKALT=null; ASKBACK=null;
      }
      return bad.length?bad.join('; '):null; }},
@@ -6718,6 +6733,7 @@ window.__REGRESS=[
      var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0, vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      if(!L[0]||String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
      var t=String(L[1]||'').toUpperCase();
@@ -7383,6 +7399,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      if(['one set for everyone','they go for whoever is nearest'].some(function(w){ return all.indexOf(w.toUpperCase())<0; })) bad.push('the card does not mention the shared pillagers of v15.80');
@@ -8381,6 +8398,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['the party ascends together','and sees each other'].join(' ').toUpperCase();
@@ -10143,6 +10161,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['c crouches even','with shift held'].join(' ').toUpperCase();
@@ -11106,6 +11125,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['a controller leaves','the end of raid card'].join(' ').toUpperCase();
@@ -11915,6 +11935,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['holding esc or p','no longer flickers the pause box'].join(' ').toUpperCase();
@@ -12865,6 +12886,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['a pillager grenade','sounds where it lands'].join(' ').toUpperCase();
@@ -13831,6 +13853,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['only a medkit','takes you past 85'].join(' ').toUpperCase();
@@ -14610,6 +14633,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['a cooked frag charge','keeps burning through a roll'].join(' ').toUpperCase();
@@ -15204,6 +15228,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['a heal on a key','no longer stops medical'].join(' ').toUpperCase();
@@ -15422,6 +15447,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['a controller packs','from the stash'].join(' ').toUpperCase();
@@ -15668,6 +15694,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['surprise me takes','a worn suit off'].join(' ').toUpperCase();
@@ -15896,6 +15923,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['erasing a save','erases its undo copy'].join(' ').toUpperCase();
@@ -16364,6 +16392,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['lightning no longer','hits you through a wall'].join(' ').toUpperCase();
@@ -16673,6 +16702,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['the title screen','and the pause box'].join(' ').toUpperCase();
@@ -17173,6 +17203,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['in an','uncalled ring'].join(' ').toUpperCase();
@@ -17548,6 +17579,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
      var all=L.join(' ').toUpperCase();
      var NEWS=['picks up the gun','bound to it'].join(' ').toUpperCase();
@@ -18799,6 +18831,7 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(this&&this.v&&vCard>parseFloat(this.v)+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
      if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build);
      var all=(wn.lines||[]).join(' ').toUpperCase();
      if(all.indexOf('COOKING')<0) bad.push('the card never mentions the cooked grenade');
@@ -20530,7 +20563,7 @@ window.__REGRESS=[
      if(!(ver>=13.29))
        bad.push('the card still says NEW IN v'+WHATSNEW_VER+', older than his ruling that sends the welcome pack to the stash, so a friend coming back is shown nothing about it');
      var lead=['THE','WELCOME','PACK','GOES','TO','YOUR','STASH'].join(' ');
-     var needle=['Equip','as','your','gun'].join(' ');
+     var needle=['Equip','your','own','gun'].join(' ');
      var idx=-1;
      for(var i=0;i<WHATSNEW.length;i++){ if(String(WHATSNEW[i]).indexOf(lead)===0){ idx=i; break; } }
      if(idx<0)
@@ -20597,7 +20630,7 @@ window.__REGRESS=[
      if(!__vpAlive()) return 'SKIP: the pane has no layout ('+window.innerWidth+'x'+window.innerHeight+'), so the frame loop cannot draw';
      var bad=[], P2=__P();
      var keep={equipped:P2.equipped,equippedSec:P2.equippedSec,weapons:(P2.weapons||[]).slice(),stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),freeKit:P2.freeKit,hot:JSON.parse(JSON.stringify(P2.hotAssign||{}))};
-     var needle=['Equip','as','your','gun'].join(' ');
+     var needle=['Equip','your','own','gun'].join(' ');
      function endAny(){ try{ var g0=__state(); if(g0&&!g0.over){ g0.player.downed=false; __endRaid('abandon'); } }catch(_0){} }
      function ascend(equipped,weapons,stash){
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -20656,7 +20689,7 @@ window.__REGRESS=[
      if(!ITEMS.gun_smg||!WEAPONS.smg) return 'SKIP: this build has no stash gun item to stage';
      var bad=[];
      var keep={equipped:P.equipped,equippedSec:P.equippedSec,weapons:(P.weapons||[]).slice(),stash:(P.stash||[]).slice(),kit:(P.kit||[]).slice(),freeKit:P.freeKit};
-     var needle=['Equip','as','your','gun'].join(' ');
+     var needle=['Equip','your','own','gun'].join(' ');
      function boxText(){ try{ renderSector(); }catch(_s){} return String(K.textContent||''); }
      try{
        // ONE: nothing equipped, and a pack gun waiting in the stash.
@@ -28113,8 +28146,8 @@ window.__REGRESS=[
      var bad=[], stale=['done with',' you'].join(''), b1=String(notoBite(1)), b2=String(notoBite(2)), b3=String(notoBite(3));
      if(b2.indexOf(stale)>=0) bad.push('at notoriety 2 the banner says "'+b2+'" while the stall stays open');
      if(b3.indexOf(stale)>=0) bad.push('at notoriety 3 the banner says "'+b3+'" while the stall stays open');
-     if(b2.indexOf('Hiring')<0) bad.push('at notoriety 2 the banner does not name the hiring cost: "'+b2+'"');
-     if(b1.indexOf('Hiring')<0) bad.push('control: at notoriety 1 the banner does not name the hiring cost: "'+b1+'"');
+     if(!(/Hir(ing|es) cost/).test(b2)) bad.push('at notoriety 2 the banner does not name the hiring cost: "'+b2+'"');
+     if(!(/Hir(ing|es) cost/).test(b1)) bad.push('control: at notoriety 1 the banner does not name the hiring cost: "'+b1+'"');
      return bad.length?bad.join('; '):null; }},
   {v:'11.67',what:'a name with a character above U+00FF (a curly quote, an emoji) still gets a restore code and the code reads back the same name; a plain code written before this build still reads',
    run:function(){
@@ -30821,6 +30854,7 @@ window.__REGRESS=[
        togglePauseBox(true);
        if(!pb.classList.contains('on')) return 'SKIP: the pause box would not open on the floor';
        var floor=shownBtns();
+       floor=floor.filter(function(b){ return !(/^settings$/i).test(b.txt); });   // v16.45 put Settings in every pause box
        // 1. EXACTLY TWO, AND THEY ARE HIS TWO. His words: "actually RETURN TO
        //    THE UNDERCROFT and RETURN TO CHARACTER SELECTION should be the 2
        //    choices".
