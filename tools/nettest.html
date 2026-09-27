@@ -441,6 +441,55 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       else if(d2>24) bad.push('enemies: 2 s later the copies disagree on body '+near.id+' by '+d2.toFixed(1)+' units (the limit is 24)');
     });
   }
+  // P2 SHOTS (his run report of v16.25: player 2 fired 24 rounds at 0 percent, no kills). Copy C, its frame widened to 1600x900
+  // so the HUD panels leave the middle clear, stands 90 units west of a machine A runs, aims with real mouse events on its own
+  // canvas and holds fire until the body dies or 5 s pass. The body must lose health on A, the hits must count on C's tally and
+  // the kill must reach C's tally. A body behind a wall takes no rounds, so up to three bodies are tried, nearest first.
+  function shotStep(A,C,bad,rep){
+    var ea=A.__net.ents(), me=C.__net.up().me, list=[], i, e, fw0=fc.style.width, fh0=fc.style.height, tries=[];
+    function kills(g){ var n=0, q, K=g&&g.tel&&g.tel.kills; if(K) for(q in K) n+=(K[q]|0); return n; }
+    function tel(){ var g=C.__state(); return {s:(g&&g.tel)?(g.tel.shots|0):0,h:(g&&g.tel)?(g.tel.hits|0):0,k:kills(g)}; }
+    for(i=0;i<ea.list.length;i++){ e=ea.list[i]; if(e.id&&e.hp>0&&['crawler','sentry'].indexOf(e.k)>=0) list.push(e); }
+    list.sort(function(a,b){ return gap(a,me)-gap(b,me); });
+    if(!list.length){ bad.push('shots: A runs no crawler or sentry to shoot'); return Promise.resolve(); }
+    fc.style.width='1600px'; fc.style.height='900px';
+    function one(t){
+      var t0=tel(), hp0=t.hp, tEnd;
+      C.__net.stand(t.x-90,t.y); clearFloor(fc);
+      return sleep(600).then(function(){
+        tEnd=Date.now()+5000;
+        return new Promise(function(res){
+          var cvC=C.document.getElementById('cv'), down=false, n=0;
+          function ev(el,type){ var r=cvC.getBoundingClientRect(); el.dispatchEvent(new C.MouseEvent(type,{clientX:r.left+r.width/2+Math.round(r.width*0.08),clientY:r.top+r.height/2,button:0,bubbles:true})); }
+          (function aim(){
+            var c=entOf(fc,t.id);
+            try{ if(c) C.__net.stand(c.x-90,c.y); ev(cvC,'mousemove'); n++; if(!down){ down=true; ev(cvC,'mousedown'); } else if(n%8===0){ ev(C,'mouseup'); down=false; } }catch(_a){ log('shots: aim '+_a.message); }   // a click every eight frames, so a gun that fires once per press fires again
+            if(Date.now()<tEnd&&entOf(fa,t.id)) setTimeout(aim,16); else { try{ ev(C,'mouseup'); }catch(_b){} res(); }
+          })();
+        });
+      }).then(function(){ return sleep(400); }).then(function(){
+        var a=entOf(fa,t.id), t1=tel(), r={id:t.id,k:t.k,shots:t1.s-t0.s,hits:t1.h-t0.h,kills:t1.k-t0.k,hp0:Math.round(hp0),hp:a?Math.round(a.hp):null};
+        log('shots: C fired at number '+r.id+' ('+r.k+'): '+r.shots+' rounds, '+r.hits+' hits and '+r.kills+' kills on its tally; A holds it at '+(a?(r.hp+' hp'):'gone (dead)')+', from '+r.hp0);
+        return r;
+      });
+    }
+    function next(ix){
+      if(ix>=list.length||ix>=3) return Promise.resolve();
+      return one(list[ix]).then(function(r){ tries.push(r); if(!r.hits) return next(ix+1); });
+    }
+    return next(0).then(function(){
+      fc.style.width=fw0; fc.style.height=fh0;
+      var r=tries[tries.length-1];
+      rep.shotHits=r?r.hits:0; rep.shotKills=r?r.kills:0;
+      if(!tries.some(function(q){ return q.shots>0; })) bad.push('shots: C fired no rounds with the fire button held');
+      else if(!r||!r.hits) bad.push('shots: C hit none of '+tries.length+' bodies it fired at from 90 units');
+      else {
+        if(r.hp!==null&&!(r.hp<r.hp0)) bad.push('shots: the body C hit lost no health on A');
+        if(r.hp===null&&!r.kills) bad.push('shots: C killed body '+r.id+' and its tally counted no kill');
+        if(r.hp!==null) log('shots: body '+r.id+' survived 5 s of fire (aim, not a fault); the kill credit is read on a run where it dies');
+      }
+    });
+  }
   // BUILD 8: LOOT PER PLAYER. Right after the enemy step, copy C is stood beside the nearest unopened box it holds (a test only
   // teleport on its handle; the box carries the number it was given at the build, the same on both copies) and holds E for real
   // on its own window for the time the box takes. The loot must land in C's own backpack, on its own raid on the player 2 save;
@@ -525,7 +574,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       // BUILD 7: the enemies, before A walks. A failure here is written down and the step goes on.
       return entStep(A,C,bad,rep).then(null,function(e){ bad.push('enemies: '+e.message); }).then(function(){
         // BUILD 8: C searches a box beside it through the host. A failure here is written down and the step goes on.
-        return lootStep(A,C,bad,rep).then(null,function(e){ bad.push('loot: '+e.message); });
+        return lootStep(A,C,bad,rep).then(null,function(e){ bad.push('loot: '+e.message); }).then(function(){ return shotStep(A,C,bad,rep).then(null,function(e){ bad.push('shots: '+e.message); }); });
       }).then(function(){
         clearFloor(fa);
         a0=A.__net.up().me;
