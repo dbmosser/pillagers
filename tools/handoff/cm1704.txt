@@ -1,0 +1,7 @@
+v17.04: a downed controller player calls the extraction with x again
+
+Downed, pad X is E: pollPad chose X on the press from G.nearPad, G.nearContainer and the other reach flags, which are only written on a standing frame, so a player who went down outside a ring and crawled in got R (nothing on the floor) and never started the 1.6 s call the downed overlay asks for; player 2 in a same machine pair has only the pad. A downed player now has the ring search grace switched off and X held on the floor holds E, including a hold carried over from before he went down. Standing play is unchanged.
+
+Check 17.04. Fails on v17.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

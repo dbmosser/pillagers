@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.04 - A DOWNED CONTROLLER PLAYER CALLS THE EXTRACTION WITH X AGAIN
+
+Co-op hunt while he was away. A controller player who went down outside an extraction circle and crawled into it could not call the ship: X chose from what was in reach where he fell, so it held the reload key, which does nothing on the floor, while the downed screen said HOLD X TO CALL FOR EXTRACTION. Player 2 on one PC has no keyboard E, so he bled out inside the circle. On the floor X now always holds E, the one key a downed player uses, and never starts a search.
+
+MEASURED. Check 17.04 passes, and fails on v17.03.
 ## v17.03 - LETTING GO OF THE RIGHT STICK NOW ENDS AIMING, SO SUPERHOT TIME STOPS AND KID FIRING COMES BACK
 
 Co-op hunt while he was away. On a controller the game kept thinking the right stick was aiming after it was let go, until the left stick moved. With Superhot on, time never stopped for either window while player 2 stood still, and kid firing stayed off with an enemy in sight. A take-over time left from one raid could also hold kid firing off for minutes of the next. The aiming flag now follows the right stick every frame, and a take-over time from an earlier raid is dropped.
