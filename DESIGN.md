@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.06 - AN ARMOURY GUN THE HOST DROPS AND PLAYER 2 PICKS UP IS NO LONGER IN BOTH SAVES
+
+Co-op hunt while he was away. In co-op, when player 1 put one of his own armoury guns in the backpack, dropped it and player 2 searched the pile up, player 2 took the gun home, but player 1 kept it on the list of guns an abandoned run puts back. If player 1 then abandoned, or closed his window mid raid, the same gun came back to his armoury as well, so one gun was in both saves. Now the gun comes off the host list the moment the host hands it to a teammate from a pile he dropped.
+
+MEASURED. Check 17.06 passes, and fails on v17.05.
 ## v17.05 - GOING DOWN OR ROLLING STOPS A TEAMMATE PICK-UP INSTEAD OF FREEZING IT
 
 Co-op hunt while he was away. A player who went down or rolled part way through picking up a teammate left the pick-up clock frozen: the REVIVING bar hung over the teammate for the whole bleed-out, even after he got up and walked off, and once the player was up again with E held the pick-up carried on from where it stopped instead of starting over. Going down or rolling now stops the pick-up and clears its bar, and E held on afterwards starts it again from the start with its Reviving line.

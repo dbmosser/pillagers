@@ -1,0 +1,5 @@
+## v17.06 - AN ARMOURY GUN THE HOST DROPS AND PLAYER 2 PICKS UP IS NO LONGER IN BOTH SAVES
+
+Co-op hunt while he was away. In co-op, when player 1 put one of his own armoury guns in the backpack, dropped it and player 2 searched the pile up, player 2 took the gun home, but player 1 kept it on the list of guns an abandoned run puts back. If player 1 then abandoned, or closed his window mid raid, the same gun came back to his armoury as well, so one gun was in both saves. Now the gun comes off the host list the moment the host hands it to a teammate from a pile he dropped.
+
+MEASURED. Check 17.06 passes, and fails on v17.05.

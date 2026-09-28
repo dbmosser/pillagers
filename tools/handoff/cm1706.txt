@@ -1,0 +1,7 @@
+v17.06: an armoury gun the host drops and player 2 picks up is no longer in both saves
+
+Co-op, host armoury gun copied into both saves. Putting an armoury gun in the backpack takes it out of P.weapons and records it in G.spliced and P.raidSpliced so an abandon (or the loader after a closed window) can put it back. A pile the host drops is numbered and shared, so player 2 could search it up through the host and bank the gun on his own save, while the host lists still named it and the host abandon or the next load pushed it back into his armoury too. netSrchTick now calls netGunsGone for every item the host hands to a teammate: for a pile the host dropped, each gun key takes one matching id off G.spliced and P.raidSpliced and the profile is saved. Only dropped piles, and one id per gun, so a found field copy in an ordinary box never costs the host his own gun, and solo play is untouched.
+
+Check 17.06. Fails on v17.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
