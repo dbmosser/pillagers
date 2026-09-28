@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.07 - AN ISSUED BANDAGE STAYS A LOANER WHEN IT PASSES BETWEEN TEAMMATES
+
+Co-op hunt while he was away. Issued Bandages are loaners and are never banked, but in co-op two roads turned one into a find that went to the stash. A Bandage player 1 dropped and player 2 searched up arrived on player 2 as found, and a Bandage held out to a teammate who walked off during the wind-up came back as found. Now the dropped pile tells the party it holds an issued Bandage, so it arrives issued, and a Bandage that comes back from a heal the teammate walked away from goes back on the issued count.
+
+MEASURED. Check 17.07 passes, and fails on v17.06.
 ## v17.06 - AN ARMOURY GUN THE HOST DROPS AND PLAYER 2 PICKS UP IS NO LONGER IN BOTH SAVES
 
 Co-op hunt while he was away. In co-op, when player 1 put one of his own armoury guns in the backpack, dropped it and player 2 searched the pile up, player 2 took the gun home, but player 1 kept it on the list of guns an abandoned run puts back. If player 1 then abandoned, or closed his window mid raid, the same gun came back to his armoury as well, so one gun was in both saves. Now the gun comes off the host list the moment the host hands it to a teammate from a pile he dropped.

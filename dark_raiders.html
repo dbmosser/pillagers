@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.06';
+var VER='17.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31457,7 +31457,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.06: Co-op, host armoury gun copied into both saves. Putting an armoury gun in the backpack takes it out of P.weapons and records it in G.spliced and P.raidSpliced so an abandon (or the loader after a closed window) can put it back. A pile the host drops is numbered and shared, so player 2 could search it up through the host and bank the gun on his own save, while the host lists still named it and the host abandon or the next load pushed it back into his armoury too. netSrchTick now calls netGunsGone for every item the host hands to a teammate: for a pile the host dropped, each gun key takes one matching id off G.spliced and P.raidSpliced and the profile is saved. Only dropped piles, and one id per gun, so a found field copy in an ordinary box never costs the host his own gun, and solo play is untouched. Check 17.06 fails on v17.05',
+  now:'v17.07: Co-op, issued Bandages banked as finds. A drop keeps an issued Bandage issued by marking the pile issuedB (v13.90), but netContNewWord did not carry the mark, so the copy player 2 window builds in netContMake had none and grantLoot on his window counted the Bandage as found, banked at his extraction. The word now carries ib and netContMake sets issuedB, so grantLoot raises the issued count on the window that takes it. The teammate heal spliced the Bandage out and the frame tracker spent it from the issued count, then netAidFinish pushed it back when the teammate walked off and the tracker read that as a find. netAidStart now spends an issued Bandage from the count itself, as dropItem does (with G.bandSeen so it is not spent twice), and marks the wind-up issB; the moved away branch of netAidFinish puts it back on the count. A finished heal still spends it as before. No number moved. Check 17.07 fails on v17.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36483,12 +36483,20 @@ function netAidHold(quiet){
   G.bag.splice(bi,1);
   startPrep(arm?'armor':'heal',key);
   p[arm?'prepA':'prep'].aid=s;
+  // v17.07, co-op hunt 2026-09-28: an issued Bandage held out to a teammate is spent from the issued count here, as dropItem does
+  // (and from what the count last saw, so the frame tracker does not spend it twice), and the wind-up remembers it, so if the
+  // teammate walks off and it comes back it goes back on the count. It came back as a find and was banked at the extraction.
+  if(!arm&&key==='bandage'&&(G.issuedBandages||0)>0){ G.issuedBandages--; if(G.bandSeen!==undefined) G.bandSeen--; p.prep.issB=1; }
   say((arm?'Slotting a plate for ':'Bandaging ')+nm+'.'); blip('pick');
   return true;
 }
 function netAidFinish(PR){
   var p=G.player, s=PR.aid, g=NET.up[s], nm=netSeatName(s)||'your teammate', it=ITEMS[PR.key], i;
-  if(!g||!netUpShown(g)||g.dn||Math.hypot(g.x-p.x,g.y-p.y)>NET_REV_R*1.5){ G.bag.push(PR.key); say(nm+' moved away. '+(it?it.name:'It')+' kept.'); return false; }
+  if(!g||!netUpShown(g)||g.dn||Math.hypot(g.x-p.x,g.y-p.y)>NET_REV_R*1.5){
+    G.bag.push(PR.key);
+    if(PR.issB){ G.issuedBandages=(G.issuedBandages||0)+1; if(G.bandSeen!==undefined) G.bandSeen++; }   // v17.07, co-op hunt 2026-09-28: still a loaner
+    say(nm+' moved away. '+(it?it.name:'It')+' kept.'); return false;
+  }
   if(NET.role==='host') netAidPass(s,NET.seat,PR.key);
   else for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'aid',s:s,k:PR.key});
   say((it&&it.use==='armor')?('Plate slotted for '+nm+'.'):('Patched up '+nm+'.')); blip('pick');
@@ -37945,7 +37953,8 @@ function netContNumber(){
 }
 function netContNewWord(ct){
   return {t:'cont',st:'new',cid:ct.cid,x:Math.round(ct.x),y:Math.round(ct.y),ty:netClean(ct.type,12),tag:netClean(ct.tag,24),ca:ct.cache?1:0,sg:ct.strong?1:0,cp:ct.camp?1:0,
-          tm:+(+(ct.time||1)).toFixed(2),d:(typeof ct.d==='number')?ct.d:-1,dr:ct.dropped?1:0,op:ct.opened?1:0,n:ct.loot?ct.loot.length:0};
+          tm:+(+(ct.time||1)).toFixed(2),d:(typeof ct.d==='number')?ct.d:-1,dr:ct.dropped?1:0,op:ct.opened?1:0,n:ct.loot?ct.loot.length:0,
+          ib:ct.issuedB?1:0};   // v17.07, co-op hunt 2026-09-28: a pile holding an issued Bandage says so, so it stays a loaner on the window that takes it
 }
 // THE HOST, about ten times a second: every box that arrived, opened or shut since the last tick. Returns how many words.
 function netContTick(){
@@ -38048,6 +38057,7 @@ function netContMake(cid,m){
   ct={cid:cid,net:1,x:clamp(x,-9000,NET_UP_MAX),y:clamp(y,-9000,NET_UP_MAX),r:15,type:ty,d:(typeof m.d==='number'&&m.d>=0)?(m.d|0):-1,loot:[],opened:!!m.op,
       time:(isFinite(tm)&&tm>0)?clamp(tm,0.2,20):1,best:'common',rot:0,pulled:0,prog:0,netBy:-1};
   if(m.ca) ct.cache=1; if(m.sg) ct.strong=1; if(m.cp) ct.camp=1; if(m.dr) ct.dropped=1;
+  if(m.ib) ct.issuedB=1;   // v17.07, co-op hunt 2026-09-28: grantLoot puts it back on this window issued count, as a pile of his own would
   if(typeof m.n==='number'&&m.n>=0) ct.netLeft=m.n|0;   // v16.32, his note: player 2 search bar shows how many items are left, as player 1 does
   if(typeof m.tag==='string'&&m.tag) ct.tag=netClean(m.tag,24);
   return ct;
