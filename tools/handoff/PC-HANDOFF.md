@@ -105,3 +105,8 @@ Shipped since 15:37: 16.83 kid firing (P2 row, right stick takes over), 16.84 ho
 selected on the tactical belt only, 16.85 stash screen on a pad (A grab, D-pad, A place, B lets go), 16.86 a teammate who has
 left is never waited for (a narrow fix; his downed-extract report may instead be keyboard focus on the P2 window: asked him).
 LEFT: kit options random from stash / top gear (redo solo); his 125% zoom question; his downed-extract answer.
+
+## 2026-09-28 10:50: v16.87 TOP GEAR and RANDOM FROM STASH at the kit question; v16.88 card refresh (his playtest line).
+His explicit asks are all shipped. Waiting on him: is his 125% zoom Chrome own zoom; was his downed-extract E going to the
+player 2 window (keyboard focus). Weekly all-models read 21% this morning. Next idle work: the full corpus in four headless
+Chromes (tools/cdp.ps1, one per port 9336-9339) on v16.88, then the stale checks it shows.
