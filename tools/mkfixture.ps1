@@ -5725,7 +5725,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof netSameOnMsg!=='function'||typeof netSamePost!=='function'||typeof NET!=='object'||!NET||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no same machine pair';
      var keep={same:NET.same,pair:NET.pair}, oPost=netSamePost, sent=[], bad=[], k0=keys, K=window.KeyboardEvent;
-     function press(code,ty){ window.dispatchEvent(new K(ty||'keydown',{code:code,key:code.replace(/^Key/,'').toLowerCase(),bubbles:true,cancelable:true})); }
+     function press(code,ty){ document.body.dispatchEvent(new K(ty||'keydown',{code:code,key:code.replace(/^Key/,'').toLowerCase(),bubbles:true,cancelable:true})); }
      try{
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        netSamePost=function(m){ sent.push(m); return true; };
