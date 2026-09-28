@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.98';
+var VER='16.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16636,6 +16636,7 @@ if(!p.fired||p.wep.auto){
       downRdr.alert=0; downRdr.goal=null;
       downRdr.hostile=false; downRdr.grudge=false; downRdr.friendlyPC=1;
       downRdr.byPlayer=false;   // v11.64: his next death is not yours unless you cause it
+      downRdr.bySeat=0;   // v16.99, co-op hunt 2026-09-28: nor a teammate kill; the player 2 mark outlived the pick-up and a later shell or bleed-out was sent to player 2 as his kill
       G.tel.revives=(G.tel.revives||0)+1;
       G.tel.raiderRevives=(G.tel.raiderRevives||0)+1;
       blip('pick');
@@ -19301,6 +19302,7 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
           TG.downed=0; TG.state='loot'; TG.hp=Math.round(TG.maxhp*0.4);
           TG.alert=0; TG.goal=null;
           TG.byPlayer=false;   // v13.98, AI audit: as your own revive does, his next death is not yours unless you cause it
+          TG.bySeat=0;   // v16.99, co-op hunt 2026-09-28: nor a teammate kill, as your own pick-up now clears it too
           e.reviving=null; e.revProg=0;
           if(!G.sim){ label(TG.x,TG.y-18,'PICKED UP','#ffc04a',0,true); }
           if(G.tel) G.tel.crewRevives=(G.tel.crewRevives||0)+1;
@@ -31426,7 +31428,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.98: Kill credit, co-op hunt 2026-09-28: a pillager who bleeds out is marked finished with no health and is only taken off the map on the next frame, but rounds and charges are stepped in between. The enemy round loop, the player round loop and explodeFrag had no skip for that body (the lightning strike loop did), so a round or charge on it ran the killing blow branch again and set bySeat to 0 or byPlayer to true, and netEntGone then sent no kill word to player 2 or gave the kill to the host. All three loops now skip a finished body, so the round or charge passes over it. A downed man is not finished and can still be shot and finished off. No number and no player text moved. Check 16.98 fails on v16.97',
+  now:'v16.99: Kill credit, co-op hunt 2026-09-28: v15.80 added bySeat beside byPlayer, but the two places a downed pillager stands back up (your pick-up with E in updatePlayer and a crewmate pick-up in updateEnts) cleared only byPlayer. The seat mark from the player 2 downing blow survived the revive, and a later death that writes no mark (a Howler shell, a crawler bite, a bleed-out) reached netEntGone with bySeat still set, so player 2 was sent a kill word, a contract tick and a grudge for a man he did not kill. Both pick-ups now clear bySeat too, the same way netShotTake clears both marks on a blow he survives. No number and no player text moved. Check 16.99 fails on v16.98',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

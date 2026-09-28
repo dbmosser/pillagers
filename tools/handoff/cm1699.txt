@@ -1,0 +1,7 @@
+v16.99: a pillager who is picked up no longer counts as a player 2 kill when he dies later
+
+Kill credit, co-op hunt 2026-09-28: v15.80 added bySeat beside byPlayer, but the two places a downed pillager stands back up (your pick-up with E in updatePlayer and a crewmate pick-up in updateEnts) cleared only byPlayer. The seat mark from the player 2 downing blow survived the revive, and a later death that writes no mark (a Howler shell, a crawler bite, a bleed-out) reached netEntGone with bySeat still set, so player 2 was sent a kill word, a contract tick and a grudge for a man he did not kill. Both pick-ups now clear bySeat too, the same way netShotTake clears both marks on a blow he survives. No number and no player text moved.
+
+Check 16.99. Fails on v16.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

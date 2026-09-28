@@ -1,0 +1,1 @@
+| A PILLAGER WHO IS PICKED UP NO LONGER COUNTS AS A PLAYER 2 KILL WHEN HE DIES LATER | v16.99 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 16.99 passes, fails on v16.98 |
