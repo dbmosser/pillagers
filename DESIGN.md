@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.01 - A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER
+
+Co-op hunt while he was away. On one PC both windows are played at once, so the player 2 backpack is opened by its controller while the other window has focus, and the player 1 backpack can be opened by keys handed over from the player 2 window. Any click that moved focus between the windows shut the backpack of the window that lost or took focus and dropped the item being moved. A focus change in a two-window game now leaves the backpack open and keeps a controller drag; a mouse drag is still dropped, and one window alone, the cursor reset key and a hidden tab still close the backpack as before.
+
+MEASURED. Check 17.01 passes, and fails on v17.00.
 ## v17.00 - A CONTROLLER X PRESSED AFTER A PAD GAP, ANOTHER SCREEN OR DURING A ROLL SEARCHES THE BOX IN REACH INSTEAD OF RELOADING
 
 Co-op hunt while he was away. On a controller X chooses on the press between searching and reloading, and the press was only noticed in the raid branch. After a pad gap, a menu or another screen, a new X press was not seen as new, so the reload choice of the X before was held again beside a box and the box was never searched until X was let go and pressed once more. X pressed during a roll also chose from where the roll began, so rolling onto a box with X down reloaded instead of searching. Now a pad gap or another screen forgets the X press, and X pressed during a roll chooses once the roll ends and the game has looked at what is in reach.

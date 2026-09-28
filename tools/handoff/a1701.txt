@@ -1,0 +1,1 @@
+| A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER | v17.01 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.01 passes, fails on v17.00 |

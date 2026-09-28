@@ -1,0 +1,7 @@
+v17.01: a click in one window no longer shuts the backpack of the other player
+
+A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER. On one PC the player 2 backpack is opened by its controller while the other window has focus, and any click that moved focus between the windows shut it and dropped the item being moved. A focus change in a two-window game now leaves the backpack open and keeps a controller drag; a mouse drag is still dropped, and one window alone, the cursor reset key and a hidden tab still close it.
+
+Check 17.01. Fails on v17.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

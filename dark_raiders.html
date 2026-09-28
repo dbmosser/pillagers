@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.00';
+var VER='17.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30704,11 +30704,17 @@ function showScreen(s){
 // short of pressing and releasing M again, which nobody would guess. The same
 // latch is what leaves sprint or crouch stuck on, which has bitten this file
 // before. Every key is now released whenever focus or visibility goes.
-function releaseAllKeys(){
+function releaseAllKeys(soft){
   keys={}; mouse.down=false; if(G) G.sprinting=false;
   // The reticle also hides for an open bag, and alt-tabbing with the bag open
   // left that panel latched too. Cleared with the keys, for the same reason.
-  if(G){ G.bagOpen=false; G.drag=null; }
+  // v17.01, co-op hunt 2026-09-28: A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER. On one PC both
+  // windows are played at once: the player 2 backpack is opened by its controller while the other window has focus, and the
+  // host backpack by keys handed over from the player 2 window. A focus change (soft, the blur and focus listeners below) in a
+  // same-machine window leaves the backpack open and keeps a controller drag; a mouse drag is still dropped, and the cursor
+  // reset and a hidden tab (no soft) still close everything, as does a window played alone.
+  var keepBag=!!(soft===true&&typeof NET!=='undefined'&&NET&&NET.same);
+  if(G){ if(!keepBag) G.bagOpen=false; if(!(keepBag&&G.drag&&G.drag.pad)) G.drag=null; }
   // v15.65, stealth audit finding: CTRL WITH THE MOUSE WHEEL SIZES THE HUD WITHOUT TOGGLING CROUCH. A Ctrl held when the
   // window loses focus never sends its keyup here, so the stance kept for Ctrl with the wheel is forgotten with the keys.
   if(G) G.ctrlUndo=null;
@@ -30741,8 +30747,8 @@ document.addEventListener('visibilitychange',function(){
   // frame back, since the music, reverb and ambience ticks all call it.
   if(document.hidden){ releaseAllKeys(); try{ if(AC&&AC.suspend) AC.suspend(); }catch(e){} } else lastTs=performance.now();
 });
-window.addEventListener('blur',releaseAllKeys);
-window.addEventListener('focus',function(){ releaseAllKeys(); lastTs=performance.now(); });
+window.addEventListener('blur',function(){ releaseAllKeys(true); });   // v17.01: a focus change is soft, see releaseAllKeys
+window.addEventListener('focus',function(){ releaseAllKeys(true); lastTs=performance.now(); });
 function onCtxLost(e){
   e.preventDefault();
   ctxLost=true;
@@ -31439,7 +31445,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.00: Controller X search after a gap or a roll (co-op hunt 2026-09-28). X on a pad chooses on the press between E (search, open, call) and R (reload) and keeps that choice for the hold. The press latch PAD.xWas was written only in the raid branch of pollPad, so the no-pad branch (a pad that dropped out, or player 2 with no forwarded state), the menu path, other screens, the stall and the Undercroft all left it set: an X let go and pressed again during the gap was not a new press, and the reload choice was held again beside a box, so G.searching stayed empty until X was pressed once more. padRelease now clears PAD.xWas, the no-pad branch clears PAD.xWas, PAD.xDownAt and PAD.xSearched (not PAD.xAfterTrade, which must still spend an X held from the stall), and the Undercroft return clears PAD.xWas. Second, pollPad runs before updatePlayer and updatePlayer looks up what is in reach only after its early return for a roll, so X pressed during a roll chose from where the roll began and held R onto the box. A roll reads neither E nor R, so a press during a roll now holds nothing until updatePlayer has looked up the reach again after the press (a new counter G.nearN, one per look), then chooses and starts the 0.35 s search grace from then. Out of a roll, or downed, the choice is made on the press as before. No number moved and no player text changed. Check 17.00 fails on v16.99',
+  now:'v17.01: A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER. On one PC the player 2 backpack is opened by its controller while the other window has focus, and any click that moved focus between the windows shut it and dropped the item being moved. A focus change in a two-window game now leaves the backpack open and keeps a controller drag; a mouse drag is still dropped, and one window alone, the cursor reset key and a hidden tab still close it. Check 17.01 fails on v17.00',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

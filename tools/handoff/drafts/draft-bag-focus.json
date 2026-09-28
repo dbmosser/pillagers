@@ -1,0 +1,24 @@
+{
+  "title": "A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER",
+  "why": "On one PC both windows are played at once, so the player 2 backpack is opened by its controller while the other window has focus, and the player 1 backpack can be opened by keys handed over from the player 2 window. Any click that moved focus between the windows shut the backpack of the window that lost or took focus and dropped the item being moved. A focus change in a two-window game now leaves the backpack open and keeps a controller drag; a mouse drag is still dropped, and one window alone, the cursor reset key and a hidden tab still close the backpack as before.",
+  "now": "A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER. On one PC the player 2 backpack is opened by its controller while the other window has focus, and any click that moved focus between the windows shut it and dropped the item being moved. A focus change in a two-window game now leaves the backpack open and keeps a controller drag; a mouse drag is still dropped, and one window alone, the cursor reset key and a hidden tab still close it.",
+  "edits": [
+    {
+      "anchor": "function releaseAllKeys(){",
+      "replacement": "function releaseAllKeys(soft){"
+    },
+    {
+      "anchor": "  if(G){ G.bagOpen=false; G.drag=null; }",
+      "replacement": "  // v16.xx, co-op hunt 2026-09-28: A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER. On one PC both\n  // windows are played at once: the player 2 backpack is opened by its controller while the other window has focus, and the\n  // host backpack by keys handed over from the player 2 window. A focus change (soft, the blur and focus listeners below) in a\n  // same-machine window leaves the backpack open and keeps a controller drag; a mouse drag is still dropped, and the cursor\n  // reset and a hidden tab (no soft) still close everything, as does a window played alone.\n  var keepBag=!!(soft===true&&typeof NET!=='undefined'&&NET&&NET.same);\n  if(G){ if(!keepBag) G.bagOpen=false; if(!(keepBag&&G.drag&&G.drag.pad)) G.drag=null; }"
+    },
+    {
+      "anchor": "window.addEventListener('blur',releaseAllKeys);",
+      "replacement": "window.addEventListener('blur',function(){ releaseAllKeys(true); });   // v16.xx: a focus change is soft, see releaseAllKeys"
+    },
+    {
+      "anchor": "window.addEventListener('focus',function(){ releaseAllKeys(); lastTs=performance.now(); });",
+      "replacement": "window.addEventListener('focus',function(){ releaseAllKeys(true); lastTs=performance.now(); });"
+    }
+  ],
+  "check": "  {v:'VER',what:'on one PC a focus change in either window leaves that window backpack open and a controller drag in hand; a mouse drag is still dropped, and a window played alone and the cursor reset still shut the backpack',\n   run:function(){\n     if(typeof releaseAllKeys!=='function'||typeof NET!=='object'||!NET||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no same machine pair';\n     var keep={same:NET.same,pair:NET.pair}, k0=keys, md0=mouse.down, bad=[];\n     function blur(){ window.dispatchEvent(new Event('blur')); }\n     function focus(){ window.dispatchEvent(new Event('focus')); }\n     try{\n       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!G||G.over) return 'SKIP: staging: no raid to open a backpack in';\n       NET.same='p2'; NET.pair='zqxbag'; keys={};\n       G.bagOpen=true; G.drag={pad:1};\n       blur();\n       if(!G.bagOpen) bad.push('the player 2 window lost focus and its backpack, opened by its controller, shut');\n       if(!(G.drag&&G.drag.pad)) bad.push('the player 2 window lost focus and the item its controller was moving was dropped');\n       G.bagOpen=true; G.drag=null;\n       focus();\n       if(!G.bagOpen) bad.push('the player 2 window took focus and its backpack shut');\n       G.bagOpen=true; G.drag={};\n       blur();\n       if(G.drag) bad.push('control: a mouse drag survived a focus change');\n       NET.same='host'; G.bagOpen=true; G.drag=null;\n       blur();\n       if(!G.bagOpen) bad.push('the player 1 window lost focus and its backpack, opened by keys handed over from the player 2 window, shut');\n       NET.same=null; G.bagOpen=true; G.drag={pad:1};\n       blur();\n       if(G.bagOpen||G.drag) bad.push('control: a window played alone kept its backpack open through a focus change');\n       NET.same='p2'; G.bagOpen=true; G.drag={pad:1};\n       releaseAllKeys();\n       if(G.bagOpen||G.drag) bad.push('control: the cursor reset no longer shuts the backpack in the player 2 window');\n     } finally {\n       NET.same=keep.same; NET.pair=keep.pair; keys=k0||{}; mouse.down=md0;\n       try{ if(G){ G.bagOpen=false; G.drag=null; } }catch(e){}\n       try{ __endRaid('abandon'); __topClear(); }catch(e){}\n     }\n     return bad.length?bad.join('; '):null; }},"
+}
