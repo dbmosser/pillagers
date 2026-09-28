@@ -7432,6 +7432,7 @@ window.__REGRESS=[
        down={3:1}; poll();
        if(!keys['KeyX']) bad.push('Y held does not hold the ring search');
        down={}; poll();
+       if(G.player) G.player.roll=0;   // v17.00 waits for a roll to end before X chooses (the A tap above started one); time never steps here
        G.nearContainer=null; G.nearPad=null; G.nearDown=null; G.nearDoor=null; G.nearPed=null;
        down={2:1}; poll(); poll();
        if(!keys['KeyR']||keys['KeyE']) bad.push('X held with nothing in reach did not reload');
