@@ -1,0 +1,7 @@
+v16.93: esc or tab that shuts the pause box in the player 2 window no longer pauses player 1
+
+Co-op hunt 2026-09-28, finding 12: the window capture listener that shuts the pause box on ESC or TAB called only stopPropagation, which does not stop later listeners on the same window. netKeyFwd, the v16.89 capture listener that hands every key in the player 2 window to player 1, is registered after it and still posted the same ESC or TAB, and the player 1 window played it as its own: RAID PAUSED opened there (wiping his held keys and trigger), or his open map or backpack shut, or on the floor his box toggled. The pause box listener now also calls stopImmediatePropagation next to its stopPropagation, so the key is spent on the box it shut. The only later capture listeners on window are netKeyFwd and the push to talk Y, neither of which needs ESC or TAB with the box open. The keyup is still handed on, which only clears a key on the host. No number and no player text moved.
+
+Check 16.93. Fails on v16.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

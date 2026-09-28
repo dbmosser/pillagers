@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.93 - ESC OR TAB THAT SHUTS THE PAUSE BOX IN THE PLAYER 2 WINDOW NO LONGER PAUSES PLAYER 1
+
+Co-op hunt while he was away. With the pause box open in the player 2 window, one press of ESC or TAB shut that box and was also handed to the player 1 window, where it opened RAID PAUSED, wiped his held keys, or snapped his map or backpack shut. One key acted in both windows. The key that shuts the pause box is now spent on that box and goes nowhere else.
+
+MEASURED. Check 16.93 passes, and fails on v16.92.
 ## v16.92 - A KEY HELD IN THE PLAYER 2 WINDOW IS LET GO WHEN THAT WINDOW LOSES FOCUS
 
 Co-op hunt while he was away. In a same machine pair the player 2 window hands every key to player 1, but it never handed up a key that was still down when it lost focus. Alt-tab, the taskbar or a click into another program with W, Shift or E held left player 1 walking, sprinting or holding E with no key down until someone clicked his window, and a key let go over a text box in the player 2 window stuck the same way. The player 2 window now remembers the keys it handed down and hands each one up when it loses focus, is hidden or closes, and a key let go over its text box is still handed up.

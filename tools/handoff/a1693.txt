@@ -1,0 +1,1 @@
+| ESC OR TAB THAT SHUTS THE PAUSE BOX IN THE PLAYER 2 WINDOW NO LONGER PAUSES PLAYER 1 | v16.93 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 16.93 passes, fails on v16.92 |
