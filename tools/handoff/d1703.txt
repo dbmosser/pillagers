@@ -1,0 +1,5 @@
+## v17.03 - LETTING GO OF THE RIGHT STICK NOW ENDS AIMING, SO SUPERHOT TIME STOPS AND KID FIRING COMES BACK
+
+Co-op hunt while he was away. On a controller the game kept thinking the right stick was aiming after it was let go, until the left stick moved. With Superhot on, time never stopped for either window while player 2 stood still, and kid firing stayed off with an enemy in sight. A take-over time left from one raid could also hold kid firing off for minutes of the next. The aiming flag now follows the right stick every frame, and a take-over time from an earlier raid is dropped.
+
+MEASURED. Check 17.03 passes, and fails on v17.02.

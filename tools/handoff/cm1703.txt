@@ -1,0 +1,7 @@
+v17.03: letting go of the right stick now ends aiming, so superhot time stops and kid firing comes back
+
+The right stick aiming flag (PAD.aiming) was set when the right stick moved but only cleared when the left stick moved with the right stick idle, so with both sticks let go it stayed on. The Superhot gate counts it as acting, so time kept running for this window and, through the sa flag in the state word, for the other window too; and netAutoFire took it as the stick still aiming, so kid firing never came back while player 2 stood still. In a raid pollPad now sets the flag from the right stick every frame (the crosshair keeps its own PAD.aimA and PAD.curOwn). PAD.afRsT was also never cleared while the raid clock starts at 0 each raid, so a value from late in one raid held kid firing off for that many seconds of the next; netAutoFire now drops a take-over time that is ahead of the raid clock.
+
+Check 17.03. Fails on v17.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

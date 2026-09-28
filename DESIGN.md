@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.03 - LETTING GO OF THE RIGHT STICK NOW ENDS AIMING, SO SUPERHOT TIME STOPS AND KID FIRING COMES BACK
+
+Co-op hunt while he was away. On a controller the game kept thinking the right stick was aiming after it was let go, until the left stick moved. With Superhot on, time never stopped for either window while player 2 stood still, and kid firing stayed off with an enemy in sight. A take-over time left from one raid could also hold kid firing off for minutes of the next. The aiming flag now follows the right stick every frame, and a take-over time from an earlier raid is dropped.
+
+MEASURED. Check 17.03 passes, and fails on v17.02.
 ## v17.02 - KID MODE AT 1/20 NOW REALLY GIVES PLAYER 2 A TWENTIETH OF EVERY HIT
 
 Co-op hunt while he was away. The 1/20 kid mode level added in v16.73 was read as OFF everywhere: the Settings row showed OFF after picking it, player 2 took full damage, and a host who picked 1/20 sent OFF to the party. The three places that read the level only accepted values down to 1/10. They now accept every level in the row, down to 1/20, so 1/20 shows, travels in the host word and cuts each hit to a twentieth.
