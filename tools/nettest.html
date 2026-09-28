@@ -361,7 +361,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       try{ A.navigator.getGamepads=NGA; }catch(e){}
       try{ delete A.document.hasFocus; delete C.document.hasFocus; }catch(e){}
       try{ A.__net.padSet(-1); }catch(e){}
-      return sleep(400).then(function(){ var p=C.__net.pad(); log('controller: 400 ms after the pads were taken away C holds ['+p.down.join(',')+'], on '+p.on); if(p.on||p.down.length) bad.push('controller: C still plays a pad 400 ms after the window in front stopped handing one over'); });
+      return sleep(800).then(function(){ var p=C.__net.pad(); log('controller: 800 ms after the pads were taken away (v16.80 keeps a handed state 0.6 s) C holds ['+p.down.join(',')+'], on '+p.on); if(p.on||p.down.length) bad.push('controller: C still plays a pad 800 ms after the window in front stopped handing one over'); });
     });
   }
   // BUILD 5: WORLD SOUND FROM ONE WINDOW ONLY. After the pair, copy C (the player 2 window) must report its sound off and copy
