@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.14 - A PLAYER 2 WINDOW STILL ON ITS TITLE GOES UP WITH THE PARTY, AND A HOST WHO WENT UP ALONE IS TOLD WHY
+
+Co-op hunt while he was away. The player 2 window links up while it is still on its title, and it stays there until its own ENTER THE UNDERCROFT is pressed. A host who took the lift in those first seconds had the kit question answered busy at once and went up alone, with no line in the raid, while player 2 was then held at the lift for the whole raid. Now the kit question and the host word take the player 2 window past its title the way its own start button does, so it is asked for its kit and goes up with the party, and a teammate who still could not go up is named in the raid, not only in a shut PARTY window.
+
+MEASURED. Check 17.14 passes, and fails on v17.13.
 ## v17.13 - THE RAID A SPECTATING HOST KEEPS RUNNING MAKES NO SOUND IN HIS UNDERCROFT
 
 Co-op hunt while he was away. When the host died or extracted and a teammate was still up top, the host window kept the raid running for the party, and that raid was meant to be silent there. It was not: the teammate rounds landing near the host body, the inbound pings, his beacon call and a pillager going down all played in the host Undercroft, out of the host speaker. Now every word from the party that is handled against the kept raid is muted in the host window, and so is every sound the kept raid plays directly; the host own clicks and menus still sound as before.

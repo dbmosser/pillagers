@@ -1,0 +1,5 @@
+## v17.14 - A PLAYER 2 WINDOW STILL ON ITS TITLE GOES UP WITH THE PARTY, AND A HOST WHO WENT UP ALONE IS TOLD WHY
+
+Co-op hunt while he was away. The player 2 window links up while it is still on its title, and it stays there until its own ENTER THE UNDERCROFT is pressed. A host who took the lift in those first seconds had the kit question answered busy at once and went up alone, with no line in the raid, while player 2 was then held at the lift for the whole raid. Now the kit question and the host word take the player 2 window past its title the way its own start button does, so it is asked for its kit and goes up with the party, and a teammate who still could not go up is named in the raid, not only in a shut PARTY window.
+
+MEASURED. Check 17.14 passes, and fails on v17.13.

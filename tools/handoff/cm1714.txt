@@ -1,0 +1,7 @@
+v17.14: a player 2 window still on its title goes up with the party, and a host who went up alone is told why
+
+Co-op hunt 2026-09-28, finding 8: the player 2 window pairs on its title (netTitleInit runs netSameBootP2 at boot) and stays there until its ENTER THE UNDERCROFT is clicked. On a kitask, netKitTake closed only the run card (v16.55) and for any other busy state answered kitok at once, so netUpBusy said on the title, the host kit wait ended on the spot and ascendNow ran. The raid word was then refused the same way in netUpTake. On the host the answering up word with st no only set NET.status and called netRefresh, which draws only a PARTY window that is already open, and startRaid had just shut every window, so the host up top was told nothing; player 2, once on the floor, was held at the lift by netGuestHeld for the whole host raid. Now netKitTake and netUpTake pass the title through NET.start, the same go the title start button runs (it commits a typed name, drops the title and shows the Undercroft floor), and read netUpBusy again, so the kit question is asked and the host word carries the window up. In netUpWord a no word is also said in the raid with sayWhenFree, as the spec word already is, when this window is in a raid that has not ended. No number, no seeded draw and no new player text: the line said is the PARTY status line that was already written.
+
+Check 17.14. Fails on v17.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
