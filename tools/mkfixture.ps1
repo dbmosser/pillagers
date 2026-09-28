@@ -5721,6 +5721,41 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.87',what:'the kit question offers TOP GEAR and RANDOM FROM STASH: top gear equips the highest tier gun owned and packs grenades, ammo and heals from the stash, random equips an owned gun and packs up to six stash items, every packed item is in the stash, both go up as MY LOADOUT does, and the two buttons are gone once the card closes',
+   run:function(){
+     if(typeof askKit!=='function'||!window.__P) return 'SKIP: this build has no kit question';
+     var top=document.getElementById('asktop'), rnd=document.getElementById('askrand'), md=document.getElementById('askmodal');
+     if(!top||!rnd) return 'the kit question has no TOP GEAR or RANDOM FROM STASH answer';
+     var P0=__P(), keep=JSON.stringify({w:P0.weapons,e:P0.equipped,es:P0.equippedSec,st:P0.stash,k:P0.kit,fk:P0.freeKit,ks:P0.kitSaved}), oSave=saveProfile, bad=[], went=0, i, st;
+     function inStash(list){ var pool=P0.stash.slice(); for(var j=0;j<list.length;j++){ var x=pool.indexOf(list[j]); if(x<0) return false; pool.splice(x,1); } return true; }
+     try{
+       saveProfile=function(){};
+       P0.weapons=['pistol','rifle','sniper']; P0.equipped='pistol'; P0.equippedSec='none'; P0.freeKit=0; P0.kitSaved=null; P0.kit=[];
+       P0.stash=['frag','frag','frag','smoke','bandage','medkit','ammobox','bandage','scrap','scrap'];
+       askKit(function(){ went++; });
+       if(top.style.display==='none'||rnd.style.display==='none') bad.push('the kit question does not show TOP GEAR and RANDOM FROM STASH');
+       top.click();
+       if(went!==1) bad.push('TOP GEAR did not go up ('+went+')');
+       if(P0.equipped!=='sniper') bad.push('TOP GEAR equipped '+P0.equipped+', not the highest tier gun owned');
+       if(P0.kit.filter(function(k){ return k==='frag'; }).length!==2) bad.push('TOP GEAR did not pack two of each grenade ('+P0.kit.join(',')+')');
+       if(P0.kit.indexOf('medkit')<0||P0.kit.indexOf('ammobox')<0) bad.push('TOP GEAR did not pack the biggest heal and ammo ('+P0.kit.join(',')+')');
+       if(P0.kit.indexOf('scrap')>=0) bad.push('TOP GEAR packed scrap');
+       if(!inStash(P0.kit)) bad.push('TOP GEAR packed something the stash does not hold');
+       if(md&&md.classList.contains('on')) bad.push('TOP GEAR left the card open');
+       if(top.style.display!=='none'||rnd.style.display!=='none') bad.push('the two answers stayed on the card after it closed');
+       for(i=0;i<5;i++){
+         P0.kit=[]; askKit(function(){ went++; }); rnd.click();
+         if(P0.weapons.indexOf(P0.equipped)<0||P0.equipped==='fists') bad.push('RANDOM FROM STASH equipped '+P0.equipped);
+         if(P0.kit.length>6||!inStash(P0.kit)) bad.push('RANDOM FROM STASH packed '+P0.kit.join(','));
+         if(P0.kit.indexOf('scrap')>=0) bad.push('RANDOM FROM STASH packed scrap');
+       }
+       if(went!==6) bad.push('RANDOM FROM STASH did not go up every time ('+went+' of 6)');
+     } finally {
+       saveProfile=oSave;
+       try{ st=JSON.parse(keep); P0.weapons=st.w; P0.equipped=st.e; P0.equippedSec=st.es; P0.stash=st.st; P0.kit=st.k; P0.freeKit=st.fk; P0.kitSaved=st.ks; }catch(e){}
+       try{ if(md) md.classList.remove('on'); ASKYES=null; ASKALT=null; ASKBACK=null; if(typeof kitExtraHide==='function') kitExtraHide(); }catch(e){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.86',what:'a downed host holding E in a landed ring after his teammate extracted ends his own raid outright: a position word of that teammate landing after his out word still draws him for a moment but never parks the host spectating for a party that has left',
    run:function(){
      if(typeof netUpWord!=='function'||typeof netOnState!=='function'||typeof netSpecStart!=='function'||typeof netUpShown!=='function'||typeof tryExtractTick!=='function'||typeof updatePlayer!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no party words';

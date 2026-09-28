@@ -1,0 +1,9 @@
+v16.87: random from stash and top gear at the kit question
+
+Top gear equips the highest tier gun owned and packs grenades, the best
+plate, ammo and heals from the stash; random from stash picks an owned
+gun and six stash items. Both go up as MY LOADOUT does.
+
+Check 16.87. Fails on v16.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,1 @@
+| RANDOM FROM STASH AND TOP GEAR | v16.87 | HIS ASK 2026-09-27 (playtest). kitFill fills P.kit from P.stash and equips an owned gun; two buttons on the kit card, hidden on every close. MEASURED: 16.87 passes, fails on v16.86 |

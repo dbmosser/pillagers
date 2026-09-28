@@ -951,6 +951,8 @@
     <div class="askrow">
       <button class="deploy" id="askyes" style="flex:2">YES</button>
       <button id="askalt" style="flex:2;display:none">FREEBIE KIT</button>
+      <button id="askrand" style="flex:2;display:none">RANDOM FROM STASH</button>
+      <button id="asktop" style="flex:2;display:none">TOP GEAR</button>
       <button id="askno" style="flex:1">Not yet</button>
     </div>
   </div>
@@ -1434,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.86';
+var VER='16.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29993,6 +29995,10 @@ function askKit(then,mate){   // v16.37: then, what an answer leads to; mate, a 
                 :'your current tactical belt and backpack.'))+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
   ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); then(); };   // v12.16: MY LOADOUT gets his packing back too
+  // v16.87, his ask: RANDOM FROM STASH and TOP GEAR fill the packing list and go up as MY LOADOUT does.
+  ASKRAND=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; kitFill(true); saveProfile(); then(); };
+  ASKTOP=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; kitFill(false); saveProfile(); then(); };
+  (function(){ var _kr=document.getElementById('askrand'), _kt=document.getElementById('asktop'); if(_kr) _kr.style.display=''; if(_kt) _kt.style.display=''; })();
   ASKALT=function(){
     // v12.13: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
     // belt plan (a key pointing at something you are not carrying is the v5.72
@@ -30034,7 +30040,34 @@ function askKit(then,mate){   // v16.37: then, what an answer leads to; mate, a 
 // either way used to leave him on the bare floor. Whoever raises the card can
 // name the window to restore, and all three answers put it back before anything
 // else runs, so a callback that redraws that window draws where he is looking.
-var ASKYES=null, ASKALT=null, ASKBACK=null;
+var ASKYES=null, ASKALT=null, ASKBACK=null, ASKRAND=null, ASKTOP=null;
+// v16.87, HIS ASK: RANDOM FROM STASH AND TOP GEAR. Two more answers on the kit question, beside MY LOADOUT and FREEBIE KIT, in
+// every window of a party too. Each fills the packing list from what the stash holds (P.kit names stash items, which leave the
+// stash only when the raid starts, so nothing is made or lost) and equips a gun he already owns (the rule the stash Equip as
+// your gun uses), then goes up exactly as MY LOADOUT does. TOP GEAR: his highest tier gun, two of each grenade, then the
+// biggest plate (only with a rig that holds plates), the biggest ammo and the two biggest heals, the size of the auto-pack.
+// RANDOM FROM STASH: a gun he owns picked at random and six stash items of those kinds picked at random.
+function kitFill(rand){
+  var own=(P.weapons||[]).filter(function(g){ return g&&g!=='fists'&&WEAPONS[g]; }), g=null, pool=(P.stash||[]).slice(), out=[], i, j, t, cap=0, tc={}, c;
+  if(own.length){ if(rand) g=own[Math.floor(Math.random()*own.length)]; else { own.sort(function(a,b){ return (WTIER[b]||0)-(WTIER[a]||0); }); g=own[0]; } }
+  if(g){ if(P.equippedSec===g) P.equippedSec='none'; P.equipped=g; }
+  try{ cap=rigCeil(myRig()); }catch(_rc){ cap=0; }
+  function ok(k){ var q=ITEMS[k]; return !!q&&(q.use==='throw'||q.use==='ammo'||q.use==='heal'||(q.use==='armor'&&cap>0)); }
+  if(rand){
+    c=pool.filter(ok);
+    for(i=0;i<6&&c.length;i++){ j=Math.floor(Math.random()*c.length); out.push(c[j]); c.splice(j,1); }
+  } else {
+    for(i=0;i<pool.length;i++){ t=ITEMS[pool[i]]; if(t&&t.use==='throw'&&(tc[pool[i]]||0)<2){ tc[pool[i]]=(tc[pool[i]]||0)+1; out.push(pool[i]); pool[i]=null; } }
+    ['armor','ammo','heal','heal'].forEach(function(u){
+      var bi=-1, bv=-1, j2, q;
+      for(j2=0;j2<pool.length;j2++){ if(!pool[j2]||!ok(pool[j2])) continue; q=ITEMS[pool[j2]]; if(q.use===u&&(q.amt||0)>bv){ bi=j2; bv=q.amt||0; } }
+      if(bi>=0){ out.push(pool[bi]); pool[bi]=null; }
+    });
+  }
+  P.kit=out;
+  return {gun:g,kit:out};
+}
+function kitExtraHide(){ ['askrand','asktop'].forEach(function(id){ var b=document.getElementById(id); if(b) b.style.display='none'; }); ASKRAND=null; ASKTOP=null; }
 function askRestore(){
   if(!ASKBACK) return;
   var _b=ASKBACK; ASKBACK=null;
@@ -31385,7 +31418,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.86: A TEAMMATE WHO HAS LEFT IS NEVER WAITED FOR. From his report during his co-op session (player 1 could not get out after player 2 had extracted). After player 2 extracted, a last position word from his window could arrive after his extraction word and make the host think he was still up top, so the host was parked watching the raid for a teammate who had already gone. A teammate whose extraction word has arrived is now never waited for, and the host run ends outright. Check 16.86 fails on v16.85',
+  now:'v16.87: RANDOM FROM STASH AND TOP GEAR. His ask during his co-op session: two more answers on the kit question beside MY LOADOUT and the freebie kit, in both windows of a party. TOP GEAR equips his highest tier gun and packs two of each grenade and the biggest plate, ammo and heals from the stash; RANDOM FROM STASH equips a gun he owns at random and packs six stash items at random. Both pack only what the stash holds and go up as MY LOADOUT does. Check 16.87 fails on v16.86',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39467,7 +39500,7 @@ document.getElementById('closeappear').onclick=function(){
 // v6.67: the confirm box. YES runs the stored callback, and the callback is cleared
 // before it runs so a question can never be answered twice by a double click.
 document.getElementById('askyes').onclick=function(){
-  var f=ASKYES; ASKYES=null;
+  var f=ASKYES; ASKYES=null; kitExtraHide();   // v16.87
   document.getElementById('askmodal').classList.remove('on');
   askRestore();   // v12.68: BEFORE the callback, so a redraw of that window is seen
   if(f) f();
@@ -39475,10 +39508,20 @@ document.getElementById('askyes').onclick=function(){
 document.getElementById('askno').onclick=function(){
   ASKYES=null; ASKALT=null;
   document.getElementById('askmodal').classList.remove('on');
+  kitExtraHide();   // v16.87
   askRestore();   // v12.68: a question he declined does not cost him the window
 };
+['askrand','asktop'].forEach(function(id){   // v16.87: RANDOM FROM STASH and TOP GEAR close the card the way the other answers do
+  var b=document.getElementById(id); if(!b) return;
+  b.onclick=function(){
+    var f=(id==='askrand')?ASKRAND:ASKTOP; kitExtraHide(); ASKYES=null; ASKALT=null;
+    document.getElementById('askmodal').classList.remove('on');
+    askRestore();
+    if(f) f();
+  };
+});
 document.getElementById('askalt').onclick=function(){
-  var f=ASKALT; ASKYES=null; ASKALT=null;
+  var f=ASKALT; ASKYES=null; ASKALT=null; kitExtraHide();   // v16.87
   document.getElementById('askmodal').classList.remove('on');
   askRestore();
   if(f) f();

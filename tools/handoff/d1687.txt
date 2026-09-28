@@ -1,0 +1,10 @@
+## v16.87 - RANDOM FROM STASH AND TOP GEAR
+
+His ask during his co-op session: an option to take a random loadout from the stash instead of the freebie kit, and one to
+take the top gear. The kit question gains two answers in every window: TOP GEAR equips his highest tier gun owned (WTIER) and
+packs two of each grenade, then the biggest plate (only with a rig that holds plates), ammo and two heals, the size of the
+auto-pack; RANDOM FROM STASH equips an owned gun at random and packs six stash items of those kinds at random. P.kit names
+stash items, which leave the stash only when the raid starts, so nothing is made or lost; both go up as MY LOADOUT does.
+The two buttons are hidden on every close of the card, which other questions share.
+
+MEASURED. Check 16.87 passes, and fails on v16.86.
