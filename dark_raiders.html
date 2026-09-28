@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.89';
+var VER='16.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12424,7 +12424,7 @@ function pollPad(){
   var _xSearch=!!(G.nearPad&&G.nearContainer&&(PAD.xSearched||PAD.xDownAt==null||(G.t-PAD.xDownAt)<0.35));
   for(var h in PADHOLD){
     var hn=+h;
-    // v16.72, his order: X loots (E) when there is something in reach to search, pick up, open or call extraction from, and
+    // v16.72, his order: X loots (E) when there is something in reach to search, pick up, open or call for extraction from, and
     // reloads (R) otherwise; the choice is made on the press and kept for the hold, so a search that ends never turns into a
     // reload. Y holds keyboard X, the second search inside an extraction circle (bodies at the ring).
     if(hn===2){
@@ -31419,7 +31419,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.89: THE KEYBOARD ALWAYS DRIVES PLAYER 1 ON ONE PC. From his playtest report: player 1 could not extract while downed after player 2 had extracted. The browser gives the keyboard to the window last clicked, so after a click on the player 2 window the keys of player 1 went there. In a same machine pair the player 2 window now hands every key to the player 1 window, which plays it as its own; player 2 keeps his controller, and a text box in his window still types. Check 16.89 fails on v16.88',
+  now:'v16.90: THE BUILD SAYS CALL FOR EXTRACTION EVERYWHERE. The full sweep on v16.88 found the old verb phrase in a comment written at v16.72; check 9.59 reads every line of the build for it. The comment now says call for extraction. Nothing the player sees changes. Check 16.90 fails on v16.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

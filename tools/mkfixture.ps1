@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.90',what:'no line of the game, comments included, uses the old verb phrase for extraction: it is call for extraction everywhere',
+   run:function(){
+     var src='', i, ss, cut, needle=new RegExp('call'+'\\s+'+'extraction','i'), m;
+     try{ ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
+     cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
+     m=needle.exec(src);
+     return m?('the build still says '+src.slice(Math.max(0,m.index-40),m.index+30).replace(/\s+/g,' ')):null; }},
   {v:'16.89',what:'in a same machine pair the keyboard always drives player 1: the player 2 window hands a key to the pair channel and does not act on it, and the player 1 window plays a handed key as its own; outside a pair nothing is handed',
    run:function(){
      if(typeof netSameOnMsg!=='function'||typeof netSamePost!=='function'||typeof NET!=='object'||!NET||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no same machine pair';

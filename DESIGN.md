@@ -40024,6 +40024,12 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.90 - THE BUILD SAYS CALL FOR EXTRACTION EVERYWHERE
+
+The full sweep on v16.88 turned 9.59 red: a comment written at v16.72 used the old verb phrase, and 9.59 reads every line of
+the build for it. The comment now says call for extraction. Nothing the player sees changes.
+
+MEASURED. Check 16.90 passes, and fails on v16.89.
 ## v16.89 - THE KEYBOARD ALWAYS DRIVES PLAYER 1 ON ONE PC
 
 From his playtest report: player 1 could not extract while downed after player 2 had extracted. The likeliest cause: the

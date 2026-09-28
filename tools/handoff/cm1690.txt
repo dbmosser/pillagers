@@ -1,0 +1,8 @@
+v16.90: the build says call for extraction everywhere
+
+A v16.72 comment used the old verb phrase that check 9.59 reads for.
+Nothing the player sees changes.
+
+Check 16.90. Fails on v16.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

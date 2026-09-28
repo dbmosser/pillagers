@@ -1,0 +1,6 @@
+## v16.90 - THE BUILD SAYS CALL FOR EXTRACTION EVERYWHERE
+
+The full sweep on v16.88 turned 9.59 red: a comment written at v16.72 used the old verb phrase, and 9.59 reads every line of
+the build for it. The comment now says call for extraction. Nothing the player sees changes.
+
+MEASURED. Check 16.90 passes, and fails on v16.89.
