@@ -1,0 +1,1 @@
+| A PLAIN LEFT CLICK ON AN ARMOURY GUN NO LONGER MOVES IT OUT OF THE ARMOURY INTO THE STASH | v17.15 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.15 passes, fails on v17.14 |

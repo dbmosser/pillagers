@@ -1,0 +1,7 @@
+v17.15: a plain left click on an armoury gun no longer moves it out of the armoury into the stash
+
+The document mouseup that ends every pointer drag dropped on the zone under the release point whether or not the pointer had moved, and the armoury cells live inside #stashgrid, the stash drop zone, so a press and release in place on a spare armoury gun ran the stash drop with from rack and rackToStash spliced it out of P.weapons into P.stash with the line that it is in the stash. The mouseup now returns before the drop when a rack grab never moved, so a click on an armoury gun is only a click; a drag that moved past the 6 pixel threshold drops as before, every other drag source is untouched, and the pad path already treated A in place as a click. No player text, no number and no seeded draw moved.
+
+Check 17.15. Fails on v17.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

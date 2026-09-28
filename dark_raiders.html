@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.14';
+var VER='17.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31465,7 +31465,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.14: Co-op hunt 2026-09-28, finding 8: the player 2 window pairs on its title (netTitleInit runs netSameBootP2 at boot) and stays there until its ENTER THE UNDERCROFT is clicked. On a kitask, netKitTake closed only the run card (v16.55) and for any other busy state answered kitok at once, so netUpBusy said on the title, the host kit wait ended on the spot and ascendNow ran. The raid word was then refused the same way in netUpTake. On the host the answering up word with st no only set NET.status and called netRefresh, which draws only a PARTY window that is already open, and startRaid had just shut every window, so the host up top was told nothing; player 2, once on the floor, was held at the lift by netGuestHeld for the whole host raid. Now netKitTake and netUpTake pass the title through NET.start, the same go the title start button runs (it commits a typed name, drops the title and shows the Undercroft floor), and read netUpBusy again, so the kit question is asked and the host word carries the window up. In netUpWord a no word is also said in the raid with sayWhenFree, as the spec word already is, when this window is in a raid that has not ended. No number, no seeded draw and no new player text: the line said is the PARTY status line that was already written. Check 17.14 fails on v17.13',
+  now:'v17.15: The document mouseup that ends every pointer drag dropped on the zone under the release point whether or not the pointer had moved, and the armoury cells live inside #stashgrid, the stash drop zone, so a press and release in place on a spare armoury gun ran the stash drop with from rack and rackToStash spliced it out of P.weapons into P.stash with the line that it is in the stash. The mouseup now returns before the drop when a rack grab never moved, so a click on an armoury gun is only a click; a drag that moved past the 6 pixel threshold drops as before, every other drag source is untouched, and the pad path already treated A in place as a click. No player text, no number and no seeded draw moved. Check 17.15 fails on v17.14',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39340,6 +39340,12 @@ document.addEventListener('mouseup',function(ev){
   var t=document.elementFromPoint(ev.clientX,ev.clientY);
   var z=t&&t.closest?t.closest('[data-drop]'):null;
   grabEnd();
+  // v17.15, co-op hunt 2026-09-28: A PLAIN CLICK ON AN ARMOURY GUN MOVES NOTHING. Every press arms a drag and this release
+  // drops on the zone under it, and the armoury row is drawn inside the stash grid, which is a drop zone, so a left click on
+  // a spare gun ran the stash drop and moved it out of the armoury into the stash, out of reach of the gun menu, TOP GEAR and
+  // the shop. A rack grab that never moved is a click, and right-click stays the armoury verb. A real drag is unchanged, and
+  // every other drag source keeps what a click did before.
+  if(!held.moved&&held.from==='rack') return;
   if(z&&typeof z.__grabDrop==='function') z.__grabDrop(held.key,held.from);
 });
 function renderStage(prefill){

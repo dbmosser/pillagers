@@ -1,0 +1,5 @@
+## v17.15 - A PLAIN LEFT CLICK ON AN ARMOURY GUN NO LONGER MOVES IT OUT OF THE ARMOURY INTO THE STASH
+
+Co-op hunt while he was away. On the Stash screen every press on a cell starts a drag, and letting go drops it on whatever is under the pointer. The armoury row is drawn inside the stash grid, so a plain left click on a spare armoury gun was taken as a drag onto the stash: the gun left the armoury, became a stash item that could be packed and lost, and the gun menu, TOP GEAR and the shop no longer counted it as his. A click on an armoury gun that did not move now moves nothing, right-click still opens its menu, and a real drag onto the stash grid still puts it there.
+
+MEASURED. Check 17.15 passes, and fails on v17.14.

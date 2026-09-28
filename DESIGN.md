@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.15 - A PLAIN LEFT CLICK ON AN ARMOURY GUN NO LONGER MOVES IT OUT OF THE ARMOURY INTO THE STASH
+
+Co-op hunt while he was away. On the Stash screen every press on a cell starts a drag, and letting go drops it on whatever is under the pointer. The armoury row is drawn inside the stash grid, so a plain left click on a spare armoury gun was taken as a drag onto the stash: the gun left the armoury, became a stash item that could be packed and lost, and the gun menu, TOP GEAR and the shop no longer counted it as his. A click on an armoury gun that did not move now moves nothing, right-click still opens its menu, and a real drag onto the stash grid still puts it there.
+
+MEASURED. Check 17.15 passes, and fails on v17.14.
 ## v17.14 - A PLAYER 2 WINDOW STILL ON ITS TITLE GOES UP WITH THE PARTY, AND A HOST WHO WENT UP ALONE IS TOLD WHY
 
 Co-op hunt while he was away. The player 2 window links up while it is still on its title, and it stays there until its own ENTER THE UNDERCROFT is pressed. A host who took the lift in those first seconds had the kit question answered busy at once and went up alone, with no line in the raid, while player 2 was then held at the lift for the whole raid. Now the kit question and the host word take the player 2 window past its title the way its own start button does, so it is asked for its kit and goes up with the party, and a teammate who still could not go up is named in the raid, not only in a shut PARTY window.
