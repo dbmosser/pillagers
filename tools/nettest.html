@@ -183,7 +183,8 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     try{ click(f,'closeparty'); }catch(e){}
     var d=D(f); if(!d) return;
     [].forEach.call(d.querySelectorAll('.modal.on'),function(m){ m.classList.remove('on'); });
-    var pb=d.getElementById('pausebox'); if(pb) pb.classList.remove('on');
+    var pb=d.getElementById('pausebox'), rb=d.getElementById('resumebtn'); if(pb&&pb.classList.contains('on')&&rb) rb.click();   // the game's own resume: hiding the box left the game paused
+    if(pb) pb.classList.remove('on');
   }
   // A real key held on the copy window (never its document: a key sent there reaches the window too and acts twice).
   function hold(f,code,key,ms){
@@ -463,6 +464,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
           function ev(el,type){ var r=cvC.getBoundingClientRect(); el.dispatchEvent(new C.MouseEvent(type,{clientX:r.left+r.width/2+Math.round(r.width*0.08),clientY:r.top+r.height/2,button:0,bubbles:true})); }
           (function aim(){
             var c=entOf(fc,t.id);
+            try{ var gk=C.__state(), pk=gk&&gk.player; if(pk&&!gk.over&&!pk.downed&&pk.hp>0) pk.hp=Math.max(pk.hp,pk.maxhp||100); }catch(_k){}   // the step tests C's rounds, not whether C outlives the sentry it stands beside
             try{ if(c) C.__net.stand(c.x-90,c.y); ev(cvC,'mousemove'); n++; if(!down){ down=true; ev(cvC,'mousedown'); } else if(n%8===0){ ev(C,'mouseup'); down=false; } }catch(_a){ log('shots: aim '+_a.message); }   // a click every eight frames, so a gun that fires once per press fires again
             if(Date.now()<tEnd&&entOf(fa,t.id)) setTimeout(aim,16); else { try{ ev(C,'mouseup'); }catch(_b){} res(); }
           })();
@@ -475,11 +477,11 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     }
     function next(ix){
       if(ix>=list.length||ix>=6) return Promise.resolve();
-      return one(list[ix]).then(function(r){ tries.push(r); if(!r.hits) return next(ix+1); });
+      return one(list[ix]).then(function(r){ tries.push(r); if(!r.hits||(r.hp!==null&&!(r.hp<r.hp0))) return next(ix+1); });   // a counted hit that left this body whole landed on another body: try the next
     }
     return next(0).then(function(){
       fc.style.width=fw0; fc.style.height=fh0;
-      var r=tries[tries.length-1];
+      var r=tries.filter(function(q){ return q.hits; }).pop()||tries[tries.length-1];
       rep.shotHits=r?r.hits:0; rep.shotKills=r?r.kills:0;
       if(!tries.some(function(q){ return q.shots>0; })) bad.push('shots: C fired no rounds with the fire button held');
       else if(!r||!r.hits) bad.push('shots: C hit none of '+tries.length+' bodies it fired at from 90 units');
@@ -507,7 +509,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     var vc=C.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, NGA=A.navigator.getGamepads, HFA=A.document.hasFocus, HFC=C.document.hasFocus, t0=0, it0=0, dn=false;
     function itemsC(){ try{ var g=C.__state(); return (g&&g.tel)?(g.tel.items|0):0; }catch(e){ return 0; } }
     function mkPad(){ var bt=[],q; for(q=0;q<17;q++) bt.push({pressed:(q===2&&dn),value:(q===2&&dn)?1:0,touched:(q===2&&dn)}); return {connected:true,id:'padloot',index:0,mapping:'standard',timestamp:Date.now(),buttons:bt,axes:[0,0,0,0]}; }
-    function state(){ var g=C.__state(), q=boxOf(fc,box.cid); return 'box '+JSON.stringify(q)+'; C searching '+(g&&g.searching?'yes':'no')+', near box '+(g&&g.nearContainer?'yes':'no')+', pad '+JSON.stringify(C.__net.pad()); }
+    function state(){ var g=C.__state(), q=boxOf(fc,box.cid); return 'box '+JSON.stringify(q)+'; C searching '+(g&&g.searching?'yes':'no')+', near box '+(g&&g.nearContainer?('yes ('+JSON.stringify({cid:g.nearContainer.cid,ty:g.nearContainer.type||g.nearContainer.ty,op:g.nearContainer.opened||g.nearContainer.op,n:(g.nearContainer.loot||[]).length})+')'):'no')+', ring '+!!(g&&g.nearPad)+', bag '+!!(g&&g.bagOpen)+', map '+!!(g&&g.mapOpen)+', down '+!!(g&&g.player&&g.player.downed)+', pad '+JSON.stringify(C.__net.pad()); }
     for(i=0;i<vc.list.length;i++){ b=vc.list[i]; if(b.op) continue; d=gap(b,me); if(d<bd){ bd=d; box=b; } }
     if(!box){ bad.push('pad loot: C holds no unopened box'); return Promise.resolve(); }
     C.__net.stand(box.x-20,box.y); clearFloor(fa); clearFloor(fc);
@@ -535,7 +537,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     ba=boxOf(fa,box.cid); n=ba?ba.n:0;
     log('loot: the nearest unopened box to C is number '+box.cid+' ('+box.ty+') at '+xy(box)+', '+Math.round(bd)+' units off; A lists '+n+' items in it, '+(ba?ba.tm:'?')+' s to search');
     if(!ba||!n){ bad.push('loot: copy A lists no items in box '+box.cid); return Promise.resolve(); }
-    bagC0=vc.bag.length; bagA0=va.bag.length; itC0=itemsC();
+    bagC0=vc.bag.length; bagA0=va.bag.length; itC0=itemsC(); rep.lootBag0=vc.bag.slice();
     C.__net.stand(box.x+6,box.y);
     clearFloor(fc);
     // C's next word tells A where it now stands, so the request is not refused as far away.
@@ -560,7 +562,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       rep.lootMsgs=msgs; log('loot: C read these lines while it searched: '+JSON.stringify(msgs));
       if(!msgs.some(function(q){ return (/^Took /).test(q); })) bad.push('loot: C never read a Took line naming what it pulled');
       rep.lootItems=bc; rep.lootMs=Math.max(Math.abs(tA-tBag),Math.abs(tC-tBag),Math.abs(tA-tC));
-      log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C (its backpack now '+JSON.stringify(vc2.bag)+'); A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
+      log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C (its backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'); A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
       if(bc!==n) bad.push('loot: '+bc+' items landed in C, not the '+n+' A listed');
       if(rep.lootMs>500) bad.push('loot: the copies took '+rep.lootMs+' ms to agree the box is searched with the loot in C (the limit is 500)');
       if(va2.bag.length!==bagA0) bad.push('loot: copy A own backpack gained '+(va2.bag.length-bagA0)+' from C search');
@@ -585,7 +587,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       w.addEventListener('error',w.__soakErr); w.addEventListener('unhandledrejection',w.__soakErr);
       (function tick(){ if(!live) return; frames[p[1]]++; w.requestAnimationFrame(tick); })();
     });
-    function mkPad(){ var b=[],q,d; for(q=0;q<17;q++){ d=Math.random()<0.12; b.push({pressed:d,value:d?1:0,touched:d}); }
+    function mkPad(){ var b=[],q,d; for(q=0;q<17;q++){ d=q!==8&&q!==9&&Math.random()<0.12; b.push({pressed:d,value:d?1:0,touched:d}); }
       return {connected:true,id:'soak pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,
         axes:[Math.random()*2-1,Math.random()*2-1,Math.random()*2-1,Math.random()*2-1]}; }
     try{ A.document.hasFocus=function(){ return true; }; C.document.hasFocus=function(){ return false; }; }catch(e){}
@@ -604,6 +606,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
         var s=(Date.now()-t0)/1000, ua=A.__net.up(), uc=C.__net.up();
         if(Math.random()<0.6){ var k=KEYS[Math.floor(Math.random()*KEYS.length)]; key(A,k,/Key[WASD]/.test(k)?(200+Math.random()*1200):(40+Math.random()*300)); n++; }
         mouse();
+        [A,C].forEach(function(w){ try{ var g=w.__state(), p=g&&g.player; if(p&&!g.over&&!p.downed&&p.hp>0) p.hp=Math.max(p.hp,p.maxhp||100); }catch(e){} });   // the soak hunts errors, not survival: random input walks into fire
         if(Math.random()<0.5) pad=mkPad();
         if(st(fa).roster.length<2||st(fc).roster.length<2) drops++;
         [[A,'A'],[C,'C']].forEach(function(p){ try{ var g=p[0].__state(), m=g?(p[1]+' '+s.toFixed(1)+'s '+(g.over?'[over '+(g.outcome||g.over)+'] ':'')+String(g.msg||'')):(p[1]+' '+s.toFixed(1)+'s no raid'); var k=m.replace(/^\S+ [\d.]+s /,p[1]); if(k!==(soakStep['last'+p[1]]||'')){ soakStep['last'+p[1]]=k; (rep.soakMsgs=rep.soakMsgs||[]).push(m); } }catch(e){} });
