@@ -1,0 +1,7 @@
+v17.02: kid mode at 1/20 now really gives player 2 a twentieth of every hit
+
+Kid mode at 1/20 now works. The level added in v16.73 was saved as 0.05, but kidMulOwn, netKidMul and netWorldTake only took values from 0.1 to 1, so a saved or sent 1/20 read as OFF: the Settings row printed OFF, the next press went to 1/2, the host sent OFF to the party and player 2 took every hit at full strength. The floor is now the smallest level in KID_OPTS (KID_MIN), used in all three places, so 1/20 shows on the row, cycles on to OFF, is carried by the host word and takes a twentieth of each hit.
+
+Check 17.02. Fails on v17.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

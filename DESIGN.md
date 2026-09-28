@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.02 - KID MODE AT 1/20 NOW REALLY GIVES PLAYER 2 A TWENTIETH OF EVERY HIT
+
+Co-op hunt while he was away. The 1/20 kid mode level added in v16.73 was read as OFF everywhere: the Settings row showed OFF after picking it, player 2 took full damage, and a host who picked 1/20 sent OFF to the party. The three places that read the level only accepted values down to 1/10. They now accept every level in the row, down to 1/20, so 1/20 shows, travels in the host word and cuts each hit to a twentieth.
+
+MEASURED. Check 17.02 passes, and fails on v17.01.
 ## v17.01 - A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER
 
 Co-op hunt while he was away. On one PC both windows are played at once, so the player 2 backpack is opened by its controller while the other window has focus, and the player 1 backpack can be opened by keys handed over from the player 2 window. Any click that moved focus between the windows shut the backpack of the window that lost or took focus and dropped the item being moved. A focus change in a two-window game now leaves the backpack open and keeps a controller drag; a mouse drag is still dropped, and one window alone, the cursor reset key and a hidden tab still close the backpack as before.

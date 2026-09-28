@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.01';
+var VER='17.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31445,7 +31445,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.01: A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER. On one PC the player 2 backpack is opened by its controller while the other window has focus, and any click that moved focus between the windows shut it and dropped the item being moved. A focus change in a two-window game now leaves the backpack open and keeps a controller drag; a mouse drag is still dropped, and one window alone, the cursor reset key and a hidden tab still close it. Check 17.01 fails on v17.00',
+  now:'v17.02: Kid mode at 1/20 now works. The level added in v16.73 was saved as 0.05, but kidMulOwn, netKidMul and netWorldTake only took values from 0.1 to 1, so a saved or sent 1/20 read as OFF: the Settings row printed OFF, the next press went to 1/2, the host sent OFF to the party and player 2 took every hit at full strength. The floor is now the smallest level in KID_OPTS (KID_MIN), used in all three places, so 1/20 shows on the row, cycles on to OFF, is carried by the host word and takes a twentieth of each hit. Check 17.02 fails on v17.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36617,8 +36617,9 @@ function netWpMapDraw(ox,oy,sc){
 // 1/5 or 1/10. A row in Settings on either window sets it; the host sends its choice with the world word twice a second, so a
 // change on the host lands on player 2 mid raid, and player 2 takes the lower of the two. Player 1 is never touched.
 var KID_OPTS=[[1,'OFF'],[0.5,'1/2'],[0.25,'1/4'],[0.2,'1/5'],[0.1,'1/10'],[0.05,'1/20']];   // v16.73, his order: and 1/20
-function kidMulOwn(){ var v=(typeof P!=='undefined'&&P)?+P.kidDmg:1; return (isFinite(v)&&v>=0.1&&v<=1)?v:1; }
-function netKidMul(){ var h=(typeof NET.kidHost==='number'&&NET.kidHost>=0.1&&NET.kidHost<=1)?NET.kidHost:1; return Math.min(kidMulOwn(),h); }
+var KID_MIN=KID_OPTS[KID_OPTS.length-1][0];   // v17.02, co-op hunt 2026-09-28: the floor is the smallest level in the row; a 0.1 floor read a saved or sent 1/20 as OFF
+function kidMulOwn(){ var v=(typeof P!=='undefined'&&P)?+P.kidDmg:1; return (isFinite(v)&&v>=KID_MIN&&v<=1)?v:1; }
+function netKidMul(){ var h=(typeof NET.kidHost==='number'&&NET.kidHost>=KID_MIN&&NET.kidHost<=1)?NET.kidHost:1; return Math.min(kidMulOwn(),h); }
 // v16.74, his order: SUPERHOT IS THE HOST SETTING FOR THE WHOLE PARTY. Each window had its own dial (the Settings row, the
 // backquote key), and the state word says a window with the dial off is always acting (sa), so with player 1 on and player 2
 // off time never stopped for either. The host now sends its dial in the world word (netWorldSend, twice a second), and a linked
@@ -36902,7 +36903,7 @@ function netWorldTake(peer,m){
   w=netWxOf(m.wx); if(w) G.wx=w;
   G.wxNext=netWxOf(m.wn); G.wxT=(typeof m.wt==='number'&&isFinite(m.wt))?clamp(m.wt,0,1):0;
   if(m.bd&&typeof m.bd.length==='number') netBoardTake(m.bd);   // v16.34: the host board
-  if(typeof m.kd==='number'&&isFinite(m.kd)) NET.kidHost=clamp(m.kd,0.1,1);   // v16.44: kid mode as the host has it
+  if(typeof m.kd==='number'&&isFinite(m.kd)) NET.kidHost=clamp(m.kd,KID_MIN,1);   // v16.44: kid mode as the host has it; v17.02, co-op hunt 2026-09-28: down to 1/20, not 1/10
   if(m.af===0||m.af===1) NET.afHost=m.af;   // v16.83, his order: auto-fire for player 2 as the host has it
   if(m.sh===0||m.sh===1) netShTake(m.sh);   // v16.74, his order: Superhot as the host has it, put on this window live dial
   if(m.z&&typeof m.z.length==='number') for(i=0;i<m.z.length&&i<(G.zones||[]).length;i++){

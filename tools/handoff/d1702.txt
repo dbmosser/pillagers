@@ -1,0 +1,5 @@
+## v17.02 - KID MODE AT 1/20 NOW REALLY GIVES PLAYER 2 A TWENTIETH OF EVERY HIT
+
+Co-op hunt while he was away. The 1/20 kid mode level added in v16.73 was read as OFF everywhere: the Settings row showed OFF after picking it, player 2 took full damage, and a host who picked 1/20 sent OFF to the party. The three places that read the level only accepted values down to 1/10. They now accept every level in the row, down to 1/20, so 1/20 shows, travels in the host word and cuts each hit to a twentieth.
+
+MEASURED. Check 17.02 passes, and fails on v17.01.
