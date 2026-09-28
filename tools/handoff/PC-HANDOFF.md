@@ -133,3 +133,21 @@ nettest.html: the soak keeps both players alive (and the shots step), no Start/B
 Resume, a stray counted hit tries the next body, richer failure logs. Last 12 soak sessions on v16.91 all passed.
 Suite: shard.html shows progress in the page title (a busy page cannot answer cdp); the middle of the corpus holds checks
 that run for many minutes (slow, not hung). Eight shards now (9336-9343 on 8804-8807, 8811-8814).
+
+## 2026-09-28 night: v17.01-v17.14. Second co-op hunt (6 areas, 12 held), drafted and shipped the same way.
+17.01 a focus change keeps a same-machine backpack open (pad drag kept, mouse drag dropped); 17.02 kid mode 1/20 really
+applies (and the Settings row); 17.03 letting go of the right stick ends aiming (Superhot time stops, kid firing returns);
+17.04 a downed pad player calls the extraction with X; 17.05 going down or rolling stops a teammate pick-up; 17.06 a host
+armoury gun picked up by P2 is not in both saves; 17.07 a loaner Bandage stays a loaner between teammates; 17.08 a heal
+given to a teammate already healing comes back; 17.09 WHAT IS NEW card refresh (parse gate refuses a card 0.21 behind);
+17.10 a heal the teammate could not take comes back; 17.11/17.12 kills after a run ended leave the saved run alone;
+17.13 a spectating host hears no raid in his Undercroft; 17.14 a P2 window on its title goes up with the party.
+LESSONS: drafts from different groups can touch the same lines (17.07 moved an anchor of 17.10): validate every queued
+draft with -After the whole chain before starting it. The gate ran only the new check and v17.00 broke check 16.72 (a
+check-side staging issue: the roll was never ended); tools/handoff/shipone.sh now runs recent.ps1 (the newest 80 checks
+by version on dry and control, stop on any new failure). __REGRESS is NOT in version order: pick checks by parseFloat(v).
+A long synchronous check loop makes the page unreachable over cdp: use rr.sh (one check per timeout, progress in the title).
+Tools saved here: shipone.sh KEY PREV NEW (Chrome 9344 on :8806), recent.ps1, rr.sh MINV, soakloop.ps1 -Cdp -Port,
+sweep8.ps1 + watchshards.sh (eight shards 9336-9343, servers 8804-8807 and 8811-8814), drafts/validate-draft.ps1.
+All 75 checks from v16.40 up pass on v17.14. Soak on a loaded PC showed 1-2 fps seconds: rerun alone to separate load.
+LEFT FOR HIM: P2 payout uses P2 own saved terms and hire (design); his 125% zoom question.
