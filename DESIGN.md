@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.95 - TURNED DOWN AT A BOX SOMEONE ELSE IS SEARCHING, A PLAYER LETS GO OF THE BOX HE STEPPED AWAY FROM
+
+Co-op hunt while he was away. In a party of three or four, a player searching one box who stepped so that a box another teammate was searching became nearest was told that teammate is searching this one, but his first search kept running on the host, so items from the box he had left kept landing in his backpack for as long as he held the button. On the host the same step left his own box marked as searched by him with its bar frozen, so the others were turned away from a box nobody was searching. Now being turned down lets go of whatever box the player was searching, the linked window tells the host at once, and the same happens while the game waits to ask again for a box that just turned him down.
+
+MEASURED. Check 16.95 passes, and fails on v16.94.
 ## v16.94 - A TEAMMATE WHOSE RAID ENDED WHILE HE WAS DOWN NO LONGER BLOCKS E IN THE EXTRACTION RING
 
 Co-op hunt while he was away. When one player extracted from the floor, his last position word, still saying he was down, could reach the other window after the word that his raid had ended. The other player then had an invisible downed teammate on that spot for the rest of the raid: holding E or X in the ring started a pick-up every 3.2 seconds, the extraction never got the key, and the ship left without him. Now a teammate whose raid has ended, or whose word has gone stale and is no longer drawn, is never offered for a pick-up, so E goes to the extraction as it should.

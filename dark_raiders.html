@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.94';
+var VER='16.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31423,7 +31423,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.94: netMateDown picked any teammate up top whose word said down, on this raid seed, with no test of whether his raid had already ended or his word had gone stale. A last position word on the unordered fast channel can land after the out or spec word of a player who extracted from the floor, and it files him down on that spot for good, since nothing drops a stale entry. netRevHold then took E every step within 64 of that spot, sent a refused pick-up every 3.2 seconds and started again, so tryExtractTick never saw E and the other player could not pull out of that ring (X on the pad too, since it maps to E while netMateDown finds someone). netMateDown now skips a seat marked out on this seed (netUpGone) and one that is not drawn any more (netUpShown), the same tests the pick-up wait and the spectating host already use. A teammate who is down with fresh words is picked up as before. No number moved. Check 16.94 fails on v16.93',
+  now:'v16.95: Co-op hunt 2026-09-28, loot: netSrchHold turned a player down at a box a teammate holds but only cleared his search when it was that same box. A player already searching another box kept it, netSrchSync saw nothing change and sent no stop, and netSrchTick on the host, which checks reach only when a search starts, kept paying the old box out to him from wherever he stood; on the host the old box stayed held by seat 0 with its bar frozen. The refusal now clears any search in hand and a linked window sends the stop in the same frame; the one second wait before asking again for a box that turned him down does the same. No number moved and no new words. Check 16.95 fails on v16.94',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37731,11 +37731,18 @@ function netSrchShared(ct){
 function netSrchHold(near,dt){
   var s, cid=near.cid, q, nm;
   if(NET.role==='host'||(near.netBy>0&&near.netBy!==NET.seat)){
-    if(G.searching===near){ G.searching=null; G.searchT=0; }
+    // v16.95, co-op hunt 2026-09-28: turned down at a box someone else holds, this window lets go of any box it was searching,
+    // not only this one. It kept the box it had stepped away from, so the host kept paying that box out to him (a party of three
+    // or four), or on the host kept it marked held by him with its bar frozen. A linked window sends the stop at once.
+    if(G.searching){ G.searching=null; G.searchT=0; }
+    if(NET.role==='join') netSrchStop();
     if(near.netSaidT===undefined||G.t-near.netSaidT>2.5){ near.netSaidT=G.t; nm=netSeatName(near.netBy); if(!G.sim) say((nm||'One of your party')+' is searching this one.'); }
     return 'held';
   }
-  if(G.searching!==near&&near.netAskT!==undefined&&G.t-near.netAskT<1) return 'wait';   // a request the host turned down is not made again every frame
+  if(G.searching!==near&&near.netAskT!==undefined&&G.t-near.netAskT<1){   // a request the host turned down is not made again every frame
+    if(G.searching){ G.searching=null; G.searchT=0; } netSrchStop();   // v16.95, co-op hunt 2026-09-28: and the box he stepped away from is let go, as above
+    return 'wait';
+  }
   s=NET.srch;
   if(G.searching!==near||!s||s.cid!==cid){
     if(s&&s.cid!==cid) netSrchStop();

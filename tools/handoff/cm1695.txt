@@ -1,0 +1,7 @@
+v16.95: turned down at a box someone else is searching, a player lets go of the box he stepped away from
+
+Co-op hunt 2026-09-28, loot: netSrchHold turned a player down at a box a teammate holds but only cleared his search when it was that same box. A player already searching another box kept it, netSrchSync saw nothing change and sent no stop, and netSrchTick on the host, which checks reach only when a search starts, kept paying the old box out to him from wherever he stood; on the host the old box stayed held by seat 0 with its bar frozen. The refusal now clears any search in hand and a linked window sends the stop in the same frame; the one second wait before asking again for a box that turned him down does the same. No number moved and no new words.
+
+Check 16.95. Fails on v16.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
