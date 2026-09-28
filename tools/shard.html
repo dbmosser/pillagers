@@ -31,6 +31,8 @@ f.onload = function () {
         window.__startMsg = w.__regressBg(A, B);
         window.__PROG = w.__PROG;
         document.title = 'shard ' + A + '-' + B + ' running';
+        // The title is read by the browser, not the page: a check that hangs the page leaves its count showing here.
+        setInterval(function () { var p = w.__PROG || {}; document.title = 'shard ' + A + '-' + B + ' at ' + (p.done | 0) + '/' + (p.total | 0) + (p.finished ? ' done' : ''); }, 300);
       } catch (e) {
         window.__PROG = { finished: true, res: { pass: false, checked: 0, fail: ['shard host: ' + e.message], skipped: [] }, range: [A, B] };
         document.title = 'shard ' + A + '-' + B + ' ERROR';

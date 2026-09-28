@@ -1,0 +1,7 @@
+v16.92: a key held in the player 2 window is let go when that window loses focus
+
+Co-op hunt 2026-09-28, findings 10 and 11: netKeyFwd in the player 2 window posts every keydown and keyup to the player 1 window, whose keyup listener is the only thing that clears keys for a handed key. When the player 2 window lost focus mid press (alt-tab, taskbar, another program) the keyup went elsewhere, releaseAllKeys cleared only the empty keys table of the player 2 window, and the unfocused player 1 window got no blur of its own, so keys stayed true there and player 1 kept walking, sprinting or holding E. A keyup aimed at a text box in the player 2 window was also dropped before it was handed on. The player 2 window now keeps netKeyHeld, the codes it handed down and not yet up; netKeyLetGo posts a keyup for each and empties it, and runs on window blur, on pagehide and on visibilitychange to hidden; outside a pair it only forgets them. A keyup for a held code is handed on even over a text box, without stopping the box from seeing it. The host is sent plain keyups, not a releaseAllKeys, so its open backpack and a mouse drag are left alone. No number and no player text moved.
+
+Check 16.92. Fails on v16.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

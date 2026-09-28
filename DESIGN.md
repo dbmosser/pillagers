@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.92 - A KEY HELD IN THE PLAYER 2 WINDOW IS LET GO WHEN THAT WINDOW LOSES FOCUS
+
+Co-op hunt while he was away. In a same machine pair the player 2 window hands every key to player 1, but it never handed up a key that was still down when it lost focus. Alt-tab, the taskbar or a click into another program with W, Shift or E held left player 1 walking, sprinting or holding E with no key down until someone clicked his window, and a key let go over a text box in the player 2 window stuck the same way. The player 2 window now remembers the keys it handed down and hands each one up when it loses focus, is hidden or closes, and a key let go over its text box is still handed up.
+
+MEASURED. Check 16.92 passes, and fails on v16.91.
 ## v16.91 - THE PARTY WINDOW CODE BOXES ARE IN THE GAME FONT
 
 The full sweep on v16.88 turned 11.09 red: his rule since v11.09 is one font on every menu, and the three invite code boxes

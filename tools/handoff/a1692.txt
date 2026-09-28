@@ -1,0 +1,1 @@
+| A KEY HELD IN THE PLAYER 2 WINDOW IS LET GO WHEN THAT WINDOW LOSES FOCUS | v16.92 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 16.92 passes, fails on v16.91 |
