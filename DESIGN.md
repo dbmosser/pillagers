@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.96 - WITH THE WHOLE PARTY PAUSED A TEAMMATE SEARCH STANDS STILL
+
+Co-op hunt while he was away. When every player in the party paused, the world stopped, but a box a teammate was searching kept filling on the host at full speed: items dropped into his backpack with their pickup lines and sounds, the box finished and showed as open, and a strongbox kept sounding its alarm. Letting go of the button during the pause changed nothing, so after unpausing the box was already empty. Now a teammate search stands still whenever the world does, as it already did while the host spectates, and runs on as soon as anyone unpauses.
+
+MEASURED. Check 16.96 passes, and fails on v16.95.
 ## v16.95 - TURNED DOWN AT A BOX SOMEONE ELSE IS SEARCHING, A PLAYER LETS GO OF THE BOX HE STEPPED AWAY FROM
 
 Co-op hunt while he was away. In a party of three or four, a player searching one box who stepped so that a box another teammate was searching became nearest was told that teammate is searching this one, but his first search kept running on the host, so items from the box he had left kept landing in his backpack for as long as he held the button. On the host the same step left his own box marked as searched by him with its bar frozen, so the others were turned away from a box nobody was searching. Now being turned down lets go of whatever box the player was searching, the linked window tells the host at once, and the same happens while the game waits to ask again for a box that just turned him down.

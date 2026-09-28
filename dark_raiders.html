@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.95';
+var VER='16.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31423,7 +31423,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.95: Co-op hunt 2026-09-28, loot: netSrchHold turned a player down at a box a teammate holds but only cleared his search when it was that same box. A player already searching another box kept it, netSrchSync saw nothing change and sent no stop, and netSrchTick on the host, which checks reach only when a search starts, kept paying the old box out to him from wherever he stood; on the host the old box stayed held by seat 0 with its bar frozen. The refusal now clears any search in hand and a linked window sends the stop in the same frame; the one second wait before asking again for a box that turned him down does the same. No number moved and no new words. Check 16.95 fails on v16.94',
+  now:'v16.96: Co-op hunt 2026-09-28, loot: netUpTick runs every raid frame before any pause test and handed the raw frame time to netSrchTick, so on the host a search one of the party held kept filling, paying out, pinging and sounding the strongbox alarm with every player paused and the world stopped; the paused teammate window runs no updatePlayer, so his hold was never let go either. The host now hands netSrchTick no time while the whole party is paused (G.paused and not netPauseLive, the same test that stops the world), as netSpecTick already does for a spectating host. The held and free bookkeeping still runs. No number moved and no new words. Check 16.96 fails on v16.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36201,7 +36201,9 @@ function netUpTick(dt){
   }
   p=G.player;
   if(G.over||!p||!netInCount()) return 0;
-  if(NET.role==='host') netSrchTick(dt); else if(NET.role==='join') netSrchSync();   // v15.91: the host runs every search one of the party holds; a linked window tells the host when its own hold ended
+  // v16.96, co-op hunt 2026-09-28: a party search on the host ran on the raw frame time, so with the whole party paused and the
+  // world stopped a teammate box kept filling, paying out and sounding. It now stands still whenever the world does, as in netSpecTick.
+  if(NET.role==='host') netSrchTick((G.paused&&!netPauseLive())?0:dt); else if(NET.role==='join') netSrchSync();   // v15.91: the host runs every search one of the party holds; a linked window tells the host when its own hold ended
   NET.upAcc+=dt;
   if(NET.upAcc<NET_HUB_STEP) return 0;
   try{ voiceProxAll(); }catch(_vp){}   // v16.10: voices by distance, on the same clock

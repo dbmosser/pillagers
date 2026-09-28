@@ -1,0 +1,7 @@
+v16.96: with the whole party paused a teammate search stands still
+
+Co-op hunt 2026-09-28, loot: netUpTick runs every raid frame before any pause test and handed the raw frame time to netSrchTick, so on the host a search one of the party held kept filling, paying out, pinging and sounding the strongbox alarm with every player paused and the world stopped; the paused teammate window runs no updatePlayer, so his hold was never let go either. The host now hands netSrchTick no time while the whole party is paused (G.paused and not netPauseLive, the same test that stops the world), as netSpecTick already does for a spectating host. The held and free bookkeeping still runs. No number moved and no new words.
+
+Check 16.96. Fails on v16.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
