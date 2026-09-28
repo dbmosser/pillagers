@@ -1,0 +1,5 @@
+## v17.10 - A BANDAGE OR PLATE YOUR TEAMMATE COULD NOT TAKE (HE WENT DOWN, DIED OR LEFT THE RAID) COMES BACK TO YOUR BACKPACK
+
+Co-op hunt while he was away. A Bandage or plate for a teammate was spent at the end of the wind-up on what the healer last heard of him. If he had gone down a moment before, was in his death beat, or had just extracted, his window turned it down and nothing came back, while the healer was told Patched up. His window now sends a refused item back, the healer no longer picks a teammate whose raid has ended, and a heal the host could not pass to anyone stays in, or goes back to, the backpack of the one who spent it.
+
+MEASURED. Check 17.10 passes, and fails on v17.09.

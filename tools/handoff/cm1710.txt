@@ -1,0 +1,7 @@
+v17.10: a bandage or plate your teammate could not take (he went down, died or left the raid) comes back to your backpack
+
+Aid items, co-op hunt 2026-09-28: once netAidFinish sent the aid word the item lived only in that word. netAidApply turned it down when the raid was over (no raid) or he was down, and when he was in his death beat (downed cleared, hp 0) it poured the heal into a dead man, and in each case nothing went back, so the item was lost and the healer read Patched up. The healer decided from his last state word, which lags a fresh down by up to NET_HUB_STEP, and a late position word after the out word re-files an extracted teammate as standing. netAidApply now sends every refused item back with the aidx word (netAidBack, from the draft before) and also refuses a man in his death beat. netAidTarget and netAidFinish skip a seat marked out on this seed (netUpGone), as the pick-up wait does. On the host, netAidFinish now reads what netAidPass answers, and when nobody could take it (no link on that seat, or the send failed) the item stays in the backpack with the line NAME could not take it. ITEM kept, and an aid word from a friend that netAidTake on the host could not pass on (nobody, or lost) goes back to that friend the same way. No number moved.
+
+Check 17.10. Fails on v17.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
