@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.00 - A CONTROLLER X PRESSED AFTER A PAD GAP, ANOTHER SCREEN OR DURING A ROLL SEARCHES THE BOX IN REACH INSTEAD OF RELOADING
+
+Co-op hunt while he was away. On a controller X chooses on the press between searching and reloading, and the press was only noticed in the raid branch. After a pad gap, a menu or another screen, a new X press was not seen as new, so the reload choice of the X before was held again beside a box and the box was never searched until X was let go and pressed once more. X pressed during a roll also chose from where the roll began, so rolling onto a box with X down reloaded instead of searching. Now a pad gap or another screen forgets the X press, and X pressed during a roll chooses once the roll ends and the game has looked at what is in reach.
+
+MEASURED. Check 17.00 passes, and fails on v16.99.
 ## v16.99 - A PILLAGER WHO IS PICKED UP NO LONGER COUNTS AS A PLAYER 2 KILL WHEN HE DIES LATER
 
 Co-op hunt while he was away. When player 2 downed a pillager and someone picked him up, the game still remembered player 2 as his killer. If the same man later died to a Howler shell, a crawler or by bleeding out, player 2 was sent a kill he did not make, with a contract tick, a grudge and the line that the man will remember it. A pick-up now clears the player 2 mark as well as the host mark, so his next death is credited to nobody unless someone causes it.

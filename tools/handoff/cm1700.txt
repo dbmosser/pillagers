@@ -1,0 +1,7 @@
+v17.00: a controller x pressed after a pad gap, another screen or during a roll searches the box in reach instead of reloading
+
+Controller X search after a gap or a roll (co-op hunt 2026-09-28). X on a pad chooses on the press between E (search, open, call) and R (reload) and keeps that choice for the hold. The press latch PAD.xWas was written only in the raid branch of pollPad, so the no-pad branch (a pad that dropped out, or player 2 with no forwarded state), the menu path, other screens, the stall and the Undercroft all left it set: an X let go and pressed again during the gap was not a new press, and the reload choice was held again beside a box, so G.searching stayed empty until X was pressed once more. padRelease now clears PAD.xWas, the no-pad branch clears PAD.xWas, PAD.xDownAt and PAD.xSearched (not PAD.xAfterTrade, which must still spend an X held from the stall), and the Undercroft return clears PAD.xWas. Second, pollPad runs before updatePlayer and updatePlayer looks up what is in reach only after its early return for a roll, so X pressed during a roll chose from where the roll began and held R onto the box. A roll reads neither E nor R, so a press during a roll now holds nothing until updatePlayer has looked up the reach again after the press (a new counter G.nearN, one per look), then chooses and starts the 0.35 s search grace from then. Out of a roll, or downed, the choice is made on the press as before. No number moved and no player text changed.
+
+Check 17.00. Fails on v16.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
