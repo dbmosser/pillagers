@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.97 - PLAYER 2 SEARCH BAR COUNTS THE ITEMS THE HOST BOX REALLY HOLDS
+
+Co-op hunt while he was away. On player 2, every box that was on the map from the start showed the item count from player 2 own copy of the loot list, which never changes while the host hands the items out. A locker player 1 had already taken one item from read 3 items left for player 2 while it gave him 2, the count did not fall as items came out, and a restocked box showed no count at all. Now those boxes read the count the host sends, as boxes the host adds later already did.
+
+MEASURED. Check 16.97 passes, and fails on v16.96.
 ## v16.96 - WITH THE WHOLE PARTY PAUSED A TEAMMATE SEARCH STANDS STILL
 
 Co-op hunt while he was away. When every player in the party paused, the world stopped, but a box a teammate was searching kept filling on the host at full speed: items dropped into his backpack with their pickup lines and sounds, the box finished and showed as open, and a strongbox kept sounding its alarm. Letting go of the button during the pause changed nothing, so after unpausing the box was already empty. Now a teammate search stands still whenever the world does, as it already did while the host spectates, and runs on as soon as anyone unpauses.

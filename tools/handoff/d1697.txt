@@ -1,0 +1,5 @@
+## v16.97 - PLAYER 2 SEARCH BAR COUNTS THE ITEMS THE HOST BOX REALLY HOLDS
+
+Co-op hunt while he was away. On player 2, every box that was on the map from the start showed the item count from player 2 own copy of the loot list, which never changes while the host hands the items out. A locker player 1 had already taken one item from read 3 items left for player 2 while it gave him 2, the count did not fall as items came out, and a restocked box showed no count at all. Now those boxes read the count the host sends, as boxes the host adds later already did.
+
+MEASURED. Check 16.97 passes, and fails on v16.96.

@@ -1,0 +1,7 @@
+v16.97: player 2 search bar counts the items the host box really holds
+
+Co-op hunt 2026-09-28, loot: the search bar reads the host count (netLeft) only on a box marked net, and only netContMake marked boxes that way, so on a linked window every map-built box that netContInit numbered fell back to its own local loot list. That list never shrinks as the host hands out items and is emptied by a restock shut word, so the bar showed the count rolled at the build and a restocked box showed none, while the ok answer and each loot word kept netLeft right unseen. netContInit on a linked window now marks each numbered box net and starts netLeft at the list it rolled, which matches the host at the build; the ok answer then gives the host count and each loot word lowers it. The host is untouched. No number moved and no new words.
+
+Check 16.97. Fails on v16.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
