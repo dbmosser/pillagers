@@ -1,0 +1,7 @@
+v16.98: a round or charge on a pillager who has just bled out no longer takes the kill from player 2
+
+Kill credit, co-op hunt 2026-09-28: a pillager who bleeds out is marked finished with no health and is only taken off the map on the next frame, but rounds and charges are stepped in between. The enemy round loop, the player round loop and explodeFrag had no skip for that body (the lightning strike loop did), so a round or charge on it ran the killing blow branch again and set bySeat to 0 or byPlayer to true, and netEntGone then sent no kill word to player 2 or gave the kill to the host. All three loops now skip a finished body, so the round or charge passes over it. A downed man is not finished and can still be shot and finished off. No number and no player text moved.
+
+Check 16.98. Fails on v16.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

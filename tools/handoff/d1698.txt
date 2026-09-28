@@ -1,0 +1,5 @@
+## v16.98 - A ROUND OR CHARGE ON A PILLAGER WHO HAS JUST BLED OUT NO LONGER TAKES THE KILL FROM PLAYER 2
+
+Co-op hunt while he was away. When player 2 downed a pillager and he bled out, his body lay in the raid for one more frame. A stray round from a machine or a rival, a host round or a host charge landing on the body in that frame wrote the kill mark again, so player 2 lost the kill, the contract tick and the grudge, or the host was given the kill instead. Rounds and charges now pass over a man who has bled out, as lightning already did, so the kill stays with whoever downed him.
+
+MEASURED. Check 16.98 passes, and fails on v16.97.

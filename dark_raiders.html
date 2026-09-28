@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.97';
+var VER='16.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12984,6 +12984,7 @@ function explodeFrag(f){
   }
   for(i=G.ents.length-1;i>=0;i--){
     var e=G.ents[i],de=dist(e,f);
+    if(e.finished) continue;   // v16.98, co-op hunt 2026-09-28: a man who bled out lies here one more frame; a charge on the body wrote the kill mark again and took the kill from player 2, so it passes him as lightning does
     if(_fMine&&e.merc&&!e.downed) continue;   // v13.68, hire audit: your charge spares your hire, as your rounds (v6.72) and fists (v11.38) do
     if(de<R+e.r&&losClear(f.x,f.y,e.x,e.y,G.map.segs)){
       var _fdm=115*(1-Math.max(0,de-e.r)/R)+25;   // v11.77: was 85 and 15
@@ -19780,6 +19781,7 @@ function updateBullets(dt){
             // v3.94: the first 0.30s of a 0.38s roll is invulnerable, the same
             // window the player gets, so a raider who times it eats nothing.
             if(en.roll>0.08) continue;
+            if(en.finished) continue;   // v16.98, co-op hunt 2026-09-28: a man who bled out lies here one more frame; a round on the body wrote the kill mark again and took the kill from player 2, so it passes over him
             if(dist(b,en)<en.r+3){
               var edmg=b.dmg;
               // SPEC 8.7: a weak point is checked BEFORE armour, because it is
@@ -19969,6 +19971,7 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
           if(!hit) for(var e3=0;e3<G.ents.length;e3++){
             var en3=G.ents[e3];
             if(en3===b.owner) continue;
+            if(en3.finished) continue;   // v16.98, co-op hunt 2026-09-28: the same for an enemy round, which wiped the player 2 seat mark off a man who had just bled out
             // Same-kind entities used to be immune to each other, so a raider's
             // round passed straight THROUGH another raider even once he was
             // aiming at him. The exception is deliberately narrow: feuding
@@ -31423,7 +31426,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.97: Co-op hunt 2026-09-28, loot: the search bar reads the host count (netLeft) only on a box marked net, and only netContMake marked boxes that way, so on a linked window every map-built box that netContInit numbered fell back to its own local loot list. That list never shrinks as the host hands out items and is emptied by a restock shut word, so the bar showed the count rolled at the build and a restocked box showed none, while the ok answer and each loot word kept netLeft right unseen. netContInit on a linked window now marks each numbered box net and starts netLeft at the list it rolled, which matches the host at the build; the ok answer then gives the host count and each loot word lowers it. The host is untouched. No number moved and no new words. Check 16.97 fails on v16.96',
+  now:'v16.98: Kill credit, co-op hunt 2026-09-28: a pillager who bleeds out is marked finished with no health and is only taken off the map on the next frame, but rounds and charges are stepped in between. The enemy round loop, the player round loop and explodeFrag had no skip for that body (the lightning strike loop did), so a round or charge on it ran the killing blow branch again and set bySeat to 0 or byPlayer to true, and netEntGone then sent no kill word to player 2 or gave the kill to the host. All three loops now skip a finished body, so the round or charge passes over it. A downed man is not finished and can still be shot and finished off. No number and no player text moved. Check 16.98 fails on v16.97',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

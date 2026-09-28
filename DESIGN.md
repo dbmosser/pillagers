@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.98 - A ROUND OR CHARGE ON A PILLAGER WHO HAS JUST BLED OUT NO LONGER TAKES THE KILL FROM PLAYER 2
+
+Co-op hunt while he was away. When player 2 downed a pillager and he bled out, his body lay in the raid for one more frame. A stray round from a machine or a rival, a host round or a host charge landing on the body in that frame wrote the kill mark again, so player 2 lost the kill, the contract tick and the grudge, or the host was given the kill instead. Rounds and charges now pass over a man who has bled out, as lightning already did, so the kill stays with whoever downed him.
+
+MEASURED. Check 16.98 passes, and fails on v16.97.
 ## v16.97 - PLAYER 2 SEARCH BAR COUNTS THE ITEMS THE HOST BOX REALLY HOLDS
 
 Co-op hunt while he was away. On player 2, every box that was on the map from the start showed the item count from player 2 own copy of the loot list, which never changes while the host hands the items out. A locker player 1 had already taken one item from read 3 items left for player 2 while it gave him 2, the count did not fall as items came out, and a restocked box showed no count at all. Now those boxes read the count the host sends, as boxes the host adds later already did.
