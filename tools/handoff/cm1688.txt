@@ -1,0 +1,9 @@
+v16.88: the what is new card names his playtest changes
+
+One line under the co-op line: his controller layout, picking up and
+placing on a controller, kid firing and kid mode 1/20, and TOP GEAR and
+RANDOM FROM STASH.
+
+Check 16.88. Fails on v16.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

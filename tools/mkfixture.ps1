@@ -5721,6 +5721,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.88',what:'the what is new card is current again: within fifteen builds, the co-op line still second, then his playtest line naming the controller layout, kid firing and the new kit answers, and no retired word on the lines the card draws',
+   run:function(){
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew(), bad=[], L=wn.lines||[];
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(!(vNow&&vCard)) return 'SKIP: no version on the card or the build';
+     if(vCard>16.88+0.001) return 'SKIP: the card has moved on to v'+wn.ver+', a later card check covers it';
+     if(vNow-vCard>0.15) bad.push('the card is at v'+wn.ver+' against a build at v'+wn.build+', more than fifteen builds behind');
+     var a=String(L[2]||'').toUpperCase();
+     ['A ROLLS','B CROUCHES','RT FIRES','KID FIRING','TOP GEAR','RANDOM FROM STASH','PATCHES UP A TEAMMATE'].forEach(function(w){ if(a.indexOf(w)<0) bad.push('the playtest line does not say '+w.toLowerCase()); });
+     if(String(L[1]||'').toUpperCase().indexOf('YOUR PARTY GOES UP TOGETHER')<0) bad.push('the co-op line is no longer second');
+     if((/\bbag\b|hotbar|touchdown|boarding|\bship\b|wardrobe/i).test(L.slice(0,13).join(' '))) bad.push('the card draws a retired word');
+     return bad.length?bad.join('; '):null; }},
   {v:'16.87',what:'the kit question offers TOP GEAR and RANDOM FROM STASH: top gear equips the highest tier gun owned and packs grenades, ammo and heals from the stash, random equips an owned gun and packs up to six stash items, every packed item is in the stash, both go up as MY LOADOUT does, and the two buttons are gone once the card closes',
    run:function(){
      if(typeof askKit!=='function'||!window.__P) return 'SKIP: this build has no kit question';

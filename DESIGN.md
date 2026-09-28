@@ -40024,6 +40024,13 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.88 - THE WHAT IS NEW CARD NAMES HIS PLAYTEST CHANGES
+
+The card was written at v16.71 and had fallen sixteen builds behind. One line goes in under the co-op line naming what his
+playtest of 2026-09-27 changed: his controller layout, picking up and placing on a controller, kid firing and kid mode
+1/20, and TOP GEAR and RANDOM FROM STASH. The older card checks step aside as the card moves on.
+
+MEASURED. Check 16.88 passes, and fails on v16.87.
 ## v16.87 - RANDOM FROM STASH AND TOP GEAR
 
 His ask during his co-op session: an option to take a random loadout from the stash instead of the freebie kit, and one to
