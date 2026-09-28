@@ -1,0 +1,5 @@
+## v17.05 - GOING DOWN OR ROLLING STOPS A TEAMMATE PICK-UP INSTEAD OF FREEZING IT
+
+Co-op hunt while he was away. A player who went down or rolled part way through picking up a teammate left the pick-up clock frozen: the REVIVING bar hung over the teammate for the whole bleed-out, even after he got up and walked off, and once the player was up again with E held the pick-up carried on from where it stopped instead of starting over. Going down or rolling now stops the pick-up and clears its bar, and E held on afterwards starts it again from the start with its Reviving line.
+
+MEASURED. Check 17.05 passes, and fails on v17.04.

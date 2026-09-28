@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.04';
+var VER='17.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16041,6 +16041,10 @@ function updatePlayer(dt){
   if(!G.sim) tickBuzz(dt);
 
   if(p.downed){
+    // v17.05, co-op hunt 2026-09-28: GOING DOWN LETS GO OF A PICK-UP. The pick-up clock is reset only inside netRevHold, on a
+    // standing frame, so going down part way through froze it: the REVIVING bar hung over the teammate for the whole bleed-out and
+    // E held on once up again carried on from the old progress instead of starting over (v16.05). Cleared here, every downed frame.
+    G.netRevT=0; G.netRevS=-1; G.netRevDone=-1;
     if(tickDowned(dt)) return;
     if(giveUpTick(dt)) return;
     var mx0=0,my0=0;
@@ -16100,6 +16104,7 @@ function updatePlayer(dt){
 
   if(p.rollCd>0) p.rollCd-=dt;
   if(p.roll>0){
+    if(G.netRevT){ G.netRevT=0; G.netRevS=-1; }   // v17.05, co-op hunt 2026-09-28: a roll breaks a pick-up hold too; netRevHold, which reset it, runs only after a roll
     p.roll-=dt;
     // A roll covers ROLLSPD a second against a sprint of 256. Moved in one hop it
     // could land the operator centre past the middle of a thin wall, and the
@@ -31452,7 +31457,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.04: Downed, pad X is E: pollPad chose X on the press from G.nearPad, G.nearContainer and the other reach flags, which are only written on a standing frame, so a player who went down outside a ring and crawled in got R (nothing on the floor) and never started the 1.6 s call the downed overlay asks for; player 2 in a same machine pair has only the pad. A downed player now has the ring search grace switched off and X held on the floor holds E, including a hold carried over from before he went down. Standing play is unchanged. Check 17.04 fails on v17.03',
+  now:'v17.05: The pick-up clock (G.netRevT, G.netRevS) and the kept pick-up (G.netRevDone) were reset only inside netRevHold, which runs only on a standing frame, and the downed and roll branches of updatePlayer return before it, so going down or rolling mid pick-up froze the clock: the REVIVING bar drew over the teammate for the whole bleed-out and a later hold resumed at the old progress with no Reviving line, against the v16.05 rule that a broken hold starts again. The downed branch now clears all three at its top and the roll branch clears the clock, so every route into those states lets go of the pick-up. The wait for his up word (G.netRevWait) is left as it was. No number moved. Check 17.05 fails on v17.04',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

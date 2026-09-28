@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.05 - GOING DOWN OR ROLLING STOPS A TEAMMATE PICK-UP INSTEAD OF FREEZING IT
+
+Co-op hunt while he was away. A player who went down or rolled part way through picking up a teammate left the pick-up clock frozen: the REVIVING bar hung over the teammate for the whole bleed-out, even after he got up and walked off, and once the player was up again with E held the pick-up carried on from where it stopped instead of starting over. Going down or rolling now stops the pick-up and clears its bar, and E held on afterwards starts it again from the start with its Reviving line.
+
+MEASURED. Check 17.05 passes, and fails on v17.04.
 ## v17.04 - A DOWNED CONTROLLER PLAYER CALLS THE EXTRACTION WITH X AGAIN
 
 Co-op hunt while he was away. A controller player who went down outside an extraction circle and crawled into it could not call the ship: X chose from what was in reach where he fell, so it held the reload key, which does nothing on the floor, while the downed screen said HOLD X TO CALL FOR EXTRACTION. Player 2 on one PC has no keyboard E, so he bled out inside the circle. On the floor X now always holds E, the one key a downed player uses, and never starts a search.
