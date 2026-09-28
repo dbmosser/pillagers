@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.12';
+var VER='17.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4192,6 +4192,7 @@ function tickMachineVoices(dt){
 }
 function blip(type,d,pan){
   if(G&&G.sim) return;
+  if(typeof NET==='object'&&NET&&NET.specTick) return;   // v17.13, co-op hunt 2026-09-28: the kept raid is silent in the spectating host window here too (a pillager going down, the beacon call)
   var a=ac(); if(!a) return;
   var vol=d===undefined?1:Math.max(0,1-d/900); if(vol<=.02) return;
   var t=a.currentTime;
@@ -31464,7 +31465,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.12: Kill credit, co-op hunt 2026-09-28: netKillTake on the player 2 window checked only that a raid was in hand, not that it was still running. When player 2 downed a pillager and then died or extracted with player 1 still up top, the man bled out on the host, netEntGone sent the kill word to his seat, and it raised G.tel.kills after endRaid had banked the kills (the pending run row holds that same object, so the logged row gained it) and ran contractKill on the board ensureContracts had refilled at the end of the run, which could step or finish a contract issued after the run. netKillTake now refuses the word unless netEntsPeer holds (linked, up top on the party seed, raid not over), as netHitTake already does. A kill word while player 2 is up top still counts. No number and no player text moved. Check 17.12 fails on v17.11',
+  now:'v17.13: Spectate sounds (co-op hunt 2026-09-28): the only mute for the raid a spectating host keeps running was in sfx, and it held only inside netSpecTick. Every word from the party is handled in netOnMsg against that raid with the mute off, so a teammate sound word (his hits, wall clanks, frag booms and the inbound pings) played through sfx in the host Undercroft, measured from where the host body lies, and a teammate beacon call played the beacon blip at full volume. Inside netSpecTick a pillager going down, the long range kill clank and the hire pick up call blip directly and skipped the sfx mute. Now netOnMsg holds NET.specTick for every word while NET.specG is set (whether or not the window is swapped to it) and puts back the value it found, and blip returns early while NET.specTick is set, the same gate sfx has. sfx still queues the sound for the party before its gate. The host own card and menu sounds play outside both paths and are unchanged. Check 17.13 fails on v17.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35225,7 +35226,16 @@ function netDcOpen(peer){
 // EVERY MESSAGE, from a real channel or a stand-in. Returns what it did, so a check can read the answer.
 // v16.14: while the host spectates, every word is handled against the raid world it keeps running, whatever this window shows.
 function netOnMsg(peer,data){
-  if(typeof NET==='object'&&NET&&NET.specG&&G!==NET.specG){ var _kg=G; G=NET.specG; try{ return netOnMsg0(peer,data); } finally{ G=_kg; } }
+  // v17.13, co-op hunt 2026-09-28: and it makes no sound in his window. The mute (NET.specTick) held only inside netSpecTick, so a
+  // word handled here played a teammate hits, pings and beacon call in the host Undercroft. It is held for every word while he keeps
+  // the raid, on his run card too, and put back as it was found, so a word handled inside netSpecTick leaves that tick muted.
+  if(typeof NET==='object'&&NET&&NET.specG){
+    var _kt=NET.specTick; NET.specTick=true;
+    try{
+      if(G!==NET.specG){ var _kg=G; G=NET.specG; try{ return netOnMsg0(peer,data); } finally{ G=_kg; } }
+      return netOnMsg0(peer,data);
+    } finally{ NET.specTick=_kt; }
+  }
   return netOnMsg0(peer,data);
 }
 function netOnMsg0(peer,data){

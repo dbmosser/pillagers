@@ -1,0 +1,7 @@
+v17.13: the raid a spectating host keeps running makes no sound in his undercroft
+
+Spectate sounds (co-op hunt 2026-09-28): the only mute for the raid a spectating host keeps running was in sfx, and it held only inside netSpecTick. Every word from the party is handled in netOnMsg against that raid with the mute off, so a teammate sound word (his hits, wall clanks, frag booms and the inbound pings) played through sfx in the host Undercroft, measured from where the host body lies, and a teammate beacon call played the beacon blip at full volume. Inside netSpecTick a pillager going down, the long range kill clank and the hire pick up call blip directly and skipped the sfx mute. Now netOnMsg holds NET.specTick for every word while NET.specG is set (whether or not the window is swapped to it) and puts back the value it found, and blip returns early while NET.specTick is set, the same gate sfx has. sfx still queues the sound for the party before its gate. The host own card and menu sounds play outside both paths and are unchanged.
+
+Check 17.13. Fails on v17.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

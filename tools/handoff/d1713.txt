@@ -1,0 +1,5 @@
+## v17.13 - THE RAID A SPECTATING HOST KEEPS RUNNING MAKES NO SOUND IN HIS UNDERCROFT
+
+Co-op hunt while he was away. When the host died or extracted and a teammate was still up top, the host window kept the raid running for the party, and that raid was meant to be silent there. It was not: the teammate rounds landing near the host body, the inbound pings, his beacon call and a pillager going down all played in the host Undercroft, out of the host speaker. Now every word from the party that is handled against the kept raid is muted in the host window, and so is every sound the kept raid plays directly; the host own clicks and menus still sound as before.
+
+MEASURED. Check 17.13 passes, and fails on v17.12.

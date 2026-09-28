@@ -1,0 +1,1 @@
+| THE RAID A SPECTATING HOST KEEPS RUNNING MAKES NO SOUND IN HIS UNDERCROFT | v17.13 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.13 passes, fails on v17.12 |
