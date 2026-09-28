@@ -110,3 +110,10 @@ LEFT: kit options random from stash / top gear (redo solo); his 125% zoom questi
 His explicit asks are all shipped. Waiting on him: is his 125% zoom Chrome own zoom; was his downed-extract E going to the
 player 2 window (keyboard focus). Weekly all-models read 21% this morning. Next idle work: the full corpus in four headless
 Chromes (tools/cdp.ps1, one per port 9336-9339) on v16.88, then the stale checks it shows.
+
+## 2026-09-28 afternoon: v16.89 the keyboard always drives player 1 on one PC (likeliest cause of his downed-extract report);
+v16.90 comment wording (9.59); v16.91 party code boxes in the game font (11.09). Tests retargeted: 16.44 (kid 1/20), 16.15
+(host is out wording), 16.89 presses keys on the body; nettest pad release 800 ms. Full sweep on v16.88: newest 200 and
+oldest 216 done, every red fixed; the 400-600 part hangs for hours in one long simulation (look at it: which check).
+4K MEASURED ON HIS GPU (item g): RX 7900 XTX, headless Chrome 3806x2055, solo raid seed 4242: 60 fps locked, avg 16.7 ms,
+p95 16.8 ms. The layer cap draft is not needed; item g closed unless he reports slow frames (then measure two windows).
