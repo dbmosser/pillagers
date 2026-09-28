@@ -1,0 +1,7 @@
+v17.09: the what is new card names the two-player fixes
+
+THE WHAT IS NEW CARD NAMES THE TWO-PLAYER FIXES. The card was stamped v16.88, twenty builds behind, and the parse check refuses a card that far back. One line goes in under the playtest line naming the two-player fixes of v16.92 to v17.08, and the stamp moves to this build.
+
+Check 17.09. Fails on v17.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.09',what:'the what is new card is stamped within 0.15 of the build and has a line on the two-player fixes of the co-op hunt',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle='TWO-PLAYER GAMES'+' ON ONE PC';
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)>=0; })) bad.push('no line of the card names the two-player fixes');
+     return bad.length?bad.join('; '):null; }},
   {v:'17.08',what:'a bandage from a teammate that cannot raise him, because his own bandage is winding up or already running to 85, is not poured into his heal but goes back to the teammate, whose window puts it back in the backpack; with nothing running it still heals him',
    run:function(){
      if(!(window.__resetCfg&&window.__pinDefaults&&window.__startRaid&&window.__cleanProfile)||typeof NET!=='object'||!NET||typeof netOnMsg!=='function'||typeof startPrep!=='function'||typeof applyHeal!=='function'||typeof healReach!=='function'||typeof healCeil!=='function') return 'SKIP: this fixture cannot stage a party raid';

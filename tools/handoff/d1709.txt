@@ -1,0 +1,5 @@
+## v17.09 - THE WHAT IS NEW CARD NAMES THE TWO-PLAYER FIXES
+
+Co-op hunt while he was away. The card was stamped v16.88 and had fallen twenty builds behind, which the parse check refuses. One line goes in under the playtest line naming the two-player fixes of v16.92 to v17.08 in plain words, and the stamp moves to this build.
+
+MEASURED. Check 17.09 passes, and fails on v17.08.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.09 - THE WHAT IS NEW CARD NAMES THE TWO-PLAYER FIXES
+
+Co-op hunt while he was away. The card was stamped v16.88 and had fallen twenty builds behind, which the parse check refuses. One line goes in under the playtest line naming the two-player fixes of v16.92 to v17.08 in plain words, and the stamp moves to this build.
+
+MEASURED. Check 17.09 passes, and fails on v17.08.
 ## v17.08 - A BANDAGE OR MEDKIT GIVEN TO A TEAMMATE WHO IS ALREADY HEALING IS NO LONGER WASTED: IT COMES BACK TO YOUR BACKPACK
 
 Co-op hunt while he was away. Healing a teammate only looked at his health from his last state word, which does not show a heal he is winding up or one already running. A Bandage given while his own Bandage was taking him to 85 was added to that heal, stopped at the same 85, and gave nothing, while both screens said Patched up. His window now checks what is already on its way before it takes the item, and one that cannot raise him goes back to the teammate who spent it, with a line saying he is already healing and the item was kept.
