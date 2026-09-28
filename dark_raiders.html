@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.93';
+var VER='16.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31423,7 +31423,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.93: Co-op hunt 2026-09-28, finding 12: the window capture listener that shuts the pause box on ESC or TAB called only stopPropagation, which does not stop later listeners on the same window. netKeyFwd, the v16.89 capture listener that hands every key in the player 2 window to player 1, is registered after it and still posted the same ESC or TAB, and the player 1 window played it as its own: RAID PAUSED opened there (wiping his held keys and trigger), or his open map or backpack shut, or on the floor his box toggled. The pause box listener now also calls stopImmediatePropagation next to its stopPropagation, so the key is spent on the box it shut. The only later capture listeners on window are netKeyFwd and the push to talk Y, neither of which needs ESC or TAB with the box open. The keyup is still handed on, which only clears a key on the host. No number and no player text moved. Check 16.93 fails on v16.92',
+  now:'v16.94: netMateDown picked any teammate up top whose word said down, on this raid seed, with no test of whether his raid had already ended or his word had gone stale. A last position word on the unordered fast channel can land after the out or spec word of a player who extracted from the floor, and it files him down on that spot for good, since nothing drops a stale entry. netRevHold then took E every step within 64 of that spot, sent a refused pick-up every 3.2 seconds and started again, so tryExtractTick never saw E and the other player could not pull out of that ring (X on the pad too, since it maps to E while netMateDown finds someone). netMateDown now skips a seat marked out on this seed (netUpGone) and one that is not drawn any more (netUpShown), the same tests the pick-up wait and the spectating host already use. A teammate who is down with fresh words is picked up as before. No number moved. Check 16.94 fails on v16.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37470,7 +37470,11 @@ function netMateDown(p){
   if(!NET.on||!netUpShared()||!p||p.downed||!NET.upSeed) return -1;
   for(i=0;i<NET.up.length;i++){
     g=NET.up[i];
-    if(!g||!g.dn||g.seat===NET.seat||netSeatName(g.seat)===null||g.sd!==(NET.upSeed>>>0)) continue;
+    // v16.94, co-op hunt 2026-09-28: a teammate whose raid ended while he was down is nobody to pick up. His last position word
+    // can land after his out word (the fast channel is unordered) and file him down on that spot for the rest of the raid, so E
+    // held there started a pick-up every 3.2 s and never reached the ring pull. A seat marked out on this seed (netUpGone), or
+    // one whose word went stale and is no longer drawn (netUpShown), is skipped, as the pick-up wait already reads them.
+    if(!g||!g.dn||!netUpShown(g)||netUpGone(g)||g.seat===NET.seat||netSeatName(g.seat)===null||g.sd!==(NET.upSeed>>>0)) continue;
     d=Math.hypot(g.x-p.x,g.y-p.y); if(d<=bd){ bd=d; best=g.seat; }
   }
   return best;

@@ -1,0 +1,5 @@
+## v16.94 - A TEAMMATE WHOSE RAID ENDED WHILE HE WAS DOWN NO LONGER BLOCKS E IN THE EXTRACTION RING
+
+Co-op hunt while he was away. When one player extracted from the floor, his last position word, still saying he was down, could reach the other window after the word that his raid had ended. The other player then had an invisible downed teammate on that spot for the rest of the raid: holding E or X in the ring started a pick-up every 3.2 seconds, the extraction never got the key, and the ship left without him. Now a teammate whose raid has ended, or whose word has gone stale and is no longer drawn, is never offered for a pick-up, so E goes to the extraction as it should.
+
+MEASURED. Check 16.94 passes, and fails on v16.93.

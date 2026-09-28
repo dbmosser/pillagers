@@ -1,0 +1,7 @@
+v16.94: a teammate whose raid ended while he was down no longer blocks e in the extraction ring
+
+netMateDown picked any teammate up top whose word said down, on this raid seed, with no test of whether his raid had already ended or his word had gone stale. A last position word on the unordered fast channel can land after the out or spec word of a player who extracted from the floor, and it files him down on that spot for good, since nothing drops a stale entry. netRevHold then took E every step within 64 of that spot, sent a refused pick-up every 3.2 seconds and started again, so tryExtractTick never saw E and the other player could not pull out of that ring (X on the pad too, since it maps to E while netMateDown finds someone). netMateDown now skips a seat marked out on this seed (netUpGone) and one that is not drawn any more (netUpShown), the same tests the pick-up wait and the spectating host already use. A teammate who is down with fresh words is picked up as before. No number moved.
+
+Check 16.94. Fails on v16.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

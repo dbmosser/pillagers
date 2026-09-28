@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.94 - A TEAMMATE WHOSE RAID ENDED WHILE HE WAS DOWN NO LONGER BLOCKS E IN THE EXTRACTION RING
+
+Co-op hunt while he was away. When one player extracted from the floor, his last position word, still saying he was down, could reach the other window after the word that his raid had ended. The other player then had an invisible downed teammate on that spot for the rest of the raid: holding E or X in the ring started a pick-up every 3.2 seconds, the extraction never got the key, and the ship left without him. Now a teammate whose raid has ended, or whose word has gone stale and is no longer drawn, is never offered for a pick-up, so E goes to the extraction as it should.
+
+MEASURED. Check 16.94 passes, and fails on v16.93.
 ## v16.93 - ESC OR TAB THAT SHUTS THE PAUSE BOX IN THE PLAYER 2 WINDOW NO LONGER PAUSES PLAYER 1
 
 Co-op hunt while he was away. With the pause box open in the player 2 window, one press of ESC or TAB shut that box and was also handed to the player 1 window, where it opened RAID PAUSED, wiped his held keys, or snapped his map or backpack shut. One key acted in both windows. The key that shuts the pause box is now spent on that box and goes nowhere else.
