@@ -1,0 +1,7 @@
+v17.08: a bandage or medkit given to a teammate who is already healing is no longer wasted: it comes back to your backpack
+
+Aid items, co-op hunt 2026-09-28: netAidStart refused a teammate heal only when his health from the state word had reached the item ceiling, and the state word carries neither the running heal (healQ, healReach) nor a heal of his own still winding up (p.prep). On his window netAidApply then called applyHeal, which adds to the running heal under the same ceiling, so the drain stopped at 85 and threw the teammate Bandage away (a Medkit over his own Medkit the same at 100). Every self heal tests healReach for this, the aid path never did. netAidApply now reads netAidReach (healReach, raised by a heal of his own in p.prep) and, when that already reaches the item ceiling, does not apply it and sends a new word {t:aidx} back to the healer, routed as the aid word came (a friend to the host, the host to the seat that sent it). netAidBackTake passes it on or takes it, and netAidKept puts the item back in the backpack of the healer with the line NAME is already healing. ITEM kept. A heal that can still raise him is applied as before. No number moved.
+
+Check 17.08. Fails on v17.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

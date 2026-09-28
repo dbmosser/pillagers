@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.08 - A BANDAGE OR MEDKIT GIVEN TO A TEAMMATE WHO IS ALREADY HEALING IS NO LONGER WASTED: IT COMES BACK TO YOUR BACKPACK
+
+Co-op hunt while he was away. Healing a teammate only looked at his health from his last state word, which does not show a heal he is winding up or one already running. A Bandage given while his own Bandage was taking him to 85 was added to that heal, stopped at the same 85, and gave nothing, while both screens said Patched up. His window now checks what is already on its way before it takes the item, and one that cannot raise him goes back to the teammate who spent it, with a line saying he is already healing and the item was kept.
+
+MEASURED. Check 17.08 passes, and fails on v17.07.
 ## v17.07 - AN ISSUED BANDAGE STAYS A LOANER WHEN IT PASSES BETWEEN TEAMMATES
 
 Co-op hunt while he was away. Issued Bandages are loaners and are never banked, but in co-op two roads turned one into a find that went to the stash. A Bandage player 1 dropped and player 2 searched up arrived on player 2 as found, and a Bandage held out to a teammate who walked off during the wind-up came back as found. Now the dropped pile tells the party it holds an issued Bandage, so it arrives issued, and a Bandage that comes back from a heal the teammate walked away from goes back on the issued count.
