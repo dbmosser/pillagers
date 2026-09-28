@@ -1,0 +1,7 @@
+v17.11: a pillager the host dropped who bleeds out after the host left the raid no longer changes his saved run
+
+Kill credit, co-op hunt 2026-09-28: a pillager the host drops keeps the host kill mark through his bleed out, and when the host is out of the raid (spectating while the party is still up top) netSpecTick keeps running updateEnts on the kept raid. When the man bled out there the credit branch raised G.tel.kills, which is the same object as the kills field of the run row already committed to the log, stepped the host contracts and wrote a grudge with saveProfile; a survivor or the Peddler dropped by a host round charged notoriety the same way. The raider credit branch and the survivor and Peddler notoriety branches now also require that the host player is not spectating (specOut), so nothing in the kept raid is credited to a host who has left it. Solo play and a host still in the raid are unchanged. No number and no player text moved.
+
+Check 17.11. Fails on v17.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

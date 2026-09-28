@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.10';
+var VER='17.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18035,7 +18035,9 @@ if(e.state==='possum'){
         csd.time=1.0; G.containers.push(csd);
         // v8.23, audit: only if HE did it. Raiders shoot the Stray themselves,
         // and this charged a permanent point either way.
-        if(!G.sim&&e.byPlayer){
+        // v17.11, co-op hunt 2026-09-28: and not once his run is over. A host who left the raid while the party is still up top
+        // keeps it running, and a survivor his round dropped there charged his save for a raid he was already out of.
+        if(!G.sim&&e.byPlayer&&!(G.player&&G.player.specOut)){
           P.notoriety=(P.notoriety||0)+1; saveProfile();
           if(G.tel) G.tel.strayKilled=1;
           say('He was not armed. Notoriety '+P.notoriety+'.');
@@ -18057,7 +18059,8 @@ if(e.state==='possum'){
         cpd.cache=1; cpd.time=1.4; cpd.tag='PEDLAR STOCK'; G.containers.push(cpd);
         // v8.23, audit: same rule. The Peddler standing still with 150hp and no
         // gun is a target raiders will take, and the player was paying for it.
-        if(!G.sim&&e.byPlayer){
+        // v17.11, co-op hunt 2026-09-28: and the same once the host is out of the raid the party still runs.
+        if(!G.sim&&e.byPlayer&&!(G.player&&G.player.specOut)){
           P.notoriety=(P.notoriety||0)+1; saveProfile();
           if(G.tel) G.tel.pedKilled=1;
           say('The Peddler is dead. Word gets around. Notoriety '+P.notoriety+'.');
@@ -18076,7 +18079,10 @@ if(e.state==='possum'){
       // map to the player inflated both contract progress and the kill counts
       // in the recorder, which is the data tuning decisions are made from.
       // Last hit wins, exactly as the flag was set at the killing blow.
-      if(e.byPlayer){
+      // v17.11, co-op hunt 2026-09-28: not once the host is out. A host who dies, extracts or abandons while the party is still up
+      // top keeps the raid running for them, and a man he had dropped who bled out there added a kill to the run row he had already
+      // saved, stepped his contracts and wrote a grudge into his save, for a raid he was no longer in. Such a death is credited to nobody.
+      if(e.byPlayer&&!(G.player&&G.player.specOut)){
         T.kills[e.kind]++; contractKill(e.kind);
         if(e.elite) T.eliteKills=(T.eliteKills||0)+1;
         // v8.29: the charge for shooting a neutral now lands at the SHOT, not
@@ -31458,7 +31464,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.10: Aid items, co-op hunt 2026-09-28: once netAidFinish sent the aid word the item lived only in that word. netAidApply turned it down when the raid was over (no raid) or he was down, and when he was in his death beat (downed cleared, hp 0) it poured the heal into a dead man, and in each case nothing went back, so the item was lost and the healer read Patched up. The healer decided from his last state word, which lags a fresh down by up to NET_HUB_STEP, and a late position word after the out word re-files an extracted teammate as standing. netAidApply now sends every refused item back with the aidx word (netAidBack, from the draft before) and also refuses a man in his death beat. netAidTarget and netAidFinish skip a seat marked out on this seed (netUpGone), as the pick-up wait does. On the host, netAidFinish now reads what netAidPass answers, and when nobody could take it (no link on that seat, or the send failed) the item stays in the backpack with the line NAME could not take it. ITEM kept, and an aid word from a friend that netAidTake on the host could not pass on (nobody, or lost) goes back to that friend the same way. No number moved. Check 17.10 fails on v17.09',
+  now:'v17.11: Kill credit, co-op hunt 2026-09-28: a pillager the host drops keeps the host kill mark through his bleed out, and when the host is out of the raid (spectating while the party is still up top) netSpecTick keeps running updateEnts on the kept raid. When the man bled out there the credit branch raised G.tel.kills, which is the same object as the kills field of the run row already committed to the log, stepped the host contracts and wrote a grudge with saveProfile; a survivor or the Peddler dropped by a host round charged notoriety the same way. The raider credit branch and the survivor and Peddler notoriety branches now also require that the host player is not spectating (specOut), so nothing in the kept raid is credited to a host who has left it. Solo play and a host still in the raid are unchanged. No number and no player text moved. Check 17.11 fails on v17.10',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

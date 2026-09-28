@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.11 - A PILLAGER THE HOST DROPPED WHO BLEEDS OUT AFTER THE HOST LEFT THE RAID NO LONGER CHANGES HIS SAVED RUN
+
+Co-op hunt while he was away. When the host dropped a pillager and then died, extracted or abandoned while player 2 was still up top, the raid kept running for player 2 and the downed man bled out there. That death was still credited to the host: the run he had already logged gained a kill, a kill contract on his board stepped or finished, and a grudge against that pillager was saved. The same went for a survivor or the Peddler his round dropped after he left. Once the host is out of the raid, a death in it is no longer credited to him.
+
+MEASURED. Check 17.11 passes, and fails on v17.10.
 ## v17.10 - A BANDAGE OR PLATE YOUR TEAMMATE COULD NOT TAKE (HE WENT DOWN, DIED OR LEFT THE RAID) COMES BACK TO YOUR BACKPACK
 
 Co-op hunt while he was away. A Bandage or plate for a teammate was spent at the end of the wind-up on what the healer last heard of him. If he had gone down a moment before, was in his death beat, or had just extracted, his window turned it down and nothing came back, while the healer was told Patched up. His window now sends a refused item back, the healer no longer picks a teammate whose raid has ended, and a heal the host could not pass to anyone stays in, or goes back to, the backpack of the one who spent it.
