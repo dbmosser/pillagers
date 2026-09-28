@@ -1,0 +1,7 @@
+v17.12: a kill that reaches player 2 after his raid ended no longer changes his finished run
+
+Kill credit, co-op hunt 2026-09-28: netKillTake on the player 2 window checked only that a raid was in hand, not that it was still running. When player 2 downed a pillager and then died or extracted with player 1 still up top, the man bled out on the host, netEntGone sent the kill word to his seat, and it raised G.tel.kills after endRaid had banked the kills (the pending run row holds that same object, so the logged row gained it) and ran contractKill on the board ensureContracts had refilled at the end of the run, which could step or finish a contract issued after the run. netKillTake now refuses the word unless netEntsPeer holds (linked, up top on the party seed, raid not over), as netHitTake already does. A kill word while player 2 is up top still counts. No number and no player text moved.
+
+Check 17.12. Fails on v17.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

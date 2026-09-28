@@ -1,0 +1,1 @@
+| A KILL THAT REACHES PLAYER 2 AFTER HIS RAID ENDED NO LONGER CHANGES HIS FINISHED RUN | v17.12 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.12 passes, fails on v17.11 |

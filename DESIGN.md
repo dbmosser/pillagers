@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.12 - A KILL THAT REACHES PLAYER 2 AFTER HIS RAID ENDED NO LONGER CHANGES HIS FINISHED RUN
+
+Co-op hunt while he was away. When player 2 downed a pillager and then died or extracted while player 1 was still up top, the pillager could bleed out in the raid player 1 was still playing, and the host then sent player 2 the kill. His window counted it on the run that was already over: the logged run gained a kill the run card never showed, and a kill contract on the board handed out at the end of the run could step or finish. Player 2 now takes a kill only while his own raid is still running, as he already does for a hit.
+
+MEASURED. Check 17.12 passes, and fails on v17.11.
 ## v17.11 - A PILLAGER THE HOST DROPPED WHO BLEEDS OUT AFTER THE HOST LEFT THE RAID NO LONGER CHANGES HIS SAVED RUN
 
 Co-op hunt while he was away. When the host dropped a pillager and then died, extracted or abandoned while player 2 was still up top, the raid kept running for player 2 and the downed man bled out there. That death was still credited to the host: the run he had already logged gained a kill, a kill contract on his board stepped or finished, and a grudge against that pillager was saved. The same went for a survivor or the Peddler his round dropped after he left. Once the host is out of the raid, a death in it is no longer credited to him.

@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.11';
+var VER='17.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31464,7 +31464,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.11: Kill credit, co-op hunt 2026-09-28: a pillager the host drops keeps the host kill mark through his bleed out, and when the host is out of the raid (spectating while the party is still up top) netSpecTick keeps running updateEnts on the kept raid. When the man bled out there the credit branch raised G.tel.kills, which is the same object as the kills field of the run row already committed to the log, stepped the host contracts and wrote a grudge with saveProfile; a survivor or the Peddler dropped by a host round charged notoriety the same way. The raider credit branch and the survivor and Peddler notoriety branches now also require that the host player is not spectating (specOut), so nothing in the kept raid is credited to a host who has left it. Solo play and a host still in the raid are unchanged. No number and no player text moved. Check 17.11 fails on v17.10',
+  now:'v17.12: Kill credit, co-op hunt 2026-09-28: netKillTake on the player 2 window checked only that a raid was in hand, not that it was still running. When player 2 downed a pillager and then died or extracted with player 1 still up top, the man bled out on the host, netEntGone sent the kill word to his seat, and it raised G.tel.kills after endRaid had banked the kills (the pending run row holds that same object, so the logged row gained it) and ran contractKill on the board ensureContracts had refilled at the end of the run, which could step or finish a contract issued after the run. netKillTake now refuses the word unless netEntsPeer holds (linked, up top on the party seed, raid not over), as netHitTake already does. A kill word while player 2 is up top still counts. No number and no player text moved. Check 17.12 fails on v17.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37765,6 +37765,10 @@ function netKillTake(peer,m){
   if(!peer||peer.state!=='in'||NET.role!=='join') return 'ignored';
   if(typeof G==='undefined'||!G||G.sim||!G.tel) return 'down';
   if(typeof m.seat==='number'&&m.seat!==NET.seat) return 'ignored';
+  // v17.12, co-op hunt 2026-09-28: only while this raid is running, up top on the party seed, as a hit word is. The host keeps his raid
+  // going for the party, so a man player 2 had downed could bleed out after player 2 died or extracted, and the kill word then raised
+  // the finished run, whose logged row shares those counts, and stepped a contract on the board refilled when the run ended.
+  if(!netEntsPeer()) return 'down';
   k=netClean(m.k,12); T=G.tel; e=(NET.entMap&&NET.entMap[m.id|0])||(NET.entDead&&NET.entDead[m.id|0])||null;   // v16.13: or the body the gone word just took off
   if(!k) return 'bad';
   if(T.kills&&T.kills[k]!==undefined) T.kills[k]++;
