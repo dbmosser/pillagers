@@ -40024,6 +40024,15 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.89 - THE KEYBOARD ALWAYS DRIVES PLAYER 1 ON ONE PC
+
+From his playtest report: player 1 could not extract while downed after player 2 had extracted. The likeliest cause: the
+browser gives the keyboard to the window last clicked, so after a click on the player 2 window his E and WASD went there.
+In a same machine pair (his rule of v16.35: player 1 keyboard and mouse, player 2 a controller) the player 2 window now
+hands every key it receives to the player 1 window over the pair channel and does not act on it; the player 1 window
+dispatches it on window as its own key. A text box in the player 2 window still types; the mouse is not handed over.
+
+MEASURED. Check 16.89 passes, and fails on v16.88. Not verified: two real windows (nettest does not click between them).
 ## v16.88 - THE WHAT IS NEW CARD NAMES HIS PLAYTEST CHANGES
 
 The card was written at v16.71 and had fallen sixteen builds behind. One line goes in under the co-op line naming what his

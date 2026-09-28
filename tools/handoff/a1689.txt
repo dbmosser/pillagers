@@ -1,0 +1,1 @@
+| THE KEYBOARD ALWAYS DRIVES PLAYER 1 ON ONE PC | v16.89 | FROM HIS PLAYTEST (host could not extract while downed). netKeyFwd in the p2 window posts keys over the pair channel; netSameOnMsg on the host dispatches them on window. MEASURED: 16.89 passes, fails on v16.88 |

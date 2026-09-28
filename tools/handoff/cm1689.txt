@@ -1,0 +1,8 @@
+v16.89: the keyboard always drives player 1 on one PC
+
+In a same machine pair the player 2 window hands every key to the player 1
+window, which plays it as its own; player 2 keeps his controller.
+
+Check 16.89. Fails on v16.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

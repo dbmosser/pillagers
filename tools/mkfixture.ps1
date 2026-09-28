@@ -5721,6 +5721,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.89',what:'in a same machine pair the keyboard always drives player 1: the player 2 window hands a key to the pair channel and does not act on it, and the player 1 window plays a handed key as its own; outside a pair nothing is handed',
+   run:function(){
+     if(typeof netSameOnMsg!=='function'||typeof netSamePost!=='function'||typeof NET!=='object'||!NET||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no same machine pair';
+     var keep={same:NET.same,pair:NET.pair}, oPost=netSamePost, sent=[], bad=[], k0=keys, K=window.KeyboardEvent;
+     function press(code,ty){ window.dispatchEvent(new K(ty||'keydown',{code:code,key:code.replace(/^Key/,'').toLowerCase(),bubbles:true,cancelable:true})); }
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       netSamePost=function(m){ sent.push(m); return true; };
+       NET.same='p2'; NET.pair='zqxkeys'; keys={};
+       press('KeyW'); press('KeyW','keyup'); press('KeyW');
+       if(!sent.some(function(m){ return m&&m.t==='key'&&m.code==='KeyW'&&m.ty==='keydown'&&m.pair==='zqxkeys'; })) bad.push('the player 2 window did not hand a key to player 1 ('+JSON.stringify(sent)+')');
+       if(keys['KeyW']) bad.push('the player 2 window acted on a key meant for player 1');
+       press('KeyW','keyup');
+       NET.same='host'; keys={};
+       var r=netSameOnMsg({t:'key',pair:'zqxkeys',ty:'keydown',code:'KeyW',key:'w'});
+       if(r!=='key'||!keys['KeyW']) bad.push('the player 1 window did not play a handed key as its own ('+r+')');
+       netSameOnMsg({t:'key',pair:'zqxkeys',ty:'keyup',code:'KeyW',key:'w'});
+       if(keys['KeyW']) bad.push('the player 1 window did not let go of a handed key');
+       NET.same=''; sent.length=0; keys={};
+       press('KeyD'); press('KeyD','keyup');
+       if(sent.length) bad.push('outside a pair a key was handed on');
+     } finally {
+       netSamePost=oPost; NET.same=keep.same; NET.pair=keep.pair; keys=k0||{};
+       try{ __endRaid('abandon'); __topClear(); }catch(e){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'16.88',what:'the what is new card is current again: within fifteen builds, the co-op line still second, then his playtest line naming the controller layout, kid firing and the new kit answers, and no retired word on the lines the card draws',
    run:function(){
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
