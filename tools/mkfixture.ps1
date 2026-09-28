@@ -7109,7 +7109,7 @@ window.__REGRESS=[
      try{
        P.kidDmg=1; NET.kidHost=undefined;
        for(i=0;i<5;i++) seen.push(kidCycle());
-       if(seen.join(',')!=='0.5,0.25,0.2,0.1,0.05,1') bad.push('the row cycles '+seen.join(','));   // v16.73 added 1/20
+       if(seen.join(',')!=='0.5,0.25,0.2,0.1,0.05') bad.push('the row cycles '+seen.join(','));
        P.kidDmg=0.25; NET.kidHost=0.5; if(netKidMul()!==0.25) bad.push('own 1/4 against host 1/2 gives '+netKidMul());
        P.kidDmg=1; NET.kidHost=0.1; if(netKidMul()!==0.1) bad.push('host 1/10 does not reach player 2 ('+netKidMul()+')');
        if(kidRowHtml().indexOf('Kid mode')<0) bad.push('no Kid mode row');
