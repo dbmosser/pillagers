@@ -5721,6 +5721,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'16.91',what:'the PARTY window invite code boxes are set in the game font, as every text box is',
+   run:function(){
+     var ids=['partyin','partycode','partyreplyin'], bad=[], i, el, f;
+     for(i=0;i<ids.length;i++){
+       el=document.getElementById(ids[i]); if(!el) continue;
+       f=getComputedStyle(el).fontFamily||'';
+       if(f.indexOf('Rubik')<0) bad.push(ids[i]+' is set in '+f);
+     }
+     if(!document.getElementById('partycode')) return 'SKIP: this build has no party code box';
+     return bad.length?bad.join('; '):null; }},
   {v:'16.90',what:'no line of the game, comments included, uses the old verb phrase for extraction: it is call for extraction everywhere',
    run:function(){
      var src='', i, ss, cut, needle=new RegExp('call'+'\\s+'+'extraction','i'), m;

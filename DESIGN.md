@@ -40024,6 +40024,13 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v16.91 - THE PARTY WINDOW CODE BOXES ARE IN THE GAME FONT
+
+The full sweep on v16.88 turned 11.09 red: his rule since v11.09 is one font on every menu, and the three invite code boxes
+of the PARTY window (partyin, partycode, partyreplyin) were set in ui-monospace by the co-op build. The rule now keeps only
+the size and the word break, so they take the game font every text box has.
+
+MEASURED. Check 16.91 passes, and fails on v16.90.
 ## v16.90 - THE BUILD SAYS CALL FOR EXTRACTION EVERYWHERE
 
 The full sweep on v16.88 turned 9.59 red: a comment written at v16.72 used the old verb phrase, and 9.59 reads every line of

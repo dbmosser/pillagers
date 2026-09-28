@@ -1,0 +1,8 @@
+v16.91: the party window code boxes are in the game font
+
+His rule since v11.09 is one font on every menu; the three invite code
+boxes were in a typewriter font. The full sweep flagged it.
+
+Check 16.91. Fails on v16.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

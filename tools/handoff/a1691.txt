@@ -1,0 +1,1 @@
+| THE PARTY WINDOW CODE BOXES ARE IN THE GAME FONT | v16.91 | SWEEP v16.88 (11.09 red). The #partymodal textarea rule no longer overrides the font. MEASURED: 16.91 passes, fails on v16.90 |

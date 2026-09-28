@@ -601,7 +601,7 @@
   #partymodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(760px,calc(100% - 28px)); transform:translate(-50%,-50%); }
   #partymodal .msub, #partymodal .plist, #partymodal .pbox{ max-width:1060px; width:100%; }
   #partymodal .plist{ flex:0 0 auto; }
-  #partymodal textarea{ font-family:ui-monospace,Consolas,monospace; font-size:12px; word-break:break-all; }
+  #partymodal textarea{ font-size:12px; word-break:break-all; }   /* v16.91: the game font, as every text box (his v11.09 rule) */
   /* v15.76, HIS ORDER OF 2026-09-25 (multiplayer, build 3): THE MODE MENU ON THE TITLE. Five rows, one under the other and all
      centred, so a controller stepping down the column lands on the next row and not on a control off to one side. A greyed
      row keeps its note beside it, out of the flow, so the row itself stays centred with the others. */
@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='16.90';
+var VER='16.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31419,7 +31419,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v16.90: THE BUILD SAYS CALL FOR EXTRACTION EVERYWHERE. The full sweep on v16.88 found the old verb phrase in a comment written at v16.72; check 9.59 reads every line of the build for it. The comment now says call for extraction. Nothing the player sees changes. Check 16.90 fails on v16.89',
+  now:'v16.91: THE PARTY WINDOW CODE BOXES ARE IN THE GAME FONT. His rule since v11.09 is one font on every menu, and the three invite code boxes of the PARTY window were set in a typewriter font; the full sweep flagged it. They are in the game font now. Check 16.91 fails on v16.90',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
