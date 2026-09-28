@@ -117,3 +117,19 @@ v16.90 comment wording (9.59); v16.91 party code boxes in the game font (11.09).
 oldest 216 done, every red fixed; the 400-600 part hangs for hours in one long simulation (look at it: which check).
 4K MEASURED ON HIS GPU (item g): RX 7900 XTX, headless Chrome 3806x2055, solo raid seed 4242: 60 fps locked, avg 16.7 ms,
 p95 16.8 ms. The layer cap draft is not needed; item g closed unless he reports slow frames (then measure two windows).
+
+## 2026-09-28 evening (he is away 3-4 h, ultracode on): v16.92-v17.00, NINE CO-OP FIXES from an agent bug hunt.
+Hunt: 5 readers on the co-op code, a skeptic per finding (14 held). Drafts: tools/handoff/drafts/draft-<key>.json, each
+reviewed by a second agent and checked by drafts/validate-draft.ps1 (applies a draft to an in-memory copy; writes nothing);
+gen-draft.ps1 now reads the now text from the draft. Shipped with the strict chain (scratchpad shipone.sh: gen, dryrun, gate
+parse + new check PASS/PASS on dry + FAIL on control, start, -Fix gate + fingerprint 85/374 165/593, commit, push):
+16.92 keys held in the P2 window let go on blur/pagehide; 16.93 ESC/TAB that shuts the P2 pause box is not handed to P1;
+16.94 a teammate whose raid ended while down no longer takes E in the ring; 16.95 a refusal at a held box lets go of the old
+box; 16.96 a teammate search stands still while the party is paused; 16.97 P2 search bar counts the host box; 16.98 rounds and
+charges pass a bled-out body (kill mark kept); 16.99 a pick-up clears the seat kill mark; 17.00 pad X after a pad gap, another
+screen or a roll searches instead of reloading. NOT DONE (need his word or low value): P2 payout uses P2 own saved terms and
+hire, not the host's (design); the focus-loss rescue closes a backpack opened by pad/forwarded keys (medium).
+nettest.html: the soak keeps both players alive (and the shots step), no Start/Back on the random pad, clearFloor presses
+Resume, a stray counted hit tries the next body, richer failure logs. Last 12 soak sessions on v16.91 all passed.
+Suite: shard.html shows progress in the page title (a busy page cannot answer cdp); the middle of the corpus holds checks
+that run for many minutes (slow, not hung). Eight shards now (9336-9343 on 8804-8807, 8811-8814).
