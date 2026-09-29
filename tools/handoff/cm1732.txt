@@ -1,0 +1,7 @@
+v17.32: a siege machine for a ring player 2 called no longer drops right beside player 2
+
+Siege placement, co-op hunt 2026-09-28: tickExtractPoints runs on the host and placed each siege arrival with dist(spot,G.player)>=700, which is the host player only. The raider wave spawn has measured from every player since v15.80 (netNearDist), but the siege loop did not, so on a ring player 2 called with player 1 far away the first freeSpot draw was taken even when it sat a few dozen units from player 2, and the arrival (alert 3, investigate toward the ring, and netTargetFor picks the nearest standing player) went straight at him. The placement loop and its accept test now measure with netNearDist when a party is on, which counts the host player unless he is spectating and every teammate shown up top. With the party off the test is the old dist to the player, so solo play and its seeded stream are unchanged. No number moved.
+
+Check 17.32. Fails on v17.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

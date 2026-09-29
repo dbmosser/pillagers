@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.32 - A SIEGE MACHINE FOR A RING PLAYER 2 CALLED NO LONGER DROPS RIGHT BESIDE PLAYER 2
+
+Co-op hunt while he was away. When player 2 called extraction, the siege machines that come while the ship is inbound were kept at least 700 away from player 1 only. With player 1 looting across the map, almost any spot passed, including one a few steps from player 2 at the ring, and a sentry or crawler could appear on top of him and go straight for him. In co-op every arrival now keeps clear of every player up top, as the pillager waves already do. Solo play is unchanged.
+
+MEASURED. Check 17.32 passes, and fails on v17.31.
 ## v17.31 - PLAYER 2 SHOOTING A PILLAGER WHO MADE PEACE NOW COSTS PLAYER 2, NOT PLAYER 1
 
 Co-op hunt while he was away. When player 2 shot a pillager who had made peace, the pillager turned on the party as he should, but the lost trust was written into player 1 save: player 1 lost standing with that man, player 1 window said he trusted you, and this happened even after player 1 had left the raid and was only watching. Player 2, who fired, lost nothing. Now the host still turns the man for everyone, but the standing and the line go to player 2 own save and window, and player 1 is charged only for his own rounds while he is still in the raid.

@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.31';
+var VER='17.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15812,8 +15812,11 @@ function tickExtractPoints(dt){
     if(_pz) z.siegeSpawnT=0; else G.siegeSpawnT=0;
     if(z===G.active) G.siegeSpawnT=0;
     var ss2=null,st2=0;
-    do{ ss2=freeSpot(G.map,30); st2++; }while(dist(ss2,p)<700&&st2<40);
-    if(dist(ss2,p)>=700){
+    // v17.32, co-op hunt 2026-09-28: in co-op the arrival keeps 700 clear of every player up top, as the pillager waves do (v15.80),
+    // not of the host player alone, so a ring player 2 called never drops a machine on top of him. Solo measures as it always did.
+    var _sd=function(q){ return NET.on?netNearDist(q):dist(q,p); };
+    do{ ss2=freeSpot(G.map,30); st2++; }while(_sd(ss2)<700&&st2<40);
+    if(_sd(ss2)>=700){
       if(_pz) z.siegeSpawned++; else G.siegeSpawned++;
       if(z===G.active) G.siegeSpawned=_pz?z.siegeSpawned:G.siegeSpawned;
 var nm=rr()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
@@ -31571,7 +31574,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.31: Parley betrayal in co-op, co-op hunt 2026-09-28: netShotTake stamps pHitT for a round from any seat and leaves a friendlyPC man friendly, so the betrayal branch in the host updateEnts turned him and then ran idRec, saveProfile and say in the host window, cutting player 1 standing with that identity to at most -1 and printing the line there, even with player 1 out of the raid (no specOut guard, unlike the v17.11 fixes). Player 2 own rival record was never touched. Now netShotTake records the seat (e.pHitSeat) and the host own charge, strike and round clear it to 0. In the branch the man still turns for everyone (friendlyPC 0, hostile, grudge); when a seat fired, the host sends that seat a new word {t:betray,seat,id} and writes nothing to its own save; otherwise the host save is charged as before, but not while the host player is out and spectating. The new netBetrayTake on the player 2 window resolves the body from entMap or entDead and applies the same -3 floor -1 to his own save and says the same line. No number moved. Check 17.31 fails on v17.30',
+  now:'v17.32: Siege placement, co-op hunt 2026-09-28: tickExtractPoints runs on the host and placed each siege arrival with dist(spot,G.player)>=700, which is the host player only. The raider wave spawn has measured from every player since v15.80 (netNearDist), but the siege loop did not, so on a ring player 2 called with player 1 far away the first freeSpot draw was taken even when it sat a few dozen units from player 2, and the arrival (alert 3, investigate toward the ring, and netTargetFor picks the nearest standing player) went straight at him. The placement loop and its accept test now measure with netNearDist when a party is on, which counts the host player unless he is spectating and every teammate shown up top. With the party off the test is the old dist to the player, so solo play and its seeded stream are unchanged. No number moved. Check 17.32 fails on v17.31',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
