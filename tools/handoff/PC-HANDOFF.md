@@ -173,3 +173,12 @@ LOAD RULES after the 2026-09-28 crash: keep 6 GB RAM free, at most 4 test Chrome
 tools\handoff\botsweep.ps1 (the game bot, __simSeedsFull, one seed at a time, errors caught per seed, progress in the title)
 and watchbots.sh. Sector 0 seeds 5000-5399: 64 extracts, 336 deaths, no error. Sector 1 seeds 6000-6399 (-Map 1): 92
 extracts, 308 deaths, no error; sector 1 raids run about 1 a minute per browser (sector 0 about 25).
+
+## 2026-09-29 afternoon: v17.26-v17.36, fourth hunt, TWO-PLAYER ONLY (his order: focus on 2-player functionality).
+17.26 a kept P2 pad pick for an unplugged pad no longer hands the only pad to P1; 17.27 a pad that drops or returns no
+longer moves the other player's pad; 17.28 P2 can no longer pick up or pay a pillager/survivor the host runs (copied items);
+17.29 P2 smoke and decoys work on the host (netThrSend/netThrTake); 17.30 host enemies hear P2 and P2 no longer fakes a
+Listener waking; 17.31 P2 shooting a peace-made pillager costs P2, not P1; 17.32 siege arrivals keep clear of every player;
+17.33 after P1 is out, P2's ring gets its siege and can be called again (netSpecRings); 17.34 the kit wait no longer starts
+the host raid behind the title; 17.35 picking a same-machine row again no longer reloads the live P2 window; 17.36 broken
+walls, cover and glass fall in every window. All gates passed incl. recent.ps1. A solo hunt was stopped on his word.
