@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.28';
+var VER='17.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13003,8 +13003,11 @@ function activateThrow(th){
   // octagon of it straight into G.vseg, so the radius was the only thing wrong.
   // 165 is double, and puts the cloud at roughly a quarter of a sentry's sight,
   // which is enough to cross a street inside.
-  if(th.kind==='smoke'){ G.smokes.push({x:th.tx,y:th.ty,r:(CFG.smokeR===undefined?165:CFG.smokeR),t:0,life:12}); sfx("clank",th.tx,th.ty); }
-  else if(th.kind==='decoy'){ G.decoys.push({x:th.tx,y:th.ty,t:0,life:6,acc:.7}); sfx("clank",th.tx,th.ty); }
+  // v17.29, co-op hunt 2026-09-28: and in a shared raid the party is told (netThrSend). Player 2 spent his smoke or decoy and it
+  // landed only in his own window, where the enemies are copies: the host enemies saw him through the cloud and never heard the
+  // decoy. The host now puts it in the world it runs, and the other windows draw it.
+  if(th.kind==='smoke'){ G.smokes.push({x:th.tx,y:th.ty,r:(CFG.smokeR===undefined?165:CFG.smokeR),t:0,life:12}); sfx("clank",th.tx,th.ty); netThrSend('smoke',th.tx,th.ty); }
+  else if(th.kind==='decoy'){ G.decoys.push({x:th.tx,y:th.ty,t:0,life:6,acc:.7}); sfx("clank",th.tx,th.ty); netThrSend('decoy',th.tx,th.ty); }
   else if(th.kind==='frag'){
     // Whatever fuse the thrower did not burn in his hand. Floored so a grenade
     // released at the last possible instant still leaves the hand before it goes,
@@ -13027,6 +13030,7 @@ function explodeFrag(f){
   G.shake=Math.max(G.shake,9);
   flash(f.x,f.y,310,'#ffb267',.45);
   ping(f.x,f.y,560,false,false,'env','fire');
+  if(!f.by) netThrSend('nz',f.x,f.y);   // v17.29, co-op hunt 2026-09-28: the blast of player 2 own charge is heard by the enemies the host runs
   var dp=dist(p,f);
   // NAMED, v2.23. This was the one damagePlayer call in the file that passed no
   // source name, and lastHitName is only ever written, never cleared, so the
@@ -13235,7 +13239,7 @@ var SH=G.shells[shI];
   for(i=G.smokes.length-1;i>=0;i--){ G.smokes[i].t+=dt; if(G.smokes[i].t>G.smokes[i].life) G.smokes.splice(i,1); }
   for(i=G.decoys.length-1;i>=0;i--){
     var dc=G.decoys[i]; dc.t+=dt; dc.acc+=dt;
-    if(dc.acc>=.8){ dc.acc=0; ping(dc.x,dc.y,420,false,false,'env','move'); }
+    if(dc.acc>=.8){ dc.acc=0; if(!dc.fx) ping(dc.x,dc.y,420,false,false,'env','move'); }   // v17.29, co-op hunt 2026-09-28: a decoy passed on for drawing calls nothing; the host world hears it
     if(dc.t>dc.life) G.decoys.splice(i,1);
   }
   for(i=G.frags.length-1;i>=0;i--){
@@ -31556,7 +31560,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.28: On a linked window (player 2 in the host raid) the downed pillager scan and the survivor scan in updatePlayer skip every body. The v16.62 guard only skipped bodies marked net, and the bodies of the opening build are the window own objects that the host runs, never marked, so player 2 was paid from a copy of the pack, his standing rose by 3 and was saved, and the next host snapshot put the man down again for another press. The survivor had no guard at all and paid 900 to 1500 per hand over. Both now test netEntsPeer; solo play, the host and the bot are untouched. Check 17.28 fails on v17.27',
+  now:'v17.29: Party throwables, co-op hunt 2026-09-28: no word carried a throw. activateThrow put a smoke or a decoy into the G.smokes and G.decoys of the window that threw it, so on the player 2 window the cloud never reached the host G.vseg that host enemies test sight against (canSee in updateEnts), and the decoy pinged only the snapshot copies that netEntsApply overwrites; the frag blast ping in explodeFrag likewise reached only those copies. activateThrow now calls netThrSend, which sends {t:thr,k:smoke or decoy,x,y} on the reliable channel in a shared raid; explodeFrag sends k:nz for a charge that is not an enemy charge from a linked window. netThrTake on the host pushes the smoke into G.smokes (so refreshVseg adds it to the sight lines), pushes the decoy into G.decoys (so its ping runs over the real enemies), runs the 560 blast ping for nz, and passes smoke and decoy on to every other window but the sender. A window that only draws marks the decoy fx, and the decoy loop in updateThrowables skips the ping for it, so no copy is called. The host own smoke and decoy reach player 2 the same way. Pillager smokes are still drawn only on the host. No number moved and no player text changed. Check 17.29 fails on v17.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35351,6 +35355,7 @@ function netOnMsg0(peer,data){
   if(m.t==='png') return netPingTake(peer,m);   // v16.43: a ping from one of the party
   if(m.t==='wp') return netWpTake(peer,m);   // v16.46: a teammate map marker
   if(m.t==='fx') return netFxTake(peer,m);   // v16.21: a round or a sound from one of the party, to draw and play
+  if(m.t==='thr') return netThrTake(peer,m);   // v17.29, co-op hunt 2026-09-28: a smoke, a decoy or a charge blast one of the party threw
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
   if(m.t==='rev') return netRevTake(peer,m);   // v16.05: a teammate picked this player up, or (on the host) passes it on
@@ -36550,6 +36555,32 @@ function netFxStep(dt){
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSendFast(NET.peers[i],m);
   }
   return G.fxBullets?G.fxBullets.length:0;
+}
+// v17.29, co-op hunt 2026-09-28: A SMOKE OR A DECOY PLAYER 2 THREW DID NOTHING ON THE HOST. No word carried a throw, so his cloud
+// never reached the sight lines the host enemies look along and his decoy called only the copies in his own window. A smoke or a
+// decoy thrown in a shared raid is sent on the reliable channel ({t:'thr'}); the host puts it in the world it runs and passes it
+// on to the other windows, where a decoy is drawn and calls nothing (fx). The blast of a charge player 2 threw (nz) is heard on
+// the host. Nothing here draws from the seeded stream. Solo play never sends or takes it.
+function netThrSend(k,x,y){
+  var i, m;
+  if(!netUpShared()) return false;
+  if(k==='nz'&&NET.role==='host') return false;   // the host own blast already reached the enemies it runs
+  m={t:'thr',k:k,x:Math.round(x),y:Math.round(y)};
+  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],m);
+  return true;
+}
+function netThrTake(peer,m){
+  var i, q, x, y, k=m.k;
+  if(!peer||peer.state!=='in') return 'ignored';
+  if(!netUpShared()) return 'off';
+  if(k!=='smoke'&&k!=='decoy'&&k!=='nz') return 'bad';
+  if(typeof m.x!=='number'||typeof m.y!=='number'||!isFinite(m.x)||!isFinite(m.y)) return 'bad';
+  x=clamp(m.x,-9000,NET_UP_MAX); y=clamp(m.y,-9000,NET_UP_MAX);
+  if(k==='nz'){ if(NET.role!=='host') return 'ignored'; ping(x,y,560,false,false,'env','fire'); return 'thr:nz'; }
+  if(NET.role==='host') for(i=0;i<NET.peers.length;i++){ q=NET.peers[i]; if(q!==peer&&q.state==='in') netSend(q,{t:'thr',k:k,x:x,y:y}); }
+  if(k==='smoke') G.smokes.push({x:x,y:y,r:(CFG.smokeR===undefined?165:CFG.smokeR),t:0,life:12});
+  else G.decoys.push({x:x,y:y,t:0,life:6,acc:.7,fx:(NET.role==='host')?0:1});
+  return 'thr:'+k;
 }
 function netFxTake(peer,m){
   var i, a, q;

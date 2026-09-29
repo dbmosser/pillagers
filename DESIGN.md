@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.29 - A SMOKE OR A DECOY PLAYER 2 THROWS NOW WORKS ON THE ENEMIES THE HOST RUNS
+
+Co-op hunt while he was away. In co-op, a Smoke Canister or a Decoy thrown by player 2 was spent from his backpack but only landed in his own window, where the enemies are copies of the ones the host runs. The real enemies kept seeing him through his cloud and never heard his decoy, and the blast of his frag alerted no one who was not hit. His window now tells the host, the host puts the cloud and the decoy into the world it runs and passes them on to the other windows to draw, and the host hears his frag blast too.
+
+MEASURED. Check 17.29 passes, and fails on v17.28.
 ## v17.28 - PLAYER 2 CAN NO LONGER PICK UP OR PAY A PILLAGER OR SURVIVOR THE HOST RUNS, WHICH COPIED ITEMS AND STANDING
 
 Co-op hunt while he was away. In co-op, player 2 could pick up a downed pillager from the start of the raid on his own window: each press of X handed him a copy of an item from the man pack and +3 standing, and the host put the man straight back down, so it repeated. A survivor paid player 2 the same way, again and again. On a linked window neither is offered now, so nothing is copied and no standing or money is paid on one window alone.

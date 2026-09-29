@@ -1,0 +1,1 @@
+| A SMOKE OR A DECOY PLAYER 2 THROWS NOW WORKS ON THE ENEMIES THE HOST RUNS | v17.29 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.29 passes, fails on v17.28 |

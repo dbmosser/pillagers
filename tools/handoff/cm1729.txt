@@ -1,0 +1,7 @@
+v17.29: a smoke or a decoy player 2 throws now works on the enemies the host runs
+
+Party throwables, co-op hunt 2026-09-28: no word carried a throw. activateThrow put a smoke or a decoy into the G.smokes and G.decoys of the window that threw it, so on the player 2 window the cloud never reached the host G.vseg that host enemies test sight against (canSee in updateEnts), and the decoy pinged only the snapshot copies that netEntsApply overwrites; the frag blast ping in explodeFrag likewise reached only those copies. activateThrow now calls netThrSend, which sends {t:thr,k:smoke or decoy,x,y} on the reliable channel in a shared raid; explodeFrag sends k:nz for a charge that is not an enemy charge from a linked window. netThrTake on the host pushes the smoke into G.smokes (so refreshVseg adds it to the sight lines), pushes the decoy into G.decoys (so its ping runs over the real enemies), runs the 560 blast ping for nz, and passes smoke and decoy on to every other window but the sender. A window that only draws marks the decoy fx, and the decoy loop in updateThrowables skips the ping for it, so no copy is called. The host own smoke and decoy reach player 2 the same way. Pillager smokes are still drawn only on the host. No number moved and no player text changed.
+
+Check 17.29. Fails on v17.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

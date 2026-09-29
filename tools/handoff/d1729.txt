@@ -1,0 +1,5 @@
+## v17.29 - A SMOKE OR A DECOY PLAYER 2 THROWS NOW WORKS ON THE ENEMIES THE HOST RUNS
+
+Co-op hunt while he was away. In co-op, a Smoke Canister or a Decoy thrown by player 2 was spent from his backpack but only landed in his own window, where the enemies are copies of the ones the host runs. The real enemies kept seeing him through his cloud and never heard his decoy, and the blast of his frag alerted no one who was not hit. His window now tells the host, the host puts the cloud and the decoy into the world it runs and passes them on to the other windows to draw, and the host hears his frag blast too.
+
+MEASURED. Check 17.29 passes, and fails on v17.28.
