@@ -1,0 +1,7 @@
+v17.34: the kit wait no longer starts the host raid behind the character selection title
+
+Kit wait, co-op hunt 2026-09-28: netKitGo only refused when state was not hub, and the character selection title is an overlay that leaves state at hub. So a kitok from player 2, or the 15 s timer, ran ascendNow while the title was up: the kit was committed, the raid built, player 2 sent up, and the host raid ran behind the title. Nothing on that path shuts the title, and ENTER on the title then called showScreen hub with G still live, so the host stopped stepping the shared world and the next ascent built a raid over the unfinished one. netKitGo now also refuses while the title is on (the same test hubModalOpen makes since v12.06), and RETURN TO CHARACTER SELECTION and netReset clear a standing NET.kitWait and its waiting line. A refused wait leaves player 2 safe on the floor, since his answer commits nothing until the host word arrives. No number moved.
+
+Check 17.34. Fails on v17.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

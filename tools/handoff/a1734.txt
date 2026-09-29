@@ -1,0 +1,1 @@
+| THE KIT WAIT NO LONGER STARTS THE HOST RAID BEHIND THE CHARACTER SELECTION TITLE | v17.34 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.34 passes, fails on v17.33 |

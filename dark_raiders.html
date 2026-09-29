@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.33';
+var VER='17.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31574,7 +31574,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.33: Kept raid rings, co-op hunt 2026-09-28: tickExtractPoints runs only from tryExtractTick in a raid frame, which stops once G.over is set, and netSpecTick (the host running the raid for the party after his own run ended) stepped the bodies, rounds, throwables and searches but never the rings. netWorldSend sends no rings once the raid is over, so player 2 runs his own, and his own siege arrivals are removed by netEntsEase since a linked window spawns nobody. So a call from player 2 while the host spectated reached netBeaconTake, which set beaconT on the kept world, and nothing ever counted it down: no siege arrival came, the two second re-ping and its pull never fired, and a second call on that ring after a missed boarding window was refused as called already with no ping and no word back. A new netSpecRings, called from netSpecTick after netSrchTick with the same world step, runs the part of tickExtractPoints the world needs for every called ring, by the same numbers: the inbound clock and the boarding window (cleared when it runs out), the per call siege clock and cap from the siege greed with each arrival placed 700 clear of the party by netNearDist (never the spectating host body), and the two second re-ping with its capped pull. It says nothing, plays nothing and leaves the HUD mirrors alone, since those belong to the teammate window, which still runs its own rings. Solo play never reaches it. No number moved. Check 17.33 fails on v17.32',
+  now:'v17.34: Kit wait, co-op hunt 2026-09-28: netKitGo only refused when state was not hub, and the character selection title is an overlay that leaves state at hub. So a kitok from player 2, or the 15 s timer, ran ascendNow while the title was up: the kit was committed, the raid built, player 2 sent up, and the host raid ran behind the title. Nothing on that path shuts the title, and ENTER on the title then called showScreen hub with G still live, so the host stopped stepping the shared world and the next ascent built a raid over the unfinished one. netKitGo now also refuses while the title is on (the same test hubModalOpen makes since v12.06), and RETURN TO CHARACTER SELECTION and netReset clear a standing NET.kitWait and its waiting line. A refused wait leaves player 2 safe on the floor, since his answer commits nothing until the host word arrives. No number moved. Check 17.34 fails on v17.33',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35477,6 +35477,7 @@ function netReset(keepErr){
   NET.peers=[];
   for(i=0;i<ps.length;i++){ if(ps[i].state==='in'||ps[i].state==='open') netSend(ps[i],{t:'bye'}); netClose(ps[i]); }
   NET.pend=null; NET.on=false; NET.role=null; NET.seat=-1; NET.roster=[]; NET.code=''; NET.reply=''; NET.codeLen=0; NET.busy=false;
+  if(NET.kitWait){ clearTimeout(NET.kitWait.tm); NET.kitWait=null; }   // v17.34, co-op hunt 2026-09-28: and no kit wait is left to send anyone up
   NET.floor=[]; NET.hubAcc=0; NET.hubN=0; NET.lkSent='';   // v15.75: nobody is left standing on the floor
   NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;   // v15.79: and nobody up top
   NET.upOut={};   // v16.86: and no seat is marked out
@@ -37985,6 +37986,10 @@ function netKitGo(){
   // it ran (the quick ascent on R at the lift), its 15 s timer ran out inside the raid and started a second raid on a new seed,
   // with no end to the first and the teammate left behind on the old one.
   if(typeof state!=='undefined'&&state!=='hub') return false;
+  // v17.34, co-op hunt 2026-09-28: and never behind the character selection title, which leaves state at hub. A kit answer or
+  // the timer that ran out there started the host raid under the title, and leaving the title then stranded the party up top.
+  var _kt=document.getElementById('title');
+  if(_kt&&_kt.classList.contains('on')) return false;
   w.f();
   return true;
 }
@@ -38861,6 +38866,8 @@ document.getElementById('closesim').onclick=function(){ document.getElementById(
 // memory, shows what he has just earned.
 document.getElementById('charselbtn').onclick=function(){
   if(G) return;                       // never from inside a raid
+  // v17.34, co-op hunt 2026-09-28: a kit wait still standing from the lift is dropped, so it cannot start the raid behind the title.
+  if(typeof NET==='object'&&NET&&NET.kitWait){ clearTimeout(NET.kitWait.tm); NET.kitWait=null; NET.status=''; }
   // v11.72: a note typed here is banked by the close below, not thrown away.
   try{ saveProfile(); }catch(_sp){}
   togglePauseBox(false);

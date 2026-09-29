@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.34 - THE KIT WAIT NO LONGER STARTS THE HOST RAID BEHIND THE CHARACTER SELECTION TITLE
+
+Co-op hunt while he was away. In a party, the host who took the lift waits up to 15 seconds for each teammate to pick a kit. If he went back to character selection in that time, the answer from the teammate or the timer still started his raid behind the title, with his player standing at the spawn taking fire, and leaving the title then stopped the shared raid and stranded player 2. The wait is now dropped when he returns to character selection or ends the party, and it never sends anyone up while the title is showing.
+
+MEASURED. Check 17.34 passes, and fails on v17.33.
 ## v17.33 - AFTER PLAYER 1 IS OUT, A RING PLAYER 2 CALLS GETS ITS SIEGE, AND HE CAN CALL IT AGAIN AFTER A MISSED SHIP
 
 Co-op hunt while he was away. When player 1 died or extracted first and player 2 was still up top, the host window kept the raid running for him but never ran the extraction rings. A ring player 2 called got no siege machines and no pull of the enemies toward it, and its call never ran out on the host, so if he missed the ship and called that ring again the host refused the call without a sound. The host now runs the rings of the kept raid by the same rules as a live raid: the clock, the boarding window, the siege arrivals kept clear of the party, and the regular pull toward the ring.
