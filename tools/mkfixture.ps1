@@ -5721,6 +5721,36 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.24',what:'with the game open in two tabs on one save, a tab whose save the other tab has written since stops saving and shows a card with RELOAD, so its old copy never wipes what the other tab banked',
+   run:function(){
+     if(typeof saveProfile!=='function'||typeof SKEY!=='string'||typeof StorageEvent!=='function') return 'SKIP: this build has no save key to test';
+     if(window.storage&&window.storage.set) return 'SKIP: this host saves through window.storage, not localStorage';
+     var raw0=null, other=null, otherStr='', got=null, bad=[], st0=(typeof SAVE_STALE!=='undefined')?SAVE_STALE:null, card;
+     try{
+       raw0=localStorage.getItem(SKEY);
+       // CONTROL: this tab saves as ever while nobody else has written the save.
+       saveProfile();
+       got=localStorage.getItem(SKEY);
+       try{ got=JSON.parse(got); }catch(e){ got=null; }
+       if(!got||got.credits!==P.credits) return 'SKIP: staging: a save from this tab did not reach the save key';
+       // The other tab extracts with a haul and saves it: credits no run of this tab could bank.
+       other=JSON.parse(JSON.stringify(P)); other.credits=(P.credits||0)+777331; other.runs=(P.runs||0)+1;
+       otherStr=JSON.stringify(other);
+       localStorage.setItem(SKEY,otherStr);
+       window.dispatchEvent(new StorageEvent('storage',{key:SKEY,oldValue:raw0,newValue:otherStr,storageArea:localStorage}));
+       // This tab, still holding the old copy, closes its backpack: a save.
+       saveProfile();
+       if(localStorage.getItem(SKEY)!==otherStr) bad.push('after another tab saved a haul, a save from this tab wrote its old copy over the key and the haul was gone');
+       card=document.getElementById('stalesave');
+       if(!card) bad.push('nothing told the player the save was changed in another tab');
+       else if(!card.querySelector('button')) bad.push('the card saying the save was changed in another tab has no RELOAD button');
+     } finally {
+       try{ card=document.getElementById('stalesave'); if(card&&card.parentNode) card.parentNode.removeChild(card); }catch(e){}
+       if(st0!==null) SAVE_STALE=st0;
+       try{ if(raw0===null) localStorage.removeItem(SKEY); else localStorage.setItem(SKEY,raw0); }catch(e){}
+       try{ saveProfile(); }catch(e){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.23',what:'an armoury gun the host dropped and a teammate searched up after the host abandoned leaves the host armoury and his gun slots, so the one gun is not in both saves, while a gun nobody took stays in his armoury',
    run:function(){
      if(typeof netSrchTick!=='function'||typeof netContInit!=='function'||typeof netPeerOfSeat!=='function'||!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET) return 'SKIP: this fixture cannot stage a party search';

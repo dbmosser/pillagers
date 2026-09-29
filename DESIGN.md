@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.24 - WITH THE GAME OPEN IN TWO TABS, THE OLDER TAB NO LONGER WIPES WHAT THE OTHER TAB SAVED
+
+Co-op hunt while he was away. Each tab of the game read the save once when it opened and wrote its whole copy back every time it saved. With the game open in two tabs, a raid banked in one tab was wiped the next time the other tab saved anything, even closing the backpack, and a kit lost to a death could come back the same way. Now, when another tab writes the save, this tab stops saving and shows a card that says so, with a RELOAD button, so the newest save is the one kept.
+
+MEASURED. Check 17.24 passes, and fails on v17.23.
 ## v17.23 - AN ARMOURY GUN THE HOST DROPPED IS NO LONGER IN BOTH SAVES WHEN A TEAMMATE PICKS IT UP AFTER THE HOST ABANDONS
 
 Co-op hunt while he was away. In co-op, if the host dropped one of his own armoury guns for a teammate and then abandoned while that teammate was still up top, the abandon put the gun back in the host armoury. The teammate could then search it up and extract with it, so the one gun was in both saves, and it could be done again with any gun. Now a gun handed over after the host abandoned comes out of his armoury too, and his gun slots let go of it.

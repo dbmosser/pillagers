@@ -1,0 +1,7 @@
+v17.24: with the game open in two tabs, the older tab no longer wipes what the other tab saved
+
+Two tabs on one save overwrote each other: saveProfile writes the whole in-memory P over SKEY, P is read only at boot, and nothing listened for another tab writing the key, so the stale tab next save (a backpack close, a settings click, the crash catcher) wiped the other tab extract or put back a kit lost to a death. A storage listener for SKEY now sets SAVE_STALE, saveProfile writes nothing while it is set, and a card that only closes to a reload (RELOAD, ESC or ENTER) says the save was changed in another tab. The storage event never fires in the tab that wrote, and a ?p2 or ?netslot window has its own key, so same machine co-op is untouched.
+
+Check 17.24. Fails on v17.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
