@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.18 - DRAGGING A BELT KEY THAT HOLDS A GUN FROM THE BACKPACK NO LONGER SWAPS OUT THE GUN IN HAND
+
+Co-op hunt while he was away. Pressing a belt key that shows a gun from the backpack equipped that gun before the drag started, even with the backpack open or with pad A. So dragging the key to tidy the belt, or off the belt to unbind it, put the gun in his hands and pushed out the one he held: a gun from his armoury went home for the rest of the raid and an issued gun was lost. Now the press only picks the key up; the gun is equipped only when the release is a click on the same key.
+
+MEASURED. Check 17.18 passes, and fails on v17.17.
 ## v17.17 - AN ITEM BOUND TO BELT KEY 1 NO LONGER BURIES THE GUN FOR THE WHOLE RAID
 
 Co-op hunt while he was away. Any item can go on any belt key, so a Medkit bound to key 1 on the Stash screen covered the gun cell for the whole raid. The raid started on the Medkit, no key fired the gun, and pressing 2 brought Bare Hands up and stowed the gun where no key could reach it again. Now a gun cell that a key covers moves to the last free key on the belt, so a key always holds each gun, the raid starts on it and the empty-key line names it.

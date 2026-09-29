@@ -1,0 +1,7 @@
+v17.18: dragging a belt key that holds a gun from the backpack no longer swaps out the gun in hand
+
+Belt drag of a backpack gun key equipping it. The raid belt mousedown called setHot on every press before arming the drag, and setHot on an assigned gun cell that is not in hand runs equipFromBag. With two real guns in hand the gun held was replaced: an armoury gun was sent home without being bagged, so it was out of the raid, and an issued gun was deleted. It happened with the backpack open against the v11.90 comment, and through pad A (bagPadAct sends the same mousedown). The mousedown now skips setHot for a cell of kind gun with an itemKey that is not equipped and only arms the drag. The window mouseup equips it when the release is a click: on the key it came from (the d.fromHot click line), or off the belt within the 24 unit click threshold. A real drag to another key or off the belt moves or unbinds the key and never touches the hands. Number keys and every other cell are unchanged.
+
+Check 17.18. Fails on v17.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

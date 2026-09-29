@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.17';
+var VER='17.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11621,7 +11621,12 @@ cv.addEventListener('mousedown',function(e){
         // G.hot directly skipped the swap, the throwable selection and the
         // readout - and left the key dead afterwards, because setHot returns
         // early when the slot is already selected.
-        setHot(_HC2.i);
+        // v17.18, belt hunt 2026-09-28: A PRESS ON A KEY HOLDING A BACKPACK GUN ONLY PICKS IT UP. The press equipped it before the
+        // drag was armed, so dragging the key to tidy the belt (or pad A on it, backpack open) put the gun in his hands and pushed
+        // out the one there: an armoury gun went home for the raid and an issued one was lost. The equip waits for the release
+        // and happens only when the release is a click (window mouseup).
+        var _bagGun=!!(_hs2&&_hs2.kind==='gun'&&_hs2.itemKey&&!_hs2.equipped);
+        if(!_bagGun) setHot(_HC2.i);
         // v11.91, HIS NOTE: "why can't i drag items to diff keys??" The derived
         // cells (Medical, Armour Plate, the grenades) carried no item key, so
         // only a cell he had already assigned could be picked up. A derived
@@ -11831,7 +11836,12 @@ window.addEventListener('mouseup',function(e){
         // move. Handled before anything else, because the drop path below strips
         // the auto mark and writes the profile - so a select-click on an
         // automatically pinned stim used to launder it into his hub belt plan.
-        if(d.fromHot===HC.i){ dropped=true; break; }
+        if(d.fromHot===HC.i){
+          // v17.18, belt hunt 2026-09-28: a click on a key holding a backpack gun equips it here, on the release (v11.91).
+          var _cg=hotbarSlots()[HC.i];
+          if(_cg&&_cg.kind==='gun'&&_cg.itemKey===d.key&&!_cg.equipped) setHot(HC.i);
+          dropped=true; break;
+        }
         // v14.62, backpack audit finding 7: A DRAG WHOSE ITEM HAS LEFT THE BACKPACK BINDS NOTHING. Press and hold a tile, press Z
         // to drop that stack, then let go over a belt key: the key was bound to an item he no longer carried, and the plan
         // saved with it. A backpack drag binds only while its item is still in the backpack.
@@ -11899,6 +11909,11 @@ window.addEventListener('mouseup',function(e){
     // with the mouse flicked up to aim before letting go, said "Medkit off slot 5" and saved the plan without it. A drag that
     // has moved less than 24 units from its press point is a click, the same threshold the hand gun drag uses.
     var _dMoved=!(d&&d.px!==undefined&&Math.sqrt((mouse.x-d.px)*(mouse.x-d.px)+(mouse.y-d.py)*(mouse.y-d.py))<=24);
+    // v17.18, belt hunt 2026-09-28: and a click that slips just off that key still equips it, as the press used to.
+    if(!_onBelt&&!_dMoved&&!dropped&&d&&d.fromHot!==undefined){
+      var _cg2=hotbarSlots()[d.fromHot];
+      if(_cg2&&_cg2.kind==='gun'&&_cg2.itemKey===d.key&&!_cg2.equipped) setHot(d.fromHot);
+    }
     if(!_onBelt&&_dMoved&&d&&d.fromHot!==undefined&&G.hotAssign&&G.hotAssign[d.fromHot]!==undefined){
       var _wasKey=G.hotAssign[d.fromHot];
       delete G.hotAssign[d.fromHot];
@@ -31489,7 +31504,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.17: Belt key 1 or 2 covering the gun cell. v6.61 lets any item go on any key, and hotbarSlots let an assignment on index 0 or 1 overwrite the derived gunA or gunB cell with nothing moving the gun cell it covered. With a Medkit on key 1, heldGunCell found no cell holding the gun in hand, so the raid started on the Medkit (gunCell falls back to 0), the trigger fired from no cell, and key 2 or RB swapped to Bare Hands and left the carried gun under the Medkit for the rest of the raid, while gunKeyLine still said Press 1 for your gun. hotbarSlots now keeps the two derived gun cells and, after the assignment loop, moves a covered one (still keyed gunA or gunB, so setHot, swapGuns, heldGunCell, the raid start and the weapon slot drop rule all find it) onto the highest empty key with no assignment, the same place the automatic pins yield to. It stays put when a key he bound already shows that gun, and stowed Bare Hands get no key. Check 17.17 fails on v17.16',
+  now:'v17.18: Belt drag of a backpack gun key equipping it. The raid belt mousedown called setHot on every press before arming the drag, and setHot on an assigned gun cell that is not in hand runs equipFromBag. With two real guns in hand the gun held was replaced: an armoury gun was sent home without being bagged, so it was out of the raid, and an issued gun was deleted. It happened with the backpack open against the v11.90 comment, and through pad A (bagPadAct sends the same mousedown). The mousedown now skips setHot for a cell of kind gun with an itemKey that is not equipped and only arms the drag. The window mouseup equips it when the release is a click: on the key it came from (the d.fromHot click line), or off the belt within the 24 unit click threshold. A real drag to another key or off the belt moves or unbinds the key and never touches the hands. Number keys and every other cell are unchanged. Check 17.18 fails on v17.17',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

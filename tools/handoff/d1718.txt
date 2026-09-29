@@ -1,0 +1,5 @@
+## v17.18 - DRAGGING A BELT KEY THAT HOLDS A GUN FROM THE BACKPACK NO LONGER SWAPS OUT THE GUN IN HAND
+
+Co-op hunt while he was away. Pressing a belt key that shows a gun from the backpack equipped that gun before the drag started, even with the backpack open or with pad A. So dragging the key to tidy the belt, or off the belt to unbind it, put the gun in his hands and pushed out the one he held: a gun from his armoury went home for the rest of the raid and an issued gun was lost. Now the press only picks the key up; the gun is equipped only when the release is a click on the same key.
+
+MEASURED. Check 17.18 passes, and fails on v17.17.
