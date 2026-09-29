@@ -1,0 +1,1 @@
+| HOLDING ESC OR TAB ON THE LOADOUT QUESTION NO LONGER SHUTS THE SECTOR PAGE IT PUTS BACK | v17.20 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.20 passes, fails on v17.19 |

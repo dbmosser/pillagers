@@ -1,0 +1,7 @@
+v17.20: holding esc or tab on the loadout question no longer shuts the sector page it puts back
+
+Co-op hunt 2026-09-28, menus finding 5: the document capture listener that shuts the front window on ESC or TAB acted on every keydown, key repeats included. Not yet on the loadout question (and on the Hire nobody question) puts the window it was asked from back inside the same press, so the first key repeat about half a second later found that window in front and pressed its CLOSE: one held key shut two windows, and the lift then reset NIGHT to DAY, the loss v15.63 fixed. The listener now spends a key repeat once a window is open, still stopping it and preventing its default so a repeated TAB neither moves the focus nor reaches the floor or raid keys. It is the rule the pause box listener has kept since v15.49. A held key with no window open is unchanged. No number and no player text moved.
+
+Check 17.20. Fails on v17.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

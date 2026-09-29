@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.20 - HOLDING ESC OR TAB ON THE LOADOUT QUESTION NO LONGER SHUTS THE SECTOR PAGE IT PUTS BACK
+
+Co-op hunt while he was away. Backing out of the loadout question puts the sector page back, but holding ESC or TAB a little too long let the key repeat press the sector page CLOSE as well. He landed on the bare floor, and walking back to the lift put his NIGHT back to DAY. The same held key on the Hire nobody question shut the bench it had put back. A held ESC or TAB now shuts one window, once.
+
+MEASURED. Check 17.20 passes, and fails on v17.19.
 ## v17.19 - ESC OR TAB ON SETTINGS IN A RAID SHUTS SETTINGS, NOT THE PAUSE BOX BEHIND IT
 
 Co-op hunt while he was away. In a raid, Settings opened from the pause box sits in front of the box, but ESC or TAB there shut the pause box behind it instead. The raid ran on under the Settings window: the clock ran, enemies attacked and WASD walked him around unseen, and P did the same. ESC or TAB now shuts Settings and leaves the pause box up with the raid still paused, and P over Settings does nothing.
