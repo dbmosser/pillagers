@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.35 - PICKING A SAME MACHINE ROW AGAIN NO LONGER RELOADS THE LIVE PLAYER 2 WINDOW
+
+Co-op hunt while he was away. The player 2 window always opens under the same name, so picking 2 PLAYER CO-OP (SAME MACHINE) again on the title after returning to character selection reloaded the player 2 window that was already linked. If player 2 was still up top his raid was lost with no run card, and on the floor his window was thrown back to its title. With player 2 linked, the row now only starts this window and brings his window forward, and picking the other mode says to close the player 2 window first.
+
+MEASURED. Check 17.35 passes, and fails on v17.34.
 ## v17.34 - THE KIT WAIT NO LONGER STARTS THE HOST RAID BEHIND THE CHARACTER SELECTION TITLE
 
 Co-op hunt while he was away. In a party, the host who took the lift waits up to 15 seconds for each teammate to pick a kit. If he went back to character selection in that time, the answer from the teammate or the timer still started his raid behind the title, with his player standing at the spawn taking fire, and leaving the title then stopped the shared raid and stranded player 2. The wait is now dropped when he returns to character selection or ends the party, and it never sends anyone up while the title is showing.

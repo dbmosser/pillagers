@@ -1,0 +1,1 @@
+| PICKING A SAME MACHINE ROW AGAIN NO LONGER RELOADS THE LIVE PLAYER 2 WINDOW | v17.35 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.35 passes, fails on v17.34 |

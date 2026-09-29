@@ -1,0 +1,7 @@
+v17.35: picking a same machine row again no longer reloads the live player 2 window
+
+Same machine rows, co-op hunt 2026-09-28: netSamePick refused only in the player 2 window, so a host already paired went straight to window.open with the fixed name pillagers_p2, and the browser navigated the live player 2 page. The title is reachable while player 2 is still up top (the host spectates with G null, and RETURN TO CHARACTER SELECTION only tests G), and the player 2 window has no guard against being unloaded, so his raid went as a page-away and the host then ended the kept raid when his link dropped. netSamePick now, when this window is the host and a peer is linked (netInCount), never opens the window again: the same mode only brings the player 2 window forward and runs the title start, and another mode is refused with a sentence on the title (close the player 2 window to change mode), instead of quietly keeping the old mode. The guard reads a linked peer, not the window, so a player 2 window that is open but never linked is still opened again, since that reload is how RETRY brings it back. No number moved.
+
+Check 17.35. Fails on v17.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

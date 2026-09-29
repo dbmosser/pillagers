@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.34';
+var VER='17.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31574,7 +31574,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.34: Kit wait, co-op hunt 2026-09-28: netKitGo only refused when state was not hub, and the character selection title is an overlay that leaves state at hub. So a kitok from player 2, or the 15 s timer, ran ascendNow while the title was up: the kit was committed, the raid built, player 2 sent up, and the host raid ran behind the title. Nothing on that path shuts the title, and ENTER on the title then called showScreen hub with G still live, so the host stopped stepping the shared world and the next ascent built a raid over the unfinished one. netKitGo now also refuses while the title is on (the same test hubModalOpen makes since v12.06), and RETURN TO CHARACTER SELECTION and netReset clear a standing NET.kitWait and its waiting line. A refused wait leaves player 2 safe on the floor, since his answer commits nothing until the host word arrives. No number moved. Check 17.34 fails on v17.33',
+  now:'v17.35: Same machine rows, co-op hunt 2026-09-28: netSamePick refused only in the player 2 window, so a host already paired went straight to window.open with the fixed name pillagers_p2, and the browser navigated the live player 2 page. The title is reachable while player 2 is still up top (the host spectates with G null, and RETURN TO CHARACTER SELECTION only tests G), and the player 2 window has no guard against being unloaded, so his raid went as a page-away and the host then ended the kept raid when his link dropped. netSamePick now, when this window is the host and a peer is linked (netInCount), never opens the window again: the same mode only brings the player 2 window forward and runs the title start, and another mode is refused with a sentence on the title (close the player 2 window to change mode), instead of quietly keeping the old mode. The guard reads a linked peer, not the window, so a player 2 window that is open but never linked is still opened again, since that reload is how RETRY brings it back. No number moved. Check 17.35 fails on v17.34',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35705,6 +35705,17 @@ function netSamePick(mode,startFn){
   mode=(mode==='pvp')?'pvp':'coop';
   NET.pick=mode;
   if(NET.same==='p2'||NET.role==='join'){ netModeMsg('This window is player 2 already.'); return 'p2'; }
+  // v17.35, co-op hunt 2026-09-28: A LINKED PLAYER 2 WINDOW IS NEVER OPENED AGAIN. It keeps its name, so the open below navigated
+  // the live player 2 page: his raid went as a page-away and a run card held only in memory was lost. With a peer linked the row
+  // only brings his window forward and starts this side; another mode waits until that window is closed. A window that never
+  // linked is still opened again, since that reload is how RETRY gets it back.
+  if(NET.same==='host'&&netInCount()>0){
+    if(mode!==NET.mode){ netModeMsg('Player 2 is already linked in '+netModeName(NET.mode)+'. Close the player 2 window to change mode.'); return 'linked'; }
+    try{ if(NET.p2win&&!NET.p2win.closed) NET.p2win.focus(); }catch(_pf){}
+    netModeMsg('');
+    if(typeof go==='function') go();
+    return 'linked';
+  }
   if(typeof BroadcastChannel!=='function'||!netSupported()){ netModeMsg('This browser cannot run two game windows. 1 PLAYER still works.'); return 'unsupported'; }
   if(!NET.pair) NET.pair=netSess();
   url=netP2Url(mode,NET.pair); NET.p2url=url;
