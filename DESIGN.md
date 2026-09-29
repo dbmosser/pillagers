@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.33 - AFTER PLAYER 1 IS OUT, A RING PLAYER 2 CALLS GETS ITS SIEGE, AND HE CAN CALL IT AGAIN AFTER A MISSED SHIP
+
+Co-op hunt while he was away. When player 1 died or extracted first and player 2 was still up top, the host window kept the raid running for him but never ran the extraction rings. A ring player 2 called got no siege machines and no pull of the enemies toward it, and its call never ran out on the host, so if he missed the ship and called that ring again the host refused the call without a sound. The host now runs the rings of the kept raid by the same rules as a live raid: the clock, the boarding window, the siege arrivals kept clear of the party, and the regular pull toward the ring.
+
+MEASURED. Check 17.33 passes, and fails on v17.32.
 ## v17.32 - A SIEGE MACHINE FOR A RING PLAYER 2 CALLED NO LONGER DROPS RIGHT BESIDE PLAYER 2
 
 Co-op hunt while he was away. When player 2 called extraction, the siege machines that come while the ship is inbound were kept at least 700 away from player 1 only. With player 1 looting across the map, almost any spot passed, including one a few steps from player 2 at the ring, and a sentry or crawler could appear on top of him and go straight for him. In co-op every arrival now keeps clear of every player up top, as the pillager waves already do. Solo play is unchanged.

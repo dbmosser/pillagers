@@ -1,0 +1,5 @@
+## v17.33 - AFTER PLAYER 1 IS OUT, A RING PLAYER 2 CALLS GETS ITS SIEGE, AND HE CAN CALL IT AGAIN AFTER A MISSED SHIP
+
+Co-op hunt while he was away. When player 1 died or extracted first and player 2 was still up top, the host window kept the raid running for him but never ran the extraction rings. A ring player 2 called got no siege machines and no pull of the enemies toward it, and its call never ran out on the host, so if he missed the ship and called that ring again the host refused the call without a sound. The host now runs the rings of the kept raid by the same rules as a live raid: the clock, the boarding window, the siege arrivals kept clear of the party, and the regular pull toward the ring.
+
+MEASURED. Check 17.33 passes, and fails on v17.32.

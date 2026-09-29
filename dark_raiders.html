@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.32';
+var VER='17.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31574,7 +31574,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.32: Siege placement, co-op hunt 2026-09-28: tickExtractPoints runs on the host and placed each siege arrival with dist(spot,G.player)>=700, which is the host player only. The raider wave spawn has measured from every player since v15.80 (netNearDist), but the siege loop did not, so on a ring player 2 called with player 1 far away the first freeSpot draw was taken even when it sat a few dozen units from player 2, and the arrival (alert 3, investigate toward the ring, and netTargetFor picks the nearest standing player) went straight at him. The placement loop and its accept test now measure with netNearDist when a party is on, which counts the host player unless he is spectating and every teammate shown up top. With the party off the test is the old dist to the player, so solo play and its seeded stream are unchanged. No number moved. Check 17.32 fails on v17.31',
+  now:'v17.33: Kept raid rings, co-op hunt 2026-09-28: tickExtractPoints runs only from tryExtractTick in a raid frame, which stops once G.over is set, and netSpecTick (the host running the raid for the party after his own run ended) stepped the bodies, rounds, throwables and searches but never the rings. netWorldSend sends no rings once the raid is over, so player 2 runs his own, and his own siege arrivals are removed by netEntsEase since a linked window spawns nobody. So a call from player 2 while the host spectated reached netBeaconTake, which set beaconT on the kept world, and nothing ever counted it down: no siege arrival came, the two second re-ping and its pull never fired, and a second call on that ring after a missed boarding window was refused as called already with no ping and no word back. A new netSpecRings, called from netSpecTick after netSrchTick with the same world step, runs the part of tickExtractPoints the world needs for every called ring, by the same numbers: the inbound clock and the boarding window (cleared when it runs out), the per call siege clock and cap from the siege greed with each arrival placed 700 clear of the party by netNearDist (never the spectating host body), and the two second re-ping with its capped pull. It says nothing, plays nothing and leaves the HUD mirrors alone, since those belong to the teammate window, which still runs its own rings. Solo play never reaches it. No number moved. Check 17.33 fails on v17.32',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37386,6 +37386,56 @@ function netSpecStart(how){
   NET.status='Your party is still in the raid. Waiting for them to finish.';
   return true;
 }
+// v17.33, co-op hunt 2026-09-28: THE RINGS OF THE KEPT RAID RUN ON THE HOST. tickExtractPoints runs only in a raid frame, so once the
+// host was out nothing counted down a ring a teammate called: no siege machine came, the re-ping never pulled the ring, and the call
+// stood for good, so his next call there after a missed ship was refused as called already without a sound. This is the part of
+// tickExtractPoints the world needs, by the same rules and numbers: the clock and the boarding window, the siege arrivals kept 700
+// clear of the party (netNearDist, never the spectating host), and the two second re-ping and pull. The words, the sounds and the
+// HUD mirrors stay with the teammate window, which runs its own rings.
+function netSpecRings(dt){
+  var zi, z, GR, sv, iv, cap, ss, st, nm, pc, bi, be, jx, jy, first, n=0;
+  if(!G||!G.zones||!(dt>0)) return 0;
+  for(zi=0;zi<G.zones.length;zi++){
+    z=G.zones[zi];
+    if(z.beaconT===null||z.beaconT===undefined) continue;
+    n++;
+    z.beaconT-=dt;
+    if(z.siegeGreed===undefined||z.siegeGreed===null) z.siegeGreed=greedOf();
+    GR=z.siegeGreed; sv=(CFG.siegeVol===undefined?1:CFG.siegeVol);
+    iv=(8-4.6*GR)/sv; cap=Math.round((6+8*GR)*sv);
+    z.siegeSpawnT=(z.siegeSpawnT||0)+dt; z.siegeSpawned=z.siegeSpawned||0;
+    if(z.siegeSpawnT>=iv&&z.siegeSpawned<cap){
+      z.siegeSpawnT=0; ss=null; st=0;
+      do{ ss=freeSpot(G.map,30); st++; }while(netNearDist(ss)<700&&st<40);
+      if(netNearDist(ss)>=700){
+        z.siegeSpawned++;
+        nm=rr()<.5?mkSentry(ss.x,ss.y):mkCrawler(ss.x,ss.y);
+        nm.siegeBorn=1; nm.alert=3; nm.state='investigate'; nm.tx=z.x+rnd(-60,60); nm.ty=z.y+rnd(-60,60);
+        G.ents.push(nm);
+        if(G.tel) G.tel.siegeArrivals=(G.tel.siegeArrivals||0)+1;
+      }
+    }
+    z.siege=(z.siege||0)+dt;
+    if(z.siege>=2){
+      z.siege=0; first=!z.pinged; z.pinged=1;
+      ping(z.x,z.y,1200*(1+0.7*GR)*(first?1:(CFG.siegeEcho===undefined?1:CFG.siegeEcho)),true,false,'env','fire');
+      pc=Math.round((6+8*GR)*(CFG.siegePull===undefined?0.5:CFG.siegePull)); z.pullN=z.pullN||0;
+      for(bi=0;bi<G.ents.length;bi++){
+        be=G.ents[bi];
+        if(dist(be,z)>1500||be.state==='chase') continue;
+        jx=rnd(-50,50); jy=rnd(-50,50);
+        if(be.pullZ!==z){ if(z.pullN>=pc) continue; be.pullZ=z; z.pullN++; }
+        be.alert=Math.max(be.alert,2.4);
+        if(be.state!=='extract'&&!onYourTail(be.state)){ be.state='investigate'; be.tx=z.x+jx; be.ty=z.y+jy; }
+      }
+    }
+    if(z.beaconT>0) continue;
+    if(z.hold===null||z.hold===undefined){ z.hold=raidClockOn()?Math.min(30,Math.max(3,G.timeLeft-1)):30; if(raidClockOn()&&z.hold>G.timeLeft) z.hold=Math.max(0.5,G.timeLeft); z.holdMax=z.hold; }
+    z.hold-=dt;
+    if(z.hold<=0){ z.beaconT=null; z.hold=null; z.pullT=null; if(z===G.active){ G.beaconT=null; G.shipHold=null; } }
+  }
+  return n;
+}
 function netSpecTick(dt){
   var keep=G, S=NET.specG, i, n=0;
   if(!S||NET.role!=='host'){ NET.specG=null; return 0; }
@@ -37416,6 +37466,7 @@ function netSpecTick(dt){
     // the host run is over. So after the host died or extracted, a teammate search was granted and never moved: the bar
     // filled and nothing came out, on every box for the rest of the raid.
     netSrchTick(wdt);
+    netSpecRings(wdt);   // v17.33, co-op hunt 2026-09-28: and the rings a teammate called, which only a raid frame counted down
     NET.specAcc=(NET.specAcc||0)+dt;
     if(NET.specAcc>=NET_HUB_STEP){ NET.specAcc=0; NET.upN++; netEntsTick(); netContTick(); if(NET.upN%5===0) netWorldSend(); }
     // v16.67, stability: every sound the kept raid makes is queued for the party (netFxNoise), and the queue went out only in
