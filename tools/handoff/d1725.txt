@@ -1,0 +1,5 @@
+## v17.25 - THE WHAT IS NEW CARD NAMES THE MENU AND STASH FIXES
+
+Co-op hunt while he was away. The card named the two-player fixes up to v17.08 but none of the menu and stash fixes of v17.15 to v17.24. One line goes in under the playtest line in plain words, and the stamp moves to this build.
+
+MEASURED. Check 17.25 passes, and fails on v17.24.

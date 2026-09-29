@@ -1,0 +1,7 @@
+v17.25: the what is new card names the menu and stash fixes
+
+THE WHAT IS NEW CARD NAMES THE MENU AND STASH FIXES. One line goes in under the playtest line naming the menu, stash, belt, Settings, hire and two-tab fixes of v17.15 to v17.24, and the stamp moves to this build.
+
+Check 17.25. Fails on v17.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

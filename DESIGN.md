@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.25 - THE WHAT IS NEW CARD NAMES THE MENU AND STASH FIXES
+
+Co-op hunt while he was away. The card named the two-player fixes up to v17.08 but none of the menu and stash fixes of v17.15 to v17.24. One line goes in under the playtest line in plain words, and the stamp moves to this build.
+
+MEASURED. Check 17.25 passes, and fails on v17.24.
 ## v17.24 - WITH THE GAME OPEN IN TWO TABS, THE OLDER TAB NO LONGER WIPES WHAT THE OTHER TAB SAVED
 
 Co-op hunt while he was away. Each tab of the game read the save once when it opened and wrote its whole copy back every time it saved. With the game open in two tabs, a raid banked in one tab was wiped the next time the other tab saved anything, even closing the backpack, and a kit lost to a death could come back the same way. Now, when another tab writes the save, this tab stops saving and shows a card that says so, with a RELOAD button, so the newest save is the one kept.

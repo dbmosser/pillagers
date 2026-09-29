@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.24';
+var VER='17.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1447,13 +1447,14 @@ var VER='17.24';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='17.09';
+var WHATSNEW_VER='17.25';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'YOUR PARTY GOES UP TOGETHER AND PLAYS AS ONE. The mode menu opens a second window for your other screen with its own controller; player 1 sound plays on the left speaker and player 2 on the right. The party shares one surface: the same enemies, clock, weather, lightning and extraction points, and a beacon any of you calls comes for the party. Nobody in your party can hurt you. Your teammates show on the HUD with health and armour, you see their shots and damage numbers and hear their sounds, and you can use your own Bandages and plates on a teammate beside you. Hold E next to a downed teammate to revive them. One of you searches a box at a time and the loot goes to whoever searched it. The game pauses only when every player has paused. If the host extracts or dies, the host watches until the party is out; if the host leaves the party, the run ends as abandoned for everyone. The clock alarms are quieter, and a lightning flash shows you to the enemy from farther off.',
   'FROM YOUR PLAYTEST. On a controller A rolls, B crouches, RT fires or uses what is selected, LT or a right stick click aims, X loots or reloads, Y searches in an extraction circle or patches up a teammate with the heal or plate selected on your tactical belt, a bumper tap changes the belt and a held bumper zooms, and D-pad left and right set the aim distance. A picks up and places in the backpack and on the Stash screen. Kid firing and kid mode 1/20 are in Settings, and the kit question offers TOP GEAR and RANDOM FROM STASH.',
   'STEADIER TWO-PLAYER GAMES ON ONE PC. A key held in one window is let go when you click the other, ESC in the player 2 window no longer pauses player 1, and a click in one window never shuts the backpack of the other player. Kid mode at 1/20 really gives player 2 a twentieth of every hit, letting go of the right stick ends aiming so Superhot time stops and kid firing comes back, a downed controller player calls for extraction with X, and a heal your teammate could not take comes back to your backpack. Kills go to whoever made them, and a gun or a loaner Bandage handed between players is never kept by both.',
+  'STEADIER MENUS AND STASH. A plain click on a gun in your armoury leaves it there, a controller can put a gun in gun 1 or gun 2 from the stash (press A twice on the gun), an item on belt key 1 no longer buries your gun, and ESC or TAB on Settings in a raid shuts Settings only. A hire you paid for is spent at the lift, and the game open in two tabs no longer wipes what the other tab saved.',
   'NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.',
   'STEADIER CO-OP. A teammate still reading his run card goes up with the party, a search keeps running and the enemies stay audible after the host has left the raid, a pick up is called revived only once it took, pinging twice marks danger, the pause box shuts when a raid ends under it, a controller tap on the map places your marker and shuts the map, B backs out of the map and the backpack, and the buttons in Settings that would drop you out of a raid are greyed out until you are back in the Undercroft.',
   'GRENADES, BELT KEYS, STASH, RACKS, SAVES AND STORMS. A cooked Frag Charge keeps burning through a roll, a heal on a key no longer stops Medical using your other heals, and a controller packs from the stash with A. SURPRISE ME takes a worn suit off, erasing a save erases its UNDO copy, and lightning no longer hits you through a wall. A controller works the title screen and the pause box, in an uncalled ring the downed screen offers the call, and key 1 picks up the gun bound to it.',
@@ -31550,7 +31551,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.24: Two tabs on one save overwrote each other: saveProfile writes the whole in-memory P over SKEY, P is read only at boot, and nothing listened for another tab writing the key, so the stale tab next save (a backpack close, a settings click, the crash catcher) wiped the other tab extract or put back a kit lost to a death. A storage listener for SKEY now sets SAVE_STALE, saveProfile writes nothing while it is set, and a card that only closes to a reload (RELOAD, ESC or ENTER) says the save was changed in another tab. The storage event never fires in the tab that wrote, and a ?p2 or ?netslot window has its own key, so same machine co-op is untouched. Check 17.24 fails on v17.23',
+  now:'v17.25: THE WHAT IS NEW CARD NAMES THE MENU AND STASH FIXES. One line goes in under the playtest line naming the menu, stash, belt, Settings, hire and two-tab fixes of v17.15 to v17.24, and the stamp moves to this build. Check 17.25 fails on v17.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

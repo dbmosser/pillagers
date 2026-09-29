@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES THE MENU AND STASH FIXES",
+    "why":  "The card named the two-player fixes up to v17.08 but none of the menu and stash fixes of v17.15 to v17.24. One line goes in under the playtest line in plain words, and the stamp moves to this build.",
+    "now":  "THE WHAT IS NEW CARD NAMES THE MENU AND STASH FIXES. One line goes in under the playtest line naming the menu, stash, belt, Settings, hire and two-tab fixes of v17.15 to v17.24, and the stamp moves to this build.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002717.09\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002717.25\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.\u0027,",
+                      "replacement":  "  \u0027STEADIER MENUS AND STASH. A plain click on a gun in your armoury leaves it there, a controller can put a gun in gun 1 or gun 2 from the stash (press A twice on the gun), an item on belt key 1 no longer buries your gun, and ESC or TAB on Settings in a raid shuts Settings only. A hire you paid for is spent at the lift, and the game open in two tabs no longer wipes what the other tab saved.\u0027,\n  \u0027NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and has a line on the menu and stash fixes\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle=\u0027STEADIER MENUS\u0027+\u0027 AND STASH\u0027;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)\u003e=0; })) bad.push(\u0027no line of the card names the menu and stash fixes\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

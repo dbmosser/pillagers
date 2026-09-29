@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.25',what:'the what is new card is stamped within 0.15 of the build and has a line on the menu and stash fixes',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle='STEADIER MENUS'+' AND STASH';
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)>=0; })) bad.push('no line of the card names the menu and stash fixes');
+     return bad.length?bad.join('; '):null; }},
   {v:'17.24',what:'with the game open in two tabs on one save, a tab whose save the other tab has written since stops saving and shows a card with RELOAD, so its old copy never wipes what the other tab banked',
    run:function(){
      if(typeof saveProfile!=='function'||typeof SKEY!=='string'||typeof StorageEvent!=='function') return 'SKIP: this build has no save key to test';
