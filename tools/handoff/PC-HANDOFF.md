@@ -151,3 +151,14 @@ Tools saved here: shipone.sh KEY PREV NEW (Chrome 9344 on :8806), recent.ps1, rr
 sweep8.ps1 + watchshards.sh (eight shards 9336-9343, servers 8804-8807 and 8811-8814), drafts/validate-draft.ps1.
 All 75 checks from v16.40 up pass on v17.14. Soak on a loaded PC showed 1-2 fps seconds: rerun alone to separate load.
 LEFT FOR HIM: P2 payout uses P2 own saved terms and hire (design); his 125% zoom question.
+
+## 2026-09-28 late: v17.15-v17.24, third hunt (menus, stash, belt, shop, saves; 10 held), shipped with recent.ps1 in the chain.
+17.15 a plain click on an armoury gun no longer moves it to the stash; 17.16 a pad can put a gun in gun 1/2 or take it out
+on the stash screen (A, A on an armoury gun opens the gun menu); 17.17 an item on belt key 1 no longer buries the gun; 17.18
+dragging a belt key holding a backpack gun no longer swaps the gun in hand; 17.19 ESC/TAB on Settings in a raid shuts
+Settings, not the pause box; 17.20 a held ESC/TAB on the kit question no longer shuts the sector page; 17.21 a hire is spent
+at the lift (no free redeploy after a refresh); 17.22 a guest keeps his own hire through a party raid; 17.23 the host-abandon
+path of the gun copy; 17.24 two tabs on one save no longer wipe each other. The rack-click check first SKIPped on both builds
+(it tested the drop zone before entering the Undercroft): a reviewer without a browser cannot see a SKIP; the gate did.
+Weekly all-models read 31% at 23:50 (21% that morning): the agent teams cost ~10% in one evening. He asked whether I was
+still token-lean; I said no, and asked whether to go lean after these ten. Until he answers: no new agent teams.
