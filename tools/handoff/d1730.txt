@@ -1,0 +1,5 @@
+## v17.30 - THE HOST ENEMIES NOW HEAR PLAYER 2, AND HIS OWN WINDOW NO LONGER FAKES A LISTENER WAKING
+
+Co-op hunt while he was away. In co-op the enemies never heard player 2. His steps, shots, hails and doors were heard only in his own window, where the enemies are copies of the ones player 1 runs: a sleeping Listener there woke, screamed on both windows and said Something woke up, then went back to sleep, again and again, while the real Listener never moved and patrols never came to look. Now every noise player 2 makes goes to player 1, where it wakes a Listener and draws patrols exactly as player 1 own noise does, and his window no longer wakes its copies.
+
+MEASURED. Check 17.30 passes, and fails on v17.29.

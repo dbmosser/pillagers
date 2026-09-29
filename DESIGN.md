@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.30 - THE HOST ENEMIES NOW HEAR PLAYER 2, AND HIS OWN WINDOW NO LONGER FAKES A LISTENER WAKING
+
+Co-op hunt while he was away. In co-op the enemies never heard player 2. His steps, shots, hails and doors were heard only in his own window, where the enemies are copies of the ones player 1 runs: a sleeping Listener there woke, screamed on both windows and said Something woke up, then went back to sleep, again and again, while the real Listener never moved and patrols never came to look. Now every noise player 2 makes goes to player 1, where it wakes a Listener and draws patrols exactly as player 1 own noise does, and his window no longer wakes its copies.
+
+MEASURED. Check 17.30 passes, and fails on v17.29.
 ## v17.29 - A SMOKE OR A DECOY PLAYER 2 THROWS NOW WORKS ON THE ENEMIES THE HOST RUNS
 
 Co-op hunt while he was away. In co-op, a Smoke Canister or a Decoy thrown by player 2 was spent from his backpack but only landed in his own window, where the enemies are copies of the ones the host runs. The real enemies kept seeing him through his cloud and never heard his decoy, and the blast of his frag alerted no one who was not hit. His window now tells the host, the host puts the cloud and the decoy into the world it runs and passes them on to the other windows to draw, and the host hears his frag blast too.

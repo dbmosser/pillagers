@@ -1,0 +1,7 @@
+v17.30: the host enemies now hear player 2, and his own window no longer fakes a listener waking
+
+Party noise, co-op hunt 2026-09-28: every noise the enemies react to goes through ping, and on a linked window up top ping ran listenersHear and the patrol loop against the mirror bodies the host runs. A dormant mirror Listener woke, played the alarm (forwarded to the host as a sound, so both windows screamed), said Something woke up, and the next host snapshot set it back to dormant, so it repeated on every step or shot. Nothing ever reached the host: the fx n word only plays a sound. Now ping on a linked window wakes nothing and queues the player noises (x, y, the strength already scaled in his window, quiet, move or fire); netFxStep sends them on the same tenth of a second clock as a new fx word k z, and on the host netFxTake plays each through ping with a new pre flag that skips the noise setting, the weather and the rig, which his window already applied. The host own noises and solo play are unchanged. No number moved.
+
+Check 17.30. Fails on v17.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
