@@ -1,0 +1,7 @@
+v17.28: player 2 can no longer pick up or pay a pillager or survivor the host runs, which copied items and standing
+
+On a linked window (player 2 in the host raid) the downed pillager scan and the survivor scan in updatePlayer skip every body. The v16.62 guard only skipped bodies marked net, and the bodies of the opening build are the window own objects that the host runs, never marked, so player 2 was paid from a copy of the pack, his standing rose by 3 and was saved, and the next host snapshot put the man down again for another press. The survivor had no guard at all and paid 900 to 1500 per hand over. Both now test netEntsPeer; solo play, the host and the bot are untouched.
+
+Check 17.28. Fails on v17.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

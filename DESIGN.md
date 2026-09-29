@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.28 - PLAYER 2 CAN NO LONGER PICK UP OR PAY A PILLAGER OR SURVIVOR THE HOST RUNS, WHICH COPIED ITEMS AND STANDING
+
+Co-op hunt while he was away. In co-op, player 2 could pick up a downed pillager from the start of the raid on his own window: each press of X handed him a copy of an item from the man pack and +3 standing, and the host put the man straight back down, so it repeated. A survivor paid player 2 the same way, again and again. On a linked window neither is offered now, so nothing is copied and no standing or money is paid on one window alone.
+
+MEASURED. Check 17.28 passes, and fails on v17.27.
 ## v17.27 - A CONTROLLER THAT DROPS OR COMES BACK NO LONGER MOVES THE OTHER PLAYER'S CONTROLLER TO ITS WINDOW
 
 Co-op hunt while he was away. With two controllers and no picks, the game worked out whose controller was whose from slot order alone, every frame. When player 2's wireless pad died mid-raid, player 1's controller at once moved player 2 in the other window and player 1 stopped answering the pad in the middle of a fight, and a pad reconnecting to a lower slot swapped the two controllers between windows. Now each window keeps the controller it is playing while that controller stays plugged in, a player whose controller went gets none of the other's, and only a newly plugged controller fills a side that has none.

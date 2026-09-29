@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.27';
+var VER='17.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16724,7 +16724,10 @@ if(!p.fired||p.wep.auto){
     // v16.62, stability (co-op hunt): a body on a linked window is a copy of one the host runs (net). Picking it up happened on
     // that window alone: the child was paid the gun in the man's hands (so it existed twice), his standing and revive tally
     // went up and were saved, and the next word from the host put the man back down. Copies are no longer picked up here.
-    if(DE.kind==='raider'&&DE.downed&&!DE.net&&dist(p,DE)<64){ downRdr=DE; break; }
+    // v17.28, co-op hunt 2026-09-28: and on a linked window none is picked up at all. The bodies of the opening build are this
+    // window own objects the host runs, never marked net, so player 2 was paid from a copy of the pack and his standing went up
+    // by 3 on every press while the host kept the man down. A pick-up there waits for a word the host applies.
+    if(DE.kind==='raider'&&DE.downed&&!DE.net&&!netEntsPeer()&&dist(p,DE)<64){ downRdr=DE; break; }
   }
   G.nearDown=downRdr;
   if(downRdr&&keys['KeyE']&&!G.revLock){
@@ -16808,7 +16811,9 @@ if(!p.fired||p.wep.auto){
   var stray=null;
   for(var sq=0;sq<G.ents.length;sq++){
     var SE=G.ents[sq];
-    if(SE.kind==='stray'&&!SE.helped&&dist(p,SE)<70){ stray=SE; break; }
+    // v17.28, co-op hunt 2026-09-28: not on a linked window. The survivor there is a copy the host runs, so a hand over paid
+    // player 2 900 to 1500 on this window alone and the next word from the host made him ask again, for another payout.
+    if(SE.kind==='stray'&&!SE.helped&&!netEntsPeer()&&dist(p,SE)<70){ stray=SE; break; }
   }
   G.nearStray=stray;
   if(stray&&keys['KeyE']&&!G.strayLock){ G.strayLock=1; strayGive(stray); }
@@ -31551,7 +31556,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.27: Co-op hunt 2026-09-28, finding 9: netPadTick worked out both sides every frame from netPadFor, which reads only slot order and the two picks. With no picks player 2 was the first connected pad and the host the first other one, so when the pad of player 2 left slot 0 the host pad became the first connected pad, was handed to the player 2 window (netPadRecv takes any pad but the sender own with no pick) and the host let go of it; a pad that came back to a lower slot than the player 2 pad took player 2 over the same way. The live window now keeps the pad each side played on the frame before (NET.padWas, tagged with the pair code): netPadFor takes it as an optional last argument, and with it a side keeps its pad while it stays plugged in, player 2 never takes the pad the host is on, and a side whose pad went takes only a pad nobody is on. Every handed-over state now carries the pad the sending window plays (at), and the window that takes it keeps the same sides, so when the other window comes to the front it goes on with them. A new pick on either side, a new pair and the end of the channel start the sides over, so his v16.35 order still sets them at the start. A call of netPadFor without the last argument answers as before. No number and no player text moved. Check 17.27 fails on v17.26',
+  now:'v17.28: On a linked window (player 2 in the host raid) the downed pillager scan and the survivor scan in updatePlayer skip every body. The v16.62 guard only skipped bodies marked net, and the bodies of the opening build are the window own objects that the host runs, never marked, so player 2 was paid from a copy of the pack, his standing rose by 3 and was saved, and the next host snapshot put the man down again for another press. The survivor had no guard at all and paid 900 to 1500 per hand over. Both now test netEntsPeer; solo play, the host and the bot are untouched. Check 17.28 fails on v17.27',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
