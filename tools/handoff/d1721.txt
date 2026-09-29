@@ -1,0 +1,5 @@
+## v17.21 - A HIRE IS SPENT AT THE LIFT, SO A REFRESH OR A CLOSED TAB MID-RAID NO LONGER BRINGS HIM BACK FOR FREE
+
+Co-op hunt while he was away. A paid hire was only spent when the raid ended on its own card, so a raid that ended by the page going away (F5, a closed tab, a crash) left him hired in the save. The next ascent dropped him in again with no fee, for as many raids as that went on, and a hire who died before the reload was never billed his death benefit. The hire is now spent the moment the lift moves, the way the Data Core is, and a hire who died up there before the page went away is billed his death benefit when the save loads.
+
+MEASURED. Check 17.21 passes, and fails on v17.20.

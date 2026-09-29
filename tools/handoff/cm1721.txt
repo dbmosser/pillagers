@@ -1,0 +1,7 @@
+v17.21: a hire is spent at the lift, so a refresh or a closed tab mid-raid no longer brings him back for free
+
+Co-op hunt 2026-09-28, hire: P.merc was cleared only by the settle inside endRaid, and nothing at the lift or in the loader touched it, so after F5, a closed tab or a crash mid-raid the save still held the hire and the next buildRaid spawned him again with no fee; G.mercDead lived only in the raid, so the death benefit was never billed either. startRaid now spends the hire after the party word (netUpAnnounce) and never on a party guest build (NET.upHold): the raid keeps his id in G.mercId, P.merc is cleared and a saved marker P.mercOut is written. His death marks the marker dead in the save it already makes. endRaid puts G.mercId back into P.merc at its top, so the settle below and the instant quit branch (which keeps the hire) work as before, and drops the marker. The loader bills MERC_DEATH and marks his standing down, as the card would, when the marker says he died, then drops it. No number moved and no new words.
+
+Check 17.21. Fails on v17.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

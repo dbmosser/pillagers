@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.21 - A HIRE IS SPENT AT THE LIFT, SO A REFRESH OR A CLOSED TAB MID-RAID NO LONGER BRINGS HIM BACK FOR FREE
+
+Co-op hunt while he was away. A paid hire was only spent when the raid ended on its own card, so a raid that ended by the page going away (F5, a closed tab, a crash) left him hired in the save. The next ascent dropped him in again with no fee, for as many raids as that went on, and a hire who died before the reload was never billed his death benefit. The hire is now spent the moment the lift moves, the way the Data Core is, and a hire who died up there before the page went away is billed his death benefit when the save loads.
+
+MEASURED. Check 17.21 passes, and fails on v17.20.
 ## v17.20 - HOLDING ESC OR TAB ON THE LOADOUT QUESTION NO LONGER SHUTS THE SECTOR PAGE IT PUTS BACK
 
 Co-op hunt while he was away. Backing out of the loadout question puts the sector page back, but holding ESC or TAB a little too long let the key repeat press the sector page CLOSE as well. He landed on the bare floor, and walking back to the lift put his NIGHT back to DAY. The same held key on the Hire nobody question shut the bench it had put back. A held ESC or TAB now shuts one window, once.

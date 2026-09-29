@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.20';
+var VER='17.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2879,6 +2879,10 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
             for(var _rsi=0;_rsi<P.raidSpliced.length;_rsi++){ var _rsk=P.raidSpliced[_rsi]; if(_rsk&&P.weapons.indexOf(_rsk)<0) P.weapons.push(_rsk); }
           }
           delete P.raidSpliced;
+          // v17.21, co-op hunt 2026-09-28: a hire is spent at the lift, so a raid that ended by the page going away leaves no hire
+          // to drop in again for free. If he died up there first, his death benefit is billed here, as the card would have billed it.
+          if(P.mercOut&&typeof P.mercOut==='object'&&P.mercOut.dead){ P.credits-=MERC_DEATH; if(typeof P.mercOut.id==='string'){ var _moR=idRec(P.mercOut.id); _moR.standing=Math.min(_moR.standing,-1); } }
+          delete P.mercOut;
           // v15.11, quit audit finding 9: AND A LOAD FORGETS IT. No raid is running when a save loads, and a raid that ended by
           // the page going away (a closed tab, F5, a crash) never reached the clear in endRaid, so the saved list outlived the
           // raid and the next death card counted it. It also stuck: commitKit keeps a list that is not empty, so a later
@@ -11022,6 +11026,12 @@ function startRaid(){
   G.carriedIn=bagValue();
   G.carriedKit=(G.bag||[]).slice();   // v13.55: WHICH items came up, so an item contract counts only what was found   // v10.27: what the lift carried in, valued as the haul is
   if(NET.on&&NET.role==='host'&&!G.sim) netUpAnnounce(G);   // v15.79: the party is told to ascend into this world (the net section)
+  // v17.21, co-op hunt 2026-09-28: THE HIRE IS SPENT AT THE LIFT, as the Data Core below is. It was spent only in endRaid, so a
+  // raid that ended by the page going away (F5, a closed tab, a crash) left him hired in the save and the next ascent dropped him
+  // in again with no fee. The raid keeps his id and endRaid settles him from it as before; P.mercOut is the saved marker the
+  // loader bills a page-away death benefit from. After the party word above, which carries the hire to the party, and never on
+  // a party guest build (NET.upHold), whose own hire is not the man who went up.
+  if(P.merc&&!G.sim&&!NET.upHold){ G.mercId=P.merc; P.mercOut={id:P.merc,dead:0}; P.merc=null; saveProfile(); }
   // THE CORE BURNS, v3.81. One core, one raid: armed intel is consumed the
   // moment the lift moves, and the raid carries the flag plus the live list
   // of which containers hold the locked-room keys, computed here because the
@@ -18149,7 +18159,7 @@ if(e.state==='possum'){
       if(e.kind==='raider'&&e.merc&&!G.sim){
         G.mercDead=1;
         var rec3=idRec(e.ident);
-        rec3.deaths++; saveProfile();
+        rec3.deaths++; if(G.mercId&&P.mercOut&&typeof P.mercOut==='object') P.mercOut.dead=1; saveProfile();   // v17.21, co-op hunt 2026-09-28: the save says he died, so a page-away still bills him
         say(e.name+' is down. His family will be told, and billed to you.');
       }
       if(e.kind==='warden'){
@@ -20556,6 +20566,9 @@ function endRaid(how){
   // v14.03, save audit: the raid is being settled here, and G.spliced drives the settling; the saved record of
   // guns taken out of the armoury is only for a raid that never reaches this line.
   if(!G.sim&&P) delete P.raidSpliced;
+  // v17.21, co-op hunt 2026-09-28: the hire this raid spent at the lift (startRaid) is settled below from P.merc as it always was,
+  // and an instant quit keeps him; the saved marker the loader bills a page-away death from is done with.
+  if(!G.sim&&P){ delete P.mercOut; if(G.mercId&&!P.merc) P.merc=G.mercId; }
   // v12.12: THE BONUS THE CARD PRINTS IS THE BONUS THE RUN BANKS. Taken here,
   // before the death branch below clears the drink; the banking at the bottom
   // of this function ran after that clear and paid the run without it.
@@ -31512,7 +31525,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.20: Co-op hunt 2026-09-28, menus finding 5: the document capture listener that shuts the front window on ESC or TAB acted on every keydown, key repeats included. Not yet on the loadout question (and on the Hire nobody question) puts the window it was asked from back inside the same press, so the first key repeat about half a second later found that window in front and pressed its CLOSE: one held key shut two windows, and the lift then reset NIGHT to DAY, the loss v15.63 fixed. The listener now spends a key repeat once a window is open, still stopping it and preventing its default so a repeated TAB neither moves the focus nor reaches the floor or raid keys. It is the rule the pause box listener has kept since v15.49. A held key with no window open is unchanged. No number and no player text moved. Check 17.20 fails on v17.19',
+  now:'v17.21: Co-op hunt 2026-09-28, hire: P.merc was cleared only by the settle inside endRaid, and nothing at the lift or in the loader touched it, so after F5, a closed tab or a crash mid-raid the save still held the hire and the next buildRaid spawned him again with no fee; G.mercDead lived only in the raid, so the death benefit was never billed either. startRaid now spends the hire after the party word (netUpAnnounce) and never on a party guest build (NET.upHold): the raid keeps his id in G.mercId, P.merc is cleared and a saved marker P.mercOut is written. His death marks the marker dead in the save it already makes. endRaid puts G.mercId back into P.merc at its top, so the settle below and the instant quit branch (which keeps the hire) work as before, and drops the marker. The loader bills MERC_DEATH and marks his standing down, as the card would, when the marker says he died, then drops it. No number moved and no new words. Check 17.21 fails on v17.20',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
