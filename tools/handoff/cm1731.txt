@@ -1,0 +1,7 @@
+v17.31: player 2 shooting a pillager who made peace now costs player 2, not player 1
+
+Parley betrayal in co-op, co-op hunt 2026-09-28: netShotTake stamps pHitT for a round from any seat and leaves a friendlyPC man friendly, so the betrayal branch in the host updateEnts turned him and then ran idRec, saveProfile and say in the host window, cutting player 1 standing with that identity to at most -1 and printing the line there, even with player 1 out of the raid (no specOut guard, unlike the v17.11 fixes). Player 2 own rival record was never touched. Now netShotTake records the seat (e.pHitSeat) and the host own charge, strike and round clear it to 0. In the branch the man still turns for everyone (friendlyPC 0, hostile, grudge); when a seat fired, the host sends that seat a new word {t:betray,seat,id} and writes nothing to its own save; otherwise the host save is charged as before, but not while the host player is out and spectating. The new netBetrayTake on the player 2 window resolves the body from entMap or entDead and applies the same -3 floor -1 to his own save and says the same line. No number moved.
+
+Check 17.31. Fails on v17.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

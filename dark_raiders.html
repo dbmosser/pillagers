@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.30';
+var VER='17.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13091,7 +13091,7 @@ function explodeFrag(f){
       // already sets byPlayer=false for raider-on-raider fire (14061) and for
       // lightning (3722); this is the same convention.
       if(e.hp<=0){ e.byPlayer=!!_fMine; e.bySeat=0; }   // v15.80: a charge on the host is never one of the party, so the seat mark comes off with the kill
-      if(_fMine) e.pHitT=.3;   // v11.37: only YOUR charge provokes
+      if(_fMine){ e.pHitT=.3; e.pHitSeat=0; }   // v11.37: only YOUR charge provokes; v17.31, co-op hunt 2026-09-28: and it is the host player own, not a seat
       // And a blast only turns the survivors onto him if it was his. An enemy
       // grenade used to aggro the dead man's own crew onto the player.
       // v11.36: a blast does not stand a bystander or a downed man up into a
@@ -13884,7 +13884,7 @@ if(wep.mag===0){
         var _mdm=wep.dmg;
         if(Math.abs(Math.atan2(Math.sin(base-_me.face),Math.cos(base-_me.face)))<0.9) _mdm*=1.5;
         if(NET.on&&netEntsPeer()) netShotSend(_me,_mdm,base,null); else _me.hp-=_mdm;   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
-        _me.hitT=.16; _me.pHitT=.3;   // v11.37: your strike provokes
+        _me.hitT=.16; _me.pHitT=.3; _me.pHitSeat=0;   // v11.37: your strike provokes; v17.31, co-op hunt 2026-09-28: yours, not a seat
         notoAggress(_me);            // v8.30: same rule, bare hands included
         if(_me.hp<=0) _me.byPlayer=true;
         _swHit=true;
@@ -18940,7 +18940,12 @@ var _rdS=G.shells[_rdi];
           // too - marking here would let a stray blast spend the one charge a
           // man is worth and leave the aimed round that follows free.
           e.friendlyPC=0; e.hostile=true; e.grudge=true;
-          if(!G.sim){
+          // v17.31, co-op hunt 2026-09-28: the standing and the line belong to whoever fired. A round from player 2 (pHitSeat, set in
+          // netShotTake) cut the host player save and printed the line in his window; now that seat is told (netBetrayTake) and it
+          // comes off his own save. A hit of the host player still charges the host, but never once he has left the raid (specOut).
+          var _bs=e.pHitSeat|0; e.pHitSeat=0;
+          if(!G.sim&&_bs>0){ var _bq=netPeerOfSeat(_bs); if(_bq) netSend(_bq,{t:'betray',seat:_bs,id:e.nid|0}); }
+          else if(!G.sim&&!(G.player&&G.player.specOut)){
             var rb=idRec(e.ident); rb.standing=Math.min((rb.standing||0)-3,-1); saveProfile();
             say(e.name+' trusted you.');
           }
@@ -19998,7 +20003,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // before, and a round into a downed man that does not finish him leaves the mark with whoever downed him.
               // No number, no player text and no seeded draw moved.
               if(en.hp<=0) en.byPlayer=true; else if(!en.downed) en.byPlayer=false;
-              en.pHitT=.3;   // v11.37: YOUR round, so it may provoke and it may earn a grudge
+              en.pHitT=.3; en.pHitSeat=0;   // v11.37: YOUR round, so it may provoke and it may earn a grudge; v17.31, co-op hunt 2026-09-28: yours, not a seat
               // v9.25, HIS NOTE: pillagers "just stood there after getting
               // attacked". Being shot now turns a peaceful pillager hostile on
               // the round that hits him, rather than leaving it to whether a
@@ -31566,7 +31571,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.30: Party noise, co-op hunt 2026-09-28: every noise the enemies react to goes through ping, and on a linked window up top ping ran listenersHear and the patrol loop against the mirror bodies the host runs. A dormant mirror Listener woke, played the alarm (forwarded to the host as a sound, so both windows screamed), said Something woke up, and the next host snapshot set it back to dormant, so it repeated on every step or shot. Nothing ever reached the host: the fx n word only plays a sound. Now ping on a linked window wakes nothing and queues the player noises (x, y, the strength already scaled in his window, quiet, move or fire); netFxStep sends them on the same tenth of a second clock as a new fx word k z, and on the host netFxTake plays each through ping with a new pre flag that skips the noise setting, the weather and the rig, which his window already applied. The host own noises and solo play are unchanged. No number moved. Check 17.30 fails on v17.29',
+  now:'v17.31: Parley betrayal in co-op, co-op hunt 2026-09-28: netShotTake stamps pHitT for a round from any seat and leaves a friendlyPC man friendly, so the betrayal branch in the host updateEnts turned him and then ran idRec, saveProfile and say in the host window, cutting player 1 standing with that identity to at most -1 and printing the line there, even with player 1 out of the raid (no specOut guard, unlike the v17.11 fixes). Player 2 own rival record was never touched. Now netShotTake records the seat (e.pHitSeat) and the host own charge, strike and round clear it to 0. In the branch the man still turns for everyone (friendlyPC 0, hostile, grudge); when a seat fired, the host sends that seat a new word {t:betray,seat,id} and writes nothing to its own save; otherwise the host save is charged as before, but not while the host player is out and spectating. The new netBetrayTake on the player 2 window resolves the body from entMap or entDead and applies the same -3 floor -1 to his own save and says the same line. No number moved. Check 17.31 fails on v17.30',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35354,6 +35359,7 @@ function netOnMsg0(peer,data){
   if(m.t==='hit') return netHitTake(peer,m);   // v15.80: a blow on this player, from the host, taken through its own damagePlayer
   if(m.t==='shot') return netShotTake(peer,m);   // v15.80: a round, blade or charge from one of the party on a body the host runs
   if(m.t==='kill') return netKillTake(peer,m);   // v15.80: a kill credited to this seat, from the host
+  if(m.t==='betray') return netBetrayTake(peer,m);   // v17.31, co-op hunt 2026-09-28: a man who made peace was turned by this seat round, from the host
   if(m.t==='contact') return netContactTake(peer,m);   // v16.36: an enemy went for this seat first, from the host
   if(m.t==='kitask'||m.t==='kitok') return netKitTake(peer,m);   // v16.37: every player chooses a kit
   if(m.t==='sum') return netSumTake(peer,m);   // v16.40: a teammate's raid result, for the party summary
@@ -37736,7 +37742,7 @@ function netShotTake(peer,m){
   s=peer.seat;
   sx=(typeof m.x==='number'&&isFinite(m.x))?m.x:e.x; sy=(typeof m.y==='number'&&isFinite(m.y))?m.y:e.y;
   if(typeof m.wk==='string'&&m.wk){ L=weakOf(e); if(L) for(i=0;i<L.length;i++) if(L[i].name===m.wk){ applyWeak(e,L[i]); break; } }
-  e.hp-=d; e.hitT=.16; e.pHitT=.3;
+  e.hp-=d; e.hitT=.16; e.pHitT=.3; e.pHitSeat=s;   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
   if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
     px=-Math.sin(m.a); py=Math.cos(m.a);
@@ -37966,6 +37972,20 @@ function netKillTake(peer,m){
     sayWhenFree((e.name||'He')+' will remember that.');
   }
   return 'kill';
+}
+// v17.31, co-op hunt 2026-09-28: A MAN WHO MADE PEACE, TURNED BY THIS PLAYER ROUND. The host turns him for the party (updateEnts)
+// and sends this word to the seat that fired; the standing he loses and the line come off this window own save, as a kill word
+// does, where they used to come off the host player save. Only while this raid is running, up top on the party seed.
+function netBetrayTake(peer,m){
+  var e, rb;
+  if(!peer||peer.state!=='in'||NET.role!=='join') return 'ignored';
+  if(typeof m.seat==='number'&&m.seat!==NET.seat) return 'ignored';
+  if(!netEntsPeer()) return 'down';
+  e=(NET.entMap&&NET.entMap[m.id|0])||(NET.entDead&&NET.entDead[m.id|0])||null;
+  if(!e||!e.ident) return 'gone';
+  rb=idRec(e.ident); rb.standing=Math.min((rb.standing||0)-3,-1); saveProfile();
+  sayWhenFree((e.name||'He')+' trusted you.');
+  return 'betray';
 }
 // The bodies as this window holds them, for the test page handle.
 function netEntsView(){

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.31 - PLAYER 2 SHOOTING A PILLAGER WHO MADE PEACE NOW COSTS PLAYER 2, NOT PLAYER 1
+
+Co-op hunt while he was away. When player 2 shot a pillager who had made peace, the pillager turned on the party as he should, but the lost trust was written into player 1 save: player 1 lost standing with that man, player 1 window said he trusted you, and this happened even after player 1 had left the raid and was only watching. Player 2, who fired, lost nothing. Now the host still turns the man for everyone, but the standing and the line go to player 2 own save and window, and player 1 is charged only for his own rounds while he is still in the raid.
+
+MEASURED. Check 17.31 passes, and fails on v17.30.
 ## v17.30 - THE HOST ENEMIES NOW HEAR PLAYER 2, AND HIS OWN WINDOW NO LONGER FAKES A LISTENER WAKING
 
 Co-op hunt while he was away. In co-op the enemies never heard player 2. His steps, shots, hails and doors were heard only in his own window, where the enemies are copies of the ones player 1 runs: a sleeping Listener there woke, screamed on both windows and said Something woke up, then went back to sleep, again and again, while the real Listener never moved and patrols never came to look. Now every noise player 2 makes goes to player 1, where it wakes a Listener and draws patrols exactly as player 1 own noise does, and his window no longer wakes its copies.
