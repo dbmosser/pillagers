@@ -1,0 +1,7 @@
+v17.27: a controller that drops or comes back no longer moves the other player's controller to its window
+
+Co-op hunt 2026-09-28, finding 9: netPadTick worked out both sides every frame from netPadFor, which reads only slot order and the two picks. With no picks player 2 was the first connected pad and the host the first other one, so when the pad of player 2 left slot 0 the host pad became the first connected pad, was handed to the player 2 window (netPadRecv takes any pad but the sender own with no pick) and the host let go of it; a pad that came back to a lower slot than the player 2 pad took player 2 over the same way. The live window now keeps the pad each side played on the frame before (NET.padWas, tagged with the pair code): netPadFor takes it as an optional last argument, and with it a side keeps its pad while it stays plugged in, player 2 never takes the pad the host is on, and a side whose pad went takes only a pad nobody is on. Every handed-over state now carries the pad the sending window plays (at), and the window that takes it keeps the same sides, so when the other window comes to the front it goes on with them. A new pick on either side, a new pair and the end of the channel start the sides over, so his v16.35 order still sets them at the start. A call of netPadFor without the last argument answers as before. No number and no player text moved.
+
+Check 17.27. Fails on v17.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.27 - A CONTROLLER THAT DROPS OR COMES BACK NO LONGER MOVES THE OTHER PLAYER'S CONTROLLER TO ITS WINDOW
+
+Co-op hunt while he was away. With two controllers and no picks, the game worked out whose controller was whose from slot order alone, every frame. When player 2's wireless pad died mid-raid, player 1's controller at once moved player 2 in the other window and player 1 stopped answering the pad in the middle of a fight, and a pad reconnecting to a lower slot swapped the two controllers between windows. Now each window keeps the controller it is playing while that controller stays plugged in, a player whose controller went gets none of the other's, and only a newly plugged controller fills a side that has none.
+
+MEASURED. Check 17.27 passes, and fails on v17.26.
 ## v17.26 - A KEPT PLAYER 2 CONTROLLER PICK FOR A PAD THAT IS NOT PLUGGED IN NO LONGER GIVES THE ONLY CONTROLLER TO PLAYER 1
 
 Co-op hunt while he was away. When the player 2 window kept a controller pick from an earlier evening and that controller was not plugged in, player 2 got no controller at all, and the rule that gives player 1 a second controller handed him the only one. The son's stick moved the dad's character, and the player 2 window had no way to reopen PARTY to change the pick. Now a player 2 pick that is not plugged in, while player 1 picked none, falls to the first free controller, and the player 2 window takes it when player 1 hands it over.

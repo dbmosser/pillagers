@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.26';
+var VER='17.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31551,7 +31551,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.26: Co-op hunt 2026-09-28, finding 8: netPadFor gave player 2 -1 for a kept pick that was not plugged in, so the host with no pick worked out player 2 as on no pad and took the first connected one under his v16.35 rule (a second controller goes to player 1). With one controller plugged in that is the only one, so it drove player 1 in both windows, and the pick is kept in localStorage and read at every player 2 boot, and the PARTY window that changes it cannot be reopened from the player 2 window. netPadFor now lets a player 2 pick that is not plugged in fall through to the first free pad when the host picked none, so the host rule takes only a pad beyond the one player 2 is on. A pick while the host picked a controller keeps its old rule (nothing), as check 15.77 asks. netPadTick notes on each live read whether this window pick is plugged in (NET.padPickOk), and netPadWant in the player 2 window then takes any pad but the host own from the window in front, as it does with no pick, so player 2 also plays when the player 1 window is the one in front. No number and no player text moved. Check 17.26 fails on v17.25',
+  now:'v17.27: Co-op hunt 2026-09-28, finding 9: netPadTick worked out both sides every frame from netPadFor, which reads only slot order and the two picks. With no picks player 2 was the first connected pad and the host the first other one, so when the pad of player 2 left slot 0 the host pad became the first connected pad, was handed to the player 2 window (netPadRecv takes any pad but the sender own with no pick) and the host let go of it; a pad that came back to a lower slot than the player 2 pad took player 2 over the same way. The live window now keeps the pad each side played on the frame before (NET.padWas, tagged with the pair code): netPadFor takes it as an optional last argument, and with it a side keeps its pad while it stays plugged in, player 2 never takes the pad the host is on, and a side whose pad went takes only a pad nobody is on. Every handed-over state now carries the pad the sending window plays (at), and the window that takes it keeps the same sides, so when the other window comes to the front it goes on with them. A new pick on either side, a new pair and the end of the channel start the sides over, so his v16.35 order still sets them at the start. A call of netPadFor without the last argument answers as before. No number and no player text moved. Check 17.27 fails on v17.26',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35653,6 +35653,7 @@ function netSameStop(){
   if(NET.bc){ try{ NET.bc.onmessage=null; NET.bc.close(); }catch(e){} }
   NET.bc=null; NET.same=''; NET.pair=''; NET.mode=''; NET.p2win=null; NET.sameBusy=false;
   NET.padFwd=null; NET.padOther=-1;   // v15.77: the handed-over state and the other window's pick go with the channel; this window's own pick stays
+  NET.padWas=null;   // v17.27: and the kept sides
   netSndRelease();   // v15.78: the master gain goes back to 1 and the other window's word is forgotten; this window's own switch stays
 }
 // The address of the player 2 window: this page, with p2=1, the mode and the pair code and nothing else.
@@ -35764,7 +35765,7 @@ function netSameOnMsg(m){
     return 'key';
   }
   if(m.t==='pad') return netPadRecv(m);
-  if(m.t==='padpick'){ NET.padOther=netPadIxOk(m.ix); return 'padpick'; }
+  if(m.t==='padpick'){ if(netPadIxOk(m.ix)!==NET.padOther) NET.padWas=null; NET.padOther=netPadIxOk(m.ix); return 'padpick'; }   // v17.27: a changed pick from the other window starts the kept sides over
   if(m.t==='snd'){ NET.sndOther=(m.on===1||m.on===true)?1:0; netRefresh(); return 'snd'; }   // v15.78: the other window says whether its sound is on
   if(NET.same==='host'){
     if(m.t==='ready'){
@@ -35883,14 +35884,22 @@ function netPadIxOk(v){ return (typeof v==='number'&&v===(v|0)&&v>=0&&v<NET_PAD_
 function netPadKey(side){ return 'salvagerun:samepad:'+((side==='p2')?'p2':'host'); }
 // The pad index a side plays on, from its own pick, the other side's pick and the pads connected: -1 for none. The host
 // plays only a pad it picked; player 2 plays its pick unless the host picked the same, else the first free pad.
-function netPadFor(side,pick,taken,gps){
-  var i, n=(gps&&gps.length)||0;
+// v17.27, co-op hunt 2026-09-28: THE PAD EACH SIDE IS PLAYING IS KEPT (NET.padWas, by pair code), so slot order alone no
+// longer decides it every frame. When the pad of player 2 dropped, the host pad was the first connected one and went to the
+// player 2 window, and a pad coming back to a lower slot swapped the two. Now, with was, a side keeps its pad while it stays
+// plugged in, player 2 never takes the pad the host is on, and only a pad nobody is on fills a side with none. A pick clears it.
+function netPadWasFor(){ var w=NET.padWas; return (w&&w.pair===NET.pair)?w:null; }
+function netPadStick(host,p2){ NET.padWas={pair:NET.pair,host:netPadIxOk(host),p2:netPadIxOk(p2)}; }
+function netPadFor(side,pick,taken,gps,was){
+  var i, n=(gps&&gps.length)||0, held=-1;
   pick=netPadIxOk(pick); taken=netPadIxOk(taken);
   if(side!=='p2'){
     if(pick>=0) return (pick<n&&gps[pick]&&gps[pick].connected)?pick:-1;
     // v16.35, HIS RULE of 2026-09-27: player 1 plays keyboard and mouse, player 2 takes the first controller, and a second
     // controller goes to player 1. With no pick the host plays the first connected pad player 2 is not on.
-    taken=netPadFor('p2',taken,-1,gps);
+    taken=netPadFor('p2',taken,-1,gps,was);
+    held=was?netPadIxOk(was.host):-1;   // v17.27: the pad the host was playing stays on the host while it is plugged in
+    if(held>=0&&held!==taken&&held<n&&gps[held]&&gps[held].connected) return held;
     for(i=0;i<n;i++) if(i!==taken&&gps[i]&&gps[i].connected) return i;
     return -1;
   }
@@ -35899,7 +35908,12 @@ function netPadFor(side,pick,taken,gps){
   // controller to player 1, and player 2, whose window cannot reopen PARTY to change the kept pick, stood still.
   if(pick>=0&&pick!==taken&&pick<n&&gps[pick]&&gps[pick].connected) return pick;
   if(pick>=0&&pick!==taken&&taken>=0) return -1;
-  for(i=0;i<n;i++) if(i!==taken&&gps[i]&&gps[i].connected) return i;
+  if(was){   // v17.27: player 2 keeps the pad it was playing while it is plugged in, and never takes the one the host is on
+    i=netPadIxOk(was.p2);
+    if(i>=0&&i!==taken&&i<n&&gps[i]&&gps[i].connected) return i;
+    if(taken<0) held=netPadIxOk(was.host);
+  }
+  for(i=0;i<n;i++) if(i!==taken&&i!==held&&gps[i]&&gps[i].connected) return i;
   return -1;
 }
 // The pad this window will take from the window in front: its pick; for player 2 with no pick (or a pick the host holds)
@@ -35922,11 +35936,12 @@ function netPadPost(){ return netSamePost({t:'padpick',pair:NET.pair,ix:NET.padI
 function netPadSet(ix){
   NET.padIx=netPadIxOk(ix);
   try{ if(NET.padIx>=0) localStorage.setItem(netPadKey(NET.same),String(NET.padIx)); else localStorage.removeItem(netPadKey(NET.same)); }catch(e){}
+  NET.padWas=null;   // v17.27, co-op hunt 2026-09-28: a new pick starts the kept sides over
   netPadPost();
   netRefresh();
   return NET.padIx;
 }
-function netPadInit(){ netPadLoad(); NET.padOther=-1; NET.padFwd=null; netPadPost(); return NET.padIx; }
+function netPadInit(){ netPadLoad(); NET.padOther=-1; NET.padFwd=null; NET.padWas=null; netPadPost(); return NET.padIx; }   // v17.27: a new pair starts the kept sides over
 // The CONTROLLER row: none, then controller 1 to 4, then none again.
 function netPadCycle(){ return netPadSet((NET.padIx>=NET_PAD_MAX-1)?-1:(NET.padIx+1)); }
 function netPadLabel(ix,side){
@@ -35936,11 +35951,11 @@ function netPadLabel(ix,side){
 }
 // One pad's state, handed to the other window: which pad, this window's own pick, the buttons (down, and how far) and the
 // sticks. Returns whether it went out.
-function netPadSend(g,ix){
+function netPadSend(g,ix,at){   // v17.27: at is the pad the sending window plays, so the other window keeps the same sides
   var p=[], v=[], a=[], i, b, bt=(g&&g.buttons)||[], ax=(g&&g.axes)||[];
   for(i=0;i<bt.length&&i<32;i++){ b=bt[i]; p.push((b&&(b.pressed||b.value>0.5))?1:0); v.push(b?(Math.round(((b.value!==undefined)?+b.value:(b.pressed?1:0))*100)/100):0); }
   for(i=0;i<ax.length&&i<8;i++) a.push(Math.round((+ax[i]||0)*1000)/1000);
-  if(!netSamePost({t:'pad',pair:NET.pair,ix:ix,own:NET.padIx,p:p,v:v,a:a})) return false;
+  if(!netSamePost({t:'pad',pair:NET.pair,ix:ix,own:NET.padIx,at:netPadIxOk(at),p:p,v:v,a:a})) return false;
   NET.padSent++;
   return true;
 }
@@ -35960,6 +35975,7 @@ function netPadRecv(m){
   for(i=0;i<m.a.length;i++){ v=+m.a[i]; a.push(isFinite(v)?clamp(v,-1,1):0); }
   NET.padFwd={ix:ix,at:netPadNow(),gp:{connected:true,index:ix,id:'controller handed over by the other window',mapping:'standard',timestamp:0,axes:a,buttons:bts}};
   NET.padGot++;
+  if(typeof m.at==='number'){ if(NET.same==='host') netPadStick(ix,netPadIxOk(m.at)); else netPadStick(netPadIxOk(m.at),ix); }   // v17.27: keep the sides the window in front keeps
   return 'pad';
 }
 // v16.78, HIS ORDER OF 2026-09-27: THE CONTROLLER FOLLOWS ITS WINDOW WHETHER OR NOT THAT WINDOW IS IN FRONT. Liveness is read
@@ -36015,9 +36031,11 @@ function netPadTick(gps){
   if(focused){
     NET.padFwd=null;
     NET.padPickOk=(netPadIxOk(NET.padIx)<0)||!!(NET.padIx<gps.length&&gps[NET.padIx]&&gps[NET.padIx].connected);   // v17.26, co-op hunt 2026-09-28: whether this window pick was plugged in on its last live read, for netPadWant
-    other=netPadFor((NET.same==='host')?'p2':'host',NET.padOther,NET.padIx,gps);
-    if(other>=0) netPadSend(gps[other],other);
-    mine=netPadFor(NET.same,NET.padIx,NET.padOther,gps);
+    var was=netPadWasFor();   // v17.27, co-op hunt 2026-09-28: the sides kept from the frame before, so a pad that drops or comes back moves no one else
+    other=netPadFor((NET.same==='host')?'p2':'host',NET.padOther,NET.padIx,gps,was);
+    mine=netPadFor(NET.same,NET.padIx,NET.padOther,gps,was);
+    if(NET.same==='host') netPadStick(mine,other); else netPadStick(other,mine);
+    if(other>=0) netPadSend(gps[other],other,mine);
     return netPadOut((mine>=0)?gps[mine]:null,true);
   }
   if(fwd&&fwd.gp&&(netPadNow()-fwd.at)<=NET_PAD_STALE) return netPadOut(fwd.gp,false);
