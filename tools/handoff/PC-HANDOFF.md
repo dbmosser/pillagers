@@ -162,3 +162,11 @@ path of the gun copy; 17.24 two tabs on one save no longer wipe each other. The 
 (it tested the drop zone before entering the Undercroft): a reviewer without a browser cannot see a SKIP; the gate did.
 Weekly all-models read 31% at 23:50 (21% that morning): the agent teams cost ~10% in one evening. He asked whether I was
 still token-lean; I said no, and asked whether to go lean after these ten. Until he answers: no new agent teams.
+
+## NEXT UP (kept current; the hourly watchdog reads this when nobody is working)
+1. Local model scan: once `ollama list` shows qwen2.5-coder:32b, run tools\localscan\scan.ps1 over one focus area at a time
+   (e.g. -Grep 'net[A-Z]' for co-op, -Grep 'hub|stash' for menus). Each hit is only a lead: read the code yourself, and
+   ship only a real, reproducible defect, one per build, via a draft + tools\handoff\shipone.sh.
+2. The full suite on v17.24 with sweep8.ps1 limited to 4 shards (9336-9339); fix any red through the ship chain.
+3. Waiting on him (do not decide): P2 payout uses P2 own saved terms and hire; his 125% zoom question.
+LOAD RULES after the 2026-09-28 crash: keep 6 GB RAM free, at most 4 test Chromes, no big download on top of tests.
