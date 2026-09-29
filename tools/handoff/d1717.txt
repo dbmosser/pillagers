@@ -1,0 +1,5 @@
+## v17.17 - AN ITEM BOUND TO BELT KEY 1 NO LONGER BURIES THE GUN FOR THE WHOLE RAID
+
+Co-op hunt while he was away. Any item can go on any belt key, so a Medkit bound to key 1 on the Stash screen covered the gun cell for the whole raid. The raid started on the Medkit, no key fired the gun, and pressing 2 brought Bare Hands up and stowed the gun where no key could reach it again. Now a gun cell that a key covers moves to the last free key on the belt, so a key always holds each gun, the raid starts on it and the empty-key line names it.
+
+MEASURED. Check 17.17 passes, and fails on v17.16.

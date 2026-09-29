@@ -1,0 +1,7 @@
+v17.17: an item bound to belt key 1 no longer buries the gun for the whole raid
+
+Belt key 1 or 2 covering the gun cell. v6.61 lets any item go on any key, and hotbarSlots let an assignment on index 0 or 1 overwrite the derived gunA or gunB cell with nothing moving the gun cell it covered. With a Medkit on key 1, heldGunCell found no cell holding the gun in hand, so the raid started on the Medkit (gunCell falls back to 0), the trigger fired from no cell, and key 2 or RB swapped to Bare Hands and left the carried gun under the Medkit for the rest of the raid, while gunKeyLine still said Press 1 for your gun. hotbarSlots now keeps the two derived gun cells and, after the assignment loop, moves a covered one (still keyed gunA or gunB, so setHot, swapGuns, heldGunCell, the raid start and the weapon slot drop rule all find it) onto the highest empty key with no assignment, the same place the automatic pins yield to. It stays put when a key he bound already shows that gun, and stowed Bare Hands get no key.
+
+Check 17.17. Fails on v17.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

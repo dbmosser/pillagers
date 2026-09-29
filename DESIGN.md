@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.17 - AN ITEM BOUND TO BELT KEY 1 NO LONGER BURIES THE GUN FOR THE WHOLE RAID
+
+Co-op hunt while he was away. Any item can go on any belt key, so a Medkit bound to key 1 on the Stash screen covered the gun cell for the whole raid. The raid started on the Medkit, no key fired the gun, and pressing 2 brought Bare Hands up and stowed the gun where no key could reach it again. Now a gun cell that a key covers moves to the last free key on the belt, so a key always holds each gun, the raid starts on it and the empty-key line names it.
+
+MEASURED. Check 17.17 passes, and fails on v17.16.
 ## v17.16 - A CONTROLLER CAN PUT A GUN IN GUN 1 OR GUN 2, OR TAKE IT OUT OF HIS HANDS, ON THE STASH SCREEN
 
 Co-op hunt while he was away. Putting a gun in gun 1 or gun 2, or taking it out of your hands, is done from the gun menu, and on the Stash screen only a right-click on an armoury gun opened it. A controller has no right-click, so a pad player, and player 2 on the same machine always, could never choose his gun at home: a new gun sat in the armoury and an empty gun 2 stayed empty. Now A on an armoury gun and A again in place opens that same menu at the gun, the D-pad moves between its rows, A picks one and B shuts it with the highlight back on the gun.
