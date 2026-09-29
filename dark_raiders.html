@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.22';
+var VER='17.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31527,7 +31527,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.22: Co-op hunt 2026-09-28, hire: netUpStart builds a linked window copy of the party raid with the host hire in P.merc and then puts the teammate own hire back, as it does for the Data Core, but endRaid in that window settled whatever P.merc held and cleared it, so the teammate own paid hire was spent on a raid it never went on, and the settle read the host man in his world (a cut, a death benefit, or left out there, written to his own man standing). netUpStart now marks the raid G.netUp once it is built from the host word, and the endRaid settle skips a raid so marked, leaving his hire as netUpStart put it back. The hire spent at the lift (v16.xx hire-refresh) already skips a party guest build. No number moved and no new words. Check 17.22 fails on v17.21',
+  now:'v17.23: An armoury gun the host dropped and a teammate searched up after the host abandoned stayed in the host armoury, because the abandon had already put every spliced gun back and saved, and netGunsGone only took the id off G.spliced and P.raidSpliced. netGunsGone now also takes one copy out of P.weapons when the kept raid ended as an abandon (the abandon branch and the instant quit are the only ends that put the list back), repairs P.equipped and P.equippedSec the way the death branch does, and saves. Check 17.23 fails on v17.22',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -38027,13 +38027,26 @@ function netSrchEndSeat(s){ return (NET.role==='host')?netSrchEnd(s):false; }
 // on it, and the one gun was in both saves. One id per gun handed over, and only from a pile the host dropped, so a found field
 // copy in an ordinary box never takes the host own gun off the list.
 function netGunsGone(ct,items){
-  var i, it, j, n=0;
+  var i, it, j, n=0, back=0;
   if(G.sim||!ct||!ct.dropped||!items||!G.spliced||!G.spliced.length) return 0;
   for(i=0;i<items.length;i++){
     it=ITEMS[items[i]]; if(!it||it.use!=='gun'||!it.gk) continue;
     j=G.spliced.indexOf(it.gk); if(j<0) continue;
     G.spliced.splice(j,1); n++;
     if(P&&Array.isArray(P.raidSpliced)){ j=P.raidSpliced.indexOf(it.gk); if(j>=0) P.raidSpliced.splice(j,1); }
+    // v17.23, co-op hunt 2026-09-28: AND OUT OF HIS ARMOURY WHEN HE HAS ALREADY ABANDONED. His party still up top keeps the raid
+    // running after his abandon (netSpecStart), and the abandon (and the instant quit) has already put every id on the list back in
+    // his armoury and saved it, so taking the id off the list alone changed nothing: a teammate searched the gun up after the
+    // abandon, banked it on his save, and the one gun was in both saves. A death or an extract never puts the list back, so only
+    // an abandon takes it out of the armoury here.
+    if(G.over==='abandon'&&P&&Array.isArray(P.weapons)){ j=P.weapons.indexOf(it.gk); if(j>=0){ P.weapons.splice(j,1); back++; } }
+  }
+  // v17.23: and his two gun slots never name the gun he no longer owns (he may have taken it up again in the Undercroft by now),
+  // the repair the death branch of endRaid makes.
+  if(back){
+    if(P.equipped&&P.equipped!=='fists'&&P.weapons.indexOf(P.equipped)<0) P.equipped=P.weapons.length?P.weapons[0]:'fists';
+    if(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists'&&P.weapons.indexOf(P.equippedSec)<0) P.equippedSec='none';
+    if((P.equippedSec||'none')===P.equipped) P.equippedSec='none';
   }
   if(n) saveProfile();
   return n;

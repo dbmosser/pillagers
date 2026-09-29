@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.23 - AN ARMOURY GUN THE HOST DROPPED IS NO LONGER IN BOTH SAVES WHEN A TEAMMATE PICKS IT UP AFTER THE HOST ABANDONS
+
+Co-op hunt while he was away. In co-op, if the host dropped one of his own armoury guns for a teammate and then abandoned while that teammate was still up top, the abandon put the gun back in the host armoury. The teammate could then search it up and extract with it, so the one gun was in both saves, and it could be done again with any gun. Now a gun handed over after the host abandoned comes out of his armoury too, and his gun slots let go of it.
+
+MEASURED. Check 17.23 passes, and fails on v17.22.
 ## v17.22 - A TEAMMATE WHO HIRED A MAN KEEPS HIM THROUGH A PARTY RAID HE NEVER WENT ON
 
 Co-op hunt while he was away. In co-op, a teammate who had paid for a hire and then went up with the host lost that hire when the raid ended. The raid was built with the host hire, not his, but his window settled his own man anyway: the card said his man was left out there, or paid a cut or billed a death benefit for the host hire under his man name, and the fee he paid was gone for a man who never went up. His own hire is now left alone on a party raid, so he still has him for his next raid.

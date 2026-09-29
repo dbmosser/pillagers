@@ -1,0 +1,7 @@
+v17.23: an armoury gun the host dropped is no longer in both saves when a teammate picks it up after the host abandons
+
+An armoury gun the host dropped and a teammate searched up after the host abandoned stayed in the host armoury, because the abandon had already put every spliced gun back and saved, and netGunsGone only took the id off G.spliced and P.raidSpliced. netGunsGone now also takes one copy out of P.weapons when the kept raid ended as an abandon (the abandon branch and the instant quit are the only ends that put the list back), repairs P.equipped and P.equippedSec the way the death branch does, and saves.
+
+Check 17.23. Fails on v17.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
