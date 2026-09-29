@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.35';
+var VER='17.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11032,6 +11032,9 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     }
   }
   if(CFG.decks!==1) clearDecks(g);   // v13.41: last, after every placement roll
+  // v17.36, co-op hunt 2026-09-28: every wall keeps the number it was built with, so a party can name the same wall after others
+  // have fallen (the list is spliced as walls go, so an index moves). The same build numbers them the same in every window; no draw.
+  for(var _wid=0;_wid<g.map.walls.length;_wid++) g.map.walls[_wid].wid=_wid;
   return g;
 }
 function startRaid(){
@@ -13814,10 +13817,14 @@ function damageWall(w,amt,x,y){
   if(w.hpLeft===undefined){ w.hpLeft=cap; w.hpMax=cap; if(G.dmgWalls) G.dmgWalls.push(w); }
   w.hpLeft-=amt;
   w.hpHit=G.t;
+  // v17.36, co-op hunt 2026-09-28: in a raid the host runs, the host breaks walls. Player 2 broke only his own copy of the map, so
+  // cover stood in one window and was gone in the other. His window keeps the bar and asks the host (netWallAsk).
+  if(netWallAsk(w,amt)) return false;
   if(w.hpLeft>0) return false;
   var ix=G.map.walls.indexOf(w);
   if(ix>=0) G.map.walls.splice(ix,1);
   if(G.dmgWalls){ var dx=G.dmgWalls.indexOf(w); if(dx>=0) G.dmgWalls.splice(dx,1); }
+  netWallGone(w);   // v17.36, co-op hunt 2026-09-28: the host tells the party which wall fell, whoever broke it
   rebuildGeometry();
   decal(x!==undefined?x:w.x+w.w/2, y!==undefined?y:w.y+w.h/2,'#1a1512',rnd(14,24));
   spark(x!==undefined?x:w.x+w.w/2, y!==undefined?y:w.y+w.h/2,'#c9b490',18,260);
@@ -31574,7 +31581,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.35: Same machine rows, co-op hunt 2026-09-28: netSamePick refused only in the player 2 window, so a host already paired went straight to window.open with the fixed name pillagers_p2, and the browser navigated the live player 2 page. The title is reachable while player 2 is still up top (the host spectates with G null, and RETURN TO CHARACTER SELECTION only tests G), and the player 2 window has no guard against being unloaded, so his raid went as a page-away and the host then ended the kept raid when his link dropped. netSamePick now, when this window is the host and a peer is linked (netInCount), never opens the window again: the same mode only brings the player 2 window forward and runs the title start, and another mode is refused with a sentence on the title (close the player 2 window to change mode), instead of quietly keeping the old mode. The guard reads a linked peer, not the window, so a player 2 window that is open but never linked is still opened again, since that reload is how RETRY brings it back. No number moved. Check 17.35 fails on v17.34',
+  now:'v17.36: Wall sync, co-op hunt 2026-09-28: damageWall spliced G.map.walls and ran rebuildGeometry in whichever window called it, and no word carried it, so after the first break the host (whose geometry decides enemy sight and netBulletPeer) and the player 2 window (whose geometry decides his movement and his rounds, which netShotTake applies with no sight test) held different maps. Every wall now keeps its build number (wid, stamped in buildRaid after clearDecks, the same in every window from the same build, no random draw), because the walls list is spliced as walls fall and an index would shift. On a linked window up top (netEntsPeer) damageWall keeps its hit points and bar but asks the host ({t:wdmg,sd,id,a}) and removes nothing; the host takes the ask through its own damageWall. Whenever a wall falls on the host, from any source, netWallGone tells the party ({t:wall,sd,id}) and netWallTake on each linked window splices that wall, clears its bar and rebuilds its geometry. A keyed door opened in one window is still not told to the others. No number moved and no player text changed. Check 17.36 fails on v17.35',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35372,6 +35379,7 @@ function netOnMsg0(peer,data){
   if(m.t==='fx') return netFxTake(peer,m);   // v16.21: a round or a sound from one of the party, to draw and play
   if(m.t==='thr') return netThrTake(peer,m);   // v17.29, co-op hunt 2026-09-28: a smoke, a decoy or a charge blast one of the party threw
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
+  if(m.t==='wdmg'||m.t==='wall') return netWallTake(peer,m);   // v17.36, co-op hunt 2026-09-28: a hit on a wall asked of the host, or a wall that fell, from the host
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
   if(m.t==='rev') return netRevTake(peer,m);   // v16.05: a teammate picked this player up, or (on the host) passes it on
   if(m.t==='aid') return netAidTake(peer,m);   // v16.23: a teammate used his bandage or plate on this player, or (on the host) passes it on
@@ -37173,6 +37181,42 @@ function netBoardTake(bd){
   }
   G.netBoard=rows;
   return rows.length;
+}
+// v17.36, co-op hunt 2026-09-28: THE HOST BREAKS THE WALLS. Each window broke only its own copy of the map, so a wreck the machines
+// shot away on the host still stood for player 2, who was hit through it, and furniture he shot out was gone only for him, so he
+// fired through a wall the enemies still stood behind. A linked window up top asks the host ({t:'wdmg'}) with the wall build number
+// (wid) and the damage, and changes nothing but its bar; the host takes the damage through its own damageWall, and whenever a wall
+// falls there, from any source, the party is told ({t:'wall'}) and each linked window takes it out and rebuilds. No seeded draw.
+function netWallById(id){ var W=G.map.walls, i; for(i=0;i<W.length;i++) if(W[i].wid===id) return W[i]; return null; }
+function netWallAsk(w,amt){
+  var i;
+  if(!w||w.wid===undefined||!netEntsPeer()) return false;
+  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'wdmg',sd:G.seed>>>0,id:w.wid,a:+(+amt||0).toFixed(2)});
+  return true;
+}
+function netWallGone(w){
+  if(!w||w.wid===undefined||!netEntsHost()) return false;
+  netBroadcast({t:'wall',sd:G.seed>>>0,id:w.wid});
+  return true;
+}
+function netWallTake(peer,m){
+  var w, i, a;
+  if(!peer||peer.state!=='in') return 'ignored';
+  if(typeof m.id!=='number'||m.id!==(m.id|0)) return 'bad';
+  if(m.t==='wdmg'){
+    if(NET.role!=='host'||!netEntsHost()||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other';
+    a=+m.a; if(!isFinite(a)||a<=0) return 'bad';
+    w=netWallById(m.id); if(!w) return 'gone';
+    return damageWall(w,a,w.x+w.w/2,w.y+w.h/2)?'wall:down':'wall:hit';
+  }
+  if(NET.role!=='join'||!netEntsPeer()||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other';
+  w=netWallById(m.id); if(!w) return 'gone';
+  G.map.walls.splice(G.map.walls.indexOf(w),1);
+  if(G.dmgWalls){ i=G.dmgWalls.indexOf(w); if(i>=0) G.dmgWalls.splice(i,1); }
+  rebuildGeometry();
+  spark(w.x+w.w/2,w.y+w.h/2,'#c9b490',18,260);
+  if(G.tel) G.tel.wallsDown=(G.tel.wallsDown||0)+1;
+  return 'wall';
 }
 function netWorldSend(){
   var z=[], s=[], i, Z, S, m, n=0;

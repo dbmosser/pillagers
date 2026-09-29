@@ -1,0 +1,7 @@
+v17.36: a wall, a piece of cover or a window broken in co-op now falls in every window
+
+Wall sync, co-op hunt 2026-09-28: damageWall spliced G.map.walls and ran rebuildGeometry in whichever window called it, and no word carried it, so after the first break the host (whose geometry decides enemy sight and netBulletPeer) and the player 2 window (whose geometry decides his movement and his rounds, which netShotTake applies with no sight test) held different maps. Every wall now keeps its build number (wid, stamped in buildRaid after clearDecks, the same in every window from the same build, no random draw), because the walls list is spliced as walls fall and an index would shift. On a linked window up top (netEntsPeer) damageWall keeps its hit points and bar but asks the host ({t:wdmg,sd,id,a}) and removes nothing; the host takes the ask through its own damageWall. Whenever a wall falls on the host, from any source, netWallGone tells the party ({t:wall,sd,id}) and netWallTake on each linked window splices that wall, clears its bar and rebuilds its geometry. A keyed door opened in one window is still not told to the others. No number moved and no player text changed.
+
+Check 17.36. Fails on v17.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
