@@ -1,0 +1,5 @@
+## v17.26 - A KEPT PLAYER 2 CONTROLLER PICK FOR A PAD THAT IS NOT PLUGGED IN NO LONGER GIVES THE ONLY CONTROLLER TO PLAYER 1
+
+Co-op hunt while he was away. When the player 2 window kept a controller pick from an earlier evening and that controller was not plugged in, player 2 got no controller at all, and the rule that gives player 1 a second controller handed him the only one. The son's stick moved the dad's character, and the player 2 window had no way to reopen PARTY to change the pick. Now a player 2 pick that is not plugged in, while player 1 picked none, falls to the first free controller, and the player 2 window takes it when player 1 hands it over.
+
+MEASURED. Check 17.26 passes, and fails on v17.25.

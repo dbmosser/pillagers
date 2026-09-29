@@ -1,0 +1,7 @@
+v17.26: a kept player 2 controller pick for a pad that is not plugged in no longer gives the only controller to player 1
+
+Co-op hunt 2026-09-28, finding 8: netPadFor gave player 2 -1 for a kept pick that was not plugged in, so the host with no pick worked out player 2 as on no pad and took the first connected one under his v16.35 rule (a second controller goes to player 1). With one controller plugged in that is the only one, so it drove player 1 in both windows, and the pick is kept in localStorage and read at every player 2 boot, and the PARTY window that changes it cannot be reopened from the player 2 window. netPadFor now lets a player 2 pick that is not plugged in fall through to the first free pad when the host picked none, so the host rule takes only a pad beyond the one player 2 is on. A pick while the host picked a controller keeps its old rule (nothing), as check 15.77 asks. netPadTick notes on each live read whether this window pick is plugged in (NET.padPickOk), and netPadWant in the player 2 window then takes any pad but the host own from the window in front, as it does with no pick, so player 2 also plays when the player 1 window is the one in front. No number and no player text moved.
+
+Check 17.26. Fails on v17.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
