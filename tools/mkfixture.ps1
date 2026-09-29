@@ -5721,6 +5721,41 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.22',what:'a teammate who hired a man and then went up on a party raid keeps his own hire when that raid ends: it carried the host hire, so his own is not settled, left out there or spent',
+   run:function(){
+     if(typeof netUpStart!=='function'||typeof netUpFpSame!=='function'||typeof NET!=='object'||!NET||!window.__endRaid||!window.__hubEnter||!window.__applyLoaded||!window.__identityIds||!window.__P) return 'SKIP: this build has no party ascent';
+     var ids=__identityIds(); if(ids.length<2) return 'SKIP: fewer than two identities to hire';
+     var nk={}, k, snap=null, g0=G, st0=state, k0=keys, oSend=netSend, oRef=netRefresh, oSame=netUpFpSame, bad=[], r, i, host=null, mine=null;
+     for(k in NET) if(Object.prototype.hasOwnProperty.call(NET,k)) nk[k]=NET[k];
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       G=null; keys={}; __hubEnter();
+       if(state!=='hub') return 'SKIP: staging: not on the Undercroft floor (state '+state+')';
+       snap=JSON.parse(JSON.stringify(__P()));
+       netSend=function(){ return true; }; netRefresh=function(){}; netUpFpSame=function(a){ return !!a; };
+       NET.on=true; NET.role='join'; NET.seat=1; NET.peers=[{state:'in',seat:0}]; NET.specG=null; NET.upHold=false;
+       P.kit=[]; P.hotAssign={}; P.freeKit=0; P.kitChosen=0; P.dropKit=[];
+       P.merc=ids[1]; P.credits=77777;
+       r=netUpStart({t:'up',seed:4242,mapIx:0,cond:'day',fp:{e:0},merc:ids[0]});
+       if(r!=='up'||!G||state!=='raid') return 'SKIP: staging: the host word did not carry this window up ('+r+')';
+       for(i=0;i<G.ents.length;i++){ var e=G.ents[i]; if(e.merc){ if(e.ident===ids[0]) host=e; else mine=e; } }
+       if(!host) return 'SKIP: staging: the host hire did not drop into the party raid';
+       if(mine) bad.push('control: the teammate own hire dropped into the party raid too');
+       if(P.merc!==ids[1]) return 'SKIP: staging: the build did not put the teammate own hire back ('+P.merc+')';
+       G.tel.distance=100; G.tel.shots=1;
+       NET.on=false;
+       __endRaid('abandon');
+       if(P.merc!==ids[1]) bad.push('a party raid that carried the host hire spent the teammate own paid hire ('+ids[1]+' became '+P.merc+'), so his fee is gone for a man who never went up');
+     } finally {
+       try{ NET.on=false; if(G&&!G.over) __endRaid('abandon'); }catch(e1){}
+       netSend=oSend; netRefresh=oRef; netUpFpSame=oSame;
+       for(k in NET) if(Object.prototype.hasOwnProperty.call(NET,k)&&!Object.prototype.hasOwnProperty.call(nk,k)) delete NET[k];
+       for(k in nk) NET[k]=nk[k];
+       try{ if(snap) __applyLoaded(snap); }catch(_r){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(e2){}
+       G=g0; state=st0; keys=k0;
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.21',what:'a hire is spent at the lift: a raid that ends by the page going away (F5, a closed tab, a crash) leaves no hire in the save to drop in again for free, and a hire who died up there first is billed his death benefit when the save loads',
    run:function(){
      if(!(window.__deploy&&window.__endRaid&&window.__P&&window.__applyLoaded&&window.__identityIds&&window.__cleanProfile&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults)||typeof updateEnts!=='function'||typeof storeSet!=='function'||typeof MERC_DEATH!=='number') return 'SKIP: this fixture cannot hire, deploy and load a save';

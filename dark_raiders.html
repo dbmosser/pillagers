@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.21';
+var VER='17.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20699,7 +20699,9 @@ silentExit:T.silentExit||0,
     _mfLine='<span style="color:var(--ash)">Mainframe server bonus: $'+
       _mfPay.toLocaleString()+'</span>';
   }
-  if(P.merc&&!G.sim){
+  // v17.22, co-op hunt 2026-09-28: not on a party raid this window joined (G.netUp). That raid carried the host hire; P.merc here is
+  // this window own hire, put back by netUpStart for a later raid, and settling it spent his fee on a man who never went up.
+  if(P.merc&&!G.sim&&!G.netUp){
     var mercEnt=null;
     for(var me=0;me<G.ents.length;me++) if(G.ents[me].merc) mercEnt=G.ents[me];
     var mname='';
@@ -31525,7 +31527,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.21: Co-op hunt 2026-09-28, hire: P.merc was cleared only by the settle inside endRaid, and nothing at the lift or in the loader touched it, so after F5, a closed tab or a crash mid-raid the save still held the hire and the next buildRaid spawned him again with no fee; G.mercDead lived only in the raid, so the death benefit was never billed either. startRaid now spends the hire after the party word (netUpAnnounce) and never on a party guest build (NET.upHold): the raid keeps his id in G.mercId, P.merc is cleared and a saved marker P.mercOut is written. His death marks the marker dead in the save it already makes. endRaid puts G.mercId back into P.merc at its top, so the settle below and the instant quit branch (which keeps the hire) work as before, and drops the marker. The loader bills MERC_DEATH and marks his standing down, as the card would, when the marker says he died, then drops it. No number moved and no new words. Check 17.21 fails on v17.20',
+  now:'v17.22: Co-op hunt 2026-09-28, hire: netUpStart builds a linked window copy of the party raid with the host hire in P.merc and then puts the teammate own hire back, as it does for the Data Core, but endRaid in that window settled whatever P.merc held and cleared it, so the teammate own paid hire was spent on a raid it never went on, and the settle read the host man in his world (a cut, a death benefit, or left out there, written to his own man standing). netUpStart now marks the raid G.netUp once it is built from the host word, and the endRaid settle skips a raid so marked, leaving his hire as netUpStart put it back. The hire spent at the lift (v16.xx hire-refresh) already skips a party guest build. No number moved and no new words. Check 17.22 fails on v17.21',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36218,6 +36220,7 @@ function netUpStart(m){
   netEntsInit(G);   // v15.80: the same numbers the host gave the same bodies (the populations match by the fingerprint)
   netContInit(G);   // v15.91: the same numbers the host gave the same containers; the host list is the truth from here on
   try{ saveProfile(); }catch(e4){}   // the kit that went up, the sector and the hour, under its own dials
+  G.netUp=1;   // v17.22, co-op hunt 2026-09-28: this raid was built from the host word, with the host hire; this window own hire did not go up
   NET.status='Your party ascended together.'; NET.err='';
   netBroadcast({t:'up',st:'in'});
   return 'up';

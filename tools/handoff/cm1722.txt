@@ -1,0 +1,7 @@
+v17.22: a teammate who hired a man keeps him through a party raid he never went on
+
+Co-op hunt 2026-09-28, hire: netUpStart builds a linked window copy of the party raid with the host hire in P.merc and then puts the teammate own hire back, as it does for the Data Core, but endRaid in that window settled whatever P.merc held and cleared it, so the teammate own paid hire was spent on a raid it never went on, and the settle read the host man in his world (a cut, a death benefit, or left out there, written to his own man standing). netUpStart now marks the raid G.netUp once it is built from the host word, and the endRaid settle skips a raid so marked, leaving his hire as netUpStart put it back. The hire spent at the lift (v16.xx hire-refresh) already skips a party guest build. No number moved and no new words.
+
+Check 17.22. Fails on v17.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

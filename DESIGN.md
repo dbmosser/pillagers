@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.22 - A TEAMMATE WHO HIRED A MAN KEEPS HIM THROUGH A PARTY RAID HE NEVER WENT ON
+
+Co-op hunt while he was away. In co-op, a teammate who had paid for a hire and then went up with the host lost that hire when the raid ended. The raid was built with the host hire, not his, but his window settled his own man anyway: the card said his man was left out there, or paid a cut or billed a death benefit for the host hire under his man name, and the fee he paid was gone for a man who never went up. His own hire is now left alone on a party raid, so he still has him for his next raid.
+
+MEASURED. Check 17.22 passes, and fails on v17.21.
 ## v17.21 - A HIRE IS SPENT AT THE LIFT, SO A REFRESH OR A CLOSED TAB MID-RAID NO LONGER BRINGS HIM BACK FOR FREE
 
 Co-op hunt while he was away. A paid hire was only spent when the raid ended on its own card, so a raid that ended by the page going away (F5, a closed tab, a crash) left him hired in the save. The next ascent dropped him in again with no fee, for as many raids as that went on, and a hire who died before the reload was never billed his death benefit. The hire is now spent the moment the lift moves, the way the Data Core is, and a hire who died up there before the page went away is billed his death benefit when the save loads.
