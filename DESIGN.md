@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.19 - ESC OR TAB ON SETTINGS IN A RAID SHUTS SETTINGS, NOT THE PAUSE BOX BEHIND IT
+
+Co-op hunt while he was away. In a raid, Settings opened from the pause box sits in front of the box, but ESC or TAB there shut the pause box behind it instead. The raid ran on under the Settings window: the clock ran, enemies attacked and WASD walked him around unseen, and P did the same. ESC or TAB now shuts Settings and leaves the pause box up with the raid still paused, and P over Settings does nothing.
+
+MEASURED. Check 17.19 passes, and fails on v17.18.
 ## v17.18 - DRAGGING A BELT KEY THAT HOLDS A GUN FROM THE BACKPACK NO LONGER SWAPS OUT THE GUN IN HAND
 
 Co-op hunt while he was away. Pressing a belt key that shows a gun from the backpack equipped that gun before the drag started, even with the backpack open or with pad A. So dragging the key to tidy the belt, or off the belt to unbind it, put the gun in his hands and pushed out the one he held: a gun from his armoury went home for the rest of the raid and an issued gun was lost. Now the press only picks the key up; the gun is equipped only when the release is a click on the same key.

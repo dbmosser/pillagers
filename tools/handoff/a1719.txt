@@ -1,0 +1,1 @@
+| ESC OR TAB ON SETTINGS IN A RAID SHUTS SETTINGS, NOT THE PAUSE BOX BEHIND IT | v17.19 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.19 passes, fails on v17.18 |

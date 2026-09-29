@@ -1,0 +1,7 @@
+v17.19: esc or tab on settings in a raid shuts settings, not the pause box behind it
+
+Co-op hunt 2026-09-28, menus finding 4: the pause box ESC and TAB listener is a window capture listener, so it runs before the document listener that shuts the front window, and it never asked whether a window was open in front of the box. With Settings opened from the box, ESC or TAB shut the box, stopped the key, and left Settings up; syncPause then unpaused the raid, so the world, the clock and his keys all ran behind the opaque Settings window. The listener now shuts the front window (or the dev edit box) through its own door when one is open over the box, keeps the box up and calls syncPause, so the raid stays paused. It does this itself rather than returning, because in a player 2 window netKeyFwd would otherwise hand the key to player 1 (the leak v16.93 closed). raidKey no longer toggles the pause box on ESC, P or TAB while a window is open, the same rule the floor branch already keeps, so P over Settings no longer shuts or opens the box under it. No number and no player text moved.
+
+Check 17.19. Fails on v17.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
