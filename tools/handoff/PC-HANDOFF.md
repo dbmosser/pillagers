@@ -164,7 +164,7 @@ Weekly all-models read 31% at 23:50 (21% that morning): the agent teams cost ~10
 still token-lean; I said no, and asked whether to go lean after these ten. Until he answers: no new agent teams.
 
 ## NEXT UP (kept current; the hourly watchdog reads this when nobody is working)
-1. SHELVED (2026-09-29, waiting on his word): the local model scan. On Windows with his AMD card Ollama keeps a copy of the model in system RAM (32b: about 23 GB, near-freeze; 14b: 8.6 GB and still tripped the 6 GB guard) and the 14b found nothing in 16 co-op sections and gave only style notes by hand. Do not run it unless he asks.
+1. SHELVED (2026-09-29, waiting on his word): the local model scan. On Windows with his AMD card Ollama keeps a copy of the model in system RAM (32b: about 23 GB, near-freeze; 14b: 8.6 GB and still tripped the 6 GB guard) and the 14b found nothing in 16 co-op sections and gave only style notes by hand. Do not run it unless he asks. 2026-09-29 11:00, at his ask, the 32b ran (tools\localscan\load32.ps1 then scan.ps1 -Model qwen2.5-coder:32b -MinFreeMB 0 -Chunk 140 -Ctx 8192): it loads fully on the GPU but keeps an 18.6 GB private copy in RAM (under 1 GB free); 30 co-op sections, 17 flags, every one checked was a false alarm. Kept on disk, unloaded, not in regular use.
 2. The full suite on v17.24 with sweep8.ps1 limited to 4 shards (9336-9339); fix any red through the ship chain.
 3. Waiting on him (do not decide): P2 payout uses P2 own saved terms and hire; his 125% zoom question.
 LOAD RULES after the 2026-09-28 crash: keep 6 GB RAM free, at most 4 test Chromes, no big download on top of tests.

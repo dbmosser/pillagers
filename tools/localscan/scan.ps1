@@ -30,7 +30,7 @@ for($s=$From; $s -le $To; $s+=($Chunk-$Overlap)){
   $avail=[math]::Round((Get-Counter '\Memory\Available MBytes').CounterSamples[0].CookedValue)   # his PC froze at 97% RAM: never run the model into it
   if($avail -lt $MinFreeMB){ & "$env:LOCALAPPDATA\Programs\Ollama\ollama.exe" stop $Model | Out-Null; "STOPPED: only $avail MB of RAM free (limit $MinFreeMB)"; break }
   $body=@{ model=$Model; stream=$false; format='json'; system=$sys; prompt=("SECTION, lines $s to $e`n"+$txt);
-           options=@{ temperature=0.1; num_ctx=$Ctx } } | ConvertTo-Json -Depth 5
+           options=@{ temperature=0.1; num_ctx=$Ctx; use_mmap=$true } } | ConvertTo-Json -Depth 5   # the same options the model was loaded with, or Ollama loads a second copy
   try{
     $r=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/generate' -Method Post -Body ([Text.Encoding]::UTF8.GetBytes($body)) -ContentType 'application/json' -TimeoutSec 900
     $j=$r.response | ConvertFrom-Json
