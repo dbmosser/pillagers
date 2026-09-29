@@ -1,9 +1,9 @@
 # Local first-pass bug scan on his GPU (Ollama). Feeds dark_raiders.html to a local model in overlapping chunks and
 # writes what it flags to out\scan-<stamp>.jsonl, one JSON object per suspected defect, with absolute line numbers.
 # A local model raises false alarms: every hit is a lead for a reviewer to verify in the code, never a fix by itself.
-#   powershell -File tools\localscan\scan.ps1 [-Model qwen2.5-coder:32b] [-From 1] [-To 0] [-Chunk 260] [-Grep 'net']
+#   powershell -File tools\localscan\scan.ps1 [-Model qwen2.5-coder:14b] [-MinFreeMB 6000] [-From 1] [-To 0] [-Chunk 260] [-Grep 'net']
 # -Grep keeps only chunks whose text matches the regex (a focus area). -To 0 means the end of the file.
-param([string]$Model='qwen2.5-coder:32b',[int]$From=1,[int]$To=0,[int]$Chunk=260,[int]$Overlap=30,[string]$Grep='',[int]$Ctx=16384)
+param([string]$Model='qwen2.5-coder:14b',[int]$MinFreeMB=6000,[int]$From=1,[int]$To=0,[int]$Chunk=260,[int]$Overlap=30,[string]$Grep='',[int]$Ctx=16384)
 $ErrorActionPreference='Stop'
 $root='C:\claudecode\dark raiders'
 $lines=[IO.File]::ReadAllLines("$root\dark_raiders.html")
@@ -27,6 +27,8 @@ for($s=$From; $s -le $To; $s+=($Chunk-$Overlap)){
   for($i=$s;$i -le $e;$i++){ [void]$sb.Append($i).Append(': ').AppendLine($lines[$i-1]) }
   $txt=$sb.ToString()
   if($Grep -and $txt -notmatch $Grep){ if($e -ge $To){ break }; continue }
+  $avail=[math]::Round((Get-Counter '\Memory\Available MBytes').CounterSamples[0].CookedValue)   # his PC froze at 97% RAM: never run the model into it
+  if($avail -lt $MinFreeMB){ & "$env:LOCALAPPDATA\Programs\Ollama\ollama.exe" stop $Model | Out-Null; "STOPPED: only $avail MB of RAM free (limit $MinFreeMB)"; break }
   $body=@{ model=$Model; stream=$false; format='json'; system=$sys; prompt=("SECTION, lines $s to $e`n"+$txt);
            options=@{ temperature=0.1; num_ctx=$Ctx } } | ConvertTo-Json -Depth 5
   try{
