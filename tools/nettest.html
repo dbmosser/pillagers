@@ -606,7 +606,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
         var s=(Date.now()-t0)/1000, ua=A.__net.up(), uc=C.__net.up();
         if(Math.random()<0.6){ var k=KEYS[Math.floor(Math.random()*KEYS.length)]; key(A,k,/Key[WASD]/.test(k)?(200+Math.random()*1200):(40+Math.random()*300)); n++; }
         mouse();
-        [A,C].forEach(function(w){ try{ var g=w.__state(), p=g&&g.player; if(p&&!g.over&&!p.downed&&p.hp>0) p.hp=Math.max(p.hp,p.maxhp||100); }catch(e){} });   // the soak hunts errors, not survival: random input walks into fire
+        [A,C].forEach(function(w){ try{ var g=w.__state(), p=g&&g.player; if(p&&!g.over&&!p.downed&&p.hp>0) p.hp=Math.max(p.hp,p.maxhp||100); if(p&&!g.over&&p.downed) p.downT=Math.max(p.downT||0,8); }catch(e){} });   // the soak hunts errors, not survival: random input walks into fire, and a downed player is not left to bleed out
         if(Math.random()<0.5) pad=mkPad();
         if(st(fa).roster.length<2||st(fc).roster.length<2) drops++;
         [[A,'A'],[C,'C']].forEach(function(p){ try{ var g=p[0].__state(), m=g?(p[1]+' '+s.toFixed(1)+'s '+(g.over?'[over '+(g.outcome||g.over)+'] ':'')+String(g.msg||'')):(p[1]+' '+s.toFixed(1)+'s no raid'); var k=m.replace(/^\S+ [\d.]+s /,p[1]); if(k!==(soakStep['last'+p[1]]||'')){ soakStep['last'+p[1]]=k; (rep.soakMsgs=rep.soakMsgs||[]).push(m); } }catch(e){} });
