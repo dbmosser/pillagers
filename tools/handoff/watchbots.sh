@@ -8,7 +8,7 @@ while :; do
     [ -n "${state[$p]}" ] && continue
     ti=$(curl -s -m 5 http://127.0.0.1:$p/json | grep -o '"title": "botsweep[^"]*"' | head -1)
     if [[ "$ti" == *done* ]]; then state[$p]=done; continue; fi
-    if [ "$ti" != "${last[$p]}" ]; then last[$p]="$ti"; since[$p]=$now
+    if [ -z "${since[$p]}" ] || [ "$ti" != "${last[$p]}" ]; then last[$p]="$ti"; since[$p]=$now
     elif [ $((now-${since[$p]})) -gt $STUCK ]; then state[$p]="STUCK $ti"; continue; fi
     left=$((left+1))
   done

@@ -168,3 +168,8 @@ still token-lean; I said no, and asked whether to go lean after these ten. Until
 2. DONE 2026-09-29: the full suite on v17.24 is clean (15.79 retargeted to v17.14; 13.23/12.94/12.80/12.79/12.74/12.21 were shard harness reds, all pass alone; 9.42 takes 20 s alone, far longer under load). Two-player soak on v17.24: 3 of 3 pass. v17.25 card line for the menu fixes. Nothing queued: next is a fresh audit of one area, lean.
 3. Waiting on him (do not decide): P2 payout uses P2 own saved terms and hire; his 125% zoom question.
 LOAD RULES after the 2026-09-28 crash: keep 6 GB RAM free, at most 4 test Chromes, no big download on top of tests.
+
+## 2026-09-29 midday: bot crash sweep, 800 full raids on v17.25, zero errors.
+tools\handoff\botsweep.ps1 (the game bot, __simSeedsFull, one seed at a time, errors caught per seed, progress in the title)
+and watchbots.sh. Sector 0 seeds 5000-5399: 64 extracts, 336 deaths, no error. Sector 1 seeds 6000-6399 (-Map 1): 92
+extracts, 308 deaths, no error; sector 1 raids run about 1 a minute per browser (sector 0 about 25).
