@@ -11564,15 +11564,15 @@ window.__REGRESS=[
        if(!noW2||noW2.st!=='no'||noW2.why!=='surface') bad.push('the host was not told the surface could not be built ('+js(noW2)+')');
        if(CFG.nRaider!==0) bad.push('the own dial did not come back after the mismatch');
 
-       // FIVE: A WINDOW ON THE TITLE is told it was left behind and tells the host why; the host names who and why.
+       // FIVE (v17.14 reversed it): A WINDOW ON THE TITLE goes up with the party instead of being left behind.
        NET.err='';
        g('title').classList.add('on');
        sentB.length=0;
        var tk4=RW?netOnMsg(H,js(RW)):'no word';
        g('title').classList.remove('on');
        var noW3=last(sentB,'up');
-       if(tk4!=='busy'||G||!noW3||noW3.st!=='no'||noW3.why!=='on the title') bad.push('a window on the title was not told and ignored ('+tk4+', '+js(noW3)+')');
-       if(!NET.err||NET.err.indexOf('on the title')<0) bad.push('the PARTY window does not say the window was on the title: '+NET.err);
+       if(!noW3||noW3.st!=='in') bad.push('a window on the title did not go up with the party ('+tk4+', '+js(noW3)+')');
+       try{ if(G) __endRaid('abandon'); __topClear(); }catch(_e5){}
        netReset(); netStartHost();
        var A2=link(1,'ZQX MATE',sentA), A4=link(2,'ZQX THIRD',sentC); NET.peers.push(A2); NET.peers.push(A4); NET.roster=netRosterBuild();
        sentA.length=0; sentC.length=0;
