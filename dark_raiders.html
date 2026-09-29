@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.15';
+var VER='17.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11988,6 +11988,9 @@ function keyLabel(code,fallback){
 // His note: the controller did nothing once a panel was open. These four helpers are the
 // whole of it; pollPad calls padMenu when a modal is up and returns.
 function padOpenModal(){
+  // v17.16, co-op hunt 2026-09-28: THE ITEM AND GUN MENU IS A PANEL TOO. It is drawn over whatever opened it, so it is checked
+  // first, and only off a raid, so a stray right-click menu never takes the pad out of a fight.
+  if(typeof IMENU!=='undefined'&&IMENU&&IMENU.parentNode&&state!=='raid') return IMENU;
   var ms=document.querySelectorAll('.modal.on');
   if(ms.length) return ms[ms.length-1];    // the last one opened is the one on top
   // v8.16, audit: THE STASH IS A PANEL TOO. It is a .screen rather than a
@@ -12033,7 +12036,8 @@ function padFocusables(root){
   // v16.80, his report: A TACTICAL BELT KEY IS A CONTROL. The belt keys on the Stash screen and the ascent check are plain
   // [data-plan] divs, named nowhere in this list, so the highlight could never land on one and nothing packed could reach the
   // belt on a controller. They pass the same filters as a cell, and the greyed out freebie kit panel keeps them out (v15.71).
-  var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,.sectorpick,input,select,[data-plan]');
+  // v17.16, co-op hunt 2026-09-28: the live rows of the item and gun menu are controls; a greyed out row is not.
+  var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,.sectorpick,input,select,[data-plan],.imenurow:not(.dim)');
   for(var i=0;i<q.length;i++){
     var el=q[i],cs=getComputedStyle(el);
     // v16.52, stability (controller audit): the PARTY window opens with the pad highlight on its CONTROLLER row, and one press of
@@ -12133,7 +12137,9 @@ function padMenu(pressed){
   if(mv){ var nx=padStep(list,PAD.focus,mv[0],mv[1]); if(nx){ padSetFocus(nx); if(GRAB&&GRAB.pad){ GRAB.moved=1; stashPadGhost(); } } }   // v16.80: a held pad grab moves with the highlight
   // v15.52, rack audit finding: BUILD A RACK KEEPS THE CONTROLLER HIGHLIGHT WHEN IT GREYS OUT. A disabled control kept under
   // the pad is not in the list, so the place it last held is kept for the panel rather than written over with -1.
-  var _pix=list.indexOf(PAD.focus); if(_pix>=0) PAD.focusIx=_pix; PAD.focusMd=md;
+  // v17.16, co-op hunt 2026-09-28: the menu does not take over the place kept for the panel under it, so when it shuts, or a
+  // row rebuilds the Stash screen, the highlight goes back to the cell that opened it and not to the first control.
+  if(md!==IMENU){ var _pix=list.indexOf(PAD.focus); if(_pix>=0) PAD.focusIx=_pix; PAD.focusMd=md; }
   // v14.21, controller audit finding 3: AN A THAT CLICKS A MENU BUTTON IS SPENT UNTIL IT IS LET GO. The click happens on the
   // press, and ASCEND switches to the raid on the spot, so on the next poll no menu was open and the same held A reached the
   // raid as the trigger: every pad ascent fired a shot at the spawn point. A mouse click on the button never did, since the
@@ -12160,6 +12166,7 @@ function padMenu(pressed){
     // B backs out: the panel's own Leave or Close if it has one, so any cleanup that
     // button does still runs, and only otherwise the blunt instrument.
     if(GRAB&&GRAB.pad){ grabEnd(); return true; }   // v16.80: B lets a pad grab go, and closes nothing else on that press
+    if(md===IMENU){ closeItemMenu(); padSetFocus(null); PAD.focus=null; return true; }   // v17.16, co-op hunt 2026-09-28: B shuts the menu, which has no button to find
     var back=null,bs=md.querySelectorAll('button');
     for(var i=0;i<bs.length;i++) if(/leave|close|not yet|back|done|return/i.test(bs[i].textContent||'')) { back=bs[i]; break; }
     if(back) back.click(); else md.classList.remove('on');
@@ -31465,7 +31472,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.15: The document mouseup that ends every pointer drag dropped on the zone under the release point whether or not the pointer had moved, and the armoury cells live inside #stashgrid, the stash drop zone, so a press and release in place on a spare armoury gun ran the stash drop with from rack and rackToStash spliced it out of P.weapons into P.stash with the line that it is in the stash. The mouseup now returns before the drop when a rack grab never moved, so a click on an armoury gun is only a click; a drag that moved past the 6 pixel threshold drops as before, every other drag source is untouched, and the pad path already treated A in place as a click. No player text, no number and no seeded draw moved. Check 17.15 fails on v17.14',
+  now:'v17.16: Every verb that changes P.equipped or P.equippedSec at home was behind a right-click: openGunMenu opened only from the contextmenu listener on the armoury cell, and padMenu reads only A, B and the D-pad or stick, so on a controller a second A in place on a picked up armoury gun ran el.click() on a cell with no click handler and nothing happened. stashPadAct now opens openGunMenu at the centre of the cell when a rack grab is let go in place, padOpenModal returns the open .imenu first (off a raid), padFocusables lists the live .imenurow rows so the D-pad walks them and A runs the row onclick the mouse runs, B on the menu calls closeItemMenu instead of hunting for a button it does not have, and while the menu is up padMenu does not write PAD.focusMd or PAD.focusIx, so when it shuts, or a row rebuilds the Stash screen, the highlight goes back to the same armoury cell rather than to the first control. A drag of an armoury gun to anywhere else, and A in place on every other cell, are unchanged. No player text, no number and no seeded draw moved. Check 17.16 fails on v17.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39281,6 +39288,16 @@ function stashPadAct(el){
   if(!GRAB.pad) return false;   // a drag the mouse holds belongs to the mouse: A stays the click it was, the mouse release ends that drag
   var held=GRAB, z=el.closest?el.closest('[data-drop]'):null;
   grabEnd();
+  // v17.16, co-op hunt 2026-09-28: A CONTROLLER PUTS AN ARMOURY GUN IN A HAND. Put in gun 1, Put in gun 2 and Take it out of
+  // your hands are rows of the gun menu, which only a right-click on the armoury cell opened, and a pad has no right-click:
+  // A in place on an armoury gun was a click on a cell with no click, so a pad player could never choose gun 1, fill gun 2 or
+  // empty a hand at home. A picked up and A again in place on an armoury gun now opens that same menu at the cell, the menu
+  // is a pad panel (padOpenModal), A presses a row and B shuts it. A drag to anywhere else is unchanged.
+  if(el===held.el&&!held.moved&&held.from==='rack'&&typeof openGunMenu==='function'){
+    var _gr=el.getBoundingClientRect();
+    try{ openGunMenu(_gr.left+_gr.width/2,_gr.top+_gr.height/2,String(held.key).slice(4)); }catch(_pg){}
+    return true;
+  }
   if(el===held.el&&!held.moved){ try{ el.click(); }catch(_pc){} return true; }
   if(z&&typeof z.__grabDrop==='function') z.__grabDrop(held.key,held.from);
   return true;

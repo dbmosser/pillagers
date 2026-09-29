@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.16 - A CONTROLLER CAN PUT A GUN IN GUN 1 OR GUN 2, OR TAKE IT OUT OF HIS HANDS, ON THE STASH SCREEN
+
+Co-op hunt while he was away. Putting a gun in gun 1 or gun 2, or taking it out of your hands, is done from the gun menu, and on the Stash screen only a right-click on an armoury gun opened it. A controller has no right-click, so a pad player, and player 2 on the same machine always, could never choose his gun at home: a new gun sat in the armoury and an empty gun 2 stayed empty. Now A on an armoury gun and A again in place opens that same menu at the gun, the D-pad moves between its rows, A picks one and B shuts it with the highlight back on the gun.
+
+MEASURED. Check 17.16 passes, and fails on v17.15.
 ## v17.15 - A PLAIN LEFT CLICK ON AN ARMOURY GUN NO LONGER MOVES IT OUT OF THE ARMOURY INTO THE STASH
 
 Co-op hunt while he was away. On the Stash screen every press on a cell starts a drag, and letting go drops it on whatever is under the pointer. The armoury row is drawn inside the stash grid, so a plain left click on a spare armoury gun was taken as a drag onto the stash: the gun left the armoury, became a stash item that could be packed and lost, and the gun menu, TOP GEAR and the shop no longer counted it as his. A click on an armoury gun that did not move now moves nothing, right-click still opens its menu, and a real drag onto the stash grid still puts it there.

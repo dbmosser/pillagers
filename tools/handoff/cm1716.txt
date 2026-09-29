@@ -1,0 +1,7 @@
+v17.16: a controller can put a gun in gun 1 or gun 2, or take it out of his hands, on the stash screen
+
+Every verb that changes P.equipped or P.equippedSec at home was behind a right-click: openGunMenu opened only from the contextmenu listener on the armoury cell, and padMenu reads only A, B and the D-pad or stick, so on a controller a second A in place on a picked up armoury gun ran el.click() on a cell with no click handler and nothing happened. stashPadAct now opens openGunMenu at the centre of the cell when a rack grab is let go in place, padOpenModal returns the open .imenu first (off a raid), padFocusables lists the live .imenurow rows so the D-pad walks them and A runs the row onclick the mouse runs, B on the menu calls closeItemMenu instead of hunting for a button it does not have, and while the menu is up padMenu does not write PAD.focusMd or PAD.focusIx, so when it shuts, or a row rebuilds the Stash screen, the highlight goes back to the same armoury cell rather than to the first control. A drag of an armoury gun to anywhere else, and A in place on every other cell, are unchanged. No player text, no number and no seeded draw moved.
+
+Check 17.16. Fails on v17.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

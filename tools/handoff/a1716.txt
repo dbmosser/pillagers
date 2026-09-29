@@ -1,0 +1,1 @@
+| A CONTROLLER CAN PUT A GUN IN GUN 1 OR GUN 2, OR TAKE IT OUT OF HIS HANDS, ON THE STASH SCREEN | v17.16 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.16 passes, fails on v17.15 |
