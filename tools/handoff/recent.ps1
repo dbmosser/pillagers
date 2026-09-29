@@ -6,6 +6,6 @@ $e="(function(){ var o={}, R=__REGRESS.slice().sort(function(a,b){ return parseF
 $d=powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match "fxdry$NN" -TimeoutSec 400 -Expr $e 2>$null
 $k=powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match "fxctl$NN" -TimeoutSec 400 -Expr $e 2>$null
 try{ $dj=$d | ConvertFrom-Json; $kj=$k | ConvertFrom-Json }catch{ "RECENT ERROR: dry=$d ctl=$k"; exit 1 }
-$n=0
-foreach($p in $dj.PSObject.Properties){ if(-not $kj.PSObject.Properties[$p.Name]){ "REGRESS $($p.Name): $($p.Value)"; $n++ } }
-"recent: $n new failures in the newest $N checks"
+$cnt=0
+foreach($p in $dj.PSObject.Properties){ if(-not $kj.PSObject.Properties[$p.Name]){ "REGRESS $($p.Name): $($p.Value)"; $cnt++ } }
+"recent: $cnt new failures in the newest $N checks"
