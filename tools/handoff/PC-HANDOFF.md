@@ -165,7 +165,7 @@ still token-lean; I said no, and asked whether to go lean after these ten. Until
 
 ## NEXT UP (kept current; the hourly watchdog reads this when nobody is working)
 1. SHELVED (2026-09-29, waiting on his word): the local model scan. On Windows with his AMD card Ollama keeps a copy of the model in system RAM (32b: about 23 GB, near-freeze; 14b: 8.6 GB and still tripped the 6 GB guard) and the 14b found nothing in 16 co-op sections and gave only style notes by hand. Do not run it unless he asks. 2026-09-29 11:00, at his ask, the 32b ran (tools\localscan\load32.ps1 then scan.ps1 -Model qwen2.5-coder:32b -MinFreeMB 0 -Chunk 140 -Ctx 8192): it loads fully on the GPU but keeps an 18.6 GB private copy in RAM (under 1 GB free); 30 co-op sections, 17 flags, every one checked was a false alarm. Evening stress test: 4 h 20 min, PC stayed up at about 1 GB free (load dipped to 64 MB), 626 flags. DELETED 2026-09-29 on his word ("not worth it"); Ollama itself is still installed with no model.
-2. DONE 2026-09-29: the full suite on v17.24 is clean (15.79 retargeted to v17.14; 13.23/12.94/12.80/12.79/12.74/12.21 were shard harness reds, all pass alone; 9.42 takes 20 s alone, far longer under load). Two-player soak on v17.24: 3 of 3 pass. v17.25 card line for the menu fixes. Nothing queued: next is a fresh audit of one area, lean.
+2. DONE 2026-09-29: the full suite on v17.24 is clean (15.79 retargeted to v17.14; 13.23/12.94/12.80/12.79/12.74/12.21 were shard harness reds, all pass alone; 9.42 takes 20 s alone, far longer under load). Two-player soak on v17.24: 3 of 3 pass. v17.25 card line for the menu fixes. NEXT: run bash tools/handoff/overnight.sh 14400 (four loops, 6 GB RAM floor) and read SOAKFAIL lines in tools/handoff/overnight.log for the two open leads (roster drop, extra item); keep tokens low, no agent teams.
 3. Waiting on him (do not decide): P2 payout uses P2 own saved terms and hire; his 125% zoom question.
 LOAD RULES after the 2026-09-28 crash: keep 6 GB RAM free, at most 4 test Chromes, no big download on top of tests.
 
@@ -182,3 +182,11 @@ Listener waking; 17.31 P2 shooting a peace-made pillager costs P2, not P1; 17.32
 17.33 after P1 is out, P2's ring gets its siege and can be called again (netSpecRings); 17.34 the kit wait no longer starts
 the host raid behind the title; 17.35 picking a same-machine row again no longer reloads the live P2 window; 17.36 broken
 walls, cover and glass fall in every window. All gates passed incl. recent.ps1. A solo hunt was stopped on his word.
+
+## 2026-09-30 morning: overnight load (9 h) plus 2 h more on v17.36; he is resetting his PC.
+PC stayed up all night. Soaks 129/138 overnight; bots on both sectors and 48 4K batches, zero errors. The failures were
+checked in code: kill credit with no feed = a stray enemy round lands the last hit (removal precedes bullets, credit code
+sound); position gap 38 vs 24 once; timeouts and a downed P2 finished off = test. TWO OPEN LEADS, need one full capture:
+(a) the roster fell below two for about 2 s at 12 fps under the heaviest load and P2's raid ended (the old log cut the
+status/err fields; overnight.sh now keeps 1100 chars); (b) a P2 box search landed one more item than the host listed (2 of
+138): the loot failure now prints the backpack before and after and the lines read. Logs: tools/handoff/overnight-0930*.log.
