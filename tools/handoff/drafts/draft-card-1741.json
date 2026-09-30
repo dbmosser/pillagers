@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES RUMBLE, ACHIEVEMENTS AND THE PARTY SCORE",
+    "why":  "The card named the menu and stash fixes up to v17.24 but none of his picks from the feature list, and it had fallen 0.16 behind, which the newest-checks gate refuses. One line goes in naming controller rumble, CTRL and a click, the PARTY block on the end card and the achievements.",
+    "now":  "THE WHAT IS NEW CARD NAMES RUMBLE, ACHIEVEMENTS AND THE PARTY SCORE. One line goes in for his picks shipped so far (controller rumble, CTRL and a click in the stash, the PARTY block on the end card, twelve achievements), and the stamp moves to this build.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002717.25\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002717.41\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.\u0027,",
+                      "replacement":  "  \u0027CONTROLLER RUMBLE AND ACHIEVEMENTS. Each player controller buzzes when that player is hit, goes down or is near a blast (Settings has a Controller rumble row). CTRL and a click moves one item from the stash to the backpack. After a party raid the end card shows a PARTY block with every player result, and twelve achievements are listed on the Mainframe beside your stats.\u0027,\n  \u0027NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and has a line on the rumble, achievements and party score\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle=\u0027CONTROLLER RUMBLE\u0027+\u0027 AND ACHIEVEMENTS\u0027;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)\u003e=0; })) bad.push(\u0027no line of the card names the rumble, achievements and party score\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

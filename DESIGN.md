@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.41 - THE WHAT IS NEW CARD NAMES RUMBLE, ACHIEVEMENTS AND THE PARTY SCORE
+
+Co-op hunt while he was away. The card named the menu and stash fixes up to v17.24 but none of his picks from the feature list, and it had fallen 0.16 behind, which the newest-checks gate refuses. One line goes in naming controller rumble, CTRL and a click, the PARTY block on the end card and the achievements.
+
+MEASURED. Check 17.41 passes, and fails on v17.40.
 ## v17.40 - ACHIEVEMENTS
 
 Co-op hunt while he was away. His pick from the feature list, beside the lifetime stats he already had. Twelve achievements are earned once and kept in the save: first extraction, big hauls, untouched and never-spotted extractions, kills in a raid, coming back from a down, pillager and machine totals, extracting as a party, and run totals. The end card names a new one and the Mainframe lists them all, earned or locked; runs still in the log count the first time the list is drawn.

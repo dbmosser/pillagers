@@ -1,0 +1,7 @@
+v17.41: the what is new card names rumble, achievements and the party score
+
+THE WHAT IS NEW CARD NAMES RUMBLE, ACHIEVEMENTS AND THE PARTY SCORE. One line goes in for his picks shipped so far (controller rumble, CTRL and a click in the stash, the PARTY block on the end card, twelve achievements), and the stamp moves to this build.
+
+Check 17.41. Fails on v17.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

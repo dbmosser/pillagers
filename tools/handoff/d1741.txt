@@ -1,0 +1,5 @@
+## v17.41 - THE WHAT IS NEW CARD NAMES RUMBLE, ACHIEVEMENTS AND THE PARTY SCORE
+
+Co-op hunt while he was away. The card named the menu and stash fixes up to v17.24 but none of his picks from the feature list, and it had fallen 0.16 behind, which the newest-checks gate refuses. One line goes in naming controller rumble, CTRL and a click, the PARTY block on the end card and the achievements.
+
+MEASURED. Check 17.41 passes, and fails on v17.40.
