@@ -1,0 +1,5 @@
+## v17.42 - STASH SEARCH AND SORT
+
+Co-op hunt while he was away. His pick from the feature list, beside the stash tabs he already had. A search box above the stash hides every item whose name does not match as he types, and a SORT button cycles default, value, name, rarity and count, kept in the save. ESC or TAB clears the search first, then closes the stash as before.
+
+MEASURED. Check 17.42 passes, and fails on v17.41.

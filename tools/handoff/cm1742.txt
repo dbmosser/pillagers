@@ -1,0 +1,7 @@
+v17.42: stash search and sort
+
+STASH SEARCH AND SORT, his pick from the feature list, beside the tabs he already had: a search box filters the stash by name as he types (ESC or TAB clears it first), and a SORT button cycles default, value, name, rarity and count, kept in the save.
+
+Check 17.42. Fails on v17.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

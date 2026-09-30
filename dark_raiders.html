@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.41';
+var VER='17.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31593,7 +31593,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.41: THE WHAT IS NEW CARD NAMES RUMBLE, ACHIEVEMENTS AND THE PARTY SCORE. One line goes in for his picks shipped so far (controller rumble, CTRL and a click in the stash, the PARTY block on the end card, twelve achievements), and the stamp moves to this build. Check 17.41 fails on v17.40',
+  now:'v17.42: STASH SEARCH AND SORT, his pick from the feature list, beside the tabs he already had: a search box filters the stash by name as he types (ESC or TAB clears it first), and a SORT button cycles default, value, name, rarity and count, kept in the save. Check 17.42 fails on v17.41',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33267,6 +33267,17 @@ try{ renderFreeKit(); }catch(_fk){}
         r2.appendChild(d);
       });
       tb.appendChild(r2);
+      // v17.42, HIS PICK 25 (2026-09-30): SEARCH AND SORT. A box filters the stash by name as he types (ESC or TAB clears it
+      // first, then closes as before), and SORT cycles DEFAULT, VALUE, NAME, RARITY and COUNT, kept in the save.
+      var r3=document.createElement('div'); r3.className='invtabs'; r3.style.cssText='padding:4px 0 0 0;gap:6px;display:flex;align-items:center';
+      var sq=document.createElement('input'); sq.id='stashsearch'; sq.type='text'; sq.placeholder='search the stash'; sq.value=STASH_Q;
+      sq.style.cssText='flex:1;min-width:0;font-size:11px;padding:3px 6px';
+      sq.oninput=function(){ STASH_Q=sq.value; stashFilterApply(); };
+      sq.onkeydown=function(ev){ if((ev.code==='Escape'||ev.code==='Tab')&&sq.value){ sq.value=''; STASH_Q=''; stashFilterApply(); ev.preventDefault(); ev.stopPropagation(); } };
+      var sb=document.createElement('div'); sb.className='invtab'; sb.id='stashsort'; sb.style.fontSize='10.5px';
+      sb.textContent='SORT: '+(STASH_SORTS[P.stashSort||'default']||'DEFAULT');
+      sb.onclick=function(){ var ks=Object.keys(STASH_SORTS), i=ks.indexOf(P.stashSort||'default'); P.stashSort=ks[(i+1)%ks.length]; saveProfile(); renderHub(); };
+      r3.appendChild(sq); r3.appendChild(sb); tb.appendChild(r3);
     }
   }
   // THE HOTBAR PLAN lives under the grid on its own tab, and is a drop target
@@ -33380,6 +33391,7 @@ try{ renderFreeKit(); }catch(_fk){}
   // WHICH PLACE. STASH is the vault, INVENTORY is what you are taking up, and
   // HOTBAR PLAN shows the same stash so you have something to drag FROM.
   var shown=keysArr.filter(function(k){ return P.stashTab==='all'||tabOf(k)===P.stashTab; });
+  stashSortKeys(shown,counts);   // v17.42: his pick 25, the sort he chose
   renderKitCol();
 
   shown.forEach(function(k){
@@ -33593,6 +33605,7 @@ try{ renderFreeKit(); }catch(_fk){}
     em2.textContent=(P.stashTab==='all')?'Nothing in the stash. Ascend, pillage, extract.':'Nothing under this tab.';
     sl.appendChild(em2);
   }
+  stashFilterApply();   // v17.42: his pick 25, the search holds across a redraw
   // REPUTATION HAD NO VISIBLE SOURCE, v3.23, and his own profile is the evidence:
   // 35 runs, 8 extracted, best haul 11,500c, and REP 0. Not low. Zero.
   // (v7.63: P.rep merged into P.xp; this block is the history of the old field.)
@@ -34986,7 +34999,30 @@ applyStashLayout();
 // v10.97, HIS NOTE 12: WHAT SHELF AN ITEM LIVES ON. This was written inside the
 // stash renderer, where it was the only copy but also unreachable, so nothing
 // else could ask and nothing could check it. It is one function now.
-function stashTabOf(k){
+// v17.42, HIS PICK 25 (2026-09-30): stash search and sort. STASH_Q is the search text (this page only, not saved);
+// P.stashSort the sort, kept in the save. The search hides cells whose name does not match, so the box keeps focus.
+var STASH_Q='';
+var STASH_SORTS={'default':'DEFAULT',value:'VALUE',name:'NAME',rarity:'RARITY',count:'COUNT'};
+function stashSortKeys(a,counts){
+  var m=(typeof P!=='undefined'&&P&&P.stashSort)||'default';
+  if(m==='default'||!a||!a.sort) return a;
+  a.sort(function(x,y){
+    var X=ITEMS[x]||{}, Y=ITEMS[y]||{};
+    if(m==='value') return ival(y)-ival(x);
+    if(m==='name') return String(X.name||x).localeCompare(String(Y.name||y));
+    if(m==='rarity') return ((_RRANK[Y.r]||0)-(_RRANK[X.r]||0))||(ival(y)-ival(x));
+    if(m==='count') return ((counts&&counts[y])||0)-((counts&&counts[x])||0);
+    return 0;
+  });
+  return a;
+}
+function stashFilterApply(){
+  var z=document.getElementById('stashgrid'), q=String(STASH_Q||'').trim().toLowerCase(), cs, i, t, on, n=0;
+  if(!z) return 0;
+  cs=z.querySelectorAll('.cell');
+  for(i=0;i<cs.length;i++){ t=String(cs[i].title||'').split('\n')[0].toLowerCase(); on=!q||t.indexOf(q)>=0; cs[i].style.display=on?'':'none'; if(on) n++; }
+  return n;
+}function stashTabOf(k){
   var t=ITEMS[k]; if(!t) return 'other';
   if(t.use==='gun') return 'gun';
   if(t.use==='armor') return 'use';     // v10.11: armour plates are consumables, his answer 2

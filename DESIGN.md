@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.42 - STASH SEARCH AND SORT
+
+Co-op hunt while he was away. His pick from the feature list, beside the stash tabs he already had. A search box above the stash hides every item whose name does not match as he types, and a SORT button cycles default, value, name, rarity and count, kept in the save. ESC or TAB clears the search first, then closes the stash as before.
+
+MEASURED. Check 17.42 passes, and fails on v17.41.
 ## v17.41 - THE WHAT IS NEW CARD NAMES RUMBLE, ACHIEVEMENTS AND THE PARTY SCORE
 
 Co-op hunt while he was away. The card named the menu and stash fixes up to v17.24 but none of his picks from the feature list, and it had fallen 0.16 behind, which the newest-checks gate refuses. One line goes in naming controller rumble, CTRL and a click, the PARTY block on the end card and the achievements.
