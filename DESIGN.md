@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.43 - GRAPHICS OPTIONS
+
+Co-op hunt while he was away. His pick from the feature list. Settings gains three rows: Render resolution (Full, High, Medium, Low; lower is softer but faster, and it applies at once), Frame cap (Off, 60, 30) and Effects (Full, Reduced; about a third of the sparks). The defaults are the game as it was.
+
+MEASURED. Check 17.43 passes, and fails on v17.42.
 ## v17.42 - STASH SEARCH AND SORT
 
 Co-op hunt while he was away. His pick from the feature list, beside the stash tabs he already had. A search box above the stash hides every item whose name does not match as he types, and a SORT button cycles default, value, name, rarity and count, kept in the save. ESC or TAB clears the search first, then closes the stash as before.

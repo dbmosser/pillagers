@@ -1,0 +1,5 @@
+## v17.43 - GRAPHICS OPTIONS
+
+Co-op hunt while he was away. His pick from the feature list. Settings gains three rows: Render resolution (Full, High, Medium, Low; lower is softer but faster, and it applies at once), Frame cap (Off, 60, 30) and Effects (Full, Reduced; about a third of the sparks). The defaults are the game as it was.
+
+MEASURED. Check 17.43 passes, and fails on v17.42.

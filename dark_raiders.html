@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.42';
+var VER='17.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13354,6 +13354,7 @@ function ping(x,y,s,h,quiet,src,typ,ent,pre){
 }
 function spark(x,y,col,n,spread){
   if(G.sim) return;
+  if(CFG.fxLevel===0) n=Math.ceil(n/3);   // v17.43: his pick 28, reduced effects
   // v7.69: cosmetic draws come from the cosmetic stream. Live play used to
   // burn seeded draws here that the sim never saw.
   for(var i=0;i<n;i++){
@@ -21639,8 +21640,14 @@ var ctx=null,wc=null,camX=0,camY=0,VX=0,VY=0,VIS=[];
 var _curNow='none';   // last cursor style written to the canvas, v2.91
 var fogC=document.createElement('canvas'),fx2=fogC.getContext('2d');
 var litC=document.createElement('canvas'),lx2=litC.getContext('2d');
-function resize(){
-  DPR=Math.min(window.devicePixelRatio||1,2);
+// v17.43, HIS PICK 28 (2026-09-30): GRAPHICS OPTIONS. Three Settings rows: Render resolution (CFG.gfxScale, the share of the
+// screen's pixels the canvases draw; lower is softer and faster), Frame cap (CFG.fpsCap, frames a second; a skipped frame
+// still counts its time in the next one) and Effects (CFG.fxLevel 0 draws about a third of the sparks). A new resolution
+// applies at once: the frame loop calls resize() when the setting moves. The defaults are the game as it was.
+var RES_APPLIED, CAP_LAST=0;
+function gfxScaleNow(){ var s=+CFG.gfxScale; return (s>0&&s<=1)?s:1; }
+function frameCapSkip(ts){ var c=+CFG.fpsCap; if(!(c>0)) return false; if(ts-CAP_LAST<1000/c-2) return true; CAP_LAST=ts; return false; }function resize(){
+  DPR=Math.min(window.devicePixelRatio||1,2)*gfxScaleNow(); RES_APPLIED=CFG.gfxScale;   // v17.43: his pick 28, the render resolution
   var r=cv.getBoundingClientRect();
   W=r.width; H=r.height;
   cv.width=W*DPR; cv.height=H*DPR;
@@ -31001,6 +31008,8 @@ function loop(ts){
   // run down behind a blank screen either, so the whole frame is skipped until the
   // browser hands the context back. lastTs is restamped on restore.
   if(ctxLost){ lastTs=ts; return; }
+  if(CFG.gfxScale!==RES_APPLIED){ try{ resize(); }catch(_rz){} }   // v17.43: his pick 28, a new render resolution applies at once
+  if(frameCapSkip(ts)) return;   // v17.43: his pick 28, the frame cap
   // THE CLAMP WAS ONE SIDED, found v2.99. This bounded dt from ABOVE at 50ms, so a
   // backgrounded tab returning does not teleport everything, but it never bounded
   // it from BELOW. A negative dt runs the entire game backwards for one frame: the
@@ -31593,7 +31602,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.42: STASH SEARCH AND SORT, his pick from the feature list, beside the tabs he already had: a search box filters the stash by name as he types (ESC or TAB clears it first), and a SORT button cycles default, value, name, rarity and count, kept in the save. Check 17.42 fails on v17.41',
+  now:'v17.43: GRAPHICS OPTIONS, his pick from the feature list: Settings rows for Render resolution (Full, High, Medium, Low, applied at once), Frame cap (Off, 60, 30) and Effects (Full or Reduced, about a third of the sparks). The defaults keep the game as it was. Check 17.43 fails on v17.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40374,6 +40383,27 @@ var GAMEOPTS=[
    opts:[
      {n:'Off', cfg:{superhot:0}},
      {n:'On',  cfg:{superhot:1}}
+   ], def:0},
+  {k:'gfxScale', label:'Render resolution',
+   hint:'How many pixels the game draws. Lower is softer but runs faster on a slower PC.',
+   opts:[
+     {n:'Full',   cfg:{gfxScale:1}},
+     {n:'High',   cfg:{gfxScale:0.85}},
+     {n:'Medium', cfg:{gfxScale:0.7}},
+     {n:'Low',    cfg:{gfxScale:0.5}}
+   ], def:0},
+  {k:'fpsCap', label:'Frame cap',
+   hint:'The most frames drawn each second. A cap keeps the PC cooler and quieter.',
+   opts:[
+     {n:'Off', cfg:{fpsCap:0}},
+     {n:'60',  cfg:{fpsCap:60}},
+     {n:'30',  cfg:{fpsCap:30}}
+   ], def:0},
+  {k:'fxLevel', label:'Effects',
+   hint:'Sparks and particles. Reduced draws about a third of them.',
+   opts:[
+     {n:'Full',    cfg:{fxLevel:1}},
+     {n:'Reduced', cfg:{fxLevel:0}}
    ], def:0},
   {k:'rumble', label:'Controller rumble',
    hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',

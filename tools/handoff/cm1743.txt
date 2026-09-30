@@ -1,0 +1,7 @@
+v17.43: graphics options
+
+GRAPHICS OPTIONS, his pick from the feature list: Settings rows for Render resolution (Full, High, Medium, Low, applied at once), Frame cap (Off, 60, 30) and Effects (Full or Reduced, about a third of the sparks). The defaults keep the game as it was.
+
+Check 17.43. Fails on v17.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
