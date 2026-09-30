@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.48 - THE WHAT IS NEW CARD NAMES TRADING, DROP-IN AND THE BOSS
+
+Co-op hunt while he was away. His picks v17.42 to v17.47 were not on the card. One line names trading, drop-in, THE OVERSEER, stash search and sort, the graphics options and the hit and death animation, and the stamp moves to this build.
+
+MEASURED. Check 17.48 passes, and fails on v17.47.
 ## v17.47 - RICHER ANIMATION: HIT JOLTS AND DEATHS
 
 Co-op hunt while he was away. His pick from the feature list. A body that is hit is drawn jolted a few pixels away from the player who hit it while its hit flash runs, and a body that dies leaves a silhouette in its colour that turns, flattens and fades over 0.8 seconds where it fell, in both windows of a party. It is drawing only: nothing a fight reads moves.

@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES TRADING, DROP-IN AND THE BOSS",
+    "why":  "His picks v17.42 to v17.47 were not on the card. One line names trading, drop-in, THE OVERSEER, stash search and sort, the graphics options and the hit and death animation, and the stamp moves to this build.",
+    "now":  "THE WHAT IS NEW CARD NAMES TRADING, DROP-IN AND THE BOSS: one line for his picks v17.42 to v17.47 (trading, drop-in, THE OVERSEER, stash search and sort, graphics options, hit and death animation), and the stamp moves to this build.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002717.41\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002717.48\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.\u0027,",
+                      "replacement":  "  \u0027TRADING, DROP-IN AND A BOSS. With the backpack open, T or Y offers the selected item to your teammate, who takes it with T or Y. A teammate in the Undercroft can JOIN THE RAID IN PROGRESS. THE OVERSEER guards the middle of every map. The stash has search and sort, Settings has Render resolution, Frame cap and Effects, and hits and deaths are animated.\u0027,\n  \u0027NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and has a line on trading, drop-in and the boss\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle=\u0027TRADING, DROP-IN\u0027+\u0027 AND A BOSS\u0027;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)\u003e=0; })) bad.push(\u0027no line of the card names trading, drop-in and the boss\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

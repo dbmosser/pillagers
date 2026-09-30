@@ -1,0 +1,7 @@
+v17.48: the what is new card names trading, drop-in and the boss
+
+THE WHAT IS NEW CARD NAMES TRADING, DROP-IN AND THE BOSS: one line for his picks v17.42 to v17.47 (trading, drop-in, THE OVERSEER, stash search and sort, graphics options, hit and death animation), and the stamp moves to this build.
+
+Check 17.48. Fails on v17.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

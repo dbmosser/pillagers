@@ -1,0 +1,5 @@
+## v17.48 - THE WHAT IS NEW CARD NAMES TRADING, DROP-IN AND THE BOSS
+
+Co-op hunt while he was away. His picks v17.42 to v17.47 were not on the card. One line names trading, drop-in, THE OVERSEER, stash search and sort, the graphics options and the hit and death animation, and the stamp moves to this build.
+
+MEASURED. Check 17.48 passes, and fails on v17.47.
