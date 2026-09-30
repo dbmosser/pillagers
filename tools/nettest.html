@@ -563,7 +563,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       if(!msgs.some(function(q){ return (/^Took /).test(q); })) bad.push('loot: C never read a Took line naming what it pulled');
       rep.lootItems=bc; rep.lootMs=Math.max(Math.abs(tA-tBag),Math.abs(tC-tBag),Math.abs(tA-tC));
       log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C (its backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'); A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
-      if(bc!==n) bad.push('loot: '+bc+' items landed in C, not the '+n+' A listed');
+      if(bc!==n) bad.push('loot: '+bc+' items landed in C, not the '+n+' A listed (box '+box.cid+' held '+JSON.stringify((ba&&ba.keys)||null)+'; backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'; lines '+JSON.stringify(msgs)+')');
       if(rep.lootMs>500) bad.push('loot: the copies took '+rep.lootMs+' ms to agree the box is searched with the loot in C (the limit is 500)');
       if(va2.bag.length!==bagA0) bad.push('loot: copy A own backpack gained '+(va2.bag.length-bagA0)+' from C search');
       if(a&&a.n) bad.push('loot: A still lists '+a.n+' items in the box');

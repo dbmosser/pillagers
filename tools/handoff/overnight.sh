@@ -10,7 +10,7 @@ ok(){ [ "$(date +%s)" -lt "$END" ] && [ "$(avail)" -ge 6000 ]; }
 loopA(){ while [ "$(date +%s)" -lt "$END" ]; do if ok; then
   S=$(powershell -NoProfile -ExecutionPolicy Bypass -File "$H\soakloop.ps1" -Runs 3 -Soak 180 -Cdp 9335 -Port 8809 2>/dev/null)
   echo "$(date +%H:%M) SOAK $(echo "$S" | grep -c '"pass":true')/$(echo "$S" | grep -c '^run')" >> "$LOG"
-  echo "$S" | grep '"pass":false' | sed "s/^/$(date +%H:%M) SOAKFAIL /" | cut -c1-500 >> "$LOG"
+  echo "$S" | grep '"pass":false' | sed "s/^/$(date +%H:%M) SOAKFAIL /" | cut -c1-1100 >> "$LOG"
   else sleep 300; fi; done; }
 loopB(){ local sd=10000; while [ "$(date +%s)" -lt "$END" ]; do if ok; then
   powershell -NoProfile -ExecutionPolicy Bypass -File "$H\botsweep.ps1" -Cdp 9336 -Port 8804 -From $sd -N 200 -Map 0 >/dev/null 2>&1
