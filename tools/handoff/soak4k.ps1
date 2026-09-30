@@ -1,0 +1,13 @@
+param([int]$Raids=60,[int]$Sec=20,[int]$Cdp=9345)
+$c='C:\claudecode\dark raiders\tools\cdp.ps1'
+try{ Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/version") -TimeoutSec 2 | Out-Null }catch{
+  $exe='C:\Program Files\Google\Chrome\Application\chrome.exe'
+  $a='--headless=new --window-size=3840,2160 --force-device-scale-factor=1 --remote-debugging-port='+$Cdp+' --user-data-dir="'+$env:TEMP+'\pillagers-cdp'+$Cdp+'" --no-first-run --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --enable-gpu-rasterization --ignore-gpu-blocklist about:blank'
+  Start-Process -FilePath $exe -ArgumentList $a | Out-Null
+  for($i=0;$i -lt 60;$i++){ try{ Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/version") -TimeoutSec 2 | Out-Null; break }catch{ Start-Sleep -Milliseconds 500 } }
+}
+(Invoke-RestMethod ("http://127.0.0.1:$Cdp/json")) | Where-Object { $_.type -eq 'page' } | ForEach-Object { try{ Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/close/"+$_.id) | Out-Null }catch{} }
+$t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:$Cdp/json/new?http://localhost:8803/fixture.html"); Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/activate/"+$t.id) | Out-Null
+Start-Sleep 15
+$g="(async function(){ var errs=[], n=0, ft=[], on=function(e){ errs.push(String(e.message||e).slice(0,120)); }; window.addEventListener('error',on); __pinDPR(1); for(var s=0;s<$Raids;s++){ var sd=2000+s*7919; try{ __runPrep(); }catch(e){} try{ __deploy({kit:[],safe:null,mapIx:s%2,seed:sd}); }catch(e){ errs.push('deploy '+sd+': '+e); continue; } var P0=__P(), c0=(P0.crashes||[]).length, f0=0, t0=performance.now(); await new Promise(function(r){ (function tick(){ f0++; if(performance.now()-t0<$($Sec)*1000) requestAnimationFrame(tick); else r(); })(); }); ft.push(f0/$Sec); n++; var cr=(P0.crashes||[]).slice(c0).map(function(x){ return x.msg; }); if(cr.length) errs.push('seed '+sd+' map '+(s%2)+': '+cr.join('; ').slice(0,200)); try{ __endRaid('abandon'); __topClear(); }catch(e){} } window.removeEventListener('error',on); var cv=document.getElementById('cv'); ft.sort(function(a,b){return a-b;}); return '4K soak on '+cv.width+'x'+cv.height+': '+n+' raids, fps lowest '+ft[0].toFixed(0)+' median '+ft[Math.floor(ft.length/2)].toFixed(0)+', '+(errs.length?('ERRORS '+errs.slice(0,8).join(' || ')):'no errors'); })()"
+powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match 8803/fixture -TimeoutSec 3000 -Expr $g 2>$null
