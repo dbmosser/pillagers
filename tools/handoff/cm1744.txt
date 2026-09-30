@@ -1,0 +1,7 @@
+v17.44: trading between players in a raid
+
+TRADING BETWEEN PLAYERS IN A RAID, his pick from the feature list. With the backpack open, T or Y offers the selected item to the nearest teammate, who takes it with T or Y within 12 seconds; it leaves the giver only when taken, lands with the taker (or at his feet), and nobody sees the other backpack.
+
+Check 17.44. Fails on v17.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

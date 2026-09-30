@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.44 - TRADING BETWEEN PLAYERS IN A RAID
+
+Co-op hunt while he was away. His pick from the feature list, without seeing the other backpack. With the backpack open, T (or Y on a controller) offers the selected item to the nearest teammate; he reads NAME offers you ITEM and takes it with T or Y within 12 seconds. The item leaves the giver only when it is taken and lands with the taker, or at his feet when his backpack is full. A loaner Bandage stays a loaner and an armoury gun cannot come back to the giver.
+
+MEASURED. Check 17.44 passes, and fails on v17.43.
 ## v17.43 - GRAPHICS OPTIONS
 
 Co-op hunt while he was away. His pick from the feature list. Settings gains three rows: Render resolution (Full, High, Medium, Low; lower is softer but faster, and it applies at once), Frame cap (Off, 60, 30) and Effects (Full, Reduced; about a third of the sparks). The defaults are the game as it was.
