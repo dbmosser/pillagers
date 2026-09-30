@@ -1,0 +1,7 @@
+v17.47: richer animation: hit jolts and deaths
+
+RICHER ANIMATION, his pick from the feature list: a hit jolts a body a few pixels away from the player who hit it while its flash runs, and a body that dies turns, flattens and fades over 0.8 seconds where it fell, in both windows of a party. Drawing only; nothing a fight reads moves.
+
+Check 17.47. Fails on v17.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

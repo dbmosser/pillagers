@@ -1,0 +1,36 @@
+{
+    "title":  "RICHER ANIMATION: HIT JOLTS AND DEATHS",
+    "why":  "His pick from the feature list. A body that is hit is drawn jolted a few pixels away from the player who hit it while its hit flash runs, and a body that dies leaves a silhouette in its colour that turns, flattens and fades over 0.8 seconds where it fell, in both windows of a party. It is drawing only: nothing a fight reads moves.",
+    "now":  "RICHER ANIMATION, his pick from the feature list: a hit jolts a body a few pixels away from the player who hit it while its flash runs, and a body that dies turns, flattens and fades over 0.8 seconds where it fell, in both windows of a party. Drawing only; nothing a fight reads moves.",
+    "edits":  [
+                  {
+                      "anchor":  "function drawWardenS(e){",
+                      "replacement":  "// v16.xx, HIS PICK 29 (2026-09-30): RICHER ANIMATION, drawn only (nothing a fight reads moves). A HIT JOLT: while its hit\n// flash runs (hitT), a body is drawn pushed a few pixels away from the player who hit it, easing back as the flash fades. A\n// DEATH ANIMATION: a body that dies leaves a silhouette in its colour that turns, flattens and fades over 0.8 seconds where it\n// fell, beside the puff and the decal it always left; a linked window plays it from the death word (netEntDeathFx).\nvar DEATH_COL={warden:\u0027#6a5a3a\u0027,choir:\u0027#5a4a3a\u0027,sentry:\u0027#56606c\u0027,crawler:\u0027#46525c\u0027,raider:\u0027#7a5446\u0027,snitch:\u0027#6a6040\u0027,howler:\u0027#5a4a52\u0027,bulwark:\u0027#4c5460\u0027,listener:\u0027#4a4a58\u0027,stray:\u0027#6a5a4a\u0027};\nfunction animHitShift(e){\n  var p, dx, dy, d, a;\n  if(!e||!(e.hitT\u003e0)||typeof G===\u0027undefined\u0027||!G||!G.player) return null;\n  p=G.player; dx=e.x-p.x; dy=e.y-p.y; d=Math.hypot(dx,dy);\n  if(!(d\u003e0.5)) return null;\n  a=5*Math.max(0,Math.min(1,e.hitT/0.16));\n  return {x:dx/d*a,y:dy/d*a};\n}\nfunction deathAnimAdd(e){\n  if(!e||typeof G===\u0027undefined\u0027||!G||G.sim) return 0;\n  if(!G.deathAnims) G.deathAnims=[];\n  if(G.deathAnims.length\u003e40) G.deathAnims.shift();\n  G.deathAnims.push({x:e.x,y:e.y,r:Math.max(8,Math.min(48,e.r||14)),face:+e.face||0,c:DEATH_COL[e.kind]||\u0027#555c64\u0027,t0:G.t||0});\n  return G.deathAnims.length;\n}\nfunction drawDeathAnims(){\n  var i, a, f, k;\n  if(typeof G===\u0027undefined\u0027||!G||!G.deathAnims||!G.deathAnims.length) return 0;\n  for(i=G.deathAnims.length-1;i\u003e=0;i--){\n    a=G.deathAnims[i]; f=((G.t||0)-a.t0)/0.8;\n    if(!(f\u003e=0\u0026\u0026f\u003c1)){ G.deathAnims.splice(i,1); continue; }\n    k=1-f;\n    wc.save(); wc.globalAlpha=0.85*k; wc.translate(a.x,a.y); wc.rotate(a.face+f*1.4); wc.scale(1-0.35*f,0.55+0.45*k);\n    wc.fillStyle=a.c; wc.beginPath(); wc.ellipse(0,0,a.r,a.r*0.8,0,0,6.2832); wc.fill();\n    wc.strokeStyle=\u0027rgba(0,0,0,\u0027+(0.5*k).toFixed(3)+\u0027)\u0027; wc.lineWidth=2; wc.stroke();\n    wc.restore();\n  }\n  return G.deathAnims.length;\n}function drawWardenS(e){"
+                  },
+                  {
+                      "anchor":  "      if(eLift\u003e0){ wc.save(); _svd++; wc.translate(0,-eLift); }",
+                      "replacement":  "      if(eLift\u003e0){ wc.save(); _svd++; wc.translate(0,-eLift); }\n      var _kb=animHitShift(e2); if(_kb){ wc.save(); _svd++; wc.translate(_kb.x,_kb.y); }   // v16.xx: his pick 29, the hit jolt"
+                  },
+                  {
+                      "anchor":  "      if(eLift\u003e0) wc.restore();",
+                      "replacement":  "      if(_kb){ wc.restore(); _svd--; }\n      if(eLift\u003e0) wc.restore();"
+                  },
+                  {
+                      "anchor":  "  for(i=0;i\u003cG.puffs.length;i++){",
+                      "replacement":  "  try{ drawDeathAnims(); }catch(_dda){}   // v16.xx: his pick 29\n  for(i=0;i\u003cG.puffs.length;i++){"
+                  },
+                  {
+                      "anchor":  "      if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind===\u0027raider\u0027?\u0027#c8452f\u0027:\u0027#ffc04a\u0027,r:26});",
+                      "replacement":  "      deathAnimAdd(e);   // v16.xx: his pick 29, the death animation\n      if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind===\u0027raider\u0027?\u0027#c8452f\u0027:\u0027#ffc04a\u0027,r:26});"
+                  },
+                  {
+                      "anchor":  "        if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:\u0027#d8a13a\u0027,r:26});",
+                      "replacement":  "        deathAnimAdd(e);   // v16.xx: his pick 29\n        if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:\u0027#d8a13a\u0027,r:26});"
+                  },
+                  {
+                      "anchor":  "function netEntDeathFx(e){",
+                      "replacement":  "function netEntDeathFx(e){\n  try{ deathAnimAdd(e); }catch(_dz){}   // v16.xx: his pick 29, the death animation in a linked window"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027richer animation: a body in its hit flash is drawn pushed away from the player who hit it and not once the flash is over, and a body that dies leaves a death animation where it fell that clears after 0.8 seconds\u0027,\n   run:function(){\n     if(typeof animHitShift!==\u0027function\u0027||typeof deathAnimAdd!==\u0027function\u0027||typeof drawDeathAnims!==\u0027function\u0027) return \u0027this build has no hit or death animation\u0027;\n     if(!window.__deploy||!window.__endRaid) return \u0027SKIP: no raid in this fixture\u0027;\n     var bad=[], e=null, i, s, oSay=say, n0, x, y;\n     try{\n       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!G||G.over||!G.player) return \u0027SKIP: staging: no raid\u0027;\n       say=function(){};\n       s=animHitShift({x:G.player.x+100,y:G.player.y,hitT:0.16});\n       if(!s||!(s.x\u003e2)||Math.abs(s.y)\u003e0.5) bad.push(\u0027a body in its hit flash was not pushed away from the player (\u0027+JSON.stringify(s)+\u0027)\u0027);\n       if(animHitShift({x:G.player.x+100,y:G.player.y,hitT:0})) bad.push(\u0027a body out of its hit flash was still pushed\u0027);\n       for(i=0;i\u003cG.ents.length;i++) if(G.ents[i]\u0026\u0026G.ents[i].kind===\u0027crawler\u0027){ e=G.ents[i]; break; }\n       if(!e) return \u0027SKIP: staging: no crawler to kill\u0027;\n       G.deathAnims=[]; x=e.x; y=e.y; e.hp=0; updateEnts(0.05);\n       n0=(G.deathAnims||[]).length;\n       if(!n0||Math.hypot(G.deathAnims[0].x-x,G.deathAnims[0].y-y)\u003e1) bad.push(\u0027a crawler that died left no death animation where it fell\u0027);\n       drawDeathAnims();\n       G.t=(G.t||0)+1.0; drawDeathAnims();\n       if((G.deathAnims||[]).length) bad.push(\u0027a death animation did not clear after 0.8 seconds\u0027);\n     }catch(ex){ bad.push(\u0027threw: \u0027+(ex\u0026\u0026ex.message||ex)); }\n     finally{\n       say=oSay;\n       try{ if(G) G.deathAnims=[]; }catch(_d){}\n       try{ __endRaid(\u0027abandon\u0027); __topClear(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

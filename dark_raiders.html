@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.46';
+var VER='17.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18224,6 +18224,7 @@ if(e.state==='possum'){
         }
         decal(e.x,e.y,'#6e1c15',rnd(18,28));
         spark(e.x,e.y,'#d8a13a',24,300);
+        deathAnimAdd(e);   // v17.47: his pick 29
         if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:'#d8a13a',r:26});
         G.ents.splice(i,1); continue;
       }
@@ -18338,6 +18339,7 @@ if(e.state==='possum'){
         label(e.x,e.y-16,(e.name||e.kind.toUpperCase())+(e.kind==='raider'?' ELIMINATED':' DOWN'),e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);
       if(e.kind!=='raider') decal(e.x,e.y,'#241a10',rnd(14,22));
       spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffc04a',22,300);
+      deathAnimAdd(e);   // v17.47: his pick 29, the death animation
       if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffc04a',r:26});
       G.ents.splice(i,1); continue;
     }
@@ -22703,7 +22705,40 @@ function spriteTop(e){
 // The Warden: drawn half again taller than anything else on the field, one
 // slitted eye, scary rather than cute, per his answer. Same three-value
 // language as the rest of the cast: ink plate, body, lit top, glow accents.
-function drawWardenS(e){
+// v17.47, HIS PICK 29 (2026-09-30): RICHER ANIMATION, drawn only (nothing a fight reads moves). A HIT JOLT: while its hit
+// flash runs (hitT), a body is drawn pushed a few pixels away from the player who hit it, easing back as the flash fades. A
+// DEATH ANIMATION: a body that dies leaves a silhouette in its colour that turns, flattens and fades over 0.8 seconds where it
+// fell, beside the puff and the decal it always left; a linked window plays it from the death word (netEntDeathFx).
+var DEATH_COL={warden:'#6a5a3a',choir:'#5a4a3a',sentry:'#56606c',crawler:'#46525c',raider:'#7a5446',snitch:'#6a6040',howler:'#5a4a52',bulwark:'#4c5460',listener:'#4a4a58',stray:'#6a5a4a'};
+function animHitShift(e){
+  var p, dx, dy, d, a;
+  if(!e||!(e.hitT>0)||typeof G==='undefined'||!G||!G.player) return null;
+  p=G.player; dx=e.x-p.x; dy=e.y-p.y; d=Math.hypot(dx,dy);
+  if(!(d>0.5)) return null;
+  a=5*Math.max(0,Math.min(1,e.hitT/0.16));
+  return {x:dx/d*a,y:dy/d*a};
+}
+function deathAnimAdd(e){
+  if(!e||typeof G==='undefined'||!G||G.sim) return 0;
+  if(!G.deathAnims) G.deathAnims=[];
+  if(G.deathAnims.length>40) G.deathAnims.shift();
+  G.deathAnims.push({x:e.x,y:e.y,r:Math.max(8,Math.min(48,e.r||14)),face:+e.face||0,c:DEATH_COL[e.kind]||'#555c64',t0:G.t||0});
+  return G.deathAnims.length;
+}
+function drawDeathAnims(){
+  var i, a, f, k;
+  if(typeof G==='undefined'||!G||!G.deathAnims||!G.deathAnims.length) return 0;
+  for(i=G.deathAnims.length-1;i>=0;i--){
+    a=G.deathAnims[i]; f=((G.t||0)-a.t0)/0.8;
+    if(!(f>=0&&f<1)){ G.deathAnims.splice(i,1); continue; }
+    k=1-f;
+    wc.save(); wc.globalAlpha=0.85*k; wc.translate(a.x,a.y); wc.rotate(a.face+f*1.4); wc.scale(1-0.35*f,0.55+0.45*k);
+    wc.fillStyle=a.c; wc.beginPath(); wc.ellipse(0,0,a.r,a.r*0.8,0,0,6.2832); wc.fill();
+    wc.strokeStyle='rgba(0,0,0,'+(0.5*k).toFixed(3)+')'; wc.lineWidth=2; wc.stroke();
+    wc.restore();
+  }
+  return G.deathAnims.length;
+}function drawWardenS(e){
   var x=e.x,y=e.y,tread=Math.sin(G.t*3+x*.01)*1.5;
   shadowE(x,y+2,26,8,.45);
   wc.fillStyle=INK; rrF(x-19,y-14,38,15,4);
@@ -24365,6 +24400,7 @@ var SHD=G.shells[i];
       var e2=it.e;
       var eLift=drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(e2.x,e2.y):0);
       if(eLift>0){ wc.save(); _svd++; wc.translate(0,-eLift); }
+      var _kb=animHitShift(e2); if(_kb){ wc.save(); _svd++; wc.translate(_kb.x,_kb.y); }   // v17.47: his pick 29, the hit jolt
       // ELITE MARKER, v3.62: one site under every kind's sprite, in the same
       // purple the loot pips already use for elite, so the colour is a word
       // the player has met before. Pure time drive, no PRNG touch.
@@ -24442,6 +24478,7 @@ var SHD=G.shells[i];
         wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.40,0,6.2832); wc.fill();
         wc.globalAlpha=1;
       }
+      if(_kb){ wc.restore(); _svd--; }
       if(eLift>0) wc.restore();
     }
     }catch(drErr){
@@ -24723,6 +24760,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
     wc.fillStyle=sp.c; wc.fillRect(sp.x-1.2,sp.y-9,2.4,2.4);
   }
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  try{ drawDeathAnims(); }catch(_dda){}   // v17.47: his pick 29
   for(i=0;i<G.puffs.length;i++){
     var q=G.puffs[i],a2=1-q.t/q.life;
     wc.globalAlpha=a2*.55; wc.fillStyle=q.c;
@@ -31656,7 +31694,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.46: DROP-IN, his pick from the feature list: a teammate in the Undercroft while the host is up top gets JOIN THE RAID IN PROGRESS; the host answers with its raid, clock, time left, position and the bodies already down, and the teammate comes up beside it on the same surface. Dropping out is as before. Check 17.46 fails on v17.45',
+  now:'v17.47: RICHER ANIMATION, his pick from the feature list: a hit jolts a body a few pixels away from the player who hit it while its flash runs, and a body that dies turns, flattens and fades over 0.8 seconds where it fell, in both windows of a party. Drawing only; nothing a fight reads moves. Check 17.47 fails on v17.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -38168,6 +38206,7 @@ function netEntWord(peer,m){
 // The end of a body this window watched: the spark, the puff and the label the host frame shows, and nothing else (what it
 // drops is the host world, a later slice). Nothing here draws from the seeded stream.
 function netEntDeathFx(e){
+  try{ deathAnimAdd(e); }catch(_dz){}   // v17.47: his pick 29, the death animation in a linked window
   try{
     var p=G.player;
     if(p&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-16,(e.name||String(e.kind).toUpperCase())+(e.kind==='raider'?' ELIMINATED':' DOWN'),e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);

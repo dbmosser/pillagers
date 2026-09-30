@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.47 - RICHER ANIMATION: HIT JOLTS AND DEATHS
+
+Co-op hunt while he was away. His pick from the feature list. A body that is hit is drawn jolted a few pixels away from the player who hit it while its hit flash runs, and a body that dies leaves a silhouette in its colour that turns, flattens and fades over 0.8 seconds where it fell, in both windows of a party. It is drawing only: nothing a fight reads moves.
+
+MEASURED. Check 17.47 passes, and fails on v17.46.
 ## v17.46 - DROP-IN: A TEAMMATE CAN JOIN A RAID ALREADY UNDER WAY
 
 Co-op hunt while he was away. His pick from the feature list. A teammate in the Undercroft while the host is up top gets a JOIN THE RAID IN PROGRESS button. It asks the host, which answers with its raid, the clock, the time left, where it stands and the bodies already down; the teammate builds the same surface, drops those bodies, takes the clock and comes up beside the host. Dropping out is as before.
