@@ -1,0 +1,7 @@
+v17.45: the overseer, a boss at the middle of the map
+
+THE OVERSEER, his pick from the feature list: one big boss in a lair at the middle of every map, a warden four times over (4000 health, half again the damage), up two seconds into the raid, guarding its lair, with a boss bar while you are near, and the OVERSEER HOARD where it falls. The map build and its fingerprint are untouched.
+
+Check 17.45. Fails on v17.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

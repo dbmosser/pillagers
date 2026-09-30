@@ -5721,6 +5721,36 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.45',what:'THE OVERSEER: no boss at the build, one comes up two seconds in at the open ground nearest the map centre with 4000 health (times the dial), never a second one, and down it leaves the OVERSEER HOARD',
+   run:function(){
+     if(typeof bossTick!=='function'||typeof bossLair!=='function') return 'this build has no boss';
+     if(!window.__deploy||!window.__endRaid) return 'SKIP: no raid in this fixture';
+     var bad=[], e, n, cx, cy, gr, nw, i, w, inWall=false, oSay=say, ents0;
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no raid';
+       say=function(){};
+       ents0=G.ents.length; G.t=0.5; bossTick();
+       if(G.ents.length!==ents0) bad.push('a boss came up before two seconds');
+       G.t=2.5; e=bossTick();
+       if(!e||G.ents.indexOf(e)<0||e.name!=='THE OVERSEER') bad.push('no OVERSEER came up at two seconds');
+       else{
+         cx=WORLD_W/2; cy=WORLD_H/2;
+         if(Math.hypot(e.x-cx,e.y-cy)>1700) bad.push('the boss came up '+Math.round(Math.hypot(e.x-cx,e.y-cy))+' from the map centre');
+         gr=buildWallGrid(G.map.walls,WORLD_W,WORLD_H); nw=wallsNear(gr,e.x,e.y,20);
+         for(i=0;i<nw.length;i++){ w=nw[i]; if(e.x>w.x&&e.x<w.x+w.w&&e.y>w.y&&e.y<w.y+w.h) inWall=true; }
+         if(inWall) bad.push('the boss came up inside a wall');
+         if(e.maxhp!==Math.round(4000*(CFG.eHp||1))) bad.push('the boss has '+e.maxhp+' health, not 4000 times the dial');
+         n=G.ents.length; G.t=5; bossTick(); if(G.ents.length!==n) bad.push('a second boss came up');
+         e.hp=0; updateEnts(0.05);
+         if(!G.containers.some(function(c){ return c&&c.tag==='OVERSEER HOARD'; })) bad.push('the boss went down and left no OVERSEER HOARD');
+       }
+     }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
+     finally{
+       say=oSay;
+       try{ __endRaid('abandon'); __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.44',what:'trading in a raid: with the backpack open T offers the selected item to the teammate in reach, and it leaves only when he takes it; an offer to this player is taken with T and the item lands in his backpack; a stale yes moves nothing',
    run:function(){
      if(typeof netGiftKey!=='function'||typeof netGiftTake!=='function') return 'this build has no trading';

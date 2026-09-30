@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.45 - THE OVERSEER, A BOSS AT THE MIDDLE OF THE MAP
+
+Co-op hunt while he was away. His pick from the feature list: one big boss in the same place every raid. THE OVERSEER is a warden four times over (4000 health, half again the damage) in a lair at the open ground nearest the map centre. It comes up two seconds into the raid, guards its lair (with you far off it walks home), shows a boss bar at the top while you are near, and down it leaves the warden wreck and the OVERSEER HOARD of rare parts. The map and its seeded layout are untouched.
+
+MEASURED. Check 17.45 passes, and fails on v17.44.
 ## v17.44 - TRADING BETWEEN PLAYERS IN A RAID
 
 Co-op hunt while he was away. His pick from the feature list, without seeing the other backpack. With the backpack open, T (or Y on a controller) offers the selected item to the nearest teammate; he reads NAME offers you ITEM and takes it with T or Y within 12 seconds. The item leaves the giver only when it is taken and lands with the taker, or at his feet when his backpack is full. A loaner Bandage stays a loaner and an armoury gun cannot come back to the giver.
