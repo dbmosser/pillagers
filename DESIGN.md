@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.38 - CTRL AND A CLICK MOVES ONE ITEM FROM THE STASH TO THE BACKPACK
+
+Co-op hunt while he was away. His pick from the feature list: quick move with CTRL. On the Stash screen CTRL and a click on a stash item packs one of it into the backpack, and the key bar names it. SHIFT still packs the whole stack, and a click on a backpack item still puts one back.
+
+MEASURED. Check 17.38 passes, and fails on v17.37.
 ## v17.37 - CONTROLLER RUMBLE
 
 Co-op hunt while he was away. His pick from the feature list. Each player controller buzzes when that player is hit, harder for a bigger hit, goes down, or is near a blast, with a light tick when firing. On one PC the player 2 buzz is sent to the window that reads his controller. A Settings row turns it off, and a controller nobody is using never buzzes.

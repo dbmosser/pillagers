@@ -1,0 +1,5 @@
+## v17.38 - CTRL AND A CLICK MOVES ONE ITEM FROM THE STASH TO THE BACKPACK
+
+Co-op hunt while he was away. His pick from the feature list: quick move with CTRL. On the Stash screen CTRL and a click on a stash item packs one of it into the backpack, and the key bar names it. SHIFT still packs the whole stack, and a click on a backpack item still puts one back.
+
+MEASURED. Check 17.38 passes, and fails on v17.37.

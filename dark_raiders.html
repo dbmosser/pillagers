@@ -1281,6 +1281,7 @@
         <div><kbd>DRAG</kbd> move</div>
         <div><kbd>RIGHT CLICK</kbd> all actions</div>
         <div><kbd>SHIFT</kbd> quick move</div>
+        <div><kbd>CTRL</kbd> move one</div>
         <div><kbd>ALT</kbd> split stack</div>
         <div><kbd>1-9</kbd> bind to key</div>
       </div>
@@ -1436,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.37';
+var VER='17.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31587,7 +31588,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.37: CONTROLLER RUMBLE, his pick from the feature list. Each player controller buzzes when that player is hit (harder for a bigger hit), goes down or is near a blast, with a light tick when firing; on one PC the player 2 buzz goes to the window that reads his controller. Settings has a Controller rumble row, On by default, and a controller nobody has touched for a minute stays still. Check 17.37 fails on v17.36',
+  now:'v17.38: CTRL AND A CLICK MOVES ONE ITEM FROM THE STASH TO THE BACKPACK, his pick from the feature list. On the Stash screen CTRL and a click packs one of that item, the key bar names it beside SHIFT, SHIFT still packs the whole stack, and a click on a backpack item still puts one back. Check 17.38 fails on v17.37',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33411,7 +33412,10 @@ try{ renderFreeKit(); }catch(_fk){}
       saveProfile(); try{ sfx('pick'); }catch(e){} renderHub();
     }
     cell.addEventListener('click',function(ev){
-      if(ev.altKey){                            // ALT split, per the key bar
+      if(ev.ctrlKey||ev.metaKey){               // v17.38, his pick 26 (2026-09-30): CTRL and a click moves one into the backpack
+        ev.stopPropagation(); ev.preventDefault();
+        _packSome(1); return;
+      }      if(ev.altKey){                            // ALT split, per the key bar
         ev.stopPropagation(); ev.preventDefault();
         _packSome(Math.max(1,Math.floor(counts[k]/2))); return;
       }

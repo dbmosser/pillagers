@@ -1,0 +1,7 @@
+v17.38: ctrl and a click moves one item from the stash to the backpack
+
+CTRL AND A CLICK MOVES ONE ITEM FROM THE STASH TO THE BACKPACK, his pick from the feature list. On the Stash screen CTRL and a click packs one of that item, the key bar names it beside SHIFT, SHIFT still packs the whole stack, and a click on a backpack item still puts one back.
+
+Check 17.38. Fails on v17.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
