@@ -1,0 +1,7 @@
+v17.46: drop-in: a teammate can join a raid already under way
+
+DROP-IN, his pick from the feature list: a teammate in the Undercroft while the host is up top gets JOIN THE RAID IN PROGRESS; the host answers with its raid, clock, time left, position and the bodies already down, and the teammate comes up beside it on the same surface. Dropping out is as before.
+
+Check 17.46. Fails on v17.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

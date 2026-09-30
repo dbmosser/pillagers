@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.46 - DROP-IN: A TEAMMATE CAN JOIN A RAID ALREADY UNDER WAY
+
+Co-op hunt while he was away. His pick from the feature list. A teammate in the Undercroft while the host is up top gets a JOIN THE RAID IN PROGRESS button. It asks the host, which answers with its raid, the clock, the time left, where it stands and the bodies already down; the teammate builds the same surface, drops those bodies, takes the clock and comes up beside the host. Dropping out is as before.
+
+MEASURED. Check 17.46 passes, and fails on v17.45.
 ## v17.45 - THE OVERSEER, A BOSS AT THE MIDDLE OF THE MAP
 
 Co-op hunt while he was away. His pick from the feature list: one big boss in the same place every raid. THE OVERSEER is a warden four times over (4000 health, half again the damage) in a lair at the open ground nearest the map centre. It comes up two seconds into the raid, guards its lair (with you far off it walks home), shows a boss bar at the top while you are near, and down it leaves the warden wreck and the OVERSEER HOARD of rare parts. The map and its seeded layout are untouched.

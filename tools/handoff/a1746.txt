@@ -1,0 +1,1 @@
+| DROP-IN: A TEAMMATE CAN JOIN A RAID ALREADY UNDER WAY | v17.46 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.46 passes, fails on v17.45 |

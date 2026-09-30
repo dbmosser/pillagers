@@ -1,0 +1,5 @@
+## v17.46 - DROP-IN: A TEAMMATE CAN JOIN A RAID ALREADY UNDER WAY
+
+Co-op hunt while he was away. His pick from the feature list. A teammate in the Undercroft while the host is up top gets a JOIN THE RAID IN PROGRESS button. It asks the host, which answers with its raid, the clock, the time left, where it stands and the bodies already down; the teammate builds the same surface, drops those bodies, takes the clock and comes up beside the host. Dropping out is as before.
+
+MEASURED. Check 17.46 passes, and fails on v17.45.
