@@ -1,0 +1,7 @@
+v17.40: achievements
+
+ACHIEVEMENTS, his pick from the feature list, beside the lifetime stats on the Mainframe. Twelve of them are earned once and kept in the save; the end card names a new one, the Mainframe lists every one with how many are earned, and runs already in the log count the first time the list is drawn.
+
+Check 17.40. Fails on v17.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

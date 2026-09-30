@@ -5721,6 +5721,37 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.40',what:'achievements: a first clean extraction earns FIRST OUT and UNTOUCHED and names them for the end card, the Mainframe lists every achievement with how many are earned, and runs already in the log count the first time the list is drawn',
+   run:function(){
+     if(typeof achRun!=='function'||typeof ACHS==='undefined') return 'this build has no achievements';
+     if(!window.__deploy||!window.__endRaid||!(window.__P&&window.__applyLoaded)||typeof renderStatCards!=='function') return 'SKIP: no raid or Mainframe in this fixture';
+     var bad=[], snap=null, q, el, g=document.getElementById('statgrid');
+     if(!g) return 'SKIP: no stats grid in this document';
+     try{
+       __topClear(); __cleanProfile();
+       snap=JSON.parse(JSON.stringify(__P()));
+       q=__P(); q.ach={}; q.achN={}; q.achScan=1;
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no raid';
+       __endRaid('extract');
+       q=__P();
+       if(!q.ach||!q.ach.firstout) bad.push('a first extraction did not earn FIRST OUT');
+       if(!q.ach||!q.ach.untouched) bad.push('an extraction without a hit did not earn UNTOUCHED');
+       if(!(G&&G.achNew&&G.achNew.some(function(a){ return a.id==='firstout'; }))) bad.push('the new achievement was not handed to the end card');
+       renderStatCards();
+       el=document.getElementById('achlist');
+       if(!el||!/FIRST OUT/.test(el.textContent||'')||!/OF 12/.test(el.textContent||'')) bad.push('the Mainframe does not list the achievements with a count ('+(el?(el.textContent||'').slice(0,80):'no list')+')');
+       q=__P(); q.ach={}; q.achN={}; q.achScan=0;
+       q.log=[{outcome:'extract',haul:25000,kills:{raider:2},dmg:{},downs:0,firstContact:5}];
+       renderStatCards();
+       if(!__P().ach.haul20k) bad.push('a $25,000 extraction already in the log did not earn MOTHERLODE when the list was first drawn');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(snap) __applyLoaded(snap); }catch(_r){}
+       try{ var al=document.getElementById('achlist'); if(al&&al.parentNode) al.parentNode.removeChild(al); }catch(_a){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.39',what:'the co-op score screen: a party raid that ends sends the party a score word and the end card shows a PARTY block, own row filled in, a teammate reading still up top until his word comes, then his result',
    run:function(){
      if(typeof netScoreSend!=='function'||typeof netScoreTake!=='function') return 'this build has no co-op score screen';

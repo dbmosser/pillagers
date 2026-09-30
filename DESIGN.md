@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.40 - ACHIEVEMENTS
+
+Co-op hunt while he was away. His pick from the feature list, beside the lifetime stats he already had. Twelve achievements are earned once and kept in the save: first extraction, big hauls, untouched and never-spotted extractions, kills in a raid, coming back from a down, pillager and machine totals, extracting as a party, and run totals. The end card names a new one and the Mainframe lists them all, earned or locked; runs still in the log count the first time the list is drawn.
+
+MEASURED. Check 17.40 passes, and fails on v17.39.
 ## v17.39 - THE CO-OP SCORE SCREEN
 
 Co-op hunt while he was away. His pick from the feature list. When a player raid ends in a party, his window sends the party his score: how it ended, kills, what he carried out and its worth, downs and revives. Every end card now shows a PARTY block with one row per player, reading still up top for a teammate who is still in the raid until his score comes.
