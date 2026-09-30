@@ -1,0 +1,7 @@
+v17.37: controller rumble
+
+CONTROLLER RUMBLE, his pick from the feature list. Each player controller buzzes when that player is hit (harder for a bigger hit), goes down or is near a blast, with a light tick when firing; on one PC the player 2 buzz goes to the window that reads his controller. Settings has a Controller rumble row, On by default, and a controller nobody has touched for a minute stays still.
+
+Check 17.37. Fails on v17.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

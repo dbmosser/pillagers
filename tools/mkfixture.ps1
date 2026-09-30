@@ -5721,6 +5721,48 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.37',what:'controller rumble: a hit buzzes the pad of the player hit, harder for a bigger hit; the Settings row turns it off; a pad nobody touched for a minute never buzzes; on one PC the player 2 window asks the player 1 window, which buzzes the pad it reads for him',
+   run:function(){
+     if(typeof padRumble!=='function'||typeof RUMBLE!=='object') return 'this build has no controller rumble';
+     if(typeof pollPad!=='function'||typeof damagePlayer!=='function'||typeof netSameOnMsg!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: no raid or pad path in this fixture';
+     var own=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), NG=navigator.getGamepads, calls=[], sent=[], bad=[];
+     var keep={same:NET.same,pair:NET.pair}, oPost=netSamePost, k0=keys, r0=CFG.rumble, sv={gp:RUMBLE.gp,other:RUMBLE.other,usedAt:RUMBLE.usedAt,at:RUMBLE.at,s:RUMBLE.s};
+     function pad(ax){ var b=[],q; for(q=0;q<17;q++) b.push({pressed:false,value:0,touched:false});
+       return {connected:true,id:'rumble check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[ax||0,0,0,0],
+         vibrationActuator:{playEffect:function(t,o){ calls.push(o); return Promise.resolve('complete'); }}}; }
+     function hit(n){ RUMBLE.at=0; RUMBLE.s=0; var p=G.player; p.iv=0; p.hp=100; p.downed=false; damagePlayer(n,'other','check'); }
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||!G.player||G.over) return 'SKIP: staging: no raid';
+       CFG.rumble=1;
+       navigator.getGamepads=function(){ return [pad(0.9)]; }; pollPad();
+       navigator.getGamepads=function(){ return [pad(0)]; }; pollPad();
+       calls.length=0; hit(10);
+       if(!calls.length) bad.push('a hit on a player whose pad is in use did not buzz it');
+       var small=calls.length?calls[calls.length-1].strongMagnitude:0;
+       calls.length=0; hit(40);
+       var big=calls.length?calls[calls.length-1].strongMagnitude:0;
+       if(!(big>small)) bad.push('a bigger hit did not buzz harder ('+small+' then '+big+')');
+       CFG.rumble=0; calls.length=0; hit(20);
+       if(calls.length) bad.push('the pad buzzed with Controller rumble set to Off');
+       CFG.rumble=1; RUMBLE.usedAt=-1e9; calls.length=0; hit(20);
+       if(calls.length) bad.push('a pad nobody touched for a minute buzzed');
+       navigator.getGamepads=function(){ return []; };
+       NET.same='p2'; NET.pair='zqxrum'; RUMBLE.gp=null; RUMBLE.usedAt=performance.now();
+       netSamePost=function(m){ sent.push(m); return true; };
+       hit(20);
+       if(!sent.some(function(m){ return m&&m.t==='rumble'&&m.s>0; })) bad.push('a hit in the player 2 window did not ask the player 1 window to buzz his pad');
+       NET.same='host'; RUMBLE.other=pad(0); calls.length=0;
+       netSameOnMsg({t:'rumble',pair:'zqxrum',s:0.5,ms:120});
+       if(!calls.length) bad.push('the player 1 window did not buzz the pad it reads for player 2');
+     } finally {
+       if(own) navigator.getGamepads=NG; else { try{ delete navigator.getGamepads; }catch(e){} }
+       netSamePost=oPost; NET.same=keep.same; NET.pair=keep.pair; CFG.rumble=r0; keys=k0||{};
+       RUMBLE.gp=sv.gp; RUMBLE.other=sv.other; RUMBLE.usedAt=sv.usedAt; RUMBLE.at=sv.at; RUMBLE.s=sv.s;
+       try{ pollPad(); }catch(e){}
+       try{ __endRaid('abandon'); __topClear(); }catch(e){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.36',what:'a wall broken in a shared raid falls in every window: the player 2 window asks the host instead of breaking its own copy, the host breaks it and tells every window, a wall the host breaks itself is told too, and the player 2 window takes a wall the host names by its build number out of its map and its sight lines',
    run:function(){
      if(typeof damageWall!=='function'||typeof wallHp!=='function'||typeof netEntsPeer!=='function'||typeof netOnMsg!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no party walls';

@@ -1436,7 +1436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.36';
+var VER='17.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12295,6 +12295,8 @@ function pollPad(){
   // front handed over. Outside those modes the first connected pad, as ever, and nothing below this line is asked.
   if(typeof NET!=='undefined'&&NET&&NET.same) gp=netPadTick(gps);
   else for(var i=0;i<gps.length;i++){ if(gps[i]&&gps[i].connected){ gp=gps[i]; break; } }
+  RUMBLE.gp=(gp&&gp.vibrationActuator&&typeof gp.vibrationActuator.playEffect==='function')?gp:null;   // v17.37: the pad this window plays, for padRumble
+  if(gp&&(((gp.buttons||[]).some(function(b){ return b&&(b.pressed||b.value>0.3); }))||((gp.axes||[]).some(function(a){ return Math.abs(a)>0.3; })))) RUMBLE.usedAt=(typeof performance!=='undefined')?performance.now():Date.now();
   if(!gp){ if(PAD.on) padRelease(); PAD.on=false; PAD.prev=[]; PAD.xWas=false; PAD.xDownAt=null; PAD.xSearched=false; PAD.mx=0; PAD.my=0; return; }   // v8.39; v17.00, co-op hunt 2026-09-28: a pad gap forgets the X press too, but not xAfterTrade, which still spends an X held from the stall
   PAD.held=PAD.held||{};
   function padHold(code,down){
@@ -13027,6 +13029,7 @@ function explodeFrag(f){
   // v11.77, HIS ORDER: bigger and harder. 150 to 190, and the two damage lines
   // below moved with it; the saved dial is migrated at cfgv 18.
   var p=G.player,R=(CFG.fragR===undefined?190:CFG.fragR),i;
+  try{ var _rd=Math.hypot(f.x-p.x,f.y-p.y); if(_rd<R*1.6) padRumble(Math.max(0.3,1-_rd/(R*1.6)),230); }catch(_rb){}   // v17.37: a blast near you thumps the pad
   sfx("boom",f.x,f.y);
   if(!G.sim){ spark(f.x,f.y,'#ffcf7a',34,340); decal(f.x,f.y,'#141210',fxn(20,30));   // v8.35
     G.puffs.push({x:f.x,y:f.y,t:0,life:.6,c:'#ffb267',r:52}); }
@@ -13533,6 +13536,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // either field since.
   var p=G.player;
   if(p.iv>0) return;
+  padRumble(Math.min(1,0.3+amt/40),Math.round(110+Math.min(200,amt*6)));   // v17.37: his pick 2, the pad buzzes with the hit
   p.combatT=0;
   // HIS NOTE, 2026-08-26: "add screen shake any time you take damage". Shake was
   // reserved for the loud things, explosions, a wall coming down, a jam, so a
@@ -13649,6 +13653,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
     // takes the crouch toggle off and clears the crouched flag, and the downed branch keeps the stance fresh every frame (the sim
     // bot already reads a downed man as not crouched). No number, dial or seeded draw moved.
 p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null; G.crouchTog=false; G.pCrouch=false;
+  padRumble(1,450);   // v17.37: going down is the longest buzz
     // v12.46, 2026-09-07 audit: AND THE AUTO-JOG STOPS WHEN HE DOES. It is
     // cleared in exactly one place, by a movement key, and that line sits below
     // the early return that runs while he is on the floor, so nothing could
@@ -13935,6 +13940,7 @@ if(wep.mag===0){
   // hits and accuracy climbs past 100 percent
   if(fromPlayer){
     G.player.recoil=1; G.player.combatT=0; G.tel.shots+=shots;
+    padRumble(0.12,35);   // v17.37: a light tick per shot
     G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2);
     // Every round through a gun you own is counted on the profile. Pellets count
     // once: a shotgun blast is one round out of the magazine, not five.
@@ -31581,7 +31587,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.36: Wall sync, co-op hunt 2026-09-28: damageWall spliced G.map.walls and ran rebuildGeometry in whichever window called it, and no word carried it, so after the first break the host (whose geometry decides enemy sight and netBulletPeer) and the player 2 window (whose geometry decides his movement and his rounds, which netShotTake applies with no sight test) held different maps. Every wall now keeps its build number (wid, stamped in buildRaid after clearDecks, the same in every window from the same build, no random draw), because the walls list is spliced as walls fall and an index would shift. On a linked window up top (netEntsPeer) damageWall keeps its hit points and bar but asks the host ({t:wdmg,sd,id,a}) and removes nothing; the host takes the ask through its own damageWall. Whenever a wall falls on the host, from any source, netWallGone tells the party ({t:wall,sd,id}) and netWallTake on each linked window splices that wall, clears its bar and rebuilds its geometry. A keyed door opened in one window is still not told to the others. No number moved and no player text changed. Check 17.36 fails on v17.35',
+  now:'v17.37: CONTROLLER RUMBLE, his pick from the feature list. Each player controller buzzes when that player is hit (harder for a bigger hit), goes down or is near a blast, with a light tick when firing; on one PC the player 2 buzz goes to the window that reads his controller. Settings has a Controller rumble row, On by default, and a controller nobody has touched for a minute stays still. Check 17.37 fails on v17.36',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35804,6 +35810,7 @@ function netSameOnMsg(m){
   if(!m||typeof m!=='object'||typeof m.t!=='string') return 'bad';
   if(!NET.same||!NET.pair||m.pair!==NET.pair) return 'ignored';
   // v15.77: the two controller words, read on either side: a pad state handed over by the window in front, and a pick.
+  if(m.t==='rumble'){ if(!RUMBLE.other) return 'nopad'; return padRumbleOn(RUMBLE.other,+m.s||0,+m.ms||0)?'rumble':'nopad'; }   // v17.37: a buzz the other window asked for, on the pad this window reads for him
   if(m.t==='key'){   // v16.89: a key the player 2 window was given, played here as this window own key
     if(NET.same!=='host') return 'ignored';
     try{ window.dispatchEvent(new KeyboardEvent((m.ty==='keyup')?'keyup':'keydown',{code:String(m.code||''),key:String(m.key||''),repeat:!!m.rep,shiftKey:!!m.sh,ctrlKey:!!m.ct,bubbles:true,cancelable:true})); }catch(_ke){}
@@ -36070,7 +36077,32 @@ function netPadHud(){
 }
 // Called by pollPad with what navigator.getGamepads gave, in a same machine mode only. Live (v16.78 above): hands the other window its
 // pad and returns this window's own, or null. Not in front: returns the state handed over while it is fresh, else null.
-function netPadTick(gps){
+// v17.37, HIS PICK 2 (2026-09-30): CONTROLLER RUMBLE. Each player pad buzzes when that player is hit (harder for a bigger
+// hit), goes down, or is near a blast, with a light tick when he fires. A pad this window reads itself (RUMBLE.gp) buzzes
+// directly; on one PC the window whose pad is handed over asks the other window, which buzzes the pad it reads for him
+// (RUMBLE.other). A pad nobody has touched for a minute never buzzes, so a keyboard player with a pad lying there feels
+// nothing. Settings: Controller rumble, On by default.
+var RUMBLE={gp:null,other:null,usedAt:-1e9,at:0,s:0};
+function padRumbleOn(gp,s,ms){
+  try{
+    var va=gp&&gp.vibrationActuator;
+    if(!va||typeof va.playEffect!=='function'||!(s>0)||!(ms>0)) return false;
+    var pr=va.playEffect('dual-rumble',{startDelay:0,duration:Math.round(Math.min(1000,ms)),strongMagnitude:Math.min(1,s),weakMagnitude:Math.min(1,s*0.6)});
+    if(pr&&typeof pr.catch==='function') pr.catch(function(){});
+    return true;
+  }catch(e){ return false; }
+}
+function padRumble(s,ms){
+  if(CFG.rumble===0||!(s>0)||!(ms>0)) return 'off';
+  if(typeof G!=='undefined'&&G&&G.sim) return 'sim';
+  var now=(typeof performance!=='undefined')?performance.now():Date.now();
+  if(!(now-RUMBLE.usedAt<60000)) return 'idle';
+  if(now-RUMBLE.at<50&&s<=RUMBLE.s) return 'soon';
+  RUMBLE.at=now; RUMBLE.s=s;
+  if(RUMBLE.gp) return padRumbleOn(RUMBLE.gp,s,ms)?'own':'none';
+  if(typeof NET!=='undefined'&&NET&&NET.same&&NET.pair&&typeof netSamePost==='function') return netSamePost({t:'rumble',pair:NET.pair,s:+s.toFixed(2),ms:Math.round(ms)})?'sent':'none';
+  return 'none';
+}function netPadTick(gps){
   var focused=netPadLive(gps), mine, other, fwd=NET.padFwd;   // v16.78: live by data or in front, no longer in front alone
   gps=gps||[];
   if(focused){
@@ -36078,6 +36110,7 @@ function netPadTick(gps){
     NET.padPickOk=(netPadIxOk(NET.padIx)<0)||!!(NET.padIx<gps.length&&gps[NET.padIx]&&gps[NET.padIx].connected);   // v17.26, co-op hunt 2026-09-28: whether this window pick was plugged in on its last live read, for netPadWant
     var was=netPadWasFor();   // v17.27, co-op hunt 2026-09-28: the sides kept from the frame before, so a pad that drops or comes back moves no one else
     other=netPadFor((NET.same==='host')?'p2':'host',NET.padOther,NET.padIx,gps,was);
+    RUMBLE.other=(other>=0&&gps[other])?gps[other]:null;   // v17.37: the pad this window reads for the other player, which buzzes when he asks
     mine=netPadFor(NET.same,NET.padIx,NET.padOther,gps,was);
     if(NET.same==='host') netPadStick(mine,other); else netPadStick(other,mine);
     if(other>=0) netPadSend(gps[other],other,mine);
@@ -40188,6 +40221,12 @@ var GAMEOPTS=[
      {n:'Off', cfg:{superhot:0}},
      {n:'On',  cfg:{superhot:1}}
    ], def:0},
+  {k:'rumble', label:'Controller rumble',
+   hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',
+   opts:[
+     {n:'Off', cfg:{rumble:0}},
+     {n:'On',  cfg:{rumble:1}}
+   ], def:1},
   {k:'raiders', label:'Other pillagers',
    hint:'Human-shaped rivals looting the same map. They fight each other and the machines as well as you.',
    opts:[

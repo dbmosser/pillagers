@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.37 - CONTROLLER RUMBLE
+
+Co-op hunt while he was away. His pick from the feature list. Each player controller buzzes when that player is hit, harder for a bigger hit, goes down, or is near a blast, with a light tick when firing. On one PC the player 2 buzz is sent to the window that reads his controller. A Settings row turns it off, and a controller nobody is using never buzzes.
+
+MEASURED. Check 17.37 passes, and fails on v17.36.
 ## v17.36 - A WALL, A PIECE OF COVER OR A WINDOW BROKEN IN CO-OP NOW FALLS IN EVERY WINDOW
 
 Co-op hunt while he was away. In co-op each window broke only its own copy of the map. Cover a machine had shot away on the host still stood in the player 2 window, so he was hit through a wreck he could see, and furniture he shot out or blew up vanished only for him, so he walked and fired through a gap the host and the enemies did not have. The host now breaks every wall in a raid it runs and tells the party which one fell, and the player 2 window asks the host instead of breaking its own copy.
