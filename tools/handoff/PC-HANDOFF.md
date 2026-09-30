@@ -190,3 +190,15 @@ sound); position gap 38 vs 24 once; timeouts and a downed P2 finished off = test
 (a) the roster fell below two for about 2 s at 12 fps under the heaviest load and P2's raid ended (the old log cut the
 status/err fields; overnight.sh now keeps 1100 chars); (b) a P2 box search landed one more item than the host listed (2 of
 138): the loot failure now prints the backpack before and after and the lines read. Logs: tools/handoff/overnight-0930*.log.
+
+## 2026-09-30: HIS PICKS FROM AAA-GAPS.md, all shipped v17.37-v17.48 (built solo, low tokens, one per build).
+17.37 controller rumble (RUMBLE, padRumble; P2 buzz asked of the window that reads his pad; Settings row); 17.38 CTRL+click
+packs one from the stash (SHIFT already quick-moved a stack); 12 death recap ALREADY EXISTED (HOW IT WENT on the KIA card);
+17.39 co-op score screen (score word t:'sc', PARTY block on the end card); 17.40 achievements (ACHS, P.ach, Mainframe list,
+retro from P.log); 17.41 card; 17.42 stash search and sort (STASH_Q, P.stashSort); 17.43 graphics options (gfxScale, fpsCap,
+fxLevel rows); 17.44 trading in a raid (gift words offer/yes/give/no; T or pad Y with the bag open; item leaves only on yes);
+17.45 THE OVERSEER boss (bossTick at 2 s, lair nearest the map centre, leash 1100, OVERSEER HOARD; made from fixed numbers so
+the build and fingerprint are untouched); 17.46 drop-in (JOIN THE RAID IN PROGRESS; raidq -> late raid word with clock, time
+left, host position and gone bodies); 17.47 hit jolts and death animations (drawing only); 17.48 card.
+Known limits: the boss draws as a big warden in the P2 window (the mirror carries no size); drop-in is tested by check 17.46
+in one window, not yet in the two-window nettest.
