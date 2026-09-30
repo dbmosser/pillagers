@@ -1,0 +1,7 @@
+v17.39: the co-op score screen
+
+THE CO-OP SCORE SCREEN, his pick from the feature list. A party raid that ends sends the party a score word (how it ended, kills, what was carried out and its worth, downs, revives), and every end card shows a PARTY block, one row per player; a teammate still up top reads so until his score arrives, then his row fills in.
+
+Check 17.39. Fails on v17.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

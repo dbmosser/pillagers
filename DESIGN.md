@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.39 - THE CO-OP SCORE SCREEN
+
+Co-op hunt while he was away. His pick from the feature list. When a player raid ends in a party, his window sends the party his score: how it ended, kills, what he carried out and its worth, downs and revives. Every end card now shows a PARTY block with one row per player, reading still up top for a teammate who is still in the raid until his score comes.
+
+MEASURED. Check 17.39 passes, and fails on v17.38.
 ## v17.38 - CTRL AND A CLICK MOVES ONE ITEM FROM THE STASH TO THE BACKPACK
 
 Co-op hunt while he was away. His pick from the feature list: quick move with CTRL. On the Stash screen CTRL and a click on a stash item packs one of it into the backpack, and the key bar names it. SHIFT still packs the whole stack, and a click on a backpack item still puts one back.
