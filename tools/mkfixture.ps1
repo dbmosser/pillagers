@@ -5721,6 +5721,35 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.52',what:'a trade offer stays on screen while it is open: the HUD names who offers what, the keys that take it and the seconds left, the giver sees who it waits on, and the line goes when the offer runs out',
+   run:function(){
+     if(typeof drawGiftLine!=='function') return 'this build shows a trade offer only once in the message feed';
+     if(!window.__deploy||!window.__endRaid||typeof drawHUD!=='function') return 'SKIP: no raid in this fixture';
+     var bad=[], s, o=drawGiftLine, n=0, nm;
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over||!G.player) return 'SKIP: staging: no raid';
+       nm=ITEMS.codex?ITEMS.codex.name:'codex';
+       G.t=50; G.giftIn={id:'tst',k:'codex',from:1,t:50};
+       s=drawGiftLine();
+       if(!s||s.indexOf(nm)<0||s.indexOf('T or Y')<0||s.indexOf('12s')<0) bad.push('an open offer showed '+JSON.stringify(s));
+       G.giftIn.yes=1; if(drawGiftLine()) bad.push('the offer line stayed after the item was taken');
+       G.giftIn={id:'tst',k:'codex',from:1,t:50}; G.t=63;
+       if(drawGiftLine()) bad.push('the offer line stayed after the offer ran out');
+       G.giftIn=null; G.giftOut={id:'out',k:'codex',to:1,t:63};
+       s=drawGiftLine();
+       if(!s||s.indexOf('Offered')<0||s.indexOf(nm)<0) bad.push('the giver saw '+JSON.stringify(s));
+       G.giftOut=null;
+       drawGiftLine=function(){ n++; return null; };
+       try{ drawHUD(); }catch(_h){}
+       if(!n) bad.push('the HUD does not draw the offer line');
+     }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
+     finally{
+       drawGiftLine=o;
+       try{ if(G){ G.giftIn=null; G.giftOut=null; } }catch(_g){}
+       try{ __endRaid('abandon'); __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.51',what:'drop-in can be reached: back on the Undercroft floor with the host up top, JOIN THE RAID IN PROGRESS shows on the page (not inside the hidden terminal panel), and going up at the lift as a teammate asks to join the raid in progress',
    run:function(){
      if(typeof netLateBtn!=='function'||typeof netGuestHeld!=='function'||typeof showScreen!=='function') return 'SKIP: this build has no drop-in';

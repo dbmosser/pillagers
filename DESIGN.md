@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.52 - A TRADE OFFER STAYS ON SCREEN WHILE IT IS OPEN
+
+Co-op hunt while he was away. A trade offer came once in the message feed and faded, so a player on a controller who missed it never knew an item was waiting for him. While an offer to you is open, a line under the boss bar now names who offers what, says T or Y takes it and counts the seconds left; while your own offer is open, it says who it waits on. Drawing only.
+
+MEASURED. Check 17.52 passes, and fails on v17.51.
 ## v17.51 - JOIN THE RAID IN PROGRESS CAN BE REACHED, BY MOUSE AND BY CONTROLLER
 
 Co-op hunt while he was away. A test of drop-in in two real windows found the JOIN THE RAID IN PROGRESS button was put inside the terminal panel, which is hidden while you walk the Undercroft floor, and was only drawn when the PARTY window changed: a teammate back from a raid never saw it, and a controller could never press it. It now sits on the page whenever this window is on the floor and the host is up top, and going up at the lift as a teammate (E, or the sector page ASCEND, so the controller reaches it) asks to join the raid in progress instead of saying only the host can start the raid.

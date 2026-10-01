@@ -465,6 +465,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
           (function aim(){
             var c=entOf(fc,t.id);
             try{ var gk=C.__state(), pk=gk&&gk.player; if(pk&&!gk.over&&!pk.downed&&pk.hp>0) pk.hp=Math.max(pk.hp,pk.maxhp||100); }catch(_k){}   // the step tests C's rounds, not whether C outlives the sentry it stands beside
+            try{ var gh=A.__state(), tg=null; if(gh&&gh.ents){ gh.ents.forEach(function(o){ if(o&&o.nid===t.id) tg=o; }); if(tg) gh.ents.forEach(function(o){ if(o&&o!==tg&&o.hp>0&&Math.hypot(o.x-tg.x,o.y-tg.y)<900) o.cd=Math.max(o.cd||0,1); }); } }catch(_x){}   // the others nearby hold fire on A, the host: a crossfire kill credits nobody and read as a lost kill (overnight 09-30, 10-01)
             try{ if(c) C.__net.stand(c.x-90,c.y); ev(cvC,'mousemove'); n++; if(!down){ down=true; ev(cvC,'mousedown'); } else if(n%8===0){ ev(C,'mouseup'); down=false; } }catch(_a){ log('shots: aim '+_a.message); }   // a click every eight frames, so a gun that fires once per press fires again
             if(Date.now()<tEnd&&entOf(fa,t.id)) setTimeout(aim,16); else { try{ ev(C,'mouseup'); }catch(_b){} res(); }
           })();

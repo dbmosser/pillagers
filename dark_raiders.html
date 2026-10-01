@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.51';
+var VER='17.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25645,7 +25645,25 @@ function cookShout(p){
 function extractNowLine(letter,secs){
   return 'EXTRACT NOW!  '+letter+'  '+Math.max(0,Math.ceil(secs))+'S LEFT';
 }
-// v17.45, his pick 21: the boss bar, top centre, while THE OVERSEER is alive and within 900 of this player.
+// v17.52, polish after his pick 4 (trading): AN OFFER STAYS ON SCREEN WHILE IT IS OPEN. The offer line came once in the
+// message feed and faded, so a player on a controller who missed it never knew an item was waiting. While an offer to this
+// player is open, a line under the boss bar names who offers what, the keys that take it and the seconds left; while this
+// player's own offer is open, it says who it waits on. Drawing only.
+function drawGiftLine(){
+  var gi, go, t, s=null, it, w, y;
+  if(typeof G==='undefined'||!G||G.over||!G.player) return null;
+  gi=G.giftIn; go=G.giftOut;
+  if(gi&&!gi.yes&&(t=GIFT_T-((G.t||0)-gi.t))>0){ it=ITEMS[gi.k]; s=(netSeatName(gi.from)||'Your teammate')+' offers you '+(it?it.name:gi.k)+'.  T or Y to take it.  '+Math.ceil(t)+'s'; }
+  else if(go&&(t=GIFT_T-((G.t||0)-go.t))>0){ it=ITEMS[go.k]; s='Offered '+(it?it.name:go.k)+' to '+(netSeatName(go.to)||'your teammate')+'. Waiting for them to take it.  '+Math.ceil(t)+'s'; }
+  if(!s) return null;
+  y=LH(104);
+  ctx.save(); ctx.font=FS(TYPE.label); ctx.textAlign='center';
+  w=ctx.measureText(s).width;
+  ctx.fillStyle='rgba(6,9,13,.78)'; ctx.fillRect(W/2-w/2-12,y-LH(15),w+24,LH(22));
+  ctx.fillStyle='#ffc04a'; ctx.fillText(s,W/2,y);
+  ctx.restore();
+  return s;
+}// v17.45, his pick 21: the boss bar, top centre, while THE OVERSEER is alive and within 900 of this player.
 function drawBossBar(){
   var e=null, p=G&&G.player, i, w, x, y, f;
   if(!G||G.over||!p||!G.ents) return;
@@ -25662,6 +25680,7 @@ function drawBossBar(){
   ctx.restore();
 }function drawHUD(){
   try{ drawBossBar(); }catch(_bb){}   // v17.45: his pick 21
+  try{ drawGiftLine(); }catch(_gl){}   // v17.52: an open trade offer stays on screen
   var p=G.player,T=G.tel,i;
   hudClampAll();
   ctx.clearRect(0,0,W,H);
@@ -31706,7 +31725,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.51: JOIN THE RAID IN PROGRESS now shows on the Undercroft floor while your host is up top, and going up at the lift as a teammate joins the raid in progress, so player 2 on a controller can drop in too. Check 17.51 fails on v17.50',
+  now:'v17.52: Trading: an open offer now stays on screen with who offers what, T or Y to take it and the seconds left, and the giver sees who it is waiting on. Check 17.52 fails on v17.51',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

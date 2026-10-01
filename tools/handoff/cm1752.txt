@@ -1,0 +1,7 @@
+v17.52: a trade offer stays on screen while it is open
+
+Trading: an open offer now stays on screen with who offers what, T or Y to take it and the seconds left, and the giver sees who it is waiting on.
+
+Check 17.52. Fails on v17.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
