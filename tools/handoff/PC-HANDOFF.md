@@ -213,3 +213,12 @@ in one window, not yet in the two-window nettest.
   hold THE OVERSEER by name and r. It resets CFG first (the soak's random keys can switch SUPERHOT on, which stops the host clock).
   The fixture __topClear only hides the run card and keeps G; a party test must close it with oc_btn as a player does.
 - overnight.sh SECS LOOPS (e.g. 18000 ABC) runs a subset; ABC leaves room for the gate Chrome under the 4-Chrome rule.
+- v17.52 an open trade offer stays on screen (drawGiftLine under the boss bar: who offers what, T or Y, seconds left; giver sees who it waits on).
+- v17.53 a teammate who links while the host is up top is told (welcome carries up: seed via netWelcomeUp; NET.hostSeed set, status says go up at the lift).
+- v17.54 card refresh (WHATSNEW_VER 17.54, PLAYING TOGETHER, SMOOTHER). Next card refresh due by ~17.69.
+- v17.55 in a party raid the backpack header says Y offer to teammate (T on keys), shorter on a narrow panel.
+- v17.56 the kill feed names THE OVERSEER (e.boss), and a linked window says it is down and its hoard is open (netEntDeathFx).
+- nettest.html now also has: tradeStep (A offers by T, C takes with a forwarded pad Y), reloadStep (C's iframe reloads mid-raid, relinks
+  ~0.5 s, told by the welcome, ENTER THE UNDERCROFT via #titlestart, JOIN, same seed and clock). Nearby bodies hold fire (cd) while C
+  shoots, so crossfire no longer reads as a lost kill. soakloop prints trade/drop/relink ms. DO NOT ship while a soak batch runs: the
+  ship rebuilds fixture.html and a reloaded C comes back on the new VER, which the host rightly refuses (the step now says so).
