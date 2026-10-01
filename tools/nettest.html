@@ -712,6 +712,43 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       if(n!==1) bad.push('trade: C holds '+n+' of the item, not one');
     },function(e){ var a=A.__state(), c=C.__state(); throw new Error(e.message+' (A bag '+JSON.stringify(a&&a.bag)+', C bag '+JSON.stringify(c&&c.bag)+', C giftIn '+JSON.stringify(c&&c.giftIn)+')'); });
   }
+  // RELOAD (v17.53): A goes up with C, then C's window is reloaded, as when player 2's window is closed and opened again in a
+  // raid. C must boot as player 2 and link again within 30 s, be told the host is in a raid (the welcome), show JOIN THE RAID
+  // IN PROGRESS once in the Undercroft, and be up top on A's seed within 5 s of pressing it. Resolves with the new window.
+  function reloadStep(A,C,bad,rep){
+    var ua=null, C2=null, t0=0;
+    [A,C].forEach(function(w){ try{ if(w.__resetCfg) w.__resetCfg(); }catch(e){} });
+    [fa,fc].forEach(function(f){ var g=W(f).__state(), b=el(f,'oc_btn'); if(g&&g.over&&b) b.click(); });
+    clearFloor(fa); clearFloor(fc);
+    var tries=0;   // A may still be watching the last raid (a host spectates until the party is back), so the ascent is tried again
+    return wait(function(){ if(A.__net.up().on) return 'none'; var m=el(fc,'askmodal'), y=el(fc,'askyes'); if(m&&m.classList.contains('on')&&y) return y; if(tries++%10===0){ try{ A.__deploy({kit:[],safe:null,mapIx:0,seed:4242}); }catch(e){} } return null; },8000,'copy C to be asked for its kit, or A to go up (A PARTY status: '+(st(fa).status||'')+')').then(function(y){
+      if(y!=='none') y.click();
+      return wait(function(){ return A.__net.up().on?1:null; },3000,'copy A to go up');
+    }).then(function(){
+      ua=A.__net.up(); t0=Date.now();
+      W(fc).__preReload=1; W(fc).location.reload();   // the window object stays the same across a reload; the mark does not
+      return sleep(500);
+    }).then(function(){
+      return wait(function(){ var w=W(fc); return (w&&!w.__preReload&&w.__net&&w.__net.p2&&st(fa).roster.length===2&&st(fc).roster.length===2)?w:null; },30000,'copy C to boot again as player 2 and link');
+    }).then(function(w){
+      C2=w; rep.relinkMs=Date.now()-t0;
+      if(!A.__net.up().on) throw new Error('copy A left the raid when C reloaded');
+      log('reload: C linked again '+rep.relinkMs+' ms after the reload; C PARTY status: '+(st(fc).status||''));
+      if(!/lift/.test(st(fc).status||'')) bad.push('reload: C was not told the host is in a raid ('+(st(fc).status||'')+')');
+      try{ var tl=el(fc,'title'), ts=el(fc,'titlestart'); if(tl&&ts&&tl.classList.contains('on')) ts.click(); else if(C2.__hubEnter) C2.__hubEnter(); }catch(e){}   // ENTER THE UNDERCROFT, as player 2 does (the fixture hook opens the floor before it shuts the title)
+      clearFloor(fc);
+      return wait(function(){ return el(fc,'joinlate')||null; },3000,'copy C to show JOIN THE RAID IN PROGRESS after it reloaded');
+    }).then(function(b){
+      b.click();
+      return wait(function(){ var u=C2.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top on A seed after it reloaded and pressed JOIN');
+    }).then(function(){
+      var ga=A.__state(), gc=C2.__state();
+      log('reload: C is up top again; clocks A '+ga.t.toFixed(1)+' C '+gc.t.toFixed(1));
+      if(Math.abs(ga.t-gc.t)>3) bad.push('reload: C is on clock '+gc.t.toFixed(1)+', A on '+ga.t.toFixed(1));
+      comeDown(A,C2);
+      return sleep(500).then(function(){ return C2; });
+    });
+  }
   function raidStep(A,C,bad,rep){
     if(typeof A.__net.up!=='function'||typeof C.__net.up!=='function'||typeof A.__endRaid!=='function'||typeof A.__deploy!=='function'){
       bad.push('this fixture has no up top view in its net handle (a build before v15.79), so the raid step cannot run');
@@ -901,6 +938,8 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       return raidStep(A,C,bad,rep).then(null,function(e){ bad.push('raid: '+e.message); });
     }).then(function(){
       return dropStep(A,C,bad,rep).then(null,function(e){ bad.push('drop-in: '+e.message); comeDown(A,C); });
+    }).then(function(){
+      return reloadStep(A,C,bad,rep).then(function(c2){ if(c2) C=c2; },function(e){ bad.push('reload: '+e.message); if(W(fc)&&W(fc).__net) C=W(fc); comeDown(A,C); });
     }).then(function(){
       if(ls(MAIN)!==ls0.main) bad.push('the main save changed while the party went up top');
       if(ls(AS)!==ls0.as) bad.push('the save pointer changed while the party went up top');
