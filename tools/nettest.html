@@ -538,6 +538,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     ba=boxOf(fa,box.cid); n=ba?ba.n:0;
     log('loot: the nearest unopened box to C is number '+box.cid+' ('+box.ty+') at '+xy(box)+', '+Math.round(bd)+' units off; A lists '+n+' items in it, '+(ba?ba.tm:'?')+' s to search');
     if(!ba||!n){ bad.push('loot: copy A lists no items in box '+box.cid); return Promise.resolve(); }
+    var op0={}; vc.list.forEach(function(q){ if(q.op) op0[q.cid]=1; });   // the boxes already open, to name any other the hold opens
     bagC0=vc.bag.length; bagA0=va.bag.length; itC0=itemsC(); rep.lootBag0=vc.bag.slice();
     C.__net.stand(box.x+6,box.y);
     clearFloor(fc);
@@ -545,13 +546,15 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     return sleep(250).then(function(){
       var holdMs=Math.round((ba.tm||1)*1200+600), held, watch; msgs=[];
       t0=Date.now();
-      held=hold(fc,'KeyE','e',holdMs);
+      var CW=W(fc), KE=CW.KeyboardEvent, eUpd=false; function eUp(){ if(eUpd) return; eUpd=true; CW.dispatchEvent(new KE('keyup',{code:'KeyE',key:'e',bubbles:true,cancelable:true})); }
+      CW.dispatchEvent(new KE('keydown',{code:'KeyE',key:'e',bubbles:true,cancelable:true}));   // E is let go once the listed items are in: held longer it searches the next box at C's feet (overnight 10-01: a Wire from a pile)
+      held=sleep(holdMs).then(eUp);
       watch=wait(function(){
         var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid), bc=itemsC()-itC0, gm;
         try{ gm=C.__state(); if(gm&&gm.msg&&msgs.indexOf(gm.msg)<0) msgs.push(gm.msg); }catch(_m){}
         if(a&&a.op&&tA===null) tA=Date.now();
         if(c&&c.op&&tC===null) tC=Date.now();
-        if(bc>=n&&tBag===null) tBag=Date.now();
+        if(bc>=n&&tBag===null){ tBag=Date.now(); eUp(); }
         return (tA!==null&&tC!==null&&tBag!==null)?true:null;
       },holdMs+1500,'the box to read searched on both copies with the loot in C');
       return Promise.all([held,watch]);
@@ -564,7 +567,8 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       if(!msgs.some(function(q){ return (/^Took /).test(q); })) bad.push('loot: C never read a Took line naming what it pulled');
       rep.lootItems=bc; rep.lootMs=Math.max(Math.abs(tA-tBag),Math.abs(tC-tBag),Math.abs(tA-tC));
       log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C (its backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'); A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
-      if(bc!==n) bad.push('loot: '+bc+' items landed in C, not the '+n+' A listed (box '+box.cid+' held '+JSON.stringify((ba&&ba.keys)||null)+'; backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'; lines '+JSON.stringify(msgs)+')');
+      var opn=vc2.list.filter(function(q){ return q.op&&!op0[q.cid]&&q.cid!==box.cid; }).map(function(q){ return q.cid+' '+q.ty; });
+      if(bc!==n) bad.push('loot: '+bc+' items landed in C, not the '+n+' A listed (other boxes opened in the hold: '+JSON.stringify(opn)+'; box '+box.cid+' held '+JSON.stringify((ba&&ba.keys)||null)+'; backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'; lines '+JSON.stringify(msgs)+')');
       if(rep.lootMs>500) bad.push('loot: the copies took '+rep.lootMs+' ms to agree the box is searched with the loot in C (the limit is 500)');
       if(va2.bag.length!==bagA0) bad.push('loot: copy A own backpack gained '+(va2.bag.length-bagA0)+' from C search');
       if(a&&a.n) bad.push('loot: A still lists '+a.n+' items in the box');
