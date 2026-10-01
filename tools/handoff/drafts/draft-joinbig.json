@@ -1,0 +1,16 @@
+{
+    "title":  "JOIN THE RAID IN PROGRESS IS BIGGER AND NAMES THE LIFT",
+    "why":  "On the Undercroft floor the join button was 13 px lettering at the top edge, small beside the station names, easy to miss from the couch. It is now 20 px with a second line, or go up at ENTER RAID!, since the lift joins the raid in progress too.",
+    "now":  "JOIN THE RAID IN PROGRESS is bigger on the Undercroft floor and says you can also go up at ENTER RAID!",
+    "edits":  [
+                  {
+                      "anchor":  "    b.textContent=\u0027JOIN THE RAID IN PROGRESS\u0027;",
+                      "replacement":  "    b.innerHTML=\u0027JOIN THE RAID IN PROGRESS\u003cdiv style=\"font-size:12px;letter-spacing:.06em;opacity:.85;margin-top:3px\"\u003eor go up at ENTER RAID!\u003c/div\u003e\u0027;   // v16.xx: and the lift, which joins too"
+                  },
+                  {
+                      "anchor":  "    b.style.cssText=\u0027position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:30;padding:6px 18px\u0027;",
+                      "replacement":  "    b.style.cssText=\u0027position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:30;padding:10px 28px;font-size:20px;letter-spacing:.08em\u0027;   // v16.xx: big enough to see from the couch"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027JOIN THE RAID IN PROGRESS is big enough to see from the couch (20 px lettering at least) and says the lift joins too\u0027,\n   run:function(){\n     if(typeof netLateBtn!==\u0027function\u0027||typeof NET!==\u0027object\u0027||!NET||!window.__hubEnter) return \u0027SKIP: this build has no drop-in\u0027;\n     var NK={}, k, bad=[], st0=state, G0=G, b, fs, r;\n     for(k in NET) NK[k]=NET[k];\n     try{\n       __runPrep(); __hubEnter();\n       G=null; NET.on=true; NET.role=\u0027join\u0027; NET.seat=1; NET.hostSeed=4242; state=\u0027hub\u0027;\n       try{ var ob=document.getElementById(\u0027joinlate\u0027); if(ob\u0026\u0026ob.parentNode) ob.parentNode.removeChild(ob); }catch(_o){}\n       netLateBtn(); b=document.getElementById(\u0027joinlate\u0027);\n       if(!b) return \u0027SKIP: staging: no join button\u0027;\n       fs=parseFloat(getComputedStyle(b).fontSize); r=b.getBoundingClientRect();\n       if(!(fs\u003e=20)) bad.push(\u0027the join button lettering is \u0027+fs+\u0027 px\u0027);\n       if(!/ENTER RAID/.test(b.textContent||\u0027\u0027)) bad.push(\u0027the join button does not say the lift joins too (\u0027+b.textContent+\u0027)\u0027);\n       if(b.textContent.indexOf(\u0027JOIN THE RAID IN PROGRESS\u0027)!==0) bad.push(\u0027the join button no longer leads with JOIN THE RAID IN PROGRESS\u0027);\n       if(!(r.top\u003e=0\u0026\u0026r.left\u003e=0\u0026\u0026r.right\u003c=innerWidth)) bad.push(\u0027the join button runs off the screen\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       for(k in NET) if(!(k in NK)) delete NET[k];\n       for(k in NK) NET[k]=NK[k];\n       try{ var jb=document.getElementById(\u0027joinlate\u0027); if(jb\u0026\u0026jb.parentNode) jb.parentNode.removeChild(jb); }catch(_j){}\n       G=G0; state=st0;\n       try{ __topClear(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

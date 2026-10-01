@@ -5721,6 +5721,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.61',what:'JOIN THE RAID IN PROGRESS is big enough to see from the couch (20 px lettering at least) and says the lift joins too',
+   run:function(){
+     if(typeof netLateBtn!=='function'||typeof NET!=='object'||!NET||!window.__hubEnter) return 'SKIP: this build has no drop-in';
+     var NK={}, k, bad=[], st0=state, G0=G, b, fs, r;
+     for(k in NET) NK[k]=NET[k];
+     try{
+       __runPrep(); __hubEnter();
+       G=null; NET.on=true; NET.role='join'; NET.seat=1; NET.hostSeed=4242; state='hub';
+       try{ var ob=document.getElementById('joinlate'); if(ob&&ob.parentNode) ob.parentNode.removeChild(ob); }catch(_o){}
+       netLateBtn(); b=document.getElementById('joinlate');
+       if(!b) return 'SKIP: staging: no join button';
+       fs=parseFloat(getComputedStyle(b).fontSize); r=b.getBoundingClientRect();
+       if(!(fs>=20)) bad.push('the join button lettering is '+fs+' px');
+       if(!/ENTER RAID/.test(b.textContent||'')) bad.push('the join button does not say the lift joins too ('+b.textContent+')');
+       if(b.textContent.indexOf('JOIN THE RAID IN PROGRESS')!==0) bad.push('the join button no longer leads with JOIN THE RAID IN PROGRESS');
+       if(!(r.top>=0&&r.left>=0&&r.right<=innerWidth)) bad.push('the join button runs off the screen');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       for(k in NET) if(!(k in NK)) delete NET[k];
+       for(k in NK) NET[k]=NK[k];
+       try{ var jb=document.getElementById('joinlate'); if(jb&&jb.parentNode) jb.parentNode.removeChild(jb); }catch(_j){}
+       G=G0; state=st0;
+       try{ __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.60',what:'drop-in: a stale mark that the host is up top clears: the host answering it is not up takes JOIN THE RAID IN PROGRESS away, and a welcome from a host below clears the mark',
    run:function(){
      if(typeof netOnMsg0!=='function'||typeof netLateBtn!=='function') return 'SKIP: this build has no drop-in';

@@ -1,0 +1,7 @@
+v17.61: join the raid in progress is bigger and names the lift
+
+JOIN THE RAID IN PROGRESS is bigger on the Undercroft floor and says you can also go up at ENTER RAID!
+
+Check 17.61. Fails on v17.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
