@@ -222,3 +222,7 @@ in one window, not yet in the two-window nettest.
   ~0.5 s, told by the welcome, ENTER THE UNDERCROFT via #titlestart, JOIN, same seed and clock). Nearby bodies hold fire (cd) while C
   shoots, so crossfire no longer reads as a lost kill. soakloop prints trade/drop/relink ms. DO NOT ship while a soak batch runs: the
   ship rebuilds fixture.html and a reloaded C comes back on the new VER, which the host rightly refuses (the step now says so).
+- v17.57 a ping on THE OVERSEER names it (netPingName). v17.58 a late join takes down the walls the host already has down (m.wg,
+  NET.wallN0). v17.59 a late join gets the map markers already placed.
+- TOOLING: gate.ps1 leaked a tab per ship on Chrome 9344 (48 tabs, 12.8 GB, starving the 6 GB floor); fixed. soakloop.ps1 now copies
+  fixture.html to fixture-soak-PORT.html per run, so shipping during a soak is safe again.
