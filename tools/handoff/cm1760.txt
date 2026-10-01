@@ -1,0 +1,7 @@
+v17.60: a stale host up top mark clears
+
+JOIN THE RAID IN PROGRESS goes away if your host turns out not to be up top.
+
+Check 17.60. Fails on v17.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

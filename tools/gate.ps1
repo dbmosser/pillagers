@@ -6,7 +6,7 @@ param([string]$NN,[string]$V,[switch]$Fix,[int]$Port=8806,[int]$Cdp=9333)
 $c=Join-Path $PSScriptRoot 'cdp.ps1'
 function Ev([string]$m,[string]$e,[int]$t=180){ powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match $m -Expr $e -TimeoutSec $t }
 function OpenWait([string]$url,[string]$m,[string]$ready){
-  (Invoke-RestMethod http://127.0.0.1:$Cdp/json) | Where-Object { $_.url -like "*$m*" -or $_.url -like "*localhost:$Port/*" } | ForEach-Object { Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/close/"+$_.id) | Out-Null }
+  (Invoke-RestMethod http://127.0.0.1:$Cdp/json) | Where-Object { $_.url -like "*$m*" -or ($_.url -like "*localhost:$Port/*" -and $_.url -notlike "*$NN.html*") } | ForEach-Object { Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/close/"+$_.id) | Out-Null }
   $t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:$Cdp/json/new?"+$url); Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/activate/"+$t.id) | Out-Null
   for($i=0;$i -lt 60;$i++){ Start-Sleep -Milliseconds 500; $r=Ev $m $ready 10; if($r -eq 'true'){ return } }
   Write-Output "TIMEOUT loading $url"

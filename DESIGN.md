@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.60 - A STALE HOST UP TOP MARK CLEARS
+
+Co-op hunt while he was away. A teammate keeps the mark that the host is up top until the host out word comes. If that word was missed, JOIN THE RAID IN PROGRESS stayed on the floor for good: pressing it only got the answer that the host is not up top, and the button stayed. That answer now clears the mark and takes the button away, and a welcome from a host below clears an old mark too. The answer also says your host, which fits a party linked by code as well.
+
+MEASURED. Check 17.60 passes, and fails on v17.59.
 ## v17.59 - A LATE TEAMMATE SEES THE MAP MARKERS ALREADY PLACED
 
 Co-op hunt while he was away. A map marker goes out to the party once, when it is placed. A teammate who joined the raid in progress never saw the host marker (or another teammate marker) placed before he came up. The join answer now sends the markers already placed, but never his own back.

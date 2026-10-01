@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.59';
+var VER='17.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31731,7 +31731,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.59: JOIN THE RAID IN PROGRESS: map markers your party already placed show for the teammate who joins. Check 17.59 fails on v17.58',
+  now:'v17.60: JOIN THE RAID IN PROGRESS goes away if your host turns out not to be up top. Check 17.60 fails on v17.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35634,7 +35634,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
   if(m.t==='sc') return netScoreTake(peer,m);   // v17.39: a teammate score for the end card
   if(m.t==='gift') return netGiftTake(peer,m);   // v17.44: his pick 4, an offer, a yes, a hand-over or a no
   if(m.t==='raidq') return netLateReply(peer);   // v17.46: his pick 3, a teammate asks to join late
-  if(m.t==='raidno'){ NET.status='Player 1 is not up top.'; netRefresh(); return 'raidno'; }
+  if(m.t==='raidno'){ NET.hostSeed=0; NET.status='Your host is not up top.'; netRefresh(); return 'raidno'; }   // v17.60: a stale mark clears with the answer
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='wdmg'||m.t==='wall') return netWallTake(peer,m);   // v17.36, co-op hunt 2026-09-28: a hit on a wall asked of the host, or a wall that fell, from the host
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
@@ -35687,6 +35687,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
       hn='';
       for(i=0;i<NET.roster.length;i++) if(NET.roster[i].host) hn=NET.roster[i].name;
       NET.reply=''; NET.err=''; NET.status='You are in the party hosted by '+(hn||'your host')+'.';
+      NET.hostSeed=0;   // v17.60: the welcome says whether the host is up; an old mark does not outlive it
       if(typeof m.up==='number'&&m.up>0){ NET.hostSeed=m.up>>>0; NET.status+=' They are in a raid now: go up at the lift to join it.'; }   // v17.53: a teammate who links late can drop in
       netSay(NET.status);
       netRefresh();
