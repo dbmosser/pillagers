@@ -5721,6 +5721,51 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.66',what:'his ruling 2026-10-01: a teammate who died or extracted cannot join that raid again (no button, the lift says so, the host refuses); one who abandoned can',
+   run:function(){
+     if(typeof netLateReply!=='function'||typeof netUpEnd!=='function'||typeof netLateBtn!=='function') return 'SKIP: this build has no drop-in';
+     if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||!window.__hubEnter) return 'SKIP: no raid or party in this fixture';
+     var NK={}, k, bad=[], sent=[], oSend=netSend, oB=netBroadcast, oSay=say, oNS=netSay, oSwf=sayWhenFree, st0=state, sd, peer, held, w;
+     for(k in NET) NK[k]=NET[k];
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over||!G.player) return 'SKIP: staging: no raid';
+       netSend=function(p,m){ sent.push(m); return true; }; netBroadcast=function(m){ sent.push(m); };
+       say=function(){}; netSay=function(){}; sayWhenFree=function(){};
+       sd=G.seed>>>0;
+       NET.on=true; NET.role='join'; NET.seat=1; NET.max=4; NET.peers=[{seat:0,state:'in'}]; NET.lateBan=0;
+       NET.upSeed=sd; netUpEnd('dead');
+       G=null; state='hub'; __hubEnter(); NET.hostSeed=sd;
+       try{ var o0=document.getElementById('joinlate'); if(o0&&o0.parentNode) o0.parentNode.removeChild(o0); }catch(_o){}
+       netLateBtn();
+       if(document.getElementById('joinlate')) bad.push('a teammate who died was offered JOIN THE RAID IN PROGRESS for that raid');
+       sent.length=0; held=netGuestHeld();
+       if(!held) bad.push('a teammate who died was let up alone at the lift');
+       if(sent.some(function(m){ return m&&m.t==='raidq'; })) bad.push('the lift asked to join the raid a teammate died in');
+       NET.lateBan=0; NET.upSeed=sd; netUpEnd('abandon'); NET.hostSeed=sd; netLateBtn();
+       if(!document.getElementById('joinlate')) bad.push('a teammate who abandoned was not offered JOIN THE RAID IN PROGRESS');
+       NET.on=false; NET.role=null; NET.peers=[];   // a window counted as a teammate is held at the lift, so the host raid is built outside the party
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no host raid';
+       NET.on=true;
+       peer={seat:1,state:'in'}; NET.role='host'; NET.seat=0; NET.peers=[peer]; NET.lateOut={};
+       netUpAnnounce(G);
+       netUpWord(peer,{t:'up',st:'out',how:'extract'});
+       sent.length=0; netLateReply(peer);
+       if(sent.some(function(m){ return m&&m.t==='raid'; })) bad.push('the host let a teammate who extracted back into the raid');
+       if(!sent.some(function(m){ return m&&m.t==='raidno'&&m.why==='out'; })) bad.push('the host did not tell the teammate who extracted he is out of this raid');
+       NET.lateOut={}; netUpWord(peer,{t:'up',st:'out',how:'abandon'});
+       sent.length=0; netLateReply(peer);
+       if(!sent.some(function(m){ return m&&m.t==='raid'; })) bad.push('the host refused a teammate who abandoned');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       netSend=oSend; netBroadcast=oB; say=oSay; netSay=oNS; sayWhenFree=oSwf; state=st0;
+       for(k in NET) if(!(k in NK)) delete NET[k];
+       for(k in NK) NET[k]=NK[k];
+       try{ var jb=document.getElementById('joinlate'); if(jb&&jb.parentNode) jb.parentNode.removeChild(jb); }catch(_j){}
+       try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.65',what:'the what is new card is stamped within 0.15 of the build and has a line on knowing where your teammate is',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';

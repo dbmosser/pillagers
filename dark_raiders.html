@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.65';
+var VER='17.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31732,7 +31732,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.65: The what is new card names the party notices, the late join fixes, the backpack offer hint and the boss by name. Check 17.65 fails on v17.64',
+  now:'v17.66: A teammate who died or extracted sits out the rest of that raid; leaving any other way (abandon, a closed window, a lost link) can still JOIN THE RAID IN PROGRESS. Check 17.66 fails on v17.65',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35635,7 +35635,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
   if(m.t==='sc') return netScoreTake(peer,m);   // v17.39: a teammate score for the end card
   if(m.t==='gift') return netGiftTake(peer,m);   // v17.44: his pick 4, an offer, a yes, a hand-over or a no
   if(m.t==='raidq') return netLateReply(peer);   // v17.46: his pick 3, a teammate asks to join late
-  if(m.t==='raidno'){ NET.hostSeed=0; NET.status='Your host is not up top.'; netRefresh(); return 'raidno'; }   // v17.60: a stale mark clears with the answer
+  if(m.t==='raidno'){ NET.hostSeed=0; NET.status=(m.why==='out')?'You are out of this raid. You go up with your host next time.':'Your host is not up top.'; netRefresh(); return 'raidno'; }   // v17.66: and the answer to one who died or extracted in it
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='wdmg'||m.t==='wall') return netWallTake(peer,m);   // v17.36, co-op hunt 2026-09-28: a hit on a wall asked of the host, or a wall that fell, from the host
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
@@ -36530,6 +36530,7 @@ function netUpAnnounce(g){
 function netGuestHeld(){
   if(typeof NET==='object'&&NET&&NET.specG){ netSay('Cannot ascend while your party is still in the raid.'); return true; }   // v16.14: a spectating host does not go up again
   if(typeof NET!=='object'||!NET||!NET.on||NET.role!=='join'||NET.upHold||!netInCount()) return false;
+  if(NET.hostSeed&&(NET.lateBan>>>0)===(NET.hostSeed>>>0)){ netSay('You are out of this raid. You go up with your host next time.'); return true; }   // v17.66, his ruling 2026-10-01
   if(NET.hostSeed&&!(typeof G!=='undefined'&&G&&!G.over)){ netLateAsk(); netSay('Your party is up top. Joining their raid in progress.'); return true; }   // v17.51: the lift joins a raid in progress
   netSay('Only the host can start the raid. You ascend with them.');
   return true;
@@ -36619,6 +36620,7 @@ function netLateReply(peer){
   var gone=[], id, n;
   if(!peer||peer.state!=='in'||NET.role!=='host') return 'ignored';
   if(!NET.upWord||typeof G==='undefined'||!G||G.over||G.sim||!G.player){ netSend(peer,{t:'raidno'}); return 'no raid'; }
+  if(NET.lateOut&&NET.lateOut[peer.seat]===(NET.upWord.seed>>>0)){ netSend(peer,{t:'raidno',why:'out'}); return 'out'; }   // v17.66, his ruling: he died or extracted in this raid
   n=(G.nidN|0);
   for(id=1;id<n&&gone.length<600;id++) if(!NET.entMap||!NET.entMap[id]) gone.push(id);
   var m={}, k; for(k in NET.upWord) if(Object.prototype.hasOwnProperty.call(NET.upWord,k)) m[k]=NET.upWord[k];
@@ -36667,7 +36669,7 @@ function netLateAsk(){
 }
 function netLateBtn(){
   var hub=document.body, b=document.getElementById('joinlate'), want, tt=document.getElementById('title');   // v17.51: on the page, not in the hidden terminal panel
-  want=!!(hub&&NET.on&&NET.role==='join'&&NET.hostSeed&&state==='hub'&&!(tt&&tt.classList.contains('on'))&&!(typeof G!=='undefined'&&G&&!G.over));
+  want=!!(hub&&NET.on&&NET.role==='join'&&NET.hostSeed&&(NET.lateBan>>>0)!==(NET.hostSeed>>>0)&&state==='hub'&&!(tt&&tt.classList.contains('on'))&&!(typeof G!=='undefined'&&G&&!G.over));
   if(!want){ if(b&&b.parentNode) b.parentNode.removeChild(b); return false; }
   if(!b){
     b=document.createElement('button'); b.id='joinlate'; b.className='deploy';
@@ -36737,6 +36739,7 @@ function netUpWord(peer,m){
   // v17.63: a teammate whose raid ended is named in the raid of the others, as the host is (spec): killed, extracted or abandoned.
   // Before, the host was told nothing and found his teammate gone from the screen.
   if(st==='out'&&s!==0&&typeof G!=='undefined'&&G&&!G.over&&!G.sim){ hw=netClean(m.how,12); hw=(hw==='dead')?'killed':(hw==='extract')?'extracted':(hw==='abandon')?'abandoned':''; try{ sayWhenFree(nm+' is out of this raid'+(hw?' ('+hw+')':'')+'.'); }catch(_so){} }  if(st==='no'){ NET.status=nm+' could not go up with you: '+netUpWhyText(m.why)+'.'; netRefresh(); try{ if(typeof G!=='undefined'&&G&&!G.over) sayWhenFree(NET.status); }catch(_sn){} }
+  if(NET.role==='host'&&st==='out'&&(m.how==='dead'||m.how==='extract')&&NET.upWord){ if(!NET.lateOut) NET.lateOut={}; NET.lateOut[s]=NET.upWord.seed>>>0; }   // v17.66, his ruling: that seat sits this raid out
   if(NET.role==='host'){
     out={t:'up',s:s,st:st}; if(m.why!==undefined) out.why=netClean(m.why,24); if(m.how!==undefined) out.how=netClean(m.how,12);
     if(st==='in') netContHello(peer); else if(st==='out') netSrchEndSeat(s);   // v15.91: a window that came up is told which boxes are open and held; one whose raid ended lets go of the box it was searching
@@ -36795,6 +36798,7 @@ function netScoreDraw(){
   return el.innerHTML;
 }function netUpEnd(how){
   if(!NET.on) return false;
+  if(NET.role==='join'&&(how==='dead'||how==='extract')&&NET.upSeed) NET.lateBan=NET.upSeed>>>0;   // v17.66, his ruling 2026-10-01: no rejoining a raid you died or extracted in
   setTimeout(function(){ try{ voiceProxAll(); }catch(_vp){} },0);   // v16.10: back to full voices once the raid is let go
   NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;
   NET.entMap={}; NET.entGone={}; NET.entN=0; NET.entRot=0; NET.entLast=-1;   // v15.80: the bodies of this raid are let go

@@ -1,0 +1,7 @@
+v17.66: no rejoining a raid you died or extracted in
+
+A teammate who died or extracted sits out the rest of that raid; leaving any other way (abandon, a closed window, a lost link) can still JOIN THE RAID IN PROGRESS.
+
+Check 17.66. Fails on v17.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

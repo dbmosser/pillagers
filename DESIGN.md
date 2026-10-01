@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.66 - NO REJOINING A RAID YOU DIED OR EXTRACTED IN
+
+Co-op hunt while he was away. His ruling of 2026-10-01: a teammate who died or extracted could press JOIN THE RAID IN PROGRESS and go straight back into the same raid with a fresh kit, a respawn that takes the sting out of dying. Now he sits that raid out: no join button for it, the lift says he goes up with his host next time, and the host refuses it too (so a window reopened after dying cannot slip back in). A teammate who abandoned, or whose window closed or lost the link, can still join.
+
+MEASURED. Check 17.66 passes, and fails on v17.65.
 ## v17.65 - THE WHAT IS NEW CARD NAMES KNOWING WHERE YOUR TEAMMATE IS
 
 Co-op hunt while he was away. The card was stamped v17.54. It now says what changed for playing together since: the join and out notices, the bigger join button, a late join seeing fallen walls and markers and paying only for its own time, the backpack offer hint, and the boss named in pings and the kill feed.
