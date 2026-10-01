@@ -1,0 +1,7 @@
+v17.54: the what is new card names the smoother party play
+
+The what is new card names the smoother party play: drop-in from the Undercroft or the lift, the trade offer line, and the boss drawn to its size.
+
+Check 17.54. Fails on v17.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

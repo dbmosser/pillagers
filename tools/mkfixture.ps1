@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.54',what:'the what is new card is stamped within 0.15 of the build and has a line on the smoother party play (drop-in from the lift, the trade offer line)',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle='PLAYING TOGETHER,'+' SMOOTHER';
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)>=0; })) bad.push('no line of the card names the smoother party play');
+     return bad.length?bad.join('; '):null; }},
   {v:'17.53',what:'drop-in after a window comes back: a teammate who links while the host is up top is told the raid it is in, keeps it for JOIN THE RAID IN PROGRESS and is told to go up at the lift; with the host below, nothing changes',
    run:function(){
      if(typeof netOnMsg0!=='function'||typeof netLateBtn!=='function') return 'SKIP: this build has no drop-in';

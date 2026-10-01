@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.54 - THE WHAT IS NEW CARD NAMES THE SMOOTHER PARTY PLAY
+
+Co-op hunt while he was away. The card was stamped v17.48. It now says what changed for playing together since: JOIN THE RAID IN PROGRESS shows in the Undercroft and the lift joins the raid too (also after a window was closed and opened again), an open trade offer stays on screen, and THE OVERSEER is drawn to its size.
+
+MEASURED. Check 17.54 passes, and fails on v17.53.
 ## v17.53 - A TEAMMATE WHO LINKS WHILE THE HOST IS UP TOP CAN DROP IN
 
 Co-op hunt while he was away. The raid word goes out once, when the host ascends. A window that linked later (player 2 opened late, or his window closed and was opened again during a raid) never heard the host was up: no JOIN THE RAID IN PROGRESS, and the lift said only the host can start the raid. The welcome a host sends now carries the raid it is in, and the teammate keeps it and is told to go up at the lift to join.
