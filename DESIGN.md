@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.51 - JOIN THE RAID IN PROGRESS CAN BE REACHED, BY MOUSE AND BY CONTROLLER
+
+Co-op hunt while he was away. A test of drop-in in two real windows found the JOIN THE RAID IN PROGRESS button was put inside the terminal panel, which is hidden while you walk the Undercroft floor, and was only drawn when the PARTY window changed: a teammate back from a raid never saw it, and a controller could never press it. It now sits on the page whenever this window is on the floor and the host is up top, and going up at the lift as a teammate (E, or the sector page ASCEND, so the controller reaches it) asks to join the raid in progress instead of saying only the host can start the raid.
+
+MEASURED. Check 17.51 passes, and fails on v17.50.
 ## v17.50 - A LATE TEAMMATE IS TOLD ABOUT BODIES THAT CAME UP AFTER THE BUILD
 
 Co-op hunt while he was away. A teammate who joined a raid in progress got the host raid and the bodies already down, but not the words about bodies that came up after the build (THE OVERSEER, and anyone else who walked in later). Its window drew them from the position updates alone: the boss had no name, no boss bar and a plain warden size. The host now sends those words right after the raid word, for those bodies only.

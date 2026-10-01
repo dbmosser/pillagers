@@ -645,6 +645,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
   function dropStep(A,C,bad,rep){
     if(typeof C.__state!=='function'||typeof A.__deploy!=='function') return Promise.resolve();
     var ua=null, t1=0;
+    [fa,fc].forEach(function(f){ var g=W(f).__state(), b=el(f,"oc_btn"); if(g&&g.over&&b) b.click(); });   // the run card closed with its button, as a player does (__topClear only hides it)
     clearFloor(fa); clearFloor(fc);
     A.__deploy({kit:[],safe:null,mapIx:0,seed:4242});
     return wait(function(){ if(A.__net.up().on) return 'none'; var m=el(fc,'askmodal'), y=el(fc,'askyes'); return (m&&m.classList.contains('on')&&y)?y:null; },3000,'copy C to be asked for its kit, or A to go up').then(function(y){
@@ -652,9 +653,11 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       return wait(function(){ return A.__net.up().on?1:null; },3000,'copy A to go up');
     }).then(function(){
       ua=A.__net.up();
-      return wait(function(){ var u=C.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top on the same seed');
+      return wait(function(){ var u=C.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top on the same seed').then(null,function(e){
+        var uc=C.__net.up(), gc=C.__state(); throw new Error('C up '+uc.on+' seed '+uc.seed+' over '+uc.over+' G '+(gc?(gc.seed+' over '+gc.over+' sim '+gc.sim):'none')+' err '+(st(fc).err||'').slice(0,160)+' (A up '+ua.on+' seed '+ua.seed+'; C PARTY status: '+(st(fc).status||'')+' / '+(st(fc).err||'')+'; A status: '+(st(fa).status||'')+')');
+      });
     }).then(function(){
-      C.__endRaid('abandon'); try{ C.__topClear(); }catch(e){}
+      C.__endRaid("abandon"); var ob=el(fc,"oc_btn"); if(ob) ob.click();
       return wait(function(){ return el(fc,'joinlate')||null; },3000,'copy C to show JOIN THE RAID IN PROGRESS after it abandoned with A up');
     }).then(function(){
       if(!A.__net.up().on) throw new Error('copy A left the raid when C abandoned');

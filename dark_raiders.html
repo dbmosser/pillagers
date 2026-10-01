@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.50';
+var VER='17.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30905,6 +30905,7 @@ function drawHubHUD(ox,oy){
 var state='hub',lastTs=0;
 function showScreen(s){
   state=s;
+  try{ netLateBtn(); }catch(_nlb){}   // v17.51: the drop-in button comes and goes with the floor
   // The terminal panel is now a station you walk to, not the hub itself.
   document.getElementById('hub').classList.remove('on');
   // v8.12, audit: and every window with it. A modal opened at a station used to
@@ -31705,7 +31706,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.50: JOIN THE RAID IN PROGRESS: a teammate who joins late now sees THE OVERSEER and anyone who came up after the start with their names and sizes, as the host does. Check 17.50 fails on v17.49',
+  now:'v17.51: JOIN THE RAID IN PROGRESS now shows on the Undercroft floor while your host is up top, and going up at the lift as a teammate joins the raid in progress, so player 2 on a controller can drop in too. Check 17.51 fails on v17.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36497,6 +36498,7 @@ function netUpAnnounce(g){
 function netGuestHeld(){
   if(typeof NET==='object'&&NET&&NET.specG){ netSay('Cannot ascend while your party is still in the raid.'); return true; }   // v16.14: a spectating host does not go up again
   if(typeof NET!=='object'||!NET||!NET.on||NET.role!=='join'||NET.upHold||!netInCount()) return false;
+  if(NET.hostSeed&&!(typeof G!=='undefined'&&G&&!G.over)){ netLateAsk(); netSay('Your party is up top. Joining their raid in progress.'); return true; }   // v17.51: the lift joins a raid in progress
   netSay('Only the host can start the raid. You ascend with them.');
   return true;
 }
@@ -36618,13 +36620,13 @@ function netLateAsk(){
   return netSend(q,{t:'raidq'});
 }
 function netLateBtn(){
-  var hub=document.getElementById('hub'), b=document.getElementById('joinlate'), want;
-  want=!!(hub&&NET.on&&NET.role==='join'&&NET.hostSeed&&state==='hub'&&!(typeof G!=='undefined'&&G&&!G.over));
+  var hub=document.body, b=document.getElementById('joinlate'), want, tt=document.getElementById('title');   // v17.51: on the page, not in the hidden terminal panel
+  want=!!(hub&&NET.on&&NET.role==='join'&&NET.hostSeed&&state==='hub'&&!(tt&&tt.classList.contains('on'))&&!(typeof G!=='undefined'&&G&&!G.over));
   if(!want){ if(b&&b.parentNode) b.parentNode.removeChild(b); return false; }
   if(!b){
     b=document.createElement('button'); b.id='joinlate'; b.className='deploy';
     b.textContent='JOIN THE RAID IN PROGRESS';
-    b.style.cssText='position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:30;padding:6px 18px';
+    b.style.cssText='position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:30;padding:6px 18px';
     b.onclick=function(){ netLateAsk(); };
     hub.appendChild(b);
   }

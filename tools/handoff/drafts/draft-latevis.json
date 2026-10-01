@@ -1,0 +1,28 @@
+{
+    "title":  "JOIN THE RAID IN PROGRESS CAN BE REACHED, BY MOUSE AND BY CONTROLLER",
+    "why":  "A test of drop-in in two real windows found the JOIN THE RAID IN PROGRESS button was put inside the terminal panel, which is hidden while you walk the Undercroft floor, and was only drawn when the PARTY window changed: a teammate back from a raid never saw it, and a controller could never press it. It now sits on the page whenever this window is on the floor and the host is up top, and going up at the lift as a teammate (E, or the sector page ASCEND, so the controller reaches it) asks to join the raid in progress instead of saying only the host can start the raid.",
+    "now":  "JOIN THE RAID IN PROGRESS now shows on the Undercroft floor while your host is up top, and going up at the lift as a teammate joins the raid in progress, so player 2 on a controller can drop in too.",
+    "edits":  [
+                  {
+                      "anchor":  "  var hub=document.getElementById(\u0027hub\u0027), b=document.getElementById(\u0027joinlate\u0027), want;",
+                      "replacement":  "  var hub=document.body, b=document.getElementById(\u0027joinlate\u0027), want, tt=document.getElementById(\u0027title\u0027);   // v16.xx: on the page, not in the hidden terminal panel"
+                  },
+                  {
+                      "anchor":  "  want=!!(hub\u0026\u0026NET.on\u0026\u0026NET.role===\u0027join\u0027\u0026\u0026NET.hostSeed\u0026\u0026state===\u0027hub\u0027\u0026\u0026!(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over));",
+                      "replacement":  "  want=!!(hub\u0026\u0026NET.on\u0026\u0026NET.role===\u0027join\u0027\u0026\u0026NET.hostSeed\u0026\u0026state===\u0027hub\u0027\u0026\u0026!(tt\u0026\u0026tt.classList.contains(\u0027on\u0027))\u0026\u0026!(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over));"
+                  },
+                  {
+                      "anchor":  "    b.style.cssText=\u0027position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:30;padding:6px 18px\u0027;",
+                      "replacement":  "    b.style.cssText=\u0027position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:30;padding:6px 18px\u0027;"
+                  },
+                  {
+                      "anchor":  "function showScreen(s){\n  state=s;",
+                      "replacement":  "function showScreen(s){\n  state=s;\n  try{ netLateBtn(); }catch(_nlb){}   // v16.xx: the drop-in button comes and goes with the floor"
+                  },
+                  {
+                      "anchor":  "  netSay(\u0027Only the host can start the raid. You ascend with them.\u0027);",
+                      "replacement":  "  if(NET.hostSeed\u0026\u0026!(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over)){ netLateAsk(); netSay(\u0027Your party is up top. Joining their raid in progress.\u0027); return true; }   // v16.xx: the lift joins a raid in progress\n  netSay(\u0027Only the host can start the raid. You ascend with them.\u0027);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027drop-in can be reached: back on the Undercroft floor with the host up top, JOIN THE RAID IN PROGRESS shows on the page (not inside the hidden terminal panel), and going up at the lift as a teammate asks to join the raid in progress\u0027,\n   run:function(){\n     if(typeof netLateBtn!==\u0027function\u0027||typeof netGuestHeld!==\u0027function\u0027||typeof showScreen!==\u0027function\u0027) return \u0027SKIP: this build has no drop-in\u0027;\n     if(typeof NET!==\u0027object\u0027||!NET||!window.__hubEnter) return \u0027SKIP: no party or floor in this fixture\u0027;\n     var NK={}, k, sent=[], bad=[], oSend=netSend, oSay=netSay, st0=state, G0=G, b, r, held;\n     for(k in NET) NK[k]=NET[k];\n     try{\n       __runPrep(); __hubEnter();\n       netSend=function(p,m){ sent.push(m); return true; };\n       netSay=function(){};\n       G=null; NET.on=true; NET.role=\u0027join\u0027; NET.seat=1; NET.max=4; NET.peers=[{seat:0,state:\u0027in\u0027}]; NET.upHold=false; NET.specG=null; NET.hostSeed=4242;\n       showScreen(\u0027hub\u0027);\n       b=document.getElementById(\u0027joinlate\u0027);\n       if(!b) bad.push(\u0027no JOIN THE RAID IN PROGRESS button on the floor after coming back down with the host up\u0027);\n       else{\n         r=b.getBoundingClientRect();\n         if(!(r.width\u003e0\u0026\u0026r.height\u003e0)) bad.push(\u0027the join button is there but not shown (\u0027+Math.round(r.width)+\u0027x\u0027+Math.round(r.height)+\u0027)\u0027);\n       }\n       sent.length=0; held=netGuestHeld();\n       if(!held) bad.push(\u0027a teammate going up at the lift with the host up top was let up alone\u0027);\n       if(!sent.some(function(m){ return m\u0026\u0026m.t===\u0027raidq\u0027; })) bad.push(\u0027going up at the lift with the host up top did not ask to join the raid in progress\u0027);\n       NET.hostSeed=0; showScreen(\u0027hub\u0027);\n       if(document.getElementById(\u0027joinlate\u0027)) bad.push(\u0027the join button stayed with the host back down\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       netSend=oSend; netSay=oSay;\n       for(k in NET) if(!(k in NK)) delete NET[k];\n       for(k in NK) NET[k]=NK[k];\n       try{ var jb=document.getElementById(\u0027joinlate\u0027); if(jb\u0026\u0026jb.parentNode) jb.parentNode.removeChild(jb); }catch(_j){}\n       G=G0; state=st0;\n       try{ __topClear(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

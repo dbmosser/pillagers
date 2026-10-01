@@ -1,0 +1,7 @@
+v17.51: join the raid in progress can be reached, by mouse and by controller
+
+JOIN THE RAID IN PROGRESS now shows on the Undercroft floor while your host is up top, and going up at the lift as a teammate joins the raid in progress, so player 2 on a controller can drop in too.
+
+Check 17.51. Fails on v17.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
