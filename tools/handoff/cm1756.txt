@@ -1,0 +1,7 @@
+v17.56: the overseer by name in a party
+
+THE OVERSEER in a party: the kill feed names it, and both windows say when it is down and its hoard is open.
+
+Check 17.56. Fails on v17.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

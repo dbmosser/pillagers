@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.56 - THE OVERSEER BY NAME IN A PARTY
+
+Co-op hunt while he was away. When THE OVERSEER went down in a party the kill feed said WARDEN, and only the host window said it is down and its hoard is open: the teammate saw the hoard appear with no word. The feed now names the boss, and a linked window that sees it go down says the same line the host does.
+
+MEASURED. Check 17.56 passes, and fails on v17.55.
 ## v17.55 - IN A PARTY RAID THE BACKPACK SAYS HOW TO OFFER AN ITEM
 
 Co-op hunt while he was away. Y on a controller (T on keys) in the backpack offers the selected item to the nearest teammate, but nothing on screen said so: the backpack header named only its own keys. In a party raid it now starts with Y offer to teammate (T on keys), said shorter on a narrow panel. Solo and in the Undercroft the line is as it was.

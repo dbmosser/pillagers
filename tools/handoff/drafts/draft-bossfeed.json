@@ -1,0 +1,16 @@
+{
+    "title":  "THE OVERSEER BY NAME IN A PARTY",
+    "why":  "When THE OVERSEER went down in a party the kill feed said WARDEN, and only the host window said it is down and its hoard is open: the teammate saw the hoard appear with no word. The feed now names the boss, and a linked window that sees it go down says the same line the host does.",
+    "now":  "THE OVERSEER in a party: the kill feed names it, and both windows say when it is down and its hoard is open.",
+    "edits":  [
+                  {
+                      "anchor":  "  var who=(e.kind===\u0027raider\u0027\u0026\u0026e.name)?netClean(e.name,24):String(e.kind||\u0027\u0027).toUpperCase();",
+                      "replacement":  "  var who=((e.kind===\u0027raider\u0027||e.boss)\u0026\u0026e.name)?netClean(e.name,24):String(e.kind||\u0027\u0027).toUpperCase();   // v16.xx: the boss by its name"
+                  },
+                  {
+                      "anchor":  "  try{ deathAnimAdd(e); }catch(_dz){}   // v17.47: his pick 29, the death animation in a linked window",
+                      "replacement":  "  try{ deathAnimAdd(e); }catch(_dz){}   // v17.47: his pick 29, the death animation in a linked window\n  if(e\u0026\u0026e.name===BOSS_NAME){ try{ say(BOSS_NAME+\u0027 is down. Its hoard is open.\u0027); }catch(_bs){} }   // v16.xx: the teammate hears the boss go down, as the host does"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027THE OVERSEER by name in a party: the kill feed names it, not WARDEN, and a linked window that sees it go down is told its hoard is open\u0027,\n   run:function(){\n     if(typeof netFeedKill!==\u0027function\u0027||typeof netEntDeathFx!==\u0027function\u0027||typeof BOSS_NAME===\u0027undefined\u0027) return \u0027SKIP: this build has no kill feed or no boss\u0027;\n     if(!window.__deploy||!window.__endRaid) return \u0027SKIP: no raid in this fixture\u0027;\n     var bad=[], oB=netBroadcast, oP=netFeedPush, oSay=say, lines=[], w;\n     try{\n       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!G||G.over||!G.player) return \u0027SKIP: staging: no raid\u0027;\n       netBroadcast=function(){ return 0; }; netFeedPush=function(){ return 0; };\n       say=function(t){ lines.push(String(t)); };\n       w=netFeedKill(1,{kind:\u0027warden\u0027,boss:1,name:BOSS_NAME,hp:0});\n       if(w!==BOSS_NAME) bad.push(\u0027the kill feed names the boss \u0027+JSON.stringify(w));\n       w=netFeedKill(1,{kind:\u0027warden\u0027,name:\u0027\u0027,hp:0});\n       if(w!==\u0027WARDEN\u0027) bad.push(\u0027the kill feed names a plain warden \u0027+JSON.stringify(w));\n       netEntDeathFx({kind:\u0027warden\u0027,name:BOSS_NAME,x:G.player.x+300,y:G.player.y,r:44,face:0,hp:0,maxhp:4000});\n       if(!lines.some(function(t){ return t.indexOf(BOSS_NAME+\u0027 is down\u0027)===0; })) bad.push(\u0027a linked window that saw the boss go down said \u0027+JSON.stringify(lines).slice(0,160));\n     }catch(ex){ bad.push(\u0027threw: \u0027+(ex\u0026\u0026ex.message||ex)); }\n     finally{\n       netBroadcast=oB; netFeedPush=oP; say=oSay;\n       try{ if(G) G.deathAnims=[]; __endRaid(\u0027abandon\u0027); __topClear(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
