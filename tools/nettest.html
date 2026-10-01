@@ -678,9 +678,33 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       if(!ba) bad.push('drop-in: A holds no boss 3 s into the raid');
       else if(!bc) bad.push('drop-in: C does not hold THE OVERSEER A holds');
       else if(bc&&(bc.name!==ba.name||bc.r!==ba.r)) bad.push('drop-in: C holds the boss as '+JSON.stringify(bc.name)+' r '+bc.r);
-      comeDown(A,C);
-      return sleep(500);
+      return tradeStep(A,C,bad,rep).then(null,function(e){ bad.push('trade: '+e.message); }).then(function(){ comeDown(A,C); return sleep(500); });
     });
+  }
+  // TRADE (v17.44): with both up top after the drop-in and C beside A, A opens its bag on one item and presses T; C must be
+  // offered it within 1.5 s and press T to take it; then it must have left A's bag and be in C's, once, within 2 s.
+  function tradeStep(A,C,bad,rep){
+    var ga=A.__state(), gc=C.__state(), K='codex', t0=0;
+    if(!ga||!gc||!ga.player||!gc.player||ga.over||gc.over) return Promise.reject(new Error('both windows must be up top'));
+    [ga,gc].forEach(function(g){ g.player.hp=g.player.maxhp||100; });
+    if(Math.hypot(gc.player.x-ga.player.x,gc.player.y-ga.player.y)>150){ gc.player.x=ga.player.x+40; gc.player.y=ga.player.y; }
+    ga.bag=[K]; gc.bag=[]; ga.bagOpen=false; gc.bagOpen=false;
+    return sleep(700).then(function(){
+      ga.bagOpen=true; ga.bagSel=0; t0=Date.now();
+      return hold(fa,'KeyT','t',80);
+    }).then(function(){
+      ga.bagOpen=false;
+      return wait(function(){ var g=C.__state(); return (g&&g.giftIn&&g.giftIn.k===K)?g.giftIn:null; },1500,'copy C to be offered the item A gave (A says: '+((A.__state()||{}).giftOut?'offered':'no offer')+')');
+    }).then(function(){
+      return hold(fc,'KeyT','t',80);
+    }).then(function(){
+      return wait(function(){ var a=A.__state(), c=C.__state(); return (a&&c&&a.bag.indexOf(K)<0&&c.bag.indexOf(K)>=0)?1:null; },2000,'the item to leave A and reach C');
+    }).then(function(){
+      var a=A.__state(), c=C.__state(), n=c.bag.filter(function(k){ return k===K; }).length;
+      rep.tradeMs=Date.now()-t0;
+      log('trade: A gave '+K+' to C in '+rep.tradeMs+' ms; A bag '+JSON.stringify(a.bag)+', C bag '+JSON.stringify(c.bag));
+      if(n!==1) bad.push('trade: C holds '+n+' of the item, not one');
+    },function(e){ var a=A.__state(), c=C.__state(); throw new Error(e.message+' (A bag '+JSON.stringify(a&&a.bag)+', C bag '+JSON.stringify(c&&c.bag)+', C giftIn '+JSON.stringify(c&&c.giftIn)+')'); });
   }
   function raidStep(A,C,bad,rep){
     if(typeof A.__net.up!=='function'||typeof C.__net.up!=='function'||typeof A.__endRaid!=='function'||typeof A.__deploy!=='function'){
