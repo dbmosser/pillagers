@@ -768,7 +768,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     var t0=0, used='W', a0=null, how='', sa=st(fa).seat, sc=st(fc).seat, ua=null;
     // the Settings dials back to their defaults in both windows: the last run's soak can leave one moved by a random click in the
     // pause box, and it rides the host save into this run (10-01: C hit nothing across six bodies, and the run after it).
-    [A,C].forEach(function(w){ try{ if(w.__resetCfg) w.__resetCfg(); }catch(e){} });
+    [A,C].forEach(function(w,ix){ try{ if(w.__resetCfg){ var ch=w.__resetCfg(); if(ch&&typeof ch==='object'&&Object.keys(ch).length){ rep.cfgReset=(rep.cfgReset||'')+(ix?'C:':'A:')+Object.keys(ch).join(',')+' '; log('settings put back before the raid on '+(ix?'C':'A')+': '+JSON.stringify(ch)); } } }catch(e){} });
     clearFloor(fa); clearFloor(fc);
     function ascend(){
       try{
