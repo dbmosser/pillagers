@@ -1,0 +1,7 @@
+v17.49: the overseer is drawn to its size
+
+THE OVERSEER now looks the part: it is drawn about half again as big as a plain warden, in both windows of a party.
+
+Check 17.49. Fails on v17.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

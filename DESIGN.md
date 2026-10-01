@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.49 - THE OVERSEER IS DRAWN TO ITS SIZE
+
+Co-op hunt while he was away. THE OVERSEER is a warden with half again the body (44 across its feet, a warden is 30), but it was drawn exactly like a plain warden, so it looked like any other one, in both windows. It is now drawn scaled up around where it stands. Its size already rides the word the second window gets when it comes up, so both windows show it big.
+
+MEASURED. Check 17.49 passes, and fails on v17.48.
 ## v17.48 - THE WHAT IS NEW CARD NAMES TRADING, DROP-IN AND THE BOSS
 
 Co-op hunt while he was away. His picks v17.42 to v17.47 were not on the card. One line names trading, drop-in, THE OVERSEER, stash search and sort, the graphics options and the hit and death animation, and the stamp moves to this build.

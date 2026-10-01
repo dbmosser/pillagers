@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.48';
+var VER='17.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22739,6 +22739,16 @@ function drawDeathAnims(){
     wc.restore();
   }
   return G.deathAnims.length;
+}
+// v17.49, polish after his pick 21: THE OVERSEER is drawn to its size. A warden body is 30 across its feet; a bigger one (the
+// boss, 44) is drawn scaled up around where it stands, in every window, since its size rides the word that announces it.
+function wardenDrawScale(e){ var r=e&&+e.r; return (r>34&&r<80)?r/30:1; }
+function drawWardenAt(e){
+  var s=wardenDrawScale(e);
+  if(s===1){ drawWardenS(e); return 1; }
+  wc.save(); wc.translate(e.x,e.y); wc.scale(s,s); wc.translate(-e.x,-e.y);
+  try{ drawWardenS(e); } finally { wc.restore(); }
+  return s;
 }function drawWardenS(e){
   var x=e.x,y=e.y,tread=Math.sin(G.t*3+x*.01)*1.5;
   shadowE(x,y+2,26,8,.45);
@@ -24414,7 +24424,7 @@ var SHD=G.shells[i];
         wc.restore();
       }
       if(e2.kind==='choir') drawChoirS(e2);
-      else if(e2.kind==='warden') drawWardenS(e2);
+      else if(e2.kind==='warden') drawWardenAt(e2);   // v17.49: the boss is drawn to its size
       else if(e2.kind==='sentry') drawSentryS(e2);
       else if(e2.kind==='crawler') drawCrawlerS(e2);
       else if(e2.kind==='snitch') drawSnitchS(e2);
@@ -31695,7 +31705,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.48: THE WHAT IS NEW CARD NAMES TRADING, DROP-IN AND THE BOSS: one line for his picks v17.42 to v17.47 (trading, drop-in, THE OVERSEER, stash search and sort, graphics options, hit and death animation), and the stamp moves to this build. Check 17.48 fails on v17.47',
+  now:'v17.49: THE OVERSEER now looks the part: it is drawn about half again as big as a plain warden, in both windows of a party. Check 17.49 fails on v17.48',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

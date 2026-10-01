@@ -5721,6 +5721,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.49',what:'THE OVERSEER is drawn to its size: a warden with the boss radius is drawn about half again as big as a plain warden, around where it stands, and a plain warden is drawn as before',
+   run:function(){
+     if(typeof drawWardenAt!=='function'||typeof wardenDrawScale!=='function') return 'this build draws the boss at a plain warden size';
+     if(typeof wc==='undefined'||!wc||typeof wc.getTransform!=='function'||!window.__deploy) return 'SKIP: no world canvas in this fixture';
+     var bad=[], o=drawWardenS, seen=[], a, b;
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no raid';
+       drawWardenS=function(e){ var t=wc.getTransform(); seen.push({a:t.a,x:t.a*e.x+t.e,y:t.d*e.y+t.f}); };
+       wc.save(); wc.setTransform(1,0,0,1,0,0);
+       drawWardenAt({kind:'warden',x:500,y:400,r:30,face:0});
+       drawWardenAt({kind:'warden',x:500,y:400,r:44,face:0,name:'THE OVERSEER',boss:1});
+       wc.restore();
+       a=seen[0]; b=seen[1];
+       if(!a||!b) bad.push('a warden was not drawn');
+       else{
+         if(Math.abs(a.a-1)>0.001) bad.push('a plain warden was drawn at scale '+a.a);
+         if(!(b.a>1.4&&b.a<1.55)) bad.push('the boss was drawn at scale '+b.a.toFixed(2)+', not about 1.47');
+         if(Math.abs(b.x-500)>0.5||Math.abs(b.y-400)>0.5) bad.push('the bigger boss is not drawn where it stands ('+b.x.toFixed(1)+','+b.y.toFixed(1)+')');
+       }
+     }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
+     finally{
+       drawWardenS=o;
+       try{ __endRaid('abandon'); __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.48',what:'the what is new card is stamped within 0.15 of the build and has a line on trading, drop-in and the boss',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';
