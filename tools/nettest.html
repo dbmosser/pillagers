@@ -729,7 +729,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       W(fc).__preReload=1; W(fc).location.reload();   // the window object stays the same across a reload; the mark does not
       return sleep(500);
     }).then(function(){
-      return wait(function(){ var w=W(fc); return (w&&!w.__preReload&&w.__net&&w.__net.p2&&st(fa).roster.length===2&&st(fc).roster.length===2)?w:null; },30000,'copy C to boot again as player 2 and link');
+      return wait(function(){ var w=W(fc); return (w&&!w.__preReload&&w.__net&&w.__net.p2&&st(fa).roster.length===2&&st(fc).roster.length===2)?w:null; },30000,'copy C to boot again as player 2 and link').then(null,function(e){ var w=W(fc), cv=(w&&w.__net)?w.__net.ver:'?'; throw new Error(e.message+' (A v'+A.__net.ver+', C v'+cv+(cv!==A.__net.ver?': a ship rebuilt the fixture mid-run, not a fault':'')+'; A PARTY error: '+(st(fa).err||'none')+')'); });
     }).then(function(w){
       C2=w; rep.relinkMs=Date.now()-t0;
       if(!A.__net.up().on) throw new Error('copy A left the raid when C reloaded');
