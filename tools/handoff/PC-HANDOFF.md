@@ -202,3 +202,14 @@ the build and fingerprint are untouched); 17.46 drop-in (JOIN THE RAID IN PROGRE
 left, host position and gone bodies); 17.47 hit jolts and death animations (drawing only); 17.48 card.
 Known limits: the boss draws as a big warden in the P2 window (the mirror carries no size); drop-in is tested by check 17.46
 in one window, not yet in the two-window nettest.
+
+## 2026-09-30 evening (he is away 7 h, low-token polish)
+- v17.49 THE OVERSEER is drawn to its size (drawWardenAt scales a warden with r>34 around its feet; both windows, r rides the new word).
+- v17.50 a late teammate gets the ent 'new' words for bodies numbered after the build (NET.entBuilt), so the boss has its name, size and bar.
+- v17.51 REAL BUG found by the new two-window drop-in step: #joinlate was appended to #hub (the terminal panel, hidden on the floor)
+  and only drawn from netRefresh. It is now position:fixed on document.body, refreshed from showScreen, and a guest going up at the
+  lift (netGuestHeld) with the host up top asks to join late, so a pad player can drop in.
+- nettest.html dropStep: A goes up, C abandons, closes its card with oc_btn, presses JOIN, must be on A's seed, clock within 3 s and
+  hold THE OVERSEER by name and r. It resets CFG first (the soak's random keys can switch SUPERHOT on, which stops the host clock).
+  The fixture __topClear only hides the run card and keeps G; a party test must close it with oc_btn as a player does.
+- overnight.sh SECS LOOPS (e.g. 18000 ABC) runs a subset; ABC leaves room for the gate Chrome under the 4-Chrome rule.
