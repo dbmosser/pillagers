@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.58';
+var VER='17.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31731,7 +31731,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.58: JOIN THE RAID IN PROGRESS: walls already blown open in the raid are open for the teammate who joins too. Check 17.58 fails on v17.57',
+  now:'v17.59: JOIN THE RAID IN PROGRESS: map markers your party already placed show for the teammate who joins. Check 17.59 fails on v17.58',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36630,6 +36630,9 @@ function netLateReply(peer){
   if(!netSend(peer,m)) return 'lost';
   // v17.50: then every body that came up after the build (the boss, a late crew), which the late window never heard announced
   for(id=0;id<G.ents.length;id++) if(G.ents[id]&&G.ents[id].nid>=(NET.entBuilt||1e9)) netSend(peer,netEntNewWord(G.ents[id]));
+  // v17.59: and the map markers already placed (the host's, and any other teammate's), which went out once, as they were placed
+  if(G.waypoint&&typeof G.waypoint.x==='number') netSend(peer,{t:'wp',x:Math.round(G.waypoint.x),y:Math.round(G.waypoint.y)});
+  if(NET.wps) for(id in NET.wps) if(Object.prototype.hasOwnProperty.call(NET.wps,id)&&(id|0)!==peer.seat&&NET.wps[id]&&typeof NET.wps[id].x==='number') netSend(peer,{t:'wp',s:id|0,x:Math.round(NET.wps[id].x),y:Math.round(NET.wps[id].y)});
   return 'sent';
 }
 function netLateApply(m){

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.59 - A LATE TEAMMATE SEES THE MAP MARKERS ALREADY PLACED
+
+Co-op hunt while he was away. A map marker goes out to the party once, when it is placed. A teammate who joined the raid in progress never saw the host marker (or another teammate marker) placed before he came up. The join answer now sends the markers already placed, but never his own back.
+
+MEASURED. Check 17.59 passes, and fails on v17.58.
 ## v17.58 - A LATE TEAMMATE SEES THE WALLS ALREADY DOWN
 
 Co-op hunt while he was away. A wall that falls goes out to the party once, as it falls. A teammate who joined the raid in progress built every wall fresh, so he stood behind walls the host had already blown open, blocked by them and his shots stopped by them, while the host saw open ground. The join answer now names the walls already down (by the number each wall keeps from the build) and the late window takes them down before its first frame.

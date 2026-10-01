@@ -1,0 +1,7 @@
+v17.59: a late teammate sees the map markers already placed
+
+JOIN THE RAID IN PROGRESS: map markers your party already placed show for the teammate who joins.
+
+Check 17.59. Fails on v17.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

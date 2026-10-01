@@ -1,0 +1,5 @@
+## v17.59 - A LATE TEAMMATE SEES THE MAP MARKERS ALREADY PLACED
+
+Co-op hunt while he was away. A map marker goes out to the party once, when it is placed. A teammate who joined the raid in progress never saw the host marker (or another teammate marker) placed before he came up. The join answer now sends the markers already placed, but never his own back.
+
+MEASURED. Check 17.59 passes, and fails on v17.58.
