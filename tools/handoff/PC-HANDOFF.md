@@ -233,3 +233,5 @@ in one window, not yet in the two-window nettest.
   any other box opened during the hold is named. Drop-in step also takes a wall down on A first.
 - OPEN QUESTION TO HIM (asked 2026-10-01): block JOIN THE RAID IN PROGRESS after dying or extracting from that raid (my suggestion:
   yes; still allowed after a closed window or a link drop). Nothing changed until he answers.
+- v17.66 HIS RULING 2026-10-01: no rejoining a raid you died or extracted in (join: NET.lateBan set in netUpEnd; host: NET.lateOut[seat]
+  from the out word, netLateReply answers raidno why out). Abandon, a closed window or a lost link can still rejoin. Two-window test still passes.
