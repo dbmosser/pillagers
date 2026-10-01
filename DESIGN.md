@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.50 - A LATE TEAMMATE IS TOLD ABOUT BODIES THAT CAME UP AFTER THE BUILD
+
+Co-op hunt while he was away. A teammate who joined a raid in progress got the host raid and the bodies already down, but not the words about bodies that came up after the build (THE OVERSEER, and anyone else who walked in later). Its window drew them from the position updates alone: the boss had no name, no boss bar and a plain warden size. The host now sends those words right after the raid word, for those bodies only.
+
+MEASURED. Check 17.50 passes, and fails on v17.49.
 ## v17.49 - THE OVERSEER IS DRAWN TO ITS SIZE
 
 Co-op hunt while he was away. THE OVERSEER is a warden with half again the body (44 across its feet, a warden is 30), but it was drawn exactly like a plain warden, so it looked like any other one, in both windows. It is now drawn scaled up around where it stands. Its size already rides the word the second window gets when it comes up, so both windows show it big.

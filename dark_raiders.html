@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.49';
+var VER='17.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31705,7 +31705,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.49: THE OVERSEER now looks the part: it is drawn about half again as big as a plain warden, in both windows of a party. Check 17.49 fails on v17.48',
+  now:'v17.50: JOIN THE RAID IN PROGRESS: a teammate who joins late now sees THE OVERSEER and anyone who came up after the start with their names and sizes, as the host does. Check 17.50 fails on v17.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36590,7 +36590,10 @@ function netLateReply(peer){
   var m={}, k; for(k in NET.upWord) if(Object.prototype.hasOwnProperty.call(NET.upWord,k)) m[k]=NET.upWord[k];
   m.late={t:+(+G.t||0).toFixed(2),left:(typeof G.timeLeft==='number')?+G.timeLeft.toFixed(2):null,x:Math.round(G.player.x),y:Math.round(G.player.y)};
   m.gone=gone;
-  return netSend(peer,m)?'sent':'lost';
+  if(!netSend(peer,m)) return 'lost';
+  // v17.50: then every body that came up after the build (the boss, a late crew), which the late window never heard announced
+  for(id=0;id<G.ents.length;id++) if(G.ents[id]&&G.ents[id].nid>=(NET.entBuilt||1e9)) netSend(peer,netEntNewWord(G.ents[id]));
+  return 'sent';
 }
 function netLateApply(m){
   var i, j, id, e, L=m&&m.late, p;
@@ -37987,6 +37990,7 @@ function netEntsInit(g){
   if(!g||!g.ents) return 0;
   g.nidN=1;
   for(i=0;i<g.ents.length;i++){ g.ents[i].nid=g.nidN++; g.ents[i].nIn=1; NET.entMap[g.ents[i].nid]=g.ents[i]; }
+  NET.entBuilt=g.nidN;   // v17.50: the first number a body that comes up after the build takes
   return g.ents.length;
 }
 // One of the party as a body the AI can read: where his window last said he stood, facing, downed, moving, crouched, sprinting.

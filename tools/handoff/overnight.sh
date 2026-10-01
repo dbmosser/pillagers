@@ -2,7 +2,7 @@
 # Overnight low-token load: four loops in parallel for SECS seconds, each batch only when 6 GB of RAM is free.
 #   A: two-player soaks (9335/8809)  B: bot raids sector 0 (9336/8804)  C: bot raids sector 1 (9337/8805)  D: 4K drawing soak (9345/8803)
 # Appends one line per batch to tools/handoff/overnight.log and prints a summary with failures only at the end.
-SECS=${1:-32400}; END=$(( $(date +%s) + SECS ))
+SECS=${1:-32400}; LOOPS=${2:-ABCD}; END=$(( $(date +%s) + SECS ))
 H="C:\claudecode\dark raiders\tools\handoff"; HU="/c/claudecode/dark raiders/tools/handoff"; LOG="$HU/overnight.log"
 : > "$LOG"
 avail(){ powershell -NoProfile -Command "[math]::Round((Get-Counter '\Memory\Available MBytes').CounterSamples[0].CookedValue)" 2>/dev/null | tr -dc '0-9'; }
@@ -23,7 +23,7 @@ loopC(){ local sd=20000; while [ "$(date +%s)" -lt "$END" ]; do if ok; then
 loopD(){ while [ "$(date +%s)" -lt "$END" ]; do if ok; then
   r=$(powershell -NoProfile -ExecutionPolicy Bypass -File "$H\soak4k.ps1" -Raids 30 -Sec 20 -Cdp 9345 2>/dev/null | tail -1); echo "$(date +%H:%M) 4K $r" | cut -c1-400 >> "$LOG"
   else sleep 300; fi; done; }
-loopA & loopB & loopC & loopD & wait
+for L in A B C D; do case "$LOOPS" in *$L*) loop$L & ;; esac; done; wait
 s=$(grep -c ' SOAK ' "$LOG"); sp=$(grep ' SOAK ' "$LOG" | awk '{split($3,a,"/"); p+=a[1]; t+=a[2]} END{print p"/"t}')
 echo "overnight: two-player soak sessions passed $sp in $s batches"
 echo "bot raids: sector 0 $(grep -c BOTS0 "$LOG") batches, sector 1 $(grep -c BOTS1 "$LOG") batches, batches with errors: $(grep 'BOTS' "$LOG" | grep -vc '"errs":\[\]')"

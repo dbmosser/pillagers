@@ -1,0 +1,7 @@
+v17.50: a late teammate is told about bodies that came up after the build
+
+JOIN THE RAID IN PROGRESS: a teammate who joins late now sees THE OVERSEER and anyone who came up after the start with their names and sizes, as the host does.
+
+Check 17.50. Fails on v17.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

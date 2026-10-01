@@ -639,6 +639,44 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       },120);
     });
   }
+  // DROP-IN (v17.46, v17.50): A goes up with C, C abandons at once and stays in the Undercroft while A plays on. C's window must
+  // show JOIN THE RAID IN PROGRESS within 3 s; once A is 3 s in (THE OVERSEER is up), C presses it and must be up top on A's
+  // seed within 5 s, on A's clock within 3 s, holding the boss under its name and size. Both come back down after.
+  function dropStep(A,C,bad,rep){
+    if(typeof C.__state!=='function'||typeof A.__deploy!=='function') return Promise.resolve();
+    var ua=null, t1=0;
+    clearFloor(fa); clearFloor(fc);
+    A.__deploy({kit:[],safe:null,mapIx:0,seed:4242});
+    return wait(function(){ if(A.__net.up().on) return 'none'; var m=el(fc,'askmodal'), y=el(fc,'askyes'); return (m&&m.classList.contains('on')&&y)?y:null; },3000,'copy C to be asked for its kit, or A to go up').then(function(y){
+      if(y!=='none') y.click();
+      return wait(function(){ return A.__net.up().on?1:null; },3000,'copy A to go up');
+    }).then(function(){
+      ua=A.__net.up();
+      return wait(function(){ var u=C.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top on the same seed');
+    }).then(function(){
+      C.__endRaid('abandon'); try{ C.__topClear(); }catch(e){}
+      return wait(function(){ return el(fc,'joinlate')||null; },3000,'copy C to show JOIN THE RAID IN PROGRESS after it abandoned with A up');
+    }).then(function(){
+      if(!A.__net.up().on) throw new Error('copy A left the raid when C abandoned');
+      return wait(function(){ var g=A.__state(); return (g&&!g.over&&g.t>3)?1:null; },8000,'copy A to be 3 s into the raid');
+    }).then(function(){
+      t1=Date.now(); el(fc,'joinlate').click();
+      return wait(function(){ var u=C.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top again after JOIN THE RAID IN PROGRESS');
+    }).then(function(){
+      rep.dropMs=Date.now()-t1;
+      return sleep(600);
+    }).then(function(){
+      var ga=A.__state(), gc=C.__state(), ba=null, bc=null, i;
+      for(i=0;i<ga.ents.length;i++) if(ga.ents[i]&&ga.ents[i].boss){ ba=ga.ents[i]; break; }
+      for(i=0;i<gc.ents.length;i++) if(gc.ents[i]&&ba&&gc.ents[i].nid===ba.nid){ bc=gc.ents[i]; break; }
+      log('drop-in: C joined '+rep.dropMs+' ms after the press; clocks A '+ga.t.toFixed(1)+' C '+gc.t.toFixed(1)+'; bodies A '+ga.ents.length+' C '+gc.ents.length+'; boss on C '+(bc?(JSON.stringify(bc.name)+' r '+bc.r):'none'));
+      if(Math.abs(ga.t-gc.t)>3) bad.push('drop-in: C is on clock '+gc.t.toFixed(1)+', A on '+ga.t.toFixed(1));
+      if(ba&&!bc) bad.push('drop-in: C does not hold THE OVERSEER A holds');
+      else if(bc&&(bc.name!==ba.name||bc.r!==ba.r)) bad.push('drop-in: C holds the boss as '+JSON.stringify(bc.name)+' r '+bc.r);
+      comeDown(A,C);
+      return sleep(500);
+    });
+  }
   function raidStep(A,C,bad,rep){
     if(typeof A.__net.up!=='function'||typeof C.__net.up!=='function'||typeof A.__endRaid!=='function'||typeof A.__deploy!=='function'){
       bad.push('this fixture has no up top view in its net handle (a build before v15.79), so the raid step cannot run');
@@ -826,6 +864,8 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       // BUILD 6, 7 and 8: the party ascends together, the enemies, the loot and the host leaving. After the stream is sampled,
       // since a raid build moves it by design. A failure here is written down and the run goes on.
       return raidStep(A,C,bad,rep).then(null,function(e){ bad.push('raid: '+e.message); });
+    }).then(function(){
+      return dropStep(A,C,bad,rep).then(null,function(e){ bad.push('drop-in: '+e.message); comeDown(A,C); });
     }).then(function(){
       if(ls(MAIN)!==ls0.main) bad.push('the main save changed while the party went up top');
       if(ls(AS)!==ls0.as) bad.push('the save pointer changed while the party went up top');

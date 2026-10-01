@@ -5721,6 +5721,41 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.50',what:'drop-in: a teammate who joins late is also told about every body that came up after the build (THE OVERSEER with its name and size), after the raid word and only those bodies',
+   run:function(){
+     if(typeof netLateReply!=='function'||typeof bossTick!=='function') return 'SKIP: this build has no drop-in or no boss';
+     if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET) return 'SKIP: no raid or party in this fixture';
+     var NK={}, k, sent=[], bad=[], oSend=netSend, oSay=say, peer={seat:1,state:'in'}, b, news, ix;
+     for(k in NET) NK[k]=NET[k];
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over||!G.player) return 'SKIP: staging: no raid';
+       netSend=function(p,m){ sent.push(m); return true; };
+       say=function(){};
+       NET.on=true; NET.role='host'; NET.seat=0; NET.max=4; NET.peers=[peer];
+       netUpAnnounce(G);
+       G.t=2.5; b=bossTick();
+       if(!b) return 'SKIP: staging: no boss came up';
+       b.nid=G.nidN++; NET.entMap[b.nid]=b;
+       sent.length=0;
+       netLateReply(peer);
+       ix=-1; sent.forEach(function(m,i){ if(m&&m.t==='raid'&&ix<0) ix=i; });
+       news=sent.filter(function(m){ return m&&m.t==='ent'&&m.op==='new'; });
+       if(ix<0) bad.push('no raid word went to the late teammate');
+       if(!news.length) bad.push('the late teammate was told about no body that came up after the build');
+       else{
+         if(news.length!==1) bad.push(news.length+' bodies were announced, not the one that came up after the build');
+         if(news[0].id!==b.nid||news[0].n!=='THE OVERSEER'||news[0].r!==44) bad.push('the word about the boss is wrong ('+JSON.stringify(news[0]).slice(0,120)+')');
+         if(sent.indexOf(news[0])<ix) bad.push('the body word went before the raid word');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       netSend=oSend; say=oSay;
+       for(k in NET) if(!(k in NK)) delete NET[k];
+       for(k in NK) NET[k]=NK[k];
+       try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.49',what:'THE OVERSEER is drawn to its size: a warden with the boss radius is drawn about half again as big as a plain warden, around where it stands, and a plain warden is drawn as before',
    run:function(){
      if(typeof drawWardenAt!=='function'||typeof wardenDrawScale!=='function') return 'this build draws the boss at a plain warden size';

@@ -1,0 +1,5 @@
+## v17.50 - A LATE TEAMMATE IS TOLD ABOUT BODIES THAT CAME UP AFTER THE BUILD
+
+Co-op hunt while he was away. A teammate who joined a raid in progress got the host raid and the bodies already down, but not the words about bodies that came up after the build (THE OVERSEER, and anyone else who walked in later). Its window drew them from the position updates alone: the boss had no name, no boss bar and a plain warden size. The host now sends those words right after the raid word, for those bodies only.
+
+MEASURED. Check 17.50 passes, and fails on v17.49.
