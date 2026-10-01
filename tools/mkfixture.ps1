@@ -5721,6 +5721,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.55',what:'in a party raid the backpack says how to offer an item: Y offer on a controller, T offer on keys; solo it says nothing about offering',
+   run:function(){
+     if(typeof drawBag!=='function'||typeof NET!=='object'||!NET) return 'SKIP: no backpack or party in this fixture';
+     if(!window.__deploy||!window.__endRaid) return 'SKIP: no raid in this fixture';
+     var bad=[], seen=[], oFT=ctx.fillText, NK={on:NET.on,role:NET.role}, pOn=PAD.on, txt;
+     function draw(){ seen.length=0; try{ drawBag(); }catch(_d){ seen.push('THREW '+_d.message); } return seen.join(' | '); }
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over||!G.player) return 'SKIP: staging: no raid';
+       G.bagOpen=true; state='raid';
+       ctx.fillText=function(s){ seen.push(String(s)); return oFT.apply(this,arguments); };
+       NET.on=true; NET.role='join';
+       PAD.on=true; txt=draw();
+       if(!/Y offer/.test(txt)) bad.push('with a controller in a party raid the backpack does not say Y offers ('+txt.slice(0,160)+')');
+       PAD.on=false; txt=draw();
+       if(!/T offer/.test(txt)) bad.push('on keys in a party raid the backpack does not say T offers');
+       NET.on=false; txt=draw();
+       if(/offer/.test(txt)) bad.push('solo the backpack still talks about offering');
+     }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
+     finally{
+       try{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }catch(_f){}
+       NET.on=NK.on; NET.role=NK.role; PAD.on=pOn;
+       try{ if(G) G.bagOpen=false; __endRaid('abandon'); __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.54',what:'the what is new card is stamped within 0.15 of the build and has a line on the smoother party play (drop-in from the lift, the trade offer line)',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';

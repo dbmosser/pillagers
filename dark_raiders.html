@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.54';
+var VER='17.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28932,7 +28932,12 @@ function drawBag(){
   // BACKPACK, and inventory means the backpack plus the belt together.
   ctx.fillText('BACKPACK',x+11,cy);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
-  ctx.fillText((PAD&&PAD.on)?((state==='hub')?'VIEW to close':'A pick up or place   B close'):'B or I to close',x+PW-11,cy); ctx.textAlign='left';   // v16.79, his order: in a raid a pad packs with A and backs out on B; on the floor A does nothing to the backpack and VIEW still closes it
+  // v17.55, polish after his pick 4: IN A PARTY RAID THE BACKPACK SAYS HOW TO OFFER AN ITEM. Y on a controller (T on keys) offers
+  // the selected item to the nearest teammate, and nothing on screen said so. The line keeps its own keys and gains the offer
+  // first; on a narrow panel the offer is said shorter. Solo and in the Undercroft the line is as it was.
+  var _bh=(PAD&&PAD.on)?((state==='hub')?'VIEW to close':'A pick up or place   B close'):'B or I to close', _bo;
+  if(state!=='hub'&&typeof NET==='object'&&NET&&NET.on){ _bo=((PAD&&PAD.on)?'Y':'T')+' offer to teammate   '; _bh=_bo+_bh; if(ctx.measureText(_bh).width>PW-LH(130)) _bh=((PAD&&PAD.on)?'Y':'T')+' offer   '+_bh.slice(_bo.length); }
+  ctx.fillText(_bh,x+PW-11,cy); ctx.textAlign='left';   // v16.79, his order: in a raid a pad packs with A and backs out on B; on the floor A does nothing to the backpack and VIEW still closes it
   cy+=LH(8);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
 
@@ -31726,7 +31731,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.54: The what is new card names the smoother party play: drop-in from the Undercroft or the lift, the trade offer line, and the boss drawn to its size. Check 17.54 fails on v17.53',
+  now:'v17.55: In a party raid the backpack header now says Y offer to teammate on a controller (T on keys). Check 17.55 fails on v17.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

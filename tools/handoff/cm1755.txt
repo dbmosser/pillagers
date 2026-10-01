@@ -1,0 +1,7 @@
+v17.55: in a party raid the backpack says how to offer an item
+
+In a party raid the backpack header now says Y offer to teammate on a controller (T on keys).
+
+Check 17.55. Fails on v17.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
