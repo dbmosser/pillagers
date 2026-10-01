@@ -1,0 +1,28 @@
+{
+    "title":  "A LATE TEAMMATE IS CHARGED FOR THE TIME HE PLAYED",
+    "why":  "A teammate who joins a raid in progress takes the host clock, so his raid time counted the minutes before he came up: an abandon 10 seconds after joining 20 minutes in cost him about 220 XP instead of about 100, and his run read 20 minutes long. His run length and the abandon XP cost now count from when he joined. A player who started the raid is charged exactly as before.",
+    "now":  "JOIN THE RAID IN PROGRESS: the abandon XP cost and the run length count from when you joined, not from when your host went up.",
+    "edits":  [
+                  {
+                      "anchor":  "function abandonRepCost(el){ return Math.min(400,100+Math.round(el/10)); }",
+                      "replacement":  "// v16.xx: the time THIS player has been in the raid. A teammate who joined a raid in progress takes the host clock (netLateApply),\n// so elapsed() counts the minutes before he came up; his run length and the XP an abandon costs him count from when he joined.\nfunction runElapsed(){ return Math.max(0,elapsed()-((typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026G.lateEl)||0)); }function abandonRepCost(el){ return Math.min(400,100+Math.round(el/10)); }"
+                  },
+                  {
+                      "anchor":  "    var _el=(G\u0026\u0026!G.over)?elapsed():0;",
+                      "replacement":  "    var _el=(G\u0026\u0026!G.over)?runElapsed():0;   // v16.xx: from when this player joined"
+                  },
+                  {
+                      "anchor":  "    var _rc=Math.min(abandonRepCost(elapsed()),(P.xp||0));",
+                      "replacement":  "    var _rc=Math.min(abandonRepCost(runElapsed()),(P.xp||0));   // v16.xx: from when this player joined"
+                  },
+                  {
+                      "anchor":  "    dur:Math.round(elapsed()),",
+                      "replacement":  "    dur:Math.round(runElapsed()),   // v16.xx: from when this player joined"
+                  },
+                  {
+                      "anchor":  "  if(typeof L.left===\u0027number\u0027\u0026\u0026isFinite(L.left)) G.timeLeft=L.left;",
+                      "replacement":  "  if(typeof L.left===\u0027number\u0027\u0026\u0026isFinite(L.left)) G.timeLeft=L.left;\n  try{ G.lateEl=elapsed(); }catch(_le){}   // v16.xx: this player came up now; his own run counts from here"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a teammate who joined a raid in progress is charged for the time he played: his abandon XP cost and run length count from when he joined, and a player who started the raid is charged as before\u0027,\n   run:function(){\n     if(typeof runElapsed!==\u0027function\u0027) return \u0027a late teammate is charged for the minutes before he joined\u0027;\n     if(typeof netLateApply!==\u0027function\u0027||!window.__deploy||!window.__endRaid) return \u0027SKIP: no drop-in or raid in this fixture\u0027;\n     var bad=[], oSay=say, e0, e1;\n     try{\n       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!G||G.over||!G.player) return \u0027SKIP: staging: no raid\u0027;\n       say=function(){};\n       e0=runElapsed();\n       if(Math.abs(e0-elapsed())\u003e0.01) bad.push(\u0027a player who started the raid is charged \u0027+e0.toFixed(1)+\u0027 s, not the \u0027+elapsed().toFixed(1)+\u0027 s it ran\u0027);\n       netLateApply({late:{t:600,left:Math.max(1,(G.raidLen===undefined?CFG.raidSec:G.raidLen)-600),x:Math.round(G.player.x),y:Math.round(G.player.y)},gone:[]});\n       e1=runElapsed();\n       if(!(e1\u003c2)) bad.push(\u0027a teammate who just joined 600 s into the raid is charged \u0027+e1.toFixed(1)+\u0027 s\u0027);\n       if(!(abandonRepCost(e1)\u003c=101)) bad.push(\u0027his abandon would cost \u0027+abandonRepCost(e1)+\u0027 XP the moment he joined\u0027);\n     }catch(ex){ bad.push(\u0027threw: \u0027+(ex\u0026\u0026ex.message||ex)); }\n     finally{\n       say=oSay;\n       try{ if(G) G.lateEl=0; __endRaid(\u0027abandon\u0027); __topClear(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.63';
+var VER='17.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21309,7 +21309,7 @@ var _cdone=contractExtract(G.bag,haul);
     caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,rounds:T.rounds||0,jams:T.jams||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
     doseMul:(T.doseMul>0)?T.doseMul:1,   // v12.12: the dose bonus the card printed, banked below
-    dur:Math.round(elapsed()),
+    dur:Math.round(runElapsed()),   // v17.64: from when this player joined
     abandonFee:G.abandonFee||0,   // v15.09, quit audit finding 7: the XP a walk-out cost, so the run report can say it
     census:G.census||null,
     intel:G.intel?1:0,
@@ -31731,7 +31731,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.63: When your teammate is out of the raid (killed, extracted or abandoned), you are told by name. Check 17.63 fails on v17.62',
+  now:'v17.64: JOIN THE RAID IN PROGRESS: the abandon XP cost and the run length count from when you joined, not from when your host went up. Check 17.64 fails on v17.63',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36651,6 +36651,7 @@ function netLateApply(m){
     if(wk) rebuildGeometry();
   }  if(typeof L.t==='number'&&isFinite(L.t)&&L.t>0) G.t=L.t;
   if(typeof L.left==='number'&&isFinite(L.left)) G.timeLeft=L.left;
+  try{ G.lateEl=elapsed(); }catch(_le){}   // v17.64: this player came up now; his own run counts from here
   p=G.player;
   if(typeof L.x==='number'&&typeof L.y==='number'&&isFinite(L.x)&&isFinite(L.y)){ p.x=L.x+36; p.y=L.y+8; if(typeof resolvePlayer==='function'){ try{ resolvePlayer(p); }catch(_rp){} } }
   say('You joined the raid in progress.');
@@ -39446,7 +39447,7 @@ document.getElementById('abandonbtn').onclick=function(){
     cb.style.display='inline-block';
     this.textContent='NO, keep playing';
     this.style.borderColor=''; this.style.color='';
-    var _el=(G&&!G.over)?elapsed():0;
+    var _el=(G&&!G.over)?runElapsed():0;   // v17.64: from when this player joined
     // v10.41, his words: the same line the markup carries, with the cost kept.
     // v12.77, 2026-09-08 first-hour audit: THE PRICE ON THE BUTTON IS THE PRICE
     // HE WILL PAY. The fine is taken with a floor at zero so it can never push
@@ -39463,7 +39464,9 @@ document.getElementById('abandonbtn').onclick=function(){
   this.textContent='Abandon run';
   this.style.borderColor='var(--rust)'; this.style.color='var(--rust)';
 };
-function abandonRepCost(el){ return Math.min(400,100+Math.round(el/10)); }
+// v17.64: the time THIS player has been in the raid. A teammate who joined a raid in progress takes the host clock (netLateApply),
+// so elapsed() counts the minutes before he came up; his run length and the XP an abandon costs him count from when he joined.
+function runElapsed(){ return Math.max(0,elapsed()-((typeof G!=='undefined'&&G&&G.lateEl)||0)); }function abandonRepCost(el){ return Math.min(400,100+Math.round(el/10)); }
 // v16.45, HIS ORDER: SETTINGS IN A RAID, CHANGING THE GAME IN REAL TIME. The pause box opens the same Settings window over the
 // raid. Damage, loot value, extraction heat, Superhot and kid mode are read as they happen, so they change at once; the raid
 // length moves the clock now, keeping the time already played (on a teammate window the host clock rules); the pillager and
@@ -39488,7 +39491,7 @@ document.getElementById('confirmabandon').onclick=function(){
     // v12.77: and the line afterwards reports what was actually taken, not the
     // figure before the floor. It used to say XP -106 to a man who had lost
     // nothing, because he had nothing to lose.
-    var _rc=Math.min(abandonRepCost(elapsed()),(P.xp||0));
+    var _rc=Math.min(abandonRepCost(runElapsed()),(P.xp||0));   // v17.64: from when this player joined
     P.xp=Math.max(0,(P.xp||0)-_rc);
     // v15.09, quit audit finding 7: AN ABANDON THAT COSTS XP SAYS SO ON THE OUTCOME CARD. The line below is drawn on the raid
     // screen, and endRaid covers that screen with the outcome card in this same click, so the fee was never read and the card's

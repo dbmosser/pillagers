@@ -1,0 +1,7 @@
+v17.64: a late teammate is charged for the time he played
+
+JOIN THE RAID IN PROGRESS: the abandon XP cost and the run length count from when you joined, not from when your host went up.
+
+Check 17.64. Fails on v17.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

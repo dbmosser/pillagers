@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.64 - A LATE TEAMMATE IS CHARGED FOR THE TIME HE PLAYED
+
+Co-op hunt while he was away. A teammate who joins a raid in progress takes the host clock, so his raid time counted the minutes before he came up: an abandon 10 seconds after joining 20 minutes in cost him about 220 XP instead of about 100, and his run read 20 minutes long. His run length and the abandon XP cost now count from when he joined. A player who started the raid is charged exactly as before.
+
+MEASURED. Check 17.64 passes, and fails on v17.63.
 ## v17.63 - THE HOST IS TOLD WHEN A TEAMMATE IS OUT OF THE RAID
 
 Co-op hunt while he was away. When the host leaves, the teammate reads the host is out of this raid and how. The other way round the host was told nothing: his teammate just vanished from the screen. A teammate whose raid ended is now named in the raid with how it ended: killed, extracted or abandoned.
