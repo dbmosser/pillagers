@@ -1,0 +1,7 @@
+v17.62: the host is told when a teammate joins the raid
+
+When your teammate joins the raid in progress, you are told by name.
+
+Check 17.62. Fails on v17.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

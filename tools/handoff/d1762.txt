@@ -1,0 +1,5 @@
+## v17.62 - THE HOST IS TOLD WHEN A TEAMMATE JOINS THE RAID
+
+Co-op hunt while he was away. A teammate who pressed JOIN THE RAID IN PROGRESS just appeared beside the host with no word. The host now reads that teammate name is joining the raid when the answer goes out.
+
+MEASURED. Check 17.62 passes, and fails on v17.61.

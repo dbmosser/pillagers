@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.62 - THE HOST IS TOLD WHEN A TEAMMATE JOINS THE RAID
+
+Co-op hunt while he was away. A teammate who pressed JOIN THE RAID IN PROGRESS just appeared beside the host with no word. The host now reads that teammate name is joining the raid when the answer goes out.
+
+MEASURED. Check 17.62 passes, and fails on v17.61.
 ## v17.61 - JOIN THE RAID IN PROGRESS IS BIGGER AND NAMES THE LIFT
 
 Co-op hunt while he was away. On the Undercroft floor the join button was 13 px lettering at the top edge, small beside the station names, easy to miss from the couch. It is now 20 px with a second line, or go up at ENTER RAID!, since the lift joins the raid in progress too.

@@ -1,0 +1,12 @@
+{
+    "title":  "THE HOST IS TOLD WHEN A TEAMMATE JOINS THE RAID",
+    "why":  "A teammate who pressed JOIN THE RAID IN PROGRESS just appeared beside the host with no word. The host now reads that teammate name is joining the raid when the answer goes out.",
+    "now":  "When your teammate joins the raid in progress, you are told by name.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(!netSend(peer,m)) return \u0027lost\u0027;",
+                      "replacement":  "  if(!netSend(peer,m)) return \u0027lost\u0027;\n  try{ say((netSeatName(peer.seat)||\u0027Your teammate\u0027)+\u0027 is joining the raid.\u0027); }catch(_ls){}   // v16.xx: the host hears who is coming"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027drop-in: the host is told when a teammate joins the raid in progress, by name\u0027,\n   run:function(){\n     if(typeof netLateReply!==\u0027function\u0027) return \u0027SKIP: this build has no drop-in\u0027;\n     if(!window.__deploy||!window.__endRaid||typeof NET!==\u0027object\u0027||!NET) return \u0027SKIP: no raid or party in this fixture\u0027;\n     var NK={}, k, bad=[], lines=[], oSend=netSend, oSay=say, oName=netSeatName, peer={seat:1,state:\u0027in\u0027};\n     for(k in NET) NK[k]=NET[k];\n     try{\n       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!G||G.over||!G.player) return \u0027SKIP: staging: no raid\u0027;\n       netSend=function(){ return true; }; say=function(t){ lines.push(String(t)); };\n       netSeatName=function(s){ return s===1?\u0027MOTH\u0027:null; };\n       NET.on=true; NET.role=\u0027host\u0027; NET.seat=0; NET.max=4; NET.peers=[peer];\n       netUpAnnounce(G); lines.length=0;\n       netLateReply(peer);\n       if(!lines.some(function(t){ return t.indexOf(\u0027MOTH is joining the raid\u0027)===0; })) bad.push(\u0027the host was told \u0027+JSON.stringify(lines));\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       netSend=oSend; say=oSay; netSeatName=oName;\n       for(k in NET) if(!(k in NK)) delete NET[k];\n       for(k in NK) NET[k]=NK[k];\n       try{ if(G) __endRaid(\u0027abandon\u0027); __topClear(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
