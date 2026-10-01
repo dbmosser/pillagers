@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.57 - A PING ON THE OVERSEER NAMES IT
+
+Co-op hunt while he was away. A ping on THE OVERSEER said WARDEN, in both windows, while the boss bar and the kill feed name it. A ping now names a pillager or THE OVERSEER by name (a linked window knows the boss by its name only) and any other body by its kind, as before.
+
+MEASURED. Check 17.57 passes, and fails on v17.56.
 ## v17.56 - THE OVERSEER BY NAME IN A PARTY
 
 Co-op hunt while he was away. When THE OVERSEER went down in a party the kill feed said WARDEN, and only the host window said it is down and its hoard is open: the teammate saw the hoard appear with no word. The feed now names the boss, and a linked window that sees it go down says the same line the host does.

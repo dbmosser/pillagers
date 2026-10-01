@@ -1,0 +1,7 @@
+v17.57: a ping on the overseer names it
+
+A ping on THE OVERSEER now names it instead of WARDEN.
+
+Check 17.57. Fails on v17.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

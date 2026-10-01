@@ -1,0 +1,16 @@
+{
+    "title":  "A PING ON THE OVERSEER NAMES IT",
+    "why":  "A ping on THE OVERSEER said WARDEN, in both windows, while the boss bar and the kill feed name it. A ping now names a pillager or THE OVERSEER by name (a linked window knows the boss by its name only) and any other body by its kind, as before.",
+    "now":  "A ping on THE OVERSEER now names it instead of WARDEN.",
+    "edits":  [
+                  {
+                      "anchor":  "function netPingMake(){",
+                      "replacement":  "// v16.xx: what a ping calls the body under it: a pillager or THE OVERSEER by name (a linked window knows the boss by its name\n// only), any other body by its kind. The ping said WARDEN on the boss.\nfunction netPingName(hit){ return ((hit.kind===\u0027raider\u0027||hit.boss||hit.name===BOSS_NAME)\u0026\u0026hit.name)?netClean(hit.name,24):String(hit.kind).toUpperCase(); }function netPingMake(){"
+                  },
+                  {
+                      "anchor":  "  m={t:\u0027png\u0027,x:Math.round(hit?hit.x:w.x),y:Math.round(hit?hit.y:w.y),w:hit?((hit.kind===\u0027raider\u0027\u0026\u0026hit.name)?netClean(hit.name,24):String(hit.kind).toUpperCase()):\u0027\u0027};",
+                      "replacement":  "  m={t:\u0027png\u0027,x:Math.round(hit?hit.x:w.x),y:Math.round(hit?hit.y:w.y),w:hit?netPingName(hit):\u0027\u0027};   // v16.xx: the boss by its name"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a ping on THE OVERSEER names it, in the host window and in a linked one, and a ping on any other body still names its kind or the pillager\u0027,\n   run:function(){\n     if(typeof netPingName!==\u0027function\u0027) return \u0027a ping on the boss calls it WARDEN\u0027;\n     if(typeof BOSS_NAME===\u0027undefined\u0027||typeof netPingMake!==\u0027function\u0027) return \u0027SKIP: this build has no boss or no ping\u0027;\n     var bad=[], n;\n     n=netPingName({kind:\u0027warden\u0027,boss:1,name:BOSS_NAME}); if(n!==BOSS_NAME) bad.push(\u0027the host ping on the boss says \u0027+n);\n     n=netPingName({kind:\u0027warden\u0027,name:BOSS_NAME}); if(n!==BOSS_NAME) bad.push(\u0027the linked ping on the boss says \u0027+n);\n     n=netPingName({kind:\u0027warden\u0027,name:\u0027\u0027}); if(n!==\u0027WARDEN\u0027) bad.push(\u0027a ping on a plain warden says \u0027+n);\n     n=netPingName({kind:\u0027raider\u0027,name:\u0027GRIT MALLOW\u0027}); if(n!==\u0027GRIT MALLOW\u0027) bad.push(\u0027a ping on a pillager says \u0027+n);\n     if(String(netPingMake).indexOf(\u0027netPingName(\u0027)\u003c0) bad.push(\u0027the ping does not use the name it should\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

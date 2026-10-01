@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.56';
+var VER='17.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31731,7 +31731,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.56: THE OVERSEER in a party: the kill feed names it, and both windows say when it is down and its hoard is open. Check 17.56 fails on v17.55',
+  now:'v17.57: A ping on THE OVERSEER now names it instead of WARDEN. Check 17.57 fails on v17.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37480,7 +37480,9 @@ function netAutoFire(p){
 // cursor for the party, or the enemy nearest it within NET_PING_SNAP. Everyone sees a marker with who pinged it for NET_PING_T
 // seconds, pulled to the screen edge when it is off screen, and hears a blip. One ping every half second.
 var NET_PING_T=10, NET_PING_SNAP=70;   // v16.46: 10 s, the length Fortnite gives a ping
-function netPingMake(){
+// v17.57: what a ping calls the body under it: a pillager or THE OVERSEER by name (a linked window knows the boss by its name
+// only), any other body by its kind. The ping said WARDEN on the boss.
+function netPingName(hit){ return ((hit.kind==='raider'||hit.boss||hit.name===BOSS_NAME)&&hit.name)?netClean(hit.name,24):String(hit.kind).toUpperCase(); }function netPingMake(){
   var w, i, e, bd=NET_PING_SNAP, d, hit=null, m;
   if(typeof G==='undefined'||!G||G.over||!G.player||!NET.on||!NET.upSeed) return null;
   // v16.61, stability (co-op review): the double press is read BEFORE the 0.5 s limit. That limit stood first and answered
@@ -37494,7 +37496,7 @@ function netPingMake(){
   NET.pingAt=Date.now();
   w=mouseWorld();
   for(i=0;i<G.ents.length;i++){ e=G.ents[i]; if(!e.nid||e.hp<=0||e.merc) continue; d=dist(e,w); if(d<bd){ bd=d; hit=e; } }
-  m={t:'png',x:Math.round(hit?hit.x:w.x),y:Math.round(hit?hit.y:w.y),w:hit?((hit.kind==='raider'&&hit.name)?netClean(hit.name,24):String(hit.kind).toUpperCase()):''};
+  m={t:'png',x:Math.round(hit?hit.x:w.x),y:Math.round(hit?hit.y:w.y),w:hit?netPingName(hit):''};   // v17.57: the boss by its name
   if(hit) m.id=hit.nid;
   netBroadcast(m);
   NET.pingLast=m;
