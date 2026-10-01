@@ -235,3 +235,5 @@ in one window, not yet in the two-window nettest.
   yes; still allowed after a closed window or a link drop). Nothing changed until he answers.
 - v17.66 HIS RULING 2026-10-01: no rejoining a raid you died or extracted in (join: NET.lateBan set in netUpEnd; host: NET.lateOut[seat]
   from the out word, netLateReply answers raidno why out). Abandon, a closed window or a lost link can still rejoin. Two-window test still passes.
+- v17.67 a new raid clears the sit-out marks (host netUpAnnounce: NET.lateOut={}; teammate netUpTake without m.late: NET.lateBan=0).
+- nettest drop-in step now also kills C after the trade and checks no JOIN for that raid (rep.banOk, soakloop prints ban).
