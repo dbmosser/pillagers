@@ -226,3 +226,10 @@ in one window, not yet in the two-window nettest.
   NET.wallN0). v17.59 a late join gets the map markers already placed.
 - TOOLING: gate.ps1 leaked a tab per ship on Chrome 9344 (48 tabs, 12.8 GB, starving the 6 GB floor); fixed. soakloop.ps1 now copies
   fixture.html to fixture-soak-PORT.html per run, so shipping during a soak is safe again.
+- v17.60 a stale host-up mark clears (raidno and every welcome reset NET.hostSeed). v17.61 #joinlate is 20 px with "or go up at ENTER
+  RAID!". v17.62 the host reads NAME is joining the raid. v17.63 the host reads NAME is out of this raid (killed/extracted/abandoned).
+  v17.64 runElapsed(): a late joiner's run length and abandon XP cost count from G.lateEl (set in netLateApply).
+- nettest loot step lets E go once the listed items are in (held on, it searched the next pile: the "extra item" lead (b) was this);
+  any other box opened during the hold is named. Drop-in step also takes a wall down on A first.
+- OPEN QUESTION TO HIM (asked 2026-10-01): block JOIN THE RAID IN PROGRESS after dying or extracting from that raid (my suggestion:
+  yes; still allowed after a closed window or a link drop). Nothing changed until he answers.
