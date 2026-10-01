@@ -697,7 +697,12 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       ga.bagOpen=false;
       return wait(function(){ var g=C.__state(); return (g&&g.giftIn&&g.giftIn.k===K)?g.giftIn:null; },1500,'copy C to be offered the item A gave (A says: '+((A.__state()||{}).giftOut?'offered':'no offer')+')');
     }).then(function(){
-      return hold(fc,'KeyT','t',80);
+      // C takes it the way player 2 does: Y on a controller, read by the window in front (A) and forwarded to C
+      var NGA=A.navigator.getGamepads, HFA=A.document.hasFocus, HFC=C.document.hasFocus, yd=true;
+      function pad(){ var bt=[],q; for(q=0;q<17;q++) bt.push({pressed:(q===3&&yd),value:(q===3&&yd)?1:0,touched:(q===3&&yd)}); return {connected:true,id:'tradepad',index:0,mapping:'standard',timestamp:Date.now(),buttons:bt,axes:[0,0,0,0]}; }
+      try{ A.document.hasFocus=function(){ return true; }; C.document.hasFocus=function(){ return false; }; }catch(e){}
+      A.navigator.getGamepads=function(){ return [pad()]; };
+      return sleep(250).then(function(){ yd=false; return sleep(250); }).then(function(){ A.navigator.getGamepads=NGA; A.document.hasFocus=HFA; C.document.hasFocus=HFC; });
     }).then(function(){
       return wait(function(){ var a=A.__state(), c=C.__state(); return (a&&c&&a.bag.indexOf(K)<0&&c.bag.indexOf(K)>=0)?1:null; },2000,'the item to leave A and reach C');
     }).then(function(){
