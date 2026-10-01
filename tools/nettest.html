@@ -665,6 +665,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       if(!A.__net.up().on) throw new Error('copy A left the raid when C abandoned');
       return wait(function(){ var g=A.__state(); return (g&&!g.over&&g.t>3)?1:null; },8000,'copy A to be 3 s into the raid').then(null,function(e){ var g=A.__state(), d=D(fa), mo=[].slice.call(d.querySelectorAll('.modal.on,.on')).map(function(x){ return x.id; }).join(','); throw new Error(e.message+' (A G '+(g?('t '+g.t+' over '+g.over+' paused '+g.paused+' shAct '+g.shAct+' deathBeat '+g.deathBeat):'none')+'; open: '+mo+')'); });
     }).then(function(){
+      try{ var gw=A.__state(), wl=gw.map.walls[Math.floor(gw.map.walls.length/2)]; rep.dropWall=wl.wid; gw.map.walls.splice(gw.map.walls.indexOf(wl),1); }catch(e){}   // a wall down on A before C comes up (v17.58)
       t1=Date.now(); el(fc,'joinlate').click();
       return wait(function(){ var u=C.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top again after JOIN THE RAID IN PROGRESS');
     }).then(function(){
@@ -676,6 +677,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       for(i=0;i<gc.ents.length;i++) if(gc.ents[i]&&ba&&gc.ents[i].nid===ba.nid){ bc=gc.ents[i]; break; }
       log('drop-in: C joined '+rep.dropMs+' ms after the press; clocks A '+ga.t.toFixed(1)+' C '+gc.t.toFixed(1)+'; bodies A '+ga.ents.length+' C '+gc.ents.length+'; boss on C '+(bc?(JSON.stringify(bc.name)+' r '+bc.r):'none'));
       if(Math.abs(ga.t-gc.t)>3) bad.push('drop-in: C is on clock '+gc.t.toFixed(1)+', A on '+ga.t.toFixed(1));
+      if(rep.dropWall!==undefined&&gc.map.walls.some(function(w){ return w.wid===rep.dropWall; })) bad.push('drop-in: wall '+rep.dropWall+' is down on A and still stands on C');
       if(!ba) bad.push('drop-in: A holds no boss 3 s into the raid');
       else if(!bc) bad.push('drop-in: C does not hold THE OVERSEER A holds');
       else if(bc&&(bc.name!==ba.name||bc.r!==ba.r)) bad.push('drop-in: C holds the boss as '+JSON.stringify(bc.name)+' r '+bc.r);
