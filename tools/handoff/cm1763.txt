@@ -1,0 +1,7 @@
+v17.63: the host is told when a teammate is out of the raid
+
+When your teammate is out of the raid (killed, extracted or abandoned), you are told by name.
+
+Check 17.63. Fails on v17.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

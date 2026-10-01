@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.63 - THE HOST IS TOLD WHEN A TEAMMATE IS OUT OF THE RAID
+
+Co-op hunt while he was away. When the host leaves, the teammate reads the host is out of this raid and how. The other way round the host was told nothing: his teammate just vanished from the screen. A teammate whose raid ended is now named in the raid with how it ended: killed, extracted or abandoned.
+
+MEASURED. Check 17.63 passes, and fails on v17.62.
 ## v17.62 - THE HOST IS TOLD WHEN A TEAMMATE JOINS THE RAID
 
 Co-op hunt while he was away. A teammate who pressed JOIN THE RAID IN PROGRESS just appeared beside the host with no word. The host now reads that teammate name is joining the raid when the answer goes out.
