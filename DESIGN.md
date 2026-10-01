@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.53 - A TEAMMATE WHO LINKS WHILE THE HOST IS UP TOP CAN DROP IN
+
+Co-op hunt while he was away. The raid word goes out once, when the host ascends. A window that linked later (player 2 opened late, or his window closed and was opened again during a raid) never heard the host was up: no JOIN THE RAID IN PROGRESS, and the lift said only the host can start the raid. The welcome a host sends now carries the raid it is in, and the teammate keeps it and is told to go up at the lift to join.
+
+MEASURED. Check 17.53 passes, and fails on v17.52.
 ## v17.52 - A TRADE OFFER STAYS ON SCREEN WHILE IT IS OPEN
 
 Co-op hunt while he was away. A trade offer came once in the message feed and faded, so a player on a controller who missed it never knew an item was waiting for him. While an offer to you is open, a line under the boss bar now names who offers what, says T or Y takes it and counts the seconds left; while your own offer is open, it says who it waits on. Drawing only.

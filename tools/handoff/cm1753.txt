@@ -1,0 +1,7 @@
+v17.53: a teammate who links while the host is up top can drop in
+
+Drop-in after a window comes back: if player 2 links while you are up top (his window was closed, or opened late), he is told you are in a raid and can join it from the lift.
+
+Check 17.53. Fails on v17.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

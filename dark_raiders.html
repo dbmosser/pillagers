@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.52';
+var VER='17.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31725,7 +31725,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.52: Trading: an open offer now stays on screen with who offers what, T or Y to take it and the seconds left, and the giver sees who it is waiting on. Check 17.52 fails on v17.51',
+  now:'v17.53: Drop-in after a window comes back: if player 2 links while you are up top (his window was closed, or opened late), he is told you are in a raid and can join it from the lift. Check 17.53 fails on v17.52',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35597,7 +35597,11 @@ function netOnMsg(peer,data){
   }
   return netOnMsg0(peer,data);
 }
-function netOnMsg0(peer,data){
+// v17.53, drop-in after a window comes back: A TEAMMATE WHO LINKS WHILE THE HOST IS UP TOP IS TOLD SO. The raid word goes out
+// once, when the host ascends, so a window that linked later (player 2 opened late, or his window was closed and opened again)
+// never heard the host was up: no JOIN THE RAID IN PROGRESS, and the lift said only the host can start the raid. The welcome
+// now carries the seed of the raid the host is in (0 when it is not), and the teammate keeps it as the raid word would.
+function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&typeof NET.upWord.seed==='number')?(NET.upWord.seed>>>0):0; }function netOnMsg0(peer,data){
   if(!peer||peer.state==='gone'||NET.peers.indexOf(peer)<0) return 'gone';
   if(typeof data!=='string'||data.length>NET_MSG_MAX) return 'bad';
   var m=null, seat, hn, i;
@@ -35656,7 +35660,7 @@ function netOnMsg0(peer,data){
       netClearTimers(peer);
       peer.state='in'; peer.seat=seat; peer.pid=netClean(m.pid,16); peer.name=netClean(m.name,16)||'PILLAGER';
       NET.roster=netRosterBuild();
-      netSend(peer,{t:'welcome',you:seat,roster:NET.roster,ver:VER});
+      netSend(peer,{t:'welcome',you:seat,roster:NET.roster,ver:VER,up:netWelcomeUp()});   // v17.53: and the raid the host is in, for a teammate who links late
       netBroadcast({t:'roster',roster:NET.roster});
       NET.status=peer.name+' joined your party.'; NET.err='';
       netSay(NET.status);
@@ -35677,6 +35681,7 @@ function netOnMsg0(peer,data){
       hn='';
       for(i=0;i<NET.roster.length;i++) if(NET.roster[i].host) hn=NET.roster[i].name;
       NET.reply=''; NET.err=''; NET.status='You are in the party hosted by '+(hn||'your host')+'.';
+      if(typeof m.up==='number'&&m.up>0){ NET.hostSeed=m.up>>>0; NET.status+=' They are in a raid now: go up at the lift to join it.'; }   // v17.53: a teammate who links late can drop in
       netSay(NET.status);
       netRefresh();
       return 'welcome';
