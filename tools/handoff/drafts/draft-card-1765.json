@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES KNOWING WHERE YOUR TEAMMATE IS",
+    "why":  "The card was stamped v17.54. It now says what changed for playing together since: the join and out notices, the bigger join button, a late join seeing fallen walls and markers and paying only for its own time, the backpack offer hint, and the boss named in pings and the kill feed.",
+    "now":  "The what is new card names the party notices, the late join fixes, the backpack offer hint and the boss by name.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002717.54\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002717.65\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027PLAYING TOGETHER, SMOOTHER. JOIN THE RAID IN PROGRESS now shows in the Undercroft while your host is up top, and going up at the lift as a teammate joins the raid too, even after your window was closed and opened again. An open trade offer stays on screen with the seconds left to take it. THE OVERSEER is drawn to its size.\u0027,",
+                      "replacement":  "  \u0027KNOWING WHERE YOUR TEAMMATE IS. You are told when your teammate joins the raid and when he is out of it (killed, extracted or abandoned). JOIN THE RAID IN PROGRESS is bigger, and a teammate who joins late sees the walls already blown open and the map markers already placed, and is charged only for the time he played. In a party raid the backpack says Y (or T) offers an item. Pings and the kill feed name THE OVERSEER.\u0027,\n  \u0027PLAYING TOGETHER, SMOOTHER. JOIN THE RAID IN PROGRESS now shows in the Undercroft while your host is up top, and going up at the lift as a teammate joins the raid too, even after your window was closed and opened again. An open trade offer stays on screen with the seconds left to take it. THE OVERSEER is drawn to its size.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and has a line on knowing where your teammate is\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle=\u0027KNOWING WHERE YOUR\u0027+\u0027 TEAMMATE IS\u0027;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)\u003e=0; })) bad.push(\u0027no line of the card names knowing where your teammate is\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

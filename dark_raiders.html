@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.64';
+var VER='17.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1448,7 +1448,7 @@ var VER='17.64';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='17.54';
+var WHATSNEW_VER='17.65';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1457,6 +1457,7 @@ var WHATSNEW=[
   'STEADIER TWO-PLAYER GAMES ON ONE PC. A key held in one window is let go when you click the other, ESC in the player 2 window no longer pauses player 1, and a click in one window never shuts the backpack of the other player. Kid mode at 1/20 really gives player 2 a twentieth of every hit, letting go of the right stick ends aiming so Superhot time stops and kid firing comes back, a downed controller player calls for extraction with X, and a heal your teammate could not take comes back to your backpack. Kills go to whoever made them, and a gun or a loaner Bandage handed between players is never kept by both.',
   'STEADIER MENUS AND STASH. A plain click on a gun in your armoury leaves it there, a controller can put a gun in gun 1 or gun 2 from the stash (press A twice on the gun), an item on belt key 1 no longer buries your gun, and ESC or TAB on Settings in a raid shuts Settings only. A hire you paid for is spent at the lift, and the game open in two tabs no longer wipes what the other tab saved.',
   'CONTROLLER RUMBLE AND ACHIEVEMENTS. Each player controller buzzes when that player is hit, goes down or is near a blast (Settings has a Controller rumble row). CTRL and a click moves one item from the stash to the backpack. After a party raid the end card shows a PARTY block with every player result, and twelve achievements are listed on the Mainframe beside your stats.',
+  'KNOWING WHERE YOUR TEAMMATE IS. You are told when your teammate joins the raid and when he is out of it (killed, extracted or abandoned). JOIN THE RAID IN PROGRESS is bigger, and a teammate who joins late sees the walls already blown open and the map markers already placed, and is charged only for the time he played. In a party raid the backpack says Y (or T) offers an item. Pings and the kill feed name THE OVERSEER.',
   'PLAYING TOGETHER, SMOOTHER. JOIN THE RAID IN PROGRESS now shows in the Undercroft while your host is up top, and going up at the lift as a teammate joins the raid too, even after your window was closed and opened again. An open trade offer stays on screen with the seconds left to take it. THE OVERSEER is drawn to its size.',
   'TRADING, DROP-IN AND A BOSS. With the backpack open, T or Y offers the selected item to your teammate, who takes it with T or Y. A teammate in the Undercroft can JOIN THE RAID IN PROGRESS. THE OVERSEER guards the middle of every map. The stash has search and sort, Settings has Render resolution, Frame cap and Effects, and hits and deaths are animated.',
   'NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.',
@@ -31731,7 +31732,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.64: JOIN THE RAID IN PROGRESS: the abandon XP cost and the run length count from when you joined, not from when your host went up. Check 17.64 fails on v17.63',
+  now:'v17.65: The what is new card names the party notices, the late join fixes, the backpack offer hint and the boss by name. Check 17.65 fails on v17.64',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

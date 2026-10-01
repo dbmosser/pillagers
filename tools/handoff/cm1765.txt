@@ -1,0 +1,7 @@
+v17.65: the what is new card names knowing where your teammate is
+
+The what is new card names the party notices, the late join fixes, the backpack offer hint and the boss by name.
+
+Check 17.65. Fails on v17.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

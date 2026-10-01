@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.65',what:'the what is new card is stamped within 0.15 of the build and has a line on knowing where your teammate is',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle='KNOWING WHERE YOUR'+' TEAMMATE IS';
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)>=0; })) bad.push('no line of the card names knowing where your teammate is');
+     return bad.length?bad.join('; '):null; }},
   {v:'17.64',what:'a teammate who joined a raid in progress is charged for the time he played: his abandon XP cost and run length count from when he joined, and a player who started the raid is charged as before',
    run:function(){
      if(typeof runElapsed!=='function') return 'a late teammate is charged for the minutes before he joined';
