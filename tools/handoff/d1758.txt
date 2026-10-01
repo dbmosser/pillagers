@@ -1,0 +1,5 @@
+## v17.58 - A LATE TEAMMATE SEES THE WALLS ALREADY DOWN
+
+Co-op hunt while he was away. A wall that falls goes out to the party once, as it falls. A teammate who joined the raid in progress built every wall fresh, so he stood behind walls the host had already blown open, blocked by them and his shots stopped by them, while the host saw open ground. The join answer now names the walls already down (by the number each wall keeps from the build) and the late window takes them down before its first frame.
+
+MEASURED. Check 17.58 passes, and fails on v17.57.

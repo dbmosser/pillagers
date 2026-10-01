@@ -1,0 +1,7 @@
+v17.58: a late teammate sees the walls already down
+
+JOIN THE RAID IN PROGRESS: walls already blown open in the raid are open for the teammate who joins too.
+
+Check 17.58. Fails on v17.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -5721,6 +5721,41 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.58',what:'drop-in: a late teammate is told the walls the host already has down and takes them down too, so it does not stand behind walls that are gone',
+   run:function(){
+     if(typeof netLateReply!=='function'||typeof netLateApply!=='function'||typeof netWallById!=='function') return 'SKIP: this build has no drop-in';
+     if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET) return 'SKIP: no raid or party in this fixture';
+     var NK={}, k, sent=[], bad=[], oSend=netSend, oSay=say, peer={seat:1,state:'in'}, w, wid, n0, wl;
+     for(k in NET) NK[k]=NET[k];
+     try{
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over||!G.player||!G.map.walls.length) return 'SKIP: staging: no raid';
+       netSend=function(p,m){ sent.push(m); return true; };
+       say=function(){};
+       NET.on=true; NET.role='host'; NET.seat=0; NET.max=4; NET.peers=[peer];
+       netUpAnnounce(G);
+       wl=G.map.walls[Math.floor(G.map.walls.length/2)]; wid=wl.wid;
+       G.map.walls.splice(G.map.walls.indexOf(wl),1); rebuildGeometry();
+       sent.length=0; netLateReply(peer);
+       w=sent.filter(function(m){ return m&&m.t==='raid'; })[0];
+       if(!w) bad.push('the host sent no raid word to a late teammate');
+       else if(!w.wg||w.wg.indexOf(wid)<0) bad.push('the late word does not name the wall already down ('+JSON.stringify(w.wg)+')');
+       __endRaid('abandon'); __topClear();
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       NET.role='join'; NET.seat=1; netEntsInit(G);
+       n0=G.map.walls.length;
+       if(!netWallById(wid)) return 'SKIP: staging: the fresh build has no wall '+wid;
+       netLateApply({late:{t:50,left:300,x:Math.round(G.player.x),y:Math.round(G.player.y)},gone:[],wg:[wid]});
+       if(netWallById(wid)) bad.push('the wall the host had down still stands in the late window');
+       if(G.map.walls.length!==n0-1) bad.push('the late window took down '+(n0-G.map.walls.length)+' walls, not one');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       netSend=oSend; say=oSay;
+       for(k in NET) if(!(k in NK)) delete NET[k];
+       for(k in NK) NET[k]=NK[k];
+       try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.57',what:'a ping on THE OVERSEER names it, in the host window and in a linked one, and a ping on any other body still names its kind or the pillager',
    run:function(){
      if(typeof netPingName!=='function') return 'a ping on the boss calls it WARDEN';

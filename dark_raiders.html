@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.57';
+var VER='17.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31731,7 +31731,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.57: A ping on THE OVERSEER now names it instead of WARDEN. Check 17.57 fails on v17.56',
+  now:'v17.58: JOIN THE RAID IN PROGRESS: walls already blown open in the raid are open for the teammate who joins too. Check 17.58 fails on v17.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36622,6 +36622,11 @@ function netLateReply(peer){
   var m={}, k; for(k in NET.upWord) if(Object.prototype.hasOwnProperty.call(NET.upWord,k)) m[k]=NET.upWord[k];
   m.late={t:+(+G.t||0).toFixed(2),left:(typeof G.timeLeft==='number')?+G.timeLeft.toFixed(2):null,x:Math.round(G.player.x),y:Math.round(G.player.y)};
   m.gone=gone;
+  // v17.58: and the walls already down. Every wall keeps the number it was built with (v17.36); a wall that fell went out once,
+  // as a word, so a late window built them all and stood behind walls the host had blown open, its shots stopped by them.
+  var have={}, wn=NET.wallN0|0, wi; m.wg=[];
+  for(wi=0;wi<G.map.walls.length;wi++){ have[G.map.walls[wi].wid]=1; if(G.map.walls[wi].wid+1>wn) wn=G.map.walls[wi].wid+1; }
+  for(wi=0;wi<wn&&m.wg.length<1500;wi++) if(!have[wi]) m.wg.push(wi);
   if(!netSend(peer,m)) return 'lost';
   // v17.50: then every body that came up after the build (the boss, a late crew), which the late window never heard announced
   for(id=0;id<G.ents.length;id++) if(G.ents[id]&&G.ents[id].nid>=(NET.entBuilt||1e9)) netSend(peer,netEntNewWord(G.ents[id]));
@@ -36635,7 +36640,11 @@ function netLateApply(m){
     if(!e) for(j=0;j<G.ents.length;j++) if(G.ents[j]&&G.ents[j].nid===id){ e=G.ents[j]; break; }
     if(e){ j=G.ents.indexOf(e); if(j>=0) G.ents.splice(j,1); if(NET.entMap) delete NET.entMap[id]; if(!NET.entGone) NET.entGone={}; NET.entGone[id]=NET.entLast+1; }
   }
-  if(typeof L.t==='number'&&isFinite(L.t)&&L.t>0) G.t=L.t;
+  if(m.wg&&m.wg.length&&G.map&&G.map.walls){   // v17.58: the walls the host already has down come down here too
+    var wk=0, wq, ww;
+    for(i=0;i<m.wg.length&&i<1500;i++){ ww=netWallById(m.wg[i]|0); if(!ww) continue; G.map.walls.splice(G.map.walls.indexOf(ww),1); if(G.dmgWalls){ wq=G.dmgWalls.indexOf(ww); if(wq>=0) G.dmgWalls.splice(wq,1); } wk++; }
+    if(wk) rebuildGeometry();
+  }  if(typeof L.t==='number'&&isFinite(L.t)&&L.t>0) G.t=L.t;
   if(typeof L.left==='number'&&isFinite(L.left)) G.timeLeft=L.left;
   p=G.player;
   if(typeof L.x==='number'&&typeof L.y==='number'&&isFinite(L.x)&&isFinite(L.y)){ p.x=L.x+36; p.y=L.y+8; if(typeof resolvePlayer==='function'){ try{ resolvePlayer(p); }catch(_rp){} } }
@@ -38025,6 +38034,7 @@ function netEntsInit(g){
   g.nidN=1;
   for(i=0;i<g.ents.length;i++){ g.ents[i].nid=g.nidN++; g.ents[i].nIn=1; NET.entMap[g.ents[i].nid]=g.ents[i]; }
   NET.entBuilt=g.nidN;   // v17.50: the first number a body that comes up after the build takes
+  NET.wallN0=(g&&g.map&&g.map.walls)?g.map.walls.length:0;   // v17.58: how many walls the build made, for a late join
   return g.ents.length;
 }
 // One of the party as a body the AI can read: where his window last said he stood, facing, downed, moving, crouched, sprinting.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.58 - A LATE TEAMMATE SEES THE WALLS ALREADY DOWN
+
+Co-op hunt while he was away. A wall that falls goes out to the party once, as it falls. A teammate who joined the raid in progress built every wall fresh, so he stood behind walls the host had already blown open, blocked by them and his shots stopped by them, while the host saw open ground. The join answer now names the walls already down (by the number each wall keeps from the build) and the late window takes them down before its first frame.
+
+MEASURED. Check 17.58 passes, and fails on v17.57.
 ## v17.57 - A PING ON THE OVERSEER NAMES IT
 
 Co-op hunt while he was away. A ping on THE OVERSEER said WARDEN, in both windows, while the boss bar and the kill feed name it. A ping now names a pillager or THE OVERSEER by name (a linked window knows the boss by its name only) and any other body by its kind, as before.
