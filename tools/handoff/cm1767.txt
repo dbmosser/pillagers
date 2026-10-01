@@ -1,0 +1,7 @@
+v17.67: sitting a raid out lasts for that raid only
+
+A teammate who sat a raid out after dying or extracting can always go up with the party on the next raid.
+
+Check 17.67. Fails on v17.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

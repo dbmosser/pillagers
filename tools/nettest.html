@@ -685,7 +685,12 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       if(!ba) bad.push('drop-in: A holds no boss 3 s into the raid');
       else if(!bc) bad.push('drop-in: C does not hold THE OVERSEER A holds');
       else if(bc&&(bc.name!==ba.name||bc.r!==ba.r)) bad.push('drop-in: C holds the boss as '+JSON.stringify(bc.name)+' r '+bc.r);
-      return tradeStep(A,C,bad,rep).then(null,function(e){ bad.push('trade: '+e.message); }).then(function(){ comeDown(A,C); return sleep(500); });
+      return tradeStep(A,C,bad,rep).then(null,function(e){ bad.push('trade: '+e.message); }).then(function(){
+        // HIS RULING 2026-10-01 (v17.66): C dies in the raid and must not be offered it again, while A is still up top
+        if(!C.__net.up().on||!A.__net.up().on) return;
+        C.__endRaid('dead'); var ob=el(fc,'oc_btn'); if(ob) ob.click();
+        return sleep(1500).then(function(){ if(!A.__net.up().on) return; if(el(fc,'joinlate')) bad.push('ban: C died and was still offered JOIN THE RAID IN PROGRESS'); else { rep.banOk=1; log('ban: C died and is not offered the raid again'); } });
+      }).then(function(){ comeDown(A,C); return sleep(500); });
     });
   }
   // TRADE (v17.44): with both up top after the drop-in and C beside A, A opens its bag on one item and presses T; C must be

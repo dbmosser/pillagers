@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.67 - SITTING A RAID OUT LASTS FOR THAT RAID ONLY
+
+Co-op hunt while he was away. His ruling of v17.66 keeps a teammate who died or extracted out of that raid, marked by its seed. A new raid on the same seed (a replayed seed, or a test that always uses one) kept him out of that one too. Now a new raid from the host clears the marks, on the host and on the teammate; a late join answer for the same raid does not.
+
+MEASURED. Check 17.67 passes, and fails on v17.66.
 ## v17.66 - NO REJOINING A RAID YOU DIED OR EXTRACTED IN
 
 Co-op hunt while he was away. His ruling of 2026-10-01: a teammate who died or extracted could press JOIN THE RAID IN PROGRESS and go straight back into the same raid with a fresh kit, a respawn that takes the sting out of dying. Now he sits that raid out: no join button for it, the lift says he goes up with his host next time, and the host refuses it too (so a window reopened after dying cannot slip back in). A teammate who abandoned, or whose window closed or lost the link, can still join.
