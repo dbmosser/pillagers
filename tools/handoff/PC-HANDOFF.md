@@ -257,3 +257,5 @@ in one window, not yet in the two-window nettest.
 - 10-02 lead (2) "C hit none of 6": diag showed C holding a scuttle; forced scuttle on C in a run -> 5/30 pellets hit, host took the
   damage: the gun is NOT it. The first try also had C facing 53 deg off the target: the test re-stands C every frame behind a moving
   target and the camera lags the mouse aim. ~1% of sessions; a test weakness, not a game fault. __weapons() hook hands C a gun.
+- v17.68 a teammate going down is said once (netOnState, the word that first carries dn in this raid: NAME is down. Pick them up.) with padRumble.
+- 10-02 load raised: six test Chromes, overnight.sh loops A-E, two runs at once with different log names (overnight.log ABC, overnight2.log DE).
