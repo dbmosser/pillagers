@@ -254,3 +254,6 @@ in one window, not yet in the two-window nettest.
 - STILL WAITING ON HIM: P2 payout from his own Terms/Hire or the host's; whether his 125% zoom is Chrome zoom or Windows scale.
 - SHIP: drafts via scratchpad mk-*.ps1 builders (copy the pattern of tools/handoff/drafts/draft-latesay.json), validate-draft.ps1,
   then bash tools/handoff/shipone.sh KEY 1767 1768 (versions without the dot). Card refresh due by ~17.79 (stamped 17.65).
+- 10-02 lead (2) "C hit none of 6": diag showed C holding a scuttle; forced scuttle on C in a run -> 5/30 pellets hit, host took the
+  damage: the gun is NOT it. The first try also had C facing 53 deg off the target: the test re-stands C every frame behind a moving
+  target and the camera lags the mouse aim. ~1% of sessions; a test weakness, not a game fault. __weapons() hook hands C a gun.
