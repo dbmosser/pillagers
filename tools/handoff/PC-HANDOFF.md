@@ -237,3 +237,7 @@ in one window, not yet in the two-window nettest.
   from the out word, netLateReply answers raidno why out). Abandon, a closed window or a lost link can still rejoin. Two-window test still passes.
 - v17.67 a new raid clears the sit-out marks (host netUpAnnounce: NET.lateOut={}; teammate netUpTake without m.late: NET.lateBan=0).
 - nettest drop-in step now also kills C after the trade and checks no JOIN for that raid (rep.banOk, soakloop prints ban).
+- 10-01/02 long runs (loop A 3 h x4, then ABC 8 h): 45/45, 44/45 (one enemy 260 units apart on C, once), 111/114 + ~270 bot batches clean.
+  nettest now resets Settings and keeps both players alive through the whole raid step. OPEN LEAD: pad X at one crate near the
+  start (~3050,2885, crate, 1 item) twice did not start a search on C (near box yes, ring false, X held and forwarded, got ~327).
+  The pad loot report now names a stall, a peddler or a door in reach. Do not run quick checks on 9336/8804 while loop B runs.
