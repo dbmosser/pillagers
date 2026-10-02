@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.67';
+var VER='17.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31732,7 +31732,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.67: A teammate who sat a raid out after dying or extracting can always go up with the party on the next raid. Check 17.67 fails on v17.66',
+  now:'v17.68: When your teammate goes down you are told (NAME is down. Pick them up.) and a controller rumbles. Check 17.68 fails on v17.67',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35827,6 +35827,10 @@ function netOnState(peer,m){
   if(!g){ g={seat:s,x:x,y:y,f:f,tx:x,ty:y,tf:f,mv:0,roll:0,bob:0,age:0,n:0,lk:null,cr:0,sp:0,dn:0,w:'',sd:0,wep:null}; L[s]=g; }   // v15.79: filed on the list the word names
   else if(g.age>=NET_HUB_STALE||Math.sqrt((x-g.x)*(x-g.x)+(y-g.y)*(y-g.y))>NET_HUB_SNAP){ g.x=x; g.y=y; g.f=f; }
   g.tx=x; g.ty=y; g.tf=f; g.mv=m.m?1:0; g.roll=clamp(+m.r||0,0,0.38); g.age=0; g.n++;
+  // v17.68: A TEAMMATE GOING DOWN IS SAID AND FELT. The word that first carries his downed flag, in the raid this window is up
+  // in, says who is down and asks for the pick-up, and gives the controller a rumble; nothing on screen said it before, and a
+  // player looking the other way found out when the run card did. Once per fall: the flag must have been clear in the last word.
+  if(up&&m.dn&&!g.dn&&g.n>1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&(G.seed>>>0)===((+m.sd)>>>0)){ try{ sayWhenFree((netSeatName(s)||'Your teammate')+' is down. Pick them up.'); padRumble(0.55,420); }catch(_md){} }
   if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour
   if(lk) g.lk=lk;
   if(NET.role==='host'){

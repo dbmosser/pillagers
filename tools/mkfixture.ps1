@@ -5721,6 +5721,35 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.68',what:'a teammate going down is said once (NAME is down. Pick them up.) with a rumble, on the word that first carries the downed flag in this raid, and not again while he stays down',
+   run:function(){
+     if(typeof netOnState!=='function'||typeof padRumble!=='function') return 'SKIP: this build has no party words or no rumble';
+     if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET) return 'SKIP: no raid or party in this fixture';
+     var NK={}, k, bad=[], lines=[], rum=0, oSwf=sayWhenFree, oRum=padRumble, oName=netSeatName, peer={seat:1,state:'in'}, w;
+     for(k in NET) NK[k]=NET[k];
+     try{
+       NET.on=false; NET.role=null; NET.peers=[];
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over||!G.player) return 'SKIP: staging: no raid';
+       sayWhenFree=function(t){ lines.push(String(t)); }; padRumble=function(){ rum++; return 'test'; };
+       netSeatName=function(s){ return s===1?'MOTH':(s===0?'HOST':null); };
+       NET.on=true; NET.role='host'; NET.seat=0; NET.max=4; NET.peers=[peer]; NET.up=[]; NET.floor=NET.floor||[];
+       w={t:'st',k:'r',x:Math.round(G.player.x)+60,y:Math.round(G.player.y),f:0,sd:G.seed>>>0,dn:0,hp:100,mh:100};
+       netOnState(peer,w); netOnState(peer,w);
+       if(lines.length||rum) bad.push('a teammate still standing was called down');
+       w.dn=1; netOnState(peer,w);
+       if(!lines.some(function(t){ return t.indexOf('MOTH is down')===0; })) bad.push('the window was told '+JSON.stringify(lines)+' when its teammate went down');
+       if(rum!==1) bad.push('the controller rumbled '+rum+' times when the teammate went down');
+       netOnState(peer,w);
+       if(lines.length!==1||rum!==1) bad.push('the fall was said again while he stayed down ('+lines.length+' lines, '+rum+' rumbles)');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       sayWhenFree=oSwf; padRumble=oRum; netSeatName=oName;
+       for(k in NET) if(!(k in NK)) delete NET[k];
+       for(k in NK) NET[k]=NK[k];
+       try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.67',what:'his ruling holds for that raid only: a new raid from the host clears who sat the last one out, on the host and on the teammate, even on the same seed',
    run:function(){
      if(typeof netUpAnnounce!=='function'||typeof netUpTake!=='function') return 'SKIP: this build has no party raid';

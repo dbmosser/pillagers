@@ -1,0 +1,7 @@
+v17.68: a teammate going down is said and felt
+
+When your teammate goes down you are told (NAME is down. Pick them up.) and a controller rumbles.
+
+Check 17.68. Fails on v17.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

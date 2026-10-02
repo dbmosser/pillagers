@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.68 - A TEAMMATE GOING DOWN IS SAID AND FELT
+
+Co-op hunt while he was away. When a teammate went down, nothing said so in the other window: the health bar over his head went dark, and a player looking the other way found out from the run card. The word that first carries his downed flag now says who is down and asks for the pick-up, and gives the controller a rumble, once per fall.
+
+MEASURED. Check 17.68 passes, and fails on v17.67.
 ## v17.67 - SITTING A RAID OUT LASTS FOR THAT RAID ONLY
 
 Co-op hunt while he was away. His ruling of v17.66 keeps a teammate who died or extracted out of that raid, marked by its seed. A new raid on the same seed (a replayed seed, or a test that always uses one) kept him out of that one too. Now a new raid from the host clears the marks, on the host and on the teammate; a late join answer for the same raid does not.

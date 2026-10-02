@@ -1,0 +1,5 @@
+## v17.68 - A TEAMMATE GOING DOWN IS SAID AND FELT
+
+Co-op hunt while he was away. When a teammate went down, nothing said so in the other window: the health bar over his head went dark, and a player looking the other way found out from the run card. The word that first carries his downed flag now says who is down and asks for the pick-up, and gives the controller a rumble, once per fall.
+
+MEASURED. Check 17.68 passes, and fails on v17.67.
