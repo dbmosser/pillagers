@@ -769,6 +769,9 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     // the Settings dials back to their defaults in both windows: the last run's soak can leave one moved by a random click in the
     // pause box, and it rides the host save into this run (10-01: C hit nothing across six bodies, and the run after it).
     [A,C].forEach(function(w,ix){ try{ if(w.__resetCfg){ var ch=w.__resetCfg(); if(ch&&typeof ch==='object'&&Object.keys(ch).length){ rep.cfgReset=(rep.cfgReset||'')+(ix?'C:':'A:')+Object.keys(ch).join(',')+' '; log('settings put back before the raid on '+(ix?'C':'A')+': '+JSON.stringify(ch)); } } }catch(e){} });
+    // both players kept on their feet through every step of the raid, as the soak keeps them: the steps test the link, not who
+    // survives the machines at the lift (10-02: C was killed 25 s in, before the shots step, and every step after it failed)
+    var keepAlive=setInterval(function(){ [A,C].forEach(function(w){ try{ var g=w.__state(), p=g&&g.player; if(p&&!g.over&&!p.downed&&p.hp>0) p.hp=Math.max(p.hp,p.maxhp||100); if(p&&!g.over&&p.downed) p.downT=Math.max(p.downT||0,8); }catch(e){} }); },150);
     clearFloor(fa); clearFloor(fc);
     function ascend(){
       try{
@@ -861,7 +864,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
         if(pa&&(ta.indexOf('YOUR PARTY')<0||(ta.match(/ABANDONED/g)||[]).length<2)) bad.push('summary: A card does not show both players abandoned');
         if(pc&&(tc.indexOf('YOUR PARTY')<0||(tc.match(/ABANDONED/g)||[]).length<2)) bad.push('summary: C card does not show both players abandoned'); },
         function(e){ bad.push('raid: '+e.message); });
-    }).then(function(){ comeDown(A,C); A.__net.open(); C.__net.open(); },function(e){ comeDown(A,C); A.__net.open(); C.__net.open(); throw e; });
+    }).then(function(){ clearInterval(keepAlive); comeDown(A,C); A.__net.open(); C.__net.open(); },function(e){ clearInterval(keepAlive); comeDown(A,C); A.__net.open(); C.__net.open(); throw e; });
     });
   }
   // BUILD 3: THE SAME MACHINE PAIR. Copy A picks 2 PLAYER CO-OP (SAME MACHINE) through its own row. Its window.open is stood in
