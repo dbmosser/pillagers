@@ -241,3 +241,16 @@ in one window, not yet in the two-window nettest.
   nettest now resets Settings and keeps both players alive through the whole raid step. OPEN LEAD: pad X at one crate near the
   start (~3050,2885, crate, 1 item) twice did not start a search on C (near box yes, ring false, X held and forwarded, got ~327).
   The pad loot report now names a stall, a peddler or a door in reach. Do not run quick checks on 9336/8804 while loop B runs.
+
+## NEXT UP (2026-10-02 ~11:00, before he switched the model to Fable)
+- Game at v17.67, all shipped and pushed. Focus: two-player same-PC co-op, low tokens, no agent teams unless he asks.
+- RUNNING: tools/handoff/overnight.sh 14400 A (two-player soaks on Chrome 9335/:8809, until ~15:00, log tools/handoff/overnight.log);
+  a watcher wakes on a "pad loot" or "hit none" failure. Heartbeat: tools/handoff/heartbeat.sh in the background each session.
+- OPEN LEADS (both rare, both now instrumented in nettest):
+  (1) pad X at one crate near the start (~3050,2885) twice did not start a search on C; the report now names stall/peddler/door.
+  (2) C hit none of 6 bodies at 90 units (3 times in ~400 sessions, with no Settings moved); the report now gives C pos, face,
+      angle to target, gun, canvas and frame sizes (r.diag).
+  (3) once: an enemy 260 units apart between windows 2 s after start (fast channel loss?); enemy lines now kept in reports.
+- STILL WAITING ON HIM: P2 payout from his own Terms/Hire or the host's; whether his 125% zoom is Chrome zoom or Windows scale.
+- SHIP: drafts via scratchpad mk-*.ps1 builders (copy the pattern of tools/handoff/drafts/draft-latesay.json), validate-draft.ps1,
+  then bash tools/handoff/shipone.sh KEY 1767 1768 (versions without the dot). Card refresh due by ~17.79 (stamped 17.65).
