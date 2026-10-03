@@ -1,0 +1,7 @@
+v17.74: volume: master, music and effects
+
+Settings has Master, Music and Effects volume rows.
+
+Check 17.74. Fails on v17.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

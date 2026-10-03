@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.73';
+var VER='17.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3478,6 +3478,20 @@ function ac(){
 // single largest thing sound can give you. BUS is the shared output; SFX routes
 // a one-shot through a panner placed by world position.
 var BUS=null,PAN_OK=true;
+// v17.74, AAA CHECK (2026-10-02): VOLUME. Three Settings rows, Master, Music and Effects, each Off to Full. Effects ride the
+// bus every sound goes through (BUS), music rides its own gain (MUS.g, whose level the music itself moves, so the setting
+// multiplies the level it asks for), and Master multiplies both. Applied every frame from the loop, so a change lands at once.
+var VOL_LAST='';
+function volOf(k){ var v=+CFG[k]; return (isFinite(v)&&v>=0&&v<=1)?v:1; }
+function volApply(){
+  var m=volOf('volMaster'), f=volOf('volFx'), mu=volOf('volMusic'), key=m+'/'+f+'/'+mu, a;
+  if(BUS&&BUS.gain){ try{ if(BUS.gain.value!==m*f) BUS.gain.value=m*f; }catch(_vb){} }
+  if(key!==VOL_LAST){
+    VOL_LAST=key;
+    if(typeof MUS==='object'&&MUS&&MUS.g&&MUS.g.gain&&typeof MUS.lvl==='number'){ a=(typeof AC!=='undefined'&&AC)?AC.currentTime:0; try{ MUS.g.gain.setTargetAtTime(MUS.lvl*mu*m,a,0.5); }catch(_vm){} }
+  }
+  return key;
+}
 function bus(){
   var a=ac(); if(!a) return null;
   if(!BUS){
@@ -3760,6 +3774,7 @@ function tickMusic(){
   }
   MUS.i=0;
   var lvl=0.17*(CFG.musicVol===undefined?1:CFG.musicVol);
+  MUS.lvl=lvl; lvl=lvl*volOf('volMusic')*volOf('volMaster');   // v17.74: the volume rows scale the level the music asks for
   MUS.g.gain.setTargetAtTime(lvl,a.currentTime,0.9);
   var T=musTrk(), _len=T.bars.length*16;
   if(!MUS.next||MUS.next<a.currentTime-0.5){ MUS.next=a.currentTime+0.08; MUS.step=0; }
@@ -31167,6 +31182,7 @@ function loop(ts){
   // browser hands the context back. lastTs is restamped on restore.
   if(ctxLost){ lastTs=ts; return; }
   if(CFG.gfxScale!==RES_APPLIED){ try{ resize(); }catch(_rz){} }   // v17.43: his pick 28, a new render resolution applies at once
+  try{ volApply(); }catch(_va){}   // v17.74: the volume rows, applied at once
   if(frameCapSkip(ts)) return;   // v17.43: his pick 28, the frame cap
   // THE CLAMP WAS ONE SIDED, found v2.99. This bounded dt from ABOVE at 50ms, so a
   // backgrounded tab returning does not teleport everything, but it never bounded
@@ -31760,7 +31776,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.73: A controller unplugged in a raid now pauses the game and says so. Check 17.73 fails on v17.72',
+  now:'v17.74: Settings has Master, Music and Effects volume rows. Check 17.74 fails on v17.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40780,6 +40796,33 @@ var GAMEOPTS=[
      {n:'Full',    cfg:{fxLevel:1}},
      {n:'Reduced', cfg:{fxLevel:0}}
    ], def:0},
+  {k:'volMaster', label:'Master volume',
+   hint:'Everything the game plays.',
+   opts:[
+     {n:'Off',  cfg:{volMaster:0}},
+     {n:'25%',  cfg:{volMaster:0.25}},
+     {n:'50%',  cfg:{volMaster:0.5}},
+     {n:'75%',  cfg:{volMaster:0.75}},
+     {n:'Full', cfg:{volMaster:1}}
+   ], def:4},
+  {k:'volMusic', label:'Music volume',
+   hint:'The music on its own.',
+   opts:[
+     {n:'Off',  cfg:{volMusic:0}},
+     {n:'25%',  cfg:{volMusic:0.25}},
+     {n:'50%',  cfg:{volMusic:0.5}},
+     {n:'75%',  cfg:{volMusic:0.75}},
+     {n:'Full', cfg:{volMusic:1}}
+   ], def:4},
+  {k:'volFx', label:'Effects volume',
+   hint:'Guns, footsteps, hits and the world.',
+   opts:[
+     {n:'Off',  cfg:{volFx:0}},
+     {n:'25%',  cfg:{volFx:0.25}},
+     {n:'50%',  cfg:{volFx:0.5}},
+     {n:'75%',  cfg:{volFx:0.75}},
+     {n:'Full', cfg:{volFx:1}}
+   ], def:4},
   {k:'rumble', label:'Controller rumble',
    hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',
    opts:[

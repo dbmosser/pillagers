@@ -1,0 +1,5 @@
+## v17.74 - VOLUME: MASTER, MUSIC AND EFFECTS
+
+Co-op hunt while he was away. A AAA game has volume controls and this one had none: the only sound choices were which window plays and the split. Settings gains Master, Music and Effects rows, Off to Full, applied at once. The defaults are the game as it was.
+
+MEASURED. Check 17.74 passes, and fails on v17.73.

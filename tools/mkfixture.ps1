@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.74',what:'volume: Settings has Master, Music and Effects rows; Effects and Master set the bus every sound rides, Music and Master scale the level the music asks for',
+   run:function(){
+     if(typeof volApply!=='function') return 'Settings has no volume rows';
+     var bad=[], ks=(GAMEOPTS||[]).map(function(o){ return o.k; }), b0=BUS, mg=(typeof MUS==='object'&&MUS)?MUS.g:null, ml=(typeof MUS==='object'&&MUS)?MUS.lvl:undefined, c0={m:CFG.volMaster,f:CFG.volFx,u:CFG.volMusic}, seen=null;
+     ['volMaster','volMusic','volFx'].forEach(function(k){ if(ks.indexOf(k)<0) bad.push('Settings has no '+k+' row'); });
+     try{
+       BUS={gain:{value:1}}; MUS.g={gain:{setTargetAtTime:function(v){ seen=v; }}}; MUS.lvl=0.4; VOL_LAST='';
+       CFG.volMaster=1; CFG.volFx=0.5; CFG.volMusic=1; volApply();
+       if(Math.abs(BUS.gain.value-0.5)>1e-9) bad.push('Effects at 50% set the bus to '+BUS.gain.value);
+       if(seen===null||Math.abs(seen-0.4)>1e-9) bad.push('with Music at Full the music level asked for was '+seen+', not 0.4');
+       CFG.volMaster=0.5; CFG.volMusic=0.5; volApply();
+       if(Math.abs(BUS.gain.value-0.25)>1e-9) bad.push('Master 50% and Effects 50% set the bus to '+BUS.gain.value);
+       if(Math.abs(seen-0.1)>1e-9) bad.push('Master 50% and Music 50% asked the music for '+seen+', not 0.1');
+       CFG.volMaster=0; volApply(); if(BUS.gain.value!==0) bad.push('Master Off left the bus at '+BUS.gain.value);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ BUS=b0; if(typeof MUS==='object'&&MUS){ MUS.g=mg; MUS.lvl=ml; } CFG.volMaster=c0.m; CFG.volFx=c0.f; CFG.volMusic=c0.u; VOL_LAST=''; try{ volApply(); }catch(_v){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.73',what:'a controller unplugged in a raid opens the pause box and says so; on the Undercroft floor it does not pause',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof togglePauseBox!=='function') return 'SKIP: no raid or pause box in this fixture';

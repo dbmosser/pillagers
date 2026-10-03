@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.74 - VOLUME: MASTER, MUSIC AND EFFECTS
+
+Co-op hunt while he was away. A AAA game has volume controls and this one had none: the only sound choices were which window plays and the split. Settings gains Master, Music and Effects rows, Off to Full, applied at once. The defaults are the game as it was.
+
+MEASURED. Check 17.74 passes, and fails on v17.73.
 ## v17.73 - A CONTROLLER UNPLUGGED IN A RAID PAUSES AND SAYS SO
 
 Co-op hunt while he was away. When a controller came unplugged mid-raid the game let go of its keys and went quiet: the player stood still with no word while the machines came. Now the pause box opens and a line says Controller disconnected. Plug it in, then resume. On the Undercroft floor nothing pauses.
