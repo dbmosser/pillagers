@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.27 - TRADING IS DROPPING
+
+Co-op hunt while he was away. His order of 2026-10-03: trading sounds way too complicated, drop it on the floor and it makes a loot box the other player picks up. Up top that is now the whole story: Z (Y on a controller with the backpack open) drops the selected item as a pile at your feet, and your teammate searches it like any box. A drop by the linked window is made by the host, which runs every box, so the whole party sees it. Every legend, the backpack and the Party window teach the drop; the old offer words stay in the code but nothing teaches them.
+
+MEASURED. Check 18.27 passes, and fails on v18.26.
 ## v18.26 - SHORT DARK HAIR IS THE DEFAULT LOOK
 
 Co-op hunt while he was away. His order of 2026-10-03: make short dark hair the default. A new character wore long blonde hair, which on player 2 read as a strange gold outline round the face. A character with no hair or cut picked now wears dark hair in a crop, and Dark hair is open from the first run so the mirror never shows the default as locked. Anyone who picked a look keeps it.

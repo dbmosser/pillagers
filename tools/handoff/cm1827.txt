@@ -1,0 +1,7 @@
+v18.27: trading is dropping
+
+To give a teammate something up top, drop it (Z, or Y with the backpack open on a controller) and they search the pile like any box.
+
+Check 18.27. Fails on v18.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
