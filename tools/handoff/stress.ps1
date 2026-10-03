@@ -1,4 +1,4 @@
-param([int]$Cdp=9344,[int]$Port=8806,[string]$Ns='40,80,120',[int]$Sec=8)
+param([int]$Cdp=9344,[int]$Port=8806,[string]$Ns='40,80,120',[int]$Sec=8,[double]$Throttle=0)
 # A BUSY SCREEN (his worry 2026-10-02): N extra bodies chasing the player, eight rounds every third frame, every body kept alive,
 # for Sec seconds; the frame interval under the live loop (median, p95, worst) and the update and draw on their own.
 # One JSON line per N. Needs a headless Chrome on $Cdp (tools\cdp.ps1 -Start -Port) and a server on $Port serving tools\.
@@ -27,5 +27,5 @@ $g=@"
  return JSON.stringify(out);
 })()
 "@
-powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match "$Port/fixture" -TimeoutSec 120 -Expr $g 2>$null
+powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match "$Port/fixture" -TimeoutSec 120 -Throttle $Throttle -Expr $g 2>$null
 }

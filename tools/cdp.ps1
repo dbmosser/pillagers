@@ -24,6 +24,12 @@ if(-not $t){ Write-Output 'NO TARGET'; exit 1 }
 $ws=New-Object System.Net.WebSockets.ClientWebSocket
 $ct=[Threading.CancellationToken]::None
 $ws.ConnectAsync([Uri]$t.webSocketDebuggerUrl,$ct).Wait()
+if($Throttle -gt 1){
+  $m0=@{id=7;method='Emulation.setCPUThrottlingRate';params=@{rate=[double]$Throttle}} | ConvertTo-Json -Depth 5 -Compress
+  $b0=[Text.Encoding]::UTF8.GetBytes($m0)
+  $ws.SendAsync((New-Object 'ArraySegment[byte]' -ArgumentList (,$b0)),[System.Net.WebSockets.WebSocketMessageType]::Text,$true,$ct).Wait()
+  $buf0=New-Object byte[] 65536; $r0=$ws.ReceiveAsync((New-Object 'ArraySegment[byte]' -ArgumentList (,$buf0)),$ct); $r0.Wait(5000) | Out-Null
+}
 $js='(async()=>{ const v=await ('+$Expr+'); return (typeof v==="string")?v:JSON.stringify(v); })()'
 $msg=@{id=1;method='Runtime.evaluate';params=@{expression=$js;returnByValue=$true;awaitPromise=$true}} | ConvertTo-Json -Depth 5 -Compress
 $bytes=[Text.Encoding]::UTF8.GetBytes($msg)
