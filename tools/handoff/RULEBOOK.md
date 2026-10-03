@@ -89,3 +89,10 @@ Never idle while any of these has work.
    D3D11, confirmed 2026-09-27); PowerShell builds, patches and fixtures on his CPU; long
    runs go in background shells while I draft the next build. Tokens go into writing fixes,
    not into watching runs. No Node on this PC: profile in the pane, not with prof.mjs.
+23. DECIDE SMALL THINGS (his worry, 2026-10-02). Config-level questions he cannot evaluate (which save's terms pay player 2,
+    what his zoom is) are mine to decide. Bring him only rulings that change how the game plays; after a playtest ask for
+    feel: is the boss fun, would his son trade, does drop-in make sense to a kid, what annoyed them. Never carry a trivial
+    question "still open" across reports.
+24. NO REJOINING A RAID YOU DIED OR EXTRACTED IN (his ruling 2026-10-02, v17.66). Abandon, a closed window or a lost link
+    can still JOIN THE RAID IN PROGRESS. The block ends with the raid (v17.67).
+25. LOAD (2026-10-02): six test Chromes, two overnight.sh runs at once with different log names, the 6 GB floor is the guard.
