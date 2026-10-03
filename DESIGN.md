@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.19 - A CONTROLLER TAKES A TRADE OFFER WITH A WINDOW OPEN
+
+Co-op hunt while he was away. His note of 2026-10-03: still not clear how trading works. One real dead end: a panel on screen owns the controller, so with the Stash screen or the shop open, which is where a player is when an Undercroft offer arrives, the Y that takes an offer never ran. Y now takes a waiting offer wherever the controller player is.
+
+MEASURED. Check 18.19 passes, and fails on v18.18.
 ## v18.18 - THE WHAT IS NEW CARD NAMES THE NIGHT OF OCTOBER 3
 
 Co-op hunt while he was away. The card was stamped v18.04. It now says what changed since: the smaller siege, shared sight, kid firing turning toward its target, Undercroft trading, the icon and gun art, the one look across title, menus and HUD, and the baked walls and trees.

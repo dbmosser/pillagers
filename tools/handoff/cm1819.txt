@@ -1,0 +1,7 @@
+v18.19: a controller takes a trade offer with a window open
+
+A controller player can take a trade offer with the stash or a shop open, not only on the floor.
+
+Check 18.19. Fails on v18.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

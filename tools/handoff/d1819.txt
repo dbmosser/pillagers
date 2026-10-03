@@ -1,0 +1,5 @@
+## v18.19 - A CONTROLLER TAKES A TRADE OFFER WITH A WINDOW OPEN
+
+Co-op hunt while he was away. His note of 2026-10-03: still not clear how trading works. One real dead end: a panel on screen owns the controller, so with the Stash screen or the shop open, which is where a player is when an Undercroft offer arrives, the Y that takes an offer never ran. Y now takes a waiting offer wherever the controller player is.
+
+MEASURED. Check 18.19 passes, and fails on v18.18.

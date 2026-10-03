@@ -1,0 +1,1 @@
+| A CONTROLLER TAKES A TRADE OFFER WITH A WINDOW OPEN | v18.19 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 18.19 passes, fails on v18.18 |
