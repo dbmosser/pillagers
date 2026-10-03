@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.78 - A PLAYSTATION PAD IS NAMED IN ITS OWN WORDS, AND THE PAD LEGEND MATCHES HIS LAYOUT
+
+Co-op hunt while he was away. Every prompt named Xbox buttons whatever pad was plugged in. The game now reads the pad make from its id and, on a PlayStation pad, says CROSS, CIRCLE, SQUARE, TRIANGLE, L1, R1, L2, R2, SHARE and OPTIONS everywhere a prompt goes through keyLabel, in the legends, and in the few prompts written out by hand. A pad handed to the other window carries its make too. The short pad legend also still described the old layout (B roll, A fire, Y reload); it now matches his: A roll, B crouch, RT fire, X reload, LT or RS focus aim, D-left and right aim distance.
+
+MEASURED. Check 17.78 passes, and fails on v17.77.
 ## v17.77 - THE NEW-IN CARD IS A CARD, NOT A WALL
 
 Co-op hunt while he was away. From the visual pass of 2026-10-02. On entering the Undercroft after an update the card drew every note in full: six paragraphs over the whole floor. It now shows the newest five notes, each as its headline and the start of what follows. The party note also said a host leaving abandons the run for everyone, which v17.69 changed: it now says player 2 keeps the raid.

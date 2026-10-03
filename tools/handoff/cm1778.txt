@@ -1,0 +1,7 @@
+v17.78: a playstation pad is named in its own words, and the pad legend matches his layout
+
+A PlayStation controller is now named in its own words (CROSS, CIRCLE, SQUARE, TRIANGLE, L1, R1...), and the short pad legend matches the real layout.
+
+Check 17.78. Fails on v17.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
