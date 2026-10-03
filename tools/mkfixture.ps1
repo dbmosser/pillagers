@@ -5792,11 +5792,12 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        keys={}; NET.same='host'; NET.pair='zqxesc';
-       if(box.classList.contains('on')) togglePauseBox(false);
+       // v18.06: started from a shut box, the pause flag down and no item menu up, whatever an earlier check left (it flaked once in the 80-check run); the failure line says what it found
+       try{ togglePauseBox(false); }catch(_c0){} pauseOpen=false; try{ closeItemMenu(); }catch(_c1){} try{ if(G) G.paused=false; }catch(_c2){}
        r=netSameOnMsg({t:'key',pair:'zqxesc',ty:'keydown',code:'Escape',key:'Escape',rep:false,sh:false,ct:false});
        netSameOnMsg({t:'key',pair:'zqxesc',ty:'keyup',code:'Escape',key:'Escape',rep:false,sh:false,ct:false});
        if(r!=='key') bad.push('the handed key was answered '+r);
-       if(!box.classList.contains('on')) bad.push('a handed ESC left player 1 unpaused');
+       if(!box.classList.contains('on')) bad.push('a handed ESC left player 1 unpaused [hidden '+document.hidden+' pauseOpen '+pauseOpen+' paused '+(G&&G.paused)+' over '+(G&&G.over)+' state '+state+' modals '+[].map.call(document.querySelectorAll('.modal.on'),function(x){ return x.id; }).join('/')+' imenu '+!!document.querySelector('.imenu')+' bag '+(G&&G.bagOpen)+' map '+(G&&G.mapOpen)+' trade '+!!(G&&G.trade)+']');
        netSameOnMsg({t:'key',pair:'zqxesc',ty:'keydown',code:'Escape',key:'Escape',rep:false,sh:false,ct:false});
        netSameOnMsg({t:'key',pair:'zqxesc',ty:'keyup',code:'Escape',key:'Escape',rep:false,sh:false,ct:false});
        if(box.classList.contains('on')) bad.push('a second handed ESC did not close the pause box');
