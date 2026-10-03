@@ -1,0 +1,5 @@
+## v18.18 - THE WHAT IS NEW CARD NAMES THE NIGHT OF OCTOBER 3
+
+Co-op hunt while he was away. The card was stamped v18.04. It now says what changed since: the smaller siege, shared sight, kid firing turning toward its target, Undercroft trading, the icon and gun art, the one look across title, menus and HUD, and the baked walls and trees.
+
+MEASURED. Check 18.18 passes, and fails on v18.17.

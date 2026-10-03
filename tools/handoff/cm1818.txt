@@ -1,0 +1,7 @@
+v18.18: the what is new card names the night of october 3
+
+The what is new card names the night of October 3.
+
+Check 18.18. Fails on v18.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

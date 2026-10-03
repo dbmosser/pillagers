@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.18 - THE WHAT IS NEW CARD NAMES THE NIGHT OF OCTOBER 3
+
+Co-op hunt while he was away. The card was stamped v18.04. It now says what changed since: the smaller siege, shared sight, kid firing turning toward its target, Undercroft trading, the icon and gun art, the one look across title, menus and HUD, and the baked walls and trees.
+
+MEASURED. Check 18.18 passes, and fails on v18.17.
 ## v18.17 - TRADING IS ON THE LEGENDS
 
 Co-op hunt while he was away. His note of 2026-10-03: trading instructions are not even on the key legend. The full key list and the full pad list gain a TEAM section (T or Y: offer or take a traded item; N or both bumpers: ping). While a party is on, the compact legend gains the same two rows and grows for them. The stash key bar says RIGHT CLICK offers to your teammate when the windows are linked, and the Party window explains both ways to trade in two sentences.

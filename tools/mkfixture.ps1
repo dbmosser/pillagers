@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.18',what:'the what is new card is stamped within 0.15 of the build and has a line on the night of October 3',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle='THE NIGHT OF'+' OCTOBER 3';
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)>=0; })) bad.push('no line of the card names the night of October 3');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.17',what:'trading is on the legends, his note of 2026-10-03: the full key list and the full pad list have a TEAM section with the trade key, the compact legend gains a trade row while a party is on and grows for it, the stash key bar has an offer line, and the Party window explains trading',
    run:function(){
      var bad=[], i, j, tRow=null, yRow=null, kb=document.getElementById('kb_trade'), pt=document.getElementById('partytrade'), g, on0, h0=0, h1=0, lines=[], src='';
