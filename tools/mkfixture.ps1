@@ -5721,6 +5721,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.86',what:'the pause legend built from the key map says CTRL / C crouch toggle, as the written legend always did',
+   run:function(){
+     if(typeof keysLegendHtml!=='function') return 'SKIP: this build has no key map legend';
+     var bad=[], km0=P.keymap, h;
+     try{ P.keymap={}; KEYS.inv=null; keysInv(); h=keysLegendHtml().replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' '); if(!/CTRL \/ C crouch toggle/.test(h)) bad.push('the legend reads '+JSON.stringify(h.slice(0,160))); }
+     catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P.keymap=km0||{}; KEYS.inv=null; keysInv(); try{ keysLegendApply(); }catch(_k){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.85',what:'the Keys window is set in the game font like every other window and its list scrolls inside the window instead of running past the bottom',
    run:function(){
      if(typeof keysOpen!=='function') return 'SKIP: this build has no Keys window';

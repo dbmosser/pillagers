@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.86 - THE PAUSE LEGEND SAYS CROUCH TOGGLE AGAIN
+
+Co-op hunt while he was away. The remappable keys build rebuilds the pause box legend from the key map, and its line for CTRL and C dropped the word toggle that the written legend had. Caught by an older check. It says CTRL / C crouch toggle again.
+
+MEASURED. Check 17.86 passes, and fails on v17.85.
 ## v17.85 - THE KEYS WINDOW IN THE GAME FONT, AND IT SCROLLS
 
 Co-op hunt while he was away. The corpus caught two faults in the new Keys window: it was added outside the box the other windows live in, so it was set in the browser default font, and its twenty rows ran 439 pixels past the bottom at 1080p with no way to scroll. It now sits beside the other windows, in their font, and its list scrolls inside the window.

@@ -1,0 +1,5 @@
+## v17.86 - THE PAUSE LEGEND SAYS CROUCH TOGGLE AGAIN
+
+Co-op hunt while he was away. The remappable keys build rebuilds the pause box legend from the key map, and its line for CTRL and C dropped the word toggle that the written legend had. Caught by an older check. It says CTRL / C crouch toggle again.
+
+MEASURED. Check 17.86 passes, and fails on v17.85.

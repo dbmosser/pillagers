@@ -1,0 +1,7 @@
+v17.86: the pause legend says crouch toggle again
+
+The pause legend says CTRL / C crouch toggle again.
+
+Check 17.86. Fails on v17.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
