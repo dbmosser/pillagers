@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.13 - THE STYLING PASS, STAGE C: ONE PANEL FOR THE RAID HUD
+
+Co-op hunt while he was away. His order of 2026-10-03: styling across all menus and HUDs. Five HUD boxes (conditions, the pillager board, both legends and the backpack) each drew their own flat black rectangle with a thin stroke. They share one panel now: rounded corners, a slight gradient, a steel border and a hairline of light along the top, so the HUD reads as one set of instruments. Every position, size and hit box is what it was.
+
+MEASURED. Check 18.13 passes, and fails on v18.12.
 ## v18.12 - THE ICON FILLS ITS CELL
 
 Co-op hunt while he was away. His order of 2026-10-03: the item graphics need massive improvement. A 40 px picture sat in a 200 px stash cell, so the thing you were looking at was a tenth of its box. Stash and backpack cells now show the icon at 62 percent of the cell at every layout, shop cells at 44 percent, and the painters draw at up to six times the row size, so the big picture is a sharp one. The belt keys keep their small picture.

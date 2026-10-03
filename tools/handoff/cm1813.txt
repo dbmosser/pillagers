@@ -1,0 +1,7 @@
+v18.13: the styling pass, stage c: one panel for the raid hud
+
+The raid HUD panels share one look: rounded, softly shaded, one border.
+
+Check 18.13. Fails on v18.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

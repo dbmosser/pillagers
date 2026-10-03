@@ -1481,7 +1481,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.12';
+var VER='18.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26431,8 +26431,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     by=Math.max(by,Math.ceil((topRightBottom()+8+((T.notes&&T.notes.length)?LH(20):0))/_cz));   // v12.05: and under the notes-logged line when there is one
     bx=clamp(bx+HOc.dx/_cz,Math.min(W-16-bw,W-(W-4)/_cz),Math.max(W-(W-4)/_cz,W-bw-4/_cz));
     by=clamp(by+HOc.dy/_cz,LH(10),Math.max(LH(10),H/_cz-LH(30)));
-ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
-    ctx.strokeStyle='rgba(127,146,216,.40)'; ctx.lineWidth=1; ctx.strokeRect(bx+.5,by+.5,bw-1,bh-1);
+hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     var ry=by+pad+LH(8);
     ctx.fillStyle='#ffc04a'; ctx.fillText('CONDITIONS',bx+pad,ry);
@@ -28084,6 +28083,24 @@ function hudOff(id){
   var o=(P&&P.hud&&P.hud[id])||{};
   return {dx:o.dx||0,dy:o.dy||0,c:!!o.c&&id!=='body'};   // v16.28, his note: the vitals block (health) never folds away
 }
+// v18.13, THE STYLING PASS, STAGE C: ONE PANEL FOR THE RAID HUD. Five HUD boxes (conditions, the pillager board, both legends and
+// the backpack) each drew their own flat black rectangle with a thin stroke. They share one panel now: rounded corners, a slight
+// top-to-bottom gradient, a one pixel steel border and a hairline of light along the top edge, so the HUD reads as one set of
+// instruments. Every position, size and hit box is what it was.
+function hudPanel(x,y,w,h,a){
+  var r, g;
+  if(!(w>0&&h>0)) return;
+  r=Math.min(6,w/2,h/2); a=(a===undefined)?0.76:a;
+  function path(px,py,pw,ph,pr){ pr=Math.max(0,Math.min(pr,pw/2,ph/2)); ctx.beginPath(); ctx.moveTo(px+pr,py); ctx.lineTo(px+pw-pr,py); ctx.quadraticCurveTo(px+pw,py,px+pw,py+pr); ctx.lineTo(px+pw,py+ph-pr); ctx.quadraticCurveTo(px+pw,py+ph,px+pw-pr,py+ph); ctx.lineTo(px+pr,py+ph); ctx.quadraticCurveTo(px,py+ph,px,py+ph-pr); ctx.lineTo(px,py+pr); ctx.quadraticCurveTo(px,py,px+pr,py); ctx.closePath(); }
+  ctx.save();
+  path(x,y,w,h,r);
+  try{ g=ctx.createLinearGradient(0,y,0,y+h); g.addColorStop(0,'rgba(14,19,40,'+a+')'); g.addColorStop(1,'rgba(6,9,13,'+a+')'); ctx.fillStyle=g; }catch(_g){ ctx.fillStyle='rgba(6,9,13,'+a+')'; }
+  ctx.fill();
+  path(x+.5,y+.5,w-1,h-1,r);
+  ctx.strokeStyle='rgba(127,146,216,.42)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x+r,y+1.5); ctx.lineTo(x+w-r,y+1.5); ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.restore();
+}
 function drawRaiderBoard(){
   delete HUDBOX.raiders;
   var R=G.roster, _nb=(NET.on&&netEntsPeer()&&G.netBoard)?G.netBoard:null;   // v16.34: a linked window draws the host board
@@ -28191,10 +28208,7 @@ function drawRaiderBoard(){
   }
   var _rShown=rows.length+(_rHid?1:0);
   var boxH=HOr.c?LH(18):(LH(20)+_rShown*LH1+LH(6));
-  ctx.fillStyle='rgba(6,9,13,.72)';
-  ctx.fillRect(PADX-8,y0-LH(13),LW,boxH);
-  ctx.strokeStyle='rgba(127,146,216,.40)'; ctx.lineWidth=1;
-  ctx.strokeRect(PADX-7.5,y0-LH(12.5),LW-1,boxH-1);
+  hudPanel(PADX-8,y0-LH(13),LW,boxH);   // v18.13: the one HUD panel
   ctx.font=FS(TYPE.micro);
   ctx.fillStyle='#ffc04a';
   ctx.fillText('CURRENT PILLAGERS  '+live,PADX,y0-LH(2));
@@ -28321,9 +28335,7 @@ function drawLegend(){
     // frame later. Both now ride outside the zoom with the anchor.
     mx=clamp(mx,4,Math.max(4,W-MW-4));
     my=clamp(my,LH(14),Math.max(LH(14),H-MH-4));
-    ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(mx-8,my-6,MW,MH+10);
-    ctx.strokeStyle='rgba(127,146,216,.40)'; ctx.lineWidth=1;
-    ctx.strokeRect(mx-7.5,my-5.5,MW-1,MH+9);
+    hudPanel(mx-8,my-6,MW,MH+10);   // v18.13: the one HUD panel
     HUDBOX.legend={x:mx-8,y:my-6,w:MW,h:MH+10,tg:{x:mx-8+MW-LH(20),y:my-6,w:LH(20),h:LH(14)}};
     ctx.textAlign='right'; ctx.fillStyle='#8a96a1'; ctx.font=MONO;
     ctx.fillText('[-]',mx-8+MW-4,my+LH(4));
@@ -28368,9 +28380,7 @@ var _hL=rows*LH(12);
   var top=Math.max(8,H-(LH(70)+LH(20))-boxH);
 var LEGW=LH(412);
   x=Math.max(14,Math.round((W-LEGW)/2));
-  ctx.fillStyle='rgba(6,9,13,.82)'; ctx.fillRect(x-8,top-6,LEGW,boxH+10);
-  ctx.strokeStyle='rgba(127,146,216,.55)'; ctx.lineWidth=1;
-  ctx.strokeRect(x-7.5,top-5.5,LEGW-1,boxH+9);
+  hudPanel(x-8,top-6,LEGW,boxH+10,0.84);   // v18.13: the one HUD panel
 var cy=top+LH(6), _cx2=x+LH(206), _cy2=top+LH(6);
   ctx.strokeStyle='rgba(127,146,216,.35)'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.moveTo(_cx2-LH(10),top); ctx.lineTo(_cx2-LH(10),top+boxH-LH(6)); ctx.stroke();
@@ -29186,8 +29196,7 @@ function drawBag(){
   // to ask where the panel is was to repeat its placement maths somewhere else,
   // which is exactly how its belt reserve drifted out of date for three builds.
   G.bagPanel={x:x,y:y,w:PW,h:hh};
-  ctx.fillStyle='rgba(6,9,13,.96)'; ctx.fillRect(x,y,PW,hh);
-  ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);
+  hudPanel(x,y,PW,hh,0.96);   // v18.13: the one HUD panel
 
   var cy=y+LH(19);
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
@@ -32050,7 +32059,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.12: Item and gun pictures now fill their cells in the stash, backpack and shop instead of sitting small in the middle. Check 18.12 fails on v18.11',
+  now:'v18.13: The raid HUD panels share one look: rounded, softly shaded, one border. Check 18.13 fails on v18.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
