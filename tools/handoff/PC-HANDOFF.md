@@ -268,3 +268,7 @@ in one window, not yet in the two-window nettest.
 - STRESS (tools/handoff/stress.ps1, 1080p, PC under 5 loops): 40 bodies update 0.3 ms draw 2.9 ms; 160 bodies update 3.2 draw 5.3;
   frame median 16.6 (vsync), p95 19-21, worst 25-31 at every N (machine load, not the game). Idle rerun scheduled after 23:00.
 - v17.71 the kid menu (KID MODE heading; P.kidBack / kbOn(); host carries m.kb; the v17.66 sit-out skips a death when it is on; extract still ends his raid).
+- v17.72 HID worker tick: a covered/minimised host window keeps running a shared raid (hidTick when no rAF for 200 ms and netEntsHost()).
+- v17.73 gamepaddisconnected in a raid: pause box + "Controller disconnected. Plug it in, then resume."
+- TOOLS: cdp.ps1 -Throttle N (CPU slowdown) and -Shot path.jpg; stress.ps1, memsoak.ps1, shots.ps1 (visual pass screenshots to tools/handoff/shots/).
+  shipone.sh: GATE_CDP=9346 ships on a second gate Chrome (profile pillagers-cdp9346) while 9344 is busy.
