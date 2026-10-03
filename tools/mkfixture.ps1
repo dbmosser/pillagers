@@ -21650,7 +21650,7 @@ window.__REGRESS=[
        if(D&&!D.call) bad.push('down inside an open uncalled ring, the overlay did not offer the call for extraction');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
-       try{ if(realFill) ctx.fillText=realFill; }catch(_r){}
+       try{ if(realFill){ delete ctx.fillText; if(ctx.fillText!==realFill) ctx.fillText=realFill; } }catch(_r){}   // never leave an own fillText
        try{ var g2=__state(); if(g2){ if(g2.player){ g2.player.downed=false; g2.player.hp=100; } if(!g2.over) __endRaid('abandon'); } }catch(_e){}
        __topClear(); __resetCfg(); __cleanProfile();
      }
@@ -21691,7 +21691,7 @@ window.__REGRESS=[
        if(B===null||Math.abs(B-want)>1) bad.push('a downed pillager at half health read '+B+'s on the revive prompt, when he is finished in about '+want+'s');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
-       try{ if(realFill) ctx.fillText=realFill; }catch(_r){}
+       try{ if(realFill){ delete ctx.fillText; if(ctx.fillText!==realFill) ctx.fillText=realFill; } }catch(_r){}   // never leave an own fillText
        try{ var g2=__state(); if(g2){ g2.nearDown=null; if(g2.player) g2.player.iv=0; if(!g2.over) __endRaid('abandon'); } }catch(_e){}
        __topClear(); __resetCfg(); __cleanProfile();
      }
@@ -21756,7 +21756,7 @@ window.__REGRESS=[
        if(drawn(100)) bad.push('the give prompt was drawn over a survivor 100 units away, where E does not hand anything over');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
-       try{ if(realFill) ctx.fillText=realFill; }catch(_r){}
+       try{ if(realFill){ delete ctx.fillText; if(ctx.fillText!==realFill) ctx.fillText=realFill; } }catch(_r){}   // never leave an own fillText
        try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
        __topClear(); __resetCfg(); __cleanProfile();
      }
