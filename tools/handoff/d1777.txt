@@ -1,0 +1,5 @@
+## v17.77 - THE NEW-IN CARD IS A CARD, NOT A WALL
+
+Co-op hunt while he was away. From the visual pass of 2026-10-02. On entering the Undercroft after an update the card drew every note in full: six paragraphs over the whole floor. It now shows the newest five notes, each as its headline and the start of what follows. The party note also said a host leaving abandons the run for everyone, which v17.69 changed: it now says player 2 keeps the raid.
+
+MEASURED. Check 17.77 passes, and fails on v17.76.

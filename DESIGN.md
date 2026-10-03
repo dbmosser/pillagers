@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.77 - THE NEW-IN CARD IS A CARD, NOT A WALL
+
+Co-op hunt while he was away. From the visual pass of 2026-10-02. On entering the Undercroft after an update the card drew every note in full: six paragraphs over the whole floor. It now shows the newest five notes, each as its headline and the start of what follows. The party note also said a host leaving abandons the run for everyone, which v17.69 changed: it now says player 2 keeps the raid.
+
+MEASURED. Check 17.77 passes, and fails on v17.76.
 ## v17.76 - THE RAID CONTROLS LEGEND: COLUMNS APART, AND OUT OF THE WAY AFTER THREE RAIDS
 
 Co-op hunt while he was away. From the visual pass of 2026-10-02. In the raid HUD the controls legend drew TACTICAL BELT into the next column (1-9 tactical b B/I), and the whole panel sat on screen in every raid, big as the health bar, where no AAA game keeps a key list. The label column is wider now, and after three raids the legend starts collapsed to its one-line H controls; H opens it as before.

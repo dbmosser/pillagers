@@ -1,0 +1,7 @@
+v17.77: the new-in card is a card, not a wall
+
+The NEW IN card is shorter: the newest five notes, each as a headline and a line.
+
+Check 17.77. Fails on v17.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

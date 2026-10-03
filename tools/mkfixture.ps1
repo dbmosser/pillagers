@@ -5721,6 +5721,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.77',what:'the new-in card shows the newest five notes, each cut to its headline and the start of what follows, and the party note no longer says a host leaving abandons the run for everyone',
+   run:function(){
+     if(typeof wnShort!=='function'||typeof WN_SHOW==='undefined') return 'the card draws every note in full';
+     var bad=[], long='A HEADLINE IN CAPS. '+new Array(60).join('word ')+'end.', s=wnShort(long), needle='abandoned for '+'everyone';
+     if(WN_SHOW!==5) bad.push('the card shows '+WN_SHOW+' notes');
+     if(s.indexOf('A HEADLINE IN CAPS.')!==0) bad.push('the headline was lost: '+s.slice(0,40));
+     if(s.length>200||s.slice(-3)!=='...') bad.push('a long note was not cut ('+s.length+' chars)');
+     if(wnShort('SHORT ONE. And a tail.')!=='SHORT ONE. And a tail.') bad.push('a short note was changed');
+     if(WHATSNEW.some(function(l){ return String(l).indexOf(needle)>=0; })) bad.push('a note still says a host leaving abandons the run for everyone');
+     return bad.length?bad.join('; '):null; }},
   {v:'17.76',what:'the raid controls legend: its two columns no longer collide (the label column is wide enough for TACTICAL BELT) and after three raids it starts collapsed, H still opens it',
    run:function(){
      if(!window.__deploy||!window.__endRaid) return 'SKIP: no raid in this fixture';

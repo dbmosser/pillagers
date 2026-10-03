@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.76';
+var VER='17.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1449,10 +1449,22 @@ var VER='17.76';
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
 var WHATSNEW_VER='17.65';
+// v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
+// whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
+// themselves are unchanged.
+var WN_SHOW=5, WN_TAIL=150;
+function wnShort(s){
+  var t=String(s||''), i=t.indexOf('. '), head, rest, cut;
+  if(i<0||i>140) return (t.length>WN_TAIL+60)?(t.slice(0,WN_TAIL+60).replace(/\s+\S*$/,'')+'...'):t;
+  head=t.slice(0,i+1); rest=t.slice(i+2);
+  if(rest.length<=WN_TAIL) return head+' '+rest;
+  cut=rest.slice(0,WN_TAIL).replace(/\s+\S*$/,'');
+  return head+' '+cut+'...';
+}
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'YOUR PARTY GOES UP TOGETHER AND PLAYS AS ONE. The mode menu opens a second window for your other screen with its own controller; player 1 sound plays on the left speaker and player 2 on the right. The party shares one surface: the same enemies, clock, weather, lightning and extraction points, and a beacon any of you calls comes for the party. Nobody in your party can hurt you. Your teammates show on the HUD with health and armour, you see their shots and damage numbers and hear their sounds, and you can use your own Bandages and plates on a teammate beside you. Hold E next to a downed teammate to revive them. One of you searches a box at a time and the loot goes to whoever searched it. The game pauses only when every player has paused. If the host extracts or dies, the host watches until the party is out; if the host leaves the party, the run ends as abandoned for everyone. The clock alarms are quieter, and a lightning flash shows you to the enemy from farther off.',
+  'YOUR PARTY GOES UP TOGETHER AND PLAYS AS ONE. The mode menu opens a second window for your other screen with its own controller; player 1 sound plays on the left speaker and player 2 on the right. The party shares one surface: the same enemies, clock, weather, lightning and extraction points, and a beacon any of you calls comes for the party. Nobody in your party can hurt you. Your teammates show on the HUD with health and armour, you see their shots and damage numbers and hear their sounds, and you can use your own Bandages and plates on a teammate beside you. Hold E next to a downed teammate to revive them. One of you searches a box at a time and the loot goes to whoever searched it. The game pauses only when every player has paused. If the host extracts or dies, the host watches until the party is out; if the host window closes, player 2 keeps the raid and runs it alone. The clock alarms are quieter, and a lightning flash shows you to the enemy from farther off.',
   'FROM YOUR PLAYTEST. On a controller A rolls, B crouches, RT fires or uses what is selected, LT or a right stick click aims, X loots or reloads, Y searches in an extraction circle or patches up a teammate with the heal or plate selected on your tactical belt, a bumper tap changes the belt and a held bumper zooms, and D-pad left and right set the aim distance. A picks up and places in the backpack and on the Stash screen. Kid firing and kid mode 1/20 are in Settings, and the kit question offers TOP GEAR and RANDOM FROM STASH.',
   'STEADIER TWO-PLAYER GAMES ON ONE PC. A key held in one window is let go when you click the other, ESC in the player 2 window no longer pauses player 1, and a click in one window never shuts the backpack of the other player. Kid mode at 1/20 really gives player 2 a twentieth of every hit, letting go of the right stick ends aiming so Superhot time stops and kid firing comes back, a downed controller player calls for extraction with X, and a heal your teammate could not take comes back to your backpack. Kills go to whoever made them, and a gun or a loaner Bandage handed between players is never kept by both.',
   'STEADIER MENUS AND STASH. A plain click on a gun in your armoury leaves it there, a controller can put a gun in gun 1 or gun 2 from the stash (press A twice on the gun), an item on belt key 1 no longer buries your gun, and ESC or TAB on Settings in a raid shuts Settings only. A hire you paid for is spent at the lift, and the game open in two tabs no longer wipes what the other tab saved.',
@@ -30937,8 +30949,8 @@ function drawHubHUD(ox,oy){
       ctx.font=FS(TYPE[wnRole]);
       wnW=Math.min(W-LH(60),LH(1000));
       wnRows=[]; wnGaps=0;
-      for(var wm=0;wm<WHATSNEW.length;wm++){
-        var wWords=((wm+1)+'. '+WHATSNEW[wm]).split(' '),wLine='',wFirst=1;
+      for(var wm=0;wm<Math.min(WN_SHOW,WHATSNEW.length);wm++){
+        var wWords=((wm+1)+'. '+wnShort(WHATSNEW[wm])).split(' '),wLine='',wFirst=1;
         for(var ww=0;ww<wWords.length;ww++){
           var wCand=wLine?(wLine+' '+wWords[ww]):wWords[ww];
           if(wLine&&ctx.measureText(wCand).width>wnW-LH(44)){
@@ -31865,7 +31877,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.76: The raid controls legend no longer overlaps itself, and after your first three raids it starts collapsed (H opens it). Check 17.76 fails on v17.75',
+  now:'v17.77: The NEW IN card is shorter: the newest five notes, each as a headline and a line. Check 17.77 fails on v17.76',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
