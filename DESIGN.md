@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.05 - TRADING WITH THE OTHER PLAYER WORKS IN THE UNDERCROFT
+
+Co-op hunt while he was away. His order of 2026-10-03: trading with other players should work in the Undercroft. The raid trade needed two bodies up top. Now, with the pair linked, the stash item menu has an Offer row for the other player; the item leaves the giver stash only when the taker says yes (T, or Y on the floor) and lands in the taker stash on the hand-over. A line on the floor and a toast say what is waiting, for 30 seconds.
+
+MEASURED. Check 18.05 passes, and fails on v18.04.
 ## v18.04 - THE WHAT IS NEW CARD NAMES HIS NOTES OF OCTOBER 3
 
 Co-op hunt while he was away. The card was stamped v17.91. It now says what changed since: player 2 character selection, F11 in both windows, ESC from the player 2 window, kid mode shared between windows, Settings keeping its place, the EXTRACT IN PROGRESS banner, the 30 second extraction, the random and quicker seal, the one look for every menu, auto resolution and the half-size fog sheets.

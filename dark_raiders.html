@@ -1466,7 +1466,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.04';
+var VER='18.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11243,6 +11243,7 @@ window.addEventListener('keydown',function(e){
   }
   // v13.45, HIS RULING OF 2026-09-13: B NO LONGER BACKS OUT. B and I open the backpack, and TAB, above, has the back-out.
   if(state==='hub'){
+    if(e.code==='KeyT'&&!e.repeat&&typeof netHubGiftKey==='function'&&netHubGiftKey()){ e.preventDefault(); return; }   // v18.05: T takes an offer in the Undercroft
     keys[e.code]=true;
     // v12.95, audit finding 10: NOTHING ON THE FLOOR ANSWERS A KEY WHILE THE PAUSE
     // BOX IS UP, except the two its own legend names. The raid has had this rule
@@ -12501,6 +12502,7 @@ function pollPad(){
     // RAID table and has no entry for A, so it named the act below the one each
     // button actually performed. PADLABEL_HUB is the table for these four.
     padHold('KeyR',pressed(2));
+    if(pressed(3)&&!PAD.prev[3]&&typeof netHubGiftKey==='function'&&NET.hg&&NET.hg.in&&!NET.hg.in.yes){ netHubGiftKey(); }   // v18.05: Y takes an offer on the floor
     padHold('KeyF',pressed(3));
     padHold('KeyT',pressed(5));
     // v13.47: View opens and closes the backpack, Menu pauses, one change per press.
@@ -30983,6 +30985,7 @@ function drawHubHUD(ox,oy){
   ctx.clearRect(0,0,W,H);
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
   ctx.fillText('THE UNDERCROFT',16,28);
+  try{ drawHubGiftLine(); }catch(_hg){}   // v18.05: an open trade offer, on the floor
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
   ctx.fillText('$'+P.credits.toLocaleString()+'  \u00b7  XP '+(P.xp||0).toLocaleString()+
     '  ·  '+P.stash.length+' item'+(P.stash.length===1?'':'s')+' in stash  ·  '+P.runs+' run'+(P.runs===1?'':'s'),16,44);   // v8.56: said "1 runs" beside a correctly pluralised stash count
@@ -31992,7 +31995,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.04: The what is new card names your notes of October 3. Check 18.04 fails on v18.03',
+  now:'v18.05: You can trade in the Undercroft: right-click a stash item and OFFER it to the other player, who takes it with T (or Y on the floor). Check 18.05 fails on v18.04',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33275,6 +33278,10 @@ function itemMenuRows(key,ctx,count){
   rows.push({sep:1});
   rows.push({keys:1,label:'Put on key'});
 
+  if(ctx!=='kit'&&typeof netHubSeat==='function'&&netHubSeat()>=0){   // v18.05: his order, trading in the Undercroft
+    rows.push({sep:1});
+    rows.push({label:'Offer to '+(netSeatName(netHubSeat())||'your teammate'),hint:'they take it with T, or Y on the floor',act:function(){ netHubOffer(key); }});
+  }
   if(ctx!=='kit'){
     rows.push({sep:1});
     var isJ=(P.junk||{})[key]?true:false;
@@ -37488,16 +37495,88 @@ function netGiftKey(){
   if(gi&&!gi.yes&&G.t-gi.t<=GIFT_T){ gi.yes=1; netGiftSend(gi.from,{op:'yes',id:gi.id}); say('Taking it.'); return true; }
   return false;
 }
+// v18.05, HIS ORDER (2026-10-03): TRADING WITH THE OTHER PLAYER WORKS IN THE UNDERCROFT. The raid trade of v17.44 needed two
+// bodies up top. Down here the stash item menu offers an item to the linked player; the offer, the yes and the hand-over are
+// the same gift words with a hub mark, the item leaves the giver's stash only on the yes and lands in the taker's stash on the
+// hand-over, so nothing is lost or copied on the way. The taker presses T (or Y on the floor); a line on the floor and a toast
+// say what is waiting, for HUB_GIFT_T seconds.
+var HUB_GIFT_T=30;
+function netHubSeat(){
+  var i;
+  if(!(typeof NET==='object'&&NET&&NET.on)) return -1;
+  if(NET.role==='host'){ for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') return NET.peers[i].seat; return -1; }
+  return netPeerOfSeat(0)?0:-1;
+}
+function hubGiftName(s){ return netSeatName(s)||'your teammate'; }
+function netHubOffer(key){
+  var s=netHubSeat(), it=ITEMS[key], H=NET.hg||(NET.hg={});
+  if(!it) return false;
+  if(s<0){ say2('Nobody is linked up to give it to.'); return false; }
+  if(P.stash.indexOf(key)<0) return false;
+  H.out={id:String(Date.now()%1e9)+'-'+Math.floor(Math.random()*1e4),k:key,to:s,t:Date.now()};
+  netGiftSend(s,{op:'offer',id:H.out.id,k:key,hub:1});
+  say2('Offered '+it.name+' to '+hubGiftName(s)+'. They take it with T or '+padB('Y')+'.');
+  return true;
+}
+function netHubGiftKey(){
+  var H=NET.hg, gi=H&&H.in;
+  if(!gi||gi.yes||Date.now()-gi.t>HUB_GIFT_T*1000) return false;
+  gi.yes=1; netGiftSend(gi.from,{op:'yes',id:gi.id,hub:1}); say2('Taking it.');
+  return true;
+}
+function netHubGiftTake(peer,m,fr){
+  var H=NET.hg||(NET.hg={}), key=netClean(m.k,32), it=ITEMS[key], nm=hubGiftName(fr), go, gi, ix;
+  if(m.op==='offer'){
+    if(!it) return 'bad';
+    H.in={id:String(m.id).slice(0,40),k:key,from:fr,t:Date.now()};
+    say2(nm+' offers you '+it.name+'. Press T or '+padB('Y')+' to take it.'); try{ blip('pick'); }catch(_b){}
+    return 'offer';
+  }
+  if(m.op==='yes'){
+    go=H.out;
+    if(!go||go.id!==m.id||go.to!==fr||Date.now()-go.t>HUB_GIFT_T*1000+5000){ netGiftSend(fr,{op:'no',id:m.id,hub:1}); return 'stale'; }
+    ix=P.stash.lastIndexOf(go.k); H.out=null;
+    if(ix<0){ netGiftSend(fr,{op:'no',id:m.id,hub:1}); return 'gone'; }
+    P.stash.splice(ix,1); try{ clearKeysFor(go.k); }catch(_ck){} saveProfile(); try{ refreshInv(); }catch(_ri){}
+    netGiftSend(fr,{op:'give',id:m.id,k:go.k,hub:1});
+    say2('Gave '+(ITEMS[go.k]?ITEMS[go.k].name:go.k)+' to '+nm+'.');
+    return 'gave';
+  }
+  if(m.op==='give'){
+    gi=H.in; if(!it||!gi||gi.id!==m.id) return 'stale';
+    H.in=null; P.stash.push(key); saveProfile(); try{ refreshInv(); }catch(_ri2){}
+    say2('Took '+it.name+' from '+nm+'.'); try{ blip('pick'); }catch(_b2){}
+    return 'took';
+  }
+  if(m.op==='no'){ if(H.in&&H.in.id===m.id) H.in=null; if(H.out&&H.out.id===m.id) H.out=null; say2(nm+' could not hand it over.'); return 'no'; }
+  return 'bad';
+}
+function drawHubGiftLine(){
+  var H=NET.hg, gi=H&&H.in, go=H&&H.out, now=Date.now(), s=null, t, it, w, y;
+  if(gi&&now-gi.t>HUB_GIFT_T*1000+5000){ H.in=null; gi=null; }
+  if(go&&now-go.t>HUB_GIFT_T*1000+5000){ H.out=null; go=null; }
+  if(gi&&!gi.yes&&(t=HUB_GIFT_T-(now-gi.t)/1000)>0){ it=ITEMS[gi.k]; s=hubGiftName(gi.from)+' offers you '+(it?it.name:gi.k)+'.  T or '+padB('Y')+' to take it.  '+Math.ceil(t)+'s'; }
+  else if(go&&(t=HUB_GIFT_T-(now-go.t)/1000)>0){ it=ITEMS[go.k]; s='Offered '+(it?it.name:go.k)+' to '+hubGiftName(go.to)+'. Waiting for them to take it.  '+Math.ceil(t)+'s'; }
+  if(!s) return null;
+  y=LH(76);
+  ctx.save(); ctx.font=FS(TYPE.label); ctx.textAlign='center';
+  w=ctx.measureText(s).width;
+  ctx.fillStyle='rgba(6,9,13,.78)'; ctx.fillRect(W/2-w/2-12,y-LH(15),w+24,LH(22));
+  ctx.fillStyle='#ffc04a'; ctx.fillText(s,W/2,y);
+  ctx.restore();
+  return s;
+}
 function netGiftTake(peer,m){
   var fr, it, nm, i, ix, go, gi, out, key, gk, j, where;
   if(!peer||peer.state!=='in'||!m||typeof m.op!=='string') return 'bad';
   fr=(NET.role==='host')?peer.seat:((typeof m.from==='number'&&m.from===(m.from|0))?m.from:0);
   if(NET.role==='host'&&typeof m.to==='number'&&m.to!==NET.seat){
-    out={t:'gift',op:m.op,id:m.id,k:m.k,ib:m.ib,to:m.to,from:fr};
+    out={t:'gift',op:m.op,id:m.id,k:m.k,ib:m.ib,to:m.to,from:fr,hub:m.hub?1:0};   // v18.05: the hub mark rides along
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&NET.peers[i].seat===m.to) return netSend(NET.peers[i],out)?'passed':'lost';
     return 'nobody';
   }
   if(typeof m.to==='number'&&m.to!==NET.seat) return 'ignored';
+  if(m.hub) return netHubGiftTake(peer,m,fr);   // v18.05: a trade in the Undercroft
   if(typeof G==='undefined'||!G||G.over||!G.player) return 'no raid';
   nm=netSeatName(fr)||'Your teammate'; key=netClean(m.k,32); it=ITEMS[key];
   if(m.op==='offer'){
