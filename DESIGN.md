@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.87 - A SLOW PC IS TOLD WHERE THE LEVERS ARE
+
+Co-op hunt while he was away. From the stress run of 2026-10-02: on a weak machine the frame runs long and nothing says why or what to do. When more than half of ten seconds of raid frames run over 25 ms, the game says once a session that Settings has Render resolution and Effects to lighten the load. The raw frame gap is measured, so a Frame cap is not read as slow.
+
+MEASURED. Check 17.87 passes, and fails on v17.86.
 ## v17.86 - THE PAUSE LEGEND SAYS CROUCH TOGGLE AGAIN
 
 Co-op hunt while he was away. The remappable keys build rebuilds the pause box legend from the key map, and its line for CTRL and C dropped the word toggle that the written legend had. Caught by an older check. It says CTRL / C crouch toggle again.

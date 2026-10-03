@@ -1438,7 +1438,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.86';
+var VER='17.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31280,6 +31280,21 @@ try{
 // are not coming and this window hosts a shared raid: HID.lastRaf is stamped by the real frames; a worker tick 200 ms after
 // the last one runs loop() without queuing another frame request. Solo, a covered window still stands still, which is the
 // pause it always was. Drawing into a covered window is cheap and harmless.
+// v17.87, AAA CHECK (2026-10-02): A SLOW PC IS TOLD WHERE THE LEVERS ARE. On a weak machine the frame runs long and nothing says
+// why or what to do. The loop keeps a ten second window of raid frames; when more than half of them ran over 25 ms (under 40
+// frames a second) the game says, once a session, that Settings has Render resolution and Effects. Measured on the raw frame
+// gap, not the clamped dt, so a capped frame rate (Frame cap) does not count as slow.
+var PERF={win:[],at:0,said:0};
+function perfNote(gapMs){
+  var now=(typeof performance!=='undefined')?performance.now():Date.now(), i, slow=0;
+  if(!(gapMs>0)||gapMs>1000) return false;
+  PERF.win.push([now,gapMs]);
+  while(PERF.win.length&&now-PERF.win[0][0]>10000) PERF.win.shift();
+  if(PERF.said||PERF.win.length<60) return false;
+  for(i=0;i<PERF.win.length;i++) if(PERF.win[i][1]>25) slow++;
+  if(slow*2>PERF.win.length){ PERF.said=1; try{ sayWhenFree('Running slowly? Settings has Render resolution and Effects to lighten the load.'); }catch(_ps){} return true; }
+  return false;
+}
 var HID={w:null,lastRaf:0,fromWorker:0,ticks:0};
 function hidWant(){ return !!(typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&typeof netEntsHost==='function'&&netEntsHost()); }
 function hidTick(){
@@ -31317,7 +31332,8 @@ function loop(ts){
   // is monotonic in real play. It is still one Math.max to make a whole class of
   // impossible-to-debug frame unreachable, and the harness now cannot produce it
   // either, which is worth as much.
-  var dt=clamp((ts-lastTs)/1000,0,.05); lastTs=ts;
+  var gap0=ts-lastTs; var dt=clamp(gap0/1000,0,.05); lastTs=ts;   // v17.87: gap0 is the raw frame gap, for perfNote
+  if(state==='raid'&&G&&!G.over&&!G.sim&&!(CFG.fpsCap>0)) perfNote(gap0);   // v17.87: a slow PC is told where the levers are
   tickMusic();
   // Ahead of every early return below, so zoom keeps easing in the hub, while
   // paused and on the death screen instead of freezing part way through a step.
@@ -31900,7 +31916,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.86: The pause legend says CTRL / C crouch toggle again. Check 17.86 fails on v17.85',
+  now:'v17.87: If the game runs slowly on a PC, it says once where the Settings levers are. Check 17.87 fails on v17.86',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

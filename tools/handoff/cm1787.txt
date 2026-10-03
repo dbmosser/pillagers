@@ -1,0 +1,7 @@
+v17.87: a slow pc is told where the levers are
+
+If the game runs slowly on a PC, it says once where the Settings levers are.
+
+Check 17.87. Fails on v17.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
