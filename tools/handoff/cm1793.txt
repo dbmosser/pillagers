@@ -1,0 +1,7 @@
+v17.93: player 2 picks a character like player 1
+
+Player 2 now picks a character from the same saves list as player 1 (or creates one), and every character can be played in 1 PLAYER. The save the other window has open shows as IN USE.
+
+Check 17.93. Fails on v17.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

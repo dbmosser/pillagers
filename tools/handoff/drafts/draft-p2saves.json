@@ -1,0 +1,60 @@
+{
+    "title":  "PLAYER 2 PICKS A CHARACTER LIKE PLAYER 1",
+    "why":  "His order of 2026-10-03: the second window played one hidden save chosen for it, with no character selection and no way to play that character in 1 PLAYER. Now the player 2 window shows the same saves list: pick a character or create one. It plays a numbered save like any window, never the one player 1 has open (the two windows share storage), each window keeps its own pointer, and the old hidden player 2 save moves into a free slot once, so that character can be played in 1 PLAYER. Either window greys the save the other holds: IN USE BY PLAYER 1 or 2.",
+    "now":  "Player 2 now picks a character from the same saves list as player 1 (or creates one), and every character can be played in 1 PLAYER. The save the other window has open shows as IN USE.",
+    "edits":  [
+                  {
+                      "anchor":  "function netSaveLocked(){ return !!((typeof NETSLOT!==\u0027undefined\u0027\u0026\u0026NETSLOT)||(typeof NETP2!==\u0027undefined\u0027\u0026\u0026NETP2)); }",
+                      "replacement":  "// v16.xx, HIS ORDER (2026-10-03): PLAYER 2 PICKS A CHARACTER LIKE PLAYER 1. The second window played one hidden save\n// (salvagerun:profile:p2) chosen for it. Now it plays a numbered save like any window: its own pointer (activeSlot2) says which,\n// never the save player 1 has open (the two windows share this storage, and two windows on one save would write over each\n// other), and the old hidden save moves into a free slot once, so that character can be played in 1 PLAYER too. The saves list\n// in either window greys the save the other window has open: IN USE BY PLAYER 1 (or 2).\nfunction p2PtrKey(){ return \u0027salvagerun:activeSlot2\u0027; }\nfunction p1SlotNow(){ try{ return localStorage.getItem(\u0027salvagerun:activeSlot\u0027)||\u00271\u0027; }catch(e){ return \u00271\u0027; } }\nfunction slotKeyOf(sn){ return sn===\u00271\u0027?\u0027salvagerun:profile\u0027:(\u0027salvagerun:profile:\u0027+sn); }\nfunction slotHas(sn){ try{ return !!localStorage.getItem(slotKeyOf(sn)); }catch(e){ return false; } }\nfunction p2SlotPick(){\n  var p1=p1SlotNow(), want=null, i, k, old=null;\n  try{ want=localStorage.getItem(p2PtrKey()); }catch(e){ want=null; }\n  if(want\u0026\u0026want!==p1\u0026\u0026/^[1-8]$/.test(want)) return want;\n  try{ old=localStorage.getItem(\u0027salvagerun:profile:p2\u0027); }catch(e1){ old=null; }\n  if(old){ for(i=2;i\u003c=8;i++){ k=String(i); if(k!==p1\u0026\u0026!slotHas(k)){ try{ localStorage.setItem(slotKeyOf(k),old); localStorage.removeItem(\u0027salvagerun:profile:p2\u0027); localStorage.setItem(p2PtrKey(),k); }catch(e2){} return k; } } }\n  for(i=1;i\u003c=8;i++){ k=String(i); if(k!==p1\u0026\u0026slotHas(k)){ try{ localStorage.setItem(p2PtrKey(),k); }catch(e3){} return k; } }\n  for(i=1;i\u003c=8;i++){ k=String(i); if(k!==p1\u0026\u0026!slotHas(k)){ try{ localStorage.setItem(p2PtrKey(),k); }catch(e4){} return k; } }\n  return (p1===\u00278\u0027)?\u00277\u0027:\u00278\u0027;\n}\nfunction slotBlocked(sn){\n  var p2=null;\n  if(typeof NETP2!==\u0027undefined\u0027\u0026\u0026NETP2) return sn===p1SlotNow();\n  if(typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.same===\u0027host\u0027){ try{ p2=localStorage.getItem(p2PtrKey()); }catch(e){ p2=null; } return !!p2\u0026\u0026sn===p2; }\n  return false;\n}\nfunction slotPtrKey(){ return (typeof NETP2!==\u0027undefined\u0027\u0026\u0026NETP2)?p2PtrKey():\u0027salvagerun:activeSlot\u0027; }\nfunction netSaveLocked(){ return !!(typeof NETSLOT!==\u0027undefined\u0027\u0026\u0026NETSLOT); }   // v16.xx: the player 2 window moves its own pointer now"
+                  },
+                  {
+                      "anchor":  "else if(NETP2) SKEY=netP2Key();",
+                      "replacement":  "else if(NETP2){ SLOT=p2SlotPick(); SKEY=(SLOT===\u00271\u0027)?\u0027salvagerun:profile\u0027:(\u0027salvagerun:profile:\u0027+SLOT); }   // v16.xx: player 2 plays a numbered save of its own"
+                  },
+                  {
+                      "anchor":  "      if(_ngl) _ngl.style.display=_p2w?\u0027none\u0027:\u0027\u0027;",
+                      "replacement":  "      if(_ngl) _ngl.style.display=\u0027\u0027;   // v16.xx: player 2 creates a save too"
+                  },
+                  {
+                      "anchor":  "      if(_sln) _sln.style.display=_p2w?\u0027none\u0027:\u0027\u0027;",
+                      "replacement":  "      if(_sln) _sln.style.display=\u0027\u0027;"
+                  },
+                  {
+                      "anchor":  "      if(_p2w){",
+                      "replacement":  "      if(false){   // v16.xx: player 2 picks a character from the same list; the one-save note is gone"
+                  },
+                  {
+                      "anchor":  "        var me=(key===SLOT);",
+                      "replacement":  "        var me=(key===SLOT), blk=slotBlocked(key);   // v16.xx: blk, the save the other window has open"
+                  },
+                  {
+                      "anchor":  "        h+=\u0027\u003cdiv data-slot=\"\u0027+key+\u0027\" style=\"cursor:pointer;border:1px solid \u0027+(me?\u0027var(--amber)\u0027:\u0027var(--steel-hi)\u0027)+",
+                      "replacement":  "        h+=\u0027\u003cdiv data-slot=\"\u0027+key+\u0027\" style=\"cursor:\u0027+(blk?\u0027default\u0027:\u0027pointer\u0027)+\u0027;opacity:\u0027+(blk?\u0027.55\u0027:\u00271\u0027)+\u0027;border:1px solid \u0027+(me?\u0027var(--amber)\u0027:\u0027var(--steel-hi)\u0027)+"
+                  },
+                  {
+                      "anchor":  "           (me?\u0027 \u003cspan style=\"font-size:10px;letter-spacing:.14em\"\u003e\u0027+((inf\u0026\u0026inf.runs\u003e0)?\u0027CONTINUING\u0027:\u0027NEW\u0027)+\u0027\u003c/span\u003e\u0027:\u0027\u0027)+\u0027\u003c/b\u003e\u0027+",
+                      "replacement":  "           (me?\u0027 \u003cspan style=\"font-size:10px;letter-spacing:.14em\"\u003e\u0027+((inf\u0026\u0026inf.runs\u003e0)?\u0027CONTINUING\u0027:\u0027NEW\u0027)+\u0027\u003c/span\u003e\u0027:(blk?\u0027 \u003cspan style=\"font-size:10px;letter-spacing:.14em;color:var(--ash)\"\u003eIN USE BY PLAYER \u0027+((typeof NETP2!==\u0027undefined\u0027\u0026\u0026NETP2)?\u00271\u0027:\u00272\u0027)+\u0027\u003c/span\u003e\u0027:\u0027\u0027))+\u0027\u003c/b\u003e\u0027+"
+                  },
+                  {
+                      "anchor":  "           (me?\u0027\u0027:\u0027 \u003cbutton data-del=\"\u0027+key+\u0027\" class=\"deploy ghost\" style=\"margin-left:8px;padding:2px 8px;font-size:10px\"\u003eDELETE\u003c/button\u003e\u0027)+",
+                      "replacement":  "           ((me||blk)?\u0027\u0027:\u0027 \u003cbutton data-del=\"\u0027+key+\u0027\" class=\"deploy ghost\" style=\"margin-left:8px;padding:2px 8px;font-size:10px\"\u003eDELETE\u003c/button\u003e\u0027)+"
+                  },
+                  {
+                      "anchor":  "          if(sn===SLOT) return;",
+                      "replacement":  "          if(sn===SLOT||slotBlocked(sn)) return;   // v16.xx: never the save the other window has open"
+                  },
+                  {
+                      "anchor":  "        if(!slotInfo(key)\u0026\u0026key!==SLOT){",
+                      "replacement":  "        if(!slotInfo(key)\u0026\u0026key!==SLOT\u0026\u0026!slotBlocked(key)){"
+                  },
+                  {
+                      "anchor":  "          try{ if(!netSaveLocked()) localStorage.setItem(\u0027salvagerun:activeSlot\u0027,sn); }catch(e){}",
+                      "replacement":  "          try{ if(!netSaveLocked()) localStorage.setItem(slotPtrKey(),sn); }catch(e){}"
+                  },
+                  {
+                      "anchor":  "          try{ if(!netSaveLocked()) localStorage.setItem(\u0027salvagerun:activeSlot\u0027,key); }catch(e){}",
+                      "replacement":  "          try{ if(!netSaveLocked()) localStorage.setItem(slotPtrKey(),key); }catch(e){}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027player 2 picks a character: the second window takes a numbered save that is never the one player 1 has open, the old hidden player 2 save moves into a free slot once, the pick is stable, and the saves list knows which save the other window holds\u0027,\n   run:function(){\n     if(typeof p2SlotPick!==\u0027function\u0027||typeof slotBlocked!==\u0027function\u0027) return \u0027player 2 plays one hidden save\u0027;\n     var bad=[], L=localStorage, p1=p1SlotNow(), ptr0=null, old0=null, k, k2, made=[], same0=NET.same, i;\n     try{ ptr0=L.getItem(p2PtrKey()); old0=L.getItem(\u0027salvagerun:profile:p2\u0027); }catch(_r){}\n     try{\n       L.removeItem(p2PtrKey()); L.setItem(\u0027salvagerun:profile:p2\u0027,JSON.stringify({pname:\u0027KID\u0027,credits:5,xp:1,runs:2}));\n       for(i=1;i\u003c=8;i++) if(!slotHas(String(i))) made.push(String(i));\n       k=p2SlotPick();\n       if(k===p1) bad.push(\u0027player 2 was given the save player 1 has open (\u0027+k+\u0027)\u0027);\n       if(!/^[1-8]$/.test(k)) bad.push(\u0027player 2 was given \u0027+k);\n       else{\n         if(String(L.getItem(slotKeyOf(k))||\u0027\u0027).indexOf(\u0027KID\u0027)\u003c0) bad.push(\u0027the old hidden save did not move into slot \u0027+k);\n         if(L.getItem(\u0027salvagerun:profile:p2\u0027)) bad.push(\u0027the old hidden save was left behind\u0027);\n         if(L.getItem(p2PtrKey())!==k) bad.push(\u0027the player 2 pointer reads \u0027+L.getItem(p2PtrKey())+\u0027, not \u0027+k);\n         k2=p2SlotPick(); if(k2!==k) bad.push(\u0027the pick moved from \u0027+k+\u0027 to \u0027+k2);\n         L.setItem(p2PtrKey(),p1); k2=p2SlotPick(); if(k2===p1) bad.push(\u0027a pointer at player 1 save was followed\u0027);\n         NET.same=\u0027host\u0027; L.setItem(p2PtrKey(),k); if(!slotBlocked(k)) bad.push(\u0027the host list does not know player 2 holds slot \u0027+k);\n         if(slotBlocked(p1)) bad.push(\u0027the host list blocks its own slot\u0027);\n         NET.same=null; if(slotBlocked(k)) bad.push(\u0027with no pair the list still blocks slot \u0027+k);\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       NET.same=same0;\n       try{ for(i=0;i\u003cmade.length;i++){ if(L.getItem(slotKeyOf(made[i]))\u0026\u0026String(L.getItem(slotKeyOf(made[i]))).indexOf(\u0027KID\u0027)\u003e=0) L.removeItem(slotKeyOf(made[i])); } }catch(_c1){}\n       try{ if(ptr0===null) L.removeItem(p2PtrKey()); else L.setItem(p2PtrKey(),ptr0); if(old0===null) L.removeItem(\u0027salvagerun:profile:p2\u0027); else L.setItem(\u0027salvagerun:profile:p2\u0027,old0); }catch(_c2){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

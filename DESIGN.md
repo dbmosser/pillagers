@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.93 - PLAYER 2 PICKS A CHARACTER LIKE PLAYER 1
+
+Co-op hunt while he was away. His order of 2026-10-03: the second window played one hidden save chosen for it, with no character selection and no way to play that character in 1 PLAYER. Now the player 2 window shows the same saves list: pick a character or create one. It plays a numbered save like any window, never the one player 1 has open (the two windows share storage), each window keeps its own pointer, and the old hidden player 2 save moves into a free slot once, so that character can be played in 1 PLAYER. Either window greys the save the other holds: IN USE BY PLAYER 1 or 2.
+
+MEASURED. Check 17.93 passes, and fails on v17.92.
 ## v17.92 - F11 FULLSCREENS EVERY WINDOW, PLAYER 2 INCLUDED
 
 Co-op hunt while he was away. His report of 2026-10-03: F11 did nothing in the player 2 window. That window opens as a popup and the browser does not act on F11 there. The game now answers F11 itself in every window, with the same toggle the GO FULLSCREEN button runs.
