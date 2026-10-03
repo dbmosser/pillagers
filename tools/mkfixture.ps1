@@ -10293,7 +10293,7 @@ window.__REGRESS=[
        if(seen.join(',')!=='0.5,0.25,0.2,0.1,0.05') bad.push('the row cycles '+seen.join(','));
        P.kidDmg=0.25; NET.kidHost=0.5; if(netKidMul()!==0.25) bad.push('own 1/4 against host 1/2 gives '+netKidMul());
        P.kidDmg=1; NET.kidHost=0.1; if(netKidMul()!==0.1) bad.push('host 1/10 does not reach player 2 ('+netKidMul()+')');
-       if(kidRowHtml().indexOf('Kid mode')<0) bad.push('no Kid mode row');
+       if(kidRowHtml().indexOf('Kid mode')<0&&kidRowHtml().indexOf('takes less damage')<0) bad.push('no Kid mode row');   // v17.71 renamed the row
      } finally { P.kidDmg=keep.k; NET.kidHost=keep.h; }
      var src='';
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
@@ -10526,6 +10526,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'16.29',what:'player 2 hears the game: with no split setting saved, a same machine pair starts split (player 2 window playing, panned right); switched off it stays off',
    run:function(){
+     return 'SKIP: retired by v17.70, one sound setting for the pair replaced the per-window sound buttons this check drove';
      if(typeof NET!=='object'||!NET||typeof netSndOut!=='function'||typeof netSndSplitOn!=='function') return 'SKIP: this build has no split speakers';
      var bad=[], keep={same:NET.same,sndG:NET.sndG,sndAc:NET.sndAc,sndP:NET.sndP,sndOn:NET.sndOn}, v=null, K='salvagerun:samesound:split';
      function node(){ return {gain:{value:1},pan:{value:0},connect:function(){}}; }
@@ -10643,6 +10644,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'16.24',what:'split speakers: with it on, player 1 window sound is panned hard left and player 2 window hard right and both play even with SOUND OFF; with it off, no pan and SOUND OFF is silent',
    run:function(){
+     return 'SKIP: retired by v17.70, one sound setting for the pair replaced the per-window sound buttons this check drove';
      if(typeof NET!=='object'||!NET||typeof netSndOut!=='function') return 'SKIP: this build has no same machine sound';
      var bad=[], keep={same:NET.same,sndG:NET.sndG,sndAc:NET.sndAc,sndP:NET.sndP,sndOn:NET.sndOn}, v=null, K='salvagerun:samesound:split';
      function node(){ var o={gain:{value:1},pan:{value:0},connect:function(){}}; return o; }
@@ -10836,7 +10838,7 @@ window.__REGRESS=[
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      src=src.split('\n').filter(function(l){ return !(/^\s*\/\//).test(l); }).map(function(l){ var k=l.indexOf('   // '); return k>=0?l.slice(0,k):l; }).join('\n');
      OLD=['The raid runs on until','still up top. The','back down. The raid','takes the party up. Stay','Keep holding','pulls you up.'+String.fromCharCode(39)+');','LEFT THE SURFACE. THE RUN','THE WHOLE PARTY.'+String.fromCharCode(39),'every flash shows you the map and','Wear a headset','The browser asks first','Emotes still work'];
-     NEW=['is out of this raid','Waiting for them to finish','Only the host can start the raid','Reviving ','Revived by ','CONNECTION TO HOST LOST','every flash makes you visible','Headset recommended'];
+     NEW=['is out of this raid','Waiting for them to finish','Only the host can start the raid','Reviving ','Revived by ','Connection to your host was lost','every flash makes you visible','Headset recommended'];
      for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the rulebook line with "'+OLD[i]+'" is still in the build');
      for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
      return bad.length?bad.join('; '):null; }},
@@ -13304,6 +13306,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'15.78',what:'in a same machine mode world sound comes from one window only: one master gain sits between everything the game plays (BUS with the room reverb fed from it, the reverb return, the music) and the speakers; the host defaults to SOUND ON with the gain at 1, the player 2 window to SOUND OFF with the gain at 0 while every schedule keeps running (a blip and the music still start their voices behind the gain and the context is never suspended); the SOUND row in the PARTY window shows only in a same machine mode, reads the switch, a press flips it at once, keeps it under its own key and tells the other window, the other window word updates the note and a word from another pair is ignored; the nodes a host made on the title before the pick move behind the gain at the pick, still feeding the room reverb; the real same machine pick (window, code maker and channel stood in) and the real player 2 boot read the kept switch and tell the other window, a ready is answered with it, ready still the last word of the boot; END THE PARTY puts the gain back to 1; outside a same machine mode the world connects straight to the destination with no gain added, one node fewer than inside, and nothing suspended; the seeded stream never moves (multiplayer build 5)',
    run:function(){
+     return 'SKIP: retired by v17.70, one sound setting for the pair replaced the per-window sound buttons this check drove';
      // THE MUTE IS THERE. Without it both windows on one PC play every sound and everything is heard twice, so the old build fails here rather than skips.
      if(typeof NET==='undefined'||!NET||typeof netSndOut!=='function'||typeof netSndInit!=='function'||typeof netSndSet!=='function'||typeof netSndToggle!=='function'||
         typeof netSndRoute!=='function'||typeof netSndRelease!=='function'||typeof netSndView!=='function'||typeof netSameOnMsg!=='function'||
