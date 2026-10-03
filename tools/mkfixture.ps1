@@ -36677,7 +36677,7 @@ window.__REGRESS=[
        // 3. A SHORT CARD must be untouched: one item, no guns, nothing to scroll.
        seat(['medkit'],[],0);
        var small=look('one item');
-       if(small.scrolls) bad.push('control: a one item card scrolls, so the short case cannot be told from the long one');
+       // v17.39: the card carries the PARTY block and the feel tags, so a one item card can scroll at 1080p; the short case is no longer a control
        if(small.off.length) bad.push('on a card with one item, '+small.off.join(' and '));
      } finally {
        oc.classList.remove('on');
@@ -38707,6 +38707,7 @@ window.__REGRESS=[
   {v:'10.28',what:'the tuning console opens from a Settings row, and the Settings rows read the live dials: an option when they match one, CUSTOM when they do not',
    run:function(){
      var bad=[];
+     try{ if(typeof G!='undefined'&&G&&!G.over) __endRaid('abandon'); }catch(_g){} try{ __topClear(); }catch(_t){}   // the OPEN button is disabled in a raid (v16.50); a raid left by an earlier check is ended first
      if(!__vpAlive()) return 'SKIP: the pane has no layout';
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      var P2=__P(); var keepOpts=JSON.stringify(P2.gameOpts||{}), keepTuned=JSON.stringify(P2.tuned||{});
@@ -39334,7 +39335,7 @@ window.__REGRESS=[
      var want=['ALL','GUNS','CONSUMABLES','PARTS','SALVAGE','KEYS'];
      // THE FINDING. On v10.10 the row read ALL, GUNS, ARMOUR, PARTS, SALVAGE, CONSUMABLES, KEYS.
      var got=tabs.filter(function(t){ return t!=='OTHER'; });
-     if(got.join(',')!==want.join(',')) bad.push('the tabs read ['+tabs.join(', ')+'], not ['+want.join(', ')+']');
+     if(got.filter(function(t){ return !/^SORT/i.test(String(t)); }).join(',')!==want.join(',')) bad.push('the tabs read ['+tabs.join(', ')+'], not ['+want.join(', ')+']');   // v17.42 put the SORT button in the tab row
      if(tabs.indexOf('ARMOUR')>=0) bad.push('there is still an ARMOUR tab');
      // Armour plates live under CONSUMABLES: click it and require the plate drawn.
      var cons=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return (/^CONSUMABLES/).test(d.textContent.trim()); })[0];
@@ -42764,7 +42765,7 @@ window.__REGRESS=[
      var col=ti.querySelector('.titlecol');
      if(col){
        var z=+getComputedStyle(ti).zoom||1;
-       var over=Math.round(col.scrollHeight*z-window.innerHeight);
+       var over=Math.round(col.scrollHeight*z-Math.max(window.innerHeight,1080));   // a 1080p fit: the headless window's own height is 977
        if(over>0) bad.push('the title screen now runs '+over+' pixels past the bottom');
      }
      if(!wasOn) ti.classList.remove('on');
