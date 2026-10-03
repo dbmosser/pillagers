@@ -21,7 +21,7 @@ echo "$gt" | grep -q "^dry fxdry$NN check $V: PASS / PASS" || die "new check doe
 c=$(echo "$gt" | grep "^control fxctl$NN check $V:")
 [ -z "$c" ] && die "no control result"
 echo "$c" | grep -q "check $V: PASS\|check $V: SKIP\|NO CHECK\|TIMEOUT" && die "control did not fail: $c"
-rc=$(ps -File "$(cygpath -w "C:/claudecode/dark raiders/tools/handoff/recent.ps1")" -NN "$NN"); echo "$rc" | cut -c1-300
+rc=$(ps -File "$(cygpath -w "C:/claudecode/dark raiders/tools/handoff/recent.ps1")" -NN "$NN" -Cdp $GCDP); echo "$rc" | cut -c1-300
 echo "$rc" | grep -q "^recent: 0 new" || die "an older check fails on the drafted build: $(echo "$rc" | head -3)"
 bash "$H/ship.sh" start "$PREV" "$NEW" 2>&1 | tail -6
 fx=$(ps -File "$(cygpath -w "$R/tools/gate.ps1")" -Fix -V "$V" -Cdp $GCDP); echo "$fx" | cut -c1-400
