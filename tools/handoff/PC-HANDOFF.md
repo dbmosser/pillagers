@@ -303,3 +303,6 @@ in one window, not yet in the two-window nettest.
 - CORPUS MAINTENANCE 2026-10-03 01:00: run one at a time, 18 of the 22 old failures PASS (the full run leaks state between checks);
   the four left were stale expectations, all adapted in mkfixture (v10.11 SORT button, v10.74 taller card, v9.58 977 px headless
   window vs a 1080 fit, v10.28 OPEN disabled under a leftover raid). A fresh full run is going for the clean count.
+- v17.85 the Keys window in the game font (appended beside partymodal) and its list scrolls (max-height 58vh). Found by the full corpus.
+- HARNESS LEAK: after the v17.83/17.84 title checks, v10.93 and v10.95 (station names / words drawn) fail in the same page; the
+  real floor is fine (floor.jpg after 17.84 shows the names). HB restore did not cure it; bisecting which of the two leaks.
