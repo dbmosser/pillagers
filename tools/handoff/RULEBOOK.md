@@ -59,7 +59,7 @@ play port; reword a line he edited; reverse one of his rulings.
 - Controller: A roll, B crouch, RT fire and use, D-left/right aim distance, right-stick click loots the ring, A in the backpack.
 
 ## His answers of 2026-10-02 (binding)
-- The bar is ARC Raiders. Release for others; alpha for friends at Halloween (2026-10-31).
+- The bar is ARC Raiders x Fortnite 2026 x CoD battle royale. Release for others; alpha for friends at Halloween (2026-10-31).
 - Priorities: no bugs, smooth menus, look and feel. No more depth for now.
 - Two windows, not split-screen. Raids are the right length.
 - Build: a kid menu (which also lets player 2 come back after death); a sound setting both / player 1 only / player 2 only.
