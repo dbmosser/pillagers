@@ -1,0 +1,7 @@
+v18.24: a controller opens the item menu
+
+On a controller, Y on a highlighted item opens its menu, so player 2 can offer, equip, bind and junk from the stash too.
+
+Check 18.24. Fails on v18.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

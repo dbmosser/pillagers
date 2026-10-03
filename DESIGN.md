@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.24 - A CONTROLLER OPENS THE ITEM MENU
+
+Co-op hunt while he was away. From the trade audit of 2026-10-03: every cell menu (Equip, Offer to, keys, junk) opened on a right-click only, so a controller player could never offer an item from the stash. With nothing waiting, Y on the highlighted cell now opens that same menu at the cell; the menu was already a pad panel. The stash key bar names both.
+
+MEASURED. Check 18.24 passes, and fails on v18.23.
 ## v18.23 - A TRADE THAT FAILS SAYS WHY
 
 Co-op hunt while he was away. From the trade audit of 2026-10-03: an offer to a downed teammate hung until it ran out, an offer nobody answered vanished without a word on either side, and a refused offer left the giver line open. Now a downed receiver refuses at once with the reason, a refused offer closes on both sides with the reason said, an offer that ran out says so to the receiver, and one nobody took says so to the giver.
