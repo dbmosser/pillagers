@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.16 - THE TREES AND BUSHES BAKE THEIR BLOBS
+
+Co-op hunt while he was away. Measured on 2026-10-03 after his lag report: a canopy was three filled circles and a bush four, every tree and bush, every frame, about 250 arcs a frame in a grove. The blobs depend only on the size and the palette, so each size is painted once into a sprite and drawn in one call at the same sway. Trunks, bush bases and shadows stay live. Same colours and shapes; a bush sways as one.
+
+MEASURED. Check 18.16 passes, and fails on v18.15.
 ## v18.15 - THE WALLS BAKE THEIR WEATHERING
 
 Co-op hunt while he was away. His report of 2026-10-03: frame rate lag when running and revealing new ground. Measured: every wall face was repainted from scratch every frame, rain streaks, damp line, crack, bitten roofline and stains, thirty to forty small fills per wall and 3,650 to 4,270 fills a frame in a street. The face of a wall never changes, so it is painted once into a small sprite the first time it comes into view and drawn in one call after that, at screen sharpness. Nothing about what is painted changed.

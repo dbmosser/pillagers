@@ -1,0 +1,7 @@
+v18.16: the trees and bushes bake their blobs
+
+Trees and bushes are painted once per size and reused, the second biggest drawing cost after the walls.
+
+Check 18.16. Fails on v18.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

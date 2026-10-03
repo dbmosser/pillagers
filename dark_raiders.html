@@ -1481,7 +1481,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.15';
+var VER='18.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23591,6 +23591,46 @@ if(ct.cache&&ct.tag&&!ct.strong){
 // setting or the screen scale changes. A door and a window are painted live as before; so is a wall when baking is off
 // (CFG.wallBake 0). Nothing about what is painted changed: wallPaint is the old block, moved.
 var WALLSPR={m:{},n:0,key:'',max:320,tick:0};
+// v18.16, AAA CHECK (2026-10-03, the frame cost): THE TREES AND BUSHES BAKE THEIR BLOBS. A canopy was three filled circles and a
+// bush four, every tree and bush, every frame, about 250 arcs a frame in a grove. The blobs are a pure function of the radius
+// and the palette, so each size is painted once into a sprite (a dozen sizes a map) and drawn in one call, at the sway offset the
+// live paint used. The trunk, the bush's base and the shadows stay live. Same colours, same shapes; a bush's blobs now sway
+// together instead of each at its own rate, which at raid distance is the same bush.
+var VEGSPR={m:{},key:''};
+function vegSprite(kind,r){
+  var ss, day, pal, gk, rr, k, e, cv2, c2, ox, oy, w, h, blf;
+  if(CFG.wallBake===0||!(r>0)||!G||!G.vegPal) return null;
+  ss=wallSpriteScale(); day=isDay();
+  pal=(kind==='tree')?(day?G.vegPal.treeD:G.vegPal.treeN):(day?G.vegPal.bushD:G.vegPal.bushN);
+  if(!pal) return null;
+  gk=String(G.seed)+'|'+(day?'d':'n')+'|'+ss;
+  if(VEGSPR.key!==gk){ VEGSPR.m={}; VEGSPR.key=gk; }
+  rr=Math.round(r); k=kind+rr; e=VEGSPR.m[k];
+  if(e) return e;
+  if(kind==='tree'){ ox=rr+2; oy=rr*1.35+2; w=rr*2+4; h=rr*2+4; }
+  else { ox=rr*0.9+2; oy=rr+2; w=rr*1.8+4; h=rr*1.3+4; }
+  cv2=document.createElement('canvas'); cv2.width=Math.ceil(w*ss); cv2.height=Math.ceil(h*ss); c2=cv2.getContext('2d'); if(!c2) return null;
+  c2.setTransform(ss,0,0,ss,ox*ss,oy*ss);
+  if(kind==='tree'){
+    c2.fillStyle=pal[0]; c2.beginPath(); c2.arc(0,-rr*.35,rr,0,6.2832); c2.fill();
+    c2.fillStyle=pal[1]; c2.beginPath(); c2.arc(-rr*.25,-rr*.5,rr*.72,0,6.2832); c2.fill();
+    c2.fillStyle=pal[2]; c2.beginPath(); c2.arc(-rr*.35,-rr*.62,rr*.45,0,6.2832); c2.fill();
+  } else {
+    blf=rr*0.55;
+    c2.fillStyle=pal[1]; c2.beginPath(); c2.arc(-rr*0.34,-blf*0.50,rr*0.52,0,6.2832); c2.fill();
+    c2.beginPath(); c2.arc(rr*0.30,-blf*0.42,rr*0.48,0,6.2832); c2.fill();
+    c2.fillStyle=pal[2]; c2.beginPath(); c2.arc(0,-blf*0.78,rr*0.54,0,6.2832); c2.fill();
+    c2.fillStyle=pal[3]; c2.beginPath(); c2.arc(-rr*0.16,-blf*0.96,rr*0.32,0,6.2832); c2.fill();
+  }
+  e={c:cv2,ss:ss,ox:ox,oy:oy}; VEGSPR.m[k]=e;
+  return e;
+}
+function vegDraw(kind,r,x,y){
+  var e=vegSprite(kind,r);
+  if(!e) return false;
+  wc.drawImage(e.c,0,0,e.c.width,e.c.height,x-e.ox,y-e.oy,e.c.width/e.ss,e.c.height/e.ss);
+  return true;
+}
 function wallSpriteScale(){ var z=1; try{ z=ZOOM()*(DPR||1); }catch(_z){ z=1; } return Math.max(1,Math.min(2,Math.round(z))); }
 function wallPaint(c,wl2,d3,LIFT){
   c.fillStyle=dcol(d3,'wall');
@@ -24239,6 +24279,7 @@ var SHD=G.shells[i];
       shadowE(BU.x+2,BU.y+BU.r*0.26,BU.r*0.88,BU.r*0.28,.28);
       wc.fillStyle=isDay()?G.vegPal.bushD[0]:G.vegPal.bushN[0];
       wc.beginPath(); wc.ellipse(BU.x,BU.y,BU.r*0.96,BU.r*0.50,0,0,6.2832); wc.fill();
+      if(!vegDraw('bush',BU.r,BU.x+bsw*1.15,BU.y)){   // v18.16: the blobs off a baked sprite, swaying together; the live paint below when there is none
       wc.fillStyle=isDay()?G.vegPal.bushD[1]:G.vegPal.bushN[1];
       wc.beginPath(); wc.arc(BU.x-BU.r*0.34+bsw,BU.y-blf*0.50,BU.r*0.52,0,6.2832); wc.fill();
       wc.beginPath(); wc.arc(BU.x+BU.r*0.30+bsw,BU.y-blf*0.42,BU.r*0.48,0,6.2832); wc.fill();
@@ -24246,6 +24287,7 @@ var SHD=G.shells[i];
       wc.beginPath(); wc.arc(BU.x+bsw*1.2,BU.y-blf*0.78,BU.r*0.54,0,6.2832); wc.fill();
       wc.fillStyle=isDay()?G.vegPal.bushD[3]:G.vegPal.bushN[3];
       wc.beginPath(); wc.arc(BU.x-BU.r*0.16+bsw*1.3,BU.y-blf*0.96,BU.r*0.32,0,6.2832); wc.fill();
+      }
       if(bmine) wc.globalAlpha=1;
     } else if(it.w&&it.w.tree){
       // A tree, not a crate: trunk at the collider, canopy floating above it,
@@ -24259,12 +24301,14 @@ var SHD=G.shells[i];
       wc.fillStyle='#2e2114';
       wc.fillRect(tcx-TR.w*.32,tby-26,TR.w*.2,26);
       var canY=tby-30,cr2=TR.canopy;
+      if(!vegDraw('tree',cr2,tcx+swayT,canY)){   // v18.16: the canopy off a baked sprite; the live paint below when there is none
       wc.fillStyle=isDay()?G.vegPal.treeD[0]:G.vegPal.treeN[0];
       wc.beginPath(); wc.arc(tcx+swayT,canY-cr2*.35,cr2,0,6.2832); wc.fill();
       wc.fillStyle=isDay()?G.vegPal.treeD[1]:G.vegPal.treeN[1];
       wc.beginPath(); wc.arc(tcx+swayT-cr2*.25,canY-cr2*.5,cr2*.72,0,6.2832); wc.fill();
       wc.fillStyle=isDay()?G.vegPal.treeD[2]:G.vegPal.treeN[2];
       wc.beginPath(); wc.arc(tcx+swayT-cr2*.35,canY-cr2*.62,cr2*.45,0,6.2832); wc.fill();
+      }
     } else if(it.w&&it.w.ruin){
       var RU=it.w,rw4=RU.w,rh4=RU.h,rx4=RU.x,ry4=RU.y,sd=RU.seed;
       shadowE(rx4+rw4/2,ry4+rh4-2,rw4*0.55,rh4*0.30,.40);
@@ -32119,7 +32163,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.15: Walls are painted once and reused instead of being repainted every frame, which was most of the drawing cost in a built-up street. Check 18.15 fails on v18.14',
+  now:'v18.16: Trees and bushes are painted once per size and reused, the second biggest drawing cost after the walls. Check 18.16 fails on v18.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

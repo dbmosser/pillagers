@@ -1,0 +1,5 @@
+## v18.16 - THE TREES AND BUSHES BAKE THEIR BLOBS
+
+Co-op hunt while he was away. Measured on 2026-10-03 after his lag report: a canopy was three filled circles and a bush four, every tree and bush, every frame, about 250 arcs a frame in a grove. The blobs depend only on the size and the palette, so each size is painted once into a sprite and drawn in one call at the same sway. Trunks, bush bases and shadows stay live. Same colours and shapes; a bush sways as one.
+
+MEASURED. Check 18.16 passes, and fails on v18.15.
