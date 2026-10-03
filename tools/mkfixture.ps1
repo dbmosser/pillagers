@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.80',what:'the what is new card is stamped within 0.15 of the build and has a line on the volume, keys, kid menu and sound setting',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle='SMOOTHER, LOUDER,'+' YOURS';
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)>=0; })) bad.push('no line of the card names the volume, keys, kid menu and sound setting');
+     return bad.length?bad.join('; '):null; }},
   {v:'17.79',what:'the sector page draws a map of each sector in its row (zones, buildings, extraction rings), one canvas per sector with something on it',
    run:function(){
      if(typeof sectorPreviewDraw!=='function'||typeof renderSector!=='function') return 'the sector page is text over an empty page';

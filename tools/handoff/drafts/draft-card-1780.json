@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES THE VOLUME, KEYS, KID MENU AND SOUND SETTING",
+    "why":  "The card was stamped v17.65. It now says what changed since: volume rows, remappable keys, the kid menu, the one sound setting for a pair, PlayStation names, the sector maps, the legend out of the way, the covered-window fix and player 2 keeping the raid.",
+    "now":  "The what is new card names the volume rows, CHANGE KEYS, the kid menu, the sound setting, PlayStation names and the sector maps.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002717.65\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002717.80\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027KNOWING WHERE YOUR TEAMMATE IS. You are told when your teammate joins the raid and when he is out of it (killed, extracted or abandoned). JOIN THE RAID IN PROGRESS is bigger, and a teammate who joins late sees the walls already blown open and the map markers already placed, and is charged only for the time he played. In a party raid the backpack says Y (or T) offers an item. Pings and the kill feed name THE OVERSEER.\u0027,",
+                      "replacement":  "  \u0027SMOOTHER, LOUDER, YOURS. Settings has Master, Music and Effects volume, CHANGE KEYS to put any action on the key you want, and a KID MODE section where player 2 can come back after death. A two-player pair has one sound setting: both, player 1 only or player 2 only. A PlayStation pad is named in its own words. The sector page shows a map of each sector, the raid controls legend stays out of the way after your first raids, a covered player 1 window no longer freezes the raid for player 2, and if the player 1 window is gone, player 2 keeps the raid.\u0027,\n  \u0027KNOWING WHERE YOUR TEAMMATE IS. You are told when your teammate joins the raid and when he is out of it (killed, extracted or abandoned). JOIN THE RAID IN PROGRESS is bigger, and a teammate who joins late sees the walls already blown open and the map markers already placed, and is charged only for the time he played. In a party raid the backpack says Y (or T) offers an item. Pings and the kill feed name THE OVERSEER.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and has a line on the volume, keys, kid menu and sound setting\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle=\u0027SMOOTHER, LOUDER,\u0027+\u0027 YOURS\u0027;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)\u003e=0; })) bad.push(\u0027no line of the card names the volume, keys, kid menu and sound setting\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

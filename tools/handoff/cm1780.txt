@@ -1,0 +1,7 @@
+v17.80: the what is new card names the volume, keys, kid menu and sound setting
+
+The what is new card names the volume rows, CHANGE KEYS, the kid menu, the sound setting, PlayStation names and the sector maps.
+
+Check 17.80. Fails on v17.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

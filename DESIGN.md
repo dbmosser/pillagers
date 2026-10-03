@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.80 - THE WHAT IS NEW CARD NAMES THE VOLUME, KEYS, KID MENU AND SOUND SETTING
+
+Co-op hunt while he was away. The card was stamped v17.65. It now says what changed since: volume rows, remappable keys, the kid menu, the one sound setting for a pair, PlayStation names, the sector maps, the legend out of the way, the covered-window fix and player 2 keeping the raid.
+
+MEASURED. Check 17.80 passes, and fails on v17.79.
 ## v17.79 - A MAP OF EACH SECTOR ON THE SECTOR PAGE
 
 Co-op hunt while he was away. From the visual pass of 2026-10-02: WHERE ARE YOU GOING? was two rows of text over an empty page. Each row now carries a drawn map of its sector from the fixed layout: the ground, the named zones, the buildings and landmarks, and the extraction points as rings. No build and no seeded draw; the map is drawn into a small canvas when the page renders.
