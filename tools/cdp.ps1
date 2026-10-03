@@ -5,7 +5,9 @@
 # Evaluate:        powershell -File tools\cdp.ps1 -Match 8804 -Expr "window.__PROG.done"
 # The expression may be a promise; a non-string result comes back as JSON.
 param([int]$Port=9333,[switch]$Start,[string]$Open='',[string]$Match='',[string]$Expr='document.title',[int]$TimeoutSec=120,
-      [string]$Profile="$env:TEMP\pillagers-cdp")
+      [double]$Throttle=0,[string]$Shot='',[string]$Profile="$env:TEMP\pillagers-cdp")
+# -Throttle N: the page runs on a CPU N times slower for this call (Chrome's own emulation), to stand in for a weak PC.
+# -Shot path.jpg: after the expression, a screenshot of the page is saved there (the visual pass, 2026-10-02).
 $ErrorActionPreference='Stop'
 if($Start){
   $exe='C:\Program Files\Google\Chrome\Application\chrome.exe'
@@ -42,6 +44,20 @@ while($true){
   if(-not $task.Wait($left)){ Write-Output 'TIMEOUT'; exit 1 }
   $ms.Write($buf,0,$task.Result.Count)
   if($task.Result.EndOfMessage){ $txt=[Text.Encoding]::UTF8.GetString($ms.ToArray()); $ms.SetLength(0); if($txt -match '"id":1[,}]'){ break } }
+}
+if($Shot){
+  $m9=@{id=9;method='Page.captureScreenshot';params=@{format='jpeg';quality=70}} | ConvertTo-Json -Depth 5 -Compress
+  $b9=[Text.Encoding]::UTF8.GetBytes($m9)
+  $ws.SendAsync((New-Object 'ArraySegment[byte]' -ArgumentList (,$b9)),[System.Net.WebSockets.WebSocketMessageType]::Text,$true,$ct).Wait()
+  $deadline=(Get-Date).AddSeconds(60); $t9=''
+  while($true){
+    $task=$ws.ReceiveAsync((New-Object 'ArraySegment[byte]' -ArgumentList (,$buf)),$ct)
+    $left=[int][Math]::Max(1,($deadline-(Get-Date)).TotalMilliseconds)
+    if(-not $task.Wait($left)){ Write-Output 'SHOT TIMEOUT'; break }
+    $ms.Write($buf,0,$task.Result.Count)
+    if($task.Result.EndOfMessage){ $t9=[Text.Encoding]::UTF8.GetString($ms.ToArray()); $ms.SetLength(0); if($t9 -match '"id":9[,}]'){ break } }
+  }
+  if($t9){ $o9=$t9 | ConvertFrom-Json; if($o9.result.data){ [IO.File]::WriteAllBytes($Shot,[Convert]::FromBase64String($o9.result.data)); Write-Output ('shot '+$Shot) } }
 }
 $ws.Dispose()
 $o=$txt | ConvertFrom-Json
