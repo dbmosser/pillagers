@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.08 - KID FIRING TURNS PLAYER 2 TOWARD HIS TARGET
+
+Co-op hunt while he was away. His order of 2026-10-03: player 2 auto-aim in kid mode should also turn the player and his field of vision toward the target. The cursor moved only once an enemy was inside gun range, so the body and the view cone kept facing the way he walked while a machine came at him. With nothing in gun range, the nearest enemy in sight with a clear line now gets the cursor, so he and his cone turn to it before it is close enough to shoot; the trigger stays up until then.
+
+MEASURED. Check 18.08 passes, and fails on v18.07.
 ## v18.07 - EACH PLAYER SEES THE OTHER PLAYER LINE OF SIGHT
 
 Co-op hunt while he was away. His order of 2026-10-03: each player should see the other player line of sight, with a Settings option to turn it off. What a teammate up top is looking at, you now see too: his view cone is open in your fog of war, a little dimmer than your own, his patch of ground is lit, and an enemy in his sight is drawn for you. Settings has a Shared sight row, On by default.

@@ -1,0 +1,7 @@
+v18.08: kid firing turns player 2 toward his target
+
+Kid firing now turns player 2 and his view toward the nearest enemy in sight, before it is in range.
+
+Check 18.08. Fails on v18.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

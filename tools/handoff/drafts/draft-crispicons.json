@@ -1,0 +1,20 @@
+{
+    "title":  "THE ITEM ICONS ARE PAINTED SHARP",
+    "why":  "His order of 2026-10-03: item graphics like the guns still look terrible. Every icon the menus show was painted once at its row size, 22 to 30 pixels, and then blown up to 40, 64 or 110 by the stash layouts with the browser told to pixelate, so a gun was a handful of blocks. The painters are vector shapes: the icon is painted at four times its row size now and scaled down smooth, so every layout shows real edges. The shapes themselves get their own pass next.",
+    "now":  "Item and gun icons are drawn sharp in every menu instead of blown-up blocks.",
+    "edits":  [
+                  {
+                      "anchor":  "  var cnv=document.createElement(\u0027canvas\u0027); cnv.width=S; cnv.height=S;\n  var c2=cnv.getContext(\u00272d\u0027);\n  drawItemIcon(c2,key,S/2,S/2,S*0.82);",
+                      "replacement":  "  // v16.xx, HIS ORDER (2026-10-03, \"item graphics like the guns still look terrible\"): THE ICONS ARE DRAWN SHARP. Every icon the\n  // menus show was painted once at its row size, 22 to 30 pixels, and then blown up to 40, 64 or 110 by the stash layouts with\n  // image-rendering:pixelated, so a gun was a handful of blocks. The painters are vector shapes, so the icon is painted at\n  // four times its row size (up to 160 across) and the browser scales it down smooth; every layout now shows real edges.\n  var R=Math.min(4,Math.max(1,Math.ceil(160/S)));\n  var cnv=document.createElement(\u0027canvas\u0027); cnv.width=S*R; cnv.height=S*R;\n  var c2=cnv.getContext(\u00272d\u0027);\n  drawItemIcon(c2,key,S*R/2,S*R/2,S*R*0.82);"
+                  },
+                  {
+                      "anchor":  "  var cnv=document.createElement(\u0027canvas\u0027); cnv.width=S; cnv.height=S;\n  var c2=cnv.getContext(\u00272d\u0027);\n  mercPortrait(c2,id,S/2,S/2,S*0.86);",
+                      "replacement":  "  var R=Math.min(4,Math.max(1,Math.ceil(160/S)));   // v16.xx: painted sharp, as the item icons are\n  var cnv=document.createElement(\u0027canvas\u0027); cnv.width=S*R; cnv.height=S*R;\n  var c2=cnv.getContext(\u00272d\u0027);\n  mercPortrait(c2,id,S*R/2,S*R/2,S*R*0.86);"
+                  },
+                  {
+                      "anchor":  "  .invgrid .ic{ image-rendering:pixelated; }",
+                      "replacement":  "  .invgrid .ic{ image-rendering:auto; }   /* v16.xx: painted sharp at four times the row size and scaled down smooth (was pixelated) */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027item icons are painted sharp: a 31 px stash icon is drawn on a canvas at least 93 px across, and the stash grid no longer asks the browser to pixelate its icons\u0027,\n   run:function(){\n     if(typeof itemIconURL!==\u0027function\u0027) return \u0027SKIP: no icon painter here\u0027;\n     var bad=[], u=itemIconURL(\u0027bandage\u0027,31), b64=(String(u).split(\u0027,\u0027)[1]||\u0027\u0027), bin=\u0027\u0027, w=0, d, img, root=document.getElementById(\u0027root\u0027)||document.body;\n     try{ bin=atob(b64); w=((bin.charCodeAt(16)\u003c\u003c24)|(bin.charCodeAt(17)\u003c\u003c16)|(bin.charCodeAt(18)\u003c\u003c8)|bin.charCodeAt(19))\u003e\u003e\u003e0; }catch(e){ bad.push(\u0027could not read the icon image\u0027); }\n     if(!(w\u003e=93)) bad.push(\u0027the 31 px icon is drawn on a \u0027+w+\u0027 px canvas\u0027);\n     d=document.createElement(\u0027div\u0027); d.className=\u0027invgrid\u0027; img=document.createElement(\u0027img\u0027); img.className=\u0027ic\u0027; d.appendChild(img); root.appendChild(d);\n     try{ if(getComputedStyle(img).imageRendering===\u0027pixelated\u0027) bad.push(\u0027the stash grid still pixelates its icons\u0027); }finally{ try{ root.removeChild(d); }catch(_r){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
