@@ -1,0 +1,1 @@
+| A CONTROLLER UNPLUGGED IN A RAID PAUSES AND SAYS SO | v17.73 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 17.73 passes, fails on v17.72 |

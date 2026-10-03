@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.73 - A CONTROLLER UNPLUGGED IN A RAID PAUSES AND SAYS SO
+
+Co-op hunt while he was away. When a controller came unplugged mid-raid the game let go of its keys and went quiet: the player stood still with no word while the machines came. Now the pause box opens and a line says Controller disconnected. Plug it in, then resume. On the Undercroft floor nothing pauses.
+
+MEASURED. Check 17.73 passes, and fails on v17.72.
 ## v17.72 - A COVERED HOST WINDOW KEEPS THE RAID RUNNING
 
 Co-op hunt while he was away. The host window runs every body for the party, and the browser stops its frames when another window covers it (his son window dragged over it, or minimised), so the raid froze for the teammate too. A worker clock the browser does not throttle now runs the frame while frames are not coming and this window hosts a shared raid. Solo, a covered window still stands still, the pause it always was.

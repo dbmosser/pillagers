@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.72';
+var VER='17.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12658,7 +12658,12 @@ function pollPad(){
   for(var b2=0;b2<bt.length;b2++) PAD.prev[b2]=pressed(b2);
 }
 window.addEventListener('gamepadconnected',function(){ PAD.announced=false; });
-window.addEventListener('gamepaddisconnected',function(){ padRelease(); PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false; });
+// v17.73, AAA CHECK (2026-10-02): A CONTROLLER UNPLUGGED IN A RAID PAUSES AND SAYS SO. The pad let go of its keys and went
+// quiet, and a player whose cable came out stood still with no word while the machines came. The pause box opens (in a party
+// it is the overlay it always is for one player) and the line names it.
+window.addEventListener('gamepaddisconnected',function(){ padRelease(); PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false;
+  if(typeof G!=='undefined'&&G&&!G.over&&!G.sim&&typeof state!=='undefined'&&state==='raid'){ try{ if(!pauseOpen) togglePauseBox(true); }catch(_pd){} try{ say('Controller disconnected. Plug it in, then resume.'); }catch(_pd2){} }
+});
 cv.addEventListener('contextmenu',function(e){e.preventDefault();});
 // v10.96: the character screen is written at boot, from the profile as it was
 // then. Anything that shows it again later has to be able to bring it up to
@@ -31755,7 +31760,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.72: Two-player: if the player 1 window is covered or minimised, the raid keeps running for player 2 instead of freezing. Check 17.72 fails on v17.71',
+  now:'v17.73: A controller unplugged in a raid now pauses the game and says so. Check 17.73 fails on v17.72',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

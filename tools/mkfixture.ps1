@@ -5721,6 +5721,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.73',what:'a controller unplugged in a raid opens the pause box and says so; on the Undercroft floor it does not pause',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof togglePauseBox!=='function') return 'SKIP: no raid or pause box in this fixture';
+     var bad=[], lines=[], oSay=say, st0=state, ev;
+     try{
+       say=function(t){ lines.push(String(t)); };
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no raid';
+       state='raid'; try{ togglePauseBox(false); }catch(_p0){}
+       ev=new Event('gamepaddisconnected'); window.dispatchEvent(ev);
+       if(!pauseOpen) bad.push('a controller unplugged in a raid did not pause');
+       if(!lines.some(function(t){ return /Controller disconnected/.test(t); })) bad.push('nothing said the controller was unplugged ('+JSON.stringify(lines)+')');
+       try{ togglePauseBox(false); }catch(_p1){}
+       __endRaid('abandon'); __topClear(); state='hub'; lines.length=0;
+       window.dispatchEvent(new Event('gamepaddisconnected'));
+       if(pauseOpen) bad.push('a controller unplugged on the floor paused');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       say=oSay; state=st0;
+       try{ togglePauseBox(false); }catch(_p2){}
+       try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.72',what:'a covered host window keeps the raid running: with no frame for 200 ms and this window hosting a shared raid, the worker tick runs a frame (the clock moves); solo, or with frames coming, it does nothing',
    run:function(){
      if(typeof hidTick!=='function'||typeof HID!=='object') return 'a covered host window freezes the raid for the party';

@@ -1,0 +1,5 @@
+## v17.73 - A CONTROLLER UNPLUGGED IN A RAID PAUSES AND SAYS SO
+
+Co-op hunt while he was away. When a controller came unplugged mid-raid the game let go of its keys and went quiet: the player stood still with no word while the machines came. Now the pause box opens and a line says Controller disconnected. Plug it in, then resume. On the Undercroft floor nothing pauses.
+
+MEASURED. Check 17.73 passes, and fails on v17.72.

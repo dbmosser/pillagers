@@ -1,0 +1,7 @@
+v17.73: a controller unplugged in a raid pauses and says so
+
+A controller unplugged in a raid now pauses the game and says so.
+
+Check 17.73. Fails on v17.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
