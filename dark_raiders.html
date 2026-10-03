@@ -1466,7 +1466,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.97';
+var VER='17.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1798,7 +1798,7 @@ function rr(){
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
-var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:25,
+var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:30,
   // HIS NOTE, 2026-08-26: "i want 10 raiders on the map, not 5". This is the count at
 // the REFERENCE map size and every map scales it by area, which is why he counted
 // five: nOf multiplies by clamp(AREA/4, 0.45, 1.6) and COLD STORAGE runs 0.69. That
@@ -31953,7 +31953,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.97: The seal opens about fifteen percent quicker at every stage. Check 17.97 fails on v17.96',
+  now:'v17.98: Extraction now takes 30 seconds to arrive after the call, then stays open for 30 seconds. Check 17.98 fails on v17.97',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

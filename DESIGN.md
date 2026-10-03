@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.98 - EXTRACTION TAKES 30 SECONDS TO ARRIVE, THEN STAYS 30
+
+Co-op hunt while he was away. His note of 2026-10-03, given mid-raid: extraction should take 30 seconds to open, then be available for 30 seconds. The ship took 25 seconds to arrive after the call; it takes 30 now. The window after it lands was already 30 seconds (shorter only when the raid clock has less), and stays so.
+
+MEASURED. Check 17.98 passes, and fails on v17.97.
 ## v17.97 - THE SEAL OPENS MARGINALLY QUICKER
 
 Co-op hunt while he was away. His note of 2026-10-03, given mid-raid: the seal should open marginally quicker. The cut needed 40 seconds at stage 1, 65 at stage 2 and 90 at stage 3; it is 34, 55 and 76 now, about fifteen percent less at every stage. Progress already banked carries over as it was.

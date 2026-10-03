@@ -1,0 +1,7 @@
+v17.98: extraction takes 30 seconds to arrive, then stays 30
+
+Extraction now takes 30 seconds to arrive after the call, then stays open for 30 seconds.
+
+Check 17.98. Fails on v17.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -5721,6 +5721,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.98',what:'extraction takes 30 seconds to arrive after the call, his note of 2026-10-03 (it was 25), and the window after it lands is the full 30 seconds',
+   run:function(){
+     if(typeof DEF==='undefined'||typeof CFG==='undefined') return 'SKIP: no defaults table';
+     if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof tryExtractTick!=='function'||typeof tickExtractPoints!=='function') return 'SKIP: this fixture cannot deploy';
+     var bad=[], g, p, Z=null, i;
+     if(DEF.extractWait!==30) bad.push('the defaults say the ship takes '+DEF.extractWait+' seconds');
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       if(CFG.extractWait!==30) bad.push('the live setting says '+CFG.extractWait+' seconds');
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); p=g.player;
+       for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
+       if(!Z) return 'SKIP: no open extraction ring';
+       p.x=Z.x+70; p.y=Z.y; p.downed=false; keys={};
+       for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++) tryExtractTick(0.1,true);
+       if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E at the ring did not call for extraction');
+       else if(!(Z.beaconT>29&&Z.beaconT<=30)) bad.push('the call set the ship '+Z.beaconT.toFixed(1)+' seconds out');
+       Z.beaconT=0.001; Z.hold=null; Z.holdMax=null; g.active=Z; g.timeLeft=Math.max(g.timeLeft,400);
+       tickExtractPoints(0.016);
+       if(Z.hold===null||Z.hold===undefined) bad.push('control: the landing set no boarding window');
+       else if(Math.abs(Z.holdMax-30)>0.001) bad.push('the boarding window is '+Z.holdMax+' seconds, not 30');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ keys={}; try{ __resetCfg(); }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.97',what:'the seal opens marginally quicker, his note of 2026-10-03: 34 seconds of cutting at stage 1 instead of 40, 55 at stage 2 instead of 65, 76 at stage 3 instead of 90, and the Undercroft lines read that one number',
    run:function(){
      if(!(window.__seal&&__seal.need)) return 'SKIP: no seal here';
