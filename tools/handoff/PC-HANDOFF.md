@@ -311,3 +311,15 @@ in one window, not yet in the two-window nettest.
 - CORPUS 02:00: 6 of 913 fail in the full run after the restore fixes (three v14.1x checks assigned fillText back too). Left: v15.91,
   v11.65, v11.63, v9.55 pass alone (order-dependent, a later pass); v11.09 sees an <a> in Times that only an earlier check creates
   (no anchors on a fresh page); v10.41 fixed by v17.86 (legend says crouch toggle).
+
+## NEXT UP (2026-10-03 02:10)
+- Game at v17.86 (v17.87 slowhint shipping on gate 9346: GATE_CDP=9346). All pushed. Priorities (his, 10-02): no bugs, smooth menus,
+  look and feel, two-player; no new depth. Bar: ARC Raiders x Fortnite 2026 x CoD BR. Alpha for friends: Halloween.
+- RUNNING: night runs (overnight.sh ABC -> overnight.log, DE -> overnight2.log) until ~06:40. Six test Chromes: 9335/9338 soaks,
+  9336/9337 bots, 9345 4K, 9344 corpus/scratch, 9346 gate. Heartbeat on. Budget 02:00: all-models 78%, Fable 65%, reset Sun 01:00.
+- CORPUS: 6/913 in a full run; 4 order-dependent (v15.91 v11.65 v11.63 v9.55 pass alone), v11.09 an <a> an earlier check leaves.
+  Full run: open fixture.html on 9344, Expr __regress() (40 min). Lesson: stubs on ctx/wc must be deleted, not reassigned.
+- CANDIDATES NEXT: controller button remap (bigger; keyLabel/PADLABEL + PADHOLD maps are the seam); raid HUD panel style pass
+  (shots in tools/handoff/shots); first-five-minutes audit with a fresh profile and a pad only; the four order-dependent checks;
+  stale "On the surface B cycles his orders" (hire orders moved to O; his TXSHIP line, ask him).
+- TOOLS: stress.ps1 (-Throttle), memsoak.ps1, shots.ps1 (-Cdp 9346 -Port 8806), cdp.ps1 -Shot/-Throttle. Two-window test: soakloop.ps1.
