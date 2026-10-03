@@ -349,3 +349,20 @@ use; measure with a style check (same font, same radius, no Times, buttons withi
   improvements": an icon art pass is part of the styling work, guns first (gunIcon at ~28389, drawItemIcon at ~28470).
 - v17.92 F11 handled by the game (both windows). v17.93 player 2 picks a character (SHIPPED; two-window test 2/2 with P2 on its own
   numbered slot). Stage A theme (draft-theme.json) shipping next on 9346, screenshots after.
+
+## 2026-10-03 afternoon: his live notes while playing (v17.94 to v18.05)
+He played co-op with his son and sent notes mid-raid. Each shipped as its own build, in order:
+- v17.94 styling pass stage A (one look for every HTML menu). Stages B-E still to do (title, raid HUD panels, run card, stash/shop).
+- v17.95 EXTRACT NOW! -> EXTRACT IN PROGRESS! (banner, ring badge, sector map line). Checks 11.54, 11.74, 12.21 and the 15.0x map-line regex were adapted.
+- v17.96 the seal spawns at a random landmark each raid (seeded side stream 4, never the one nearest the first spawn, never under half the farthest).
+- v17.97 the seal opens marginally quicker: 34/55/76 s (was 40/65/90).
+- v17.98 extraction takes 30 s to arrive (DEF.extractWait 25 -> 30); the 30 s window was already so.
+- v17.99 a Settings change keeps scroll, focused button and pad highlight (setKeep/setRestore around renderSettingsInner).
+- v18.00 kid-mode rows shared between the two windows (localStorage salvagerun:kid with a stamp; storage event re-renders Settings).
+- v18.01 Auto resolution row (DRS): slow frames step gfx scale down a notch at a time to Low, smooth frames step it back; first step says so once.
+- v18.02 ESC from the player 2 window pauses player 1: the handed key is dispatched on document.body, not at window (the capture-order trap in memory).
+- v18.03 fog-of-war and darkness sheets draw at SOFTR of the screen (0.5 at 1440p/4K, 0.67 at 1080p, times the render scale) and are stretched back.
+- v18.04 What's New card restamped (WHATSNEW_VER 18.04).
+- v18.05 trading in the Undercroft: stash item menu OFFER row; T (or Y on the floor) takes; same gift words with hub:1.
+LAG: he reported frame-rate lag while I had five test Chromes running. Killed them all at once. RULE: when he is playing, no test loads at all. The lag "when running and revealing new assets" is not fully explained; DRS and the half-size sheets are the generic answer. Still worth profiling: the per-frame canSee loop over all ents, buildVisPoly ray count in built-up areas, per-frame gradient creation per tree/house.
+NEXT: gun and item icon art pass (his explicit ask), styling stages B-E, then the profiling above.
