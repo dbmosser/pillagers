@@ -1,0 +1,7 @@
+v18.29: the what is new card says trading is dropping
+
+The what is new card says how trading works now.
+
+Check 18.29. Fails on v18.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

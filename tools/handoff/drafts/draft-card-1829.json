@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD SAYS TRADING IS DROPPING",
+    "why":  "The card was stamped v18.18. It now leads with his order of the morning: trading is dropping, up top and in the Undercroft, and the new default look.",
+    "now":  "The what is new card says how trading works now.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002718.18\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002718.29\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027THE NIGHT OF OCTOBER 3. Fewer big robots at the extraction. You see what your teammate sees: their view cone is open in your fog and the enemies in it are shown (Settings: Shared sight). Kid firing turns player 2 toward the nearest enemy before it is in range. Trading works in the Undercroft: right-click a stash item and OFFER it. Guns and items are painted like objects, sharp, and fill their cells. The title, the menus and the raid HUD share one look. Walls and trees are painted once and reused, so a busy street runs smoother. Trading is on every key legend and the Party window explains it.\u0027,",
+                      "replacement":  "  \u0027TRADING IS DROPPING. Up top, press Z (Y on a controller, backpack open) and the item is a pile at your feet; your teammate searches it like any box. In the Undercroft, right-click a stash item (Y on a controller), choose Drop on the floor, and they press E beside the crate. The key legends and the Party window say so. New characters start with short dark hair.\u0027,\n  \u0027THE NIGHT OF OCTOBER 3. Fewer big robots at the extraction. You see what your teammate sees: their view cone is open in your fog and the enemies in it are shown (Settings: Shared sight). Kid firing turns player 2 toward the nearest enemy before it is in range. Trading works in the Undercroft: right-click a stash item and OFFER it. Guns and items are painted like objects, sharp, and fill their cells. The title, the menus and the raid HUD share one look. Walls and trees are painted once and reused, so a busy street runs smoother. Trading is on every key legend and the Party window explains it.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and has a line saying trading is dropping\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle=\u0027TRADING IS\u0027+\u0027 DROPPING\u0027;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)\u003e=0; })) bad.push(\u0027no line of the card says trading is dropping\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,5 @@
+## v18.29 - THE WHAT IS NEW CARD SAYS TRADING IS DROPPING
+
+Co-op hunt while he was away. The card was stamped v18.18. It now leads with his order of the morning: trading is dropping, up top and in the Undercroft, and the new default look.
+
+MEASURED. Check 18.29 passes, and fails on v18.28.

@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.29',what:'the what is new card is stamped within 0.15 of the build and has a line saying trading is dropping',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle='TRADING IS'+' DROPPING';
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)>=0; })) bad.push('no line of the card says trading is dropping');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.28',what:'trading on the Undercroft floor: Drop on the floor takes the item out of the stash and puts a crate at his feet that is told to the party, a crate the other window put down shows here, and E beside it takes the item into the stash and tells the party; the stash menu has the Drop row while linked',
    run:function(){
      if(typeof hubDropMake!=='function'||typeof netHubDropTake!=='function'||typeof updateHubWorld!=='function') return 'there is no dropping on the floor';

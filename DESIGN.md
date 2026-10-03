@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.29 - THE WHAT IS NEW CARD SAYS TRADING IS DROPPING
+
+Co-op hunt while he was away. The card was stamped v18.18. It now leads with his order of the morning: trading is dropping, up top and in the Undercroft, and the new default look.
+
+MEASURED. Check 18.29 passes, and fails on v18.28.
 ## v18.28 - TRADING IS DROPPING, ON THE FLOOR TOO
 
 Co-op hunt while he was away. His order of 2026-10-03: drop it on the floor and it makes a box the other player picks up. In the Undercroft the stash menu now has Drop on the floor: the item becomes a small crate at your feet, shown in both windows; your teammate walks to it and presses E (A on a controller) to take it. The crate stays until someone takes it. The key bar, the floor line, the H card, the stash text and the Party window all teach the drop; the old offer words stay in the code but nothing teaches them.
