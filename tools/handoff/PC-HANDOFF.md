@@ -394,3 +394,6 @@ STILL TO DO in this pass: stage D (run card), stage E (stash/shop/sector page: t
 - v18.17 trading is on the legends: LEGEND and LEGEND_PAD gain a TEAM section (T / Y offer or take a traded item; N / LB+RB ping); the compact legend adds the two rows while NET.on (rows now _mr=ceil(MN.length/2)); #kb_trade line in the stash key bar shown when netHubSeat()>=0 (toggled in refreshInv); #partytrade paragraph in the Party window.
 - v18.18 card restamped.
 - A trade-clarity workflow (3 tracers + 2 refuters per dead end) ran read-only; its findings and what was shipped from them are below this line when done.
+- v18.19 a controller takes an Undercroft offer with a window open: padMenu reads Y first on its own edge (PAD.yMenuWas) because a panel owns the pad before the hub branch runs.
+- v18.20 a waiting raid offer is taken first: netGiftKey answers G.giftIn before the backpack-open offer branch.
+- The full corpus (944 checks) is running in headless Chrome 9344 on fixture.html; it is slow (about 3 a minute while the gate ships), so the gate rests until it finishes. Results go here when in.
