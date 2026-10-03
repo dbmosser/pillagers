@@ -366,3 +366,10 @@ He played co-op with his son and sent notes mid-raid. Each shipped as its own bu
 - v18.05 trading in the Undercroft: stash item menu OFFER row; T (or Y on the floor) takes; same gift words with hub:1.
 LAG: he reported frame-rate lag while I had five test Chromes running. Killed them all at once. RULE: when he is playing, no test loads at all. The lag "when running and revealing new assets" is not fully explained; DRS and the half-size sheets are the generic answer. Still worth profiling: the per-frame canSee loop over all ents, buildVisPoly ray count in built-up areas, per-frame gradient creation per tree/house.
 NEXT: gun and item icon art pass (his explicit ask), styling stages B-E, then the profiling above.
+
+## 2026-10-03 later: his second batch of notes (v18.06 to v18.08) and two findings
+- v18.06 fewer big robots at the extraction siege: cap 5+7*greed (was 6+8), sentries 3 in 10 (was 1 in 2).
+- v18.07 shared sight: a teammate's view cone is cut from your fog (netMateFog/netMateLamp/netMateSees), enemies in his sight are seen; Settings row Shared sight (CFG.sharedSight, On).
+- v18.08 kid firing turns player 2 toward the nearest enemy in sight (afLook) before it is in gun range.
+- GATE LESSON (memory dark-raiders-gate-tabs-share-storage): the control tab's saves fire storage events in the dry tab, SAVE_STALE goes up and its capture listener eats ESC/Enter; check 18.02 clears it first. The dry chain reuses %TEMP%\pillagers-dry\dry<Prev> with its own mkfixture copy: delete it after editing a check.
+- "GOLD OUTLINE AROUND PLAYER 2'S FACE IN THE UNDERCROFT": almost certainly the default look of a new character, COSDEF hair 'blonde' + cut 'long' (HAIRCOL.blonde is gold; the long cut is a flat rounded rect behind the face). Player 2's new numbered save (v17.93) wears the default. Asked him whether to change the default for new characters or leave it to the mirror; not changed yet.
