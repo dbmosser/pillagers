@@ -1466,7 +1466,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.94';
+var VER='17.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25797,7 +25797,7 @@ function zoneBadge(z){
   if(!z.open) return 'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID';
   if(z.beaconT===null||z.beaconT===undefined) return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
   if(z.beaconT>0) return 'EXTRACTION POINT - '+Math.max(0,Math.ceil(z.beaconT))+'S UNTIL EXTRACTION BEGINS';
-  if(z.hold!==null&&z.hold!==undefined) return 'EXTRACTION POINT - EXTRACT NOW! '+Math.max(0,Math.ceil(z.hold))+'S UNTIL EXTRACTION ENDS';
+  if(z.hold!==null&&z.hold!==undefined) return 'EXTRACTION POINT - EXTRACT IN PROGRESS! '+Math.max(0,Math.ceil(z.hold))+'S UNTIL EXTRACTION ENDS';   // v17.95: his words of 2026-10-03
   return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
 }
 // v11.55, HIS NOTE: the last second of a cooked frag, in his words. One place,
@@ -25811,7 +25811,7 @@ function cookShout(p){
 // Both places that announce it read from here, so they cannot drift apart, and
 // the seconds are named as what is LEFT rather than a bare number.
 function extractNowLine(letter,secs){
-  return 'EXTRACT NOW!  '+letter+'  '+Math.max(0,Math.ceil(secs))+'S LEFT';
+  return 'EXTRACT IN PROGRESS!  '+letter+'  '+Math.max(0,Math.ceil(secs))+'S LEFT';   // v17.95: his words of 2026-10-03 (EXTRACT NOW from v11.74 until then)
 }
 // v17.52, polish after his pick 4 (trading): AN OFFER STAYS ON SCREEN WHILE IT IS OPEN. The offer line came once in the
 // message feed and faded, so a player on a controller who missed it never knew an item was waiting. While an offer to this
@@ -29696,7 +29696,7 @@ if(G.trail&&G.trail.length>1){
       ctx.fillText('EXTRACT '+String.fromCharCode(65+_fz),ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-LH(24));
       var _zSub;
       if(!Z.open) _zSub='CLOSED';
-      else if(_zHold) _zSub='EXTRACT NOW!  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v12.21: the banner's words (v11.74); the letter is the line above
+      else if(_zHold) _zSub='EXTRACT IN PROGRESS!  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v12.21: the banner's words (v11.74, his rewording of 2026-10-03); the letter is the line above
       else if(_zAct) _zSub='CALLED  '+Math.max(0,Math.ceil(Z.beaconT))+'s';
       else if(Z.closeAt===undefined) _zSub='STAYS OPEN';
       else _zSub='closes in '+fmtMS(Math.max(0,Math.ceil(G.timeLeft-Z.closeAt)));
@@ -31950,7 +31950,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.94: Every menu shares one look now: glass panes, one header style, rounded buttons with a proper primary, cleaner rows, inputs and scrollbars. More stages follow for the title, the raid HUD and the stash. Check 17.94 fails on v17.93',
+  now:'v17.95: The extraction banner now reads EXTRACT IN PROGRESS! with the ring letter and the seconds left. Check 17.95 fails on v17.94',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

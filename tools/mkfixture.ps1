@@ -5721,6 +5721,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.95',what:'the boarding window reads EXTRACT IN PROGRESS, his words of 2026-10-03, in the banner line, the ring badge and the sector map line, and the old EXTRACT NOW is gone from all three',
+   run:function(){
+     if(typeof extractNowLine!=='function'||typeof zoneBadge!=='function') return 'SKIP: no boarding line here';
+     var bad=[], neu='EXTRACT IN '+'PROGRESS!', old='EXTRACT '+'NOW', l=String(extractNowLine('B',11.4)), b=String(zoneBadge({open:true,beaconT:0,hold:11.4})), src='';
+     if(l.indexOf(neu)!==0) bad.push('the banner reads "'+l+'"');
+     if(b.indexOf(neu)<0) bad.push('the ring badge reads "'+b+'"');
+     try{ src=drawMapOverlay.toString(); }catch(e){ src=''; }
+     if(src.indexOf("'"+neu)<0) bad.push('the sector map line does not say '+neu);
+     if(src.indexOf("'"+old)>=0) bad.push('the sector map still says '+old);
+     if(l.indexOf(old)>=0||b.indexOf(old)>=0) bad.push('the old words are still there');
+     return bad.length?bad.join('; '):null; }},
   {v:'17.94',what:'stage A of the styling pass: every menu button is rounded to one radius with one minimum height, the primary button is a gradient, modal headers are uppercase amber with a rule under them, inputs are dark with rounded corners',
    run:function(){
      var bad=[], m=document.getElementById('partymodal'), tmp=document.createElement('div'), b, d, h, i, s;

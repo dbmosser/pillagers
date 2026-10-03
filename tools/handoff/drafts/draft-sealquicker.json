@@ -1,0 +1,12 @@
+{
+    "title":  "THE SEAL OPENS MARGINALLY QUICKER",
+    "why":  "His note of 2026-10-03, given mid-raid: the seal should open marginally quicker. The cut needed 40 seconds at stage 1, 65 at stage 2 and 90 at stage 3; it is 34, 55 and 76 now, about fifteen percent less at every stage. Progress already banked carries over as it was.",
+    "now":  "The seal opens about fifteen percent quicker at every stage.",
+    "edits":  [
+                  {
+                      "anchor":  "function sealNeed(tier){ return 40+tier*25; }",
+                      "replacement":  "function sealNeed(tier){ return 34+tier*21; }   // v16.xx: his note of 2026-10-03, marginally quicker (was 40+tier*25)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the seal opens marginally quicker, his note of 2026-10-03: 34 seconds of cutting at stage 1 instead of 40, 55 at stage 2 instead of 65, 76 at stage 3 instead of 90, and the Undercroft lines read that one number\u0027,\n   run:function(){\n     if(!(window.__seal\u0026\u0026__seal.need)) return \u0027SKIP: no seal here\u0027;\n     var bad=[], src=\u0027\u0027;\n     if(__seal.need(0)!==34) bad.push(\u0027stage 1 needs \u0027+__seal.need(0)+\u0027 seconds\u0027);\n     if(__seal.need(1)!==55) bad.push(\u0027stage 2 needs \u0027+__seal.need(1)+\u0027 seconds\u0027);\n     if(__seal.need(2)!==76) bad.push(\u0027stage 3 needs \u0027+__seal.need(2)+\u0027 seconds\u0027);\n     try{ src=sealLines.toString(); }catch(e){ src=\u0027\u0027; }\n     if(src.indexOf(\u0027sealNeed(\u0027)\u003c0) bad.push(\u0027control: the Undercroft lines do not read sealNeed, so the number on screen is not this one\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

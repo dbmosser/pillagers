@@ -1,0 +1,7 @@
+v17.95: the boarding window reads extract in progress
+
+The extraction banner now reads EXTRACT IN PROGRESS! with the ring letter and the seconds left.
+
+Check 17.95. Fails on v17.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

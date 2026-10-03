@@ -1,0 +1,20 @@
+{
+    "title":  "THE BOARDING WINDOW READS EXTRACT IN PROGRESS",
+    "why":  "His words of 2026-10-03, given mid-raid: EXTRACT NOW! becomes EXTRACT IN PROGRESS! It is the banner above the belt while the ship sits in the ring, the badge on the ring itself and the line under the ring on the sector map, all three from the same words. The letter and the seconds left stay as they were.",
+    "now":  "The extraction banner now reads EXTRACT IN PROGRESS! with the ring letter and the seconds left.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(z.hold!==null\u0026\u0026z.hold!==undefined) return \u0027EXTRACTION POINT - EXTRACT NOW! \u0027+Math.max(0,Math.ceil(z.hold))+\u0027S UNTIL EXTRACTION ENDS\u0027;",
+                      "replacement":  "  if(z.hold!==null\u0026\u0026z.hold!==undefined) return \u0027EXTRACTION POINT - EXTRACT IN PROGRESS! \u0027+Math.max(0,Math.ceil(z.hold))+\u0027S UNTIL EXTRACTION ENDS\u0027;   // v16.xx: his words of 2026-10-03"
+                  },
+                  {
+                      "anchor":  "  return \u0027EXTRACT NOW!  \u0027+letter+\u0027  \u0027+Math.max(0,Math.ceil(secs))+\u0027S LEFT\u0027;",
+                      "replacement":  "  return \u0027EXTRACT IN PROGRESS!  \u0027+letter+\u0027  \u0027+Math.max(0,Math.ceil(secs))+\u0027S LEFT\u0027;   // v16.xx: his words of 2026-10-03 (EXTRACT NOW from v11.74 until then)"
+                  },
+                  {
+                      "anchor":  "      else if(_zHold) _zSub=\u0027EXTRACT NOW!  \u0027+Math.max(0,Math.ceil(Z.hold))+\u0027S LEFT\u0027;   // v12.21: the banner\u0027s words (v11.74); the letter is the line above",
+                      "replacement":  "      else if(_zHold) _zSub=\u0027EXTRACT IN PROGRESS!  \u0027+Math.max(0,Math.ceil(Z.hold))+\u0027S LEFT\u0027;   // v12.21: the banner\u0027s words (v11.74, his rewording of 2026-10-03); the letter is the line above"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the boarding window reads EXTRACT IN PROGRESS, his words of 2026-10-03, in the banner line, the ring badge and the sector map line, and the old EXTRACT NOW is gone from all three\u0027,\n   run:function(){\n     if(typeof extractNowLine!==\u0027function\u0027||typeof zoneBadge!==\u0027function\u0027) return \u0027SKIP: no boarding line here\u0027;\n     var bad=[], neu=\u0027EXTRACT IN \u0027+\u0027PROGRESS!\u0027, old=\u0027EXTRACT \u0027+\u0027NOW\u0027, l=String(extractNowLine(\u0027B\u0027,11.4)), b=String(zoneBadge({open:true,beaconT:0,hold:11.4})), src=\u0027\u0027;\n     if(l.indexOf(neu)!==0) bad.push(\u0027the banner reads \"\u0027+l+\u0027\"\u0027);\n     if(b.indexOf(neu)\u003c0) bad.push(\u0027the ring badge reads \"\u0027+b+\u0027\"\u0027);\n     try{ src=drawMapOverlay.toString(); }catch(e){ src=\u0027\u0027; }\n     if(src.indexOf(\"\u0027\"+neu)\u003c0) bad.push(\u0027the sector map line does not say \u0027+neu);\n     if(src.indexOf(\"\u0027\"+old)\u003e=0) bad.push(\u0027the sector map still says \u0027+old);\n     if(l.indexOf(old)\u003e=0||b.indexOf(old)\u003e=0) bad.push(\u0027the old words are still there\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.95 - THE BOARDING WINDOW READS EXTRACT IN PROGRESS
+
+Co-op hunt while he was away. His words of 2026-10-03, given mid-raid: EXTRACT NOW! becomes EXTRACT IN PROGRESS! It is the banner above the belt while the ship sits in the ring, the badge on the ring itself and the line under the ring on the sector map, all three from the same words. The letter and the seconds left stay as they were.
+
+MEASURED. Check 17.95 passes, and fails on v17.94.
 ## v17.94 - THE STYLING PASS, STAGE A: ONE LOOK FOR EVERY MENU
 
 Co-op hunt while he was away. His order of 2026-10-03: styling across all menus and HUDs needs massive improvement. Stage A lays one look over every HTML menu: glass panes with a soft light from the top, one header style (uppercase amber with a rule under it), rounded buttons of one height with a real gradient primary and a quiet ghost, rows that light on hover, dark rounded inputs with a focus ring, thin scrollbars. Nothing moves and no id or class changes; the raid HUD, the title and the stash get their own stages next.

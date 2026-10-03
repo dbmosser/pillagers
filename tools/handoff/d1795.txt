@@ -1,0 +1,5 @@
+## v17.95 - THE BOARDING WINDOW READS EXTRACT IN PROGRESS
+
+Co-op hunt while he was away. His words of 2026-10-03, given mid-raid: EXTRACT NOW! becomes EXTRACT IN PROGRESS! It is the banner above the belt while the ship sits in the ring, the badge on the ring itself and the line under the ring on the sector map, all three from the same words. The letter and the seconds left stay as they were.
+
+MEASURED. Check 17.95 passes, and fails on v17.94.
