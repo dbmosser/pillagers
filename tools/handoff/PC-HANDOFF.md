@@ -282,3 +282,6 @@ in one window, not yet in the two-window nettest.
 - v17.76 legend columns + collapsed after 3 raids; v17.77 NEW-IN card shows five notes, headline+line (wnShort), stale host line fixed;
   v17.78 PlayStation names (PAD.brand, padB, keyLabel, LEGEND_MINI_PAD fixed to his layout). Queued: secprev (sector maps), padbrand2
   (full legend), titlebg (the Undercroft under the title). BUDGET 22:30 Thu: Fable 61%, ALL MODELS 76% (the binding cap), ~1.2%/h.
+- v17.79/82 sector maps on the sector page (sectorPreviewDraw from FIXED_MAPS; rows overflow:hidden). v17.80 card refresh (stamped 17.80).
+  v17.81 full legend pad names. v17.83/84 the Undercroft under the title (titleOn, titleSceneReady, #title.on translucent; drawHubHUD
+  and station names skipped under the title). Two-window test 2/2 on v17.79. Next card refresh due by ~17.95.
