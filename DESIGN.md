@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.85 - THE KEYS WINDOW IN THE GAME FONT, AND IT SCROLLS
+
+Co-op hunt while he was away. The corpus caught two faults in the new Keys window: it was added outside the box the other windows live in, so it was set in the browser default font, and its twenty rows ran 439 pixels past the bottom at 1080p with no way to scroll. It now sits beside the other windows, in their font, and its list scrolls inside the window.
+
+MEASURED. Check 17.85 passes, and fails on v17.84.
 ## v17.84 - UNDER THE TITLE, ONLY THE WORLD
 
 Co-op hunt while he was away. The title backdrop of v17.83 drew the whole floor, with its header, the NEW IN card, the station names and the walk hint showing through the glass. Under the title only the world draws now: the floor, the people, the light. The moment the title goes, everything draws as before.

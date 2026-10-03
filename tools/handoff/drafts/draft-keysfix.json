@@ -1,0 +1,16 @@
+{
+    "title":  "THE KEYS WINDOW IN THE GAME FONT, AND IT SCROLLS",
+    "why":  "The corpus caught two faults in the new Keys window: it was added outside the box the other windows live in, so it was set in the browser default font, and its twenty rows ran 439 pixels past the bottom at 1080p with no way to scroll. It now sits beside the other windows, in their font, and its list scrolls inside the window.",
+    "now":  "The CHANGE KEYS window is in the game font and scrolls.",
+    "edits":  [
+                  {
+                      "anchor":  "\u0027\u003cdiv id=\"keyslist\"\u003e\u003c/div\u003e\u003cdiv class=\"pbox\" style=\"display:flex;gap:8px;margin-top:14px\"\u003e\u003cbutton id=\"keysreset\"",
+                      "replacement":  "\u0027\u003cdiv id=\"keyslist\" style=\"max-height:58vh;overflow-y:auto;padding-right:6px\"\u003e\u003c/div\u003e\u003cdiv class=\"pbox\" style=\"display:flex;gap:8px;margin-top:14px\"\u003e\u003cbutton id=\"keysreset\""
+                  },
+                  {
+                      "anchor":  "    document.body.appendChild(m);\n    document.getElementById(\u0027keysreset\u0027).onclick=",
+                      "replacement":  "    (document.getElementById(\u0027partymodal\u0027)\u0026\u0026document.getElementById(\u0027partymodal\u0027).parentNode||document.body).appendChild(m);   // v16.xx: beside the other windows, in their font\n    document.getElementById(\u0027keysreset\u0027).onclick="
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Keys window is set in the game font like every other window and its list scrolls inside the window instead of running past the bottom\u0027,\n   run:function(){\n     if(typeof keysOpen!==\u0027function\u0027) return \u0027SKIP: this build has no Keys window\u0027;\n     var bad=[], m, ref=document.getElementById(\u0027partymodal\u0027), list, fm, fr;\n     try{\n       keysOpen(); m=document.getElementById(\u0027keysmodal\u0027); list=document.getElementById(\u0027keyslist\u0027);\n       if(!m||!list) return \u0027SKIP: the Keys window did not open\u0027;\n       fm=getComputedStyle(list).fontFamily; fr=ref?getComputedStyle(ref).fontFamily:\u0027\u0027;\n       if(ref\u0026\u0026fm!==fr) bad.push(\u0027the Keys list is set in \u0027+fm+\u0027, the party window in \u0027+fr);\n       if(/times/i.test(fm)) bad.push(\u0027the Keys list is in Times\u0027);\n       if(list.scrollHeight\u003elist.clientHeight+2\u0026\u0026getComputedStyle(list).overflowY!==\u0027auto\u0027\u0026\u0026getComputedStyle(list).overflowY!==\u0027scroll\u0027) bad.push(\u0027the Keys list runs past its box and cannot scroll\u0027);\n       if(m.getBoundingClientRect().bottom\u003einnerHeight+1) bad.push(\u0027the Keys window runs \u0027+Math.round(m.getBoundingClientRect().bottom-innerHeight)+\u0027 px past the bottom\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ var mm=document.getElementById(\u0027keysmodal\u0027); if(mm) mm.classList.remove(\u0027on\u0027); }catch(_m){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,7 @@
+v17.85: the keys window in the game font, and it scrolls
+
+The CHANGE KEYS window is in the game font and scrolls.
+
+Check 17.85. Fails on v17.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

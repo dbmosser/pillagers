@@ -1438,7 +1438,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.84';
+var VER='17.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12792,8 +12792,8 @@ function keysOpen(){
   if(!m){
     m=document.createElement('div'); m.className='modal'; m.id='keysmodal';
     m.innerHTML='<h3>Keys</h3><div class="msub">Click an action, then press the key you want on it. Two actions never share a key: they swap. ESC cancels a press. 1 to 9 stay the tactical belt and TAB stays TAB.</div>'+
-      '<div id="keyslist"></div><div class="pbox" style="display:flex;gap:8px;margin-top:14px"><button id="keysreset" style="padding:8px 22px">RESET TO DEFAULTS</button><button id="closekeys" style="padding:8px 22px;margin-left:auto">CLOSE</button></div>';
-    document.body.appendChild(m);
+      '<div id="keyslist" style="max-height:58vh;overflow-y:auto;padding-right:6px"></div><div class="pbox" style="display:flex;gap:8px;margin-top:14px"><button id="keysreset" style="padding:8px 22px">RESET TO DEFAULTS</button><button id="closekeys" style="padding:8px 22px;margin-left:auto">CLOSE</button></div>';
+    (document.getElementById('partymodal')&&document.getElementById('partymodal').parentNode||document.body).appendChild(m);   // v17.85: beside the other windows, in their font
     document.getElementById('keysreset').onclick=function(){ keysReset(); KEYS.waiting=null; keysRender(); try{ renderSettings(); }catch(_r){} };
     document.getElementById('closekeys').onclick=function(){ KEYS.waiting=null; m.classList.remove('on'); try{ renderSettings(); }catch(_r2){} };
   }
@@ -31900,7 +31900,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.84: The title backdrop shows only the Undercroft itself: no floor text shows through. Check 17.84 fails on v17.83',
+  now:'v17.85: The CHANGE KEYS window is in the game font and scrolls. Check 17.85 fails on v17.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
