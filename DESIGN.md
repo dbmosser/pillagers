@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.20 - A WAITING TRADE OFFER IS TAKEN FIRST
+
+Co-op hunt while he was away. His note of 2026-10-03: still not clear how trading works. A real trap: the prompt says press T or Y to take the offer, but with the receiver own backpack open that key started an offer of his own and the one waiting ran out. An open offer to this player is now answered first; with none waiting the key offers as before.
+
+MEASURED. Check 18.20 passes, and fails on v18.19.
 ## v18.19 - A CONTROLLER TAKES A TRADE OFFER WITH A WINDOW OPEN
 
 Co-op hunt while he was away. His note of 2026-10-03: still not clear how trading works. One real dead end: a panel on screen owns the controller, so with the Stash screen or the shop open, which is where a player is when an Undercroft offer arrives, the Y that takes an offer never ran. Y now takes a waiting offer wherever the controller player is.

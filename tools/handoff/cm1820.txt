@@ -1,0 +1,7 @@
+v18.20: a waiting trade offer is taken first
+
+Pressing T or Y with a trade offer waiting always takes it, even with your backpack open.
+
+Check 18.20. Fails on v18.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
