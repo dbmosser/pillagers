@@ -1,0 +1,7 @@
+v18.23: a trade that fails says why
+
+When a trade does not go through, both players are told why: down, gone, ran out or not taken.
+
+Check 18.23. Fails on v18.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

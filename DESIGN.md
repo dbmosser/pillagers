@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.23 - A TRADE THAT FAILS SAYS WHY
+
+Co-op hunt while he was away. From the trade audit of 2026-10-03: an offer to a downed teammate hung until it ran out, an offer nobody answered vanished without a word on either side, and a refused offer left the giver line open. Now a downed receiver refuses at once with the reason, a refused offer closes on both sides with the reason said, an offer that ran out says so to the receiver, and one nobody took says so to the giver.
+
+MEASURED. Check 18.23 passes, and fails on v18.22.
 ## v18.22 - T WITH THE BACKPACK OPEN IS THE TRADE KEY AND NOTHING ELSE
 
 Co-op hunt while he was away. From the trade audit of 2026-10-03: with the backpack open on an empty cell, T fell through to the patch-up key and started bandaging a teammate, or printed the Select-a-Bandage line, when the player meant to offer something; and with the Peddler stall open T still offered or healed behind the stall. With the backpack open T is the trade key only; with the stall open it does nothing; closed and with nothing waiting it patches up as before. The short legend now says trade or patch up.
