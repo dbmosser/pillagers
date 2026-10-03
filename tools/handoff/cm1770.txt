@@ -1,0 +1,7 @@
+v17.70: one sound setting for the pair: both, player 1 only or player 2 only
+
+Two-player sound is one setting in the PARTY window: WORLD SOUND: BOTH PLAYERS, PLAYER 1 ONLY or PLAYER 2 ONLY. Both windows follow it.
+
+Check 17.70. Fails on v17.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

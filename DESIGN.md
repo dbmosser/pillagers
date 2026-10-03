@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.70 - ONE SOUND SETTING FOR THE PAIR: BOTH, PLAYER 1 ONLY OR PLAYER 2 ONLY
+
+Co-op hunt while he was away. His order of 2026-10-02. Each window had its own SOUND ON/OFF button and read what the other window had said. Now one setting, in the PARTY window, says where world sound plays: both players, player 1 only or player 2 only, and both windows follow it the moment it changes. With both, SPLIT SPEAKERS still puts player 1 left and player 2 right.
+
+MEASURED. Check 17.70 passes, and fails on v17.69.
 ## v17.69 - THE REMAINING PLAYER PICKS UP THE RAID WHEN THE HOST IS GONE
 
 Co-op hunt while he was away. His ruling of 2026-10-02, replacing host drop means abandon. When the host window is gone (closed, crashed, the link lost, the party ended, or its raid let go), the teammate still up top used to have his run ended as abandoned. His window already holds the whole surface and the bodies where the host last placed them, so it now keeps the raid and runs it alone: the enemies run under its own update, loot is searched the solo way, bodies known only from host words are let go, THE OVERSEER is made again at the health it had, and the player is told he is running the raid now.

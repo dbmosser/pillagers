@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.69';
+var VER='17.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31732,7 +31732,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.69: If your host window is gone mid-raid (closed, crashed or the link lost), you keep the raid and run it yourself instead of being sent down as abandoned. Check 17.69 fails on v17.68',
+  now:'v17.70: Two-player sound is one setting in the PARTY window: WORLD SOUND: BOTH PLAYERS, PLAYER 1 ONLY or PLAYER 2 ONLY. Both windows follow it. Check 17.70 fails on v17.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36413,7 +36413,17 @@ function netSndOut(a){
   }
   return NET.sndG;
 }
-function netSndApply(){ if(NET.sndG){ try{ NET.sndG.gain.value=(NET.sndOn||netSndSplitOn())?1:0; }catch(e){} } if(NET.sndP){ try{ NET.sndP.pan.value=netSndSplitOn()?((NET.same==='p2')?1:-1):0; }catch(e2){} } return NET.sndOn; }
+// v17.70, HIS ORDER 2026-10-02: ONE SOUND SETTING FOR THE PAIR. World sound plays in both windows, in player 1 only, or in
+// player 2 only; one setting both windows read (the same origin shares it, and the storage event tells the other window the
+// moment it changes). It replaces the per-window SOUND ON/OFF buttons, which had to be set in each window and read what the
+// other had said. With both, SPLIT SPEAKERS still puts player 1 left and player 2 right.
+var NET_WHO_KEY='salvagerun:samesound:who';
+function netSndWho(){ var v=null; try{ v=localStorage.getItem(NET_WHO_KEY); }catch(e){ v=null; } return (v==='p1'||v==='p2')?v:'both'; }
+function netSndWhoOn(){ var w=netSndWho(); return !NET.same||w==='both'||(w==='p1'&&NET.same==='host')||(w==='p2'&&NET.same==='p2'); }
+function netSndWhoSet(v){ v=(v==='p1'||v==='p2')?v:'both'; try{ localStorage.setItem(NET_WHO_KEY,v); }catch(e){} NET.sndOn=netSndWhoOn(); netSndApply(); try{ renderParty(); }catch(e2){} return v; }
+function netSndWhoCycle(){ var w=netSndWho(); return netSndWhoSet(w==='both'?'p1':(w==='p1'?'p2':'both')); }
+function netSndWhoLabel(){ var w=netSndWho(); return 'WORLD SOUND: '+(w==='p1'?'PLAYER 1 ONLY':(w==='p2'?'PLAYER 2 ONLY':'BOTH PLAYERS')); }
+function netSndApply(){ var on=netSndWhoOn(); NET.sndOn=on; if(NET.sndG){ try{ NET.sndG.gain.value=on?1:0; }catch(e){} } if(NET.sndP){ try{ NET.sndP.pan.value=(on&&netSndWho()==='both'&&netSndSplitOn())?((NET.same==='p2')?1:-1):0; }catch(e2){} } return on; }
 // v16.24, HIS NOTE: AN OPTION TO PUT PLAYER ONE'S SOUND IN THE LEFT SPEAKER AND PLAYER TWO'S IN THE RIGHT. SPLIT SPEAKERS in the
 // sound row of the PARTY window, in a same machine mode: both windows play the world sound, player 1's window panned hard left and
 // player 2's hard right, whatever SOUND ON or OFF says. It is one setting for the pair, kept in the browser; the other window picks
@@ -36421,7 +36431,7 @@ function netSndApply(){ if(NET.sndG){ try{ NET.sndG.gain.value=(NET.sndOn||netSn
 var NET_SPLIT_KEY='salvagerun:samesound:split';
 function netSndSplitOn(){ var v=null; if(!NET.same) return false; try{ v=localStorage.getItem(NET_SPLIT_KEY); }catch(e){ v=null; } return (v===null)?true:(v==='1'); }   // v16.29, his note: player 2 heard nothing; split is the default until switched off
 function netSndSplitToggle(){ var on=!netSndSplitOn(); try{ localStorage.setItem(NET_SPLIT_KEY,on?'1':'0'); }catch(e){} netSndApply(); try{ renderParty(); }catch(e2){} return on; }
-try{ window.addEventListener('storage',function(ev){ if(ev&&ev.key===NET_SPLIT_KEY&&NET.same){ netSndApply(); try{ renderParty(); }catch(e){} } }); }catch(_se){}
+try{ window.addEventListener('storage',function(ev){ if(ev&&(ev.key===NET_SPLIT_KEY||ev.key===NET_WHO_KEY)&&NET.same){ netSndApply(); try{ renderParty(); }catch(e){} } }); }catch(_se){}
 // The nodes that reach the destination move behind the master gain, once each. Returns how many moved.
 function netSndRoute(){
   var a=(AC&&AC.destination)?AC:null, g, list, i, n, moved=0;
@@ -39021,7 +39031,7 @@ function renderParty(){
   if(pr){ pr.style.display=NET.same?'':'none'; if(NET.same){ if(pb) pb.textContent='THIS WINDOW: '+netPadLabel(NET.padIx,NET.same); if(pn) pn.textContent='Press to change. The other window is on '+netPadLabel(NET.padOther,(NET.same==='host')?'p2':'host').toLowerCase()+'. Each window keeps its own controller, in front or not.'; } }
   // v15.78: whether this window plays the world sound, in a same machine mode; what the other window said beside it.
   var sr=g('partysnd'), sb2=g('partysndbtn'), sn=g('partysndnote');
-  if(sr){ sr.style.display=NET.same?'':'none'; if(NET.same){ if(sb2) sb2.textContent='THIS WINDOW: '+netSndLabel(NET.sndOn); if(sn) sn.textContent='Press to change. The other window: '+netSndOtherLabel()+'. Only one window should play world sound, or you hear everything twice.'; } }
+  if(sr){ sr.style.display=NET.same?'':'none'; if(NET.same){ if(sb2) sb2.textContent=netSndWhoLabel(); if(sn) sn.textContent='Press to change. Both windows follow this setting. With both, SPLIT SPEAKERS puts player 1 left and player 2 right.'; } }   // v17.70: one setting for the pair
   if(g('partysplitbtn')) g('partysplitbtn').textContent=netSndSplitOn()?'SPLIT SPEAKERS: ON (P1 LEFT, P2 RIGHT)':'SPLIT SPEAKERS: OFF';   // v16.24
   var vr=g('partyvoice');   // v16.09: the voice row, for a party linked by code (a same machine pair shares one room already)
   if(vr){ vr.style.display=(role&&!NET.same)?'':'none';
@@ -39079,7 +39089,7 @@ function netCopyOld(t,done){
   var blurIn=function(){ var a=document.activeElement, m=g('partymodal'); if(a&&m&&m.contains(a)&&a.blur) a.blur(); };
   g('closeparty').onclick=function(){ blurIn(); g('partymodal').classList.remove('on'); };
   if(g('partypadbtn')) g('partypadbtn').onclick=function(){ netPadCycle(); };   // v15.77: the CONTROLLER row
-  if(g('partysndbtn')) g('partysndbtn').onclick=function(){ netSndToggle(); };   // v15.78: the SOUND row
+  if(g('partysndbtn')) g('partysndbtn').onclick=function(){ netSndWhoCycle(); };   // v17.70: both / player 1 only / player 2 only
   if(g('partysplitbtn')) g('partysplitbtn').onclick=function(){ netSndSplitToggle(); };   // v16.24: player 1 left, player 2 right
   if(g('partymicbtn')) g('partymicbtn').onclick=function(){ if(NET.micTrack){ voiceMicOff(); renderParty(); } else netUi(function(){ return voiceMicOn(); },'Requesting microphone access.'); };   // v16.09
   if(g('partymicmode')) g('partymicmode').onclick=function(){ NET.micMode=(NET.micMode==='open')?'ptt':'open'; voiceGate(); renderParty(); };   // v16.09
