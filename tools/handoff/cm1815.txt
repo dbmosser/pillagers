@@ -1,0 +1,7 @@
+v18.15: the walls bake their weathering
+
+Walls are painted once and reused instead of being repainted every frame, which was most of the drawing cost in a built-up street.
+
+Check 18.15. Fails on v18.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

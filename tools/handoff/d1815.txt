@@ -1,0 +1,5 @@
+## v18.15 - THE WALLS BAKE THEIR WEATHERING
+
+Co-op hunt while he was away. His report of 2026-10-03: frame rate lag when running and revealing new ground. Measured: every wall face was repainted from scratch every frame, rain streaks, damp line, crack, bitten roofline and stains, thirty to forty small fills per wall and 3,650 to 4,270 fills a frame in a street. The face of a wall never changes, so it is painted once into a small sprite the first time it comes into view and drawn in one call after that, at screen sharpness. Nothing about what is painted changed.
+
+MEASURED. Check 18.15 passes, and fails on v18.14.

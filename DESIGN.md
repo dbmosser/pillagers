@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.15 - THE WALLS BAKE THEIR WEATHERING
+
+Co-op hunt while he was away. His report of 2026-10-03: frame rate lag when running and revealing new ground. Measured: every wall face was repainted from scratch every frame, rain streaks, damp line, crack, bitten roofline and stains, thirty to forty small fills per wall and 3,650 to 4,270 fills a frame in a street. The face of a wall never changes, so it is painted once into a small sprite the first time it comes into view and drawn in one call after that, at screen sharpness. Nothing about what is painted changed.
+
+MEASURED. Check 18.15 passes, and fails on v18.14.
 ## v18.14 - THE ITEM ICONS GET A LIFT
 
 Co-op hunt while he was away. His order of 2026-10-03: the item graphics need massive improvement. Every non-gun icon the menus show was a flat shape. After the painter has drawn it, the painted shape now gets a light from the top left and a shade toward the bottom right, clipped to the shape, and a soft dark shadow under it, so a bandage or a plate sits in its cell like an object instead of a sticker. Guns shade themselves since v18.10.
