@@ -389,3 +389,8 @@ STILL TO DO in this pass: stage D (run card), stage E (stash/shop/sector page: t
 - v18.15 walls bake their weathering: wallPaint (the old block, moved), wallSprite (per wall, round(ZOOM*DPR) scale, LRU 320, keyed on seed/day/decay/scale), CFG.wallBake 0 restores live paint.
 - v18.16 trees and bushes bake their blobs: vegSprite/vegDraw per rounded radius and palette; bush blobs sway together.
 - NEXT if he still sees lag: shadowE ellipses (~160/frame), drawContS boxes (~140 rrF), then re-measure; the update side (canSee per ent per frame, buildVisPoly) was not measured.
+
+## 2026-10-03 late: "still not clear how trading works" (v18.17, v18.18)
+- v18.17 trading is on the legends: LEGEND and LEGEND_PAD gain a TEAM section (T / Y offer or take a traded item; N / LB+RB ping); the compact legend adds the two rows while NET.on (rows now _mr=ceil(MN.length/2)); #kb_trade line in the stash key bar shown when netHubSeat()>=0 (toggled in refreshInv); #partytrade paragraph in the Party window.
+- v18.18 card restamped.
+- A trade-clarity workflow (3 tracers + 2 refuters per dead end) ran read-only; its findings and what was shipped from them are below this line when done.
