@@ -1466,7 +1466,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.02';
+var VER='18.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21852,6 +21852,12 @@ var ctx=null,wc=null,camX=0,camY=0,VX=0,VY=0,VIS=[];
 var _curNow='none';   // last cursor style written to the canvas, v2.91
 var fogC=document.createElement('canvas'),fx2=fogC.getContext('2d');
 var litC=document.createElement('canvas'),lx2=litC.getContext('2d');
+// v18.03, AAA CHECK after his report of 2026-10-03 (frame rate lag): THE TWO SOFT SHEETS DRAW SMALL. The fog of war sheet and
+// the darkness-and-lamps sheet were each a full screen of pixels, cleared, filled and composited every frame, at 4K eight
+// million pixels apiece, and the Render resolution row never touched them. They hold nothing but gradients and one soft cone
+// edge, which do not need every pixel. They draw at SOFTR of the screen now (half at 1440p and 4K, two thirds at 1080p, less
+// again under a lower render resolution) and are stretched back over the frame. The hub's warm light sheet is the same sheet.
+var SOFTR=1;
 // v17.43, HIS PICK 28 (2026-09-30): GRAPHICS OPTIONS. Three Settings rows: Render resolution (CFG.gfxScale, the share of the
 // screen's pixels the canvases draw; lower is softer and faster), Frame cap (CFG.fpsCap, frames a second; a skipped frame
 // still counts its time in the next one) and Effects (CFG.fxLevel 0 draws about a third of the sparks). A new resolution
@@ -21895,8 +21901,9 @@ function frameCapSkip(ts){ var c=+CFG.fpsCap; if(!(c>0)) return false; if(ts-CAP
   wc=cv.getContext('2d'); wc.setTransform(DPR,0,0,DPR,0,0);
   hcv.width=W*DPR; hcv.height=H*DPR;
   ctx=hcv.getContext('2d'); ctx.setTransform(DPR,0,0,DPR,0,0);
-  fogC.width=W; fogC.height=H;
-  litC.width=W; litC.height=H;
+  SOFTR=Math.max(0.33,((W*H>2.6e6)?0.5:0.67)*gfxScaleNow());   // v18.03: the soft sheets' share of the screen
+  fogC.width=Math.max(1,Math.round(W*SOFTR)); fogC.height=Math.max(1,Math.round(H*SOFTR));
+  litC.width=Math.max(1,Math.round(W*SOFTR)); litC.height=Math.max(1,Math.round(H*SOFTR));
   if(!mouse.init){ mouse.x=W/2; mouse.y=H/2; mouse.init=true; }
   // HIS NOTE, 2026-08-25: "mouse graphic is still disappearing". v0.98 blamed a
   // latched M and cleared held keys on blur, which was a real fix for a different
@@ -25038,7 +25045,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   wc.setTransform(DPR,0,0,DPR,0,0);
   // lighting overlay
   lx2.globalCompositeOperation='source-over';
-  lx2.clearRect(0,0,W,H);
+  lx2.setTransform(1,0,0,1,0,0); lx2.clearRect(0,0,litC.width,litC.height); lx2.setTransform(SOFTR,0,0,SOFTR,0,0);   // v18.03: the sheet is SOFTR of the screen; everything below draws in screen units through this
   // CFG.bright lifts everything you can actually see. 1.0 is the old v0.19 look.
   var BR=CFG.bright||1;
   // at noon there is barely a shadow layer to punch lamps through
@@ -25058,7 +25065,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   // canvas, so every light below uses its own position and radius directly and
   // stays glued to the ground at any zoom. These layers are sized in CSS pixels
   // rather than device pixels, so there is no DPR term here.
-  lx2.setTransform(Z,0,0,Z,-ox*Z,-oy*Z);
+  lx2.setTransform(Z*SOFTR,0,0,Z*SOFTR,-ox*Z*SOFTR,-oy*Z*SOFTR);   // v18.03: world units on the small sheet
   lx2.globalCompositeOperation='destination-out';
   for(i=0;i<G.lights.length;i++){
     var L=G.lights[i];
@@ -25115,7 +25122,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   }
   // back to screen space to hand the finished layer over
   lx2.setTransform(1,0,0,1,0,0);
-  wc.drawImage(litC,0,0);
+  wc.drawImage(litC,0,0,W,H);   // v18.03: stretched back over the frame
   // warm glows
   wc.globalCompositeOperation='lighter';
   // Nothing in Chrono Trigger is ever pure black; its darks are violet, not
@@ -25192,7 +25199,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   // vision fog
   fx2.globalCompositeOperation='source-over';
   fx2.setTransform(1,0,0,1,0,0);
-  fx2.clearRect(0,0,W,H);
+  fx2.clearRect(0,0,fogC.width,fogC.height); fx2.setTransform(SOFTR,0,0,SOFTR,0,0);   // v18.03: the fog sheet is SOFTR of the screen
   // fog stays strong: it is the fog of war, not a mood filter. Only eased a little.
   // Fog of war is attention, not darkness, but it must always read DARKER than
   // what you can see or the cone stops being legible. A pale haze made daylight
@@ -25243,7 +25250,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   fx2.fillRect(0,0,W,H);
   // the fog cutouts are all world shapes, so the fog layer takes the world
   // transform exactly as the light layer does
-  fx2.setTransform(Z,0,0,Z,-ox*Z,-oy*Z);
+  fx2.setTransform(Z*SOFTR,0,0,Z*SOFTR,-ox*Z*SOFTR,-oy*Z*SOFTR);   // v18.03: world units on the small sheet
   fx2.globalCompositeOperation='destination-out';
   var pol2=buildVisPoly(p.x,p.y,p.face,G.vseg);
   var psx=p.x,psy=p.y;
@@ -25257,7 +25264,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   ag.addColorStop(0,'rgba(0,0,0,'+clamp(.85*BR,.6,.99)+')'); ag.addColorStop(1,'rgba(0,0,0,0)');
   fx2.fillStyle=ag;
   fx2.beginPath(); fx2.arc(psx,psy,AMBR(),0,6.2832); fx2.fill();
-wc.drawImage(fogC,0,0);
+wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
   if(G.map.locked&&G.map.locked.length){
     wc.save(); wc.scale(Z,Z); wc.translate(-ox,-oy);
     for(var _lk=0;_lk<G.map.locked.length;_lk++){
@@ -30874,7 +30881,7 @@ function drawHubWorld(dt){
   wc.restore();
   // warm light overlay, no fog: this is home
   lx2.globalCompositeOperation='source-over';
-  lx2.clearRect(0,0,W,H);
+  lx2.setTransform(1,0,0,1,0,0); lx2.clearRect(0,0,litC.width,litC.height); lx2.setTransform(SOFTR,0,0,SOFTR,0,0);   // v18.03: the home sheet draws small too
   lx2.fillStyle='rgba(14,12,36,'+clamp(.40/(CFG.bright||1),.05,.7)+')';
   lx2.fillRect(0,0,W,H);
   lx2.globalCompositeOperation='destination-out';
@@ -30890,7 +30897,7 @@ function drawHubWorld(dt){
     g2.addColorStop(0,'rgba(0,0,0,'+(.9*Lt.i)+')'); g2.addColorStop(1,'rgba(0,0,0,0)');
     lx2.fillStyle=g2; lx2.beginPath(); lx2.arc(lsx,lsy,_lrad,0,6.2832); lx2.fill();
   }
-  wc.drawImage(litC,0,0);
+  lx2.setTransform(1,0,0,1,0,0); wc.drawImage(litC,0,0,W,H);   // v18.03: stretched back over the frame
   wc.globalCompositeOperation='lighter';
   for(i=0;i<HB.lights.length;i++){
     var _S2=hubScale();
@@ -31984,7 +31991,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.02: ESC pauses player 1 even while the player 2 window is the one selected. Check 18.02 fails on v18.01',
+  now:'v18.03: The fog and darkness layers now draw at half size and are stretched back, which cuts two of the heaviest full-screen passes to a quarter of their pixels. Check 18.03 fails on v18.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

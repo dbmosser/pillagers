@@ -1,0 +1,7 @@
+v18.03: the fog and darkness sheets draw at half size
+
+The fog and darkness layers now draw at half size and are stretched back, which cuts two of the heaviest full-screen passes to a quarter of their pixels.
+
+Check 18.03. Fails on v18.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

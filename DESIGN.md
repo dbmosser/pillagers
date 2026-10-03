@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.03 - THE FOG AND DARKNESS SHEETS DRAW AT HALF SIZE
+
+Co-op hunt while he was away. His report of 2026-10-03: frame rate lag. The fog of war sheet and the darkness-and-lamps sheet were each a full screen of pixels, cleared, filled and composited every frame, eight million apiece at 4K, in each of the two windows, and the Render resolution row never touched them. They hold only gradients and one soft cone edge. They draw at half the screen at 1440p and 4K (two thirds at 1080p, less under a lower render resolution) and are stretched back over the frame; the look is the same and the two heaviest full-screen passes cost a quarter.
+
+MEASURED. Check 18.03 passes, and fails on v18.02.
 ## v18.02 - ESC FROM THE PLAYER 2 WINDOW PAUSES PLAYER 1
 
 Co-op hunt while he was away. His report of 2026-10-03: player 1 could not pause with ESC while the player 2 window was selected. The player 2 window hands every key to the player 1 window (v16.89), but the handed key was dispatched at the window itself, so the main handler opened the pause box and the Escape closer, registered later, shut it again in the same press. The handed key now starts at the page body, the path a key pressed in that window walks, so ESC pauses and a second ESC resumes.
