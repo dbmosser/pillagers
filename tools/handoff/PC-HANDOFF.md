@@ -294,3 +294,9 @@ in one window, not yet in the two-window nettest.
 - CORPUS at 1080p on v17.84: 30 of 912 fail (tools: baseline in task bmev5km6k). Known causes from today: kid row renamed (v16.44), per-window
   sound gone (v16.24/29, v15.78), host-leave rule (v15.91, v16.15), NEW-IN card (v11.92), legend collapsed after 3 runs (fixture now
   opens it on __deploy). The rest await the v17.48 comparison run.
+- CORPUS TRIAGE 2026-10-03 00:30 (full __regress at 1080p, 912 checks): on v17.84 30 failed; on a v17.48 fixture with the same checks
+  the same 22 OLD checks also fail, so they rotted BEFORE today (the ship gate runs only the newest 80): v12.94 v12.80 v12.74 v12.21
+  v12.05 v11.85 v11.65 v11.63 v11.09 v10.74 v10.52 v10.44 v10.28 v10.11 v9.93 v9.71 v9.58 v9.55 (+ v13.23 v12.79 which pass now).
+  TO DO: a maintenance pass over those 22 (each: environment, stale expectation, or a real bug; v10.11 is the stash tab row gaining
+  the search and SORT controls at v17.42). Today's intended changes: fixture updated (kid row name, host-lost line, 3 sound checks
+  retired); with the legend opened on __deploy, v8.91 v10.95 v10.93 v10.78 v10.41 v15.91 v11.92 v11.39 pass again.
