@@ -1,0 +1,7 @@
+v17.94: the styling pass, stage a: one look for every menu
+
+Every menu shares one look now: glass panes, one header style, rounded buttons with a proper primary, cleaner rows, inputs and scrollbars. More stages follow for the title, the raid HUD and the stash.
+
+Check 17.94. Fails on v17.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

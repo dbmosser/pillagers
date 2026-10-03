@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.94',what:'stage A of the styling pass: every menu button is rounded to one radius with one minimum height, the primary button is a gradient, modal headers are uppercase amber with a rule under them, inputs are dark with rounded corners',
+   run:function(){
+     var bad=[], m=document.getElementById('partymodal'), tmp=document.createElement('div'), b, d, h, i, s;
+     if(!m) return 'SKIP: no modal to measure in';
+     tmp.innerHTML='<button>x</button><button class="deploy">y</button><input type="text" value="z">';
+     m.appendChild(tmp); b=tmp.children[0]; d=tmp.children[1]; i=tmp.children[2]; h=m.querySelector('h3');
+     try{
+       if(b){ s=getComputedStyle(b); if(parseFloat(s.borderTopLeftRadius)<5) bad.push('menu buttons are square ('+s.borderTopLeftRadius+')'); if(parseFloat(s.minHeight)<36) bad.push('menu buttons have no minimum height ('+s.minHeight+')'); } else bad.push('no menu button to measure');
+       if(d){ s=getComputedStyle(d); if(!/gradient/.test(s.backgroundImage)) bad.push('the primary button is flat ('+s.backgroundImage.slice(0,40)+')'); }
+       if(h){ s=getComputedStyle(h); if(s.textTransform!=='uppercase') bad.push('modal headers are not uppercase'); if(parseFloat(s.borderBottomWidth)<1) bad.push('modal headers have no rule under them'); }
+       if(i){ s=getComputedStyle(i); if(parseFloat(s.borderTopLeftRadius)<5) bad.push('inputs are square ('+s.borderTopLeftRadius+')'); }
+       m=document.getElementById('partymodal'); if(m){ s=getComputedStyle(m); if(!/gradient/.test(s.backgroundImage)) bad.push('modals have no light from the top'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ m.removeChild(tmp); }catch(_t){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.93',what:'player 2 picks a character: the second window takes a numbered save that is never the one player 1 has open, the old hidden player 2 save moves into a free slot once, the pick is stable, and the saves list knows which save the other window holds',
    run:function(){
      if(typeof p2SlotPick!=='function'||typeof slotBlocked!=='function') return 'player 2 plays one hidden save';

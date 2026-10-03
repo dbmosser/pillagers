@@ -659,6 +659,33 @@
   .scard .ss{ font-size:12px; color:var(--ash); margin-top:2px; }
   .scard .ss b{ color:var(--amber); font-weight:600; }
   .scard.wide{ grid-column:1/-1; }
+  /* v17.94, THE STYLING PASS, STAGE A (his order 2026-10-03: styling across all menus and HUDs). One look for every HTML menu, laid
+     over the rules above: glass panes with a soft light from the top, one header style, rounded buttons of one height with a
+     real primary, quiet rows that light on hover, dark inputs with a focus ring, thin scrollbars. Ids and classes are unchanged. */
+  #root .modal{ background:radial-gradient(1200px 700px at 50% -10%, rgba(127,146,216,.12), transparent 60%), rgba(8,12,28,.95);
+    padding:26px 32px; }
+  #root .modal h3{ font-size:22px; letter-spacing:.22em; text-transform:uppercase; color:var(--amber); margin:0 0 14px;
+    padding-bottom:12px; border-bottom:1px solid rgba(127,146,216,.22); }
+  #root .msub{ font-size:15px; line-height:1.5; color:var(--ash); max-width:1180px; }
+  #root .hint{ font-size:13.5px; line-height:1.55; }
+  #root .row{ border-radius:6px; border:1px solid transparent; transition:background .12s, border-color .12s; }
+  #root .row:hover{ background:rgba(127,146,216,.07); }
+  #root .plist .row + .row{ border-top-color:rgba(127,146,216,.10); border-radius:0; }
+  #root button{ border-radius:6px; border-color:rgba(127,146,216,.45); padding:9px 18px; min-height:38px; font-weight:600; letter-spacing:.08em; }
+  #root button:hover:not(:disabled){ background:rgba(255,192,74,.10); box-shadow:0 0 0 1px rgba(255,192,74,.25) inset; }
+  #root button:active:not(:disabled){ transform:translateY(1px); }
+  #root .deploy{ background:linear-gradient(180deg,#ffd97f 0%,#ffb634 100%); color:#1a1408; border:1px solid #ffe9b0; border-radius:8px;
+    box-shadow:0 8px 22px rgba(255,180,50,.22), 0 1px 0 rgba(255,255,255,.35) inset; letter-spacing:.24em; font-weight:800; }
+  #root .deploy:hover:not(:disabled){ filter:brightness(1.06); color:#1a1408; background:linear-gradient(180deg,#ffe08f 0%,#ffbd40 100%); box-shadow:0 10px 26px rgba(255,180,50,.3); }
+  #root .deploy.ghost{ background:transparent; color:var(--amber); border-color:rgba(255,192,74,.55); box-shadow:none; }
+  #root .deploy.ghost:hover:not(:disabled){ background:rgba(255,192,74,.10); color:var(--amber); }
+  #root input:not([type=range]):not([type=checkbox]), #root textarea{ background:rgba(0,0,0,.35); border:1px solid rgba(127,146,216,.35); border-radius:6px;
+    color:var(--bone); padding:9px 12px; }
+  #root input:not([type=range]):focus, #root textarea:focus{ border-color:var(--amber); outline:none; box-shadow:0 0 0 2px rgba(255,192,74,.22); }
+  *::-webkit-scrollbar{ width:8px; height:8px; }
+  *::-webkit-scrollbar-thumb{ background:rgba(127,146,216,.35); border-radius:8px; }
+  *::-webkit-scrollbar-thumb:hover{ background:rgba(127,146,216,.55); }
+  *::-webkit-scrollbar-track{ background:transparent; }
 </style>
 
 <canvas id="cv"></canvas>
@@ -1439,7 +1466,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.93';
+var VER='17.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31923,7 +31950,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.93: Player 2 now picks a character from the same saves list as player 1 (or creates one), and every character can be played in 1 PLAYER. The save the other window has open shows as IN USE. Check 17.93 fails on v17.92',
+  now:'v17.94: Every menu shares one look now: glass panes, one header style, rounded buttons with a proper primary, cleaner rows, inputs and scrollbars. More stages follow for the title, the raid HUD and the stash. Check 17.94 fails on v17.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

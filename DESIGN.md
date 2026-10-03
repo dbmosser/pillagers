@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.94 - THE STYLING PASS, STAGE A: ONE LOOK FOR EVERY MENU
+
+Co-op hunt while he was away. His order of 2026-10-03: styling across all menus and HUDs needs massive improvement. Stage A lays one look over every HTML menu: glass panes with a soft light from the top, one header style (uppercase amber with a rule under it), rounded buttons of one height with a real gradient primary and a quiet ghost, rows that light on hover, dark rounded inputs with a focus ring, thin scrollbars. Nothing moves and no id or class changes; the raid HUD, the title and the stash get their own stages next.
+
+MEASURED. Check 17.94 passes, and fails on v17.93.
 ## v17.93 - PLAYER 2 PICKS A CHARACTER LIKE PLAYER 1
 
 Co-op hunt while he was away. His order of 2026-10-03: the second window played one hidden save chosen for it, with no character selection and no way to play that character in 1 PLAYER. Now the player 2 window shows the same saves list: pick a character or create one. It plays a numbered save like any window, never the one player 1 has open (the two windows share storage), each window keeps its own pointer, and the old hidden player 2 save moves into a free slot once, so that character can be played in 1 PLAYER. Either window greys the save the other holds: IN USE BY PLAYER 1 or 2.
