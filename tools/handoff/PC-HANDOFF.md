@@ -267,3 +267,4 @@ in one window, not yet in the two-window nettest.
 - v17.70 one sound setting for the pair (NET_WHO_KEY both/p1/p2, netSndWhoOn gates the gain; PARTY button cycles; storage event syncs).
 - STRESS (tools/handoff/stress.ps1, 1080p, PC under 5 loops): 40 bodies update 0.3 ms draw 2.9 ms; 160 bodies update 3.2 draw 5.3;
   frame median 16.6 (vsync), p95 19-21, worst 25-31 at every N (machine load, not the game). Idle rerun scheduled after 23:00.
+- v17.71 the kid menu (KID MODE heading; P.kidBack / kbOn(); host carries m.kb; the v17.66 sit-out skips a death when it is on; extract still ends his raid).
