@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.85',what:'the Keys window is set in the game font like every other window and its list scrolls inside the window instead of running past the bottom',
+   run:function(){
+     if(typeof keysOpen!=='function') return 'SKIP: this build has no Keys window';
+     var bad=[], m, ref=document.getElementById('partymodal'), list, fm, fr;
+     try{
+       keysOpen(); m=document.getElementById('keysmodal'); list=document.getElementById('keyslist');
+       if(!m||!list) return 'SKIP: the Keys window did not open';
+       fm=getComputedStyle(list).fontFamily; fr=ref?getComputedStyle(ref).fontFamily:'';
+       if(ref&&fm!==fr) bad.push('the Keys list is set in '+fm+', the party window in '+fr);
+       if(/times/i.test(fm)) bad.push('the Keys list is in Times');
+       if(list.scrollHeight>list.clientHeight+2&&getComputedStyle(list).overflowY!=='auto'&&getComputedStyle(list).overflowY!=='scroll') bad.push('the Keys list runs past its box and cannot scroll');
+       if(m.getBoundingClientRect().bottom>innerHeight+1) bad.push('the Keys window runs '+Math.round(m.getBoundingClientRect().bottom-innerHeight)+' px past the bottom');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var mm=document.getElementById('keysmodal'); if(mm) mm.classList.remove('on'); }catch(_m){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.84',what:'under the title only the world shows: no THE UNDERCROFT header, no NEW IN card, no station names; with the title gone they draw as before',
    run:function(){
      if(typeof titleOn!=='function'||typeof drawHubHUD!=='function') return 'SKIP: this build has no title backdrop';
@@ -5756,7 +5771,7 @@ window.__REGRESS=[
        if(!HB) bad.push('the floor was not built under the title');
        else{ d=wc.getImageData(0,0,cv.width,cv.height).data; for(k=3;k<d.length;k+=4*211) if(d[k]>0) lit++; if(lit<100) bad.push('nothing was drawn under the title ('+lit+' lit samples)'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ if(!was&&t) t.classList.remove('on'); state=st0; if(!HB&&HB0) HB=HB0; try{ __topClear(); }catch(_c){} }
+     finally{ if(!was&&t) t.classList.remove('on'); state=st0; if(HB0) HB=HB0; try{ __topClear(); }catch(_c){} }   // the floor the other checks were built on comes back, not the one this check built under the title
      return bad.length?bad.join('; '):null; }},
   {v:'17.82',what:'each sector row on the sector page is tall enough to hold its map (the map does not spill into the row below), and the zone names are 11 px',
    run:function(){
