@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.10',what:'the gun icons are painted like objects: every weapon draws without throwing at 22 and at 160 px, and on a 160 px pistol the slide is lighter along its top edge than along its underside (the bevel)',
+   run:function(){
+     if(typeof gunIcon!=='function'||typeof WEAPONS==='undefined') return 'SKIP: no gun painter here';
+     var bad=[], cv2=document.createElement('canvas'), c2, k, n=0, top, bot, S=160, u=S/40;
+     cv2.width=S; cv2.height=S; c2=cv2.getContext('2d');
+     function lum(x,y){ var d=c2.getImageData(Math.round(x),Math.round(y),1,1).data; return d[0]*0.3+d[1]*0.59+d[2]*0.11; }
+     try{
+       for(k in WEAPONS){ if(!Object.prototype.hasOwnProperty.call(WEAPONS,k)||k==='fists') continue; c2.clearRect(0,0,S,S); gunIcon(c2,k,S/2,S/2,S); gunIcon(c2,k,S/2,S/2,22); n++; }
+       if(n<4) bad.push('control: only '+n+' weapons to paint');
+       c2.clearRect(0,0,S,S); gunIcon(c2,'pistol',S/2,S/2,S);
+       // x +6 units: forward of the frame (ends at +2) and short of the front sight (from +8), so nothing lies over the slide there on either painter
+       top=lum(S/2+6*u,S/2-6*u); bot=lum(S/2+6*u,S/2-1*u);
+       if(!(top>bot+12)) bad.push('the slide has no bevel: top '+top.toFixed(0)+' against underside '+bot.toFixed(0));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.09',what:'item icons are painted sharp: a 31 px stash icon is drawn on a canvas at least 93 px across, and the stash grid no longer asks the browser to pixelate its icons',
    run:function(){
      if(typeof itemIconURL!=='function') return 'SKIP: no icon painter here';

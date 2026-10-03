@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.10 - THE GUNS ARE PAINTED LIKE OBJECTS
+
+Co-op hunt while he was away. His order of 2026-10-03: item graphics like the guns still look terrible and need massive improvements. The gun painter laid flat rounded rectangles in two colours. Every part now has a material (the receiver in the rarity colour, barrels and sights in gunmetal, stocks and grips in dark furniture or wood), a bevel with a light top edge and a dark underside so it reads as a solid, a soft ground shadow, a faint glow in the rarity colour behind big icons, and on icons 36 px and larger the small things that make a gun a gun: rail ticks, an ejection port, a muzzle, a front sight, a trigger, a magazine base plate and grip lines. Same families, same silhouettes, so every place that drew a gun still does.
+
+MEASURED. Check 18.10 passes, and fails on v18.09.
 ## v18.09 - THE ITEM ICONS ARE PAINTED SHARP
 
 Co-op hunt while he was away. His order of 2026-10-03: item graphics like the guns still look terrible. Every icon the menus show was painted once at its row size, 22 to 30 pixels, and then blown up to 40, 64 or 110 by the stash layouts with the browser told to pixelate, so a gun was a handful of blocks. The painters are vector shapes: the icon is painted at four times its row size now and scaled down smooth, so every layout shows real edges. The shapes themselves get their own pass next.

@@ -1,0 +1,7 @@
+v18.10: the guns are painted like objects
+
+Gun icons are painted like real objects now: materials, shading, a shadow and the small details, in every menu and on the belt.
+
+Check 18.10. Fails on v18.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
