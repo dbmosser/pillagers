@@ -5603,7 +5603,7 @@ window.__REGRESS=[
      want({open:false,beaconT:null,hold:null},'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID','a closed point');
      want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','an open point nobody has called');
      want({open:true,beaconT:17.2,hold:null},'EXTRACTION POINT - 18S UNTIL EXTRACTION BEGINS','a called point with the beacon inbound');
-     want({open:true,beaconT:0,hold:11.4},'EXTRACTION POINT - EXTRACT NOW! 12S UNTIL EXTRACTION ENDS','a landed point in its hold window');
+     want({open:true,beaconT:0,hold:11.4},'EXTRACTION POINT - EXTRACT IN PROGRESS! 12S UNTIL EXTRACTION ENDS','a landed point in its hold window');   // v17.95: his words of 2026-10-03
      want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','a point the extraction has left');
      // CONTROL: the HUD draw reads the function, or the words above are never on screen.
      var src=''; try{ src=drawHUD.toString(); }catch(_s){}
@@ -31166,13 +31166,13 @@ window.__REGRESS=[
        keys={}; __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.21',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
+  {v:'12.21',what:'the sector map says EXTRACT IN PROGRESS with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74; his words of 2026-10-03 at v17.95)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
      if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
      if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
      var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
-     var oldWords='OPEN TO '+'EXTRACT', newWords='EXTRACT '+'NOW';
+     var oldWords='OPEN TO '+'EXTRACT', newWords='EXTRACT IN '+'PROGRESS';
      proto.fillText=function(t){ try{ rec.push(String(t)); }catch(_r){} return orig.apply(this,arguments); };
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -32185,7 +32185,7 @@ window.__REGRESS=[
        drawMapOverlay();
        function px(f){ var m=/([\d.]+)px/.exec(f||''); return m?parseFloat(m[1]):0; }
        var names=rec.filter(function(r){ return r.t.indexOf('EXTRACT ')===0&&r.t.length<=10; });
-       var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |EXTRACT NOW)/.test(r.t); });
+       var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |EXTRACT NOW|EXTRACT IN PROGRESS)/.test(r.t); });
        if(!names.length) bad.push('control: the map drew no EXTRACT name');
        if(!subs.length) bad.push('control: the map drew no countdown or state line under a ring');
        var _hp=(window.__type&&__type.px('head'))||18, _lp=(window.__type&&__type.px('label'))||15;
@@ -32532,14 +32532,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ craftHoldCancel(); }catch(_c){} try{ document.body.removeChild(stub); }catch(_r){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.74',what:'the boarding window tells him to act: EXTRACT NOW with the ring letter and the seconds left, in both the banner above the belt and the label on an off-screen ring, and nowhere does it say the old in-progress wording',
+  {v:'11.74',what:'the boarding window reads EXTRACT IN PROGRESS (his words of 2026-10-03 at v17.95; it read EXTRACT NOW from v11.74) with the ring letter and the seconds left, in both the banner above the belt and the label on an off-screen ring, and nowhere does it say the retired wording',
    run:function(){
      if(typeof extractNowLine!=='function') return 'the boarding window has no line of its own to read; it is still written inline';
      if(typeof drawHUD!=='function') return 'SKIP: no HUD draw in this build';
-     var bad=[], stale=['IN ','PROGRESS'].join('');
+     var bad=[], stale=['EXTRACT ','NOW!'].join('');
      var line=String(extractNowLine('B',11.4));
      // HIS WORDS, and the two things he needs from the line.
-     if(line.indexOf('EXTRACT NOW')<0) bad.push('the boarding window reads "'+line+'" instead of telling him to extract now');
+     if(line.indexOf('EXTRACT IN PROGRESS')<0) bad.push('the boarding window reads "'+line+'" instead of saying the extraction is in progress');
      if(line.indexOf('B')<0) bad.push('the line does not name which ring: "'+line+'"');
      if(line.indexOf('12')<0) bad.push('the line does not round the seconds left up to 12: "'+line+'"');
      if(line.indexOf(stale)>=0) bad.push('the line still carries the old wording: "'+line+'"');
