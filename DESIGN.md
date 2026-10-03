@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.71 - A KID MENU, WITH PLAYER 2 COMING BACK AFTER DEATH
+
+Co-op hunt while he was away. His order of 2026-10-02. Settings now has a KID MODE heading over the kid rows (player 2 takes less damage, auto-fire for player 2) and a new one: PLAYER 2 COMES BACK AFTER DEATH. With it on, a teammate who died can JOIN THE RAID IN PROGRESS again from the Undercroft or the lift; off, he sits that raid out as the rule of v17.66 says. Extracting still ends his raid. Either window can set it, and the host carries it to the party.
+
+MEASURED. Check 17.71 passes, and fails on v17.70.
 ## v17.70 - ONE SOUND SETTING FOR THE PAIR: BOTH, PLAYER 1 ONLY OR PLAYER 2 ONLY
 
 Co-op hunt while he was away. His order of 2026-10-02. Each window had its own SOUND ON/OFF button and read what the other window had said. Now one setting, in the PARTY window, says where world sound plays: both players, player 1 only or player 2 only, and both windows follow it the moment it changes. With both, SPLIT SPEAKERS still puts player 1 left and player 2 right.

@@ -1,0 +1,5 @@
+## v17.71 - A KID MENU, WITH PLAYER 2 COMING BACK AFTER DEATH
+
+Co-op hunt while he was away. His order of 2026-10-02. Settings now has a KID MODE heading over the kid rows (player 2 takes less damage, auto-fire for player 2) and a new one: PLAYER 2 COMES BACK AFTER DEATH. With it on, a teammate who died can JOIN THE RAID IN PROGRESS again from the Undercroft or the lift; off, he sits that raid out as the rule of v17.66 says. Extracting still ends his raid. Either window can set it, and the host carries it to the party.
+
+MEASURED. Check 17.71 passes, and fails on v17.70.

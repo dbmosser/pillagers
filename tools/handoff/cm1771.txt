@@ -1,0 +1,7 @@
+v17.71: a kid menu, with player 2 coming back after death
+
+Settings has a KID MODE section, and a new switch: PLAYER 2 COMES BACK AFTER DEATH, so a younger player 2 can rejoin the raid after dying.
+
+Check 17.71. Fails on v17.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
