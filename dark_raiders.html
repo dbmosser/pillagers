@@ -1466,7 +1466,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.96';
+var VER='17.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8597,7 +8597,7 @@ function sealRec(mi){
   if(!P.seals[mi]) P.seals[mi]={cut:0,tier:0,done:0};
   return P.seals[mi];
 }
-function sealNeed(tier){ return 40+tier*25; }
+function sealNeed(tier){ return 34+tier*21; }   // v17.97: his note of 2026-10-03, marginally quicker (was 40+tier*25)
 function sealHere(){
   return sealRec(clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1));
 }
@@ -31953,7 +31953,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.96: The seal now spawns at a different landmark each raid. Check 17.96 fails on v17.95',
+  now:'v17.97: The seal opens about fifteen percent quicker at every stage. Check 17.97 fails on v17.96',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v17.97: the seal opens marginally quicker
+
+The seal opens about fifteen percent quicker at every stage.
+
+Check 17.97. Fails on v17.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.97 - THE SEAL OPENS MARGINALLY QUICKER
+
+Co-op hunt while he was away. His note of 2026-10-03, given mid-raid: the seal should open marginally quicker. The cut needed 40 seconds at stage 1, 65 at stage 2 and 90 at stage 3; it is 34, 55 and 76 now, about fifteen percent less at every stage. Progress already banked carries over as it was.
+
+MEASURED. Check 17.97 passes, and fails on v17.96.
 ## v17.96 - THE SEAL SPAWNS AT RANDOM
 
 Co-op hunt while he was away. His order of 2026-10-03, given mid-raid: the seal stood in the same far corner of each sector every raid. Each raid now rolls it among the sector landmarks, never the one nearest the first spawn and never one closer than half the farthest, so the cut stays a journey. The roll comes from the raid seed, so the two windows of a pair see the same door and nothing else on the map moves.

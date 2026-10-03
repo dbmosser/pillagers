@@ -5721,6 +5721,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.97',what:'the seal opens marginally quicker, his note of 2026-10-03: 34 seconds of cutting at stage 1 instead of 40, 55 at stage 2 instead of 65, 76 at stage 3 instead of 90, and the Undercroft lines read that one number',
+   run:function(){
+     if(!(window.__seal&&__seal.need)) return 'SKIP: no seal here';
+     var bad=[], src='';
+     if(__seal.need(0)!==34) bad.push('stage 1 needs '+__seal.need(0)+' seconds');
+     if(__seal.need(1)!==55) bad.push('stage 2 needs '+__seal.need(1)+' seconds');
+     if(__seal.need(2)!==76) bad.push('stage 3 needs '+__seal.need(2)+' seconds');
+     try{ src=sealLines.toString(); }catch(e){ src=''; }
+     if(src.indexOf('sealNeed(')<0) bad.push('control: the Undercroft lines do not read sealNeed, so the number on screen is not this one');
+     return bad.length?bad.join('; '):null; }},
   {v:'17.96',what:'the seal spawns at random: across 24 seeds the door lands in more than one place on the first sector, and the same seed lands it in the same place twice, so both windows of a pair agree',
    run:function(){
      if(!(window.__seal&&__seal.spot)||typeof FIXED_MAPS==='undefined'||typeof sideStream!=='function') return 'SKIP: no seal spot to roll here';
