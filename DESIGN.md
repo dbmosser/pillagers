@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.22 - T WITH THE BACKPACK OPEN IS THE TRADE KEY AND NOTHING ELSE
+
+Co-op hunt while he was away. From the trade audit of 2026-10-03: with the backpack open on an empty cell, T fell through to the patch-up key and started bandaging a teammate, or printed the Select-a-Bandage line, when the player meant to offer something; and with the Peddler stall open T still offered or healed behind the stall. With the backpack open T is the trade key only; with the stall open it does nothing; closed and with nothing waiting it patches up as before. The short legend now says trade or patch up.
+
+MEASURED. Check 18.22 passes, and fails on v18.21.
 ## v18.21 - THE OFFER LINE AND THE BOSS BAR REACH THE SCREEN
 
 Co-op hunt while he was away. Found by the trade audit of 2026-10-03: the standing "NAME offers you ITEM, T or Y to take it" line and THE OVERSEER health bar were painted at the top of the HUD frame, before the clear that starts every HUD frame, so neither ever reached the screen; only the three second toast did, which is a large part of why trading was unclear. Both are drawn after the clear now.

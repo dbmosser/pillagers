@@ -1,0 +1,7 @@
+v18.22: t with the backpack open is the trade key and nothing else
+
+T (or Y) with the backpack open only trades; it never starts a heal by mistake, and does nothing behind the Peddler stall.
+
+Check 18.22. Fails on v18.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
