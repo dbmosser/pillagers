@@ -896,7 +896,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     wait(function(){ return W(fc)&&W(fc).__net&&W(fc).__net.p2; },30000,'copy C to boot as the player 2 window').then(function(){
       C=W(fc); rngC0=C.__net.rngs(); rep.key=C.__net.key;
       log('C booted as player 2 on save '+C.__net.key+', '+(Date.now()-t0)+' ms after the row; its window title reads '+(C.document.title||'?')+'; its same machine state '+JSON.stringify(C.__net.same()));
-      if(C.__net.key!==P2K) bad.push('the player 2 window plays '+C.__net.key+', not '+P2K);
+      if(!/^salvagerun:profile(:[1-8])?$/.test(C.__net.key)||C.__net.key===A.__net.key) bad.push('the player 2 window plays '+C.__net.key+' (player 1 plays '+A.__net.key+')');   // v17.93: a numbered save of its own, never player 1 save
       if(C.__net.key===A.__net.key) bad.push('both windows play the same save');
       var p2l=el(fc,'p2line'), mc=el(fc,'modecoop');
       if(!p2l||p2l.style.display==='none'||p2l.textContent.indexOf('PLAYER 2')<0) bad.push('the player 2 window does not say it is player 2 on its title');
@@ -934,7 +934,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       return sndStep(A,C,bad,rep).then(null,function(e){ bad.push('sound: '+e.message); });
     }).then(function(){
       // THE SAVES: player 2 wrote its own key and nothing else moved.
-      var p2=ls(P2K), d=null; try{ d=JSON.parse(p2); }catch(e){}
+      var P2K=C.__net.key, p2=ls(P2K), d=null; try{ d=JSON.parse(p2); }catch(e){}   // v17.93: the slot player 2 picked
       if(!d||typeof d.credits!=='number') bad.push('the player 2 window wrote no readable save under '+P2K);
       if(ls(MAIN)!==ls0.main) bad.push('the main save changed while the player 2 window ran');
       if(ls(AS)!==ls0.as) bad.push('the save pointer changed while the player 2 window ran');
@@ -965,6 +965,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     (function(k){ [k,k+':prerestore',k+':precrash',k+':unreadable'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} }); })('salvagerun:profile:p2');
     // BUILD 4: and the two controller picks kept for next time.
     ['salvagerun:samepad:host','salvagerun:samepad:p2','salvagerun:samesound:who','salvagerun:samesound:split'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });   // v17.70: and the shared sound setting
+    (function(){ try{ var s2=localStorage.getItem('salvagerun:activeSlot2'); if(s2){ var k2=(s2==='1')?'salvagerun:profile':('salvagerun:profile:'+s2); [k2,k2+':prerestore',k2+':precrash',k2+':unreadable'].forEach(function(x){ localStorage.removeItem(x); }); } localStorage.removeItem('salvagerun:activeSlot2'); }catch(e){} })();   // v17.93: player 2 own pointer and the slot it picked
     // BUILD 5: and the two sound switches kept for next time.
     ['salvagerun:samesound:host','salvagerun:samesound:p2'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
     log('wiped the two net saves, the player 2 save, the controller picks and the sound switches; reloading the copies');
