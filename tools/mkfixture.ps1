@@ -43861,6 +43861,7 @@ window.__deploy=function(o){
   var ok=false;
   try{ ok=commitKit(); }catch(e){ return {error:'commitKit threw: '+e}; }
   __startRaid({mapIx:o.mapIx===undefined?0:o.mapIx,seed:o.seed===undefined?4242:o.seed,sim:!!o.sim});
+  try{ if(G&&!o.sim) G.legendOn=1; }catch(_lg){}   // v17.76 starts the legend collapsed after three raids; the checks were written with it open
   return {committed:ok,dropKit:(P.dropKit||[]).slice(),
           stashLeft:(P.stash||[]).slice(),bag:G?G.bag.slice():null};
 };
