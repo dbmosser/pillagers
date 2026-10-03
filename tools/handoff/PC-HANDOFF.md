@@ -331,3 +331,6 @@ in one window, not yet in the two-window nettest.
   while runs==0 and nothing is packed. Still plain: WELCOME PACK is a text list (icons would be AAA); stash cells have no names.
 - v17.90 WELCOME PACK rows carry item icons (gunIcon / drawItemIcon into 56px canvases). Fresh-save shots retaken: shots/fresh/.
 - v17.91 card refresh (stamped 17.91, A BETTER FIRST HOUR). Next card due by ~18.06.
+- NIGHT 10-02/03 (23:38-06:40): soaks 87/90 + 90/93 (2 machine stalls while I shipped, 1 test-aim miss, 3 unfinished); bots 173
+  batches, none with errors (one empty result line at 02:23); 4K 32 batches, one at 3 fps at 00:50 while corpus+memsoak+stress all
+  ran, the rest 54-60. Game at v17.91.
