@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.82',what:'each sector row on the sector page is tall enough to hold its map (the map does not spill into the row below), and the zone names are 11 px',
+   run:function(){
+     if(typeof sectorPreviewDraw!=='function'||typeof renderSector!=='function') return 'SKIP: this build has no sector maps';
+     if(!document.getElementById('sectorlist')) return 'SKIP: no sector page in this fixture';
+     var bad=[], rows, i, cv, r, c;
+     try{
+       renderSector();
+       rows=document.querySelectorAll('#sectorlist .sectorpick');
+       if(!rows.length) return 'SKIP: staging: no sector rows';
+       for(i=0;i<rows.length;i++){ cv=rows[i].querySelector('canvas.secprev'); if(!cv) continue; r=rows[i].getBoundingClientRect(); c=cv.getBoundingClientRect(); if(c.bottom>r.bottom+1) bad.push('sector '+i+' map spills '+Math.round(c.bottom-r.bottom)+' px below its row'); }
+       if(String(sectorPreviewDraw).indexOf('11px')<0) bad.push('the zone names are not 11 px');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.81',what:'the full controls legend (H twice) names a PlayStation pad in its own words: CIRCLE crouch, CROSS dodge roll',
    run:function(){
      if(typeof padB!=='function') return 'SKIP: this build has no pad names';

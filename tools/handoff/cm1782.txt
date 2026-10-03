@@ -1,0 +1,7 @@
+v17.82: the sector rows hold their maps
+
+The sector page rows now hold their maps properly, with clearer zone names.
+
+Check 17.82. Fails on v17.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

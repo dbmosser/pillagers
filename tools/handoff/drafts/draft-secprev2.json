@@ -1,0 +1,16 @@
+{
+    "title":  "THE SECTOR ROWS HOLD THEIR MAPS",
+    "why":  "The sector maps of v17.79 floated past the bottom of their rows, so The Cold Mile map spilled over the empty page below and Cold Storage map sat against the next row. Each row now grows to hold its map, and the zone names are a little larger.",
+    "now":  "The sector page rows now hold their maps properly, with clearer zone names.",
+    "edits":  [
+                  {
+                      "anchor":  "h+=\u0027\u003cdiv class=\"row sectorpick\" data-map=\"\u0027+i+\u0027\" style=\"display:block;cursor:pointer;\u0027+",
+                      "replacement":  "h+=\u0027\u003cdiv class=\"row sectorpick\" data-map=\"\u0027+i+\u0027\" style=\"display:block;overflow:hidden;cursor:pointer;\u0027+"
+                  },
+                  {
+                      "anchor":  "c.font=\u0027bold 9px Rubik, system-ui, sans-serif\u0027;",
+                      "replacement":  "c.font=\u0027bold 11px Rubik, system-ui, sans-serif\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027each sector row on the sector page is tall enough to hold its map (the map does not spill into the row below), and the zone names are 11 px\u0027,\n   run:function(){\n     if(typeof sectorPreviewDraw!==\u0027function\u0027||typeof renderSector!==\u0027function\u0027) return \u0027SKIP: this build has no sector maps\u0027;\n     if(!document.getElementById(\u0027sectorlist\u0027)) return \u0027SKIP: no sector page in this fixture\u0027;\n     var bad=[], rows, i, cv, r, c;\n     try{\n       renderSector();\n       rows=document.querySelectorAll(\u0027#sectorlist .sectorpick\u0027);\n       if(!rows.length) return \u0027SKIP: staging: no sector rows\u0027;\n       for(i=0;i\u003crows.length;i++){ cv=rows[i].querySelector(\u0027canvas.secprev\u0027); if(!cv) continue; r=rows[i].getBoundingClientRect(); c=cv.getBoundingClientRect(); if(c.bottom\u003er.bottom+1) bad.push(\u0027sector \u0027+i+\u0027 map spills \u0027+Math.round(c.bottom-r.bottom)+\u0027 px below its row\u0027); }\n       if(String(sectorPreviewDraw).indexOf(\u002711px\u0027)\u003c0) bad.push(\u0027the zone names are not 11 px\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

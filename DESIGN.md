@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.82 - THE SECTOR ROWS HOLD THEIR MAPS
+
+Co-op hunt while he was away. The sector maps of v17.79 floated past the bottom of their rows, so The Cold Mile map spilled over the empty page below and Cold Storage map sat against the next row. Each row now grows to hold its map, and the zone names are a little larger.
+
+MEASURED. Check 17.82 passes, and fails on v17.81.
 ## v17.81 - THE FULL CONTROLS LEGEND NAMES A PLAYSTATION PAD TOO
 
 Co-op hunt while he was away. The pad names build left one place out: the full controls list (H pressed twice) still said A, B, X, Y on a PlayStation pad. It goes through the same translation now.

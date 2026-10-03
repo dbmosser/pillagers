@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.81';
+var VER='17.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31886,7 +31886,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.81: The full controls list (H twice) also names a PlayStation pad in its own words. Check 17.81 fails on v17.80',
+  now:'v17.82: The sector page rows now hold their maps properly, with clearer zone names. Check 17.82 fails on v17.81',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40031,7 +40031,7 @@ function sectorPreviewDraw(cv,M){
   if(M.buildings) for(i=0;i<M.buildings.length;i++){ b=M.buildings[i]; if(!b||typeof b.x!=='number'||!b.w) continue; c.fillStyle='rgba(20,24,34,.75)'; c.fillRect(ox+b.x*sc,oy+b.y*sc,b.w*sc,b.h*sc); n++; }
   if(M.landmarks) for(i=0;i<M.landmarks.length;i++){ b=M.landmarks[i]; if(!b||typeof b.x!=='number'||!b.w) continue; c.strokeStyle='rgba(255,192,74,.55)'; c.lineWidth=1; c.strokeRect(ox+b.x*sc+.5,oy+b.y*sc+.5,b.w*sc-1,b.h*sc-1); n++; }
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number'||!z.name) continue;
-    c.font='bold 9px Rubik, system-ui, sans-serif'; c.fillStyle='rgba(205,214,221,.85)'; c.textAlign='center'; c.fillText(z.name,ox+(z.x+z.w/2)*sc,oy+(z.y+z.h/2)*sc+3); }
+    c.font='bold 11px Rubik, system-ui, sans-serif'; c.fillStyle='rgba(205,214,221,.85)'; c.textAlign='center'; c.fillText(z.name,ox+(z.x+z.w/2)*sc,oy+(z.y+z.h/2)*sc+3); }
   if(M.extracts) for(i=0;i<M.extracts.length;i++){ e=M.extracts[i]; if(!e) continue;
     c.strokeStyle='#4de3d0'; c.lineWidth=2; c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,Math.max(4,78*sc),0,6.2832); c.stroke();
     c.fillStyle='rgba(77,227,208,.25)'; c.fill(); n++; }
@@ -40073,7 +40073,7 @@ var _myR=0;
     if(MS.ext!==undefined) facts.push('the test robot extracts '+MS.ext+'% of its raids in '+sectorTitle(M.name)+'.');
     if(R.tier>0||R.cut>0) facts.push('seal tier '+(R.tier+1)+', '+Math.round(R.cut)+' of '+sealNeed(R.tier)+'s cut');
 
-    h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;cursor:pointer;'+
+    h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;overflow:hidden;cursor:pointer;'+
        (sel?'border-left:3px solid var(--amber);background:rgba(255,192,74,.10)':'border-left:3px solid transparent')+'">'+
        '<canvas class="secprev" data-map="'+i+'" width="420" height="'+Math.round(420*M.h/M.w)+'" style="float:right;margin:0 0 8px 16px;border:1px solid var(--steel-hi);border-radius:4px;background:#0b1020"></canvas>'+   // v17.79: the sector map
        '<div><b style="color:'+(sel?'var(--amber)':'var(--bone)')+'">'+M.name+'</b>'+
