@@ -63,3 +63,12 @@ play port; reword a line he edited; reverse one of his rulings.
 - Priorities: no bugs, smooth menus, look and feel. No more depth for now.
 - Two windows, not split-screen. Raids are the right length.
 - Build: a kid menu (which also lets player 2 come back after death); a sound setting both / player 1 only / player 2 only.
+
+## What a AAA developer checks without being told (his point, 2026-10-02: "I shouldn't have to tell you")
+- Smooth when the screen is busy: after any build that adds bodies, effects or drawing, run tools/handoff/stress.ps1 and
+  compare frame time to the last run. A frame over 16 ms at 1080p on his PC is a bug to fix before more features.
+- Every action has feedback a player can see and hear (hit, kill, pick-up, a teammate down), in both windows.
+- Menus: nothing dead-ends, ESC and CLOSE everywhere, the controller reaches everything the mouse does.
+- One word per thing on screen (his vocabulary); the same number everywhere it shows.
+- Load and download: measure the itch build size and the time to first frame when they change.
+- Two-player: anything the host sees, the teammate sees the same way, and the two-window test proves it.
