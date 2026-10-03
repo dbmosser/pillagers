@@ -326,3 +326,6 @@ in one window, not yet in the two-window nettest.
 - v17.86 legend says crouch toggle again (v10.41). v17.87 perfNote: ten seconds of frames mostly over 25 ms say once that Settings has
   Render resolution and Effects (raw gap, not under a Frame cap). v17.88 queued: a pad unplug pauses only the window that plays it
   (NET.padIx), since both windows on one PC hear every gamepaddisconnected.
+- FRESH-SAVE PASS 02:30 (tools/handoff/shots-fresh.ps1 -> shots/fresh/): title, WELCOME PACK, floor and stash read well; the stash is
+  the dead end for a stranger (icons without names, empty loadout, tiny key legend) -> v17.89 #firstkit line in the loadout column
+  while runs==0 and nothing is packed. Still plain: WELCOME PACK is a text list (icons would be AAA); stash cells have no names.
