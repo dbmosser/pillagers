@@ -373,3 +373,12 @@ NEXT: gun and item icon art pass (his explicit ask), styling stages B-E, then th
 - v18.08 kid firing turns player 2 toward the nearest enemy in sight (afLook) before it is in gun range.
 - GATE LESSON (memory dark-raiders-gate-tabs-share-storage): the control tab's saves fire storage events in the dry tab, SAVE_STALE goes up and its capture listener eats ESC/Enter; check 18.02 clears it first. The dry chain reuses %TEMP%\pillagers-dry\dry<Prev> with its own mkfixture copy: delete it after editing a check.
 - "GOLD OUTLINE AROUND PLAYER 2'S FACE IN THE UNDERCROFT": almost certainly the default look of a new character, COSDEF hair 'blonde' + cut 'long' (HAIRCOL.blonde is gold; the long cut is a flat rounded rect behind the face). Player 2's new numbered save (v17.93) wears the default. Asked him whether to change the default for new characters or leave it to the mirror; not changed yet.
+
+## 2026-10-03 evening: the art and styling pass continues (v18.09 to v18.14)
+- v18.09 icons painted sharp: itemIconURL/mercPortraitURL draw at R x the row size (R up to 4, then 6 at v18.12); .invgrid .ic image-rendering auto (was pixelated).
+- v18.10 the gun painter: materials (rarity receiver, gunmetal barrels, dark furniture, wood), bevel per part, ground shadow, rarity glow on big icons, fine details (rail ticks, port, muzzle, sight, trigger, mag plate, grip lines) when u>=0.9. Same silhouettes. Check samples the pistol slide at x +6 units (clear of the frame and the sight).
+- v18.11 styling stage B, the title: gradient wordmark (.wordmark), glass step cards (.tcard/.tstep/.tbody), vignette backdrop on #title.on (still translucent for 17.83).
+- v18.12 the icon fills its cell: #hub .invgrid .cell:not([data-plan]) .ic 62%, .vcell .ic 44%.
+- v18.13 styling stage C: hudPanel(x,y,w,h,a) rounded gradient panel for conditions, pillager board, both legends and the backpack panel.
+- v18.14 the icon lift: iconLift(c,w,h) light/shade clipped to the shape plus a soft shadow, run by itemIconURL for non-gun icons.
+STILL TO DO in this pass: stage D (run card), stage E (stash/shop/sector page: the shop's cream card is deliberate, leave it), the vitals panel and belt frame in the HUD, and a look at the raid backpack icons (canvas-drawn, no lift yet).
