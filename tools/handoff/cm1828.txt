@@ -1,0 +1,7 @@
+v18.28: trading is dropping, on the floor too
+
+In the Undercroft, right-click a stash item (Y on a controller) and choose Drop on the floor; your teammate walks to the crate and presses E to take it.
+
+Check 18.28. Fails on v18.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
