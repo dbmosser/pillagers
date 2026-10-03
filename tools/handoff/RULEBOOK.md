@@ -57,3 +57,9 @@ play port; reword a line he edited; reverse one of his rulings.
 - The remaining player picks up the raid when the host is gone (his order 2026-10-02; replaces host drop = abandon).
 - No rejoining a raid you died or extracted in; abandon, a closed window or a lost link can still join (v17.66/67).
 - Controller: A roll, B crouch, RT fire and use, D-left/right aim distance, right-stick click loots the ring, A in the backpack.
+
+## His answers of 2026-10-02 (binding)
+- The bar is ARC Raiders. Release for others; alpha for friends at Halloween (2026-10-31).
+- Priorities: no bugs, smooth menus, look and feel. No more depth for now.
+- Two windows, not split-screen. Raids are the right length.
+- Build: a kid menu (which also lets player 2 come back after death); a sound setting both / player 1 only / player 2 only.
