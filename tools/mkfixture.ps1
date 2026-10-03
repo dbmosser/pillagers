@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.91',what:'the what is new card is stamped within 0.15 of the build and has a line on the better first hour',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle='A BETTER FIRST'+' HOUR';
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)>=0; })) bad.push('no line of the card names the better first hour');
+     return bad.length?bad.join('; '):null; }},
   {v:'17.90',what:'the WELCOME PACK shows each item with its icon beside its name, not a bare list',
    run:function(){
      if(typeof maybeWelcome!=='function'||typeof netUpSnapP!=='function') return 'SKIP: no welcome pack in this fixture';

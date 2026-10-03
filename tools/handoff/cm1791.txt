@@ -1,0 +1,7 @@
+v17.91: the what is new card names the better first hour
+
+The what is new card names the better first hour.
+
+Check 17.91. Fails on v17.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
