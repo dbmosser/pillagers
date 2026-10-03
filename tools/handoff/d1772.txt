@@ -1,0 +1,5 @@
+## v17.72 - A COVERED HOST WINDOW KEEPS THE RAID RUNNING
+
+Co-op hunt while he was away. The host window runs every body for the party, and the browser stops its frames when another window covers it (his son window dragged over it, or minimised), so the raid froze for the teammate too. A worker clock the browser does not throttle now runs the frame while frames are not coming and this window hosts a shared raid. Solo, a covered window still stands still, the pause it always was.
+
+MEASURED. Check 17.72 passes, and fails on v17.71.

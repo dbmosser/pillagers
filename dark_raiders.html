@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.71';
+var VER='17.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31131,8 +31131,31 @@ try{
   cv.addEventListener('contextlost',onCtxLost); cv.addEventListener('contextrestored',onCtxRestored);
   hcv.addEventListener('contextlost',onCtxLost); hcv.addEventListener('contextrestored',onCtxRestored);
 }catch(e){}
+// v17.72, AAA CHECK (2026-10-02): A COVERED HOST WINDOW KEEPS THE RAID RUNNING. The host window runs every body for the party,
+// and the browser stops its frames when the window is covered by another (his son's window dragged over it, or minimised):
+// the raid froze for the teammate too. A worker clock, which the browser does not throttle, ticks the frame while the frames
+// are not coming and this window hosts a shared raid: HID.lastRaf is stamped by the real frames; a worker tick 200 ms after
+// the last one runs loop() without queuing another frame request. Solo, a covered window still stands still, which is the
+// pause it always was. Drawing into a covered window is cheap and harmless.
+var HID={w:null,lastRaf:0,fromWorker:0,ticks:0};
+function hidWant(){ return !!(typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&typeof netEntsHost==='function'&&netEntsHost()); }
+function hidTick(){
+  var now=(typeof performance!=='undefined')?performance.now():Date.now();
+  if(!(now-HID.lastRaf>200)||!hidWant()) return false;
+  HID.fromWorker=1; HID.ticks++;
+  try{ loop(now); }catch(_ht){} finally{ HID.fromWorker=0; }
+  return true;
+}
+function hidStart(){
+  if(HID.w||typeof Worker==='undefined'||typeof Blob==='undefined'||typeof URL==='undefined'||!URL.createObjectURL) return false;
+  try{
+    HID.w=new Worker(URL.createObjectURL(new Blob(['setInterval(function(){ postMessage(0); },33);'],{type:'text/javascript'})));
+    HID.w.onmessage=function(){ hidTick(); };
+    return true;
+  }catch(_hw){ HID.w=null; return false; }
+}
 function loop(ts){
-  requestAnimationFrame(loop);
+  if(!HID.fromWorker){ requestAnimationFrame(loop); HID.lastRaf=(typeof performance!=='undefined')?performance.now():Date.now(); if(!HID.w) hidStart(); }
   try{ syncTopRight(); }catch(_tr2){}   // v11.52: a string compare per frame, a DOM write only on change
   // Nothing is drawable while the context is gone, and the raid clock should not
   // run down behind a blank screen either, so the whole frame is skipped until the
@@ -31732,7 +31755,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.71: Settings has a KID MODE section, and a new switch: PLAYER 2 COMES BACK AFTER DEATH, so a younger player 2 can rejoin the raid after dying. Check 17.71 fails on v17.70',
+  now:'v17.72: Two-player: if the player 1 window is covered or minimised, the raid keeps running for player 2 instead of freezing. Check 17.72 fails on v17.71',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

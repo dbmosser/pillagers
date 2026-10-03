@@ -5721,6 +5721,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.72',what:'a covered host window keeps the raid running: with no frame for 200 ms and this window hosting a shared raid, the worker tick runs a frame (the clock moves); solo, or with frames coming, it does nothing',
+   run:function(){
+     if(typeof hidTick!=='function'||typeof HID!=='object') return 'a covered host window freezes the raid for the party';
+     if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET) return 'SKIP: no raid or party in this fixture';
+     var NK={}, k, bad=[], t0, r, st0=state;
+     for(k in NET) NK[k]=NET[k];
+     try{
+       NET.on=false; NET.role=null; NET.peers=[];
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no raid';
+       state='raid';
+       HID.lastRaf=performance.now()-1000; t0=G.t; r=hidTick();
+       if(r||G.t!==t0) bad.push('solo, a covered window ran the raid on');
+       NET.on=true; NET.role='host'; NET.seat=0; NET.max=4; NET.peers=[{seat:1,state:'in'}]; NET.upSeed=G.seed>>>0;
+       HID.lastRaf=performance.now(); t0=G.t; r=hidTick();
+       if(r||G.t!==t0) bad.push('with frames still coming the worker tick ran a frame');
+       HID.lastRaf=performance.now()-1000; t0=G.t; r=hidTick();
+       if(!r) bad.push('hosting a shared raid with no frame for a second, the worker tick did nothing');
+       else if(!(G.t>t0)) bad.push('the worker tick ran but the raid clock did not move ('+t0+' to '+G.t+')');
+       if(HID.fromWorker) bad.push('the worker flag stayed up after the tick');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       state=st0;
+       for(k in NET) if(!(k in NK)) delete NET[k];
+       for(k in NK) NET[k]=NK[k];
+       try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.71',what:'the kid menu: a KID MODE heading in Settings with a PLAYER 2 COMES BACK AFTER DEATH row; on, a teammate who died is not kept out of the raid (neither his window nor the host marks him); off, he is',
    run:function(){
      if(typeof kbCycle!=='function'||typeof kidHeadHtml!=='function') return 'Settings has no kid menu and no way back after death for player 2';

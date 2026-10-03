@@ -1,0 +1,7 @@
+v17.72: a covered host window keeps the raid running
+
+Two-player: if the player 1 window is covered or minimised, the raid keeps running for player 2 instead of freezing.
+
+Check 17.72. Fails on v17.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

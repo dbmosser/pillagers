@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.72 - A COVERED HOST WINDOW KEEPS THE RAID RUNNING
+
+Co-op hunt while he was away. The host window runs every body for the party, and the browser stops its frames when another window covers it (his son window dragged over it, or minimised), so the raid froze for the teammate too. A worker clock the browser does not throttle now runs the frame while frames are not coming and this window hosts a shared raid. Solo, a covered window still stands still, the pause it always was.
+
+MEASURED. Check 17.72 passes, and fails on v17.71.
 ## v17.71 - A KID MENU, WITH PLAYER 2 COMING BACK AFTER DEATH
 
 Co-op hunt while he was away. His order of 2026-10-02. Settings now has a KID MODE heading over the kid rows (player 2 takes less damage, auto-fire for player 2) and a new one: PLAYER 2 COMES BACK AFTER DEATH. With it on, a teammate who died can JOIN THE RAID IN PROGRESS again from the Undercroft or the lift; off, he sits that raid out as the rule of v17.66 says. Extracting still ends his raid. Either window can set it, and the host carries it to the party.
