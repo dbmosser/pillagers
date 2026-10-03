@@ -285,3 +285,8 @@ in one window, not yet in the two-window nettest.
 - v17.79/82 sector maps on the sector page (sectorPreviewDraw from FIXED_MAPS; rows overflow:hidden). v17.80 card refresh (stamped 17.80).
   v17.81 full legend pad names. v17.83/84 the Undercroft under the title (titleOn, titleSceneReady, #title.on translucent; drawHubHUD
   and station names skipped under the title). Two-window test 2/2 on v17.79. Next card refresh due by ~17.95.
+- IDLE STRESS 23:20 Thu (a corpus still ran on 9344, so not fully idle). 1080p: 40 bodies update 0.6 / draw 5.0 ms; 160: 5.7 / 9.2 (frame
+  median 17.2, p95 22); 240: 8.9 / 11.7 (median 19.8 = ~50 fps). 4K: 240 bodies 7.1 / 10.7, median 17.6: the GPU is not the limit.
+  CPU 4x SLOWER (a weak laptop stand-in, headless = software raster): 40 bodies draw 28 ms, frame 38 ms (26 fps); 120 bodies 91 ms.
+  Drawing is the cost on weak PCs; Render resolution / Effects (v17.43) are the levers. CANDIDATE: auto-detect slow frames and
+  point at those settings once. MEMORY 30 raids: heap floor 16 -> 26 MB (sawtooth 23-53); mild; a 100-raid soak queued.
