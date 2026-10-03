@@ -343,3 +343,7 @@ Stages, one build each, screenshots after (tools/handoff/shots.ps1, shots-fresh.
 rows, tabs, buttons, inputs, scrollbars); B) title screen; C) raid HUD canvas panels via one shared panel helper (legend, pillager
 board, contracts, vitals, weapon box, belt frame); D) run card; E) stash + shop + sector page. Keep every id and class the checks
 use; measure with a style check (same font, same radius, no Times, buttons within one height).
+- 10-03 morning, his asks: (1) STYLING PASS across all menus/HUDs first (plan above). (2) Player 2 character selection: v17.93 p2saves
+  (p2SlotPick, activeSlot2 pointer, IN USE BY PLAYER 1/2, the old profile:p2 moves into a free slot once; nettest updated).
+  (3) F11 did not fullscreen the P2 popup: v17.92 answers F11 itself. (4) ITEM GRAPHICS (guns especially) "look terrible, need massive
+  improvements": an icon art pass is part of the styling work, guns first (gunIcon at ~28389, drawItemIcon at ~28470).
