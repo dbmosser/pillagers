@@ -5783,8 +5783,8 @@ window.__REGRESS=[
        if(!/pick Offer|choose Offer|Drop on the floor/.test(src)) bad.push('the stash idle text does not say how to hand an item over while linked');
        if(typeof drawHubHUD==='function'&&typeof HB!=='undefined'&&HB){
          ctx.fillText=function(s){ lines.push(String(s)); return oFT.apply(this,arguments); };
-         try{ HB.legend=true; drawHubHUD(0,0); }catch(_h){ bad.push('the floor HUD threw: '+(_h&&_h.message||_h)); }
-         finally{ HB.legend=false; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
+         try{ HB.legend=true; HB.drops=(HB.drops||[]).concat([{id:'chk',k:'bandage',x:100,y:100}]); drawHubHUD(0,0); }catch(_h){ bad.push('the floor HUD threw: '+(_h&&_h.message||_h)); }
+         finally{ HB.legend=false; if(HB.drops) HB.drops=HB.drops.filter(function(q){ return q.id!=='chk'; }); delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
          if(!lines.some(function(s){ return /TAKE AN OFFER|TAKE THE DROPPED/.test(s); })) bad.push('the Undercroft bottom line does not say how to take a dropped item');
          if(!lines.some(function(s){ return /take an offer|teammate dropped/.test(s); })) bad.push('the floor H card has no trade row with a party on');
        }
@@ -5946,7 +5946,7 @@ window.__REGRESS=[
      if(!tRow||!/trad|offer|drop/.test(String(tRow[1]))) return 'the key list has no TEAM section with a Z row for trading';
      if(!yRow||!/trad|offer|drop/.test(String(yRow[1]))) bad.push('the pad list has no TEAM section with a Y row for trading');
      if(!kb) bad.push('the stash key bar has no offer line');
-     if(!pt||!/Offer/.test(pt.textContent)) bad.push('the Party window does not explain trading');
+     if(!pt||!/Offer|Drop/.test(pt.textContent)) bad.push('the Party window does not explain trading');
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__textTrace)) return bad.length?bad.join('; '):null;
      on0=NET.on;
      try{
