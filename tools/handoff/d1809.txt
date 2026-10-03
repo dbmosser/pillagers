@@ -1,0 +1,5 @@
+## v18.09 - THE ITEM ICONS ARE PAINTED SHARP
+
+Co-op hunt while he was away. His order of 2026-10-03: item graphics like the guns still look terrible. Every icon the menus show was painted once at its row size, 22 to 30 pixels, and then blown up to 40, 64 or 110 by the stash layouts with the browser told to pixelate, so a gun was a handful of blocks. The painters are vector shapes: the icon is painted at four times its row size now and scaled down smooth, so every layout shows real edges. The shapes themselves get their own pass next.
+
+MEASURED. Check 18.09 passes, and fails on v18.08.

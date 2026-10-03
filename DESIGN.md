@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.09 - THE ITEM ICONS ARE PAINTED SHARP
+
+Co-op hunt while he was away. His order of 2026-10-03: item graphics like the guns still look terrible. Every icon the menus show was painted once at its row size, 22 to 30 pixels, and then blown up to 40, 64 or 110 by the stash layouts with the browser told to pixelate, so a gun was a handful of blocks. The painters are vector shapes: the icon is painted at four times its row size now and scaled down smooth, so every layout shows real edges. The shapes themselves get their own pass next.
+
+MEASURED. Check 18.09 passes, and fails on v18.08.
 ## v18.08 - KID FIRING TURNS PLAYER 2 TOWARD HIS TARGET
 
 Co-op hunt while he was away. His order of 2026-10-03: player 2 auto-aim in kid mode should also turn the player and his field of vision toward the target. The cursor moved only once an enemy was inside gun range, so the body and the view cone kept facing the way he walked while a machine came at him. With nothing in gun range, the nearest enemy in sight with a clear line now gets the cursor, so he and his cone turn to it before it is close enough to shoot; the trigger stays up until then.

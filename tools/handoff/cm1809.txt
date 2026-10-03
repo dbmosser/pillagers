@@ -1,0 +1,7 @@
+v18.09: the item icons are painted sharp
+
+Item and gun icons are drawn sharp in every menu instead of blown-up blocks.
+
+Check 18.09. Fails on v18.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

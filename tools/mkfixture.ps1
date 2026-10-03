@@ -5721,6 +5721,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.09',what:'item icons are painted sharp: a 31 px stash icon is drawn on a canvas at least 93 px across, and the stash grid no longer asks the browser to pixelate its icons',
+   run:function(){
+     if(typeof itemIconURL!=='function') return 'SKIP: no icon painter here';
+     var bad=[], u=itemIconURL('bandage',31), b64=(String(u).split(',')[1]||''), bin='', w=0, d, img, root=document.getElementById('root')||document.body;
+     try{ bin=atob(b64); w=((bin.charCodeAt(16)<<24)|(bin.charCodeAt(17)<<16)|(bin.charCodeAt(18)<<8)|bin.charCodeAt(19))>>>0; }catch(e){ bad.push('could not read the icon image'); }
+     if(!(w>=93)) bad.push('the 31 px icon is drawn on a '+w+' px canvas');
+     d=document.createElement('div'); d.className='invgrid'; img=document.createElement('img'); img.className='ic'; d.appendChild(img); root.appendChild(d);
+     try{ if(getComputedStyle(img).imageRendering==='pixelated') bad.push('the stash grid still pixelates its icons'); }finally{ try{ root.removeChild(d); }catch(_r){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.08',what:'kid firing turns player 2 toward his target before it is in gun range: with an enemy in sight range to the east and a clear line, and the cursor west, the auto-fire step puts the cursor east of him without pressing the trigger',
    run:function(){
      if(typeof afLook!=='function'||typeof netAutoFire!=='function') return 'kid firing turns him only once a machine is in gun range';
