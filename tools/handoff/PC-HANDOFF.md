@@ -334,3 +334,12 @@ in one window, not yet in the two-window nettest.
 - NIGHT 10-02/03 (23:38-06:40): soaks 87/90 + 90/93 (2 machine stalls while I shipped, 1 test-aim miss, 3 unfinished); bots 173
   batches, none with errors (one empty result line at 02:23); 4K 32 batches, one at 3 fps at 00:50 while corpus+memsoak+stress all
   ran, the rest 54-60. Game at v17.91.
+
+## STYLING PASS (his order 2026-10-03 07:50: "styling across all menus, HUDs etc needs massive improvements") — DO THIS FIRST
+Bar: ARC Raiders x Fortnite 2026 x CoD BR. One look everywhere: dark glass panels (translucent, 1 px light border, 6 px radius,
+no hatched corner grips), one type scale (Rubik; uppercase letter-spaced labels for headers, sentence case for body), one accent
+(amber) for the primary action, bone text, ash hints, consistent button heights and paddings, visible hover/focus, generous spacing.
+Stages, one build each, screenshots after (tools/handoff/shots.ps1, shots-fresh.ps1): A) CSS theme for all HTML menus (modals,
+rows, tabs, buttons, inputs, scrollbars); B) title screen; C) raid HUD canvas panels via one shared panel helper (legend, pillager
+board, contracts, vitals, weapon box, belt frame); D) run card; E) stash + shop + sector page. Keep every id and class the checks
+use; measure with a style check (same font, same radius, no Times, buttons within one height).
