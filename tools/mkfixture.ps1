@@ -5794,6 +5794,9 @@ window.__REGRESS=[
        keys={}; NET.same='host'; NET.pair='zqxesc';
        // v18.06: started from a shut box, the pause flag down and no item menu up, whatever an earlier check left (it flaked once in the 80-check run); the failure line says what it found
        try{ togglePauseBox(false); }catch(_c0){} pauseOpen=false; try{ closeItemMenu(); }catch(_c1){} try{ if(G) G.paused=false; }catch(_c2){}
+       // v18.06: THE CONTROL TAB SHARES THIS ORIGIN. Its saves fire storage events here, which raise the stale-save banner, and that banner's capture
+       // listener eats Escape and Enter (and reloads). The banner is nothing this check measures, so it is cleared first.
+       try{ SAVE_STALE=false; var _ssb=document.getElementById('stalesave'); if(_ssb&&_ssb.parentNode) _ssb.parentNode.removeChild(_ssb); }catch(_c3){}
        r=netSameOnMsg({t:'key',pair:'zqxesc',ty:'keydown',code:'Escape',key:'Escape',rep:false,sh:false,ct:false});
        netSameOnMsg({t:'key',pair:'zqxesc',ty:'keyup',code:'Escape',key:'Escape',rep:false,sh:false,ct:false});
        if(r!=='key') bad.push('the handed key was answered '+r);
