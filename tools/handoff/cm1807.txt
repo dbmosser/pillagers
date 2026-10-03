@@ -1,0 +1,7 @@
+v18.07: each player sees the other player line of sight
+
+You now see what your teammate sees: their view cone is open in your fog and the enemies in it are shown (Settings: Shared sight).
+
+Check 18.07. Fails on v18.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

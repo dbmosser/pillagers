@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.07 - EACH PLAYER SEES THE OTHER PLAYER LINE OF SIGHT
+
+Co-op hunt while he was away. His order of 2026-10-03: each player should see the other player line of sight, with a Settings option to turn it off. What a teammate up top is looking at, you now see too: his view cone is open in your fog of war, a little dimmer than your own, his patch of ground is lit, and an enemy in his sight is drawn for you. Settings has a Shared sight row, On by default.
+
+MEASURED. Check 18.07 passes, and fails on v18.06.
 ## v18.06 - FEWER BIG ROBOTS AT THE EXTRACTION
 
 Co-op hunt while he was away. His son, 2026-10-03: too many big robots at the final extract. The siege that answers a called extraction sent up to 6 + 8 x greed machines, half of them sentries. It sends up to 5 + 7 x greed now, and about three in ten are sentries; the rest are crawlers. The rate is unchanged.
