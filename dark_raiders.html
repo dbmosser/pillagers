@@ -1483,7 +1483,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.24';
+var VER='18.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12837,7 +12837,7 @@ function keysLegendHtml(){
   var n=keyName, s=function(c){ return '<b style="color:var(--bone)">'+n(keysOf(c))+'</b>'; };
   return 'MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; '+s('KeyW')+s('KeyA')+s('KeyS')+s('KeyD')+' move &nbsp; '+s('Space')+' dodge roll &nbsp; '+s('ShiftLeft')+' hold to sprint &nbsp; '+
     s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' interact &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyF')+' melee strike &nbsp; 1-9 tactical belt &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
-    s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyH')+' controls &nbsp; TAB back out &nbsp; '+s('KeyP')+' / TAB pause';
+    s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyT')+' offer or take a traded item &nbsp; '+s('KeyN')+' ping &nbsp; '+s('KeyH')+' controls &nbsp; TAB back out &nbsp; '+s('KeyP')+' / TAB pause';   // v18.25: the trade key, from the audit
 }
 function keysLegendApply(){ var el=document.getElementById('pausekeys'); if(!el) return false; el.innerHTML=keysLegendHtml(); return true; }
 function keysRowHtml(){
@@ -31295,7 +31295,9 @@ function drawHubHUD(ox,oy){
   // the surface. Drawn after the update card so the two never fight for the middle.
   if(HB.legend){
     var _lg=['WASD','walk','SHIFT','jog','SPACE','roll','E','use the station in front of you',
-             'B or I','your things','TAB','pause, or back out','M','the map, on the surface','H','close this'];
+             'B or I','your things','TAB','pause, or back out','M','the map, on the surface'];
+    if(typeof NET==='object'&&NET&&NET.on) _lg.push('T','take an offer from your teammate (offer from the stash)');   // v18.25: trading on the floor card
+    _lg.push('H','close this');
     ctx.font=FS(TYPE.label);
     var _lw=0;
     for(var _li=0;_li<_lg.length;_li+=2)
@@ -31328,8 +31330,8 @@ function drawHubHUD(ox,oy){
   // 0). The raid swaps its legends for LEGEND_MINI_PAD and LEGEND_PAD; this line never had a pad version. With a pad on it now
   // draws the pad words in the raid legend's own terms, L STICK and LS, with A from the same keyLabel the prompt uses, and
   // returns. The keyboard line below is untouched word for word. No number and no seeded draw moved.
-  if(padOn()){ ctx.fillText('L STICK WALK  \u00b7  LS JOG  \u00b7  '+keyLabel('KeyE','E')+' USE STATION',W/2,H-16); ctx.textAlign='left'; return; }
-  ctx.fillText('WASD WALK  ·  SHIFT JOG  ·  E USE STATION',W/2,H-16);
+  if(padOn()){ ctx.fillText('L STICK WALK  \u00b7  LS JOG  \u00b7  '+keyLabel('KeyE','E')+' USE STATION'+((typeof NET==='object'&&NET&&NET.on)?'  \u00b7  Y TAKE AN OFFER':''),W/2,H-16); ctx.textAlign='left'; return; }   // v18.25: and the trade button while a party is on
+  ctx.fillText('WASD WALK  ·  SHIFT JOG  ·  E USE STATION'+((typeof NET==='object'&&NET&&NET.on)?'  \u00b7  T TAKE AN OFFER':''),W/2,H-16);   // v18.25: and the trade key while a party is on
   ctx.textAlign='left';
 }
 // ================================================================ main loop
@@ -32190,7 +32192,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.24: On a controller, Y on a highlighted item opens its menu, so player 2 can offer, equip, bind and junk from the stash too. Check 18.24 fails on v18.23',
+  now:'v18.25: The pause box, the stash screen and the Undercroft floor all say how to trade while a party is on. Check 18.25 fails on v18.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33986,7 +33988,7 @@ try{ renderFreeKit(); }catch(_fk){}
   });
   var detail=document.getElementById('stashdetail');
   function detailIdle(){
-    if(detail) detail.innerHTML='<span style="opacity:.55">Hover an item and press J to tag it JUNK. '+
+    if(detail) detail.innerHTML='<span style="opacity:.55">'+((typeof netHubSeat==='function'&&netHubSeat()>=0)?('Right-click an item (Y on a controller) and pick Offer to hand it to '+(netSeatName(netHubSeat())||'your teammate')+'; they take it with T or Y. '):'')+'Hover an item and press J to tag it JUNK. '+
       'PARTS are eaten by recipes and racks; SALVAGE is safe to sell. '+
       'The sell button clears junk and loose salvage.</span>';
   }

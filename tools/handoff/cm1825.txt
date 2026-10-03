@@ -1,0 +1,7 @@
+v18.25: the floor says how to trade
+
+The pause box, the stash screen and the Undercroft floor all say how to trade while a party is on.
+
+Check 18.25. Fails on v18.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

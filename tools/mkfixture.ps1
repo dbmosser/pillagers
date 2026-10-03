@@ -5721,6 +5721,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.25',what:'the floor says how to trade while a party is on: the pause-box key line names the trade key, the stash idle text says how to offer when the windows are linked, and the Undercroft bottom line and H card gain the take line',
+   run:function(){
+     if(typeof keysLegendHtml!=='function') return 'SKIP: no key line here';
+     var bad=[], keep={on:NET.on,role:NET.role,peers:NET.peers}, peer={state:'in',seat:1,dc:{readyState:'open',send:function(){}}}, lines=[], src='', oFT=ctx.fillText, det=document.getElementById('invdetail')||document.querySelector('#hub .detail');
+     if(!/offer|trade/.test(keysLegendHtml())) bad.push('the pause-box key line does not name the trade key');
+     try{
+       NET.on=true; NET.role='host'; NET.peers=[peer];
+       try{ if(typeof renderHub==='function') renderHub(); }catch(_r){}   // the stash screen render is what writes the idle text
+       src=(document.getElementById('stashdetail')||{}).textContent||'';   // textContent: the stash screen is hidden here and innerText leaves hidden text out
+       if(!/pick Offer|choose Offer/.test(src)) bad.push('the stash idle text does not say how to offer while linked');
+       if(typeof drawHubHUD==='function'&&typeof HB!=='undefined'&&HB){
+         ctx.fillText=function(s){ lines.push(String(s)); return oFT.apply(this,arguments); };
+         try{ HB.legend=true; drawHubHUD(0,0); }catch(_h){ bad.push('the floor HUD threw: '+(_h&&_h.message||_h)); }
+         finally{ HB.legend=false; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
+         if(!lines.some(function(s){ return /TAKE AN OFFER/.test(s); })) bad.push('the Undercroft bottom line does not say T TAKE AN OFFER with a party on');
+         if(!lines.some(function(s){ return /take an offer/.test(s); })) bad.push('the floor H card has no trade row with a party on');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; NET.on=keep.on; NET.role=keep.role; NET.peers=keep.peers; try{ if(typeof renderHub==='function') renderHub(); }catch(_r2){} try{ __topClear(); }catch(_t){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.24',what:'a controller opens the item menu: with the Stash screen up and the pad highlight on a stash cell, one Y press through pollPad opens the item menu at that cell',
    run:function(){
      if(typeof pollPad!=='function'||typeof padMenu!=='function'||typeof refreshInv!=='function') return 'SKIP: no pad menu here';

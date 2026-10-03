@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.25 - THE FLOOR SAYS HOW TO TRADE
+
+Co-op hunt while he was away. From the trade audit of 2026-10-03, the places a player looks and found nothing: the pause-box key line, the stash screen idle text, the Undercroft bottom controls line and the H card. Each names the trade key now, the last three only while a party is on.
+
+MEASURED. Check 18.25 passes, and fails on v18.24.
 ## v18.24 - A CONTROLLER OPENS THE ITEM MENU
 
 Co-op hunt while he was away. From the trade audit of 2026-10-03: every cell menu (Equip, Offer to, keys, junk) opened on a right-click only, so a controller player could never offer an item from the stash. With nothing waiting, Y on the highlighted cell now opens that same menu at the cell; the menu was already a pad panel. The stash key bar names both.
