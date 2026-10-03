@@ -382,3 +382,10 @@ NEXT: gun and item icon art pass (his explicit ask), styling stages B-E, then th
 - v18.13 styling stage C: hudPanel(x,y,w,h,a) rounded gradient panel for conditions, pillager board, both legends and the backpack panel.
 - v18.14 the icon lift: iconLift(c,w,h) light/shade clipped to the shape plus a soft shadow, run by itemIconURL for non-gun icons.
 STILL TO DO in this pass: stage D (run card), stage E (stash/shop/sector page: the shop's cream card is deliberate, leave it), the vitals panel and belt frame in the HUD, and a look at the raid backpack icons (canvas-drawn, no lift yet).
+
+## 2026-10-03 night: the frame cost, measured and cut (v18.13 to v18.16)
+- v18.13 HUD panels share hudPanel(); v18.14 icon lift (two half gradients: transparent white next to transparent black at the midpoint, or the shade half goes light grey).
+- MEASURED (scratchpad probe-perf.js / probe-callers.js through tools/cdp.ps1 -Expr, 4x throttle): 3,650 fillRect calls a frame at the spawn, 4,270 walking south; 3,500 of them inline in render2D = the per-wall weathering loops. Recipe in memory pillagers-frame-cost-is-wall-weathering.
+- v18.15 walls bake their weathering: wallPaint (the old block, moved), wallSprite (per wall, round(ZOOM*DPR) scale, LRU 320, keyed on seed/day/decay/scale), CFG.wallBake 0 restores live paint.
+- v18.16 trees and bushes bake their blobs: vegSprite/vegDraw per rounded radius and palette; bush blobs sway together.
+- NEXT if he still sees lag: shadowE ellipses (~160/frame), drawContS boxes (~140 rrF), then re-measure; the update side (canSee per ent per frame, buildVisPoly) was not measured.
