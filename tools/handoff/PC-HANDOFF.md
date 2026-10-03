@@ -347,3 +347,5 @@ use; measure with a style check (same font, same radius, no Times, buttons withi
   (p2SlotPick, activeSlot2 pointer, IN USE BY PLAYER 1/2, the old profile:p2 moves into a free slot once; nettest updated).
   (3) F11 did not fullscreen the P2 popup: v17.92 answers F11 itself. (4) ITEM GRAPHICS (guns especially) "look terrible, need massive
   improvements": an icon art pass is part of the styling work, guns first (gunIcon at ~28389, drawItemIcon at ~28470).
+- v17.92 F11 handled by the game (both windows). v17.93 player 2 picks a character (SHIPPED; two-window test 2/2 with P2 on its own
+  numbered slot). Stage A theme (draft-theme.json) shipping next on 9346, screenshots after.
