@@ -279,3 +279,6 @@ in one window, not yet in the two-window nettest.
   title has no scene behind it; raid HUD panels are debug-grey with hatched corners (a styling pass); shop and stash are fine.
 - PAD SURVEY (agent, 2026-10-02): keyLabel/PADLABEL is the one place for pad names; LEGEND_MINI_PAD was stale (B roll, A fire);
   no pad id was ever read. v17.78 padbrand: PAD.brand from gp.id, padB() translates, legend fixed, b carried in the pad word.
+- v17.76 legend columns + collapsed after 3 raids; v17.77 NEW-IN card shows five notes, headline+line (wnShort), stale host line fixed;
+  v17.78 PlayStation names (PAD.brand, padB, keyLabel, LEGEND_MINI_PAD fixed to his layout). Queued: secprev (sector maps), padbrand2
+  (full legend), titlebg (the Undercroft under the title). BUDGET 22:30 Thu: Fable 61%, ALL MODELS 76% (the binding cap), ~1.2%/h.
