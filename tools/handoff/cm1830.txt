@@ -1,0 +1,7 @@
+v18.30: drag to drop
+
+You can drag an item out of the backpack to drop it, and drag a stash item onto DROP HERE to put it on the Undercroft floor.
+
+Check 18.30. Fails on v18.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
