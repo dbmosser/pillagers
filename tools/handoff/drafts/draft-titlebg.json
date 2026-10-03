@@ -1,0 +1,24 @@
+{
+    "title":  "THE UNDERCROFT SHOWS THROUGH THE TITLE",
+    "why":  "From the visual pass of 2026-10-02. The title sat on a flat gradient with nothing behind it. The floor is now built while the title is up and drawn beneath it, people milling, the way a AAA title shows its world, under a dark glass so the title reads as before. The floor belt and backpack stay off until the title goes.",
+    "now":  "The title screen now has the Undercroft behind it, under dark glass.",
+    "edits":  [
+                  {
+                      "anchor":  "  .screen.on { display:flex; }",
+                      "replacement":  "  .screen.on { display:flex; }\n   #title.on { background:rgba(9,15,40,.80); }   /* v16.xx: the Undercroft shows through the title */"
+                  },
+                  {
+                      "anchor":  "var state=\u0027hub\u0027,lastTs=0;",
+                      "replacement":  "var state=\u0027hub\u0027,lastTs=0;\n// v16.xx, THE VISUAL PASS (2026-10-02): THE UNDERCROFT SHOWS THROUGH THE TITLE. The title sat on a flat gradient with nothing\n// behind it. The floor is built while the title is up and drawn beneath it, people milling, the way a AAA title shows its\n// world; the title keeps a dark glass over it (the CSS rule on #title.on). The floor\u0027s own belt and backpack stay off until\n// the title goes. Nothing the title does changes: ENTER THE UNDERCROFT still runs its own go().\nfunction titleOn(){ var t=document.getElementById(\u0027title\u0027); return !!(t\u0026\u0026t.classList.contains(\u0027on\u0027)); }\nfunction titleSceneReady(){\n  if(HB) return true;\n  try{ HB=buildHub(); if(!hubGround) hubGround=bakeHubGround(); }catch(_ts){ HB=null; }\n  return !!HB;\n}"
+                  },
+                  {
+                      "anchor":  "  if(state===\u0027hub\u0027){\n    try{ craftHoldStep(dt); }catch(_ch){}   // v11.75: the craft hold fills here",
+                      "replacement":  "  if(state===\u0027hub\u0027){\n    try{ craftHoldStep(dt); }catch(_ch){}   // v11.75: the craft hold fills here\n    if(!HB\u0026\u0026titleOn()) titleSceneReady();   // v16.xx: the floor under the title"
+                  },
+                  {
+                      "anchor":  "        if(hubBagOpen) drawHubBag(); else drawHubBelt();",
+                      "replacement":  "        if(!titleOn()){ if(hubBagOpen) drawHubBag(); else drawHubBelt(); }   // v16.xx: not under the title"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title has the Undercroft behind it: with the title up and no floor built yet, one frame builds the floor and draws it under a translucent title\u0027,\n   run:function(){\n     if(typeof titleSceneReady!==\u0027function\u0027||typeof titleOn!==\u0027function\u0027) return \u0027the title sits on a flat gradient\u0027;\n     if(typeof loop!==\u0027function\u0027||typeof wc===\u0027undefined\u0027||!wc) return \u0027SKIP: no loop or world canvas in this fixture\u0027;\n     var bad=[], t=document.getElementById(\u0027title\u0027), was=t\u0026\u0026t.classList.contains(\u0027on\u0027), st0=state, HB0=HB, d, k, lit=0, bg;\n     try{\n       if(!t) return \u0027SKIP: no title in this fixture\u0027;\n       t.classList.add(\u0027on\u0027); state=\u0027hub\u0027; HB=null;\n       bg=getComputedStyle(t).backgroundColor;\n       if(!/rgba\\(/.test(bg)||!(parseFloat(bg.split(\u0027,\u0027)[3])\u003c1)) bad.push(\u0027the title background is not translucent (\u0027+bg+\u0027)\u0027);\n       HID.fromWorker=1; try{ loop(performance.now()); loop(performance.now()+16); }finally{ HID.fromWorker=0; }\n       if(!HB) bad.push(\u0027the floor was not built under the title\u0027);\n       else{ d=wc.getImageData(0,0,cv.width,cv.height).data; for(k=3;k\u003cd.length;k+=4*211) if(d[k]\u003e0) lit++; if(lit\u003c100) bad.push(\u0027nothing was drawn under the title (\u0027+lit+\u0027 lit samples)\u0027); }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ if(!was\u0026\u0026t) t.classList.remove(\u0027on\u0027); state=st0; if(!HB\u0026\u0026HB0) HB=HB0; try{ __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

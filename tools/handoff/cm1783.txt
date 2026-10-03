@@ -1,0 +1,7 @@
+v17.83: the undercroft shows through the title
+
+The title screen now has the Undercroft behind it, under dark glass.
+
+Check 17.83. Fails on v17.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

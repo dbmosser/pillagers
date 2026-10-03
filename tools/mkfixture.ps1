@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.83',what:'the title has the Undercroft behind it: with the title up and no floor built yet, one frame builds the floor and draws it under a translucent title',
+   run:function(){
+     if(typeof titleSceneReady!=='function'||typeof titleOn!=='function') return 'the title sits on a flat gradient';
+     if(typeof loop!=='function'||typeof wc==='undefined'||!wc) return 'SKIP: no loop or world canvas in this fixture';
+     var bad=[], t=document.getElementById('title'), was=t&&t.classList.contains('on'), st0=state, HB0=HB, d, k, lit=0, bg;
+     try{
+       if(!t) return 'SKIP: no title in this fixture';
+       t.classList.add('on'); state='hub'; HB=null;
+       bg=getComputedStyle(t).backgroundColor;
+       if(!/rgba\(/.test(bg)||!(parseFloat(bg.split(',')[3])<1)) bad.push('the title background is not translucent ('+bg+')');
+       HID.fromWorker=1; try{ loop(performance.now()); loop(performance.now()+16); }finally{ HID.fromWorker=0; }
+       if(!HB) bad.push('the floor was not built under the title');
+       else{ d=wc.getImageData(0,0,cv.width,cv.height).data; for(k=3;k<d.length;k+=4*211) if(d[k]>0) lit++; if(lit<100) bad.push('nothing was drawn under the title ('+lit+' lit samples)'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(!was&&t) t.classList.remove('on'); state=st0; if(!HB&&HB0) HB=HB0; try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.82',what:'each sector row on the sector page is tall enough to hold its map (the map does not spill into the row below), and the zone names are 11 px',
    run:function(){
      if(typeof sectorPreviewDraw!=='function'||typeof renderSector!=='function') return 'SKIP: this build has no sector maps';

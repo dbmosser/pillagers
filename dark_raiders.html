@@ -63,6 +63,7 @@
       linear-gradient(165deg,#131c46 0%,#0d1435 55%,#090f28 100%);
     display:none; flex-direction:column; padding:18px 22px; overflow:hidden; }
   .screen.on { display:flex; }
+   #title.on { background:rgba(9,15,40,.80); }   /* v17.83: the Undercroft shows through the title */
   /* v8.88: the title screen scales now, so it must be able to scroll rather
      than clip. .screen is overflow:hidden, and the saves list and the CREATE A
      NEW SAVE button are the last things on it. Same rule as the v5.31 note
@@ -1437,7 +1438,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.82';
+var VER='17.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31059,6 +31060,16 @@ function drawHubHUD(ox,oy){
 }
 // ================================================================ main loop
 var state='hub',lastTs=0;
+// v17.83, THE VISUAL PASS (2026-10-02): THE UNDERCROFT SHOWS THROUGH THE TITLE. The title sat on a flat gradient with nothing
+// behind it. The floor is built while the title is up and drawn beneath it, people milling, the way a AAA title shows its
+// world; the title keeps a dark glass over it (the CSS rule on #title.on). The floor's own belt and backpack stay off until
+// the title goes. Nothing the title does changes: ENTER THE UNDERCROFT still runs its own go().
+function titleOn(){ var t=document.getElementById('title'); return !!(t&&t.classList.contains('on')); }
+function titleSceneReady(){
+  if(HB) return true;
+  try{ HB=buildHub(); if(!hubGround) hubGround=bakeHubGround(); }catch(_ts){ HB=null; }
+  return !!HB;
+}
 function showScreen(s){
   state=s;
   try{ netLateBtn(); }catch(_nlb){}   // v17.51: the drop-in button comes and goes with the floor
@@ -31313,6 +31324,7 @@ function loop(ts){
   if(NET.on&&NET.specG) netSpecTick(dt);   // v16.14: the raid the host left runs on for the party still up top, whatever this window shows
   if(state==='hub'){
     try{ craftHoldStep(dt); }catch(_ch){}   // v11.75: the craft hold fills here
+    if(!HB&&titleOn()) titleSceneReady();   // v17.83: the floor under the title
     if(HB&&wc&&W>0){
       // v8.95: the HUD canvas holds whatever the last raid left there, so it is
       // cleared every frame. v11.58, from the 2026-09-06 menu audit: ABOVE the
@@ -31328,7 +31340,7 @@ function loop(ts){
       try{
         // v9.88: the belt is on the floor now, answer 22. The opened backpack
         // draws its own copy of it as before, so exactly one is ever drawn.
-        if(hubBagOpen) drawHubBag(); else drawHubBelt();
+        if(!titleOn()){ if(hubBagOpen) drawHubBag(); else drawHubBelt(); }   // v17.83: not under the title
       }catch(_hbd){}
     }
     return;
@@ -31886,7 +31898,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.82: The sector page rows now hold their maps properly, with clearer zone names. Check 17.82 fails on v17.81',
+  now:'v17.83: The title screen now has the Undercroft behind it, under dark glass. Check 17.83 fails on v17.82',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

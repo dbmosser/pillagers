@@ -1,0 +1,5 @@
+## v17.83 - THE UNDERCROFT SHOWS THROUGH THE TITLE
+
+Co-op hunt while he was away. From the visual pass of 2026-10-02. The title sat on a flat gradient with nothing behind it. The floor is now built while the title is up and drawn beneath it, people milling, the way a AAA title shows its world, under a dark glass so the title reads as before. The floor belt and backpack stay off until the title goes.
+
+MEASURED. Check 17.83 passes, and fails on v17.82.
