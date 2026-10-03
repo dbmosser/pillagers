@@ -1,0 +1,7 @@
+v17.89: the stash points a first raid at what to do
+
+A new player sees in the stash what to do before the first raid: drag a gun and two heals into the loadout, then go up at ENTER RAID!
+
+Check 17.89. Fails on v17.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

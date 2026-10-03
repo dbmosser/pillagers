@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.89',what:'a first raid is pointed at: in the stash, a player with no runs and nothing packed sees FIRST RAID: drag a gun and two heals in here, then go up at ENTER RAID!; a player with runs behind him does not',
+   run:function(){
+     if(typeof renderKitCol!=='function') return 'SKIP: no stash in this fixture';
+     var el=document.getElementById('firstkit'); if(!el) return 'the stash gives a first raid no pointer';
+     var bad=[], r0=P.runs, k0=P.kit, shown;
+     try{
+       P.runs=0; P.kit=[]; renderKitCol(); shown=el.style.display!=='none';
+       if(!shown) bad.push('a new player with nothing packed does not see the first raid pointer');
+       if(!/FIRST RAID/.test(el.textContent)||!/ENTER RAID/.test(el.textContent)) bad.push('the pointer reads '+JSON.stringify(el.textContent));
+       P.runs=3; renderKitCol(); if(el.style.display!=='none') bad.push('a player with three runs still sees the first raid pointer');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P.runs=r0; P.kit=k0; try{ renderKitCol(); }catch(_r){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.88',what:'in a same machine pair a window pauses only when the pad it plays is unplugged; the other window pad coming out does nothing to it',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof togglePauseBox!=='function'||typeof NET!=='object'||!NET) return 'SKIP: no raid, pause box or party in this fixture';

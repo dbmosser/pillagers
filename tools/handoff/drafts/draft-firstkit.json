@@ -1,0 +1,16 @@
+{
+    "title":  "THE STASH POINTS A FIRST RAID AT WHAT TO DO",
+    "why":  "From the fresh-save pass of 2026-10-03: a new player lands in the stash on a row of icons with no names, an empty loadout and a tiny key legend, and nothing says what the screen is for. Until his first raid is logged, and while nothing is packed, the loadout column now says FIRST RAID: drag a gun and two heals in here, then go up at ENTER RAID!",
+    "now":  "A new player sees in the stash what to do before the first raid: drag a gun and two heals into the loadout, then go up at ENTER RAID!",
+    "edits":  [
+                  {
+                      "anchor":  "          \u003cdiv class=\"lohead\"\u003eLOADOUT\u003cem\u003e\u003cspan id=\"kitval\"\u003e0\u003c/span\u003ec going up\u003c/em\u003e\u003c/div\u003e",
+                      "replacement":  "          \u003cdiv class=\"lohead\"\u003eLOADOUT\u003cem\u003e\u003cspan id=\"kitval\"\u003e0\u003c/span\u003ec going up\u003c/em\u003e\u003c/div\u003e\n          \u003cdiv id=\"firstkit\" class=\"hint\" style=\"display:none;margin:4px 0 8px;padding:8px 10px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);font-weight:700;letter-spacing:.04em\"\u003eFIRST RAID: drag a gun and two heals in here, then go up at ENTER RAID!\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "  var kvEl=document.getElementById(\u0027kitval\u0027);",
+                      "replacement":  "  var kvEl=document.getElementById(\u0027kitval\u0027);\n  try{ var _fk=document.getElementById(\u0027firstkit\u0027); if(_fk) _fk.style.display=((((P\u0026\u0026P.runs)||0)===0)\u0026\u0026_goingUp.length===0)?\u0027\u0027:\u0027none\u0027; }catch(_fke){}   // v16.xx: a first raid is pointed at"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a first raid is pointed at: in the stash, a player with no runs and nothing packed sees FIRST RAID: drag a gun and two heals in here, then go up at ENTER RAID!; a player with runs behind him does not\u0027,\n   run:function(){\n     if(typeof renderKitCol!==\u0027function\u0027) return \u0027SKIP: no stash in this fixture\u0027;\n     var el=document.getElementById(\u0027firstkit\u0027); if(!el) return \u0027the stash gives a first raid no pointer\u0027;\n     var bad=[], r0=P.runs, k0=P.kit, shown;\n     try{\n       P.runs=0; P.kit=[]; renderKitCol(); shown=el.style.display!==\u0027none\u0027;\n       if(!shown) bad.push(\u0027a new player with nothing packed does not see the first raid pointer\u0027);\n       if(!/FIRST RAID/.test(el.textContent)||!/ENTER RAID/.test(el.textContent)) bad.push(\u0027the pointer reads \u0027+JSON.stringify(el.textContent));\n       P.runs=3; renderKitCol(); if(el.style.display!==\u0027none\u0027) bad.push(\u0027a player with three runs still sees the first raid pointer\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ P.runs=r0; P.kit=k0; try{ renderKitCol(); }catch(_r){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

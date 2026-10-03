@@ -1265,6 +1265,7 @@
         </div>
         <div id="kitcol" class="invside" style="flex:1;border-left:1px solid var(--steel-hi)">
           <div class="lohead">LOADOUT<em><span id="kitval">0</span>c going up</em></div>
+          <div id="firstkit" class="hint" style="display:none;margin:4px 0 8px;padding:8px 10px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);font-weight:700;letter-spacing:.04em">FIRST RAID: drag a gun and two heals in here, then go up at ENTER RAID!</div>
           <div class="losec" style="flex:1;border-top:none">
             <div class="loslab">Backpack<b><span id="kitn">0</span> packed</b></div>
             <div class="invgrid" id="kitgrid"></div>
@@ -1438,7 +1439,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.88';
+var VER='17.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31921,7 +31922,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.88: Two-player: a controller coming unplugged pauses only the window that was playing it. Check 17.88 fails on v17.87',
+  now:'v17.89: A new player sees in the stash what to do before the first raid: drag a gun and two heals into the loadout, then go up at ENTER RAID! Check 17.89 fails on v17.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32916,6 +32917,7 @@ function renderKitCol(){
   // it counted that item twice; and when the named item is not packed it counted
   // something that stays at home. Measured both ways at 60 credits out.
   var kvEl=document.getElementById('kitval');
+  try{ var _fk=document.getElementById('firstkit'); if(_fk) _fk.style.display=((((P&&P.runs)||0)===0)&&_goingUp.length===0)?'':'none'; }catch(_fke){}   // v17.89: a first raid is pointed at
   if(kvEl){ var kv=0; for(var _kq=0;_kq<_goingUp.length;_kq++) kv+=ival(_goingUp[_kq]);
     kvEl.textContent=kv.toLocaleString(); }
   var qn=document.getElementById('quickn');

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.89 - THE STASH POINTS A FIRST RAID AT WHAT TO DO
+
+Co-op hunt while he was away. From the fresh-save pass of 2026-10-03: a new player lands in the stash on a row of icons with no names, an empty loadout and a tiny key legend, and nothing says what the screen is for. Until his first raid is logged, and while nothing is packed, the loadout column now says FIRST RAID: drag a gun and two heals in here, then go up at ENTER RAID!
+
+MEASURED. Check 17.89 passes, and fails on v17.88.
 ## v17.88 - A PAD UNPLUGGED PAUSES ONLY THE WINDOW THAT PLAYS IT
 
 Co-op hunt while he was away. On one PC both windows hear every pad unplug, so the v17.73 pause landed in both: player 2 cable coming out put a pause box over player 1 mid-fight. A window in a same machine pair now reacts only to the pad it plays.
