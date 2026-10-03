@@ -5741,7 +5741,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof keysLegendHtml!=='function') return 'SKIP: no key line here';
      var bad=[], keep={on:NET.on,role:NET.role,peers:NET.peers}, peer={state:'in',seat:1,dc:{readyState:'open',send:function(){}}}, lines=[], src='', oFT=ctx.fillText, det=document.getElementById('invdetail')||document.querySelector('#hub .detail');
-     if(!/offer|trade/.test(keysLegendHtml())) bad.push('the pause-box key line does not name the trade key');
+     if(!/offer|trade|drop/.test(keysLegendHtml())) bad.push('the pause-box key line does not name the trade key');
      try{
        NET.on=true; NET.role='host'; NET.peers=[peer];
        try{ if(typeof renderHub==='function') renderHub(); }catch(_r){}   // the stash screen render is what writes the idle text
@@ -7185,7 +7185,7 @@ window.__REGRESS=[
        try{ if(G) G.deathAnims=[]; __endRaid('abandon'); __topClear(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'17.55',what:'in a party raid the backpack says how to offer an item: Y offer on a controller, T offer on keys; solo it says nothing about offering',
+  {v:'17.55',what:'in a party raid the backpack says how to hand an item over: Y drop on a controller, Z drop on keys (it said offer until v18.27); solo it says nothing about giving',
    run:function(){
      if(typeof drawBag!=='function'||typeof NET!=='object'||!NET) return 'SKIP: no backpack or party in this fixture';
      if(!window.__deploy||!window.__endRaid) return 'SKIP: no raid in this fixture';
@@ -7198,11 +7198,11 @@ window.__REGRESS=[
        ctx.fillText=function(s){ seen.push(String(s)); return oFT.apply(this,arguments); };
        NET.on=true; NET.role='join';
        PAD.on=true; txt=draw();
-       if(!/Y offer/.test(txt)) bad.push('with a controller in a party raid the backpack does not say Y offers ('+txt.slice(0,160)+')');
+       if(!/Y (offer|drop)/.test(txt)) bad.push('with a controller in a party raid the backpack does not say Y drops ('+txt.slice(0,160)+')');
        PAD.on=false; txt=draw();
-       if(!/T offer/.test(txt)) bad.push('on keys in a party raid the backpack does not say T offers');
+       if(!/(T offer|Z drop)/.test(txt)) bad.push('on keys in a party raid the backpack does not say Z drops');
        NET.on=false; txt=draw();
-       if(/offer/.test(txt)) bad.push('solo the backpack still talks about offering');
+       if(/offer|drop for/.test(txt)) bad.push('solo the backpack still talks about giving');
      }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
      finally{
        try{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }catch(_f){}
