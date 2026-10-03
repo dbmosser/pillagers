@@ -1,0 +1,5 @@
+## v17.75 - REMAPPABLE KEYS
+
+Co-op hunt while he was away. Every AAA game lets you change its keys; this one could not. Settings gains CHANGE KEYS, a window that lists the actions (move, roll, sprint, crouch, interact, reload, melee, search, backpack, equip, map, controls, offer, ping, pause): click one, press the key you want. Two actions never share a key: they swap. RESET TO DEFAULTS puts everything back. The map is saved with the profile and the pause box legend follows it. The raid prompts still name the default keys in this build; that follows.
+
+MEASURED. Check 17.75 passes, and fails on v17.74.

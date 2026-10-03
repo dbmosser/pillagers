@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.75 - REMAPPABLE KEYS
+
+Co-op hunt while he was away. Every AAA game lets you change its keys; this one could not. Settings gains CHANGE KEYS, a window that lists the actions (move, roll, sprint, crouch, interact, reload, melee, search, backpack, equip, map, controls, offer, ping, pause): click one, press the key you want. Two actions never share a key: they swap. RESET TO DEFAULTS puts everything back. The map is saved with the profile and the pause box legend follows it. The raid prompts still name the default keys in this build; that follows.
+
+MEASURED. Check 17.75 passes, and fails on v17.74.
 ## v17.74 - VOLUME: MASTER, MUSIC AND EFFECTS
 
 Co-op hunt while he was away. A AAA game has volume controls and this one had none: the only sound choices were which window plays and the split. Settings gains Master, Music and Effects rows, Off to Full, applied at once. The defaults are the game as it was.

@@ -1,0 +1,7 @@
+v17.75: remappable keys
+
+Settings has CHANGE KEYS: click an action, press the key you want on it. Two actions never share a key, they swap.
+
+Check 17.75. Fails on v17.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
