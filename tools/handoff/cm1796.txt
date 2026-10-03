@@ -1,0 +1,7 @@
+v17.96: the seal spawns at random
+
+The seal now spawns at a different landmark each raid.
+
+Check 17.96. Fails on v17.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

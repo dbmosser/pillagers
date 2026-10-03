@@ -5721,6 +5721,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.96',what:'the seal spawns at random: across 24 seeds the door lands in more than one place on the first sector, and the same seed lands it in the same place twice, so both windows of a pair agree',
+   run:function(){
+     if(!(window.__seal&&__seal.spot)||typeof FIXED_MAPS==='undefined'||typeof sideStream!=='function') return 'SKIP: no seal spot to roll here';
+     var bad=[], def=FIXED_MAPS[0], map={}, spots={}, n=0, s, a=null, b=null, k;
+     if(!def||!def.landmarks||def.landmarks.length<3) return 'SKIP: the first sector has under three landmarks';
+     try{
+       for(s=1;s<=24;s++){ sideStream(s*7919,4,function(){ a=__seal.spot(map,def); }); k=Math.round(a.x/200)+','+Math.round(a.y/200); if(!spots[k]){ spots[k]=1; n++; } }
+       sideStream(4242,4,function(){ a=__seal.spot(map,def); }); sideStream(4242,4,function(){ b=__seal.spot(map,def); });
+       if(!a||!b||a.x!==b.x||a.y!==b.y) bad.push('the same seed rolled two different doors');
+       if(n<2) bad.push('24 seeds all put the seal in the same place');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.95',what:'the boarding window reads EXTRACT IN PROGRESS, his words of 2026-10-03, in the banner line, the ring badge and the sector map line, and the old EXTRACT NOW is gone from all three',
    run:function(){
      if(typeof extractNowLine!=='function'||typeof zoneBadge!=='function') return 'SKIP: no boarding line here';

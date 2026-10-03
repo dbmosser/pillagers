@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.96 - THE SEAL SPAWNS AT RANDOM
+
+Co-op hunt while he was away. His order of 2026-10-03, given mid-raid: the seal stood in the same far corner of each sector every raid. Each raid now rolls it among the sector landmarks, never the one nearest the first spawn and never one closer than half the farthest, so the cut stays a journey. The roll comes from the raid seed, so the two windows of a pair see the same door and nothing else on the map moves.
+
+MEASURED. Check 17.96 passes, and fails on v17.95.
 ## v17.95 - THE BOARDING WINDOW READS EXTRACT IN PROGRESS
 
 Co-op hunt while he was away. His words of 2026-10-03, given mid-raid: EXTRACT NOW! becomes EXTRACT IN PROGRESS! It is the banner above the belt while the ship sits in the ring, the badge on the ring itself and the line under the ring on the sector map, all three from the same words. The letter and the seconds left stay as they were.

@@ -1466,7 +1466,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.95';
+var VER='17.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8601,21 +8601,24 @@ function sealNeed(tier){ return 40+tier*25; }
 function sealHere(){
   return sealRec(clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1));
 }
-// Fixed per map, derived from the map's own geometry so it is always the same
-// door in the same place: the far corner from the first authored spawn.
+// v17.96, HIS ORDER (2026-10-03): THE SEAL SPAWNS AT RANDOM. It stood in the same far corner every raid; now each raid rolls it
+// among the map's landmarks from the raid's own seeded side stream (v8.35), so both windows of a pair roll the same door and the
+// main stream, and every count that hangs on it, is untouched. Never the landmark nearest the first spawn, and never one closer
+// than half the farthest, so the cut stays a journey. The clear-spot search below is unchanged.
 function sealSpot(map,def){
-  var s0=def.spawns[0],best=null,bd=-1;
-  for(var i=0;i<def.landmarks.length;i++){
-    var L=def.landmarks[i],cx=L.x+L.w/2,cy=L.y+L.h/2;
-    var d=dist({x:cx,y:cy},s0);
+  var s0=def.spawns[0],best=null,bd=-1,nearest=null,nd=1e9,cands=[],i,L,cx,cy,d;
+  for(i=0;i<def.landmarks.length;i++){
+    L=def.landmarks[i]; cx=L.x+L.w/2; cy=L.y+L.h/2; d=dist({x:cx,y:cy},s0);
+    cands.push({x:cx,y:cy,d:d});
     if(d>bd){ bd=d; best={x:cx,y:cy}; }
+    if(d<nd){ nd=d; nearest=cands[cands.length-1]; }
   }
+  var far=[]; for(i=0;i<cands.length;i++){ if(cands[i]!==nearest&&cands[i].d>=bd*0.5) far.push(cands[i]); }
+  if(far.length>1){ var pick=far[Math.min(far.length-1,Math.floor(rr()*far.length))]; best={x:pick.x,y:pick.y}; }
   if(!best) best={x:WORLD_W*0.5,y:WORLD_H*0.5};
-  // MUST be the same door in the same place every raid, so the candidate test
-  // uses the map DEFINITION only. Testing against the built wall list looked
-  // right and was not: furniture and interior partitions are rolled fresh each
-  // raid, so a spot that was clear last time can be blocked this time and the
-  // seal walks. Measured on COLD STORAGE, where it moved across four raids.
+  // The candidate test uses the map DEFINITION only, so the two windows of a pair, which build the same definition from the
+  // same seed, agree on the door: furniture and interior partitions are rolled fresh each raid, and a test against the built
+  // wall list once walked the seal across four raids on COLD STORAGE.
   function defClear(x,y){
     if(x<90||y<90||x>WORLD_W-90||y>WORLD_H-90) return false;
     var q,W2;
@@ -10871,7 +10874,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   // plus jitter without ever asking whether that is somebody's front room. His
   // cap is checked here, once, with everybody on the map.
   _capHouses();
-  // THE SEAL. Not a container: a door you cut at, in the same place every raid.
+  // THE SEAL. Not a container: a door you cut at, rolled to a new landmark each raid (v17.96, his order of 2026-10-03).
   if(!sim) sideStream(seed,4,function(){                // v8.35: side stream
     G_SEAL_SPOT=sealSpot(map,FIXED_MAPS[mapIx]);
   });
@@ -31950,7 +31953,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.95: The extraction banner now reads EXTRACT IN PROGRESS! with the ring letter and the seconds left. Check 17.95 fails on v17.94',
+  now:'v17.96: The seal now spawns at a different landmark each raid. Check 17.96 fails on v17.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
