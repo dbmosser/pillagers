@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.76 - THE RAID CONTROLS LEGEND: COLUMNS APART, AND OUT OF THE WAY AFTER THREE RAIDS
+
+Co-op hunt while he was away. From the visual pass of 2026-10-02. In the raid HUD the controls legend drew TACTICAL BELT into the next column (1-9 tactical b B/I), and the whole panel sat on screen in every raid, big as the health bar, where no AAA game keeps a key list. The label column is wider now, and after three raids the legend starts collapsed to its one-line H controls; H opens it as before.
+
+MEASURED. Check 17.76 passes, and fails on v17.75.
 ## v17.75 - REMAPPABLE KEYS
 
 Co-op hunt while he was away. Every AAA game lets you change its keys; this one could not. Settings gains CHANGE KEYS, a window that lists the actions (move, roll, sprint, crouch, interact, reload, melee, search, backpack, equip, map, controls, offer, ping, pause): click one, press the key you want. Two actions never share a key: they swap. RESET TO DEFAULTS puts everything back. The map is saved with the profile and the pause box legend follows it. The raid prompts still name the default keys in this build; that follows.

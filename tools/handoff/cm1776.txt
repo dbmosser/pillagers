@@ -1,0 +1,7 @@
+v17.76: the raid controls legend: columns apart, and out of the way after three raids
+
+The raid controls legend no longer overlaps itself, and after your first three raids it starts collapsed (H opens it).
+
+Check 17.76. Fails on v17.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

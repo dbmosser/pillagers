@@ -1,0 +1,20 @@
+{
+    "title":  "THE NEW-IN CARD IS A CARD, NOT A WALL",
+    "why":  "From the visual pass of 2026-10-02. On entering the Undercroft after an update the card drew every note in full: six paragraphs over the whole floor. It now shows the newest five notes, each as its headline and the start of what follows. The party note also said a host leaving abandons the run for everyone, which v17.69 changed: it now says player 2 keeps the raid.",
+    "now":  "The NEW IN card is shorter: the newest five notes, each as a headline and a line.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002717.65\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002717.65\u0027;\n// v16.xx, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the\n// whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes\n// themselves are unchanged.\nvar WN_SHOW=5, WN_TAIL=150;\nfunction wnShort(s){\n  var t=String(s||\u0027\u0027), i=t.indexOf(\u0027. \u0027), head, rest, cut;\n  if(i\u003c0||i\u003e140) return (t.length\u003eWN_TAIL+60)?(t.slice(0,WN_TAIL+60).replace(/\\s+\\S*$/,\u0027\u0027)+\u0027...\u0027):t;\n  head=t.slice(0,i+1); rest=t.slice(i+2);\n  if(rest.length\u003c=WN_TAIL) return head+\u0027 \u0027+rest;\n  cut=rest.slice(0,WN_TAIL).replace(/\\s+\\S*$/,\u0027\u0027);\n  return head+\u0027 \u0027+cut+\u0027...\u0027;\n}"
+                  },
+                  {
+                      "anchor":  "      for(var wm=0;wm\u003cWHATSNEW.length;wm++){\n        var wWords=((wm+1)+\u0027. \u0027+WHATSNEW[wm]).split(\u0027 \u0027),wLine=\u0027\u0027,wFirst=1;",
+                      "replacement":  "      for(var wm=0;wm\u003cMath.min(WN_SHOW,WHATSNEW.length);wm++){\n        var wWords=((wm+1)+\u0027. \u0027+wnShort(WHATSNEW[wm])).split(\u0027 \u0027),wLine=\u0027\u0027,wFirst=1;"
+                  },
+                  {
+                      "anchor":  "if the host leaves the party, the run ends as abandoned for everyone.",
+                      "replacement":  "if the host window closes, player 2 keeps the raid and runs it alone."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the new-in card shows the newest five notes, each cut to its headline and the start of what follows, and the party note no longer says a host leaving abandons the run for everyone\u0027,\n   run:function(){\n     if(typeof wnShort!==\u0027function\u0027||typeof WN_SHOW===\u0027undefined\u0027) return \u0027the card draws every note in full\u0027;\n     var bad=[], long=\u0027A HEADLINE IN CAPS. \u0027+new Array(60).join(\u0027word \u0027)+\u0027end.\u0027, s=wnShort(long), needle=\u0027abandoned for \u0027+\u0027everyone\u0027;\n     if(WN_SHOW!==5) bad.push(\u0027the card shows \u0027+WN_SHOW+\u0027 notes\u0027);\n     if(s.indexOf(\u0027A HEADLINE IN CAPS.\u0027)!==0) bad.push(\u0027the headline was lost: \u0027+s.slice(0,40));\n     if(s.length\u003e200||s.slice(-3)!==\u0027...\u0027) bad.push(\u0027a long note was not cut (\u0027+s.length+\u0027 chars)\u0027);\n     if(wnShort(\u0027SHORT ONE. And a tail.\u0027)!==\u0027SHORT ONE. And a tail.\u0027) bad.push(\u0027a short note was changed\u0027);\n     if(WHATSNEW.some(function(l){ return String(l).indexOf(needle)\u003e=0; })) bad.push(\u0027a note still says a host leaving abandons the run for everyone\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

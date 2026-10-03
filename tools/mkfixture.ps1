@@ -5721,6 +5721,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.76',what:'the raid controls legend: its two columns no longer collide (the label column is wide enough for TACTICAL BELT) and after three raids it starts collapsed, H still opens it',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid) return 'SKIP: no raid in this fixture';
+     var bad=[], r0=P.runs, oSay=say, seen=[], oFT=ctx.fillText, i, kx=null, lx=null, nx=null;
+     try{
+       say=function(){};
+       P.runs=0; __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no raid';
+       if(G.legendOn!==1) bad.push('a new player does not get the legend open ('+G.legendOn+')');
+       ctx.fillText=function(s,x,y){ seen.push({s:String(s),x:x,y:y,f:ctx.font}); return oFT.apply(this,arguments); };
+       try{ drawHUD(); }catch(_h){}
+       ctx.fillText=oFT;
+       for(i=0;i<seen.length;i++){ if(seen[i].s==='1-9') kx=seen[i]; if(seen[i].s==='tactical belt') lx=seen[i]; if(seen[i].s==='B / I'||seen[i].s==='B/I') nx=seen[i]; }
+       if(!kx||!lx||!nx) bad.push('the legend did not draw its belt row ('+(kx?'':'no key ')+(lx?'':'no label ')+(nx?'':'no next key')+')');
+       else{ ctx.font=lx.f; var w=ctx.measureText('tactical belt').width; if(lx.x+w>nx.x-4) bad.push('TACTICAL BELT runs into the next column ('+Math.round(lx.x+w)+' past '+Math.round(nx.x)+')'); }
+       __endRaid('abandon'); __topClear();
+       P.runs=3; __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no second raid';
+       if(G.legendOn!==0) bad.push('after three raids the legend still starts open ('+G.legendOn+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ ctx.fillText=oFT; say=oSay; P.runs=r0; try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.75',what:'remappable keys: binding interact onto F swaps it with melee, a real F press then reads as E in the game and the pause legend says F interact; RESET puts the defaults back; Settings has a CHANGE KEYS row and the Keys window lists the actions',
    run:function(){
      if(typeof keysBind!=='function'||typeof keyRemap!=='function') return 'the keys cannot be changed';
