@@ -964,7 +964,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     // BUILD 3: and the permanent player 2 save this page makes on this origin.
     (function(k){ [k,k+':prerestore',k+':precrash',k+':unreadable'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} }); })('salvagerun:profile:p2');
     // BUILD 4: and the two controller picks kept for next time.
-    ['salvagerun:samepad:host','salvagerun:samepad:p2'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
+    ['salvagerun:samepad:host','salvagerun:samepad:p2','salvagerun:samesound:who','salvagerun:samesound:split'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });   // v17.70: and the shared sound setting
     // BUILD 5: and the two sound switches kept for next time.
     ['salvagerun:samesound:host','salvagerun:samesound:p2'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
     log('wiped the two net saves, the player 2 save, the controller picks and the sound switches; reloading the copies');
