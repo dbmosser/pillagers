@@ -1,0 +1,5 @@
+## v17.84 - UNDER THE TITLE, ONLY THE WORLD
+
+Co-op hunt while he was away. The title backdrop of v17.83 drew the whole floor, with its header, the NEW IN card, the station names and the walk hint showing through the glass. Under the title only the world draws now: the floor, the people, the light. The moment the title goes, everything draws as before.
+
+MEASURED. Check 17.84 passes, and fails on v17.83.

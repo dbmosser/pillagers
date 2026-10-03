@@ -1,0 +1,16 @@
+{
+    "title":  "UNDER THE TITLE, ONLY THE WORLD",
+    "why":  "The title backdrop of v17.83 drew the whole floor, with its header, the NEW IN card, the station names and the walk hint showing through the glass. Under the title only the world draws now: the floor, the people, the light. The moment the title goes, everything draws as before.",
+    "now":  "The title backdrop shows only the Undercroft itself: no floor text shows through.",
+    "edits":  [
+                  {
+                      "anchor":  "function drawHubHUD(ox,oy){",
+                      "replacement":  "function drawHubHUD(ox,oy){\n  if(titleOn()) return;   // v16.xx: nothing of the floor HUD under the title"
+                  },
+                  {
+                      "anchor":  "    var s3=HB.stations[i],on=HB.near===s3;",
+                      "replacement":  "    var s3=HB.stations[i],on=HB.near===s3;\n    if(titleOn()) continue;   // v16.xx: no station names under the title"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027under the title only the world shows: no THE UNDERCROFT header, no NEW IN card, no station names; with the title gone they draw as before\u0027,\n   run:function(){\n     if(typeof titleOn!==\u0027function\u0027||typeof drawHubHUD!==\u0027function\u0027) return \u0027SKIP: this build has no title backdrop\u0027;\n     if(typeof loop!==\u0027function\u0027||!window.__hubEnter) return \u0027SKIP: no loop or floor in this fixture\u0027;\n     var bad=[], t=document.getElementById(\u0027title\u0027), was=t\u0026\u0026t.classList.contains(\u0027on\u0027), st0=state, oF1=ctx.fillText, oF2=wc.fillText, seen=[], has=function(s){ return seen.some(function(q){ return q.indexOf(s)\u003e=0; }); };\n     try{\n       if(!t) return \u0027SKIP: no title in this fixture\u0027;\n       __runPrep(); __hubEnter();\n       ctx.fillText=function(s){ seen.push(String(s)); return oF1.apply(this,arguments); }; wc.fillText=function(s){ seen.push(String(s)); return oF2.apply(this,arguments); };\n       t.classList.add(\u0027on\u0027); state=\u0027hub\u0027;\n       HID.fromWorker=1; try{ loop(performance.now()); loop(performance.now()+16); }finally{ HID.fromWorker=0; }\n       if(has(\u0027THE UNDERCROFT\u0027)) bad.push(\u0027the floor header shows through the title\u0027);\n       if(has(\u0027NEW IN v\u0027)) bad.push(\u0027the NEW IN card shows through the title\u0027);\n       if(has(\u0027ENTER RAID\u0027)||has(\u0027THE MAINFRAME\u0027)) bad.push(\u0027the station names show through the title\u0027);\n       t.classList.remove(\u0027on\u0027); seen.length=0;\n       HID.fromWorker=1; try{ loop(performance.now()+32); loop(performance.now()+48); }finally{ HID.fromWorker=0; }\n       if(!has(\u0027THE UNDERCROFT\u0027)) bad.push(\u0027with the title gone the floor header does not draw\u0027);\n       if(!has(\u0027ENTER RAID\u0027)) bad.push(\u0027with the title gone the station names do not draw\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ ctx.fillText=oF1; wc.fillText=oF2; if(was\u0026\u0026t) t.classList.add(\u0027on\u0027); else if(t) t.classList.remove(\u0027on\u0027); state=st0; try{ __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.84 - UNDER THE TITLE, ONLY THE WORLD
+
+Co-op hunt while he was away. The title backdrop of v17.83 drew the whole floor, with its header, the NEW IN card, the station names and the walk hint showing through the glass. Under the title only the world draws now: the floor, the people, the light. The moment the title goes, everything draws as before.
+
+MEASURED. Check 17.84 passes, and fails on v17.83.
 ## v17.83 - THE UNDERCROFT SHOWS THROUGH THE TITLE
 
 Co-op hunt while he was away. From the visual pass of 2026-10-02. The title sat on a flat gradient with nothing behind it. The floor is now built while the title is up and drawn beneath it, people milling, the way a AAA title shows its world, under a dark glass so the title reads as before. The floor belt and backpack stay off until the title goes.

@@ -1438,7 +1438,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.83';
+var VER='17.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30851,6 +30851,7 @@ function hubStationNames(S,ox,oy){
   wc.textAlign='center';
   for(i=0;i<HB.stations.length;i++){
     var s3=HB.stations[i],on=HB.near===s3;
+    if(titleOn()) continue;   // v17.84: no station names under the title
     wc.font=FS(TYPE.label);
     var tw=wc.measureText(s3.label).width;
     // v10.93: a firm plate. It was half transparent, so the floor showed through
@@ -30901,6 +30902,7 @@ function hubStationNames(S,ox,oy){
   wc.restore();
 }
 function drawHubHUD(ox,oy){
+  if(titleOn()) return;   // v17.84: nothing of the floor HUD under the title
   var p=HB.player;
   // The hub is a place you point at things, so it always has an arrow, v2.91.
   if(_curNow!=='default'){ _curNow='default'; try{ cv.style.cursor='default'; }catch(e){} }
@@ -31898,7 +31900,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.83: The title screen now has the Undercroft behind it, under dark glass. Check 17.83 fails on v17.82',
+  now:'v17.84: The title backdrop shows only the Undercroft itself: no floor text shows through. Check 17.84 fails on v17.83',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

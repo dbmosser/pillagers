@@ -5721,6 +5721,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.84',what:'under the title only the world shows: no THE UNDERCROFT header, no NEW IN card, no station names; with the title gone they draw as before',
+   run:function(){
+     if(typeof titleOn!=='function'||typeof drawHubHUD!=='function') return 'SKIP: this build has no title backdrop';
+     if(typeof loop!=='function'||!window.__hubEnter) return 'SKIP: no loop or floor in this fixture';
+     var bad=[], t=document.getElementById('title'), was=t&&t.classList.contains('on'), st0=state, oF1=ctx.fillText, oF2=wc.fillText, seen=[], has=function(s){ return seen.some(function(q){ return q.indexOf(s)>=0; }); };
+     try{
+       if(!t) return 'SKIP: no title in this fixture';
+       __runPrep(); __hubEnter();
+       ctx.fillText=function(s){ seen.push(String(s)); return oF1.apply(this,arguments); }; wc.fillText=function(s){ seen.push(String(s)); return oF2.apply(this,arguments); };
+       t.classList.add('on'); state='hub';
+       HID.fromWorker=1; try{ loop(performance.now()); loop(performance.now()+16); }finally{ HID.fromWorker=0; }
+       if(has('THE UNDERCROFT')) bad.push('the floor header shows through the title');
+       if(has('NEW IN v')) bad.push('the NEW IN card shows through the title');
+       if(has('ENTER RAID')||has('THE MAINFRAME')) bad.push('the station names show through the title');
+       t.classList.remove('on'); seen.length=0;
+       HID.fromWorker=1; try{ loop(performance.now()+32); loop(performance.now()+48); }finally{ HID.fromWorker=0; }
+       if(!has('THE UNDERCROFT')) bad.push('with the title gone the floor header does not draw');
+       if(!has('ENTER RAID')) bad.push('with the title gone the station names do not draw');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ ctx.fillText=oF1; wc.fillText=oF2; if(was&&t) t.classList.add('on'); else if(t) t.classList.remove('on'); state=st0; try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.83',what:'the title has the Undercroft behind it: with the title up and no floor built yet, one frame builds the floor and draws it under a translucent title',
    run:function(){
      if(typeof titleSceneReady!=='function'||typeof titleOn!=='function') return 'the title sits on a flat gradient';

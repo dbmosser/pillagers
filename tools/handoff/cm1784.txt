@@ -1,0 +1,7 @@
+v17.84: under the title, only the world
+
+The title backdrop shows only the Undercroft itself: no floor text shows through.
+
+Check 17.84. Fails on v17.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
