@@ -300,3 +300,6 @@ in one window, not yet in the two-window nettest.
   TO DO: a maintenance pass over those 22 (each: environment, stale expectation, or a real bug; v10.11 is the stash tab row gaining
   the search and SORT controls at v17.42). Today's intended changes: fixture updated (kid row name, host-lost line, 3 sound checks
   retired); with the legend opened on __deploy, v8.91 v10.95 v10.93 v10.78 v10.41 v15.91 v11.92 v11.39 pass again.
+- CORPUS MAINTENANCE 2026-10-03 01:00: run one at a time, 18 of the 22 old failures PASS (the full run leaks state between checks);
+  the four left were stale expectations, all adapted in mkfixture (v10.11 SORT button, v10.74 taller card, v9.58 977 px headless
+  window vs a 1080 fit, v10.28 OPEN disabled under a leftover raid). A fresh full run is going for the clean count.
