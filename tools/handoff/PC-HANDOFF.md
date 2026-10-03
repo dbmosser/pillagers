@@ -323,3 +323,6 @@ in one window, not yet in the two-window nettest.
   (shots in tools/handoff/shots); first-five-minutes audit with a fresh profile and a pad only; the four order-dependent checks;
   stale "On the surface B cycles his orders" (hire orders moved to O; his TXSHIP line, ask him).
 - TOOLS: stress.ps1 (-Throttle), memsoak.ps1, shots.ps1 (-Cdp 9346 -Port 8806), cdp.ps1 -Shot/-Throttle. Two-window test: soakloop.ps1.
+- v17.86 legend says crouch toggle again (v10.41). v17.87 perfNote: ten seconds of frames mostly over 25 ms say once that Settings has
+  Render resolution and Effects (raw gap, not under a Frame cap). v17.88 queued: a pad unplug pauses only the window that plays it
+  (NET.padIx), since both windows on one PC hear every gamepaddisconnected.
