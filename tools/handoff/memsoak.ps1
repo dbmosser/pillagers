@@ -5,7 +5,7 @@ param([int]$Cdp=9344,[int]$Port=8806,[int]$Raids=30,[int]$Sec=6)
 $c='C:\claudecode\dark raiders\tools\cdp.ps1'
 (Invoke-RestMethod ("http://127.0.0.1:$Cdp/json")) | Where-Object { $_.type -eq 'page' -and $_.url -like "*$Port*" } | ForEach-Object { try{ Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/close/"+$_.id) | Out-Null }catch{} }
 $t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:$Cdp/json/new?http://localhost:$Port/fixture.html"); Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/activate/"+$t.id) | Out-Null
-Start-Sleep 15
+for($w=0;$w -lt 120;$w++){ Start-Sleep -Milliseconds 500; $ok=powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match "$Port/fixture" -TimeoutSec 5 -Expr "String(typeof __pinDPR==='function'&&typeof __deploy==='function')" 2>$null; if($ok -eq 'true'){ break } }   # the page is ready, however slow the PC is
 $g=@"
 (async function(){
  var R=$Raids, SEC=$Sec, s, heap=[], G, p, errs=[], on=function(e){ errs.push(String(e.message||e).slice(0,100)); };
