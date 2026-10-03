@@ -329,3 +329,4 @@ in one window, not yet in the two-window nettest.
 - FRESH-SAVE PASS 02:30 (tools/handoff/shots-fresh.ps1 -> shots/fresh/): title, WELCOME PACK, floor and stash read well; the stash is
   the dead end for a stranger (icons without names, empty loadout, tiny key legend) -> v17.89 #firstkit line in the loadout column
   while runs==0 and nothing is packed. Still plain: WELCOME PACK is a text list (icons would be AAA); stash cells have no names.
+- v17.90 WELCOME PACK rows carry item icons (gunIcon / drawItemIcon into 56px canvases). Fresh-save shots retaken: shots/fresh/.
