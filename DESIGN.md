@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.04 - THE WHAT IS NEW CARD NAMES HIS NOTES OF OCTOBER 3
+
+Co-op hunt while he was away. The card was stamped v17.91. It now says what changed since: player 2 character selection, F11 in both windows, ESC from the player 2 window, kid mode shared between windows, Settings keeping its place, the EXTRACT IN PROGRESS banner, the 30 second extraction, the random and quicker seal, the one look for every menu, auto resolution and the half-size fog sheets.
+
+MEASURED. Check 18.04 passes, and fails on v18.03.
 ## v18.03 - THE FOG AND DARKNESS SHEETS DRAW AT HALF SIZE
 
 Co-op hunt while he was away. His report of 2026-10-03: frame rate lag. The fog of war sheet and the darkness-and-lamps sheet were each a full screen of pixels, cleared, filled and composited every frame, eight million apiece at 4K, in each of the two windows, and the Render resolution row never touched them. They hold only gradients and one soft cone edge. They draw at half the screen at 1440p and 4K (two thirds at 1080p, less under a lower render resolution) and are stretched back over the frame; the look is the same and the two heaviest full-screen passes cost a quarter.

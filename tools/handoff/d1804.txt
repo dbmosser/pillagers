@@ -1,0 +1,5 @@
+## v18.04 - THE WHAT IS NEW CARD NAMES HIS NOTES OF OCTOBER 3
+
+Co-op hunt while he was away. The card was stamped v17.91. It now says what changed since: player 2 character selection, F11 in both windows, ESC from the player 2 window, kid mode shared between windows, Settings keeping its place, the EXTRACT IN PROGRESS banner, the 30 second extraction, the random and quicker seal, the one look for every menu, auto resolution and the half-size fog sheets.
+
+MEASURED. Check 18.04 passes, and fails on v18.03.

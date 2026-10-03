@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.04',what:'the what is new card is stamped within 0.15 of the build and has a line on his notes of October 3',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle='YOUR NOTES OF'+' OCTOBER 3';
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)>=0; })) bad.push('no line of the card names his notes of October 3');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.03',what:'the fog of war and darkness sheets draw at a fraction of the screen and are stretched back: the sheets are between half and three quarters of the screen width at full render resolution, smaller again at Low, and with a raid up the ground behind the player is still darker than the ground beside him',
    run:function(){
      if(typeof SOFTR==='undefined'||typeof resize!=='function'||typeof litC==='undefined') return 'the soft sheets still draw at full screen size';
