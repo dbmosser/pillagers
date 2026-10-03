@@ -5856,7 +5856,7 @@ window.__REGRESS=[
        if(!kx||!lx||!nx) bad.push('the legend did not draw its belt row ('+(kx?'':'no key ')+(lx?'':'no label ')+(nx?'':'no next key')+')');
        else{ ctx.font=lx.f; var w=ctx.measureText('tactical belt').width; if(lx.x+w>nx.x-4) bad.push('TACTICAL BELT runs into the next column ('+Math.round(lx.x+w)+' past '+Math.round(nx.x)+')'); }
        __endRaid('abandon'); __topClear();
-       P.runs=3; __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       P.runs=3; __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242,keepLegend:1});
        if(!G||G.over) return 'SKIP: staging: no second raid';
        if(G.legendOn!==0) bad.push('after three raids the legend still starts open ('+G.legendOn+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -43865,7 +43865,7 @@ window.__deploy=function(o){
   var ok=false;
   try{ ok=commitKit(); }catch(e){ return {error:'commitKit threw: '+e}; }
   __startRaid({mapIx:o.mapIx===undefined?0:o.mapIx,seed:o.seed===undefined?4242:o.seed,sim:!!o.sim});
-  try{ if(G&&!o.sim) G.legendOn=1; }catch(_lg){}   // v17.76 starts the legend collapsed after three raids; the checks were written with it open
+  try{ if(G&&!o.sim&&!o.keepLegend) G.legendOn=1; }catch(_lg){}   // v17.76 starts the legend collapsed after three raids; the checks were written with it open (keepLegend:1 keeps the game default)
   return {committed:ok,dropKit:(P.dropKit||[]).slice(),
           stashLeft:(P.stash||[]).slice(),bag:G?G.bag.slice():null};
 };
