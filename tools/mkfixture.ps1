@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.79',what:'the sector page draws a map of each sector in its row (zones, buildings, extraction rings), one canvas per sector with something on it',
+   run:function(){
+     if(typeof sectorPreviewDraw!=='function'||typeof renderSector!=='function') return 'the sector page is text over an empty page';
+     if(!document.getElementById('sectorlist')) return 'SKIP: no sector page in this fixture';
+     var bad=[], cvs, i, c, d, lit, k;
+     try{
+       renderSector();
+       cvs=document.querySelectorAll('#sectorlist canvas.secprev');
+       if(cvs.length!==FIXED_MAPS.length) bad.push('the sector page has '+cvs.length+' maps for '+FIXED_MAPS.length+' sectors');
+       for(i=0;i<cvs.length;i++){
+         c=cvs[i].getContext('2d'); d=c.getImageData(0,0,cvs[i].width,cvs[i].height).data; lit=0;
+         for(k=3;k<d.length;k+=4*37) if(d[k]>0) lit++;
+         if(lit<50) bad.push('sector '+i+' map is blank ('+lit+' lit samples)');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.78',what:'a PlayStation pad is named in its own words: the pad id picks the make, keyLabel says SQUARE for the X prompt, the backpack line says CROSS pick up, CIRCLE close, and the short pad legend names his layout (A roll, RT fire)',
    run:function(){
      if(typeof padB!=='function'||typeof padBrandOf!=='function') return 'every prompt names Xbox buttons whatever pad is plugged in';

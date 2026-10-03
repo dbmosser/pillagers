@@ -1,0 +1,7 @@
+v17.79: a map of each sector on the sector page
+
+The sector page now shows a map of each sector beside its name: zones, buildings and the extraction points.
+
+Check 17.79. Fails on v17.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

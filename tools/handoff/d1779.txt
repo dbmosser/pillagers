@@ -1,0 +1,5 @@
+## v17.79 - A MAP OF EACH SECTOR ON THE SECTOR PAGE
+
+Co-op hunt while he was away. From the visual pass of 2026-10-02: WHERE ARE YOU GOING? was two rows of text over an empty page. Each row now carries a drawn map of its sector from the fixed layout: the ground, the named zones, the buildings and landmarks, and the extraction points as rings. No build and no seeded draw; the map is drawn into a small canvas when the page renders.
+
+MEASURED. Check 17.79 passes, and fails on v17.78.

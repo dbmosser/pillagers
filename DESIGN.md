@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.79 - A MAP OF EACH SECTOR ON THE SECTOR PAGE
+
+Co-op hunt while he was away. From the visual pass of 2026-10-02: WHERE ARE YOU GOING? was two rows of text over an empty page. Each row now carries a drawn map of its sector from the fixed layout: the ground, the named zones, the buildings and landmarks, and the extraction points as rings. No build and no seeded draw; the map is drawn into a small canvas when the page renders.
+
+MEASURED. Check 17.79 passes, and fails on v17.78.
 ## v17.78 - A PLAYSTATION PAD IS NAMED IN ITS OWN WORDS, AND THE PAD LEGEND MATCHES HIS LAYOUT
 
 Co-op hunt while he was away. Every prompt named Xbox buttons whatever pad was plugged in. The game now reads the pad make from its id and, on a PlayStation pad, says CROSS, CIRCLE, SQUARE, TRIANGLE, L1, R1, L2, R2, SHARE and OPTIONS everywhere a prompt goes through keyLabel, in the legends, and in the few prompts written out by hand. A pad handed to the other window carries its make too. The short pad legend also still described the old layout (B roll, A fire, Y reload); it now matches his: A roll, B crouch, RT fire, X reload, LT or RS focus aim, D-left and right aim distance.
