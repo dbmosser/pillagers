@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.92 - F11 FULLSCREENS EVERY WINDOW, PLAYER 2 INCLUDED
+
+Co-op hunt while he was away. His report of 2026-10-03: F11 did nothing in the player 2 window. That window opens as a popup and the browser does not act on F11 there. The game now answers F11 itself in every window, with the same toggle the GO FULLSCREEN button runs.
+
+MEASURED. Check 17.92 passes, and fails on v17.91.
 ## v17.91 - THE WHAT IS NEW CARD NAMES THE BETTER FIRST HOUR
 
 Co-op hunt while he was away. The card was stamped v17.80. It now says what changed since: the title backdrop, the welcome pack icons, the first raid pointer in the stash, the sector maps, the legend out of the way, the short card, the slow PC hint and the per-window pad unplug.

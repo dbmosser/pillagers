@@ -5721,6 +5721,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.92',what:'F11 toggles fullscreen in this window: the game answers the key itself (the second window is a popup the browser ignores F11 in)',
+   run:function(){
+     if(typeof fsToggle!=='function') return 'SKIP: no fullscreen toggle in this fixture';
+     var bad=[], o=fsToggle, n=0, ev;
+     try{
+       fsToggle=function(){ n++; return true; };
+       ev=new KeyboardEvent('keydown',{code:'F11',key:'F11',bubbles:true,cancelable:true}); window.dispatchEvent(ev);
+       if(n!==1) bad.push('F11 ran the fullscreen toggle '+n+' times');
+       if(!ev.defaultPrevented) bad.push('F11 was left to the browser');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ fsToggle=o; }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.91',what:'the what is new card is stamped within 0.15 of the build and has a line on the better first hour',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';

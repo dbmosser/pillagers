@@ -1,0 +1,7 @@
+v17.92: f11 fullscreens every window, player 2 included
+
+F11 goes fullscreen in both windows, player 2 included.
+
+Check 17.92. Fails on v17.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

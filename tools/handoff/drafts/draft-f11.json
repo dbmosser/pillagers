@@ -1,0 +1,12 @@
+{
+    "title":  "F11 FULLSCREENS EVERY WINDOW, PLAYER 2 INCLUDED",
+    "why":  "His report of 2026-10-03: F11 did nothing in the player 2 window. That window opens as a popup and the browser does not act on F11 there. The game now answers F11 itself in every window, with the same toggle the GO FULLSCREEN button runs.",
+    "now":  "F11 goes fullscreen in both windows, player 2 included.",
+    "edits":  [
+                  {
+                      "anchor":  "function fsSync(){",
+                      "replacement":  "// v16.xx, HIS REPORT (2026-10-03): F11 DID NOT FULLSCREEN THE PLAYER 2 WINDOW. The second window opens as a popup, and the browser\n// does not act on F11 there. The game answers F11 itself now, in every window, with the same toggle the GO FULLSCREEN button\n// runs; on the key the browser still has a user gesture to grant it. Caught on the way down, before any menu eats the key.\ntry{ window.addEventListener(\u0027keydown\u0027,function(ev){ if(ev\u0026\u0026ev.code===\u0027F11\u0027\u0026\u0026!ev.repeat){ ev.preventDefault(); try{ fsToggle(); }catch(_f){} } },true); }catch(_fk){}\nfunction fsSync(){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027F11 toggles fullscreen in this window: the game answers the key itself (the second window is a popup the browser ignores F11 in)\u0027,\n   run:function(){\n     if(typeof fsToggle!==\u0027function\u0027) return \u0027SKIP: no fullscreen toggle in this fixture\u0027;\n     var bad=[], o=fsToggle, n=0, ev;\n     try{\n       fsToggle=function(){ n++; return true; };\n       ev=new KeyboardEvent(\u0027keydown\u0027,{code:\u0027F11\u0027,key:\u0027F11\u0027,bubbles:true,cancelable:true}); window.dispatchEvent(ev);\n       if(n!==1) bad.push(\u0027F11 ran the fullscreen toggle \u0027+n+\u0027 times\u0027);\n       if(!ev.defaultPrevented) bad.push(\u0027F11 was left to the browser\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ fsToggle=o; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

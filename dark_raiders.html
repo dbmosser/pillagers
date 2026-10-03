@@ -1439,7 +1439,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.91';
+var VER='17.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31923,7 +31923,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.91: The what is new card names the better first hour. Check 17.91 fails on v17.90',
+  now:'v17.92: F11 goes fullscreen in both windows, player 2 included. Check 17.92 fails on v17.91',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39519,6 +39519,10 @@ function fsToggle(){
 }
 // The label has to follow the real state rather than what the last click asked
 // for: leaving fullscreen with Escape never goes through the button.
+// v17.92, HIS REPORT (2026-10-03): F11 DID NOT FULLSCREEN THE PLAYER 2 WINDOW. The second window opens as a popup, and the browser
+// does not act on F11 there. The game answers F11 itself now, in every window, with the same toggle the GO FULLSCREEN button
+// runs; on the key the browser still has a user gesture to grant it. Caught on the way down, before any menu eats the key.
+try{ window.addEventListener('keydown',function(ev){ if(ev&&ev.code==='F11'&&!ev.repeat){ ev.preventDefault(); try{ fsToggle(); }catch(_f){} } },true); }catch(_fk){}
 function fsSync(){
   var b=document.getElementById('titlefs'); if(!b) return;
   if(!fsCan()){ b.style.display='none'; return; }
