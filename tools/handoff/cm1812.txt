@@ -1,0 +1,7 @@
+v18.12: the icon fills its cell
+
+Item and gun pictures now fill their cells in the stash, backpack and shop instead of sitting small in the middle.
+
+Check 18.12. Fails on v18.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

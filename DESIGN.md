@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.12 - THE ICON FILLS ITS CELL
+
+Co-op hunt while he was away. His order of 2026-10-03: the item graphics need massive improvement. A 40 px picture sat in a 200 px stash cell, so the thing you were looking at was a tenth of its box. Stash and backpack cells now show the icon at 62 percent of the cell at every layout, shop cells at 44 percent, and the painters draw at up to six times the row size, so the big picture is a sharp one. The belt keys keep their small picture.
+
+MEASURED. Check 18.12 passes, and fails on v18.11.
 ## v18.11 - THE STYLING PASS, STAGE B: THE TITLE
 
 Co-op hunt while he was away. His order of 2026-10-03: styling across all menus needs massive improvement. Stage B is the title: a gold gradient wordmark with a glow instead of flat amber, the three step cards as rounded glass cards, and a vignette backdrop in place of the flat wash, so the Undercroft still shows through and the column reads. No words moved.

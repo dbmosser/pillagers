@@ -1,0 +1,32 @@
+{
+    "title":  "THE STYLING PASS, STAGE C: ONE PANEL FOR THE RAID HUD",
+    "why":  "His order of 2026-10-03: styling across all menus and HUDs. Five HUD boxes (conditions, the pillager board, both legends and the backpack) each drew their own flat black rectangle with a thin stroke. They share one panel now: rounded corners, a slight gradient, a steel border and a hairline of light along the top, so the HUD reads as one set of instruments. Every position, size and hit box is what it was.",
+    "now":  "The raid HUD panels share one look: rounded, softly shaded, one border.",
+    "edits":  [
+                  {
+                      "anchor":  "function drawRaiderBoard(){",
+                      "replacement":  "// v16.xx, THE STYLING PASS, STAGE C: ONE PANEL FOR THE RAID HUD. Five HUD boxes (conditions, the pillager board, both legends and\n// the backpack) each drew their own flat black rectangle with a thin stroke. They share one panel now: rounded corners, a slight\n// top-to-bottom gradient, a one pixel steel border and a hairline of light along the top edge, so the HUD reads as one set of\n// instruments. Every position, size and hit box is what it was.\nfunction hudPanel(x,y,w,h,a){\n  var r, g;\n  if(!(w\u003e0\u0026\u0026h\u003e0)) return;\n  r=Math.min(6,w/2,h/2); a=(a===undefined)?0.76:a;\n  function path(px,py,pw,ph,pr){ pr=Math.max(0,Math.min(pr,pw/2,ph/2)); ctx.beginPath(); ctx.moveTo(px+pr,py); ctx.lineTo(px+pw-pr,py); ctx.quadraticCurveTo(px+pw,py,px+pw,py+pr); ctx.lineTo(px+pw,py+ph-pr); ctx.quadraticCurveTo(px+pw,py+ph,px+pw-pr,py+ph); ctx.lineTo(px+pr,py+ph); ctx.quadraticCurveTo(px,py+ph,px,py+ph-pr); ctx.lineTo(px,py+pr); ctx.quadraticCurveTo(px,py,px+pr,py); ctx.closePath(); }\n  ctx.save();\n  path(x,y,w,h,r);\n  try{ g=ctx.createLinearGradient(0,y,0,y+h); g.addColorStop(0,\u0027rgba(14,19,40,\u0027+a+\u0027)\u0027); g.addColorStop(1,\u0027rgba(6,9,13,\u0027+a+\u0027)\u0027); ctx.fillStyle=g; }catch(_g){ ctx.fillStyle=\u0027rgba(6,9,13,\u0027+a+\u0027)\u0027; }\n  ctx.fill();\n  path(x+.5,y+.5,w-1,h-1,r);\n  ctx.strokeStyle=\u0027rgba(127,146,216,.42)\u0027; ctx.lineWidth=1; ctx.stroke();\n  ctx.beginPath(); ctx.moveTo(x+r,y+1.5); ctx.lineTo(x+w-r,y+1.5); ctx.strokeStyle=\u0027rgba(255,255,255,.06)\u0027; ctx.lineWidth=1; ctx.stroke();\n  ctx.restore();\n}\nfunction drawRaiderBoard(){"
+                  },
+                  {
+                      "anchor":  "ctx.fillStyle=\u0027rgba(6,9,13,.72)\u0027; ctx.fillRect(bx,by,bw,bh);\n    ctx.strokeStyle=\u0027rgba(127,146,216,.40)\u0027; ctx.lineWidth=1; ctx.strokeRect(bx+.5,by+.5,bw-1,bh-1);",
+                      "replacement":  "hudPanel(bx,by,bw,bh);   // v16.xx: the one HUD panel"
+                  },
+                  {
+                      "anchor":  "  ctx.fillStyle=\u0027rgba(6,9,13,.72)\u0027;\n  ctx.fillRect(PADX-8,y0-LH(13),LW,boxH);\n  ctx.strokeStyle=\u0027rgba(127,146,216,.40)\u0027; ctx.lineWidth=1;\n  ctx.strokeRect(PADX-7.5,y0-LH(12.5),LW-1,boxH-1);",
+                      "replacement":  "  hudPanel(PADX-8,y0-LH(13),LW,boxH);   // v16.xx: the one HUD panel"
+                  },
+                  {
+                      "anchor":  "    ctx.fillStyle=\u0027rgba(6,9,13,.72)\u0027; ctx.fillRect(mx-8,my-6,MW,MH+10);\n    ctx.strokeStyle=\u0027rgba(127,146,216,.40)\u0027; ctx.lineWidth=1;\n    ctx.strokeRect(mx-7.5,my-5.5,MW-1,MH+9);",
+                      "replacement":  "    hudPanel(mx-8,my-6,MW,MH+10);   // v16.xx: the one HUD panel"
+                  },
+                  {
+                      "anchor":  "  ctx.fillStyle=\u0027rgba(6,9,13,.82)\u0027; ctx.fillRect(x-8,top-6,LEGW,boxH+10);\n  ctx.strokeStyle=\u0027rgba(127,146,216,.55)\u0027; ctx.lineWidth=1;\n  ctx.strokeRect(x-7.5,top-5.5,LEGW-1,boxH+9);",
+                      "replacement":  "  hudPanel(x-8,top-6,LEGW,boxH+10,0.84);   // v16.xx: the one HUD panel"
+                  },
+                  {
+                      "anchor":  "  ctx.fillStyle=\u0027rgba(6,9,13,.96)\u0027; ctx.fillRect(x,y,PW,hh);\n  ctx.strokeStyle=\u0027#3a4552\u0027; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);",
+                      "replacement":  "  hudPanel(x,y,PW,hh,0.96);   // v16.xx: the one HUD panel"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027stage C of the styling pass: the raid HUD panels share one rounded panel: in a drawn raid frame the conditions panel corner pixel is empty and a pixel just inside it is painted, and the same holds for the pillager board\u0027,\n   run:function(){\n     if(typeof hudPanel!==\u0027function\u0027) return \u0027the HUD panels are flat rectangles\u0027;\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)||typeof HUDBOX===\u0027undefined\u0027) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var bad=[], g, keep=P.hud, R, a;\n     function al(x,y){ return ctx.getImageData(Math.round(x*DPR),Math.round(y*DPR),1,1).data[3]; }\n     function box(name,R){ if(!R||!(R.w\u003e20\u0026\u0026R.h\u003e20)) return bad.push(\u0027control: no \u0027+name+\u0027 panel to measure\u0027); a=al(R.x+0.6,R.y+0.6); if(a\u003e40) bad.push(\u0027the \u0027+name+\u0027 panel corner is square (alpha \u0027+a+\u0027)\u0027); a=al(R.x+8,R.y+8); if(a\u003c60) bad.push(\u0027the \u0027+name+\u0027 panel is not painted inside its corner (alpha \u0027+a+\u0027)\u0027); }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       P.hud={};\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); keys={}; g.mapOpen=false; g.legendOn=1;\n       __frame(0.016); __frame(0.016);\n       box(\u0027conditions\u0027,HUDBOX.cond); box(\u0027pillager board\u0027,HUDBOX.raiders);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ P.hud=keep; keys={}; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

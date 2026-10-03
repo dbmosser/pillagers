@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.12',what:'the icon fills its cell: a stash cell icon is sized by the cell (62 percent of it) rather than a fixed 30 or 40 px, the shop cell icon likewise (44 percent), and the icon painter draws a 30 px icon at least 150 px across so the big picture is sharp',
+   run:function(){
+     if(typeof itemIconURL!=='function') return 'SKIP: no icon painter here';
+     var bad=[], hub=document.getElementById('hub'), host=hub||document.body, d, c, img, s, u, b64, bin='', w=0, v, vimg;
+     d=document.createElement('div'); d.className='invgrid'; d.style.width='220px';
+     c=document.createElement('div'); c.className='cell'; img=document.createElement('img'); img.className='ic'; img.style.width='30px'; img.style.height='30px';
+     c.appendChild(img); d.appendChild(c); host.appendChild(d);
+     v=document.createElement('div'); v.className='vcell'; v.style.width='190px'; vimg=document.createElement('img'); vimg.className='ic'; vimg.style.width='56px'; vimg.style.height='56px'; v.appendChild(vimg); host.appendChild(v);
+     try{
+       s=getComputedStyle(img); if(!(s.width==='62%'||parseFloat(s.width)>=110)) bad.push('the stash cell icon is '+s.width+' wide');
+       s=getComputedStyle(vimg); if(!(s.width==='44%'||parseFloat(s.width)>=70)) bad.push('the shop cell icon is '+s.width+' wide');
+       u=itemIconURL('bandage',30); b64=(String(u).split(',')[1]||'');
+       try{ bin=atob(b64); w=((bin.charCodeAt(16)<<24)|(bin.charCodeAt(17)<<16)|(bin.charCodeAt(18)<<8)|bin.charCodeAt(19))>>>0; }catch(e){ bad.push('could not read the icon image'); }
+       if(!(w>=150)) bad.push('the 30 px icon is drawn on a '+w+' px canvas');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ host.removeChild(d); }catch(_r){} try{ host.removeChild(v); }catch(_r2){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.11',what:'stage B of the styling pass: the title wordmark is a gold gradient clipped to the letters, the three step cards are rounded glass cards, and the title backdrop is a vignette that still lets the Undercroft show through',
    run:function(){
      var t=document.getElementById('title'), wm=t&&t.querySelector('.wordmark'), cards=t?t.querySelectorAll('.tcard'):[], bad=[], s, was;
