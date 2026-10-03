@@ -1483,7 +1483,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.25';
+var VER='18.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22207,7 +22207,7 @@ var COSMETICS=[
   {id:'mohawk',  name:'Mohawk',        how:'always',      kind:'cut'},
   {id:'shaved',  name:'Shaved',        how:'always',      kind:'cut'},
   {id:'blonde', name:'Blonde',         how:'always',      kind:'hair'},
-  {id:'dark',   name:'Dark',           how:'runs:3',      kind:'hair'},
+  {id:'dark',   name:'Dark',           how:'always',      kind:'hair'},   // v18.26: the default, so it is never shown locked (was runs:3)
   {id:'red',    name:'Rust Red',       how:'extracts:12', kind:'hair'},
   // LEVEL 4, not 6. Measured the curve instead of guessing: XP is 72 a run and
   // the level is 1+floor(sqrt(xp/220)), so level 6 is about a HUNDRED runs. He
@@ -22307,7 +22307,7 @@ function cosFind(id){
 // v6.46: five kinds now, so the worn id and the fallback both come from a table
 // instead of a two-way branch with the answer baked into the return.
 var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch',tattoo:'cosTattoo',outfit:'cosOutfit'};
-var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone',outfit:'outnone'};
+var COSDEF={hair:'dark',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'crop',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone',outfit:'outnone'};   // v18.26, HIS ORDER (2026-10-03): short dark hair is the default look; a new character wore long blonde, which read as a gold outline round the face
 // v10.54: WHAT EACH OUTFIT OVERRULES. coat and trs are the torso and the
 // trousers, boots the two legs, skin the head, hands the gun hand; cut, hat and
 // beard replace the racks; mark names the suit's own paint, done last.
@@ -32192,7 +32192,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.25: The pause box, the stash screen and the Undercroft floor all say how to trade while a party is on. Check 18.25 fails on v18.24',
+  now:'v18.26: New characters start with short dark hair. Check 18.26 fails on v18.25',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

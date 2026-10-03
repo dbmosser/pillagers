@@ -1,0 +1,7 @@
+v18.26: short dark hair is the default look
+
+New characters start with short dark hair.
+
+Check 18.26. Fails on v18.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

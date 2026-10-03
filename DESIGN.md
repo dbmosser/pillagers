@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.26 - SHORT DARK HAIR IS THE DEFAULT LOOK
+
+Co-op hunt while he was away. His order of 2026-10-03: make short dark hair the default. A new character wore long blonde hair, which on player 2 read as a strange gold outline round the face. A character with no hair or cut picked now wears dark hair in a crop, and Dark hair is open from the first run so the mirror never shows the default as locked. Anyone who picked a look keeps it.
+
+MEASURED. Check 18.26 passes, and fails on v18.25.
 ## v18.25 - THE FLOOR SAYS HOW TO TRADE
 
 Co-op hunt while he was away. From the trade audit of 2026-10-03, the places a player looks and found nothing: the pause-box key line, the stash screen idle text, the Undercroft bottom controls line and the H card. Each names the trade key now, the last three only while a party is on.
