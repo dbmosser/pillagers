@@ -1,0 +1,5 @@
+## v17.81 - THE FULL CONTROLS LEGEND NAMES A PLAYSTATION PAD TOO
+
+Co-op hunt while he was away. The pad names build left one place out: the full controls list (H pressed twice) still said A, B, X, Y on a PlayStation pad. It goes through the same translation now.
+
+MEASURED. Check 17.81 passes, and fails on v17.80.

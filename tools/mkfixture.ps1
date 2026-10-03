@@ -5721,6 +5721,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.81',what:'the full controls legend (H twice) names a PlayStation pad in its own words: CIRCLE crouch, CROSS dodge roll',
+   run:function(){
+     if(typeof padB!=='function') return 'SKIP: this build has no pad names';
+     if(!window.__deploy||!window.__endRaid||typeof drawHUD!=='function') return 'SKIP: no raid in this fixture';
+     var bad=[], b0=PAD.brand, on0=PAD.on, oFT=ctx.fillText, seen=[], oSay=say;
+     try{
+       say=function(){};
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no raid';
+       PAD.brand='ps'; PAD.on=true; G.legendOn=2;
+       ctx.fillText=function(s){ seen.push(String(s)); return oFT.apply(this,arguments); };
+       try{ drawHUD(); }catch(_h){}
+       ctx.fillText=oFT;
+       if(seen.indexOf('CIRCLE')<0||seen.indexOf('CROSS')<0) bad.push('the full legend on a PlayStation pad drew '+JSON.stringify(seen.filter(function(s){ return /^(A|B|X|Y|CROSS|CIRCLE|SQUARE|TRIANGLE)$/.test(s); })));
+       if(seen.indexOf('B')>=0) bad.push('the full legend still says B on a PlayStation pad');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ ctx.fillText=oFT; PAD.brand=b0; PAD.on=on0; say=oSay; try{ if(G){ G.legendOn=1; __endRaid('abandon'); } __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.80',what:'the what is new card is stamped within 0.15 of the build and has a line on the volume, keys, kid menu and sound setting',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined') return 'SKIP: this build has no what is new card';

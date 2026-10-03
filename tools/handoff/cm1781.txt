@@ -1,0 +1,7 @@
+v17.81: the full controls legend names a playstation pad too
+
+The full controls list (H twice) also names a PlayStation pad in its own words.
+
+Check 17.81. Fails on v17.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

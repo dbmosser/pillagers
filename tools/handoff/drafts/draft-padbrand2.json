@@ -1,0 +1,12 @@
+{
+    "title":  "THE FULL CONTROLS LEGEND NAMES A PLAYSTATION PAD TOO",
+    "why":  "The pad names build left one place out: the full controls list (H pressed twice) still said A, B, X, Y on a PlayStation pad. It goes through the same translation now.",
+    "now":  "The full controls list (H twice) also names a PlayStation pad in its own words.",
+    "edits":  [
+                  {
+                      "anchor":  "      ctx.fillText(k[0],x+LH(6),cy);",
+                      "replacement":  "      ctx.fillText(padB(k[0]),x+LH(6),cy);   // v16.xx: the pad in its own words"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the full controls legend (H twice) names a PlayStation pad in its own words: CIRCLE crouch, CROSS dodge roll\u0027,\n   run:function(){\n     if(typeof padB!==\u0027function\u0027) return \u0027SKIP: this build has no pad names\u0027;\n     if(!window.__deploy||!window.__endRaid||typeof drawHUD!==\u0027function\u0027) return \u0027SKIP: no raid in this fixture\u0027;\n     var bad=[], b0=PAD.brand, on0=PAD.on, oFT=ctx.fillText, seen=[], oSay=say;\n     try{\n       say=function(){};\n       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!G||G.over) return \u0027SKIP: staging: no raid\u0027;\n       PAD.brand=\u0027ps\u0027; PAD.on=true; G.legendOn=2;\n       ctx.fillText=function(s){ seen.push(String(s)); return oFT.apply(this,arguments); };\n       try{ drawHUD(); }catch(_h){}\n       ctx.fillText=oFT;\n       if(seen.indexOf(\u0027CIRCLE\u0027)\u003c0||seen.indexOf(\u0027CROSS\u0027)\u003c0) bad.push(\u0027the full legend on a PlayStation pad drew \u0027+JSON.stringify(seen.filter(function(s){ return /^(A|B|X|Y|CROSS|CIRCLE|SQUARE|TRIANGLE)$/.test(s); })));\n       if(seen.indexOf(\u0027B\u0027)\u003e=0) bad.push(\u0027the full legend still says B on a PlayStation pad\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ ctx.fillText=oFT; PAD.brand=b0; PAD.on=on0; say=oSay; try{ if(G){ G.legendOn=1; __endRaid(\u0027abandon\u0027); } __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

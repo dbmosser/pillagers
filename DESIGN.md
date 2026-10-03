@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.81 - THE FULL CONTROLS LEGEND NAMES A PLAYSTATION PAD TOO
+
+Co-op hunt while he was away. The pad names build left one place out: the full controls list (H pressed twice) still said A, B, X, Y on a PlayStation pad. It goes through the same translation now.
+
+MEASURED. Check 17.81 passes, and fails on v17.80.
 ## v17.80 - THE WHAT IS NEW CARD NAMES THE VOLUME, KEYS, KID MENU AND SOUND SETTING
 
 Co-op hunt while he was away. The card was stamped v17.65. It now says what changed since: volume rows, remappable keys, the kid menu, the one sound setting for a pair, PlayStation names, the sector maps, the legend out of the way, the covered-window fix and player 2 keeping the raid.
