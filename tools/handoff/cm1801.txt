@@ -1,0 +1,7 @@
+v18.01: auto resolution: a slow stretch steps the picture down by itself
+
+When the game runs slowly it lowers its own render resolution a notch at a time, and raises it again when frames are smooth (Settings: Auto resolution).
+
+Check 18.01. Fails on v18.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

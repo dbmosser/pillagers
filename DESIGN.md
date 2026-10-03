@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.01 - AUTO RESOLUTION: A SLOW STRETCH STEPS THE PICTURE DOWN BY ITSELF
+
+Co-op hunt while he was away. His report of 2026-10-03, mid-raid: frame rate lag while running into new ground. A slow stretch used to run slow until someone found the Render resolution row. Now Settings has an Auto resolution row, On by default: two seconds of long frames step the render scale down one notch, never under Low, and the picture sharpens again after eight seconds of smooth frames, waiting longer after each bounce. The first step down says so once. The Render resolution row stays the ceiling.
+
+MEASURED. Check 18.01 passes, and fails on v18.00.
 ## v18.00 - KID MODE SET IN ONE WINDOW SHOWS IN THE OTHER
 
 Co-op hunt while he was away. His order of 2026-10-03: kid mode changes made in player 1 Settings should show in player 2 Settings. The three kid rows lived on each window save. A change is now also written to the storage both windows share, with a time stamp; the other window takes it at once, or when its Settings next open, and an older stamp never undoes a newer one.
