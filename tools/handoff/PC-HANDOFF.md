@@ -290,3 +290,7 @@ in one window, not yet in the two-window nettest.
   CPU 4x SLOWER (a weak laptop stand-in, headless = software raster): 40 bodies draw 28 ms, frame 38 ms (26 fps); 120 bodies 91 ms.
   Drawing is the cost on weak PCs; Render resolution / Effects (v17.43) are the levers. CANDIDATE: auto-detect slow frames and
   point at those settings once. MEMORY 30 raids: heap floor 16 -> 26 MB (sawtooth 23-53); mild; a 100-raid soak queued.
+- MEMORY 100 raids (memsoak, 5 s each): heap returns to 17-20 MB at raids 17, 51, 75, 89; peaks 61. No leak.
+- CORPUS at 1080p on v17.84: 30 of 912 fail (tools: baseline in task bmev5km6k). Known causes from today: kid row renamed (v16.44), per-window
+  sound gone (v16.24/29, v15.78), host-leave rule (v15.91, v16.15), NEW-IN card (v11.92), legend collapsed after 3 runs (fixture now
+  opens it on __deploy). The rest await the v17.48 comparison run.
