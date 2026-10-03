@@ -1,0 +1,48 @@
+{
+    "title":  "THE FOG AND DARKNESS SHEETS DRAW AT HALF SIZE",
+    "why":  "His report of 2026-10-03: frame rate lag. The fog of war sheet and the darkness-and-lamps sheet were each a full screen of pixels, cleared, filled and composited every frame, eight million apiece at 4K, in each of the two windows, and the Render resolution row never touched them. They hold only gradients and one soft cone edge. They draw at half the screen at 1440p and 4K (two thirds at 1080p, less under a lower render resolution) and are stretched back over the frame; the look is the same and the two heaviest full-screen passes cost a quarter.",
+    "now":  "The fog and darkness layers now draw at half size and are stretched back, which cuts two of the heaviest full-screen passes to a quarter of their pixels.",
+    "edits":  [
+                  {
+                      "anchor":  "var litC=document.createElement(\u0027canvas\u0027),lx2=litC.getContext(\u00272d\u0027);",
+                      "replacement":  "var litC=document.createElement(\u0027canvas\u0027),lx2=litC.getContext(\u00272d\u0027);\n// v16.xx, AAA CHECK after his report of 2026-10-03 (frame rate lag): THE TWO SOFT SHEETS DRAW SMALL. The fog of war sheet and\n// the darkness-and-lamps sheet were each a full screen of pixels, cleared, filled and composited every frame, at 4K eight\n// million pixels apiece, and the Render resolution row never touched them. They hold nothing but gradients and one soft cone\n// edge, which do not need every pixel. They draw at SOFTR of the screen now (half at 1440p and 4K, two thirds at 1080p, less\n// again under a lower render resolution) and are stretched back over the frame. The hub\u0027s warm light sheet is the same sheet.\nvar SOFTR=1;"
+                  },
+                  {
+                      "anchor":  "  fogC.width=W; fogC.height=H;\n  litC.width=W; litC.height=H;",
+                      "replacement":  "  SOFTR=Math.max(0.33,((W*H\u003e2.6e6)?0.5:0.67)*gfxScaleNow());   // v16.xx: the soft sheets\u0027 share of the screen\n  fogC.width=Math.max(1,Math.round(W*SOFTR)); fogC.height=Math.max(1,Math.round(H*SOFTR));\n  litC.width=Math.max(1,Math.round(W*SOFTR)); litC.height=Math.max(1,Math.round(H*SOFTR));"
+                  },
+                  {
+                      "anchor":  "  lx2.globalCompositeOperation=\u0027source-over\u0027;\n  lx2.clearRect(0,0,W,H);\n  // CFG.bright lifts everything you can actually see.",
+                      "replacement":  "  lx2.globalCompositeOperation=\u0027source-over\u0027;\n  lx2.setTransform(1,0,0,1,0,0); lx2.clearRect(0,0,litC.width,litC.height); lx2.setTransform(SOFTR,0,0,SOFTR,0,0);   // v16.xx: the sheet is SOFTR of the screen; everything below draws in screen units through this\n  // CFG.bright lifts everything you can actually see."
+                  },
+                  {
+                      "anchor":  "  lx2.setTransform(Z,0,0,Z,-ox*Z,-oy*Z);",
+                      "replacement":  "  lx2.setTransform(Z*SOFTR,0,0,Z*SOFTR,-ox*Z*SOFTR,-oy*Z*SOFTR);   // v16.xx: world units on the small sheet"
+                  },
+                  {
+                      "anchor":  "  lx2.setTransform(1,0,0,1,0,0);\n  wc.drawImage(litC,0,0);",
+                      "replacement":  "  lx2.setTransform(1,0,0,1,0,0);\n  wc.drawImage(litC,0,0,W,H);   // v16.xx: stretched back over the frame"
+                  },
+                  {
+                      "anchor":  "  fx2.setTransform(1,0,0,1,0,0);\n  fx2.clearRect(0,0,W,H);",
+                      "replacement":  "  fx2.setTransform(1,0,0,1,0,0);\n  fx2.clearRect(0,0,fogC.width,fogC.height); fx2.setTransform(SOFTR,0,0,SOFTR,0,0);   // v16.xx: the fog sheet is SOFTR of the screen"
+                  },
+                  {
+                      "anchor":  "  fx2.setTransform(Z,0,0,Z,-ox*Z,-oy*Z);",
+                      "replacement":  "  fx2.setTransform(Z*SOFTR,0,0,Z*SOFTR,-ox*Z*SOFTR,-oy*Z*SOFTR);   // v16.xx: world units on the small sheet"
+                  },
+                  {
+                      "anchor":  "wc.drawImage(fogC,0,0);",
+                      "replacement":  "wc.drawImage(fogC,0,0,W,H);   // v16.xx: stretched back over the frame"
+                  },
+                  {
+                      "anchor":  "  lx2.globalCompositeOperation=\u0027source-over\u0027;\n  lx2.clearRect(0,0,W,H);\n  lx2.fillStyle=\u0027rgba(14,12,36,\u0027",
+                      "replacement":  "  lx2.globalCompositeOperation=\u0027source-over\u0027;\n  lx2.setTransform(1,0,0,1,0,0); lx2.clearRect(0,0,litC.width,litC.height); lx2.setTransform(SOFTR,0,0,SOFTR,0,0);   // v16.xx: the home sheet draws small too\n  lx2.fillStyle=\u0027rgba(14,12,36,\u0027"
+                  },
+                  {
+                      "anchor":  "  wc.drawImage(litC,0,0);\n  wc.globalCompositeOperation=\u0027lighter\u0027;\n  for(i=0;i\u003cHB.lights.length;i++){",
+                      "replacement":  "  lx2.setTransform(1,0,0,1,0,0); wc.drawImage(litC,0,0,W,H);   // v16.xx: stretched back over the frame\n  wc.globalCompositeOperation=\u0027lighter\u0027;\n  for(i=0;i\u003cHB.lights.length;i++){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the fog of war and darkness sheets draw at a fraction of the screen and are stretched back: the sheets are between half and three quarters of the screen width at full render resolution, smaller again at Low, and with a raid up the ground behind the player is still darker than the ground beside him\u0027,\n   run:function(){\n     if(typeof SOFTR===\u0027undefined\u0027||typeof resize!==\u0027function\u0027||typeof litC===\u0027undefined\u0027) return \u0027the soft sheets still draw at full screen size\u0027;\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var bad=[], s0=CFG.gfxScale, g, p, pz, sx, sy, fx, fy, near, far;\n     function px(x,y){ var d=wc.getImageData(Math.round(x*DPR),Math.round(y*DPR),1,1).data; return d[0]+d[1]+d[2]; }\n     try{\n       CFG.gfxScale=1; resize();\n       if(!(litC.width\u003cW*0.75\u0026\u0026litC.width\u003e=Math.round(W*0.5)-1)) bad.push(\u0027the darkness sheet is \u0027+litC.width+\u0027 wide on a \u0027+W+\u0027 screen\u0027);\n       if(fogC.width!==litC.width||fogC.height!==litC.height) bad.push(\u0027the two sheets differ in size\u0027);\n       CFG.gfxScale=0.5; resize(); if(!(litC.width\u003cW*0.4)) bad.push(\u0027a Low render resolution left the sheet \u0027+litC.width+\u0027 wide\u0027); CFG.gfxScale=1; resize();\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); p=g.player; g.mapOpen=false; keys={};\n       __frame(0.016); __frame(0.016);\n       pz=ZOOM(); sx=(p.x-g.camX)*pz; sy=(p.y-g.camY)*pz;\n       fx=Math.max(4,Math.min(W-4,sx-Math.cos(p.face||0)*620)); fy=Math.max(4,Math.min(H-4,sy-Math.sin(p.face||0)*620));\n       near=px(sx+14,sy+6); far=px(fx,fy);\n       if(!(far\u003cnear)) bad.push(\u0027the fog does not darken the ground behind him (beside \u0027+near+\u0027, behind \u0027+far+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ CFG.gfxScale=s0; try{ resize(); }catch(_r){} try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

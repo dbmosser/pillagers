@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.02 - ESC FROM THE PLAYER 2 WINDOW PAUSES PLAYER 1
+
+Co-op hunt while he was away. His report of 2026-10-03: player 1 could not pause with ESC while the player 2 window was selected. The player 2 window hands every key to the player 1 window (v16.89), but the handed key was dispatched at the window itself, so the main handler opened the pause box and the Escape closer, registered later, shut it again in the same press. The handed key now starts at the page body, the path a key pressed in that window walks, so ESC pauses and a second ESC resumes.
+
+MEASURED. Check 18.02 passes, and fails on v18.01.
 ## v18.01 - AUTO RESOLUTION: A SLOW STRETCH STEPS THE PICTURE DOWN BY ITSELF
 
 Co-op hunt while he was away. His report of 2026-10-03, mid-raid: frame rate lag while running into new ground. A slow stretch used to run slow until someone found the Render resolution row. Now Settings has an Auto resolution row, On by default: two seconds of long frames step the render scale down one notch, never under Low, and the picture sharpens again after eight seconds of smooth frames, waiting longer after each bounce. The first step down says so once. The Render resolution row stays the ceiling.

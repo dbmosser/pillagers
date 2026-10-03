@@ -1,0 +1,1 @@
+| ESC FROM THE PLAYER 2 WINDOW PAUSES PLAYER 1 | v18.02 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 18.02 passes, fails on v18.01 |

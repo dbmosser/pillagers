@@ -1,0 +1,7 @@
+v18.02: esc from the player 2 window pauses player 1
+
+ESC pauses player 1 even while the player 2 window is the one selected.
+
+Check 18.02. Fails on v18.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

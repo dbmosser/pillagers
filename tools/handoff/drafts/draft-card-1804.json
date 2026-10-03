@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES HIS NOTES OF OCTOBER 3",
+    "why":  "The card was stamped v17.91. It now says what changed since: player 2 character selection, F11 in both windows, ESC from the player 2 window, kid mode shared between windows, Settings keeping its place, the EXTRACT IN PROGRESS banner, the 30 second extraction, the random and quicker seal, the one look for every menu, auto resolution and the half-size fog sheets.",
+    "now":  "The what is new card names your notes of October 3.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002717.91\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002718.04\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027A BETTER FIRST HOUR. The title shows the Undercroft behind it, the WELCOME PACK shows its items, and the stash tells a first raid what to do: drag a gun and two heals into the loadout, then go up at ENTER RAID! The sector page shows a map of each sector. The raid controls legend stays out of the way after your first raids, the NEW IN card is short, and if the game runs slowly it says once where the Settings levers are. A controller unplugged pauses only the window that was playing it.\u0027,",
+                      "replacement":  "  \u0027YOUR NOTES OF OCTOBER 3. Player 2 picks a character from the saves list, and every character can play 1 PLAYER. F11 fullscreens both windows. ESC pauses player 1 even with the player 2 window selected. Kid mode set in one window shows in the other, and a Settings change keeps its place. The banner reads EXTRACT IN PROGRESS, extraction takes 30 seconds to arrive and stays 30, the seal spawns at a new landmark each raid and opens a little quicker. Every menu shares one look. When the game runs slowly it lowers its own render resolution a notch at a time, and the fog and darkness layers draw at half size.\u0027,\n  \u0027A BETTER FIRST HOUR. The title shows the Undercroft behind it, the WELCOME PACK shows its items, and the stash tells a first raid what to do: drag a gun and two heals into the loadout, then go up at ENTER RAID! The sector page shows a map of each sector. The raid controls legend stays out of the way after your first raids, the NEW IN card is short, and if the game runs slowly it says once where the Settings levers are. A controller unplugged pauses only the window that was playing it.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and has a line on his notes of October 3\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle=\u0027YOUR NOTES OF\u0027+\u0027 OCTOBER 3\u0027;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)\u003e=0; })) bad.push(\u0027no line of the card names his notes of October 3\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
