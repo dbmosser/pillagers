@@ -272,3 +272,10 @@ in one window, not yet in the two-window nettest.
 - v17.73 gamepaddisconnected in a raid: pause box + "Controller disconnected. Plug it in, then resume."
 - TOOLS: cdp.ps1 -Throttle N (CPU slowdown) and -Shot path.jpg; stress.ps1, memsoak.ps1, shots.ps1 (visual pass screenshots to tools/handoff/shots/).
   shipone.sh: GATE_CDP=9346 ships on a second gate Chrome (profile pillagers-cdp9346) while 9344 is busy.
+- v17.74 volume rows (volApply from the loop: BUS.gain=master*fx; MUS.lvl*music*master). v17.75 remappable keys (P.keymap, keyRemapEvent at the
+  window keydown/keyup, CHANGE KEYS window, swap semantics; raid prompts still say defaults).
+- VISUAL PASS 2026-10-02 (tools/handoff/shots/*.jpg at 1080p): legend columns collided and the panel is too big in play (v17.76);
+  NEW-IN card was a wall of six paragraphs (v17.77 shows five, headline+line); sector page is 80% empty (map previews would fill it);
+  title has no scene behind it; raid HUD panels are debug-grey with hatched corners (a styling pass); shop and stash are fine.
+- PAD SURVEY (agent, 2026-10-02): keyLabel/PADLABEL is the one place for pad names; LEGEND_MINI_PAD was stale (B roll, A fire);
+  no pad id was ever read. v17.78 padbrand: PAD.brand from gp.id, padB() translates, legend fixed, b carried in the pad word.
