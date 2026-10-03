@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.88 - A PAD UNPLUGGED PAUSES ONLY THE WINDOW THAT PLAYS IT
+
+Co-op hunt while he was away. On one PC both windows hear every pad unplug, so the v17.73 pause landed in both: player 2 cable coming out put a pause box over player 1 mid-fight. A window in a same machine pair now reacts only to the pad it plays.
+
+MEASURED. Check 17.88 passes, and fails on v17.87.
 ## v17.87 - A SLOW PC IS TOLD WHERE THE LEVERS ARE
 
 Co-op hunt while he was away. From the stress run of 2026-10-02: on a weak machine the frame runs long and nothing says why or what to do. When more than half of ten seconds of raid frames run over 25 ms, the game says once a session that Settings has Render resolution and Effects to lighten the load. The raw frame gap is measured, so a Frame cap is not read as slow.

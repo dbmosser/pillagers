@@ -1,0 +1,7 @@
+v17.88: a pad unplugged pauses only the window that plays it
+
+Two-player: a controller coming unplugged pauses only the window that was playing it.
+
+Check 17.88. Fails on v17.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v17.88 - A PAD UNPLUGGED PAUSES ONLY THE WINDOW THAT PLAYS IT
+
+Co-op hunt while he was away. On one PC both windows hear every pad unplug, so the v17.73 pause landed in both: player 2 cable coming out put a pause box over player 1 mid-fight. A window in a same machine pair now reacts only to the pad it plays.
+
+MEASURED. Check 17.88 passes, and fails on v17.87.

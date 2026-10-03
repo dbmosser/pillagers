@@ -5721,6 +5721,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.88',what:'in a same machine pair a window pauses only when the pad it plays is unplugged; the other window pad coming out does nothing to it',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof togglePauseBox!=='function'||typeof NET!=='object'||!NET) return 'SKIP: no raid, pause box or party in this fixture';
+     var bad=[], lines=[], oSay=say, st0=state, same0=NET.same, ix0=NET.padIx, ev;
+     function drop(ix){ var e=new Event('gamepaddisconnected'); try{ Object.defineProperty(e,'gamepad',{value:{index:ix}}); }catch(_d){} window.dispatchEvent(e); }
+     try{
+       say=function(t){ lines.push(String(t)); };
+       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no raid';
+       state='raid'; try{ togglePauseBox(false); }catch(_p0){}
+       NET.same='host'; NET.padIx=0;
+       drop(1);
+       if(pauseOpen) bad.push('the other window pad coming out paused this window');
+       if(lines.some(function(t){ return /Controller disconnected/.test(t); })) bad.push('the other window pad coming out said '+JSON.stringify(lines));
+       drop(0);
+       if(!pauseOpen) bad.push('this window own pad coming out did not pause');
+       if(!lines.some(function(t){ return /Controller disconnected/.test(t); })) bad.push('this window own pad coming out said nothing');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ say=oSay; state=st0; NET.same=same0; NET.padIx=ix0; try{ togglePauseBox(false); }catch(_p2){} try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.87',what:'a slow PC is told once where the levers are: ten seconds of frames mostly over 25 ms say the line, smooth frames never do, and it is said once a session',
    run:function(){
      if(typeof perfNote!=='function') return 'a slow PC is told nothing';

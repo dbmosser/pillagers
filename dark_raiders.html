@@ -1438,7 +1438,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.87';
+var VER='17.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12700,7 +12700,12 @@ window.addEventListener('gamepadconnected',function(){ PAD.announced=false; });
 // v17.73, AAA CHECK (2026-10-02): A CONTROLLER UNPLUGGED IN A RAID PAUSES AND SAYS SO. The pad let go of its keys and went
 // quiet, and a player whose cable came out stood still with no word while the machines came. The pause box opens (in a party
 // it is the overlay it always is for one player) and the line names it.
-window.addEventListener('gamepaddisconnected',function(){ padRelease(); PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false;
+window.addEventListener('gamepaddisconnected',function(ev){
+  // v17.88: on one PC both windows hear every pad unplug. A window in a same machine pair reacts only to the pad it plays
+  // (NET.padIx); the other player's cable coming out is his to notice, not a pause over this player's fight.
+  var _gi=(ev&&ev.gamepad&&typeof ev.gamepad.index==='number')?ev.gamepad.index:-1;
+  if(typeof NET==='object'&&NET&&NET.same&&typeof NET.padIx==='number'&&NET.padIx>=0&&_gi>=0&&_gi!==NET.padIx) return;
+  padRelease(); PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false;
   if(typeof G!=='undefined'&&G&&!G.over&&!G.sim&&typeof state!=='undefined'&&state==='raid'){ try{ if(!pauseOpen) togglePauseBox(true); }catch(_pd){} try{ say('Controller disconnected. Plug it in, then resume.'); }catch(_pd2){} }
 });
 cv.addEventListener('contextmenu',function(e){e.preventDefault();});
@@ -31916,7 +31921,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.87: If the game runs slowly on a PC, it says once where the Settings levers are. Check 17.87 fails on v17.86',
+  now:'v17.88: Two-player: a controller coming unplugged pauses only the window that was playing it. Check 17.88 fails on v17.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
