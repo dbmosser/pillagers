@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.17 - TRADING IS ON THE LEGENDS
+
+Co-op hunt while he was away. His note of 2026-10-03: trading instructions are not even on the key legend. The full key list and the full pad list gain a TEAM section (T or Y: offer or take a traded item; N or both bumpers: ping). While a party is on, the compact legend gains the same two rows and grows for them. The stash key bar says RIGHT CLICK offers to your teammate when the windows are linked, and the Party window explains both ways to trade in two sentences.
+
+MEASURED. Check 18.17 passes, and fails on v18.16.
 ## v18.16 - THE TREES AND BUSHES BAKE THEIR BLOBS
 
 Co-op hunt while he was away. Measured on 2026-10-03 after his lag report: a canopy was three filled circles and a bush four, every tree and bush, every frame, about 250 arcs a frame in a grove. The blobs depend only on the size and the palette, so each size is painted once into a sprite and drawn in one call at the same sway. Trunks, bush bases and shadows stay live. Same colours and shapes; a bush sways as one.

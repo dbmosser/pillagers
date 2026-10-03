@@ -1,0 +1,7 @@
+v18.17: trading is on the legends
+
+Trading is on every key legend now, the stash key bar says how to offer, and the Party window explains both ways to trade.
+
+Check 18.17. Fails on v18.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

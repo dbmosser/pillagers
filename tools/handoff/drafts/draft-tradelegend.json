@@ -1,0 +1,40 @@
+{
+    "title":  "TRADING IS ON THE LEGENDS",
+    "why":  "His note of 2026-10-03: trading instructions are not even on the key legend. The full key list and the full pad list gain a TEAM section (T or Y: offer or take a traded item; N or both bumpers: ping). While a party is on, the compact legend gains the same two rows and grows for them. The stash key bar says RIGHT CLICK offers to your teammate when the windows are linked, and the Party window explains both ways to trade in two sentences.",
+    "now":  "Trading is on every key legend now, the stash key bar says how to offer, and the Party window explains both ways to trade.",
+    "edits":  [
+                  {
+                      "anchor":  "[\u0027WORLD\u0027,[[\u0027E\u0027,\u0027search / call for extraction\u0027],[\u0027X\u0027,\u0027search, even on the way out\u0027],[\u0027M\u0027,\u0027map\u0027],[\u0027H\u0027,\u0027cycle this list\u0027],[\u0027P\u0027,\u0027pause\u0027],[\u0027TAB\u0027,\u0027pause, or back out of a menu\u0027],[\u0027O\u0027,\u0027order your hire\u0027]]],",
+                      "replacement":  "[\u0027WORLD\u0027,[[\u0027E\u0027,\u0027search / call for extraction\u0027],[\u0027X\u0027,\u0027search, even on the way out\u0027],[\u0027M\u0027,\u0027map\u0027],[\u0027H\u0027,\u0027cycle this list\u0027],[\u0027P\u0027,\u0027pause\u0027],[\u0027TAB\u0027,\u0027pause, or back out of a menu\u0027],[\u0027O\u0027,\u0027order your hire\u0027]]],\n  [\u0027TEAM\u0027,[[\u0027T\u0027,\u0027offer or take a traded item\u0027],[\u0027N\u0027,\u0027ping, twice for danger\u0027]]],   // v16.xx: his note, trading was on no legend"
+                  },
+                  {
+                      "anchor":  "  [\u0027WORLD\u0027,[[\u0027X\u0027,\u0027search / open / call for extraction\u0027],[\u0027Y\u0027,\u0027search in a ring\u0027],[\u0027DPAD UP\u0027,\u0027ping (twice: danger); hold: map\u0027],[\u0027MENU\u0027,\u0027pause\u0027]]]",
+                      "replacement":  "  [\u0027WORLD\u0027,[[\u0027X\u0027,\u0027search / open / call for extraction\u0027],[\u0027Y\u0027,\u0027search in a ring\u0027],[\u0027DPAD UP\u0027,\u0027ping (twice: danger); hold: map\u0027],[\u0027MENU\u0027,\u0027pause\u0027]]],\n  [\u0027TEAM\u0027,[[\u0027Y\u0027,\u0027offer or take a traded item\u0027],[\u0027LB + RB\u0027,\u0027ping, twice for danger\u0027]]]   // v16.xx: his note, trading was on no legend"
+                  },
+                  {
+                      "anchor":  "    var MN=(PAD\u0026\u0026PAD.on)?LEGEND_MINI_PAD:LEGEND_MINI,mi;",
+                      "replacement":  "    var MN=((PAD\u0026\u0026PAD.on)?LEGEND_MINI_PAD:LEGEND_MINI).slice(),mi;\n    if(typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.on) MN.push([(PAD\u0026\u0026PAD.on)?\u0027Y\u0027:\u0027T\u0027,\u0027trade\u0027],[(PAD\u0026\u0026PAD.on)?\u0027LB + RB\u0027:\u0027N\u0027,\u0027ping\u0027]);   // v16.xx: his note, in a party the trade key is on the short list too\n    var _mr=Math.ceil(MN.length/2);"
+                  },
+                  {
+                      "anchor":  "    var COLW=LH(112),MROW=LH(10),MW=COLW*2+LH(24),MH=MROW*6+LH(16);   // v17.76: wide enough for TACTICAL BELT beside its key",
+                      "replacement":  "    var COLW=LH(112),MROW=LH(10),MW=COLW*2+LH(24),MH=MROW*_mr+LH(16);   // v17.76: wide enough for TACTICAL BELT beside its key; v16.xx: as many rows as the list has"
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(\u0027H  full list\u0027,mx,my+LH(7)+MROW*6+LH(3));",
+                      "replacement":  "    ctx.fillText(\u0027H  full list\u0027,mx,my+LH(7)+MROW*_mr+LH(3));"
+                  },
+                  {
+                      "anchor":  "        \u003cdiv\u003e\u003ckbd\u003eRIGHT CLICK\u003c/kbd\u003e all actions\u003c/div\u003e",
+                      "replacement":  "        \u003cdiv\u003e\u003ckbd\u003eRIGHT CLICK\u003c/kbd\u003e all actions\u003c/div\u003e\n        \u003cdiv id=\"kb_trade\" style=\"display:none\"\u003e\u003ckbd\u003eRIGHT CLICK\u003c/kbd\u003e offer to your teammate\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "function refreshInv(){",
+                      "replacement":  "function refreshInv(){\n  try{ var _kt=document.getElementById(\u0027kb_trade\u0027); if(_kt) _kt.style.display=(typeof netHubSeat===\u0027function\u0027\u0026\u0026netHubSeat()\u003e=0)?\u0027\u0027:\u0027none\u0027; }catch(_kte){}   // v16.xx: the offer line shows while the windows are linked"
+                  },
+                  {
+                      "anchor":  "  \u003cdiv class=\"plist\" id=\"partyroster\" style=\"border:1px solid var(--steel-hi);display:none\"\u003e\u003c/div\u003e",
+                      "replacement":  "  \u003cdiv class=\"plist\" id=\"partyroster\" style=\"border:1px solid var(--steel-hi);display:none\"\u003e\u003c/div\u003e\n  \u003cdiv class=\"hint\" id=\"partytrade\" style=\"margin-top:8px\"\u003eTRADING. Up top: open the backpack, pick the item and press T (Y on a controller); your teammate takes it with T or Y with their backpack closed. In the Undercroft: right-click a stash item and choose Offer; they take it with T, or Y on the floor.\u003c/div\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027trading is on the legends, his note of 2026-10-03: the full key list and the full pad list have a TEAM section with the trade key, the compact legend gains a trade row while a party is on and grows for it, the stash key bar has an offer line, and the Party window explains trading\u0027,\n   run:function(){\n     var bad=[], i, j, tRow=null, yRow=null, kb=document.getElementById(\u0027kb_trade\u0027), pt=document.getElementById(\u0027partytrade\u0027), g, on0, h0=0, h1=0, lines=[], src=\u0027\u0027;\n     if(typeof LEGEND===\u0027undefined\u0027||typeof LEGEND_PAD===\u0027undefined\u0027) return \u0027SKIP: no key tables\u0027;\n     for(i=0;i\u003cLEGEND.length;i++) if(LEGEND[i][0]===\u0027TEAM\u0027) for(j=0;j\u003cLEGEND[i][1].length;j++) if(LEGEND[i][1][j][0]===\u0027T\u0027) tRow=LEGEND[i][1][j];\n     for(i=0;i\u003cLEGEND_PAD.length;i++) if(LEGEND_PAD[i][0]===\u0027TEAM\u0027) for(j=0;j\u003cLEGEND_PAD[i][1].length;j++) if(LEGEND_PAD[i][1][j][0]===\u0027Y\u0027) yRow=LEGEND_PAD[i][1][j];\n     if(!tRow||!/trad|offer/.test(String(tRow[1]))) return \u0027the key list has no TEAM section with a T row for trading\u0027;\n     if(!yRow||!/trad|offer/.test(String(yRow[1]))) bad.push(\u0027the pad list has no TEAM section with a Y row for trading\u0027);\n     if(!kb) bad.push(\u0027the stash key bar has no offer line\u0027);\n     if(!pt||!/Offer/.test(pt.textContent)) bad.push(\u0027the Party window does not explain trading\u0027);\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame\u0026\u0026window.__textTrace)) return bad.length?bad.join(\u0027; \u0027):null;\n     on0=NET.on;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); keys={}; g.mapOpen=false; g.legendOn=1;\n       NET.on=false; __frame(0.016); h0=HUDBOX.legend?HUDBOX.legend.h:0;\n       NET.on=true; lines=__textTrace(function(){ __frame(0.016); }); h1=HUDBOX.legend?HUDBOX.legend.h:0;\n       NET.on=on0;\n       if(!lines.some(function(l){ return /trade/.test(String(l.t||l)); })) bad.push(\u0027with a party on the compact legend draws no trade row\u0027);\n       if(!(h1\u003eh0+4)) bad.push(\u0027the compact legend did not grow for the trade row (\u0027+Math.round(h0)+\u0027 to \u0027+Math.round(h1)+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ NET.on=on0; keys={}; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
