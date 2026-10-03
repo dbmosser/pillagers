@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.21 - THE OFFER LINE AND THE BOSS BAR REACH THE SCREEN
+
+Co-op hunt while he was away. Found by the trade audit of 2026-10-03: the standing "NAME offers you ITEM, T or Y to take it" line and THE OVERSEER health bar were painted at the top of the HUD frame, before the clear that starts every HUD frame, so neither ever reached the screen; only the three second toast did, which is a large part of why trading was unclear. Both are drawn after the clear now.
+
+MEASURED. Check 18.21 passes, and fails on v18.20.
 ## v18.20 - A WAITING TRADE OFFER IS TAKEN FIRST
 
 Co-op hunt while he was away. His note of 2026-10-03: still not clear how trading works. A real trap: the prompt says press T or Y to take the offer, but with the receiver own backpack open that key started an offer of his own and the one waiting ran out. An open offer to this player is now answered first; with none waiting the key offers as before.

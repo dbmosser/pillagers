@@ -1,0 +1,7 @@
+v18.21: the offer line and the boss bar reach the screen
+
+A trade offer now stays on screen with its countdown until it is taken, and THE OVERSEER shows its health bar.
+
+Check 18.21. Fails on v18.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

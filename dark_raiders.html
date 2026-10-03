@@ -1483,7 +1483,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.20';
+var VER='18.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26000,14 +26000,18 @@ function drawBossBar(){
   ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#ffc04a'; ctx.fillText(e.name,W/2,y-LH(4));
   ctx.restore();
 }function drawHUD(){
-  try{ drawBossBar(); }catch(_bb){}   // v17.45: his pick 21
-  try{ drawGiftLine(); }catch(_gl){}   // v17.52: an open trade offer stays on screen
   var p=G.player,T=G.tel,i;
   hudClampAll();
   ctx.clearRect(0,0,W,H);
   var vg=ctx.createRadialGradient(W/2,H/2,H*.42,W/2,H/2,H*.85);
   vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.45)');
   ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
+  // v18.21, FOUND BY THE TRADE AUDIT (2026-10-03): THE BOSS BAR AND THE OFFER LINE WERE DRAWN AND THEN WIPED. Both were painted at
+  // the top of this function, before the clearRect that starts every HUD frame, so THE OVERSEER's health bar (v17.45) and the
+  // "NAME offers you ITEM, T or Y to take it, Ns" line (v17.52) never reached the screen; only the three second toast did,
+  // which is why a player who looked away never knew an offer was waiting. Drawn here, after the clear and the vignette.
+  try{ drawBossBar(); }catch(_bb){}   // v17.45: his pick 21
+  try{ drawGiftLine(); }catch(_gl){}   // v17.52: an open trade offer stays on screen
   if(p.hp<32&&!p.downed){
     // v9.69, HIS NOTE: "red flashing for low health should slow down 2x when not
     // in combat". It ran at one rate forever, a cycle every 1.05 seconds, as
@@ -32177,7 +32181,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.20: Pressing T or Y with a trade offer waiting always takes it, even with your backpack open. Check 18.20 fails on v18.19',
+  now:'v18.21: A trade offer now stays on screen with its countdown until it is taken, and THE OVERSEER shows its health bar. Check 18.21 fails on v18.20',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
