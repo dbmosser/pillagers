@@ -1,0 +1,7 @@
+v18.00: kid mode set in one window shows in the other
+
+Kid mode rows changed in one window now show, and apply, in the other window too.
+
+Check 18.00. Fails on v17.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

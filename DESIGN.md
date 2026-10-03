@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.00 - KID MODE SET IN ONE WINDOW SHOWS IN THE OTHER
+
+Co-op hunt while he was away. His order of 2026-10-03: kid mode changes made in player 1 Settings should show in player 2 Settings. The three kid rows lived on each window save. A change is now also written to the storage both windows share, with a time stamp; the other window takes it at once, or when its Settings next open, and an older stamp never undoes a newer one.
+
+MEASURED. Check 18.00 passes, and fails on v17.99.
 ## v17.99 - A SETTINGS CHANGE KEEPS ITS PLACE
 
 Co-op hunt while he was away. His report of 2026-10-03: every change in the player 2 Settings threw him back to the top of the menu. Each row click rebuilds the list and the rebuild lost the scroll, the focused button and the pad highlight. All three are kept across the rebuild now, in both windows.
