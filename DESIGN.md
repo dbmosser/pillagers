@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.69 - THE REMAINING PLAYER PICKS UP THE RAID WHEN THE HOST IS GONE
+
+Co-op hunt while he was away. His ruling of 2026-10-02, replacing host drop means abandon. When the host window is gone (closed, crashed, the link lost, the party ended, or its raid let go), the teammate still up top used to have his run ended as abandoned. His window already holds the whole surface and the bodies where the host last placed them, so it now keeps the raid and runs it alone: the enemies run under its own update, loot is searched the solo way, bodies known only from host words are let go, THE OVERSEER is made again at the health it had, and the player is told he is running the raid now.
+
+MEASURED. Check 17.69 passes, and fails on v17.68.
 ## v17.68 - A TEAMMATE GOING DOWN IS SAID AND FELT
 
 Co-op hunt while he was away. When a teammate went down, nothing said so in the other window: the health bar over his head went dark, and a player looking the other way found out from the run card. The word that first carries his downed flag now says who is down and asks for the pick-up, and gives the controller a rumble, once per fall.

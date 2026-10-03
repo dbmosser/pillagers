@@ -1437,7 +1437,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.68';
+var VER='17.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9126,10 +9126,10 @@ function bossLair(){
   }
   return {x:cx,y:cy};
 }
-function bossTick(){
+function bossTick(force){   // v17.69: force, for a teammate taking the raid over
   var L, hp, e;
   if(typeof G==='undefined'||!G||G.over||G.bossDone||!G.map||(G.t||0)<2) return null;
-  if(typeof NET!=='undefined'&&NET&&NET.on&&NET.role==='join') return null;
+  if(!force&&typeof NET!=='undefined'&&NET&&NET.on&&NET.role==='join') return null;
   if(CFG.boss===0){ G.bossDone=1; return null; }
   L=bossLair(); hp=Math.round(4000*(CFG.eHp||1));
   e={kind:'warden',boss:1,x:L.x,y:L.y,r:44,hp:hp,maxhp:hp,name:BOSS_NAME,face:0,state:'patrol',tx:L.x,ty:L.y,cd:0,alert:0,
@@ -31732,7 +31732,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.68: When your teammate goes down you are told (NAME is down. Pick them up.) and a controller rumbles. Check 17.68 fails on v17.67',
+  now:'v17.69: If your host window is gone mid-raid (closed, crashed or the link lost), you keep the raid and run it yourself instead of being sent down as abandoned. Check 17.69 fails on v17.68',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -38976,11 +38976,21 @@ function netContMake(cid,m){
 function netHostGone(why){
   if(typeof G==='undefined'||!G||G.sim||G.over) return false;
   if(!netContPeer()) return false;
-  G.netLeft=(why==='out')?'HOST LEFT THE RAID. RUN ABANDONED.'
-                         :'CONNECTION TO HOST LOST. RUN ABANDONED.';
-  NET.status=(why==='out')?'Host left the raid. Run abandoned.'
-                          :'Connection to host lost. Run abandoned.';
-  try{ endRaid('abandon'); }catch(_eg){}
+  // v17.69, HIS RULING 2026-10-02: THE REMAINING PLAYER PICKS UP THE RAID. Before, a host gone (its window closed, the link
+  // lost, the party ended, or its raid let go) ended this raid as abandon (his ruling of 2026-09-25, now replaced). This window
+  // built the whole surface itself and holds the bodies where the host last placed them, so it runs them from here: the raid
+  // stops being shared (upSeed 0, so the frame loop runs updateEnts and the solo loot path), bodies known only from host words
+  // (no AI numbers of their own) are let go, THE OVERSEER among them is made again at the health it had, and a search held
+  // through the host is dropped. The run card never says abandoned for a host that left.
+  var _i, _e, _boss=null, _b;
+  NET.upSeed=0; NET.upFp=null; NET.upWord=null; NET.hostSeed=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;
+  if(G.searching){ G.searching=null; G.searchT=0; }
+  for(_i=G.ents.length-1;_i>=0;_i--){ _e=G.ents[_i]; if(_e&&_e.net){ if(_e.name===BOSS_NAME) _boss=_e; G.ents.splice(_i,1); } }
+  if(_boss){ G.bossDone=0; _b=bossTick(true); if(_b&&_boss.maxhp>0&&_boss.hp>0) _b.hp=Math.max(1,Math.round(_b.maxhp*Math.min(1,_boss.hp/_boss.maxhp))); }
+  else if((G.t||0)>=2) G.bossDone=1;
+  G.netLeft='';
+  NET.status=(why==='out')?'Your host is out of the raid. You are running it now.':'Connection to your host was lost. You are running the raid now.';
+  try{ sayWhenFree(NET.status); }catch(_hs){}
   return true;
 }
 // The containers as this window holds them, for the test page handle.

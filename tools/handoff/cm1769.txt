@@ -1,0 +1,7 @@
+v17.69: the remaining player picks up the raid when the host is gone
+
+If your host window is gone mid-raid (closed, crashed or the link lost), you keep the raid and run it yourself instead of being sent down as abandoned.
+
+Check 17.69. Fails on v17.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
