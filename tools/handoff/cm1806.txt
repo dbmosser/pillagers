@@ -1,0 +1,7 @@
+v18.06: fewer big robots at the extraction
+
+The extraction siege sends fewer machines and far fewer of the big ones.
+
+Check 18.06. Fails on v18.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -5721,6 +5721,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.06',what:'the extraction siege sends fewer big robots (his son, 2026-10-03): the arrivals cap is 5 + 7 x greed (was 6 + 8 x greed) and about three in ten arrivals are sentries (was one in two), measured on a pinned seed',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof tickExtractPoints!=='function'||typeof srand!=='function') return 'SKIP: this fixture cannot deploy';
+     var bad=[], g, Z=null, i, born, sn=0, v0=CFG.siegeVol, GR, want, share;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); keys={};
+       for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
+       if(!Z) return 'SKIP: no open ring';
+       for(i=0;i<g.ents.length;i++) g.ents[i].siegeBorn=0;
+       CFG.siegeVol=1; Z.beaconT=25; Z.hold=null; Z.siegeSpawned=0; Z.siegeSpawnT=0; Z.siegeGreed=null; g.active=Z; g.beaconT=25;
+       srand(777);
+       for(i=0;i<60;i++){ Z.siegeSpawnT=99; tickExtractPoints(0.016); }
+       GR=Z.siegeGreed; want=Math.round(5+7*GR);
+       born=g.ents.filter(function(e){ return e.siegeBorn; });
+       if(born.length!==want) bad.push('the ring sent '+born.length+' machines at greed '+(+GR).toFixed(2)+', not '+want);
+       for(i=0;i<born.length;i++) born[i].siegeBorn=0;
+       CFG.siegeVol=10; Z.siegeSpawned=0; Z.siegeGreed=null; Z.beaconT=25; srand(777);
+       for(i=0;i<140;i++){ Z.siegeSpawnT=99; tickExtractPoints(0.016); }
+       born=g.ents.filter(function(e){ return e.siegeBorn; });
+       for(i=0;i<born.length;i++) if(born[i].kind==='sentry') sn++;
+       share=born.length?sn/born.length:0;
+       if(born.length<30) bad.push('control: only '+born.length+' arrivals to measure the mix on');
+       else if(!(share<=0.42&&share>=0.14)) bad.push('sentries are '+Math.round(share*100)+' percent of '+born.length+' arrivals');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ CFG.siegeVol=v0; keys={}; try{ __resetCfg(); }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.05',what:'trading in the Undercroft: with the pair linked the stash item menu offers an item to the other player, the offer goes over the pair as a hub gift, the other window takes it with T, the item leaves the giver stash only on the yes and lands in the taker stash on the hand-over',
    run:function(){
      if(typeof netHubOffer!=='function'||typeof netHubGiftTake!=='function'||typeof itemMenuRows!=='function') return 'there is no trading in the Undercroft';

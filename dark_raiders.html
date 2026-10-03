@@ -1466,7 +1466,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.05';
+var VER='18.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16000,7 +16000,7 @@ function tickExtractPoints(dt){
   // beacon announcement: raising the cap alone did nothing because the window
   // never had room to reach it.
   var _sv85=(CFG.siegeVol===undefined?1:CFG.siegeVol);
-  var siegeIv=(8-4.6*GR)/_sv85, siegeCap=Math.round((6+8*GR)*_sv85);
+  var siegeIv=(8-4.6*GR)/_sv85, siegeCap=Math.round((5+7*GR)*_sv85);   // v18.06: his son, fewer at the ring (was 6+8*GR)
   // THE SIEGE CLOCK IS PER CALL, v2.27, and it was global inside a per-zone loop.
   // Every line around it is per zone: z.beaconT, z.hold, and z.siegeGreed, which
   // is read three lines up so the price is fixed per call. The counter and the
@@ -16045,7 +16045,7 @@ function tickExtractPoints(dt){
     if(_sd(ss2)>=700){
       if(_pz) z.siegeSpawned++; else G.siegeSpawned++;
       if(z===G.active) G.siegeSpawned=_pz?z.siegeSpawned:G.siegeSpawned;
-var nm=rr()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
+var nm=rr()<.3?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);   // v18.06: his son, fewer big robots: three in ten are sentries (was one in two)
       nm.siegeBorn=1;    // v4.17: the Q2 instrument reads this at touchdown
       nm.alert=3; nm.state='investigate'; nm.tx=z.x+rnd(-60,60); nm.ty=z.y+rnd(-60,60);
       G.ents.push(nm);
@@ -31995,7 +31995,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.05: You can trade in the Undercroft: right-click a stash item and OFFER it to the other player, who takes it with T (or Y on the floor). Check 18.05 fails on v18.04',
+  now:'v18.06: The extraction siege sends fewer machines and far fewer of the big ones. Check 18.06 fails on v18.05',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

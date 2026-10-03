@@ -1,0 +1,5 @@
+## v18.06 - FEWER BIG ROBOTS AT THE EXTRACTION
+
+Co-op hunt while he was away. His son, 2026-10-03: too many big robots at the final extract. The siege that answers a called extraction sent up to 6 + 8 x greed machines, half of them sentries. It sends up to 5 + 7 x greed now, and about three in ten are sentries; the rest are crawlers. The rate is unchanged.
+
+MEASURED. Check 18.06 passes, and fails on v18.05.

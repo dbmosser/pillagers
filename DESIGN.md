@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.06 - FEWER BIG ROBOTS AT THE EXTRACTION
+
+Co-op hunt while he was away. His son, 2026-10-03: too many big robots at the final extract. The siege that answers a called extraction sent up to 6 + 8 x greed machines, half of them sentries. It sends up to 5 + 7 x greed now, and about three in ten are sentries; the rest are crawlers. The rate is unchanged.
+
+MEASURED. Check 18.06 passes, and fails on v18.05.
 ## v18.05 - TRADING WITH THE OTHER PLAYER WORKS IN THE UNDERCROFT
 
 Co-op hunt while he was away. His order of 2026-10-03: trading with other players should work in the Undercroft. The raid trade needed two bodies up top. Now, with the pair linked, the stash item menu has an Offer row for the other player; the item leaves the giver stash only when the taker says yes (T, or Y on the floor) and lands in the taker stash on the hand-over. A line on the floor and a toast say what is waiting, for 30 seconds.
