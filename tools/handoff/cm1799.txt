@@ -1,0 +1,7 @@
+v17.99: a settings change keeps its place
+
+Changing a setting no longer throws you back to the top of the menu.
+
+Check 17.99. Fails on v17.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

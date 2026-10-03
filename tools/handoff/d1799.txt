@@ -1,0 +1,5 @@
+## v17.99 - A SETTINGS CHANGE KEEPS ITS PLACE
+
+Co-op hunt while he was away. His report of 2026-10-03: every change in the player 2 Settings threw him back to the top of the menu. Each row click rebuilds the list and the rebuild lost the scroll, the focused button and the pad highlight. All three are kept across the rebuild now, in both windows.
+
+MEASURED. Check 17.99 passes, and fails on v17.98.

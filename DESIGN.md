@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.99 - A SETTINGS CHANGE KEEPS ITS PLACE
+
+Co-op hunt while he was away. His report of 2026-10-03: every change in the player 2 Settings threw him back to the top of the menu. Each row click rebuilds the list and the rebuild lost the scroll, the focused button and the pad highlight. All three are kept across the rebuild now, in both windows.
+
+MEASURED. Check 17.99 passes, and fails on v17.98.
 ## v17.98 - EXTRACTION TAKES 30 SECONDS TO ARRIVE, THEN STAYS 30
 
 Co-op hunt while he was away. His note of 2026-10-03, given mid-raid: extraction should take 30 seconds to open, then be available for 30 seconds. The ship took 25 seconds to arrive after the call; it takes 30 now. The window after it lands was already 30 seconds (shorter only when the raid clock has less), and stays so.
