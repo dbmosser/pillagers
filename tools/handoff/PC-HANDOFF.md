@@ -306,3 +306,5 @@ in one window, not yet in the two-window nettest.
 - v17.85 the Keys window in the game font (appended beside partymodal) and its list scrolls (max-height 58vh). Found by the full corpus.
 - HARNESS LEAK: after the v17.83/17.84 title checks, v10.93 and v10.95 (station names / words drawn) fail in the same page; the
   real floor is fine (floor.jpg after 17.84 shows the names). HB restore did not cure it; bisecting which of the two leaks.
+- HARNESS LEAK FOUND 01:40: my v17.76/17.81/17.84 checks left an own fillText on ctx/wc, shadowing the prototype capture the older
+  text checks use (v10.93, v10.95, v9.93...). Fixed (delete the stub). Memory: dark-raiders-stub-a-method-delete-it-after. Full corpus rerun going.
