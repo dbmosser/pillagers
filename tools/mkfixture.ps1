@@ -5780,13 +5780,13 @@ window.__REGRESS=[
        NET.on=true; NET.role='host'; NET.peers=[peer];
        try{ if(typeof renderHub==='function') renderHub(); }catch(_r){}   // the stash screen render is what writes the idle text
        src=(document.getElementById('stashdetail')||{}).textContent||'';   // textContent: the stash screen is hidden here and innerText leaves hidden text out
-       if(!/pick Offer|choose Offer/.test(src)) bad.push('the stash idle text does not say how to offer while linked');
+       if(!/pick Offer|choose Offer|Drop on the floor/.test(src)) bad.push('the stash idle text does not say how to hand an item over while linked');
        if(typeof drawHubHUD==='function'&&typeof HB!=='undefined'&&HB){
          ctx.fillText=function(s){ lines.push(String(s)); return oFT.apply(this,arguments); };
          try{ HB.legend=true; drawHubHUD(0,0); }catch(_h){ bad.push('the floor HUD threw: '+(_h&&_h.message||_h)); }
          finally{ HB.legend=false; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
-         if(!lines.some(function(s){ return /TAKE AN OFFER/.test(s); })) bad.push('the Undercroft bottom line does not say T TAKE AN OFFER with a party on');
-         if(!lines.some(function(s){ return /take an offer/.test(s); })) bad.push('the floor H card has no trade row with a party on');
+         if(!lines.some(function(s){ return /TAKE AN OFFER|TAKE THE DROPPED/.test(s); })) bad.push('the Undercroft bottom line does not say how to take a dropped item');
+         if(!lines.some(function(s){ return /take an offer|teammate dropped/.test(s); })) bad.push('the floor H card has no trade row with a party on');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; NET.on=keep.on; NET.role=keep.role; NET.peers=keep.peers; try{ if(typeof renderHub==='function') renderHub(); }catch(_r2){} try{ __topClear(); }catch(_t){} }
@@ -6203,9 +6203,9 @@ window.__REGRESS=[
        NET.on=true; NET.role='host'; NET.same='host'; NET.peers=[peer]; NET.roster=[{seat:0,name:'HOST'},{seat:1,name:'KID'}]; NET.hg=null;
        P.stash=['bandage','bandage'];
        rows=itemMenuRows('bandage','stash',2);
-       rows.forEach(function(x){ if(x&&x.label&&/Offer to KID/.test(x.label)) row=x; });
+       rows.forEach(function(x){ if(x&&x.label&&/Offer to KID|Drop on the floor/.test(x.label)) row=x; });
        if(!row) bad.push('the stash item menu has no Offer row ('+rows.map(function(x){ return x.label||''; }).join('|')+')');
-       else row.act();
+       else netHubOffer('bandage');   // v18.28: the menu row drops now; the offer plumbing is tested through its own door
        off=sent.filter(function(m){ return m&&m.t==='gift'&&m.op==='offer'&&m.hub; })[0];
        if(!off) bad.push('no offer went over the pair ('+JSON.stringify(sent).slice(0,120)+')');
        if(P.stash.length!==2) bad.push('the item left the giver before the yes');
