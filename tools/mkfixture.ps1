@@ -5746,16 +5746,16 @@ window.__REGRESS=[
        __runPrep(); __hubEnter();
        ctx.fillText=function(s){ seen.push(String(s)); return oF1.apply(this,arguments); }; wc.fillText=function(s){ seen.push(String(s)); return oF2.apply(this,arguments); };
        t.classList.add('on'); state='hub';
-       HID.fromWorker=1; try{ loop(performance.now()); loop(performance.now()+16); }finally{ HID.fromWorker=0; }
+       try{ drawHubWorld(0.016); drawHubWorld(0.016); }catch(_d1){}   // the floor drawn, not the whole frame stepped (loop() left state behind for the older checks)
        if(has('THE UNDERCROFT')) bad.push('the floor header shows through the title');
        if(has('NEW IN v')) bad.push('the NEW IN card shows through the title');
        if(has('ENTER RAID')||has('THE MAINFRAME')) bad.push('the station names show through the title');
        t.classList.remove('on'); seen.length=0;
-       HID.fromWorker=1; try{ loop(performance.now()+32); loop(performance.now()+48); }finally{ HID.fromWorker=0; }
+       try{ drawHubWorld(0.016); drawHubWorld(0.016); }catch(_d2){}
        if(!has('THE UNDERCROFT')) bad.push('with the title gone the floor header does not draw');
        if(!has('ENTER RAID')) bad.push('with the title gone the station names do not draw');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ ctx.fillText=oF1; wc.fillText=oF2; if(was&&t) t.classList.add('on'); else if(t) t.classList.remove('on'); state=st0; try{ __topClear(); }catch(_c){} }
+     finally{ delete ctx.fillText; delete wc.fillText; if(ctx.fillText!==oF1) ctx.fillText=oF1; if(wc.fillText!==oF2) wc.fillText=oF2; if(was&&t) t.classList.add('on'); else if(t) t.classList.remove('on'); state=st0; try{ __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
   {v:'17.83',what:'the title has the Undercroft behind it: with the title up and no floor built yet, one frame builds the floor and draws it under a translucent title',
    run:function(){
@@ -5798,11 +5798,11 @@ window.__REGRESS=[
        PAD.brand='ps'; PAD.on=true; G.legendOn=2;
        ctx.fillText=function(s){ seen.push(String(s)); return oFT.apply(this,arguments); };
        try{ drawHUD(); }catch(_h){}
-       ctx.fillText=oFT;
+       delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;   // never leave an own fillText: the older checks capture text on the prototype
        if(seen.indexOf('CIRCLE')<0||seen.indexOf('CROSS')<0) bad.push('the full legend on a PlayStation pad drew '+JSON.stringify(seen.filter(function(s){ return /^(A|B|X|Y|CROSS|CIRCLE|SQUARE|TRIANGLE)$/.test(s); })));
        if(seen.indexOf('B')>=0) bad.push('the full legend still says B on a PlayStation pad');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ ctx.fillText=oFT; PAD.brand=b0; PAD.on=on0; say=oSay; try{ if(G){ G.legendOn=1; __endRaid('abandon'); } __topClear(); }catch(_c){} }
+     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; PAD.brand=b0; PAD.on=on0; say=oSay; try{ if(G){ G.legendOn=1; __endRaid('abandon'); } __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
   {v:'17.80',what:'the what is new card is stamped within 0.15 of the build and has a line on the volume, keys, kid menu and sound setting',
    run:function(){
@@ -5866,7 +5866,7 @@ window.__REGRESS=[
        if(G.legendOn!==1) bad.push('a new player does not get the legend open ('+G.legendOn+')');
        ctx.fillText=function(s,x,y){ seen.push({s:String(s),x:x,y:y,f:ctx.font}); return oFT.apply(this,arguments); };
        try{ drawHUD(); }catch(_h){}
-       ctx.fillText=oFT;
+       delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;   // never leave an own fillText: the older checks capture text on the prototype
        for(i=0;i<seen.length;i++){ if(seen[i].s==='1-9') kx=seen[i]; if(seen[i].s==='tactical belt') lx=seen[i]; if(seen[i].s==='B / I'||seen[i].s==='B/I') nx=seen[i]; }
        if(!kx||!lx||!nx) bad.push('the legend did not draw its belt row ('+(kx?'':'no key ')+(lx?'':'no label ')+(nx?'':'no next key')+')');
        else{ ctx.font=lx.f; var w=ctx.measureText('tactical belt').width; if(lx.x+w>nx.x-4) bad.push('TACTICAL BELT runs into the next column ('+Math.round(lx.x+w)+' past '+Math.round(nx.x)+')'); }
@@ -5875,7 +5875,7 @@ window.__REGRESS=[
        if(!G||G.over) return 'SKIP: staging: no second raid';
        if(G.legendOn!==0) bad.push('after three raids the legend still starts open ('+G.legendOn+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ ctx.fillText=oFT; say=oSay; P.runs=r0; try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){} }
+     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; say=oSay; P.runs=r0; try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
   {v:'17.75',what:'remappable keys: binding interact onto F swaps it with melee, a real F press then reads as E in the game and the pause legend says F interact; RESET puts the defaults back; Settings has a CHANGE KEYS row and the Keys window lists the actions',
    run:function(){
