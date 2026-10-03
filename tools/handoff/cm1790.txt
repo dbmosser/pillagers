@@ -1,0 +1,7 @@
+v17.90: the welcome pack shows its items
+
+The WELCOME PACK shows a picture of each item beside its name.
+
+Check 17.90. Fails on v17.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,20 @@
+{
+    "title":  "THE WELCOME PACK SHOWS ITS ITEMS",
+    "why":  "From the fresh-save pass of 2026-10-03: the WELCOME PACK greeted a new player with a bare list of names over an empty page. Each row now carries the item icon the stash and shop draw, so the pack reads like a gift and not a receipt.",
+    "now":  "The WELCOME PACK shows a picture of each item beside its name.",
+    "edits":  [
+                  {
+                      "anchor":  "    rows+=\u0027\u003cdiv class=\"row\"\u003e\u003cdiv style=\"flex:1\"\u003e\u003cb class=\"r-\u0027+rr2+\u0027\"\u003e\u0027+W.name+\u0027\u003c/b\u003e\u003cdiv class=\"hint\"\u003e\u0027+rr2+\u0027 gun, to your stash\u003c/div\u003e\u003c/div\u003e\u003c/div\u003e\u0027; }",
+                      "replacement":  "    rows+=\u0027\u003cdiv class=\"row\"\u003e\u003ccanvas class=\"wpic\" data-g=\"\u0027+W.id+\u0027\" width=\"56\" height=\"56\" style=\"flex:none;margin-right:14px\"\u003e\u003c/canvas\u003e\u003cdiv style=\"flex:1\"\u003e\u003cb class=\"r-\u0027+rr2+\u0027\"\u003e\u0027+W.name+\u0027\u003c/b\u003e\u003cdiv class=\"hint\"\u003e\u0027+rr2+\u0027 gun, to your stash\u003c/div\u003e\u003c/div\u003e\u003c/div\u003e\u0027; }   // v16.xx: with its icon"
+                  },
+                  {
+                      "anchor":  "    rows+=\u0027\u003cdiv class=\"row\"\u003e\u003cdiv style=\"flex:1\"\u003e\u003cb class=\"r-\u0027+(it.r||\u0027common\u0027)+\u0027\"\u003e\u0027+it.name+(counts[k]\u003e1?\u0027 x\u0027+counts[k]:\u0027\u0027)+\u0027\u003c/b\u003e\u003cdiv class=\"hint\"\u003eto your stash\u003c/div\u003e\u003c/div\u003e\u003c/div\u003e\u0027; }",
+                      "replacement":  "    rows+=\u0027\u003cdiv class=\"row\"\u003e\u003ccanvas class=\"wpic\" data-k=\"\u0027+k+\u0027\" width=\"56\" height=\"56\" style=\"flex:none;margin-right:14px\"\u003e\u003c/canvas\u003e\u003cdiv style=\"flex:1\"\u003e\u003cb class=\"r-\u0027+(it.r||\u0027common\u0027)+\u0027\"\u003e\u0027+it.name+(counts[k]\u003e1?\u0027 x\u0027+counts[k]:\u0027\u0027)+\u0027\u003c/b\u003e\u003cdiv class=\"hint\"\u003eto your stash\u003c/div\u003e\u003c/div\u003e\u003c/div\u003e\u0027; }   // v16.xx: with its icon"
+                  },
+                  {
+                      "anchor":  "  box.innerHTML=rows;\n  document.getElementById(\u0027welcometake\u0027).onclick=function(){",
+                      "replacement":  "  box.innerHTML=rows;\n  try{ var _wc=box.querySelectorAll(\u0027canvas.wpic\u0027), _wi, _wx; for(_wi=0;_wi\u003c_wc.length;_wi++){ _wx=_wc[_wi].getContext(\u00272d\u0027); if(!_wx) continue; try{ if(_wc[_wi].getAttribute(\u0027data-g\u0027)) gunIcon(_wx,_wc[_wi].getAttribute(\u0027data-g\u0027),28,28,40); else drawItemIcon(_wx,_wc[_wi].getAttribute(\u0027data-k\u0027),28,28,40); }catch(_we){} } }catch(_wl){}   // v16.xx: the icons\n  document.getElementById(\u0027welcometake\u0027).onclick=function(){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the WELCOME PACK shows each item with its icon beside its name, not a bare list\u0027,\n   run:function(){\n     if(typeof maybeWelcome!==\u0027function\u0027||typeof netUpSnapP!==\u0027function\u0027) return \u0027SKIP: no welcome pack in this fixture\u0027;\n     var bad=[], snap=netUpSnapP(), md=document.getElementById(\u0027welcomemodal\u0027), cvs, d, k, lit=0;\n     try{\n       P.welcomed=0; P.runs=0; P.stash=[]; P.weapons=[];\n       maybeWelcome();\n       cvs=document.querySelectorAll(\u0027#welcomelist canvas.wpic\u0027);\n       if(cvs.length\u003c5) bad.push(\u0027the welcome pack draws \u0027+cvs.length+\u0027 icons\u0027);\n       else{ d=cvs[0].getContext(\u00272d\u0027).getImageData(0,0,cvs[0].width,cvs[0].height).data; for(k=3;k\u003cd.length;k+=4*7) if(d[k]\u003e0) lit++; if(lit\u003c10) bad.push(\u0027the first icon is blank\u0027); }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ if(md) md.classList.remove(\u0027on\u0027); }catch(_m){} try{ if(snap) netUpPutP(snap); }catch(_p){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

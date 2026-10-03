@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v17.90 - THE WELCOME PACK SHOWS ITS ITEMS
+
+Co-op hunt while he was away. From the fresh-save pass of 2026-10-03: the WELCOME PACK greeted a new player with a bare list of names over an empty page. Each row now carries the item icon the stash and shop draw, so the pack reads like a gift and not a receipt.
+
+MEASURED. Check 17.90 passes, and fails on v17.89.
 ## v17.89 - THE STASH POINTS A FIRST RAID AT WHAT TO DO
 
 Co-op hunt while he was away. From the fresh-save pass of 2026-10-03: a new player lands in the stash on a row of icons with no names, an empty loadout and a tiny key legend, and nothing says what the screen is for. Until his first raid is logged, and while nothing is packed, the loadout column now says FIRST RAID: drag a gun and two heals in here, then go up at ENTER RAID!

@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'17.90',what:'the WELCOME PACK shows each item with its icon beside its name, not a bare list',
+   run:function(){
+     if(typeof maybeWelcome!=='function'||typeof netUpSnapP!=='function') return 'SKIP: no welcome pack in this fixture';
+     var bad=[], snap=netUpSnapP(), md=document.getElementById('welcomemodal'), cvs, d, k, lit=0;
+     try{
+       P.welcomed=0; P.runs=0; P.stash=[]; P.weapons=[];
+       maybeWelcome();
+       cvs=document.querySelectorAll('#welcomelist canvas.wpic');
+       if(cvs.length<5) bad.push('the welcome pack draws '+cvs.length+' icons');
+       else{ d=cvs[0].getContext('2d').getImageData(0,0,cvs[0].width,cvs[0].height).data; for(k=3;k<d.length;k+=4*7) if(d[k]>0) lit++; if(lit<10) bad.push('the first icon is blank'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(md) md.classList.remove('on'); }catch(_m){} try{ if(snap) netUpPutP(snap); }catch(_p){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'17.89',what:'a first raid is pointed at: in the stash, a player with no runs and nothing packed sees FIRST RAID: drag a gun and two heals in here, then go up at ENTER RAID!; a player with runs behind him does not',
    run:function(){
      if(typeof renderKitCol!=='function') return 'SKIP: no stash in this fixture';

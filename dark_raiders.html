@@ -1439,7 +1439,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='17.89';
+var VER='17.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31922,7 +31922,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v17.89: A new player sees in the stash what to do before the first raid: drag a gun and two heals into the loadout, then go up at ENTER RAID! Check 17.89 fails on v17.88',
+  now:'v17.90: The WELCOME PACK shows a picture of each item beside its name. Check 17.90 fails on v17.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40894,11 +40894,12 @@ function maybeWelcome(){
   var rows='';
   for(var g=0;g<WELCOME_PACK.guns.length;g++){ var W=WEAPONS[WELCOME_PACK.guns[g]]; if(!W) continue;
     var rr2=(typeof gunRarity==='function')?gunRarity(W.id):'common';
-    rows+='<div class="row"><div style="flex:1"><b class="r-'+rr2+'">'+W.name+'</b><div class="hint">'+rr2+' gun, to your stash</div></div></div>'; }
+    rows+='<div class="row"><canvas class="wpic" data-g="'+W.id+'" width="56" height="56" style="flex:none;margin-right:14px"></canvas><div style="flex:1"><b class="r-'+rr2+'">'+W.name+'</b><div class="hint">'+rr2+' gun, to your stash</div></div></div>'; }   // v17.90: with its icon
   var counts={}; for(var i=0;i<WELCOME_PACK.items.length;i++) counts[WELCOME_PACK.items[i]]=(counts[WELCOME_PACK.items[i]]||0)+1;
   for(var k in counts){ var it=ITEMS[k]; if(!it) continue;
-    rows+='<div class="row"><div style="flex:1"><b class="r-'+(it.r||'common')+'">'+it.name+(counts[k]>1?' x'+counts[k]:'')+'</b><div class="hint">to your stash</div></div></div>'; }
+    rows+='<div class="row"><canvas class="wpic" data-k="'+k+'" width="56" height="56" style="flex:none;margin-right:14px"></canvas><div style="flex:1"><b class="r-'+(it.r||'common')+'">'+it.name+(counts[k]>1?' x'+counts[k]:'')+'</b><div class="hint">to your stash</div></div></div>'; }   // v17.90: with its icon
   box.innerHTML=rows;
+  try{ var _wc=box.querySelectorAll('canvas.wpic'), _wi, _wx; for(_wi=0;_wi<_wc.length;_wi++){ _wx=_wc[_wi].getContext('2d'); if(!_wx) continue; try{ if(_wc[_wi].getAttribute('data-g')) gunIcon(_wx,_wc[_wi].getAttribute('data-g'),28,28,40); else drawItemIcon(_wx,_wc[_wi].getAttribute('data-k'),28,28,40); }catch(_we){} } }catch(_wl){}   // v17.90: the icons
   document.getElementById('welcometake').onclick=function(){
     P.weapons=P.weapons||[];
     // v13.29, HIS RULING 2026-09-13: the whole pack goes to the stash, guns included,

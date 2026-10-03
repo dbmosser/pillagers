@@ -1,0 +1,5 @@
+## v17.90 - THE WELCOME PACK SHOWS ITS ITEMS
+
+Co-op hunt while he was away. From the fresh-save pass of 2026-10-03: the WELCOME PACK greeted a new player with a bare list of names over an empty page. Each row now carries the item icon the stash and shop draw, so the pack reads like a gift and not a receipt.
+
+MEASURED. Check 17.90 passes, and fails on v17.89.
