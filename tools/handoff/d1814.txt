@@ -1,0 +1,5 @@
+## v18.14 - THE ITEM ICONS GET A LIFT
+
+Co-op hunt while he was away. His order of 2026-10-03: the item graphics need massive improvement. Every non-gun icon the menus show was a flat shape. After the painter has drawn it, the painted shape now gets a light from the top left and a shade toward the bottom right, clipped to the shape, and a soft dark shadow under it, so a bandage or a plate sits in its cell like an object instead of a sticker. Guns shade themselves since v18.10.
+
+MEASURED. Check 18.14 passes, and fails on v18.13.

@@ -1,0 +1,7 @@
+v18.14: the item icons get a lift
+
+Item pictures in the menus have light, shade and a shadow now, not flat shapes.
+
+Check 18.14. Fails on v18.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

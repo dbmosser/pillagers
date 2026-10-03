@@ -1481,7 +1481,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.13';
+var VER='18.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28973,6 +28973,26 @@ function mercImgHTML(id,S){
 // canvas, cached as a dataURL, dropped into shop and stash rows as an <img>.
 // The cache is tiny (a few dozen 26px sprites) and never invalidates, because
 // the painters are pure functions of the item table.
+// v18.14, HIS ORDER (2026-10-03, the item graphics): THE LIFT. Every non-gun icon the menus show was a flat shape. After the
+// painter has drawn it, the painted shape gets a light from the top left and a shade toward the bottom right (clipped to the
+// shape, so nothing spills), and a soft dark shadow under it, so a bandage or a plate sits in its cell like an object instead
+// of a sticker. Guns shade themselves (v18.10) and are left alone.
+function iconLift(c,w,h){
+  var g, t, tc;
+  if(!c||!(w>0&&h>0)) return false;
+  try{
+    c.save(); c.globalCompositeOperation='source-atop';
+    // two half gradients meeting at the middle: a stop that is transparent white next to one that is transparent black, or the
+    // shaded half interpolates toward light grey and never darkens anything
+    g=c.createLinearGradient(0,0,w,h); g.addColorStop(0,'rgba(255,255,255,.22)'); g.addColorStop(0.5,'rgba(255,255,255,0)'); g.addColorStop(0.5,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,.30)');
+    c.fillStyle=g; c.fillRect(0,0,w,h); c.restore();
+    t=document.createElement('canvas'); t.width=w; t.height=h; tc=t.getContext('2d');
+    tc.drawImage(c.canvas,0,0); tc.globalCompositeOperation='source-in'; tc.fillStyle='rgba(0,0,0,.55)'; tc.fillRect(0,0,w,h);
+    c.save(); c.globalCompositeOperation='destination-over'; try{ c.filter='blur('+Math.max(0.6,w*0.015).toFixed(2)+'px)'; }catch(_f){}
+    c.drawImage(t,w*0.025,h*0.04); c.restore();
+    return true;
+  }catch(e){ try{ c.restore(); }catch(_r){} return false; }
+}
 var _iconURL={};
 function itemIconURL(key,S){
   var ck=key+'|'+S, hit=_iconURL[ck];
@@ -28985,6 +29005,7 @@ function itemIconURL(key,S){
   var cnv=document.createElement('canvas'); cnv.width=S*R; cnv.height=S*R;
   var c2=cnv.getContext('2d');
   drawItemIcon(c2,key,S*R/2,S*R/2,S*R*0.82);
+  if(!(WEAPONS[key]||(ITEMS[key]&&ITEMS[key].use==='gun'))) iconLift(c2,S*R,S*R);   // v18.14: the lift, for everything but a gun
   return _iconURL[ck]=cnv.toDataURL();
 }
 function iconImg(key,S){
@@ -32059,7 +32080,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.13: The raid HUD panels share one look: rounded, softly shaded, one border. Check 18.13 fails on v18.12',
+  now:'v18.14: Item pictures in the menus have light, shade and a shadow now, not flat shapes. Check 18.14 fails on v18.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

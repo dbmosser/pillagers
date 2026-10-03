@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.14 - THE ITEM ICONS GET A LIFT
+
+Co-op hunt while he was away. His order of 2026-10-03: the item graphics need massive improvement. Every non-gun icon the menus show was a flat shape. After the painter has drawn it, the painted shape now gets a light from the top left and a shade toward the bottom right, clipped to the shape, and a soft dark shadow under it, so a bandage or a plate sits in its cell like an object instead of a sticker. Guns shade themselves since v18.10.
+
+MEASURED. Check 18.14 passes, and fails on v18.13.
 ## v18.13 - THE STYLING PASS, STAGE C: ONE PANEL FOR THE RAID HUD
 
 Co-op hunt while he was away. His order of 2026-10-03: styling across all menus and HUDs. Five HUD boxes (conditions, the pillager board, both legends and the backpack) each drew their own flat black rectangle with a thin stroke. They share one panel now: rounded corners, a slight gradient, a steel border and a hairline of light along the top, so the HUD reads as one set of instruments. Every position, size and hit box is what it was.
