@@ -330,3 +330,4 @@ in one window, not yet in the two-window nettest.
   the dead end for a stranger (icons without names, empty loadout, tiny key legend) -> v17.89 #firstkit line in the loadout column
   while runs==0 and nothing is packed. Still plain: WELCOME PACK is a text list (icons would be AAA); stash cells have no names.
 - v17.90 WELCOME PACK rows carry item icons (gunIcon / drawItemIcon into 56px canvases). Fresh-save shots retaken: shots/fresh/.
+- v17.91 card refresh (stamped 17.91, A BETTER FIRST HOUR). Next card due by ~18.06.
