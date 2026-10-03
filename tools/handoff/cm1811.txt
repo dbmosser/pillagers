@@ -1,0 +1,7 @@
+v18.11: the styling pass, stage b: the title
+
+The title screen has a gold wordmark, glass step cards and a vignette backdrop.
+
+Check 18.11. Fails on v18.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

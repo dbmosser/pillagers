@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.11',what:'stage B of the styling pass: the title wordmark is a gold gradient clipped to the letters, the three step cards are rounded glass cards, and the title backdrop is a vignette that still lets the Undercroft show through',
+   run:function(){
+     var t=document.getElementById('title'), wm=t&&t.querySelector('.wordmark'), cards=t?t.querySelectorAll('.tcard'):[], bad=[], s, was;
+     if(!t) return 'SKIP: no title';
+     if(!wm) return 'the title has no wordmark';
+     was=t.classList.contains('on'); if(!was) t.classList.add('on');
+     try{
+       s=getComputedStyle(wm);
+       if(!/gradient/.test(s.backgroundImage)) bad.push('the wordmark is flat');
+       if(!/text/.test(String(s.webkitBackgroundClip||s.backgroundClip))) bad.push('the gradient is not clipped to the letters');
+       if(cards.length!==3) bad.push('the title has '+cards.length+' step cards, not 3');
+       else { s=getComputedStyle(cards[0]); if(parseFloat(s.borderTopLeftRadius)<8) bad.push('the step cards are square'); if(!/gradient/.test(s.backgroundImage)) bad.push('the step cards are flat'); }
+       s=getComputedStyle(t);
+       if(!/gradient/.test(s.backgroundImage)) bad.push('the title backdrop is a flat wash');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(!was) t.classList.remove('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.10',what:'the gun icons are painted like objects: every weapon draws without throwing at 22 and at 160 px, and on a 160 px pistol the slide is lighter along its top edge than along its underside (the bevel)',
    run:function(){
      if(typeof gunIcon!=='function'||typeof WEAPONS==='undefined') return 'SKIP: no gun painter here';

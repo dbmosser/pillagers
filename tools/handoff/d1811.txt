@@ -1,0 +1,5 @@
+## v18.11 - THE STYLING PASS, STAGE B: THE TITLE
+
+Co-op hunt while he was away. His order of 2026-10-03: styling across all menus needs massive improvement. Stage B is the title: a gold gradient wordmark with a glow instead of flat amber, the three step cards as rounded glass cards, and a vignette backdrop in place of the flat wash, so the Undercroft still shows through and the column reads. No words moved.
+
+MEASURED. Check 18.11 passes, and fails on v18.10.

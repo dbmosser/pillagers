@@ -63,7 +63,16 @@
       linear-gradient(165deg,#131c46 0%,#0d1435 55%,#090f28 100%);
     display:none; flex-direction:column; padding:18px 22px; overflow:hidden; }
   .screen.on { display:flex; }
-   #title.on { background:rgba(9,15,40,.80); }   /* v17.83: the Undercroft shows through the title */
+   /* v18.11, THE STYLING PASS, STAGE B: THE TITLE. A vignette instead of a flat wash, so the Undercroft still shows through
+      (v17.83) and the column reads; a wordmark with a gold gradient and a glow; the three step cards as glass cards. */
+   #title.on { background:radial-gradient(ellipse 70% 62% at 50% 42%, rgba(9,15,40,.60) 0%, rgba(9,15,40,.84) 70%, rgba(5,8,22,.96) 100%); }
+   #title .wordmark{ font-family:'Titan One','Rubik',sans-serif; font-size:64px; letter-spacing:.16em; line-height:1;
+     background:linear-gradient(180deg,#ffe9a8 0%,#ffc04a 55%,#e08a1a 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
+     filter:drop-shadow(0 4px 0 rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(255,192,74,.28)); }
+   #title .tcard{ border:1px solid rgba(127,146,216,.35); border-radius:10px; padding:14px 16px;
+     background:linear-gradient(180deg,rgba(127,146,216,.10),rgba(0,0,0,.32)); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); }
+   #title .tstep{ font-size:11px; letter-spacing:.22em; color:var(--amber); font-weight:700; }
+   #title .tcard .tbody{ font-size:12px; color:var(--ash); margin-top:6px; line-height:1.5; }
   /* v8.88: the title screen scales now, so it must be able to scroll rather
      than clip. .screen is overflow:hidden, and the saves list and the CREATE A
      NEW SAVE button are the last things on it. Same rule as the v5.31 note
@@ -1023,8 +1032,7 @@
 </div>
 <div class="screen on" id="title">
   <div class="titlecol" style="margin:auto;width:100%;text-align:center;padding:0 20px">
-    <div style="font-family:'Titan One','Rubik',sans-serif;font-size:58px;letter-spacing:.14em;
-         color:var(--amber);line-height:1;text-shadow:0 3px 0 rgba(0,0,0,.55)">PILLAGERS</div>
+    <div class="wordmark">PILLAGERS</div>
     <div style="margin-top:9px;font-size:11px;letter-spacing:.34em;color:var(--ash)">
       A 2.5D EXTRACTION RAID  &middot;  <span id="titlever"></span></div>
     <div id="titleres" style="margin-top:7px;font-size:10.5px;letter-spacing:.18em;color:var(--steel-hi);
@@ -1038,19 +1046,19 @@
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:26px;text-align:left">
-      <div style="border:1px solid var(--steel-hi);border-radius:4px;padding:11px 13px;background:rgba(0,0,0,.28)">
-        <div style="font-size:10.5px;letter-spacing:.2em;color:var(--amber)">1 &middot; ASCEND</div>
-        <div style="font-size:11.5px;color:var(--ash);margin-top:5px;line-height:1.5">
+      <div class="tcard">
+        <div class="tstep">1 &middot; ASCEND</div>
+        <div class="tbody">
           Take the lift up with whatever you dare carry. What you bring, you can lose.</div>
       </div>
-      <div style="border:1px solid var(--steel-hi);border-radius:4px;padding:11px 13px;background:rgba(0,0,0,.28)">
-        <div style="font-size:10.5px;letter-spacing:.2em;color:var(--amber)">2 &middot; PILLAGE</div>
-        <div style="font-size:11.5px;color:var(--ash);margin-top:5px;line-height:1.5">
+      <div class="tcard">
+        <div class="tstep">2 &middot; PILLAGE</div>
+        <div class="tbody">
           Hold E on anything worth opening. Beware of hostile robots and fellow pillagers.</div>
       </div>
-      <div style="border:1px solid var(--steel-hi);border-radius:4px;padding:11px 13px;background:rgba(0,0,0,.28)">
-        <div style="font-size:10.5px;letter-spacing:.2em;color:var(--amber)">3 &middot; EXTRACT</div>
-        <div style="font-size:11.5px;color:var(--ash);margin-top:5px;line-height:1.5">
+      <div class="tcard">
+        <div class="tstep">3 &middot; EXTRACT</div>
+        <div class="tbody">
           Stand in a ring and hold E to call for extraction. Die out there and it is all gone.</div>
       </div>
     </div>
@@ -1466,7 +1474,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.10';
+var VER='18.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32035,7 +32043,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.10: Gun icons are painted like real objects now: materials, shading, a shadow and the small details, in every menu and on the belt. Check 18.10 fails on v18.09',
+  now:'v18.11: The title screen has a gold wordmark, glass step cards and a vignette backdrop. Check 18.11 fails on v18.10',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
