@@ -259,3 +259,8 @@ in one window, not yet in the two-window nettest.
   target and the camera lags the mouse aim. ~1% of sessions; a test weakness, not a game fault. __weapons() hook hands C a gun.
 - v17.68 a teammate going down is said once (netOnState, the word that first carries dn in this raid: NAME is down. Pick them up.) with padRumble.
 - 10-02 load raised: six test Chromes, overnight.sh loops A-E, two runs at once with different log names (overnight.log ABC, overnight2.log DE).
+- v17.69 HIS RULING 2026-10-02: the remaining player picks up the raid when the host is gone (netHostGone no longer abandons: upSeed 0 ->
+  solo update and loot paths, e.net bodies dropped, the boss remade at its health via bossTick(true)). TO DO: a nettest step that reloads
+  A mid-raid and checks C keeps running; what a reopened host window does to C mid-raid is untested (it pairs anew; C is solo until then).
+- RULEBOOK rewritten at his order (AAA feel on top, woods off the vetoes, balancing allowed, garbled gun-wear line removed:
+  his answer #14/#18 is NO wear, NO condition).
