@@ -5907,10 +5907,10 @@ window.__REGRESS=[
    run:function(){
      var bad=[], i, j, tRow=null, yRow=null, kb=document.getElementById('kb_trade'), pt=document.getElementById('partytrade'), g, on0, h0=0, h1=0, lines=[], src='';
      if(typeof LEGEND==='undefined'||typeof LEGEND_PAD==='undefined') return 'SKIP: no key tables';
-     for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='TEAM') for(j=0;j<LEGEND[i][1].length;j++) if(LEGEND[i][1][j][0]==='T') tRow=LEGEND[i][1][j];
+     for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='TEAM') for(j=0;j<LEGEND[i][1].length;j++) if(LEGEND[i][1][j][0]==='Z') tRow=LEGEND[i][1][j];
      for(i=0;i<LEGEND_PAD.length;i++) if(LEGEND_PAD[i][0]==='TEAM') for(j=0;j<LEGEND_PAD[i][1].length;j++) if(LEGEND_PAD[i][1][j][0]==='Y') yRow=LEGEND_PAD[i][1][j];
-     if(!tRow||!/trad|offer/.test(String(tRow[1]))) return 'the key list has no TEAM section with a T row for trading';
-     if(!yRow||!/trad|offer/.test(String(yRow[1]))) bad.push('the pad list has no TEAM section with a Y row for trading');
+     if(!tRow||!/trad|offer|drop/.test(String(tRow[1]))) return 'the key list has no TEAM section with a Z row for trading';
+     if(!yRow||!/trad|offer|drop/.test(String(yRow[1]))) bad.push('the pad list has no TEAM section with a Y row for trading');
      if(!kb) bad.push('the stash key bar has no offer line');
      if(!pt||!/Offer/.test(pt.textContent)) bad.push('the Party window does not explain trading');
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__textTrace)) return bad.length?bad.join('; '):null;
@@ -5922,7 +5922,7 @@ window.__REGRESS=[
        NET.on=false; __frame(0.016); h0=HUDBOX.legend?HUDBOX.legend.h:0;
        NET.on=true; lines=__textTrace(function(){ __frame(0.016); }); h1=HUDBOX.legend?HUDBOX.legend.h:0;
        NET.on=on0;
-       if(!lines.some(function(l){ return /trade/.test(String(l.t||l)); })) bad.push('with a party on the compact legend draws no trade row');
+       if(!lines.some(function(l){ return /trade|drop/.test(String(l.t||l)); })) bad.push('with a party on the compact legend draws no trade row');
        if(!(h1>h0+4)) bad.push('the compact legend did not grow for the trade row ('+Math.round(h0)+' to '+Math.round(h1)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ NET.on=on0; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
