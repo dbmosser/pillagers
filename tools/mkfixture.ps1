@@ -5845,9 +5845,10 @@ window.__REGRESS=[
        d=null; HB.drops.forEach(function(q){ if(q.id==='h9') d=q; });
        if(!d) bad.push('the other window crate is not on this floor');
        else{
-         if(hub) hub.classList.remove('on'); try{ var ms=document.querySelectorAll('.modal.on'); for(var mi=0;mi<ms.length;mi++) ms[mi].classList.remove('on'); }catch(_m){}
+         if(hub) hub.classList.remove('on'); var _tt=document.getElementById('title'), _ttw=_tt&&_tt.classList.contains('on'); if(_tt) _tt.classList.remove('on'); try{ var ms=document.querySelectorAll('.modal.on'); for(var mi=0;mi<ms.length;mi++) ms[mi].classList.remove('on'); }catch(_m){}
          HB.player.x=d.x; HB.player.y=d.y; HB.eLock=false; keys={}; keys['KeyE']=true; sent.length=0;
          updateHubWorld(0.016);
+         if(_tt&&_ttw) _tt.classList.add('on');   // a fresh page opens on the title, which counts as a window over the floor
          if(P.stash.indexOf('frag')<0) bad.push('E beside the crate did not take the item');
          if(HB.drops.some(function(q){ return q.id==='h9'; })) bad.push('the taken crate stayed on the floor');
          if(!sent.some(function(m){ return m&&m.t==='hdrop'&&m.op==='took'&&m.id==='h9'; })) bad.push('the party was not told the crate was taken');
@@ -14989,8 +14990,8 @@ window.__REGRESS=[
        if(kP===MAIN||kP===S0||kP===netSlotKey('A')||kP===netSlotKey('B')||kP.indexOf(MAIN+':')!==0||kP.indexOf(':net')>=0) bad.push('the player 2 save key '+kP+' is not a key of its own beside '+MAIN);
        if(typeof NETP2!=='boolean') bad.push('the page does not read NETP2 off its address (it is '+typeof NETP2+')');
        else {
-         NETP2=true; var l1=netSaveLocked(); NETP2=oNP2;
-         if(!l1) bad.push('the save pointer lock does not hold for the player 2 window');
+         NETP2=true; var l1=(typeof slotPtrKey==='function')?(slotPtrKey()==='salvagerun:activeSlot2'):netSaveLocked(); NETP2=oNP2;   // v17.93: player 2 moves a pointer of its own, never player 1's
+         if(!l1) bad.push('the player 2 window would write player 1 save pointer');
          if(!NETSLOT&&!oNP2&&netSaveLocked()) bad.push('control: the save pointer lock holds for an ordinary copy');
        }
        if((typeof NETSLOT!=='undefined'&&NETSLOT)||oNP2) return skip('this page was itself opened with ?netslot or ?p2=1, so the main save cannot be told apart here');
@@ -41624,14 +41625,14 @@ window.__REGRESS=[
      // CONTROL THREE, AND IT IS THE ONE THAT MATTERS. Standard is what the game
      // is balanced on and what every other number here is measured against, so it
      // must not have moved by a single machine.
-     if(SL.n!==6||SH.n!==14)
+     if(SL.n!==5||SH.n!==12)   // v18.06: his son's smaller siege (cap 5+7 x greed); it was 6 and 14
        bad.push('control: a standard siege now brings '+SL.n+' and '+SH.n+
-                ' rather than 6 and 14, so the default extraction moved');
+                ' rather than 5 and 12, so the default extraction moved');
      // CONTROL FOUR: and neither did Light, which already worked. A fix that
      // scaled the rate the wrong way would show up here first.
-     if(LL.n!==4||LH2.n!==8)
+     if(LL.n!==3||LH2.n!==7)   // v18.06: it was 4 and 8
        bad.push('control: a light siege now brings '+LL.n+' and '+LH2.n+
-                ' rather than 4 and 8, so the option that already worked moved');
+                ' rather than 3 and 7, so the option that already worked moved');
      return bad.length?bad.join('; '):null; }},
   {v:'9.84',what:'the Machines setting moves the crawlers, not just the sentries',
    run:function(){
