@@ -1,0 +1,5 @@
+## v18.34 - THE BELT KEYS ARE ROUNDED TILES
+
+Co-op hunt while he was away. The styling pass reached the stash cells (v18.32) but the raid belt still drew flat squares with a thin stroke. Each belt key is now a rounded tile with a light from the top, its rarity wash inside the same shape and a rounded ring, matching the stash. Sizes, hit boxes and colour rules are unchanged.
+
+MEASURED. Check 18.34 passes, and fails on v18.33.

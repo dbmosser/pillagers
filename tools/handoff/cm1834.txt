@@ -1,0 +1,7 @@
+v18.34: the belt keys are rounded tiles
+
+The tactical belt keys in a raid are rounded, shaded tiles that match the stash.
+
+Check 18.34. Fails on v18.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

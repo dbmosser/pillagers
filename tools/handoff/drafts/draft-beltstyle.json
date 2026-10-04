@@ -1,0 +1,20 @@
+{
+    "title":  "THE BELT KEYS ARE ROUNDED TILES",
+    "why":  "The styling pass reached the stash cells (v18.32) but the raid belt still drew flat squares with a thin stroke. Each belt key is now a rounded tile with a light from the top, its rarity wash inside the same shape and a rounded ring, matching the stash. Sizes, hit boxes and colour rules are unchanged.",
+    "now":  "The tactical belt keys in a raid are rounded, shaded tiles that match the stash.",
+    "edits":  [
+                  {
+                      "anchor":  "      ctx.fillStyle=on?\u0027rgba(38,32,20,.94)\u0027:\u0027rgba(6,9,13,.80)\u0027;\n      ctx.fillRect(bx,hy,bw,bw);",
+                      "replacement":  "      // v16.xx, THE STYLING PASS IN THE RAID (2026-10-04): THE BELT KEYS ARE ROUNDED TILES. A belt key was a flat square with a thin\n      // stroke. It is a rounded tile now with a light from the top, a rarity wash inside the same shape and a rounded ring, the\n      // shape the stash cells took at v18.32. Every size, hit box and colour rule is unchanged.\n      var _br=Math.max(3,bw*0.09);\n      function _bpath(){ ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(bx+.5,hy+.5,bw-1,bw-1,_br); else ctx.rect(bx+.5,hy+.5,bw-1,bw-1); }\n      ctx.save(); _bpath(); ctx.clip();\n      var _bg=ctx.createLinearGradient(0,hy,0,hy+bw); _bg.addColorStop(0,on?\u0027rgba(70,56,28,.96)\u0027:\u0027rgba(28,36,64,.86)\u0027); _bg.addColorStop(1,on?\u0027rgba(38,32,20,.94)\u0027:\u0027rgba(6,9,13,.86)\u0027);\n      ctx.fillStyle=_bg; ctx.fillRect(bx,hy,bw,bw);"
+                  },
+                  {
+                      "anchor":  "      if(_hr\u0026\u0026!empty){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; ctx.fillRect(bx,hy,bw,bw); } }",
+                      "replacement":  "      if(_hr\u0026\u0026!empty){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; ctx.fillRect(bx,hy,bw,bw); } }\n      ctx.fillStyle=\u0027rgba(255,255,255,.05)\u0027; ctx.fillRect(bx,hy,bw,Math.max(1,bw*0.04));\n      ctx.restore();"
+                  },
+                  {
+                      "anchor":  "      ctx.lineWidth=(dragOver||on)?2:1;\n      ctx.strokeRect(bx+.5,hy+.5,bw-1,bw-1);",
+                      "replacement":  "      ctx.lineWidth=(dragOver||on)?2:1;\n      _bpath(); ctx.stroke();   // v16.xx: the rounded ring"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the belt keys are rounded tiles in the raid: with the HUD drawn, the outer corner pixel of the first belt key is left clear while a pixel just inside it is painted\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var bad=[], g, C, oCR=ctx.clearRect, cor, ins, seq=0, after=0;\n     function al(x,y){ return ctx.getImageData(Math.round(x*DPR),Math.round(y*DPR),1,1).data[3]; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); keys={}; g.mapOpen=false; g.bagOpen=false; g.legendOn=0;\n       __frame(0.016); __frame(0.016);\n       C=g.hotCells\u0026\u0026g.hotCells[0]; if(!C) return \u0027SKIP: no belt drawn\u0027;\n       cor=al(C.x+0.6,C.y+0.6); ins=al(C.x+C.w*0.2,C.y+C.w*0.2);\n       if(ins\u003c120) bad.push(\u0027control: the belt key is not painted inside (alpha \u0027+ins+\u0027)\u0027);\n       if(cor\u003e=ins-40) bad.push(\u0027the belt key corner is square (corner \u0027+cor+\u0027, inside \u0027+ins+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ keys={}; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

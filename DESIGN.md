@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.34 - THE BELT KEYS ARE ROUNDED TILES
+
+Co-op hunt while he was away. The styling pass reached the stash cells (v18.32) but the raid belt still drew flat squares with a thin stroke. Each belt key is now a rounded tile with a light from the top, its rarity wash inside the same shape and a rounded ring, matching the stash. Sizes, hit boxes and colour rules are unchanged.
+
+MEASURED. Check 18.34 passes, and fails on v18.33.
 ## v18.33 - THE BELT AND THE BACKPACK DRAW THE NEW ICONS
 
 Co-op hunt while he was away. The art pass of 2026-10-03 reached the menus but not the raid: the belt and backpack painted every icon live on the HUD each frame, flat and without the lift. They now draw a sprite painted once per item and size at the screen scale, with the same lift: sharper, shaded like the stash, and one draw call per icon instead of thirty fills.
