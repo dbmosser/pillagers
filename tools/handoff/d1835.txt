@@ -1,0 +1,5 @@
+## v18.35 - ONE SIEGE SIZE: THE PROMISE MATCHES THE ARRIVALS
+
+Co-op hunt while he was away. Found by the full test run of 2026-10-04: v18.06 cut the extraction siege to 5 + 7 x greed in the spawner only. The call still promised the old 6 + 8 x greed (about 10 machines with 8 coming), and the late pull wave and a linked window copy of the siege still counted the old size. One function holds the size now and all five places read it.
+
+MEASURED. Check 18.35 passes, and fails on v18.34.

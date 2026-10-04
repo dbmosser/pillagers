@@ -1,0 +1,32 @@
+{
+    "title":  "ONE SIEGE SIZE: THE PROMISE MATCHES THE ARRIVALS",
+    "why":  "Found by the full test run of 2026-10-04: v18.06 cut the extraction siege to 5 + 7 x greed in the spawner only. The call still promised the old 6 + 8 x greed (about 10 machines with 8 coming), and the late pull wave and a linked window copy of the siege still counted the old size. One function holds the size now and all five places read it.",
+    "now":  "The extraction call now promises exactly as many machines as actually come.",
+    "edits":  [
+                  {
+                      "anchor":  "function greedOf(){ return clamp(bagValue()/CFG.greedFull,0,1); }",
+                      "replacement":  "function greedOf(){ return clamp(bagValue()/CFG.greedFull,0,1); }\n// v16.xx, FOUND BY THE FULL TEST RUN (2026-10-04): ONE SIEGE SIZE. v18.06 cut the siege to 5 + 7 x greed (his son: too many big\n// robots) in the spawner only; the call still promised 6 + 8 x greed (\"about 10 machines\" with 8 coming), the late pull wave\n// and a linked window\u0027s copy of the siege still counted the old size. Every one of them reads this now.\nfunction siegeBase(GR){ return 5+7*GR; }"
+                  },
+                  {
+                      "anchor":  "      var _scap=Math.round((6+8*_g)*(CFG.siegeVol===undefined?1:CFG.siegeVol));",
+                      "replacement":  "      var _scap=Math.round(siegeBase(_g)*(CFG.siegeVol===undefined?1:CFG.siegeVol));   // v16.xx: the one siege size"
+                  },
+                  {
+                      "anchor":  "  var siegeIv=(8-4.6*GR)/_sv85, siegeCap=Math.round((5+7*GR)*_sv85);   // v18.06: his son, fewer at the ring (was 6+8*GR)",
+                      "replacement":  "  var siegeIv=(8-4.6*GR)/_sv85, siegeCap=Math.round(siegeBase(GR)*_sv85);   // v18.06: his son, fewer at the ring (was 6+8*GR); v16.xx: the one siege size"
+                  },
+                  {
+                      "anchor":  "    var _pullCap=Math.round((6+8*GR)*(CFG.siegePull===undefined?0.5:CFG.siegePull));",
+                      "replacement":  "    var _pullCap=Math.round(siegeBase(GR)*(CFG.siegePull===undefined?0.5:CFG.siegePull));   // v16.xx: the one siege size"
+                  },
+                  {
+                      "anchor":  "    iv=(8-4.6*GR)/sv; cap=Math.round((6+8*GR)*sv);",
+                      "replacement":  "    iv=(8-4.6*GR)/sv; cap=Math.round(siegeBase(GR)*sv);   // v16.xx: the one siege size, as the host counts it"
+                  },
+                  {
+                      "anchor":  "      pc=Math.round((6+8*GR)*(CFG.siegePull===undefined?0.5:CFG.siegePull)); z.pullN=z.pullN||0;",
+                      "replacement":  "      pc=Math.round(siegeBase(GR)*(CFG.siegePull===undefined?0.5:CFG.siegePull)); z.pullN=z.pullN||0;   // v16.xx: the one siege size"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027one siege size: the call promises the number of machines the ring sends (check 9.34 passes), and the size is 5 + 7 x greed everywhere it is counted\u0027,\n   run:function(){\n     if(typeof siegeBase!==\u0027function\u0027) return \u0027the siege size is written out in several places\u0027;\n     var bad=[], t=(typeof __REGRESS!==\u0027undefined\u0027)?__REGRESS.find(function(x){ return x.v===\u00279.34\u0027; }):null, r;\n     if(Math.abs(siegeBase(0)-5)\u003e1e-9||Math.abs(siegeBase(1)-12)\u003e1e-9) bad.push(\u0027the siege size reads \u0027+siegeBase(0)+\u0027 to \u0027+siegeBase(1));\n     if(!t) return bad.length?bad.join(\u0027; \u0027):\u0027SKIP: no promise check to run\u0027;\n     try{ __runPrep(); __topClear(); r=t.run(); }catch(e){ r=\u0027threw: \u0027+(e\u0026\u0026e.message||e); }\n     if(r\u0026\u0026String(r).indexOf(\u0027SKIP\u0027)!==0) bad.push(\u0027the promise and the arrivals still differ: \u0027+String(r).slice(0,120));\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

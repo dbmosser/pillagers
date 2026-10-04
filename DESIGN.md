@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.35 - ONE SIEGE SIZE: THE PROMISE MATCHES THE ARRIVALS
+
+Co-op hunt while he was away. Found by the full test run of 2026-10-04: v18.06 cut the extraction siege to 5 + 7 x greed in the spawner only. The call still promised the old 6 + 8 x greed (about 10 machines with 8 coming), and the late pull wave and a linked window copy of the siege still counted the old size. One function holds the size now and all five places read it.
+
+MEASURED. Check 18.35 passes, and fails on v18.34.
 ## v18.34 - THE BELT KEYS ARE ROUNDED TILES
 
 Co-op hunt while he was away. The styling pass reached the stash cells (v18.32) but the raid belt still drew flat squares with a thin stroke. Each belt key is now a rounded tile with a light from the top, its rarity wash inside the same shape and a rounded ring, matching the stash. Sizes, hit boxes and colour rules are unchanged.

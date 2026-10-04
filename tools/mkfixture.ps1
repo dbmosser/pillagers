@@ -5721,6 +5721,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.35',what:'one siege size: the call promises the number of machines the ring sends (check 9.34 passes), and the size is 5 + 7 x greed everywhere it is counted',
+   run:function(){
+     if(typeof siegeBase!=='function') return 'the siege size is written out in several places';
+     var bad=[], t=(typeof __REGRESS!=='undefined')?__REGRESS.find(function(x){ return x.v==='9.34'; }):null, r;
+     if(Math.abs(siegeBase(0)-5)>1e-9||Math.abs(siegeBase(1)-12)>1e-9) bad.push('the siege size reads '+siegeBase(0)+' to '+siegeBase(1));
+     if(!t) return bad.length?bad.join('; '):'SKIP: no promise check to run';
+     try{ __runPrep(); __topClear(); r=t.run(); }catch(e){ r='threw: '+(e&&e.message||e); }
+     if(r&&String(r).indexOf('SKIP')!==0) bad.push('the promise and the arrivals still differ: '+String(r).slice(0,120));
+     return bad.length?bad.join('; '):null; }},
   {v:'18.34',what:'the belt keys are rounded tiles in the raid: with the HUD drawn, the outer corner pixel of the first belt key is left clear while a pixel just inside it is painted',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';

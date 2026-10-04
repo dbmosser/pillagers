@@ -1,0 +1,7 @@
+v18.35: one siege size: the promise matches the arrivals
+
+The extraction call now promises exactly as many machines as actually come.
+
+Check 18.35. Fails on v18.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
