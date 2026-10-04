@@ -409,3 +409,9 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - The corpus is still running on 9344 (420/944 at 11:56); result lands in scratchpad corpus-result.txt.
 - v18.29 card restamped (leads with trading is dropping). v18.30 DRAG TO DROP: a backpack drag let go outside G.bagPanel and off the belt (and not a hire gift) calls dropItem; the stash screen has #floordrop (data-drop, shown as flex while netHubSeat()>=0, name in #floordropwho) whose __grabDrop unpacks a kit item if needed and hubDropMake()s it; a pad grabs with A and presses A on the DROP HERE button.
 - 13:3x MODEL SWITCH (Fable allowance gone): state is clean at HEAD v18.30, everything pushed. Still running on his PC: headless Chrome 9344 with the corpus tab (result lands in the scratchpad corpus-result.txt via the poller; if the poller died, open tools/cdp.ps1 -Port 9344 -Match corpus=1 -Expr "window.__PROG&&__PROG.res&&__PROG.res.summary"), gate Chrome 9346 idle, heartbeat. Next: read the corpus result, fix real regressions only; then styling stages D/E, shadows bake, and his next notes.
+
+## 2026-10-04 (Opus, very low token, one gate Chrome started and closed per build)
+- v18.31 styling stage D, the run card (#root .ocwin glass, h1 glow, .tag pills, #oc_btn gradient). v18.32 stage E, stash and shop (.cell/.vcell rounded gradient tiles, .invtab, .vdet shadow).
+- v18.33 iconSprite/drawIconSprite: the raid belt, backpack cells and EQUIPPED portrait draw cached sprites with iconLift (ICONSPR, cap 400).
+- v18.34 the belt keys are rounded gradient tiles (roundRect clip, rarity wash inside, rounded ring).
+- The full corpus was stopped at 773/944 when he started Fortnite (2026-10-03 ~15:30). Rerun it only when he says the PC is free.
