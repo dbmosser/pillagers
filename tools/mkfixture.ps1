@@ -4801,7 +4801,7 @@ window.__REGRESS=[
          // Stand in the ring and let the whole siege run in.
          for(var f2=0;f2<2600;f2++){ p.x=z.x; p.y=z.y; __loop(performance.now()+4000+f2*16.7); }
          var m=0;
-         for(var e=0;e<g.ents.length;e++){ var kk=g.ents[e].kind; if(kk!=='raider'&&kk!=='stray') m++; }
+         for(var e=0;e<g.ents.length;e++){ var kk=g.ents[e].kind; if(kk!=='raider'&&kk!=='stray'&&g.ents[e].siegeBorn) m++; }   // v18.35: the siege the call names, not the pull wave his held E also brings (the ship lands sooner since v17.98)
          out.arrived=m;
        }
        for(var k2 in K) delete K[k2];
