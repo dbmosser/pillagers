@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.33',what:'the raid belt and backpack draw sprite icons: drawing an item icon through the sprite paints the canvas around its centre, the second draw reuses the stored sprite, and a non-gun sprite carries the lift (lighter top left than bottom right)',
+   run:function(){
+     if(typeof iconSprite!=='function'||typeof drawIconSprite!=='function') return 'the raid icons are painted live';
+     var bad=[], cv2=document.createElement('canvas'), c, n0, e, d, tl, br;
+     cv2.width=120; cv2.height=120; c=cv2.getContext('2d');
+     try{
+       drawIconSprite(c,'bandage',60,60,60);
+       d=c.getImageData(60,60,1,1).data; if(d[3]<50) bad.push('nothing was painted at the icon centre');
+       n0=ICONSPR.n; drawIconSprite(c,'bandage',60,60,60); if(ICONSPR.n!==n0) bad.push('the second draw painted a new sprite');
+       e=iconSprite('plate',60)||iconSprite('armor',60);
+       if(!e) bad.push('no sprite for a plate');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.32',what:'stage E of the styling pass: stash cells, shop cells and the tabs are rounded tiles, and the cells carry a light from the top',
    run:function(){
      var root=document.getElementById('root')||document.body, d=document.createElement('div'), bad=[], c, v, t, s;

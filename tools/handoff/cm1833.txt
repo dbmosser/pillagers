@@ -1,0 +1,7 @@
+v18.33: the belt and the backpack draw the new icons
+
+The tactical belt and the raid backpack show the same shaded, sharp icons as the stash.
+
+Check 18.33. Fails on v18.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

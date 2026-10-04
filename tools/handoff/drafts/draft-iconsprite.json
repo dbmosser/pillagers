@@ -1,0 +1,24 @@
+{
+    "title":  "THE BELT AND THE BACKPACK DRAW THE NEW ICONS",
+    "why":  "The art pass of 2026-10-03 reached the menus but not the raid: the belt and backpack painted every icon live on the HUD each frame, flat and without the lift. They now draw a sprite painted once per item and size at the screen scale, with the same lift: sharper, shaded like the stash, and one draw call per icon instead of thirty fills.",
+    "now":  "The tactical belt and the raid backpack show the same shaded, sharp icons as the stash.",
+    "edits":  [
+                  {
+                      "anchor":  "function iconLift(c,w,h){",
+                      "replacement":  "// v16.xx, THE ART PASS IN THE RAID (2026-10-04): THE BELT AND THE BACKPACK DRAW THE MENU ICONS. The raid belt and backpack\n// painted every icon live on the HUD canvas each frame, flat and without the lift the menus got (v18.14). They now draw a\n// sprite painted once per item and size, at the screen scale, with the same lift: sharper, shaded like the stash, and one draw\n// call per icon instead of thirty fills. A size or screen scale change paints a new sprite; the store is capped.\nvar ICONSPR={m:{},n:0};\nfunction iconSprite(key,S){\n  var R, side, k, e, cv2, c2, it;\n  if(!(S\u003e0)) return null;\n  R=Math.max(1,Math.min(3,Math.round((typeof DPR===\u0027number\u0027\u0026\u0026DPR\u003e0)?DPR*1.5:1.5)));\n  k=key+\u0027|\u0027+Math.round(S)+\u0027|\u0027+R; e=ICONSPR.m[k];\n  if(e) return e;\n  side=Math.ceil(S*1.3*R);\n  cv2=document.createElement(\u0027canvas\u0027); cv2.width=side; cv2.height=side; c2=cv2.getContext(\u00272d\u0027); if(!c2) return null;\n  drawItemIcon(c2,key,side/2,side/2,S*R);\n  it=ITEMS[key];\n  if(!(WEAPONS[key]||(it\u0026\u0026it.use===\u0027gun\u0027))\u0026\u0026typeof iconLift===\u0027function\u0027) iconLift(c2,side,side);\n  if(ICONSPR.n\u003e400){ ICONSPR.m={}; ICONSPR.n=0; }\n  e={c:cv2,s:side/R}; ICONSPR.m[k]=e; ICONSPR.n++;\n  return e;\n}\nfunction drawIconSprite(c,key,cx,cy,S){\n  var e=null;\n  try{ e=iconSprite(key,S); }catch(_is){ e=null; }\n  if(!e){ drawItemIcon(c,key,cx,cy,S); return false; }\n  c.drawImage(e.c,cx-e.s/2,cy-e.s/2,e.s,e.s);\n  return true;\n}\nfunction iconLift(c,w,h){"
+                  },
+                  {
+                      "anchor":  "      if(S.icon){ drawItemIcon(ctx,S.icon,cx2,cy2,bw*0.64); }",
+                      "replacement":  "      if(S.icon){ drawIconSprite(ctx,S.icon,cx2,cy2,bw*0.64); }   // v16.xx: the sprite icon"
+                  },
+                  {
+                      "anchor":  "      drawItemIcon(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2),TILE*0.62);",
+                      "replacement":  "      drawIconSprite(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2),TILE*0.62);   // v16.xx: the sprite icon"
+                  },
+                  {
+                      "anchor":  "  drawItemIcon(ctx,p.wep.id,x+11+LH(16),cy-LH(2),LH(30));",
+                      "replacement":  "  drawIconSprite(ctx,p.wep.id,x+11+LH(16),cy-LH(2),LH(30));   // v16.xx: the sprite icon"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the raid belt and backpack draw sprite icons: drawing an item icon through the sprite paints the canvas around its centre, the second draw reuses the stored sprite, and a non-gun sprite carries the lift (lighter top left than bottom right)\u0027,\n   run:function(){\n     if(typeof iconSprite!==\u0027function\u0027||typeof drawIconSprite!==\u0027function\u0027) return \u0027the raid icons are painted live\u0027;\n     var bad=[], cv2=document.createElement(\u0027canvas\u0027), c, n0, e, d, tl, br;\n     cv2.width=120; cv2.height=120; c=cv2.getContext(\u00272d\u0027);\n     try{\n       drawIconSprite(c,\u0027bandage\u0027,60,60,60);\n       d=c.getImageData(60,60,1,1).data; if(d[3]\u003c50) bad.push(\u0027nothing was painted at the icon centre\u0027);\n       n0=ICONSPR.n; drawIconSprite(c,\u0027bandage\u0027,60,60,60); if(ICONSPR.n!==n0) bad.push(\u0027the second draw painted a new sprite\u0027);\n       e=iconSprite(\u0027plate\u0027,60)||iconSprite(\u0027armor\u0027,60);\n       if(!e) bad.push(\u0027no sprite for a plate\u0027);\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

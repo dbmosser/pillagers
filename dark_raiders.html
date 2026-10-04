@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.32';
+var VER='18.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25899,7 +25899,7 @@ function drawBuzzFx(){
       // Real item portraits, v2.87: the slot draws the same icon the inventory
       // and the shops use, so a Kettle looks like a Kettle everywhere. The old
       // four-glyph fallback survives for any slot without an icon key.
-      if(S.icon){ drawItemIcon(ctx,S.icon,cx2,cy2,bw*0.64); }
+      if(S.icon){ drawIconSprite(ctx,S.icon,cx2,cy2,bw*0.64); }   // v18.33: the sprite icon
       else if(S.kind==='gun'){
         ctx.fillRect(cx2-bw*0.28,cy2-bw*0.05,bw*0.46,bw*0.11);
         ctx.fillRect(cx2+bw*0.10,cy2-bw*0.13,bw*0.10,bw*0.09);
@@ -29148,6 +29148,33 @@ function mercImgHTML(id,S){
 // painter has drawn it, the painted shape gets a light from the top left and a shade toward the bottom right (clipped to the
 // shape, so nothing spills), and a soft dark shadow under it, so a bandage or a plate sits in its cell like an object instead
 // of a sticker. Guns shade themselves (v18.10) and are left alone.
+// v18.33, THE ART PASS IN THE RAID (2026-10-04): THE BELT AND THE BACKPACK DRAW THE MENU ICONS. The raid belt and backpack
+// painted every icon live on the HUD canvas each frame, flat and without the lift the menus got (v18.14). They now draw a
+// sprite painted once per item and size, at the screen scale, with the same lift: sharper, shaded like the stash, and one draw
+// call per icon instead of thirty fills. A size or screen scale change paints a new sprite; the store is capped.
+var ICONSPR={m:{},n:0};
+function iconSprite(key,S){
+  var R, side, k, e, cv2, c2, it;
+  if(!(S>0)) return null;
+  R=Math.max(1,Math.min(3,Math.round((typeof DPR==='number'&&DPR>0)?DPR*1.5:1.5)));
+  k=key+'|'+Math.round(S)+'|'+R; e=ICONSPR.m[k];
+  if(e) return e;
+  side=Math.ceil(S*1.3*R);
+  cv2=document.createElement('canvas'); cv2.width=side; cv2.height=side; c2=cv2.getContext('2d'); if(!c2) return null;
+  drawItemIcon(c2,key,side/2,side/2,S*R);
+  it=ITEMS[key];
+  if(!(WEAPONS[key]||(it&&it.use==='gun'))&&typeof iconLift==='function') iconLift(c2,side,side);
+  if(ICONSPR.n>400){ ICONSPR.m={}; ICONSPR.n=0; }
+  e={c:cv2,s:side/R}; ICONSPR.m[k]=e; ICONSPR.n++;
+  return e;
+}
+function drawIconSprite(c,key,cx,cy,S){
+  var e=null;
+  try{ e=iconSprite(key,S); }catch(_is){ e=null; }
+  if(!e){ drawItemIcon(c,key,cx,cy,S); return false; }
+  c.drawImage(e.c,cx-e.s/2,cy-e.s/2,e.s,e.s);
+  return true;
+}
 function iconLift(c,w,h){
   var g, t, tc;
   if(!c||!(w>0&&h>0)) return false;
@@ -29410,7 +29437,7 @@ function drawBag(){
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('EQUIPPED',x+11,cy);
   cy+=LH(15);
-  drawItemIcon(ctx,p.wep.id,x+11+LH(16),cy-LH(2),LH(30));
+  drawIconSprite(ctx,p.wep.id,x+11+LH(16),cy-LH(2),LH(30));   // v18.33: the sprite icon
   ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
   ctx.fillText(p.wep.name,x+11+LH(38),cy);
   ctx.font=FS(TYPE.label); ctx.textAlign='right';
@@ -29459,7 +29486,7 @@ function drawBag(){
       ctx.strokeStyle=(si===sel&&!G.bagBelt)?'#ffc04a':(RCOL[it?dispR(stacks[si].key):null]||'rgba(90,102,116,.6)');   // v16.79, his order: the gold ring is on the belt row while the highlight is there
       ctx.lineWidth=(si===sel)?2:1.2;
       ctx.strokeRect(tx+.5,ty+.5,TILE-1,TILE-1);
-      drawItemIcon(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2),TILE*0.62);
+      drawIconSprite(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2),TILE*0.62);   // v18.33: the sprite icon
       if(st.idxs.length>1){
         ctx.font=FS(TYPE.micro); ctx.textAlign='right'; ctx.fillStyle='#FFF6DC';
         ctx.fillText(String(st.idxs.length),tx+TILE-LH(4),ty+TILE-LH(4));
@@ -32261,7 +32288,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.32: The stash and shop cells and tabs have the new rounded, shaded look. Check 18.32 fails on v18.31',
+  now:'v18.33: The tactical belt and the raid backpack show the same shaded, sharp icons as the stash. Check 18.33 fails on v18.32',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
