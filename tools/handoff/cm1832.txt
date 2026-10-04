@@ -1,0 +1,7 @@
+v18.32: the styling pass, stage e: the stash and the shop
+
+The stash and shop cells and tabs have the new rounded, shaded look.
+
+Check 18.32. Fails on v18.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -5721,6 +5721,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.32',what:'stage E of the styling pass: stash cells, shop cells and the tabs are rounded tiles, and the cells carry a light from the top',
+   run:function(){
+     var root=document.getElementById('root')||document.body, d=document.createElement('div'), bad=[], c, v, t, s;
+     d.innerHTML='<div class="invgrid"><div class="cell c-common">x</div></div><div class="vendgrid"><div class="vcell">y</div></div><div class="invtab">z</div>';
+     root.appendChild(d); c=d.querySelector('.cell'); v=d.querySelector('.vcell'); t=d.querySelector('.invtab');
+     try{
+       s=getComputedStyle(c); if(parseFloat(s.borderTopLeftRadius)<6) bad.push('stash cells are square ('+s.borderTopLeftRadius+')'); if(!/gradient/.test(s.backgroundImage)) bad.push('stash cells are flat');
+       s=getComputedStyle(v); if(parseFloat(s.borderTopLeftRadius)<6) bad.push('shop cells are square ('+s.borderTopLeftRadius+')');
+       s=getComputedStyle(t); if(parseFloat(s.borderTopLeftRadius)<6) bad.push('the tabs are square ('+s.borderTopLeftRadius+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ root.removeChild(d); }catch(_r){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.31',what:'stage D of the styling pass: the run card is a rounded glass card with a drop shadow, the outcome word glows, the feel tags are pills and LOG RUN AND RETURN is a gradient primary button',
    run:function(){
      var w=document.querySelector('#outcome .ocwin'), h=document.getElementById('oc_title'), b=document.getElementById('oc_btn'), tw=document.getElementById('tagwrap'), t=document.createElement('span'), bad=[], s, o=document.getElementById('outcome'), was=o&&o.classList.contains('on');

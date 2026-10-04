@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.32 - THE STYLING PASS, STAGE E: THE STASH AND THE SHOP
+
+Co-op hunt while he was away. His order of 2026-10-03: styling across all menus needs massive improvement. Stage E is the stash and the shop: item and shop cells as rounded tiles with a light from the top and a small lift on hover, rounded tabs, a rounded shop grid and a shadowed detail card. Rarity colours, sizes and every word are unchanged.
+
+MEASURED. Check 18.32 passes, and fails on v18.31.
 ## v18.31 - THE STYLING PASS, STAGE D: THE RUN CARD
 
 Co-op hunt while he was away. His order of 2026-10-03: styling across all menus needs massive improvement. Stage D is the run card at the end of every raid: a rounded glass card with a drop shadow, the outcome word glowing in its own colour, the feel tags as pills, and LOG RUN AND RETURN as the one gradient primary button. Nothing moved and no word changed.
