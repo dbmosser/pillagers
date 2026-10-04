@@ -1,0 +1,7 @@
+v18.31: the styling pass, stage d: the run card
+
+The end-of-raid card has the new look: glass card, glowing outcome, pill tags and a clear main button.
+
+Check 18.31. Fails on v18.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

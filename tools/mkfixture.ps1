@@ -5721,6 +5721,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.31',what:'stage D of the styling pass: the run card is a rounded glass card with a drop shadow, the outcome word glows, the feel tags are pills and LOG RUN AND RETURN is a gradient primary button',
+   run:function(){
+     var w=document.querySelector('#outcome .ocwin'), h=document.getElementById('oc_title'), b=document.getElementById('oc_btn'), tw=document.getElementById('tagwrap'), t=document.createElement('span'), bad=[], s, o=document.getElementById('outcome'), was=o&&o.classList.contains('on');
+     if(!w||!h||!b||!tw) return 'SKIP: no run card here';
+     t.className='tag'; t.textContent='x'; tw.appendChild(t);
+     try{
+       if(o&&!was) o.classList.add('on');
+       s=getComputedStyle(w); if(parseFloat(s.borderTopLeftRadius)<10) bad.push('the card corners are '+s.borderTopLeftRadius); if(!/rgba\(0, 0, 0/.test(s.boxShadow)) bad.push('the card has no drop shadow');
+       s=getComputedStyle(h); if(!s.textShadow||s.textShadow==='none') bad.push('the outcome word has no glow');
+       s=getComputedStyle(t); if(parseFloat(s.borderTopLeftRadius)<12) bad.push('the feel tags are square ('+s.borderTopLeftRadius+')');
+       s=getComputedStyle(b); if(!/gradient/.test(s.backgroundImage)) bad.push('LOG RUN AND RETURN is flat');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ tw.removeChild(t); }catch(_r){} if(o&&!was) o.classList.remove('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.30',what:'drag to drop: up top a backpack item let go outside the panel (and off the belt) becomes a pile at his feet, and in the stash screen a DROP HERE target shows while linked and takes a dragged item to the floor',
    run:function(){
      if(typeof hubDropMake!=='function'||typeof dropItem!=='function') return 'SKIP: no dropping here';

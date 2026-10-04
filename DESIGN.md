@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.31 - THE STYLING PASS, STAGE D: THE RUN CARD
+
+Co-op hunt while he was away. His order of 2026-10-03: styling across all menus needs massive improvement. Stage D is the run card at the end of every raid: a rounded glass card with a drop shadow, the outcome word glowing in its own colour, the feel tags as pills, and LOG RUN AND RETURN as the one gradient primary button. Nothing moved and no word changed.
+
+MEASURED. Check 18.31 passes, and fails on v18.30.
 ## v18.30 - DRAG TO DROP
 
 Co-op hunt while he was away. His order of 2026-10-03: drag to drop should work also. Up top, a backpack item dragged out of the panel and let go anywhere that is not the belt or your hire is dropped as a pile at your feet, as Z does. In the stash screen a DROP HERE target shows while the windows are linked; drag an item onto it (or pick it up with A and press A on it on a controller) and it is a crate on the floor for your teammate.
