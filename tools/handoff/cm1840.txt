@@ -1,0 +1,7 @@
+v18.40: the stamina word sits beside its bar
+
+The stamina label sits beside its bar instead of spilling over it.
+
+Check 18.40. Fails on v18.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

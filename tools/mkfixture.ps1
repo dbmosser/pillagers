@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.40',what:'the stamina word sits beside its bar: in a raid HUD frame the word STAMINA is drawn to the right of the 280 unit stamina bar, not inside it',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     var bad=[], g, oFT=ctx.fillText, at=null;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); keys={}; g.mapOpen=false; g.bagOpen=false;
+       ctx.fillText=function(s,x,y){ if(String(s)==='STAMINA'||String(s)==='WINDED') at=x; return oFT.apply(this,arguments); };
+       __frame(0.016);
+       delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;
+       if(at===null) bad.push('control: the stamina word was not drawn');
+       else if(at<16+280) bad.push('the stamina word is drawn inside its bar (x '+at+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.39',what:'the weapon readout panel never covers the belt: in a raid HUD frame the bottom right panel starts to the right of the last belt key',
    run:function(){
      if(typeof hudPanel!=='function') return 'SKIP: no HUD panel';

@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.39';
+var VER='18.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27210,8 +27210,11 @@ if(p.armor>0){
   }
   var _stc=p.stamLock?'#ff5a4a':(p.stam<35?'#ffc04a':'#8fb5c8');
   bar(16,by-25,280,12,p.stam/100,_stc);
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='#0a0e14';
-ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
+  // v18.40, THE STYLING PASS IN THE RAID (2026-10-04): THE STAMINA WORD SITS BESIDE ITS BAR. It was dark text inside a 12 unit bar
+  // in a face taller than the bar, so it spilled over the top edge and read as a smudge. It sits just past the bar's end now, in
+  // the bar's own colour, and WINDED still replaces it when the bar locks.
+  ctx.font=FS(TYPE.micro); ctx.fillStyle=_stc;
+  ctx.fillText(p.stamLock?'WINDED':'STAMINA',16+280+8,by-15);
   ctx.restore();                          // v8.08: end of the corner scale
   ctx.restore();
   var _boG=hudOff('gear');
@@ -32338,7 +32341,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.39: The weapon readout panel no longer covers belt key 9. Check 18.39 fails on v18.38',
+  now:'v18.40: The stamina label sits beside its bar instead of spilling over it. Check 18.40 fails on v18.39',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
