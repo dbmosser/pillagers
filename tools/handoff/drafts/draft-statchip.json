@@ -1,0 +1,12 @@
+{
+    "title":  "THE POSTURE CHIP IS A HUD PANEL",
+    "why":  "Styling across the HUD (his order of 2026-10-03): the STANDING / CROUCHED chip above the stamina bar was the last flat black box in the corner. It is a small rounded HUD panel like the boxes around it, same place and size.",
+    "now":  "The STANDING / CROUCHED chip matches the other HUD panels.",
+    "edits":  [
+                  {
+                      "anchor":  "    ctx.fillStyle=\u0027rgba(6,9,13,.72)\u0027;\n    ctx.fillRect(20,by-_up-LH(17),_pw+10,LH(14));",
+                      "replacement":  "    // v16.xx, THE STYLING PASS IN THE RAID (2026-10-04): the posture chip (STANDING, CROUCHED, SPRINTING...) is a small rounded\n    // HUD panel like the boxes around it, same place and size.\n    if(typeof hudPanel===\u0027function\u0027) hudPanel(18,by-_up-LH(18),_pw+14,LH(16),0.78);\n    else { ctx.fillStyle=\u0027rgba(6,9,13,.72)\u0027; ctx.fillRect(20,by-_up-LH(17),_pw+10,LH(14)); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the posture chip is a HUD panel: a raid HUD frame draws a small panel at the left edge just above the stamina bar, behind the STANDING word\u0027,\n   run:function(){\n     if(typeof hudPanel!==\u0027function\u0027) return \u0027SKIP: no HUD panel\u0027;\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var bad=[], g, oHP=hudPanel, seen=[];\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); keys={}; g.mapOpen=false; g.bagOpen=false;\n       hudPanel=function(x,y,w,h,a){ seen.push([x,y,w,h]); return oHP.apply(this,arguments); };\n       __frame(0.016);\n       hudPanel=oHP;\n       if(!seen.some(function(r){ return r[0]\u003e=16\u0026\u0026r[0]\u003c=22\u0026\u0026r[3]\u003cLH(20); })) bad.push(\u0027no posture chip panel (\u0027+seen.length+\u0027 panels)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ hudPanel=oHP; keys={}; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

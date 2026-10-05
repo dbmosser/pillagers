@@ -1,0 +1,7 @@
+v18.41: the posture chip is a hud panel
+
+The STANDING / CROUCHED chip matches the other HUD panels.
+
+Check 18.41. Fails on v18.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v18.41 - THE POSTURE CHIP IS A HUD PANEL
+
+Co-op hunt while he was away. Styling across the HUD (his order of 2026-10-03): the STANDING / CROUCHED chip above the stamina bar was the last flat black box in the corner. It is a small rounded HUD panel like the boxes around it, same place and size.
+
+MEASURED. Check 18.41 passes, and fails on v18.40.

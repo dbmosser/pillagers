@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.41 - THE POSTURE CHIP IS A HUD PANEL
+
+Co-op hunt while he was away. Styling across the HUD (his order of 2026-10-03): the STANDING / CROUCHED chip above the stamina bar was the last flat black box in the corner. It is a small rounded HUD panel like the boxes around it, same place and size.
+
+MEASURED. Check 18.41 passes, and fails on v18.40.
 ## v18.40 - THE STAMINA WORD SITS BESIDE ITS BAR
 
 Co-op hunt while he was away. Seen on the HUD screenshot of 2026-10-04: STAMINA was dark text inside a 12 unit bar in a face taller than the bar, so it spilled over the top edge and read as a smudge. It sits just past the end of the bar now, in the bar colour, and WINDED still replaces it when the bar locks.
