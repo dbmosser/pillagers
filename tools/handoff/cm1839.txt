@@ -1,0 +1,7 @@
+v18.39: the weapon panel never covers the belt
+
+The weapon readout panel no longer covers belt key 9.
+
+Check 18.39. Fails on v18.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

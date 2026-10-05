@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.39 - THE WEAPON PANEL NEVER COVERS THE BELT
+
+Co-op hunt while he was away. Seen on the screenshot after v18.38: at 1080p the new panel behind the weapon readout reached left over belt key 9. It now starts to the right of the last belt key when the two would meet.
+
+MEASURED. Check 18.39 passes, and fails on v18.38.
 ## v18.38 - THE WEAPON READOUT SITS ON A PANEL
 
 Co-op hunt while he was away. Styling across the HUD (his order of 2026-10-03): the bottom right readout, gun name, ammo, what is stowed, the backpack count and its key, was bare text over the world and hard to read over a bright street. It sits on the same HUD panel as the other boxes now, sized to the widest line. Nothing moved.

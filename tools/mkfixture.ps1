@@ -5721,6 +5721,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.39',what:'the weapon readout panel never covers the belt: in a raid HUD frame the bottom right panel starts to the right of the last belt key',
+   run:function(){
+     if(typeof hudPanel!=='function') return 'SKIP: no HUD panel';
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     var bad=[], g, oHP=hudPanel, seen=[], C, br;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); keys={}; g.mapOpen=false; g.bagOpen=false;
+       __frame(0.016);
+       hudPanel=function(x,y,w,h,a){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1; seen.push([(m.a*x+m.c*y+m.e)/d,(m.b*x+m.d*y+m.f)/d,w*m.a/d,h*m.d/d]); return oHP.apply(this,arguments); };   // screen space: the corner is drawn scaled
+       __frame(0.016);
+       hudPanel=oHP;
+       C=g.hotCells&&g.hotCells[g.hotCells.length-1];
+       br=seen.filter(function(r){ return r[0]+r[2]>=W-30&&r[1]>H*0.6; })[0];
+       if(!C||!br) return 'SKIP: no belt or no corner panel drawn';
+       if(br[0]<C.x+C.w&&br[1]<C.y+C.h) bad.push('the corner panel starts at '+Math.round(br[0])+', over belt key 9 which ends at '+Math.round(C.x+C.w));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ hudPanel=oHP; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.38',what:'the weapon readout sits on a panel: a raid HUD frame draws a HUD panel in the bottom right corner, behind the gun name',
    run:function(){
      if(typeof hudPanel!=='function') return 'SKIP: no HUD panel';

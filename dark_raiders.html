@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.38';
+var VER='18.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27256,7 +27256,10 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   // v18.38, THE STYLING PASS IN THE RAID (2026-10-04): THE WEAPON READOUT SITS ON A PANEL. The gun name, the ammo, what is stowed,
   // the backpack count and its key were bare text over the world, unreadable over a bright street. One HUD panel behind them,
   // sized to the widest line; every line stays where it was.
-  try{ var _wpw=Math.max(LH(230),ctx.measureText(_cornName).width+LH(30)); hudPanel(W-16-_wpw+LH(10),by-LH(90),_wpw,LH(100),0.62); ctx.textAlign='right'; }catch(_wp){}
+  try{ var _wpw=Math.max(LH(230),ctx.measureText(_cornName).width+LH(30)), _wpx=W-16-_wpw+LH(10), _hcL=(G.hotCells&&G.hotCells.length)?G.hotCells[G.hotCells.length-1]:null;
+       var _gz=(HUDZ.gear||1)*hudRes()*hudUserZ('gear'), _gdx=(typeof _boG==='object'&&_boG)?(_boG.dx||0):0, _lim=_hcL?(W+((_hcL.x+_hcL.w+LH(8))-_gdx-W)/_gz):-1e9;   // the belt edge, brought into this corner's scaled space
+       if(_hcL&&_wpx<_lim){ _wpx=_lim; _wpw=W-16+LH(10)-_wpx; }   // v18.39: never over the belt (it covered key 9)
+       if(_wpw>LH(60)) hudPanel(_wpx,by-LH(90),_wpw,LH(100),0.62); ctx.textAlign='right'; }catch(_wp){}
   ctx.fillText(_cornName,W-16,by-LH(34));
   ctx.font=FS(TYPE.title);
   if(!_heldGun){
@@ -32335,7 +32338,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.38: The gun and ammo readout in the bottom right has a panel behind it, so it reads over any ground. Check 18.38 fails on v18.37',
+  now:'v18.39: The weapon readout panel no longer covers belt key 9. Check 18.39 fails on v18.38',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
