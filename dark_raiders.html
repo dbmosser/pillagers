@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.35';
+var VER='18.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22086,7 +22086,25 @@ function camClamp(v,span,world){
   if(hi<lo) return (world-span)/2;
   return v<lo?lo:(v>hi?hi:v);
 }
+// v18.36, THE FRAME COST (2026-10-04): A GROUND SHADOW IS A STAMP. Every body, tree, box and wreck laid a soft ellipse every frame,
+// about 160 path fills a frame. The ellipse depends only on its size and darkness, so each one is painted once into a small
+// sprite at the screen scale and stamped after that. Sizes round to whole units, darkness to hundredths; the store empties when
+// it passes 300. CFG.wallBake 0 paints them live, as the walls do.
+var SHADSPR={m:{},n:0,ss:0};
 function shadowE(x,y,rx,ry,a){
+  var ss, k, e, R, cv2, c2;
+  if(CFG.wallBake!==0&&rx>0&&ry>0&&rx<400&&ry<400&&typeof wallSpriteScale==='function'){
+    ss=wallSpriteScale();
+    if(SHADSPR.ss!==ss){ SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=ss; }
+    R=[Math.round(rx),Math.round(ry),Math.round(a*100)]; k=R.join(',');
+    e=SHADSPR.m[k];
+    if(!e&&R[0]>0&&R[1]>0){
+      if(SHADSPR.n>300){ SHADSPR.m={}; SHADSPR.n=0; }
+      cv2=document.createElement('canvas'); cv2.width=Math.ceil(R[0]*2*ss)+2; cv2.height=Math.ceil(R[1]*2*ss)+2; c2=cv2.getContext('2d');
+      if(c2){ c2.fillStyle='rgba(0,0,0,'+(R[2]/100)+')'; c2.beginPath(); c2.ellipse(cv2.width/2,cv2.height/2,R[0]*ss,R[1]*ss,0,0,6.2832); c2.fill(); e={c:cv2,ss:ss}; SHADSPR.m[k]=e; SHADSPR.n++; }
+    }
+    if(e){ wc.drawImage(e.c,x-e.c.width/(2*e.ss),y-e.c.height/(2*e.ss),e.c.width/e.ss,e.c.height/e.ss); return; }
+  }
   wc.fillStyle='rgba(0,0,0,'+a+')';
   wc.beginPath(); wc.ellipse(x,y,rx,ry,0,0,6.2832); wc.fill();
 }
@@ -32300,7 +32318,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.35: The extraction call now promises exactly as many machines as actually come. Check 18.35 fails on v18.34',
+  now:'v18.36: Ground shadows are painted once and stamped, a little more frame rate in busy places. Check 18.36 fails on v18.35',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

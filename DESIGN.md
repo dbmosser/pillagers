@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.36 - GROUND SHADOWS ARE STAMPS
+
+Co-op hunt while he was away. The frame cost work of 2026-10-03, continued: every body, tree, box and wreck laid a soft ellipse shadow every frame, about 160 path fills a frame. A shadow depends only on its size and darkness, so each one is painted once into a small sprite at the screen scale and stamped after that. Same look; fewer draw calls in a busy street.
+
+MEASURED. Check 18.36 passes, and fails on v18.35.
 ## v18.35 - ONE SIEGE SIZE: THE PROMISE MATCHES THE ARRIVALS
 
 Co-op hunt while he was away. Found by the full test run of 2026-10-04: v18.06 cut the extraction siege to 5 + 7 x greed in the spawner only. The call still promised the old 6 + 8 x greed (about 10 machines with 8 coming), and the late pull wave and a linked window copy of the siege still counted the old size. One function holds the size now and all five places read it.

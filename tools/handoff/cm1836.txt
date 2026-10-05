@@ -1,0 +1,7 @@
+v18.36: ground shadows are stamps
+
+Ground shadows are painted once and stamped, a little more frame rate in busy places.
+
+Check 18.36. Fails on v18.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
