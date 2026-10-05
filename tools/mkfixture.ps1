@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.38',what:'the weapon readout sits on a panel: a raid HUD frame draws a HUD panel in the bottom right corner, behind the gun name',
+   run:function(){
+     if(typeof hudPanel!=='function') return 'SKIP: no HUD panel';
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     var bad=[], g, oHP=hudPanel, seen=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); keys={}; g.mapOpen=false; g.bagOpen=false;
+       hudPanel=function(x,y,w,h,a){ seen.push([x,y,w,h]); return oHP.apply(this,arguments); };
+       __frame(0.016);
+       hudPanel=oHP;
+       if(!seen.some(function(r){ return r[0]+r[2]>=W-30&&r[1]>H*0.6; })) bad.push('no panel in the bottom right corner ('+seen.length+' panels drawn)');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ hudPanel=oHP; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.37',what:'one bar for every meter: a full bar drawn on a test canvas is the fill colour at its centre, lighter at its top, and its outer corner is left clear (rounded)',
    run:function(){
      if(typeof bar!=='function') return 'SKIP: no bar painter';

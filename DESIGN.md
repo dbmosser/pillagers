@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.38 - THE WEAPON READOUT SITS ON A PANEL
+
+Co-op hunt while he was away. Styling across the HUD (his order of 2026-10-03): the bottom right readout, gun name, ammo, what is stowed, the backpack count and its key, was bare text over the world and hard to read over a bright street. It sits on the same HUD panel as the other boxes now, sized to the widest line. Nothing moved.
+
+MEASURED. Check 18.38 passes, and fails on v18.37.
 ## v18.37 - ONE BAR FOR EVERY METER
 
 Co-op hunt while he was away. Styling across the HUD (his order of 2026-10-03): health, armour, stamina and every progress bar were flat rectangles. They are rounded capsules now with a dark track, a fill lit along its top and its own colour through the middle, a thin highlight and a rounded steel ring. Same positions, sizes and fractions everywhere.

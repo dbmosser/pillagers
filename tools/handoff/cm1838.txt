@@ -1,0 +1,7 @@
+v18.38: the weapon readout sits on a panel
+
+The gun and ammo readout in the bottom right has a panel behind it, so it reads over any ground.
+
+Check 18.38. Fails on v18.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
