@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.42 - THE KEY ITEMS ARE PAINTED LIKE OBJECTS
+
+Co-op hunt while he was away. His order of 2026-10-05: the icons for key items (weapons, bandages and the rest) need to be improved drastically. This build is the items: the bandage, medkit, stim, armour plate, ammo box, smoke, decoy and frag were three or four flat fills each. Each is now drawn as the thing it is, lit from the top left with gradients, an ink outline and a highlight, with the parts that name it: a gauze roll with its tail, a red case with handle and latches, a syringe, a ballistic plate with its bevel, a box of brass rounds, a canister with its pin and smoke, a beacon with its waves, a pineapple grenade with its spoon and ring. The guns follow in the next build. Every place that shows an icon (stash, shop, belt, backpack, pickups) gets the new art.
+
+MEASURED. Check 18.42 passes, and fails on v18.41.
 ## v18.41 - THE POSTURE CHIP IS A HUD PANEL
 
 Co-op hunt while he was away. Styling across the HUD (his order of 2026-10-03): the STANDING / CROUCHED chip above the stamina bar was the last flat black box in the corner. It is a small rounded HUD panel like the boxes around it, same place and size.

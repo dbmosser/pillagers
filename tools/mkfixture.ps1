@@ -5721,6 +5721,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.42',what:'the key items are painted like objects: bandage, medkit, stim, plate, ammo box, smoke, decoy and frag each draw at 96 px with real shading, at least 14 distinct solid colours where the flat icons had a handful, and fill a fair part of their box',
+   run:function(){
+     if(typeof keyIcon!=='function') return 'the key items are flat';
+     var bad=[], ks=['bandage','medkit','stim','plate','ammobox','smoke','decoy','frag'], i, cv2, c, d, p, cols, solid, k;
+     for(i=0;i<ks.length;i++){
+       k=ks[i]; if(!ITEMS[k]) continue;
+       cv2=document.createElement('canvas'); cv2.width=96; cv2.height=96; c=cv2.getContext('2d');
+       try{ drawItemIcon(c,k,48,48,96*0.82); }catch(e){ bad.push(k+' threw: '+(e&&e.message||e)); continue; }
+       d=c.getImageData(0,0,96,96).data; cols={}; solid=0;
+       for(p=0;p<d.length;p+=4){ if(d[p+3]>220){ solid++; cols[(d[p]>>3)+','+(d[p+1]>>3)+','+(d[p+2]>>3)]=1; } }
+       if(Object.keys(cols).length<14) bad.push(k+' has only '+Object.keys(cols).length+' colours');
+       if(solid<96*96*(k==='stim'?0.12:0.18)) bad.push(k+' fills only '+solid+' pixels');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.41',what:'the posture chip is a HUD panel: a raid HUD frame draws a small panel at the left edge just above the stamina bar, behind the STANDING word',
    run:function(){
      if(typeof hudPanel!=='function') return 'SKIP: no HUD panel';

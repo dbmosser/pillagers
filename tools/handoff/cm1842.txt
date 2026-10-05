@@ -1,0 +1,7 @@
+v18.42: the key items are painted like objects
+
+Bandages, medkits, stims, plates, ammo, smoke, decoys and frags have new detailed, shaded icons everywhere.
+
+Check 18.42. Fails on v18.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
