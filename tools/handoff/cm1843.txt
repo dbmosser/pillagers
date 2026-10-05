@@ -1,0 +1,7 @@
+v18.43: the guns are drawn as guns
+
+Every gun has a new detailed icon drawn as the real thing: slides, grips, scopes, stocks and magazines.
+
+Check 18.43. Fails on v18.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

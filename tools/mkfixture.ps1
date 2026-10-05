@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.43',what:'the guns are drawn as guns: every weapon draws at 96 px from the outline painter, with at least 18 distinct solid colours, an ink outline and a trigger guard ring (a transparent hole inside the guard)',
+   run:function(){
+     if(typeof gunArt!=='function') return 'the guns are stacked blocks';
+     var bad=[], k, n=0, cv2, c, d, p, cols;
+     for(k in WEAPONS){
+       if(!Object.prototype.hasOwnProperty.call(WEAPONS,k)||k==='fists') continue;
+       cv2=document.createElement('canvas'); cv2.width=96; cv2.height=96; c=cv2.getContext('2d');
+       try{ gunIcon(c,k,48,48,96); }catch(e){ bad.push(k+' threw: '+(e&&e.message||e)); continue; }
+       d=c.getImageData(0,0,96,96).data; cols={};
+       for(p=0;p<d.length;p+=4) if(d[p+3]>220) cols[(d[p]>>3)+','+(d[p+1]>>3)+','+(d[p+2]>>3)]=1;
+       if(Object.keys(cols).length<18) bad.push(k+' has only '+Object.keys(cols).length+' colours');
+       n++;
+     }
+     if(n<4) bad.push('control: only '+n+' weapons drawn');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.42',what:'the key items are painted like objects: bandage, medkit, stim, plate, ammo box, smoke, decoy and frag each draw at 96 px with real shading, at least 14 distinct solid colours where the flat icons had a handful, and fill a fair part of their box',
    run:function(){
      if(typeof keyIcon!=='function') return 'the key items are flat';

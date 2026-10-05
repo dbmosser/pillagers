@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.43 - THE GUNS ARE DRAWN AS GUNS
+
+Co-op hunt while he was away. His order of 2026-10-05: the weapon icons need to be improved drastically. v18.10 shaded the old stacked blocks and a gun still read as blocks. Each family is now drawn from real outlines: a pistol slide with its angled front, serrations and port over a frame, a raked grip and a ring trigger guard; a revolver fluted cylinder and wooden grip; a rifle stock, buffer tube, railed receiver, vented handguard, curved magazine and flash hider (a fat can on the Whisper); a pump gun wood stock, barrel, tube and grooved pump; an LMG drum and bipod; a marksman scope with lenses and bolt; the lance coils. The receiver keeps the rarity colour, lit from the top and ink outlined, everywhere a gun is shown.
+
+MEASURED. Check 18.43 passes, and fails on v18.42.
 ## v18.42 - THE KEY ITEMS ARE PAINTED LIKE OBJECTS
 
 Co-op hunt while he was away. His order of 2026-10-05: the icons for key items (weapons, bandages and the rest) need to be improved drastically. This build is the items: the bandage, medkit, stim, armour plate, ammo box, smoke, decoy and frag were three or four flat fills each. Each is now drawn as the thing it is, lit from the top left with gradients, an ink outline and a highlight, with the parts that name it: a gauze roll with its tail, a red case with handle and latches, a syringe, a ballistic plate with its bevel, a box of brass rounds, a canister with its pin and smoke, a beacon with its waves, a pineapple grenade with its spoon and ring. The guns follow in the next build. Every place that shows an icon (stash, shop, belt, backpack, pickups) gets the new art.
