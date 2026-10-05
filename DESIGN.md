@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.37 - ONE BAR FOR EVERY METER
+
+Co-op hunt while he was away. Styling across the HUD (his order of 2026-10-03): health, armour, stamina and every progress bar were flat rectangles. They are rounded capsules now with a dark track, a fill lit along its top and its own colour through the middle, a thin highlight and a rounded steel ring. Same positions, sizes and fractions everywhere.
+
+MEASURED. Check 18.37 passes, and fails on v18.36.
 ## v18.36 - GROUND SHADOWS ARE STAMPS
 
 Co-op hunt while he was away. The frame cost work of 2026-10-03, continued: every body, tree, box and wreck laid a soft ellipse shadow every frame, about 160 path fills a frame. A shadow depends only on its size and darkness, so each one is painted once into a small sprite at the screen scale and stamped after that. Same look; fewer draw calls in a busy street.

@@ -1,0 +1,7 @@
+v18.37: one bar for every meter
+
+Health, armour, stamina and progress bars are rounded, shaded capsules.
+
+Check 18.37. Fails on v18.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

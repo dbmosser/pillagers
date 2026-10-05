@@ -5721,6 +5721,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.37',what:'one bar for every meter: a full bar drawn on a test canvas is the fill colour at its centre, lighter at its top, and its outer corner is left clear (rounded)',
+   run:function(){
+     if(typeof bar!=='function') return 'SKIP: no bar painter';
+     var bad=[], cv2=document.createElement('canvas'), oc=ctx, c, d0, dt, dc;
+     cv2.width=200; cv2.height=60; c=cv2.getContext('2d');
+     try{
+       ctx=c; bar(10,10,180,30,1,'#5fae6f');
+       dc=c.getImageData(100,25,1,1).data; dt=c.getImageData(100,12,1,1).data; d0=c.getImageData(10,10,1,1).data;
+       if(Math.abs(dc[1]-0xae)>14) bad.push('the centre is not the fill colour ('+dc[0]+','+dc[1]+','+dc[2]+')');
+       if(!(dt[0]+dt[1]+dt[2]>dc[0]+dc[1]+dc[2]+20)) bad.push('the top of the fill is not lit');
+       if(d0[3]>120) bad.push('the corner is square (alpha '+d0[3]+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ ctx=oc; }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.36',what:'ground shadows are stamps: with the sprites warm a raid frame issues under 70 ellipse calls (it issued about 165), and a stamped shadow is as dark at its middle as the live one',
    run:function(){
      if(typeof SHADSPR==='undefined') return 'the shadows are painted live every frame';
