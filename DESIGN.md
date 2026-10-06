@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.45 - THE WHAT IS NEW CARD NAMES THE NEW ICONS AND HUD
+
+Co-op hunt while he was away. The card was stamped v18.29 and the stamp may not trail the build by more than 0.15. It now says what changed since: the redrawn guns and items, the one look across the raid HUD, smoother busy streets and safe floor crates.
+
+MEASURED. Check 18.45 passes, and fails on v18.44.
 ## v18.44 - THE PARTS AND THE SALVAGE ARE PAINTED LIKE OBJECTS
 
 Co-op hunt while he was away. His order of 2026-10-05, continued with his yes of 2026-10-06: after the key items and the guns, the parts and salvage. Scrap, wire, coils, cells, boards, the relay, lenses, servos, component kits, data and Warden cores, ledgers, the codex, the black box, the reactor core, the bloom sample and the meat were flat shapes. Each is drawn as the thing it is, lit from the top left, ink outlined, in its own rarity colour, everywhere an icon is shown.

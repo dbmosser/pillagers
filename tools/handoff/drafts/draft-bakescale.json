@@ -1,0 +1,20 @@
+{
+    "title":  "THE BAKED SPRITES ARE SHARP AT 4K",
+    "why":  "Found by the code comb of 2026-10-06: the walls, trees, shadows and belt icons baked since v18.15 were painted at a scale rounded to the nearest whole number and capped at 2, so at 4K (where he plays) and between whole zooms they were stretched and blurred; a shadow stamp took the raid camera scale even when drawn on another canvas; and a lost and restored canvas kept sprites that had gone blank. The scale now rounds up and reaches 4, a shadow reads the scale of the canvas it is drawn on, and a restored canvas drops every sprite store.",
+    "now":  "Walls, trees, shadows and belt icons stay sharp at 4K and every zoom.",
+    "edits":  [
+                  {
+                      "anchor":  "function wallSpriteScale(){ var z=1; try{ z=ZOOM()*(DPR||1); }catch(_z){ z=1; } return Math.max(1,Math.min(2,Math.round(z))); }",
+                      "replacement":  "function wallSpriteScale(){ var z=1; try{ z=ZOOM()*(DPR||1); }catch(_z){ z=1; } return Math.max(1,Math.min(4,Math.ceil(z-0.05))); }   // v16.xx: rounds up and reaches 4, so 4K and odd zooms are never stretched"
+                  },
+                  {
+                      "anchor":  "    ss=wallSpriteScale();",
+                      "replacement":  "    ss=(function(){ try{ var _m=wc.getTransform(); return Math.max(1,Math.min(4,Math.ceil(Math.hypot(_m.a,_m.b)-0.05))); }catch(_t){ return wallSpriteScale(); } })();   // v16.xx: the scale of the canvas being drawn on"
+                  },
+                  {
+                      "anchor":  "function onCtxRestored(){\n  ctxLost=false;",
+                      "replacement":  "function onCtxRestored(){\n  ctxLost=false;\n  try{ WALLSPR.m={}; WALLSPR.n=0; WALLSPR.key=\u0027\u0027; VEGSPR.m={}; VEGSPR.key=\u0027\u0027; SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=0; ICONSPR.m={}; ICONSPR.n=0; }catch(_sc){}   // v16.xx: sprites painted before the loss are blank now"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the baked sprites are sharp at any scale: the sprite scale rounds up (2.6 gives 3) and reaches 4 for 4K, a shadow stamp takes the scale of the canvas it is drawn on, and a lost canvas drops every sprite store\u0027,\n   run:function(){\n     if(typeof wallSpriteScale!==\u0027function\u0027||typeof SHADSPR===\u0027undefined\u0027) return \u0027SKIP: no baked sprites here\u0027;\n     var bad=[], oZ=ZOOM, oD=DPR, cv2=document.createElement(\u0027canvas\u0027), oWc=wc, src=\u0027\u0027;\n     try{\n       ZOOM=function(){ return 2.6; }; DPR=1;\n       if(wallSpriteScale()!==3) bad.push(\u0027a scale of 2.6 bakes at \u0027+wallSpriteScale());\n       ZOOM=function(){ return 2.0; }; DPR=2;\n       if(wallSpriteScale()!==4) bad.push(\u0027a scale of 4 bakes at \u0027+wallSpriteScale());\n       ZOOM=oZ; DPR=oD;\n       cv2.width=300; cv2.height=300; wc=cv2.getContext(\u00272d\u0027); wc.setTransform(3,0,0,3,0,0);\n       SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=0;\n       shadowE(40,40,20,8,0.3);\n       if(SHADSPR.ss!==3) bad.push(\u0027a shadow on a canvas scaled 3 was stamped at \u0027+SHADSPR.ss);\n       src=onCtxRestored.toString();\n       [\u0027WALLSPR\u0027,\u0027VEGSPR\u0027,\u0027SHADSPR\u0027,\u0027ICONSPR\u0027].forEach(function(k){ if(src.indexOf(k)\u003c0) bad.push(\u0027a restored canvas keeps the old \u0027+k); });\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ ZOOM=oZ; DPR=oD; wc=oWc; SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=0; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

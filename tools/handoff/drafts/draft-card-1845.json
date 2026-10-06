@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES THE NEW ICONS AND HUD",
+    "why":  "The card was stamped v18.29 and the stamp may not trail the build by more than 0.15. It now says what changed since: the redrawn guns and items, the one look across the raid HUD, smoother busy streets and safe floor crates.",
+    "now":  "The what is new card names the new icons and the cleaner HUD.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002718.29\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002718.45\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027TRADING IS DROPPING. Up top, press Z (Y on a controller, backpack open) and the item is a pile at your feet; your teammate searches it like any box. In the Undercroft, right-click a stash item (Y on a controller), choose Drop on the floor, and they press E beside the crate. The key legends and the Party window say so. New characters start with short dark hair.\u0027,",
+                      "replacement":  "  \u0027NEW ICONS AND A CLEANER HUD. Every gun is drawn as the real thing, and bandages, medkits, stims, plates, ammo, grenades, parts and salvage all have new detailed pictures. The raid HUD shares one look: rounded panels, capsule bars, a panel behind your gun and ammo. Busy streets run smoother. Items dropped on the Undercroft floor can always be picked up and come back to you if nobody takes them.\u0027,\n  \u0027TRADING IS DROPPING. Up top, press Z (Y on a controller, backpack open) and the item is a pile at your feet; your teammate searches it like any box. In the Undercroft, right-click a stash item (Y on a controller), choose Drop on the floor, and they press E beside the crate. The key legends and the Party window say so. New characters start with short dark hair.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and has a line on the new icons and HUD\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), needle=\u0027NEW ICONS AND\u0027+\u0027 A CLEANER HUD\u0027;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(!WHATSNEW.some(function(l){ return String(l).indexOf(needle)\u003e=0; })) bad.push(\u0027no line of the card names the new icons and HUD\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
