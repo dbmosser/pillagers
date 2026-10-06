@@ -1,0 +1,7 @@
+v18.47: a drop is never lost on its way
+
+Dropping an item for your teammate always leaves it on the ground, even after the host has extracted.
+
+Check 18.47. Fails on v18.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

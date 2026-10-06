@@ -1,0 +1,5 @@
+## v18.47 - A DROP IS NEVER LOST ON ITS WAY
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-06: when the host extracted or died and kept the world running for the party, a teammate drop was refused by the host (its raid was over) and the item, already out of the backpack, was gone; and a linked window that had lost its host link dropped items into nowhere. The spectating host now makes the pile, and with no host link the pile is made locally as in solo.
+
+MEASURED. Check 18.47 passes, and fails on v18.46.

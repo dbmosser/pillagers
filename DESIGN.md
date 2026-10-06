@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.47 - A DROP IS NEVER LOST ON ITS WAY
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-06: when the host extracted or died and kept the world running for the party, a teammate drop was refused by the host (its raid was over) and the item, already out of the backpack, was gone; and a linked window that had lost its host link dropped items into nowhere. The spectating host now makes the pile, and with no host link the pile is made locally as in solo.
+
+MEASURED. Check 18.47 passes, and fails on v18.46.
 ## v18.46 - FLOOR CRATES ARE NEVER LOST OR DOUBLED
 
 Co-op hunt while he was away. Found by the code comb of 2026-10-06, all in the Undercroft drop of v18.28: a crate dropped at the stash landed inside the stash reach, often inside its plinth, so E opened the stash and nobody could ever take it, and the item was gone; both windows could take one crate at once; a crate outlived the party and could then be taken by both; a reload or crash deleted a crate whose item had already left the stash. Now the crate lands outside any station reach and wins over a station when you stand nearer it, the dropper cannot take his own crate while linked, and every crate is written in the dropper profile: it comes home when the party ends or at the next load.
