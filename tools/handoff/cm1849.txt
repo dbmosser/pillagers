@@ -1,0 +1,7 @@
+v18.49: at 4k the hud stack does not overlap
+
+At 1440p and 4K the HIDDEN chip, the boss bar and the clock no longer print over each other.
+
+Check 18.49. Fails on v18.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

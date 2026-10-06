@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.48';
+var VER='18.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26092,7 +26092,7 @@ function drawGiftLine(){
   if(gi&&!gi.yes&&(t=GIFT_T-((G.t||0)-gi.t))>0){ it=ITEMS[gi.k]; s=(netSeatName(gi.from)||'Your teammate')+' offers you '+(it?it.name:gi.k)+'.  T or '+padB('Y')+' to take it.  '+Math.ceil(t)+'s'; }
   else if(go&&(t=GIFT_T-((G.t||0)-go.t))>0){ it=ITEMS[go.k]; s='Offered '+(it?it.name:go.k)+' to '+(netSeatName(go.to)||'your teammate')+'. Waiting for them to take it.  '+Math.ceil(t)+'s'; }
   if(!s) return null;
-  y=LH(104);
+  y=Math.round(LH(132)*hudRes());   // v18.49: below the boss bar and above the message plate (was LH(104), on the toast)
   ctx.save(); ctx.font=FS(TYPE.label); ctx.textAlign='center';
   w=ctx.measureText(s).width;
   ctx.fillStyle='rgba(6,9,13,.78)'; ctx.fillRect(W/2-w/2-12,y-LH(15),w+24,LH(22));
@@ -26107,7 +26107,7 @@ function drawBossBar(){
   else for(i=0;i<G.ents.length;i++) if(G.ents[i]&&G.ents[i].name===BOSS_NAME){ e=G.ents[i]; break; }
   if(!e||!(e.hp>0)||Math.hypot(e.x-p.x,e.y-p.y)>900) return;
   f=Math.max(0,Math.min(1,e.hp/(e.maxhp||e.hp)));
-  w=Math.min(520,W*0.4); x=W/2-w/2; y=LH(64);
+  w=Math.min(520,W*0.4); x=W/2-w/2; y=Math.round(LH(108)*hudRes());   // v18.49: below the clock, the compass and the extract arrow, scaled with them (was LH(64), inside the stack)
   ctx.save();
   ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(x-4,y-LH(16),w+8,LH(16)+10);
   ctx.fillStyle='#3a0d0d'; ctx.fillRect(x,y,w,6);
@@ -27114,8 +27114,12 @@ var by=H-34;
     ctx.textAlign='right';
     ctx.fillStyle='rgba(6,9,13,.72)';
     var _gGrow=Math.round((34+LH(80))*((HUDZ.gear||1)-1));
-    ctx.fillRect(W-16-cw2-8,by-LH(106)-_gGrow,cw2+16,LH(20));
-    ctx.fillStyle=ccol; ctx.fillText(clab,W-24,by-LH(92)-_gGrow);
+    // v18.49, FROM THE CODE COMB (2026-10-06): THE HIDDEN CHIP SITS ABOVE THE WEAPON PANEL AT EVERY SIZE. The weapon panel (v18.38) grows
+    // with the corner's scale, and at 1440p and 4K it was painted over this chip. The chip's bottom is kept above the panel's real top
+    // on screen, and the chip is a HUD panel like the rest.
+    var _zg=(HUDZ.gear||1)*hudRes()*hudUserZ('gear'), _og=hudOff('gear'), _ptop=H+((by-LH(90))-H)*_zg+(_og.dy||0), _cyb=Math.min(by-LH(86)-_gGrow,_ptop-LH(6));
+    if(typeof hudPanel==='function') hudPanel(W-16-cw2-8,_cyb-LH(20),cw2+16,LH(20),0.78); else { ctx.fillRect(W-16-cw2-8,_cyb-LH(20),cw2+16,LH(20)); }
+    ctx.fillStyle=ccol; ctx.fillText(clab,W-24,_cyb-LH(6));
     ctx.textAlign='left';
   }
   // HIS NOTE, 2026-08-25: "health bar needs to be bigger/more prominent". It was
@@ -32699,7 +32703,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.48: Walls, trees, shadows and belt icons stay sharp at 4K and every zoom. Check 18.48 fails on v18.47',
+  now:'v18.49: At 1440p and 4K the HIDDEN chip, the boss bar and the clock no longer print over each other. Check 18.49 fails on v18.48',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
