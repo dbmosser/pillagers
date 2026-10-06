@@ -1,0 +1,7 @@
+v18.48: the baked sprites are sharp at 4k
+
+Walls, trees, shadows and belt icons stay sharp at 4K and every zoom.
+
+Check 18.48. Fails on v18.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

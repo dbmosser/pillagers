@@ -5721,6 +5721,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.48',what:'the baked sprites are sharp at any scale: the sprite scale rounds up (2.6 gives 3) and reaches 4 for 4K, a shadow stamp takes the scale of the canvas it is drawn on, and a lost canvas drops every sprite store',
+   run:function(){
+     if(typeof wallSpriteScale!=='function'||typeof SHADSPR==='undefined') return 'SKIP: no baked sprites here';
+     var bad=[], oZ=ZOOM, oD=DPR, cv2=document.createElement('canvas'), oWc=wc, src='';
+     try{
+       ZOOM=function(){ return 2.6; }; DPR=1;
+       if(wallSpriteScale()!==3) bad.push('a scale of 2.6 bakes at '+wallSpriteScale());
+       ZOOM=function(){ return 2.0; }; DPR=2;
+       if(wallSpriteScale()!==4) bad.push('a scale of 4 bakes at '+wallSpriteScale());
+       ZOOM=oZ; DPR=oD;
+       cv2.width=300; cv2.height=300; wc=cv2.getContext('2d'); wc.setTransform(3,0,0,3,0,0);
+       SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=0;
+       shadowE(40,40,20,8,0.3);
+       if(SHADSPR.ss!==3) bad.push('a shadow on a canvas scaled 3 was stamped at '+SHADSPR.ss);
+       src=onCtxRestored.toString();
+       ['WALLSPR','VEGSPR','SHADSPR','ICONSPR'].forEach(function(k){ if(src.indexOf(k)<0) bad.push('a restored canvas keeps the old '+k); });
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ ZOOM=oZ; DPR=oD; wc=oWc; SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.47',what:'a drop is never lost on its way: the host makes a pile for a teammate while it spectates (its raid over, the world kept for the party), and a linked window with no host link makes the pile itself',
    run:function(){
      if(typeof netPileTake!=='function'||typeof dropItem!=='function') return 'SKIP: no drop trading here';

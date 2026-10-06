@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.47';
+var VER='18.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22096,7 +22096,7 @@ var SHADSPR={m:{},n:0,ss:0};
 function shadowE(x,y,rx,ry,a){
   var ss, k, e, R, cv2, c2;
   if(CFG.wallBake!==0&&rx>0&&ry>0&&rx<400&&ry<400&&typeof wallSpriteScale==='function'){
-    ss=wallSpriteScale();
+    ss=(function(){ try{ var _m=wc.getTransform(); return Math.max(1,Math.min(4,Math.ceil(Math.hypot(_m.a,_m.b)-0.05))); }catch(_t){ return wallSpriteScale(); } })();   // v18.48: the scale of the canvas being drawn on
     if(SHADSPR.ss!==ss){ SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=ss; }
     R=[Math.round(rx),Math.round(ry),Math.round(a*100)]; k=R.join(',');
     e=SHADSPR.m[k];
@@ -23732,7 +23732,7 @@ function vegDraw(kind,r,x,y){
   wc.drawImage(e.c,0,0,e.c.width,e.c.height,x-e.ox,y-e.oy,e.c.width/e.ss,e.c.height/e.ss);
   return true;
 }
-function wallSpriteScale(){ var z=1; try{ z=ZOOM()*(DPR||1); }catch(_z){ z=1; } return Math.max(1,Math.min(2,Math.round(z))); }
+function wallSpriteScale(){ var z=1; try{ z=ZOOM()*(DPR||1); }catch(_z){ z=1; } return Math.max(1,Math.min(4,Math.ceil(z-0.05))); }   // v18.48: rounds up and reaches 4, so 4K and odd zooms are never stretched
 function wallPaint(c,wl2,d3,LIFT){
   c.fillStyle=dcol(d3,'wall');
   c.fillRect(wl2.x,wl2.y+wl2.h-LIFT,wl2.w,LIFT);
@@ -31963,6 +31963,7 @@ function onCtxLost(e){
 }
 function onCtxRestored(){
   ctxLost=false;
+  try{ WALLSPR.m={}; WALLSPR.n=0; WALLSPR.key=''; VEGSPR.m={}; VEGSPR.key=''; SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=0; ICONSPR.m={}; ICONSPR.n=0; }catch(_sc){}   // v18.48: sprites painted before the loss are blank now
   hubGround=null;
   // hubGround rebuilds lazily on its next use, but G.ground is drawn unguarded, so
   // nulling it would trade a blank canvas for a throw. Rebuilt here instead.
@@ -32698,7 +32699,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.47: Dropping an item for your teammate always leaves it on the ground, even after the host has extracted. Check 18.47 fails on v18.46',
+  now:'v18.48: Walls, trees, shadows and belt icons stay sharp at 4K and every zoom. Check 18.48 fails on v18.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

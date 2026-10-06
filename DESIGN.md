@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.48 - THE BAKED SPRITES ARE SHARP AT 4K
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-06: the walls, trees, shadows and belt icons baked since v18.15 were painted at a scale rounded to the nearest whole number and capped at 2, so at 4K (where he plays) and between whole zooms they were stretched and blurred; a shadow stamp took the raid camera scale even when drawn on another canvas; and a lost and restored canvas kept sprites that had gone blank. The scale now rounds up and reaches 4, a shadow reads the scale of the canvas it is drawn on, and a restored canvas drops every sprite store.
+
+MEASURED. Check 18.48 passes, and fails on v18.47.
 ## v18.47 - A DROP IS NEVER LOST ON ITS WAY
 
 Co-op hunt while he was away. Found by the code comb of 2026-10-06: when the host extracted or died and kept the world running for the party, a teammate drop was refused by the host (its raid was over) and the item, already out of the backpack, was gone; and a linked window that had lost its host link dropped items into nowhere. The spectating host now makes the pile, and with no host link the pile is made locally as in solo.
