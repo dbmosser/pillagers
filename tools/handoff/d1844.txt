@@ -1,0 +1,5 @@
+## v18.44 - THE PARTS AND THE SALVAGE ARE PAINTED LIKE OBJECTS
+
+Co-op hunt while he was away. His order of 2026-10-05, continued with his yes of 2026-10-06: after the key items and the guns, the parts and salvage. Scrap, wire, coils, cells, boards, the relay, lenses, servos, component kits, data and Warden cores, ledgers, the codex, the black box, the reactor core, the bloom sample and the meat were flat shapes. Each is drawn as the thing it is, lit from the top left, ink outlined, in its own rarity colour, everywhere an icon is shown.
+
+MEASURED. Check 18.44 passes, and fails on v18.43.

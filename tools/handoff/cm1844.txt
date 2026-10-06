@@ -1,0 +1,7 @@
+v18.44: the parts and the salvage are painted like objects
+
+Parts and salvage (scrap, wire, cores, boards, the black box and the rest) have new detailed icons.
+
+Check 18.44. Fails on v18.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

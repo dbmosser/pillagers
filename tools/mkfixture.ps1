@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.44',what:'the parts and salvage are painted like objects: every part and salvage icon draws at 96 px with at least 12 distinct solid colours and fills a fair part of its box',
+   run:function(){
+     if(typeof partIcon!=='function') return 'the parts and salvage are flat';
+     var bad=[], ks=['scrap','wire','coil','cell','board','relay','optic','servo','comp','core','wcore','titan','ledger','codex','blackbox','reactor','bloom','meat'], i, cv2, c, d, p, cols, solid, k, n=0;
+     for(i=0;i<ks.length;i++){
+       k=ks[i]; if(!ITEMS[k]) continue; n++;
+       cv2=document.createElement('canvas'); cv2.width=96; cv2.height=96; c=cv2.getContext('2d');
+       try{ drawItemIcon(c,k,48,48,96*0.82); }catch(e){ bad.push(k+' threw: '+(e&&e.message||e)); continue; }
+       d=c.getImageData(0,0,96,96).data; cols={}; solid=0;
+       for(p=0;p<d.length;p+=4){ if(d[p+3]>220){ solid++; cols[(d[p]>>3)+','+(d[p+1]>>3)+','+(d[p+2]>>3)]=1; } }
+       if(Object.keys(cols).length<12) bad.push(k+' has only '+Object.keys(cols).length+' colours');
+       if(solid<96*96*0.12) bad.push(k+' fills only '+solid+' pixels');
+     }
+     if(n<10) bad.push('control: only '+n+' parts found');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.43',what:'the guns are drawn as guns: every weapon draws at 96 px from the outline painter, with at least 18 distinct solid colours, an ink outline and a trigger guard ring (a transparent hole inside the guard)',
    run:function(){
      if(typeof gunArt!=='function') return 'the guns are stacked blocks';
