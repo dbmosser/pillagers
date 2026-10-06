@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.46 - FLOOR CRATES ARE NEVER LOST OR DOUBLED
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-06, all in the Undercroft drop of v18.28: a crate dropped at the stash landed inside the stash reach, often inside its plinth, so E opened the stash and nobody could ever take it, and the item was gone; both windows could take one crate at once; a crate outlived the party and could then be taken by both; a reload or crash deleted a crate whose item had already left the stash. Now the crate lands outside any station reach and wins over a station when you stand nearer it, the dropper cannot take his own crate while linked, and every crate is written in the dropper profile: it comes home when the party ends or at the next load.
+
+MEASURED. Check 18.46 passes, and fails on v18.45.
 ## v18.45 - THE WHAT IS NEW CARD NAMES THE NEW ICONS AND HUD
 
 Co-op hunt while he was away. The card was stamped v18.29 and the stamp may not trail the build by more than 0.15. It now says what changed since: the redrawn guns and items, the one look across the raid HUD, smoother busy streets and safe floor crates.

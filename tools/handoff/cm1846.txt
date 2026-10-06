@@ -1,0 +1,7 @@
+v18.46: floor crates are never lost or doubled
+
+Items dropped on the Undercroft floor can always be picked up, are never doubled, and come back to you if nobody takes them.
+
+Check 18.46. Fails on v18.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

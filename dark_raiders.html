@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.45';
+var VER='18.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31168,7 +31168,9 @@ function updateHubWorld(dt){
   HB.near=best;
   // v18.28, his order: a dropped item on the floor is taken with E (A) when no station is in reach
   HB.nearDrop=null;
-  if(!best&&HB.drops&&HB.drops.length){ var _dbd=44, _ddd; for(i=0;i<HB.drops.length;i++){ _ddd=dist(p,HB.drops[i]); if(_ddd<_dbd){ _dbd=_ddd; HB.nearDrop=HB.drops[i]; } } }
+  // v18.46, from the code comb: the nearest crate within reach wins over a station when the player stands nearer the crate
+  if(HB.drops&&HB.drops.length){ var _dbd=44, _ddd, _dn=null; for(i=0;i<HB.drops.length;i++){ _ddd=dist(p,HB.drops[i]); if(_ddd<_dbd){ _dbd=_ddd; _dn=HB.drops[i]; } }
+    if(_dn&&(!best||_dbd<dist(p,best))){ HB.nearDrop=_dn; best=null; HB.near=null; } }
   if(HB.nearDrop&&!HB.eLock&&keys['KeyE']){ HB.eLock=true; ac(); hubDropTake(HB.nearDrop); HB.nearDrop=null; }
   // Any key the station maps fires its function; the lock spans them all so a
   // held key opens exactly one modal.
@@ -32695,7 +32697,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.45: The what is new card names the new icons and the cleaner HUD. Check 18.45 fails on v18.44',
+  now:'v18.46: Items dropped on the Undercroft floor can always be picked up, are never doubled, and come back to you if nobody takes them. Check 18.46 fails on v18.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36740,6 +36742,7 @@ function netDrop(peer,why){
 // QUIT THE PARTY and END THE PARTY: a bye to every link, every link closed, and the section back to off.
 function netReset(keepErr){
   var ps=NET.peers.slice(), i;
+  try{ if(NET.on) floorDropsRestore(); if(typeof HB==='object'&&HB) HB.drops=[]; }catch(_fd){}   // v18.46: the party ends, every crate leaves the floor and this window's own come home
   try{ voiceMicOff(); }catch(_vm){}   // v16.09: the mic is let go with the party
   NET.specG=null; NET.specHow=''; NET.specTick=false;   // v16.14: a host who ends the party stops running the raid (the party is told bye: abandon, his ruling)
   NET.peers=[];
@@ -38249,16 +38252,37 @@ function hubDropMake(key){
   HB.drops=HB.drops||[];
   d={id:String(Date.now()%1e9)+'-'+Math.floor(Math.random()*1e4),k:key,x:Math.round(p.x+Math.cos(p.face||0)*26),y:Math.round(p.y+Math.sin(p.face||0)*26)+6,by:NET.seat};
   d.x=clamp(d.x,30,HUBW-30); d.y=clamp(d.y,30,HUBH-30);
+  // v18.46, FROM THE CODE COMB (2026-10-06): A CRATE NEVER LANDS INSIDE A STATION'S REACH. Drops are made at the stash, so the crate
+  // fell inside the stash's 46 unit reach, often inside its plinth, where E always opened the stash and nobody could ever take it.
+  // It is pushed out from any station it lands near, toward the player who dropped it, to the station's reach plus 22.
+  (function(){ var k, st, dd, ax, ay, al; for(k=0;k<(HB.stations||[]).length;k++){ st=HB.stations[k]; dd=Math.hypot(d.x-st.x,d.y-st.y);
+    if(dd<(st.r||46)+22){ ax=p.x-st.x; ay=p.y-st.y; al=Math.hypot(ax,ay)||1; d.x=Math.round(st.x+ax/al*((st.r||46)+22)); d.y=Math.round(st.y+ay/al*((st.r||46)+22)); d.x=clamp(d.x,30,HUBW-30); d.y=clamp(d.y,30,HUBH-30); } } })();
   HB.drops.push(d);
+  // v18.46: and it is written down, so a reload, a crash or a party ending never loses it: it goes back to this stash (floorDropsRestore)
+  P.floorDrops=P.floorDrops||[]; P.floorDrops.push({id:d.id,k:d.k}); saveProfile();
   if(NET.on) netBroadcast({t:'hdrop',op:'put',id:d.id,k:d.k,x:d.x,y:d.y});
   s=(typeof netHubSeat==='function')?netHubSeat():-1;
   say2('Dropped '+it.name+' on the floor.'+((s>=0)?(' '+(netSeatName(s)||'Your teammate')+' can pick it up.'):''));
   try{ blip('clank'); }catch(_b){}
   return true;
 }
+// v18.46, FROM THE CODE COMB (2026-10-06): A CRATE IS NEVER TAKEN TWICE OR LOST. The dropper cannot take his own crate back while the
+// party is linked (both windows pressing E at once took one item twice); his crates are written in the profile and come back to his
+// stash when the party ends, on the next load after a reload or a crash, and never vanish with the floor.
+function floorDropForget(id){ var i, a=P.floorDrops||[]; for(i=0;i<a.length;i++) if(a[i].id===id){ a.splice(i,1); try{ saveProfile(); }catch(_s){} return true; } return false; }
+function floorDropsRestore(){
+  var a=P.floorDrops||[], n=0, i, ids={};
+  for(i=0;i<a.length;i++){ if(a[i]&&ITEMS[a[i].k]){ P.stash.push(a[i].k); n++; ids[a[i].id]=1; } }
+  P.floorDrops=[];
+  if(typeof HB==='object'&&HB&&HB.drops) HB.drops=HB.drops.filter(function(q){ return !ids[q.id]&&q.by!==NET.seat; });
+  if(n){ try{ saveProfile(); }catch(_s){} try{ refreshInv(); }catch(_r){} }
+  return n;
+}
 function hubDropTake(d){
   var it=d&&ITEMS[d.k], i;
   if(!d||!it) return false;
+  if(NET.on&&d.by===NET.seat){ say2('That is the '+it.name+' you dropped for '+((typeof netHubSeat==='function'&&netHubSeat()>=0)?(netSeatName(netHubSeat())||'your teammate'):'your teammate')+'. It comes back to your stash if they leave it.'); return false; }
+  floorDropForget(d.id);
   i=(HB.drops||[]).indexOf(d); if(i>=0) HB.drops.splice(i,1);
   P.stash.push(d.k); saveProfile(); try{ refreshInv(); }catch(_ri){}
   if(NET.on) netBroadcast({t:'hdrop',op:'took',id:d.id});
@@ -38279,6 +38303,7 @@ function netHubDropTake(peer,m){
     return 'put';
   }
   if(m.op==='took'){
+    floorDropForget(m.id);   // v18.46: a crate this window dropped was taken, so it is no longer owed back
     for(i=0;i<HB.drops.length;i++) if(HB.drops[i].id===m.id){ HB.drops.splice(i,1); break; }
     if(NET.role==='host') netHubRelay(peer,m);
     return 'took';
@@ -42957,6 +42982,7 @@ loadProfile().then(function(){
   // something else happened to trigger it. The profile exists by here, which is
   // the whole reason this block is at the bottom of the load.
   try{ applyGameOpts(); }catch(_ag2){}   // v12.01: once more here, where a loader that threw part way cannot skip it
+  try{ floorDropsRestore(); }catch(_fdr){}   // v18.46: crates left on the floor by a reload or a crash come home
   try{ applyMenuZoom(); }catch(_am){}
   ensureContracts();
   saveProfile();
