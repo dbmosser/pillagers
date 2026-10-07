@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.60 - THE COMPACT LEGEND FITS ITS KEYS
+
+Co-op hunt while he was away. Seen on the raid screenshot of 2026-10-07: the compact controls panel printed CTRL / C straight into the word crouch, because every word sat a fixed distance from its key and CTRL / C is the widest key. And like the prompts before v18.59, it named the default keys even after CHANGE KEYS moved them. The word column now clears the widest key (the panel grows a little if it must), and the keys come from the key map, the same text by default.
+
+MEASURED. Check 18.60 passes, and fails on v18.59.
 ## v18.59 - PROMPTS NAME THE KEY YOU SET
 
 Co-op hunt while he was away. Found by the code comb of 2026-10-07: since CHANGE KEYS (v17.75) any action can move to another key, but on the keyboard the prompts drawn on screen (search, take, open, extract, revive: 16 of them name E) and the Undercroft footer still said the default key, so after moving interact the game kept telling you to press E. They now name the key the action is on; with nothing changed they read exactly as before.

@@ -1,0 +1,7 @@
+v18.60: the compact legend fits its keys
+
+The controls panel reads CTRL / C  crouch with a clear gap, and shows the keys you set.
+
+Check 18.60. Fails on v18.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

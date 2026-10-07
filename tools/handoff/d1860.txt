@@ -1,0 +1,5 @@
+## v18.60 - THE COMPACT LEGEND FITS ITS KEYS
+
+Co-op hunt while he was away. Seen on the raid screenshot of 2026-10-07: the compact controls panel printed CTRL / C straight into the word crouch, because every word sat a fixed distance from its key and CTRL / C is the widest key. And like the prompts before v18.59, it named the default keys even after CHANGE KEYS moved them. The word column now clears the widest key (the panel grows a little if it must), and the keys come from the key map, the same text by default.
+
+MEASURED. Check 18.60 passes, and fails on v18.59.

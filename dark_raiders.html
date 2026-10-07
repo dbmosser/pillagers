@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.59';
+var VER='18.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27865,6 +27865,16 @@ var LEGEND_MINI=[
   ['1-9','tactical belt'],['B / I','backpack'],
   ['E','search'],['M','map']
 ];
+// v18.60, FROM THE CODE COMB (2026-10-07): THE COMPACT LEGEND NAMES THE KEYS AS SET AND NEVER RUNS A KEY INTO ITS WORD. On the
+// keyboard the list said the default keys after CHANGE KEYS moved them, and every word sat a fixed 44 from its key, so CTRL / C
+// printed into crouch. The keys come from the key map now (the same text by default), and the word column clears the widest key.
+var LEGEND_MINI_CODES={'WASD':['KeyW','KeyA','KeyS','KeyD'],'SHIFT':['ShiftLeft'],'CTRL / C':['ControlLeft','KeyC'],'SPACE':['Space'],'R':['KeyR'],'F':['KeyF'],'B / I':['KeyB','KeyI'],'E':['KeyE'],'M':['KeyM'],'Z':['KeyZ'],'N':['KeyN']};
+function legendKeys(s){
+  var c=LEGEND_MINI_CODES[s], o;
+  if(!c) return s;
+  try{ o=c.map(function(k){ return keyName(keysOf(k)); }); }catch(_l){ return s; }
+  return (s==='WASD')?o.join(''):o.join(' / ');
+}
 var LEGEND_MINI_PAD=[
   ['L STICK','move'],['LS','sprint'],
   ['B','crouch'],['A','roll'],
@@ -28580,7 +28590,11 @@ function drawLegend(){
     var MN=((PAD&&PAD.on)?LEGEND_MINI_PAD:LEGEND_MINI).slice(),mi;
     if(typeof NET==='object'&&NET&&NET.on) MN.push([(PAD&&PAD.on)?'Y':'Z','drop to trade'],[(PAD&&PAD.on)?'LB + RB':'N','ping']);   // v18.27: his order, trading is dropping
     var _mr=Math.ceil(MN.length/2);
-    var COLW=LH(112),MROW=LH(10),MW=COLW*2+LH(24),MH=MROW*_mr+LH(16);   // v17.76: wide enough for TACTICAL BELT beside its key; v18.17: as many rows as the list has
+    if(!(PAD&&PAD.on)) for(mi=0;mi<MN.length;mi++) MN[mi]=[legendKeys(MN[mi][0]),MN[mi][1]];   // v18.60: the keys as set
+    var _kw=0, _lw=0; ctx.font=FS(TYPE.micro); for(mi=0;mi<MN.length;mi++) _kw=Math.max(_kw,ctx.measureText(padB(MN[mi][0])).width);
+    ctx.font=MONO; for(mi=0;mi<MN.length;mi++) _lw=Math.max(_lw,ctx.measureText(MN[mi][1]).width);
+    var KOFF=Math.max(LH(44),Math.ceil(_kw)+LH(6));   // v18.60: the word clears the widest key
+    var COLW=Math.max(LH(112),KOFF+Math.ceil(_lw)+LH(8)),MROW=LH(10),MW=COLW*2+LH(24),MH=MROW*_mr+LH(16);   // v17.76: wide enough for TACTICAL BELT beside its key; v18.17: as many rows as the list has; v18.60: and for the widest key and word
     // 118, not 96: the health panel below is about 100 tall and 96 left the
     // legend sitting 12 pixels inside it. Measured, not guessed.
     var mx=14,my=H-Math.max(LH(64),Math.round(104*(HUDZ.body||1))+14)-MH;
@@ -28599,7 +28613,7 @@ function drawLegend(){
       ctx.font=FS(TYPE.micro); ctx.fillStyle='#cdd6dd';
       ctx.fillText(padB(MN[mi][0]),cx0,cy0);
       ctx.font=MONO; ctx.fillStyle='#8a96a1';
-      ctx.fillText(MN[mi][1],cx0+LH(44),cy0);
+      ctx.fillText(MN[mi][1],cx0+KOFF,cy0);
     }
     ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.6)';
     ctx.fillText('H  full list',mx,my+LH(7)+MROW*_mr+LH(3));
@@ -32725,7 +32739,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.59: After you move a key in CHANGE KEYS, the on-screen prompts name the new key. Check 18.59 fails on v18.58',
+  now:'v18.60: The controls panel reads CTRL / C  crouch with a clear gap, and shows the keys you set. Check 18.60 fails on v18.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
