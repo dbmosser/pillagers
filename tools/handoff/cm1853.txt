@@ -1,0 +1,7 @@
+v18.53: a late out word belongs to its own raid
+
+Player 2 is never shut out of a fresh raid by a message left over from the last one.
+
+Check 18.53. Fails on v18.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

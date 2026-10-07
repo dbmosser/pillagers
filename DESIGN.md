@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.53 - A LATE OUT WORD BELONGS TO ITS OWN RAID
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-07: when a player raid ends their window tells the party they are out, and since v17.66 a player who died or extracted sits that raid out. The word named no raid, so one that landed after the host had already started the next raid benched player 2 from a raid they had never played. The word now names its raid, and a word about another raid is ignored.
+
+MEASURED. Check 18.53 passes, and fails on v18.52.
 ## v18.52 - AN UNPLUGGED CONTROLLER PAUSES ONLY ITS OWN WINDOW
 
 Co-op hunt while he was away. Found by the code comb of 2026-10-07: on one PC both windows hear every controller unplug, and v17.88 meant each window to react only to its own pad, but it compared against the pad picked in the PARTY window, and with no pick (the default) every unplug got through: player 2 cable coming out paused player 1 mid fight too. Each window now remembers the pad it actually played and reacts only to that one; the keyboard window ignores them all.
