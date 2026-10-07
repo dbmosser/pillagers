@@ -1,0 +1,7 @@
+v18.61: bare hands stowed show no ammo
+
+The weapon panel reads STOWED  Bare Hands, without a stray 0.
+
+Check 18.61. Fails on v18.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

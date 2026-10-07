@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.60';
+var VER='18.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27312,7 +27312,7 @@ if(p.armor>0){
   // exists. The hotbar is how a gun comes up now.
   if(p.sec){
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#7d8894';
-    var _cornStow='STOWED  '+p.sec.name+'  '+p.secAmmo;
+    var _cornStow='STOWED  '+p.sec.name+((p.sec.mag>0)?'  '+p.secAmmo:'');   // v18.61, seen on the raid screenshot (2026-10-07): bare hands read STOWED Bare Hands 0; a weapon with no magazine shows no count, as the held line says MELEE
     _cornMark(_cornStow);
     ctx.fillText(_cornStow,W-16,by-LH(52));
   }
@@ -32739,7 +32739,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.60: The controls panel reads CTRL / C  crouch with a clear gap, and shows the keys you set. Check 18.60 fails on v18.59',
+  now:'v18.61: The weapon panel reads STOWED  Bare Hands, without a stray 0. Check 18.61 fails on v18.60',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

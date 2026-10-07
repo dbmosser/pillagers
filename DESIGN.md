@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.61 - BARE HANDS STOWED SHOW NO AMMO
+
+Co-op hunt while he was away. Seen on the raid screenshot of 2026-10-07: with a gun in hand, the weapon panel read STOWED  Bare Hands  0, an ammo count for fists. A stowed weapon with no magazine now shows just its name, as the held line already says MELEE for it; a stowed gun still shows its rounds.
+
+MEASURED. Check 18.61 passes, and fails on v18.60.
 ## v18.60 - THE COMPACT LEGEND FITS ITS KEYS
 
 Co-op hunt while he was away. Seen on the raid screenshot of 2026-10-07: the compact controls panel printed CTRL / C straight into the word crouch, because every word sat a fixed distance from its key and CTRL / C is the widest key. And like the prompts before v18.59, it named the default keys even after CHANGE KEYS moved them. The word column now clears the widest key (the panel grows a little if it must), and the keys come from the key map, the same text by default.
