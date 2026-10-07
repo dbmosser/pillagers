@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.56 - ERASE ASKS AGAIN AT THE CLICK
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-07: the save list asked whether the other window had a save open only when it was drawn. A save armed for erasing (DELETE, then typing the word) and then opened by the player 2 window was still erased by ERASE, under that window. ERASE now asks again and leaves such a save alone.
+
+MEASURED. Check 18.56 passes, and fails on v18.55.
 ## v18.55 - THE PLAYER 2 SAVE STAYS SHUT WHILE ITS WINDOW IS OPEN
 
 Co-op hunt while he was away. Found by the code comb of 2026-10-07: the player 1 window greys out the save the player 2 window has open (v17.93), but only while it sits in a two player mode, and reloading the player 1 window drops the mode: player 1 could then load or erase the save player 2 was still playing and saving to. The player 2 window now leaves a mark every 2 seconds that it is open (taken off when it closes), and the save stays shut while the mark is fresh.

@@ -1,0 +1,7 @@
+v18.56: erase asks again at the click
+
+ERASE never removes a save the other player window has open.
+
+Check 18.56. Fails on v18.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

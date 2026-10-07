@@ -1,0 +1,5 @@
+## v18.56 - ERASE ASKS AGAIN AT THE CLICK
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-07: the save list asked whether the other window had a save open only when it was drawn. A save armed for erasing (DELETE, then typing the word) and then opened by the player 2 window was still erased by ERASE, under that window. ERASE now asks again and leaves such a save alone.
+
+MEASURED. Check 18.56 passes, and fails on v18.55.
