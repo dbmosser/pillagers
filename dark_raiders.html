@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.53';
+var VER='18.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12832,7 +12832,11 @@ function disarmAbandon(){
 var KEYS_ACTS=[['KeyW','move up'],['KeyA','move left'],['KeyS','move down'],['KeyD','move right'],['Space','dodge roll'],['ShiftLeft','sprint (hold)'],
   ['ControlLeft','crouch (hold)'],['KeyC','crouch toggle'],['KeyE','interact, search, call for extraction'],['KeyR','reload'],['KeyF','melee strike'],
   ['KeyX','search what you stand on'],['KeyB','backpack'],['KeyI','backpack'],['Enter','equip from the backpack'],['KeyM','map'],['KeyH','controls'],
-  ['KeyT','offer an item to a teammate'],['KeyN','ping'],['KeyP','pause']];
+  ['KeyT','offer an item to a teammate'],['KeyN','ping'],['KeyP','pause'],
+  // v18.54, FROM THE CODE COMB (2026-10-07): EVERY KEY THAT DOES SOMETHING IS ON THE LIST. G, Q, Z, V and O work in the raid but were
+  // not here, so binding an action onto one of them did not swap: reload on G kept R as reload too, and the belt item on G was gone
+  // with no way back but RESET. They are listed now, so a bind onto one swaps like any other.
+  ['KeyG','use the selected belt item'],['KeyQ','switch throwable'],['KeyZ','drop an item for a teammate'],['KeyV','emotes'],['KeyO','order your hire']];
 var KEYS={inv:null,waiting:null,built:0,inited:0};
 function keysMap(){ return (typeof P!=='undefined'&&P&&P.keymap&&typeof P.keymap==='object')?P.keymap:{}; }
 function keysInv(){ var m=keysMap(), k, inv={}; for(k in m) if(Object.prototype.hasOwnProperty.call(m,k)&&typeof m[k]==='string'&&m[k]!==k) inv[m[k]]=k; KEYS.inv=inv; return inv; }
@@ -12856,7 +12860,7 @@ function keyName(code){
 function keysOf(logical){ var m=keysMap(); return (typeof m[logical]==='string')?m[logical]:logical; }
 function keysBind(logical,physical){
   var m=keysMap(), k, other=null, old=keysOf(logical), i;
-  if(typeof logical!=='string'||typeof physical!=='string'||!physical||physical==='Escape'||physical==='Tab'||/^Digit[1-9]$/.test(physical)) return false;
+  if(typeof logical!=='string'||typeof physical!=='string'||!physical||physical==='Escape'||physical==='Tab'||physical==='Backspace'||physical==='Backquote'||/^Digit[1-9]$/.test(physical)) return false;   // v18.54: and never BACKSPACE (the cursor) or the key left of 1 (Superhot), which keep their own jobs
   if(!P.keymap||typeof P.keymap!=='object') P.keymap={}; m=P.keymap;
   for(i=0;i<KEYS_ACTS.length;i++){ k=KEYS_ACTS[i][0]; if(k!==logical&&keysOf(k)===physical){ other=k; break; } }
   if(!other&&physical!==logical){ for(i=0;i<KEYS_ACTS.length;i++){ k=KEYS_ACTS[i][0]; if(k===physical&&k!==logical&&keysOf(k)===k){ other=k; break; } } }
@@ -32712,7 +32716,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.53: Player 2 is never shut out of a fresh raid by a message left over from the last one. Check 18.53 fails on v18.52',
+  now:'v18.54: CHANGE KEYS lists G, Q, Z, V and O too, and moving an action onto any key swaps the two cleanly. Check 18.54 fails on v18.53',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

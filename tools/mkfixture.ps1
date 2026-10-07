@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.54',what:'every key that does something is on the keys list: binding reload onto G swaps it with the belt item, and the cursor and Superhot keys refuse a bind',
+   run:function(){
+     if(typeof keysBind!=='function'||typeof keyRemap!=='function'||typeof KEYS_ACTS==='undefined') return 'SKIP: no key binding here';
+     var bad=[], km=(P&&P.keymap)?JSON.parse(JSON.stringify(P.keymap)):null, oSave=saveProfile;
+     try{
+       saveProfile=function(){};
+       P.keymap={}; KEYS.inv=null;
+       if(!keysBind('KeyR','KeyG')) bad.push('reload could not be put on G');
+       if(keyRemap('KeyG')!=='KeyR') bad.push('control: G does not reload after the bind');
+       if(keyRemap('KeyR')!=='KeyG') bad.push('binding reload onto G lost the belt item key (R still reloads)');
+       P.keymap={}; KEYS.inv=null;
+       if(keysBind('KeyE','Backquote')) bad.push('interact was put on the Superhot key');
+       if(keysBind('KeyE','Backspace')) bad.push('interact was put on the cursor key');
+       ['KeyG','KeyQ','KeyZ','KeyV','KeyO'].forEach(function(c){ if(!KEYS_ACTS.some(function(a){ return a[0]===c; })) bad.push(c.slice(3)+' is not on the keys list'); });
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ saveProfile=oSave; if(P){ if(km) P.keymap=km; else delete P.keymap; } KEYS.inv=null; try{ keysInv(); keysLegendApply(); }catch(_k){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.53',what:'a late out word belongs to its own raid: the word names its raid, a word about the last raid landing in the next one does not mark the teammate out of it, and one about this raid still does',
    run:function(){
      if(typeof netUpWord!=='function'||typeof netUpEnd!=='function'||typeof netUpAnnounce!=='function'||typeof netLateReply!=='function') return 'SKIP: no party raid words here';

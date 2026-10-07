@@ -1,0 +1,7 @@
+v18.54: every key that does something is on the keys list
+
+CHANGE KEYS lists G, Q, Z, V and O too, and moving an action onto any key swaps the two cleanly.
+
+Check 18.54. Fails on v18.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
