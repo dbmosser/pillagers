@@ -1,0 +1,1 @@
+| AN UNPLUGGED CONTROLLER PAUSES ONLY ITS OWN WINDOW | v18.52 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 18.52 passes, fails on v18.51 |

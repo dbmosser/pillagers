@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.52 - AN UNPLUGGED CONTROLLER PAUSES ONLY ITS OWN WINDOW
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-07: on one PC both windows hear every controller unplug, and v17.88 meant each window to react only to its own pad, but it compared against the pad picked in the PARTY window, and with no pick (the default) every unplug got through: player 2 cable coming out paused player 1 mid fight too. Each window now remembers the pad it actually played and reacts only to that one; the keyboard window ignores them all.
+
+MEASURED. Check 18.52 passes, and fails on v18.51.
 ## v18.51 - A COVERED HOST WINDOW KEEPS THE KEPT RAID RUNNING
 
 Co-op hunt while he was away. Found by the code comb of 2026-10-07: when player 1 (the host) died or extracted and went back to the Undercroft while player 2 was still up top, the host keeps the raid world running for player 2. With the host window covered by player 2 window (one screen) its frames stop, and the background tick that keeps a covered host running (v17.73) did not count a spectating host: player 2 enemies froze and every box player 2 searched filled its bar and paid nothing. The tick now runs for a spectating host too.

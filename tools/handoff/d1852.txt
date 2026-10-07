@@ -1,0 +1,5 @@
+## v18.52 - AN UNPLUGGED CONTROLLER PAUSES ONLY ITS OWN WINDOW
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-07: on one PC both windows hear every controller unplug, and v17.88 meant each window to react only to its own pad, but it compared against the pad picked in the PARTY window, and with no pick (the default) every unplug got through: player 2 cable coming out paused player 1 mid fight too. Each window now remembers the pad it actually played and reacts only to that one; the keyboard window ignores them all.
+
+MEASURED. Check 18.52 passes, and fails on v18.51.

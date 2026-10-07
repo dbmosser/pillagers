@@ -1,0 +1,7 @@
+v18.52: an unplugged controller pauses only its own window
+
+When one player pulls their controller cable, only their own window pauses.
+
+Check 18.52. Fails on v18.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
