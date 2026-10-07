@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.55 - THE PLAYER 2 SAVE STAYS SHUT WHILE ITS WINDOW IS OPEN
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-07: the player 1 window greys out the save the player 2 window has open (v17.93), but only while it sits in a two player mode, and reloading the player 1 window drops the mode: player 1 could then load or erase the save player 2 was still playing and saving to. The player 2 window now leaves a mark every 2 seconds that it is open (taken off when it closes), and the save stays shut while the mark is fresh.
+
+MEASURED. Check 18.55 passes, and fails on v18.54.
 ## v18.54 - EVERY KEY THAT DOES SOMETHING IS ON THE KEYS LIST
 
 Co-op hunt while he was away. Found by the code comb of 2026-10-07: G (use the belt item), Q (switch throwable), Z (drop an item), V (emotes) and O (order your hire) work in the raid but were not on the CHANGE KEYS list, so putting an action on one of them did not swap: reload on G left R reloading too and the belt item gone, with no way back but RESET. They are on the list now and swap like the rest; the cursor key and the Superhot key refuse a bind.

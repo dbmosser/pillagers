@@ -1,0 +1,7 @@
+v18.55: the player 2 save stays shut while its window is open
+
+After a reload of player 1 window, player 2 save still shows IN USE BY PLAYER 2 while their window is open.
+
+Check 18.55. Fails on v18.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
