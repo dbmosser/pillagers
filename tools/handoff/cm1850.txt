@@ -1,0 +1,7 @@
+v18.50: a seal cut past the new need still opens
+
+A seal that was stuck full after the quicker-seal change now opens the moment you hold E at it.
+
+Check 18.50. Fails on v18.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.50 - A SEAL CUT PAST THE NEW NEED STILL OPENS
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-07: v17.97 made the seal quicker to cut (34 + 21 per stage), and a profile that had already banked more cutting than the new need (36 of the old 40, say) could never finish it: the cut was skipped, so the completion test never ran, the bar sat full and nothing happened, and that sector seal was stuck for good. The cut always runs now; the first moment of E on such a door completes it and pays out.
+
+MEASURED. Check 18.50 passes, and fails on v18.49.
 ## v18.49 - AT 4K THE HUD STACK DOES NOT OVERLAP
 
 Co-op hunt while he was away. Found by the code comb of 2026-10-06, at the sizes he plays (4K): the weapon panel grows with its corner and was painted over the HIDDEN / CONCEALED chip, and the boss bar sat inside the clock and compass stack, its name under the extract arrow at 1080p and printed over the compass at 1440p and 4K; the offer line sat on the message toast. The chip now sits above the panel at every size and is a HUD panel, and the boss bar and the offer line sit below the top stack, scaled with it.
