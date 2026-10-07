@@ -421,3 +421,14 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v18.41 the posture chip (STANDING...) is a hudPanel. Screenshot after it: the raid HUD now reads as one set (rounded panels, capsule bars, belt tiles, weapon panel clear of key 9). Stopped here for the night to keep tokens low; nothing running on his PC.
 - 2026-10-05 his order (icons drastically better, low token): v18.42 keyIcon(c,key,S,col) paints bandage, medkit, stim, plate, ammobox, smoke, decoy, frag with gradients, ink outline and their defining parts (called at the top of drawItemIcon's switch); v18.43 gunArt(c,fam,id,W,col,S) draws every gun family from real outlines (u=S/110), called first in gunIcon with the ground shadow and rarity glow; the old block painter stays as the fallback. Screenshots of shop and stash confirm both. Next if he wants more: parts/salvage icons (scrap, wire, cell, board...), and the in-world loot props.
 - 2026-10-06 code comb (workflow wf_b4be1c15, 14 agents, 10 confirmed of the recent code): shipped v18.45 card, v18.46 floor crates safe (pushed out of station reach, nearer-crate wins, dropper cannot take own while linked, P.floorDrops written and floorDropsRestore at load and netReset), v18.47 spectating host makes piles and a no-link drop is local, v18.48 sprites scale ceil up to 4 + shadow scale from the canvas transform + caches dropped on context restore, v18.49 HIDDEN chip kept above the weapon panel, boss bar at LH(108)*hudRes, offer line at LH(132)*hudRes (its check's control failed on the chip being a fillRect, so the boss arm may not have been exercised). Not done: offer line vs toast overlap is moot (offers untaught).
+
+## 2026-10-07 evening: comb round 2 closed (v18.50 to v18.57)
+- v18.50 sealstuck: a seal banked past the new (quicker) need opens on the next E.
+- v18.51 hidspec: a covered host window keeps the kept raid running while the host spectates.
+- v18.52 padunplug: an unplugged controller pauses only the window that played it (PAD.ix, kept by pollPad).
+- v18.53 staleout: the out word names its raid (sd); a word about another raid is dropped ('stale').
+- v18.54 keysall: G, Q, Z, V, O are on KEYS_ACTS; Backspace and Backquote refuse a bind.
+- v18.55 p2live: the player 2 window marks salvagerun:p2live every 2 s (removed on pagehide); slotBlocked honours a mark under 75 s.
+- v18.56 eraseblk: ERASE re-checks slotBlocked at the click.
+- v18.57 card-1857: WHATSNEW_VER 18.57; the card draws only WN_SHOW=5 lines, so the newest lines now sit right under the alpha line. Next refresh by ~18.72.
+- Harness: soak4k.ps1 now forces a 3840x2160 canvas (__forceSize); before, the D soak ran at 1886x975 when 9345 was started by cdp.ps1 -Start.

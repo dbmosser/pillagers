@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.57';
+var VER='18.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32717,7 +32717,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.57: The what is new card shows the two player fixes, the new icons and dropping items. Check 18.57 fails on v18.56',
+  now:'v18.58: Items dropped on the Undercroft floor show up for player 2 even if they were dropped before player 2 window opened, and can never be picked up twice. Check 18.58 fails on v18.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36702,6 +36702,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
       peer.state='in'; peer.seat=seat; peer.pid=netClean(m.pid,16); peer.name=netClean(m.name,16)||'PILLAGER';
       NET.roster=netRosterBuild();
       netSend(peer,{t:'welcome',you:seat,roster:NET.roster,ver:VER,up:netWelcomeUp()});   // v17.53: and the raid the host is in, for a teammate who links late
+      try{ hubDropsTell(peer,false); }catch(_ht){}   // v18.58: and every crate on the floor, dropped before he linked
       netBroadcast({t:'roster',roster:NET.roster});
       NET.status=peer.name+' joined your party.'; NET.err='';
       netSay(NET.status);
@@ -36724,6 +36725,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
       NET.reply=''; NET.err=''; NET.status='You are in the party hosted by '+(hn||'your host')+'.';
       NET.hostSeed=0;   // v17.60: the welcome says whether the host is up; an old mark does not outlive it
       if(typeof m.up==='number'&&m.up>0){ NET.hostSeed=m.up>>>0; NET.status+=' They are in a raid now: go up at the lift to join it.'; }   // v17.53: a teammate who links late can drop in
+      try{ hubDropsTell(peer,true); }catch(_jt){}   // v18.58: and the host is told this window's own crates again
       netSay(NET.status);
       netRefresh();
       return 'welcome';
@@ -36763,6 +36765,7 @@ function netDrop(peer,why){
       NET.roster=netRosterBuild();
       netBroadcast({t:'roster',roster:NET.roster});
       netSrchEndSeat(peer.seat);   // v15.91: a box he was searching is free again
+      try{ if(typeof HB==='object'&&HB&&HB.drops) HB.drops=HB.drops.filter(function(q){ return q.by!==peer.seat; }); }catch(_hd){}   // v18.58: his crates leave the floor with him; they go home to his own stash (floorDropsRestore)
       NET.status=peer.name+' left your party.';
       netSay(NET.status);
     } else if(why==='failed'||why==='timeout'||why==='silent'){
@@ -38307,6 +38310,22 @@ function hubDropMake(key){
 // v18.46, FROM THE CODE COMB (2026-10-06): A CRATE IS NEVER TAKEN TWICE OR LOST. The dropper cannot take his own crate back while the
 // party is linked (both windows pressing E at once took one item twice); his crates are written in the profile and come back to his
 // stash when the party ends, on the next load after a reload or a crash, and never vanish with the floor.
+// v18.58, FROM THE CODE COMB (2026-10-07): CRATES OUTLIVE A WINDOW COMING AND GOING. A crate was told to the party only once, when it
+// was dropped, so one dropped before the other window linked (or while it reloaded, as picking a character does) was never seen
+// there, and the dropper could not take it back while linked: it sat until the party ended. And a window that left kept its
+// crates on the other floor while they also came home to its own stash on its next load, so the other player could take the same
+// item again. Now a linking window is told every crate on the floor (the host tells all, a teammate tells its own again), a
+// window that leaves takes its crates off the other floor, and the dropper can take a crate back while no teammate is linked.
+function hubDropsTell(peer,own){
+  var a=(typeof HB==='object'&&HB&&HB.drops)||[], f=P.floorDrops||[], mine={}, i, n=0;
+  for(i=0;i<f.length;i++) if(f[i]) mine[f[i].id]=1;
+  for(i=0;i<a.length;i++){
+    if(own&&!mine[a[i].id]) continue;
+    if(own) a[i].by=NET.seat;
+    if(netSend(peer,{t:'hdrop',op:'put',id:a[i].id,k:a[i].k,x:a[i].x,y:a[i].y})) n++;
+  }
+  return n;
+}
 function floorDropForget(id){ var i, a=P.floorDrops||[]; for(i=0;i<a.length;i++) if(a[i].id===id){ a.splice(i,1); try{ saveProfile(); }catch(_s){} return true; } return false; }
 function floorDropsRestore(){
   var a=P.floorDrops||[], n=0, i, ids={};
@@ -38319,7 +38338,7 @@ function floorDropsRestore(){
 function hubDropTake(d){
   var it=d&&ITEMS[d.k], i;
   if(!d||!it) return false;
-  if(NET.on&&d.by===NET.seat){ say2('That is the '+it.name+' you dropped for '+((typeof netHubSeat==='function'&&netHubSeat()>=0)?(netSeatName(netHubSeat())||'your teammate'):'your teammate')+'. It comes back to your stash if they leave it.'); return false; }
+  if(NET.on&&d.by===NET.seat&&netHubSeat()>=0){ say2('That is the '+it.name+' you dropped for '+((typeof netHubSeat==='function'&&netHubSeat()>=0)?(netSeatName(netHubSeat())||'your teammate'):'your teammate')+'. It comes back to your stash if they leave it.'); return false; }
   floorDropForget(d.id);
   i=(HB.drops||[]).indexOf(d); if(i>=0) HB.drops.splice(i,1);
   P.stash.push(d.k); saveProfile(); try{ refreshInv(); }catch(_ri){}
@@ -38331,6 +38350,7 @@ function netHubRelay(peer,m){ var i; for(i=0;i<NET.peers.length;i++) if(NET.peer
 function netHubDropTake(peer,m){
   var i, k;
   if(!peer||peer.state!=='in'||!m) return 'ignored';
+  if(!HB){ try{ titleSceneReady(); }catch(_tb){} }   // v18.58: a crate told before this window drew its floor is kept
   if(!HB) return 'nofloor';
   HB.drops=HB.drops||[];
   if(m.op==='put'){

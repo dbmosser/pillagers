@@ -1,0 +1,7 @@
+v18.58: crates outlive a window coming and going
+
+Items dropped on the Undercroft floor show up for player 2 even if they were dropped before player 2 window opened, and can never be picked up twice.
+
+Check 18.58. Fails on v18.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

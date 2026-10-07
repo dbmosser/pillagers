@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.58 - CRATES OUTLIVE A WINDOW COMING AND GOING
+
+Co-op hunt while he was away. Found by reading the Undercroft drop code (2026-10-07): a floor crate was told to the other window only once, when dropped, so a crate dropped before the player 2 window linked, or while it reloaded (picking a character reloads it), never showed there, and the dropper could not take it back while linked. Worse, a window that left kept its crates on the other floor while they also came home to its own stash on its next load, so the other player could take the same item a second time. Now a window that links is told every crate already on the floor, a window that leaves takes its crates with it, and you can take your own crate back while nobody is linked.
+
+MEASURED. Check 18.58 passes, and fails on v18.57.
 ## v18.57 - THE WHAT IS NEW CARD SHOWS ITS NEWEST NEWS
 
 Co-op hunt while he was away. The card draws only its first 5 lines, and the last two refreshes put the new icons and dropping lines 7th and 8th, where nobody saw them; its stamp (v18.45) was also nearly 0.15 behind the build. The newest news now sits right under the alpha line: a line on this round of two player fixes, then the icons, then dropping.
