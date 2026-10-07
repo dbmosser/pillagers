@@ -1511,7 +1511,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.62';
+var VER='18.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31685,9 +31685,6 @@ function hubStationNames(S,ox,oy){
     // v10.23, his note: a station can carry its name under it instead of over
     // it. The cheat box does, because its name ran into its neighbour.
     var _lyP=s3.labelBelow?(s3.y+s3.r+4):(s3.y-56), _lyT=_lyP+10;
-    wc.fillRect(s3.x-tw/2-5,_lyP,tw+10,13);
-    // v10.93: opaque. This was rgba(160,172,184,.75).
-    wc.fillStyle=on?s3.c:'#cfd8e2';
     // v6.73: keep the name inside the room. Centred text on a station near a wall used
     // to have its first letters cut off by the edge of the floor.
     var _lw2=wc.measureText(s3.label).width, _lx2=s3.x;
@@ -31696,6 +31693,14 @@ function hubStationNames(S,ox,oy){
       if(_lx2-_lw2/2<_lm2)       _lx2=_lm2+_lw2/2;
       if(_lx2+_lw2/2>HUBW-_lm2)  _lx2=HUBW-_lm2-_lw2/2;
     }
+    // v18.63, SEEN ON THE UNDERCROFT SCREENSHOT (2026-10-07): THE PLATE SITS UNDER THE NAME. It was laid at the station's x before a
+    // name near a wall was pushed inward (v6.73), so a bare strip of plate stuck out beside SHOP, CRAFT, AND HIRE and WIRT THE
+    // GAMBLER, and it was 13 units tall, which at the label size covered only the lower half of the letters. It is now drawn where
+    // the name is and as tall as its letters.
+    var _lmx=wc.measureText(s3.label), _lAsc=Math.max(8,_lmx.actualBoundingBoxAscent||9), _lDsc=Math.max(2,_lmx.actualBoundingBoxDescent||3);
+    wc.fillRect(_lx2-tw/2-5,_lyT-_lAsc-3,tw+10,_lAsc+_lDsc+6);
+    // v10.93: opaque. This was rgba(160,172,184,.75).
+    wc.fillStyle=on?s3.c:'#cfd8e2';
     wc.fillText(s3.label,_lx2,_lyT);
     if(s3.id==='bar'){
       // v7.74, his order, his asterisks.
@@ -31705,7 +31710,8 @@ function hubStationNames(S,ox,oy){
       // warning in capitals and he has rewritten that one; his wording is matched on
       // the whole string, so this sign being mixed case meant his version reached one
       // of the two features it warns about and not the other. His asterisks, v7.74.
-      wc.fillText('***EXPERIMENTAL***',_lx2,s3.y-35);
+      var _eAsc=Math.max(6,wc.measureText('***EXPERIMENTAL***').actualBoundingBoxAscent||7);   // v18.63: below the name's plate, never into it (it printed across THE LAST POUR)
+      wc.fillText('***EXPERIMENTAL***',_lx2,Math.max(s3.y-35,_lyT+_lDsc+3+_eAsc+2));
       wc.font=FS(TYPE.label);
     }
     if(s3.season){
@@ -32755,7 +32761,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.62: On the Undercroft floor the top line, the credits and the key footer are all readable. Check 18.62 fails on v18.61',
+  now:'v18.63: Station names on the Undercroft floor sit cleanly on their plates, and THE LAST POUR warning no longer prints over its name. Check 18.63 fails on v18.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

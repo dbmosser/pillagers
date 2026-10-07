@@ -1,0 +1,7 @@
+v18.63: every station name sits on its plate
+
+Station names on the Undercroft floor sit cleanly on their plates, and THE LAST POUR warning no longer prints over its name.
+
+Check 18.63. Fails on v18.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
