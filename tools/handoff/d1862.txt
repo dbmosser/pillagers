@@ -1,0 +1,5 @@
+## v18.62 - THE UNDERCROFT HUD READS ON ANY WALL
+
+Co-op hunt while he was away. Seen on the Undercroft screenshot of 2026-10-07: the stats line under THE UNDERCROFT (items in stash, runs) and the CREDITS label in the corner are grey on the light side wall of the room, so parts of them vanished (0 items ... sh, CR..DITS); and the footer that names the keys (WASD WALK, E USE STATION) sat at the bottom edge behind the belt, showing only in scraps between the cells. The text now has a dark halo, nothing moved, and the footer sits just above the belt.
+
+MEASURED. Check 18.62 passes, and fails on v18.61.

@@ -1,0 +1,7 @@
+v18.62: the undercroft hud reads on any wall
+
+On the Undercroft floor the top line, the credits and the key footer are all readable.
+
+Check 18.62. Fails on v18.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

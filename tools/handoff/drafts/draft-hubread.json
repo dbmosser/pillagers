@@ -1,0 +1,36 @@
+{
+    "title":  "THE UNDERCROFT HUD READS ON ANY WALL",
+    "why":  "Seen on the Undercroft screenshot of 2026-10-07: the stats line under THE UNDERCROFT (items in stash, runs) and the CREDITS label in the corner are grey on the light side wall of the room, so parts of them vanished (0 items ... sh, CR..DITS); and the footer that names the keys (WASD WALK, E USE STATION) sat at the bottom edge behind the belt, showing only in scraps between the cells. The text now has a dark halo, nothing moved, and the footer sits just above the belt.",
+    "now":  "On the Undercroft floor the top line, the credits and the key footer are all readable.",
+    "edits":  [
+                  {
+                      "anchor":  "var HUBBELT={cells:[]};",
+                      "replacement":  "var HUBBELT={cells:[]};\n// v16.xx, seen on the Undercroft screenshot (2026-10-07): the footer (WASD WALK, E USE STATION) sat at the bottom edge, behind the\n// belt the floor draws there since v18.0x, so only scraps of it showed between the cells. It now sits just above the belt when\n// the belt is shown, and at the bottom edge as before when it is not.\nfunction hubFootY(){\n  var c=(HUBBELT\u0026\u0026HUBBELT.cells)||[], t=H, i;\n  for(i=0;i\u003cc.length;i++) if(c[i]\u0026\u0026typeof c[i].y===\u0027number\u0027\u0026\u0026isFinite(c[i].y)) t=Math.min(t,c[i].y);\n  return (t\u003cH-LH(20))?Math.round(t-LH(8)):H-16;\n}"
+                  },
+                  {
+                      "anchor":  "  ctx.font=FS(TYPE.head); ctx.fillStyle=\u0027#ffc04a\u0027;\n  ctx.fillText(\u0027THE UNDERCROFT\u0027,16,28);",
+                      "replacement":  "  // v16.xx, SEEN ON THE UNDERCROFT SCREENSHOT (2026-10-07): THE FLOOR HUD READS ON ANY WALL. The title and the stats line under it\n  // run across the light side wall of the room, where the grey stats line vanished (0 items in stash read 0 items ... sh). Both\n  // are drawn with a dark halo now, and the stats line a shade lighter; nothing moves.\n  ctx.shadowColor=\u0027rgba(4,6,9,.95)\u0027; ctx.shadowBlur=4;\n  ctx.font=FS(TYPE.head); ctx.fillStyle=\u0027#ffc04a\u0027;\n  ctx.fillText(\u0027THE UNDERCROFT\u0027,16,28);\n  ctx.shadowColor=\u0027transparent\u0027; ctx.shadowBlur=0;"
+                  },
+                  {
+                      "anchor":  "  try{ hubDrawDropPrompt(); }catch(_hdp){}   // v18.28: E TAKE beside a dropped crate\n  ctx.font=FS(TYPE.micro); ctx.fillStyle=\u0027#8a96a1\u0027;",
+                      "replacement":  "  try{ hubDrawDropPrompt(); }catch(_hdp){}   // v18.28: E TAKE beside a dropped crate\n  ctx.shadowColor=\u0027rgba(4,6,9,.95)\u0027; ctx.shadowBlur=4;   // v16.xx: the halo, for the stats line too\n  ctx.font=FS(TYPE.micro); ctx.fillStyle=\u0027#aeb8c2\u0027;"
+                  },
+                  {
+                      "anchor":  "  // v8.13: the line itself moved to #hubtoast",
+                      "replacement":  "  ctx.shadowColor=\u0027transparent\u0027; ctx.shadowBlur=0;   // v16.xx: the halo ends with the stats line\n  // v8.13: the line itself moved to #hubtoast"
+                  },
+                  {
+                      "anchor":  "  #topright small{ font-size:14px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:7px; margin-right:20px; }",
+                      "replacement":  "  #topright{ text-shadow:0 0 3px rgba(4,6,9,.95),0 0 8px rgba(4,6,9,.8); }   /* v16.xx: the corner readout reads over a light wall (CREDITS vanished on the Undercroft side wall) */\n  #topright small{ font-size:14px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:7px; margin-right:20px; }"
+                  },
+                  {
+                      "anchor":  "TAKE THE DROPPED ITEM\u0027:\u0027\u0027),W/2,H-16); ctx.textAlign=\u0027left\u0027; return; }",
+                      "replacement":  "TAKE THE DROPPED ITEM\u0027:\u0027\u0027),W/2,hubFootY()); ctx.textAlign=\u0027left\u0027; return; }"
+                  },
+                  {
+                      "anchor":  "TAKE THE DROPPED ITEM\u0027:\u0027\u0027)),W/2,H-16);",
+                      "replacement":  "TAKE THE DROPPED ITEM\u0027:\u0027\u0027)),W/2,hubFootY());"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Undercroft HUD reads on any wall and its footer clears the belt: the title and stats line are drawn with a dark halo, the corner readout has a text shadow, and the WASD WALK footer sits above the belt cells\u0027,\n   run:function(){\n     if(typeof drawHubHUD!==\u0027function\u0027||typeof __hubEnter!==\u0027function\u0027||typeof __loop!==\u0027function\u0027) return \u0027SKIP: no Undercroft floor here\u0027;\n     var bad=[], oFT=ctx.fillText, rec=[], t, i, top=1e9, foot=null, tl=null, st=null, tr;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       t=document.getElementById(\u0027title\u0027); if(t) t.classList.remove(\u0027on\u0027);\n       __hubEnter(); __loop(performance.now()); __loop(performance.now()+17);\n       ctx.fillText=function(s,x,y){ rec.push({s:String(s),y:y,b:ctx.shadowBlur,c:String(ctx.shadowColor)}); return oFT.apply(this,arguments); };\n       try{ __loop(performance.now()+34); } finally { delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }\n       for(i=0;i\u003crec.length;i++){ if(rec[i].s===\u0027THE UNDERCROFT\u0027) tl=rec[i]; if(rec[i].s.indexOf(\u0027 in stash\u0027)\u003e=0) st=rec[i]; if(rec[i].s.indexOf(\u0027USE STATION\u0027)\u003e=0) foot=rec[i]; }\n       if(!tl||!st) return \u0027SKIP: the floor HUD was not drawn\u0027;\n       if(!(tl.b\u003e0)) bad.push(\u0027the Undercroft title has no halo over the light wall\u0027);\n       if(!(st.b\u003e0)) bad.push(\u0027the stats line (items in stash) has no halo over the light wall\u0027);\n       tr=document.getElementById(\u0027topright\u0027);\n       if(tr\u0026\u0026getComputedStyle(tr).textShadow===\u0027none\u0027) bad.push(\u0027the corner readout (CREDITS, XP) has no text shadow\u0027);\n       (HUBBELT.cells||[]).forEach(function(c){ if(c\u0026\u0026typeof c.y===\u0027number\u0027) top=Math.min(top,c.y); });\n       if(foot\u0026\u0026top\u003c1e9\u0026\u0026foot.y\u003etop) bad.push(\u0027the footer (y \u0027+Math.round(foot.y)+\u0027) sits behind the belt (top \u0027+Math.round(top)+\u0027)\u0027);\n       if(!foot) bad.push(\u0027control: no footer was drawn\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ ctx.shadowColor=\u0027transparent\u0027; ctx.shadowBlur=0; }catch(_s){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -492,6 +492,7 @@
      fitting the band above the box. */
   #topright{ position:fixed; top:6px; right:20px; height:44px; line-height:44px; z-index:9000; pointer-events:none;
     font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }
+  #topright{ text-shadow:0 0 3px rgba(4,6,9,.95),0 0 8px rgba(4,6,9,.8); }   /* v18.62: the corner readout reads over a light wall (CREDITS vanished on the Undercroft side wall) */
   #topright small{ font-size:14px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:7px; margin-right:20px; }
   #topright small:last-child{ margin-right:0; }
   .toprow{ padding-right:560px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide; v12.25: the readout carries the window zoom now, up to 1.3 times wider again at 1080p */
@@ -1510,7 +1511,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.61';
+var VER='18.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29740,6 +29741,14 @@ function hubBagOpenSet(on){
 // closing is the commit. The cells are kept on HUBBELT for the fixture and for
 // anyone who later wants the floor belt to take a click.
 var HUBBELT={cells:[]};
+// v18.62, seen on the Undercroft screenshot (2026-10-07): the footer (WASD WALK, E USE STATION) sat at the bottom edge, behind the
+// belt the floor draws there since v18.0x, so only scraps of it showed between the cells. It now sits just above the belt when
+// the belt is shown, and at the bottom edge as before when it is not.
+function hubFootY(){
+  var c=(HUBBELT&&HUBBELT.cells)||[], t=H, i;
+  for(i=0;i<c.length;i++) if(c[i]&&typeof c[i].y==='number'&&isFinite(c[i].y)) t=Math.min(t,c[i].y);
+  return (t<H-LH(20))?Math.round(t-LH(8)):H-16;
+}
 function drawHubBelt(){
   if(CFG.hubBelt===0){ HUBBELT.cells=[]; return; }
   var old=G, st=hubBagState();
@@ -31723,13 +31732,20 @@ function drawHubHUD(ox,oy){
   // The hub is a place you point at things, so it always has an arrow, v2.91.
   if(_curNow!=='default'){ _curNow='default'; try{ cv.style.cursor='default'; }catch(e){} }
   ctx.clearRect(0,0,W,H);
+  // v18.62, SEEN ON THE UNDERCROFT SCREENSHOT (2026-10-07): THE FLOOR HUD READS ON ANY WALL. The title and the stats line under it
+  // run across the light side wall of the room, where the grey stats line vanished (0 items in stash read 0 items ... sh). Both
+  // are drawn with a dark halo now, and the stats line a shade lighter; nothing moves.
+  ctx.shadowColor='rgba(4,6,9,.95)'; ctx.shadowBlur=4;
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
   ctx.fillText('THE UNDERCROFT',16,28);
+  ctx.shadowColor='transparent'; ctx.shadowBlur=0;
   try{ drawHubGiftLine(); }catch(_hg){}   // v18.05: an open trade offer, on the floor
   try{ hubDrawDropPrompt(); }catch(_hdp){}   // v18.28: E TAKE beside a dropped crate
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
+  ctx.shadowColor='rgba(4,6,9,.95)'; ctx.shadowBlur=4;   // v18.62: the halo, for the stats line too
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#aeb8c2';
   ctx.fillText('$'+P.credits.toLocaleString()+'  \u00b7  XP '+(P.xp||0).toLocaleString()+
     '  ·  '+P.stash.length+' item'+(P.stash.length===1?'':'s')+' in stash  ·  '+P.runs+' run'+(P.runs===1?'':'s'),16,44);   // v8.56: said "1 runs" beside a correctly pluralised stash count
+  ctx.shadowColor='transparent'; ctx.shadowBlur=0;   // v18.62: the halo ends with the stats line
   // v8.13: the line itself moved to #hubtoast, which sits above the windows it
   // is usually answering. This block keeps the timer honest for anything still
   // reading HUBSAY_T and draws nothing.
@@ -31876,8 +31892,8 @@ function drawHubHUD(ox,oy){
   // 0). The raid swaps its legends for LEGEND_MINI_PAD and LEGEND_PAD; this line never had a pad version. With a pad on it now
   // draws the pad words in the raid legend's own terms, L STICK and LS, with A from the same keyLabel the prompt uses, and
   // returns. The keyboard line below is untouched word for word. No number and no seeded draw moved.
-  if(padOn()){ ctx.fillText('L STICK WALK  \u00b7  LS JOG  \u00b7  '+keyLabel('KeyE','E')+' USE STATION'+((HB&&HB.drops&&HB.drops.length)?'  \u00b7  '+keyLabel('KeyE','E')+' TAKE THE DROPPED ITEM':''),W/2,H-16); ctx.textAlign='left'; return; }   // v18.25: and the trade button while a party is on
-  ctx.fillText(hubFootKeys('WASD WALK  ·  SHIFT JOG  ·  E USE STATION'+((HB&&HB.drops&&HB.drops.length)?'  \u00b7  E TAKE THE DROPPED ITEM':'')),W/2,H-16);   // v18.25: and the trade key while a party is on; v18.59: in the keys as set
+  if(padOn()){ ctx.fillText('L STICK WALK  \u00b7  LS JOG  \u00b7  '+keyLabel('KeyE','E')+' USE STATION'+((HB&&HB.drops&&HB.drops.length)?'  \u00b7  '+keyLabel('KeyE','E')+' TAKE THE DROPPED ITEM':''),W/2,hubFootY()); ctx.textAlign='left'; return; }   // v18.25: and the trade button while a party is on
+  ctx.fillText(hubFootKeys('WASD WALK  ·  SHIFT JOG  ·  E USE STATION'+((HB&&HB.drops&&HB.drops.length)?'  \u00b7  E TAKE THE DROPPED ITEM':'')),W/2,hubFootY());   // v18.25: and the trade key while a party is on; v18.59: in the keys as set
   ctx.textAlign='left';
 }
 // ================================================================ main loop
@@ -32739,7 +32755,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.61: The weapon panel reads STOWED  Bare Hands, without a stray 0. Check 18.61 fails on v18.60',
+  now:'v18.62: On the Undercroft floor the top line, the credits and the key footer are all readable. Check 18.62 fails on v18.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

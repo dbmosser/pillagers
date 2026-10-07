@@ -5721,6 +5721,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.62',what:'the Undercroft HUD reads on any wall and its footer clears the belt: the title and stats line are drawn with a dark halo, the corner readout has a text shadow, and the WASD WALK footer sits above the belt cells',
+   run:function(){
+     if(typeof drawHubHUD!=='function'||typeof __hubEnter!=='function'||typeof __loop!=='function') return 'SKIP: no Undercroft floor here';
+     var bad=[], oFT=ctx.fillText, rec=[], t, i, top=1e9, foot=null, tl=null, st=null, tr;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __loop(performance.now()); __loop(performance.now()+17);
+       ctx.fillText=function(s,x,y){ rec.push({s:String(s),y:y,b:ctx.shadowBlur,c:String(ctx.shadowColor)}); return oFT.apply(this,arguments); };
+       try{ __loop(performance.now()+34); } finally { delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
+       for(i=0;i<rec.length;i++){ if(rec[i].s==='THE UNDERCROFT') tl=rec[i]; if(rec[i].s.indexOf(' in stash')>=0) st=rec[i]; if(rec[i].s.indexOf('USE STATION')>=0) foot=rec[i]; }
+       if(!tl||!st) return 'SKIP: the floor HUD was not drawn';
+       if(!(tl.b>0)) bad.push('the Undercroft title has no halo over the light wall');
+       if(!(st.b>0)) bad.push('the stats line (items in stash) has no halo over the light wall');
+       tr=document.getElementById('topright');
+       if(tr&&getComputedStyle(tr).textShadow==='none') bad.push('the corner readout (CREDITS, XP) has no text shadow');
+       (HUBBELT.cells||[]).forEach(function(c){ if(c&&typeof c.y==='number') top=Math.min(top,c.y); });
+       if(foot&&top<1e9&&foot.y>top) bad.push('the footer (y '+Math.round(foot.y)+') sits behind the belt (top '+Math.round(top)+')');
+       if(!foot) bad.push('control: no footer was drawn');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ ctx.shadowColor='transparent'; ctx.shadowBlur=0; }catch(_s){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.61',what:'a stowed weapon with no magazine shows no ammo count: bare hands read STOWED  Bare Hands, and a stowed gun still shows its rounds',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';

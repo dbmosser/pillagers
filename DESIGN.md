@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.62 - THE UNDERCROFT HUD READS ON ANY WALL
+
+Co-op hunt while he was away. Seen on the Undercroft screenshot of 2026-10-07: the stats line under THE UNDERCROFT (items in stash, runs) and the CREDITS label in the corner are grey on the light side wall of the room, so parts of them vanished (0 items ... sh, CR..DITS); and the footer that names the keys (WASD WALK, E USE STATION) sat at the bottom edge behind the belt, showing only in scraps between the cells. The text now has a dark halo, nothing moved, and the footer sits just above the belt.
+
+MEASURED. Check 18.62 passes, and fails on v18.61.
 ## v18.61 - BARE HANDS STOWED SHOW NO AMMO
 
 Co-op hunt while he was away. Seen on the raid screenshot of 2026-10-07: with a gun in hand, the weapon panel read STOWED  Bare Hands  0, an ammo count for fists. A stowed weapon with no magazine now shows just its name, as the held line already says MELEE for it; a stowed gun still shows its rounds.
