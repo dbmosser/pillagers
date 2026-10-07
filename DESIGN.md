@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.57 - THE WHAT IS NEW CARD SHOWS ITS NEWEST NEWS
+
+Co-op hunt while he was away. The card draws only its first 5 lines, and the last two refreshes put the new icons and dropping lines 7th and 8th, where nobody saw them; its stamp (v18.45) was also nearly 0.15 behind the build. The newest news now sits right under the alpha line: a line on this round of two player fixes, then the icons, then dropping.
+
+MEASURED. Check 18.57 passes, and fails on v18.56.
 ## v18.56 - ERASE ASKS AGAIN AT THE CLICK
 
 Co-op hunt while he was away. Found by the code comb of 2026-10-07: the save list asked whether the other window had a save open only when it was drawn. A save armed for erasing (DELETE, then typing the word) and then opened by the player 2 window was still erased by ERASE, under that window. ERASE now asks again and leaves such a save alone.

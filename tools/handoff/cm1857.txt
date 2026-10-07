@@ -1,0 +1,7 @@
+v18.57: the what is new card shows its newest news
+
+The what is new card shows the two player fixes, the new icons and dropping items.
+
+Check 18.57. Fails on v18.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -5721,6 +5721,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.57',what:'the what is new card is stamped within 0.15 of the build and shows its newest news: the two player fixes, the new icons and dropping all sit in the lines the card draws',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof WN_SHOW==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), shown=WHATSNEW.slice(0,WN_SHOW).join(' | ');
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     [['TWO PLAYERS,'+' FEWER SNAGS','the two player fixes'],['NEW ICONS AND'+' A CLEANER HUD','the new icons'],['TRADING IS'+' DROPPING','dropping items']].forEach(function(n){ if(shown.indexOf(n[0])<0) bad.push('the card does not show '+n[1]+' (not in its first '+WN_SHOW+' lines)'); });
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.56',what:'ERASE asks again at the click: a save armed for erasing and then opened by the player 2 window is kept, and a save nobody has open still erases',
    run:function(){
      if(typeof titleRefresh!=='function'||!document.getElementById('slotlist')) return 'SKIP: no title save list in this document';

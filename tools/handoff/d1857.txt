@@ -1,0 +1,5 @@
+## v18.57 - THE WHAT IS NEW CARD SHOWS ITS NEWEST NEWS
+
+Co-op hunt while he was away. The card draws only its first 5 lines, and the last two refreshes put the new icons and dropping lines 7th and 8th, where nobody saw them; its stamp (v18.45) was also nearly 0.15 behind the build. The newest news now sits right under the alpha line: a line on this round of two player fixes, then the icons, then dropping.
+
+MEASURED. Check 18.57 passes, and fails on v18.56.
