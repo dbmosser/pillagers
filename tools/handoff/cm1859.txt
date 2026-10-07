@@ -1,0 +1,7 @@
+v18.59: prompts name the key you set
+
+After you move a key in CHANGE KEYS, the on-screen prompts name the new key.
+
+Check 18.59. Fails on v18.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

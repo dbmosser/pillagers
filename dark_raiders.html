@@ -1510,7 +1510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.58';
+var VER='18.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12194,7 +12194,15 @@ function keyLabel(code,fallback){
     if(state==='hub'&&PADLABEL_HUB[code]) return padB(PADLABEL_HUB[code]);
     if(PADLABEL[code]) return padB(PADLABEL[code]);
   }
+  // v18.59, from the code comb (2026-10-07): on the keyboard every prompt drawn through here (16 of them name E) said the default
+  // key even after CHANGE KEYS moved it; it now names the key the action is on. Unchanged keys read as before.
+  try{ if(typeof code==='string'&&keysOf(code)!==code) return keyName(keysOf(code)); }catch(_kl){}
   return fallback===undefined?code:fallback;
+}
+// v18.59: the Undercroft footer, in the keys as set (WASD, SHIFT and E by default, word for word as before)
+function hubFootKeys(s){
+  var n=function(c){ try{ return keyName(keysOf(c)); }catch(_k){ return c; } };
+  return String(s).replace('WASD WALK',n('KeyW')+n('KeyA')+n('KeyS')+n('KeyD')+' WALK').replace('SHIFT JOG',n('ShiftLeft')+' JOG').replace(/\bE (USE STATION|TAKE THE DROPPED ITEM)/g,function(_m,w){ return n('KeyE')+' '+w; });
 }
 // ================================================== THE PAD IN A MENU, v6.84
 // His note: the controller did nothing once a panel was open. These four helpers are the
@@ -31855,7 +31863,7 @@ function drawHubHUD(ox,oy){
   // draws the pad words in the raid legend's own terms, L STICK and LS, with A from the same keyLabel the prompt uses, and
   // returns. The keyboard line below is untouched word for word. No number and no seeded draw moved.
   if(padOn()){ ctx.fillText('L STICK WALK  \u00b7  LS JOG  \u00b7  '+keyLabel('KeyE','E')+' USE STATION'+((HB&&HB.drops&&HB.drops.length)?'  \u00b7  '+keyLabel('KeyE','E')+' TAKE THE DROPPED ITEM':''),W/2,H-16); ctx.textAlign='left'; return; }   // v18.25: and the trade button while a party is on
-  ctx.fillText('WASD WALK  ·  SHIFT JOG  ·  E USE STATION'+((HB&&HB.drops&&HB.drops.length)?'  \u00b7  E TAKE THE DROPPED ITEM':''),W/2,H-16);   // v18.25: and the trade key while a party is on
+  ctx.fillText(hubFootKeys('WASD WALK  ·  SHIFT JOG  ·  E USE STATION'+((HB&&HB.drops&&HB.drops.length)?'  \u00b7  E TAKE THE DROPPED ITEM':'')),W/2,H-16);   // v18.25: and the trade key while a party is on; v18.59: in the keys as set
   ctx.textAlign='left';
 }
 // ================================================================ main loop
@@ -32717,7 +32725,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.58: Items dropped on the Undercroft floor show up for player 2 even if they were dropped before player 2 window opened, and can never be picked up twice. Check 18.58 fails on v18.57',
+  now:'v18.59: After you move a key in CHANGE KEYS, the on-screen prompts name the new key. Check 18.59 fails on v18.58',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

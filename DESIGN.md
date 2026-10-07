@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.59 - PROMPTS NAME THE KEY YOU SET
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-07: since CHANGE KEYS (v17.75) any action can move to another key, but on the keyboard the prompts drawn on screen (search, take, open, extract, revive: 16 of them name E) and the Undercroft footer still said the default key, so after moving interact the game kept telling you to press E. They now name the key the action is on; with nothing changed they read exactly as before.
+
+MEASURED. Check 18.59 passes, and fails on v18.58.
 ## v18.58 - CRATES OUTLIVE A WINDOW COMING AND GOING
 
 Co-op hunt while he was away. Found by reading the Undercroft drop code (2026-10-07): a floor crate was told to the other window only once, when dropped, so a crate dropped before the player 2 window linked, or while it reloaded (picking a character reloads it), never showed there, and the dropper could not take it back while linked. Worse, a window that left kept its crates on the other floor while they also came home to its own stash on its next load, so the other player could take the same item a second time. Now a window that links is told every crate already on the floor, a window that leaves takes its crates with it, and you can take your own crate back while nobody is linked.
