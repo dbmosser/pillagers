@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.51',what:'a covered host window keeps the kept raid running: the worker tick is wanted while the host spectates for the party, even back in the Undercroft, and not when there is no party',
+   run:function(){
+     if(typeof hidWant!=='function') return 'SKIP: no worker tick here';
+     var bad=[], keep={on:NET.on,role:NET.role,specG:NET.specG}, oH=netEntsHost;
+     try{
+       netEntsHost=function(){ return false; };
+       NET.on=true; NET.role='host'; NET.specG={over:true};
+       if(!hidWant()) bad.push('a spectating host with its window covered stops running the kept raid');
+       NET.specG=null; if(hidWant()) bad.push('control: the tick is wanted with no raid to run');
+       NET.on=false; NET.specG={over:true}; if(hidWant()) bad.push('control: the tick is wanted with no party');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ netEntsHost=oH; NET.on=keep.on; NET.role=keep.role; NET.specG=keep.specG; }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.50',what:'a seal cut past the new need still opens: with a banked cut above sealNeed, holding E at the door completes it and pays out',
    run:function(){
      if(!(window.__seal&&__seal.here&&__seal.need)) return 'SKIP: no seal here';

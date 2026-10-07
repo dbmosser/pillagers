@@ -1,0 +1,7 @@
+v18.51: a covered host window keeps the kept raid running
+
+When player 1 is out of the raid and their window is covered, player 2 raid keeps running normally.
+
+Check 18.51. Fails on v18.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

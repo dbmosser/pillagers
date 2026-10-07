@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.51 - A COVERED HOST WINDOW KEEPS THE KEPT RAID RUNNING
+
+Co-op hunt while he was away. Found by the code comb of 2026-10-07: when player 1 (the host) died or extracted and went back to the Undercroft while player 2 was still up top, the host keeps the raid world running for player 2. With the host window covered by player 2 window (one screen) its frames stop, and the background tick that keeps a covered host running (v17.73) did not count a spectating host: player 2 enemies froze and every box player 2 searched filled its bar and paid nothing. The tick now runs for a spectating host too.
+
+MEASURED. Check 18.51 passes, and fails on v18.50.
 ## v18.50 - A SEAL CUT PAST THE NEW NEED STILL OPENS
 
 Co-op hunt while he was away. Found by the code comb of 2026-10-07: v17.97 made the seal quicker to cut (34 + 21 per stage), and a profile that had already banked more cutting than the new need (36 of the old 40, say) could never finish it: the cut was skipped, so the completion test never ran, the bar sat full and nothing happened, and that sector seal was stuck for good. The cut always runs now; the first moment of E on such a door completes it and pays out.
