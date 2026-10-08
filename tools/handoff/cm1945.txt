@@ -1,0 +1,7 @@
+v19.45: his own map marker stays on top
+
+On the sector map your own marker and your teammate are always on top of the writing.
+
+Check 19.45. Fails on v19.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

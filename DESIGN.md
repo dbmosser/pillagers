@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.45 - HIS OWN MAP MARKER STAYS ON TOP
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in the v19.02 map label placer: the labels were drawn after the whole map, so a landmark name or a CACHE tag printed over his own gold marker and over the party dots, gold letters on the gold dot, the two things his Q23 says are never lost. The marker and the party dots are drawn after the labels again.
+
+MEASURED. Check 19.45 passes, and fails on v19.44.
 ## v19.44 - THE RAIDER BOARD HOLDS ITS SUMMARY LINE
 
 Co-op hunt while he was away. Seen on the 4K downed screenshot of 2026-10-08: the line under the names on the CURRENT PILLAGERS board (0 out, 3 down) had no row of its own in the box, so the panel bottom edge ran through its letters. When the line shows it now gets a row like the names.
