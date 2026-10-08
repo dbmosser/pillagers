@@ -1,0 +1,7 @@
+v18.99: the what is new card names the big screen and belt fixes
+
+The what is new card names the big screen and belt fixes.
+
+Check 18.99. Fails on v18.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

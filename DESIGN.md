@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.99 - THE WHAT IS NEW CARD NAMES THE BIG SCREEN AND BELT FIXES
+
+Co-op hunt while he was away. The card was stamped v18.84 and the stamp may not trail the build by more than 0.15. Its new second line names the 4K scaling of the backpack, Undercroft text and run card, the belt drag fixes and the gradual Blotter.
+
+MEASURED. Check 18.99 passes, and fails on v18.98.
 ## v18.98 - THE STASH BELT KEYS SHARE ONE ROW
 
 Co-op hunt while he was away. Seen on the 4K stash screenshot of 2026-10-07: the TACTICAL BELT on the stash screen wrapped at his size, keys 1 to 8 in a row and key 9 alone on a line below, which reads as if key 9 were something else. The nine keys now always share one row, each shrinking to fit when it must and staying square.

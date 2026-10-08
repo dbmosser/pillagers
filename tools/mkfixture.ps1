@@ -5721,6 +5721,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.99',what:'the what is new card is stamped within 0.15 of the build and leads with the big screen and belt news, his October 7 notes still on the card',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof WN_SHOW==='undefined') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>18.99+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), shown=WHATSNEW.slice(0,WN_SHOW).join(' | ');
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('BIGGER ON A'+' BIG SCREEN')!==0) bad.push('the card does not lead with the big screen and belt news');
+     if(shown.indexOf('YOUR NOTES OF'+' OCTOBER 7')<0) bad.push('the card no longer shows his October 7 notes');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.98',what:'the stash belt keys share one row: with little room all nine tactical belt keys sit on one line and stay square',
    run:function(){
      if(typeof __station!=='function'||typeof __hubEnter!=='function'||typeof applyMenuZoom!=='function') return 'SKIP: no stash here';
