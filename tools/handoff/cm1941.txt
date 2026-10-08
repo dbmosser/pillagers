@@ -1,0 +1,7 @@
+v19.41: the full controls list fits its keys
+
+The H controls list is a tidy panel the width of its keys.
+
+Check 19.41. Fails on v19.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
