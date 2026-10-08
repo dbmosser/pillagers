@@ -1,0 +1,5 @@
+## v19.52 - MAP LABEL BOXES FOLLOW HIS WORDING
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.02: the map label placer measured each label on its original words, but the words drawn are his edits, so a longer wording could overlap a neighbour the placer thought was clear, and a label he blanked still pushed other labels aside for a word never shown. The box is measured on the words drawn now, and a blanked label takes no room.
+
+MEASURED. Check 19.52 passes, and fails on v19.51.

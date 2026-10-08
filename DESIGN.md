@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.52 - MAP LABEL BOXES FOLLOW HIS WORDING
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.02: the map label placer measured each label on its original words, but the words drawn are his edits, so a longer wording could overlap a neighbour the placer thought was clear, and a label he blanked still pushed other labels aside for a word never shown. The box is measured on the words drawn now, and a blanked label takes no room.
+
+MEASURED. Check 19.52 passes, and fails on v19.51.
 ## v19.51 - ENTER IN THE BACKPACK LEAVES THE CARD
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.28: the what is new card waits behind the open floor backpack, but ENTER (equip from the backpack) still dismissed it there, so a returning player who opened the bag first lost the card unseen for the rest of the load. ENTER only dismisses the card when the bag is closed.

@@ -1,0 +1,7 @@
+v19.52: map label boxes follow his wording
+
+Map labels make room for your own wording.
+
+Check 19.52. Fails on v19.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
