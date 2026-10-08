@@ -40029,6 +40029,7 @@ may now be led by a sound three times the length of its siblings.
 Co-op hunt while he was away. Found by the review of 2026-10-07: every click on a FASHION tile built the whole rack list twice, once directly and once more through the operator panel, which redraws the racks itself, so about half a megabyte of pictures was parsed twice per click (about 120 ms a click at 1080p, measured). The racks are now built once.
 
 MEASURED. Check 19.20 passes, and fails on v19.19.
+CORRECTION, measured after shipping: the click still takes about 110 to 130 ms at 1080p. The rack is built once now, but the time goes on turning about 49 freshly painted pictures into PNG images (about 55 ms; painting them is about 6 ms), not on the build. Moving the racks off PNG images would need the older picture checks (18.79, 18.82, 19.17) retargeted; left for later, the review rated it low.
 ## v19.19 - THE STATUS ICONS KEEP OFF MOVED PANELS
 
 Co-op hunt while he was away. Found by the review of 2026-10-07: the status column (v19.00) avoided the board only when its top was above the column and the controls list only when its top was below it, so dragging the board down, or growing or dragging the controls list up, had the icons drawn right over them. Every panel at the left is now treated the same way, and when they leave no room the column moves to their right.
