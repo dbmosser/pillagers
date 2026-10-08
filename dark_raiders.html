@@ -1537,7 +1537,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.46';
+var VER='19.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33362,7 +33362,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.46: The what is new card names the cleaner screens. Check 19.46 fails on v19.45',
+  now:'v19.47: Your teammate rows stay readable at the left wherever you drag the board. Check 19.47 fails on v19.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39297,7 +39297,16 @@ var NETTEAMBOX={n:0,x:0,y:0,w:0,h:0};   // v19.07: where the teammate rows were 
 function netTeamHud(by){
   var i, g, n=0, x=16, w=150, y, f, t;
   var _thr=Math.max(1,(typeof hudRes==='function')?hudRes():1), _tt=Math.round(H*0.30), _ty;   // v19.07: rows below the board, grown with the screen
-  if(HUDBOX.raiders) _tt=Math.max(_tt,Math.round(HUDBOX.raiders.y+HUDBOX.raiders.h+16*_thr));
+  // v19.47, from the review (2026-10-08): the rows followed the board down wherever it had been dragged, so a board moved to the right
+  // or low put the teammate rows under the controls list or off the screen. They keep their own place at 30 percent and only step
+  // below the board when it sits over that place in their left column, and then never past the bottom of the screen.
+  var _trb=HUDBOX.raiders, _tun=0, _trh, _tj;
+  try{ for(_tj=0;_tj<(NET.up||[]).length;_tj++) if(netUpShown(NET.up[_tj])) _tun++; }catch(_tu){}
+  _trh=Math.max(1,_tun)*Math.round(44*_thr);
+  if(_trb&&_trb.x<170*_thr&&_trb.x+_trb.w>12*_thr&&_trb.y<_tt+_trh+8*_thr&&_trb.y+_trb.h>_tt-8*_thr){
+    _tt=Math.round(_trb.y+_trb.h+16*_thr);
+    if(_tt+_trh>H-8*_thr) _tt=Math.max(0,Math.round(H-8*_thr-_trh));
+  }
   NETTEAMBOX.n=0;
   if(typeof G==='undefined'||!G||G.over) return 0;
   for(i=0;i<NET.up.length;i++){

@@ -1,0 +1,7 @@
+v19.47: the teammate rows stay on the left
+
+Your teammate rows stay readable at the left wherever you drag the board.
+
+Check 19.47. Fails on v19.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.47 - THE TEAMMATE ROWS STAY ON THE LEFT
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.07: the co-op teammate rows started under the pillager board wherever it had been dragged, so a board moved to the right or low on the screen pushed your teammate health and DOWN countdown under the controls list or off the bottom. They follow the board only when it sits over their own left column, and fall back to their old place when they would not fit.
+
+MEASURED. Check 19.47 passes, and fails on v19.46.
 ## v19.46 - THE WHAT IS NEW CARD NAMES THE CLEANER SCREENS
 
 Co-op hunt while he was away. The card was stamped v19.30 and the stamp may not trail the build by more than 0.15. Its new second line names the map marker on top (v19.45), the Undercroft walls (v19.35), the run card strip (v19.36, v19.37), the controls list (v19.41), the stats titles (v19.38) and the text fixes of v19.31 to v19.44.
