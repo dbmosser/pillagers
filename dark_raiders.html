@@ -1522,7 +1522,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.13';
+var VER='19.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25875,6 +25875,7 @@ var BUZZRND=[0.37,0.71,0.13,0.59,0.83,0.29,0.47,0.91];   // v10.31: eight number
 // the trip clock from BUZZRNDAT. BUZZRNDTO is the roll that fade is heading for, so anything that writes BUZZRND
 // directly (a check) simply gets its roll at once, with no fade.
 var BUZZRNDP=null, BUZZRNDTO=null, BUZZRNDAT=0, BUZZRNDFADE=8;
+var BUZZLASTK=0;   // v19.14, from the review (2026-10-07): how strongly the trip showed on the last frame; a dose arms the melt fade only when there was a melt to fade out of
 // v18.94, after his report (2026-10-07) and the Blotter review: THE COLOURS TURN AT THE DOSE'S SPEED, NOT THE CLOCK'S. The hue was
 // clock*rate, with the clock the time since the page loaded (BUZZT), so while a dose came on the turning sped up by clock*change of
 // rate: after an hour of play the colours whirled round about once a second for the whole first minute of a dose and then calmed
@@ -26007,7 +26008,7 @@ function buzzMenuFx(dr,ac){
 }
 function drawBuzzFx(){
   if(G&&G.sim) return;
-  if(typeof P==='undefined'||!P||!P.buzz||!P.buzz.length){ buzzMenuFx(0,0); return; }
+  if(typeof P==='undefined'||!P||!P.buzz||!P.buzz.length){ BUZZLASTK=0; buzzMenuFx(0,0); return; }
   var t=BUZZT*0.4;   // v7.73, his note: same trip, slower flashes
   // v7.73, two of his notes at once: ceiling 8.5 (was a hard 11 - "10 hits of
   // acid is still unplayable") and asymptotic, so a fading stack softens
@@ -26024,6 +26025,7 @@ function drawBuzzFx(){
   // out instead of cutting off 8 s before the dose ends. The menu panels take the same k so they stay in step.
   var _kx=(ac-0.01)/0.89; _kx=(_kx>0)?Math.min(1,_kx):0;
   var k=_kx*(1.5-0.5*_kx*_kx);
+  BUZZLASTK=ac*k;
   buzzMenuFx(dr,ac*k);   // v16.39, his note: Liquor and Blotter reach the menu screens too
   if(dr<0.05&&ac<0.01) return;
   var wcv=wc.canvas, ocv=ctx.canvas;
@@ -33248,7 +33250,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.13: Trying on pieces in FASHION no longer builds up memory. Check 19.13 fails on v19.12',
+  now:'v19.14: Taking a first Blotter dose costs less drawing for its first seconds. Check 19.14 fails on v19.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33982,7 +33984,7 @@ function renderBar(){
       // v18.93, his report (2026-10-07): still a fresh roll with every dose (v10.31), but the roll on screen is kept as the
       // one to fade out of, and buzzWarp crossfades the melt over BUZZRNDFADE s. If an earlier fade is still mostly on its
       // old roll, that old roll stays the one fading out, so doses bought in quick succession do not snap it either.
-      if(B2.tag==='lsd'){ var _bw=(BUZZRNDP&&BUZZRNDTO===BUZZRND)?(BUZZT-BUZZRNDAT)/BUZZRNDFADE:1; if(!(_bw>=0&&_bw<0.5)) BUZZRNDP=BUZZRND; BUZZRNDAT=BUZZT; BUZZRND=[]; for(var _br=0;_br<8;_br++) BUZZRND.push(Math.random()); BUZZRNDTO=BUZZRND; }
+      if(B2.tag==='lsd'){ var _bw=(BUZZRNDP&&BUZZRNDTO===BUZZRND)?(BUZZT-BUZZRNDAT)/BUZZRNDFADE:1; if(!(_bw>=0&&_bw<0.5)) BUZZRNDP=(BUZZLASTK>0.05)?BUZZRND:null; BUZZRNDAT=BUZZT; BUZZRND=[]; for(var _br=0;_br<8;_br++) BUZZRND.push(Math.random()); BUZZRNDTO=BUZZRND; }
       saveProfile(); blip('pick');
       say2(B2.line+(buzzDoses(B2.tag)>1?('  That is '+buzzDoses(B2.tag)+'.'):''));
       renderBar();

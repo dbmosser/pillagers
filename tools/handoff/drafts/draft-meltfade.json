@@ -1,0 +1,24 @@
+{
+    "title":  "A FIRST BLOTTER DOSE DRAWS THE MELT ONCE",
+    "why":  "Found by the review of 2026-10-07: the v18.93 crossfade, which blends the old melt into the new one when another dose is taken, also ran on the first dose, when there was nothing showing to fade out of, so for 8 seconds the melt pass was drawn twice over the whole screen at 4K for no visible gain. It now runs only when a trip was actually showing.",
+    "now":  "Taking a first Blotter dose costs less drawing for its first seconds.",
+    "edits":  [
+                  {
+                      "anchor":  "var BUZZRNDP=null, BUZZRNDTO=null, BUZZRNDAT=0, BUZZRNDFADE=8;",
+                      "replacement":  "var BUZZRNDP=null, BUZZRNDTO=null, BUZZRNDAT=0, BUZZRNDFADE=8;\nvar BUZZLASTK=0;   // v16.xx, from the review (2026-10-07): how strongly the trip showed on the last frame; a dose arms the melt fade only when there was a melt to fade out of"
+                  },
+                  {
+                      "anchor":  "  var k=_kx*(1.5-0.5*_kx*_kx);",
+                      "replacement":  "  var k=_kx*(1.5-0.5*_kx*_kx);\n  BUZZLASTK=ac*k;"
+                  },
+                  {
+                      "anchor":  "  if(typeof P===\u0027undefined\u0027||!P||!P.buzz||!P.buzz.length){ buzzMenuFx(0,0); return; }",
+                      "replacement":  "  if(typeof P===\u0027undefined\u0027||!P||!P.buzz||!P.buzz.length){ BUZZLASTK=0; buzzMenuFx(0,0); return; }"
+                  },
+                  {
+                      "anchor":  "if(!(_bw\u003e=0\u0026\u0026_bw\u003c0.5)) BUZZRNDP=BUZZRND;",
+                      "replacement":  "if(!(_bw\u003e=0\u0026\u0026_bw\u003c0.5)) BUZZRNDP=(BUZZLASTK\u003e0.05)?BUZZRND:null;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a first Blotter dose draws the melt once: with no trip showing, taking a dose arms no crossfade, and with a trip showing it does\u0027,\n   run:function(){\n     if(typeof renderBar!==\u0027function\u0027||typeof __station!==\u0027function\u0027||typeof __hubEnter!==\u0027function\u0027) return \u0027SKIP: no bar here\u0027;\n     var bad=[], c0=P.credits, b0=P.buzz, k0=(typeof BUZZLASTK!==\u0027undefined\u0027)?BUZZLASTK:0, p0=BUZZRNDP, r0=BUZZRND, to0=BUZZRNDTO, at0=BUZZRNDAT, t, btn;\n     try{\n       __topClear(); __runPrep(); __cleanProfile();\n       t=document.getElementById(\u0027title\u0027); if(t) t.classList.remove(\u0027on\u0027);\n       __hubEnter(); __station(\u0027bar\u0027,\u0027KeyE\u0027);\n       btn=document.querySelector(\u0027.modal.on [data-bz=\"lsd\"]\u0027);\n       if(!btn||typeof btn.onclick!==\u0027function\u0027) return \u0027SKIP: no Blotter button\u0027;\n       P.credits=99999; P.buzz=[]; BUZZLASTK=0; BUZZRNDP=null;\n       btn.onclick.call(btn);\n       if(BUZZRNDP) bad.push(\u0027a first dose with nothing showing armed the melt crossfade, drawing the melt twice for 8 s\u0027);\n       BUZZLASTK=1; BUZZRNDP=null; BUZZRNDTO=null;\n       btn.onclick.call(btn);\n       if(!BUZZRNDP) bad.push(\u0027control: a dose during a visible trip did not arm the crossfade\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ P.credits=c0; P.buzz=b0; BUZZLASTK=k0; BUZZRNDP=p0; BUZZRND=r0; BUZZRNDTO=to0; BUZZRNDAT=at0; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

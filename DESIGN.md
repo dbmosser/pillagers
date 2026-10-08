@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.14 - A FIRST BLOTTER DOSE DRAWS THE MELT ONCE
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: the v18.93 crossfade, which blends the old melt into the new one when another dose is taken, also ran on the first dose, when there was nothing showing to fade out of, so for 8 seconds the melt pass was drawn twice over the whole screen at 4K for no visible gain. It now runs only when a trip was actually showing.
+
+MEASURED. Check 19.14 passes, and fails on v19.13.
 ## v19.13 - THE FASHION PREVIEWS KEEP ONE LOOK
 
 Co-op hunt while he was away. Found by the review of 2026-10-07: the FASHION previews (v18.79 and v18.82) kept every picture ever painted, about 57 for each change of skin, hair or any other piece, and never let them go, so a long stay in FASHION kept growing the memory the game uses. They now keep only the look you are wearing; a change of look clears them first.

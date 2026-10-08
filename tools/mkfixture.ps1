@@ -5721,6 +5721,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.14',what:'a first Blotter dose draws the melt once: with no trip showing, taking a dose arms no crossfade, and with a trip showing it does',
+   run:function(){
+     if(typeof renderBar!=='function'||typeof __station!=='function'||typeof __hubEnter!=='function') return 'SKIP: no bar here';
+     var bad=[], c0=P.credits, b0=P.buzz, k0=(typeof BUZZLASTK!=='undefined')?BUZZLASTK:0, p0=BUZZRNDP, r0=BUZZRND, to0=BUZZRNDTO, at0=BUZZRNDAT, t, btn;
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('bar','KeyE');
+       btn=document.querySelector('.modal.on [data-bz="lsd"]');
+       if(!btn||typeof btn.onclick!=='function') return 'SKIP: no Blotter button';
+       P.credits=99999; P.buzz=[]; BUZZLASTK=0; BUZZRNDP=null;
+       btn.onclick.call(btn);
+       if(BUZZRNDP) bad.push('a first dose with nothing showing armed the melt crossfade, drawing the melt twice for 8 s');
+       BUZZLASTK=1; BUZZRNDP=null; BUZZRNDTO=null;
+       btn.onclick.call(btn);
+       if(!BUZZRNDP) bad.push('control: a dose during a visible trip did not arm the crossfade');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P.credits=c0; P.buzz=b0; BUZZLASTK=k0; BUZZRNDP=p0; BUZZRND=r0; BUZZRNDTO=to0; BUZZRNDAT=at0; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.13',what:'the FASHION preview caches keep one look: previewing pieces under three different looks leaves only the last look pictures stored',
    run:function(){
      if(typeof cosPreviewURL!=='function'||typeof COSMETICS==='undefined') return 'SKIP: no rack previews here';

@@ -1,0 +1,7 @@
+v19.14: a first blotter dose draws the melt once
+
+Taking a first Blotter dose costs less drawing for its first seconds.
+
+Check 19.14. Fails on v19.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
