@@ -1,0 +1,7 @@
+v19.71: the pause box speaks controller on a controller
+
+On a controller the pause box lists the controller buttons.
+
+Check 19.71. Fails on v19.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

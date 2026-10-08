@@ -1552,7 +1552,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.70';
+var VER='19.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13045,6 +13045,10 @@ function keysBind(logical,physical){
 function keysReset(){ if(P) P.keymap={}; KEYS.inv=null; keysInv(); try{ saveProfile(); }catch(_kr){} try{ keysLegendApply(); }catch(_kl3){} return true; }
 function keysLegendHtml(){
   var n=keyName, s=function(c){ return '<b style="color:var(--bone)">'+n(keysOf(c))+'</b>'; };
+  // v19.71, seen on the 4K controller screenshot (2026-10-08): on a controller (player 2 in co-op) the pause box listed MOUSE aim,
+  // LMB fire and WASD move, keys the pad player does not have. With a pad on it lists the pad layout, from the same table as the
+  // full controls panel (LEGEND_PAD), so the two never disagree.
+  if(PAD&&PAD.on&&typeof LEGEND_PAD!=='undefined'&&LEGEND_PAD) return LEGEND_PAD.map(function(sec){ return sec[1].map(function(r){ return '<b style="color:var(--bone)">'+r[0]+'</b> '+r[1]; }).join(' &nbsp; '); }).join(' &nbsp; ');
   return 'MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; '+s('KeyW')+s('KeyA')+s('KeyS')+s('KeyD')+' move &nbsp; '+s('Space')+' dodge roll &nbsp; '+s('ShiftLeft')+' hold to sprint &nbsp; '+
     s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' interact &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyF')+' melee strike &nbsp; 1-9 tactical belt &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
     s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyZ')+' drop an item for a teammate &nbsp; '+s('KeyN')+' ping &nbsp; '+s('KeyH')+' controls &nbsp; TAB back out &nbsp; '+s('KeyP')+' / TAB pause';   // v18.25: the trade key, from the audit
@@ -13098,6 +13102,7 @@ function togglePauseBox(on){
   if(on&&G&&G.over) return;
   if(!G&&state!=='hub') return;
   pauseOpen=on;
+  if(on){ try{ keysLegendApply(); }catch(_pk){} }   // v19.71: the key line matches the device in hand when the box opens
   // v11.72: a note typed on the floor has no raid to attach to. It used to sit
   // in the box and ride into the NEXT raid's first pause as if written there.
   // The close banks it to the profile; every report prints it under FLOOR NOTES.
@@ -33439,7 +33444,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.70: On a controller the stash shows the controller buttons. Check 19.70 fails on v19.69',
+  now:'v19.71: On a controller the pause box lists the controller buttons. Check 19.71 fails on v19.70',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

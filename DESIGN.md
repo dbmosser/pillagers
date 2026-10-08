@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.71 - THE PAUSE BOX SPEAKS CONTROLLER ON A CONTROLLER
+
+Co-op hunt while he was away. Seen on the 4K controller screenshot of 2026-10-08: on a controller (player 2 in co-op) the pause box listed MOUSE aim, LMB fire, WASD move and the rest of the keyboard, keys the pad player does not have. With a pad on it now lists the pad layout (sticks, RT fire, A roll, B crouch, X reload, MENU pause), from the same table as the full controls panel, so the two never disagree.
+
+MEASURED. Check 19.71 passes, and fails on v19.70.
 ## v19.70 - THE STASH SPEAKS CONTROLLER ON A CONTROLLER
 
 Co-op hunt while he was away. Seen on the 4K controller screenshot of 2026-10-08: on a controller (player 2 in co-op) the stash still listed the mouse and keyboard moves (DRAG, RIGHT CLICK, SHIFT, CTRL, ALT, 1-9). With a pad on, it now shows the pad row instead: D-PAD moves the highlight, A picks up and A again places (v16.79), Y opens all actions (v18.27), B backs out.
