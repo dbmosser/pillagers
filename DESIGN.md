@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.95 - THE TITLE SPEAKS CONTROLLER ON A CONTROLLER
+
+Co-op hunt while he was away. Seen on the controller pass of 2026-10-08: with a pad on, the key row under the three steps on the title still named WASD, MOUSE, LMB and the other keyboard keys. A pad row shows there instead (L STICK move, R STICK aim, RT fire, B crouch, X search, VIEW backpack, D-UP hold for the map, MENU pause), in PlayStation names on a PlayStation pad.
+
+MEASURED. Check 19.95 passes, and fails on v19.94.
 ## v19.94 - THE PAUSE BOX FRAME IS WIDE ENOUGH
 
 Co-op hunt while he was away. Seen on the 4K Undercroft pause screenshot of 2026-10-08: on the floor the pause box shows three buttons (RETURN TO THE UNDERCROFT, SETTINGS, RETURN TO CHARACTER SELECTION) and the row all but touched the sides of the fixed 780 pixel frame. The frame now fits the widest line in the box as well as its height (v19.90), never narrower than before.

@@ -449,6 +449,7 @@
   /* v19.70, seen on the 4K controller screenshot (2026-10-08): on a controller the stash still listed DRAG, RIGHT CLICK, SHIFT, CTRL
      and ALT. While the pad is on (body.padon) the stash shows the pad's own row instead. */
   #invkeybarpad{ display:none; }
+  .padrow{ display:none; } body.padon .kbrow{ display:none !important; } body.padon .padrow{ display:block; }   /* v19.95: the title's key row on a pad */
   body.padon #invkeybar{ display:none !important; }
   body.padon #invkeybarpad{ display:flex; }
   .keybar div{ display:flex; align-items:center; gap:6px;
@@ -1143,7 +1144,7 @@
       </div>
     </div>
 
-    <div style="margin-top:22px;font-size:11.5px;color:var(--ash);letter-spacing:.05em;line-height:2">
+    <div class="kbrow" style="margin-top:22px;font-size:11.5px;color:var(--ash);letter-spacing:.05em;line-height:2">
       <b style="color:var(--bone)">WASD</b> move &nbsp;
       <b style="color:var(--bone)">MOUSE</b> aim &nbsp;
       <b style="color:var(--bone)">LMB</b> fire &nbsp;
@@ -1152,6 +1153,18 @@
       <b style="color:var(--bone)">B / I</b> backpack &nbsp;
       <b style="color:var(--bone)">M</b> map &nbsp;
       <b style="color:var(--bone)">H</b> controls
+    </div>
+    <!-- v19.95, seen on the controller pass (2026-10-08): with a pad on, the title's key row named WASD, MOUSE and LMB. The pad row
+         (his layout, LEGEND_PAD) shows instead, through padB on a PlayStation pad. -->
+    <div class="padrow" style="margin-top:22px;font-size:11.5px;color:var(--ash);letter-spacing:.05em;line-height:2">
+      <b style="color:var(--bone)">L STICK</b> move &nbsp;
+      <b style="color:var(--bone)">R STICK</b> aim &nbsp;
+      <b style="color:var(--bone)">RT</b> fire &nbsp;
+      <b style="color:var(--bone)">B</b> crouch &nbsp;
+      <b style="color:var(--bone)">X</b> search &nbsp;
+      <b style="color:var(--bone)">VIEW</b> backpack &nbsp;
+      <b style="color:var(--bone)">D-UP</b> hold for the map &nbsp;
+      <b style="color:var(--bone)">MENU</b> pause
     </div>
 
     <!-- v15.76, HIS ORDER OF 2026-09-25 (multiplayer, build 3): THE MODE MENU. The first thing a player picks is the mode, five
@@ -1567,7 +1580,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.94';
+var VER='19.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12650,7 +12663,7 @@ function padRelease(){
 // v19.70: body.padon follows PAD.on, so the DOM menus can show the pad's own hints. Touched only when it changes.
 // v19.86, from the code review of 2026-10-08: on a PlayStation pad the stash pad row (v19.70) named Xbox buttons. The row is written
 // through padB whenever the pad comes or goes or its make changes, as the canvas hints are.
-function padBodyCls(){ var on=!!(PAD&&PAD.on), r; if(PAD._bodyOn!==on||PAD._bodyBr!==PAD.brand){ PAD._bodyOn=on; PAD._bodyBr=PAD.brand; try{ document.body.classList.toggle('padon',on); }catch(_b){} try{ r=document.getElementById('invkeybarpad'); if(r){ if(!r.dataset.src) r.dataset.src=r.innerHTML; r.innerHTML=padB(r.dataset.src); } }catch(_r){} if(typeof pauseOpen!=='undefined'&&pauseOpen){ try{ keysLegendApply(); }catch(_k){} } } }   // v19.87, code review: an open pause box follows a pad plugged in or pulled out
+function padBodyCls(){ var on=!!(PAD&&PAD.on), r; if(PAD._bodyOn!==on||PAD._bodyBr!==PAD.brand){ PAD._bodyOn=on; PAD._bodyBr=PAD.brand; try{ document.body.classList.toggle('padon',on); }catch(_b){} try{ [].forEach.call(document.querySelectorAll('#invkeybarpad,.padrow'),function(r){ if(!r.dataset.src) r.dataset.src=r.innerHTML; r.innerHTML=padB(r.dataset.src); }); }catch(_r){} if(typeof pauseOpen!=='undefined'&&pauseOpen){ try{ keysLegendApply(); }catch(_k){} } } }   // v19.87, code review: an open pause box follows a pad plugged in or pulled out
 function pollPad(){
   if(!navigator.getGamepads) return;
   var gps=navigator.getGamepads(),gp=null;
@@ -33502,7 +33515,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.94: The pause box frame leaves room around its buttons in the Undercroft. Check 19.94 fails on v19.93',
+  now:'v19.95: On a controller the title screen shows the controller buttons. Check 19.95 fails on v19.94',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

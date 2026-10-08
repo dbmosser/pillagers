@@ -1,0 +1,7 @@
+v19.95: the title speaks controller on a controller
+
+On a controller the title screen shows the controller buttons.
+
+Check 19.95. Fails on v19.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

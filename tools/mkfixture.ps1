@@ -5722,6 +5722,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.95',what:'the title speaks controller on a controller: with a pad on the title shows a pad key row (sticks, RT fire) instead of WASD and LMB, in PlayStation names on a PlayStation pad',
+   run:function(){
+     if(typeof pollPad!=='function') return 'SKIP: no controller poll here';
+     var t=document.getElementById('title'), bad=[], had=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), og=navigator.getGamepads, on0=PAD.on, b0=PAD.brand, pad, kb, pr, tOn;
+     if(!t) return 'SKIP: no title screen';
+     kb=t.querySelector('.kbrow')||[].slice.call(t.querySelectorAll('div')).filter(function(d){ return d.children.length>4&&/WASD/.test(d.textContent)&&/LMB/.test(d.textContent); })[0];
+     if(!kb) return 'SKIP: no title key row';
+     tOn=t.classList.contains('on');
+     pad={id:'Xbox Wireless Controller (STANDARD GAMEPAD)',index:0,connected:true,mapping:'standard',timestamp:1,axes:[0,0,0,0],buttons:Array.apply(null,Array(17)).map(function(){ return {pressed:false,touched:false,value:0}; })};
+     try{
+       t.classList.add('on');
+       navigator.getGamepads=function(){ pad.timestamp++; return [pad,null,null,null]; };
+       pollPad(); pollPad();
+       pr=t.querySelector('.padrow');
+       if(getComputedStyle(kb).display!=='none') bad.push('with a pad on the title still shows the WASD row');
+       if(!pr||getComputedStyle(pr).display==='none'||pr.textContent.indexOf('STICK')<0) bad.push('with a pad on the title shows no pad row');
+       pad.id='DualSense Wireless Controller (STANDARD GAMEPAD Vendor: 054c Product: 0ce6)'; pollPad(); pollPad();
+       if(pr&&PAD.brand==='ps'&&pr.textContent.indexOf('R2')<0) bad.push('on a PlayStation pad the title row does not say R2');
+       navigator.getGamepads=function(){ return [null,null,null,null]; }; pollPad();
+       if(getComputedStyle(kb).display==='none') bad.push('control: without a pad the WASD row is hidden');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(had) navigator.getGamepads=og; else delete navigator.getGamepads; try{ pollPad(); }catch(_p){} PAD.on=on0; PAD.brand=b0; try{ padBodyCls(); }catch(_b){} t.classList.toggle('on',tOn); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.94',what:'the pause box frame is wide enough for its content: with an extra wide line in the box the frame grows to hold it, and it is never narrower than 780px',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
