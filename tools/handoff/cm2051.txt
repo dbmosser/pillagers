@@ -1,0 +1,7 @@
+v20.51: a controller can pick a save on the title
+
+On a controller you can now highlight a save on the title and load it with A.
+
+Check 20.51. Fails on v20.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

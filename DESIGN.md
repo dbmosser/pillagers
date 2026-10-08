@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.51 - A CONTROLLER CAN PICK A SAVE ON THE TITLE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On the title screen the controller highlight moved between the mode rows, the DELETE buttons, the name box, CHANGE NAME and CREATE A NEW SAVE, but it could never land on a save itself. So a player on a controller could get as far as arming DELETE on a save but could never load one, and in two player play on one machine, player 2, who plays on a controller only, could not pick a character. The saves are now places the highlight can land, and A loads the save, the same as a click. A on the save already in play, or on the one the other window has open, still does nothing.
+
+MEASURED. Check 20.51 passes, and fails on v20.50.
 ## v20.50 - THE STATION PROMPT SITS ABOVE THE BELT
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In the Undercroft, walking up to a station shows a prompt naming the key and what the station does, and walking up to a crate a teammate dropped shows [E] TAKE. Both were painted at the very bottom of the screen, and the floor belt, which is on by default, was then drawn over them, so only scraps of letters showed between the belt keys, at 1080p, 1440p and 4K. The line of keys along the bottom was already moved above the belt; these prompts now sit just above that line, and they grow with the screen as it does. With the belt turned off at 1080p they are exactly where they were.
