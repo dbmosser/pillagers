@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.20 - THE WHAT IS NEW CARD NAMES THE RIVALS
+
+Co-op hunt while he was away. The card was stamped v20.07 and the stamp may not trail the build by more than 0.15. Its new second line names the rival pillagers wearing their own looks and builds (v20.12, v20.13) and the cleaner card windows (v20.18, v20.19); the jiggle tuning, armour on Curved and the rest are in the change list.
+
+MEASURED. Check 20.20 passes, and fails on v20.19.
 ## v20.19 - THE TERMS NAMES STAND OUT
 
 Co-op hunt while he was away. Seen on the 4K TERMS screenshot of 2026-10-08: each term name (BLACKOUT PROTOCOL, HEAVY PATROLS and the rest) was the same weight as the line under it, so the list read as one block. The names are bold now; an unsigned term is still dimmed and a signed one still lights up with its bonus in amber.

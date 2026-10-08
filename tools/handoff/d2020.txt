@@ -1,0 +1,5 @@
+## v20.20 - THE WHAT IS NEW CARD NAMES THE RIVALS
+
+Co-op hunt while he was away. The card was stamped v20.07 and the stamp may not trail the build by more than 0.15. Its new second line names the rival pillagers wearing their own looks and builds (v20.12, v20.13) and the cleaner card windows (v20.18, v20.19); the jiggle tuning, armour on Curved and the rest are in the change list.
+
+MEASURED. Check 20.20 passes, and fails on v20.19.
