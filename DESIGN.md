@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.62 - THE WHAT IS NEW CARD NAMES THE BIG SCREEN PROMPTS
+
+Co-op hunt while he was away. The card was stamped v19.46 and the stamp may not trail the build by more than 0.15. Its new second line names the 4K prompts and bars (v19.54, v19.55, v19.57, v19.61) and the co-op HUD placement (v19.47, v19.48, v19.58).
+
+MEASURED. Check 19.62 passes, and fails on v19.61.
 ## v19.61 - THE CO-OP REVIVE BAR GROWS AT 4K
 
 Co-op hunt while he was away. Found by the review of 2026-10-08: v19.55 and v19.57 grew the prompts and bars drawn over the world at 4K, but the bar and REVIVING word over a teammate you are reviving in co-op were left at their 1080p size between them. They grow with the screen now too.

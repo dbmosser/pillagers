@@ -1,0 +1,7 @@
+v19.62: the what is new card names the big screen prompts
+
+The what is new card names the big screen prompts.
+
+Check 19.62. Fails on v19.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
