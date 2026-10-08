@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.33 - THE WHAT IS NEW CARD NAMES THE CO-OP FIXES
+
+Co-op hunt while he was away. The card was stamped v20.20 and the stamp may not trail the build by more than 0.15. Its new second line names the co-op fixes from the bug hunt: doors opened with a key (v20.29), boxes, piles and enemies kept when the host leaves (v20.30, v20.32) and the Terms pay (v20.31); the rest are in the change list.
+
+MEASURED. Check 20.33 passes, and fails on v20.32.
 ## v20.32 - WHEN THE HOST LEAVES, THE MAP KEEPS ITS ENEMIES
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op the host sends positions only for enemies near a player, and the other window takes an enemy with no news for 3 seconds off its map while keeping it in mind. When the host left and the other player picked up the raid, those far enemies were never put back, so most of the map went empty, and THE OVERSEER, out of range in its lair, was marked as done and never came, taking its wreck and hoard with it. Now every enemy still known goes back where it was last seen, and the Overseer is made again at its health.

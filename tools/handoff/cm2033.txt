@@ -1,0 +1,7 @@
+v20.33: the what is new card names the co-op fixes
+
+The what is new card names the co-op fixes.
+
+Check 20.33. Fails on v20.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
