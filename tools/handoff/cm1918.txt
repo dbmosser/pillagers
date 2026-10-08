@@ -1,0 +1,7 @@
+v19.18: a gun swap names the key it really lands on
+
+Swapping guns on the belt says where the gun really went.
+
+Check 19.18. Fails on v19.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.18 - A GUN SWAP NAMES THE KEY IT REALLY LANDS ON
+
+Co-op hunt while he was away. Found by the review of 2026-10-07, in the v18.89 and v18.91 gun swaps: when the gun in his hands was also bound to a key of its own (key 8, say), dragging it onto the other gun on key 9 traded the two guns but said it went to slot 9, while the belt showed it on key 8 and left key 9 empty. The words now name the key the gun really shows on, in a raid and in the Undercroft.
+
+MEASURED. Check 19.18 passes, and fails on v19.17.
 ## v19.17 - THE FASHION PREVIEWS ARE SHARP AT 4K
 
 Co-op hunt while he was away. Found by the review of 2026-10-07: the FASHION previews of v18.79 and v18.82 were painted 128 pixels across and shown under the menu zoom, about 158 screen pixels at 4K and more at a bigger menu size, so the outfit, face, hat and hairstyle pictures came out blurry next to the stash icons. They are now painted at the size they are shown, on the same layout, so at 4K they are crisp; at 1080p nothing changes.
