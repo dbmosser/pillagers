@@ -1,0 +1,7 @@
+v18.90: picking up key 8 no longer swaps his gun
+
+Pressing a belt key to drag it no longer swaps the gun in your hands.
+
+Check 18.90. Fails on v18.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

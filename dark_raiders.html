@@ -1517,7 +1517,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.89';
+var VER='18.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11819,7 +11819,8 @@ cv.addEventListener('mousedown',function(e){
         // drag was armed, so dragging the key to tidy the belt (or pad A on it, backpack open) put the gun in his hands and pushed
         // out the one there: an armoury gun went home for the raid and an issued one was lost. The equip waits for the release
         // and happens only when the release is a click (window mouseup).
-        var _bagGun=!!(_hs2&&_hs2.kind==='gun'&&_hs2.itemKey&&!_hs2.equipped);
+        // v18.90, his report (2026-10-07): "can't move a gun from slot 8 to slot 1". The v17.18 rule, a press only picks the key up, now covers a key holding a gun that is already in his hands too: pressing key 8 to drag it swapped that gun up on the press, before he had dropped anything. The swap waits for the release and happens only when the release is a click.
+        var _bagGun=!!(_hs2&&_hs2.kind==='gun'&&_hs2.itemKey);
         if(!_bagGun) setHot(_HC2.i);
         // v11.91, HIS NOTE: "why can't i drag items to diff keys??" The derived
         // cells (Medical, Armour Plate, the grenades) carried no item key, so
@@ -12085,7 +12086,7 @@ window.addEventListener('mouseup',function(e){
         if(d.fromHot===HC.i){
           // v17.18, belt hunt 2026-09-28: a click on a key holding a backpack gun equips it here, on the release (v11.91).
           var _cg=hotbarSlots()[HC.i];
-          if(_cg&&_cg.kind==='gun'&&_cg.itemKey===d.key&&!_cg.equipped) setHot(HC.i);
+          if(_cg&&_cg.kind==='gun'&&_cg.itemKey===d.key) setHot(HC.i);   // v18.90, his report (2026-10-07): a key on a gun in his hands too, since the press no longer brings it up
           dropped=true; break;
         }
         // v14.62, backpack audit finding 7: A DRAG WHOSE ITEM HAS LEFT THE BACKPACK BINDS NOTHING. Press and hold a tile, press Z
@@ -12166,7 +12167,7 @@ window.addEventListener('mouseup',function(e){
     // v17.18, belt hunt 2026-09-28: and a click that slips just off that key still equips it, as the press used to.
     if(!_onBelt&&!_dMoved&&!dropped&&d&&d.fromHot!==undefined){
       var _cg2=hotbarSlots()[d.fromHot];
-      if(_cg2&&_cg2.kind==='gun'&&_cg2.itemKey===d.key&&!_cg2.equipped) setHot(d.fromHot);
+      if(_cg2&&_cg2.kind==='gun'&&_cg2.itemKey===d.key) setHot(d.fromHot);   // v18.90, his report (2026-10-07): a key on a gun in his hands too, since the press no longer brings it up
     }
     if(!_onBelt&&_dMoved&&d&&d.fromHot!==undefined&&G.hotAssign&&G.hotAssign[d.fromHot]!==undefined){
       var _wasKey=G.hotAssign[d.fromHot];
@@ -32890,7 +32891,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.89: Dragging one gun key onto the other swaps keys 1 and 2. Check 18.89 fails on v18.88',
+  now:'v18.90: Pressing a belt key to drag it no longer swaps the gun in your hands. Check 18.90 fails on v18.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

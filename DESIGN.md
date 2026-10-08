@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.90 - PICKING UP KEY 8 NO LONGER SWAPS HIS GUN
+
+Co-op hunt while he was away. If key 8 held his stowed gun, pressing it to start a drag swapped that gun into his hands right away, before he had dropped it anywhere. Pressing A on it with the controller did the same. A press now only picks the key up. A plain click, or A twice on the same key, still brings the gun up when he lets go.
+
+MEASURED. Check 18.90 passes, and fails on v18.89.
 ## v18.89 - DRAG GUN 2 ONTO KEY 1 TO SWAP KEYS 1 AND 2
 
 Co-op hunt while he was away. Dragging the gun on key 2 onto key 1 was always refused, so nothing could change which gun keys 1 and 2 show. Now the two keys trade places and the guns in his hands do not change. The belt moves a gun down to key 8 or 9 when an item is bound over its own key. Dragging that gun back onto its own key now gives it the key back, and the item goes to the key the gun came from. Dropping a hand gun anywhere else still gets the old spoken refusal.
