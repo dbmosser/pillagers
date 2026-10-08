@@ -1,0 +1,7 @@
+v19.09: the fashion piece previews show the piece even with an outfit on
+
+With an outfit on, the FASHION hat, hair, face, tattoo and clothing tiles still show each piece.
+
+Check 19.09. Fails on v19.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

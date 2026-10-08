@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.09 - THE FASHION PIECE PREVIEWS SHOW THE PIECE EVEN WITH AN OUTFIT ON
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: an outfit covers the hat, beard, hairstyle, face, tattoo and clothing when drawn, so while one was worn every tile on those six FASHION racks showed the same outfit picture. Those previews are now painted on your own clothes, where the piece really shows, and the outfit you wear is untouched.
+
+MEASURED. Check 19.09 passes, and fails on v19.08.
 ## v19.08 - THE SCOPE ZOOM FOLLOWS A DELIBERATE AIM ONLY
 
 Co-op hunt while he was away. Found by the review of 2026-10-07: on a controller every trigger pull steadies the aim for a moment, and kid firing does the same while it has a target, and since v18.76 both also pulled in the scope zoom, so with a Marksman Rifle or Longshot the view of player 2 pumped in and out by a third on every shot. The zoom now follows only a deliberate aim (LT, the stick click toggle, or the right mouse button); the steadying keeps its tighter aim without moving the camera.

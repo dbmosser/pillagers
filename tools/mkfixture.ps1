@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.09',what:'the FASHION piece previews show the piece even with an outfit on: with an outfit worn, two hairstyles and two hats still give different pictures, and the outfit is still worn after',
+   run:function(){
+     if(typeof cosPreviewURL!=='function'||typeof COSMETICS==='undefined'||typeof OUTFITS==='undefined') return 'SKIP: no rack previews here';
+     var bad=[], ow0=cosOwned, k=COSKEY.outfit, o0=P[k], oid=Object.keys(OUTFITS).filter(function(i){ return i!=='outnone'; })[0], cuts, hats, a, b;
+     if(!oid) return 'SKIP: no outfit to wear';
+     cuts=COSMETICS.filter(function(c){ return c&&c.kind==='cut'; }); hats=COSMETICS.filter(function(c){ return c&&c.kind==='hat'; });
+     if(cuts.length<2) return 'SKIP: fewer than two hairstyles';
+     try{
+       cosOwned=function(c){ return true; }; P[k]=oid;
+       for(var q in COSPREV) delete COSPREV[q];
+       a=cosPreviewURL('cut',cuts[0].id); b=cosPreviewURL('cut',cuts[1].id);
+       if(a&&b&&a===b) bad.push('with an outfit on, two hairstyles show the same picture');
+       if(hats.length>=2){ a=cosPreviewURL('hat',hats[0].id); b=cosPreviewURL('hat',hats[1].id); if(a&&b&&a===b) bad.push('with an outfit on, two hats show the same picture'); }
+       if(P[k]!==oid) bad.push('drawing the previews took the outfit off');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ cosOwned=ow0; if(o0===undefined) delete P[k]; else P[k]=o0; for(var q2 in COSPREV) delete COSPREV[q2]; }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.08',what:'the scope zoom follows a deliberate aim only: a controller steadying its aim after a trigger pull does not zoom, a held LT does',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';

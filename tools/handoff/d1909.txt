@@ -1,0 +1,5 @@
+## v19.09 - THE FASHION PIECE PREVIEWS SHOW THE PIECE EVEN WITH AN OUTFIT ON
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: an outfit covers the hat, beard, hairstyle, face, tattoo and clothing when drawn, so while one was worn every tile on those six FASHION racks showed the same outfit picture. Those previews are now painted on your own clothes, where the piece really shows, and the outfit you wear is untouched.
+
+MEASURED. Check 19.09 passes, and fails on v19.08.
