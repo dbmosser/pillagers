@@ -1,0 +1,7 @@
+v18.76: a scoped gun zooms in a little on ads
+
+Aiming down sights with a scoped gun zooms the view in a little; stronger scopes zoom more.
+
+Check 18.76. Fails on v18.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

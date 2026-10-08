@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.76 - A SCOPED GUN ZOOMS IN A LITTLE ON ADS
+
+Co-op hunt while he was away. His note of 2026-10-07: a gun with a scope, like the Auto Rifle, should actually zoom in a little when you aim down sights. Aiming only pushed the view toward the cursor. Now a scoped gun eases the camera in by a share of its scope: the Auto Rifle about 9 percent, the Marksman Rifle about 30, the Longshot about half again, and it eases back out when you let go. The robots in the balance tests are not affected, and aiming never forces the walls and trees to be redrawn.
+
+MEASURED. Check 18.76 passes, and fails on v18.75.
 ## v18.75 - BANDAGES, MEDKITS AND PLATES SHOW A USE BAR
 
 Co-op hunt while he was away. His note of 2026-10-07: there needs to be a bar for using a bandage or medkit like the one for armour. Both already had a wind-up (1.5 seconds for medical, 2 for a plate) shown only as a small strip over the player, easy to miss on a TV in a fight. Each now also shows a bar on the HUD above the belt, saying APPLYING BANDAGE, APPLYING MEDKIT or SLOTTING ARMOUR PLATE with the seconds left (and ON NAME when it is for a teammate), and the strip over the player is a size bigger.
