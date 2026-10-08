@@ -1,0 +1,5 @@
+## v18.93 - BLOTTER COMES ON GRADUALLY
+
+Co-op hunt while he was away. His note of 2026-10-07: the Blotter visual effects hit all at once. They never drew until the dose was about 8 seconds in, and then every effect (the colour wash, the tint, the drift, the melting, the tracers, the tears) appeared in one frame at a fixed minimum strength, most of them at more than half of their peak. Now one shared onset brings every effect up from nothing as the dose comes on, reaching exactly the same look as before at the peak (one dose still half as strong as two or more). A new dose no longer snaps the melting into a new pattern: it fades over 8 seconds into the fresh roll. The menu effects follow the same onset, and the rainbow fringe and the inside-out flash fade in instead of switching on.
+
+MEASURED. Check 18.93 passes, and fails on v18.92.

@@ -1,0 +1,7 @@
+v18.93: blotter comes on gradually
+
+Blotter effects come on smoothly over the first minute of a dose instead of all at once.
+
+Check 18.93. Fails on v18.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

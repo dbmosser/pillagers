@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.93 - BLOTTER COMES ON GRADUALLY
+
+Co-op hunt while he was away. His note of 2026-10-07: the Blotter visual effects hit all at once. They never drew until the dose was about 8 seconds in, and then every effect (the colour wash, the tint, the drift, the melting, the tracers, the tears) appeared in one frame at a fixed minimum strength, most of them at more than half of their peak. Now one shared onset brings every effect up from nothing as the dose comes on, reaching exactly the same look as before at the peak (one dose still half as strong as two or more). A new dose no longer snaps the melting into a new pattern: it fades over 8 seconds into the fresh roll. The menu effects follow the same onset, and the rainbow fringe and the inside-out flash fade in instead of switching on.
+
+MEASURED. Check 18.93 passes, and fails on v18.92.
 ## v18.92 - STASH SCREEN: A KEY LEFT ON A RACK GUN MOVES LIKE ANY ITEM
 
 Co-op hunt while he was away. On the Stash screen, a belt key can stay on a gun that has since gone back to the rack. That happens after he picks another gun for his hands or takes this one out of them. Dragging that key from 8 to 1 was refused with a clank and the wrong reason: it said the gun was not in his stash, when it was on the rack. Now it works the way dragging the gun from the rack does: the gun is packed and takes key 1. If the backpack is full, he is told that.
