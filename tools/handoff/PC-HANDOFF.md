@@ -522,3 +522,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.81 liftcaps: lift page SURFACE / WEATHER row names 11 -> 13px. Looked at and left: mirror tile requirement lines (11px, faded on purpose, legible at 4K; bigger would wrap more in 96px tiles).
 - v19.82 condwrap: the CONDITIONS box wrap() is balanced (binary search for the narrowest width with the same line count) and cached in CONDWRAP by font|inner|text (cleared past 300 keys).
 - v19.83 condindent: continuation lines hang by LH(8); wrap() gives lines after the first w-IND so they stay inside.
+- v19.84 textpretty: body{ text-wrap:pretty } so no DOM menu paragraph ends on one word (Chrome 117+; older browsers ignore it). Only line breaks move.
