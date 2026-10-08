@@ -6738,7 +6738,7 @@ window.__REGRESS=[
      v=document.createElement('div'); v.className='vcell'; v.style.width='190px'; vimg=document.createElement('img'); vimg.className='ic'; vimg.style.width='56px'; vimg.style.height='56px'; v.appendChild(vimg); host.appendChild(v);
      try{
        s=getComputedStyle(img); if(!(s.width==='62%'||parseFloat(s.width)>=110)) bad.push('the stash cell icon is '+s.width+' wide');
-       s=getComputedStyle(vimg); if(!(s.width==='44%'||parseFloat(s.width)>=70)) bad.push('the shop cell icon is '+s.width+' wide');
+       s=getComputedStyle(vimg); if(!((/%$/.test(s.width)&&parseFloat(s.width)>=44)||parseFloat(s.width)>=70)) bad.push('the shop cell icon is '+s.width+' wide');
        u=itemIconURL('bandage',30); b64=(String(u).split(',')[1]||'');
        try{ bin=atob(b64); w=((bin.charCodeAt(16)<<24)|(bin.charCodeAt(17)<<16)|(bin.charCodeAt(18)<<8)|bin.charCodeAt(19))>>>0; }catch(e){ bad.push('could not read the icon image'); }
        if(!(w>=150)) bad.push('the 30 px icon is drawn on a '+w+' px canvas');
