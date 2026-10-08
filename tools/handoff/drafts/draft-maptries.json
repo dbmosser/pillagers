@@ -1,0 +1,12 @@
+{
+    "title":  "A MAP TAG STEPS ASIDE BEFORE IT STEPS DOWN",
+    "why":  "Seen on the 4K map screenshot of 2026-10-08: when a marker tag on the sector map clashed with another label, the placer (v19.02) tried moving it down before moving it aside, and since a tag sits just above its marker, down put it across its own marker (CACHE printed through its ring). Up and the sides are tried first now, down last.",
+    "now":  "Map tags no longer land on top of their own markers.",
+    "edits":  [
+                  {
+                      "anchor":  "    tries=[[0,0],[0,-(gh+3)],[0,gh+3],[0,-2*(gh+3)],[0,2*(gh+3)],[-(gw*0.6),0],[gw*0.6,0],[0,-3*(gh+3)],[0,3*(gh+3)]];",
+                      "replacement":  "    // v16.xx, seen on the 4K map screenshot (2026-10-08): a tag sits just above its marker, so moving it DOWN off a clash put it on its\n    // own marker (CACHE printed across its ring). Up and to the sides are tried first now, down last.\n    tries=[[0,0],[0,-(gh+3)],[-(gw*0.6),0],[gw*0.6,0],[0,-2*(gh+3)],[0,gh+3],[0,2*(gh+3)],[0,-3*(gh+3)],[0,3*(gh+3)]];"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a map tag steps aside before it steps down: with the spot above taken and room to the side, a clashing CACHE tag moves sideways, not down onto its marker\u0027,\n   run:function(){\n     if(typeof mapPlaceLabels!==\u0027function\u0027) return \u0027SKIP: no label placer here\u0027;\n     var bad=[], got={}, c=document.createElement(\u0027canvas\u0027), x2=c.getContext(\u00272d\u0027), keep=ctx, m;\n     if(!x2) return \u0027SKIP: no canvas\u0027;\n     c.width=1200; c.height=800;\n     function lab(s,x,y){ x2.font=\u0027bold 14px sans-serif\u0027; return {s:s,x:x,y:y,font:x2.font,fs:\u0027#fff\u0027,ta:\u0027center\u0027,tb:\u0027alphabetic\u0027,ga:1,m:new DOMMatrix([1,0,0,1,0,0]),fp:14,w:x2.measureText(s).width}; }\n     try{\n       ctx=x2;\n       mapPlaceLabels([lab(\u0027SECTOR MAP\u0027,100,30),lab(\u0027CACHE\u0027,400,304),lab(\u0027ZQX LOCKED\u0027,355,300),lab(\u0027ZQY LOCKED\u0027,355,282)],30,function(s,x,y){ got[String(s)]={x:x,y:y}; });\n       m=got[\u0027CACHE\u0027];\n       if(!m) return \u0027SKIP: the CACHE tag was dropped\u0027;\n       if(m.y\u003e304+1) bad.push(\u0027the CACHE tag was moved down to y \u0027+Math.round(m.y)+\u0027, onto its marker, with room beside it\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ ctx=keep; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,7 @@
+v19.64: a map tag steps aside before it steps down
+
+Map tags no longer land on top of their own markers.
+
+Check 19.64. Fails on v19.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
