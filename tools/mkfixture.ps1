@@ -5721,6 +5721,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.79',what:'an outfit tile shows the outfit: each outfit swatch is a painted preview of the operator in it, two outfits give two different pictures, and the worn outfit and ownership are untouched after',
+   run:function(){
+     if(typeof cosSwatch!=='function'||typeof OUTFITS==='undefined') return 'SKIP: no outfits here';
+     var ids=Object.keys(OUTFITS), bad=[], a, b, k=COSKEY.outfit, w0=P[k], ow0=cosOwned;
+     if(ids.length<2) return 'SKIP: fewer than two outfits';
+     a=cosSwatch({kind:'outfit',id:ids[0],name:'a'}); b=cosSwatch({kind:'outfit',id:ids[1],name:'b'});
+     if(String(a).indexOf('<img')<0||String(a).indexOf('data:image/png')<0) bad.push('an outfit tile is still a plain swatch');
+     else if(a===b) bad.push('two outfits show the same picture');
+     if(P[k]!==w0) bad.push('drawing the previews changed the worn outfit');
+     if(cosOwned!==ow0) bad.push('drawing the previews left the ownership test replaced');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.78',what:'text in the framed windows stays inside the frame: the text lines of the Terms, Party, gambler and bar windows are capped at 1060 like their lists, not the general 1180',
    run:function(){
      var bad=[], ids=['termsmodal','partymodal','gamblemodal','barmodal'], n=0;

@@ -1,0 +1,7 @@
+v18.79: an outfit tile shows the outfit
+
+The FASHION outfit tiles show your operator wearing each outfit.
+
+Check 18.79. Fails on v18.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

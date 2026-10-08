@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.79 - AN OUTFIT TILE SHOWS THE OUTFIT
+
+Co-op hunt while he was away. Seen on the 4K FASHION screenshot of 2026-10-07: every tile on the OUTFIT rack was the same placeholder, a coloured square with a dot, so the Skeleton, the Machine, the Trooper and the rest could not be told apart without wearing them. Each tile now shows your own operator wearing that outfit, drawn the same way as the big YOUR OPERATOR figure, locked outfits included so you can see what you are working toward.
+
+MEASURED. Check 18.79 passes, and fails on v18.78.
 ## v18.78 - TEXT IN THE FRAMED WINDOWS STAYS INSIDE THE FRAME
 
 Co-op hunt while he was away. Seen on the 4K screenshots of 2026-10-07: in THE LAST POUR and WIRT THE GAMBLER (and the same way in the Terms and Party windows) the lines above the list ran out to the very edge of the window frame on a big screen. Those windows cap their text at the width of their list, but a general rule written later in the page overrode it. The cap holds again, so the text sits inside the frame like the list does.
