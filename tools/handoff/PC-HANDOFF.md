@@ -516,3 +516,5 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.75 card-1975: WHATSNEW_VER 19.75; new line 1 PLAYER 2 ON A CONTROLLER (v19.68-v19.72).
 - v19.76 stashtabs: stash category tabs, search box and SORT 10.5/11px -> 13px (a 4K DOM text scan of all station windows found these and the key row as the only menu text under 26 real px at 4K). Check note: #stashtabs is itself .invtabs, so select tb.firstElementChild's tabs.
 - v19.77 keybar: .keybar words and kbd 10.5 -> 12.5px. #invkeybar holds a hidden zero-width child; count only visible items when testing for wraps.
+- v19.78 stashhelp: #stashdetail, #sellhint, #nextunlock and .fkbox b/span 11 -> 13px.
+- v19.79 beltnums: stash belt [data-plan] numbers 10.5 -> 14px empty, 12px corner number and stack count. Note: the DOM text scan skipped one-character text, which hid these.
