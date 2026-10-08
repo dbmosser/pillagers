@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.46';
+var VER='20.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9897,6 +9897,16 @@ function pedSellAll(){
   if(!G.sim&&G.player&&G.player.downed) return;   // v13.73: nothing is traded from the floor
   var i,tot=0,full=0,n=0,kept=[],_soldB=0;   // v15.36, peddler audit finding 8: _soldB, the found Bandages this sale takes
   var _cl=pedBeltClaims(), _iss=G.issuedBandages||0;
+  // v20.47, from the whole-game bug hunt of 2026-10-08 (H18): KIT CARRIED UP AND SOLD HERE NO LONGER EATS WHAT THE RUN FOUND. Hazard
+  // pay, the XP haul term, a haul card and the best haul all count the backpack at the end less what the lift carried up
+  // (G.carriedIn). A sale took the kit out of the backpack but left its value in G.carriedIn, so selling 1,520 of carried Medkits
+  // and Plates and then finding 1,500 counted nothing found at all. A purchase here already adds to what was carried up (v13.91);
+  // a sale of a carried copy now takes it off again, and off the list of carried items, by count. The issued Bandages he keeps are
+  // carried copies still in the backpack, so a found Bandage sold is never matched to one. What the sold kit was worth is kept on
+  // G.kitSold, so the lifetime earnings of v15.84 still count everything that went up. No price and no seeded draw moved.
+  var _ck={}, _ckOut=[], _ckV=0, _cj, _ckL=G.carriedKit||[];
+  for(_cj=0;_cj<_ckL.length;_cj++) _ck[_ckL[_cj]]=(_ck[_ckL[_cj]]||0)+1;
+  if(_ck.bandage) _ck.bandage=Math.max(0,_ck.bandage-_iss);
   for(i=0;i<G.bag.length;i++){
     var k=G.bag[i];
     // He will not buy a key. Selling him the way into the vault you are standing
@@ -9909,6 +9919,7 @@ function pedSellAll(){
     // never banked (v13.54); 33 each was free money every raid.
     if(k==='bandage'&&_iss>0){ _iss--; kept.push(k); continue; }
     tot+=Math.round(ival(k)*pedBuyRate()); full+=ival(k); n++; if(k==='bandage') _soldB++;   // v15.36, peddler audit finding 8: a found Bandage he buys
+    if(_ck[k]>0){ _ck[k]--; _ckOut.push(k); _ckV+=ival(k); }   // v20.47 (H18): a copy the lift carried up, sold
   }
   if(!n){ if(!G.sim) say('Nothing in your backpack he wants.'); return; }
   // v15.36, peddler audit finding 8: SELLING FOUND BANDAGES NEVER TURNS ISSUED BANDAGES INTO FOUND ONES. Since v13.71 the stall
@@ -9919,6 +9930,10 @@ function pedSellAll(){
   // against v13.54. The sale now moves what the count last saw by the found Bandages it took, as dropItem does for a drop
   // (v13.90), so the frame reads no fall. A use or a drop after the sale is still counted. No seeded draw, no price changed.
   G.bag=kept; if(G.bandSeen!==undefined) G.bandSeen-=_soldB;
+  if(_ckV>0){   // v20.47 (H18): what was carried up and sold here no longer counts as carried up
+    G.carriedIn=Math.max(0,(G.carriedIn||0)-_ckV); G.kitSold=(G.kitSold||0)+_ckV;
+    for(_cj=0;_cj<_ckOut.length;_cj++){ var _cx=G.carriedKit.indexOf(_ckOut[_cj]); if(_cx>=0) G.carriedKit.splice(_cx,1); }
+  }
   // v7.62, his order: stall money is CARRIED, not banked. It rides the raid on
   // G.pedCarry, pays out only if you walk out, and dies where you fall. This is
   // also sim-safe for free - nothing touches P until the extract branch.
@@ -21217,7 +21232,9 @@ function nightXpMul(){ return (CFG.nightXp===undefined)?1.2:CFG.nightXp; }
 // it. The run row carries the sale as pedSold, written by pedSellAll together with pedCarry, so it counts here on extraction
 // only: on death or abandonment the stall money is lost with him, as the outcome card says, and the row sums as before. A
 // row from before the stall figure has no pedSold and sums as it did. No price, no dial and no seeded draw moved.
-function runEarnings(rec){ return ((rec.outcome==='extract')?((rec.haul||0)+(rec.pedSold||0)):0)-(rec.carriedIn||0); }
+// v20.47 (H18): and less what was carried up and then sold at the stall (kitSold), which a sale now takes out of carriedIn, so the
+// sum is what it was: everything that came out, stall money included, less everything that went up. An older row has no kitSold.
+function runEarnings(rec){ return ((rec.outcome==='extract')?((rec.haul||0)+(rec.pedSold||0)):0)-(rec.carriedIn||0)-(rec.kitSold||0); }
 function netEarnFromLog(){ var t=0, L=(P&&P.log)||[]; for(var i=0;i<L.length;i++) t+=runEarnings(L[i]||{}); return t; }
 // v11.63: the one place the night and weather multipliers are applied to a run's
 // base XP. addProgress banks it; the outcome card prints it (times the dose
@@ -21948,6 +21965,7 @@ wallClip:(G.tel&&G.tel.wallClip)||null,
     ghostIn:(G.tel&&G.tel.ghostIn)?1:0,
     haul:haul,items:G.bag.length,containers:T.containers,
     carriedIn:G.carriedIn||0,   // v10.27: the bag's value when the lift landed
+    kitSold:G.kitSold||0,   // v20.47 (H18): the part of it sold at the stall, which runEarnings still counts as gone up
     shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,diedWithMed:T.diedWithMed||0,eliteKills:T.eliteKills||0,
     downs:T.downs,revives:T.revives,thr:T.thr,marked:T.marked||0,
     beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,regen:T.regen||0,
@@ -33721,7 +33739,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.46: The contract REWARDS strip now shows the gun or key a contract pays, next to the Credits. Check 20.46 fails on v20.45',
+  now:'v20.47: Selling your own kit at the Peddler no longer wipes out the hazard pay and XP for the loot you found. Check 20.47 fails on v20.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

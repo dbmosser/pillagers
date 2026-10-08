@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.47 - SELLING YOUR OWN KIT KEEPS WHAT YOU FOUND
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Hazard pay, the XP for the haul, a haul contract and your best haul all count what you carry out less what you carried up. Selling kit you brought up to the Peddler took it out of the backpack but still counted it as carried up, so selling 1,520 of your own Medkits and Plates and then finding 1,500 of salvage counted as finding nothing: no hazard pay, no haul XP, a failed haul card. A sale of kit you carried up now takes it off what you carried up, the reverse of buying, and lifetime earnings still count it as gone.
+
+MEASURED. Check 20.47 passes, and fails on v20.46.
 ## v20.46 - CONTRACT REWARDS SHOW THE GUN
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. At the Mainframe, a hard or elite contract that pays a gun (the Auto Rifle, Carbine, Scattergun, Marksman Rifle or Support MG) or a key to a sealed room said so on its row, but the REWARDS strip in the cream panel showed only the Credits. The strip looked the gun up under the wrong name and had nothing to draw for a key. It now shows the gun, and a key on a key card.

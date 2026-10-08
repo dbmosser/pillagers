@@ -1,0 +1,7 @@
+v20.47: selling your own kit keeps what you found
+
+Selling your own kit at the Peddler no longer wipes out the hazard pay and XP for the loot you found.
+
+Check 20.47. Fails on v20.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
