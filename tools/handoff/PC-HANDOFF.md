@@ -520,3 +520,5 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.79 beltnums: stash belt [data-plan] numbers 10.5 -> 14px empty, 12px corner number and stack count. Note: the DOM text scan skipped one-character text, which hid these.
 - v19.80 crlab: .crlab captions (PROGRESS, REWARDS, REQUIRED RESOURCES) 10.5 -> 12.5px.
 - v19.81 liftcaps: lift page SURFACE / WEATHER row names 11 -> 13px. Looked at and left: mirror tile requirement lines (11px, faded on purpose, legible at 4K; bigger would wrap more in 96px tiles).
+- v19.82 condwrap: the CONDITIONS box wrap() is balanced (binary search for the narrowest width with the same line count) and cached in CONDWRAP by font|inner|text (cleared past 300 keys).
+- v19.83 condindent: continuation lines hang by LH(8); wrap() gives lines after the first w-IND so they stay inside.
