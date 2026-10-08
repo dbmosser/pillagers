@@ -1,0 +1,12 @@
+{
+    "title":  "A DEAD CONTROL LOOKS DEAD UNDER THE PAD HIGHLIGHT",
+    "why":  "Found by the code review of 2026-10-08: v19.69 drew whatever the controller highlights at full strength so faded empty slots stand out, but that also made a button that went dead under the highlight (for example BUILD A RACK right after building the last one you can afford) or a locked shop cell look live, and A on it did nothing. Those stay dimmed now; empty slots are still full strength.",
+    "now":  "On a controller, a greyed-out button still looks greyed out when highlighted.",
+    "edits":  [
+                  {
+                      "anchor":  "    box-shadow:0 0 0 6px rgba(255,192,74,.35), 0 0 22px 4px rgba(255,192,74,.45) !important; }",
+                      "replacement":  "    box-shadow:0 0 0 6px rgba(255,192,74,.35), 0 0 22px 4px rgba(255,192,74,.45) !important; }\n  /* v16.xx, from the code review of 2026-10-08: the full strength above made a button that went dead under the highlight (the last\n     affordable rack just built, v15.52 keeps the highlight there on purpose) or a locked shop cell look live. They stay dimmed. */\n  button:disabled.padfocus, .vcell.locked.padfocus{ opacity:.55 !important; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a dead control looks dead under the controller highlight: a disabled button with the highlight stays dimmed, and an empty slot with it is at full strength\u0027,\n   run:function(){\n     var m=document.createElement(\u0027div\u0027), b=document.createElement(\u0027button\u0027), c=document.createElement(\u0027div\u0027), bad=[], ob, oc;\n     try{\n       m.className=\u0027modal on\u0027; m.style.zIndex=\u0027-1\u0027;\n       b.textContent=\u0027ZQ DEAD\u0027; b.disabled=true; b.className=\u0027padfocus\u0027;\n       c.style.cssText=\u0027width:40px;height:40px;opacity:.4\u0027; c.className=\u0027padfocus\u0027;\n       m.appendChild(b); m.appendChild(c); document.body.appendChild(m);\n       ob=parseFloat(getComputedStyle(b).opacity); oc=parseFloat(getComputedStyle(c).opacity);\n       if(!(ob\u003c0.8)) bad.push(\u0027a disabled button under the highlight is at opacity \u0027+ob);\n       if(oc\u003c1) bad.push(\u0027control: a faded slot under the highlight is at opacity \u0027+oc);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ document.body.removeChild(m); }catch(_r){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

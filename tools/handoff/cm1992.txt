@@ -1,0 +1,7 @@
+v19.92: a dead control looks dead under the pad highlight
+
+On a controller, a greyed-out button still looks greyed out when highlighted.
+
+Check 19.92. Fails on v19.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.92 - A DEAD CONTROL LOOKS DEAD UNDER THE PAD HIGHLIGHT
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: v19.69 drew whatever the controller highlights at full strength so faded empty slots stand out, but that also made a button that went dead under the highlight (for example BUILD A RACK right after building the last one you can afford) or a locked shop cell look live, and A on it did nothing. Those stay dimmed now; empty slots are still full strength.
+
+MEASURED. Check 19.92 passes, and fails on v19.91.
 ## v19.91 - THE WHAT IS NEW CARD NAMES THE EASIER READING
 
 Co-op hunt while he was away. The card was stamped v19.75 and the stamp may not trail the build by more than 0.15. Its new second line names the bigger stash, lift and Mainframe print (v19.76 to v19.81), the even contract wrap (v19.82, v19.83) and the PlayStation button names (v19.86); the rest is in the change list.
