@@ -1,0 +1,7 @@
+v20.34: a gun dropped for the party is theirs
+
+In co-op, an armoury gun you drop for the other player is no longer copied back into your armoury.
+
+Check 20.34. Fails on v20.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

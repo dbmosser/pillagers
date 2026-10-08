@@ -583,3 +583,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-08 18:53 v20.30 boxsync shipped: H21+H22 DONE (host leaves: boxes keep the host's last list, no doubles, made piles keep items)
 2026-10-08 18:57 v20.31 guestterms shipped: H27 DONE (a co-op guest is paid for the host-built Terms)
 2026-10-08 19:00 v20.32 farbodies shipped: H25 DONE (host leaves: far bodies and the Overseer come back). H16 = H21/H22, DONE
+2026-10-08 19:02 v20.33 card refresh (stamped 20.33, next by ~20.48)

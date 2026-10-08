@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.34 - A GUN DROPPED FOR THE PARTY IS THEIRS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op the other player could drag an armoury gun into the backpack and drop it for the host. The host searched it up and banked it, but the dropping window still had the gun on its list of armoury guns carried up, so an abandon put it back in its own armoury too: one gun in two saves. The drop now takes it off that list, as handing a gun over already did.
+
+MEASURED. Check 20.34 passes, and fails on v20.33.
 ## v20.33 - THE WHAT IS NEW CARD NAMES THE CO-OP FIXES
 
 Co-op hunt while he was away. The card was stamped v20.20 and the stamp may not trail the build by more than 0.15. Its new second line names the co-op fixes from the bug hunt: doors opened with a key (v20.29), boxes, piles and enemies kept when the host leaves (v20.30, v20.32) and the Terms pay (v20.31); the rest are in the change list.

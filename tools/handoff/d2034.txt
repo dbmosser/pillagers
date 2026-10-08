@@ -1,0 +1,5 @@
+## v20.34 - A GUN DROPPED FOR THE PARTY IS THEIRS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op the other player could drag an armoury gun into the backpack and drop it for the host. The host searched it up and banked it, but the dropping window still had the gun on its list of armoury guns carried up, so an abandon put it back in its own armoury too: one gun in two saves. The drop now takes it off that list, as handing a gun over already did.
+
+MEASURED. Check 20.34 passes, and fails on v20.33.
