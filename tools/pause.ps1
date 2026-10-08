@@ -1,4 +1,5 @@
 # Pause a page that will not answer (a hung check), print its stack and, read on the paused frame, which corpus check it was in. Then resume.
+# NOTE (measured 2026-10-08): a page ALREADY busy in JS does not answer Debugger.enable, so this only helps if the page yields. Replay the stretch with __regressBg(a,b) polled every 5 s instead.
 param([int]$Port=9344,[string]$Match='slice',[int]$TimeoutSec=40)
 $ErrorActionPreference='Stop'
 $tabs=Invoke-RestMethod -Uri "http://127.0.0.1:$Port/json" -TimeoutSec 5
@@ -8,7 +9,17 @@ $ws=New-Object System.Net.WebSockets.ClientWebSocket
 $ct=[Threading.CancellationToken]::None
 $ws.ConnectAsync([Uri]$t.webSocketDebuggerUrl,$ct).Wait()
 function Send($id,$method,$params){ $o=@{id=$id;method=$method}; if($params){ $o.params=$params }; $j=$o | ConvertTo-Json -Depth 6 -Compress; $b=[Text.Encoding]::UTF8.GetBytes($j); $ws.SendAsync((New-Object ArraySegment[byte] -ArgumentList (,$b)),[Net.WebSockets.WebSocketMessageType]::Text,$true,$ct).Wait() }
-function Recv(){ $buf=New-Object byte[] 1048576; $ms=New-Object IO.MemoryStream; do{ $seg=New-Object ArraySegment[byte] -ArgumentList (,$buf); $task=$ws.ReceiveAsync($seg,$ct); if(-not $task.Wait(3000)){ return $null }; $r=$task.Result; $ms.Write($buf,0,$r.Count) } while(-not $r.EndOfMessage); return [Text.Encoding]::UTF8.GetString($ms.ToArray()) }
+# One receive is kept pending across calls: a second ReceiveAsync while one is outstanding faults (the 05:25 first run).
+$script:buf=New-Object byte[] 1048576; $script:pend=$null; $script:ms=New-Object IO.MemoryStream
+function Recv(){
+  while($true){
+    if(-not $script:pend){ $seg=New-Object ArraySegment[byte] -ArgumentList (,$script:buf); $script:pend=$ws.ReceiveAsync($seg,$ct) }
+    if(-not $script:pend.Wait(3000)){ return $null }
+    $r=$script:pend.Result; $script:pend=$null
+    $script:ms.Write($script:buf,0,$r.Count)
+    if($r.EndOfMessage){ $s=[Text.Encoding]::UTF8.GetString($script:ms.ToArray()); $script:ms.SetLength(0); return $s }
+  }
+}
 Send 1 'Debugger.enable' @{}
 Send 2 'Debugger.pause' @{}
 $deadline=(Get-Date).AddSeconds($TimeoutSec); $got=$false
