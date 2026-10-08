@@ -1,0 +1,5 @@
+## v19.51 - ENTER IN THE BACKPACK LEAVES THE CARD
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.28: the what is new card waits behind the open floor backpack, but ENTER (equip from the backpack) still dismissed it there, so a returning player who opened the bag first lost the card unseen for the rest of the load. ENTER only dismisses the card when the bag is closed.
+
+MEASURED. Check 19.51 passes, and fails on v19.50.

@@ -5721,6 +5721,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.51',what:'ENTER in the floor backpack leaves the what is new card: with the card waiting behind the open bag, ENTER does not mark it seen',
+   run:function(){
+     if(!(window.__wnseen&&window.__hubEnter&&window.__hubBagSet&&window.__showScreen)) return 'SKIP: this fixture cannot drive the floor card';
+     var bad=[], P2=__P(), keepRuns=P2.runs, t;
+     try{
+       __topClear(); __runPrep();
+       P2.runs=Math.max(1,keepRuns||0);
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       __wnseen(0); __hubBagSet(true);
+       window.dispatchEvent(new KeyboardEvent('keydown',{code:'Enter',key:'Enter',bubbles:true}));
+       window.dispatchEvent(new KeyboardEvent('keyup',{code:'Enter',key:'Enter',bubbles:true}));
+       if(__wnseen()!==0) bad.push('ENTER in the open backpack marked the hidden card seen');
+       __hubBagSet(false);
+       window.dispatchEvent(new KeyboardEvent('keydown',{code:'Enter',key:'Enter',bubbles:true}));
+       window.dispatchEvent(new KeyboardEvent('keyup',{code:'Enter',key:'Enter',bubbles:true}));
+       if(__wnseen()!==1) bad.push('control: ENTER with the bag closed did not dismiss the card');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __hubBagSet(false); }catch(_b){} P2.runs=keepRuns; __wnseen(1); keys={}; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.50',what:'the run card fade strip stays in the gap: on a card that does not scroll, the fade above the buttons does not reach the note box',
    run:function(){
      var oc=document.getElementById('outcome'), a=oc&&oc.querySelector('.ocacts'), nb=document.getElementById('oc_note'), was=oc&&oc.classList.contains('on'), bad=[], s, top, h, ar, nr;

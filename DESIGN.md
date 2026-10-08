@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.51 - ENTER IN THE BACKPACK LEAVES THE CARD
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.28: the what is new card waits behind the open floor backpack, but ENTER (equip from the backpack) still dismissed it there, so a returning player who opened the bag first lost the card unseen for the rest of the load. ENTER only dismisses the card when the bag is closed.
+
+MEASURED. Check 19.51 passes, and fails on v19.50.
 ## v19.50 - THE RUN CARD FADE STAYS IN THE GAP
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.36: the fade strip above the run card buttons was 28 pixels tall while the gap above the buttons is 14, so on every card, even one that does not scroll, it veiled the bottom of the note box. It fits the gap now.

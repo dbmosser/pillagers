@@ -1,0 +1,7 @@
+v19.51: enter in the backpack leaves the card
+
+Pressing ENTER in the Undercroft backpack no longer throws away the what is new card.
+
+Check 19.51. Fails on v19.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
