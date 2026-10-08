@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.86 - THE CONTROLS LEGEND STEPS ASIDE FOR THE BACKPACK
+
+Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-07: with the backpack open the controls legend ran under its left edge and its second column showed through the panel. The backpack has its own key line, so the legend now steps aside while the backpack is open and comes back when it closes.
+
+MEASURED. Check 18.86 passes, and fails on v18.85.
 ## v18.85 - THE BACKPACK TEXT GROWS WITH THE BACKPACK
 
 Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-07 (he plays at 4K): the raid backpack panel and its tiles grow with the screen, but every line of text in it (the title, the gun you hold and its numbers, the selected item and its keys) stayed at its 1080p size, half size in a panel twice as big and hard to read from the couch. The text now grows with the panel. At 1080p nothing changes.

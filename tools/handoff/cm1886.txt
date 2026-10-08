@@ -1,0 +1,7 @@
+v18.86: the controls legend steps aside for the backpack
+
+Opening the backpack hides the controls legend until you close it.
+
+Check 18.86. Fails on v18.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
