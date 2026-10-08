@@ -1,0 +1,7 @@
+v18.95: the undercroft floor text grows with the screen
+
+At 4K the Undercroft title, stats line and key footer are a readable size.
+
+Check 18.95. Fails on v18.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

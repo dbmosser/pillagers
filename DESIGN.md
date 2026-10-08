@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.95 - THE UNDERCROFT FLOOR TEXT GROWS WITH THE SCREEN
+
+Co-op hunt while he was away. Seen on the 4K Undercroft screenshot of 2026-10-07: THE UNDERCROFT title, the line under it (credits, XP, stash, runs) and the key footer over the belt were drawn at their 1080p size at every resolution, small specks at 4K while the station names and the belt grow with the screen. They now grow with the screen too; at 1080p nothing changes.
+
+MEASURED. Check 18.95 passes, and fails on v18.94.
 ## v18.94 - THE BLOTTER COLOURS TURN AT THE DOSE SPEED
 
 Co-op hunt while he was away. Found by the Blotter review after his note of 2026-10-07 (effects should come on gradually): the colour wash turned at a speed that also grew with how long the game had been running, so an hour into a session a dose coming on made the colours whirl round about once a second for its whole first minute, then calm all at once at the peak, and spin backwards as it wore off. The colours now turn at a speed that simply follows the strength of the dose.

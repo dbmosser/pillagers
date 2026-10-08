@@ -1,0 +1,5 @@
+## v18.95 - THE UNDERCROFT FLOOR TEXT GROWS WITH THE SCREEN
+
+Co-op hunt while he was away. Seen on the 4K Undercroft screenshot of 2026-10-07: THE UNDERCROFT title, the line under it (credits, XP, stash, runs) and the key footer over the belt were drawn at their 1080p size at every resolution, small specks at 4K while the station names and the belt grow with the screen. They now grow with the screen too; at 1080p nothing changes.
+
+MEASURED. Check 18.95 passes, and fails on v18.94.
