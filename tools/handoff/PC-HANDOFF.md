@@ -510,3 +510,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.68 padhline: on a pad the compact legend drops H full list and its row. v19.69 padring: .padfocus 3px outline, ring plus glow, opacity 1. Pad-mode shots: floor footer and raid HUD switch to pad buttons; the stash key-hint row (DRAG, RIGHT CLICK, SHIFT...) stays mouse-only in pad mode (left: pad stash actions not checked).
 - v19.70 stashpadbar: padBodyCls() keeps body.padon in step with PAD.on (pollPad and the release path); CSS swaps #invkeybar for #invkeybarpad (D-PAD, A pick up/place, Y all actions, B back). body.padon is available for other DOM pad hints.
 - v19.71 pausepad: keysLegendHtml() returns the LEGEND_PAD layout when PAD.on; togglePauseBox(true) calls keysLegendApply() so the pause key line matches the device when the box opens.
+- v19.72 wnpad: the NEW IN card's last line reads walk to dismiss when PAD.on (no pad button closes it; walking does).
