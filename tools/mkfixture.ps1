@@ -5960,6 +5960,7 @@ window.__REGRESS=[
   {v:'18.68',what:'the what is new card is stamped within 0.15 of the build and leads with the cleaner look, with the two player fixes, icons and dropping still on the card',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof WN_SHOW==='undefined') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>18.68+0.001) return 'SKIP: the card has moved on, a later card check covers it';
      var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), shown=WHATSNEW.slice(0,WN_SHOW).join(' | ');
      if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
      if(String(WHATSNEW[1]).indexOf('A CLEANER'+' LOOK')!==0) bad.push('the card does not lead with the cleaner look');
@@ -6174,6 +6175,7 @@ window.__REGRESS=[
   {v:'18.57',what:'the what is new card is stamped within 0.15 of the build and shows its newest news: the two player fixes, the new icons and dropping all sit in the lines the card draws',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof WN_SHOW==='undefined') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>18.57+0.001) return 'SKIP: the card has moved on, a later card check covers it';
      var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), shown=WHATSNEW.slice(0,WN_SHOW).join(' | ');
      if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
      [['TWO PLAYERS,'+' FEWER SNAGS','the two player fixes'],['NEW ICONS AND'+' A CLEANER HUD','the new icons'],['TRADING IS'+' DROPPING','dropping items']].forEach(function(n){ if(shown.indexOf(n[0])<0) bad.push('the card does not show '+n[1]+' (not in its first '+WN_SHOW+' lines)'); });
