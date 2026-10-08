@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.41';
+var VER='20.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20679,7 +20679,12 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // talk him back into the fight, v2.93. This is the path his report
               // actually came through, since he was the one shooting.
               if(en.kind==='raider'&&en.state==='extract'){ en.alert=2.6; }
-              else if(en.kind!=='snitch'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; }
+              // v20.42, from the whole-game bug hunt of 2026-10-08 (H2): A ROUND INTO THE PEDDLER DOES NOT MOVE HIS STALL. His tx/ty
+              // are his pitch, not a target, so this line set his table, stock and lantern down where you fired from, and left him
+              // in 'chase' for the rest of the raid: the red mark, a place in the count coming for the ring, the threat music and the
+              // heartbeat. He still bolts and comes home (his own branch reads his health). The Survivor is a fixture too. A blast
+              // has skipped both since v11.36; a round now does the same.
+              else if(en.kind!=='snitch'){ if(en.kind!=='peddler'&&en.kind!=='stray'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; } }
               // v8.41, audit: an alarm has to be STARTED, not just named. Entering
               // this state without wind/markX/markY left the countdown at NaN, so
               // it never completed and never called anything in - it just looped
@@ -33705,7 +33710,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.41: In co-op, you hear the other player fire, reload and walk, from where he is. Check 20.41 fails on v20.40',
+  now:'v20.42: Shooting the Peddler no longer moves his stall or marks him as hunting you. Check 20.42 fails on v20.41',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40864,7 +40869,7 @@ function netShotTake(peer,m){
   if(e.hp<=0){ e.byPlayer=false; e.bySeat=s; } else if(!e.downed){ e.byPlayer=false; e.bySeat=0; }
   if(e.kind==='raider'&&e.hostile===false&&!e.merc&&!e.friendlyPC) e.hostile=true;
   if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.6; }
-  else if(e.kind!=='snitch'){ e.alert=2.6; e.state='chase'; e.tx=sx; e.ty=sy; }
+  else if(e.kind!=='snitch'){ if(e.kind!=='peddler'&&e.kind!=='stray'){ e.alert=2.6; e.state='chase'; e.tx=sx; e.ty=sy; } }   // v20.42 (H2): a party round into the Peddler or the Survivor moves no stall and sets no chase, as your own round
   else if(e.state!=='alarm'){ e.state='alarm'; e.lost=0; e.wind=3.5; e.markX=sx; e.markY=sy; }
   if(!G.sim){ spark(e.x,e.y,e.kind==='raider'?'#ff5a4a':'#ffc25c',9,220); sfxHere('hit',e.x,e.y); }   // v20.40 (H52): the window that fired plays its own
   return 'shot';

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.42 - SHOOTING THE PEDDLER LEAVES HIS STALL
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A round that hit the Peddler, yours or the other player's, picked up his table, stock and lantern and set them down where the shot came from. After he ran off and came back he walked to that new spot, and for the rest of the raid he wore a red hunting mark, was counted among those coming for your ring, and set off the threat music and the heartbeat whenever you were near him. A grenade already left him alone. Now a round still hurts him and he still runs, but his stall stays where it was and he never counts as hunting you. The Survivor is treated the same way.
+
+MEASURED. Check 20.42 passes, and fails on v20.41.
 ## v20.41 - YOU HEAR YOUR TEAMMATE FIRE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Your own gunshots, reloads and footsteps play straight into your own ears, and unlike every other sound they were never passed to the other window. So in co-op a teammate's rifle was silent at any distance (you saw only the tracers), and with the sound switched to one window only, the other player's whole fight made no sound at all. They are now passed on and play where he stands. A crouched step stays silent to others.
