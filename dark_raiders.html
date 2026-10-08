@@ -1512,7 +1512,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.74';
+var VER='18.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24125,13 +24125,13 @@ if(!sc.seen) continue;
   for(_pbi=0;_pbi<2;_pbi++) if(_pbs[_pbi]){
     var _pb=_pbs[_pbi];
     var _pf=clamp(_pb.t/_pb.max,0,1);
-    var _py=p.y-62-((_pbi&&p.prep)?10:0);
+    var _py=p.y-68-((_pbi&&p.prep)?13:0);   // v18.75: a size bigger (was 48 by 8), with the HUD bar (drawUseBar) as well
     wc.fillStyle='rgba(6,9,13,.85)';
-    wc.fillRect(p.x-24,_py,48,8);
+    wc.fillRect(p.x-32,_py,64,11);
     wc.strokeStyle='rgba(255,255,255,.22)'; wc.lineWidth=1;
-    wc.strokeRect(p.x-23.5,_py+0.5,47,7);
+    wc.strokeRect(p.x-31.5,_py+0.5,63,10);
     wc.fillStyle=_pb.kind==='armor'?'#5aa9e6':'#6fe0a0';
-    wc.fillRect(p.x-23,_py+1,46*_pf,6);
+    wc.fillRect(p.x-31,_py+1,62*_pf,9);
   }
   // marked ring
   if(G.marked>0){
@@ -26129,6 +26129,43 @@ function drawGiftLine(){
   ctx.restore();
   return s;
 }// v17.45, his pick 21: the boss bar, top centre, while THE OVERSEER is alive and within 900 of this player.
+// v18.75, HIS NOTE (2026-10-07): "need to be a bar for using the bandage/med pack, like how the bar to use armor works". Both
+// wind-ups (v3.54: 1.5 s for medical, 2 s for a plate) had only a small strip above the player, 48 world units wide, easy to
+// miss on a TV and gone into the crowd of a fight. Each wind-up now also gets a HUD bar, centred above the belt, with what is
+// going on and the seconds left: APPLYING BANDAGE, APPLYING MEDKIT, SLOTTING ARMOUR PLATE, or ... ON NAME for a teammate. Two
+// at once (a plate while a bandage goes on, v11.82) stack, the plate above. Drawn on the HUD after its clear. Returns how many.
+function drawUseBar(){
+  var p=G&&G.player, L=[], i, PR, it, nm, f, w, h, x, y, by, cap, s, n=0, bw0, hr;
+  if(!p||G.over||G.sim) return 0;
+  if(p.prep) L.push(p.prep);
+  if(p.prepA) L.push(p.prepA);
+  if(!L.length) return 0;
+  hr=(typeof hudRes==='function')?hudRes():1;
+  bw0=(G.hotCells&&G.hotCells.length)?G.hotCells[0].w:LH(60);
+  by=(G.hotCells&&G.hotCells.length)?G.hotCells[0].y:(H-LH(80));
+  cap=Math.round(Math.max(LH(11),bw0*0.12));   // the belt caption over the slots (v18.71)
+  w=Math.round(Math.min(LH(300)*hr,W*0.34)); h=Math.max(6,Math.round(LH(9)*hr));
+  x=Math.round(W/2-w/2);
+  y=Math.round(by-LH(6)-cap-LH(12)-h);
+  ctx.save();
+  ctx.font=FS(TYPE.label); ctx.textAlign='center';
+  for(i=0;i<L.length;i++){
+    PR=L[i]; it=ITEMS[PR.key]; nm=(it&&it.name)?it.name.toUpperCase():(PR.kind==='armor'?'ARMOUR PLATE':'MEDICAL');
+    f=clamp((PR.t||0)/(PR.max||1),0,1);
+    s=(PR.kind==='armor'?'SLOTTING ':'APPLYING ')+nm;
+    if(typeof PR.aid==='number'){ try{ s+=' ON '+String(netSeatName(PR.aid)||'YOUR TEAMMATE').toUpperCase(); }catch(_an){ s+=' ON YOUR TEAMMATE'; } }
+    s+='   '+Math.max(0,(PR.max||0)-(PR.t||0)).toFixed(1)+'s';
+    if(typeof hudPanel==='function') hudPanel(x-LH(10),y-LH(20),w+LH(20),h+LH(28),0.78);
+    else { ctx.fillStyle='rgba(6,9,13,.78)'; ctx.fillRect(x-LH(10),y-LH(20),w+LH(20),h+LH(28)); }
+    ctx.fillStyle='#e8f0f6'; ctx.fillText(s,W/2,y-LH(6));
+    ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x,y,w,h);
+    ctx.fillStyle=(PR.kind==='armor')?'#5aa9e6':'#6fe0a0'; ctx.fillRect(x,y,Math.round(w*f),h);
+    n++;
+    y-=h+LH(34);
+  }
+  ctx.restore();
+  return n;
+}
 function drawBossBar(){
   var e=null, p=G&&G.player, i, w, x, y, f;
   if(!G||G.over||!p||!G.ents) return;
@@ -26161,6 +26198,7 @@ function drawBossBar(){
   // which is why a player who looked away never knew an offer was waiting. Drawn here, after the clear and the vignette.
   try{ drawBossBar(); }catch(_bb){}   // v17.45: his pick 21
   try{ drawGiftLine(); }catch(_gl){}   // v17.52: an open trade offer stays on screen
+  try{ drawUseBar(); }catch(_ub){}   // v18.75, his note: the bandage, medkit and plate wind-ups on the HUD
   if(p.hp<32&&!p.downed){
     // v9.69, HIS NOTE: "red flashing for low health should slow down 2x when not
     // in combat". It ran at one rate forever, a cycle every 1.05 seconds, as
@@ -32775,7 +32813,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.74: The Overseer health bar only appears once you have actually seen the Overseer. Check 18.74 fails on v18.73',
+  now:'v18.75: Using a bandage, medkit or armour plate shows a clear progress bar above your belt with the seconds left. Check 18.75 fails on v18.74',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

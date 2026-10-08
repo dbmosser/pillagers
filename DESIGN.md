@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.75 - BANDAGES, MEDKITS AND PLATES SHOW A USE BAR
+
+Co-op hunt while he was away. His note of 2026-10-07: there needs to be a bar for using a bandage or medkit like the one for armour. Both already had a wind-up (1.5 seconds for medical, 2 for a plate) shown only as a small strip over the player, easy to miss on a TV in a fight. Each now also shows a bar on the HUD above the belt, saying APPLYING BANDAGE, APPLYING MEDKIT or SLOTTING ARMOUR PLATE with the seconds left (and ON NAME when it is for a teammate), and the strip over the player is a size bigger.
+
+MEASURED. Check 18.75 passes, and fails on v18.74.
 ## v18.74 - THE OVERSEER HEALTH BAR WAITS UNTIL YOU SEE HIM
 
 Co-op hunt while he was away. His note of 2026-10-07: the Overseer health bar appeared as soon as he was within range, through walls or behind you, which gave away that he was near before you ever saw him. The bar now waits until you have actually seen him (the same view, distance, darkness and walls that decide what you see on screen), then stays up as before while he is alive and near. Each player gets the bar when they have seen him themselves.

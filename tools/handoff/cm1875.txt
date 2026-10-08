@@ -1,0 +1,7 @@
+v18.75: bandages, medkits and plates show a use bar
+
+Using a bandage, medkit or armour plate shows a clear progress bar above your belt with the seconds left.
+
+Check 18.75. Fails on v18.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
