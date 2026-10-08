@@ -1,0 +1,7 @@
+v20.14: a crouch does not throw the chest
+
+Crouching no longer jolts a Curved body.
+
+Check 20.14. Fails on v20.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

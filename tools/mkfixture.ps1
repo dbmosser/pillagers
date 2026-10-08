@@ -5722,6 +5722,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.14',what:'a crouch does not throw the chest: dropping into a crouch and standing up again moves a Curved chest by less than 0.3',
+   run:function(){
+     if(typeof drawOp!=='function'||typeof bodyJiggle!=='function') return 'SKIP: no jiggle here';
+     var bad=[], w0=wc, cv=document.createElement('canvas'), x2, own={wep:null}, k=(typeof COSKEY!=='undefined'&&COSKEY.build)||'cosBuild', b0=P[k], i, mx=0, modes=['','','','crouch','crouch','crouch','crouch','','','',''];
+     cv.width=60; cv.height=60; x2=cv.getContext('2d');
+     try{
+       P[k]='curved'; wc=x2;
+       for(i=0;i<modes.length;i++){ if(own._jg) own._jg.t-=17; drawOp(0,300,0,0,'#242832',0,0,modes[i],0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:own}); if(own._jg) mx=Math.max(mx,Math.abs(own._jg.c)); }
+       wc=w0;
+       if(!own._jg) return 'SKIP: no spring state';
+       if(mx>=0.3) bad.push('a crouch threw the chest by '+mx.toFixed(2));
+     }catch(e){ wc=w0; bad.push('threw: '+(e&&e.message||e)); }
+     finally{ wc=w0; P[k]=b0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.13',what:'a pillager looks the same in both co-op windows: one that has walked since he was born is rebuilt on the other window with the hair, skin, hat and build the host gave him',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';

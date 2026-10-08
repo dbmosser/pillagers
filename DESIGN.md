@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.14 - A CROUCH DOES NOT THROW THE CHEST
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: a crouch drops the body 5 units in one frame, which the jiggle spring read as a violent lurch, throwing a Curved chest from one stop to the other. The crouch is no longer fed into the spring, only the walking bob, and the speed it reads is capped so one odd frame cannot throw it.
+
+MEASURED. Check 20.14 passes, and fails on v20.13.
 ## v20.13 - A PILLAGER LOOKS THE SAME IN BOTH WINDOWS
 
 Co-op hunt while he was away. Found by the code review of 2026-10-08: since v20.12 pillagers wear their own look, which is worked out from where each one was born. A pillager who arrived mid-raid had already walked a little before the other co-op window heard of him, so that window worked his look out from a different spot and drew a different man, build and all. His birthplace now goes with him, and both windows work the look out from it. No dice the game uses are spent.

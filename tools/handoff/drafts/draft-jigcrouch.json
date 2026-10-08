@@ -1,0 +1,16 @@
+{
+    "title":  "A CROUCH DOES NOT THROW THE CHEST",
+    "why":  "Found by the code review of 2026-10-08: a crouch drops the body 5 units in one frame, which the jiggle spring read as a violent lurch, throwing a Curved chest from one stop to the other. The crouch is no longer fed into the spring, only the walking bob, and the speed it reads is capped so one odd frame cannot throw it.",
+    "now":  "Crouching no longer jolts a Curved body.",
+    "edits":  [
+                  {
+                      "anchor":  "_JG=(_BLD===\u0027curved\u0027)?bodyJiggle(st.own,ty-y):JIG0;",
+                      "replacement":  "_JG=(_BLD===\u0027curved\u0027)?bodyJiggle(st.own,ty-y-lift):JIG0;"
+                  },
+                  {
+                      "anchor":  "  J.t=now; v=(ty-J.py)/dt; a=v-J.pv; J.py=ty; J.pv=v;",
+                      "replacement":  "  // v16.xx, code review (2026-10-08): a crouch dropped the body 5 units in one frame, read as a 300 a second lurch that threw the\n  // chest stop to stop. The crouch is no longer fed in (drawOp passes the bob only), and the speed read is capped at 60, well over\n  // a sprinting bob (about 23), so one odd frame cannot throw it.\n  J.t=now; v=(ty-J.py)/dt; if(v\u003e60) v=60; else if(v\u003c-60) v=-60; a=v-J.pv; J.py=ty; J.pv=v;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a crouch does not throw the chest: dropping into a crouch and standing up again moves a Curved chest by less than 0.3\u0027,\n   run:function(){\n     if(typeof drawOp!==\u0027function\u0027||typeof bodyJiggle!==\u0027function\u0027) return \u0027SKIP: no jiggle here\u0027;\n     var bad=[], w0=wc, cv=document.createElement(\u0027canvas\u0027), x2, own={wep:null}, k=(typeof COSKEY!==\u0027undefined\u0027\u0026\u0026COSKEY.build)||\u0027cosBuild\u0027, b0=P[k], i, mx=0, modes=[\u0027\u0027,\u0027\u0027,\u0027\u0027,\u0027crouch\u0027,\u0027crouch\u0027,\u0027crouch\u0027,\u0027crouch\u0027,\u0027\u0027,\u0027\u0027,\u0027\u0027,\u0027\u0027];\n     cv.width=60; cv.height=60; x2=cv.getContext(\u00272d\u0027);\n     try{\n       P[k]=\u0027curved\u0027; wc=x2;\n       for(i=0;i\u003cmodes.length;i++){ if(own._jg) own._jg.t-=17; drawOp(0,300,0,0,\u0027#242832\u0027,0,0,modes[i],0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:own}); if(own._jg) mx=Math.max(mx,Math.abs(own._jg.c)); }\n       wc=w0;\n       if(!own._jg) return \u0027SKIP: no spring state\u0027;\n       if(mx\u003e=0.3) bad.push(\u0027a crouch threw the chest by \u0027+mx.toFixed(2));\n     }catch(e){ wc=w0; bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ wc=w0; P[k]=b0; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
