@@ -1,0 +1,7 @@
+v19.23: the shop panel shows what items do
+
+The shop says what a Bandage, Medkit, plate, stim or frag does in numbers.
+
+Check 19.23. Fails on v19.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

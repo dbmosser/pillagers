@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.23 - THE SHOP PANEL SHOWS WHAT ITEMS DO
+
+Co-op hunt while he was away. Seen on the 4K shop screenshot of 2026-10-08: a gun on the cream panel shows damage, magazine and range, but a Bandage, Medkit, plate, stim or frag showed one sentence over an empty panel. They now show their numbers: a Bandage heals 28 over 2.6 s up to 85 and takes 1.5 s to put on, a Medkit heals up to 100, a plate adds 20 armour, a stim lasts 10 s, a frag blast reaches 19 m.
+
+MEASURED. Check 19.23 passes, and fails on v19.22.
 ## v19.22 - THE RAID LABELS GROW AT 4K
 
 Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-08: the hiding chip above the weapon panel (CONCEALED, IN COVER and the rest) and the label on an extraction ring (EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN) stayed their 1080p size on a 4K screen, tiny beside the panel and the world around them. Both now grow with the screen; at 1080p nothing changes.

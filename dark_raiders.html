@@ -1526,7 +1526,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.22';
+var VER='19.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33285,7 +33285,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.22: At 4K the hiding chip and the ring labels are readable from the couch. Check 19.22 fails on v19.21',
+  now:'v19.23: The shop says what a Bandage, Medkit, plate, stim or frag does in numbers. Check 19.23 fails on v19.22',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36333,6 +36333,7 @@ function renderShopDetail(rows){
   } else {
     var it=ITEMS[o.k];
     h+='<div class="vdesc">'+escHtml(it?(itemBlurb(o.k)||''):'')+'</div>';
+    h+=itemStatsHTML(o.k);   // v19.23: what it does in numbers, as the guns have
   }
   if(locked) h+='<div class="vdesc" style="color:#8a5a2c">Locked until XP '+
     o.rep.toLocaleString()+'. You have '+(P.xp||0).toLocaleString()+'.</div>';
@@ -36396,7 +36397,33 @@ function renderShopDetail(rows){
 // One line of plain English per item, for the cream panel. Falls back to what the
 // item DOES rather than to a blank, because a blank on the panel where the money is
 // asked for is the worst place in the game to say nothing.
-function itemBlurb(k){
+// v19.23, seen on the 4K shop screenshot (2026-10-08): a gun on the cream panel shows its damage, magazine and range, but a Bandage,
+// a Medkit, a plate, a stim or a frag showed one sentence over a blank panel. They now show what they do in numbers: how much, over
+// how long, up to what, and how long they take to put on. Read from the same numbers the game uses, so they cannot drift.
+function itemStatsHTML(k){
+  var it=ITEMS[k], R=[], i, s='';
+  if(!it) return '';
+  function sec(v){ return (Math.round(v*10)/10)+' s'; }
+  if(it.use==='heal'){
+    R.push(['Heals',(it.amt||0)+' health']);
+    if(it.hot) R.push(['Over',sec(it.hot)]);
+    R.push(['Heals up to',(it.capHp||100)+' health']);
+    R.push(['Takes',sec(CFG.healPrep===undefined?1.5:CFG.healPrep)+' to put on']);
+  } else if(it.use==='armor'){
+    R.push(['Armour','+'+(it.amt||0)]);
+    R.push(['Takes',sec(CFG.armorPrep===undefined?2:CFG.armorPrep)+' to slot']);
+  } else if(it.use==='ammo'){
+    R.push(['Rounds',String(it.amt||0)]);
+  } else if(it.use==='stim'){
+    R.push(['Lasts',sec(STIM_SEC)]);
+    R.push(['Speed','+'+Math.round((STIM_SPD-1)*100)+'%']);
+    R.push(['Stamina','unlimited']);
+  } else if(it.use==='throw'&&it.tk==='frag'){
+    R.push(['Blast',Math.round((CFG.fragR===undefined?190:CFG.fragR)/10)+'m']);
+  }
+  for(i=0;i<R.length;i++) s+='<div class="vstat" style="font-size:15px;padding:4px 0;border-bottom:1px solid #ddd5c4"><span>'+escHtml(R[i][0])+'</span><b>'+escHtml(String(R[i][1]))+'</b></div>';
+  return s?('<div class="vstats" style="margin:-4px 0 18px">'+s+'</div>'):'';
+}function itemBlurb(k){
   var it=ITEMS[k]; if(!it) return '';
   if(it.use==='heal') return 'Heals you in the field.';
   if(it.use==='armor') return 'Restores '+(it.amt||0)+' armour.';

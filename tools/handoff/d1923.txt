@@ -1,0 +1,5 @@
+## v19.23 - THE SHOP PANEL SHOWS WHAT ITEMS DO
+
+Co-op hunt while he was away. Seen on the 4K shop screenshot of 2026-10-08: a gun on the cream panel shows damage, magazine and range, but a Bandage, Medkit, plate, stim or frag showed one sentence over an empty panel. They now show their numbers: a Bandage heals 28 over 2.6 s up to 85 and takes 1.5 s to put on, a Medkit heals up to 100, a plate adds 20 armour, a stim lasts 10 s, a frag blast reaches 19 m.
+
+MEASURED. Check 19.23 passes, and fails on v19.22.
