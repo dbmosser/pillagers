@@ -625,6 +625,7 @@
      row keeps its note beside it, out of the flow, so the row itself stays centred with the others. */
   #modemenu{ display:flex; flex-direction:column; align-items:center; gap:6px; }
   #modemenu button.moderow{ min-width:440px; padding:9px 28px; font-size:12px; letter-spacing:.22em; }
+  #modemenu button.moderow.ghost{ background:rgba(9,13,28,.88); }   /* v18.67, seen on the title screenshot (2026-10-07): the mode rows were see-through, so the Undercroft behind the title showed inside them, a head in 2 PLAYER CO-OP; solid now, the gold outline kept */
   #modemenu .modelater{ position:relative; display:inline-block; }
   #modemenu .modelater span{ position:absolute; left:100%; top:50%; transform:translateY(-50%); margin-left:12px; white-space:nowrap;
     font-size:10.5px; letter-spacing:.18em; color:var(--ash); text-transform:uppercase; }
@@ -1511,7 +1512,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.66';
+var VER='18.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32761,7 +32762,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.66: Contracts on the Mainframe are easier to read. Check 18.66 fails on v18.65',
+  now:'v18.67: The title buttons and save rows are solid, with nothing showing through them. Check 18.67 fails on v18.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -43173,7 +43174,7 @@ loadProfile().then(function(){
         if(!inf&&key!==SLOT) continue;
         var me=(key===SLOT), blk=slotBlocked(key);   // v17.93: blk, the save the other window has open
         h+='<div data-slot="'+key+'" style="cursor:'+(blk?'default':'pointer')+';opacity:'+(blk?'.55':'1')+';border:1px solid '+(me?'var(--amber)':'var(--steel-hi)')+
-           ';border-radius:3px;padding:8px 11px;background:rgba(0,0,0,.28);display:flex;justify-content:space-between;gap:10px;align-items:center">'+
+           ';border-radius:3px;padding:8px 11px;background:rgba(9,13,28,.82);display:flex;justify-content:space-between;gap:10px;align-items:center">'+
            '<b style="color:'+(me?'var(--amber)':'var(--bone)')+'">'+escHtml(inf?inf.name:'PILLAGER')+
            // v13.28: the current save said CONTINUING even with no raids on it, beside
            // the line reading 0 raids. The tag now reads the same run count.

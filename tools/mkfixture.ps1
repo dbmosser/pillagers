@@ -5721,6 +5721,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.67',what:'the title rows are solid: the mode rows and the saves rows have a dark fill, so the Undercroft behind the title does not show through them',
+   run:function(){
+     var b=document.getElementById('modecoop'), bad=[], a, r;
+     if(!b) return 'SKIP: no mode menu here';
+     function alpha(el){ var c=getComputedStyle(el).backgroundColor, m=/rgba?\(([^)]*)\)/.exec(c); if(!m) return 0; var p=m[1].split(','); return (p.length>3)?parseFloat(p[3]):1; }
+     a=alpha(b); if(!(a>=0.7)) bad.push('2 PLAYER CO-OP is see-through (fill '+a+')');
+     try{ if(typeof titleRefresh==='function') titleRefresh(); }catch(_t){}
+     r=document.querySelector('#slotlist [data-slot]');
+     if(r){ a=alpha(r); if(!(a>=0.6)) bad.push('a save row is see-through (fill '+a+')'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.66',what:'the contract list reads from the couch: on the Mainframe a contract line is 17 pixels or more, its progress line 15 or more and its pays line 13 or more',
    run:function(){
      if(typeof __station!=='function'||typeof __hubEnter!=='function') return 'SKIP: no stations here';

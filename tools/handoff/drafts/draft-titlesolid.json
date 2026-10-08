@@ -1,0 +1,16 @@
+{
+    "title":  "THE TITLE ROWS ARE SOLID",
+    "why":  "Seen on the title screenshot of 2026-10-07: the title draws the Undercroft behind it, and its mode rows (2 PLAYER CO-OP and the rest) and save rows were see-through, so characters walking the floor showed inside the buttons, a head in the middle of 2 PLAYER CO-OP. The rows have a dark fill now; the gold outlines and words are unchanged.",
+    "now":  "The title buttons and save rows are solid, with nothing showing through them.",
+    "edits":  [
+                  {
+                      "anchor":  "  #modemenu button.moderow{ min-width:440px; padding:9px 28px; font-size:12px; letter-spacing:.22em; }",
+                      "replacement":  "  #modemenu button.moderow{ min-width:440px; padding:9px 28px; font-size:12px; letter-spacing:.22em; }\n  #modemenu button.moderow.ghost{ background:rgba(9,13,28,.88); }   /* v16.xx, seen on the title screenshot (2026-10-07): the mode rows were see-through, so the Undercroft behind the title showed inside them, a head in 2 PLAYER CO-OP; solid now, the gold outline kept */"
+                  },
+                  {
+                      "anchor":  "border-radius:3px;padding:8px 11px;background:rgba(0,0,0,.28);display:flex;justify-content:space-between;gap:10px;align-items:center",
+                      "replacement":  "border-radius:3px;padding:8px 11px;background:rgba(9,13,28,.82);display:flex;justify-content:space-between;gap:10px;align-items:center"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title rows are solid: the mode rows and the saves rows have a dark fill, so the Undercroft behind the title does not show through them\u0027,\n   run:function(){\n     var b=document.getElementById(\u0027modecoop\u0027), bad=[], a, r;\n     if(!b) return \u0027SKIP: no mode menu here\u0027;\n     function alpha(el){ var c=getComputedStyle(el).backgroundColor, m=/rgba?\\(([^)]*)\\)/.exec(c); if(!m) return 0; var p=m[1].split(\u0027,\u0027); return (p.length\u003e3)?parseFloat(p[3]):1; }\n     a=alpha(b); if(!(a\u003e=0.7)) bad.push(\u00272 PLAYER CO-OP is see-through (fill \u0027+a+\u0027)\u0027);\n     try{ if(typeof titleRefresh===\u0027function\u0027) titleRefresh(); }catch(_t){}\n     r=document.querySelector(\u0027#slotlist [data-slot]\u0027);\n     if(r){ a=alpha(r); if(!(a\u003e=0.6)) bad.push(\u0027a save row is see-through (fill \u0027+a+\u0027)\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

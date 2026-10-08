@@ -1,0 +1,7 @@
+v18.67: the title rows are solid
+
+The title buttons and save rows are solid, with nothing showing through them.
+
+Check 18.67. Fails on v18.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

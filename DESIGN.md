@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.67 - THE TITLE ROWS ARE SOLID
+
+Co-op hunt while he was away. Seen on the title screenshot of 2026-10-07: the title draws the Undercroft behind it, and its mode rows (2 PLAYER CO-OP and the rest) and save rows were see-through, so characters walking the floor showed inside the buttons, a head in the middle of 2 PLAYER CO-OP. The rows have a dark fill now; the gold outlines and words are unchanged.
+
+MEASURED. Check 18.67 passes, and fails on v18.66.
 ## v18.66 - THE CONTRACT LIST READS FROM THE COUCH
 
 Co-op hunt while he was away. Seen on the Mainframe screenshot of 2026-10-07: each contract was a 15 pixel line with 13.5, 11 and 10.5 pixel lines under it (progress, what it pays, its tier) across a panel most of the screen wide, hard to read on a TV. Each is a few sizes up now; nothing else changes.
