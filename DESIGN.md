@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.13 - THE FASHION PREVIEWS KEEP ONE LOOK
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: the FASHION previews (v18.79 and v18.82) kept every picture ever painted, about 57 for each change of skin, hair or any other piece, and never let them go, so a long stay in FASHION kept growing the memory the game uses. They now keep only the look you are wearing; a change of look clears them first.
+
+MEASURED. Check 19.13 passes, and fails on v19.12.
 ## v19.12 - A REFUSED GUN KEY DROP LEAVES THE BELT AS IT WAS
 
 Co-op hunt while he was away. Found by the review of 2026-10-07, in the v18.87 fix for moving a gun from key 8: with an item bound over key 2 (so the belt shows the second gun down on key 9), dragging the gun in his hands from key 8 onto key 9 was refused, and the refusal left the two guns swapped on the belt (key 1 showing the wrong gun), kept the trigger on a key that no longer held his gun, and said it was his only gun when he had two. The drag now lets go of its own key first, so the gun lands on key 9; when a drop is refused, everything goes back as it was and the words say what happened.

@@ -1,0 +1,5 @@
+## v19.13 - THE FASHION PREVIEWS KEEP ONE LOOK
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: the FASHION previews (v18.79 and v18.82) kept every picture ever painted, about 57 for each change of skin, hair or any other piece, and never let them go, so a long stay in FASHION kept growing the memory the game uses. They now keep only the look you are wearing; a change of look clears them first.
+
+MEASURED. Check 19.13 passes, and fails on v19.12.

@@ -5721,6 +5721,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.13',what:'the FASHION preview caches keep one look: previewing pieces under three different looks leaves only the last look pictures stored',
+   run:function(){
+     if(typeof cosPreviewURL!=='function'||typeof COSMETICS==='undefined') return 'SKIP: no rack previews here';
+     var bad=[], ow0=cosOwned, ks=COSKEY.skin, s0=P[ks], skins=COSMETICS.filter(function(c){ return c&&c.kind==='skin'; }), faces=COSMETICS.filter(function(c){ return c&&c.kind==='face'; }), i, j, n;
+     if(skins.length<3||faces.length<3) return 'SKIP: too few skins or faces';
+     try{
+       cosOwned=function(c){ return true; };
+       for(i=0;i<3;i++){ P[ks]=skins[i].id; for(j=0;j<3;j++) cosPreviewURL('face',faces[j].id); }
+       n=Object.keys(COSPREV).filter(function(q){ return q.indexOf('face:')===0; }).length;
+       if(n>3) bad.push(n+' face pictures are kept after three looks; only the current look 3 should be');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ cosOwned=ow0; if(s0===undefined) delete P[ks]; else P[ks]=s0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.12',what:'a refused or moved gun-key drop leaves the belt right: a gun on key 8 dropped on the other gun moved down to key 9 either lands there or is refused with the guns as they were, never says only gun with two guns, and the selected key is the gun in his hands',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';

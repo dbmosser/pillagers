@@ -1,0 +1,7 @@
+v19.13: the fashion previews keep one look
+
+Trying on pieces in FASHION no longer builds up memory.
+
+Check 19.13. Fails on v19.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,20 @@
+{
+    "title":  "THE FASHION PREVIEWS KEEP ONE LOOK",
+    "why":  "Found by the review of 2026-10-07: the FASHION previews (v18.79 and v18.82) kept every picture ever painted, about 57 for each change of skin, hair or any other piece, and never let them go, so a long stay in FASHION kept growing the memory the game uses. They now keep only the look you are wearing; a change of look clears them first.",
+    "now":  "Trying on pieces in FASHION no longer builds up memory.",
+    "edits":  [
+                  {
+                      "anchor":  "var COSPREV={};",
+                      "replacement":  "var COSPREV={};\n// v16.xx, from the review (2026-10-07): the preview caches kept every look ever previewed, about 57 PNG pictures per change of\n// skin, hair or anything else, never let go. They now keep only the look being worn: a different look clears both stores first.\nvar PREVLOOK=null;\nfunction prevCacheGuard(){ var lk=\u0027\u0027; try{ lk=cosLookKey(); }catch(_lk){ return; } if(lk!==PREVLOOK){ COSPREV={}; OUTPREV={}; PREVLOOK=lk; } }"
+                  },
+                  {
+                      "anchor":  "  key=kind+\u0027:\u0027+id+\u0027|\u0027+cosLookKey(); hit=COSPREV[key]; if(hit!==undefined) return hit;",
+                      "replacement":  "  prevCacheGuard();   // v16.xx: one look\u0027s pictures at a time\n  key=kind+\u0027:\u0027+id+\u0027|\u0027+cosLookKey(); hit=COSPREV[key]; if(hit!==undefined) return hit;"
+                  },
+                  {
+                      "anchor":  "  k=COSKEY.outfit;",
+                      "replacement":  "  k=COSKEY.outfit;\n  prevCacheGuard();   // v16.xx: one look\u0027s pictures at a time"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the FASHION preview caches keep one look: previewing pieces under three different looks leaves only the last look pictures stored\u0027,\n   run:function(){\n     if(typeof cosPreviewURL!==\u0027function\u0027||typeof COSMETICS===\u0027undefined\u0027) return \u0027SKIP: no rack previews here\u0027;\n     var bad=[], ow0=cosOwned, ks=COSKEY.skin, s0=P[ks], skins=COSMETICS.filter(function(c){ return c\u0026\u0026c.kind===\u0027skin\u0027; }), faces=COSMETICS.filter(function(c){ return c\u0026\u0026c.kind===\u0027face\u0027; }), i, j, n;\n     if(skins.length\u003c3||faces.length\u003c3) return \u0027SKIP: too few skins or faces\u0027;\n     try{\n       cosOwned=function(c){ return true; };\n       for(i=0;i\u003c3;i++){ P[ks]=skins[i].id; for(j=0;j\u003c3;j++) cosPreviewURL(\u0027face\u0027,faces[j].id); }\n       n=Object.keys(COSPREV).filter(function(q){ return q.indexOf(\u0027face:\u0027)===0; }).length;\n       if(n\u003e3) bad.push(n+\u0027 face pictures are kept after three looks; only the current look 3 should be\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ cosOwned=ow0; if(s0===undefined) delete P[ks]; else P[ks]=s0; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

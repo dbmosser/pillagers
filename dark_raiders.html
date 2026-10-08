@@ -1522,7 +1522,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.12';
+var VER='19.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33248,7 +33248,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.12: Dragging a gun between belt keys never leaves the belt showing the wrong gun. Check 19.12 fails on v19.11',
+  now:'v19.13: Trying on pieces in FASHION no longer builds up memory. Check 19.13 fails on v19.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -43106,6 +43106,7 @@ function outfitPreviewURL(id){
   var k, key, hit, cv2, x2, keepW, keepO, keepOwned;
   if(typeof drawOp!=='function'||typeof P==='undefined'||!P) return '';
   k=COSKEY.outfit;
+  prevCacheGuard();   // v19.13: one look's pictures at a time
   key=id+'|'+['skin','build','hair','cut','hat','eyes','beard','pack','boots','gloves','fit','face'].map(function(s){ try{ return cosWorn(s); }catch(_w){ return ''; } }).join(',');
   hit=OUTPREV[key]; if(hit!==undefined) return hit;
   cv2=document.createElement('canvas'); cv2.width=128; cv2.height=128; x2=cv2.getContext('2d');
@@ -43142,6 +43143,10 @@ function outfitPreviewURL(id){
 // measured once per look (COSPREV box), so a click on the racks repaints them quickly; every preview is kept until the look
 // changes. Colour swatches (skin, hair colour, eyes) stay as they are: a colour reads best as a colour.
 var COSPREV={};
+// v19.13, from the review (2026-10-07): the preview caches kept every look ever previewed, about 57 PNG pictures per change of
+// skin, hair or anything else, never let go. They now keep only the look being worn: a different look clears both stores first.
+var PREVLOOK=null;
+function prevCacheGuard(){ var lk=''; try{ lk=cosLookKey(); }catch(_lk){ return; } if(lk!==PREVLOOK){ COSPREV={}; OUTPREV={}; PREVLOOK=lk; } }
 function cosLookKey(){ return ['outfit','skin','build','hair','cut','hat','eyes','beard','pack','boots','gloves','fit','face','tattoo','patch'].map(function(s){ try{ return cosWorn(s); }catch(_w){ return ''; } }).join(','); }
 function cosPreviewPaint(x2,s,ty){ x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,128,128); x2.translate(64,ty); x2.scale(s,s); drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); }
 function cosPreviewBox(cv2,x2){
@@ -43157,6 +43162,7 @@ function cosPreviewBox(cv2,x2){
 function cosPreviewURL(kind,id){
   var key, hit, cv2, x2, keepW, keepV, keepOwned, ck=COSKEY[kind], b, s, hh;
   if(!ck||typeof drawOp!=='function'||typeof P==='undefined'||!P) return '';
+  prevCacheGuard();   // v19.13: one look's pictures at a time
   key=kind+':'+id+'|'+cosLookKey(); hit=COSPREV[key]; if(hit!==undefined) return hit;
   cv2=document.createElement('canvas'); cv2.width=128; cv2.height=128; x2=cv2.getContext('2d');
   if(!x2) return '';
