@@ -1,0 +1,7 @@
+v19.29: two-line map notes never overlap
+
+The map notes at the bottom and over hot ground read as two clean lines at 4K.
+
+Check 19.29. Fails on v19.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

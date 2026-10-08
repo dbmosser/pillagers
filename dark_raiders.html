@@ -1528,7 +1528,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.28';
+var VER='19.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30959,9 +30959,12 @@ if(G.trail&&G.trail.length>1){
     ctx.fillStyle='rgba(255,120,60,.13)';
     ctx.beginPath(); ctx.arc(hx,hy,hr,0,6.2832); ctx.fill();
     ctx.fillStyle='rgba(255,150,90,.95)'; ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+    // v19.29, seen on the 4K map screenshot (2026-10-08): the two lines were 12 pixels apart whatever the text size, so where the text
+    // is bigger (a big screen, a bigger text setting) the second line printed over the first. They are a line height apart now.
+    var _hgf=parseFloat(((/([\d.]+)px/).exec(String(ctx.font))||[0,11])[1])||11;
     ctx.fillText('HOT GROUND',hx,hy-hr-5);
     ctx.fillStyle='rgba(255,150,90,.65)';
-    ctx.fillText('richer, and busier',hx,hy-hr+7);
+    ctx.fillText('richer, and busier',hx,hy-hr-5+Math.max(12,_hgf*1.15));
     ctx.textAlign='left';
   })();
   // Drawn AFTER the fog on purpose: the extraction rings and your own marker are
@@ -31020,9 +31023,13 @@ if(G.trail&&G.trail.length>1){
     var f=0; try{ f=fogFrac(); }catch(e){ return; }
     ctx.textAlign='left'; ctx.font=FS(TYPE.micro);
     ctx.fillStyle='rgba(214,208,190,.80)';
-    ctx.fillText('SURVEYED  '+Math.round(f*100)+'%',ox+4,oy+WORLD_H*sc+16);
+    // v19.29, seen on the 4K map screenshot (2026-10-08): these two were 14 pixels apart whatever the text size and printed over each
+    // other on a big screen. A line height apart now, and lifted together if the second would fall off the bottom of the screen.
+    var _svf=parseFloat(((/([\d.]+)px/).exec(String(ctx.font))||[0,11])[1])||11, _svl=Math.max(14,_svf*1.15), _sv1=oy+WORLD_H*sc+Math.max(16,_svf*1.1);
+    if(_sv1+_svl>H-4) _sv1=Math.max(_svf,H-4-_svl);
+    ctx.fillText('SURVEYED  '+Math.round(f*100)+'%',ox+4,_sv1);
     ctx.fillStyle='rgba(214,208,190,.45)';
-    ctx.fillText('what you walk stays on the map',ox+4,oy+WORLD_H*sc+30);
+    ctx.fillText('what you walk stays on the map',ox+4,_sv1+_svl);
   })();
 }
 
@@ -33289,7 +33296,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.28: Opening the backpack in the Undercroft no longer shows the what is new card through it. Check 19.28 fails on v19.27',
+  now:'v19.29: The map notes at the bottom and over hot ground read as two clean lines at 4K. Check 19.29 fails on v19.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

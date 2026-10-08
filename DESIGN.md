@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.29 - TWO-LINE MAP NOTES NEVER OVERLAP
+
+Co-op hunt while he was away. Seen on the 4K map screenshot of 2026-10-08: SURVEYED and the line under it (what you walk stays on the map), and HOT GROUND and its line (richer, and busier), were a fixed 12 to 14 pixels apart whatever the text size, so on a big screen each second line printed over the first. They are a line height apart now, and the SURVEYED pair lifts to stay on screen.
+
+MEASURED. Check 19.29 passes, and fails on v19.28.
 ## v19.28 - THE WHAT IS NEW CARD WAITS FOR THE BACKPACK
 
 Co-op hunt while he was away. Seen on the 4K Undercroft backpack screenshot of 2026-10-08: with the what is new card still up, opening the backpack laid the bag over the card and its lines read through the bag panel, two layers of text on top of each other. While the backpack is open the card now waits; it is back when the bag closes, until you walk it off as before.
