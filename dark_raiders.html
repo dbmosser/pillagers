@@ -1537,7 +1537,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.43';
+var VER='19.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28914,7 +28914,10 @@ function drawRaiderBoard(){
   // the board exactly as tall with smaller writing in it. This is the half of his
   // note that the constant above cannot deliver on its own.
   var _rMax=Math.max(LH(60),Math.round((H*0.38)/(_rz||1))-(y0-LH(13)));
-  var _rFit=Math.max(3,Math.floor((_rMax-LH(26))/LH1));
+  // v19.44, seen on the 4K downed screenshot (2026-10-08): the "N out, N down" line under the names had no row of its own in the box,
+  // so the panel's bottom edge ran through it. When it shows, it is given a row like the names.
+  var _rSum=(!HOr.c&&out+dead>0)?1:0;
+  var _rFit=Math.max(3,Math.floor((_rMax-LH(26))/LH1))-_rSum;
   var _rHid=0;
   if(!HOr.c&&rows.length>_rFit){
     // One row is spent saying how many are not shown, so the board is never a
@@ -28923,7 +28926,7 @@ function drawRaiderBoard(){
     rows=rows.slice(0,_rFit-1);
   }
   var _rShown=rows.length+(_rHid?1:0);
-  var boxH=HOr.c?LH(18):(LH(20)+_rShown*LH1+LH(6));
+  var boxH=HOr.c?LH(18):(LH(20)+(_rShown+_rSum)*LH1+LH(6));
   hudPanel(PADX-8,y0-LH(13),LW,boxH);   // v18.13: the one HUD panel
   ctx.font=FS(TYPE.micro);
   ctx.fillStyle='#ffc04a';
@@ -33348,7 +33351,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.43: The bar warning on the Undercroft floor sits under THE LAST POUR only. Check 19.43 fails on v19.42',
+  now:'v19.44: The out and down line on the pillager board sits inside the board. Check 19.44 fails on v19.43',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

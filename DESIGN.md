@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.44 - THE RAIDER BOARD HOLDS ITS SUMMARY LINE
+
+Co-op hunt while he was away. Seen on the 4K downed screenshot of 2026-10-08: the line under the names on the CURRENT PILLAGERS board (0 out, 3 down) had no row of its own in the box, so the panel bottom edge ran through its letters. When the line shows it now gets a row like the names.
+
+MEASURED. Check 19.44 passes, and fails on v19.43.
 ## v19.43 - THE BAR WARNING SITS UNDER ITS OWN NAME
 
 Co-op hunt while he was away. Seen on the 4K Undercroft screenshot of 2026-10-08: his warning under THE LAST POUR (***EXPERIMENTAL FEATURE MAY GLITCH***) is about twice as wide as the name, so even slid in from the wall (v18.96) it reached across under THE STASH and read as that station line. It now shrinks to sit under its own name, never below 70 percent, his words unchanged.

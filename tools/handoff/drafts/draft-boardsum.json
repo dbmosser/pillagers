@@ -1,0 +1,16 @@
+{
+    "title":  "THE RAIDER BOARD HOLDS ITS SUMMARY LINE",
+    "why":  "Seen on the 4K downed screenshot of 2026-10-08: the line under the names on the CURRENT PILLAGERS board (0 out, 3 down) had no row of its own in the box, so the panel bottom edge ran through its letters. When the line shows it now gets a row like the names.",
+    "now":  "The out and down line on the pillager board sits inside the board.",
+    "edits":  [
+                  {
+                      "anchor":  "  var _rFit=Math.max(3,Math.floor((_rMax-LH(26))/LH1));",
+                      "replacement":  "  // v16.xx, seen on the 4K downed screenshot (2026-10-08): the \"N out, N down\" line under the names had no row of its own in the box,\n  // so the panel\u0027s bottom edge ran through it. When it shows, it is given a row like the names.\n  var _rSum=(!HOr.c\u0026\u0026out+dead\u003e0)?1:0;\n  var _rFit=Math.max(3,Math.floor((_rMax-LH(26))/LH1))-_rSum;"
+                  },
+                  {
+                      "anchor":  "  var boxH=HOr.c?LH(18):(LH(20)+_rShown*LH1+LH(6));",
+                      "replacement":  "  var boxH=HOr.c?LH(18):(LH(20)+(_rShown+_rSum)*LH1+LH(6));"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the raider board holds its summary line: with pillagers down, the out and down line sits inside the board panel, clear of its bottom edge\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     if(typeof drawRaiderBoard!==\u0027function\u0027||typeof hudPanel!==\u0027function\u0027) return \u0027SKIP: no raider board here\u0027;\n     var bad=[], g, oHP=hudPanel, oFT=ctx.fillText, panel=null, sum=null;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       g.ents.length=0; g.bagOpen=false; g.mapOpen=false;\n       if(P.hud\u0026\u0026P.hud.raiders) P.hud.raiders.c=0;\n       hudPanel=function(x,y,w,h){ if(!panel) panel={y:y,h:h}; return oHP.apply(this,arguments); };\n       ctx.fillText=function(t,x,y){ var s=String(t), fm=(/([\\d.]+)px/).exec(String(ctx.font)); if(/ out .* down$/.test(s)) sum={y:y,fp:fm?parseFloat(fm[1]):11}; return oFT.apply(this,arguments); };\n       ctx.save(); try{ drawRaiderBoard(); } finally { ctx.restore(); }\n       if(!panel) return \u0027SKIP: the board panel was not drawn\u0027;\n       if(!sum) return \u0027SKIP: no out and down line (nobody down)\u0027;\n       if(sum.y+sum.fp*0.25\u003epanel.y+panel.h-1) bad.push(\u0027the out and down line reaches \u0027+Math.round(sum.y+sum.fp*0.25)+\u0027, past the panel bottom at \u0027+Math.round(panel.y+panel.h));\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ hudPanel=oHP; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
