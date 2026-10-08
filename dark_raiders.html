@@ -1580,7 +1580,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.95';
+var VER='19.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33515,7 +33515,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.95: On a controller the title screen shows the controller buttons. Check 19.95 fails on v19.94',
+  now:'v19.96: The 1 and 2 on equipped guns in the stash are easy to read. Check 19.96 fails on v19.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35518,7 +35518,7 @@ try{ renderFreeKit(); }catch(_fk){}
         oc.className='cell c-'+gunRarity(gk);
         oc.style.borderColor=inSlot?'var(--amber)':'';
         oc.innerHTML=(ITEMS[_ik]?iconImgHTML(_ik,30):('<span style="font-size:10.5px">'+escHtml(W.name.slice(0,6))+'</span>'))+
-          (inSlot?('<span class="cnt" style="background:var(--amber);color:#0d1435">'+inSlot+'</span>'):'');
+          (inSlot?('<span class="cnt" style="background:var(--amber);color:#0d1435;padding:1px 7px;border-radius:7px;right:7px;bottom:6px;text-shadow:none">'+inSlot+'</span>'):'');   // v19.96, seen on the 4K stash screenshot (2026-10-08): the slot number was a bare amber sliver jammed into the rounded corner
         oc.title=W.name+'\nYours. Right-click it to equip it.'+
           (inSlot?('\nCurrently gun '+inSlot+'.'):'');
         // v8.20, audit: the item key, not a token nothing parses. 'own:'+gk was

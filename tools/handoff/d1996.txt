@@ -1,0 +1,5 @@
+## v19.96 - THE STASH SLOT BADGE IS A CLEAR PILL
+
+Co-op hunt while he was away. Seen on the 4K stash screenshot of 2026-10-08: the 1 or 2 that marks a gun equipped as primary or secondary was a bare amber sliver hugging its digit, pushed into the rounded corner of the tile so the corner cut it. It is a small rounded pill now, set in from the corner.
+
+MEASURED. Check 19.96 passes, and fails on v19.95.

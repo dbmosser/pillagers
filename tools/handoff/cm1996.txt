@@ -1,0 +1,7 @@
+v19.96: the stash slot badge is a clear pill
+
+The 1 and 2 on equipped guns in the stash are easy to read.
+
+Check 19.96. Fails on v19.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.96 - THE STASH SLOT BADGE IS A CLEAR PILL
+
+Co-op hunt while he was away. Seen on the 4K stash screenshot of 2026-10-08: the 1 or 2 that marks a gun equipped as primary or secondary was a bare amber sliver hugging its digit, pushed into the rounded corner of the tile so the corner cut it. It is a small rounded pill now, set in from the corner.
+
+MEASURED. Check 19.96 passes, and fails on v19.95.
 ## v19.95 - THE TITLE SPEAKS CONTROLLER ON A CONTROLLER
 
 Co-op hunt while he was away. Seen on the controller pass of 2026-10-08: with a pad on, the key row under the three steps on the title still named WASD, MOUSE, LMB and the other keyboard keys. A pad row shows there instead (L STICK move, R STICK aim, RT fire, B crouch, X search, VIEW backpack, D-UP hold for the map, MENU pause), in PlayStation names on a PlayStation pad.
