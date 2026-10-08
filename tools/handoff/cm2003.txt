@@ -1,0 +1,7 @@
+v20.03: your teammate sees your build
+
+In co-op your teammate sees your build, and you see theirs.
+
+Check 20.03. Fails on v20.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

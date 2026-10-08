@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.02';
+var VER='20.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33587,7 +33587,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.02: A Curved body has jiggle when it moves. Check 20.02 fails on v20.01',
+  now:'v20.03: In co-op your teammate sees your build, and you see theirs. Check 20.03 fails on v20.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37740,7 +37740,7 @@ function netRefresh(){ try{ netLateBtn(); }catch(_nlb){} var m=document.getEleme
 // SOLO PLAY IS UNTOUCHED. The floor calls in here only while NET.on, so a solo frame draws, sends and changes nothing new.
 // Nothing here draws from the seeded stream (rr, rnd, ri, pick, rollTable) or reads G.
 var NET_HUB_STEP=0.1, NET_HUB_SNAP=160, NET_HUB_STALE=3, NET_HUB_EASE=12;
-var NET_LOOK=['hair','hat','skin','fit','cut','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit'];
+var NET_LOOK=['hair','hat','skin','fit','cut','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit','build'];   // v20.03, his answer (2026-10-08): everyone sees your build
 // What he is wearing, one rack id per kind, read the way his own body is drawn.
 function netLook(){
   var lk={}, i;
@@ -37854,7 +37854,7 @@ function netDrawPeer(g){
     drawOp(g.x,g.y,g.f,rl?(1-g.roll/0.38)*12.6:g.bob,fit[1],0,0,rl?'roll':'none',0,
       {hero:0,moving:!!g.mv,sprint:false,ads:false,hurt:0,rl:0,
        skin:lk.skin,hair:lk.hair,hat:lk.hat,cut:lk.cut,beard:lk.beard,eyes:lk.eyes,faceMark:lk.face,boots:lk.boots,
-       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,own:g});
+       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build,own:g});
   }catch(e){}
 }
 // Their names over their heads, drawn after the darkness like the station names, with the same camera.
@@ -38901,7 +38901,7 @@ function netUpDrawOne(g){
     drawOp(g.x,g.y,g.f,(g.roll>0)?(1-g.roll/0.38)*12.6:g.bob,fit[1],0,0,mode,0,
       {hero:0,own:g,moving:!!g.mv,sprint:!!g.sp,ads:false,hurt:0,rl:0,bulk:0,
        skin:lk.skin,hair:lk.hair,hat:lk.hat,cut:lk.cut,beard:lk.beard,eyes:lk.eyes,faceMark:lk.face,boots:lk.boots,
-       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit});
+       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build});
   }catch(e){}
   if(lift>0){ try{ wc.restore(); }catch(e2){} }
 }

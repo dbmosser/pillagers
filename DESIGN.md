@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.03 - YOUR TEAMMATE SEES YOUR BUILD
+
+Co-op hunt while he was away. His answer of 2026-10-08: everyone sees the build, the way they see your outfit and hair. The look each player sends now carries the build, a bad id is dropped like any other, and the teammate is drawn in the build sent, on the Undercroft floor and in a raid, in two windows on one PC or online.
+
+MEASURED. Check 20.03 passes, and fails on v20.02.
 ## v20.02 - A CURVED BODY MOVES
 
 Co-op hunt while he was away. His order of 2026-10-08: add jiggle physics if possible. A small damped spring for the chest and the hips of a Curved body: when the torso changes speed, at each footfall, a start, a stop or a landing, they keep going for a moment and settle back. It is drawing only, never part of the game simulation or its dice, and it works in the raid and on the Undercroft floor.

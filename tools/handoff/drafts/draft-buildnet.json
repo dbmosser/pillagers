@@ -1,0 +1,20 @@
+{
+    "title":  "YOUR TEAMMATE SEES YOUR BUILD",
+    "why":  "His answer of 2026-10-08: everyone sees the build, the way they see your outfit and hair. The look each player sends now carries the build, a bad id is dropped like any other, and the teammate is drawn in the build sent, on the Undercroft floor and in a raid, in two windows on one PC or online.",
+    "now":  "In co-op your teammate sees your build, and you see theirs.",
+    "edits":  [
+                  {
+                      "anchor":  "var NET_LOOK=[\u0027hair\u0027,\u0027hat\u0027,\u0027skin\u0027,\u0027fit\u0027,\u0027cut\u0027,\u0027beard\u0027,\u0027eyes\u0027,\u0027face\u0027,\u0027boots\u0027,\u0027gloves\u0027,\u0027pack\u0027,\u0027patch\u0027,\u0027tattoo\u0027,\u0027outfit\u0027];",
+                      "replacement":  "var NET_LOOK=[\u0027hair\u0027,\u0027hat\u0027,\u0027skin\u0027,\u0027fit\u0027,\u0027cut\u0027,\u0027beard\u0027,\u0027eyes\u0027,\u0027face\u0027,\u0027boots\u0027,\u0027gloves\u0027,\u0027pack\u0027,\u0027patch\u0027,\u0027tattoo\u0027,\u0027outfit\u0027,\u0027build\u0027];   // v16.xx, his answer (2026-10-08): everyone sees your build"
+                  },
+                  {
+                      "anchor":  "       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,own:g});",
+                      "replacement":  "       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build,own:g});"
+                  },
+                  {
+                      "anchor":  "       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit});",
+                      "replacement":  "       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build});"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027your teammate sees your build: the look you send carries the build, a bad build id is dropped, and the teammate is drawn in the build sent on the floor and in a raid\u0027,\n   run:function(){\n     if(typeof netLook!==\u0027function\u0027||typeof netLookClean!==\u0027function\u0027||typeof netDrawPeer!==\u0027function\u0027||typeof netUpDrawOne!==\u0027function\u0027) return \u0027SKIP: no co-op look here\u0027;\n     var bad=[], k=(typeof COSKEY!==\u0027undefined\u0027\u0026\u0026COSKEY.build)||\u0027cosBuild\u0027, b0=P[k], od=drawOp, seen=[], lk, c1, c2;\n     try{\n       P[k]=\u0027curved\u0027; lk=netLook();\n       if(!lk||lk.build!==\u0027curved\u0027) bad.push(\u0027the look sent does not carry the build (\u0027+(lk\u0026\u0026lk.build)+\u0027)\u0027);\n       c1=netLookClean({build:\u0027curved\u0027}); c2=netLookClean({build:\u0027zqbadbuild\u0027});\n       if(!c1||c1.build!==\u0027curved\u0027) bad.push(\u0027a received Curved build was dropped\u0027);\n       if(c2\u0026\u0026c2.build) bad.push(\u0027a bad build id was kept\u0027);\n       drawOp=function(x,y,f,ph,co,pk,mu,mode,iv,st){ seen.push(st\u0026\u0026st.build); };\n       netDrawPeer({x:0,y:0,f:0,bob:0,roll:0,lk:{build:\u0027curved\u0027}});\n       netUpDrawOne({x:0,y:0,f:0,bob:0,roll:0,lk:{build:\u0027curved\u0027}});\n       drawOp=od;\n       if(seen.length\u003c2) bad.push(\u0027the teammate was not drawn (\u0027+seen.length+\u0027 draws)\u0027);\n       else if(seen[0]!==\u0027curved\u0027||seen[1]!==\u0027curved\u0027) bad.push(\u0027the teammate is drawn without the build (floor \u0027+seen[0]+\u0027, raid \u0027+seen[1]+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ drawOp=od; P[k]=b0; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
