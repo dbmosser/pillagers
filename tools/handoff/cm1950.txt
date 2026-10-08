@@ -1,0 +1,7 @@
+v19.50: the run card fade stays in the gap
+
+The run card note box is never veiled.
+
+Check 19.50. Fails on v19.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

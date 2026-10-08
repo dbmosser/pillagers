@@ -1,0 +1,12 @@
+{
+    "title":  "THE RUN CARD FADE STAYS IN THE GAP",
+    "why":  "Found by the review of 2026-10-08, in v19.36: the fade strip above the run card buttons was 28 pixels tall while the gap above the buttons is 14, so on every card, even one that does not scroll, it veiled the bottom of the note box. It fits the gap now.",
+    "now":  "The run card note box is never veiled.",
+    "edits":  [
+                  {
+                      "anchor":  "  .ocacts::before{ content:\u0027\u0027; position:absolute; left:0; right:0; top:-28px; height:28px; pointer-events:none;",
+                      "replacement":  "  .ocacts::before{ content:\u0027\u0027; position:absolute; left:0; right:0; top:-14px; height:14px; pointer-events:none;   /* v16.xx, from the review (2026-10-08): inside the 14px gap above the row, so on a card that does not scroll it no longer veils the note box */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the run card fade strip stays in the gap: on a card that does not scroll, the fade above the buttons does not reach the note box\u0027,\n   run:function(){\n     var oc=document.getElementById(\u0027outcome\u0027), a=oc\u0026\u0026oc.querySelector(\u0027.ocacts\u0027), nb=document.getElementById(\u0027oc_note\u0027), was=oc\u0026\u0026oc.classList.contains(\u0027on\u0027), bad=[], s, top, h, ar, nr;\n     if(!oc||!a||!nb) return \u0027SKIP: no run card here\u0027;\n     try{\n       oc.classList.add(\u0027on\u0027);\n       s=getComputedStyle(a,\u0027::before\u0027); top=parseFloat(s.top); h=parseFloat(s.height);\n       if(!(h\u003e0)) return \u0027SKIP: no fade strip\u0027;\n       ar=a.getBoundingClientRect(); nr=nb.getBoundingClientRect();\n       var z=ar.height\u003e0\u0026\u0026a.offsetHeight\u003e0?ar.height/a.offsetHeight:1;\n       if(ar.top+top*z\u003cnr.bottom-1) bad.push(\u0027the fade strip starts \u0027+Math.round(nr.bottom-(ar.top+top*z))+\u0027 px inside the note box\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ if(!was) oc.classList.remove(\u0027on\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.50 - THE RUN CARD FADE STAYS IN THE GAP
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.36: the fade strip above the run card buttons was 28 pixels tall while the gap above the buttons is 14, so on every card, even one that does not scroll, it veiled the bottom of the note box. It fits the gap now.
+
+MEASURED. Check 19.50 passes, and fails on v19.49.
 ## v19.49 - TRYING ON OUTFITS KEEPS THE PREVIEWS
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.13 with v19.09 and v19.17: the piece previews are painted with the outfit off and the outfit previews never depended on it, but the worn outfit was part of the look the caches are kept for, so every outfit click in FASHION threw away all 57 pictures and repainted them unchanged. The worn outfit is left out of that look now.

@@ -1,0 +1,5 @@
+## v19.50 - THE RUN CARD FADE STAYS IN THE GAP
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.36: the fade strip above the run card buttons was 28 pixels tall while the gap above the buttons is 14, so on every card, even one that does not scroll, it veiled the bottom of the note box. It fits the gap now.
+
+MEASURED. Check 19.50 passes, and fails on v19.49.
