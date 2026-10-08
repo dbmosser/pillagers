@@ -1,0 +1,7 @@
+v18.73: the title step cards are solid
+
+The three step cards on the title are solid.
+
+Check 18.73. Fails on v18.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

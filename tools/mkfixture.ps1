@@ -5721,6 +5721,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.73',what:'the title step cards are solid: ASCEND, PILLAGE and EXTRACT have a dark fill the Undercroft does not show through',
+   run:function(){
+     var c=document.querySelector('#title .tcard'), bi, m, a;
+     if(!c) return 'SKIP: no title step cards here';
+     bi=getComputedStyle(c).backgroundImage||'';
+     m=(/rgba?\(([^)]*)\)/).exec(bi);
+     if(!m) return 'the step card has no fill ('+bi.slice(0,60)+')';
+     a=m[1].split(','); a=(a.length>3)?parseFloat(a[3]):1;
+     return (a>=0.8)?null:('the step cards are see-through (fill '+a+')'); }},
   {v:'18.72',what:'a contract count never sits alone on a line in the raid panel: every wrapped CONTRACTS line has words, not just a count like 0/1',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';

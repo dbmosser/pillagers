@@ -1,0 +1,12 @@
+{
+    "title":  "THE TITLE STEP CARDS ARE SOLID",
+    "why":  "Seen on the 4K title screenshot of 2026-10-07: v18.67 made the mode rows solid, but the three step cards above them (ASCEND, PILLAGE, EXTRACT) were still see-through, so characters walking the Undercroft behind the title showed inside them. They have the same dark fill now; the words are unchanged.",
+    "now":  "The three step cards on the title are solid.",
+    "edits":  [
+                  {
+                      "anchor":  "     background:linear-gradient(180deg,rgba(127,146,216,.10),rgba(0,0,0,.32)); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); }",
+                      "replacement":  "     background:linear-gradient(180deg,rgba(30,38,72,.92),rgba(9,13,28,.92)); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); }   /* v16.xx, seen on the 4K title screenshot (2026-10-07): the Undercroft behind the title showed through the three step cards, a head inside 2 PILLAGE; solid like the mode rows (v18.67) */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title step cards are solid: ASCEND, PILLAGE and EXTRACT have a dark fill the Undercroft does not show through\u0027,\n   run:function(){\n     var c=document.querySelector(\u0027#title .tcard\u0027), bi, m, a;\n     if(!c) return \u0027SKIP: no title step cards here\u0027;\n     bi=getComputedStyle(c).backgroundImage||\u0027\u0027;\n     m=(/rgba?\\(([^)]*)\\)/).exec(bi);\n     if(!m) return \u0027the step card has no fill (\u0027+bi.slice(0,60)+\u0027)\u0027;\n     a=m[1].split(\u0027,\u0027); a=(a.length\u003e3)?parseFloat(a[3]):1;\n     return (a\u003e=0.8)?null:(\u0027the step cards are see-through (fill \u0027+a+\u0027)\u0027); }},"
+}

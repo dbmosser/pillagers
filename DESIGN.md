@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.73 - THE TITLE STEP CARDS ARE SOLID
+
+Co-op hunt while he was away. Seen on the 4K title screenshot of 2026-10-07: v18.67 made the mode rows solid, but the three step cards above them (ASCEND, PILLAGE, EXTRACT) were still see-through, so characters walking the Undercroft behind the title showed inside them. They have the same dark fill now; the words are unchanged.
+
+MEASURED. Check 18.73 passes, and fails on v18.72.
 ## v18.72 - A CONTRACT COUNT NEVER SITS ALONE ON A LINE
 
 Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-07: in the CONDITIONS and CONTRACTS panel a contract whose words just filled a line had its count wrapped onto a line of its own, a lone 0/1 or 0/2 under it, four times in one panel. The count is glued to the last word now, so it wraps with it.

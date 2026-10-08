@@ -70,7 +70,7 @@
      background:linear-gradient(180deg,#ffe9a8 0%,#ffc04a 55%,#e08a1a 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
      filter:drop-shadow(0 4px 0 rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(255,192,74,.28)); }
    #title .tcard{ border:1px solid rgba(127,146,216,.35); border-radius:10px; padding:14px 16px;
-     background:linear-gradient(180deg,rgba(127,146,216,.10),rgba(0,0,0,.32)); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); }
+     background:linear-gradient(180deg,rgba(30,38,72,.92),rgba(9,13,28,.92)); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); }   /* v18.73, seen on the 4K title screenshot (2026-10-07): the Undercroft behind the title showed through the three step cards, a head inside 2 PILLAGE; solid like the mode rows (v18.67) */
    #title .tstep{ font-size:11px; letter-spacing:.22em; color:var(--amber); font-weight:700; }
    #title .tcard .tbody{ font-size:12px; color:var(--ash); margin-top:6px; line-height:1.5; }
   /* v8.88: the title screen scales now, so it must be able to scroll rather
@@ -1512,7 +1512,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.72';
+var VER='18.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32770,7 +32770,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.72: In the raid contracts panel each count stays on the line with its contract. Check 18.72 fails on v18.71',
+  now:'v18.73: The three step cards on the title are solid. Check 18.73 fails on v18.72',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
