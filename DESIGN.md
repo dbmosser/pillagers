@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.15 - THE WHAT IS NEW CARD NAMES THE STATUS ICONS
+
+Co-op hunt while he was away. The card was stamped v18.99 and the stamp may not trail the build by more than 0.15. Its new second line names the status icons down the left (v19.00), the sector map names that no longer overlap (v19.02), the death card pictures (v19.04) and the extraction card haul (v19.05).
+
+MEASURED. Check 19.15 passes, and fails on v19.14.
 ## v19.14 - A FIRST BLOTTER DOSE DRAWS THE MELT ONCE
 
 Co-op hunt while he was away. Found by the review of 2026-10-07: the v18.93 crossfade, which blends the old melt into the new one when another dose is taken, also ran on the first dose, when there was nothing showing to fade out of, so for 8 seconds the melt pass was drawn twice over the whole screen at 4K for no visible gain. It now runs only when a trip was actually showing.

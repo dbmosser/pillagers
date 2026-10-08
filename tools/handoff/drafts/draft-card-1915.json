@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES THE STATUS ICONS",
+    "why":  "The card was stamped v18.99 and the stamp may not trail the build by more than 0.15. Its new second line names the status icons down the left (v19.00), the sector map names that no longer overlap (v19.02), the death card pictures (v19.04) and the extraction card haul (v19.05).",
+    "now":  "The what is new card names the status icons and the clearer cards.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002718.99\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002719.15\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,",
+                      "replacement":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,\n  \u0027STATUS ICONS AND CLEARER CARDS. Healing, stims, drinks and other effects show as icons down the left, like WoW or Diablo; healing shows there instead of over your head. Sector map names never print over each other, the death card shows what you lost in pictures, and the extraction card shows your haul.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and leads with the status icons and cards news, his October 7 notes still on the card\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof WN_SHOW===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e19.15+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), shown=WHATSNEW.slice(0,WN_SHOW).join(\u0027 | \u0027);\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(String(WHATSNEW[1]).indexOf(\u0027STATUS ICONS\u0027+\u0027 AND CLEARER\u0027)!==0) bad.push(\u0027the card does not lead with the status icons and cards news\u0027);\n     if(shown.indexOf(\u0027YOUR NOTES OF\u0027+\u0027 OCTOBER 7\u0027)\u003c0) bad.push(\u0027the card no longer shows his October 7 notes\u0027);\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
