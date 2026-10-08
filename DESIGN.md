@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.32 - WHEN THE HOST LEAVES, THE MAP KEEPS ITS ENEMIES
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op the host sends positions only for enemies near a player, and the other window takes an enemy with no news for 3 seconds off its map while keeping it in mind. When the host left and the other player picked up the raid, those far enemies were never put back, so most of the map went empty, and THE OVERSEER, out of range in its lair, was marked as done and never came, taking its wreck and hoard with it. Now every enemy still known goes back where it was last seen, and the Overseer is made again at its health.
+
+MEASURED. Check 20.32 passes, and fails on v20.31.
 ## v20.31 - A GUEST IS PAID FOR THE RAID IT IS IN
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op the raid is built with the host's Terms, but the other player was paid hazard pay and XP for the Terms it had signed itself. A guest who signed all five got 140% extra for a standard raid, and a guest who signed none fought heavy patrols and hostile pillagers for nothing. Its conditions panel and run record listed the wrong Terms too, and two mid-raid effects (hostile pillagers arriving late, the listener's reach) followed its own list. The raid now keeps the Terms it was built with, and pay, XP, the panel and the record read those.

@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.31';
+var VER='20.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33664,7 +33664,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.31: In co-op, both players are paid hazard pay for the Terms the raid was actually built with. Check 20.31 fails on v20.30',
+  now:'v20.32: In co-op, when the host leaves, the rest of the map keeps its enemies and THE OVERSEER. Check 20.32 fails on v20.31',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41431,10 +41431,21 @@ function netHostGone(why){
   // stops being shared (upSeed 0, so the frame loop runs updateEnts and the solo loot path), bodies known only from host words
   // (no AI numbers of their own) are let go, THE OVERSEER among them is made again at the health it had, and a search held
   // through the host is dropped. The run card never says abandoned for a host that left.
-  var _i, _e, _boss=null, _b;
+  var _i, _e, _boss=null, _b, _k;
   NET.upSeed=0; NET.upFp=null; NET.upWord=null; NET.hostSeed=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;
   if(G.searching){ G.searching=null; G.searchT=0; }
   for(_i=0;_i<G.containers.length;_i++) netBoxMine(G.containers[_i]);   // v20.30 (H21, H22): every box holds what the host last said it held
+  // v20.32, from the whole-game bug hunt of 2026-10-08 (H25): AND THE BODIES FAR FROM THE PLAYERS COME BACK. The host sends rows
+  // only for bodies near a player, and this window takes a body with no row for 3 seconds off the map (it stays known), so at the
+  // takeover most of the map was empty, and THE OVERSEER, out of range in its lair, was marked done and never came. Every body
+  // built here that is still known goes back on the map where it was last placed, and an Overseer the host made is remade at its
+  // health wherever it was.
+  if(NET.entMap) for(_k in NET.entMap){
+    if(!Object.prototype.hasOwnProperty.call(NET.entMap,_k)) continue;
+    _e=NET.entMap[_k]; if(!_e||_e.nIn) continue;
+    if(_e.net){ if(_e.name===BOSS_NAME&&!_boss) _boss=_e; continue; }
+    if(!(_e.hp<=0)){ _e.nIn=1; G.ents.push(_e); }
+  }
   for(_i=G.ents.length-1;_i>=0;_i--){ _e=G.ents[_i]; if(_e&&_e.net){ if(_e.name===BOSS_NAME) _boss=_e; G.ents.splice(_i,1); } }
   if(_boss){ G.bossDone=0; _b=bossTick(true); if(_b&&_boss.maxhp>0&&_boss.hp>0) _b.hp=Math.max(1,Math.round(_b.maxhp*Math.min(1,_boss.hp/_boss.maxhp))); }
   else if((G.t||0)>=2) G.bossDone=1;

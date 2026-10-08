@@ -1,0 +1,7 @@
+v20.32: when the host leaves, the map keeps its enemies
+
+In co-op, when the host leaves, the rest of the map keeps its enemies and THE OVERSEER.
+
+Check 20.32. Fails on v20.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

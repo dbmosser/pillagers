@@ -581,3 +581,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-08 18:45 v20.29 doorsync shipped: H15/H57 DONE (a key opens the door for the whole party; late joiners see it open)
 2026-10-08 18:45 usage: weekly 41% (5h 24%); 18:18->now = +2% in ~28 min, still above the 1.1%/h pace; context compacted to 96k, solo shipping only, re-measure in 30 min
 2026-10-08 18:53 v20.30 boxsync shipped: H21+H22 DONE (host leaves: boxes keep the host's last list, no doubles, made piles keep items)
+2026-10-08 18:57 v20.31 guestterms shipped: H27 DONE (a co-op guest is paid for the host-built Terms)
