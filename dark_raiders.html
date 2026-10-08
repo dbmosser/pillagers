@@ -1517,7 +1517,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.84';
+var VER='18.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29904,7 +29904,12 @@ function drawBag(){
   // 1.00 tall against four times the screen area. BZ is the same hudRes() the
   // rest of the HUD has scaled by since v8.81, and it is exactly 1 at 1920x1080,
   // so that layout does not move.
-  var BZ=hudRes();
+  // v18.85, SEEN ON THE 4K RAID SCREENSHOT (2026-10-07): THE BACKPACK TEXT GROWS WITH THE BACKPACK. Since v9.13 the panel, the tiles
+  // and the gaps scale with the screen (BZ, hudRes, 1 at 1080p and about 2 at 4K), but every line of text and every text offset
+  // stayed at its 1080p size, so at 4K the title, the equipped gun, its numbers and the item line were half size in a panel twice
+  // as big, hard to read from the couch. Every font in this panel goes through bFS (the HUD type times BZ) and every offset that was
+  // not yet scaled is now LH(n)*BZ. At 1080p BZ is exactly 1 and nothing moves.
+  var BZ=hudRes(), bFS=function(s){ var f=FS(s); return (BZ>1.01)?f.replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*BZ).toFixed(1)+'px'; }):f; };
   var TILE=LH(58)*BZ,GAP=LH(7)*BZ,MARG=LH(30)*BZ;
   var COLS=clamp(Math.floor((W*0.66-MARG*2+GAP)/(TILE+GAP)),5,12); G.bagCols=COLS;
   var gridW=COLS*TILE+(COLS-1)*GAP;
@@ -29928,7 +29933,7 @@ function drawBag(){
   // 1080p, 28 into it at 1440p, 64 into it at 4K, which is his screenshot.
   // G.hotCells is written by the belt draw earlier in this same frame, so this is
   // the same rectangle the mouse hit-tests against and they cannot drift.
-  var _beltTop=(G.hotCells&&G.hotCells.length)?G.hotCells[0].y:(H-LH(70));
+  var _beltTop=(G.hotCells&&G.hotCells.length)?G.hotCells[0].y:(H-LH(70)*BZ);
   // LH(22) rather than LH(14): the weapon and prompt line sits above the cells,
   // and it was the other half of what the panel was covering.
   // v9.13: the belt reserve scales too. The belt has followed the screen since
@@ -29942,38 +29947,38 @@ function drawBag(){
   G.bagPanel={x:x,y:y,w:PW,h:hh};
   hudPanel(x,y,PW,hh,0.96);   // v18.13: the one HUD panel
 
-  var cy=y+LH(19);
-  ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
+  var cy=y+LH(19)*BZ;
+  ctx.font=bFS(TYPE.head); ctx.fillStyle='#ffc04a';
   // v8.94, his note: BACKPACK, not INVENTORY. His vocabulary: I opens the
   // BACKPACK, and inventory means the backpack plus the belt together.
   ctx.fillText('BACKPACK',x+11,cy);
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
+  ctx.font=bFS(TYPE.micro); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
   // v17.55, polish after his pick 4: IN A PARTY RAID THE BACKPACK SAYS HOW TO OFFER AN ITEM. Y on a controller (T on keys) offers
   // the selected item to the nearest teammate, and nothing on screen said so. The line keeps its own keys and gains the offer
   // first; on a narrow panel the offer is said shorter. Solo and in the Undercroft the line is as it was.
   var _bh=(PAD&&PAD.on)?((state==='hub')?padB('VIEW to close'):padB('A pick up or place   B close')):'B or I to close', _bo;
-  if(state!=='hub'&&typeof NET==='object'&&NET&&NET.on){ _bo=((PAD&&PAD.on)?padB('Y'):'Z')+' drop for teammate   '; _bh=_bo+_bh; if(ctx.measureText(_bh).width>PW-LH(130)) _bh=((PAD&&PAD.on)?padB('Y'):'Z')+' drop   '+_bh.slice(_bo.length); }
+  if(state!=='hub'&&typeof NET==='object'&&NET&&NET.on){ _bo=((PAD&&PAD.on)?padB('Y'):'Z')+' drop for teammate   '; _bh=_bo+_bh; if(ctx.measureText(_bh).width>PW-LH(130)*BZ) _bh=((PAD&&PAD.on)?padB('Y'):'Z')+' drop   '+_bh.slice(_bo.length); }
   ctx.fillText(_bh,x+PW-11,cy); ctx.textAlign='left';   // v16.79, his order: in a raid a pad packs with A and backs out on B; on the floor A does nothing to the backpack and VIEW still closes it
-  cy+=LH(8);
+  cy+=LH(8)*BZ;
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
 
   // equipped, with its portrait
-  cy+=LH(16);
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
+  cy+=LH(16)*BZ;
+  ctx.font=bFS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('EQUIPPED',x+11,cy);
-  cy+=LH(15);
-  drawIconSprite(ctx,p.wep.id,x+11+LH(16),cy-LH(2),LH(30));   // v18.33: the sprite icon
-  ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
-  ctx.fillText(p.wep.name,x+11+LH(38),cy);
-  ctx.font=FS(TYPE.label); ctx.textAlign='right';
+  cy+=LH(15)*BZ;
+  drawIconSprite(ctx,p.wep.id,x+11+LH(16)*BZ,cy-LH(2)*BZ,LH(30)*BZ);   // v18.33: the sprite icon
+  ctx.font=bFS(TYPE.head); ctx.fillStyle='#cdd6dd';
+  ctx.fillText(p.wep.name,x+11+LH(38)*BZ,cy);
+  ctx.font=bFS(TYPE.label); ctx.textAlign='right';
   ctx.fillStyle=p.wep.mag===0?'#8a96a1':(p.ammo===0?'#ff5a4a':'#ffc04a');
   ctx.fillText(p.wep.mag===0?'MELEE':(p.ammo+' / '+p.reserve),x+PW-11,cy);
   ctx.textAlign='left';
-  cy+=LH(14);
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
+  cy+=LH(14)*BZ;
+  ctx.font=bFS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('DMG '+(p.wep.dmg*(p.wep.pellets||1))+'  RANGE '+Math.round(p.wep.rng/10)+'m  '+(p.wep.auto?'AUTO':'SEMI')+
     (p.wep.mag?('  MAG '+p.wep.mag):''),x+11,cy);
-  cy+=LH(16);
+  cy+=LH(16)*BZ;
   // v8.78: this counted the whole store, so the instant an item went to the belt
   // it printed "BAG 5 items" over a grid of four. Splitting it is the honest
   // form: BACKPACK plus BELT is the inventory, and neither number claims the
@@ -29985,9 +29990,9 @@ function drawBag(){
     if(_clm[_ck2]>0){ _clm[_ck2]--; _bltN++; } else _bpN++; }
   ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armour '+Math.round(p.armor)+
     '    BACKPACK '+_bpN+'    BELT '+_bltN,x+11,cy);   // v8.34, split at v8.78
-  cy+=LH(8);
+  cy+=LH(8)*BZ;
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
-  cy+=LH(10);
+  cy+=LH(10)*BZ;
 
   // the grid, windowed around the selection
   var sel=clamp(G.bagSel||0,0,Math.max(0,stacks.length-1));
@@ -30011,32 +30016,32 @@ function drawBag(){
       ctx.strokeStyle=(si===sel&&!G.bagBelt)?'#ffc04a':(RCOL[it?dispR(stacks[si].key):null]||'rgba(90,102,116,.6)');   // v16.79, his order: the gold ring is on the belt row while the highlight is there
       ctx.lineWidth=(si===sel)?2:1.2;
       ctx.strokeRect(tx+.5,ty+.5,TILE-1,TILE-1);
-      drawIconSprite(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2),TILE*0.62);   // v18.33: the sprite icon
+      drawIconSprite(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2)*BZ,TILE*0.62);   // v18.33: the sprite icon
       if(st.idxs.length>1){
-        ctx.font=FS(TYPE.micro); ctx.textAlign='right'; ctx.fillStyle='#FFF6DC';
-        ctx.fillText(String(st.idxs.length),tx+TILE-LH(4),ty+TILE-LH(4));
+        ctx.font=bFS(TYPE.micro); ctx.textAlign='right'; ctx.fillStyle='#FFF6DC';
+        ctx.fillText(String(st.idxs.length),tx+TILE-LH(4)*BZ,ty+TILE-LH(4)*BZ);
         ctx.textAlign='left';
       }
       var isProt=false;
       for(var pk=0;pk<st.idxs.length;pk++) if(prot[st.idxs[pk]]){ isProt=true; break; }
-      if(isProt){ ctx.font=FS(TYPE.micro); ctx.fillStyle='#7fc4a0';
-        ctx.fillText('\u25c6',tx+LH(3),ty+LH(12)); }
+      if(isProt){ ctx.font=bFS(TYPE.micro); ctx.fillStyle='#7fc4a0';
+        ctx.fillText('\u25c6',tx+LH(3)*BZ,ty+LH(12)*BZ); }
     }
   }
   var gridBot=cy+rows*(TILE+GAP);
   if(rowsAll>rows){
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0'; ctx.textAlign='center';
-    ctx.fillText('row '+(top0+1)+'-'+(top0+rows)+' of '+rowsAll,x+PW/2,gridBot+LH(2));
+    ctx.font=bFS(TYPE.micro); ctx.fillStyle='#9aa8d0'; ctx.textAlign='center';
+    ctx.fillText('row '+(top0+1)+'-'+(top0+rows)+' of '+rowsAll,x+PW/2,gridBot+LH(2)*BZ);
     ctx.textAlign='left';
   }
 
   // the selected stack, spelled out
-  var hintY=Math.min(gridBot+LH(20),y+hh-LH(24));
+  var hintY=Math.min(gridBot+LH(20)*BZ,y+hh-LH(24)*BZ);
   ctx.strokeStyle='#232b35'; ctx.beginPath();
-  ctx.moveTo(x+11,hintY-LH(12)); ctx.lineTo(x+PW-11,hintY-LH(12)); ctx.stroke();
+  ctx.moveTo(x+11,hintY-LH(12)*BZ); ctx.lineTo(x+PW-11,hintY-LH(12)*BZ); ctx.stroke();
   if(stacks.length){
     var sst=stacks[sel], sit=ITEMS[sst.key];
-    ctx.font=FS(TYPE.label);
+    ctx.font=bFS(TYPE.label);
     ctx.fillStyle=RCOL[sit?dispR(sst.key):null]||'#cdd6dd';
     ctx.fillText((sit?sit.name:sst.key)+(sst.idxs.length>1?('  x'+sst.idxs.length):''),x+11,hintY);
     ctx.textAlign='right'; ctx.fillStyle='#ffc04a';
@@ -30048,18 +30053,18 @@ function drawBag(){
     // every seeded draw are unchanged.
     ctx.fillText('$'+ival(sst.key).toLocaleString()+' each',x+PW-11,hintY);
     ctx.textAlign='left';
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
+    ctx.font=bFS(TYPE.micro); ctx.fillStyle='#9aa8d0';
     var isGun=!!(sit&&sit.use==='gun');
     // WHAT IT ACTUALLY IS, v5.33. Same rows as the stash panel, same function,
     // so the two windows can never describe one object differently. Drawn above
     // the key hints because the stats are why you opened the bag.
-    var _rw=itemRows(sst.key), _ry=hintY+LH(13);
+    var _rw=itemRows(sst.key), _ry=hintY+LH(13)*BZ;
     for(var _rr=0;_rr<_rw.length&&_rr<6;_rr++){
       ctx.fillStyle='rgba(154,168,208,.55)';
       ctx.fillText(_rw[_rr][0],x+11,_ry);
       ctx.fillStyle='#cdd6dd';
-      ctx.fillText(String(_rw[_rr][1]),x+11+LH(74),_ry);
-      _ry+=LH(11);
+      ctx.fillText(String(_rw[_rr][1]),x+11+LH(74)*BZ,_ry);
+      _ry+=LH(11)*BZ;
     }
     ctx.fillStyle='#9aa8d0';
     // v15.59, first run audit finding: THE UNDERCROFT BACKPACK NAMES ONLY KEYS THAT WORK ON THE FLOOR. drawHubBag draws this
@@ -30074,9 +30079,9 @@ function drawBag(){
       :(PAD&&PAD.on)?'DPAD move, past the ends to the tactical belt   A pick up or place   B close'   // v16.79, his order: D-LEFT no longer drops on a pad
       :('ARROWS move   Z drop one   drag to tactical belt'
         +(isGun?'   ENTER equip   SHIFT+ENTER to back':'')
-        ),x+11,_ry+LH(3));
+        ),x+11,_ry+LH(3)*BZ);
   } else {
-    ctx.font=FS(TYPE.label); ctx.fillStyle='#6b7783';
+    ctx.font=bFS(TYPE.label); ctx.fillStyle='#6b7783';
     ctx.fillText('Backpack is empty.',x+11,hintY);
   }
 }
@@ -32829,7 +32834,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.84: The what is new card names the changes from his October 7 notes. Check 18.84 fails on v18.83',
+  now:'v18.85: At 4K the backpack text is as big, relative to the panel, as at 1080p. Check 18.85 fails on v18.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

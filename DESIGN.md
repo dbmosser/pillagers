@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.85 - THE BACKPACK TEXT GROWS WITH THE BACKPACK
+
+Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-07 (he plays at 4K): the raid backpack panel and its tiles grow with the screen, but every line of text in it (the title, the gun you hold and its numbers, the selected item and its keys) stayed at its 1080p size, half size in a panel twice as big and hard to read from the couch. The text now grows with the panel. At 1080p nothing changes.
+
+MEASURED. Check 18.85 passes, and fails on v18.84.
 ## v18.84 - THE WHAT IS NEW CARD NAMES HIS NOTES OF OCTOBER 7
 
 Co-op hunt while he was away. The card was stamped v18.68 and the stamp may not trail the build by more than 0.15. Its new second line names what came of his notes of October 7: the Overseer health bar, the bandage and plate bar, the scope zoom and the FASHION previews.

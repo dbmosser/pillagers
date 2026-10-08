@@ -1,0 +1,7 @@
+v18.85: the backpack text grows with the backpack
+
+At 4K the backpack text is as big, relative to the panel, as at 1080p.
+
+Check 18.85. Fails on v18.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
