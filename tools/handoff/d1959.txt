@@ -1,0 +1,5 @@
+## v19.59 - A BOARD DRAGGED LOW STILL NAMES A RIVAL
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.44: giving the out and down line its own row took that row out of the board three-row floor, so a board dragged into the lower part of the screen (or grown with its grip) showed only YOU and a count, no rival named. The row now comes out of the room above the floor, never out of the floor.
+
+MEASURED. Check 19.59 passes, and fails on v19.58.

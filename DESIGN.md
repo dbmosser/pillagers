@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.59 - A BOARD DRAGGED LOW STILL NAMES A RIVAL
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.44: giving the out and down line its own row took that row out of the board three-row floor, so a board dragged into the lower part of the screen (or grown with its grip) showed only YOU and a count, no rival named. The row now comes out of the room above the floor, never out of the floor.
+
+MEASURED. Check 19.59 passes, and fails on v19.58.
 ## v19.58 - THE KILL FEED KEEPS ITS PLACE UNDER A LOW PANEL
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.48: the kill feed was pushed under the CONDITIONS panel whenever the panel was in its column, so a panel dragged low pulled the feed down over its own rows and onto the weapon readout. The feed now moves only when the panel covers its usual place, to below the panel when that still clears the weapon readout, otherwise above it.

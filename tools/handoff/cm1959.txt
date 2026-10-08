@@ -1,0 +1,7 @@
+v19.59: a board dragged low still names a rival
+
+The pillager board always names at least one rival.
+
+Check 19.59. Fails on v19.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
