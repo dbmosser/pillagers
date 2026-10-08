@@ -1,0 +1,16 @@
+{
+    "title":  "THE REWARDS XP COUNT CAN BE READ",
+    "why":  "Seen on the 4K REWARDS screenshot of 2026-10-08: the count over the XP bar (524 / 1,200,000) was dark text meant for the amber fill, but the fill is nearly empty for a long time, so the count sat dark on the dark track and could not be read. It is light text with a dark edge now, readable on both, and the bar is a little taller.",
+    "now":  "The XP count on the REWARDS bar is readable.",
+    "edits":  [
+                  {
+                      "anchor":  "    \u003cdiv id=\"seasonbar\" style=\"height:16px;",
+                      "replacement":  "    \u003c!-- v16.xx, seen on the 4K REWARDS screenshot (2026-10-08): the count was dark text meant for the amber fill, but with the fill near empty\n         (XP out of 1,200,000) it sat on the dark track and could not be read. Light text with a dark edge reads on both; the bar is a little taller. --\u003e\n    \u003cdiv id=\"seasonbar\" style=\"height:20px;"
+                  },
+                  {
+                      "anchor":  "      \u003cdiv id=\"seasontext\" style=\"position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700\"\u003e\u003c/div\u003e",
+                      "replacement":  "      \u003cdiv id=\"seasontext\" style=\"position:absolute;inset:0;text-align:center;font-size:13px;line-height:20px;color:#f3ead8;font-weight:700;text-shadow:0 0 3px #000,0 1px 2px #000\"\u003e\u003c/div\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the rewards XP count can be read: the count over the bar is light text with a dark edge, readable on the empty track and on the amber fill\u0027,\n   run:function(){\n     var el=document.getElementById(\u0027seasontext\u0027), bad=[], s, m, lum;\n     if(!el) return \u0027SKIP: no rewards bar here\u0027;\n     s=getComputedStyle(el); m=(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)/).exec(s.color||\u0027\u0027);\n     if(!m) return \u0027SKIP: the count has no readable colour\u0027;\n     lum=(0.2126*m[1]+0.7152*m[2]+0.0722*m[3])/255;\n     if(lum\u003c0.5) bad.push(\u0027the count is dark (\u0027+s.color+\u0027) over a bar that is nearly always empty and dark\u0027);\n     if(!s.textShadow||s.textShadow===\u0027none\u0027) bad.push(\u0027the count has no dark edge to read over the amber fill\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

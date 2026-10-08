@@ -5721,6 +5721,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.40',what:'the rewards XP count can be read: the count over the bar is light text with a dark edge, readable on the empty track and on the amber fill',
+   run:function(){
+     var el=document.getElementById('seasontext'), bad=[], s, m, lum;
+     if(!el) return 'SKIP: no rewards bar here';
+     s=getComputedStyle(el); m=(/rgba?\((\d+),\s*(\d+),\s*(\d+)/).exec(s.color||'');
+     if(!m) return 'SKIP: the count has no readable colour';
+     lum=(0.2126*m[1]+0.7152*m[2]+0.0722*m[3])/255;
+     if(lum<0.5) bad.push('the count is dark ('+s.color+') over a bar that is nearly always empty and dark');
+     if(!s.textShadow||s.textShadow==='none') bad.push('the count has no dark edge to read over the amber fill');
+     return bad.length?bad.join('; '):null; }},
   {v:'19.39',what:'a lifetime loss reads with the minus first: with net earnings of minus 9750 the YOUR STATS card says -$9,750, never $-9,750',
    run:function(){
      if(!window.__station||!window.__hubEnter) return 'SKIP: this fixture cannot open the Mainframe';

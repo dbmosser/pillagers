@@ -1,0 +1,7 @@
+v19.40: the rewards xp count can be read
+
+The XP count on the REWARDS bar is readable.
+
+Check 19.40. Fails on v19.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

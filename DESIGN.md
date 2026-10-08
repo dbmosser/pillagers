@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.40 - THE REWARDS XP COUNT CAN BE READ
+
+Co-op hunt while he was away. Seen on the 4K REWARDS screenshot of 2026-10-08: the count over the XP bar (524 / 1,200,000) was dark text meant for the amber fill, but the fill is nearly empty for a long time, so the count sat dark on the dark track and could not be read. It is light text with a dark edge now, readable on both, and the bar is a little taller.
+
+MEASURED. Check 19.40 passes, and fails on v19.39.
 ## v19.39 - A LIFETIME LOSS READS WITH THE MINUS FIRST
 
 Co-op hunt while he was away. Seen on the 4K YOUR STATS screenshot of 2026-10-08: net lifetime earnings below zero read $-9,750. It reads -$9,750 now.
