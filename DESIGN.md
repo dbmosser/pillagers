@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.66 - THE CONTRACT LIST READS FROM THE COUCH
+
+Co-op hunt while he was away. Seen on the Mainframe screenshot of 2026-10-07: each contract was a 15 pixel line with 13.5, 11 and 10.5 pixel lines under it (progress, what it pays, its tier) across a panel most of the screen wide, hard to read on a TV. Each is a few sizes up now; nothing else changes.
+
+MEASURED. Check 18.66 passes, and fails on v18.65.
 ## v18.65 - THE SECTOR CARDS READ AT A GLANCE
 
 Co-op hunt while he was away. Seen on the lift screenshot of 2026-10-07: each sector card on WHERE ARE YOU GOING is as tall as its map, and the name and facts were a 16 pixel and a 13 pixel line across the top of it, so the page looked like two big empty boxes. The name is a heading now and the lines under it are bigger; the words are unchanged.

@@ -1,0 +1,7 @@
+v18.66: the contract list reads from the couch
+
+Contracts on the Mainframe are easier to read.
+
+Check 18.66. Fails on v18.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
