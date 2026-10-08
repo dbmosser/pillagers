@@ -1,0 +1,7 @@
+v19.00: status icons on the left, like wow or diablo
+
+Status effects show as icons with names and timers down the left of the screen.
+
+Check 19.00. Fails on v18.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.00 - STATUS ICONS ON THE LEFT, LIKE WOW OR DIABLO
+
+Co-op hunt while he was away. His notes of 2026-10-07: there should be status effect icons on the side like in WoW or Diablo (healing, stamina and so on), and the green heal circle should be on the left instead of over the player head. Seven statuses now show as round icons down the left edge, each with its name and the time left written beside it so player 2 can read them from the couch: healing (moved from over the head), the stim, resting regeneration, winded, Liquor and Blotter with their dose counts, and kid-mode help. A buff sits on a disc and anything working against you on a hexagon with a red edge; a ring shows how much is left. Nothing is drawn when nothing is active, and the column never takes a click. The CONDITIONS row now says BLOTTER for Blotter, the name on the bar.
+
+MEASURED. Check 19.00 passes, and fails on v18.99.
 ## v18.99 - THE WHAT IS NEW CARD NAMES THE BIG SCREEN AND BELT FIXES
 
 Co-op hunt while he was away. The card was stamped v18.84 and the stamp may not trail the build by more than 0.15. Its new second line names the 4K scaling of the backpack, Undercroft text and run card, the belt drag fixes and the gradual Blotter.
