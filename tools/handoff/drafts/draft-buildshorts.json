@@ -1,0 +1,20 @@
+{
+    "title":  "BARE LEGGED OUTFITS WEAR SHORTS ON CURVED",
+    "why":  "Seen on the 4K FASHION outfit screenshots of 2026-10-08: the Baller and the Tomb Explorer have bare legs, so on a Curved body the hips were filled with skin and read as a bare midriff. Those suits now wear shorts on the hips in a darker cut of their own colour, with the bare legs below as before.",
+    "now":  "The Baller and the Tomb Explorer wear shorts on a Curved body.",
+    "edits":  [
+                  {
+                      "anchor":  "function drawBuildTorso(b,cx,ty,cc,cHi,cLo,trs,jc,jh,lx,lA,lB){",
+                      "replacement":  "function drawBuildTorso(b,cx,ty,cc,cHi,cLo,trs,jc,jh,lx,lA,lB,legc){   // v16.xx: trs fills the hips, legc the legs below them"
+                  },
+                  {
+                      "anchor":  "  if(b===\u0027curved\u0027){ wc.fillStyle=trs; wc.fillRect(lx-6.3+lB,ty-10.9,4.6,2.2); wc.fillRect(lx+1.7+lA,ty-10.9,4.6,2.2); }",
+                      "replacement":  "  if(b===\u0027curved\u0027){ wc.fillStyle=legc||trs; wc.fillRect(lx-6.3+lB,ty-10.9,4.6,2.2); wc.fillRect(lx+1.7+lA,ty-10.9,4.6,2.2); }"
+                  },
+                  {
+                      "anchor":  "drawBuildTorso(_BLD,x+leanX,ty,cc,cHi,cLo,_TRS,_JG.c,_JG.h,x,swing*.5,swing2*.5);",
+                      "replacement":  "drawBuildTorso(_BLD,x+leanX,ty,cc,cHi,cLo,(OUTF\u0026\u0026!OUTF.trs)?darkHex(cc,.62):_TRS,_JG.c,_JG.h,x,swing*.5,swing2*.5,_TRS);   /* v16.xx: a bare-legged suit wears shorts on the hips */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a bare-legged outfit wears shorts on a Curved body: the Baller hips are a dark red, not skin, and the legs below stay bare\u0027,\n   run:function(){\n     if(typeof drawOp!==\u0027function\u0027||typeof COSKEY===\u0027undefined\u0027||typeof OUTFITS===\u0027undefined\u0027) return \u0027SKIP: no painter or outfits here\u0027;\n     var kb=COSKEY.build||\u0027cosBuild\u0027, ko=COSKEY.outfit||\u0027cosOutfit\u0027, b0=P[kb], o0=P[ko], a0=P.cosAll, w0=wc, cv=document.createElement(\u0027canvas\u0027), x2, bad=[], d, sk;\n     cv.width=240; cv.height=220; x2=cv.getContext(\u00272d\u0027); if(!x2) return \u0027SKIP: no canvas\u0027;\n     try{\n       P.cosAll=true; P[kb]=\u0027curved\u0027; P[ko]=\u0027outballer\u0027;\n       x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,240,220); x2.setTransform(4,0,0,4,120,190); wc=x2;\n       drawOp(0,0,0,0,\u0027#242832\u0027,0,0,\u0027none\u0027,0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); wc=w0; x2.setTransform(1,0,0,1,0,0);\n       d=x2.getImageData(Math.round(120+4.4*4),Math.round(190-12.6*4),1,1).data;   // out on the hip, past the legs\n       sk=(d[0]\u003e200\u0026\u0026d[1]\u003e150);   // skin is light; the shorts are a dark red\n       if(d[3]\u003c40) bad.push(\u0027nothing drawn at the hip\u0027);\n       else if(sk) bad.push(\u0027the Baller hips are bare skin (\u0027+d[0]+\u0027,\u0027+d[1]+\u0027,\u0027+d[2]+\u0027)\u0027);\n       else if(!(d[0]\u003ed[1]+30)) bad.push(\u0027the Baller hips are not red (\u0027+d[0]+\u0027,\u0027+d[1]+\u0027,\u0027+d[2]+\u0027)\u0027);\n     }catch(e){ wc=w0; bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ wc=w0; P[kb]=b0; P[ko]=o0; P.cosAll=a0; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

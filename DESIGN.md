@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.06 - BARE LEGGED OUTFITS WEAR SHORTS ON CURVED
+
+Co-op hunt while he was away. Seen on the 4K FASHION outfit screenshots of 2026-10-08: the Baller and the Tomb Explorer have bare legs, so on a Curved body the hips were filled with skin and read as a bare midriff. Those suits now wear shorts on the hips in a darker cut of their own colour, with the bare legs below as before.
+
+MEASURED. Check 20.06 passes, and fails on v20.05.
 ## v20.05 - OUTFITS FIT THE BUILD
 
 Co-op hunt while he was away. Seen on the 4K FASHION screenshots of every outfit on Broad and Curved (2026-10-08): the Baller jersey side panels hung outside a Curved waist, the Tomb Explorer bare shoulders floated on a Broad chest and poked out of Curved shoulders, the robot seam ran past a Curved body, and the Curved rose mouth showed on the skull, the robot and the Trooper helmet. Each now follows the build; Lean is unchanged.

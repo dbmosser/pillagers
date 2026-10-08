@@ -1,0 +1,7 @@
+v20.06: bare legged outfits wear shorts on curved
+
+The Baller and the Tomb Explorer wear shorts on a Curved body.
+
+Check 20.06. Fails on v20.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
