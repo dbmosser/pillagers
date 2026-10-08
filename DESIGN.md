@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.80 - THE CARD CAPTIONS ARE READABLE
+
+Co-op hunt while he was away. Seen on the 4K Mainframe screenshot of 2026-10-08: the small captions on the cream cards (PROGRESS and REWARDS on a contract, REQUIRED RESOURCES on a recipe) were 10.5 pixels, the smallest print left on the Mainframe. They are 12.5 now.
+
+MEASURED. Check 19.80 passes, and fails on v19.79.
 ## v19.79 - THE STASH BELT NUMBERS ARE READABLE
 
 Co-op hunt while he was away. Seen on the 4K stash screenshot of 2026-10-08: the key numbers in the tactical belt slots under the loadout were 10.5 pixels, a speck in a 62 pixel slot on a TV. An empty slot shows its number at 14, and a filled slot shows its key number and stack count at 12 in the corners.

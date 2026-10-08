@@ -5721,6 +5721,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.80',what:'the section captions on the cream cards are readable: PROGRESS and REWARDS on the Mainframe card are drawn at 12.5px or more',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the Mainframe';
+     var bad=[], m, labs, i, f, n=0;
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       __hubEnter(); __station('mf','KeyE');
+       m=document.querySelector('.modal.on'); if(!m) return 'SKIP: the Mainframe did not open';
+       labs=[].slice.call(m.querySelectorAll('.crlab'));
+       for(i=0;i<labs.length;i++){ if(!/^(PROGRESS|REWARDS)$/.test(labs[i].textContent.trim())) continue; n++; f=parseFloat(getComputedStyle(labs[i]).fontSize); if(!(f>=12.4)) bad.push(labs[i].textContent.trim()+' is '+f+'px'); }
+       if(!n) return 'SKIP: no PROGRESS or REWARDS caption showing';
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(x){ x.classList.remove('on'); }); }catch(_m){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.79',what:'the stash belt key numbers are readable: the number in an empty belt slot is drawn at 14px or more',
    run:function(){
      if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';
