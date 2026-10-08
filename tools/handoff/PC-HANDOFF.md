@@ -499,3 +499,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.54 exrows4k: extraction lines above the belt use hudFS and offsets times hudRes; drawUseBar lift scales to match.
 - v19.55 prompts4k: hudAtIn(x,y) scales a world prompt about its point (door, revive, search, ring countdowns, pad prompt). Lesson: in a check, set the camera by stepping __frame(0.05) a few times after moving the player; setting g.anchX leaves w2s NaN and hudAtIn's isFinite guard then skips.
 - v19.56 callonce: in the active ring with no beacon, the [E] CALL prompt over the character steps aside for the HOLD E line above the belt.
+- v19.57 prompts4k2: cook countdown, reload bar and search bar with its count scale about their point (hudAtIn). Review 3 (wf_dfe94578-042) over v19.38-v19.57 running.
