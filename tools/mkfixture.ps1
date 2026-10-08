@@ -5931,6 +5931,9 @@ window.__REGRESS=[
      function rightExtent(ly){ var row=x2.getImageData(120,Math.round(190+ly*4),120,1).data, j, r=0; for(j=0;j<120;j++) if(row[j*4+3]>40) r=j; return r; }
      function opaque(ly){ var row=x2.getImageData(0,Math.round(190+ly*4),240,1).data, j, n=0; for(j=0;j<240;j++) if(row[j*4+3]>40) n++; return n; }
      function mouthRose(){ var d=x2.getImageData(108,Math.round(190-25.0*4)-2,24,6).data, j, n=0; for(j=0;j<d.length;j+=4) if(d[j+3]>200&&d[j]>170&&d[j+1]<120&&d[j+2]>80) n++; return n; }
+     // 2026-10-08 retarget: v20.15 keeps the rose mouth off a mask or helmet worn as a hat, and the profile may be wearing one, so the
+     // build is measured bare-headed.
+     var _kh=COSKEY.hat||'cosHat', _h0=P[_kh]; P[_kh]='none';
      try{
        for(i=0;i<3;i++){
          b=['lean','broad','curved'][i]; P[k]=b;
@@ -5940,7 +5943,7 @@ window.__REGRESS=[
          res[b]={hip:rightExtent(-11.6),waist:rightExtent(-14.9),sh:rightExtent(-21.0),rose:mouthRose()};
        }
      }catch(e){ wc=w0; bad.push('threw: '+(e&&e.message||e)); }
-     finally{ wc=w0; P[k]=b0; }
+     finally{ wc=w0; P[k]=b0; P[_kh]=_h0; }
      if(bad.length) return bad.join('; ');
      if(!(res.curved.hip>=res.lean.hip+4)) bad.push('Curved is not wider at the hips ('+res.curved.hip+' against Lean '+res.lean.hip+')');
      if(!(res.curved.waist<res.curved.hip-6)) bad.push('Curved has no waist ('+res.curved.waist+' at the waist, '+res.curved.hip+' at the hips)');
