@@ -1,0 +1,5 @@
+## v20.15 - NO ROSE MOUTH OVER A MASK
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: v20.05 kept the Curved rose mouth off the skull, robot and Trooper outfits, but the Dust Mask, the Spartan Helmet and the Ghost Mask worn as a hat still had a pink dash painted on them, on the player, a teammate, the crowd or a pillager. They show the plain dark mark as on any other build.
+
+MEASURED. Check 20.15 passes, and fails on v20.14.

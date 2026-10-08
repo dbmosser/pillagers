@@ -1,0 +1,7 @@
+v20.15: no rose mouth over a mask
+
+Masks and helmets no longer show a pink mouth on a Curved body.
+
+Check 20.15. Fails on v20.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

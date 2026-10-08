@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.14';
+var VER='20.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23297,7 +23297,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.textAlign='left';
   }
   // a small mouth, hurt pulls it into a grimace
-  wc.fillStyle=(_BLD==='curved'&&!(OUTF&&/^(skeleton|robot|trooper)$/.test(OUTF.mark)))?'#c25a6c':'#8a5c46';   // v20.05: not on a skull, a robot or a helmet   // v20.01: Curved, a rose mouth
+  wc.fillStyle=(_BLD==='curved'&&!(OUTF&&/^(skeleton|robot|trooper)$/.test(OUTF.mark))&&!/^(mask|spartan|ghostmask)$/.test(HAT))?'#c25a6c':'#8a5c46';   /* v20.15, code review: nor over a mask or helmet worn as a hat */   // v20.05: not on a skull, a robot or a helmet   // v20.01: Curved, a rose mouth
   if(st.hurt>0) wc.fillRect(hx2-2,ty-25.6,4,1.6);
   else wc.fillRect(hx2-1.5,ty-25.2,3,1);
 
@@ -33624,7 +33624,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.14: Crouching no longer jolts a Curved body. Check 20.14 fails on v20.13',
+  now:'v20.15: Masks and helmets no longer show a pink mouth on a Curved body. Check 20.15 fails on v20.14',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

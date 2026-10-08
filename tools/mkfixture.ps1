@@ -5722,6 +5722,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.15',what:'no rose mouth over a mask: a Curved body wearing the Dust Mask, the Spartan Helmet or the Ghost Mask as a hat shows no rose mouth',
+   run:function(){
+     if(typeof drawOp!=='function'||typeof COSKEY==='undefined') return 'SKIP: no painter here';
+     var kb=COSKEY.build||'cosBuild', kh=COSKEY.hat||'cosHat', b0=P[kb], h0=P[kh], a0=P.cosAll, w0=wc, cv=document.createElement('canvas'), x2, bad=[], hats=['mask','spartan','ghostmask'], i, n;
+     cv.width=240; cv.height=220; x2=cv.getContext('2d'); if(!x2) return 'SKIP: no canvas';
+     function rose(){ var d=x2.getImageData(104,84,32,14).data, j, c=0; for(j=0;j<d.length;j+=4) if(d[j+3]>200&&d[j]>170&&d[j+1]<120&&d[j+2]>80) c++; return c; }
+     try{
+       P.cosAll=true; P[kb]='curved';
+       for(i=0;i<hats.length;i++){
+         P[kh]=hats[i];
+         x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,240,220); x2.setTransform(4,0,0,4,120,190); wc=x2;
+         drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); wc=w0; x2.setTransform(1,0,0,1,0,0);
+         n=rose(); if(n>3) bad.push('a rose mouth shows over the '+hats[i]+' ('+n+' px)');
+       }
+     }catch(e){ wc=w0; bad.push('threw: '+(e&&e.message||e)); }
+     finally{ wc=w0; P[kb]=b0; P[kh]=h0; P.cosAll=a0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.14',what:'a crouch does not throw the chest: dropping into a crouch and standing up again moves a Curved chest by less than 0.3',
    run:function(){
      if(typeof drawOp!=='function'||typeof bodyJiggle!=='function') return 'SKIP: no jiggle here';
