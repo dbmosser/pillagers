@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.53';
+var VER='20.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33777,7 +33777,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.53: With the backpack highlight on the belt, dropping, offering and equipping no longer act on an unmarked backpack item. Check 20.53 fails on v20.52',
+  now:'v20.54: A restore code can no longer end a raid, and a restored character no longer takes on the guns or hire bill of the old one. Check 20.54 fails on v20.53',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36459,6 +36459,11 @@ function restoreApply(o){
   // v14.04, save audit: and the rest the code does not carry. A hire he paid for, a contract board half done, cutting on
   // a sealed door, an explored map and signed Terms all belonged to the character being replaced.
   P.merc=null; P.contracts=[]; P.seals={}; P.mapSeen={}; P.discover={}; P.terms=[]; P.notExt=0;
+  // v20.54, from the whole-game bug hunt of 2026-10-08 (H35): AND A RAID THE REPLACED CHARACTER LEFT OPEN. The armoury guns he
+  // carried up (raidSpliced) and a hire who died up there (mercOut) are settled by the next load, and the next load is the
+  // restored character's, so he was handed the guns and billed the death benefit. They go here; the UNDO copy, written before
+  // this, keeps them for the character they belong to.
+  delete P.raidSpliced; delete P.mercOut;
   // v15.96, ghost audit finding: A RESTORE CODE CARRIES THE IMPORTED FRIEND. The friend imported at the Mainframe (P.ghost) was
   // neither carried by the code nor cleared here, so a code pasted over a character who had imported one kept that friend: the
   // Mainframe still said they walk your raids and applyGhost still dressed a pillager as them on the restored character's raids,
@@ -44414,10 +44419,18 @@ document.getElementById('copybtn').onclick=function(){
   var pend=null;
   function el(id){ return document.getElementById(id); }
   function shut(){ pend=null; var c=el('resconfirm'); if(c) c.style.display='none'; var w=el('resword'); if(w) w.value=''; }
+  // v20.54, from the whole-game bug hunt of 2026-10-08 (H35): A RESTORE CODE WAITS FOR THE UNDERCROFT. Settings opens in a raid
+  // (v16.45), and v16.50 greyed out PICK FILE, UNDO and the tuning console there, but READ CODE and REPLACE stayed live: a code
+  // pasted in a raid replaced the save and reloaded the window 400 ms later, which threw the raid away, and the raid's own notes
+  // then settled onto the restored character. In a raid, and while the host runs the raid for his party (as _rOff reads it),
+  // both buttons now say why and do nothing, and a code read before the raid cannot be applied in it.
+  function resInRaid(){ return !!((typeof G!=='undefined'&&G&&!G.over&&!G.sim)||(typeof NET==='object'&&NET&&NET.on&&NET.specG)); }
+  function resNotNow(){ var s=el('reswhat'); shut(); if(s){ s.style.color='var(--hazard)'; s.textContent='A restore code reloads the game, which would end this raid. It works once you are back in the Undercroft.'; } }
   var rr=el('resread');
   if(rr) rr.onclick=function(){
     var ta=el('rescode'), o=restoreRead(ta?ta.value:'');
     var say=el('reswhat');
+    if(resInRaid()){ resNotNow(); return; }   // v20.54 (H35): not in a raid
     pend=o;
     if(!o){ if(say){ say.style.color='var(--hazard)'; say.textContent='That is not a restore code.'; } shut(); return; }
     if(say){ say.style.color='var(--ash)'; say.textContent=restoreSay(o); }
@@ -44429,6 +44442,7 @@ document.getElementById('copybtn').onclick=function(){
   if(go) go.onclick=function(){
     var w=el('resword'), word=((w&&w.value)||'').trim().toLowerCase();
     if(word!=='restore'||!pend) return;
+    if(resInRaid()){ resNotNow(); return; }   // v20.54 (H35): a code read in the Undercroft is not applied once a raid has started
     var o=pend;
     // v14.06, save audit: the character a code replaces is kept for UNDO, as a file restore keeps it.
     try{ localStorage.setItem(RESTORE_BACKUP_KEY,JSON.stringify(P)); }catch(_pk){}

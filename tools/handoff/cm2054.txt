@@ -1,0 +1,7 @@
+v20.54: a restore code waits for the undercroft
+
+A restore code can no longer end a raid, and a restored character no longer takes on the guns or hire bill of the old one.
+
+Check 20.54. Fails on v20.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

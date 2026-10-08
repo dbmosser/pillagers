@@ -1,0 +1,1 @@
+| A RESTORE CODE WAITS FOR THE UNDERCROFT | v20.54 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 20.54 passes, fails on v20.53 |

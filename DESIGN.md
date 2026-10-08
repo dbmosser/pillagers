@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.54 - A RESTORE CODE WAITS FOR THE UNDERCROFT
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Settings opens in a raid, and the buttons there that would drop you out of a raid are greyed out, but the restore code buttons were not. Pasting a code in a raid replaced your save and reloaded the game, which threw the raid away, and the reload then handed the restored character any armoury guns carried up in that raid and billed him for a hire who died up there. In a raid READ CODE and REPLACE now say they work once you are back in the Undercroft, and a restored character never picks up the replaced one's open raid.
+
+MEASURED. Check 20.54 passes, and fails on v20.53.
 ## v20.53 - THE BELT HIGHLIGHT DROPS NOTHING HIDDEN
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. With the backpack open, walking the highlight down past the last stack moves the gold ring onto the belt row. The backpack stack it left had no ring any more, but Z, Y on a controller, T and Enter still acted on it: pressing Z meaning to drop the Medkit ringed on the belt dropped a hidden backpack item instead (in co-op, a pile your teammate can take), T offered it and Enter equipped it. With the highlight on the belt these keys now say where the highlight is and do nothing, and clicking a backpack tile brings the highlight back into the backpack.
