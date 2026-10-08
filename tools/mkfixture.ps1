@@ -6184,7 +6184,7 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); keys={}; g.mapOpen=false; g.bagOpen=false; g.pCrouch=true;
        for(i=0;i<g.ents.length;i++) if(g.ents[i]&&g.ents[i].name===BOSS_NAME&&g.ents[i].hp>0){ e=g.ents[i]; break; }
-       if(e){ e.x=g.player.x+150; e.y=g.player.y; g.bossRef=e; }
+       if(e){ e.x=g.player.x+150; e.y=g.player.y; g.bossRef=e; e.barSeen=1; }   // seen: this check is about layout, not when the bar first shows
        __frame(0.016);
        hudPanel=function(x,y,w,h,a){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1; seen.push([(m.a*x+m.c*y+m.e)/d,(m.b*x+m.d*y+m.f)/d,w*m.a/d,h*m.d/d]); return oHP.apply(this,arguments); };
        ctx.fillText=function(s,x,y){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1; texts.push([String(s),(m.b*x+m.d*y+m.f)/d]); return oFT.apply(this,arguments); };
@@ -6713,7 +6713,7 @@ window.__REGRESS=[
        NET.on=true; NET.roster=[{seat:0,name:'HOST'},{seat:1,name:'KID'}];
        g.giftIn={id:'z1',k:'bandage',from:1,t:g.t};
        for(i=0;i<g.ents.length;i++){ if(g.ents[i]&&g.ents[i].name===BOSS_NAME&&g.ents[i].hp>0){ e=g.ents[i]; break; } }
-       if(e){ e.x=p.x+120; e.y=p.y; g.bossRef=e; }
+       if(e){ e.x=p.x+120; e.y=p.y; g.bossRef=e; e.barSeen=1; }   // seen: this check is about draw order, not when the bar first shows
        __frame(0.016);
        ctx.clearRect=function(x,y,w,h){ seq++; if(w>=W-1&&h>=H-1) cl=seq; return oCR.apply(this,arguments); };
        ctx.fillText=function(s){ seq++; if(/offers you/.test(String(s))) gl=seq; if(e&&String(s)===String(e.name)) bl=seq; return oFT.apply(this,arguments); };

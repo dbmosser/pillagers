@@ -447,3 +447,10 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v18.68 card-1868: WHATSNEW_VER 18.68; next refresh by ~18.83.
 - Fixture: 17.71 restores salvagerun:kid (it left kb:1 shared, which broke 17.66); 17.66 pins kid comeback off; 16.33 finds the YOUR PARTY line anywhere.
 - Shots: tools/handoff/shots/*.jpg retaken on v18.67. Not fixed (taste or low value): station pages centre their content (safe center), Integrity vs HP wording in the backpack, map preview labels overlap on The Cold Mile.
+- v18.69 zonenames: sector preview zone names shrink to fit their zone and break onto two lines.
+- v18.70 zonelabel: an extraction ring label slides to stay whole on screen.
+- v18.71 beltfont: belt key numbers, counts and caption scale with the slot (beltFS); caption names the V key as set.
+- v18.72 contractwrap: the raid contract count is glued to its last word (no lone 0/1 line).
+- v18.73 tcardsolid: title step cards solid.
+- 9345 (4K soak) now runs in a real 3804x2055 window (soak4k.ps1 relaunches it when the port is down); 4K shots in tools/handoff/shots4k.
+- Heartbeat cron 3ef10367 at :17 and :47 (session-only, 7-day expiry).
