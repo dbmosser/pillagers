@@ -5721,6 +5721,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.06',what:'the pause key line never breaks an entry: every key and its words sit in one unbreakable piece',
+   run:function(){
+     if(typeof keysLegendApply!=='function') return 'SKIP: no pause key line here';
+     var el=document.getElementById('pausekeys'), parts, sp, bad=[];
+     if(!el) return 'SKIP: no pause key line';
+     keysLegendApply();
+     parts=String(keysLegendHtml()).split(' &nbsp; ').length;
+     sp=el.querySelectorAll('span[style*="nowrap"]').length;
+     if(sp<parts) bad.push(sp+' of '+parts+' entries are kept on one line');
+     return bad.length?bad.join('; '):null; }},
   {v:'19.05',what:'the extraction card shows the haul: after extracting with items, the card shows a picture for each item secured (up to twelve)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';

@@ -1,0 +1,12 @@
+{
+    "title":  "THE PAUSE KEY LINE NEVER BREAKS AN ENTRY",
+    "why":  "Seen on the 4K pause screenshot of 2026-10-07: the line of keys on the RAID PAUSED box broke one entry across two lines (TAB back, then out on the next line). Each key and its words now stay together on one line; only the gaps between entries can wrap.",
+    "now":  "The keys on the pause box wrap only between entries, never inside one.",
+    "edits":  [
+                  {
+                      "anchor":  "function keysLegendApply(){ var el=document.getElementById(\u0027pausekeys\u0027); if(!el) return false; el.innerHTML=keysLegendHtml(); return true; }",
+                      "replacement":  "function keysLegendApply(){ var el=document.getElementById(\u0027pausekeys\u0027); if(!el) return false; el.innerHTML=String(keysLegendHtml()).split(\u0027 \u0026nbsp; \u0027).map(function(p){ return \u0027\u003cspan style=\"white-space:nowrap\"\u003e\u0027+p+\u0027\u003c/span\u003e\u0027; }).join(\u0027 \u0026nbsp; \u0027); return true; }   // v16.xx, seen on the 4K pause screenshot (2026-10-07): an entry broke in two at the line end (TAB back / out); each key and its words now stay on one line"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pause key line never breaks an entry: every key and its words sit in one unbreakable piece\u0027,\n   run:function(){\n     if(typeof keysLegendApply!==\u0027function\u0027) return \u0027SKIP: no pause key line here\u0027;\n     var el=document.getElementById(\u0027pausekeys\u0027), parts, sp, bad=[];\n     if(!el) return \u0027SKIP: no pause key line\u0027;\n     keysLegendApply();\n     parts=String(keysLegendHtml()).split(\u0027 \u0026nbsp; \u0027).length;\n     sp=el.querySelectorAll(\u0027span[style*=\"nowrap\"]\u0027).length;\n     if(sp\u003cparts) bad.push(sp+\u0027 of \u0027+parts+\u0027 entries are kept on one line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

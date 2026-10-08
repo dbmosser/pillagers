@@ -1,0 +1,7 @@
+v19.06: the pause key line never breaks an entry
+
+The keys on the pause box wrap only between entries, never inside one.
+
+Check 19.06. Fails on v19.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.06 - THE PAUSE KEY LINE NEVER BREAKS AN ENTRY
+
+Co-op hunt while he was away. Seen on the 4K pause screenshot of 2026-10-07: the line of keys on the RAID PAUSED box broke one entry across two lines (TAB back, then out on the next line). Each key and its words now stay together on one line; only the gaps between entries can wrap.
+
+MEASURED. Check 19.06 passes, and fails on v19.05.
 ## v19.05 - THE EXTRACTION CARD SHOWS THE HAUL
 
 Co-op hunt while he was away. Seen on the extraction card screenshot of 2026-10-07: the card told you how many items you secured and what they were worth, but never showed them. A strip of their pictures now sits under that line, most valuable first, each framed in its rarity colour, up to twelve and then a count.

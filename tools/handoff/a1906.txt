@@ -1,0 +1,1 @@
+| THE PAUSE KEY LINE NEVER BREAKS AN ENTRY | v19.06 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 19.06 passes, fails on v19.05 |

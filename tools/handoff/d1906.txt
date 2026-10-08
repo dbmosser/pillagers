@@ -1,0 +1,5 @@
+## v19.06 - THE PAUSE KEY LINE NEVER BREAKS AN ENTRY
+
+Co-op hunt while he was away. Seen on the 4K pause screenshot of 2026-10-07: the line of keys on the RAID PAUSED box broke one entry across two lines (TAB back, then out on the next line). Each key and its words now stay together on one line; only the gaps between entries can wrap.
+
+MEASURED. Check 19.06 passes, and fails on v19.05.
