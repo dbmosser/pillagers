@@ -1580,7 +1580,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.96';
+var VER='19.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33515,7 +33515,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.96: The 1 and 2 on equipped guns in the stash are easy to read. Check 19.96 fails on v19.95',
+  now:'v19.97: On the lift page maps, zone names no longer run through the extraction rings. Check 19.97 fails on v19.96',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42075,16 +42075,20 @@ function sectorPreviewDraw(cv,M){
     (function(){
       var zw=Math.max(10,z.w*sc-6), fs=11, cx=ox+(z.x+z.w/2)*sc, cy=oy+(z.y+z.h/2)*sc, nm=String(z.name), ws, k, a1, a2, best=-1, bw=1e9, w1, w2;
       c.fillStyle='rgba(205,214,221,.85)'; c.textAlign='center';
+      // v19.97, seen on the 4K lift screenshot (2026-10-08): a zone name was printed through an extraction ring (THE LONG DOCK, BLAST
+      // LINE). A name that would touch a ring moves to the nearest clear place just above or below it, inside its own zone.
+      function hits(y,hh,hw){ var j,e2,rx,ry,r2,nx,ny; if(!M.extracts) return false; for(j=0;j<M.extracts.length;j++){ e2=M.extracts[j]; if(!e2) continue; rx=ox+e2.x*sc; ry=oy+e2.y*sc; r2=Math.max(4,78*sc)+2; nx=Math.max(cx-hw,Math.min(rx,cx+hw)); ny=Math.max(y-hh,Math.min(ry,y+hh)); if((nx-rx)*(nx-rx)+(ny-ry)*(ny-ry)<r2*r2) return true; } return false; }
+      function place(hh,hw){ var top=oy+z.y*sc+hh+1, bot=oy+(z.y+z.h)*sc-hh-1, cand=[cy], j, e2, ry, r2, k, y, best=null; if(M.extracts) for(j=0;j<M.extracts.length;j++){ e2=M.extracts[j]; if(!e2) continue; ry=oy+e2.y*sc; r2=Math.max(4,78*sc)+2; cand.push(ry-r2-hh-1,ry+r2+hh+1); } for(k=0;k<cand.length;k++){ y=cand[k]; if(y<top||y>bot||hits(y,hh,hw)) continue; if(best===null||Math.abs(y-cy)<Math.abs(best-cy)) best=y; } return best===null?cy:best; }
       c.font='bold '+fs+'px Rubik, system-ui, sans-serif';
       while(fs>8&&c.measureText(nm).width>zw){ fs--; c.font='bold '+fs+'px Rubik, system-ui, sans-serif'; }
       if(c.measureText(nm).width>zw&&nm.indexOf(' ')>0){
         ws=nm.split(' ');
         for(k=1;k<ws.length;k++){ w1=c.measureText(ws.slice(0,k).join(' ')).width; w2=c.measureText(ws.slice(k).join(' ')).width; if(Math.max(w1,w2)<bw){ bw=Math.max(w1,w2); best=k; } }
         a1=ws.slice(0,best).join(' '); a2=ws.slice(best).join(' ');
-        c.fillText(a1,cx,cy-fs*0.5+3); c.fillText(a2,cx,cy+fs*0.5+4);
+        cy=place(fs+1,Math.max(c.measureText(a1).width,c.measureText(a2).width)/2+2); c.fillText(a1,cx,cy-fs*0.5+3); c.fillText(a2,cx,cy+fs*0.5+4);
         return;
       }
-      c.fillText(nm,cx,cy+3);
+      cy=place(fs*0.5+1,c.measureText(nm).width/2+2); c.fillText(nm,cx,cy+3);
     })(); }
   if(M.extracts) for(i=0;i<M.extracts.length;i++){ e=M.extracts[i]; if(!e) continue;
     c.strokeStyle='#4de3d0'; c.lineWidth=2; c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,Math.max(4,78*sc),0,6.2832); c.stroke();

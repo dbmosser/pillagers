@@ -1,0 +1,7 @@
+v19.97: sector thumbnail names clear the rings
+
+On the lift page maps, zone names no longer run through the extraction rings.
+
+Check 19.97. Fails on v19.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

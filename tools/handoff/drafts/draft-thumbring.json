@@ -1,0 +1,20 @@
+{
+    "title":  "SECTOR THUMBNAIL NAMES CLEAR THE RINGS",
+    "why":  "Seen on the 4K lift screenshot of 2026-10-08: on the sector thumbnails a zone name could be printed straight through a cyan extraction ring (THE LONG DOCK on Cold Storage, BLAST LINE on The Cold Mile). A name that would touch a ring now moves to the nearest clear place just above or below it, inside its own zone.",
+    "now":  "On the lift page maps, zone names no longer run through the extraction rings.",
+    "edits":  [
+                  {
+                      "anchor":  "      c.fillStyle=\u0027rgba(205,214,221,.85)\u0027; c.textAlign=\u0027center\u0027;",
+                      "replacement":  "      c.fillStyle=\u0027rgba(205,214,221,.85)\u0027; c.textAlign=\u0027center\u0027;\n      // v16.xx, seen on the 4K lift screenshot (2026-10-08): a zone name was printed through an extraction ring (THE LONG DOCK, BLAST\n      // LINE). A name that would touch a ring moves to the nearest clear place just above or below it, inside its own zone.\n      function hits(y,hh,hw){ var j,e2,rx,ry,r2,nx,ny; if(!M.extracts) return false; for(j=0;j\u003cM.extracts.length;j++){ e2=M.extracts[j]; if(!e2) continue; rx=ox+e2.x*sc; ry=oy+e2.y*sc; r2=Math.max(4,78*sc)+2; nx=Math.max(cx-hw,Math.min(rx,cx+hw)); ny=Math.max(y-hh,Math.min(ry,y+hh)); if((nx-rx)*(nx-rx)+(ny-ry)*(ny-ry)\u003cr2*r2) return true; } return false; }\n      function place(hh,hw){ var top=oy+z.y*sc+hh+1, bot=oy+(z.y+z.h)*sc-hh-1, cand=[cy], j, e2, ry, r2, k, y, best=null; if(M.extracts) for(j=0;j\u003cM.extracts.length;j++){ e2=M.extracts[j]; if(!e2) continue; ry=oy+e2.y*sc; r2=Math.max(4,78*sc)+2; cand.push(ry-r2-hh-1,ry+r2+hh+1); } for(k=0;k\u003ccand.length;k++){ y=cand[k]; if(y\u003ctop||y\u003ebot||hits(y,hh,hw)) continue; if(best===null||Math.abs(y-cy)\u003cMath.abs(best-cy)) best=y; } return best===null?cy:best; }"
+                  },
+                  {
+                      "anchor":  "        c.fillText(a1,cx,cy-fs*0.5+3); c.fillText(a2,cx,cy+fs*0.5+4);",
+                      "replacement":  "        cy=place(fs+1,Math.max(c.measureText(a1).width,c.measureText(a2).width)/2+2); c.fillText(a1,cx,cy-fs*0.5+3); c.fillText(a2,cx,cy+fs*0.5+4);"
+                  },
+                  {
+                      "anchor":  "      c.fillText(nm,cx,cy+3);\n    })(); }",
+                      "replacement":  "      cy=place(fs*0.5+1,c.measureText(nm).width/2+2); c.fillText(nm,cx,cy+3);\n    })(); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a sector thumbnail zone name clears the extraction rings: a name whose zone centre sits on a ring is drawn above or below the ring, not through it\u0027,\n   run:function(){\n     if(typeof sectorPreviewDraw!==\u0027function\u0027) return \u0027SKIP: no sector thumbnails here\u0027;\n     var cv=document.createElement(\u0027canvas\u0027), c, rec=[], M, sc, rx, ry, r, i, bad=[], hh;\n     cv.width=300; cv.height=300; c=cv.getContext(\u00272d\u0027); if(!c) return \u0027SKIP: no canvas\u0027;\n     M={w:1000,h:1000,zones:[{x:0,y:0,w:1000,h:1000,name:\u0027ZQ ZONE\u0027}],extracts:[{x:500,y:500}]};\n     c.fillText=function(t,x,y){ rec.push({t:String(t),x:x,y:y,w:c.measureText(String(t)).width,f:c.font}); return CanvasRenderingContext2D.prototype.fillText.apply(c,arguments); };\n     try{ sectorPreviewDraw(cv,M); }catch(e){ return \u0027threw: \u0027+(e\u0026\u0026e.message||e); }\n     sc=0.3; rx=150; ry=150; r=Math.max(4,78*sc);\n     for(i=0;i\u003crec.length;i++){ if(rec[i].t!==\u0027ZQ ZONE\u0027) continue; hh=(parseFloat((/(\\d+)px/.exec(rec[i].f)||[0,11])[1])||11)*0.5; var cyl=rec[i].y-3; if(Math.abs(cyl-ry)\u003cr+hh) bad.push(\u0027the zone name is drawn through the ring (centre \u0027+Math.round(cyl)+\u0027, ring \u0027+ry+\u0027 r \u0027+Math.round(r)+\u0027)\u0027); }\n     if(!rec.some(function(q){ return q.t===\u0027ZQ ZONE\u0027; })) return \u0027SKIP: the zone name was not drawn\u0027;\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

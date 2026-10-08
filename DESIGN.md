@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.97 - SECTOR THUMBNAIL NAMES CLEAR THE RINGS
+
+Co-op hunt while he was away. Seen on the 4K lift screenshot of 2026-10-08: on the sector thumbnails a zone name could be printed straight through a cyan extraction ring (THE LONG DOCK on Cold Storage, BLAST LINE on The Cold Mile). A name that would touch a ring now moves to the nearest clear place just above or below it, inside its own zone.
+
+MEASURED. Check 19.97 passes, and fails on v19.96.
 ## v19.96 - THE STASH SLOT BADGE IS A CLEAR PILL
 
 Co-op hunt while he was away. Seen on the 4K stash screenshot of 2026-10-08: the 1 or 2 that marks a gun equipped as primary or secondary was a bare amber sliver hugging its digit, pushed into the rounded corner of the tile so the corner cut it. It is a small rounded pill now, set in from the corner.
