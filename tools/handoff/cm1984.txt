@@ -1,0 +1,7 @@
+v19.84: menu paragraphs never end on one word
+
+Menu text no longer leaves a single word alone on its last line.
+
+Check 19.84. Fails on v19.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

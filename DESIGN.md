@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.84 - MENU PARAGRAPHS NEVER END ON ONE WORD
+
+Co-op hunt while he was away. From the 4K menu screenshots of 2026-10-08: hints and descriptions in the menus could end on one lonely word on a line of its own. The browser now evens out the last lines of every menu paragraph, so none ends on a single word. Only where the lines break moves; no text changes.
+
+MEASURED. Check 19.84 passes, and fails on v19.83.
 ## v19.83 - A WRAPPED CONTRACT HANGS ITS SECOND LINE
 
 Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-08 after v19.82: the second line of a wrapped contract in the CONDITIONS box started at the same margin as the next contract, so 1x Data Core 0/1 read as a contract of its own. Second lines now hang a little to the right, and the wrap leaves them the room so they stay inside the box.
