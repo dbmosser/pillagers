@@ -5721,6 +5721,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.78',what:'text in the framed windows stays inside the frame: the text lines of the Terms, Party, gambler and bar windows are capped at 1060 like their lists, not the general 1180',
+   run:function(){
+     var bad=[], ids=['termsmodal','partymodal','gamblemodal','barmodal'], n=0;
+     ids.forEach(function(id){ var m=document.getElementById(id); if(!m) return; var s=m.querySelector('.msub'); if(!s) return; n++; var mw=getComputedStyle(s).maxWidth; if(mw!=='1060px') bad.push(id+' text lines are capped at '+mw); });
+     if(!n) return 'SKIP: no framed windows here';
+     return bad.length?bad.join('; '):null; }},
   {v:'18.77',what:'the gambler window lines are centred like its title and cards: the credits line and Wirt line read centred, never flush against the panel edge',
    run:function(){
      var a=document.getElementById('wallet_gamble'), b=document.getElementById('gamble_line'), bad=[];

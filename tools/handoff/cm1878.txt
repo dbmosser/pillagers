@@ -1,0 +1,7 @@
+v18.78: text in the framed windows stays inside the frame
+
+In the bar, gambler, Terms and Party windows the text no longer touches the frame on a 4K screen.
+
+Check 18.78. Fails on v18.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

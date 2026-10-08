@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.78 - TEXT IN THE FRAMED WINDOWS STAYS INSIDE THE FRAME
+
+Co-op hunt while he was away. Seen on the 4K screenshots of 2026-10-07: in THE LAST POUR and WIRT THE GAMBLER (and the same way in the Terms and Party windows) the lines above the list ran out to the very edge of the window frame on a big screen. Those windows cap their text at the width of their list, but a general rule written later in the page overrode it. The cap holds again, so the text sits inside the frame like the list does.
+
+MEASURED. Check 18.78 passes, and fails on v18.77.
 ## v18.77 - THE GAMBLER WINDOW LINES ARE CENTRED
 
 Co-op hunt while he was away. Seen on the 4K screenshot of 2026-10-07: in WIRT THE GAMBLER the credits line and Wirt line ran from the very left edge of the panel, touching its border, under a centred title and centred cards. They are centred like the rest of the window now; the words are unchanged.

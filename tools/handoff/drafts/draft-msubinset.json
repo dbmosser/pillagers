@@ -1,0 +1,12 @@
+{
+    "title":  "TEXT IN THE FRAMED WINDOWS STAYS INSIDE THE FRAME",
+    "why":  "Seen on the 4K screenshots of 2026-10-07: in THE LAST POUR and WIRT THE GAMBLER (and the same way in the Terms and Party windows) the lines above the list ran out to the very edge of the window frame on a big screen. Those windows cap their text at the width of their list, but a general rule written later in the page overrode it. The cap holds again, so the text sits inside the frame like the list does.",
+    "now":  "In the bar, gambler, Terms and Party windows the text no longer touches the frame on a 4K screen.",
+    "edits":  [
+                  {
+                      "anchor":  "  #root .msub{ font-size:15px; line-height:1.5; color:var(--ash); max-width:1180px; }",
+                      "replacement":  "  #root .msub{ font-size:15px; line-height:1.5; color:var(--ash); max-width:1180px; }\n  #root #termsmodal .msub, #root #partymodal .msub, #root #gamblemodal .msub, #root #barmodal .msub{ max-width:1060px; }   /* v16.xx, seen on the 4K screenshots (2026-10-07): the general 1180 cap above came later and beat the 1060 these framed windows set, so on a big screen their text lines ran out to the frame\u0027s edge (THE LAST POUR, WIRT THE GAMBLER, the Terms, the Party); inside the frame again */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027text in the framed windows stays inside the frame: the text lines of the Terms, Party, gambler and bar windows are capped at 1060 like their lists, not the general 1180\u0027,\n   run:function(){\n     var bad=[], ids=[\u0027termsmodal\u0027,\u0027partymodal\u0027,\u0027gamblemodal\u0027,\u0027barmodal\u0027], n=0;\n     ids.forEach(function(id){ var m=document.getElementById(id); if(!m) return; var s=m.querySelector(\u0027.msub\u0027); if(!s) return; n++; var mw=getComputedStyle(s).maxWidth; if(mw!==\u00271060px\u0027) bad.push(id+\u0027 text lines are capped at \u0027+mw); });\n     if(!n) return \u0027SKIP: no framed windows here\u0027;\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
