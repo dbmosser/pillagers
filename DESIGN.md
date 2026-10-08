@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.64 - THE SHOP SHOWS ITS ITEMS BIG
+
+Co-op hunt while he was away. Seen on the shop screenshot of 2026-10-07: the new item pictures filled only 44% of a shop, craft or hire tile, small in a lot of empty tile. They fill 60% now, which still leaves room for the name under them at every tile size.
+
+MEASURED. Check 18.64 passes, and fails on v18.63.
 ## v18.63 - EVERY STATION NAME SITS ON ITS PLATE
 
 Co-op hunt while he was away. Seen on the Undercroft screenshot of 2026-10-07: the dark plate behind a station name was laid at the station before a name near a wall was pushed inward, so a bare strip of plate stuck out beside SHOP, CRAFT, AND HIRE and WIRT THE GAMBLER; the plate covered only the lower half of the letters; and the warning under THE LAST POUR printed across its name. The plate now sits under the name and covers it, and the warning starts below it. His wording is untouched.

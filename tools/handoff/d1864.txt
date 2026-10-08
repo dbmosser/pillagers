@@ -1,0 +1,5 @@
+## v18.64 - THE SHOP SHOWS ITS ITEMS BIG
+
+Co-op hunt while he was away. Seen on the shop screenshot of 2026-10-07: the new item pictures filled only 44% of a shop, craft or hire tile, small in a lot of empty tile. They fill 60% now, which still leaves room for the name under them at every tile size.
+
+MEASURED. Check 18.64 passes, and fails on v18.63.

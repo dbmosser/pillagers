@@ -1,0 +1,7 @@
+v18.64: the shop shows its items big
+
+Items in the shop, craft and hire lists are shown about a third bigger.
+
+Check 18.64. Fails on v18.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

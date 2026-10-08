@@ -248,7 +248,7 @@
      times the row size (v18.09), so the big picture is a sharp one. */
   #hub .invgrid .cell:not([data-plan]) .ic{ width:62% !important; height:62% !important; }
   #stagemodal .invgrid .cell:not([data-plan]) .ic{ width:62% !important; height:62% !important; }
-  .vcell .ic{ width:44% !important; height:44% !important; }
+  .vcell .ic{ width:60% !important; height:60% !important; object-fit:contain; }   /* v18.64, seen on the shop screenshot (2026-10-07): the new pictures were 44% of a shop, craft or hire tile, small in a lot of empty tile; 60% still leaves room for the name */
   #kitgrid{ min-height:56px; }
   #hub[data-slayout] .invgrid .ic{ width:40px !important; height:40px !important; }
   #hub[data-slayout="2"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(140px,1fr)) !important; gap:12px !important; }
@@ -1511,7 +1511,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.63';
+var VER='18.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32761,7 +32761,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.63: Station names on the Undercroft floor sit cleanly on their plates, and THE LAST POUR warning no longer prints over its name. Check 18.63 fails on v18.62',
+  now:'v18.64: Items in the shop, craft and hire lists are shown about a third bigger. Check 18.64 fails on v18.63',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
