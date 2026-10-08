@@ -574,3 +574,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - usage 18:13 weekly 38% (5h 11%): 18:00-18:13 burn ~9%/h weekly with the 10-area hunt = 8x the 1.16%/h target. Rule: workflows in bursts only; solo shipping between; re-measure ~30 min.
 - v20.25 cresbig: craft REQUIRED RESOURCES rows 16/17px with 30px pictures.
 - v20.26 statbig: YOUR STATS cards min 190px (fill the row), title 13, figure 28 (word 19), sub-line 14.
+- usage 18:18 weekly 39% (5h 14%): ~10%/h with the hunt plus a 930k-token context (every call costly until auto-compact at 97%). Throttling: fewer, larger calls; fix the hunt's findings in batches.
