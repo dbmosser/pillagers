@@ -5722,6 +5722,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.31',what:'a co-op guest is paid and scored for the Terms the shared raid was built with: a raid holding its own Terms reads them while it runs and as it ends, and the Undercroft still reads the player own',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof termsPay!=='function'||typeof hasTerm!=='function'||typeof netUpStart!=='function') return 'SKIP: no raid or Terms here';
+     var bad=[], t0, g, src, nd;
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       t0=P.terms; P.terms=[];
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       g.terms=['known','patrols'];
+       if(!hasTerm('known')) bad.push('a raid built under THEY KNOW YOU does not read it');
+       if(!(Math.abs(termsPay()-0.60)<1e-9)) bad.push('the raid pays '+termsPay()+' for its Terms, not 0.60');
+       g.over='extract';
+       if(!(Math.abs(termsPay(1)-0.60)<1e-9)) bad.push('as the raid ends it pays '+termsPay(1)+', not 0.60');
+       if(hasTerm('known')||termsPay()!==0) bad.push('the Undercroft reads the raid Terms, not the player own');
+       g.over=false;
+       src=String(netUpStart); nd='G.ter'+'ms=';
+       if(src.indexOf(nd)<0) bad.push('a guest raid never keeps the Terms the host built it with');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} if(t0!==undefined) P.terms=t0; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.30',what:'when the host leaves, every box holds what the host last said: a box part searched gives nothing twice, a box the host searched holds what he left, and a pile or restocked box the host made keeps its items',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof netHostGone!=='function'||typeof netContWord!=='function'||typeof netLootTake!=='function') return 'SKIP: no raid or party in this fixture';

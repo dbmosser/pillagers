@@ -1,0 +1,7 @@
+v20.31: a guest is paid for the raid it is in
+
+In co-op, both players are paid hazard pay for the Terms the raid was actually built with.
+
+Check 20.31. Fails on v20.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

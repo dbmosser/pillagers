@@ -1,0 +1,5 @@
+## v20.31 - A GUEST IS PAID FOR THE RAID IT IS IN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op the raid is built with the host's Terms, but the other player was paid hazard pay and XP for the Terms it had signed itself. A guest who signed all five got 140% extra for a standard raid, and a guest who signed none fought heavy patrols and hostile pillagers for nothing. Its conditions panel and run record listed the wrong Terms too, and two mid-raid effects (hostile pillagers arriving late, the listener's reach) followed its own list. The raid now keeps the Terms it was built with, and pay, XP, the panel and the record read those.
+
+MEASURED. Check 20.31 passes, and fails on v20.30.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.31 - A GUEST IS PAID FOR THE RAID IT IS IN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op the raid is built with the host's Terms, but the other player was paid hazard pay and XP for the Terms it had signed itself. A guest who signed all five got 140% extra for a standard raid, and a guest who signed none fought heavy patrols and hostile pillagers for nothing. Its conditions panel and run record listed the wrong Terms too, and two mid-raid effects (hostile pillagers arriving late, the listener's reach) followed its own list. The raid now keeps the Terms it was built with, and pay, XP, the panel and the record read those.
+
+MEASURED. Check 20.31 passes, and fails on v20.30.
 ## v20.30 - WHEN THE HOST LEAVES, THE BOXES ARE RIGHT
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. When the host window closed and the other player picked up the raid, each box went back to that window's own copy. A box part searched gave the same items a second time (six items out of a four item box), and every box the host made held nothing: a Medkit dropped to trade, pillager bodies, wrecks, the Overseer hoard and restocked boxes all opened empty. The host now tells the party what is left in a box whenever that changes, and at the takeover every box holds exactly that, with its search bar where it was.

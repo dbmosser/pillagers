@@ -1,0 +1,36 @@
+{
+    "title":  "A GUEST IS PAID FOR THE RAID IT IS IN",
+    "why":  "Found by the whole-game bug hunt of 2026-10-08. In co-op the raid is built with the host\u0027s Terms, but the other player was paid hazard pay and XP for the Terms it had signed itself. A guest who signed all five got 140% extra for a standard raid, and a guest who signed none fought heavy patrols and hostile pillagers for nothing. Its conditions panel and run record listed the wrong Terms too, and two mid-raid effects (hostile pillagers arriving late, the listener\u0027s reach) followed its own list. The raid now keeps the Terms it was built with, and pay, XP, the panel and the record read those.",
+    "now":  "In co-op, both players are paid hazard pay for the Terms the raid was actually built with.",
+    "edits":  [
+                  {
+                      "anchor":  "function termsOn(){ if(!Array.isArray(P.terms)) P.terms=[]; return P.terms; }\nfunction hasTerm(id){ return termsOn().indexOf(id)\u003e=0; }\nfunction termsPay(){\n  var m=0,t=termsOn();",
+                      "replacement":  "// v16.xx, from the whole-game bug hunt of 2026-10-08 (H27): THE TERMS OF THE RAID YOU ARE IN. A co-op guest\u0027s raid is built with\n// the host\u0027s Terms (netUpStart), but everything after the build read the guest\u0027s own signed list: its hazard pay, its XP, its\n// conditions panel, its run record, and the hostile pillagers and listener reach decided mid raid. A guest who signed all five\n// was paid 140% for a standard raid; a guest who signed none fought heavy patrols for nothing. A raid built with someone else\u0027s\n// Terms now keeps them (G.terms), and those are read while it runs and as it ends (termsPay(1), termsOf). Solo and the host\n// never set G.terms, so they read their own list as before; the Undercroft always reads the player\u0027s own.\nfunction termsRaid(){ return (typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.sim\u0026\u0026Array.isArray(G.terms))?G.terms:null; }\nfunction termsOn(){ var R=termsRaid(); if(R\u0026\u0026!G.over) return R; if(!Array.isArray(P.terms)) P.terms=[]; return P.terms; }\nfunction termsOf(){ return termsRaid()||termsOn(); }   // the raid\u0027s own, even as it ends\nfunction hasTerm(id){ return termsOn().indexOf(id)\u003e=0; }\nfunction termsPay(raid){\n  var m=0,t=raid?termsOf():termsOn();"
+                  },
+                  {
+                      "anchor":  "    pendSeed=seed;\n    startRaid();",
+                      "replacement":  "    pendSeed=seed;\n    startRaid();\n    if(G\u0026\u0026!G.sim) G.terms=P.terms.slice();   // v16.xx (H27): the raid keeps the Terms it was built with, for the pay, the XP and the panel"
+                  },
+                  {
+                      "anchor":  "return termsOn().join(\u0027+\u0027)||\u0027none\u0027;",
+                      "replacement":  "return termsOf().join(\u0027+\u0027)||\u0027none\u0027;"
+                  },
+                  {
+                      "anchor":  "*termsPay())):0);",
+                      "replacement":  "*termsPay(1))):0);"
+                  },
+                  {
+                      "anchor":  "  var tPay=termsPay();",
+                      "replacement":  "  var tPay=termsPay(1);   // v16.xx (H27): the Terms this raid was built with"
+                  },
+                  {
+                      "anchor":  "for(var tq=0;tq\u003cTERMS.length;tq++) if(hasTerm(TERMS[tq].id)) tn.push(TERMS[tq].name);",
+                      "replacement":  "for(var tq=0;tq\u003cTERMS.length;tq++) if(termsOf().indexOf(TERMS[tq].id)\u003e=0) tn.push(TERMS[tq].name);"
+                  },
+                  {
+                      "anchor":  "termPay:tPay,terms:termsOn().slice(),",
+                      "replacement":  "termPay:tPay,terms:termsOf().slice(),"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a co-op guest is paid and scored for the Terms the shared raid was built with: a raid holding its own Terms reads them while it runs and as it ends, and the Undercroft still reads the player own\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||typeof termsPay!==\u0027function\u0027||typeof hasTerm!==\u0027function\u0027||typeof netUpStart!==\u0027function\u0027) return \u0027SKIP: no raid or Terms here\u0027;\n     var bad=[], t0, g, src, nd;\n     try{\n       __topClear(); __runPrep(); __cleanProfile();\n       t0=P.terms; P.terms=[];\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over) return \u0027SKIP: no live raid\u0027;\n       g.terms=[\u0027known\u0027,\u0027patrols\u0027];\n       if(!hasTerm(\u0027known\u0027)) bad.push(\u0027a raid built under THEY KNOW YOU does not read it\u0027);\n       if(!(Math.abs(termsPay()-0.60)\u003c1e-9)) bad.push(\u0027the raid pays \u0027+termsPay()+\u0027 for its Terms, not 0.60\u0027);\n       g.over=\u0027extract\u0027;\n       if(!(Math.abs(termsPay(1)-0.60)\u003c1e-9)) bad.push(\u0027as the raid ends it pays \u0027+termsPay(1)+\u0027, not 0.60\u0027);\n       if(hasTerm(\u0027known\u0027)||termsPay()!==0) bad.push(\u0027the Undercroft reads the raid Terms, not the player own\u0027);\n       g.over=false;\n       src=String(netUpStart); nd=\u0027G.ter\u0027+\u0027ms=\u0027;\n       if(src.indexOf(nd)\u003c0) bad.push(\u0027a guest raid never keeps the Terms the host built it with\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} if(t0!==undefined) P.terms=t0; __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

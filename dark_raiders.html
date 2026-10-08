@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.30';
+var VER='20.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20871,10 +20871,18 @@ var TERMS=[
   {id:'silence', name:'SILENT RUNNING',pay:0.30,
    desc:'One extra Listener. All Listeners hear 50% farther.'}
 ];
-function termsOn(){ if(!Array.isArray(P.terms)) P.terms=[]; return P.terms; }
+// v20.31, from the whole-game bug hunt of 2026-10-08 (H27): THE TERMS OF THE RAID YOU ARE IN. A co-op guest's raid is built with
+// the host's Terms (netUpStart), but everything after the build read the guest's own signed list: its hazard pay, its XP, its
+// conditions panel, its run record, and the hostile pillagers and listener reach decided mid raid. A guest who signed all five
+// was paid 140% for a standard raid; a guest who signed none fought heavy patrols for nothing. A raid built with someone else's
+// Terms now keeps them (G.terms), and those are read while it runs and as it ends (termsPay(1), termsOf). Solo and the host
+// never set G.terms, so they read their own list as before; the Undercroft always reads the player's own.
+function termsRaid(){ return (typeof G!=='undefined'&&G&&!G.sim&&Array.isArray(G.terms))?G.terms:null; }
+function termsOn(){ var R=termsRaid(); if(R&&!G.over) return R; if(!Array.isArray(P.terms)) P.terms=[]; return P.terms; }
+function termsOf(){ return termsRaid()||termsOn(); }   // the raid's own, even as it ends
 function hasTerm(id){ return termsOn().indexOf(id)>=0; }
-function termsPay(){
-  var m=0,t=termsOn();
+function termsPay(raid){
+  var m=0,t=raid?termsOf():termsOn();
   for(var i=0;i<TERMS.length;i++) if(t.indexOf(TERMS[i].id)>=0) m+=TERMS[i].pay;
   return m;
 }
@@ -21251,7 +21259,7 @@ function endRaid(how){
     G.simResult={outcome:how,seed:G.seed,dur:Math.round(elapsed()),haul:haul,items:G.bag.length,
       // v8.50, audit: WHICH TERMS WERE LIVE. SILENT RUNNING reaches sim raids
       // unguarded and makes them harder, and the row recorded nothing about it.
-      terms:(function(){ try{ return termsOn().join('+')||'none'; }catch(_te){ return 'unknown'; } })(),
+      terms:(function(){ try{ return termsOf().join('+')||'none'; }catch(_te){ return 'unknown'; } })(),
       containers:T.containers,windfalls:T.windfalls||0,pedSold:T.pedSold||0,wepSource:(function(){ var W=G.player&&G.player.wep; if(!W) return 'none'; if(G.player.wepIssued) return 'issued'; return wearable(W.id)?'owned':'field'; })(),crouched:T.tCrouchBot?Math.round(T.tCrouchBot):0,siegeArrivals:T.siegeArrivals||0,siegeNoSpot:T.siegeNoSpot||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
       shots:T.shots,hits:T.hits,kills:T.kills,jams:T.jams||0,closest:Math.round(T.closestExtract),
 downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
@@ -21378,7 +21386,7 @@ silentExit:T.silentExit||0,
       // It is now decided on what the extraction is about to bank, the same two sums the lines below add (termsPay() is pure
       // and is the tPay computed below; both terms are zero when absent). The amount owed, the balance and every number are
       // unchanged, and no seeded draw moves.
-      var _mdIn=P.credits+((how==='extract')?((G.pedCarry||0)+Math.round(Math.max(0,haul-(G.carriedIn||0))*termsPay())):0);
+      var _mdIn=P.credits+((how==='extract')?((G.pedCarry||0)+Math.round(Math.max(0,haul-(G.carriedIn||0))*termsPay(1))):0);
       lines.push('<span style="color:var(--rust)">'+mname+' died. Death benefit '+'$'+MERC_DEATH.toLocaleString()+' owed'+(_mdIn<0?', you are in debt':'')+'.</span>');
       var mr=idRec(P.merc); mr.standing=Math.min(mr.standing,-1);
     } else if(mercEnt&&how==='extract'&&(mercEnt.finished||mercEnt.out||
@@ -21434,7 +21442,7 @@ silentExit:T.silentExit||0,
   // spForRun took termPay:undefined -> ||0. Hazard terms have therefore never paid
   // their multiplier on season progress, only on credits. A 35 percent Terms load
   // was quietly worth nothing on the long track.
-  var tPay=termsPay();
+  var tPay=termsPay(1);   // v20.31 (H27): the Terms this raid was built with
   (function(){
     var _grec={outcome:how,haul:haul,carriedIn:G.carriedIn||0,containers:T.containers,kills:T.kills,termPay:tPay,
       doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:Math.round(T.distance||0),   // v13.57: rounded as the banked record rounds it
@@ -21502,7 +21510,7 @@ silentExit:T.silentExit||0,
     var bonus=Math.round(Math.max(0,haul-(G.carriedIn||0))*tPay);
     P.credits+=bonus;
     var tn=[];
-    for(var tq=0;tq<TERMS.length;tq++) if(hasTerm(TERMS[tq].id)) tn.push(TERMS[tq].name);
+    for(var tq=0;tq<TERMS.length;tq++) if(termsOf().indexOf(TERMS[tq].id)>=0) tn.push(TERMS[tq].name);
     lines.push('<span style="color:var(--amber)">Hazard pay +'+Math.round(tPay*100)+
       '%: '+'$'+bonus.toLocaleString()+' for '+tn.join(', ')+'.</span>');
   } else if(how==='dead'&&tPay>0){
@@ -21853,7 +21861,7 @@ var _cdone=contractExtract(G.bag,haul);
     wepSource:(function(){ var W=G.player&&G.player.wep; if(!W) return 'none';
       if(G.player.wepIssued) return 'issued';
       return wearable(W.id)?'owned':'field'; })(),
-    n:P.runs,ver:VER,seed:G.seed,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',termPay:tPay,terms:termsOn().slice(),
+    n:P.runs,ver:VER,seed:G.seed,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',termPay:tPay,terms:termsOf().slice(),
     drawErr:T.drawErr||null,
     // WHICH SECTOR THIS RUN WAS ON, added v2.96, and it is overdue by exactly one
     // build. The record has carried the version since v1.90 and the weather since
@@ -33656,7 +33664,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.30: In co-op, when the host leaves, boxes never give items twice, and dropped piles and bodies keep their items. Check 20.30 fails on v20.29',
+  now:'v20.31: In co-op, both players are paid hazard pay for the Terms the raid was actually built with. Check 20.31 fails on v20.30',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -38648,6 +38656,7 @@ function netUpStart(m){
     P.terms=netUpTerms(m.terms); P.merc=netClean(m.merc,24)||null; P.intel=0; P.wxPick=netClean(m.wx,16)||'any';
     pendSeed=seed;
     startRaid();
+    if(G&&!G.sim) G.terms=P.terms.slice();   // v20.31 (H27): the raid keeps the Terms it was built with, for the pay, the XP and the panel
   }catch(e){ threw=netErrText(e); }
   finally{
     NET.upHold=false; NET.upIss=null; pendSeed=null;
