@@ -1,0 +1,24 @@
+{
+    "title":  "THE STASH HELP LINES ARE READABLE",
+    "why":  "Found by the 4K menu text scan of 2026-10-08: once the stash filter tabs and key row grew (v19.76, v19.77), the help line under the grid (hover and press J to tag junk), the sell notes and the FREEBIE KIT bar were the smallest print left in any menu, at 11 pixels. They are 13 now; every line has room.",
+    "now":  "The help lines and the FREEBIE KIT bar on the stash are easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "           min-height:52px;font-size:11px;color:var(--ash)\"\u003e\u003c/div\u003e",
+                      "replacement":  "           min-height:52px;font-size:13px;color:var(--ash)\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u003cdiv id=\"sellhint\" class=\"hint\" style=\"margin-top:6px;font-size:11px;line-height:1.35\"\u003e\u003c/div\u003e",
+                      "replacement":  "\u003cdiv id=\"sellhint\" class=\"hint\" style=\"margin-top:6px;font-size:13px;line-height:1.35\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u003cdiv id=\"nextunlock\" class=\"hint\" style=\"margin-top:4px;font-size:11px;line-height:1.35\"\u003e\u003c/div\u003e",
+                      "replacement":  "\u003cdiv id=\"nextunlock\" class=\"hint\" style=\"margin-top:4px;font-size:13px;line-height:1.35\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "  .fkbox b{ color:var(--amber); letter-spacing:.1em; font-size:11px; }\n  .fkbox span{ flex:1; color:var(--ash); font-size:11px; }",
+                      "replacement":  "  /* v16.xx, seen on a 4K menu text scan (2026-10-08): the stash help line, the sell notes and this bar were 11px, the smallest\n     print left in any menu once the filter tabs and key row grew (v19.76, v19.77). 13px, with room on every line. */\n  .fkbox b{ color:var(--amber); letter-spacing:.1em; font-size:13px; }\n  .fkbox span{ flex:1; color:var(--ash); font-size:13px; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stash help lines are readable: the help line under the grid, the sell note and the FREEBIE KIT bar are drawn at 13px or more\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__station\u0026\u0026window.__wnseen)) return \u0027SKIP: this fixture cannot open the stash\u0027;\n     if(window.__vpAlive\u0026\u0026!__vpAlive()) return \u0027SKIP: the pane has no layout, so nothing renders\u0027;\n     var bad=[], els, i, f;\n     try{\n       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);\n       __hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027);\n       els=[[\u0027the help line\u0027,document.getElementById(\u0027stashdetail\u0027)],[\u0027the sell note\u0027,document.getElementById(\u0027sellhint\u0027)],[\u0027the FREEBIE KIT words\u0027,document.querySelector(\u0027#freekit .fkbox span\u0027)]];\n       for(i=0;i\u003cels.length;i++){\n         if(!els[i][1]){ bad.push(els[i][0]+\u0027 is missing\u0027); continue; }\n         f=parseFloat(getComputedStyle(els[i][1]).fontSize);\n         if(!(f\u003e=12.9)) bad.push(els[i][0]+\u0027 is \u0027+f+\u0027px\u0027);\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

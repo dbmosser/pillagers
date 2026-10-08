@@ -1,0 +1,5 @@
+## v19.78 - THE STASH HELP LINES ARE READABLE
+
+Co-op hunt while he was away. Found by the 4K menu text scan of 2026-10-08: once the stash filter tabs and key row grew (v19.76, v19.77), the help line under the grid (hover and press J to tag junk), the sell notes and the FREEBIE KIT bar were the smallest print left in any menu, at 11 pixels. They are 13 now; every line has room.
+
+MEASURED. Check 19.78 passes, and fails on v19.77.

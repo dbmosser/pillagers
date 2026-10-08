@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.78',what:'the stash help lines are readable: the help line under the grid, the sell note and the FREEBIE KIT bar are drawn at 13px or more',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], els, i, f;
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       __hubEnter(); __station('term','KeyE');
+       els=[['the help line',document.getElementById('stashdetail')],['the sell note',document.getElementById('sellhint')],['the FREEBIE KIT words',document.querySelector('#freekit .fkbox span')]];
+       for(i=0;i<els.length;i++){
+         if(!els[i][1]){ bad.push(els[i][0]+' is missing'); continue; }
+         f=parseFloat(getComputedStyle(els[i][1]).fontSize);
+         if(!(f>=12.9)) bad.push(els[i][0]+' is '+f+'px');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.77',what:'the stash key row is readable: DRAG, RIGHT CLICK and the rest and their words are drawn at 12.5px or more, and the row stays on one line',
    run:function(){
      if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';

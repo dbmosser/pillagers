@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.78 - THE STASH HELP LINES ARE READABLE
+
+Co-op hunt while he was away. Found by the 4K menu text scan of 2026-10-08: once the stash filter tabs and key row grew (v19.76, v19.77), the help line under the grid (hover and press J to tag junk), the sell notes and the FREEBIE KIT bar were the smallest print left in any menu, at 11 pixels. They are 13 now; every line has room.
+
+MEASURED. Check 19.78 passes, and fails on v19.77.
 ## v19.77 - THE STASH KEY ROW IS READABLE
 
 Co-op hunt while he was away. Found by the same 4K menu text scan of 2026-10-08: the key row under the stash (DRAG move, RIGHT CLICK all actions, SHIFT, CTRL, ALT, 1-9, and the controller row of v19.70) was set at 10.5 pixels on a row half empty. It is 12.5 now and still one line.

@@ -1,0 +1,7 @@
+v19.78: the stash help lines are readable
+
+The help lines and the FREEBIE KIT bar on the stash are easier to read.
+
+Check 19.78. Fails on v19.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
