@@ -1,0 +1,7 @@
+v19.03: the open map hides what is under it
+
+Nothing from the HUD shows through the open map any more.
+
+Check 19.03. Fails on v19.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

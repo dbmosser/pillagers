@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.03 - THE OPEN MAP HIDES WHAT IS UNDER IT
+
+Co-op hunt while he was away. Seen on the map screenshot of 2026-10-07: with the map open, the message under it (Partly cloudy. This will not hold.) still showed through faintly across THE LONG DOCK, because the map backing let six percent of the screen below through. It is near solid now, so only the map shows.
+
+MEASURED. Check 19.03 passes, and fails on v19.02.
 ## v19.02 - THE SECTOR MAP LABELS NEVER PRINT OVER EACH OTHER
 
 Co-op hunt while he was away. Seen on the map screenshot of 2026-10-07: on a busy sector map the labels printed over each other, BLAST FREEZER LOCKED, STRONGBOX and CACHE in one smear, ENCAMPMENT across PACKING FLOOR, SEAL 0% across CHILL ROW, EXTRACT C across THE LONG DOCK. The map now places its labels most important first (extractions and the waypoint, locked rooms and the seal, the peddler and hot ground, caches) and moves any that would collide to the nearest free spot; a faint zone name with no room is left out instead of smeared. The header and the SURVEYED line stay where they are.
