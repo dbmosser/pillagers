@@ -1,0 +1,7 @@
+v18.94: the blotter colours turn at the dose speed
+
+Blotter colours drift smoothly however long you have been playing.
+
+Check 18.94. Fails on v18.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

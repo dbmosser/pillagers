@@ -1,0 +1,28 @@
+{
+    "title":  "THE BLOTTER COLOURS TURN AT THE DOSE SPEED",
+    "why":  "Found by the Blotter review after his note of 2026-10-07 (effects should come on gradually): the colour wash turned at a speed that also grew with how long the game had been running, so an hour into a session a dose coming on made the colours whirl round about once a second for its whole first minute, then calm all at once at the peak, and spin backwards as it wore off. The colours now turn at a speed that simply follows the strength of the dose.",
+    "now":  "Blotter colours drift smoothly however long you have been playing.",
+    "edits":  [
+                  {
+                      "anchor":  "function buzzWarp(c2,cnv,t,dr,ac,k){",
+                      "replacement":  "// v16.xx, after his report (2026-10-07) and the Blotter review: THE COLOURS TURN AT THE DOSE\u0027S SPEED, NOT THE CLOCK\u0027S. The hue was\n// clock*rate, with the clock the time since the page loaded (BUZZT), so while a dose came on the turning sped up by clock*change of\n// rate: after an hour of play the colours whirled round about once a second for the whole first minute of a dose and then calmed\n// all at once at the peak, and spun backwards as it wore off. The phases now add up rate*time frame by frame (BUZZPH), so the\n// turning speed simply follows the strength. One phase for the world pass, one for the HUD pass, one for the colour washes.\nvar BUZZPH={lt:null,w:0,h:0,wash:0};\nfunction buzzWarp(c2,cnv,t,dr,ac,k,hp){"
+                  },
+                  {
+                      "anchor":  "      c2.filter=\u0027hue-rotate(\u0027+Math.round((t*(30+22*ac))%360)+\u0027deg) saturate(\u0027+(1.4+0.22*ac).toFixed(2)+\u0027)\u0027;",
+                      "replacement":  "      c2.filter=\u0027hue-rotate(\u0027+Math.round(((hp===undefined)?(t*(30+22*ac)):hp)%360)+\u0027deg) saturate(\u0027+(1.4+0.22*ac).toFixed(2)+\u0027)\u0027;   // v16.xx: the phase as added up (BUZZPH), not clock times rate"
+                  },
+                  {
+                      "anchor":  "  buzzWarp(wc,wcv,t,dr,ac,k);",
+                      "replacement":  "  (function(){ var dtp=(BUZZPH.lt===null)?0:Math.max(0,Math.min(0.25,t-BUZZPH.lt)); BUZZPH.lt=t;   // v16.xx: the phases add up the rate frame by frame\n    BUZZPH.w=(BUZZPH.w+dtp*(30+22*ac))%360; BUZZPH.h=(BUZZPH.h+dtp*1.13*(30+22*ac*0.4))%360; BUZZPH.wash=(BUZZPH.wash+dtp*(50+8*ac))%360; })();\n  buzzWarp(wc,wcv,t,dr,ac,k,BUZZPH.w);"
+                  },
+                  {
+                      "anchor":  "  buzzWarp(ctx,ocv,t*1.13+0.7,dr*0.5,ac*0.4,k);",
+                      "replacement":  "  buzzWarp(ctx,ocv,t*1.13+0.7,dr*0.5,ac*0.4,k,BUZZPH.h);"
+                  },
+                  {
+                      "anchor":  "      var hue=Math.round((t*(50+8*ac)+tb*77)%360);",
+                      "replacement":  "      var hue=Math.round((BUZZPH.wash+tb*77)%360);   // v16.xx: the wash phase as added up, not clock times rate"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Blotter colours turn at the dose speed, not the clock: an hour into a session, a coming-on dose turns the hue a few degrees per step, not a hundred\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     if(typeof drawBuzzFx!==\u0027function\u0027||typeof BUZZT===\u0027undefined\u0027) return \u0027SKIP: no Blotter effects here\u0027;\n     var bad=[], oB=P.buzz, oT=BUZZT, oDI=wc.drawImage, hs=[], a1, a2, dlt, i;\n     function hueNow(){ hs=[]; wc.drawImage=function(){ var f=String(wc.filter||\u0027\u0027); if(f.indexOf(\u0027hue-rotate(\u0027)===0\u0026\u0026f.indexOf(\u0027saturate(\u0027)\u003e0) hs.push(parseFloat(f.slice(11))); return oDI.apply(this,arguments); }; try{ drawBuzzFx(); } finally { delete wc.drawImage; if(wc.drawImage!==oDI) wc.drawImage=oDI; } return hs.length?hs[0]:null; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       P.buzz=[{tag:\u0027lsd\u0027,dur:180,t:150}];\n       BUZZT=3600; if(typeof BUZZPH!==\u0027undefined\u0027) BUZZPH.lt=null;\n       hueNow(); BUZZT+=0.25; P.buzz[0].t-=0.25; a1=hueNow();\n       BUZZT+=0.25; P.buzz[0].t-=0.25; a2=hueNow();\n       if(a1===null||a2===null) return \u0027SKIP: the hue pass was not drawn\u0027;\n       dlt=((a2-a1)%360+360)%360; if(dlt\u003e180) dlt=360-dlt;\n       if(dlt\u003e12) bad.push(\u0027an hour in, a coming-on dose turns the hue \u0027+Math.round(dlt)+\u0027 degrees in a quarter second\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ delete wc.drawImage; if(wc.drawImage!==oDI) wc.drawImage=oDI; P.buzz=oB; BUZZT=oT; try{ if(typeof BUZZPH!==\u0027undefined\u0027) BUZZPH.lt=null; }catch(_p){} try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.94 - THE BLOTTER COLOURS TURN AT THE DOSE SPEED
+
+Co-op hunt while he was away. Found by the Blotter review after his note of 2026-10-07 (effects should come on gradually): the colour wash turned at a speed that also grew with how long the game had been running, so an hour into a session a dose coming on made the colours whirl round about once a second for its whole first minute, then calm all at once at the peak, and spin backwards as it wore off. The colours now turn at a speed that simply follows the strength of the dose.
+
+MEASURED. Check 18.94 passes, and fails on v18.93.
 ## v18.93 - BLOTTER COMES ON GRADUALLY
 
 Co-op hunt while he was away. His note of 2026-10-07: the Blotter visual effects hit all at once. They never drew until the dose was about 8 seconds in, and then every effect (the colour wash, the tint, the drift, the melting, the tracers, the tears) appeared in one frame at a fixed minimum strength, most of them at more than half of their peak. Now one shared onset brings every effect up from nothing as the dose comes on, reaching exactly the same look as before at the peak (one dose still half as strong as two or more). A new dose no longer snaps the melting into a new pattern: it fades over 8 seconds into the fresh roll. The menu effects follow the same onset, and the rainbow fringe and the inside-out flash fade in instead of switching on.

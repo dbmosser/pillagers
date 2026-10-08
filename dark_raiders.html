@@ -1517,7 +1517,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.93';
+var VER='18.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25844,7 +25844,13 @@ var BUZZRND=[0.37,0.71,0.13,0.59,0.83,0.29,0.47,0.91];   // v10.31: eight number
 // the trip clock from BUZZRNDAT. BUZZRNDTO is the roll that fade is heading for, so anything that writes BUZZRND
 // directly (a check) simply gets its roll at once, with no fade.
 var BUZZRNDP=null, BUZZRNDTO=null, BUZZRNDAT=0, BUZZRNDFADE=8;
-function buzzWarp(c2,cnv,t,dr,ac,k){
+// v18.94, after his report (2026-10-07) and the Blotter review: THE COLOURS TURN AT THE DOSE'S SPEED, NOT THE CLOCK'S. The hue was
+// clock*rate, with the clock the time since the page loaded (BUZZT), so while a dose came on the turning sped up by clock*change of
+// rate: after an hour of play the colours whirled round about once a second for the whole first minute of a dose and then calmed
+// all at once at the peak, and spun backwards as it wore off. The phases now add up rate*time frame by frame (BUZZPH), so the
+// turning speed simply follows the strength. One phase for the world pass, one for the HUD pass, one for the colour washes.
+var BUZZPH={lt:null,w:0,h:0,wash:0};
+function buzzWarp(c2,cnv,t,dr,ac,k,hp){
   // v18.93, his report (2026-10-07): k is the one Blotter onset, 0 to 1, worked out once in drawBuzzFx from the world's
   // strength and handed to both layers, so the HUD comes up with the world instead of ahead of it. Each Blotter pass
   // below is multiplied by it once. At k=1 (one dose at its peak, and anything stronger) nothing here changes, and the
@@ -25881,7 +25887,7 @@ function buzzWarp(c2,cnv,t,dr,ac,k){
     // v18.93, his report (2026-10-07): the tinted copy rises from nothing with k instead of starting at 28 percent.
     c2.globalAlpha=Math.min(0.28+0.055*ac,0.85)*k;
     try{
-      c2.filter='hue-rotate('+Math.round((t*(30+22*ac))%360)+'deg) saturate('+(1.4+0.22*ac).toFixed(2)+')';
+      c2.filter='hue-rotate('+Math.round(((hp===undefined)?(t*(30+22*ac)):hp)%360)+'deg) saturate('+(1.4+0.22*ac).toFixed(2)+')';   // v18.94: the phase as added up (BUZZPH), not clock times rate
       c2.drawImage(cnv,0,0); c2.filter='none';
     }catch(_e2){}
     c2.globalAlpha=1;
@@ -26003,8 +26009,10 @@ function drawBuzzFx(){
   // THE WORLD ITSELF warps: his report was that only the HUD moved. Both layers get the
   // geometry now, the world at full strength and the HUD at half, so panels sway a
   // little while the ground properly misbehaves.
-  buzzWarp(wc,wcv,t,dr,ac,k);
-  buzzWarp(ctx,ocv,t*1.13+0.7,dr*0.5,ac*0.4,k);   // v18.93, his report (2026-10-07): the HUD takes the world's k, so it no longer gets its full floors on the first frame
+  (function(){ var dtp=(BUZZPH.lt===null)?0:Math.max(0,Math.min(0.25,t-BUZZPH.lt)); BUZZPH.lt=t;   // v18.94: the phases add up the rate frame by frame
+    BUZZPH.w=(BUZZPH.w+dtp*(30+22*ac))%360; BUZZPH.h=(BUZZPH.h+dtp*1.13*(30+22*ac*0.4))%360; BUZZPH.wash=(BUZZPH.wash+dtp*(50+8*ac))%360; })();
+  buzzWarp(wc,wcv,t,dr,ac,k,BUZZPH.w);
+  buzzWarp(ctx,ocv,t*1.13+0.7,dr*0.5,ac*0.4,k,BUZZPH.h);   // v18.93, his report (2026-10-07): the HUD takes the world's k, so it no longer gets its full floors on the first frame
   // the colour washes live on the overlay so they sit over EVERYTHING
   ctx.save(); ctx.setTransform(1,0,0,1,0,0);
   var RW=ocv.width,RH=ocv.height;
@@ -26014,7 +26022,7 @@ function drawBuzzFx(){
     for(var tb=0;tb<nb;tb++){
       var _hx=RW/2+Math.sin(t*0.5+tb*2.1)*RW*0.36;
       var _hy=RH/2+Math.cos(t*0.4+tb*1.7)*RH*0.36;
-      var hue=Math.round((t*(50+8*ac)+tb*77)%360);
+      var hue=Math.round((BUZZPH.wash+tb*77)%360);   // v18.94: the wash phase as added up, not clock times rate
       var g2=ctx.createRadialGradient(_hx,_hy,0,_hx,_hy,RH*(0.22+0.03*ac));
       // v18.93, his report (2026-10-07): the washes rise with k, and each extra patch a stronger trip adds fades in over a
       // quarter step of strength instead of appearing whole. Every dose count's peak sits at least 0.39 past a whole
@@ -32950,7 +32958,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.93: Blotter effects come on smoothly over the first minute of a dose instead of all at once. Check 18.93 fails on v18.92',
+  now:'v18.94: Blotter colours drift smoothly however long you have been playing. Check 18.94 fails on v18.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
