@@ -1,0 +1,7 @@
+v18.98: the stash belt keys share one row
+
+The stash screen tactical belt always shows keys 1 to 9 in one row.
+
+Check 18.98. Fails on v18.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

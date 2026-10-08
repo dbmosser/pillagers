@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.98',what:'the stash belt keys share one row: with little room all nine tactical belt keys sit on one line and stay square',
+   run:function(){
+     if(typeof __station!=='function'||typeof __hubEnter!=='function'||typeof applyMenuZoom!=='function') return 'SKIP: no stash here';
+     var bad=[], t, z0=P.menuZoom, cells, tops, i, r;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       P.menuZoom=2.4; __hubEnter(); __station('term','KeyE');
+       try{ applyMenuZoom(); if(typeof renderHub==='function') renderHub(); }catch(_r){}
+       var hpw=document.getElementById('hotplanwrap'), w0=hpw?hpw.style.width:''; if(hpw) hpw.style.width='440px';
+       cells=document.querySelectorAll('#hub #hotplanwrap [data-plan]');
+       if(cells.length<9) return 'SKIP: the stash belt was not drawn ('+cells.length+' keys)';
+       tops=[]; for(i=0;i<cells.length;i++){ r=cells[i].getBoundingClientRect(); tops.push(Math.round(r.top)); if(Math.abs(r.width-r.height)>3) bad.push('key '+(i+1)+' is '+Math.round(r.width)+' by '+Math.round(r.height)); }
+       if(Math.max.apply(null,tops)-Math.min.apply(null,tops)>2) bad.push('the belt keys wrap onto '+(new Set(tops)).size+' lines');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var hpw2=document.getElementById('hotplanwrap'); if(hpw2) hpw2.style.width=''; }catch(_w){} if(z0===undefined) delete P.menuZoom; else P.menuZoom=z0; try{ applyMenuZoom(); }catch(_z){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.slice(0,3).join('; '):null; }},
   {v:'18.97',what:'the run card note box never squashes: on a card taller than the screen the note box keeps its height, the card stays inside the screen and scrolls',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
