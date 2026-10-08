@@ -591,3 +591,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-08 19:13 usage flat at 41% weekly 18:46-19:12 while shipping solo (9 builds) -> under pace; burst: 5 drafting agents on 15 medium hunt bugs (no game edits, no browser)
 2026-10-08 19:17 v20.38 crierp2 shipped: H11 DONE
 2026-10-08 19:20 v20.39 hotshared shipped: H59 DONE
+2026-10-08 19:26 v20.40 sndonce shipped: H52 DONE (fixture sfx is a stub: checks must record NET.fxIn, not netFxNoise)

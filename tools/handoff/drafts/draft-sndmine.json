@@ -1,0 +1,40 @@
+{
+    "title":  "YOU HEAR YOUR TEAMMATE FIRE",
+    "why":  "Found by the whole-game bug hunt of 2026-10-08. Your own gunshots, reloads and footsteps play straight into your own ears, and unlike every other sound they were never passed to the other window. So in co-op a teammate\u0027s rifle was silent at any distance (you saw only the tracers), and with the sound switched to one window only, the other player\u0027s whole fight made no sound at all. They are now passed on and play where he stands. A crouched step stays silent to others.",
+    "now":  "In co-op, you hear the other player fire, reload and walk, from where he is.",
+    "edits":  [
+                  {
+                      "anchor":  "function sfxHere(type,wx,wy,wid){",
+                      "replacement":  "// v16.xx, from the whole-game bug hunt of 2026-10-08 (H51): YOUR OWN SOUNDS REACH THE PARTY. Your gunshots, reloads and footsteps\n// play centred in your own ears (they are in your hands), straight through blip, so they never went to the other window: a\n// teammate\u0027s rifle was silent at any distance, and with the sound on one window only his whole fight was silent. They now also\n// go to the party, placed where you stand, as every other sound does. A crouched step stays yours alone.\nfunction blipMine(type,a,b,c,d){\n  blip(type,a,b,c,d);\n  if(typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.on\u0026\u0026!NET.fxIn\u0026\u0026G\u0026\u0026!G.sim\u0026\u0026G.player) netFxNoise(type,G.player.x,G.player.y,(typeof c===\u0027string\u0027)?c:undefined);\n}\nfunction sfxHere(type,wx,wy,wid){"
+                  },
+                  {
+                      "anchor":  "if(fromPlayer) blip(melee?\u0027hit\u0027:\u0027shot\u0027,0,undefined,wep.id);",
+                      "replacement":  "if(fromPlayer) blipMine(melee?\u0027hit\u0027:\u0027shot\u0027,0,undefined,wep.id);   // v16.xx (H51): and the party hears it where you stand"
+                  },
+                  {
+                      "anchor":  "if(!G.sim) blip(\u0027reloadin\u0027);",
+                      "replacement":  "if(!G.sim) blipMine(\u0027reloadin\u0027);"
+                  },
+                  {
+                      "anchor":  "T.reloads++; if(!G.sim) blip(\u0027reload\u0027); }   // v10.56",
+                      "replacement":  "T.reloads++; if(!G.sim) blipMine(\u0027reload\u0027); }   // v10.56"
+                  },
+                  {
+                      "anchor":  "    p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) blip(\u0027reload\u0027);",
+                      "replacement":  "    p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) blipMine(\u0027reload\u0027);"
+                  },
+                  {
+                      "anchor":  "say(\u0027Reloading...\u0027); blip(\u0027reload\u0027);",
+                      "replacement":  "say(\u0027Reloading...\u0027); blipMine(\u0027reload\u0027);"
+                  },
+                  {
+                      "anchor":  "if(!G.sim) blip(\u0027dry\u0027);",
+                      "replacement":  "if(!G.sim) blipMine(\u0027dry\u0027);"
+                  },
+                  {
+                      "anchor":  "blip(\u0027foot\u0027,crouch?540:",
+                      "replacement":  "(crouch?blip:blipMine)(\u0027foot\u0027,crouch?540:"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027your own gunshot reaches the party: fired in a shared raid it plays in your ears and is passed to the other window at where you stand\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||typeof NET!==\u0027object\u0027||!NET||typeof fireWeapon!==\u0027function\u0027) return \u0027SKIP: no raid or party here\u0027;\n     var NK={}, k, bad=[], oFx=netFxNoise, fw=[], g, w, hit=null;\n     for(k in NET) NK[k]=NET[k];\n     try{\n       NET.on=false; NET.role=null; NET.peers=[];\n       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: no live raid\u0027;\n       w=g.player.wep; if(!w||w.id===\u0027fists\u0027) return \u0027SKIP: staging: no gun in hand\u0027;\n       netFxNoise=function(t,x,y,wid){ fw.push({t:String(t),x:x,y:y,w:wid}); return true; };\n       NET.on=true; NET.role=\u0027join\u0027; NET.seat=1; NET.peers=[{seat:0,state:\u0027in\u0027}]; NET.upSeed=g.seed\u003e\u003e\u003e0;\n       fireWeapon(g.player,w,g.player.x+200,g.player.y,true);\n       fw.forEach(function(f){ if(f.t===\u0027shot\u0027) hit=f; });\n       if(!hit) bad.push(\u0027your own shot was never passed to the party (\u0027+fw.map(function(f){ return f.t; }).join(\u0027,\u0027)+\u0027)\u0027);\n       else{\n         if(Math.abs(hit.x-g.player.x)\u003e2||Math.abs(hit.y-g.player.y)\u003e2) bad.push(\u0027your shot was placed at \u0027+Math.round(hit.x)+\u0027,\u0027+Math.round(hit.y)+\u0027, not where you stand\u0027);\n         if(hit.w!==w.id) bad.push(\u0027your shot was passed on without its gun (\u0027+hit.w+\u0027)\u0027);\n       }\n     }catch(ex){ bad.push(\u0027threw: \u0027+(ex\u0026\u0026ex.message||ex)); }\n     finally{\n       netFxNoise=oFx;\n       for(k in NET) if(!(k in NK)) delete NET[k];\n       for(k in NK) NET[k]=NK[k];\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

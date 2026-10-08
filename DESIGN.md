@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.41 - YOU HEAR YOUR TEAMMATE FIRE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Your own gunshots, reloads and footsteps play straight into your own ears, and unlike every other sound they were never passed to the other window. So in co-op a teammate's rifle was silent at any distance (you saw only the tracers), and with the sound switched to one window only, the other player's whole fight made no sound at all. They are now passed on and play where he stands. A crouched step stays silent to others.
+
+MEASURED. Check 20.41 passes, and fails on v20.40.
 ## v20.40 - CO-OP SOUNDS PLAY ONCE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op some sounds were heard twice in each window, a beat apart, each with its own ring: every lightning warning and crack, the extraction ring sonar, touchdown and last call, and every round player 2 landed on a machine. Both windows made those sounds themselves and also passed them to the other window. Now those sounds play only where they are made, and sounds only one window makes are still passed on.

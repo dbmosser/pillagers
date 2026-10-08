@@ -5722,6 +5722,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.41',what:'your own gunshot reaches the party: fired in a shared raid it plays in your ears and is passed to the other window at where you stand',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof fireWeapon!=='function') return 'SKIP: no raid or party here';
+     var NK={}, k, bad=[], oFx=netFxNoise, fw=[], g, w, hit=null;
+     for(k in NET) NK[k]=NET[k];
+     try{
+       NET.on=false; NET.role=null; NET.peers=[];
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
+       w=g.player.wep; if(!w||w.id==='fists') return 'SKIP: staging: no gun in hand';
+       netFxNoise=function(t,x,y,wid){ fw.push({t:String(t),x:x,y:y,w:wid}); return true; };
+       NET.on=true; NET.role='join'; NET.seat=1; NET.peers=[{seat:0,state:'in'}]; NET.upSeed=g.seed>>>0;
+       fireWeapon(g.player,w,g.player.x+200,g.player.y,true);
+       fw.forEach(function(f){ if(f.t==='shot') hit=f; });
+       if(!hit) bad.push('your own shot was never passed to the party ('+fw.map(function(f){ return f.t; }).join(',')+')');
+       else{
+         if(Math.abs(hit.x-g.player.x)>2||Math.abs(hit.y-g.player.y)>2) bad.push('your shot was placed at '+Math.round(hit.x)+','+Math.round(hit.y)+', not where you stand');
+         if(hit.w!==w.id) bad.push('your shot was passed on without its gun ('+hit.w+')');
+       }
+     }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
+     finally{
+       netFxNoise=oFx;
+       for(k in NET) if(!(k in NK)) delete NET[k];
+       for(k in NK) NET[k]=NK[k];
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.40',what:'a sound both windows make is heard once in each: a bolt from the host and its crack, and a teammate round landing, are played but never passed back to the party, while a sound only this window makes still is',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof netWorldTake!=='function'||typeof strikeTick!=='function'||typeof netShotTake!=='function') return 'SKIP: no raid or party here';

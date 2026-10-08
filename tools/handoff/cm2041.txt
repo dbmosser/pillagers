@@ -1,0 +1,7 @@
+v20.41: you hear your teammate fire
+
+In co-op, you hear the other player fire, reload and walk, from where he is.
+
+Check 20.41. Fails on v20.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
