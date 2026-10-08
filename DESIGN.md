@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.35 - THE UNDERCROFT WALLS SIT IN THE ROOM LIGHT
+
+Co-op hunt while he was away. Seen on the 4K Undercroft screenshot of 2026-10-08: the walls of the Undercroft wore the raid daylight wall colours at full strength, so in the dark navy room the blue walls by the lift, the purple block by the shop and the green block by Settings glowed like lit panels. Each wall keeps its colour, taken about half way down into the room own light, so they read as walls in a dim room. A look change: tell me if you want them back.
+
+MEASURED. Check 19.35 passes, and fails on v19.34.
 ## v19.34 - THE BELT HINT READS ON ANY GROUND
 
 Co-op hunt while he was away. Seen on the 4K fog screenshot of 2026-10-08: the line over the belt (the item name, [FIRE] use, [V] signal) was grey text straight on the ground, so on pale ground (fog, sand, a lit floor) it all but vanished. It now sits on a soft dark strip and is a little brighter, at the same size and place.

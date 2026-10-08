@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.35',what:'the Undercroft walls sit in the room light: a floor frame paints no wall in the raid daylight wall colours, the lift walls included',
+   run:function(){
+     if(!(window.__hubEnter&&window.__hubFrame&&window.__showScreen)) return 'SKIP: this fixture cannot draw the floor';
+     if(typeof DISTRICTS==='undefined'||typeof wc==='undefined') return 'SKIP: no districts here';
+     var bad=[], used={}, oFR=null, t, raw=String(DISTRICTS[1].wallTop).toLowerCase();
+     try{
+       __topClear(); __runPrep();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       oFR=CanvasRenderingContext2D.prototype.fillRect;
+       CanvasRenderingContext2D.prototype.fillRect=function(){ if(this===wc) used[String(this.fillStyle).toLowerCase()]=1; return oFR.apply(this,arguments); };
+       __hubFrame(0.016);
+       if(used[raw]) bad.push('the lift walls are still painted in the raid daylight top colour '+raw);
+       if(!Object.keys(used).length) return 'SKIP: nothing was painted on the floor canvas';
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(oFR) CanvasRenderingContext2D.prototype.fillRect=oFR; __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.34',what:'the belt hint reads on any ground: the line over the belt ([FIRE] use) is drawn on a dark strip that covers its words',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';

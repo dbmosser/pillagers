@@ -1,0 +1,7 @@
+v19.35: the undercroft walls sit in the room light
+
+The Undercroft walls are dimmed to suit the room; each keeps its colour.
+
+Check 19.35. Fails on v19.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
