@@ -1,0 +1,5 @@
+## v19.85 - WHAT IS NEW LINES END AT A WHOLE SENTENCE
+
+Co-op hunt while he was away. Seen on the 4K What is New screenshot of 2026-10-08: a line of the card was cut mid-sentence with dots (In co-op your teammate...) even when a whole sentence fitted before the limit. Now a line ends at its last full stop inside the limit when there is one, and is cut at a word with dots only when there is not.
+
+MEASURED. Check 19.85 passes, and fails on v19.84.

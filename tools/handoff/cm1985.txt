@@ -1,0 +1,7 @@
+v19.85: what is new lines end at a whole sentence
+
+Lines on the What is New card end at a full sentence where they can.
+
+Check 19.85. Fails on v19.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

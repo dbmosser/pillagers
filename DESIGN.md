@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.85 - WHAT IS NEW LINES END AT A WHOLE SENTENCE
+
+Co-op hunt while he was away. Seen on the 4K What is New screenshot of 2026-10-08: a line of the card was cut mid-sentence with dots (In co-op your teammate...) even when a whole sentence fitted before the limit. Now a line ends at its last full stop inside the limit when there is one, and is cut at a word with dots only when there is not.
+
+MEASURED. Check 19.85 passes, and fails on v19.84.
 ## v19.84 - MENU PARAGRAPHS NEVER END ON ONE WORD
 
 Co-op hunt while he was away. From the 4K menu screenshots of 2026-10-08: hints and descriptions in the menus could end on one lonely word on a line of its own. The browser now evens out the last lines of every menu paragraph, so none ends on a single word. Only where the lines break moves; no text changes.

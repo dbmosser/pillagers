@@ -1,0 +1,12 @@
+{
+    "title":  "WHAT IS NEW LINES END AT A WHOLE SENTENCE",
+    "why":  "Seen on the 4K What is New screenshot of 2026-10-08: a line of the card was cut mid-sentence with dots (In co-op your teammate...) even when a whole sentence fitted before the limit. Now a line ends at its last full stop inside the limit when there is one, and is cut at a word with dots only when there is not.",
+    "now":  "Lines on the What is New card end at a full sentence where they can.",
+    "edits":  [
+                  {
+                      "anchor":  "  cut=rest.slice(0,WN_TAIL).replace(/\\s+\\S*$/,\u0027\u0027);",
+                      "replacement":  "  // v16.xx, seen on the 4K What\u0027s New screenshot (2026-10-08): a line was cut mid-sentence (In co-op your teammate...) even when a\n  // whole sentence fitted. When one does, the line ends at that full stop; otherwise it is cut at a word as before.\n  cut=rest.slice(0,WN_TAIL);\n  if(cut.lastIndexOf(\u0027. \u0027)\u003e=WN_TAIL*0.4) return head+\u0027 \u0027+rest.slice(0,cut.lastIndexOf(\u0027. \u0027)+1);\n  cut=cut.replace(/\\s+\\S*$/,\u0027\u0027);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a What is New line ends at a whole sentence when one fits: a long line is cut at its last full stop inside the limit, not mid-sentence with dots\u0027,\n   run:function(){\n     if(typeof wnShort!==\u0027function\u0027||typeof WN_TAIL!==\u0027number\u0027) return \u0027SKIP: no card shortener here\u0027;\n     var bad=[], s1, s2, r1, r2, pad=function(n){ return new Array(n+1).join(\u0027zq \u0027); };\n     s1=\u0027ZQHEAD. \u0027+pad(Math.round(WN_TAIL*0.25))+\u0027zqend. \u0027+pad(WN_TAIL);\n     r1=wnShort(s1);\n     if(!/zqend\\.$/.test(r1)) bad.push(\u0027a line with a sentence end inside the limit ends as ...\u0027+r1.slice(-24));\n     s2=\u0027ZQHEAD. \u0027+pad(WN_TAIL);\n     r2=wnShort(s2);\n     if(!/\\.\\.\\.$/.test(r2)) bad.push(\u0027control: a line with no sentence end inside the limit lost its dots\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

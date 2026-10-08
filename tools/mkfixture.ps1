@@ -5721,6 +5721,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.85',what:'a What is New line ends at a whole sentence when one fits: a long line is cut at its last full stop inside the limit, not mid-sentence with dots',
+   run:function(){
+     if(typeof wnShort!=='function'||typeof WN_TAIL!=='number') return 'SKIP: no card shortener here';
+     var bad=[], s1, s2, r1, r2, pad=function(n){ return new Array(n+1).join('zq '); };
+     s1='ZQHEAD. '+pad(Math.round(WN_TAIL*0.25))+'zqend. '+pad(WN_TAIL);
+     r1=wnShort(s1);
+     if(!/zqend\.$/.test(r1)) bad.push('a line with a sentence end inside the limit ends as ...'+r1.slice(-24));
+     s2='ZQHEAD. '+pad(WN_TAIL);
+     r2=wnShort(s2);
+     if(!/\.\.\.$/.test(r2)) bad.push('control: a line with no sentence end inside the limit lost its dots');
+     return bad.length?bad.join('; '):null; }},
   {v:'19.84',what:'menu paragraphs never end on one word: a paragraph that plain wrapping leaves with a single last word gets at least two words on its last line',
    run:function(){
      var d=document.createElement('div'), bad=[], k, txt=null, words='Selling salvage here pays credits and the same in XP for every piece you carry home from the surface tonight'.split(' ');

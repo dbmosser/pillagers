@@ -1,0 +1,1 @@
+| WHAT IS NEW LINES END AT A WHOLE SENTENCE | v19.85 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 19.85 passes, fails on v19.84 |
