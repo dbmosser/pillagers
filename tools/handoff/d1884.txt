@@ -1,0 +1,5 @@
+## v18.84 - THE WHAT IS NEW CARD NAMES HIS NOTES OF OCTOBER 7
+
+Co-op hunt while he was away. The card was stamped v18.68 and the stamp may not trail the build by more than 0.15. Its new second line names what came of his notes of October 7: the Overseer health bar, the bandage and plate bar, the scope zoom and the FASHION previews.
+
+MEASURED. Check 18.84 passes, and fails on v18.83.

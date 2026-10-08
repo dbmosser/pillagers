@@ -1,0 +1,7 @@
+v18.84: the what is new card names his notes of october 7
+
+The what is new card names the changes from his October 7 notes.
+
+Check 18.84. Fails on v18.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

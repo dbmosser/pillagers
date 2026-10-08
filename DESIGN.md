@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.84 - THE WHAT IS NEW CARD NAMES HIS NOTES OF OCTOBER 7
+
+Co-op hunt while he was away. The card was stamped v18.68 and the stamp may not trail the build by more than 0.15. Its new second line names what came of his notes of October 7: the Overseer health bar, the bandage and plate bar, the scope zoom and the FASHION previews.
+
+MEASURED. Check 18.84 passes, and fails on v18.83.
 ## v18.83 - A TATTOO TILE IS A CLOSE-UP
 
 Co-op hunt while he was away. Seen on the FASHION screenshot of 2026-10-07: the new TATTOO previews showed the whole small figure, so the ink could not be seen and every tattoo tile looked alike. Tattoos now get a close-up of the face, neck and tops of the arms, like the face and hairstyle tiles.
