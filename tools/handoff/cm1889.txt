@@ -1,0 +1,7 @@
+v18.89: drag gun 2 onto key 1 to swap keys 1 and 2
+
+Dragging one gun key onto the other swaps keys 1 and 2.
+
+Check 18.89. Fails on v18.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,1 @@
+| DRAG GUN 2 ONTO KEY 1 TO SWAP KEYS 1 AND 2 | v18.89 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 18.89 passes, fails on v18.88 |
