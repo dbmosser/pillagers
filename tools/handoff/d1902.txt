@@ -1,0 +1,5 @@
+## v19.02 - THE SECTOR MAP LABELS NEVER PRINT OVER EACH OTHER
+
+Co-op hunt while he was away. Seen on the map screenshot of 2026-10-07: on a busy sector map the labels printed over each other, BLAST FREEZER LOCKED, STRONGBOX and CACHE in one smear, ENCAMPMENT across PACKING FLOOR, SEAL 0% across CHILL ROW, EXTRACT C across THE LONG DOCK. The map now places its labels most important first (extractions and the waypoint, locked rooms and the seal, the peddler and hot ground, caches) and moves any that would collide to the nearest free spot; a faint zone name with no room is left out instead of smeared. The header and the SURVEYED line stay where they are.
+
+MEASURED. Check 19.02 passes, and fails on v19.01.

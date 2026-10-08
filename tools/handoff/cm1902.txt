@@ -1,0 +1,7 @@
+v19.02: the sector map labels never print over each other
+
+Every label on the sector map is readable; none print over each other.
+
+Check 19.02. Fails on v19.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

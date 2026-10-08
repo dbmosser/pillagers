@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.02 - THE SECTOR MAP LABELS NEVER PRINT OVER EACH OTHER
+
+Co-op hunt while he was away. Seen on the map screenshot of 2026-10-07: on a busy sector map the labels printed over each other, BLAST FREEZER LOCKED, STRONGBOX and CACHE in one smear, ENCAMPMENT across PACKING FLOOR, SEAL 0% across CHILL ROW, EXTRACT C across THE LONG DOCK. The map now places its labels most important first (extractions and the waypoint, locked rooms and the seal, the peddler and hot ground, caches) and moves any that would collide to the nearest free spot; a faint zone name with no room is left out instead of smeared. The header and the SURVEYED line stay where they are.
+
+MEASURED. Check 19.02 passes, and fails on v19.01.
 ## v19.01 - AN EMPTY BELT KEY IS JUST A KEY
 
 Co-op hunt while he was away. Seen on the screenshots of 2026-10-07: every empty belt key (7, 8 and 9 on most raids) drew the fallback mark meant for an unknown item, a faint T, and a 0 count in its corner, so empty keys looked like broken items. An empty key now shows only its number. A key holding an item you have run out of still shows its picture and a 0.

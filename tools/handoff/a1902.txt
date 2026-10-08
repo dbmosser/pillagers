@@ -1,0 +1,1 @@
+| THE SECTOR MAP LABELS NEVER PRINT OVER EACH OTHER | v19.02 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 19.02 passes, fails on v19.01 |
