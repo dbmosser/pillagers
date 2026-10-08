@@ -1,0 +1,7 @@
+v18.65: the sector cards read at a glance
+
+On the lift page the sector names and facts are big enough to read from the couch.
+
+Check 18.65. Fails on v18.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.65 - THE SECTOR CARDS READ AT A GLANCE
+
+Co-op hunt while he was away. Seen on the lift screenshot of 2026-10-07: each sector card on WHERE ARE YOU GOING is as tall as its map, and the name and facts were a 16 pixel and a 13 pixel line across the top of it, so the page looked like two big empty boxes. The name is a heading now and the lines under it are bigger; the words are unchanged.
+
+MEASURED. Check 18.65 passes, and fails on v18.64.
 ## v18.64 - THE SHOP SHOWS ITS ITEMS BIG
 
 Co-op hunt while he was away. Seen on the shop screenshot of 2026-10-07: the new item pictures filled only 44% of a shop, craft or hire tile, small in a lot of empty tile. They fill 60% now, which still leaves room for the name under them at every tile size.

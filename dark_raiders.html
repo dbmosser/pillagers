@@ -1511,7 +1511,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.64';
+var VER='18.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32761,7 +32761,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.64: Items in the shop, craft and hire lists are shown about a third bigger. Check 18.64 fails on v18.63',
+  now:'v18.65: On the lift page the sector names and facts are big enough to read from the couch. Check 18.65 fails on v18.64',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41276,11 +41276,14 @@ var _myR=0;
     h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;overflow:hidden;cursor:pointer;'+
        (sel?'border-left:3px solid var(--amber);background:rgba(255,192,74,.10)':'border-left:3px solid transparent')+'">'+
        '<canvas class="secprev" data-map="'+i+'" width="420" height="'+Math.round(420*M.h/M.w)+'" style="float:right;margin:0 0 8px 16px;border:1px solid var(--steel-hi);border-radius:4px;background:#0b1020"></canvas>'+   // v17.79: the sector map
-       '<div><b style="color:'+(sel?'var(--amber)':'var(--bone)')+'">'+M.name+'</b>'+
-       ' <span style="color:var(--ash);font-size:11px">'+sizeTag(i)+'</span>'+
-       (sel?' <span style="color:var(--amber);font-size:11px">ASCENDING HERE</span>':'')+
-       '<div class="hint" style="margin:2px 0 0">'+SECTOR_CHAR[i]+'</div>'+
-       '<div class="hint" style="margin:2px 0 0;color:var(--ash)">'+facts.join('  &middot;  ')+'</div></div></div>';
+       // v18.65, seen on the lift screenshot (2026-10-07): each sector card is as tall as its map, and the name and facts were
+       // 16 and 13 pixel lines across the top of it, a big empty card. The name is a heading now and the lines under it read
+       // at a glance; the words are his, untouched.
+       '<div><b style="font-size:28px;letter-spacing:.04em;line-height:1.15;color:'+(sel?'var(--amber)':'var(--bone)')+'">'+M.name+'</b>'+
+       ' <span style="color:var(--ash);font-size:14px;letter-spacing:.08em">'+sizeTag(i)+'</span>'+
+       (sel?' <span style="color:var(--amber);font-size:14px;letter-spacing:.08em">ASCENDING HERE</span>':'')+
+       '<div class="hint" style="margin:10px 0 0;font-size:17px;line-height:1.5">'+SECTOR_CHAR[i]+'</div>'+
+       '<div class="hint" style="margin:8px 0 0;font-size:16px;line-height:1.6;color:var(--ash)">'+facts.join('  &middot;  ')+'</div></div></div>';
   }
   host.innerHTML=h;
   try{ sectorPreviews(host); }catch(_sv){}   // v17.79: the sector maps
