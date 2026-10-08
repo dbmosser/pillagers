@@ -1,0 +1,7 @@
+v20.56: the overseer stays in its lair
+
+THE OVERSEER now stays near the middle of the map instead of touring the extraction rings.
+
+Check 20.56. Fails on v20.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

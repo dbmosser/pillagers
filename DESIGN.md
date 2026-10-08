@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.56 - THE OVERSEER STAYS IN ITS LAIR
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. THE OVERSEER is meant to guard the middle of the map, but it only remembered its lair while it could see you. Once it lost you it walked to where you had been, then to the nearest extraction ring, then the next, for the rest of the raid, so you met a 4000 health boss on your way out instead of in the middle. Before anyone met it, it was already wandering anywhere on the map. Now losing you sends it home, anything that sends it far from its lair sends it home instead, and until it finds someone it paces a short beat around its lair.
+
+MEASURED. Check 20.56 passes, and fails on v20.55.
 ## v20.55 - THE BOSS BAR STAYS IN SIGHT
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The Overseer's health bar sat at the same height as the message line at the top of the screen, and the message is painted after it, so every pickup, kill or warning hid the boss name and bar for three seconds, at 1080p and at 4K. In two-player play on one PC the CONTROLLER PAUSED line and a trade offer also printed on top of each other. The top of the screen now stacks them: the message, then the boss bar, then the trade offer, then the controller line, each under the one above. With no boss and no offer nothing moves.
