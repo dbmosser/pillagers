@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.67 - THE CRAFT PANEL SHOWS WHAT ITEMS DO
+
+Co-op hunt while he was away. Seen on the 4K craft screenshot of 2026-10-08: since v19.23 the BUY panel shows what a Bandage, Medkit, plate, stim or frag does in numbers, but the CRAFT panel for the same items showed one sentence over an empty panel. It shows the same numbers now.
+
+MEASURED. Check 19.67 passes, and fails on v19.66.
 ## v19.66 - THE BELT HINT GROWS AT 4K
 
 Co-op hunt while he was away. Found by a 4K text scan of 2026-10-08: the line over the belt (the item, [FIRE] use, [V] signal) grew only 1.3 times from 1080p to 4K, where the extraction lines above it and the rest of the HUD grow twice, so it read as small print. It now grows with the screen as well as with the slots, and the bandage bar above it reads the same size, so it still clears it.

@@ -1,0 +1,7 @@
+v19.67: the craft panel shows what items do
+
+Crafting shows what the Medkit, plate, frag and the rest do in numbers.
+
+Check 19.67. Fails on v19.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

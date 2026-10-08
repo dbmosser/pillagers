@@ -1,0 +1,5 @@
+## v19.67 - THE CRAFT PANEL SHOWS WHAT ITEMS DO
+
+Co-op hunt while he was away. Seen on the 4K craft screenshot of 2026-10-08: since v19.23 the BUY panel shows what a Bandage, Medkit, plate, stim or frag does in numbers, but the CRAFT panel for the same items showed one sentence over an empty panel. It shows the same numbers now.
+
+MEASURED. Check 19.67 passes, and fails on v19.66.

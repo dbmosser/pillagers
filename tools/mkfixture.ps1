@@ -5721,6 +5721,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.67',what:'the craft panel shows what an item does: choosing the Medkit recipe, the panel names its heal and that it heals up to 100',
+   run:function(){
+     if(!window.__station||!window.__hubEnter||typeof itemStatsHTML!=='function') return 'SKIP: no craft panel stats here';
+     var bad=[], t, tab, tiles, i, mk=null, d, tx;
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('trader','KeyE');
+       tab=[].slice.call(document.querySelectorAll('#tradertabs .invtab')).filter(function(x){ return x.textContent==='CRAFT'; })[0];
+       if(!tab) return 'SKIP: no CRAFT tab';
+       tab.click();
+       tiles=[].slice.call(document.querySelectorAll('#craftgrid .vcell'));
+       for(i=0;i<tiles.length;i++) if(String(tiles[i].textContent||'').indexOf(ITEMS.medkit.name)>=0&&String(tiles[i].textContent||'').indexOf('Component')<0){ mk=tiles[i]; break; }
+       if(!mk) return 'SKIP: no Medkit recipe tile';
+       mk.click();
+       d=document.getElementById('craftdetail');
+       if(!d||String(d.textContent||'').indexOf(ITEMS.medkit.name)<0) return 'SKIP: the Medkit recipe did not open';
+       tx=String(d.textContent||'');
+       if(tx.indexOf('Heals up to')<0||tx.indexOf('100 health')<0) bad.push('the craft panel shows no numbers for the Medkit');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.66',what:'the belt hint grows at 4K and stays clear: the line over the belt is about twice its 1080p size at 4K, and below the HOLD E line in a ring',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and draw';
