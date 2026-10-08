@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.30 - WHEN THE HOST LEAVES, THE BOXES ARE RIGHT
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. When the host window closed and the other player picked up the raid, each box went back to that window's own copy. A box part searched gave the same items a second time (six items out of a four item box), and every box the host made held nothing: a Medkit dropped to trade, pillager bodies, wrecks, the Overseer hoard and restocked boxes all opened empty. The host now tells the party what is left in a box whenever that changes, and at the takeover every box holds exactly that, with its search bar where it was.
+
+MEASURED. Check 20.30 passes, and fails on v20.29.
 ## v20.29 - A KEY OPENS THE DOOR FOR THE WHOLE PARTY
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08: in co-op, a locked room opened with its key opened only in the window that used the key. The key is single use, so the other player could never get into that room, could not search the caches inside, and still saw the door as locked. Opening a door is now told to the party and every window opens it; a player who joins late finds it open too.

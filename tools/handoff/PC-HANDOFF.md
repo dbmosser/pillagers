@@ -578,3 +578,5 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - 18:30 WHOLE-GAME BUG HUNT (workflow wf_82ada364-687, 75 agents): 63 confirmed bugs (H1-H63), full text in tools/handoff/hunt/hunt-2026-10-08.txt. Fix order: highs H1 (weak points never register), H7, H15=H57, H21, H22, H27, then mediums, then lows. One per build; mark each H# in this log when shipped.
 - v20.27 weakray: H1 DONE. weakHit(e,bx,by,ux,uy) follows the round's path into the body up to the centre line (nearest pass to each opening); the bullet site passes ux,uy.
 - v20.28 searchfresh: H7 DONE. searchSector keeps e.searchFx/Fy (the target it was built for); a new tx/ty more than 90 away rebuilds the point.
+2026-10-08 18:45 v20.29 doorsync shipped: H15/H57 DONE (a key opens the door for the whole party; late joiners see it open)
+2026-10-08 18:45 usage: weekly 41% (5h 24%); 18:18->now = +2% in ~28 min, still above the 1.1%/h pace; context compacted to 96k, solo shipping only, re-measure in 30 min

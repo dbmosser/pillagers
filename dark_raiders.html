@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.29';
+var VER='20.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33656,7 +33656,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.29: In co-op, a locked room opened with its key is open for both players. Check 20.29 fails on v20.28',
+  now:'v20.30: In co-op, when the host leaves, boxes never give items twice, and dropped piles and bodies keep their items. Check 20.30 fails on v20.29',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41057,7 +41057,7 @@ function netContInit(g){
   var i, ct;
   NET.contMap={}; NET.contN=0; NET.contN0=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;
   if(!g||!g.containers) return 0;
-  for(i=0;i<g.containers.length;i++){ ct=g.containers[i]; ct.cid=i; ct.netBy=-1; ct.netOpen=ct.opened?1:0; NET.contMap[i]=ct; }
+  for(i=0;i<g.containers.length;i++){ ct=g.containers[i]; ct.cid=i; ct.netBy=-1; ct.netOpen=ct.opened?1:0; NET.contMap[i]=ct; ct.netLn=ct.loot?ct.loot.length:0; ct.netPu=ct.pulled|0; ct.netTold=0; ct.netLk=undefined; }
   // v16.97, co-op hunt 2026-09-28: on a linked window the host list is the truth, so every box numbered here reads the count the
   // host sends, as a box the host adds later does. The bar read this window own copy of the list, which never falls as the host
   // hands out items and is emptied by a restock, so it showed the count rolled at the build, or none after a restock.
@@ -41255,7 +41255,7 @@ function netContNumber(){
   var ct, n=0;
   if(!NET.contMap) NET.contMap={};
   while(NET.contN<G.containers.length){
-    ct=G.containers[NET.contN]; ct.cid=NET.contN; if(typeof ct.netBy!=='number') ct.netBy=-1; ct.netOpen=ct.opened?1:0;
+    ct=G.containers[NET.contN]; ct.cid=NET.contN; if(typeof ct.netBy!=='number') ct.netBy=-1; ct.netOpen=ct.opened?1:0; ct.netLn=ct.loot?ct.loot.length:0; ct.netPu=ct.pulled|0;
     NET.contMap[NET.contN]=ct; NET.contN++;
     netBroadcast(netContNewWord(ct)); n++;
   }
@@ -41264,20 +41264,26 @@ function netContNumber(){
 function netContNewWord(ct){
   return {t:'cont',st:'new',cid:ct.cid,x:Math.round(ct.x),y:Math.round(ct.y),ty:netClean(ct.type,12),tag:netClean(ct.tag,24),ca:ct.cache?1:0,sg:ct.strong?1:0,cp:ct.camp?1:0,
           tm:+(+(ct.time||1)).toFixed(2),d:(typeof ct.d==='number')?ct.d:-1,dr:ct.dropped?1:0,op:ct.opened?1:0,n:ct.loot?ct.loot.length:0,
-          ib:ct.issuedB?1:0};   // v17.07, co-op hunt 2026-09-28: a pile holding an issued Bandage says so, so it stays a loaner on the window that takes it
+          ib:ct.issuedB?1:0,lk:netLootList(ct.loot),pl:ct.pulled|0};   // v17.07, co-op hunt 2026-09-28: a pile holding an issued Bandage says so, so it stays a loaner on the window that takes it
 }
 // THE HOST, about ten times a second: every box that arrived, opened or shut since the last tick. Returns how many words.
 function netContTick(){
-  var i, ct, op, n=0;
+  var i, ct, op, w, n=0;
   if(!netContHost()) return 0;
   n+=netContNumber();
   for(i=0;i<G.containers.length;i++){
     ct=G.containers[i]; op=ct.opened?1:0;
     if((ct.netOpen|0)!==op){
       ct.netOpen=op;
-      netBroadcast({t:'cont',cid:ct.cid,st:op?'open':'shut',by:(op&&typeof ct.netOpenBy==='number')?ct.netOpenBy:0});
-      if(!op) ct.netOpenBy=undefined;
+      w={t:'cont',cid:ct.cid,st:op?'open':'shut',by:(op&&typeof ct.netOpenBy==='number')?ct.netOpenBy:0};
+      if(!op){ ct.netOpenBy=undefined; w.lk=netLootList(ct.loot); w.pl=ct.pulled|0; ct.netTold=1; }   // v20.30 (H22): a restocked box says what it holds now
+      netBroadcast(w);
+      ct.netLn=ct.loot?ct.loot.length:0; ct.netPu=ct.pulled|0;
       n++;
+    } else if(!op&&((ct.loot?ct.loot.length:0)!==ct.netLn||(ct.pulled|0)!==ct.netPu)){
+      // v20.30 (H21): a box part searched, by anyone, tells the party what is left in it
+      ct.netLn=ct.loot?ct.loot.length:0; ct.netPu=ct.pulled|0; ct.netTold=1;
+      netBroadcast(netContLeftWord(ct)); n++;
     }
   }
   return n;
@@ -41288,6 +41294,7 @@ function netContHello(peer){
   if(!netContHost()||!peer||peer.state!=='in') return false;
   netContNumber();
   for(i=NET.contN0;i<NET.contN;i++){ ct=NET.contMap[i]; if(ct) netSend(peer,netContNewWord(ct)); }
+  for(i=0;i<NET.contN0;i++){ ct=NET.contMap[i]; if(ct&&ct.netTold&&!ct.opened) netSend(peer,netContLeftWord(ct)); }   // v20.30 (H21): and what is left in a box from the build that someone part searched or that came back
   for(i=0;i<NET.contN;i++){ ct=NET.contMap[i]; if(!ct) continue; if(ct.opened) open.push(i); if(typeof ct.netBy==='number'&&ct.netBy>=0) held.push([i,ct.netBy]); }
   netSend(peer,{t:'cont',st:'all',open:open,held:held});
   return true;
@@ -41305,6 +41312,7 @@ function netLootTake(peer,m){
   if(items.length){
     where=openContainer(at,items);
     if(ct&&typeof ct.netLeft==='number') ct.netLeft=Math.max(0,ct.netLeft-items.length);   // v16.32: the count on the bar falls as each item comes out
+    if(ct) netLkTake(ct,items);   // v20.30 (H21): and this window remembers what is left in the box, for the day the host is gone
     if(!G.sim){
       say('Took '+items.map(function(q){ return ITEMS[q].name; }).join(', ')+'.');
       if(where) sayWhenFree(where);
@@ -41346,9 +41354,11 @@ function netContWord(peer,m){
   ct=netContOf(cid); if(!ct) return 'cont:unknown';
   if(st==='held'){ ct.netBy=by; if(by!==NET.seat&&G.searching===ct){ G.searching=null; G.searchT=0; netSrchStop(); } return 'cont:held'; }
   if(st==='free'){ if(by<0||ct.netBy===by) ct.netBy=-1; return 'cont:free'; }
+  if(st==='left'){ ct.netLk=netLootKeys(m.lk); ct.netPl=((m.pl|0)>0)?(m.pl|0):0; if(!ct.opened) ct.netLeft=ct.netLk.length; return 'cont:left'; }   // v20.30 (H21)
   if(st==='open'){ netContOpen(ct,by); return 'cont:open'; }
   if(st==='shut'){
     ct.opened=false; ct.openedAt=null; ct.prog=0; ct.pulled=0; ct.loot=[]; ct.best='common'; ct.netBy=-1; ct.netCounted=0; ct.netLit=0;
+    ct.netLk=netLootKeys(m.lk); ct.netPl=((m.pl|0)>0)?(m.pl|0):0; ct.netLeft=ct.netLk.length;   // v20.30 (H22): what the restock put in it
     if(!G.sim&&G.player&&dist(ct,G.player)<700) say('Something restocked nearby.');
     return 'cont:shut';
   }
@@ -41360,6 +41370,33 @@ function netContOpen(ct,by){
   if(NET.srch&&NET.srch.cid===ct.cid) NET.srch=null;
   if(G.searching===ct){ G.searching=null; G.searchT=0; }
 }
+// v20.30, from the whole-game bug hunt of 2026-10-08 (H21, H22): WHEN THE HOST LEAVES, EVERY BOX HOLDS WHAT THE HOST SAID IT HELD.
+// When the host's window closed and the other player picked up the raid (his ruling of 2026-10-02), each box went back to this
+// window's own copy: a box part searched still held the full list it was built with, so it gave the same items again, and a box
+// the host made (a dropped pile, a pillager body, a wreck, the Overseer hoard, a restock) held nothing at all, so a Medkit dropped
+// to trade was gone. Now the host tells the party what is left in a box whenever that changes (and the whole list for a box it
+// makes or restocks), this window keeps it aside (netLk, never granted from while the host runs the raid), and at the takeover
+// every box takes that list, its pulled count, and the bar where it was.
+function netLootList(a){ var o=[], i; if(a&&typeof a.length==='number') for(i=0;i<a.length&&i<40;i++) if(typeof a[i]==='string') o.push(a[i]); return o; }
+function netLootKeys(a){ var o=[], i, k; if(a&&typeof a.length==='number') for(i=0;i<a.length&&i<40;i++){ k=netClean(a[i],32); if(k&&Object.prototype.hasOwnProperty.call(ITEMS,k)&&ITEMS[k]) o.push(k); } return o; }
+function netContLeftWord(ct){ return {t:'cont',cid:ct.cid,st:'left',lk:netLootList(ct.loot),pl:ct.pulled|0}; }
+function netLkTake(ct,items){
+  var i, j;
+  if(!Array.isArray(ct.netLk)){ ct.netLk=(ct.loot||[]).slice(); ct.netPl=ct.pulled|0; }
+  for(i=0;i<items.length;i++){ j=ct.netLk.indexOf(items[i]); if(j>=0){ ct.netLk.splice(j,1); ct.netPl=(ct.netPl|0)+1; } }
+}
+function netBoxMine(ct){
+  var tot;
+  if(!ct||typeof ct.cid!=='number') return false;
+  if(!ct.opened&&Array.isArray(ct.netLk)){
+    ct.loot=ct.netLk.slice(); ct.pulled=ct.netPl|0;
+    tot=ct.loot.length+ct.pulled;
+    ct.prog=(tot>0&&ct.pulled>0)?(ct.time||1)*ct.pulled/tot:0;   // the bar where the last item came out, so the next stage is the next item
+    ct.best=bestRarity(ct.loot);
+  }
+  ct.net=0; ct.netLeft=undefined; ct.netLk=undefined; ct.netBy=-1;
+  return true;
+}
 // A box the host made, with what the drawing and the reach need; its loot is the host list, never rolled here.
 function netContMake(cid,m){
   var ty=netClean(m.ty,12), x=+m.x, y=+m.y, tm=+m.tm, ct;
@@ -41368,6 +41405,7 @@ function netContMake(cid,m){
       time:(isFinite(tm)&&tm>0)?clamp(tm,0.2,20):1,best:'common',rot:0,pulled:0,prog:0,netBy:-1};
   if(m.ca) ct.cache=1; if(m.sg) ct.strong=1; if(m.cp) ct.camp=1; if(m.dr) ct.dropped=1;
   if(m.ib) ct.issuedB=1;   // v17.07, co-op hunt 2026-09-28: grantLoot puts it back on this window issued count, as a pile of his own would
+  if(m.lk&&typeof m.lk.length==='number'){ ct.netLk=netLootKeys(m.lk); ct.netPl=((m.pl|0)>0)?(m.pl|0):0; }   // v20.30 (H22): what it holds, never granted from here while the host runs the raid
   if(typeof m.n==='number'&&m.n>=0) ct.netLeft=m.n|0;   // v16.32, his note: player 2 search bar shows how many items are left, as player 1 does
   if(typeof m.tag==='string'&&m.tag) ct.tag=netClean(m.tag,24);
   return ct;
@@ -41387,6 +41425,7 @@ function netHostGone(why){
   var _i, _e, _boss=null, _b;
   NET.upSeed=0; NET.upFp=null; NET.upWord=null; NET.hostSeed=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;
   if(G.searching){ G.searching=null; G.searchT=0; }
+  for(_i=0;_i<G.containers.length;_i++) netBoxMine(G.containers[_i]);   // v20.30 (H21, H22): every box holds what the host last said it held
   for(_i=G.ents.length-1;_i>=0;_i--){ _e=G.ents[_i]; if(_e&&_e.net){ if(_e.name===BOSS_NAME) _boss=_e; G.ents.splice(_i,1); } }
   if(_boss){ G.bossDone=0; _b=bossTick(true); if(_b&&_boss.maxhp>0&&_boss.hp>0) _b.hp=Math.max(1,Math.round(_b.maxhp*Math.min(1,_boss.hp/_boss.maxhp))); }
   else if((G.t||0)>=2) G.bossDone=1;

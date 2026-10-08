@@ -1,0 +1,7 @@
+v20.30: when the host leaves, the boxes are right
+
+In co-op, when the host leaves, boxes never give items twice, and dropped piles and bodies keep their items.
+
+Check 20.30. Fails on v20.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
