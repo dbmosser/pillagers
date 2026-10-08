@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.76 - THE STASH FILTER ROW IS READABLE
+
+Co-op hunt while he was away. Found by a 4K menu text scan of 2026-10-08: the stash category tabs (ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS), the search box and SORT were set at 10.5 to 11 pixels, the smallest print in any menu, in a row with room to spare. They are 13 now and still fit on one line.
+
+MEASURED. Check 19.76 passes, and fails on v19.75.
 ## v19.75 - THE WHAT IS NEW CARD NAMES THE CONTROLLER MENUS
 
 Co-op hunt while he was away. The card was stamped v19.62 and the stamp may not trail the build by more than 0.15. Its new second line names the player 2 controller menus (v19.68 to v19.72); the 4K map tags, belt hint, craft numbers and the corner credits (v19.63 to v19.67, v19.73, v19.74) are in the change list.

@@ -1556,7 +1556,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.75';
+var VER='19.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33451,7 +33451,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.75: The what is new card names the controller menus for player 2. Check 19.75 fails on v19.74',
+  now:'v19.76: The stash category tabs, search box and SORT are easier to read. Check 19.76 fails on v19.75',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35149,7 +35149,7 @@ try{ renderFreeKit(); }catch(_fk){}
         if(T[0]==='other'&&!cnt){ if(P.stashTab==='other') P.stashTab='all'; return; }
         var d=document.createElement('div');
         d.className='invtab'+(P.stashTab===T[0]?' on':'');
-        d.style.fontSize='10.5px';
+        d.style.fontSize='13px';   // v19.76, seen on a 4K menu text scan (2026-10-08): 10.5px was the smallest print in any menu, in a row with room to spare
         d.textContent=T[1]+'  '+cnt;
         d.onclick=function(){ P.stashTab=T[0]; saveProfile(); renderHub(); };
         r2.appendChild(d);
@@ -35159,10 +35159,10 @@ try{ renderFreeKit(); }catch(_fk){}
       // first, then closes as before), and SORT cycles DEFAULT, VALUE, NAME, RARITY and COUNT, kept in the save.
       var r3=document.createElement('div'); r3.className='invtabs'; r3.style.cssText='padding:4px 0 0 0;gap:6px;display:flex;align-items:center';
       var sq=document.createElement('input'); sq.id='stashsearch'; sq.type='text'; sq.placeholder='search the stash'; sq.value=STASH_Q;
-      sq.style.cssText='flex:1;min-width:0;font-size:11px;padding:3px 6px';
+      sq.style.cssText='flex:1;min-width:0;font-size:13px;padding:4px 8px';
       sq.oninput=function(){ STASH_Q=sq.value; stashFilterApply(); };
       sq.onkeydown=function(ev){ if((ev.code==='Escape'||ev.code==='Tab')&&sq.value){ sq.value=''; STASH_Q=''; stashFilterApply(); ev.preventDefault(); ev.stopPropagation(); } };
-      var sb=document.createElement('div'); sb.className='invtab'; sb.id='stashsort'; sb.style.fontSize='10.5px';
+      var sb=document.createElement('div'); sb.className='invtab'; sb.id='stashsort'; sb.style.fontSize='13px';
       sb.textContent='SORT: '+(STASH_SORTS[P.stashSort||'default']||'DEFAULT');
       sb.onclick=function(){ var ks=Object.keys(STASH_SORTS), i=ks.indexOf(P.stashSort||'default'); P.stashSort=ks[(i+1)%ks.length]; saveProfile(); renderHub(); };
       r3.appendChild(sq); r3.appendChild(sb); tb.appendChild(r3);

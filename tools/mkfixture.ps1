@@ -5721,6 +5721,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.76',what:'the stash filter row is readable: the category tabs, the search box and SORT are drawn at 13px or more, and the tabs stay on one line',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], tb, tabs, sq, sb, i, f, tops={};
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       __hubEnter(); __station('term','KeyE');
+       tb=document.getElementById('stashtabs'); if(!tb||!tb.getBoundingClientRect().width) return 'SKIP: the stash did not open';
+       tabs=(tb.firstElementChild&&tb.firstElementChild.querySelectorAll)?[].slice.call(tb.firstElementChild.querySelectorAll('.invtab')):[]; sq=document.getElementById('stashsearch'); sb=document.getElementById('stashsort');
+       if(!tabs.length||!sq||!sb) return 'SKIP: no filter row';
+       for(i=0;i<tabs.length;i++){ f=parseFloat(getComputedStyle(tabs[i]).fontSize); if(!(f>=12.9)) { bad.push('the '+tabs[i].textContent.trim()+' tab is '+f+'px'); break; } tops[Math.round(tabs[i].getBoundingClientRect().top)]=1; }
+       if(!(parseFloat(getComputedStyle(sq).fontSize)>=12.9)) bad.push('the search box is '+getComputedStyle(sq).fontSize);
+       if(!(parseFloat(getComputedStyle(sb).fontSize)>=12.9)) bad.push('SORT is '+getComputedStyle(sb).fontSize);
+       if(Object.keys(tops).length>1) bad.push('the category tabs wrap onto '+Object.keys(tops).length+' lines');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.75',what:'the what is new card is stamped within 0.15 of the build and leads with the player 2 controller news',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof WN_SHOW==='undefined') return 'SKIP: this build has no what is new card';

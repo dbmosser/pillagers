@@ -1,0 +1,20 @@
+{
+    "title":  "THE STASH FILTER ROW IS READABLE",
+    "why":  "Found by a 4K menu text scan of 2026-10-08: the stash category tabs (ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS), the search box and SORT were set at 10.5 to 11 pixels, the smallest print in any menu, in a row with room to spare. They are 13 now and still fit on one line.",
+    "now":  "The stash category tabs, search box and SORT are easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "        d.style.fontSize=\u002710.5px\u0027;",
+                      "replacement":  "        d.style.fontSize=\u002713px\u0027;   // v16.xx, seen on a 4K menu text scan (2026-10-08): 10.5px was the smallest print in any menu, in a row with room to spare"
+                  },
+                  {
+                      "anchor":  "sq.style.cssText=\u0027flex:1;min-width:0;font-size:11px;padding:3px 6px\u0027;",
+                      "replacement":  "sq.style.cssText=\u0027flex:1;min-width:0;font-size:13px;padding:4px 8px\u0027;"
+                  },
+                  {
+                      "anchor":  "sb.id=\u0027stashsort\u0027; sb.style.fontSize=\u002710.5px\u0027;",
+                      "replacement":  "sb.id=\u0027stashsort\u0027; sb.style.fontSize=\u002713px\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stash filter row is readable: the category tabs, the search box and SORT are drawn at 13px or more, and the tabs stay on one line\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__station\u0026\u0026window.__wnseen)) return \u0027SKIP: this fixture cannot open the stash\u0027;\n     if(window.__vpAlive\u0026\u0026!__vpAlive()) return \u0027SKIP: the pane has no layout, so nothing renders\u0027;\n     var bad=[], tb, tabs, sq, sb, i, f, tops={};\n     try{\n       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);\n       __hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027);\n       tb=document.getElementById(\u0027stashtabs\u0027); if(!tb||!tb.getBoundingClientRect().width) return \u0027SKIP: the stash did not open\u0027;\n       tabs=(tb.firstElementChild\u0026\u0026tb.firstElementChild.querySelectorAll)?[].slice.call(tb.firstElementChild.querySelectorAll(\u0027.invtab\u0027)):[]; sq=document.getElementById(\u0027stashsearch\u0027); sb=document.getElementById(\u0027stashsort\u0027);\n       if(!tabs.length||!sq||!sb) return \u0027SKIP: no filter row\u0027;\n       for(i=0;i\u003ctabs.length;i++){ f=parseFloat(getComputedStyle(tabs[i]).fontSize); if(!(f\u003e=12.9)) { bad.push(\u0027the \u0027+tabs[i].textContent.trim()+\u0027 tab is \u0027+f+\u0027px\u0027); break; } tops[Math.round(tabs[i].getBoundingClientRect().top)]=1; }\n       if(!(parseFloat(getComputedStyle(sq).fontSize)\u003e=12.9)) bad.push(\u0027the search box is \u0027+getComputedStyle(sq).fontSize);\n       if(!(parseFloat(getComputedStyle(sb).fontSize)\u003e=12.9)) bad.push(\u0027SORT is \u0027+getComputedStyle(sb).fontSize);\n       if(Object.keys(tops).length\u003e1) bad.push(\u0027the category tabs wrap onto \u0027+Object.keys(tops).length+\u0027 lines\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
