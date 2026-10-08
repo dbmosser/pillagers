@@ -7528,7 +7528,8 @@ window.__REGRESS=[
    run:function(){
      if(typeof kbCycle!=='function'||typeof kidHeadHtml!=='function') return 'Settings has no kid menu and no way back after death for player 2';
      if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof renderSettings!=='function') return 'SKIP: no raid, party or Settings in this fixture';
-     var NK={}, k, bad=[], kb0=P.kidBack, oB=netBroadcast, oSend=netSend, oSay=netSay, oSwf=sayWhenFree, host, peer, sd;
+     var NK={}, k, bad=[], kb0=P.kidBack, oB=netBroadcast, oSend=netSend, oSay=netSay, oSwf=sayWhenFree, host, peer, sd, ks0=null;
+     try{ ks0=localStorage.getItem(KID_SHARE_KEY); }catch(_ks){}
      for(k in NET) NK[k]=NET[k];
      try{
        P.kidBack=0; renderSettings(); host=document.getElementById('settings')||document.body;
@@ -7548,7 +7549,7 @@ window.__REGRESS=[
        P.kidBack=0; NET.lateOut={}; netUpWord(peer,{t:'up',st:'out',how:'dead'}); if(!(NET.lateOut&&NET.lateOut[1])) bad.push('with it off, the host did not keep the teammate who died out');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       P.kidBack=kb0; try{ saveProfile(); }catch(_s){}
+       P.kidBack=kb0; try{ if(ks0===null) localStorage.removeItem(KID_SHARE_KEY); else localStorage.setItem(KID_SHARE_KEY,ks0); }catch(_kr){} try{ saveProfile(); }catch(_s){}
        netBroadcast=oB; netSend=oSend; netSay=oSay; sayWhenFree=oSwf;
        for(k in NET) if(!(k in NK)) delete NET[k];
        for(k in NK) NET[k]=NK[k];
@@ -7681,6 +7682,7 @@ window.__REGRESS=[
      var NK={}, k, bad=[], sent=[], oSend=netSend, oB=netBroadcast, oSay=say, oNS=netSay, oSwf=sayWhenFree, st0=state, sd, peer, held, w;
      for(k in NET) NK[k]=NET[k];
      try{
+       var __kb66=P.kidBack, __kh66=NET.kbHost; P.kidBack=0; NET.kbHost=0;   // pinned off: a leftover kid comeback setting lets a dead teammate back in, by design
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        if(!G||G.over||!G.player) return 'SKIP: staging: no raid';
        netSend=function(p,m){ sent.push(m); return true; }; netBroadcast=function(m){ sent.push(m); };
@@ -7712,6 +7714,7 @@ window.__REGRESS=[
        if(!sent.some(function(m){ return m&&m.t==='raid'; })) bad.push('the host refused a teammate who abandoned');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       try{ P.kidBack=__kb66; }catch(_k66){}
        netSend=oSend; netBroadcast=oB; say=oSay; netSay=oNS; sayWhenFree=oSwf; state=st0;
        for(k in NET) if(!(k in NK)) delete NET[k];
        for(k in NK) NET[k]=NK[k];
@@ -12051,7 +12054,7 @@ window.__REGRESS=[
   {v:'16.33',what:'the what is new card catches up on co-op: split speakers, teammate health on the HUD, your heals on a teammate, pause when every player has paused, the host watching until the party is out',
    run:function(){
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
-     var wn=__words.whatsnew(), bad=[], t=String((wn.lines||[])[1]||'').toUpperCase();
+     var wn=__words.whatsnew(), bad=[], t=String(((wn.lines||[]).filter(function(l){ return /^YOUR PARTY GOES UP TOGETHER/i.test(String(l)); })[0])||(wn.lines||[])[1]||'').toUpperCase();
      ['LEFT SPEAKER','HEALTH AND ARMOUR','ON A TEAMMATE','EVERY PLAYER HAS PAUSED','THE HOST WATCHES'].forEach(function(w){ if(t.indexOf(w)<0) bad.push('the co-op line does not say '+w.toLowerCase()); });
      if(t.indexOf('ONE OF THE TWO')>=0) bad.push('the co-op line still says world sound plays from one window');
      return bad.length?bad.join('; '):null; }},
