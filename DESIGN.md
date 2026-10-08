@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.38 - THE YOUR STATS TITLES ARE WHOLE
+
+Co-op hunt while he was away. Seen on the 4K YOUR STATS screenshot of 2026-10-08: four card titles on the Mainframe stats page were cut off with dots (NET LIFETIME EARNI..., TYPICAL RAID LENG..., AVERAGE CONTAINE..., AVERAGE KILLS PER ...). A title now wraps onto a second line, and every title keeps room for two so the numbers in a row stay level.
+
+MEASURED. Check 19.38 passes, and fails on v19.37.
 ## v19.37 - THE RUN CARD BUTTON STRIP SITS ON THE EDGE
 
 Co-op hunt while he was away. Seen on the 4K death card screenshot after v19.36: the pinned button row stopped at the card inner padding, 26 pixels short of its bottom edge, and on a card that scrolls the note box showed in that band under the two buttons. The card has no bottom padding now (the space moved to its last line, so a short card looks the same) and the row sits on the edge.

@@ -5721,6 +5721,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.38',what:'the YOUR STATS card titles are whole: in a narrow grid every card title fits its card, none cut off with dots',
+   run:function(){
+     if(!window.__station||!window.__hubEnter) return 'SKIP: this fixture cannot open the Mainframe';
+     var bad=[], t, tab, sg, w0, ks, i, cut=[];
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('mf','KeyE');
+       tab=document.querySelector('[data-optab="rec"]'); if(!tab) return 'SKIP: no YOUR STATS tab';
+       tab.click();
+       sg=document.getElementById('statgrid'); if(!sg) return 'SKIP: no stat grid';
+       w0=sg.style.width; sg.style.width='700px';
+       ks=sg.querySelectorAll('.scard .sk'); if(!ks.length) return 'SKIP: no stat cards';
+       for(i=0;i<ks.length;i++) if(ks[i].scrollWidth>ks[i].clientWidth+1) cut.push(String(ks[i].textContent||'').trim());
+       if(cut.length) bad.push(cut.length+' card titles are cut off: '+cut.slice(0,3).join(', '));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(sg) sg.style.width=w0||''; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.37',what:'the run card button strip sits on the card edge: on a card that scrolls, nothing shows between the pinned buttons and the bottom of the card',
    run:function(){
      var oc=document.getElementById('outcome'), w=oc&&oc.querySelector('.ocwin'), a=oc&&oc.querySelector('.ocacts'), was=oc&&oc.classList.contains('on'), mh, bad=[], wr, ar, bw;

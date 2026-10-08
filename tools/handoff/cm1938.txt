@@ -1,0 +1,7 @@
+v19.38: the your stats titles are whole
+
+Every YOUR STATS card shows its whole title.
+
+Check 19.38. Fails on v19.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
