@@ -491,3 +491,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.42 partytrade: #partymodal .hint gets the 1060 cap (the TRADING line ran across the whole screen).
 - Seen and left: stash shows 3 huge columns at true 1080p and 4K (his v6.22 bigger cells x menu zoom 1.3); lamp pools are two flat discs on purpose ("stepped, not a smooth falloff"); gambler offer has a LIMITED TIME OFFER header over his own Limited Time Offer line.
 - Co-op soak 2: 39/40 pass; run 4 failed staging (22 rounds, 0 hits, a wall between); 6 runs at 3-6 fps when the 4K window covers the soak window (occlusion throttle), the rest 49-57.
+- v19.43 exptag: the bar warning (his words) shrinks to 70% at most so it sits under THE LAST POUR, not THE STASH. Corpus night run: all slices pass except the three retargeted checks (17.95, 17.82, 15.91), now passing alone; 11.52 passes alone.
