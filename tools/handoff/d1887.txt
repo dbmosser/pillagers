@@ -1,0 +1,5 @@
+## v18.87 - A GUN ALREADY IN HIS HANDS, DRAGGED FROM KEY 8 ONTO KEY 1, GOES THERE
+
+Co-op hunt while he was away. When a gun on key 8 is already one of his two guns, dragging it onto key 1 did nothing and said nothing. The game looked for the gun in the backpack, did not find it, and gave up quietly. Now key 1 shows that gun and key 2 shows the other one. The guns in his hands stay as they were, and key 8 is freed, the same as when any item moves between keys. He is told "X to slot 1." If the gun has left the backpack and his hands, he is told so.
+
+MEASURED. Check 18.87 passes, and fails on v18.86.

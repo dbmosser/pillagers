@@ -1,0 +1,7 @@
+v18.87: a gun already in his hands, dragged from key 8 onto key 1, goes there
+
+In a raid, with the mouse or the controller (pad A sends the same mouse release): pick up key 8 holding a gun he has already brought up once, then drop it on key 1. Nothing changes and nothing is said. Key 1 still shows the other gun and key 8 still shows the dragged one. The code is `if(_bx>=0){` with no else, followed by `dropped=true; break;`.
+
+Check 18.87. Fails on v18.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

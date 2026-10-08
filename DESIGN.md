@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.87 - A GUN ALREADY IN HIS HANDS, DRAGGED FROM KEY 8 ONTO KEY 1, GOES THERE
+
+Co-op hunt while he was away. When a gun on key 8 is already one of his two guns, dragging it onto key 1 did nothing and said nothing. The game looked for the gun in the backpack, did not find it, and gave up quietly. Now key 1 shows that gun and key 2 shows the other one. The guns in his hands stay as they were, and key 8 is freed, the same as when any item moves between keys. He is told "X to slot 1." If the gun has left the backpack and his hands, he is told so.
+
+MEASURED. Check 18.87 passes, and fails on v18.86.
 ## v18.86 - THE CONTROLS LEGEND STEPS ASIDE FOR THE BACKPACK
 
 Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-07: with the backpack open the controls legend ran under its left edge and its second column showed through the panel. The backpack has its own key line, so the legend now steps aside while the backpack is open and comes back when it closes.

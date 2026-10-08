@@ -1517,7 +1517,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.86';
+var VER='18.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11993,6 +11993,23 @@ window.addEventListener('mouseup',function(e){
         if(_si&&_siDerived&&_dit&&_dit.use==='gun'){
           var _pp=G.player;
           var _bx=(G.bag[d.bagIx]===d.key)?d.bagIx:G.bag.indexOf(d.key);
+          // v18.87, his report (2026-10-07): "can't move a gun from slot 8 to slot 1". A gun on key 8 that is already in his hands is not in the backpack (equipFromBag took it out the first time key 8 brought it up), so this drop looked for it there, found nothing, did nothing and said nothing. Keys 1 and 2 show his two guns by p.swapped alone, so turning it over puts the gun on the key he let go on without changing what is in his hands, and the key it came from lets it go, as any item moved between keys does.
+          var _r8gk=_dit.gk, _r8on=(_bx<0&&!!_r8gk&&((_pp.wep&&_pp.wep.id===_r8gk)||(_pp.sec&&_pp.sec.id===_r8gk)));
+          if(_r8on){
+            var _r8w=(_pp.wep&&_pp.wep.id===_r8gk)?_pp.wep:_pp.sec;
+            if(_si.icon!==_r8gk&&_pp.wep&&_pp.sec) _pp.swapped=!_pp.swapped;
+            var _r8s=hotbarSlots();
+            if(_r8s[HC.i]&&_r8s[HC.i].kind==='gun'&&_r8s[HC.i].icon===_r8gk){
+              if(d.fromHot!==undefined&&d.fromHot!==HC.i&&G.hotAssign&&G.hotAssign[d.fromHot]===d.key){
+                delete G.hotAssign[d.fromHot]; if(G.hotAuto) delete G.hotAuto[d.fromHot];
+                if(!G.sim){ var _r8f={}; for(var _r8k in G.hotAssign) if(!G.hotAuto||!G.hotAuto[_r8k]) _r8f[_r8k]=G.hotAssign[_r8k]; P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_r8f))); try{ saveProfile(); }catch(_r8e){} }
+              }
+              G.hot=gunCell(); blip('pick');
+              say(_r8w.name+' to slot '+(HC.i+1)+'.');
+            }
+            else say(_r8w.name+' stays where it is: it is your only gun, so there is no other gun for it to trade places with.');
+          }
+          else if(_bx<0) say(_dit.name+' is no longer in your backpack.');
           if(_bx>=0){
             var _isA=(_si.k==='gunA');
             var _tgt=_isA?(_pp.swapped?2:1):(_pp.swapped?1:2);
@@ -32838,7 +32855,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.86: Opening the backpack hides the controls legend until you close it. Check 18.86 fails on v18.85',
+  now:'v18.87: In a raid, with the mouse or the controller (pad A sends the same mouse release): pick up key 8 holding a gun he has already brought up once, then drop it on key 1. Nothing changes and nothing is said. Key 1 still shows the other gun and key 8 still shows the dragged one. The code is if(_bx>=0){ with no else, followed by dropped=true; break;. Check 18.87 fails on v18.86',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
