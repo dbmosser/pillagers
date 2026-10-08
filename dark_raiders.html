@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.51';
+var VER='20.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14506,6 +14506,12 @@ if(wep.mag===0){
         if(dist(sh,_me)>wep.rng+_me.r) continue;
         var _ma=Math.atan2(_me.y-sh.y,_me.x-sh.x);
         if(Math.abs(Math.atan2(Math.sin(_ma-base),Math.cos(_ma-base)))>0.9) continue;
+        // v20.52, from the whole-game bug hunt of 2026-10-08 (H3): NO STRIKE THROUGH A WALL. The reach was measured centre to
+        // centre with nothing in between, so a machine or a pillager just the other side of a building wall or a locked room
+        // wall took the blow, sparked, turned on you, and a peaceful pillager in the next room charged you for it. A blow now
+        // needs the same clear line a round needs (the map's own walls, so smoke and glass do not stop it), as the crawler and
+        // Listener bites already do (v8.59).
+        if(!losClear(sh.x,sh.y,_me.x,_me.y,G.map.segs)) continue;
         var _mdm=wep.dmg;
         if(Math.abs(Math.atan2(Math.sin(base-_me.face),Math.cos(base-_me.face)))<0.9) _mdm*=1.5;
         if(NET.on&&netEntsPeer()) netShotSend(_me,_mdm,base,null); else _me.hp-=_mdm;   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
@@ -33760,7 +33766,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.51: On a controller you can now highlight a save on the title and load it with A. Check 20.51 fails on v20.50',
+  now:'v20.52: Bare-hand strikes no longer hit through walls. Check 20.52 fails on v20.51',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

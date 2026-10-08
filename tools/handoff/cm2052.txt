@@ -1,0 +1,7 @@
+v20.52: no strikes through walls
+
+Bare-hand strikes no longer hit through walls.
+
+Check 20.52. Fails on v20.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

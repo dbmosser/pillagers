@@ -1,0 +1,5 @@
+## v20.52 - NO STRIKES THROUGH WALLS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A bare-hand strike (F, or a click with empty hands) only measured how far away the target was, so a machine or a pillager just the other side of a building wall or a locked room wall took the blow, sparked, and turned on you, and a peaceful pillager in the next room charged you for it. A strike now needs a clear line to what it hits, as a round does and as the crawler and Listener bites already do.
+
+MEASURED. Check 20.52 passes, and fails on v20.51.
