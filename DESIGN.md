@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.07 - THE WHAT IS NEW CARD NAMES THE BUILDS
+
+Co-op hunt while he was away. The card was stamped v19.91 and the stamp may not trail the build by more than 0.15. Its new second line names the body builds (v20.01 to v20.06: Lean, Broad and Curved, the jiggle, the teammate seeing it, the FASHION tiles and outfits fitting); the stash at 6 across (v19.98) and the rest are in the change list.
+
+MEASURED. Check 20.07 passes, and fails on v20.06.
 ## v20.06 - BARE LEGGED OUTFITS WEAR SHORTS ON CURVED
 
 Co-op hunt while he was away. Seen on the 4K FASHION outfit screenshots of 2026-10-08: the Baller and the Tomb Explorer have bare legs, so on a Curved body the hips were filled with skin and read as a bare midriff. Those suits now wear shorts on the hips in a darker cut of their own colour, with the bare legs below as before.

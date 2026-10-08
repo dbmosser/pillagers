@@ -1,0 +1,7 @@
+v20.07: the what is new card names the builds
+
+The what is new card names the body builds.
+
+Check 20.07. Fails on v20.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
