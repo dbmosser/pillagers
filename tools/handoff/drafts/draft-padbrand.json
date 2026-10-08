@@ -1,68 +1,16 @@
 {
-    "title":  "A PLAYSTATION PAD IS NAMED IN ITS OWN WORDS, AND THE PAD LEGEND MATCHES HIS LAYOUT",
-    "why":  "Every prompt named Xbox buttons whatever pad was plugged in. The game now reads the pad make from its id and, on a PlayStation pad, says CROSS, CIRCLE, SQUARE, TRIANGLE, L1, R1, L2, R2, SHARE and OPTIONS everywhere a prompt goes through keyLabel, in the legends, and in the few prompts written out by hand. A pad handed to the other window carries its make too. The short pad legend also still described the old layout (B roll, A fire, Y reload); it now matches his: A roll, B crouch, RT fire, X reload, LT or RS focus aim, D-left and right aim distance.",
-    "now":  "A PlayStation controller is now named in its own words (CROSS, CIRCLE, SQUARE, TRIANGLE, L1, R1...), and the short pad legend matches the real layout.",
+    "title":  "A PLAYSTATION PAD IS TOLD ITS OWN BUTTONS",
+    "why":  "Found by the code review of 2026-10-08: on a PlayStation pad the new pause box key line (v19.71) and the stash pad row (v19.70) named Xbox buttons, so X reload sent a DualSense player to Cross, which rolls. Both now go through the same renaming as the H panel and the canvas hints: SQUARE reload, CROSS roll, OPTIONS pause.",
+    "now":  "On a PlayStation controller the pause box and the stash name the PlayStation buttons.",
     "edits":  [
                   {
-                      "anchor":  "function keyLabel(code,fallback){",
-                      "replacement":  "// v16.xx, AAA CHECK (2026-10-02): A PLAYSTATION PAD IS NAMED IN ITS OWN WORDS. Every prompt named Xbox buttons (A, B, X, Y, LB,\n// RB, LT, RT, VIEW, MENU) whatever pad was plugged in. The pad\u0027s id names its make (Sony\u0027s vendor code, PlayStation, DualShock,\n// DualSense); on one of those every prompt says CROSS, CIRCLE, SQUARE, TRIANGLE, L1, R1, L2, R2, SHARE and OPTIONS instead.\n// padB turns one string; keyLabel and the legends go through it, and the few prompts written out by hand do too. The window\n// that hands a pad over carries its make with it (netPadSend b), so player 2 is named right as well.\nvar PAD_PS={A:\u0027CROSS\u0027,B:\u0027CIRCLE\u0027,X:\u0027SQUARE\u0027,Y:\u0027TRIANGLE\u0027,LB:\u0027L1\u0027,RB:\u0027R1\u0027,LT:\u0027L2\u0027,RT:\u0027R2\u0027,LS:\u0027L3\u0027,RS:\u0027R3\u0027,VIEW:\u0027SHARE\u0027,MENU:\u0027OPTIONS\u0027,BACK:\u0027SHARE\u0027};\nfunction padBrandOf(gp){ var id=(gp\u0026\u0026gp.id)?String(gp.id):\u0027\u0027; return /054c|playstation|dualshock|dualsense/i.test(id)?\u0027ps\u0027:\u0027xbox\u0027; }\nfunction padB(s){ if(typeof s!==\u0027string\u0027||typeof PAD===\u0027undefined\u0027||!PAD||PAD.brand!==\u0027ps\u0027) return s; return s.replace(/\\b(LB|RB|LT|RT|LS|RS|VIEW|MENU|BACK|A|B|X|Y)\\b/g,function(m){ return PAD_PS[m]||m; }); }\nfunction keyLabel(code,fallback){"
+                      "anchor":  "function padBodyCls(){ var on=!!(PAD\u0026\u0026PAD.on); if(PAD._bodyOn!==on){ PAD._bodyOn=on; try{ document.body.classList.toggle(\u0027padon\u0027,on); }catch(_b){} } }",
+                      "replacement":  "// v16.xx, from the code review of 2026-10-08: on a PlayStation pad the stash pad row (v19.70) named Xbox buttons. The row is written\n// through padB whenever the pad comes or goes or its make changes, as the canvas hints are.\nfunction padBodyCls(){ var on=!!(PAD\u0026\u0026PAD.on), r; if(PAD._bodyOn!==on||PAD._bodyBr!==PAD.brand){ PAD._bodyOn=on; PAD._bodyBr=PAD.brand; try{ document.body.classList.toggle(\u0027padon\u0027,on); }catch(_b){} try{ r=document.getElementById(\u0027invkeybarpad\u0027); if(r){ if(!r.dataset.src) r.dataset.src=r.innerHTML; r.innerHTML=padB(r.dataset.src); } }catch(_r){} } }"
                   },
                   {
-                      "anchor":  "    if(state===\u0027hub\u0027\u0026\u0026PADLABEL_HUB[code]) return PADLABEL_HUB[code];",
-                      "replacement":  "    if(state===\u0027hub\u0027\u0026\u0026PADLABEL_HUB[code]) return padB(PADLABEL_HUB[code]);"
-                  },
-                  {
-                      "anchor":  "    if(PADLABEL[code]) return PADLABEL[code];",
-                      "replacement":  "    if(PADLABEL[code]) return padB(PADLABEL[code]);"
-                  },
-                  {
-                      "anchor":  "  RUMBLE.gp=(gp\u0026\u0026gp.vibrationActuator\u0026\u0026typeof gp.vibrationActuator.playEffect===\u0027function\u0027)?gp:null;   // v17.37: the pad this window plays, for padRumble",
-                      "replacement":  "  RUMBLE.gp=(gp\u0026\u0026gp.vibrationActuator\u0026\u0026typeof gp.vibrationActuator.playEffect===\u0027function\u0027)?gp:null;   // v17.37: the pad this window plays, for padRumble\n  PAD.brand=padBrandOf(gp);   // v16.xx: the pad make, for the prompts"
-                  },
-                  {
-                      "anchor":  "      ctx.fillText(MN[mi][0],cx0,cy0);",
-                      "replacement":  "      ctx.fillText(padB(MN[mi][0]),cx0,cy0);"
-                  },
-                  {
-                      "anchor":  "var LEGEND_MINI_PAD=[\n  [\u0027L STICK\u0027,\u0027move\u0027],[\u0027LS\u0027,\u0027sprint\u0027],\n  [\u0027RS\u0027,\u0027crouch\u0027],[\u0027B\u0027,\u0027roll\u0027],\n  [\u0027A\u0027,\u0027fire\u0027],[\u0027LT / RT\u0027,\u0027reach\u0027],\n  [\u0027X\u0027,\u0027search\u0027],[\u0027Y\u0027,\u0027reload\u0027],\n  [\u0027LB / RB\u0027,\u0027tactical belt\u0027],[\u0027D-RIGHT\u0027,\u0027use it\u0027],\n  [\u0027VIEW\u0027,\u0027backpack\u0027],[\u0027D-DOWN\u0027,\u0027revive\u0027],\n  [\u0027D-UP\u0027,\u0027ping, hold: map\u0027],[\u0027MENU\u0027,\u0027pause\u0027]\n];",
-                      "replacement":  "var LEGEND_MINI_PAD=[\n  [\u0027L STICK\u0027,\u0027move\u0027],[\u0027LS\u0027,\u0027sprint\u0027],\n  [\u0027B\u0027,\u0027crouch\u0027],[\u0027A\u0027,\u0027roll\u0027],\n  [\u0027RT\u0027,\u0027fire / use\u0027],[\u0027LT / RS\u0027,\u0027focus aim\u0027],\n  [\u0027X\u0027,\u0027reload\u0027],[\u0027D-L / D-R\u0027,\u0027aim distance\u0027],\n  [\u0027LB / RB\u0027,\u0027tactical belt\u0027],[\u0027VIEW\u0027,\u0027backpack\u0027],\n  [\u0027D-UP\u0027,\u0027ping, hold: map\u0027],[\u0027MENU\u0027,\u0027pause\u0027]\n];   // v16.xx: his layout of v16.72 (A roll, B crouch, RT fire, X reload); it had said B roll, A fire, Y reload"
-                  },
-                  {
-                      "anchor":  "if(padOn()) return \u0027LB or RB to your gun.\u0027;",
-                      "replacement":  "if(padOn()) return padB(\u0027LB or RB to your gun.\u0027);"
-                  },
-                  {
-                      "anchor":  "padOn()?\u0027VIEW  BACKPACK\u0027:\u0027B / I  BACKPACK\u0027",
-                      "replacement":  "padOn()?padB(\u0027VIEW  BACKPACK\u0027):\u0027B / I  BACKPACK\u0027"
-                  },
-                  {
-                      "anchor":  "(padOn()?\u0027[D-PAD] choose  [A] take  \u0027:\u0027\u0027)",
-                      "replacement":  "(padOn()?padB(\u0027[D-PAD] choose  [A] take  \u0027):\u0027\u0027)"
-                  },
-                  {
-                      "anchor":  "(state===\u0027hub\u0027)?\u0027VIEW to close\u0027:\u0027A pick up or place   B close\u0027",
-                      "replacement":  "(state===\u0027hub\u0027)?padB(\u0027VIEW to close\u0027):padB(\u0027A pick up or place   B close\u0027)"
-                  },
-                  {
-                      "anchor":  "  if(state!==\u0027hub\u0027\u0026\u0026typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.on){ _bo=((PAD\u0026\u0026PAD.on)?\u0027Y\u0027:\u0027T\u0027)+\u0027 offer to teammate   \u0027; _bh=_bo+_bh; if(ctx.measureText(_bh).width\u003ePW-LH(130)) _bh=((PAD\u0026\u0026PAD.on)?\u0027Y\u0027:\u0027T\u0027)+\u0027 offer   \u0027+_bh.slice(_bo.length); }",
-                      "replacement":  "  if(state!==\u0027hub\u0027\u0026\u0026typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.on){ _bo=((PAD\u0026\u0026PAD.on)?padB(\u0027Y\u0027):\u0027T\u0027)+\u0027 offer to teammate   \u0027; _bh=_bo+_bh; if(ctx.measureText(_bh).width\u003ePW-LH(130)) _bh=((PAD\u0026\u0026PAD.on)?padB(\u0027Y\u0027):\u0027T\u0027)+\u0027 offer   \u0027+_bh.slice(_bo.length); }"
-                  },
-                  {
-                      "anchor":  "T or Y to take it.  \u0027+Math.ceil(t)+\u0027s\u0027",
-                      "replacement":  "T or \u0027+padB(\u0027Y\u0027)+\u0027 to take it.  \u0027+Math.ceil(t)+\u0027s\u0027"
-                  },
-                  {
-                      "anchor":  "\u0027. Press T or Y to take it.\u0027",
-                      "replacement":  "\u0027. Press T or \u0027+padB(\u0027Y\u0027)+\u0027 to take it.\u0027"
-                  },
-                  {
-                      "anchor":  "at:netPadIxOk(at),p:p,v:v,a:a})) return false;",
-                      "replacement":  "at:netPadIxOk(at),p:p,v:v,a:a,b:padBrandOf(g)})) return false;"
-                  },
-                  {
-                      "anchor":  "id:\u0027controller handed over by the other window\u0027,mapping:\u0027standard\u0027",
-                      "replacement":  "id:((m.b===\u0027ps\u0027)?\u0027playstation \u0027:\u0027\u0027)+\u0027controller handed over by the other window\u0027,mapping:\u0027standard\u0027"
+                      "anchor":  "return \u0027\u003cb style=\"color:var(--bone)\"\u003e\u0027+r[0]+\u0027\u003c/b\u003e \u0027+r[1]; }",
+                      "replacement":  "return \u0027\u003cb style=\"color:var(--bone)\"\u003e\u0027+padB(r[0])+\u0027\u003c/b\u003e \u0027+r[1]; }   /* v16.xx, code review: through padB, so a PlayStation pad reads SQUARE reload as the H panel does */"
                   }
               ],
-    "check":  "  {v:\u0027VER\u0027,what:\u0027a PlayStation pad is named in its own words: the pad id picks the make, keyLabel says SQUARE for the X prompt, the backpack line says CROSS pick up, CIRCLE close, and the short pad legend names his layout (A roll, RT fire)\u0027,\n   run:function(){\n     if(typeof padB!==\u0027function\u0027||typeof padBrandOf!==\u0027function\u0027) return \u0027every prompt names Xbox buttons whatever pad is plugged in\u0027;\n     var bad=[], b0=PAD.brand, on0=PAD.on, st0=state, s;\n     try{\n       if(padBrandOf({id:\u0027Wireless Controller (STANDARD GAMEPAD Vendor: 054c Product: 09cc)\u0027})!==\u0027ps\u0027) bad.push(\u0027a DualShock id was not read as PlayStation\u0027);\n       if(padBrandOf({id:\u0027Xbox 360 Controller (XInput STANDARD GAMEPAD)\u0027})!==\u0027xbox\u0027) bad.push(\u0027an Xbox id was not read as Xbox\u0027);\n       PAD.brand=\u0027ps\u0027; PAD.on=true; state=\u0027raid\u0027;\n       s=keyLabel(\u0027KeyE\u0027,\u0027E\u0027); if(s!==\u0027SQUARE\u0027) bad.push(\u0027on a PlayStation pad the X prompt reads \u0027+s);\n       s=padB(\u0027A pick up or place   B close\u0027); if(s!==\u0027CROSS pick up or place   CIRCLE close\u0027) bad.push(\u0027the backpack line reads \u0027+s);\n       s=padB(\u0027VIEW  BACKPACK\u0027); if(s!==\u0027SHARE  BACKPACK\u0027) bad.push(\u0027VIEW BACKPACK reads \u0027+s);\n       s=padB(\u0027LT / RS\u0027); if(s!==\u0027L2 / R3\u0027) bad.push(\u0027LT / RS reads \u0027+s);\n       PAD.brand=\u0027xbox\u0027; if(keyLabel(\u0027KeyE\u0027,\u0027E\u0027)!==\u0027X\u0027) bad.push(\u0027on an Xbox pad the X prompt reads \u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027));\n       if(!LEGEND_MINI_PAD.some(function(r){ return r[0]===\u0027A\u0027\u0026\u0026r[1]===\u0027roll\u0027; })||!LEGEND_MINI_PAD.some(function(r){ return r[0]===\u0027RT\u0027\u0026\u0026/fire/.test(r[1]); })) bad.push(\u0027the short pad legend does not name his layout (A roll, RT fire)\u0027);\n       if(LEGEND_MINI_PAD.some(function(r){ return r[0]===\u0027B\u0027\u0026\u0026r[1]===\u0027roll\u0027; })) bad.push(\u0027the short pad legend still says B roll\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ PAD.brand=b0; PAD.on=on0; state=st0; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a PlayStation pad is told its own buttons: with a DualSense on, the pause box key line and the stash pad row say SQUARE and CROSS, not X and A\u0027,\n   run:function(){\n     if(typeof pollPad!==\u0027function\u0027||typeof keysLegendHtml!==\u0027function\u0027||typeof padB!==\u0027function\u0027) return \u0027SKIP: no pad legend here\u0027;\n     var bad=[], had=Object.prototype.hasOwnProperty.call(navigator,\u0027getGamepads\u0027), og=navigator.getGamepads, on0=PAD.on, b0=PAD.brand, pad, h, row;\n     pad={id:\u0027DualSense Wireless Controller (STANDARD GAMEPAD Vendor: 054c Product: 0ce6)\u0027,index:0,connected:true,mapping:\u0027standard\u0027,timestamp:1,axes:[0,0,0,0],buttons:Array.apply(null,Array(17)).map(function(){ return {pressed:false,touched:false,value:0}; })};\n     try{\n       navigator.getGamepads=function(){ pad.timestamp++; return [pad,null,null,null]; };\n       pollPad(); pollPad();\n       if(PAD.brand!==\u0027ps\u0027) return \u0027SKIP: the pad was not read as a PlayStation pad\u0027;\n       h=String(keysLegendHtml());\n       if(h.indexOf(\u0027\u003eX\u003c/b\u003e\u0027)\u003e=0||h.indexOf(\u0027\u003eA\u003c/b\u003e\u0027)\u003e=0) bad.push(\u0027the pause key line still names X and A\u0027);\n       if(h.indexOf(\u0027SQUARE\u0027)\u003c0) bad.push(\u0027the pause key line does not name SQUARE\u0027);\n       row=document.getElementById(\u0027invkeybarpad\u0027);\n       if(row\u0026\u0026(row.textContent.indexOf(\u0027CROSS\u0027)\u003c0||/(^|\\s)A(\\s|$)/.test(row.textContent))) bad.push(\u0027the stash pad row still names A (\u0027+row.textContent.replace(/\\s+/g,\u0027 \u0027).trim().slice(0,60)+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ navigator.getGamepads=function(){ return [null,null,null,null]; }; try{ pollPad(); }catch(_p){} if(had) navigator.getGamepads=og; else delete navigator.getGamepads; PAD.on=on0; PAD.brand=b0; try{ if(typeof padBodyCls===\u0027function\u0027) padBodyCls(); }catch(_b){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
 }

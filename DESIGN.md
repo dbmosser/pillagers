@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.86 - A PLAYSTATION PAD IS TOLD ITS OWN BUTTONS
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: on a PlayStation pad the new pause box key line (v19.71) and the stash pad row (v19.70) named Xbox buttons, so X reload sent a DualSense player to Cross, which rolls. Both now go through the same renaming as the H panel and the canvas hints: SQUARE reload, CROSS roll, OPTIONS pause.
+
+MEASURED. Check 19.86 passes, and fails on v19.85.
 ## v19.85 - WHAT IS NEW LINES END AT A WHOLE SENTENCE
 
 Co-op hunt while he was away. Seen on the 4K What is New screenshot of 2026-10-08: a line of the card was cut mid-sentence with dots (In co-op your teammate...) even when a whole sentence fitted before the limit. Now a line ends at its last full stop inside the limit when there is one, and is cut at a word with dots only when there is not.

@@ -1,0 +1,5 @@
+## v19.86 - A PLAYSTATION PAD IS TOLD ITS OWN BUTTONS
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: on a PlayStation pad the new pause box key line (v19.71) and the stash pad row (v19.70) named Xbox buttons, so X reload sent a DualSense player to Cross, which rolls. Both now go through the same renaming as the H panel and the canvas hints: SQUARE reload, CROSS roll, OPTIONS pause.
+
+MEASURED. Check 19.86 passes, and fails on v19.85.

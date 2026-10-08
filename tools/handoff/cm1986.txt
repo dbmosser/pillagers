@@ -1,0 +1,7 @@
+v19.86: a playstation pad is told its own buttons
+
+On a PlayStation controller the pause box and the stash name the PlayStation buttons.
+
+Check 19.86. Fails on v19.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
