@@ -1,0 +1,7 @@
+v19.10: the use bar clears the extraction lines
+
+Healing while you wait for extraction no longer prints the extraction text over the bar.
+
+Check 19.10. Fails on v19.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

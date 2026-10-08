@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.10 - THE USE BAR CLEARS THE EXTRACTION LINES
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: the bandage, medkit and plate bar (v18.75) sat in the same band above the belt where the extraction lines are written (EXTRACT A INBOUND 41s, the distance and arrow, HOLD E TO CALL FOR EXTRACTION), so putting a bandage on while waiting at a ring printed those lines across the bar. While extraction lines show, the bar now sits above them, and above the emote strip when that is open.
+
+MEASURED. Check 19.10 passes, and fails on v19.09.
 ## v19.09 - THE FASHION PIECE PREVIEWS SHOW THE PIECE EVEN WITH AN OUTFIT ON
 
 Co-op hunt while he was away. Found by the review of 2026-10-07: an outfit covers the hat, beard, hairstyle, face, tattoo and clothing when drawn, so while one was worn every tile on those six FASHION racks showed the same outfit picture. Those previews are now painted on your own clothes, where the piece really shows, and the outfit you wear is untouched.
