@@ -1,0 +1,7 @@
+v20.59: the what is new card names the controller and 4k fixes
+
+The what is new card names the controller and 4K fixes.
+
+Check 20.59. Fails on v20.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

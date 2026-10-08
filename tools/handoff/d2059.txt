@@ -1,0 +1,5 @@
+## v20.59 - THE WHAT IS NEW CARD NAMES THE CONTROLLER AND 4K FIXES
+
+Co-op hunt while he was away. The card was stamped v20.49 and the stamp may not trail the build by more than 0.15. Its new second line names the controller fixes (picking a save on the title, FASHION and the run tags on a pad, v20.51 and v20.58) and the 4K layout fixes (the boss bar under the messages, the HP number in its bar, the station prompts above the belt, v20.50, v20.55, v20.57); the many other bug fixes are in the change list.
+
+MEASURED. Check 20.59 passes, and fails on v20.58.

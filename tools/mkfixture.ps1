@@ -5722,6 +5722,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.59',what:'the what is new card is stamped within 0.15 of the build and leads with the controller and 4K news, shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>20.59+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('CONTROLLER AND'+' 4K')!==0) bad.push('the card does not lead with the controller and 4K news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'20.58',what:'a controller reaches the FASHION racks, slot rows and saved looks and the run tags: A on a rack tile wears it, A on a slot row opens it, the three looks are in reach, A on a run tag picks it, and the end-of-raid card still opens on Log run and return',
    run:function(){
      if(typeof padMenu!=='function'||typeof padFocusables!=='function'||typeof padSetFocus!=='function'||typeof padOpenModal!=='function'||typeof renderAvatar!=='function'||typeof buildTags!=='function'||typeof cosWorn!=='function'||typeof COSKEY==='undefined'||typeof PAD==='undefined'||!PAD) return 'SKIP: no pad menu, FASHION or run tags here';
