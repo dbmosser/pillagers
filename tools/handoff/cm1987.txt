@@ -1,0 +1,7 @@
+v19.87: an open pause box follows the pad
+
+Plugging a controller in or out while paused switches the pause box hints at once.
+
+Check 19.87. Fails on v19.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

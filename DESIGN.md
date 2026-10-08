@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.87 - AN OPEN PAUSE BOX FOLLOWS THE PAD
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: the pause box key line (v19.71) was chosen only when the box opened. When a pad cable came out mid-raid the box opened on the keyboard keys, and plugging the pad back in left them up; a pad pulled out with the box already open left the pad buttons up for a keyboard player. The line now changes the moment the pad comes or goes.
+
+MEASURED. Check 19.87 passes, and fails on v19.86.
 ## v19.86 - A PLAYSTATION PAD IS TOLD ITS OWN BUTTONS
 
 Co-op hunt while he was away. Found by the code review of 2026-10-08: on a PlayStation pad the new pause box key line (v19.71) and the stash pad row (v19.70) named Xbox buttons, so X reload sent a DualSense player to Cross, which rolls. Both now go through the same renaming as the H panel and the canvas hints: SQUARE reload, CROSS roll, OPTIONS pause.

@@ -1,0 +1,5 @@
+## v19.87 - AN OPEN PAUSE BOX FOLLOWS THE PAD
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: the pause box key line (v19.71) was chosen only when the box opened. When a pad cable came out mid-raid the box opened on the keyboard keys, and plugging the pad back in left them up; a pad pulled out with the box already open left the pad buttons up for a keyboard player. The line now changes the moment the pad comes or goes.
+
+MEASURED. Check 19.87 passes, and fails on v19.86.
