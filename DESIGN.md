@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.37 - PILLAGERS KEEP COMING FOR PLAYER 2
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. When the host dies or extracts, his window keeps the raid running for player 2. But in that kept raid a pillager who spotted player 2 never called his crew, and new pillagers never arrived, even with the map down to one or two men, because both treated the host's ended run as the end of the raid. The kept raid now counts as live for both, so player 2 gets the same raid the host had.
+
+MEASURED. Check 20.37 passes, and fails on v20.36.
 ## v20.36 - NEW MACHINES LAND FAR FROM BOTH PLAYERS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. After the two minute mark a lost sentry or crawler is replaced every 30 to 50 seconds, at a spot at least 800 from the player. In co-op only the host was measured, so a new machine could appear right on top of player 2, about one raid in seven within 300 of him, and with the host out it was measured from his body. It is now measured from every player still up top, as the pillager waves and the siege already were. Solo is unchanged.

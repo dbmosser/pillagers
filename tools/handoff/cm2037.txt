@@ -1,0 +1,7 @@
+v20.37: pillagers keep coming for player 2
+
+In co-op, after the host is out, pillager crews still answer a shout and new pillagers still arrive for player 2.
+
+Check 20.37. Fails on v20.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

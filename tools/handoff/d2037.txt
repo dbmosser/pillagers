@@ -1,0 +1,5 @@
+## v20.37 - PILLAGERS KEEP COMING FOR PLAYER 2
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. When the host dies or extracts, his window keeps the raid running for player 2. But in that kept raid a pillager who spotted player 2 never called his crew, and new pillagers never arrived, even with the map down to one or two men, because both treated the host's ended run as the end of the raid. The kept raid now counts as live for both, so player 2 gets the same raid the host had.
+
+MEASURED. Check 20.37 passes, and fails on v20.36.

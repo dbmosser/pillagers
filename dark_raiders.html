@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.36';
+var VER='20.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9136,7 +9136,9 @@ function mkCrawler(x,y){
 // never fights pillagers, so nothing here can measure whether that is too many,
 // which is the reason it is a dial and the reason the cap is low.
 function crewShout(caller,px,py){
-  if(!G||!G.ents||G.over) return 0;
+  // v20.37, from the whole-game bug hunt of 2026-10-08 (H10): the raid a host keeps running for his party after his own run is over
+  // (netSpecStart) is live, so a pillager who spots player 2 still brings his crew. Any other raid that is over calls nobody.
+  if(!G||!G.ents||(G.over&&!(typeof NET==='object'&&NET&&NET.specG===G))) return 0;
   if(CFG.crewCall===0) return 0;
   if(!caller||caller.kind!=='raider'||caller.merc||caller.friendlyPC) return 0;
   var R=(CFG.crewR===undefined)?620:CFG.crewR;
@@ -16252,7 +16254,7 @@ function raiderThrow(e,foe,fd,dt){
   return true;
 }
 function tickRaiderWaves(dt){
-  if(CFG.raiderWaves===0||!G||G.over||!G.roster) return;
+  if(CFG.raiderWaves===0||!G||(G.over&&!(typeof NET==='object'&&NET&&NET.specG===G))||!G.roster) return;   // v20.37 (H10): and on the raid kept for the party
   if(NET.on&&netEntsPeer()) return;   // v15.80: a linked window up top spawns nobody; the host does, and the arrival comes as a word
   // ONCE A FRAME. tryExtractTick, which calls this, has THREE call sites, so the
   // wave clock was advancing up to three times per frame and arrivals came at
@@ -33677,7 +33679,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.36: In co-op, replacement machines no longer appear on top of player 2. Check 20.36 fails on v20.35',
+  now:'v20.37: In co-op, after the host is out, pillager crews still answer a shout and new pillagers still arrive for player 2. Check 20.37 fails on v20.36',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40450,6 +40452,7 @@ function netSpecTick(dt){
     if(CFG.superhot&&!netAnyActing()) wdt=0;   // v16.74, his order: in Superhot the kept raid clock and world stand still unless a teammate up top is acting (the v16.27 rule, which the run card frame keeps and this stepper did not)
     G.t+=wdt; if(raidClockOn()) G.timeLeft=Math.max(0,G.timeLeft-wdt);
     refreshVseg(); updateEnts(wdt); updateBullets(wdt); updateThrowables(wdt);
+    tickRaiderWaves(wdt);   // v20.37 (H10): new pillagers still arrive for the party; only a raid frame ran this, and that stops with the host run
     // v16.53, stability (co-op review): the host runs every search the party holds, but only in netUpTick, which stops once
     // the host run is over. So after the host died or extracted, a teammate search was granted and never moved: the bar
     // filled and nothing came out, on every box for the rest of the raid.
