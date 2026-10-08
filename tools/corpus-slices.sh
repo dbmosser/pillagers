@@ -26,7 +26,9 @@ while [ $A -lt $END ]; do
     [ $still -ge 8 ] && break
   done
   if [ $done_ = 1 ]; then
-    CDP -Match "$TAG=1" -TimeoutSec 60 -Expr "(function(){ var r=__PROG.res; return '['+$A+','+$B+') '+r.summary+(r.fail.length?' || '+r.fail.map(function(f){ return String(f).slice(0,240); }).join(' || '):''); })()" >> "$OUT"
+    # 2026-10-08: this read once answered TIMEOUT (a late timer still busy on the page) and the slice's result was lost; try 3 times.
+    res=""; for try_ in 1 2 3; do res=$(CDP -Match "$TAG=1" -TimeoutSec 150 -Expr "(function(){ var r=__PROG.res; return '['+$A+','+$B+') '+r.summary+(r.fail.length?' || '+r.fail.map(function(f){ return String(f).slice(0,240); }).join(' || '):''); })()"); case "$res" in \[*) break;; esac; sleep 20; done
+    echo "${res:-[$A,$B) result could not be read}" >> "$OUT"
     NEXT=$B
   else
     st=$(powershell -NoProfile -ExecutionPolicy Bypass -File "$SD/pause.ps1" -Port 9344 -Match "$TAG=1" 2>&1 | tr '\r\n' '  ')

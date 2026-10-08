@@ -43359,7 +43359,9 @@ window.__REGRESS=[
      var html=''; if(typeof renderStatCards==='function'){ renderStatCards(); html=(document.getElementById('statgrid')||{}).innerHTML||''; }
      if(html.indexOf('Net lifetime earnings')<0) bad.push('the card is not called Net lifetime earnings');
      if(/Net carried out/.test(html)) bad.push('the old card name is still there');
-     if(html.indexOf((-plate+scrap).toLocaleString())<0) bad.push('the card does not show '+(-plate+scrap));
+     // 2026-10-08 retarget: v19.39 writes a loss as -$435 (it read $-435), so the figure is looked for as the card writes it.
+     var _nv=-plate+scrap, _nw=(_nv<0?'-$':'$')+Math.abs(_nv).toLocaleString();
+     if(html.indexOf(_nw)<0) bad.push('the card does not show '+_nw);
      if(!/extracted minus value carried in/.test(html)) bad.push('the card does not explain itself');
      // FIVE: a profile from before the counter sums its log, old records counting their haul alone.
      P2.log=[{outcome:'extract',haul:500},{outcome:'dead',haul:900},{outcome:'extract',haul:300,carriedIn:120}];
