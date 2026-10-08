@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.42';
+var VER='20.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3024,7 +3024,12 @@ P.buzz=[];                      // v7.35, his order: quitting the game cuts you 
   var _num=['credits','runs','ext','died','best','racks','notoriety','cstand','xp','arrays','pack'];
   for(var _ni=0;_ni<_num.length;_ni++){
     var _k=_num[_ni],_v=P[_k];
-    if(typeof _v!=='number'||!isFinite(_v)||_v<0) P[_k]=Math.max(0,(typeof _v==='number'&&isFinite(_v))?_v:0);
+    // v20.43, from the whole-game bug hunt of 2026-10-08 (H34): A DEBT SURVIVES A RELOAD. A hire who dies costs a death benefit
+    // and can leave the credits below zero (the run card says you are in debt, and the hire bench says a hire can do that), but
+    // this floor set them back to 0 on the next load, so F5 wiped any debt for free, as often as he liked; the page-away bill of
+    // v17.21 lasted one load. Credits that are a real number now load as they are, below zero or not. A value that is not a
+    // number at all is still set to 0, and every other counter keeps its floor.
+    if(typeof _v!=='number'||!isFinite(_v)||(_v<0&&_k!=='credits')) P[_k]=Math.max(0,(typeof _v==='number'&&isFinite(_v))?_v:0);
   }
 })();
 // v14.30, progression audit finding 3: THE LEVEL IS WORKED OUT FROM THE XP WHEN A PROFILE LOADS. P.xpLevel was recomputed
@@ -33710,7 +33715,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.42: Shooting the Peddler no longer moves his stall or marks him as hunting you. Check 20.42 fails on v20.41',
+  now:'v20.43: Reloading the game no longer wipes a debt left by a hire who died. Check 20.43 fails on v20.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

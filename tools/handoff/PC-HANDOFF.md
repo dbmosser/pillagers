@@ -594,3 +594,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-08 19:26 v20.40 sndonce shipped: H52 DONE (fixture sfx is a stub: checks must record NET.fxIn, not netFxNoise)
 2026-10-08 19:33 v20.41 sndmine shipped: H51 DONE. GOTCHA: a draft 'now' text with an apostrophe breaks the game script (parse FAIL, page TIMEOUT); keep now free of '
 2026-10-08 19:35 usage: weekly 42% (5h 29%); +1% since 19:12 including the 5-agent drafting burst (1.1M agent tokens) -> on pace; a burst of ~5 agents costs about 1%
+2026-10-08 19:35 H19 = H23 (fixed in v20.34, raidSpliced too); H41 = H26; H36 = H32. Burst 2: 6 drafting agents on 28 lows

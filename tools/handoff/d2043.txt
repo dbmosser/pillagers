@@ -1,0 +1,5 @@
+## v20.43 - A DEBT SURVIVES A RELOAD
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A hire who dies costs a death benefit, and that can leave you owing money: the run card says you are in debt. But loading the game reset any amount below zero to nothing, so pressing F5 wiped the debt for free, every time. A debt now loads as it is. Only a value that is not a number at all is still reset, and the other counts keep their floor of zero.
+
+MEASURED. Check 20.43 passes, and fails on v20.42.

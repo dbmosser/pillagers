@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.43 - A DEBT SURVIVES A RELOAD
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A hire who dies costs a death benefit, and that can leave you owing money: the run card says you are in debt. But loading the game reset any amount below zero to nothing, so pressing F5 wiped the debt for free, every time. A debt now loads as it is. Only a value that is not a number at all is still reset, and the other counts keep their floor of zero.
+
+MEASURED. Check 20.43 passes, and fails on v20.42.
 ## v20.42 - SHOOTING THE PEDDLER LEAVES HIS STALL
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A round that hit the Peddler, yours or the other player's, picked up his table, stock and lantern and set them down where the shot came from. After he ran off and came back he walked to that new spot, and for the rest of the raid he wore a red hunting mark, was counted among those coming for your ring, and set off the threat music and the heartbeat whenever you were near him. A grenade already left him alone. Now a round still hurts him and he still runs, but his stall stays where it was and he never counts as hunting you. The Survivor is treated the same way.

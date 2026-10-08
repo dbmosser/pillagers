@@ -1,0 +1,7 @@
+v20.43: a debt survives a reload
+
+Reloading the game no longer wipes a debt left by a hire who died.
+
+Check 20.43. Fails on v20.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
