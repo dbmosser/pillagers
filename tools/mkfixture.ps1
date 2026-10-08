@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.96',what:'the warning under THE LAST POUR stays inside the room: as he wrote it, it ends before the right wall',
+   run:function(){
+     if(typeof __hubEnter!=='function'||typeof __loop!=='function'||typeof HUBW==='undefined') return 'SKIP: no Undercroft floor here';
+     var bad=[], t, oT=wc.fillText, rec=null;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __loop(performance.now());
+       wc.fillText=function(s,x,y){ if(String(s)==='***EXPERIMENTAL***'){ var shown=(typeof TX==='function')?TX(String(s)):String(s); rec={x:x,w:CanvasRenderingContext2D.prototype.measureText.call(wc,shown).width}; } return oT.apply(this,arguments); };
+       try{ __loop(performance.now()+17); } finally { delete wc.fillText; if(wc.fillText!==oT) wc.fillText=oT; }
+       if(!rec) return 'SKIP: the warning was not drawn';
+       if(rec.x+rec.w/2>HUBW-20+1) bad.push('the warning ends at '+Math.round(rec.x+rec.w/2)+', past the wall at '+(HUBW-20));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ delete wc.fillText; if(wc.fillText!==oT) wc.fillText=oT; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.95',what:'the Undercroft floor text grows with the screen: at 4K the title and the key footer are drawn at least 1.6 times their 1080p size',
    run:function(){
      if(typeof __hubEnter!=='function'||typeof __loop!=='function'||!window.__forceSize) return 'SKIP: no Undercroft floor here';

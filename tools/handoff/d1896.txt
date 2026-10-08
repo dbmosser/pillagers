@@ -1,0 +1,5 @@
+## v18.96 - THE LAST POUR WARNING STAYS INSIDE THE ROOM
+
+Co-op hunt while he was away. Seen on the Undercroft screenshots of 2026-10-07: the warning under THE LAST POUR (his words, EXPERIMENTAL FEATURE MAY GLITCH) is wider than the name above it, and centred under the name it ran across the right wall of the room. It now slides inward like the station names do, so it stays inside the room. His words are unchanged.
+
+MEASURED. Check 18.96 passes, and fails on v18.95.

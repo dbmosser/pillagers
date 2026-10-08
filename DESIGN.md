@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.96 - THE LAST POUR WARNING STAYS INSIDE THE ROOM
+
+Co-op hunt while he was away. Seen on the Undercroft screenshots of 2026-10-07: the warning under THE LAST POUR (his words, EXPERIMENTAL FEATURE MAY GLITCH) is wider than the name above it, and centred under the name it ran across the right wall of the room. It now slides inward like the station names do, so it stays inside the room. His words are unchanged.
+
+MEASURED. Check 18.96 passes, and fails on v18.95.
 ## v18.95 - THE UNDERCROFT FLOOR TEXT GROWS WITH THE SCREEN
 
 Co-op hunt while he was away. Seen on the 4K Undercroft screenshot of 2026-10-07: THE UNDERCROFT title, the line under it (credits, XP, stash, runs) and the key footer over the belt were drawn at their 1080p size at every resolution, small specks at 4K while the station names and the belt grow with the screen. They now grow with the screen too; at 1080p nothing changes.

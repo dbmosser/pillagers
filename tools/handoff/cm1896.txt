@@ -1,0 +1,7 @@
+v18.96: the last pour warning stays inside the room
+
+The warning under THE LAST POUR no longer runs into the wall.
+
+Check 18.96. Fails on v18.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
