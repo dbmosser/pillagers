@@ -1,0 +1,7 @@
+v18.80: the outfit previews fill their tiles
+
+The operator in each FASHION outfit tile is bigger and easier to make out.
+
+Check 18.80. Fails on v18.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

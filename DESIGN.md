@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.80 - THE OUTFIT PREVIEWS FILL THEIR TILES
+
+Co-op hunt while he was away. Seen on the FASHION screenshot of 2026-10-07, right after v18.79: the operator in each outfit tile filled only about half of the picture, small in a big tile. Each preview now measures its own figure and draws it big enough to stand nearly the full height of the tile, head to boots, whatever the outfit adds on top.
+
+MEASURED. Check 18.80 passes, and fails on v18.79.
 ## v18.79 - AN OUTFIT TILE SHOWS THE OUTFIT
 
 Co-op hunt while he was away. Seen on the 4K FASHION screenshot of 2026-10-07: every tile on the OUTFIT rack was the same placeholder, a coloured square with a dot, so the Skeleton, the Machine, the Trooper and the rest could not be told apart without wearing them. Each tile now shows your own operator wearing that outfit, drawn the same way as the big YOUR OPERATOR figure, locked outfits included so you can see what you are working toward.

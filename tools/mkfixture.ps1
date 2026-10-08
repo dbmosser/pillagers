@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.80',what:'the outfit previews fill their tiles: a fresh preview paints a figure at least 100 of its 128 pixels tall and wholly inside the picture, for every outfit',
+   run:function(){
+     if(typeof outfitPreviewURL!=='function'||typeof OUTFITS==='undefined') return 'SKIP: no outfit previews here';
+     var ids=Object.keys(OUTFITS), bad=[], i, k, cv2, d, x, y, top, bot, w, h;
+     for(i=0;i<ids.length;i++){
+       for(k in OUTPREV) delete OUTPREV[k];
+       outfitPreviewURL(ids[i]); cv2=OUTPREV._cv;
+       if(!cv2){ bad.push('no preview canvas was kept to measure'); break; }
+       w=cv2.width; h=cv2.height; d=cv2.getContext('2d').getImageData(0,0,w,h).data; top=999; bot=-1;
+       for(y=0;y<h;y++) for(x=0;x<w;x++) if(d[(y*w+x)*4+3]>40){ if(y<top) top=y; if(y>bot) bot=y; }
+       if(bot<0){ bad.push(ids[i]+' painted nothing'); continue; }
+       if(bot-top+1<100) bad.push(ids[i]+' is only '+(bot-top+1)+' of '+h+' pixels tall');
+       if(top<=0||bot>=h-1) bad.push(ids[i]+' runs off the picture');
+     }
+     return bad.length?bad.slice(0,3).join('; '):null; }},
   {v:'18.79',what:'an outfit tile shows the outfit: each outfit swatch is a painted preview of the operator in it, two outfits give two different pictures, and the worn outfit and ownership are untouched after',
    run:function(){
      if(typeof cosSwatch!=='function'||typeof OUTFITS==='undefined') return 'SKIP: no outfits here';
