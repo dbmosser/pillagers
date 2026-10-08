@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.97 - THE RUN CARD NOTE BOX NEVER SQUASHES
+
+Co-op hunt while he was away. Seen on the 4K run card screenshot of 2026-10-07: a first extraction earned three achievements, each a line on the card, and the card ran past the bottom of the screen and squeezed the Anything else? box to a sliver you could not type in. Nothing on the card shrinks now: a long card stays inside the screen and scrolls, with the two buttons pinned at its foot as before.
+
+MEASURED. Check 18.97 passes, and fails on v18.96.
 ## v18.96 - THE LAST POUR WARNING STAYS INSIDE THE ROOM
 
 Co-op hunt while he was away. Seen on the Undercroft screenshots of 2026-10-07: the warning under THE LAST POUR (his words, EXPERIMENTAL FEATURE MAY GLITCH) is wider than the name above it, and centred under the name it ran across the right wall of the room. It now slides inward like the station names do, so it stays inside the room. His words are unchanged.

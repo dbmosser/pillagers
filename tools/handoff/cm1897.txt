@@ -1,0 +1,7 @@
+v18.97: the run card note box never squashes
+
+The run card note box always has room to type, however long the card is.
+
+Check 18.97. Fails on v18.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
