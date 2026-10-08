@@ -843,11 +843,15 @@
        the way down their panel (the EYES row cut through, blank below) while the whole grid scrolled for the tall slot list on the
        left. Each column now fills the window and scrolls on its own. -->
   <div class="hubgrid" style="grid-template-columns:260px 1fr;grid-template-rows:minmax(0,1fr);margin-top:6px">
-    <div class="panel" style="overflow-y:auto;min-height:0">
+    <div class="panel" style="display:flex;flex-direction:column;min-height:0">
       <h2>Your operator</h2>
+      <!-- v19.16, from the review (2026-10-07): an inner box scrolls, as the racks do, so the panel frame line and the heading stay put
+           when the slot list scrolls; before, the whole panel scrolled and its frame line slid up through the slot rows -->
+      <div id="appopscroll" style="flex:1;min-height:0;overflow-y:auto">
       <div id="appavatar"></div>
       <!-- v10.16, his answers 18 and 19: a randomiser and three saved looks -->
       <div id="applooks" style="border-top:1px solid var(--steel-hi);padding:8px 10px"></div>
+      </div>
     </div>
     <div class="panel" style="display:flex;flex-direction:column;min-height:0">
       <h2>The racks</h2>
@@ -1522,7 +1526,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.15';
+var VER='19.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33251,7 +33255,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.15: The what is new card names the status icons and the clearer cards. Check 19.15 fails on v19.14',
+  now:'v19.16: Scrolling the FASHION slot list keeps the panel frame and heading still. Check 19.16 fails on v19.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

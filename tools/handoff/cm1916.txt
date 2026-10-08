@@ -1,0 +1,7 @@
+v19.16: the fashion operator panel keeps its frame
+
+Scrolling the FASHION slot list keeps the panel frame and heading still.
+
+Check 19.16. Fails on v19.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

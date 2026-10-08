@@ -5721,6 +5721,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.16',what:'the FASHION operator panel keeps its frame: scrolling the slot list scrolls an inner box, so the panel itself and its heading do not move',
+   run:function(){
+     var ap=document.getElementById('appearmodal'), av=document.getElementById('appavatar');
+     if(!ap||!av||typeof renderAvatar!=='function') return 'SKIP: no FASHION here';
+     var bad=[], pn=av.closest('.panel'), gr=ap.querySelector('.hubgrid'), h0=gr?gr.style.height:'', sc=null, e, h2, t0, t1, was=ap.classList.contains('on');
+     if(!pn||!gr) return 'SKIP: no operator panel';
+     try{
+       ap.classList.add('on');
+       try{ renderAvatar('appavatar','appavatarpicker'); }catch(_r){}
+       if(typeof applyMenuZoom==='function') applyMenuZoom();
+       gr.style.height='260px';
+       for(e=av.parentNode;e&&e!==ap;e=e.parentNode){ var ov=getComputedStyle(e).overflowY; if((ov==='auto'||ov==='scroll')&&e.scrollHeight>e.clientHeight+2){ sc=e; break; } }
+       if(!sc) return 'SKIP: the slot list does not overflow even in a short window';
+       h2=pn.querySelector('h2'); if(!h2) return 'SKIP: the panel has no heading';
+       sc.scrollTop=0; t0=h2.getBoundingClientRect().top-pn.getBoundingClientRect().top;
+       sc.scrollTop=sc.scrollHeight; t1=h2.getBoundingClientRect().top-pn.getBoundingClientRect().top;
+       if(sc===pn||pn.scrollTop>0) bad.push('the operator panel itself scrolls, so its frame line slides through the slot rows');
+       if(Math.abs(t1-t0)>1) bad.push('scrolling the slot list moved the Your operator heading by '+Math.round(t0-t1)+' px');
+       if(sc.scrollTop<=0) bad.push('control: the slot list did not scroll');
+       sc.scrollTop=0;
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{ gr.style.height=h0; pn.scrollTop=0; if(!was) ap.classList.remove('on'); if(typeof applyMenuZoom==='function') applyMenuZoom(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.15',what:'the what is new card is stamped within 0.15 of the build and leads with the status icons and cards news, his October 7 notes still on the card',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof WN_SHOW==='undefined') return 'SKIP: this build has no what is new card';

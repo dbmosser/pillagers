@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.16 - THE FASHION OPERATOR PANEL KEEPS ITS FRAME
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: since v18.81 the Your operator panel in FASHION scrolled as a whole, so its thin inner frame line scrolled with it, the top edge vanished and the bottom edge rose up through the slot rows. An inner box now scrolls instead, the way the racks do, so the frame and the heading stay put.
+
+MEASURED. Check 19.16 passes, and fails on v19.15.
 ## v19.15 - THE WHAT IS NEW CARD NAMES THE STATUS ICONS
 
 Co-op hunt while he was away. The card was stamped v18.99 and the stamp may not trail the build by more than 0.15. Its new second line names the status icons down the left (v19.00), the sector map names that no longer overlap (v19.02), the death card pictures (v19.04) and the extraction card haul (v19.05).
