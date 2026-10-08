@@ -485,3 +485,9 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.35 hubwalls: Undercroft walls blended about half way toward navy (hubWallHex); a look change, flagged in the note so he can ask for them back.
 - Fixture retargets (commit f452ead9): 17.95 reads drawMapOverlayRaw, 17.82 accepts fs=11 start, 15.91 host-leaving arms follow his 10-02 pick-up ruling (netHostGone NET.upSeed=0).
 - Night shots: setting P.cond='night' before __deploy still gave a day raid in the fixture (8am); not chased.
+- v19.36/v19.37 ocfoot, ocfoot2: run card button row solid with a fade strip above (.ocacts::before); .ocwin has no bottom padding (moved to the last note line) so the pinned row sits on the card edge.
+- v19.38 statkeys: YOUR STATS titles wrap (two-line min height). v19.39 netsign: lifetime loss reads -$9,750. v19.40 seasontext: REWARDS count light with a dark edge, bar 20 px.
+- v19.41 legfit: full H list panel measured to its widest line; the v12.79 empty second column and its divider are gone.
+- v19.42 partytrade: #partymodal .hint gets the 1060 cap (the TRADING line ran across the whole screen).
+- Seen and left: stash shows 3 huge columns at true 1080p and 4K (his v6.22 bigger cells x menu zoom 1.3); lamp pools are two flat discs on purpose ("stepped, not a smooth falloff"); gambler offer has a LIMITED TIME OFFER header over his own Limited Time Offer line.
+- Co-op soak 2: 39/40 pass; run 4 failed staging (22 rounds, 0 hits, a wall between); 6 runs at 3-6 fps when the 4K window covers the soak window (occlusion throttle), the rest 49-57.
