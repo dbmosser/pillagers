@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.83 - A TATTOO TILE IS A CLOSE-UP
+
+Co-op hunt while he was away. Seen on the FASHION screenshot of 2026-10-07: the new TATTOO previews showed the whole small figure, so the ink could not be seen and every tattoo tile looked alike. Tattoos now get a close-up of the face, neck and tops of the arms, like the face and hairstyle tiles.
+
+MEASURED. Check 18.83 passes, and fails on v18.82.
 ## v18.82 - THE OTHER FASHION RACKS SHOW THE LOOK
 
 Co-op hunt while he was away. Seen on the FASHION screenshot of 2026-10-07: after the outfits got real previews, BUILD was still three grey blocks and FACE and TATTOO were typed marks like -- and /. Those tiles, and HAT, BEARD and HAIRSTYLE, now show your own operator with that piece on: build, fit and tattoo as the whole figure, face, hat, beard and hairstyle as a head and shoulders close-up. Skin, hair colour and eyes stay as colour swatches.

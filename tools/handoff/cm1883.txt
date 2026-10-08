@@ -1,0 +1,7 @@
+v18.83: a tattoo tile is a close-up
+
+The FASHION tattoo tiles show the tattoo up close.
+
+Check 18.83. Fails on v18.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
