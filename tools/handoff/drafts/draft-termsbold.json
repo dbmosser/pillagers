@@ -1,0 +1,12 @@
+{
+    "title":  "THE TERMS NAMES STAND OUT",
+    "why":  "Seen on the 4K TERMS screenshot of 2026-10-08: each term name (BLACKOUT PROTOCOL, HEAVY PATROLS and the rest) was the same weight as the line under it, so the list read as one block. The names are bold now; an unsigned term is still dimmed and a signed one still lights up with its bonus in amber.",
+    "now":  "The TERMS list is easier to scan.",
+    "edits":  [
+                  {
+                      "anchor":  "    nm.innerHTML=T.name+\u0027\u003cdiv style=\"font-size:14px;color:var(--ash);font-weight:400\"\u003e\u0027+",
+                      "replacement":  "    nm.innerHTML=\u0027\u003cb style=\"font-weight:700;letter-spacing:.03em\"\u003e\u0027+T.name+\u0027\u003c/b\u003e\u003cdiv style=\"font-size:14px;color:var(--ash);font-weight:400\"\u003e\u0027+   // v16.xx, seen on the 4K TERMS screenshot (2026-10-08): the name in bold over its line, so the list scans"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the TERMS names stand out: each term name is bold over its plain description, and an unsigned term is still dimmed\u0027,\n   run:function(){\n     if(typeof renderTerms!==\u0027function\u0027) return \u0027SKIP: no TERMS here\u0027;\n     var bad=[], rows, b, nm;\n     try{\n       renderTerms();\n       rows=[].slice.call(document.querySelectorAll(\u0027#termslist .row\u0027));\n       if(!rows.length) return \u0027SKIP: no terms listed\u0027;\n       nm=rows[0].querySelector(\u0027.nm\u0027); b=nm\u0026\u0026nm.querySelector(\u0027b\u0027);\n       if(!b) bad.push(\u0027the term name is not set apart\u0027);\n       else if(!(parseInt(getComputedStyle(b).fontWeight,10)\u003e=600)) bad.push(\u0027the term name is not bold (\u0027+getComputedStyle(b).fontWeight+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.19 - THE TERMS NAMES STAND OUT
+
+Co-op hunt while he was away. Seen on the 4K TERMS screenshot of 2026-10-08: each term name (BLACKOUT PROTOCOL, HEAVY PATROLS and the rest) was the same weight as the line under it, so the list read as one block. The names are bold now; an unsigned term is still dimmed and a signed one still lights up with its bonus in amber.
+
+MEASURED. Check 20.19 passes, and fails on v20.18.
 ## v20.18 - CARD WINDOWS FIT WHAT THEY HOLD
 
 Co-op hunt while he was away. Seen on the 4K Last Pour screenshot of 2026-10-08: the centred card windows (TERMS, the gambler, the bar and PARTY) drew a frame of a fixed height, so the two drinks at the bar sat in a frame 640 tall with wide empty bands above and below. The frame now fits what the window holds, never taller than before, and follows it when the content changes while open.

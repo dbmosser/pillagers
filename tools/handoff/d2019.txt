@@ -1,0 +1,5 @@
+## v20.19 - THE TERMS NAMES STAND OUT
+
+Co-op hunt while he was away. Seen on the 4K TERMS screenshot of 2026-10-08: each term name (BLACKOUT PROTOCOL, HEAVY PATROLS and the rest) was the same weight as the line under it, so the list read as one block. The names are bold now; an unsigned term is still dimmed and a signed one still lights up with its bonus in amber.
+
+MEASURED. Check 20.19 passes, and fails on v20.18.

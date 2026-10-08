@@ -5722,6 +5722,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.19',what:'the TERMS names stand out: each term name is bold over its plain description, and an unsigned term is still dimmed',
+   run:function(){
+     if(typeof renderTerms!=='function') return 'SKIP: no TERMS here';
+     var bad=[], rows, b, nm;
+     try{
+       renderTerms();
+       rows=[].slice.call(document.querySelectorAll('#termslist .row'));
+       if(!rows.length) return 'SKIP: no terms listed';
+       nm=rows[0].querySelector('.nm'); b=nm&&nm.querySelector('b');
+       if(!b) bad.push('the term name is not set apart');
+       else if(!(parseInt(getComputedStyle(b).fontWeight,10)>=600)) bad.push('the term name is not bold ('+getComputedStyle(b).fontWeight+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.18',what:'a card window frame fits its content: the Last Pour frame is at most 170 menu pixels taller than what it holds, and still taller than it',
    run:function(){
      if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the bar';
