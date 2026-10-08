@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.68 - THE PAD CONTROLS PANEL NAMES NO KEYBOARD KEY
+
+Co-op hunt while he was away. Seen on the 4K controller screenshot of 2026-10-08: on a controller (player 2 in co-op) the compact controls panel switches to pad buttons but still ended with H  full list, a keyboard key the pad player cannot press, since no pad button opens the full list. On a pad that line and its row are left out; with keyboard and mouse it is as before.
+
+MEASURED. Check 19.68 passes, and fails on v19.67.
 ## v19.67 - THE CRAFT PANEL SHOWS WHAT ITEMS DO
 
 Co-op hunt while he was away. Seen on the 4K craft screenshot of 2026-10-08: since v19.23 the BUY panel shows what a Bandage, Medkit, plate, stim or frag does in numbers, but the CRAFT panel for the same items showed one sentence over an empty panel. It shows the same numbers now.

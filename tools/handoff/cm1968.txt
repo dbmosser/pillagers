@@ -1,0 +1,7 @@
+v19.68: the pad controls panel names no keyboard key
+
+On a controller the controls panel lists only pad buttons.
+
+Check 19.68. Fails on v19.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
