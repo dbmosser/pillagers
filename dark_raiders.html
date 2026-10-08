@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.34';
+var VER='20.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33673,7 +33673,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.34: In co-op, an armoury gun you drop for the other player is no longer copied back into your armoury. Check 20.34 fails on v20.33',
+  now:'v20.35: On one PC, picking 2 PLAYER again never throws away a raid player 2 is still playing. Check 20.35 fails on v20.34',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37394,11 +37394,15 @@ function p2SlotPick(){
 // The player 2 window now leaves a mark (salvagerun:p2live, the time, every 2 seconds, taken off when it closes), and a mark
 // under 75 seconds old (a covered window's timers can run once a minute) keeps that save shut in the other window too.
 function p2LiveKey(){ return 'salvagerun:p2live'; }
-function p2LiveBeat(){ try{ localStorage.setItem(p2LiveKey(),String(Date.now())); return true; }catch(_b){ return false; } }
+// v20.35, from the whole-game bug hunt of 2026-10-08 (H24): and a second mark while that window is in a raid, so player 1 never
+// opens a fresh player 2 window over a raid in progress (see netSamePick).
+function p2RaidKey(){ return 'salvagerun:p2raid'; }
+function p2LiveBeat(){ try{ localStorage.setItem(p2LiveKey(),String(Date.now())); if(typeof G!=='undefined'&&G&&!G.sim&&!G.over) localStorage.setItem(p2RaidKey(),String(Date.now())); else localStorage.removeItem(p2RaidKey()); return true; }catch(_b){ return false; } }
+function p2RaidNow(){ var t=0; try{ t=+localStorage.getItem(p2RaidKey())||0; }catch(_g){ t=0; } return !!(t&&Math.abs(Date.now()-t)<75000); }
 function p2LiveNow(){ var t=0; try{ t=+localStorage.getItem(p2LiveKey())||0; }catch(_g){ t=0; } return !!(t&&Math.abs(Date.now()-t)<75000); }
 if(typeof NETP2!=='undefined'&&NETP2){
   p2LiveBeat(); try{ setInterval(p2LiveBeat,2000); }catch(_si){}
-  try{ window.addEventListener('pagehide',function(){ try{ localStorage.removeItem(p2LiveKey()); }catch(_r){} }); }catch(_ph){}
+  try{ window.addEventListener('pagehide',function(){ try{ localStorage.removeItem(p2LiveKey()); localStorage.removeItem(p2RaidKey()); }catch(_r){} }); }catch(_ph){}
 }
 function slotBlocked(sn){
   var p2=null;
@@ -38053,6 +38057,11 @@ function netSamePick(mode,startFn){
     if(typeof go==='function') go();
     return 'linked';
   }
+  // v20.35, from the whole-game bug hunt of 2026-10-08 (H24): A PLAYER 2 WINDOW IN A RAID IS NEVER OPENED OVER. After player 1
+  // reloads mid raid, player 2 picks up the raid (his ruling of 2026-10-02) and no link is left, so the open below navigated the
+  // live player 2 window to a new address and his raid went as a page-away. Player 1 is told to let that raid finish; once player
+  // 2 is back in the Undercroft the pick opens it again as before.
+  if(netInCount()===0&&typeof p2RaidNow==='function'&&p2RaidNow()){ netModeMsg('Player 2 is still in a raid in the other window. Let it finish there, then pick 2 PLAYER again.',true); return 'p2raid'; }
   if(typeof BroadcastChannel!=='function'||!netSupported()){ netModeMsg('This browser cannot run two game windows. 1 PLAYER still works.'); return 'unsupported'; }
   if(!NET.pair) NET.pair=netSess();
   url=netP2Url(mode,NET.pair); NET.p2url=url;

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.35 - PLAYER 1 NEVER OPENS OVER A PLAYER 2 RAID
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On one PC, if player 1 reloaded his window mid raid, player 2 picked up the raid and kept playing. When player 1 then picked 2 PLAYER CO-OP to get back in, the game opened the player 2 window again at a new address, which threw away player 2's raid as if he had left the page. The player 2 window now marks when it is in a raid, and while that mark is fresh the pick opens nothing and tells player 1 to let that raid finish.
+
+MEASURED. Check 20.35 passes, and fails on v20.34.
 ## v20.34 - A GUN DROPPED FOR THE PARTY IS THEIRS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op the other player could drag an armoury gun into the backpack and drop it for the host. The host searched it up and banked it, but the dropping window still had the gun on its list of armoury guns carried up, so an abandon put it back in its own armoury too: one gun in two saves. The drop now takes it off that list, as handing a gun over already did.

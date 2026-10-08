@@ -1,0 +1,7 @@
+v20.35: player 1 never opens over a player 2 raid
+
+On one PC, picking 2 PLAYER again never throws away a raid player 2 is still playing.
+
+Check 20.35. Fails on v20.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

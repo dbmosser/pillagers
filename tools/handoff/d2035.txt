@@ -1,0 +1,5 @@
+## v20.35 - PLAYER 1 NEVER OPENS OVER A PLAYER 2 RAID
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On one PC, if player 1 reloaded his window mid raid, player 2 picked up the raid and kept playing. When player 1 then picked 2 PLAYER CO-OP to get back in, the game opened the player 2 window again at a new address, which threw away player 2's raid as if he had left the page. The player 2 window now marks when it is in a raid, and while that mark is fresh the pick opens nothing and tells player 1 to let that raid finish.
+
+MEASURED. Check 20.35 passes, and fails on v20.34.
