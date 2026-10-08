@@ -1,0 +1,7 @@
+v19.74: the corner credits end where the heading ends
+
+With a window open, the credits in the corner end where the window title line ends.
+
+Check 19.74. Fails on v19.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

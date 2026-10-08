@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.74 - THE CORNER CREDITS END WHERE THE HEADING ENDS
+
+Co-op hunt while he was away. Seen on the 4K settings screenshot after v19.73: with a window open the CREDITS and XP readout now sits on the heading line, but its XP ran past the end of the heading underline to almost touch the window frame. Its right edge now ends where the heading line ends.
+
+MEASURED. Check 19.74 passes, and fails on v19.73.
 ## v19.73 - THE CORNER CREDITS LINE UP WITH THE WINDOW HEADING
 
 Co-op hunt while he was away. Seen on the 4K shop and settings screenshots of 2026-10-08: with a window open (shop, stash, settings and the rest) the CREDITS and XP readout sits in the window heading row by design, but 18 pixels above the heading, so at every screen size its figures sat on the window frame line. While a window is up it now drops to the heading line; on the floor and in a raid it stays in the corner.

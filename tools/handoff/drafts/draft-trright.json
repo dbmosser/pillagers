@@ -1,0 +1,12 @@
+{
+    "title":  "THE CORNER CREDITS END WHERE THE HEADING ENDS",
+    "why":  "Seen on the 4K settings screenshot after v19.73: with a window open the CREDITS and XP readout now sits on the heading line, but its XP ran past the end of the heading underline to almost touch the window frame. Its right edge now ends where the heading line ends.",
+    "now":  "With a window open, the credits in the corner end where the window title line ends.",
+    "edits":  [
+                  {
+                      "anchor":  "  body:has(.modal.on) #topright{ top:24px; }",
+                      "replacement":  "  body:has(.modal.on) #topright{ top:24px; right:33px; }   /* v16.xx: and its right edge ends where the heading line ends, inside the frame */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the corner credits end where the window heading ends: with the shop open the XP readout right edge meets the end of the heading line, inside the frame\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__station)) return \u0027SKIP: this fixture cannot open a station\u0027;\n     if(window.__vpAlive\u0026\u0026!__vpAlive()) return \u0027SKIP: the pane has no layout, so nothing renders\u0027;\n     var bad=[], tr=document.getElementById(\u0027topright\u0027), m, h, a, b, t, d;\n     if(!tr) return \u0027SKIP: no corner readout here\u0027;\n     try{\n       __topClear(); __runPrep(); __cleanProfile();\n       t=document.getElementById(\u0027title\u0027); if(t) t.classList.remove(\u0027on\u0027);\n       __hubEnter(); __station(\u0027trader\u0027,\u0027KeyE\u0027);\n       m=document.getElementById(\u0027tradermodal\u0027); h=m\u0026\u0026m.querySelector(\u0027h3\u0027);\n       if(!m||!m.classList.contains(\u0027on\u0027)||!h) return \u0027SKIP: the shop did not open\u0027;\n       a=tr.getBoundingClientRect(); b=h.getBoundingClientRect();\n       if(!(a.height\u003e0\u0026\u0026b.width\u003e0)) return \u0027SKIP: nothing laid out\u0027;\n       d=a.right-b.right;\n       if(Math.abs(d)\u003ea.height*0.1) bad.push(\u0027with the shop open the readout ends \u0027+Math.round(d)+\u0027 px from the end of the heading line\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ if(m\u0026\u0026m.classList.contains(\u0027on\u0027)\u0026\u0026typeof closeTrader===\u0027function\u0027) closeTrader(); }catch(_c){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

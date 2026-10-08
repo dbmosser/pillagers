@@ -5721,6 +5721,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.74',what:'the corner credits end where the window heading ends: with the shop open the XP readout right edge meets the end of the heading line, inside the frame',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot open a station';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], tr=document.getElementById('topright'), m, h, a, b, t, d;
+     if(!tr) return 'SKIP: no corner readout here';
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('trader','KeyE');
+       m=document.getElementById('tradermodal'); h=m&&m.querySelector('h3');
+       if(!m||!m.classList.contains('on')||!h) return 'SKIP: the shop did not open';
+       a=tr.getBoundingClientRect(); b=h.getBoundingClientRect();
+       if(!(a.height>0&&b.width>0)) return 'SKIP: nothing laid out';
+       d=a.right-b.right;
+       if(Math.abs(d)>a.height*0.1) bad.push('with the shop open the readout ends '+Math.round(d)+' px from the end of the heading line');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(m&&m.classList.contains('on')&&typeof closeTrader==='function') closeTrader(); }catch(_c){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.73',what:'the corner credits line up with a window heading: with the shop open the CREDITS and XP readout is centred on the heading row, and with no window open it is back in the corner',
    run:function(){
      if(!(window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot open a station';
