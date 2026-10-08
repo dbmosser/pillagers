@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.27',what:'the bar shows its drinks: each drink row leads with a picture, and Liquor and Blotter have different pictures',
+   run:function(){
+     if(!window.__station||!window.__hubEnter||typeof renderBar!=='function') return 'SKIP: no bar here';
+     var bad=[], t, rows, ims=[], i, im;
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('bar','KeyE');
+       rows=[].slice.call(document.querySelectorAll('.modal.on .row')).filter(function(r){ return !!r.querySelector('[data-bz]'); });
+       if(rows.length<2) return 'SKIP: fewer than two drink rows';
+       for(i=0;i<rows.length;i++){ im=rows[i].querySelector('img'); if(!im||String(im.getAttribute('src')||'').indexOf('data:image/png')!==0) bad.push('the '+(rows[i].querySelector('b')?rows[i].querySelector('b').textContent:'drink')+' row has no picture'); else ims.push(im.getAttribute('src')); }
+       if(ims.length>=2&&ims[0]===ims[1]) bad.push('the two drinks have the same picture');
+       if(ims.length&&rows[0].querySelector('img').getBoundingClientRect().width<30) bad.push('the drink picture is drawn '+Math.round(rows[0].querySelector('img').getBoundingClientRect().width)+' px wide');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.26',what:'a blanked sector line takes no room: with the first sector line blanked the card hides it, and with words in it the card shows them',
    run:function(){
      if(typeof renderSector!=='function'||typeof SECTOR_CHAR==='undefined'||typeof TX!=='function') return 'SKIP: no sector page here';

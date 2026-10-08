@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.27 - THE BAR SHOWS ITS DRINKS
+
+Co-op hunt while he was away. Seen on the 4K bar screenshot of 2026-10-08: The Last Pour listed Liquor and Blotter as bare lines of text, the only station with no pictures. Each drink now leads with its picture, the same icon the raid shows down the left while it is in your blood, so the two connect at a glance.
+
+MEASURED. Check 19.27 passes, and fails on v19.26.
 ## v19.26 - A BLANKED SECTOR LINE TAKES NO ROOM
 
 Co-op hunt while he was away. Seen on the 4K lift screenshot of 2026-10-08: he blanked both sector description lines with his text edits, and the empty lines still left a band of space between the sector name and its facts on every card. A blank line now takes no room; with Edit the words on, it stays so it can be clicked and given words again. His words are untouched.
