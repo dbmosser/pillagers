@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.05 - OUTFITS FIT THE BUILD
+
+Co-op hunt while he was away. Seen on the 4K FASHION screenshots of every outfit on Broad and Curved (2026-10-08): the Baller jersey side panels hung outside a Curved waist, the Tomb Explorer bare shoulders floated on a Broad chest and poked out of Curved shoulders, the robot seam ran past a Curved body, and the Curved rose mouth showed on the skull, the robot and the Trooper helmet. Each now follows the build; Lean is unchanged.
+
+MEASURED. Check 20.05 passes, and fails on v20.04.
 ## v20.04 - THE BUILD TILES SHOW YOU IN EACH BUILD
 
 Co-op hunt while he was away. Following v20.01 (his order of 2026-10-08): the three BUILD tiles in FASHION showed the same little block picture, because a build used to change nothing. They now show your operator in Lean, Broad and Curved, like the outfit and hair tiles do.

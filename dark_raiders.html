@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.04';
+var VER='20.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22883,7 +22883,10 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // pixels against the red's 3,222. At this size two black bars down a chest
     // read as backpack straps. They are trim now.
     var _jx=x-6.5+leanX;
-    wc.fillStyle='#14161b'; wc.fillRect(_jx,ty-21.4,1.4,10); wc.fillRect(_jx+11.6,ty-21.4,1.4,10);
+    // v20.05, seen on the 4K FASHION outfit screenshots (2026-10-08): on a Curved body the panels hung outside the narrow waist; on
+    // Broad and Curved they now run down the body's own sides.
+    if(_BLD){ wc.save(); buildPath(x+leanX,ty,(_BLD==='broad')?BUILD_BROAD:BUILD_CURVED,0); wc.clip(); wc.beginPath(); wc.rect(x+leanX-12,ty-21.4,24,10); wc.clip(); buildPath(x+leanX,ty,(_BLD==='broad')?BUILD_BROAD:BUILD_CURVED,0); wc.strokeStyle='#14161b'; wc.lineWidth=2.8; wc.stroke(); wc.restore(); }
+    else { wc.fillStyle='#14161b'; wc.fillRect(_jx,ty-21.4,1.4,10); wc.fillRect(_jx+11.6,ty-21.4,1.4,10); }
     wc.fillStyle='#f4f2ec';
     var _jy=ty-20;
     wc.fillRect(_jx+2.6,_jy,3.4,1.5); wc.fillRect(_jx+4.5,_jy,1.5,2.6); wc.fillRect(_jx+2.6,_jy+1.9,3.4,1.5); wc.fillRect(_jx+2.6,_jy+1.9,1.5,2.6); wc.fillRect(_jx+2.6,_jy+3.8,3.4,1.5);
@@ -23201,7 +23204,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     } else if(_om==='robot'){
       // plate seams, a chest light, a red eye bar across the face, an antenna.
       wc.fillStyle=INK;
-      wc.fillRect(_ox-0.5,ty-22,1,11); wc.fillRect(_ox-6.5,ty-16.6,13,1);
+      if(_BLD){ wc.save(); buildPath(_ox,ty,(_BLD==='broad')?BUILD_BROAD:BUILD_CURVED,0); wc.clip(); wc.fillRect(_ox-0.5,ty-22,1,11); wc.fillRect(_ox-10,ty-16.6,20,1); wc.restore(); }   // v20.05: the seams stay on the build's body
+      else { wc.fillRect(_ox-0.5,ty-22,1,11); wc.fillRect(_ox-6.5,ty-16.6,13,1); }
       wc.fillStyle='#4de3d0'; wc.fillRect(_ox+fl*2.6-1.2,ty-19.6,2.4,1.6);
       wc.fillStyle=INK;       rrF(hx2-7.8,ty-32.4,15.6,5.4,1.4);
       wc.fillStyle='#1a2028'; rrF(hx2-7.2,ty-31.9,14.4,4.4,1.1);
@@ -23227,7 +23231,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     } else if(_om==='explorer'){
       // a teal tank top with bare shoulders, a belt, and a holster on each hip.
       wc.fillStyle=(SKINCOL[st.hero?cosWorn('skin'):(st.skin||'fair')]||SKINCOL.fair);
-      wc.fillRect(_ox-6.5,ty-22,2.4,3.2); wc.fillRect(_ox+4.1,ty-22,2.4,3.2);
+      if(_BLD){ var _sw=(_BLD==='broad')?8.9:6.1; wc.fillRect(_ox-_sw,ty-22,2.4,3.2); wc.fillRect(_ox+_sw-2.4,ty-22,2.4,3.2); }   // v20.05: the bare shoulders sit on the build's shoulders
+      else { wc.fillRect(_ox-6.5,ty-22,2.4,3.2); wc.fillRect(_ox+4.1,ty-22,2.4,3.2); }
       wc.fillStyle='#5a3a1e'; wc.fillRect(_ox-6.5,ty-12.6,13,1.6);
       rrF(_ox-8.2,ty-12.2,3,4.4,0.8); rrF(_ox+5.2,ty-12.2,3,4.4,0.8);
       wc.fillStyle='#a08a50'; wc.fillRect(_ox-1.2,ty-12.8,2.4,2);
@@ -23266,7 +23271,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.textAlign='left';
   }
   // a small mouth, hurt pulls it into a grimace
-  wc.fillStyle=(_BLD==='curved')?'#c25a6c':'#8a5c46';   // v20.01: Curved, a rose mouth
+  wc.fillStyle=(_BLD==='curved'&&!(OUTF&&/^(skeleton|robot|trooper)$/.test(OUTF.mark)))?'#c25a6c':'#8a5c46';   // v20.05: not on a skull, a robot or a helmet   // v20.01: Curved, a rose mouth
   if(st.hurt>0) wc.fillRect(hx2-2,ty-25.6,4,1.6);
   else wc.fillRect(hx2-1.5,ty-25.2,3,1);
 
@@ -33587,7 +33592,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.04: The FASHION BUILD tiles show you in Lean, Broad and Curved. Check 20.04 fails on v20.03',
+  now:'v20.05: Every outfit sits right on Broad and Curved bodies. Check 20.05 fails on v20.04',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
