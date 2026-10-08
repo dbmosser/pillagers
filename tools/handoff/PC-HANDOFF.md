@@ -542,3 +542,11 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.98 stashmedium (HIS ORDER 2026-10-08, pick Medium): default layout 6 grid is repeat(auto-fill,minmax(max(96px,calc((100% - 40px)/6)),1fr)), so 6 across at every window size (a fixed px size could not: menu zoom is 0.9 in the gate window, 2.47 at 4K). Backpack is 6 across too.
 - v19.99 haulbig: extraction card haul strip pictures 34 -> 52 px with 3px padding and radius 8.
 - v20.00 partyframe: #partymodal::before height min(760px, 100% - 150px), so in an ~830 css tall window its top line is 75 down, clear of the corner readout (it ran under CREDITS at 33).
+- HIS ORDER 2026-10-08 08:15 (BUILD must change the body, Curved clearly female, jiggle, everyone sees it):
+- v20.01 buildbody: drawOp reads _BID (hero cosWorn, else st.build); Lean keeps its literal torso lines; drawBuildTorso draws Broad (V torso) and Curved (hourglass via buildPath over BUILD_CURVED half-widths, lit chest with shadow, belt, hips in trouser colour, leg tops painted over the hip hem). Curved face: inked upper lid + flick, rose mouth. Hurt flash fills the build path.
+- v20.02 jiggle: bodyJiggle(own,ty[,now]) spring on own._jg (chest c, hips h), driven by torso speed change, clamped, settles; dt<4ms = same frame (ghost); floor hero and ghost use HUBOWN so state persists.
+- v20.03 buildnet: 'build' in NET_LOOK; netDrawPeer and netUpDrawOne pass build:lk.build.
+- v20.04 buildtiles: cosSwatch paints BUILD tiles (figure in each build).
+- v20.05 buildoutfits: Baller panels stroke the build outline (clipped), robot seam clipped to the body, Explorer bare shoulders at the build's shoulders, rose mouth not on skeleton/robot/trooper.
+- v20.06 buildshorts: bare-legged suits (trs null) fill Curved hips with darkHex(coat,.62); legs below keep _TRS.
+- v20.07 card-2007: WHATSNEW_VER 20.07, line 1 YOUR BUILD SHOWS. Next refresh by ~20.22.
