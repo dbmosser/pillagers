@@ -1522,7 +1522,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.07';
+var VER='19.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12742,6 +12742,7 @@ function pollPad(){
   else if(PAD.adsT>0) PAD.adsT-=dtPad();
   if(pressed(11)&&!PAD.prev[11]&&!G.over&&!G.paused) PAD.adsTog=!PAD.adsTog;   // v16.72, his order: RS click toggles focus aim
   if(G.over) PAD.adsTog=false;
+  PAD.adsAim=!!(PAD.adsTog||(trig(6)>0.35&&!G.over&&!G.paused));   // v19.08, from the review (2026-10-07): a deliberate aim (LT or the RS toggle), apart from the steadying after each RT pull
   if((PAD.adsT>0||PAD.adsTog||(trig(6)>0.35&&!G.over&&!G.paused))&&!(pressed(10)&&G.player&&G.player.moving)){ G.player.ads=true; PAD.adsing=1; }   // v16.81: never while sprinting   // v16.72, his order: LT held or RS toggled is focus aim
   else if(PAD.adsing){ G.player.ads=false; PAD.adsing=0; }
 
@@ -23969,7 +23970,7 @@ function render2D(dt){
   // and fog layers all have to work in those world units instead of pixels or
   // the lighting stops lining up with the ground.
   // v18.76, his note: the scope zoom eases toward its target here, once a frame, before anything reads ZOOM.
-  (function(){ var m=opticMag(), k=(CFG.adsZoom===undefined)?0.35:CFG.adsZoom, tgt=(m>1&&!G.sim&&!G.over)?Math.max(1,1+(m-1)*k):1, d=Math.max(0,Math.min(0.1,+dt||0));
+  (function(){ var m=opticMag(), k=(CFG.adsZoom===undefined)?0.35:CFG.adsZoom, tgt=(m>1&&!G.sim&&!G.over&&!(typeof PAD!=='undefined'&&PAD&&PAD.adsing&&!PAD.adsAim))?Math.max(1,1+(m-1)*k):1, d=Math.max(0,Math.min(0.1,+dt||0));
     if(!(G.adsZ>0)) G.adsZ=1; G.adsZ+=(tgt-G.adsZ)*(1-Math.exp(-d*11)); if(Math.abs(tgt-G.adsZ)<0.0005) G.adsZ=tgt; })();
   var Z=ZOOM(),VW=W/Z,VH=H/Z;
   // camera with cursor lean
@@ -33227,7 +33228,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.07: In two player raids your teammate health, the kill feed and pings show on screen at every resolution. Check 19.07 fails on v19.06',
+  now:'v19.08: On a controller the view no longer zooms in and out with every shot of a scoped gun; holding LT still zooms. Check 19.08 fails on v19.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

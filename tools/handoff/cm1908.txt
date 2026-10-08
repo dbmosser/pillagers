@@ -1,0 +1,7 @@
+v19.08: the scope zoom follows a deliberate aim only
+
+On a controller the view no longer zooms in and out with every shot of a scoped gun; holding LT still zooms.
+
+Check 19.08. Fails on v19.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

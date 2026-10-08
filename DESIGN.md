@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.08 - THE SCOPE ZOOM FOLLOWS A DELIBERATE AIM ONLY
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: on a controller every trigger pull steadies the aim for a moment, and kid firing does the same while it has a target, and since v18.76 both also pulled in the scope zoom, so with a Marksman Rifle or Longshot the view of player 2 pumped in and out by a third on every shot. The zoom now follows only a deliberate aim (LT, the stick click toggle, or the right mouse button); the steadying keeps its tighter aim without moving the camera.
+
+MEASURED. Check 19.08 passes, and fails on v19.07.
 ## v19.07 - THE CO-OP HUD DRAWS WHERE IT SHOULD
 
 Co-op hunt while he was away. Found by the review of 2026-10-07: in a party raid the teammate rows (name, health, armour), the kill feed, the pings and the controller paused word were drawn inside the zoom of the health corner, so everything they drew was pushed up and out. At 1080p the teammate rows sat in the top left corner over the CURRENT PILLAGERS board, and at 1440p and 4K (where he plays) the rows, the kill feed and the pings were drawn off the screen altogether. They now draw where they should: the teammate rows down the left below the board, the kill feed on the right below CONDITIONS, both grown with the screen, and the status icons below the teammate rows.

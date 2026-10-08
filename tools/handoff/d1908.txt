@@ -1,0 +1,5 @@
+## v19.08 - THE SCOPE ZOOM FOLLOWS A DELIBERATE AIM ONLY
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: on a controller every trigger pull steadies the aim for a moment, and kid firing does the same while it has a target, and since v18.76 both also pulled in the scope zoom, so with a Marksman Rifle or Longshot the view of player 2 pumped in and out by a third on every shot. The zoom now follows only a deliberate aim (LT, the stick click toggle, or the right mouse button); the steadying keeps its tighter aim without moving the camera.
+
+MEASURED. Check 19.08 passes, and fails on v19.07.
