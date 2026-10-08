@@ -538,3 +538,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.94 pausewide: pauseFrameFit also sets --pbw (widest visible child offsetWidth + 96, min 780); the floor's three buttons all but touched the 780 frame.
 - v19.95 titlepad: title key row gets class kbrow and a .padrow twin (L STICK, R STICK, RT, B, X, VIEW, D-UP hold, MENU); CSS swaps them on body.padon; padBodyCls rewrites #invkeybarpad and every .padrow through padB.
 - v19.96 slotbadge: the stash's equipped-gun 1/2 badge gets padding 1px 7px, radius 7, right 7, bottom 6, no text shadow (was a bare sliver in the rounded corner).
+- v19.97 thumbring: sectorPreviewDraw moves a zone name that would touch an extraction ring to the nearest clear y just above or below the ring, inside its zone (hits/place helpers in the label IIFE).
