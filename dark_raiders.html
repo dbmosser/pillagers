@@ -1526,7 +1526,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.19';
+var VER='19.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33275,7 +33275,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.19: Status icons never draw over a board or controls list you have moved or resized. Check 19.19 fails on v19.18',
+  now:'v19.20: Clicking through FASHION is quicker. Check 19.20 fails on v19.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -43594,8 +43594,12 @@ function renderCosmetics(target,kindOnly,hid,pid){
       }
       P[COSKEY[kind]||'cosHat']=id;
       saveProfile();
-      renderCosmetics(target,kindOnly,hid,pid);
-      try{ renderAvatar(hid,pid); }catch(e){}
+      // v19.20, from the review (2026-10-07): renderAvatar draws the racks again itself (renderAvPicker), so in FASHION every click built
+      // all the racks twice, about 0.5 MB of pictures parsed twice in one click. When the racks are the picker renderAvatar fills, it is
+      // left to do it once.
+      var _rk1=false; try{ _rk1=!!(hid&&pid&&document.getElementById(hid)&&document.getElementById(pid)===target); }catch(_rk){}
+      if(!_rk1) renderCosmetics(target,kindOnly,hid,pid);
+      try{ renderAvatar(hid,pid); }catch(e){ if(_rk1) renderCosmetics(target,kindOnly,hid,pid); }
     };
   });
 }

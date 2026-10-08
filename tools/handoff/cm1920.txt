@@ -1,0 +1,7 @@
+v19.20: a fashion click builds the racks once
+
+Clicking through FASHION is quicker.
+
+Check 19.20. Fails on v19.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

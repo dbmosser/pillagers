@@ -1,0 +1,5 @@
+## v19.20 - A FASHION CLICK BUILDS THE RACKS ONCE
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: every click on a FASHION tile built the whole rack list twice, once directly and once more through the operator panel, which redraws the racks itself, so about half a megabyte of pictures was parsed twice per click (about 120 ms a click at 1080p, measured). The racks are now built once.
+
+MEASURED. Check 19.20 passes, and fails on v19.19.
