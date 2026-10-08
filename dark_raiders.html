@@ -1522,7 +1522,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.11';
+var VER='19.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12046,11 +12046,21 @@ window.addEventListener('mouseup',function(e){
           var _r8gk=_dit.gk, _r8on=(_bx<0&&!!_r8gk&&((_pp.wep&&_pp.wep.id===_r8gk)||(_pp.sec&&_pp.sec.id===_r8gk)));
           if(_r8on){
             var _r8w=(_pp.wep&&_pp.wep.id===_r8gk)?_pp.wep:_pp.sec;
+            // v19.12, from the review (2026-10-07): the key the drag came from is let go FIRST, tentatively, so a gun cell the belt had
+            // moved down (v17.17) can show again on the key it was dropped on; before, its own binding hid it and the drop was refused
+            // with p.swapped left flipped, key 1 showing the wrong gun, the trigger on the old cell and the words saying his only gun.
+            // A refusal now puts the binding and p.swapped back, keeps the trigger on the gun in his hands and says what happened.
+            var _r8sw=_pp.swapped, _r8had=(d.fromHot!==undefined&&d.fromHot!==HC.i&&G.hotAssign&&G.hotAssign[d.fromHot]===d.key), _r8au=(_r8had&&G.hotAuto)?G.hotAuto[d.fromHot]:undefined;
+            if(_r8had){ delete G.hotAssign[d.fromHot]; if(G.hotAuto) delete G.hotAuto[d.fromHot]; }
             if(_si.icon!==_r8gk&&_pp.wep&&_pp.sec) _pp.swapped=!_pp.swapped;
             var _r8s=hotbarSlots();
-            if(_r8s[HC.i]&&_r8s[HC.i].kind==='gun'&&_r8s[HC.i].icon===_r8gk){
-              if(d.fromHot!==undefined&&d.fromHot!==HC.i&&G.hotAssign&&G.hotAssign[d.fromHot]===d.key){
-                delete G.hotAssign[d.fromHot]; if(G.hotAuto) delete G.hotAuto[d.fromHot];
+            if(!(_r8s[HC.i]&&_r8s[HC.i].kind==='gun'&&_r8s[HC.i].icon===_r8gk)){
+              _pp.swapped=_r8sw; if(_r8had){ G.hotAssign[d.fromHot]=d.key; if(G.hotAuto&&_r8au!==undefined) G.hotAuto[d.fromHot]=_r8au; }
+              G.hot=gunCell();
+              say((_pp.wep&&_pp.sec&&_pp.wep.id!=='fists'&&_pp.sec.id!=='fists')?(_r8w.name+' cannot go on key '+(HC.i+1)+'; it stays where it is.'):(_r8w.name+' stays where it is: it is your only gun, so there is no other gun for it to trade places with.'));
+            }
+            else if(_r8s[HC.i]&&_r8s[HC.i].kind==='gun'&&_r8s[HC.i].icon===_r8gk){
+              if(_r8had){
                 if(!G.sim){ var _r8f={}; for(var _r8k in G.hotAssign) if(!G.hotAuto||!G.hotAuto[_r8k]) _r8f[_r8k]=G.hotAssign[_r8k]; P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_r8f))); try{ saveProfile(); }catch(_r8e){} }
               }
               G.hot=gunCell(); blip('pick');
@@ -33238,7 +33248,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.11: Status icons always stay in the left strip, however little room there is. Check 19.11 fails on v19.10',
+  now:'v19.12: Dragging a gun between belt keys never leaves the belt showing the wrong gun. Check 19.12 fails on v19.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

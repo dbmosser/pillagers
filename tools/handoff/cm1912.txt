@@ -1,0 +1,7 @@
+v19.12: a refused gun key drop leaves the belt as it was
+
+Dragging a gun between belt keys never leaves the belt showing the wrong gun.
+
+Check 19.12. Fails on v19.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
