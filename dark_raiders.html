@@ -1537,7 +1537,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.45';
+var VER='19.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1548,7 +1548,7 @@ var VER='19.45';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='19.30';
+var WHATSNEW_VER='19.46';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -1564,6 +1564,7 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'CLEANER SCREENS. Your own map marker always sits on top, the Undercroft walls sit in the room light, the run card buttons sit on a clean strip, the H controls list fits its keys, the stats titles are whole, and the map, party and belt text stay in place and read on any ground.',
   'SHARPER ON A BIG SCREEN, MORE TO READ. FASHION pictures are crisp at 4K, the shop says what a Bandage, Medkit, plate, stim or frag does in numbers, the bar shows its drinks, the gambler shows the item on offer, and the lift, map and raid labels read from the couch.',
   'STATUS ICONS AND CLEARER CARDS. Healing, stims, drinks and other effects show as icons down the left, like WoW or Diablo; healing shows there instead of over your head. Sector map names never print over each other, the death card shows what you lost in pictures, and the extraction card shows your haul.',
   'BIGGER ON A BIG SCREEN, AND THE BELT FIXED. At 4K the backpack, the Undercroft text and the run card grow with the screen. A gun on key 8 drags onto key 1, and dragging one gun key onto the other swaps them. Blotter comes on gradually.',
@@ -33361,7 +33362,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.45: On the sector map your own marker and your teammate are always on top of the writing. Check 19.45 fails on v19.44',
+  now:'v19.46: The what is new card names the cleaner screens. Check 19.46 fails on v19.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

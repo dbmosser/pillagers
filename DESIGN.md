@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.46 - THE WHAT IS NEW CARD NAMES THE CLEANER SCREENS
+
+Co-op hunt while he was away. The card was stamped v19.30 and the stamp may not trail the build by more than 0.15. Its new second line names the map marker on top (v19.45), the Undercroft walls (v19.35), the run card strip (v19.36, v19.37), the controls list (v19.41), the stats titles (v19.38) and the text fixes of v19.31 to v19.44.
+
+MEASURED. Check 19.46 passes, and fails on v19.45.
 ## v19.45 - HIS OWN MAP MARKER STAYS ON TOP
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in the v19.02 map label placer: the labels were drawn after the whole map, so a landmark name or a CACHE tag printed over his own gold marker and over the party dots, gold letters on the gold dot, the two things his Q23 says are never lost. The marker and the party dots are drawn after the labels again.
