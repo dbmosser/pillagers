@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.40 - CO-OP SOUNDS PLAY ONCE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op some sounds were heard twice in each window, a beat apart, each with its own ring: every lightning warning and crack, the extraction ring sonar, touchdown and last call, and every round player 2 landed on a machine. Both windows made those sounds themselves and also passed them to the other window. Now those sounds play only where they are made, and sounds only one window makes are still passed on.
+
+MEASURED. Check 20.40 passes, and fails on v20.39.
 ## v20.39 - THE HOT GROUND IS SHARED
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op each window moved its own hot ground on its own dice, so after the first move player 1 and player 2 saw it in different places, and a box player 2 emptied on it never paid the two bonus items, because only the host's own open rolled them. The host now owns the hot ground: the other window shows it where the host has it and is told when it moves, and a box either player empties on it pays the bonus.

@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.39';
+var VER='20.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4201,6 +4201,15 @@ function noiseMark(type,wx,wy){
 }
 // One-shot at a world position. Falls back to the flat centred behaviour if the
 // browser has no stereo panner.
+// v20.40, from the whole-game bug hunt of 2026-10-08 (H52): A SOUND EVERY WINDOW MAKES FOR ITSELF IS NOT PASSED ON. sfx tells the
+// party every positioned sound, which is right for a sound only this window makes. But lightning, the ring sounds and a
+// teammate's hits are made on both windows, so each was heard twice in each window, a beat apart, with two rings. Those
+// call sites play here only.
+function sfxHere(type,wx,wy,wid){
+  var on=(typeof NET==='object'&&NET), f=on?NET.fxIn:false;
+  if(on) NET.fxIn=true;
+  try{ sfx(type,wx,wy,wid); }finally{ if(on) NET.fxIn=f; }
+}
 function sfx(type,wx,wy,wid){
   if(G&&G.sim) return;
   if(typeof NET==='object'&&NET&&NET.on&&!NET.fxIn&&wx!==undefined&&wx!==null) netFxNoise(type,wx,wy,wid);   // v16.21: the rest of the party hears it and sees its ring
@@ -5901,7 +5910,7 @@ function strikeTick(dt){
       sx=clamp(_so.x,80,WORLD_W-80); sy=clamp(_so.y,80,WORLD_H-80);
     }
     G.strikes.push({x:sx,y:sy,t:STRIKE_WARN,hit:0,id:(G.strikeN=(G.strikeN||0)+1)});   // v16.06: numbered, so the party draws the same bolt once
-    if(!G.sim) sfx('charge',sx,sy);   // v11.59, HIS NOTE: a positioned sound marks itself
+    if(!G.sim) sfxHere('charge',sx,sy);   // v11.59, HIS NOTE: a positioned sound marks itself; v20.40 (H52): the party makes its own from the world word
   }
   for(var i=G.strikes.length-1;i>=0;i--){
     var S=G.strikes[i];
@@ -5909,10 +5918,10 @@ function strikeTick(dt){
     if(S.t>0) continue;
     // THE BOLT. Everything below happens once, on the frame it lands.
     G.strikes.splice(i,1);
-    if(S.rm){ G.lightning=0.34; if(!G.sim) sfx('alarm',S.x,S.y); continue; }   // v16.06: a host bolt on a linked window: the flash and the crack only; the host lands the hit (netAreaHitPeers)
+    if(S.rm){ G.lightning=0.34; if(!G.sim) sfxHere('alarm',S.x,S.y); continue; }   // v16.06: a host bolt on a linked window: the flash and the crack only; the host lands the hit (netAreaHitPeers)
     G.lightning=0.34;                       // the flash the renderer has always had
     var d=dist(p,S);
-    if(!G.sim) sfx('alarm',S.x,S.y);
+    if(!G.sim) sfxHere('alarm',S.x,S.y);   // v20.40 (H52): each window cracks its own bolt
     ping(S.x,S.y,900,false,false,'env','fire');
     if(NET.on) netAreaHitPeers(S.x,S.y,STRIKE_R,function(){ return STRIKE_DMG; },'lightning','the storm',{noRoof:true});   // v15.80: the bolt reaches the party up top by the same roof and wall rules; the draws below are untouched
     if(d<STRIKE_R&&!p.downed){
@@ -16356,7 +16365,7 @@ function tickExtractPoints(dt){
       var _fr=clamp(1-z.beaconT/Math.max(1,CFG.extractWait),0,1);
       var _iv=2.2-1.65*_fr;
       z.pingT=(z.pingT||0)+dt;
-      if(z.pingT>=_iv){ z.pingT=0; sfx('inbound',z.x,z.y); }   // v11.59: marks itself
+      if(z.pingT>=_iv){ z.pingT=0; sfxHere('inbound',z.x,z.y); }   // v11.59: marks itself
     }
     z.beaconT-=dt;
     if(z===G.active) G.beaconT=z.beaconT;
@@ -16561,7 +16570,7 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
         }
         G.tel.ringCrowd={mapBorn:_rcm,siegeBorn:_rcs};
       }
-      if(dist(p,z)<1400){ sfx('touchdown',z.x,z.y); sfx('alarm',z.x,z.y);   // v11.59: mark themselves
+      if(dist(p,z)<1400){ sfxHere('touchdown',z.x,z.y); sfxHere('alarm',z.x,z.y);   // v11.59: mark themselves
         say('EXTRACTION IS OPEN. Hold E to extract, '+Math.round(z.hold)+'s.'); }
     }
     // THE WINDOW CLOSING, once a second for the last eight. This is the only
@@ -16570,7 +16579,7 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
     var _hPrev=z.hold;
     z.hold-=dt;
     if(!G.sim&&z===G.active&&z.hold<=8&&z.hold>0&&Math.ceil(z.hold)!==Math.ceil(_hPrev)){
-      sfx('lastcall',z.x,z.y);   // v11.59: marks itself
+      sfxHere('lastcall',z.x,z.y);   // v11.59: marks itself; v20.40 (H52): every window runs its own rings, so none passes its ring sounds on
     }
     if(z===G.active){ G.shipHold=z.hold; G.shipHoldMax=z.holdMax; }
     // v11.98, HIS ORDER: a hold that began before the window shut finishes.
@@ -20678,7 +20687,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
 G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
               if(en.hp<=0&&dist(en,p)>620) blip('clank',760);
               spark(b.x,b.y,en.kind==='raider'?'#ff5a4a':'#ffc25c',9,220);
-              sfx("hit",en.x,en.y);
+              if(NET.on&&netEntsPeer()) sfxHere("hit",en.x,en.y); else sfx("hit",en.x,en.y);   // v20.40 (H52): the host plays this hit itself when it lands the round
               // v11.84, HIS NOTE: "meridian lance bullets should travel through
               // crawlers". The round keeps going after a crawler with its damage
               // intact and remembers him so he is not hit again next frame;
@@ -33688,7 +33697,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.39: In co-op, both players see the hot ground in the same place, and both get its extra loot. Check 20.39 fails on v20.38',
+  now:'v20.40: In co-op, lightning, extraction rings and hits are heard once, not twice. Check 20.40 fails on v20.39',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40203,7 +40212,7 @@ function netWorldTake(peer,m){
     if(have||(G.netBolts&&G.netBolts[a[0]])) continue;
     (G.netBolts=G.netBolts||{})[a[0]]=1;
     S={x:+a[1]||0,y:+a[2]||0,t:Math.max(0.05,+a[3]||0.05),hit:0,rm:1,rid:a[0]}; G.strikes.push(S);
-    if(!G.sim) sfx('charge',S.x,S.y);
+    if(!G.sim) sfxHere('charge',S.x,S.y);   // v20.40 (H52): heard here, never sent back to the host that sent the bolt
   }
   // v20.39, from the whole-game bug hunt of 2026-10-08 (H59): THE HOT GROUND IS THE HOST'S. Each window moved its own disc on its
   // own dice, so after the first move the two maps showed it in different places. It is where the host has it, and a move is
@@ -40762,7 +40771,7 @@ function netMarkTake(peer,m){
   k=netClean(m.k,6); e=NET.entMap?NET.entMap[m.nid|0]:null; mine=((m.seat|0)===NET.seat);
   if(k==='on'){
     if(e){ e.wind=clamp(isFinite(+m.wind)?+m.wind:3.5,0,6); e.state='alarm'; }
-    if(!G.sim){ if(e) sfx('alarm',e.x,e.y); if(mine) say('A crier has you. Kill it or move.'); }
+    if(!G.sim){ if(e) sfxHere('alarm',e.x,e.y); if(mine) say('A crier has you. Kill it or move.'); }
     return 'mark:on';
   }
   if(k==='fire'){
@@ -40849,7 +40858,7 @@ function netShotTake(peer,m){
   if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.6; }
   else if(e.kind!=='snitch'){ e.alert=2.6; e.state='chase'; e.tx=sx; e.ty=sy; }
   else if(e.state!=='alarm'){ e.state='alarm'; e.lost=0; e.wind=3.5; e.markX=sx; e.markY=sy; }
-  if(!G.sim){ spark(e.x,e.y,e.kind==='raider'?'#ff5a4a':'#ffc25c',9,220); sfx('hit',e.x,e.y); }
+  if(!G.sim){ spark(e.x,e.y,e.kind==='raider'?'#ff5a4a':'#ffc25c',9,220); sfxHere('hit',e.x,e.y); }   // v20.40 (H52): the window that fired plays its own
   return 'shot';
 }
 // A kill credited to this seat, from the host: the count, the contract and the grudge, as this window own kill would be.

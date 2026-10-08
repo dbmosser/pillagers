@@ -1,0 +1,7 @@
+v20.40: co-op sounds play once
+
+In co-op, lightning, extraction rings and hits are heard once, not twice.
+
+Check 20.40. Fails on v20.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

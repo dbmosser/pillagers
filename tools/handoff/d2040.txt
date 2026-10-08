@@ -1,0 +1,5 @@
+## v20.40 - CO-OP SOUNDS PLAY ONCE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op some sounds were heard twice in each window, a beat apart, each with its own ring: every lightning warning and crack, the extraction ring sonar, touchdown and last call, and every round player 2 landed on a machine. Both windows made those sounds themselves and also passed them to the other window. Now those sounds play only where they are made, and sounds only one window makes are still passed on.
+
+MEASURED. Check 20.40 passes, and fails on v20.39.
