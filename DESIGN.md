@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.92 - STASH SCREEN: A KEY LEFT ON A RACK GUN MOVES LIKE ANY ITEM
+
+Co-op hunt while he was away. On the Stash screen, a belt key can stay on a gun that has since gone back to the rack. That happens after he picks another gun for his hands or takes this one out of them. Dragging that key from 8 to 1 was refused with a clank and the wrong reason: it said the gun was not in his stash, when it was on the rack. Now it works the way dragging the gun from the rack does: the gun is packed and takes key 1. If the backpack is full, he is told that.
+
+MEASURED. Check 18.92 passes, and fails on v18.91.
 ## v18.91 - UNDERCROFT FLOOR: GUN KEYS CAN BE PICKED UP, AND GUN 2 DROPPED ON KEY 1 BECOMES GUN 1
 
 Co-op hunt while he was away. On the Undercroft floor with the backpack open, pressing a gun key (key 1, key 2, or key 8 or 9 when the belt moved a gun down) picked nothing up and said nothing. Gun keys now pick up like any other item. Dropping one on the other gun's key makes gun 1 and gun 2 trade places, which is what the raid starts with. Dropping it back on its own key moves the item that covered that key to where the gun was. Any other drop says why it cannot go there, on the floor's own message line.

@@ -1,0 +1,7 @@
+v18.92: stash screen: a key left on a rack gun moves like any item
+
+On the Stash screen a key on a racked gun moves to another key like any item.
+
+Check 18.92. Fails on v18.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
