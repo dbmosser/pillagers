@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.21 - THE DEATH CARD SHOWS WHAT YOU LOST BIGGER
+
+Co-op hunt while he was away. Seen on the 4K death card screenshot of 2026-10-08: the picture beside each item you lost was 24 pixels, a speck on a TV beside the 52 pixel pictures of what you bring home on an extraction (v19.99). They are 32 now, still in line with the names.
+
+MEASURED. Check 20.21 passes, and fails on v20.20.
 ## v20.20 - THE WHAT IS NEW CARD NAMES THE RIVALS
 
 Co-op hunt while he was away. The card was stamped v20.07 and the stamp may not trail the build by more than 0.15. Its new second line names the rival pillagers wearing their own looks and builds (v20.12, v20.13) and the cleaner card windows (v20.18, v20.19); the jiggle tuning, armour on Curved and the rest are in the change list.

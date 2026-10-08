@@ -1,0 +1,7 @@
+v20.21: the death card shows what you lost bigger
+
+The death card pictures of what you lost are bigger.
+
+Check 20.21. Fails on v20.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

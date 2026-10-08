@@ -5722,6 +5722,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.21',what:'the death card shows what you lost at a readable size: each lost item picture is at least 30 menu pixels',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     var bad=[], g, o, pics, i, w;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_smg','bandage','frag','plate'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
+       __endRaid('dead');
+       o=document.getElementById('outcome'); if(!o||!o.classList.contains('on')) return 'SKIP: no death card';
+       pics=[].slice.call(o.querySelectorAll('img')).filter(function(im){ return !im.closest('.haulstrip')&&/LOST/.test((im.parentElement&&im.parentElement.textContent)||''); });
+       if(!pics.length) return 'SKIP: no lost item pictures';
+       for(i=0;i<pics.length;i++){ w=pics[i].offsetWidth||parseFloat(pics[i].getAttribute('width'))||0; if(w<30){ bad.push('a lost item picture is '+w+' px'); break; } }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.20',what:'the what is new card is stamped within 0.15 of the build and leads with the rivals news',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof WN_SHOW==='undefined') return 'SKIP: this build has no what is new card';
