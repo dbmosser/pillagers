@@ -1,0 +1,7 @@
+v19.54: the extraction lines grow at 4k
+
+At 4K the extraction call and countdown are big enough to read at a glance.
+
+Check 19.54. Fails on v19.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

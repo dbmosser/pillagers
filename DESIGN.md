@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.54 - THE EXTRACTION LINES GROW AT 4K
+
+Co-op hunt while he was away. Seen on the 4K ring screenshot of 2026-10-08: the lines above the belt at an extraction ring (HOLD E TO CALL FOR EXTRACTION, EXTRACT A INBOUND and its countdown, the distance and arrow, the converging count) kept their 1080p size and spacing at 4K while the belt under them grew, so they read as small print at the most important moment of a raid. Their words and their gaps now grow with the screen, and the bandage bar keeps clear of them as before.
+
+MEASURED. Check 19.54 passes, and fails on v19.53.
 ## v19.53 - THE SURVEYED NOTE STAYS ON THE SCREEN
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.29: lifting the two SURVEYED lines to fit pushed SURVEYED into the map frame and cut the bottoms off the second line at 4K and at bigger text sizes. When both lines do not fit under the frame they now sit side by side on one line, his two lines as they are.
