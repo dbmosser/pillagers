@@ -1,0 +1,12 @@
+{
+    "title":  "LONG HAIR LEAVES A CURVED CHEST SHOWING",
+    "why":  "Found by the code review of 2026-10-08: on a teammate, a pillager or someone in the Undercroft crowd, long hair is drawn as one block behind the head that reaches down over the chest, so a Curved body with long hair lost the top of her chest. On Curved the long hair now falls down the sides, off the chest; your own figure was already drawn this way.",
+    "now":  "Long-haired Curved teammates, pillagers and crowd keep their chest visible.",
+    "edits":  [
+                  {
+                      "anchor":  "    if(_NCT===\u0027long\u0027){ rrF(hx2-9.6,ty-38.6,19.2,20.5,6); }",
+                      "replacement":  "    if(_NCT===\u0027long\u0027){ if(_BLD===\u0027curved\u0027){ rrF(hx2-9.6,ty-38.6,19.2,17.8,6); rrF(hx2-9.6,ty-26,3.0,7.9,1.5); rrF(hx2+6.6,ty-26,3.0,7.9,1.5); } else rrF(hx2-9.6,ty-38.6,19.2,20.5,6); }   // v16.xx, code review: on Curved the long hair falls down the sides, off the chest"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027long hair leaves a Curved chest showing: on a teammate, a pillager or the crowd, a Curved body with long hair shows the same chest as one with short hair\u0027,\n   run:function(){\n     if(typeof drawOp!==\u0027function\u0027) return \u0027SKIP: no painter here\u0027;\n     var w0=wc, cv=document.createElement(\u0027canvas\u0027), x2, bad=[], a, b;\n     cv.width=240; cv.height=220; x2=cv.getContext(\u00272d\u0027); if(!x2) return \u0027SKIP: no canvas\u0027;\n     function px(cut){ x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,240,220); x2.setTransform(4,0,0,4,120,190); wc=x2; drawOp(0,0,0,0,\u0027#5a6a7a\u0027,0,0,\u0027none\u0027,0,{hero:0,build:\u0027curved\u0027,cut:cut,hair:\u0027blonde\u0027,hat:\u0027none\u0027,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); wc=w0; x2.setTransform(1,0,0,1,0,0); var d=x2.getImageData(Math.round(120-2.8*4),Math.round(190-19.4*4),1,1).data; return [d[0],d[1],d[2]]; }\n     try{ a=px(\u0027crop\u0027); b=px(\u0027long\u0027); }catch(e){ wc=w0; return \u0027threw: \u0027+(e\u0026\u0026e.message||e); }\n     finally{ wc=w0; }\n     if(Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2])\u003e30) bad.push(\u0027long hair covers the Curved chest (short \u0027+a.join(\u0027,\u0027)+\u0027, long \u0027+b.join(\u0027,\u0027)+\u0027)\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

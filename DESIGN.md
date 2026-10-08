@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.16 - LONG HAIR LEAVES A CURVED CHEST SHOWING
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: on a teammate, a pillager or someone in the Undercroft crowd, long hair is drawn as one block behind the head that reaches down over the chest, so a Curved body with long hair lost the top of her chest. On Curved the long hair now falls down the sides, off the chest; your own figure was already drawn this way.
+
+MEASURED. Check 20.16 passes, and fails on v20.15.
 ## v20.15 - NO ROSE MOUTH OVER A MASK
 
 Co-op hunt while he was away. Found by the code review of 2026-10-08: v20.05 kept the Curved rose mouth off the skull, robot and Trooper outfits, but the Dust Mask, the Spartan Helmet and the Ghost Mask worn as a hat still had a pink dash painted on them, on the player, a teammate, the crowd or a pillager. They show the plain dark mark as on any other build.

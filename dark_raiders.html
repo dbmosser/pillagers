@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.15';
+var VER='20.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23039,7 +23039,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   else { _NHC=HAIRCOL[st.hair]||HAIRCOL.dark; _NCT=st.cut||'crop'; }
   if(!HERO||(_NCT!=='long'&&_NCT!=='pigtails')){
     wc.fillStyle=_NHC[0];
-    if(_NCT==='long'){ rrF(hx2-9.6,ty-38.6,19.2,20.5,6); }
+    if(_NCT==='long'){ if(_BLD==='curved'){ rrF(hx2-9.6,ty-38.6,19.2,17.8,6); rrF(hx2-9.6,ty-26,3.0,7.9,1.5); rrF(hx2+6.6,ty-26,3.0,7.9,1.5); } else rrF(hx2-9.6,ty-38.6,19.2,20.5,6); }   // v20.16, code review: on Curved the long hair falls down the sides, off the chest
     else if(_NCT==='bob'){ rrF(hx2-9.6,ty-38.6,19.2,15.5,6); }
     else if(_NCT==='pigtails'){ rrF(hx2-13,ty-33.5,4.6,10.4,2.3); rrF(hx2+8.4,ty-33.5,4.6,10.4,2.3); rrF(hx2-9.2,ty-38.6,18.4,6,5); }
     else if(_NCT==='bun'){ rrF(hx2-3.6,ty-42.4,7.2,5.6,2.8); }
@@ -33624,7 +33624,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.15: Masks and helmets no longer show a pink mouth on a Curved body. Check 20.15 fails on v20.14',
+  now:'v20.16: Long-haired Curved teammates, pillagers and crowd keep their chest visible. Check 20.16 fails on v20.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

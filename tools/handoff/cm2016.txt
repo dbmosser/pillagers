@@ -1,0 +1,7 @@
+v20.16: long hair leaves a curved chest showing
+
+Long-haired Curved teammates, pillagers and crowd keep their chest visible.
+
+Check 20.16. Fails on v20.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

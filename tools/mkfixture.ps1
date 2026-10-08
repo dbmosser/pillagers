@@ -5722,6 +5722,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.16',what:'long hair leaves a Curved chest showing: on a teammate, a pillager or the crowd, a Curved body with long hair shows the same chest as one with short hair',
+   run:function(){
+     if(typeof drawOp!=='function') return 'SKIP: no painter here';
+     var w0=wc, cv=document.createElement('canvas'), x2, bad=[], a, b;
+     cv.width=240; cv.height=220; x2=cv.getContext('2d'); if(!x2) return 'SKIP: no canvas';
+     function px(cut){ x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,240,220); x2.setTransform(4,0,0,4,120,190); wc=x2; drawOp(0,0,0,0,'#5a6a7a',0,0,'none',0,{hero:0,build:'curved',cut:cut,hair:'blonde',hat:'none',moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); wc=w0; x2.setTransform(1,0,0,1,0,0); var d=x2.getImageData(Math.round(120-2.8*4),Math.round(190-19.4*4),1,1).data; return [d[0],d[1],d[2]]; }
+     try{ a=px('crop'); b=px('long'); }catch(e){ wc=w0; return 'threw: '+(e&&e.message||e); }
+     finally{ wc=w0; }
+     if(Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2])>30) bad.push('long hair covers the Curved chest (short '+a.join(',')+', long '+b.join(',')+')');
+     return bad.length?bad.join('; '):null; }},
   {v:'20.15',what:'no rose mouth over a mask: a Curved body wearing the Dust Mask, the Spartan Helmet or the Ghost Mask as a hat shows no rose mouth',
    run:function(){
      if(typeof drawOp!=='function'||typeof COSKEY==='undefined') return 'SKIP: no painter here';
