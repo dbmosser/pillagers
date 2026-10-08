@@ -1,0 +1,7 @@
+v19.32: the map weather line clears the credits
+
+The time and weather on the sector map no longer run into the credits.
+
+Check 19.32. Fails on v19.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

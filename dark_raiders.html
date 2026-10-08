@@ -1528,7 +1528,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.31';
+var VER='19.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30635,9 +30635,20 @@ function drawMapOverlayRaw(){
   // heard it named the coming weather on both sides of the arrow (Storming, arrow, Storming 71%), while the CONDITIONS row,
   // which reads G.wx, still said Rainy. The left of the arrow is G.wx, the weather the turn is leaving, which buildRaid always
   // sets. The colour above and every other reader of wx() are unchanged. No number and no seeded draw moved.
+  // v19.32, seen on the 4K map screenshot (2026-10-08): this line ends at the map's right edge, which on a big screen is under the credits
+  // and XP readout in the top right corner (8am Clear ran into 900 CREDITS). When that readout covers the line, it ends just left of it.
+  var _wxR=ox+WORLD_W*sc;
+  try{
+    var _trE=document.getElementById('topright'), _trR=_trE?_trE.getBoundingClientRect():null, _cvR=ctx.canvas.getBoundingClientRect(), _wm=ctx.getTransform(), _wk=(_cvR.width>0)?ctx.canvas.width/_cvR.width:1;
+    if(_trR&&_trR.width>0&&_wm.a){
+      var _wfp=parseFloat(((/([\d.]+)px/).exec(String(ctx.font))||[0,11])[1])||11;
+      var _trL=((_trR.left-_cvR.left)*_wk-_wm.e)/_wm.a, _trB=((_trR.bottom-_cvR.top)*_wk-_wm.f)/(_wm.d||1);
+      if(_trB>oy-10-_wfp&&_trL<_wxR+2) _wxR=Math.min(_wxR,_trL-14);
+    }
+  }catch(_wx){}
   ctx.fillText((isDay()?tod().name:'night')+'  '+G.wx.name+
     (G.wxNext?('  \u2192 '+G.wxNext.name+'  '+Math.round(G.wxT*100)+'%'):''),
-    ox+WORLD_W*sc,oy-10);
+    _wxR,oy-10);
   ctx.textAlign='left';
   for(i=0;i<G.map.buildings.length;i++){
     var b=G.map.buildings[i];
@@ -33299,7 +33310,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.31: Zone names on the sector map never end up above the map or off the screen. Check 19.31 fails on v19.30',
+  now:'v19.32: The time and weather on the sector map no longer run into the credits. Check 19.32 fails on v19.31',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.32 - THE MAP WEATHER LINE CLEARS THE CREDITS
+
+Co-op hunt while he was away. Seen on the 4K map screenshot of 2026-10-08: the time and weather line at the top right of the sector map (8am Clear) ends at the map edge, which on a big screen sits under the credits and XP readout, so the two ran into each other. When the readout covers the end of the line, the line now ends just left of it.
+
+MEASURED. Check 19.32 passes, and fails on v19.31.
 ## v19.31 - A MOVED MAP LABEL STAYS ON THE MAP
 
 Co-op hunt while he was away. Seen on the 4K map screenshot of 2026-10-08: the map label placer of v19.02 moves a label off a clash, but it could move it anywhere, so the zone name RECEIVING APRON on The Cold Mile went up past the SECTOR MAP line and half off the top of the screen. A moved label now stays on the screen and below the header line; one with no room left is left off, as before.
