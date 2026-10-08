@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.82 - LONG CONTRACTS WRAP EVENLY
+
+Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-08: in the CONDITIONS box a contract too long for one line left a single word and its count on the second line (Extract carrying 1x Data, then Core 0/1), splitting the item name. Lines are now shared out evenly (Extract carrying 1x, then Data Core 0/1), with the same number of lines, so the box keeps its size.
+
+MEASURED. Check 19.82 passes, and fails on v19.81.
 ## v19.81 - THE LIFT ROW NAMES ARE READABLE
 
 Co-op hunt while he was away. Found by the 4K menu text scan of 2026-10-08: on the lift page the names of the two choice rows, SURFACE (day or night) and WEATHER, were 11 pixels beside 14 pixel hints, the smallest print on the page. They are 13 now.

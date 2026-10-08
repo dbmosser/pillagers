@@ -1,0 +1,7 @@
+v19.82: long contracts wrap evenly
+
+Long contracts in the CONDITIONS box break into even lines instead of leaving one word behind.
+
+Check 19.82. Fails on v19.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1559,7 +1559,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.81';
+var VER='19.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26597,6 +26597,7 @@ function drawStatusIcons(){
   } finally { ctx.restore(); }
   return s;
 }
+var CONDWRAP={}, CONDWRAPN=0;   // v19.82: the CONDITIONS box's wrapped lines, by font, width and text (see wrap() below)
 function drawBossBar(){
   var e=null, p=G&&G.player, i, w, x, y, f;
   if(!G||G.over||!p||!G.ents) return;
@@ -27115,15 +27116,27 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     // is measured from the wrapped result rather than guessed at.
     ctx.font=FS(TYPE.micro);
     var pad=8, lh=LH(11), bw=Math.round(LH(165)), inner=bw-pad*2;
+    // v19.82, seen on the 4K raid screenshot (2026-10-08): greedy wrapping left one word and the count alone on a second line
+    // (Extract carrying 1x Data / Core 0/1), splitting the item name. The same number of lines, so the box keeps its height, but
+    // the words are shared out: the narrowest width that needs no more lines. Kept per font, width and text, so a frame
+    // measures nothing new.
     function wrap(t){
-      var words=String(t).split(' '),lines=[],cur='';
-      for(var i=0;i<words.length;i++){
-        var trial=cur?(cur+' '+words[i]):words[i];
-        if(ctx.measureText(trial).width<=inner){ cur=trial; }
-        else { if(cur) lines.push(cur); cur=words[i]; }
+      var ck=ctx.font+'|'+inner+'|'+t, best, n, lo, hi, mid, tr, it;
+      if(CONDWRAP[ck]) return CONDWRAP[ck];
+      function greedy(w){
+        var words=String(t).split(' '),lines=[],cur='';
+        for(var i=0;i<words.length;i++){
+          var trial=cur?(cur+' '+words[i]):words[i];
+          if(ctx.measureText(trial).width<=w){ cur=trial; }
+          else { if(cur) lines.push(cur); cur=words[i]; }
+        }
+        if(cur) lines.push(cur);
+        return lines.length?lines:[''];
       }
-      if(cur) lines.push(cur);
-      return lines.length?lines:[''];
+      best=greedy(inner); n=best.length; lo=inner*0.4; hi=inner;
+      if(n>1){ for(it=0;it<9;it++){ mid=(lo+hi)/2; tr=greedy(mid); if(tr.length<=n){ best=tr; hi=mid; } else lo=mid; } }
+      if(++CONDWRAPN>300){ CONDWRAP={}; CONDWRAPN=1; }
+      return (CONDWRAP[ck]=best);
     }
     var total=0;
     for(var _wq=0;_wq<rows.length;_wq++){
@@ -33454,7 +33467,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.81: SURFACE and WEATHER on the lift page are easier to read. Check 19.81 fails on v19.80',
+  now:'v19.82: Long contracts in the CONDITIONS box break into even lines instead of leaving one word behind. Check 19.82 fails on v19.81',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
