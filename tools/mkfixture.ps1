@@ -5655,7 +5655,8 @@ window.__REGRESS=[
        var cs=getComputedStyle(el), r=rect();
        if(cs.display==='none'||cs.visibility==='hidden'||parseFloat(cs.opacity)===0) bad.push(where+': the readout is hidden');
        if(!(r.w>40&&r.h>10)) bad.push(where+': the readout has no size ('+Math.round(r.w)+'x'+Math.round(r.h)+')');
-       if(!(r.r<=innerWidth+1&&r.r>=innerWidth-48)) bad.push(where+': the readout is not at the right edge (right '+Math.round(r.r)+' of '+innerWidth+')');
+       if(!(r.r<=innerWidth+1&&r.r>=innerWidth-48*Math.max(1,parseFloat(el.style.zoom)||1))) bad.push(where+': the readout is not at the right edge (right '+Math.round(r.r)+' of '+innerWidth+')');
+       // 2026-10-08 retarget: the readout sits 20px in at the menu zoom (applyMenuZoom sets it on #topright), 49 screen px at 4K scale 2.47; the allowance scales with it.
        if(!(r.t>=0&&r.t<=40)) bad.push(where+': the readout is not at the top (top '+Math.round(r.t)+')');
        var t=(el.textContent||'').replace(/\s+/g,' ');
        var c=(prof.credits||0).toLocaleString(), x=(prof.xp||0).toLocaleString();
