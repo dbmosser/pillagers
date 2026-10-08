@@ -5722,6 +5722,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.00',what:'the PARTY frame stays clear of the corner readout: in a window about 830 menu pixels tall its top line sits at least 60 pixels down, below CREDITS',
+   run:function(){
+     var pm=document.getElementById('partymodal'), bad=[], on0, h0, b0, fh, top;
+     if(!pm) return 'SKIP: no PARTY window here';
+     on0=pm.classList.contains('on'); h0=pm.style.height; b0=pm.style.bottom;
+     try{
+       pm.classList.add('on'); pm.style.bottom='auto'; pm.style.height='831px';
+       fh=parseFloat(getComputedStyle(pm,'::before').height);
+       if(!(fh>0)) return 'SKIP: the frame did not lay out';
+       top=(pm.offsetHeight-fh)/2;
+       if(!(top>=60)) bad.push('in an 831 pixel window the PARTY frame top is '+Math.round(top)+' pixels down, under the readout');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ pm.style.height=h0; pm.style.bottom=b0; pm.classList.toggle('on',on0); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.99',what:'the extraction card shows the haul at a readable size: each secured item picture on the card is at least 50 menu pixels',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';

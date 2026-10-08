@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.00 - THE PARTY FRAME STAYS CLEAR OF THE CREDITS
+
+Co-op hunt while he was away. Seen on the 4K PARTY screenshot of 2026-10-08: in a window about 830 menu pixels tall (1080p or 1440p fullscreen, or a 4K window) the PARTY frame top line ran 33 pixels down, straight under the CREDITS readout in the corner. The frame now keeps 75 pixels clear of the top and bottom; the party content still fits with room.
+
+MEASURED. Check 20.00 passes, and fails on v19.99.
 ## v19.99 - THE EXTRACTION CARD SHOWS THE HAUL BIGGER
 
 Co-op hunt while he was away. Seen on the 4K extraction card screenshot of 2026-10-08: the pictures of what you brought home (v19.05) were 34 pixel chips under the items secured line, small on a TV next to the card text. They are 52 now with a little padding; a big haul wraps to a second row.

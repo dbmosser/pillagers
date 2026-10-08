@@ -1,0 +1,12 @@
+{
+    "title":  "THE PARTY FRAME STAYS CLEAR OF THE CREDITS",
+    "why":  "Seen on the 4K PARTY screenshot of 2026-10-08: in a window about 830 menu pixels tall (1080p or 1440p fullscreen, or a 4K window) the PARTY frame top line ran 33 pixels down, straight under the CREDITS readout in the corner. The frame now keeps 75 pixels clear of the top and bottom; the party content still fits with room.",
+    "now":  "The PARTY window frame no longer runs under the credits in the corner.",
+    "edits":  [
+                  {
+                      "anchor":  "  #partymodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(760px,calc(100% - 28px)); transform:translate(-50%,-50%); }",
+                      "replacement":  "  /* v16.xx, seen on the 4K PARTY screenshot (2026-10-08): in a window about 830 menu pixels tall (1080p, 1440p, a 4K window) the\n     frame\u0027s top line ran 33 pixels down, under the CREDITS readout in the corner. The frame now stays 75 pixels clear of the top\n     and bottom, which holds the party content with room and keeps the corner readout off its line. */\n  #partymodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(760px,calc(100% - 150px)); transform:translate(-50%,-50%); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the PARTY frame stays clear of the corner readout: in a window about 830 menu pixels tall its top line sits at least 60 pixels down, below CREDITS\u0027,\n   run:function(){\n     var pm=document.getElementById(\u0027partymodal\u0027), bad=[], on0, h0, b0, fh, top;\n     if(!pm) return \u0027SKIP: no PARTY window here\u0027;\n     on0=pm.classList.contains(\u0027on\u0027); h0=pm.style.height; b0=pm.style.bottom;\n     try{\n       pm.classList.add(\u0027on\u0027); pm.style.bottom=\u0027auto\u0027; pm.style.height=\u0027831px\u0027;\n       fh=parseFloat(getComputedStyle(pm,\u0027::before\u0027).height);\n       if(!(fh\u003e0)) return \u0027SKIP: the frame did not lay out\u0027;\n       top=(pm.offsetHeight-fh)/2;\n       if(!(top\u003e=60)) bad.push(\u0027in an 831 pixel window the PARTY frame top is \u0027+Math.round(top)+\u0027 pixels down, under the readout\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ pm.style.height=h0; pm.style.bottom=b0; pm.classList.toggle(\u0027on\u0027,on0); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

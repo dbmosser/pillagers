@@ -1,0 +1,7 @@
+v20.00: the party frame stays clear of the credits
+
+The PARTY window frame no longer runs under the credits in the corner.
+
+Check 20.00. Fails on v19.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
