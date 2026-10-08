@@ -471,3 +471,17 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - Cards: v19.15 (stamp 19.15, next refresh by about 19.30).
 - 4K screenshots (shots4k): v19.21 the what is new card is drawn scaled with hudRes; v19.22 hiding chip and extraction ring labels use hudFS (FS times hudRes). Not done: the belt caption (beltFS 0.12) is still small at 4K; raising it collides with the extraction rows above the belt.
 - Corpus night run (corpus-slices.sh): its stall detector counts a busy tab as stuck, so slice 0 was marked STALLED at index 0 while it was running; check 0 passes by hand.
+- v19.23 shopstats: shop cream panel lists numbers for consumables (itemStatsHTML: heal amount, over, up to 85/100, put-on time; plate armour; stim; frag blast).
+- v19.24 lotbig: gambler offer item at 72 px on a dark tile (was 34). His v9.94 inner "Limited Time Offer" line kept; the section header duplicates it, left alone.
+- v19.25 liftprint: lift kit box 15 px (was 11), day and weather hints 14.
+- v19.26 secblank: a sector line he blanked (TXSHIP " ") takes no room unless Edit the words is on.
+- v19.27 baricons: bar rows lead with the drink's status icon (barIconURL paints statusGlyph by swapping ctx).
+- v19.28 wnbag: the what is new card waits while the floor backpack is open.
+- v19.29 mapgap: HOT GROUND and SURVEYED second lines a font line height apart (were 12/14 px at any size).
+- v19.30 card-1930 (stamp 19.30, next by ~19.45).
+- v19.31 mapbound: mapPlaceLabels keeps a moved label on screen and below the SECTOR MAP line (RECEIVING APRON went off the top).
+- v19.32/v19.33 mapwx, mapwxgap: the map time and weather line ends left of #topright with a 1.6 x font gap.
+- v19.34 beltcap: belt hint on a dark strip, #b4bfca.
+- v19.35 hubwalls: Undercroft walls blended about half way toward navy (hubWallHex); a look change, flagged in the note so he can ask for them back.
+- Fixture retargets (commit f452ead9): 17.95 reads drawMapOverlayRaw, 17.82 accepts fs=11 start, 15.91 host-leaving arms follow his 10-02 pick-up ruling (netHostGone NET.upSeed=0).
+- Night shots: setting P.cond='night' before __deploy still gave a day raid in the fixture (8am); not chased.
