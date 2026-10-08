@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.72 - A CONTRACT COUNT NEVER SITS ALONE ON A LINE
+
+Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-07: in the CONDITIONS and CONTRACTS panel a contract whose words just filled a line had its count wrapped onto a line of its own, a lone 0/1 or 0/2 under it, four times in one panel. The count is glued to the last word now, so it wraps with it.
+
+MEASURED. Check 18.72 passes, and fails on v18.71.
 ## v18.71 - THE BELT TEXT GROWS WITH THE BELT
 
 Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-07 (he plays at 4K): the belt slots grow with the screen, but the key number, the count in each slot and the caption over the belt stayed the smallest HUD type, so at 4K a count was a speck in the corner of a big slot. They now take a share of the slot size, never smaller than before, and the caption names the signal key as set.
