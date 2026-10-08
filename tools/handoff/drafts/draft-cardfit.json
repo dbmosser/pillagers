@@ -1,32 +1,16 @@
 {
-    "title":  "CARD WINDOWS FIT WHAT THEY HOLD",
-    "why":  "Seen on the 4K Last Pour screenshot of 2026-10-08: the centred card windows (TERMS, the gambler, the bar and PARTY) drew a frame of a fixed height, so the two drinks at the bar sat in a frame 640 tall with wide empty bands above and below. The frame now fits what the window holds, never taller than before, and follows it when the content changes while open.",
-    "now":  "The bar, gambler, TERMS and PARTY windows fit their contents instead of floating in a big empty frame.",
+    "title":  "THE CO-OP LINE FITS THE CARD",
+    "why":  "Seen on the 4K screenshot of the what is new card (2026-10-08): the new co-op line was longer than the card shows, so it ended in dots halfway through. It is now short enough to show whole. The card is also stamped again, since the stamp may not trail the build by more than 0.15; the many fixes since are in the change list.",
+    "now":  "The co-op line on the what is new card shows whole.",
     "edits":  [
                   {
-                      "anchor":  "  #termsmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(600px,calc(100% - 28px));",
-                      "replacement":  "  #termsmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,600px),calc(100% - 28px));"
+                      "anchor":  "var WHATSNEW_VER=\u002720.33\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002720.49\u0027;"
                   },
                   {
-                      "anchor":  "  #gamblemodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(620px,calc(100% - 28px));",
-                      "replacement":  "  #gamblemodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,620px),calc(100% - 28px));"
-                  },
-                  {
-                      "anchor":  "  #barmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(640px,calc(100% - 28px));",
-                      "replacement":  "  #barmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,640px),calc(100% - 28px));"
-                  },
-                  {
-                      "anchor":  "  #partymodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(760px,calc(100% - 150px));",
-                      "replacement":  "  #partymodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,760px),calc(100% - 150px));"
-                  },
-                  {
-                      "anchor":  "    m.classList.remove(\u0027on\u0027);\n  }\n  el.classList.add(\u0027on\u0027);",
-                      "replacement":  "    m.classList.remove(\u0027on\u0027);\n  }\n  el.classList.add(\u0027on\u0027);\n  try{ cardFrameFit(el); }catch(_cf){}   // v16.xx: a card window\u0027s frame fits what it holds"
-                  },
-                  {
-                      "anchor":  "function openModal(id){",
-                      "replacement":  "// v16.xx, seen on the 4K Last Pour screenshot (2026-10-08): the centred card windows (TERMS, the gambler, the bar, PARTY) drew a\n// frame of a fixed height, so the bar\u0027s two drinks sat in a frame 640 tall with empty bands above and below. The frame now fits\n// what the window holds (never taller than before), and follows it when the content changes while it is open (a gamble, a join).\nvar CARDFIT={termsmodal:600,gamblemodal:620,barmodal:640,partymodal:760};\nfunction cardFrameFit(el){\n  if(!el||!CARDFIT[el.id]) return false;\n  var i, c, t=1e9, b=-1e9;\n  if(!el._cfObs\u0026\u0026typeof MutationObserver===\u0027function\u0027){ el._cfObs=new MutationObserver(function(){ if(el.classList.contains(\u0027on\u0027)\u0026\u0026!el._cfRaf){ el._cfRaf=requestAnimationFrame(function(){ el._cfRaf=0; cardFrameFit(el); }); } }); el._cfObs.observe(el,{childList:true,subtree:true,characterData:true}); }\n  if(!el.offsetHeight) return false;\n  for(i=0;i\u003cel.children.length;i++){ c=el.children[i]; if(c.offsetHeight\u003e0){ t=Math.min(t,c.offsetTop); b=Math.max(b,c.offsetTop+c.offsetHeight); } }\n  if(!(b\u003et)) return false;\n  el.style.setProperty(\u0027--cfh\u0027,Math.min(CARDFIT[el.id],Math.max(320,Math.ceil(b-t)+112))+\u0027px\u0027);\n  return true;\n}\nfunction openModal(id){"
+                      "anchor":  "  \u0027CO-OP HOLDS TOGETHER. A key opens a door for both players, the other player is paid for the Terms the raid was built with, and when the host leaves, boxes, dropped piles and enemies stay as they were.\u0027,",
+                      "replacement":  "  \u0027CO-OP HOLDS TOGETHER. A key opens a door for both players, both are paid for the Terms the raid was built with, and when the host leaves, boxes and enemies stay put.\u0027,"
                   }
               ],
-    "check":  "  {v:\u0027VER\u0027,what:\u0027a card window frame fits its content: the Last Pour frame is at most 170 menu pixels taller than what it holds, and still taller than it\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__station\u0026\u0026window.__wnseen)) return \u0027SKIP: this fixture cannot open the bar\u0027;\n     var bad=[], m, i, c, t=1e9, b=-1e9, fh, span;\n     try{\n       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);\n       __hubEnter(); __station(\u0027bar\u0027,\u0027KeyE\u0027);\n       m=document.getElementById(\u0027barmodal\u0027); if(!m||!m.classList.contains(\u0027on\u0027)) return \u0027SKIP: the bar did not open\u0027;\n       for(i=0;i\u003cm.children.length;i++){ c=m.children[i]; if(c.offsetHeight\u003e0){ t=Math.min(t,c.offsetTop); b=Math.max(b,c.offsetTop+c.offsetHeight); } }\n       span=b-t; fh=parseFloat(getComputedStyle(m,\u0027::before\u0027).height);\n       if(!(span\u003e0\u0026\u0026fh\u003e0)) return \u0027SKIP: nothing laid out\u0027;\n       if(fh\u003espan+170) bad.push(\u0027the frame is \u0027+Math.round(fh)+\u0027 for \u0027+Math.round(span)+\u0027 of content\u0027);\n       if(fh\u003cspan) bad.push(\u0027the frame is shorter than its content\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ [].slice.call(document.querySelectorAll(\u0027.modal.on\u0027)).forEach(function(x){ x.classList.remove(\u0027on\u0027); }); }catch(_m){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and its co-op line is shown whole, not cut off with dots\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof wnShort!==\u0027function\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e20.49+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), s=String(WHATSNEW[1]||\u0027\u0027), w;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(s.indexOf(\u0027CO-OP HOLDS\u0027+\u0027 TOGETHER\u0027)!==0) bad.push(\u0027the card does not lead with the co-op news\u0027);\n     w=wnShort(s);\n     if(w.slice(-3)===\u0027...\u0027) bad.push(\u0027the co-op line is cut on the card: \u0027+w.slice(-60));\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
 }

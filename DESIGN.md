@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.49 - THE CO-OP LINE FITS THE CARD
+
+Co-op hunt while he was away. Seen on the 4K screenshot of the what is new card (2026-10-08): the new co-op line was longer than the card shows, so it ended in dots halfway through. It is now short enough to show whole. The card is also stamped again, since the stamp may not trail the build by more than 0.15; the many fixes since are in the change list.
+
+MEASURED. Check 20.49 passes, and fails on v20.48.
 ## v20.48 - THE CHOIR STAYS ON ITS CACHE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The Choir pillbox is meant to stand on top of a landmark cache, THE LONG DOCK CACHE on COLD STORAGE. It was placed using a copy of where the cache box first landed, and two later steps can move the box: the one that moves loot nobody can walk to, and the one that pushes anything off an extraction pad. When either moved it, the pillbox stayed behind guarding nothing, and on COLD STORAGE that could leave it sitting on or beside the north extraction ring, sometimes the only way out still open. The pillbox now moves onto wherever its cache box finally ends up, unless that spot is right up against a wall, and nothing about how the map is rolled changes.

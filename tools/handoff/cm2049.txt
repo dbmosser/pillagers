@@ -1,0 +1,7 @@
+v20.49: the co-op line fits the card
+
+The co-op line on the what is new card shows whole.
+
+Check 20.49. Fails on v20.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
