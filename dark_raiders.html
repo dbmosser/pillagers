@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.37';
+var VER='20.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19339,7 +19339,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
 
       if(sees){ e.seenYou=true; e.tx=p.x; e.ty=p.y; e.alert=4;
       if(e.boss&&e.lairX!==undefined&&Math.hypot(p.x-e.lairX,p.y-e.lairY)>1100){ e.tx=e.lairX; e.ty=e.lairY; e.seenYou=true; }   // v17.45: his pick 21, it guards its lair
-        if(!e.announced){ e.announced=true; say('Something very large has noticed you.'); sfx('alarm',e.x,e.y); } }
+        if(!e.announced){ e.announced=true; if(p&&p.net){ if(NET.on) netMarkSend({t:'mark',k:'big',nid:e.nid|0,seat:p.seat|0}); } else say('Something very large has noticed you.'); sfx('alarm',e.x,e.y); } }   // v20.38 (H11): said to the player it noticed
       var wantW=e.face;
       if(e.seenYou){
         // Never faster than a walk, never gives up. The threat is a tide, not a
@@ -19409,7 +19409,13 @@ navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x);
         e.wind=rnd(3,4);
         e.markX=p.x; e.markY=p.y;      // the position that gets called in
         sfx('alarm',e.x,e.y);
-        say('A crier has you. Kill it or move.');
+        // v20.38, from the whole-game bug hunt of 2026-10-08 (H11): THE PLAYER IT MARKS IS THE ONE TOLD. A Crier that spotted
+        // player 2 warned the host and later flashed MARKED on the host, while player 2 got no line, no countdown and no banner.
+        // The marked seat is kept on the Crier; the host hears the line only when it is him, and the party is told the windup so
+        // every window draws the countdown and the marked player gets his own line and banner.
+        e.markSeat=(p&&p.net)?(p.seat|0):0;
+        if(!e.markSeat) say('A crier has you. Kill it or move.');
+        if(NET.on) netMarkSend({t:'mark',k:'on',nid:e.nid|0,wind:+(+e.wind).toFixed(2),seat:e.markSeat});
       }
       var wantS=e.face;
 if(e.state==='alarm'){
@@ -19449,7 +19455,10 @@ if(e.state==='alarm'){
           e.wind=null; e.state='patrol'; e.cd=rnd(4,7);
           sfx('alarm',e.x,e.y);
           ping(e.markX,e.markY,620,true,false,'robot','fire');
-          G.marked=2.2; T.marked=(T.marked||0)+1;
+          if(NET.on) netMarkSend({t:'mark',k:'fire',nid:e.nid|0,seat:e.markSeat|0,sees:sees?1:0});   // v20.38 (H11)
+          if(!e.markSeat){ G.marked=2.2; T.marked=(T.marked||0)+1; }
+          // v20.38 (H11): the lines below are for the host only when the Crier marked him; player 2 gets them from the word above
+          if(!e.markSeat)
 say(sees?'The Crier raised the alarm. They know exactly where you are.'   // v11.94, HIS NOTE: name the Crier
                  :'The Crier raised the alarm. They are heading to where it last saw you.');
           // Reinforcements converge on the MARKED position, not your current
@@ -33679,7 +33688,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.37: In co-op, after the host is out, pillager crews still answer a shout and new pillagers still arrive for player 2. Check 20.37 fails on v20.36',
+  now:'v20.38: In co-op, a Crier that spots player 2 warns player 2, shows him its countdown, and marks him, not the host. Check 20.38 fails on v20.37',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37709,6 +37718,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='wdmg'||m.t==='wall') return netWallTake(peer,m);   // v17.36, co-op hunt 2026-09-28: a hit on a wall asked of the host, or a wall that fell, from the host
   if(m.t==='door') return netDoorTake(peer,m);   // v20.29 (H15): a door opened with its key, for the whole party
+  if(m.t==='mark') return netMarkTake(peer,m);   // v20.38 (H11): a Crier or THE OVERSEER on one of the party, told to his window
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
   if(m.t==='rev') return netRevTake(peer,m);   // v16.05: a teammate picked this player up, or (on the host) passes it on
   if(m.t==='aid') return netAidTake(peer,m);   // v16.23: a teammate used his bandage or plate on this player, or (on the host) passes it on
@@ -40732,6 +40742,31 @@ function netEntDeathFx(e){
 // A LINKED WINDOW, every frame in place of its own updateEnts: each body slides toward where the host last put it, turns on
 // the shortest arc, walks its cycle while the host says it moves, runs its timers down, and goes when the host has said
 // nothing about it for NET_ENT_STALE seconds. A body this window made on its own (nothing the host numbered) goes too.
+// v20.38, from the whole-game bug hunt of 2026-10-08 (H11): A CRIER OR THE OVERSEER ON ONE OF THE PARTY. The host tells everyone
+// a Crier windup (so each window draws its countdown) and when it fires, and tells the player it marked or THE OVERSEER noticed
+// his line, his banner and his tally on his own window.
+function netMarkSend(w){ if(typeof netEntsHost!=='function'||!netEntsHost()) return false; netBroadcast(w); return true; }
+function netMarkTake(peer,m){
+  var e, k, mine;
+  if(!peer||peer.state!=='in'||NET.role!=='join') return 'ignored';
+  if(!netEntsPeer()) return 'down';
+  k=netClean(m.k,6); e=NET.entMap?NET.entMap[m.nid|0]:null; mine=((m.seat|0)===NET.seat);
+  if(k==='on'){
+    if(e){ e.wind=clamp(isFinite(+m.wind)?+m.wind:3.5,0,6); e.state='alarm'; }
+    if(!G.sim){ if(e) sfx('alarm',e.x,e.y); if(mine) say('A crier has you. Kill it or move.'); }
+    return 'mark:on';
+  }
+  if(k==='fire'){
+    if(e) e.wind=null;
+    if(mine){
+      G.marked=2.2; if(G.tel) G.tel.marked=(G.tel.marked||0)+1;
+      if(!G.sim) say(m.sees?'The Crier raised the alarm. They know exactly where you are.':'The Crier raised the alarm. They are heading to where it last saw you.');
+    }
+    return 'mark:fire';
+  }
+  if(k==='big'){ if(mine&&!G.sim) say('Something very large has noticed you.'); return 'mark:big'; }
+  return 'bad';
+}
 function netEntsEase(dt){
   var i, e, k, dx, dy, da, tr, n=0;
   if(!isFinite(dt)||dt<0) dt=0;
@@ -40751,6 +40786,7 @@ function netEntsEase(dt){
     if(e.roll>0) e.roll=Math.max(0,e.roll-dt);
     if(e.windup!==undefined&&e.windup!==null){ e.windup-=dt; if(e.windup<=0) e.windup=null; }
     if(e.overheat>0) e.overheat-=dt; if(e.shotT>0) e.shotT-=dt;
+    if(typeof e.wind==='number'&&e.wind>0) e.wind=Math.max(0,e.wind-dt);   // v20.38 (H11): a Crier windup the host told this window counts down here
     n++;
   }
   return n;

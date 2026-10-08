@@ -587,3 +587,5 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-08 19:05 v20.34 dropgun shipped: H23 DONE
 2026-10-08 19:07 v20.35 p2raidguard shipped: H24 DONE
 2026-10-08 19:09 v20.36 reinfnear shipped: H9 DONE
+2026-10-08 19:12 v20.37 specwaves shipped: H10 DONE
+2026-10-08 19:13 usage flat at 41% weekly 18:46-19:12 while shipping solo (9 builds) -> under pace; burst: 5 drafting agents on 15 medium hunt bugs (no game edits, no browser)

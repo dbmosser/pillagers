@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.38 - THE CRIER MARKS THE PLAYER IT SAW
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op a Crier that spotted player 2 told the host "A crier has you" and, when it fired, flashed MARKED on the host, who was never seen. Player 2, the one actually marked, got no line, no CRIER countdown and no banner, so the counterplay (kill it or move before it fires) was invisible to him. THE OVERSEER noticing player 2 was also said to the host. Now each warning goes to the player it is about, and every window draws the Crier countdown.
+
+MEASURED. Check 20.38 passes, and fails on v20.37.
 ## v20.37 - PILLAGERS KEEP COMING FOR PLAYER 2
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. When the host dies or extracts, his window keeps the raid running for player 2. But in that kept raid a pillager who spotted player 2 never called his crew, and new pillagers never arrived, even with the map down to one or two men, because both treated the host's ended run as the end of the raid. The kept raid now counts as live for both, so player 2 gets the same raid the host had.

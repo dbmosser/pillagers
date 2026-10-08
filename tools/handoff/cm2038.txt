@@ -1,0 +1,7 @@
+v20.38: the crier marks the player it saw
+
+In co-op, a Crier that spots player 2 warns player 2, shows him its countdown, and marks him, not the host.
+
+Check 20.38. Fails on v20.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
