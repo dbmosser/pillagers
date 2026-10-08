@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.28 - A MAN SENT AFTER YOU SEARCHES THE RIGHT PLACE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08: a pillager or machine that once lost you kept that old search point for the rest of the raid. Shot later from cover, or called by his crew to a fresh sighting, he turned and walked toward the old spot, sometimes across the map, instead of coming for you. A search point now belongs to the target it was built for, and a new target more than 90 units away gets a new one. No dice the game uses are spent.
+
+MEASURED. Check 20.28 passes, and fails on v20.27.
 ## v20.27 - WEAK POINTS REGISTER
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08: a round is tested where it first touches a machine, and every weak point sits inside the body, so a perfect shot on a Sentry vent paid about half the time at 60 frames a second, a Warden seam almost never at 144, and THE OVERSEER core seam and optic never at all. The test now follows the round on into the body as far as its centre and pays if it passes over the opening, so a clean shot on the vent or seam is a weak hit at any frame rate. Openings on the far side still cannot be reached through the body: the vent on the back still needs a flank.

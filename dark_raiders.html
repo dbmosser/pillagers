@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.27';
+var VER='20.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7590,8 +7590,15 @@ function mkVegPal(map){
 // the shared point, which made the A/B arms identical and looked like dead code.
 // Computed once when sight breaks and stored, not six tests a frame.
 function searchSector(e){
-  if(e.searchX!==undefined) return;
+  // v20.28, from the whole-game bug hunt of 2026-10-08 (H7): a search point was cleared only when he saw you, so a man who lost
+  // you once and was later shot from cover, or called by his crew, kept walking to his OLD search point, sometimes across the map.
+  // A search point now belongs to the target it was built for, and a new target more than 90 units away builds a new one.
+  if(e.searchX!==undefined){
+    if(e.searchFx===undefined||e.tx===undefined||e.ty===undefined||(Math.abs(e.searchFx-e.tx)<=90&&Math.abs(e.searchFy-e.ty)<=90)) return;
+    delete e.searchX; delete e.searchY; delete e.searchArc;
+  }
   if(e.tx===undefined||e.ty===undefined){ e.searchX=e.x; e.searchY=e.y; return; }
+  e.searchFx=e.tx; e.searchFy=e.ty;
   // v9.52: FIVE SLOTS, CLAIMED. The v9.51 arc was a sum of a golden angle and the
   // man's own bearing, and the second term was three times larger than the gap the
   // first one opens, so it closed it: two men measured 6.30 radians apart in arc,
@@ -33651,7 +33658,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.27: Shots on a machine vent, optic or core seam now count as weak point hits, including on THE OVERSEER. Check 20.27 fails on v20.26',
+  now:'v20.28: Pillagers and machines you shoot from cover come looking where you are, not where you used to be. Check 20.28 fails on v20.27',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

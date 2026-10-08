@@ -1,0 +1,7 @@
+v20.28: a man sent after you searches the right place
+
+Pillagers and machines you shoot from cover come looking where you are, not where you used to be.
+
+Check 20.28. Fails on v20.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
