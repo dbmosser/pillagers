@@ -1,0 +1,7 @@
+v19.11: the status column stays at the left
+
+Status icons always stay in the left strip, however little room there is.
+
+Check 19.11. Fails on v19.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

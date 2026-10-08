@@ -1522,7 +1522,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.10';
+var VER='19.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26454,14 +26454,19 @@ function drawStatusIcons(){
   B=HUDBOX.legend; if(B&&B.x<ox+wC&&B.x+B.w>ox&&B.y>oy) yBot=Math.min(yBot,B.y-g*hr);
   B=HUDBOX.body;   if(B&&B.x<ox+wC&&B.x+B.w>ox&&B.y>oy) yBot=Math.min(yBot,B.y-LH(20)*hr);
   rows=Math.max(1,Math.floor((yBot-oy+g*hr)/((S+g)*hr)));   // more than fit start a second column to the right
+  // v19.11, from the review (2026-10-07): with little room below the board (big text, a short window, the full controls list) rows fell to 1 and every
+  // further status started a new column further right, out across the play area and off the screen. The column now shrinks to fit first
+  // (down to 0.6), and never uses more than two columns; a status past those is left for the CONDITIONS panel, which lists the drinks too.
+  var _sk=1; if(n>rows){ _sk=Math.max(0.6,Math.min(1,(yBot-oy+g*hr)/(n*(S+g)*hr))); rows=Math.max(1,Math.floor((yBot-oy+g*hr)/((S+g)*hr*_sk))); }
   nf=FS(TYPE.label); vf=FS(TYPE.micro);
   lw=Math.max(2,S*0.085); rr=r*0.8; u=S*0.24; hx=r*1.04; ph=S*0.86;
   ctx.save();
   try{
-    ctx.translate(ox,oy); ctx.scale(hr,hr);
+    ctx.translate(ox,oy); ctx.scale(hr*_sk,hr*_sk);
     ctx.textAlign='left'; ctx.lineCap='butt'; ctx.lineJoin='miter';
     for(i=0;i<L.length;i++){
       E=L[i]; if(!E.on) continue;
+      if(s>=rows*2) break;   // v19.11: two columns at most
       x=Math.floor(s/rows)*(S+LH(110)); y=(s%rows)*(S+g); s++;
       cx=x+r; cy=y+r; tx=x+S+LH(6);
       ctx.globalAlpha=(E.id==='stim'&&p.stimT<=3)?(0.6+0.4*Math.cos((G.t||0)*12)):1;   // the last three seconds of a stim blink
@@ -33233,7 +33238,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.10: Healing while you wait for extraction no longer prints the extraction text over the bar. Check 19.10 fails on v19.09',
+  now:'v19.11: Status icons always stay in the left strip, however little room there is. Check 19.11 fails on v19.10',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

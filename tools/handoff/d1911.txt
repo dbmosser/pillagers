@@ -1,0 +1,5 @@
+## v19.11 - THE STATUS COLUMN STAYS AT THE LEFT
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: when there was little room for the status icons below the board (a bigger text size, a short window, or the full controls list open), each extra status started a new column further right, so the icons marched out across the play area, over your own character, and off the edge. The column now shrinks to fit first and never uses more than two columns.
+
+MEASURED. Check 19.11 passes, and fails on v19.10.
