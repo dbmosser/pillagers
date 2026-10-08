@@ -1,0 +1,5 @@
+## v19.79 - THE STASH BELT NUMBERS ARE READABLE
+
+Co-op hunt while he was away. Seen on the 4K stash screenshot of 2026-10-08: the key numbers in the tactical belt slots under the loadout were 10.5 pixels, a speck in a 62 pixel slot on a TV. An empty slot shows its number at 14, and a filled slot shows its key number and stack count at 12 in the corners.
+
+MEASURED. Check 19.79 passes, and fails on v19.78.

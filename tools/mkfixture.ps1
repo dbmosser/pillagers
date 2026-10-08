@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.79',what:'the stash belt key numbers are readable: the number in an empty belt slot is drawn at 14px or more',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], cells, i, sp=null, f;
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       __hubEnter(); __station('term','KeyE');
+       cells=[].slice.call(document.querySelectorAll('[data-plan]'));
+       for(i=0;i<cells.length&&!sp;i++){ if(cells[i].getBoundingClientRect().width>0&&!cells[i].querySelector('img,canvas')&&cells[i].querySelector('span')) sp=cells[i].querySelector('span'); }
+       if(!sp) return 'SKIP: no empty belt slot showing';
+       f=parseFloat(getComputedStyle(sp).fontSize);
+       if(!(f>=13.9)) bad.push('the number in an empty belt slot is '+f+'px');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.78',what:'the stash help lines are readable: the help line under the grid, the sell note and the FREEBIE KIT bar are drawn at 13px or more',
    run:function(){
      if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';

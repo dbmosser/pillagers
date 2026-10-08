@@ -1,0 +1,16 @@
+{
+    "title":  "THE STASH BELT NUMBERS ARE READABLE",
+    "why":  "Seen on the 4K stash screenshot of 2026-10-08: the key numbers in the tactical belt slots under the loadout were 10.5 pixels, a speck in a 62 pixel slot on a TV. An empty slot shows its number at 14, and a filled slot shows its key number and stack count at 12 in the corners.",
+    "now":  "The key numbers in the stash belt slots are easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "      (it?iconImgHTML(k,22):\u0027\u003cspan style=\"color:var(--ash);font-size:10.5px\"\u003e\u0027+(i+1)+\u0027\u003c/span\u003e\u0027)+\n      (it?\u0027\u003cspan style=\"position:absolute;right:2px;bottom:0;font-size:10.5px;color:var(--ash)\"\u003e\u0027+(i+1)+\u0027\u003c/span\u003e\u0027:\u0027\u0027)+",
+                      "replacement":  "      // v16.xx, seen on the 4K stash screenshot (2026-10-08): the key numbers in the belt slots were 10.5px, a speck in a 62px slot\n      // on a TV. 14 in an empty slot, 12 in the corner of a filled one, with the stack count beside it.\n      (it?iconImgHTML(k,22):\u0027\u003cspan style=\"color:var(--ash);font-size:14px\"\u003e\u0027+(i+1)+\u0027\u003c/span\u003e\u0027)+\n      (it?\u0027\u003cspan style=\"position:absolute;right:2px;bottom:0;font-size:12px;color:var(--ash)\"\u003e\u0027+(i+1)+\u0027\u003c/span\u003e\u0027:\u0027\u0027)+"
+                  },
+                  {
+                      "anchor":  "((it\u0026\u0026packedCount(k)\u003e1)?\u0027\u003cspan style=\"position:absolute;left:2px;top:0;font-size:10.5px;color:var(--amber)\"\u003ex\u0027",
+                      "replacement":  "((it\u0026\u0026packedCount(k)\u003e1)?\u0027\u003cspan style=\"position:absolute;left:2px;top:0;font-size:12px;color:var(--amber)\"\u003ex\u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stash belt key numbers are readable: the number in an empty belt slot is drawn at 14px or more\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__station\u0026\u0026window.__wnseen)) return \u0027SKIP: this fixture cannot open the stash\u0027;\n     if(window.__vpAlive\u0026\u0026!__vpAlive()) return \u0027SKIP: the pane has no layout, so nothing renders\u0027;\n     var bad=[], cells, i, sp=null, f;\n     try{\n       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);\n       __hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027);\n       cells=[].slice.call(document.querySelectorAll(\u0027[data-plan]\u0027));\n       for(i=0;i\u003ccells.length\u0026\u0026!sp;i++){ if(cells[i].getBoundingClientRect().width\u003e0\u0026\u0026!cells[i].querySelector(\u0027img,canvas\u0027)\u0026\u0026cells[i].querySelector(\u0027span\u0027)) sp=cells[i].querySelector(\u0027span\u0027); }\n       if(!sp) return \u0027SKIP: no empty belt slot showing\u0027;\n       f=parseFloat(getComputedStyle(sp).fontSize);\n       if(!(f\u003e=13.9)) bad.push(\u0027the number in an empty belt slot is \u0027+f+\u0027px\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

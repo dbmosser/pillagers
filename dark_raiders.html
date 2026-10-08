@@ -1558,7 +1558,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.78';
+var VER='19.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33453,7 +33453,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.78: The help lines and the FREEBIE KIT bar on the stash are easier to read. Check 19.78 fails on v19.77',
+  now:'v19.79: The key numbers in the stash belt slots are easier to read. Check 19.79 fails on v19.78',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35075,11 +35075,13 @@ function hotPlanHTML(where){
       ' style="width:34px;height:34px;border:1px '+(it?'solid':'dashed')+' var(--steel-hi);border-radius:3px;'+
       'display:flex;align-items:center;justify-content:center;cursor:'+(it?'pointer':'default')+';'+
       'background:rgba(0,0,0,.3);position:relative">'+
-      (it?iconImgHTML(k,22):'<span style="color:var(--ash);font-size:10.5px">'+(i+1)+'</span>')+
-      (it?'<span style="position:absolute;right:2px;bottom:0;font-size:10.5px;color:var(--ash)">'+(i+1)+'</span>':'')+
+      // v19.79, seen on the 4K stash screenshot (2026-10-08): the key numbers in the belt slots were 10.5px, a speck in a 62px slot
+      // on a TV. 14 in an empty slot, 12 in the corner of a filled one, with the stack count beside it.
+      (it?iconImgHTML(k,22):'<span style="color:var(--ash);font-size:14px">'+(i+1)+'</span>')+
+      (it?'<span style="position:absolute;right:2px;bottom:0;font-size:12px;color:var(--ash)">'+(i+1)+'</span>':'')+
       // v11.96, HIS ORDER: how many are coming, on the cell, so a key on a stack
       // reads as a stack. One is silent; the key number already says it is set.
-      ((it&&packedCount(k)>1)?'<span style="position:absolute;left:2px;top:0;font-size:10.5px;color:var(--amber)">x'+packedCount(k)+'</span>':'')+
+      ((it&&packedCount(k)>1)?'<span style="position:absolute;left:2px;top:0;font-size:12px;color:var(--amber)">x'+packedCount(k)+'</span>':'')+
       // v12.27, HIS NOTE: a key on an item with none packed looked exactly like a
       // packed one; it says 0 now, so the drop above and this cell tell one story.
       ((it&&packedCount(k)<1)?'<span style="position:absolute;left:2px;top:0;font-size:10.5px;color:var(--rust)">0</span>':'')+
