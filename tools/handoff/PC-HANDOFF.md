@@ -500,3 +500,6 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.55 prompts4k: hudAtIn(x,y) scales a world prompt about its point (door, revive, search, ring countdowns, pad prompt). Lesson: in a check, set the camera by stepping __frame(0.05) a few times after moving the player; setting g.anchX leaves w2s NaN and hudAtIn's isFinite guard then skips.
 - v19.56 callonce: in the active ring with no beacon, the [E] CALL prompt over the character steps aside for the HOLD E line above the belt.
 - v19.57 prompts4k2: cook countdown, reload bar and search bar with its count scale about their point (hudAtIn). Review 3 (wf_dfe94578-042) over v19.38-v19.57 running.
+- Review 3 (wf_dfe94578-042, 10 agents, v19.38-v19.57): 6 confirmed = 4 unique, 1 refuted; all shipped: v19.58 feedband (feed moves only when CONDITIONS covers its 46% band; below if it clears ~0.78H, else above), v19.59 boardmin (summary row subtracted inside the 3-row floor), v19.60 doordodge (hudDodge at the drawn size, lift brought back through the scale), v19.61 revbar4k (co-op revive bar through hudAtIn with a finally).
+- v19.62 card-1962 (stamp 19.62, next by ~19.77).
+- Corpus: [842,962) re-run with a busy-tolerant stall detector (scratchpad corpus-slices.sh).
