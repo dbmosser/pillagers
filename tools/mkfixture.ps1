@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.42',what:'the PARTY window TRADING line stays in the window: it is no wider than the other lines of the window',
+   run:function(){
+     if(!window.__station||!window.__hubEnter) return 'SKIP: this fixture cannot open the PARTY window';
+     var bad=[], t, tr, st, a, b;
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('lift','KeyF');
+       tr=document.getElementById('partytrade'); st=document.querySelector('#partymodal .msub');
+       if(!tr||!st||!document.getElementById('partymodal').classList.contains('on')) return 'SKIP: the PARTY window did not open';
+       a=tr.getBoundingClientRect(); b=st.getBoundingClientRect();
+       if(a.width>b.width+2) bad.push('the TRADING line is '+Math.round(a.width)+' px wide against '+Math.round(b.width)+' for the other lines');
+       if(a.left<b.left-2) bad.push('the TRADING line starts left of the window text');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.41',what:'the full controls list fits its keys: the panel ends a little past its widest line, with no empty half and no divider down the middle',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';

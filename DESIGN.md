@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.42 - THE PARTY TRADING LINE STAYS IN THE WINDOW
+
+Co-op hunt while he was away. Seen on the 4K PARTY screenshot of 2026-10-08: the TRADING line in the PARTY window ran out past both sides of the window frame, across the whole screen, because its kind of text block was left out of the width cap the window gives its other lines (v18.78). It is held to the same width now.
+
+MEASURED. Check 19.42 passes, and fails on v19.41.
 ## v19.41 - THE FULL CONTROLS LIST FITS ITS KEYS
 
 Co-op hunt while he was away. Seen on the 4K controls screenshot of 2026-10-08: his v12.79 note took the second column (gear rules and the sound key) out of the H list, but the panel kept its two-column width and the line between the columns, so half of it was empty with a stray divider down the middle. The panel is as wide as its widest line now, still centred, and the divider is gone.

@@ -1,0 +1,7 @@
+v19.42: the party trading line stays in the window
+
+The TRADING line in the PARTY window sits inside the window.
+
+Check 19.42. Fails on v19.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
