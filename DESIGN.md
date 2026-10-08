@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.36 - NEW MACHINES LAND FAR FROM BOTH PLAYERS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. After the two minute mark a lost sentry or crawler is replaced every 30 to 50 seconds, at a spot at least 800 from the player. In co-op only the host was measured, so a new machine could appear right on top of player 2, about one raid in seven within 300 of him, and with the host out it was measured from his body. It is now measured from every player still up top, as the pillager waves and the siege already were. Solo is unchanged.
+
+MEASURED. Check 20.36 passes, and fails on v20.35.
 ## v20.35 - PLAYER 1 NEVER OPENS OVER A PLAYER 2 RAID
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On one PC, if player 1 reloaded his window mid raid, player 2 picked up the raid and kept playing. When player 1 then picked 2 PLAYER CO-OP to get back in, the game opened the player 2 window again at a new address, which threw away player 2's raid as if he had left the page. The player 2 window now marks when it is in a raid, and while that mark is fresh the pick opens nothing and tells player 1 to let that raid finish.

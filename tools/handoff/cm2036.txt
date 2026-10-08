@@ -1,0 +1,7 @@
+v20.36: new machines land far from both players
+
+In co-op, replacement machines no longer appear on top of player 2.
+
+Check 20.36. Fails on v20.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
