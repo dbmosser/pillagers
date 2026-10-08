@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.25 - THE LIFT SMALL PRINT IS READABLE
+
+Co-op hunt while he was away. Seen on the 4K lift screenshot of 2026-10-08: the box saying what you take up, with the amber warning that you go up with no armour on, was 11 pixels, the smallest text on the page and the last thing read before going up; the day and weather hints beside their buttons were 11 too. The box is 15 now and the hints 14.
+
+MEASURED. Check 19.25 passes, and fails on v19.24.
 ## v19.24 - THE GAMBLER OFFER SHOWS ITS ITEM
 
 Co-op hunt while he was away. Seen on the 4K gambler screenshot of 2026-10-08: the item on the Limited Time Offer card was a 34 pixel picture beside four lines of text, a speck at the edge of the card. It is now 72 pixels on a soft dark tile, about the height of the lines beside it.

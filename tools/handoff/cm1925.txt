@@ -1,0 +1,7 @@
+v19.25: the lift small print is readable
+
+The lift page says what you take up in text you can read from the couch.
+
+Check 19.25. Fails on v19.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

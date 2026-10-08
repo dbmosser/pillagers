@@ -5721,6 +5721,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.25',what:'the lift small print is readable: what he takes up and the no-armour warning are at least 14 px, and the day and weather hints at least 13',
+   run:function(){
+     var k=document.getElementById('sectorkit'), c=document.getElementById('condhint'), w=document.getElementById('wxhint'), bad=[], f;
+     if(!k||!c||!w) return 'SKIP: no lift page here';
+     f=parseFloat(k.style.fontSize); if(!(f>=14)) bad.push('the going up with box is '+f+' px');
+     f=parseFloat(c.style.fontSize); if(!(f>=13)) bad.push('the day hint is '+f+' px');
+     f=parseFloat(w.style.fontSize); if(!(f>=13)) bad.push('the weather hint is '+f+' px');
+     return bad.length?bad.join('; '):null; }},
   {v:'19.24',what:'the gambler offer shows its item at a size you can see: the picture on the Limited Time Offer card is at least 64 pixels',
    run:function(){
      if(!window.__station||!window.__hubEnter||typeof renderWirtLot!=='function') return 'SKIP: no offer card here';

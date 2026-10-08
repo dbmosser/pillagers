@@ -1,0 +1,20 @@
+{
+    "title":  "THE LIFT SMALL PRINT IS READABLE",
+    "why":  "Seen on the 4K lift screenshot of 2026-10-08: the box saying what you take up, with the amber warning that you go up with no armour on, was 11 pixels, the smallest text on the page and the last thing read before going up; the day and weather hints beside their buttons were 11 too. The box is 15 now and the hints 14.",
+    "now":  "The lift page says what you take up in text you can read from the couch.",
+    "edits":  [
+                  {
+                      "anchor":  "  \u003cdiv id=\"sectorkit\" style=\"margin-top:11px;font-size:11px;padding:8px 10px;",
+                      "replacement":  "  \u003c!-- v16.xx, seen on the 4K lift screenshot (2026-10-08): what he takes up, and the no-armour warning, were 11 px, the smallest text on\n       the page and the last thing read before going up; 15 now, and the day and weather hints 14 --\u003e\n  \u003cdiv id=\"sectorkit\" style=\"margin-top:11px;font-size:15px;line-height:1.5;padding:9px 12px;"
+                  },
+                  {
+                      "anchor":  "    \u003cspan id=\"condhint\" style=\"font-size:11px;color:var(--ash)\"\u003e\u003c/span\u003e",
+                      "replacement":  "    \u003cspan id=\"condhint\" style=\"font-size:14px;color:var(--ash)\"\u003e\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cspan id=\"wxhint\" style=\"font-size:11px;color:var(--ash)\"\u003e\u003c/span\u003e",
+                      "replacement":  "    \u003cspan id=\"wxhint\" style=\"font-size:14px;color:var(--ash)\"\u003e\u003c/span\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the lift small print is readable: what he takes up and the no-armour warning are at least 14 px, and the day and weather hints at least 13\u0027,\n   run:function(){\n     var k=document.getElementById(\u0027sectorkit\u0027), c=document.getElementById(\u0027condhint\u0027), w=document.getElementById(\u0027wxhint\u0027), bad=[], f;\n     if(!k||!c||!w) return \u0027SKIP: no lift page here\u0027;\n     f=parseFloat(k.style.fontSize); if(!(f\u003e=14)) bad.push(\u0027the going up with box is \u0027+f+\u0027 px\u0027);\n     f=parseFloat(c.style.fontSize); if(!(f\u003e=13)) bad.push(\u0027the day hint is \u0027+f+\u0027 px\u0027);\n     f=parseFloat(w.style.fontSize); if(!(f\u003e=13)) bad.push(\u0027the weather hint is \u0027+f+\u0027 px\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
