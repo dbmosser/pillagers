@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.65 - A CACHE TAG CLEARS ITS OWN RING
+
+Co-op hunt while he was away. Seen on the 4K map screenshot of 2026-10-08: with the map tags grown at 4K (v19.63), a CACHE tag sat so close above its marker that the ring ran through its letters. It sits a little higher now, clear of the ring at any size.
+
+MEASURED. Check 19.65 passes, and fails on v19.64.
 ## v19.64 - A MAP TAG STEPS ASIDE BEFORE IT STEPS DOWN
 
 Co-op hunt while he was away. Seen on the 4K map screenshot of 2026-10-08: when a marker tag on the sector map clashed with another label, the placer (v19.02) tried moving it down before moving it aside, and since a tag sits just above its marker, down put it across its own marker (CACHE printed through its ring). Up and the sides are tried first now, down last.

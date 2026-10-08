@@ -1537,7 +1537,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.64';
+var VER='19.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30827,7 +30827,7 @@ function drawMapOverlayRaw(){
     ctx.beginPath(); ctx.arc(qx,qy,(9+2*qp)*_MZ,0,6.2832); ctx.stroke();
     ctx.fillStyle='#e6b4ff';
     ctx.beginPath(); ctx.arc(qx,qy,3.5*_MZ,0,6.2832); ctx.fill();
-    mapLabel(CQ.opened?'LOOTED':'CACHE',qx,qy-15*_MZ,'#e6b4ff');
+    mapLabel(CQ.opened?'LOOTED':'CACHE',qx,qy-20*_MZ,'#e6b4ff');   // v19.65, seen on the 4K map (2026-10-08): clear of its own ring (up to 12 above the centre) at the grown text size
     ctx.globalAlpha=1;
   }
   // Encampments in red: advertised danger. You are told where the fight is and
@@ -33417,7 +33417,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.64: Map tags no longer land on top of their own markers. Check 19.64 fails on v19.63',
+  now:'v19.65: CACHE tags on the sector map sit clear of their rings. Check 19.65 fails on v19.64',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

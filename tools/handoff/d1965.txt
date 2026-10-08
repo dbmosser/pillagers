@@ -1,0 +1,5 @@
+## v19.65 - A CACHE TAG CLEARS ITS OWN RING
+
+Co-op hunt while he was away. Seen on the 4K map screenshot of 2026-10-08: with the map tags grown at 4K (v19.63), a CACHE tag sat so close above its marker that the ring ran through its letters. It sits a little higher now, clear of the ring at any size.
+
+MEASURED. Check 19.65 passes, and fails on v19.64.
