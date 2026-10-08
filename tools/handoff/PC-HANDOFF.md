@@ -523,3 +523,13 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.82 condwrap: the CONDITIONS box wrap() is balanced (binary search for the narrowest width with the same line count) and cached in CONDWRAP by font|inner|text (cleared past 300 keys).
 - v19.83 condindent: continuation lines hang by LH(8); wrap() gives lines after the first w-IND so they stay inside.
 - v19.84 textpretty: body{ text-wrap:pretty } so no DOM menu paragraph ends on one word (Chrome 117+; older browsers ignore it). Only line breaks move.
+- v19.85 wnsentence: wnShort ends a line at its last full stop inside WN_TAIL (if past 40 percent of it) instead of cutting mid-sentence with dots.
+- Review 4 (v19.63-v19.81 diff, workflow wf_8595a427-9c0): 10 confirmed, 7 distinct, all fixed:
+- v19.86 padbrand: pause pad legend through padB; stash #invkeybarpad rewritten through padB in padBodyCls (also on PAD.brand change).
+- v19.87 pauseflip: padBodyCls calls keysLegendApply when pauseOpen, so an open box follows a pad plugged in or out.
+- v19.88 pausefloor: on the floor (state hub or no G) the pad pause line lists the floor buttons (A station, X/Y/RB other actions, LS click jog, Y offer).
+- v19.89 trcards: the corner-readout move excludes the centred card windows (party, terms, gamble, bar, ask); at 4K it sat on the PARTY frame.
+- v19.90 pausefit: pauseFrameFit() sets --pbh on #pausebox from its visible children (offsetTop/offsetHeight, min 400, +64); called on open and from keysLegendApply.
+- v19.91 card-1991: WHATSNEW_VER 19.91, line 1 EASIER READING.
+- v19.92 paddead: button:disabled.padfocus and .vcell.locked.padfocus stay at opacity .55.
+- v19.93 padhhint: H  controls and H  hide not drawn when PAD.on.
