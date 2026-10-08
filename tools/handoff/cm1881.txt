@@ -1,0 +1,7 @@
+v18.81: the fashion racks fill their panel
+
+In FASHION the racks use the whole panel and scroll on their own, as does the slot list on the left.
+
+Check 18.81. Fails on v18.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

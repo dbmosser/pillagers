@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.81 - THE FASHION RACKS FILL THEIR PANEL
+
+Co-op hunt while he was away. Seen on the FASHION screenshot of 2026-10-07: the racks list was capped at a fixed height, so on a 1080p screen it stopped a third of the way down its panel, cutting through the EYES row with blank space below, while the whole window scrolled for the long slot list on the left. Each column now fills the window and scrolls on its own.
+
+MEASURED. Check 18.81 passes, and fails on v18.80.
 ## v18.80 - THE OUTFIT PREVIEWS FILL THEIR TILES
 
 Co-op hunt while he was away. Seen on the FASHION screenshot of 2026-10-07, right after v18.79: the operator in each outfit tile filled only about half of the picture, small in a big tile. Each preview now measures its own figure and draws it big enough to stand nearly the full height of the tile, head to boots, whatever the outfit adds on top.

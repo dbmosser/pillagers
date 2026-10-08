@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.81',what:'the FASHION racks fill their panel: the racks list reaches the bottom of the window grid and scrolls on its own, and the grid itself does not scroll',
+   run:function(){
+     if(typeof __station!=='function'||typeof __hubEnter!=='function') return 'SKIP: no stations here';
+     var bad=[], t, pk, gr, R, G2;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('mirror','KeyE');
+       pk=document.getElementById('appavatarpicker'); gr=pk&&pk.closest('.hubgrid');
+       if(!pk||!gr||!document.getElementById('appearmodal').classList.contains('on')) return 'SKIP: FASHION did not open';
+       R=pk.getBoundingClientRect(); G2=gr.getBoundingClientRect();
+       if(R.bottom<G2.bottom-40) bad.push('the racks stop at '+Math.round(R.bottom)+', short of the grid bottom '+Math.round(G2.bottom));
+       if(gr.scrollHeight>gr.clientHeight+4) bad.push('the whole grid scrolls ('+gr.scrollHeight+' in '+gr.clientHeight+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'18.80',what:'the outfit previews fill their tiles: a fresh preview paints a figure at least 100 of its 128 pixels tall and wholly inside the picture, for every outfit',
    run:function(){
      if(typeof outfitPreviewURL!=='function'||typeof OUTFITS==='undefined') return 'SKIP: no outfit previews here';
