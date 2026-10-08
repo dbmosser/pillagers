@@ -513,3 +513,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.72 wnpad: the NEW IN card's last line reads walk to dismiss when PAD.on (no pad button closes it; walking does).
 - v19.73 trheading: body:has(.modal.on) #topright{ top:24px } - with a window open the corner readout is centred on the window h3 (it sat 18 css px above, on the frame line).
 - v19.74 trright: and right:33px, so it ends where the h3 underline ends (measured 33 css px at 1080p and 4K).
+- v19.75 card-1975: WHATSNEW_VER 19.75; new line 1 PLAYER 2 ON A CONTROLLER (v19.68-v19.72).
