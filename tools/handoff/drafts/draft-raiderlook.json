@@ -1,0 +1,24 @@
+{
+    "title":  "PILLAGERS WEAR THEIR OWN LOOK",
+    "why":  "Found by the build design review of 2026-10-08: his answer 20 (v10.18) gives every rival pillager a look from the racks, hair, hat, skin, beard, eyes, boots and the rest, but the raid drew every one of them in the default look, because the painter reads a look from the draw call and the call never passed it. It is passed now, and pillagers also roll a build, so you meet Broad and Curved pillagers. No dice the game uses are spent and every pillager keeps the look he was given.",
+    "now":  "Rival pillagers show their own hair, skin, hats and builds.",
+    "edits":  [
+                  {
+                      "anchor":  "pack:pick(\u0027pack\u0027),patch:pick(\u0027patch\u0027),tattoo:pick(\u0027tattoo\u0027)};",
+                      "replacement":  "pack:pick(\u0027pack\u0027),patch:pick(\u0027patch\u0027),tattoo:pick(\u0027tattoo\u0027),build:pick(\u0027build\u0027)};   // v16.xx: and a build, picked last so every other pick is as before"
+                  },
+                  {
+                      "anchor":  "patch:_look.patch, tattoo:_look.tattoo,",
+                      "replacement":  "patch:_look.patch, tattoo:_look.tattoo, build:_look.build,"
+                  },
+                  {
+                      "anchor":  "e.tattoo=lk.tattoo; }",
+                      "replacement":  "e.tattoo=lk.tattoo; e.build=lk.build; }"
+                  },
+                  {
+                      "anchor":  "          {own:e2,moving:!!e2.moving,sprint:e2.state===\u0027extract\u0027,ads:e2.state===\u0027chase\u0027,hurt:e2.hitT,bulk:e2.bulk||0});",
+                      "replacement":  "          {own:e2,moving:!!e2.moving,sprint:e2.state===\u0027extract\u0027,ads:e2.state===\u0027chase\u0027,hurt:e2.hitT,bulk:e2.bulk||0,\n           // v16.xx, found by the build design review (2026-10-08): his answer 20 (v10.18) gives every pillager a look from the racks,\n           // stored on him at spawn, but drawOp reads a look from this object and never from own, so every pillager was drawn in the\n           // default look. It is passed through now, with the build he rolled.\n           hair:e2.hair,cut:e2.cut,hat:e2.hat,skin:e2.skin,beard:e2.beard,eyes:e2.eyes,faceMark:e2.faceMark,boots:e2.boots,\n           gloves:e2.gloves,pack:e2.pack,patch:e2.patch,tattoo:e2.tattoo,build:e2.build});"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027pillagers wear their own look: a pillager in a raid is drawn in the hair, skin and build he was given at spawn, not the default\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy and draw\u0027;\n     var bad=[], g, r=null, od=drawOp, seen=null, i;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       for(i=0;i\u003cg.ents.length;i++) if(g.ents[i].kind===\u0027raider\u0027\u0026\u0026g.ents[i].hp\u003e0\u0026\u0026g.ents[i].skin){ r=g.ents[i]; break; }\n       if(!r) return \u0027SKIP: no pillager with a look in this raid\u0027;\n       r.build=r.build||\u0027curved\u0027; r.downed=false;\n       g.player.x=r.x+40; g.player.y=r.y+40; g.player.iv=99;\n       drawOp=function(x,y,f,ph,co,pk,mu,mode,iv,st){ if(st\u0026\u0026st.own===r) seen=st; return od.apply(this,arguments); };\n       for(i=0;i\u003c6\u0026\u0026!seen;i++) __frame(0.05);\n       drawOp=od;\n       if(!seen) return \u0027SKIP: the pillager was not drawn\u0027;\n       if(seen.skin!==r.skin||seen.hair!==r.hair) bad.push(\u0027the pillager is drawn without his look (skin \u0027+seen.skin+\u0027 for \u0027+r.skin+\u0027)\u0027);\n       if(seen.build!==r.build) bad.push(\u0027the pillager is drawn without his build\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ drawOp=od; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

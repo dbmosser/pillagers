@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.12 - PILLAGERS WEAR THEIR OWN LOOK
+
+Co-op hunt while he was away. Found by the build design review of 2026-10-08: his answer 20 (v10.18) gives every rival pillager a look from the racks, hair, hat, skin, beard, eyes, boots and the rest, but the raid drew every one of them in the default look, because the painter reads a look from the draw call and the call never passed it. It is passed now, and pillagers also roll a build, so you meet Broad and Curved pillagers. No dice the game uses are spent and every pillager keeps the look he was given.
+
+MEASURED. Check 20.12 passes, and fails on v20.11.
 ## v20.11 - ARMOUR FITS A CURVED BODY
 
 Co-op hunt while he was away. From the build design review of 2026-10-08: an Armour Plate was drawn as the same steel box on every body, so on a Curved body it hid her waist and chest. On Curved the plate is cut to her outline and the chest is moulded into the steel, moving with her; the shoulder plates and collar of the heavier tiers are as before.

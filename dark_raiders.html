@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.11';
+var VER='20.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9494,7 +9494,7 @@ function raiderLook(identId,x,y){
   var hat=pick('hat',['crown'].concat(COSMETICS.filter(function(c){ return c.kind==='hat'&&c.crowd===0; }).map(function(c){ return c.id; })));
   h=Math.imul(h^(h>>>11),2246822507)>>>0;
   if((h%3)===0) hat='none';                   // a third go bareheaded
-  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves'),pack:pick('pack'),patch:pick('patch'),tattoo:pick('tattoo')};
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves'),pack:pick('pack'),patch:pick('patch'),tattoo:pick('tattoo'),build:pick('build')};   // v20.12: and a build, picked last so every other pick is as before
 }
 function mkRaider(x,y,forceId,simBuild){
   // v6.53, his note. Nine entries: pistol 3, smg 2, rifle 2, carbine 1, scattergun 1,
@@ -9549,7 +9549,7 @@ function mkRaider(x,y,forceId,simBuild){
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],looted:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
 coat:ident.coat, ident:ident.id, name:ident.tag,
-    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, faceMark:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack, patch:_look.patch, tattoo:_look.tattoo,   // v10.18, his answer 20; v10.21: faceMark, because e.face is the facing angle and a string there stopped every pillager firing
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, faceMark:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack, patch:_look.patch, tattoo:_look.tattoo, build:_look.build,   // v10.18, his answer 20; v10.21: faceMark, because e.face is the facing angle and a string there stopped every pillager firing
     rival:(!simBuild&&ident.id===myRival())?1:0,
     // SPEC 8.4: varying hostility. A raider you have killed before is shoot on
     // sight with no negotiation; one you have good standing with is passive
@@ -25241,7 +25241,12 @@ var SHD=G.shells[i];
       else if(e2.kind==='raider')
         drawOp(e2.x,e2.y,e2.face,(e2.roll>0)?(1-e2.roll/.38)*12.6:(e2.step||0)*4,e2.coat,
           clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,(e2.downed||e2.state==='down')?'down':((e2.roll>0)?'roll':(raiderCrouched(e2)?'crouch':'')),0,
-          {own:e2,moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0});
+          {own:e2,moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0,
+           // v20.12, found by the build design review (2026-10-08): his answer 20 (v10.18) gives every pillager a look from the racks,
+           // stored on him at spawn, but drawOp reads a look from this object and never from own, so every pillager was drawn in the
+           // default look. It is passed through now, with the build he rolled.
+           hair:e2.hair,cut:e2.cut,hat:e2.hat,skin:e2.skin,beard:e2.beard,eyes:e2.eyes,faceMark:e2.faceMark,boots:e2.boots,
+           gloves:e2.gloves,pack:e2.pack,patch:e2.patch,tattoo:e2.tattoo,build:e2.build});
 
       // SPEC 8.7: the openings have to be VISIBLE or they are a secret, and a
       // secret is not a tactic. Drawn on top of the body, pulsing, in their own
@@ -33616,7 +33621,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.11: Armour plates follow a Curved figure instead of boxing it in. Check 20.11 fails on v20.10',
+  now:'v20.12: Rival pillagers show their own hair, skin, hats and builds. Check 20.12 fails on v20.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40518,7 +40523,7 @@ function netEntFill(e,m){
     e.merc=m.mc?1:0;
     if(typeof m.idn==='string'&&m.idn){
       e.ident=netClean(m.idn,24);
-      try{ lk=raiderLook(e.ident,m.x,m.y); if(lk){ e.hair=lk.hair; e.cut=lk.cut; e.hat=lk.hat; e.skin=lk.skin; e.beard=lk.beard; e.eyes=lk.eyes; e.faceMark=lk.face; e.boots=lk.boots; e.gloves=lk.gloves; e.pack=lk.pack; e.patch=lk.patch; e.tattoo=lk.tattoo; } }catch(_lk){}
+      try{ lk=raiderLook(e.ident,m.x,m.y); if(lk){ e.hair=lk.hair; e.cut=lk.cut; e.hat=lk.hat; e.skin=lk.skin; e.beard=lk.beard; e.eyes=lk.eyes; e.faceMark=lk.face; e.boots=lk.boots; e.gloves=lk.gloves; e.pack=lk.pack; e.patch=lk.patch; e.tattoo=lk.tattoo; e.build=lk.build; } }catch(_lk){}
     }
   }
 }

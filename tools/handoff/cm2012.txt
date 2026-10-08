@@ -1,0 +1,7 @@
+v20.12: pillagers wear their own look
+
+Rival pillagers show their own hair, skin, hats and builds.
+
+Check 20.12. Fails on v20.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
