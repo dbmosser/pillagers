@@ -1,7 +1,7 @@
 {
     "title":  "PICKING UP KEY 8 NO LONGER SWAPS HIS GUN",
     "why":  "If key 8 held his stowed gun, pressing it to start a drag swapped that gun into his hands right away, before he had dropped it anywhere. Pressing A on it with the controller did the same. A press now only picks the key up. A plain click, or A twice on the same key, still brings the gun up when he lets go.",
-    "now":  "In a raid, key 8 holds the gun he has stowed. Pressing the mouse on key 8 to drag it, or pad A on it with the backpack open, swaps that gun up at once. The code runs `if(!_bagGun) setHot(_HC2.i);` on the press, and _bagGun is false for an equipped gun.",
+    "now":  "Pressing a belt key to drag it no longer swaps the gun in your hands.",
     "edits":  [
                   {
                       "anchor":  "var _bagGun=!!(_hs2\u0026\u0026_hs2.kind===\u0027gun\u0027\u0026\u0026_hs2.itemKey\u0026\u0026!_hs2.equipped);",

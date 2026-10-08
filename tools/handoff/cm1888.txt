@@ -1,0 +1,7 @@
+v18.88: a backpack gun dropped on key 1 lands on key 1, not key 2
+
+A backpack gun dragged onto key 1 lands on key 1.
+
+Check 18.88. Fails on v18.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

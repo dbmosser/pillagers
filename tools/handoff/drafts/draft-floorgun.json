@@ -1,7 +1,7 @@
 {
     "title":  "UNDERCROFT FLOOR: GUN KEYS CAN BE PICKED UP, AND GUN 2 DROPPED ON KEY 1 BECOMES GUN 1",
     "why":  "On the Undercroft floor with the backpack open, pressing a gun key (key 1, key 2, or key 8 or 9 when the belt moved a gun down) picked nothing up and said nothing. Gun keys now pick up like any other item. Dropping one on the other gun\u0027s key makes gun 1 and gun 2 trade places, which is what the raid starts with. Dropping it back on its own key moves the item that covered that key to where the gun was. Any other drop says why it cannot go there, on the floor\u0027s own message line.",
-    "now":  "On the floor with the backpack open, the press on a gun key is taken but no drag starts: no click, no icon on the cursor, no words. The code is `if(_sl\u0026\u0026_sdk\u0026\u0026!(_sl.k===\u0027gunA\u0027||_sl.k===\u0027gunB\u0027)){...}` followed by `_hbDone=true; return;`. So a gun the belt moved down to key 8 can never go back to key 1 here, and gun 2 can never become gun 1.",
+    "now":  "On the Undercroft floor gun keys can be dragged, and gun 2 dropped on key 1 becomes gun 1.",
     "edits":  [
                   {
                       "anchor":  "if(_sl\u0026\u0026_sdk\u0026\u0026!(_sl.k===\u0027gunA\u0027||_sl.k===\u0027gunB\u0027)){ G.drag={key:_sdk,fromHot:_H.i,px:mouse.x,py:mouse.y}; blip(\u0027pick\u0027); }   // v11.97: a key holding a gun drags on the floor too",

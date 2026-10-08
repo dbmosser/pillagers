@@ -1517,7 +1517,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.87';
+var VER='18.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12013,7 +12013,24 @@ window.addEventListener('mouseup',function(e){
           if(_bx>=0){
             var _isA=(_si.k==='gunA');
             var _tgt=_isA?(_pp.swapped?2:1):(_pp.swapped?1:2);
-            if(!equipFromBag(_bx,_tgt)) say('Cannot equip that right now.');
+            // v18.88, his report (2026-10-07): "can't move a gun from slot 8 to slot 1". A backpack gun dropped on key 1 while key 2 held Bare Hands went to key 2 instead (the v10.62 free-slot rule, which is for a key press and a pickup), and key 8 kept showing it, so the next try found it out of the backpack and did nothing. A drop goes on the key he let go on: the gun fills the free hand slot, keys 1 and 2 trade places (p.swapped) so it shows where he dropped it and the gun he had stays in his hands, and the key it came from lets it go. A refusal says why.
+            var _r9t=(_tgt===2)?_pp.sec:_pp.wep, _r9o=(_tgt===2)?_pp.wep:_pp.sec;
+            var _r9f=!!(_r9t&&_r9t.id!=='fists'&&_r9t.mag!==0&&(!_r9o||_r9o.id==='fists'||_r9o.mag===0));
+            if(!equipFromBag(_bx,_r9f?(_tgt===2?1:2):_tgt)){
+              say(_pp.roll>0?'Cannot equip a gun while rolling.':(G.paused?'Cannot equip a gun while paused.':((_pp.downed||_pp.dying)?'Cannot equip a gun while down.':'Cannot equip that right now.')));
+            } else {
+              if(_r9f) _pp.swapped=!_pp.swapped;
+              if(d.fromHot!==undefined&&G.hotAssign&&G.hotAssign[d.fromHot]===d.key){
+                delete G.hotAssign[d.fromHot]; if(G.hotAuto) delete G.hotAuto[d.fromHot];
+                if(!G.sim){ var _r9p={}; for(var _r9k in G.hotAssign) if(!G.hotAuto||!G.hotAuto[_r9k]) _r9p[_r9k]=G.hotAssign[_r9k]; P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_r9p))); try{ saveProfile(); }catch(_r9e){} }
+              }
+              if(_r9f||G.hot===d.fromHot) G.hot=gunCell();
+              if(_r9f){
+                var _r9n=(_tgt===2)?_pp.wep:_pp.sec, _r9s=hotbarSlots(), _r9i=-1, _r9q;
+                for(_r9q=0;_r9q<_r9s.length;_r9q++) if(_r9s[_r9q]&&(_r9s[_r9q].k==='gunA'||_r9s[_r9q].k==='gunB')&&_r9s[_r9q].icon===_r9t.id){ _r9i=_r9q; break; }
+                say(_r9n.name+' to slot '+(HC.i+1)+'.'+(_r9i>=0?(' '+_r9t.name+' to slot '+(_r9i+1)+'.'):''));
+              }
+            }
           }
           dropped=true;
           break;
@@ -32855,7 +32872,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.87: In a raid, with the mouse or the controller (pad A sends the same mouse release): pick up key 8 holding a gun he has already brought up once, then drop it on key 1. Nothing changes and nothing is said. Key 1 still shows the other gun and key 8 still shows the dragged one. The code is if(_bx>=0){ with no else, followed by dropped=true; break;. Check 18.87 fails on v18.86',
+  now:'v18.88: A backpack gun dragged onto key 1 lands on key 1. Check 18.88 fails on v18.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

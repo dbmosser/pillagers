@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.88 - A BACKPACK GUN DROPPED ON KEY 1 LANDS ON KEY 1, NOT KEY 2
+
+Co-op hunt while he was away. With Bare Hands on key 2, a gun dragged from key 8 onto key 1 ended up on key 2. A rule meant for pressing a key or picking up a gun ('use the empty slot') overrode where he dropped it. Key 8 also kept showing the gun, so the next try did nothing at all. Now the gun goes on the key he dropped it on, the gun he was holding stays in his hands on the other key, and key 8 is freed. When the equip is refused, the line says why: rolling, paused or down.
+
+MEASURED. Check 18.88 passes, and fails on v18.87.
 ## v18.87 - A GUN ALREADY IN HIS HANDS, DRAGGED FROM KEY 8 ONTO KEY 1, GOES THERE
 
 Co-op hunt while he was away. When a gun on key 8 is already one of his two guns, dragging it onto key 1 did nothing and said nothing. The game looked for the gun in the backpack, did not find it, and gave up quietly. Now key 1 shows that gun and key 2 shows the other one. The guns in his hands stay as they were, and key 8 is freed, the same as when any item moves between keys. He is told "X to slot 1." If the gun has left the backpack and his hands, he is told so.

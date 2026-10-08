@@ -1,7 +1,7 @@
 {
     "title":  "DRAG GUN 2 ONTO KEY 1 TO SWAP KEYS 1 AND 2",
     "why":  "Dragging the gun on key 2 onto key 1 was always refused, so nothing could change which gun keys 1 and 2 show. Now the two keys trade places and the guns in his hands do not change. The belt moves a gun down to key 8 or 9 when an item is bound over its own key. Dragging that gun back onto its own key now gives it the key back, and the item goes to the key the gun came from. Dropping a hand gun anywhere else still gets the old spoken refusal.",
-    "now":  "In a raid, drag the gun on key 1 or 2 onto the other gun\u0027s key, or drag a gun the belt moved down to key 8 back onto key 1. Every time he gets \"Drop it off the belt to stow it in the backpack; its own key brings it up.\" and nothing moves.",
+    "now":  "Dragging one gun key onto the other swaps keys 1 and 2.",
     "edits":  [
                   {
                       "anchor":  "else if(_onCell\u003e=0\u0026\u0026_onCell!==d.fromHot) say(\u0027Drop it off the belt to stow it in the backpack; its own key brings it up.\u0027);",

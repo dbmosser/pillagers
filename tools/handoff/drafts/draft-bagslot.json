@@ -1,7 +1,7 @@
 {
     "title":  "A BACKPACK GUN DROPPED ON KEY 1 LANDS ON KEY 1, NOT KEY 2",
-    "why":  "With Bare Hands on key 2, a gun dragged from key 8 onto key 1 ended up on key 2. A rule meant for pressing a key or picking up a gun (\"use the empty slot\") overrode where he dropped it. Key 8 also kept showing the gun, so the next try did nothing at all. Now the gun goes on the key he dropped it on, the gun he was holding stays in his hands on the other key, and key 8 is freed. When the equip is refused, the line says why: rolling, paused or down.",
-    "now":  "In a raid, with key 2 on Bare Hands, he drags a backpack gun from key 8 onto key 1. He reads \"X to your empty slot. Y stays in hand.\", the gun shows on key 2, and key 8 still shows it. A refusal only says \"Cannot equip that right now.\"",
+    "why":  "With Bare Hands on key 2, a gun dragged from key 8 onto key 1 ended up on key 2. A rule meant for pressing a key or picking up a gun (\u0027use the empty slot\u0027) overrode where he dropped it. Key 8 also kept showing the gun, so the next try did nothing at all. Now the gun goes on the key he dropped it on, the gun he was holding stays in his hands on the other key, and key 8 is freed. When the equip is refused, the line says why: rolling, paused or down.",
+    "now":  "A backpack gun dragged onto key 1 lands on key 1.",
     "edits":  [
                   {
                       "anchor":  "if(!equipFromBag(_bx,_tgt)) say(\u0027Cannot equip that right now.\u0027);",
