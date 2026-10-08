@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.34 - THE BELT HINT READS ON ANY GROUND
+
+Co-op hunt while he was away. Seen on the 4K fog screenshot of 2026-10-08: the line over the belt (the item name, [FIRE] use, [V] signal) was grey text straight on the ground, so on pale ground (fog, sand, a lit floor) it all but vanished. It now sits on a soft dark strip and is a little brighter, at the same size and place.
+
+MEASURED. Check 19.34 passes, and fails on v19.33.
 ## v19.33 - THE MAP WEATHER LINE KEEPS A CLEAR GAP
 
 Co-op hunt while he was away. Seen on the 4K map screenshot after v19.32: the time and weather line now ended left of the credits readout, but 14 pixels away, which beside the big 900 at 4K still read as touching. The gap is now about a word wide, growing with the text.

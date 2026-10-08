@@ -1,0 +1,7 @@
+v19.34: the belt hint reads on any ground
+
+The hint over the belt is readable on pale ground and in fog.
+
+Check 19.34. Fails on v19.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
