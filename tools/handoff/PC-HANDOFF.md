@@ -550,3 +550,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v20.05 buildoutfits: Baller panels stroke the build outline (clipped), robot seam clipped to the body, Explorer bare shoulders at the build's shoulders, rose mouth not on skeleton/robot/trooper.
 - v20.06 buildshorts: bare-legged suits (trs null) fill Curved hips with darkHex(coat,.62); legs below keep _TRS.
 - v20.07 card-2007: WHATSNEW_VER 20.07, line 1 YOUR BUILD SHOWS. Next refresh by ~20.22.
+- v20.08 jigtune: the v20.02 spring rang at 2.85 Hz = the walk footfall rate (bob 9 rad/s), so it pinned its 1.5 stop. Now k 1400/1000 (about 6 Hz), damping 18/16, gain .85/.50, 16 ms substeps, fed ty-y (body bob only, not map motion). Measured in a raid: walk -0.23..0.40, sprint -0.51..0.66, settles in about 0.5 s.
