@@ -1,0 +1,20 @@
+{
+    "title":  "A PILLAGER LOOKS THE SAME IN BOTH WINDOWS",
+    "why":  "Found by the code review of 2026-10-08: since v20.12 pillagers wear their own look, which is worked out from where each one was born. A pillager who arrived mid-raid had already walked a little before the other co-op window heard of him, so that window worked his look out from a different spot and drew a different man, build and all. His birthplace now goes with him, and both windows work the look out from it. No dice the game uses are spent.",
+    "now":  "In co-op, every pillager looks the same in both windows.",
+    "edits":  [
+                  {
+                      "anchor":  "  var r={kind:\u0027raider\u0027,x:x,y:y,r:11,",
+                      "replacement":  "  var r={kind:\u0027raider\u0027,x:x,y:y,lx:Math.round(x),ly:Math.round(y),r:11,"
+                  },
+                  {
+                      "anchor":  "m.rg=netClean(e.rig,8); m.mc=e.merc?1:0; }",
+                      "replacement":  "m.rg=netClean(e.rig,8); m.mc=e.merc?1:0; if(typeof e.lx===\u0027number\u0027){ m.lx=e.lx; m.ly=e.ly; } }   // v16.xx: his birthplace, which his look is hashed from"
+                  },
+                  {
+                      "anchor":  "try{ lk=raiderLook(e.ident,m.x,m.y);",
+                      "replacement":  "try{ if(typeof m.lx===\u0027number\u0027\u0026\u0026typeof m.ly===\u0027number\u0027){ e.lx=m.lx; e.ly=m.ly; } lk=raiderLook(e.ident,(typeof e.lx===\u0027number\u0027)?e.lx:m.x,(typeof e.ly===\u0027number\u0027)?e.ly:m.y);   /* v16.xx, code review: hash where he was born, as the host did */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a pillager looks the same in both co-op windows: one that has walked since he was born is rebuilt on the other window with the hair, skin, hat and build the host gave him\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     if(typeof netEntNewWord!==\u0027function\u0027||typeof netEntFill!==\u0027function\u0027) return \u0027SKIP: no co-op entity messages here\u0027;\n     var bad=[], g, r=null, i, m, e, diff=[];\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over) return \u0027SKIP: no live raid\u0027;\n       for(i=0;i\u003cg.ents.length;i++) if(g.ents[i].kind===\u0027raider\u0027\u0026\u0026g.ents[i].ident\u0026\u0026g.ents[i].skin){ r=g.ents[i]; break; }\n       if(!r) return \u0027SKIP: no pillager with a look\u0027;\n       var x0=r.x, y0=r.y; r.x+=37; r.y-=23; r.nid=r.nid||9999;\n       m=netEntNewWord(r); r.x=x0; r.y=y0;\n       e={kind:\u0027raider\u0027}; netEntFill(e,m);\n       [\u0027hair\u0027,\u0027skin\u0027,\u0027hat\u0027,\u0027cut\u0027,\u0027build\u0027].forEach(function(k){ if(e[k]!==r[k]) diff.push(k+\u0027 \u0027+e[k]+\u0027 for \u0027+r[k]); });\n       if(diff.length) bad.push(\u0027the other window draws him differently: \u0027+diff.join(\u0027, \u0027));\n     }catch(ex){ bad.push(\u0027threw: \u0027+(ex\u0026\u0026ex.message||ex)); }\n     finally{ try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

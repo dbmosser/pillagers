@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.13 - A PILLAGER LOOKS THE SAME IN BOTH WINDOWS
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: since v20.12 pillagers wear their own look, which is worked out from where each one was born. A pillager who arrived mid-raid had already walked a little before the other co-op window heard of him, so that window worked his look out from a different spot and drew a different man, build and all. His birthplace now goes with him, and both windows work the look out from it. No dice the game uses are spent.
+
+MEASURED. Check 20.13 passes, and fails on v20.12.
 ## v20.12 - PILLAGERS WEAR THEIR OWN LOOK
 
 Co-op hunt while he was away. Found by the build design review of 2026-10-08: his answer 20 (v10.18) gives every rival pillager a look from the racks, hair, hat, skin, beard, eyes, boots and the rest, but the raid drew every one of them in the default look, because the painter reads a look from the draw call and the call never passed it. It is passed now, and pillagers also roll a build, so you meet Broad and Curved pillagers. No dice the game uses are spent and every pillager keeps the look he was given.

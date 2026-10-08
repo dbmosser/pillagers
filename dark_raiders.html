@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.12';
+var VER='20.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9545,7 +9545,7 @@ function mkRaider(x,y,forceId,simBuild){
   // ternary below, where your own history with this man could skip it.
   var _hostRoll=rr();
   var _look=raiderLook(ident.id,x,y);          // v10.18: no seeded roll spent
-  var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp),maxhp:Math.round(78*CFG.eHp),react:rnd(.38,.62),
+  var r={kind:'raider',x:x,y:y,lx:Math.round(x),ly:Math.round(y),r:11,hp:Math.round(78*CFG.eHp),maxhp:Math.round(78*CFG.eHp),react:rnd(.38,.62),
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],looted:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
 coat:ident.coat, ident:ident.id, name:ident.tag,
@@ -33621,7 +33621,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.12: Rival pillagers show their own hair, skin, hats and builds. Check 20.12 fails on v20.11',
+  now:'v20.13: In co-op, every pillager looks the same in both windows. Check 20.13 fails on v20.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40467,7 +40467,7 @@ function netEntRow(e){
 // A body that arrived after the build: what a linked window needs to draw and name it.
 function netEntNewWord(e){
   var m={t:'ent',op:'new',id:e.nid,k:e.kind,x:Math.round(e.x),y:Math.round(e.y),n:netClean(e.name,24),r:e.r,mh:e.maxhp,hp:Math.ceil(clamp(e.hp/(e.maxhp||1),0,1)*20),el:e.elite?1:0,ho:e.hostile?1:0};
-  if(e.kind==='raider'){ m.c=netClean(e.coat,12); m.cr=e.crew|0; m.idn=netClean(e.ident,24); m.w=(e.wep&&e.wep.id)?String(e.wep.id):''; m.rg=netClean(e.rig,8); m.mc=e.merc?1:0; }
+  if(e.kind==='raider'){ m.c=netClean(e.coat,12); m.cr=e.crew|0; m.idn=netClean(e.ident,24); m.w=(e.wep&&e.wep.id)?String(e.wep.id):''; m.rg=netClean(e.rig,8); m.mc=e.merc?1:0; if(typeof e.lx==='number'){ m.lx=e.lx; m.ly=e.ly; } }   // v20.13: his birthplace, which his look is hashed from
   return m;
 }
 // A body left the list: dead or out. A dead body one of the party killed is his kill, told to his seat.
@@ -40523,7 +40523,7 @@ function netEntFill(e,m){
     e.merc=m.mc?1:0;
     if(typeof m.idn==='string'&&m.idn){
       e.ident=netClean(m.idn,24);
-      try{ lk=raiderLook(e.ident,m.x,m.y); if(lk){ e.hair=lk.hair; e.cut=lk.cut; e.hat=lk.hat; e.skin=lk.skin; e.beard=lk.beard; e.eyes=lk.eyes; e.faceMark=lk.face; e.boots=lk.boots; e.gloves=lk.gloves; e.pack=lk.pack; e.patch=lk.patch; e.tattoo=lk.tattoo; e.build=lk.build; } }catch(_lk){}
+      try{ if(typeof m.lx==='number'&&typeof m.ly==='number'){ e.lx=m.lx; e.ly=m.ly; } lk=raiderLook(e.ident,(typeof e.lx==='number')?e.lx:m.x,(typeof e.ly==='number')?e.ly:m.y);   /* v20.13, code review: hash where he was born, as the host did */ if(lk){ e.hair=lk.hair; e.cut=lk.cut; e.hat=lk.hat; e.skin=lk.skin; e.beard=lk.beard; e.eyes=lk.eyes; e.faceMark=lk.face; e.boots=lk.boots; e.gloves=lk.gloves; e.pack=lk.pack; e.patch=lk.patch; e.tattoo=lk.tattoo; e.build=lk.build; } }catch(_lk){}
     }
   }
 }

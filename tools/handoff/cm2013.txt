@@ -1,0 +1,7 @@
+v20.13: a pillager looks the same in both windows
+
+In co-op, every pillager looks the same in both windows.
+
+Check 20.13. Fails on v20.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
