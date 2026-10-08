@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.17 - STACK COUNTS SIT IN A PILL
+
+Co-op hunt while he was away. Seen on the 4K stash screenshots of 2026-10-08: the number on a stacked item (2 bandages, 3 frags) was a bare digit tucked into the rounded corner of the tile, as the equipped gun badge was until v19.96. It sits in a small dark pill now, set in from the corner, so it reads on any picture.
+
+MEASURED. Check 20.17 passes, and fails on v20.16.
 ## v20.16 - LONG HAIR LEAVES A CURVED CHEST SHOWING
 
 Co-op hunt while he was away. Found by the code review of 2026-10-08: on a teammate, a pillager or someone in the Undercroft crowd, long hair is drawn as one block behind the head that reaches down over the chest, so a Curved body with long hair lost the top of her chest. On Curved the long hair now falls down the sides, off the chest; your own figure was already drawn this way.

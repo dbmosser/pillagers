@@ -1,0 +1,7 @@
+v20.17: stack counts sit in a pill
+
+The stack counts on stash tiles are easier to read.
+
+Check 20.17. Fails on v20.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

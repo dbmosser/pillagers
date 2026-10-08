@@ -5722,6 +5722,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.17',what:'stack counts in the stash sit in a pill: a count on a stash tile has a dark background, padding and space from the corner',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';
+     var bad=[], P2=__P(), s0=(P2.stash||[]).slice(), c=null, cs, cell, a;
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       P2.stash=['bandage','bandage','bandage','frag','frag'];
+       __hubEnter(); __station('term','KeyE');
+       a=[].slice.call(document.querySelectorAll('#stashgrid .cell .cnt')).filter(function(x){ return !/0d1435/.test(x.getAttribute('style')||'')&&x.offsetWidth>0; });
+       if(!a.length) return 'SKIP: no stack count showing';
+       c=a[0]; cs=getComputedStyle(c); cell=c.parentElement;
+       if(!(cs.backgroundColor&&cs.backgroundColor!=='rgba(0, 0, 0, 0)'&&cs.backgroundColor!=='transparent')) bad.push('the count has no background');
+       if(!(parseFloat(cs.paddingLeft)>=4)) bad.push('the count has '+cs.paddingLeft+' of padding');
+       if(!(cell.clientWidth-(c.offsetLeft+c.offsetWidth)>=4)) bad.push('the count sits in the corner');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P2.stash=s0; try{ renderHub(); }catch(_r){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.16',what:'long hair leaves a Curved chest showing: on a teammate, a pillager or the crowd, a Curved body with long hair shows the same chest as one with short hair',
    run:function(){
      if(typeof drawOp!=='function') return 'SKIP: no painter here';
