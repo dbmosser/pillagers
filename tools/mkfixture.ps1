@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.82',what:'the other racks show the look: a fit, face, tattoo, hat, beard or hairstyle tile is a painted preview of the operator with that piece on, two pieces give two pictures, and the worn look and ownership are untouched after',
+   run:function(){
+     if(typeof cosSwatch!=='function'||typeof COSMETICS==='undefined'&&typeof cosFind!=='function') return 'SKIP: no cosmetics here';
+     var bad=[], kinds=['fit','face','tattoo','hat','beard','cut'], all=(typeof COSMETICS!=='undefined')?COSMETICS:null, ow0=cosOwned, keep={};
+     if(!all) return 'SKIP: no cosmetics list to read';
+     kinds.forEach(function(kd){ keep[kd]=P[COSKEY[kd]]; });
+     kinds.forEach(function(kd){
+       var ids=all.filter(function(c){ return c&&c.kind===kd; }).map(function(c){ return c.id; }), a, b;
+       if(ids.length<2) return;
+       var pics=ids.map(function(id){ return String(cosSwatch({kind:kd,id:id,name:id})); }), uniq={}; pics.forEach(function(s){ uniq[s]=1; });
+       if(pics[0].indexOf('<img')<0||pics[0].indexOf('data:image/png')<0) bad.push('a '+kd+' tile is still a placeholder');
+       else if(Object.keys(uniq).length<2) bad.push('every '+kd+' tile shows the same picture');
+       if(P[COSKEY[kd]]!==keep[kd]) bad.push('drawing the '+kd+' previews changed what is worn');
+     });
+     if(cosOwned!==ow0) bad.push('the ownership test was left replaced');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.81',what:'the FASHION racks fill their panel: the racks list reaches the bottom of the window grid and scrolls on its own, and the grid itself does not scroll',
    run:function(){
      if(typeof __station!=='function'||typeof __hubEnter!=='function') return 'SKIP: no stations here';

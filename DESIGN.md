@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.82 - THE OTHER FASHION RACKS SHOW THE LOOK
+
+Co-op hunt while he was away. Seen on the FASHION screenshot of 2026-10-07: after the outfits got real previews, BUILD was still three grey blocks and FACE and TATTOO were typed marks like -- and /. Those tiles, and HAT, BEARD and HAIRSTYLE, now show your own operator with that piece on: build, fit and tattoo as the whole figure, face, hat, beard and hairstyle as a head and shoulders close-up. Skin, hair colour and eyes stay as colour swatches.
+
+MEASURED. Check 18.82 passes, and fails on v18.81.
 ## v18.81 - THE FASHION RACKS FILL THEIR PANEL
 
 Co-op hunt while he was away. Seen on the FASHION screenshot of 2026-10-07: the racks list was capped at a fixed height, so on a 1080p screen it stopped a third of the way down its panel, cutting through the EYES row with blank space below, while the whole window scrolled for the long slot list on the left. Each column now fills the window and scrolls on its own.

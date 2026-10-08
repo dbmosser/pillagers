@@ -1,0 +1,7 @@
+v18.82: the other fashion racks show the look
+
+Every FASHION piece shows what it looks like on your operator before you wear it.
+
+Check 18.82. Fails on v18.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
