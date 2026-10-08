@@ -504,3 +504,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.62 card-1962 (stamp 19.62, next by ~19.77).
 - Corpus: [842,962) re-run with a busy-tolerant stall detector (scratchpad corpus-slices.sh).
 - 4K text scans (render a raid, floor and map frame at 1080p and 4K, compare each text's drawn size): only the belt caption and counts grow less than 1.6x (beltFS); the map marker tags did not grow at all, fixed in v19.63 maplabel4k (mapLabel uses hudFS, offsets times _MZ). v19.64 maptries (placer tries up, left, right before down). v19.65 cachegap (CACHE tag at qy-20*_MZ).
+- Corpus [842,962) re-run: one red, 10.78 (it scrolled the grid; since v19.16 the operator panel inner box scrolls); retargeted to scroll the box holding SURPRISE ME, passes. Whole corpus now clean.
