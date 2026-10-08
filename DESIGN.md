@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.23 - THE ACHIEVEMENTS LIST IS READABLE
+
+Co-op hunt while he was away. Seen on the 4K Mainframe screenshots of 2026-10-08: the achievements under YOUR STATS were 11 pixels with a 10 pixel heading, and the name column was so narrow that LOCKED MACHINE BREAKER broke over two lines. The rows are 14 now, the heading 13, and the names fit on one line.
+
+MEASURED. Check 20.23 passes, and fails on v20.22.
 ## v20.22 - THE RACKS PAGE IS READABLE
 
 Co-op hunt while he was away. Seen on the 4K Mainframe screenshots of 2026-10-08: on the RACKS page the rack count, what a rack costs, what an array is, what a Data Core does and the friend import line were all 11 pixels, the smallest print left in the Mainframe. They are 14 now.

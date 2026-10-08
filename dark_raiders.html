@@ -1589,7 +1589,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.22';
+var VER='20.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33628,7 +33628,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.22: The Mainframe RACKS page is easier to read. Check 20.22 fails on v20.21',
+  now:'v20.23: The achievements list under YOUR STATS is easier to read. Check 20.23 fails on v20.22',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36039,12 +36039,12 @@ function achStatsDraw(g){
   }
   for(i=0;i<ACHS.length;i++){
     a=ACHS[i]; if(P.ach[a.id]) n++;
-    h+='<div style="display:flex;gap:10px;font-size:11.5px;padding:2px 0;color:'+(P.ach[a.id]?'var(--amber)':'var(--ash)')+'">'+
-       '<span style="width:150px">'+(P.ach[a.id]?'':'LOCKED ')+a.n+'</span><span style="flex:1">'+a.d+'</span></div>';
+    h+='<div style="display:flex;gap:14px;font-size:14px;padding:3px 0;color:'+(P.ach[a.id]?'var(--amber)':'var(--ash)')+'">'+
+       '<span style="width:230px;flex:0 0 230px">'+(P.ach[a.id]?'':'LOCKED ')+a.n+'</span><span style="flex:1">'+a.d+'</span></div>';
   }
   old=document.getElementById('achlist'); if(old&&old.parentNode) old.parentNode.removeChild(old);
   g.insertAdjacentHTML('beforeend','<div id="achlist" style="grid-column:1/-1;margin-top:10px;border-top:1px solid var(--steel-hi);padding-top:8px">'+
-    '<div style="font-size:10.5px;letter-spacing:.2em;color:var(--ash);margin-bottom:6px">ACHIEVEMENTS  '+n+' OF '+ACHS.length+'</div>'+h+'</div>');
+    '<div style="font-size:13px;letter-spacing:.2em;color:var(--ash);margin-bottom:6px">ACHIEVEMENTS  '+n+' OF '+ACHS.length+'</div>'+h+'</div>');
   return n+'/'+ACHS.length;
 }function renderStatCards(){
   var g=document.getElementById('statgrid');

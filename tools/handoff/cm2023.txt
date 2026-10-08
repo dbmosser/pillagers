@@ -1,0 +1,7 @@
+v20.23: the achievements list is readable
+
+The achievements list under YOUR STATS is easier to read.
+
+Check 20.23. Fails on v20.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -5722,6 +5722,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.23',what:'the achievements list is readable: its rows are 14px with a name column wide enough for LOCKED MACHINE BREAKER on one line',
+   run:function(){
+     if(typeof renderStatCards!=='function') return 'SKIP: no stats page here';
+     var bad=[], row, nm;
+     try{ renderStatCards(); }catch(e){ return 'threw: '+(e&&e.message||e); }
+     row=document.querySelector('#achlist > div:nth-child(2)'); nm=row&&row.querySelector('span');
+     if(!row||!nm) return 'SKIP: no achievements listed';
+     if(!(parseFloat(getComputedStyle(row).fontSize)>=13.9)) bad.push('the rows are '+getComputedStyle(row).fontSize);
+     if(!(parseFloat(nm.style.width)>=220)) bad.push('the name column is '+nm.style.width);
+     return bad.length?bad.join('; '):null; }},
   {v:'20.22',what:'the RACKS page is readable: its status line, the hints under its buttons and the name box are 14px',
    run:function(){
      var bad=[], ids=['mfstatus','mfhint','mfarrayhint','mfslothint','mfghosthint','mfghostname'], i, el, f;

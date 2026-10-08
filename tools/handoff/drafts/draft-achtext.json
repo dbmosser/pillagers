@@ -1,0 +1,20 @@
+{
+    "title":  "THE ACHIEVEMENTS LIST IS READABLE",
+    "why":  "Seen on the 4K Mainframe screenshots of 2026-10-08: the achievements under YOUR STATS were 11 pixels with a 10 pixel heading, and the name column was so narrow that LOCKED MACHINE BREAKER broke over two lines. The rows are 14 now, the heading 13, and the names fit on one line.",
+    "now":  "The achievements list under YOUR STATS is easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "h+=\u0027\u003cdiv style=\"display:flex;gap:10px;font-size:11.5px;padding:2px 0;color:\u0027",
+                      "replacement":  "h+=\u0027\u003cdiv style=\"display:flex;gap:14px;font-size:14px;padding:3px 0;color:\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027\u003cspan style=\"width:150px\"\u003e\u0027+(P.ach[a.id]?\u0027\u0027:\u0027LOCKED \u0027)+a.n+\u0027\u003c/span\u003e",
+                      "replacement":  "\u0027\u003cspan style=\"width:230px;flex:0 0 230px\"\u003e\u0027+(P.ach[a.id]?\u0027\u0027:\u0027LOCKED \u0027)+a.n+\u0027\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "\u0027\u003cdiv style=\"font-size:10.5px;letter-spacing:.2em;color:var(--ash);margin-bottom:6px\"\u003eACHIEVEMENTS  \u0027",
+                      "replacement":  "\u0027\u003cdiv style=\"font-size:13px;letter-spacing:.2em;color:var(--ash);margin-bottom:6px\"\u003eACHIEVEMENTS  \u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the achievements list is readable: its rows are 14px with a name column wide enough for LOCKED MACHINE BREAKER on one line\u0027,\n   run:function(){\n     if(typeof renderStatCards!==\u0027function\u0027) return \u0027SKIP: no stats page here\u0027;\n     var bad=[], row, nm;\n     try{ renderStatCards(); }catch(e){ return \u0027threw: \u0027+(e\u0026\u0026e.message||e); }\n     row=document.querySelector(\u0027#achlist \u003e div:nth-child(2)\u0027); nm=row\u0026\u0026row.querySelector(\u0027span\u0027);\n     if(!row||!nm) return \u0027SKIP: no achievements listed\u0027;\n     if(!(parseFloat(getComputedStyle(row).fontSize)\u003e=13.9)) bad.push(\u0027the rows are \u0027+getComputedStyle(row).fontSize);\n     if(!(parseFloat(nm.style.width)\u003e=220)) bad.push(\u0027the name column is \u0027+nm.style.width);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
