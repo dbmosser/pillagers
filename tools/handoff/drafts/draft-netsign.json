@@ -1,0 +1,12 @@
+{
+    "title":  "A LIFETIME LOSS READS WITH THE MINUS FIRST",
+    "why":  "Seen on the 4K YOUR STATS screenshot of 2026-10-08: net lifetime earnings below zero read $-9,750. It reads -$9,750 now.",
+    "now":  "A lifetime loss on the Mainframe reads -$9,750.",
+    "edits":  [
+                  {
+                      "anchor":  "  h+=card(\u0027Net lifetime earnings\u0027, \u0027$\u0027+(P.netEarn||0).toLocaleString(),",
+                      "replacement":  "  h+=card(\u0027Net lifetime earnings\u0027, ((P.netEarn||0)\u003c0?\u0027-$\u0027:\u0027$\u0027)+Math.abs(P.netEarn||0).toLocaleString(),   // v16.xx: a loss reads -$9,750, not $-9,750"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a lifetime loss reads with the minus first: with net earnings of minus 9750 the YOUR STATS card says -$9,750, never $-9,750\u0027,\n   run:function(){\n     if(!window.__station||!window.__hubEnter) return \u0027SKIP: this fixture cannot open the Mainframe\u0027;\n     var bad=[], t, tab, sg, n0=P.netEarn, txt;\n     try{\n       __topClear(); __runPrep(); __cleanProfile();\n       P.netEarn=-9750;\n       t=document.getElementById(\u0027title\u0027); if(t) t.classList.remove(\u0027on\u0027);\n       __hubEnter(); __station(\u0027mf\u0027,\u0027KeyE\u0027);\n       tab=document.querySelector(\u0027[data-optab=\"rec\"]\u0027); if(!tab) return \u0027SKIP: no YOUR STATS tab\u0027;\n       tab.click();\n       sg=document.getElementById(\u0027statgrid\u0027); if(!sg) return \u0027SKIP: no stat grid\u0027;\n       txt=String(sg.textContent||\u0027\u0027);\n       if(txt.indexOf(\u0027$-\u0027)\u003e=0) bad.push(\u0027the card reads $- before the number\u0027);\n       if(txt.indexOf(\u0027-$9,750\u0027)\u003c0) bad.push(\u0027the card does not read -$9,750\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ if(n0===undefined) delete P.netEarn; else P.netEarn=n0; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

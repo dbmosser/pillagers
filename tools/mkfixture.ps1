@@ -5721,6 +5721,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.39',what:'a lifetime loss reads with the minus first: with net earnings of minus 9750 the YOUR STATS card says -$9,750, never $-9,750',
+   run:function(){
+     if(!window.__station||!window.__hubEnter) return 'SKIP: this fixture cannot open the Mainframe';
+     var bad=[], t, tab, sg, n0=P.netEarn, txt;
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       P.netEarn=-9750;
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('mf','KeyE');
+       tab=document.querySelector('[data-optab="rec"]'); if(!tab) return 'SKIP: no YOUR STATS tab';
+       tab.click();
+       sg=document.getElementById('statgrid'); if(!sg) return 'SKIP: no stat grid';
+       txt=String(sg.textContent||'');
+       if(txt.indexOf('$-')>=0) bad.push('the card reads $- before the number');
+       if(txt.indexOf('-$9,750')<0) bad.push('the card does not read -$9,750');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(n0===undefined) delete P.netEarn; else P.netEarn=n0; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.38',what:'the YOUR STATS card titles are whole: in a narrow grid every card title fits its card, none cut off with dots',
    run:function(){
      if(!window.__station||!window.__hubEnter) return 'SKIP: this fixture cannot open the Mainframe';

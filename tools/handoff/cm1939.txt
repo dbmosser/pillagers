@@ -1,0 +1,7 @@
+v19.39: a lifetime loss reads with the minus first
+
+A lifetime loss on the Mainframe reads -$9,750.
+
+Check 19.39. Fails on v19.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

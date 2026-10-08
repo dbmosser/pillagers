@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.39 - A LIFETIME LOSS READS WITH THE MINUS FIRST
+
+Co-op hunt while he was away. Seen on the 4K YOUR STATS screenshot of 2026-10-08: net lifetime earnings below zero read $-9,750. It reads -$9,750 now.
+
+MEASURED. Check 19.39 passes, and fails on v19.38.
 ## v19.38 - THE YOUR STATS TITLES ARE WHOLE
 
 Co-op hunt while he was away. Seen on the 4K YOUR STATS screenshot of 2026-10-08: four card titles on the Mainframe stats page were cut off with dots (NET LIFETIME EARNI..., TYPICAL RAID LENG..., AVERAGE CONTAINE..., AVERAGE KILLS PER ...). A title now wraps onto a second line, and every title keeps room for two so the numbers in a row stay level.

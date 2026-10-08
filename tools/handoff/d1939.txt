@@ -1,0 +1,5 @@
+## v19.39 - A LIFETIME LOSS READS WITH THE MINUS FIRST
+
+Co-op hunt while he was away. Seen on the 4K YOUR STATS screenshot of 2026-10-08: net lifetime earnings below zero read $-9,750. It reads -$9,750 now.
+
+MEASURED. Check 19.39 passes, and fails on v19.38.
