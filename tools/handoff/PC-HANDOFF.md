@@ -555,3 +555,8 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v20.10 buildsleeve: gun sleeve 5.8 tall on Broad, 4.0 on Curved, Lean literal 4.8.
 - v20.11 buildarmour: on Curved the bulk plate is clipped to the BUILD_CURVED path (ink at grow .6, steel at grow -.4) with a moulded chest riding _JG.c; pauldrons and collar unchanged; other builds keep the box.
 - v20.12 raiderlook: the raider drawOp call now passes his spawn look (hair..tattoo, faceMark) and build; raiderLook picks build LAST (other picks unchanged, hash only, no rr); mkRaider and the joiner copy store e.build. His answer 20 (v10.18) had never reached the screen: drawOp reads looks from st, never own.
+- Review 5 (v19.82-v20.12, workflow wf_9a37929b-ed8): 6 confirmed, 4 distinct, all fixed:
+- v20.13 raiderbirth: raiders keep lx/ly (birthplace); netEntNewWord sends m.lx/m.ly; netEntFill hashes raiderLook at the birthplace (wave pillagers had different looks on the joined window).
+- v20.14 jigcrouch: bodyJiggle fed ty-y-lift (bob only); v clamped to +-60.
+- v20.15 rosemask: no rose mouth under hat mask/spartan/ghostmask. mkfixture retarget: the v20.01 check pins cosHat none (the gate profile can wear a mask).
+- v20.16 longhair: non-hero long cut on Curved = shorter back mass plus side locks, off the chest.
