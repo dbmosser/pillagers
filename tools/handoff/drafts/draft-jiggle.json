@@ -1,0 +1,32 @@
+{
+    "title":  "A CURVED BODY MOVES",
+    "why":  "His order of 2026-10-08: add jiggle physics if possible. A small damped spring for the chest and the hips of a Curved body: when the torso changes speed, at each footfall, a start, a stop or a landing, they keep going for a moment and settle back. It is drawing only, never part of the game simulation or its dice, and it works in the raid and on the Undercroft floor.",
+    "now":  "A Curved body has jiggle when it moves.",
+    "edits":  [
+                  {
+                      "anchor":  "function buildPath(cx,ty,P,grow){",
+                      "replacement":  "// v16.xx, HIS ORDER (2026-10-08): \"add jiggle physics if possible\". A small damped spring for the chest and the hips of a Curved\n// body: when the torso changes speed (each footfall, a start, a stop, a landing) they keep going for a moment and settle back.\n// Kept on the figure\u0027s own object, as the hair sway is. Cosmetic only: it never runs in the sim steppers and draws no random\n// numbers. A second draw in the same frame (the see-through ghost) reuses that frame\u0027s pose rather than stepping again.\nvar JIG0={c:0,h:0}, HUBOWN={wep:null};\nfunction bodyJiggle(o,ty,now){\n  if(!o||typeof o!==\u0027object\u0027) return JIG0;\n  var J=o._jg, dt, v, a;\n  if(!J) J=o._jg={c:0,h:0,vc:0,vh:0,py:ty,pv:0,t:0};\n  if(now===undefined) now=(typeof performance!==\u0027undefined\u0027\u0026\u0026performance.now)?performance.now():0;\n  dt=(now-J.t)/1000;\n  if(!J.t||dt\u003e0.25||!isFinite(ty)){ J.t=now; J.py=ty; J.pv=0; J.c=J.h=J.vc=J.vh=0; return J; }\n  if(dt\u003c0.004) return J;\n  J.t=now; v=(ty-J.py)/dt; a=v-J.pv; J.py=ty; J.pv=v;\n  if(a\u003e400) a=400; else if(a\u003c-400) a=-400;\n  J.vc-=a*0.40; J.vh-=a*0.26;\n  J.vc+=(-320*J.c-9*J.vc)*dt; J.c+=J.vc*dt;\n  J.vh+=(-240*J.h-9*J.vh)*dt; J.h+=J.vh*dt;\n  if(J.c\u003e1.5){ J.c=1.5; J.vc=0; } else if(J.c\u003c-1.5){ J.c=-1.5; J.vc=0; }\n  if(J.h\u003e0.9){ J.h=0.9; J.vh=0; } else if(J.h\u003c-0.9){ J.h=-0.9; J.vh=0; }\n  return J;\n}\nvar BUILD_CPT=BUILD_CURVED.map(function(p){ return p.slice(); });   // the Curved outline with the hips where the spring has them\nfunction buildPath(cx,ty,P,grow){"
+                  },
+                  {
+                      "anchor":  "  var P=(b===\u0027broad\u0027)?BUILD_BROAD:BUILD_CURVED, by, sh, bl;",
+                      "replacement":  "  var P=(b===\u0027broad\u0027)?BUILD_BROAD:BUILD_CURVED, by, sh, bl;\n  if(b===\u0027curved\u0027\u0026\u0026jh){ BUILD_CPT[4][1]=BUILD_CURVED[4][1]+jh*.6; BUILD_CPT[5][1]=BUILD_CURVED[5][1]+jh*.4; P=BUILD_CPT; }   // v16.xx: the hips ride the spring"
+                  },
+                  {
+                      "anchor":  "  var _BID=st.hero?cosWorn(\u0027build\u0027):(st.build||\u0027lean\u0027), _BLD=(_BID===\u0027broad\u0027||_BID===\u0027curved\u0027)?_BID:null;",
+                      "replacement":  "  var _BID=st.hero?cosWorn(\u0027build\u0027):(st.build||\u0027lean\u0027), _BLD=(_BID===\u0027broad\u0027||_BID===\u0027curved\u0027)?_BID:null, _JG=(_BLD===\u0027curved\u0027)?bodyJiggle(st.own,ty):JIG0;"
+                  },
+                  {
+                      "anchor":  "drawBuildTorso(_BLD,x+leanX,ty,cc,cHi,cLo,_TRS,0,0,x,swing*.5,swing2*.5);",
+                      "replacement":  "drawBuildTorso(_BLD,x+leanX,ty,cc,cHi,cLo,_TRS,_JG.c,_JG.h,x,swing*.5,swing2*.5);"
+                  },
+                  {
+                      "anchor":  "        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,\n         own:{wep:null}});",
+                      "replacement":  "        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,\n         own:HUBOWN});   // v16.xx: one own object on the floor, so the jiggle spring has a home"
+                  },
+                  {
+                      "anchor":  "        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}});",
+                      "replacement":  "        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,own:HUBOWN});"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a Curved body jiggles and settles: when the torso jumps the chest spring moves, and after two seconds still it is back at rest\u0027,\n   run:function(){\n     if(typeof bodyJiggle!==\u0027function\u0027) return \u0027control: there is no jiggle spring in this build\u0027;\n     var o={}, t=1000, i, J, peak=0, bad=[];\n     J=bodyJiggle(o,100,t);\n     for(i=0;i\u003c10;i++){ t+=16.7; J=bodyJiggle(o,100,t); }\n     if(Math.abs(J.c)\u003e0.001) bad.push(\u0027a still body jiggles (\u0027+J.c.toFixed(3)+\u0027)\u0027);\n     for(i=0;i\u003c6;i++){ t+=16.7; J=bodyJiggle(o,100-i*2.5,t); peak=Math.max(peak,Math.abs(J.c)); }\n     for(i=0;i\u003c6;i++){ t+=16.7; J=bodyJiggle(o,85,t); peak=Math.max(peak,Math.abs(J.c)); }\n     if(!(peak\u003e0.2)) bad.push(\u0027the chest did not move when the torso jumped (peak \u0027+peak.toFixed(3)+\u0027)\u0027);\n     for(i=0;i\u003c120;i++){ t+=16.7; J=bodyJiggle(o,85,t); }\n     if(!(Math.abs(J.c)\u003c0.05\u0026\u0026Math.abs(J.h)\u003c0.05)) bad.push(\u0027the spring did not settle (\u0027+J.c.toFixed(3)+\u0027, \u0027+J.h.toFixed(3)+\u0027)\u0027);\n     var J2=bodyJiggle(o,85,t+1);\n     if(J2!==J||J2.c!==J.c) bad.push(\u0027a second draw in the same frame stepped the spring\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

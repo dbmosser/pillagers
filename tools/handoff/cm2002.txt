@@ -1,0 +1,7 @@
+v20.02: a curved body moves
+
+A Curved body has jiggle when it moves.
+
+Check 20.02. Fails on v20.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

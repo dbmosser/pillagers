@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.01';
+var VER='20.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22725,6 +22725,29 @@ function drawLift(v){ return (isFinite(v)&&v>0)?Math.min(v,DRAW_LIFT_MAX):0; }
 var BUILD_BROAD=[[3.6,-23.8],[8.9,-23.0],[9.1,-19.4],[7.4,-14.6],[6.9,-10.6],[2.2,-10.2]];
 var BUILD_CURVED=[[3.0,-23.4],[6.0,-22.8],[7.8,-18.6],[4.1,-14.9],[8.7,-11.8],[7.3,-9.8],[0.8,-10.8]];
 var BUILD_Q=[]; (function(){ for(var i=0;i<16;i++) BUILD_Q.push([0,0]); })();
+// v20.02, HIS ORDER (2026-10-08): "add jiggle physics if possible". A small damped spring for the chest and the hips of a Curved
+// body: when the torso changes speed (each footfall, a start, a stop, a landing) they keep going for a moment and settle back.
+// Kept on the figure's own object, as the hair sway is. Cosmetic only: it never runs in the sim steppers and draws no random
+// numbers. A second draw in the same frame (the see-through ghost) reuses that frame's pose rather than stepping again.
+var JIG0={c:0,h:0}, HUBOWN={wep:null};
+function bodyJiggle(o,ty,now){
+  if(!o||typeof o!=='object') return JIG0;
+  var J=o._jg, dt, v, a;
+  if(!J) J=o._jg={c:0,h:0,vc:0,vh:0,py:ty,pv:0,t:0};
+  if(now===undefined) now=(typeof performance!=='undefined'&&performance.now)?performance.now():0;
+  dt=(now-J.t)/1000;
+  if(!J.t||dt>0.25||!isFinite(ty)){ J.t=now; J.py=ty; J.pv=0; J.c=J.h=J.vc=J.vh=0; return J; }
+  if(dt<0.004) return J;
+  J.t=now; v=(ty-J.py)/dt; a=v-J.pv; J.py=ty; J.pv=v;
+  if(a>400) a=400; else if(a<-400) a=-400;
+  J.vc-=a*0.40; J.vh-=a*0.26;
+  J.vc+=(-320*J.c-9*J.vc)*dt; J.c+=J.vc*dt;
+  J.vh+=(-240*J.h-9*J.vh)*dt; J.h+=J.vh*dt;
+  if(J.c>1.5){ J.c=1.5; J.vc=0; } else if(J.c<-1.5){ J.c=-1.5; J.vc=0; }
+  if(J.h>0.9){ J.h=0.9; J.vh=0; } else if(J.h<-0.9){ J.h=-0.9; J.vh=0; }
+  return J;
+}
+var BUILD_CPT=BUILD_CURVED.map(function(p){ return p.slice(); });   // the Curved outline with the hips where the spring has them
 function buildPath(cx,ty,P,grow){
   var n=P.length*2, i, j, a, b2, Q=BUILD_Q;
   for(i=0;i<P.length;i++){ Q[i][0]=cx-P[i][0]-grow; Q[i][1]=ty+P[i][1]+(i===0?-grow:(i===P.length-1?grow:0)); }
@@ -22735,6 +22758,7 @@ function buildPath(cx,ty,P,grow){
 }
 function drawBuildTorso(b,cx,ty,cc,cHi,cLo,trs,jc,jh,lx,lA,lB){
   var P=(b==='broad')?BUILD_BROAD:BUILD_CURVED, by, sh, bl;
+  if(b==='curved'&&jh){ BUILD_CPT[4][1]=BUILD_CURVED[4][1]+jh*.6; BUILD_CPT[5][1]=BUILD_CURVED[5][1]+jh*.4; P=BUILD_CPT; }   // v20.02: the hips ride the spring
   buildPath(cx,ty,P,1); wc.fillStyle=INK; wc.fill();
   buildPath(cx,ty,P,0); wc.save(); wc.clip();
   wc.fillStyle=cc; wc.fillRect(cx-11,ty-25,22,17);
@@ -22801,7 +22825,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // free, and computing cc first keeps the invulnerable override working across
   // every band instead of leaving a seam.
   var OUTF=outfitOf(st);   // v10.54: an outfit overrules the racks below
-  var _BID=st.hero?cosWorn('build'):(st.build||'lean'), _BLD=(_BID==='broad'||_BID==='curved')?_BID:null;   // v20.01: the body's build
+  var _BID=st.hero?cosWorn('build'):(st.build||'lean'), _BLD=(_BID==='broad'||_BID==='curved')?_BID:null, _JG=(_BLD==='curved')?bodyJiggle(st.own,ty):JIG0;   // v20.01: the body's build
   var cc=iv>0?'#2a6a5e':(OUTF?OUTF.coat:(st.hero?((FITCOL[cosWorn('fit')]||FITCOL.slate)[1]):coat)),cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);
   // Each leg gets its own ink plate, and the boots keep a real gap between them.
   // Drawn as one flush block they read as a single slab, which is the one place
@@ -22844,7 +22868,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);
   wc.fillStyle=cHi; wc.fillRect(x-5.7+leanX,ty-22,11.4,3);
   wc.fillStyle=cLo; wc.fillRect(x-5.7+leanX,ty-13.4,11.4,2.4);
-  } else drawBuildTorso(_BLD,x+leanX,ty,cc,cHi,cLo,_TRS,0,0,x,swing*.5,swing2*.5);   // v20.01: Broad and Curved draw their own body
+  } else drawBuildTorso(_BLD,x+leanX,ty,cc,cHi,cLo,_TRS,_JG.c,_JG.h,x,swing*.5,swing2*.5);   // v20.01: Broad and Curved draw their own body
   // v11.06, HIS NOTE 20: the jersey used to be painted HERE, before the chest
   // rig, so the rig's near-black band was laid across the lower half of the
   // numeral. It goes on after the rig now, a dozen lines down.
@@ -32372,7 +32396,7 @@ function drawHubWorld(dt){
       drawOp(p.x,p.y,p.face,(p.rollT>0)?(1-p.rollT/.38)*12.6:p.bob,'#242832',clamp(P.stash.length/24,0,1),0,
         (p.rollT>0)?'roll':'none',0,
         {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,
-         own:{wep:null}});
+         own:HUBOWN});   // v20.02: one own object on the floor, so the jiggle spring has a home
     }
   }
   // v10.51, HIS NOTE: "WEIRD COLLISION IN UNDERCROFT, ONLY HAPPENS WHEN PLAYER
@@ -32399,7 +32423,7 @@ function drawHubWorld(dt){
       // v13.08: and the same for the ghost of him, which is the same man.
       drawOp(p.x,p.y,p.face,(p.rollT>0)?(1-p.rollT/.38)*12.6:p.bob,'#9fd8ff',0,0,
         (p.rollT>0)?'roll':'none',0,
-        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}});
+        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,own:HUBOWN});
       wc.restore();
     }
   }
@@ -33563,7 +33587,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.01: Lean, Broad and Curved now change your body; Curved is clearly a woman. Check 20.01 fails on v20.00',
+  now:'v20.02: A Curved body has jiggle when it moves. Check 20.02 fails on v20.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

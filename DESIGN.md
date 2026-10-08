@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.02 - A CURVED BODY MOVES
+
+Co-op hunt while he was away. His order of 2026-10-08: add jiggle physics if possible. A small damped spring for the chest and the hips of a Curved body: when the torso changes speed, at each footfall, a start, a stop or a landing, they keep going for a moment and settle back. It is drawing only, never part of the game simulation or its dice, and it works in the raid and on the Undercroft floor.
+
+MEASURED. Check 20.02 passes, and fails on v20.01.
 ## v20.01 - THE BUILD CHANGES YOUR BODY
 
 Co-op hunt while he was away. His order of 2026-10-08: build should change your character, Curved clearly female with larger chest and hips. The BUILD row in FASHION had never been read by the painter, so all three drew the same figure. Lean is unchanged. Broad is a V of a torso, wide at the shoulders. Curved is an hourglass: a fuller chest lit from above, a narrow waist with a belt, hips that flare past the legs with the trousers running up into them, and in the face lashes and a rose mouth so she reads at raid size. It shows everywhere you are drawn: the raid, the Undercroft and the FASHION figure.

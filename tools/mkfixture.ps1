@@ -5722,6 +5722,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.02',what:'a Curved body jiggles and settles: when the torso jumps the chest spring moves, and after two seconds still it is back at rest',
+   run:function(){
+     if(typeof bodyJiggle!=='function') return 'control: there is no jiggle spring in this build';
+     var o={}, t=1000, i, J, peak=0, bad=[];
+     J=bodyJiggle(o,100,t);
+     for(i=0;i<10;i++){ t+=16.7; J=bodyJiggle(o,100,t); }
+     if(Math.abs(J.c)>0.001) bad.push('a still body jiggles ('+J.c.toFixed(3)+')');
+     for(i=0;i<6;i++){ t+=16.7; J=bodyJiggle(o,100-i*2.5,t); peak=Math.max(peak,Math.abs(J.c)); }
+     for(i=0;i<6;i++){ t+=16.7; J=bodyJiggle(o,85,t); peak=Math.max(peak,Math.abs(J.c)); }
+     if(!(peak>0.2)) bad.push('the chest did not move when the torso jumped (peak '+peak.toFixed(3)+')');
+     for(i=0;i<120;i++){ t+=16.7; J=bodyJiggle(o,85,t); }
+     if(!(Math.abs(J.c)<0.05&&Math.abs(J.h)<0.05)) bad.push('the spring did not settle ('+J.c.toFixed(3)+', '+J.h.toFixed(3)+')');
+     var J2=bodyJiggle(o,85,t+1);
+     if(J2!==J||J2.c!==J.c) bad.push('a second draw in the same frame stepped the spring');
+     return bad.length?bad.join('; '):null; }},
   {v:'20.01',what:'the BUILD changes the body: drawn the same way, Curved flares wider than Lean at the hips with a narrower waist and a rose mouth, and Broad is wider than Lean at the shoulders',
    run:function(){
      if(typeof drawOp!=='function'||typeof COSKEY==='undefined') return 'SKIP: no painter here';

@@ -1,0 +1,5 @@
+## v20.02 - A CURVED BODY MOVES
+
+Co-op hunt while he was away. His order of 2026-10-08: add jiggle physics if possible. A small damped spring for the chest and the hips of a Curved body: when the torso changes speed, at each footfall, a start, a stop or a landing, they keep going for a moment and settle back. It is drawing only, never part of the game simulation or its dice, and it works in the raid and on the Undercroft floor.
+
+MEASURED. Check 20.02 passes, and fails on v20.01.
