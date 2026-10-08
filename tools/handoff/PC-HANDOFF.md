@@ -518,3 +518,5 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.77 keybar: .keybar words and kbd 10.5 -> 12.5px. #invkeybar holds a hidden zero-width child; count only visible items when testing for wraps.
 - v19.78 stashhelp: #stashdetail, #sellhint, #nextunlock and .fkbox b/span 11 -> 13px.
 - v19.79 beltnums: stash belt [data-plan] numbers 10.5 -> 14px empty, 12px corner number and stack count. Note: the DOM text scan skipped one-character text, which hid these.
+- v19.80 crlab: .crlab captions (PROGRESS, REWARDS, REQUIRED RESOURCES) 10.5 -> 12.5px.
+- v19.81 liftcaps: lift page SURFACE / WEATHER row names 11 -> 13px. Looked at and left: mirror tile requirement lines (11px, faded on purpose, legible at 4K; bigger would wrap more in 96px tiles).
