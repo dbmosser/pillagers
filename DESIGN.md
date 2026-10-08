@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.66 - THE BELT HINT GROWS AT 4K
+
+Co-op hunt while he was away. Found by a 4K text scan of 2026-10-08: the line over the belt (the item, [FIRE] use, [V] signal) grew only 1.3 times from 1080p to 4K, where the extraction lines above it and the rest of the HUD grow twice, so it read as small print. It now grows with the screen as well as with the slots, and the bandage bar above it reads the same size, so it still clears it.
+
+MEASURED. Check 19.66 passes, and fails on v19.65.
 ## v19.65 - A CACHE TAG CLEARS ITS OWN RING
 
 Co-op hunt while he was away. Seen on the 4K map screenshot of 2026-10-08: with the map tags grown at 4K (v19.63), a CACHE tag sat so close above its marker that the ring ran through its letters. It sits a little higher now, clear of the ring at any size.

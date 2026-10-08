@@ -1,0 +1,7 @@
+v19.66: the belt hint grows at 4k
+
+At 4K the hint over the belt is full size.
+
+Check 19.66. Fails on v19.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
