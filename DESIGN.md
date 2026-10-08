@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.48 - THE CHOIR STAYS ON ITS CACHE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The Choir pillbox is meant to stand on top of a landmark cache, THE LONG DOCK CACHE on COLD STORAGE. It was placed using a copy of where the cache box first landed, and two later steps can move the box: the one that moves loot nobody can walk to, and the one that pushes anything off an extraction pad. When either moved it, the pillbox stayed behind guarding nothing, and on COLD STORAGE that could leave it sitting on or beside the north extraction ring, sometimes the only way out still open. The pillbox now moves onto wherever its cache box finally ends up, unless that spot is right up against a wall, and nothing about how the map is rolled changes.
+
+MEASURED. Check 20.48 passes, and fails on v20.47.
 ## v20.47 - SELLING YOUR OWN KIT KEEPS WHAT YOU FOUND
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Hazard pay, the XP for the haul, a haul contract and your best haul all count what you carry out less what you carried up. Selling kit you brought up to the Peddler took it out of the backpack but still counted it as carried up, so selling 1,520 of your own Medkits and Plates and then finding 1,500 of salvage counted as finding nothing: no hazard pay, no haul XP, a failed haul card. A sale of kit you carried up now takes it off what you carried up, the reverse of buying, and lifetime earnings still count it as gone.

@@ -1,0 +1,5 @@
+## v20.48 - THE CHOIR STAYS ON ITS CACHE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The Choir pillbox is meant to stand on top of a landmark cache, THE LONG DOCK CACHE on COLD STORAGE. It was placed using a copy of where the cache box first landed, and two later steps can move the box: the one that moves loot nobody can walk to, and the one that pushes anything off an extraction pad. When either moved it, the pillbox stayed behind guarding nothing, and on COLD STORAGE that could leave it sitting on or beside the north extraction ring, sometimes the only way out still open. The pillbox now moves onto wherever its cache box finally ends up, unless that spot is right up against a wall, and nothing about how the map is rolled changes.
+
+MEASURED. Check 20.48 passes, and fails on v20.47.

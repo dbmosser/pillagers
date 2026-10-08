@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.47';
+var VER='20.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10453,7 +10453,7 @@ function buildRaid(sim){
     var use=bestSp||sp4; if(!use) return;
     var cc=mkContainer(use.x,use.y,'cache',map.districtAt?map.districtAt(use.x,use.y):-1);
     cc.cache=1; cc.tag=tag;
-    containers.push(cc); caches.push({x:use.x,y:use.y,tag:tag});
+    containers.push(cc); caches.push({x:use.x,y:use.y,tag:tag,cc:cc});   // v20.48 (H58): and the box itself, so the Choir can follow it
   }
   // v9.19, HIS INSTRUCTION: "'EXTRACT CACHE' -- confusing name -- lets call it a
   // 'ELITE CACHE'". Every other cache on the map is named for where it is; this
@@ -10974,11 +10974,16 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   // nothing is just a health bar in a field, and the cache is what turns it into
   // a question. Placed on the SECOND cache rather than the extraction one, so a
   // straight run out is still a paying run exactly as v1.75 promised.
+  // v20.48, from the whole-game bug hunt of 2026-10-08 (H58): THE CHOIR FOLLOWS ITS CACHE BOX. It was placed from a copy of where the
+  // box first landed, and the reach pass below and the pad clearance in the raid build both move only the box, so a moved cache left
+  // the pillbox guarding nothing: on COLD STORAGE about one raid in ten on or beside the north extraction ring. It is still made
+  // here, so every seeded draw stays where it was, and at the end of the build it is moved onto the box, where the box ended up.
+  var _choir=null, _choirOn=null;
   if(caches.length>1){
     var _cg=caches[1];
-    ents.push(mkChoir(_cg.x,_cg.y));
+    ents.push(_choir=mkChoir(_cg.x,_cg.y)); _choirOn=_cg.cc||null;
   } else if(caches.length){
-    ents.push(mkChoir(caches[0].x,caches[0].y));
+    ents.push(_choir=mkChoir(caches[0].x,caches[0].y)); _choirOn=caches[0].cc||null;
   }
   // SPEC 3.5: the hired mercenary drops in with you. He is a normal raider in
   // every way except that he will not shoot you and he is tracked for payout.
@@ -11361,6 +11366,10 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   // v17.36, co-op hunt 2026-09-28: every wall keeps the number it was built with, so a party can name the same wall after others
   // have fallen (the list is spliced as walls go, so an index moves). The same build numbers them the same in every window; no draw.
   for(var _wid=0;_wid<g.map.walls.length;_wid++) g.map.walls[_wid].wid=_wid;
+  // v20.48 (H58): the Choir stands on its cache box where the box ended up, unless that spot is against a wall. No draw.
+  if(_choir&&_choirOn&&(_choir.x!==_choirOn.x||_choir.y!==_choirOn.y)&&spotFree(g.map,_choirOn.x,_choirOn.y,20)){
+    _choir.x=_choir.tx=_choir.homeX=_choirOn.x; _choir.y=_choir.ty=_choir.homeY=_choirOn.y;
+  }
   return g;
 }
 function startRaid(){
@@ -33739,7 +33748,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.47: Selling your own kit at the Peddler no longer wipes out the hazard pay and XP for the loot you found. Check 20.47 fails on v20.46',
+  now:'v20.48: The Choir pillbox always stands on its cache, never on a spot the cache was moved away from. Check 20.48 fails on v20.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

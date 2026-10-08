@@ -1,0 +1,7 @@
+v20.48: the choir stays on its cache
+
+The Choir pillbox always stands on its cache, never on a spot the cache was moved away from.
+
+Check 20.48. Fails on v20.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
