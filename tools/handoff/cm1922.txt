@@ -1,0 +1,7 @@
+v19.22: the raid labels grow at 4k
+
+At 4K the hiding chip and the ring labels are readable from the couch.
+
+Check 19.22. Fails on v19.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.22 - THE RAID LABELS GROW AT 4K
+
+Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-08: the hiding chip above the weapon panel (CONCEALED, IN COVER and the rest) and the label on an extraction ring (EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN) stayed their 1080p size on a 4K screen, tiny beside the panel and the world around them. Both now grow with the screen; at 1080p nothing changes.
+
+MEASURED. Check 19.22 passes, and fails on v19.21.
 ## v19.21 - THE WHAT IS NEW CARD GROWS WITH THE SCREEN
 
 Co-op hunt while he was away. Seen on the 4K screenshot of 2026-10-08: the card that greets a returning player was drawn at its 1080p size on a 4K screen, so its words were half the height of the station names around it and hard to read from the couch (his v8.79 note was already that this text is too small). It is now drawn scaled with the screen, like the rest of the floor text; at 1080p nothing changes.
