@@ -1,0 +1,5 @@
+## v19.19 - THE STATUS ICONS KEEP OFF MOVED PANELS
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: the status column (v19.00) avoided the board only when its top was above the column and the controls list only when its top was below it, so dragging the board down, or growing or dragging the controls list up, had the icons drawn right over them. Every panel at the left is now treated the same way, and when they leave no room the column moves to their right.
+
+MEASURED. Check 19.19 passes, and fails on v19.18.

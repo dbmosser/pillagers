@@ -1,0 +1,7 @@
+v19.19: the status icons keep off moved panels
+
+Status icons never draw over a board or controls list you have moved or resized.
+
+Check 19.19. Fails on v19.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

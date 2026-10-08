@@ -1526,7 +1526,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.18';
+var VER='19.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26473,12 +26473,23 @@ function drawStatusIcons(){
   wC=(S+LH(110))*hr;                         // one column, icon and words, on screen
   ox=Math.round(9*hr);                       // the left edge the legend and the board already share
   oy=Math.round(H*0.40);                     // under the board, whose height is capped at 38 percent of the screen
-  B=HUDBOX.raiders;                          // a board dragged or grown down into the band pushes the column below it
-  if(B&&B.x<ox+wC&&B.x+B.w>ox&&B.y<=oy&&B.y+B.h+g*hr>oy) oy=Math.round(B.y+B.h+g*hr);
   if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.y+NETTEAMBOX.h+g*hr>oy) oy=Math.round(NETTEAMBOX.y+NETTEAMBOX.h+g*hr);   // v19.07: and below the teammate rows
   yBot=H-LH(8)*hr;                           // and it stops above the controls and the vitals, wherever they sit
-  B=HUDBOX.legend; if(B&&B.x<ox+wC&&B.x+B.w>ox&&B.y>oy) yBot=Math.min(yBot,B.y-g*hr);
-  B=HUDBOX.body;   if(B&&B.x<ox+wC&&B.x+B.w>ox&&B.y>oy) yBot=Math.min(yBot,B.y-LH(20)*hr);
+  // v19.19, from the review (2026-10-07): the board was avoided only when its top was above the column, and the controls list and the
+  // vitals only when their top was below it, so a board dragged down, or a list grown or dragged up, had the icons drawn over it. Every
+  // panel at the left is now treated the same, top to bottom: one that starts by the column's first row pushes the column below it, one
+  // that starts lower ends the column above it. When that leaves no room for a row, the column moves to the right of those panels.
+  var _bx=[HUDBOX.raiders,HUDBOX.legend,HUDBOX.body].filter(function(b){ return b&&b.x<ox+wC&&b.x+b.w>ox; }).sort(function(a,b){ return a.y-b.y; }), _bi, _br;
+  for(_bi=0;_bi<_bx.length;_bi++){ B=_bx[_bi];
+    if(B.y+B.h+g*hr<=oy||B.y>=yBot) continue;
+    if(B.y<=oy+S*hr/2) oy=Math.round(B.y+B.h+g*hr);
+    else yBot=Math.min(yBot,B.y-((B===HUDBOX.body)?LH(20):g)*hr);
+  }
+  if(yBot-oy<S*hr*0.6&&_bx.length){
+    _br=0; for(_bi=0;_bi<_bx.length;_bi++) _br=Math.max(_br,_bx[_bi].x+_bx[_bi].w);
+    ox=Math.round(_br+g*hr); oy=Math.round(H*0.40); yBot=H-LH(8)*hr;
+    if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.x<ox+wC&&NETTEAMBOX.x+NETTEAMBOX.w>ox&&NETTEAMBOX.y+NETTEAMBOX.h+g*hr>oy) oy=Math.round(NETTEAMBOX.y+NETTEAMBOX.h+g*hr);
+  }
   rows=Math.max(1,Math.floor((yBot-oy+g*hr)/((S+g)*hr)));   // more than fit start a second column to the right
   // v19.11, from the review (2026-10-07): with little room below the board (big text, a short window, the full controls list) rows fell to 1 and every
   // further status started a new column further right, out across the play area and off the screen. The column now shrinks to fit first
@@ -33264,7 +33275,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.18: Swapping guns on the belt says where the gun really went. Check 19.18 fails on v19.17',
+  now:'v19.19: Status icons never draw over a board or controls list you have moved or resized. Check 19.19 fails on v19.18',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
