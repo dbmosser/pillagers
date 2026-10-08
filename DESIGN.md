@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.24 - THE GAMBLER OFFER SHOWS ITS ITEM
+
+Co-op hunt while he was away. Seen on the 4K gambler screenshot of 2026-10-08: the item on the Limited Time Offer card was a 34 pixel picture beside four lines of text, a speck at the edge of the card. It is now 72 pixels on a soft dark tile, about the height of the lines beside it.
+
+MEASURED. Check 19.24 passes, and fails on v19.23.
 ## v19.23 - THE SHOP PANEL SHOWS WHAT ITEMS DO
 
 Co-op hunt while he was away. Seen on the 4K shop screenshot of 2026-10-08: a gun on the cream panel shows damage, magazine and range, but a Bandage, Medkit, plate, stim or frag showed one sentence over an empty panel. They now show their numbers: a Bandage heals 28 over 2.6 s up to 85 and takes 1.5 s to put on, a Medkit heals up to 100, a plate adds 20 armour, a stim lasts 10 s, a frag blast reaches 19 m.

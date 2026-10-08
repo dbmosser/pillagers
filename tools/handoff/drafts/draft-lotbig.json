@@ -1,0 +1,12 @@
+{
+    "title":  "THE GAMBLER OFFER SHOWS ITS ITEM",
+    "why":  "Seen on the 4K gambler screenshot of 2026-10-08: the item on the Limited Time Offer card was a 34 pixel picture beside four lines of text, a speck at the edge of the card. It is now 72 pixels on a soft dark tile, about the height of the lines beside it.",
+    "now":  "The gambler shows the item on offer big enough to see.",
+    "edits":  [
+                  {
+                      "anchor":  "  el.innerHTML=\u0027\u003cspan title=\"\u0027+escHtml(names.join(\u0027, \u0027))+\u0027\" style=\"display:inline-flex\"\u003e\u0027+iconImgHTML(k,34)+\u0027\u003c/span\u003e\u0027+",
+                      "replacement":  "  // v16.xx, seen on the 4K gambler screenshot (2026-10-08): the item on the counter was a 34 pixel picture beside four lines of text, a\n  // speck at the edge of the card. It is shown at 72, about the height of those lines, with a soft dark tile behind it.\n  el.innerHTML=\u0027\u003cspan title=\"\u0027+escHtml(names.join(\u0027, \u0027))+\u0027\" style=\"display:inline-flex;align-items:center;justify-content:center;width:84px;height:84px;flex:none;border-radius:8px;background:rgba(0,0,0,.22)\"\u003e\u0027+iconImgHTML(k,72)+\u0027\u003c/span\u003e\u0027+"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the gambler offer shows its item at a size you can see: the picture on the Limited Time Offer card is at least 64 pixels\u0027,\n   run:function(){\n     if(!window.__station||!window.__hubEnter||typeof renderWirtLot!==\u0027function\u0027) return \u0027SKIP: no offer card here\u0027;\n     var bad=[], el, im, t, b0=P.wirtLotBought, w;\n     try{\n       __topClear(); __runPrep(); __cleanProfile();\n       t=document.getElementById(\u0027title\u0027); if(t) t.classList.remove(\u0027on\u0027);\n       __hubEnter(); __station(\u0027gamble\u0027,\u0027KeyE\u0027);\n       P.wirtLotBought=-1; renderWirtLot();\n       el=document.getElementById(\u0027wirtlot\u0027); if(!el) return \u0027SKIP: no offer card\u0027;\n       im=el.querySelector(\u0027img\u0027); if(!im) return \u0027SKIP: the counter shows no item\u0027;\n       w=parseFloat(im.style.width)||im.getBoundingClientRect().width;\n       if(w\u003c64) bad.push(\u0027the offer item is drawn \u0027+w+\u0027 pixels wide\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ P.wirtLotBought=b0; __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

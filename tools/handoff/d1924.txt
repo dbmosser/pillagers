@@ -1,0 +1,5 @@
+## v19.24 - THE GAMBLER OFFER SHOWS ITS ITEM
+
+Co-op hunt while he was away. Seen on the 4K gambler screenshot of 2026-10-08: the item on the Limited Time Offer card was a 34 pixel picture beside four lines of text, a speck at the edge of the card. It is now 72 pixels on a soft dark tile, about the height of the lines beside it.
+
+MEASURED. Check 19.24 passes, and fails on v19.23.

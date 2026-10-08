@@ -1,0 +1,7 @@
+v19.24: the gambler offer shows its item
+
+The gambler shows the item on offer big enough to see.
+
+Check 19.24. Fails on v19.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

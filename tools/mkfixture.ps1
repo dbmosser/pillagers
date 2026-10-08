@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.24',what:'the gambler offer shows its item at a size you can see: the picture on the Limited Time Offer card is at least 64 pixels',
+   run:function(){
+     if(!window.__station||!window.__hubEnter||typeof renderWirtLot!=='function') return 'SKIP: no offer card here';
+     var bad=[], el, im, t, b0=P.wirtLotBought, w;
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('gamble','KeyE');
+       P.wirtLotBought=-1; renderWirtLot();
+       el=document.getElementById('wirtlot'); if(!el) return 'SKIP: no offer card';
+       im=el.querySelector('img'); if(!im) return 'SKIP: the counter shows no item';
+       w=parseFloat(im.style.width)||im.getBoundingClientRect().width;
+       if(w<64) bad.push('the offer item is drawn '+w+' pixels wide');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P.wirtLotBought=b0; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.23',what:'the shop panel shows what a heal does in numbers: with the Bandage chosen the cream panel names its heal, how long and up to 85, and a Medkit heals up to 100',
    run:function(){
      if(!window.__station||!window.__hubEnter) return 'SKIP: this fixture cannot open the shop';
