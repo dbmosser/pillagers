@@ -1,0 +1,12 @@
+{
+    "title":  "THE GUN ARM FOLLOWS THE BUILD",
+    "why":  "Following v20.01: the arm that holds the gun was the same thickness on every body. On Broad it is thicker and on Curved slimmer, so the arm matches the shoulders it hangs from; Lean is unchanged.",
+    "now":  "Broad has a thicker gun arm and Curved a slimmer one.",
+    "edits":  [
+                  {
+                      "anchor":  "  wc.fillStyle=coat; wc.fillRect(1+ext,-2.4,6,4.8);",
+                      "replacement":  "  wc.fillStyle=coat; if(_BLD===\u0027broad\u0027) wc.fillRect(1+ext,-2.9,6,5.8); else if(_BLD===\u0027curved\u0027) wc.fillRect(1+ext,-2.0,6,4.0); else wc.fillRect(1+ext,-2.4,6,4.8);   // v16.xx: a thicker arm on Broad, a slimmer one on Curved"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the gun arm follows the build: drawn with a gun at rest, the Broad sleeve is thicker than the Lean one and the Curved sleeve slimmer\u0027,\n   run:function(){\n     if(typeof drawOp!==\u0027function\u0027||typeof COSKEY===\u0027undefined\u0027) return \u0027SKIP: no painter here\u0027;\n     var k=COSKEY.build||\u0027cosBuild\u0027, b0=P[k], w0=wc, cv=document.createElement(\u0027canvas\u0027), x2, res={}, bad=[], i, b, of=null;\n     cv.width=60; cv.height=60; x2=cv.getContext(\u00272d\u0027); if(!x2) return \u0027SKIP: no canvas\u0027;\n     var oFR=x2.fillRect, rec=[];\n     x2.fillRect=function(x,y,w,h){ if(x2.fillStyle===\u0027#242832\u0027) rec.push(h); return oFR.apply(this,arguments); };\n     try{\n       for(i=0;i\u003c3;i++){ b=[\u0027lean\u0027,\u0027broad\u0027,\u0027curved\u0027][i]; P[k]=b; rec.length=0; wc=x2; drawOp(0,0,0,0,\u0027#242832\u0027,0,0,\u0027\u0027,0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); wc=w0; res[b]=rec.length?Math.max.apply(null,rec):0; }\n     }catch(e){ wc=w0; bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ wc=w0; P[k]=b0; delete x2.fillRect; }\n     if(bad.length) return bad.join(\u0027; \u0027);\n     if(!(res.lean\u003e0)) return \u0027SKIP: no sleeve was drawn\u0027;\n     if(!(res.broad\u003eres.lean\u0026\u0026res.curved\u003cres.lean)) bad.push(\u0027sleeve heights lean \u0027+res.lean+\u0027, broad \u0027+res.broad+\u0027, curved \u0027+res.curved);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

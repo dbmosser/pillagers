@@ -1,0 +1,5 @@
+## v20.10 - THE GUN ARM FOLLOWS THE BUILD
+
+Co-op hunt while he was away. Following v20.01: the arm that holds the gun was the same thickness on every body. On Broad it is thicker and on Curved slimmer, so the arm matches the shoulders it hangs from; Lean is unchanged.
+
+MEASURED. Check 20.10 passes, and fails on v20.09.

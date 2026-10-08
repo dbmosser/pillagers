@@ -1,0 +1,7 @@
+v20.10: the gun arm follows the build
+
+Broad has a thicker gun arm and Curved a slimmer one.
+
+Check 20.10. Fails on v20.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

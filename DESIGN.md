@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.10 - THE GUN ARM FOLLOWS THE BUILD
+
+Co-op hunt while he was away. Following v20.01: the arm that holds the gun was the same thickness on every body. On Broad it is thicker and on Curved slimmer, so the arm matches the shoulders it hangs from; Lean is unchanged.
+
+MEASURED. Check 20.10 passes, and fails on v20.09.
 ## v20.09 - THE UNDERCROFT CROWD HAS BUILDS
 
 Co-op hunt while he was away. Following v20.01: the people walking the Undercroft floor roll every rack for their look, but the build was left out on purpose back when a build drew nothing. Now that it changes the body, the crowd rolls it too, so the floor has Broad and Curved people in it, and the Curved ones move like yours.

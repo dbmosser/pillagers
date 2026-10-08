@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.09';
+var VER='20.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23337,7 +23337,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(_drum){ wc.fillStyle='#3c4650'; wc.beginPath(); wc.arc(7+ext,2.6,3,0,6.2832); wc.fill(); }
   if(_pump){ wc.fillStyle='#5c4a34'; wc.fillRect(7+ext,0.6,4.5,2.4); }
   if(_sc){ wc.fillStyle='#232a31'; wc.fillRect(5+ext,-3.6,5.5,2); wc.fillStyle=_rc||'#5c6773'; wc.fillRect(9.5+ext,-3.4,1.5,1.6); }
-  wc.fillStyle=coat; wc.fillRect(1+ext,-2.4,6,4.8);
+  wc.fillStyle=coat; if(_BLD==='broad') wc.fillRect(1+ext,-2.9,6,5.8); else if(_BLD==='curved') wc.fillRect(1+ext,-2.0,6,4.0); else wc.fillRect(1+ext,-2.4,6,4.8);   // v20.10: a thicker arm on Broad, a slimmer one on Curved
   if(_rc){ wc.fillStyle=_rc; wc.fillRect(7+ext,-2.3,Math.max(3,_L-5),0.9); }
   // support hand: rides the handguard, or feeds a magazine mid-reload
   if(rl>0&&reach>0){
@@ -33601,7 +33601,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.09: Some of the people in the Undercroft are Broad or Curved now. Check 20.09 fails on v20.08',
+  now:'v20.10: Broad has a thicker gun arm and Curved a slimmer one. Check 20.10 fails on v20.09',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
