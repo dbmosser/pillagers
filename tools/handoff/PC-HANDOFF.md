@@ -573,3 +573,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v20.24 askwide: askcard width fit-content (min 560, max 1000), msub max 560, buttons nowrap: the loadout question's five choices each on one line.
 - usage 18:13 weekly 38% (5h 11%): 18:00-18:13 burn ~9%/h weekly with the 10-area hunt = 8x the 1.16%/h target. Rule: workflows in bursts only; solo shipping between; re-measure ~30 min.
 - v20.25 cresbig: craft REQUIRED RESOURCES rows 16/17px with 30px pictures.
+- v20.26 statbig: YOUR STATS cards min 190px (fill the row), title 13, figure 28 (word 19), sub-line 14.
