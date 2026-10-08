@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD LEADS WITH THE CLEANER LOOK",
+    "why":  "The card was stamped v18.57 and the stamp may not trail the build by more than 0.15. Its new second line names this round of look and feel fixes (v18.59 to v18.67); the two player fixes, the icons and dropping stay in the five lines the card draws.",
+    "now":  "The what is new card names the cleaner look.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002718.57\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002718.68\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,",
+                      "replacement":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,\n  \u0027A CLEANER LOOK. The shop shows its items bigger, the sector cards and contracts read from the couch, the title buttons are solid, and the Undercroft names, top line and key footer read on any wall. The controls panel shows the keys you set. Crates dropped before player 2 joined now show for them.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and leads with the cleaner look, with the two player fixes, icons and dropping still on the card\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof WN_SHOW===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), shown=WHATSNEW.slice(0,WN_SHOW).join(\u0027 | \u0027);\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(String(WHATSNEW[1]).indexOf(\u0027A CLEANER\u0027+\u0027 LOOK\u0027)!==0) bad.push(\u0027the card does not lead with the cleaner look\u0027);\n     [[\u0027TWO PLAYERS,\u0027+\u0027 FEWER SNAGS\u0027,\u0027the two player fixes\u0027],[\u0027NEW ICONS AND\u0027+\u0027 A CLEANER HUD\u0027,\u0027the new icons\u0027],[\u0027TRADING IS\u0027+\u0027 DROPPING\u0027,\u0027dropping items\u0027]].forEach(function(n){ if(shown.indexOf(n[0])\u003c0) bad.push(\u0027the card does not show \u0027+n[1]); });\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

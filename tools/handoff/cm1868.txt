@@ -1,0 +1,7 @@
+v18.68: the what is new card leads with the cleaner look
+
+The what is new card names the cleaner look.
+
+Check 18.68. Fails on v18.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

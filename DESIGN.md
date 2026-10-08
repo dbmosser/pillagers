@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.68 - THE WHAT IS NEW CARD LEADS WITH THE CLEANER LOOK
+
+Co-op hunt while he was away. The card was stamped v18.57 and the stamp may not trail the build by more than 0.15. Its new second line names this round of look and feel fixes (v18.59 to v18.67); the two player fixes, the icons and dropping stay in the five lines the card draws.
+
+MEASURED. Check 18.68 passes, and fails on v18.67.
 ## v18.67 - THE TITLE ROWS ARE SOLID
 
 Co-op hunt while he was away. Seen on the title screenshot of 2026-10-07: the title draws the Undercroft behind it, and its mode rows (2 PLAYER CO-OP and the rest) and save rows were see-through, so characters walking the floor showed inside the buttons, a head in the middle of 2 PLAYER CO-OP. The rows have a dark fill now; the gold outlines and words are unchanged.

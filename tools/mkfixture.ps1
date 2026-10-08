@@ -5721,6 +5721,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.68',what:'the what is new card is stamped within 0.15 of the build and leads with the cleaner look, with the two player fixes, icons and dropping still on the card',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof WN_SHOW==='undefined') return 'SKIP: this build has no what is new card';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), shown=WHATSNEW.slice(0,WN_SHOW).join(' | ');
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('A CLEANER'+' LOOK')!==0) bad.push('the card does not lead with the cleaner look');
+     [['TWO PLAYERS,'+' FEWER SNAGS','the two player fixes'],['NEW ICONS AND'+' A CLEANER HUD','the new icons'],['TRADING IS'+' DROPPING','dropping items']].forEach(function(n){ if(shown.indexOf(n[0])<0) bad.push('the card does not show '+n[1]); });
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.67',what:'the title rows are solid: the mode rows and the saves rows have a dark fill, so the Undercroft behind the title does not show through them',
    run:function(){
      var b=document.getElementById('modecoop'), bad=[], a, r;
