@@ -5721,6 +5721,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.81',what:'the lift page row names are readable: SURFACE and WEATHER beside the day and weather buttons are drawn at 13px or more',
+   run:function(){
+     var bad=[], a=document.querySelector('#sectorcond > span'), b=document.querySelector('#sectorwx > span');
+     if(!a||!b) return 'SKIP: no surface or weather row here';
+     [a,b].forEach(function(s){ var f=parseFloat(getComputedStyle(s).fontSize); if(!(f>=12.9)) bad.push(s.textContent.trim()+' is '+f+'px'); });
+     return bad.length?bad.join('; '):null; }},
   {v:'19.80',what:'the section captions on the cream cards are readable: PROGRESS and REWARDS on the Mainframe card are drawn at 12.5px or more',
    run:function(){
      if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the Mainframe';

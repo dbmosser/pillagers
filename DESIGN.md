@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.81 - THE LIFT ROW NAMES ARE READABLE
+
+Co-op hunt while he was away. Found by the 4K menu text scan of 2026-10-08: on the lift page the names of the two choice rows, SURFACE (day or night) and WEATHER, were 11 pixels beside 14 pixel hints, the smallest print on the page. They are 13 now.
+
+MEASURED. Check 19.81 passes, and fails on v19.80.
 ## v19.80 - THE CARD CAPTIONS ARE READABLE
 
 Co-op hunt while he was away. Seen on the 4K Mainframe screenshot of 2026-10-08: the small captions on the cream cards (PROGRESS and REWARDS on a contract, REQUIRED RESOURCES on a recipe) were 10.5 pixels, the smallest print left on the Mainframe. They are 12.5 now.

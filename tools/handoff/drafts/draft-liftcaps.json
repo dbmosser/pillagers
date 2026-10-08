@@ -1,0 +1,16 @@
+{
+    "title":  "THE LIFT ROW NAMES ARE READABLE",
+    "why":  "Found by the 4K menu text scan of 2026-10-08: on the lift page the names of the two choice rows, SURFACE (day or night) and WEATHER, were 11 pixels beside 14 pixel hints, the smallest print on the page. They are 13 now.",
+    "now":  "SURFACE and WEATHER on the lift page are easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "    \u003cspan style=\"font-size:11px;letter-spacing:.14em;color:var(--ash)\"\u003eSURFACE\u003c/span\u003e",
+                      "replacement":  "    \u003c!-- v16.xx, seen on a 4K menu text scan (2026-10-08): SURFACE and WEATHER were 11px beside 14px hints; 13 now --\u003e\n    \u003cspan style=\"font-size:13px;letter-spacing:.14em;color:var(--ash)\"\u003eSURFACE\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cspan style=\"font-size:11px;letter-spacing:.14em;color:var(--ash)\"\u003eWEATHER\u003c/span\u003e",
+                      "replacement":  "    \u003cspan style=\"font-size:13px;letter-spacing:.14em;color:var(--ash)\"\u003eWEATHER\u003c/span\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the lift page row names are readable: SURFACE and WEATHER beside the day and weather buttons are drawn at 13px or more\u0027,\n   run:function(){\n     var bad=[], a=document.querySelector(\u0027#sectorcond \u003e span\u0027), b=document.querySelector(\u0027#sectorwx \u003e span\u0027);\n     if(!a||!b) return \u0027SKIP: no surface or weather row here\u0027;\n     [a,b].forEach(function(s){ var f=parseFloat(getComputedStyle(s).fontSize); if(!(f\u003e=12.9)) bad.push(s.textContent.trim()+\u0027 is \u0027+f+\u0027px\u0027); });\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
