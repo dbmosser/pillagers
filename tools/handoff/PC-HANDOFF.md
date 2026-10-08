@@ -536,3 +536,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - mkfixture retarget (no build): v11.52's right-edge allowance (48 px) now scales with #topright's menu zoom; at 4K scale 2.47 the readout's 20 css px is 49 screen px. It failed in corpus-night too, before v19.73.
 - tools/corpus-slices.sh + tools/pause.ps1 added: polls wait 150 s (v8.82 runs 70 s without yielding; a TIMEOUT poll is not a hang).
 - v19.94 pausewide: pauseFrameFit also sets --pbw (widest visible child offsetWidth + 96, min 780); the floor's three buttons all but touched the 780 frame.
+- v19.95 titlepad: title key row gets class kbrow and a .padrow twin (L STICK, R STICK, RT, B, X, VIEW, D-UP hold, MENU); CSS swaps them on body.padon; padBodyCls rewrites #invkeybarpad and every .padrow through padB.
