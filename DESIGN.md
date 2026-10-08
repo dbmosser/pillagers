@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.94 - THE PAUSE BOX FRAME IS WIDE ENOUGH
+
+Co-op hunt while he was away. Seen on the 4K Undercroft pause screenshot of 2026-10-08: on the floor the pause box shows three buttons (RETURN TO THE UNDERCROFT, SETTINGS, RETURN TO CHARACTER SELECTION) and the row all but touched the sides of the fixed 780 pixel frame. The frame now fits the widest line in the box as well as its height (v19.90), never narrower than before.
+
+MEASURED. Check 19.94 passes, and fails on v19.93.
 ## v19.93 - THE COLLAPSED CONTROLS HINT NAMES NO KEYBOARD KEY ON A PAD
 
 Co-op hunt while he was away. Found by the code review of 2026-10-08: v19.68 left H  full list out on a controller, but a player with three or more raids starts every raid with the panel collapsed to H  controls, and the full list ends with H  hide; no pad button sends H. On a pad both are left out; with keyboard and mouse they are as before.

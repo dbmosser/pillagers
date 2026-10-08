@@ -1,0 +1,7 @@
+v19.94: the pause box frame is wide enough
+
+The pause box frame leaves room around its buttons in the Undercroft.
+
+Check 19.94. Fails on v19.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
