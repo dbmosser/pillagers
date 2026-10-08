@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES THE CONTROLLER MENUS",
+    "why":  "The card was stamped v19.62 and the stamp may not trail the build by more than 0.15. Its new second line names the player 2 controller menus (v19.68 to v19.72); the 4K map tags, belt hint, craft numbers and the corner credits (v19.63 to v19.67, v19.73, v19.74) are in the change list.",
+    "now":  "The what is new card names the controller menus for player 2.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002719.62\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002719.75\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,",
+                      "replacement":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,\n  \u0027PLAYER 2 ON A CONTROLLER. Menus glow amber where the controller points, and the stash, pause box and controls panel show controller buttons instead of keys.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and leads with the player 2 controller news\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof WN_SHOW===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e19.75+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), shown=WHATSNEW.slice(0,WN_SHOW).join(\u0027 | \u0027);\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(String(WHATSNEW[1]).indexOf(\u0027PLAYER 2 ON\u0027+\u0027 A CONTROLLER\u0027)!==0) bad.push(\u0027the card does not lead with the player 2 controller news\u0027);\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

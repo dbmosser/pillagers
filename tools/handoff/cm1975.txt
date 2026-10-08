@@ -1,0 +1,7 @@
+v19.75: the what is new card names the controller menus
+
+The what is new card names the controller menus for player 2.
+
+Check 19.75. Fails on v19.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

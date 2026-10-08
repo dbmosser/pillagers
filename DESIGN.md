@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.75 - THE WHAT IS NEW CARD NAMES THE CONTROLLER MENUS
+
+Co-op hunt while he was away. The card was stamped v19.62 and the stamp may not trail the build by more than 0.15. Its new second line names the player 2 controller menus (v19.68 to v19.72); the 4K map tags, belt hint, craft numbers and the corner credits (v19.63 to v19.67, v19.73, v19.74) are in the change list.
+
+MEASURED. Check 19.75 passes, and fails on v19.74.
 ## v19.74 - THE CORNER CREDITS END WHERE THE HEADING ENDS
 
 Co-op hunt while he was away. Seen on the 4K settings screenshot after v19.73: with a window open the CREDITS and XP readout now sits on the heading line, but its XP ran past the end of the heading underline to almost touch the window frame. Its right edge now ends where the heading line ends.
