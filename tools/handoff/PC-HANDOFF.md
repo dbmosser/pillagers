@@ -432,3 +432,18 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v18.56 eraseblk: ERASE re-checks slotBlocked at the click.
 - v18.57 card-1857: WHATSNEW_VER 18.57; the card draws only WN_SHOW=5 lines, so the newest lines now sit right under the alpha line. Next refresh by ~18.72.
 - Harness: soak4k.ps1 now forces a 3840x2160 canvas (__forceSize); before, the D soak ran at 1886x975 when 9345 was started by cdp.ps1 -Start.
+
+## 2026-10-07 night: look and feel from screenshots (v18.58 to v18.68)
+- v18.58 crateslink: crates told to a linking window (hubDropsTell), a leaving window's crates leave the other floor (no double take), dropper may take own crate back while nobody is linked.
+- v18.59 keyprompt: keyLabel and the Undercroft footer (hubFootKeys) name remapped keys.
+- v18.60 legendfit: compact legend keys from the key map (legendKeys), word column clears the widest key (CTRL / C).
+- v18.61 stowmelee: STOWED Bare Hands shows no ammo count.
+- v18.62 hubread: Undercroft title/stats with a dark halo, #topright text-shadow, footer above the belt (hubFootY).
+- v18.63 hublabels: station name plates centred under the drawn name and as tall as the letters; the bar warning below its plate.
+- v18.64 shopicons: .vcell .ic 60% (was 44%); check 18.12 retargeted to any tile-relative size >= 44%.
+- v18.65 sectorcard: lift page sector name 28px, facts 16px.
+- v18.66 contractrows: Mainframe contract rows a few sizes up.
+- v18.67 titlesolid: title mode rows and save rows have a dark fill.
+- v18.68 card-1868: WHATSNEW_VER 18.68; next refresh by ~18.83.
+- Fixture: 17.71 restores salvagerun:kid (it left kb:1 shared, which broke 17.66); 17.66 pins kid comeback off; 16.33 finds the YOUR PARTY line anywhere.
+- Shots: tools/handoff/shots/*.jpg retaken on v18.67. Not fixed (taste or low value): station pages centre their content (safe center), Integrity vs HP wording in the backpack, map preview labels overlap on The Cold Mile.

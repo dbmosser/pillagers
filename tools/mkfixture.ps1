@@ -5721,6 +5721,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.69',what:'zone names on the sector maps never print into each other: on every sector preview no two drawn names overlap',
+   run:function(){
+     if(typeof sectorPreviewDraw!=='function'||typeof FIXED_MAPS==='undefined') return 'SKIP: no sector previews here';
+     var bad=[], mi, M, cv2, c2, boxes, i, j, A, B, n=0;
+     for(mi=0;mi<FIXED_MAPS.length;mi++){
+       M=FIXED_MAPS[mi]; if(!M||!M.zones) continue;
+       cv2=document.createElement('canvas'); cv2.width=420; cv2.height=Math.round(420*M.h/M.w); c2=cv2.getContext('2d'); boxes=[];
+       c2.fillText=function(s,x,y){ var m=CanvasRenderingContext2D.prototype.measureText.call(this,String(s)), fsz=parseFloat(String(this.font).replace(/^[^0-9]*/,''))||11; boxes.push({s:String(s),l:x-m.width/2,r:x+m.width/2,t:y-fsz*0.8,b:y+fsz*0.2}); return CanvasRenderingContext2D.prototype.fillText.apply(this,arguments); };
+       try{ sectorPreviewDraw(cv2,M); }catch(e){ bad.push(M.name+' threw: '+(e&&e.message||e)); continue; }
+       for(i=0;i<boxes.length;i++) for(j=i+1;j<boxes.length;j++){ A=boxes[i]; B=boxes[j]; n++;
+         if(A.l<B.r-1&&B.l<A.r-1&&A.t<B.b-1&&B.t<A.b-1) bad.push(M.name+': '+A.s+' prints into '+B.s); }
+     }
+     if(!n) return 'SKIP: no zone names were drawn';
+     return bad.length?bad.slice(0,4).join('; '):null; }},
   {v:'18.68',what:'the what is new card is stamped within 0.15 of the build and leads with the cleaner look, with the two player fixes, icons and dropping still on the card',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof WN_SHOW==='undefined') return 'SKIP: this build has no what is new card';

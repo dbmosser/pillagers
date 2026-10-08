@@ -1512,7 +1512,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.68';
+var VER='18.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32763,7 +32763,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.68: The what is new card names the cleaner look. Check 18.68 fails on v18.67',
+  now:'v18.69: The zone names on the sector maps are all readable. Check 18.69 fails on v18.68',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41233,7 +41233,23 @@ function sectorPreviewDraw(cv,M){
   if(M.buildings) for(i=0;i<M.buildings.length;i++){ b=M.buildings[i]; if(!b||typeof b.x!=='number'||!b.w) continue; c.fillStyle='rgba(20,24,34,.75)'; c.fillRect(ox+b.x*sc,oy+b.y*sc,b.w*sc,b.h*sc); n++; }
   if(M.landmarks) for(i=0;i<M.landmarks.length;i++){ b=M.landmarks[i]; if(!b||typeof b.x!=='number'||!b.w) continue; c.strokeStyle='rgba(255,192,74,.55)'; c.lineWidth=1; c.strokeRect(ox+b.x*sc+.5,oy+b.y*sc+.5,b.w*sc-1,b.h*sc-1); n++; }
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number'||!z.name) continue;
-    c.font='bold 11px Rubik, system-ui, sans-serif'; c.fillStyle='rgba(205,214,221,.85)'; c.textAlign='center'; c.fillText(z.name,ox+(z.x+z.w/2)*sc,oy+(z.y+z.h/2)*sc+3); }
+    // v18.69, seen on the lift screenshot (2026-10-07): every zone name was 11 pixels whatever its zone, so on The Cold Mile
+    // HOARFROST ROW, FROST YARD and BLAST LINE printed into each other. A name now shrinks to fit its zone (down to 8 pixels) and
+    // breaks onto two lines at a space if it still does not fit.
+    (function(){
+      var zw=Math.max(10,z.w*sc-6), fs=11, cx=ox+(z.x+z.w/2)*sc, cy=oy+(z.y+z.h/2)*sc, nm=String(z.name), ws, k, a1, a2, best=-1, bw=1e9, w1, w2;
+      c.fillStyle='rgba(205,214,221,.85)'; c.textAlign='center';
+      c.font='bold '+fs+'px Rubik, system-ui, sans-serif';
+      while(fs>8&&c.measureText(nm).width>zw){ fs--; c.font='bold '+fs+'px Rubik, system-ui, sans-serif'; }
+      if(c.measureText(nm).width>zw&&nm.indexOf(' ')>0){
+        ws=nm.split(' ');
+        for(k=1;k<ws.length;k++){ w1=c.measureText(ws.slice(0,k).join(' ')).width; w2=c.measureText(ws.slice(k).join(' ')).width; if(Math.max(w1,w2)<bw){ bw=Math.max(w1,w2); best=k; } }
+        a1=ws.slice(0,best).join(' '); a2=ws.slice(best).join(' ');
+        c.fillText(a1,cx,cy-fs*0.5+3); c.fillText(a2,cx,cy+fs*0.5+4);
+        return;
+      }
+      c.fillText(nm,cx,cy+3);
+    })(); }
   if(M.extracts) for(i=0;i<M.extracts.length;i++){ e=M.extracts[i]; if(!e) continue;
     c.strokeStyle='#4de3d0'; c.lineWidth=2; c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,Math.max(4,78*sc),0,6.2832); c.stroke();
     c.fillStyle='rgba(77,227,208,.25)'; c.fill(); n++; }

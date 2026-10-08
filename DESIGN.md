@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.69 - ZONE NAMES ON THE SECTOR MAPS NEVER OVERLAP
+
+Co-op hunt while he was away. Seen on the lift screenshot of 2026-10-07: the little sector maps on WHERE ARE YOU GOING print every zone name at 11 pixels whatever the size of its zone, so on The Cold Mile HOARFROST ROW, FROST YARD and BLAST LINE ran into each other. A name now shrinks to fit its zone and breaks onto two lines if it must.
+
+MEASURED. Check 18.69 passes, and fails on v18.68.
 ## v18.68 - THE WHAT IS NEW CARD LEADS WITH THE CLEANER LOOK
 
 Co-op hunt while he was away. The card was stamped v18.57 and the stamp may not trail the build by more than 0.15. Its new second line names this round of look and feel fixes (v18.59 to v18.67); the two player fixes, the icons and dropping stay in the five lines the card draws.

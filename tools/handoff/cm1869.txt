@@ -1,0 +1,7 @@
+v18.69: zone names on the sector maps never overlap
+
+The zone names on the sector maps are all readable.
+
+Check 18.69. Fails on v18.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
