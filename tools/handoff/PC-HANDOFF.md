@@ -553,3 +553,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v20.08 jigtune: the v20.02 spring rang at 2.85 Hz = the walk footfall rate (bob 9 rad/s), so it pinned its 1.5 stop. Now k 1400/1000 (about 6 Hz), damping 18/16, gain .85/.50, 16 ms substeps, fed ty-y (body bob only, not map motion). Measured in a raid: walk -0.23..0.40, sprint -0.51..0.66, settles in about 0.5 s.
 - v20.09 crowdbuild: hubRollLook rolls the build too; the crowd draw passes build:_lk.build (own:_c persists, so Curved crowd members jiggle).
 - v20.10 buildsleeve: gun sleeve 5.8 tall on Broad, 4.0 on Curved, Lean literal 4.8.
+- v20.11 buildarmour: on Curved the bulk plate is clipped to the BUILD_CURVED path (ink at grow .6, steel at grow -.4) with a moulded chest riding _JG.c; pauldrons and collar unchanged; other builds keep the box.
