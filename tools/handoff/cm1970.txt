@@ -1,0 +1,7 @@
+v19.70: the stash speaks controller on a controller
+
+On a controller the stash shows the controller buttons.
+
+Check 19.70. Fails on v19.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

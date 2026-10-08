@@ -1,0 +1,32 @@
+{
+    "title":  "THE STASH SPEAKS CONTROLLER ON A CONTROLLER",
+    "why":  "Seen on the 4K controller screenshot of 2026-10-08: on a controller (player 2 in co-op) the stash still listed the mouse and keyboard moves (DRAG, RIGHT CLICK, SHIFT, CTRL, ALT, 1-9). With a pad on, it now shows the pad row instead: D-PAD moves the highlight, A picks up and A again places (v16.79), Y opens all actions (v18.27), B backs out.",
+    "now":  "On a controller the stash shows the controller buttons.",
+    "edits":  [
+                  {
+                      "anchor":  "  .keybar{ display:flex; gap:16px; align-items:center; flex-wrap:wrap;\n    padding:7px 12px; border-top:1px solid var(--steel-hi); }",
+                      "replacement":  "  .keybar{ display:flex; gap:16px; align-items:center; flex-wrap:wrap;\n    padding:7px 12px; border-top:1px solid var(--steel-hi); }\n  /* v16.xx, seen on the 4K controller screenshot (2026-10-08): on a controller the stash still listed DRAG, RIGHT CLICK, SHIFT, CTRL\n     and ALT. While the pad is on (body.padon) the stash shows the pad\u0027s own row instead. */\n  #invkeybarpad{ display:none; }\n  body.padon #invkeybar{ display:none !important; }\n  body.padon #invkeybarpad{ display:flex; }"
+                  },
+                  {
+                      "anchor":  "        \u003cdiv\u003e\u003ckbd\u003e1-9\u003c/kbd\u003e bind to key\u003c/div\u003e\n      \u003c/div\u003e",
+                      "replacement":  "        \u003cdiv\u003e\u003ckbd\u003e1-9\u003c/kbd\u003e bind to key\u003c/div\u003e\n      \u003c/div\u003e\n      \u003c!-- v16.xx: the same row for a controller (A picks up and places, v16.79; Y opens all actions, v18.27; B backs out) --\u003e\n      \u003cdiv class=\"keybar\" id=\"invkeybarpad\"\u003e\n        \u003cdiv\u003e\u003ckbd\u003eD-PAD\u003c/kbd\u003e move the highlight\u003c/div\u003e\n        \u003cdiv\u003e\u003ckbd\u003eA\u003c/kbd\u003e pick up, A again to place\u003c/div\u003e\n        \u003cdiv\u003e\u003ckbd\u003eY\u003c/kbd\u003e all actions\u003c/div\u003e\n        \u003cdiv\u003e\u003ckbd\u003eB\u003c/kbd\u003e back\u003c/div\u003e\n      \u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "function pollPad(){",
+                      "replacement":  "// v16.xx: body.padon follows PAD.on, so the DOM menus can show the pad\u0027s own hints. Touched only when it changes.\nfunction padBodyCls(){ var on=!!(PAD\u0026\u0026PAD.on); if(PAD._bodyOn!==on){ PAD._bodyOn=on; try{ document.body.classList.toggle(\u0027padon\u0027,on); }catch(_b){} } }\nfunction pollPad(){"
+                  },
+                  {
+                      "anchor":  "  PAD.on=true;",
+                      "replacement":  "  PAD.on=true; padBodyCls();   // v16.xx: the page knows the pad is on (body.padon)"
+                  },
+                  {
+                      "anchor":  "  if(!gp){ if(PAD.on) padRelease(); PAD.on=false; PAD.prev=[]; PAD.xWas=false; PAD.xDownAt=null; PAD.xSearched=false; PAD.mx=0; PAD.my=0; return; }",
+                      "replacement":  "  if(!gp){ if(PAD.on) padRelease(); PAD.on=false; PAD.prev=[]; PAD.xWas=false; PAD.xDownAt=null; PAD.xSearched=false; PAD.mx=0; PAD.my=0; padBodyCls(); return; }"
+                  },
+                  {
+                      "anchor":  "  padRelease(); PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false;",
+                      "replacement":  "  padRelease(); PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false; padBodyCls();"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stash speaks controller on a controller: with a pad connected the stash shows the pad row (A, Y, B) instead of DRAG and RIGHT CLICK, and without one the mouse row\u0027,\n   run:function(){\n     if(typeof pollPad!==\u0027function\u0027) return \u0027SKIP: no controller poll here\u0027;\n     var kb=document.getElementById(\u0027invkeybar\u0027), bad=[], had=Object.prototype.hasOwnProperty.call(navigator,\u0027getGamepads\u0027), og=navigator.getGamepads, pb, pad, on0=PAD.on;\n     if(!kb) return \u0027SKIP: no stash key row here\u0027;\n     pad={id:\u0027Xbox Wireless Controller (STANDARD GAMEPAD)\u0027,index:0,connected:true,mapping:\u0027standard\u0027,timestamp:1,axes:[0,0,0,0],buttons:Array.apply(null,Array(17)).map(function(){ return {pressed:false,touched:false,value:0}; })};\n     try{\n       navigator.getGamepads=function(){ pad.timestamp++; return [pad,null,null,null]; };\n       pollPad();\n       pb=document.getElementById(\u0027invkeybarpad\u0027);\n       if(getComputedStyle(kb).display!==\u0027none\u0027) bad.push(\u0027with a pad on the stash still shows the mouse row\u0027);\n       if(!pb||getComputedStyle(pb).display===\u0027none\u0027) bad.push(\u0027with a pad on the stash shows no pad row\u0027);\n       navigator.getGamepads=function(){ return [null,null,null,null]; };\n       pollPad();\n       if(getComputedStyle(kb).display===\u0027none\u0027) bad.push(\u0027control: without a pad the mouse row is hidden\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ if(had) navigator.getGamepads=og; else delete navigator.getGamepads; try{ pollPad(); }catch(_p){} if(!on0){ PAD.on=false; } try{ document.body.classList.toggle(\u0027padon\u0027,!!PAD.on); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

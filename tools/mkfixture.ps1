@@ -5721,6 +5721,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.70',what:'the stash speaks controller on a controller: with a pad connected the stash shows the pad row (A, Y, B) instead of DRAG and RIGHT CLICK, and without one the mouse row',
+   run:function(){
+     if(typeof pollPad!=='function') return 'SKIP: no controller poll here';
+     var kb=document.getElementById('invkeybar'), bad=[], had=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), og=navigator.getGamepads, pb, pad, on0=PAD.on;
+     if(!kb) return 'SKIP: no stash key row here';
+     pad={id:'Xbox Wireless Controller (STANDARD GAMEPAD)',index:0,connected:true,mapping:'standard',timestamp:1,axes:[0,0,0,0],buttons:Array.apply(null,Array(17)).map(function(){ return {pressed:false,touched:false,value:0}; })};
+     try{
+       navigator.getGamepads=function(){ pad.timestamp++; return [pad,null,null,null]; };
+       pollPad();
+       pb=document.getElementById('invkeybarpad');
+       if(getComputedStyle(kb).display!=='none') bad.push('with a pad on the stash still shows the mouse row');
+       if(!pb||getComputedStyle(pb).display==='none') bad.push('with a pad on the stash shows no pad row');
+       navigator.getGamepads=function(){ return [null,null,null,null]; };
+       pollPad();
+       if(getComputedStyle(kb).display==='none') bad.push('control: without a pad the mouse row is hidden');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(had) navigator.getGamepads=og; else delete navigator.getGamepads; try{ pollPad(); }catch(_p){} if(!on0){ PAD.on=false; } try{ document.body.classList.toggle('padon',!!PAD.on); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.69',what:'the controller focus is easy to see: a focused element has a 3px amber outline, a glow, and full strength even when faded',
    run:function(){
      var m=document.createElement('div'), el=document.createElement('div'), bad=[], s;

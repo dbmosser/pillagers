@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.70 - THE STASH SPEAKS CONTROLLER ON A CONTROLLER
+
+Co-op hunt while he was away. Seen on the 4K controller screenshot of 2026-10-08: on a controller (player 2 in co-op) the stash still listed the mouse and keyboard moves (DRAG, RIGHT CLICK, SHIFT, CTRL, ALT, 1-9). With a pad on, it now shows the pad row instead: D-PAD moves the highlight, A picks up and A again places (v16.79), Y opens all actions (v18.27), B backs out.
+
+MEASURED. Check 19.70 passes, and fails on v19.69.
 ## v19.69 - THE CONTROLLER FOCUS IS EASY TO SEE
 
 Co-op hunt while he was away. Seen on the 4K controller screenshot of 2026-10-08: the ring that shows where the controller is pointing in menus (v6.84, meant to be found at a glance) was a 2 pixel line, easy to lose on a TV, and on an empty slot, which is drawn faded, it came out a dim brown. It is thicker now, with a brighter ring and a soft glow, and the focused thing is always at full strength.
