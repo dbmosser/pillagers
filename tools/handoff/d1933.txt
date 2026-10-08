@@ -1,0 +1,5 @@
+## v19.33 - THE MAP WEATHER LINE KEEPS A CLEAR GAP
+
+Co-op hunt while he was away. Seen on the 4K map screenshot after v19.32: the time and weather line now ended left of the credits readout, but 14 pixels away, which beside the big 900 at 4K still read as touching. The gap is now about a word wide, growing with the text.
+
+MEASURED. Check 19.33 passes, and fails on v19.32.

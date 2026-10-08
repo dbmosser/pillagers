@@ -1,0 +1,7 @@
+v19.33: the map weather line keeps a clear gap
+
+The time and weather on the sector map stand clear of the credits.
+
+Check 19.33. Fails on v19.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.33 - THE MAP WEATHER LINE KEEPS A CLEAR GAP
+
+Co-op hunt while he was away. Seen on the 4K map screenshot after v19.32: the time and weather line now ended left of the credits readout, but 14 pixels away, which beside the big 900 at 4K still read as touching. The gap is now about a word wide, growing with the text.
+
+MEASURED. Check 19.33 passes, and fails on v19.32.
 ## v19.32 - THE MAP WEATHER LINE CLEARS THE CREDITS
 
 Co-op hunt while he was away. Seen on the 4K map screenshot of 2026-10-08: the time and weather line at the top right of the sector map (8am Clear) ends at the map edge, which on a big screen sits under the credits and XP readout, so the two ran into each other. When the readout covers the end of the line, the line now ends just left of it.
