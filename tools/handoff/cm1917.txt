@@ -1,0 +1,7 @@
+v19.17: the fashion previews are sharp at 4k
+
+FASHION pictures are crisp on a 4K screen.
+
+Check 19.17. Fails on v19.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

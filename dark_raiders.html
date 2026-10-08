@@ -1526,7 +1526,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.16';
+var VER='19.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33255,7 +33255,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.16: Scrolling the FASHION slot list keeps the panel frame and heading still. Check 19.16 fails on v19.15',
+  now:'v19.17: FASHION pictures are crisp on a 4K screen. Check 19.17 fails on v19.16',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -43114,9 +43114,10 @@ function outfitPreviewURL(id){
   if(typeof drawOp!=='function'||typeof P==='undefined'||!P) return '';
   k=COSKEY.outfit;
   prevCacheGuard();   // v19.13: one look's pictures at a time
-  key=id+'|'+['skin','build','hair','cut','hat','eyes','beard','pack','boots','gloves','fit','face'].map(function(s){ try{ return cosWorn(s); }catch(_w){ return ''; } }).join(',');
+  var q=prevQ();   // v19.17: painted at the size it is shown
+  key=id+'|q'+q+'|'+['skin','build','hair','cut','hat','eyes','beard','pack','boots','gloves','fit','face'].map(function(s){ try{ return cosWorn(s); }catch(_w){ return ''; } }).join(',');
   hit=OUTPREV[key]; if(hit!==undefined) return hit;
-  cv2=document.createElement('canvas'); cv2.width=128; cv2.height=128; x2=cv2.getContext('2d');
+  cv2=document.createElement('canvas'); cv2.width=Math.round(128*q); cv2.height=Math.round(128*q); x2=cv2.getContext('2d');
   if(!x2) return '';
   keepW=wc; keepO=P[k]; keepOwned=cosOwned;
   try{
@@ -43125,11 +43126,10 @@ function outfitPreviewURL(id){
     // 1.4 with room all round, measured (the rows with paint in them), then painted again scaled so it stands 112 of the 128 pixels, head to boots,
     // whatever the outfit, hat or hair adds on top.
     wc=x2;
-    var _paint=function(s,ty){ x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,128,128); x2.translate(64,ty); x2.scale(s,s); drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); };
+    var _paint=function(s,ty){ x2.setTransform(q,0,0,q,0,0); x2.clearRect(0,0,128,128); x2.translate(64,ty); x2.scale(s,s); drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); };
     _paint(1.4,96);
     (function(){ var dd, yy, xx, top=999, bot=-1, up, dn, s1;
-      try{ dd=x2.getImageData(0,0,128,128).data; }catch(_g){ return; }
-      for(yy=0;yy<128;yy++){ for(xx=0;xx<128;xx++){ if(dd[(yy*128+xx)*4+3]>40){ if(yy<top) top=yy; bot=yy; break; } } }
+      try{ dd=prevRows(x2); }catch(_g){ return; } top=dd.top; bot=dd.bot;
       if(bot<0||top<=0||bot>=127) return;
       up=(96-top)/1.4; dn=(bot-96)/1.4;
       if(!(up+dn>4)) return;
@@ -43155,13 +43155,20 @@ var COSPREV={};
 var PREVLOOK=null;
 function prevCacheGuard(){ var lk=''; try{ lk=cosLookKey(); }catch(_lk){ return; } if(lk!==PREVLOOK){ COSPREV={}; OUTPREV={}; PREVLOOK=lk; } }
 function cosLookKey(){ return ['outfit','skin','build','hair','cut','hat','eyes','beard','pack','boots','gloves','fit','face','tattoo','patch'].map(function(s){ try{ return cosWorn(s); }catch(_w){ return ''; } }).join(','); }
-function cosPreviewPaint(x2,s,ty){ x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,128,128); x2.translate(64,ty); x2.scale(s,s); drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); }
+// v19.17, from the review (2026-10-07): the previews were painted at 128 pixels and shown 64 wide under the menu zoom, about 158 screen
+// pixels at 4K and up to 267 at the biggest menu size, so they came out soft beside the stash icons. They are now painted at the size
+// they are shown (in quarter steps, at most three times), still laid out on the same 128 grid, so nothing moves; at 1080p nothing changes.
+function prevQ(){ var z=1, d=1, q; try{ z=menuScale(); }catch(_z){} try{ d=window.devicePixelRatio||1; }catch(_d){} q=Math.ceil(64*z*d/128*4)/4; return (q>1)?Math.min(3,q):1; }
+// The rows a preview canvas has paint in, in its 128 grid, whatever size it is painted at.
+function prevRows(x2){ var c=x2.canvas, w=c.width, h=c.height, q=w/128, dd=x2.getImageData(0,0,w,h).data, yy, xx, top=999, bot=-1;
+  for(yy=0;yy<h;yy++){ for(xx=0;xx<w;xx++){ if(dd[(yy*w+xx)*4+3]>40){ if(yy<top) top=yy; bot=yy; break; } } }
+  return (bot<0)?{top:999,bot:-1}:{top:Math.floor(top/q),bot:Math.floor(bot/q)}; }
+function cosPreviewPaint(x2,s,ty){ var q=x2.canvas.width/128; x2.setTransform(q,0,0,q,0,0); x2.clearRect(0,0,128,128); x2.translate(64,ty); x2.scale(s,s); drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); }
 function cosPreviewBox(cv2,x2){
   var lk=cosLookKey(), b=COSPREV['box|'+lk], dd, yy, xx, top=999, bot=-1;
   if(b) return b;
   cosPreviewPaint(x2,1.4,96);
-  try{ dd=x2.getImageData(0,0,128,128).data; }catch(_g){ return {up:30,dn:2}; }
-  for(yy=0;yy<128;yy++){ for(xx=0;xx<128;xx++){ if(dd[(yy*128+xx)*4+3]>40){ if(yy<top) top=yy; bot=yy; break; } } }
+  try{ dd=prevRows(x2); }catch(_g){ return {up:30,dn:2}; } top=dd.top; bot=dd.bot;
   b=(bot<0)?{up:30,dn:2}:{up:(96-top)/1.4,dn:Math.max(0,(bot-96)/1.4)};
   COSPREV['box|'+lk]=b;
   return b;
@@ -43170,8 +43177,9 @@ function cosPreviewURL(kind,id){
   var key, hit, cv2, x2, keepW, keepV, keepOwned, ck=COSKEY[kind], b, s, hh;
   if(!ck||typeof drawOp!=='function'||typeof P==='undefined'||!P) return '';
   prevCacheGuard();   // v19.13: one look's pictures at a time
-  key=kind+':'+id+'|'+cosLookKey(); hit=COSPREV[key]; if(hit!==undefined) return hit;
-  cv2=document.createElement('canvas'); cv2.width=128; cv2.height=128; x2=cv2.getContext('2d');
+  var q=prevQ();   // v19.17: painted at the size it is shown
+  key=kind+':'+id+'|q'+q+'|'+cosLookKey(); hit=COSPREV[key]; if(hit!==undefined) return hit;
+  cv2=document.createElement('canvas'); cv2.width=Math.round(128*q); cv2.height=Math.round(128*q); x2=cv2.getContext('2d');
   if(!x2) return '';
   keepW=wc; keepV=P[ck]; keepOwned=cosOwned;
   // v19.09, from the review (2026-10-07): an outfit overrules hat, beard, hairstyle, face, tattoo and clothing when drawn, so while

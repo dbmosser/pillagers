@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.17 - THE FASHION PREVIEWS ARE SHARP AT 4K
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: the FASHION previews of v18.79 and v18.82 were painted 128 pixels across and shown under the menu zoom, about 158 screen pixels at 4K and more at a bigger menu size, so the outfit, face, hat and hairstyle pictures came out blurry next to the stash icons. They are now painted at the size they are shown, on the same layout, so at 4K they are crisp; at 1080p nothing changes.
+
+MEASURED. Check 19.17 passes, and fails on v19.16.
 ## v19.16 - THE FASHION OPERATOR PANEL KEEPS ITS FRAME
 
 Co-op hunt while he was away. Found by the review of 2026-10-07: since v18.81 the Your operator panel in FASHION scrolled as a whole, so its thin inner frame line scrolled with it, the top edge vanished and the bottom edge rose up through the slot rows. An inner box now scrolls instead, the way the racks do, so the frame and the heading stay put.
