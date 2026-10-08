@@ -1,0 +1,16 @@
+{
+    "title":  "THE RUN CARD BUTTON STRIP SITS ON THE EDGE",
+    "why":  "Seen on the 4K death card screenshot after v19.36: the pinned button row stopped at the card inner padding, 26 pixels short of its bottom edge, and on a card that scrolls the note box showed in that band under the two buttons. The card has no bottom padding now (the space moved to its last line, so a short card looks the same) and the row sits on the edge.",
+    "now":  "Nothing shows under the run card buttons on a long card.",
+    "edits":  [
+                  {
+                      "anchor":  "    padding:30px 52px 26px; border-radius:6px; max-width:880px; max-height:86vh;",
+                      "replacement":  "    padding:30px 52px 0; border-radius:6px; max-width:880px; max-height:86vh;   /* v16.xx: no bottom padding, so the pinned button row sits on the card edge (its 26px moved to the last line) */"
+                  },
+                  {
+                      "anchor":  "  \u003cdiv style=\"font-size:11px;color:var(--ash);margin-top:8px;max-width:520px;line-height:1.5\"\u003eCopy report puts",
+                      "replacement":  "  \u003cdiv style=\"font-size:11px;color:var(--ash);margin-top:8px;max-width:520px;line-height:1.5;margin-bottom:26px\"\u003eCopy report puts"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the run card button strip sits on the card edge: on a card that scrolls, nothing shows between the pinned buttons and the bottom of the card\u0027,\n   run:function(){\n     var oc=document.getElementById(\u0027outcome\u0027), w=oc\u0026\u0026oc.querySelector(\u0027.ocwin\u0027), a=oc\u0026\u0026oc.querySelector(\u0027.ocacts\u0027), was=oc\u0026\u0026oc.classList.contains(\u0027on\u0027), mh, bad=[], wr, ar, bw;\n     if(!oc||!w||!a) return \u0027SKIP: no run card here\u0027;\n     try{\n       oc.classList.add(\u0027on\u0027); mh=w.style.maxHeight; w.style.maxHeight=\u0027260px\u0027; w.scrollTop=0;\n       if(w.scrollHeight\u003c=w.clientHeight+4) return \u0027SKIP: the card does not scroll even at 260 px\u0027;\n       wr=w.getBoundingClientRect(); ar=a.getBoundingClientRect(); bw=parseFloat(getComputedStyle(w).borderBottomWidth)||0;\n       if(wr.bottom-bw-ar.bottom\u003e8) bad.push(\u0027there is a \u0027+Math.round(wr.bottom-bw-ar.bottom)+\u0027 px band under the pinned buttons where the card shows through\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ if(w) w.style.maxHeight=mh||\u0027\u0027; if(!was) oc.classList.remove(\u0027on\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

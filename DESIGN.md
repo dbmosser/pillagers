@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.37 - THE RUN CARD BUTTON STRIP SITS ON THE EDGE
+
+Co-op hunt while he was away. Seen on the 4K death card screenshot after v19.36: the pinned button row stopped at the card inner padding, 26 pixels short of its bottom edge, and on a card that scrolls the note box showed in that band under the two buttons. The card has no bottom padding now (the space moved to its last line, so a short card looks the same) and the row sits on the edge.
+
+MEASURED. Check 19.37 passes, and fails on v19.36.
 ## v19.36 - THE RUN CARD BUTTONS SIT ON A SOLID STRIP
 
 Co-op hunt while he was away. Seen on the 4K death card screenshot of 2026-10-08: with five lost items the run card scrolls, and the pinned Log run and return and Copy report row (v10.74) faded from clear inside itself, so half-faded feel tags showed round and behind the two buttons. The row is solid now and the fade is a strip just above it, so the tags pass under cleanly.

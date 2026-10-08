@@ -5721,6 +5721,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.37',what:'the run card button strip sits on the card edge: on a card that scrolls, nothing shows between the pinned buttons and the bottom of the card',
+   run:function(){
+     var oc=document.getElementById('outcome'), w=oc&&oc.querySelector('.ocwin'), a=oc&&oc.querySelector('.ocacts'), was=oc&&oc.classList.contains('on'), mh, bad=[], wr, ar, bw;
+     if(!oc||!w||!a) return 'SKIP: no run card here';
+     try{
+       oc.classList.add('on'); mh=w.style.maxHeight; w.style.maxHeight='260px'; w.scrollTop=0;
+       if(w.scrollHeight<=w.clientHeight+4) return 'SKIP: the card does not scroll even at 260 px';
+       wr=w.getBoundingClientRect(); ar=a.getBoundingClientRect(); bw=parseFloat(getComputedStyle(w).borderBottomWidth)||0;
+       if(wr.bottom-bw-ar.bottom>8) bad.push('there is a '+Math.round(wr.bottom-bw-ar.bottom)+' px band under the pinned buttons where the card shows through');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(w) w.style.maxHeight=mh||''; if(!was) oc.classList.remove('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.36',what:'the run card buttons sit on a solid strip: the pinned button row has an opaque background, with the fade in a strip above it',
    run:function(){
      var a=document.querySelector('#outcome .ocacts'), oc=document.getElementById('outcome'), was=oc&&oc.classList.contains('on'), bad=[], s, b, m;

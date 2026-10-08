@@ -511,7 +511,7 @@
     display:none; flex-direction:column; align-items:center; justify-content:center; z-index:40; }
 
   .ocwin{ display:flex; flex-direction:column; align-items:center; position:relative;
-    padding:30px 52px 26px; border-radius:6px; max-width:880px; max-height:86vh;
+    padding:30px 52px 0; border-radius:6px; max-width:880px; max-height:86vh;   /* v19.37: no bottom padding, so the pinned button row sits on the card edge (its 26px moved to the last line) */
     overflow-y:auto; background:linear-gradient(180deg,var(--win-top),var(--win-bot));
     border:2px solid var(--steel-hi); box-shadow:inset 0 0 0 2px var(--steel); }
   /* v10.74: the two buttons are how you leave this card and how you send him
@@ -775,7 +775,7 @@
     <button style="padding:8px 22px" id="oc_btn">Log run and return</button>
     <button style="padding:8px 22px" id="oc_copy">Copy report</button>
   </div>
-  <div style="font-size:11px;color:var(--ash);margin-top:8px;max-width:520px;line-height:1.5">Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.</div>
+  <div style="font-size:11px;color:var(--ash);margin-top:8px;max-width:520px;line-height:1.5;margin-bottom:26px">Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.</div>
 </div>
 </div>
 
@@ -1533,7 +1533,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.36';
+var VER='19.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33333,7 +33333,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.36: On a long run card the two buttons sit on a clean strip. Check 19.36 fails on v19.35',
+  now:'v19.37: Nothing shows under the run card buttons on a long card. Check 19.37 fails on v19.36',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

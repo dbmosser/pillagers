@@ -1,0 +1,7 @@
+v19.37: the run card button strip sits on the edge
+
+Nothing shows under the run card buttons on a long card.
+
+Check 19.37. Fails on v19.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
