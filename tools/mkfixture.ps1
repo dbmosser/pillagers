@@ -34897,6 +34897,7 @@ window.__REGRESS=[
        prof=__P(); keepAE=prof.autoExport; prof.autoExport=false;   // a check must not start a download
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(); g.ents.length=0;
+       if(prof.log&&prof.log.length>40) prof.log.splice(0,prof.log.length-40);   // headroom: the log keeps only 60 runs, so a full one adds and drops in the same push
        var n0=(prof.log||[]).length;
        __endRaid('extract');
        document.execCommand=function(){ return true; };
@@ -34968,6 +34969,7 @@ window.__REGRESS=[
      g.wx=hardRow; g.wxNext=null; g.wxT=0;
      // Something to bank: a bag worth carrying out.
      p.bag=['medkit','medkit','frag','frag']; g.over=false; p.downed=false;
+     if(P.log&&P.log.length>40) P.log.splice(0,P.log.length-40);   // headroom: the log keeps only 60 runs
      var n0=(P.log||[]).length;
      try{ __endRaid('extract'); }catch(e){ bad.push('endRaid threw: '+String(e&&e.message||e).slice(0,80)); }
      var txt=''; try{ txt=(document.getElementById('outcome')||{}).innerText||''; }catch(e2){}
