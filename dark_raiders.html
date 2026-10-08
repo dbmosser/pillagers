@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.56';
+var VER='20.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28040,8 +28040,14 @@ ctx.fillStyle='rgba(190,255,220,.85)';
     // division is the seconds he asked for.
     // v4.61: the seconds moved above the character, per his run #58 note.
   }
-  ctx.font=FS(TYPE.title); ctx.fillStyle='#FFF6DC';
-  ctx.fillText('HP  '+Math.round(p.hp),24,by+18);
+  // v20.57, seen on the 4K screenshot (2026-10-08): THE HP NUMBER SITS INSIDE ITS BAR. The number grows with the text size (the
+  // Settings choice and the screen) on top of the corner zoom the two share, while the bar grows with the zoom only, so at 4K
+  // the number stood a third taller than its bar and stuck out over the top edge. It is now never taller than the bar holds,
+  // and then centred in it; at 1080p with the usual text size nothing changes.
+  var _hpf=FS(TYPE.title), _hpx=parseFloat((/([\d.]+)px/.exec(_hpf)||[0,26])[1]), _hpm=HBH*1.08;
+  if(_hpx>_hpm) _hpf=_hpf.replace(/[\d.]+px/,(Math.round(_hpm*10)/10)+'px');
+  ctx.font=_hpf; ctx.fillStyle='#FFF6DC';
+  ctx.fillText('HP  '+Math.round(p.hp),24,(_hpx>_hpm)?Math.round(by+HBH/2+_hpm*0.36):by+18);
   // v19.07: the co-op HUD (teammate rows, kill feed, pings, the controller paused word) is drawn after the corner scale ends, below
   // YOUR OWN STATUS, beside the health because that is where you already look.
   // Same verb and same colour the raider board gives them, from the same table,
@@ -33806,7 +33812,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.56: THE OVERSEER now stays near the middle of the map instead of touring the extraction rings. Check 20.56 fails on v20.55',
+  now:'v20.57: At 4K the HP number sits inside its bar. Check 20.57 fails on v20.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

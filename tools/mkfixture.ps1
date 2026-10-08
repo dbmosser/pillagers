@@ -5722,6 +5722,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.57',what:'the HP number fits inside its bar at any text size: at the largest text size its font is no taller than the 26 high bar holds',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof drawHUD!=='function') return 'SKIP: no HUD here';
+     var bad=[], g, u0, got=null, own=Object.prototype.hasOwnProperty.call(ctx,'fillText'), of=ctx.fillText, px;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       u0=P.uiScale; P.uiScale=2;
+       ctx.fillText=function(t,x,y){ if(String(t).indexOf('HP  ')===0) got={f:ctx.font,y:y}; return of.apply(this,arguments); };
+       drawHUD();
+       if(!got) return 'SKIP: the HP number was not drawn';
+       px=parseFloat((/([\d.]+)px/.exec(got.f)||[0,0])[1]);
+       if(!(px<=26*1.08+0.6)) bad.push('at the largest text size the HP number is '+px+'px tall in a bar 26 high');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       if(own) ctx.fillText=of; else delete ctx.fillText;
+       if(u0===undefined) delete P.uiScale; else P.uiScale=u0;
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.56',what:'THE OVERSEER guards its lair: having lost you beside it, it stays home instead of heading for an extraction ring; sent far past its leash it goes home; and its unaware walks stay near the lair',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof bossTick!=='function'||typeof updateEnts!=='function') return 'SKIP: no raid or no boss in this fixture';

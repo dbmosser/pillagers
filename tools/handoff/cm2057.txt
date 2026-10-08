@@ -1,0 +1,7 @@
+v20.57: the hp number fits its bar
+
+At 4K the HP number sits inside its bar.
+
+Check 20.57. Fails on v20.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
