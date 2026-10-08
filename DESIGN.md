@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.30 - THE WHAT IS NEW CARD NAMES THE 4K POLISH
+
+Co-op hunt while he was away. The card was stamped v19.15 and the stamp may not trail the build by more than 0.15. Its new second line names the sharp FASHION pictures (v19.17), the shop numbers (v19.23), the bar pictures (v19.27), the gambler offer picture (v19.24) and the bigger lift, map and raid labels (v19.22, v19.25, v19.29).
+
+MEASURED. Check 19.30 passes, and fails on v19.29.
 ## v19.29 - TWO-LINE MAP NOTES NEVER OVERLAP
 
 Co-op hunt while he was away. Seen on the 4K map screenshot of 2026-10-08: SURVEYED and the line under it (what you walk stays on the map), and HOT GROUND and its line (richer, and busier), were a fixed 12 to 14 pixels apart whatever the text size, so on a big screen each second line printed over the first. They are a line height apart now, and the SURVEYED pair lifts to stay on screen.

@@ -1,0 +1,7 @@
+v19.30: the what is new card names the 4k polish
+
+The what is new card names the 4K polish.
+
+Check 19.30. Fails on v19.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
