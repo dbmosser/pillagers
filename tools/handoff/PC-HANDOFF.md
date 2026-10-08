@@ -507,3 +507,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - Corpus [842,962) re-run: one red, 10.78 (it scrolled the grid; since v19.16 the operator panel inner box scrolls); retargeted to scroll the box holding SURPRISE ME, passes. Whole corpus now clean.
 - v19.66 beltcap4k: belt hint font = larger of beltFS(bw,0.12) and hudFS(micro) (beltCapFS); drawUseBar cap reads the same size.
 - v19.67 craftstats: the craft panel shows itemStatsHTML for the crafted item. Found, not changed: BUILD (cosBuild) is never read by drawOp, so Lean/Broad/Curved look identical; asked him in the morning report.
+- v19.68 padhline: on a pad the compact legend drops H full list and its row. v19.69 padring: .padfocus 3px outline, ring plus glow, opacity 1. Pad-mode shots: floor footer and raid HUD switch to pad buttons; the stash key-hint row (DRAG, RIGHT CLICK, SHIFT...) stays mouse-only in pad mode (left: pad stash actions not checked).
