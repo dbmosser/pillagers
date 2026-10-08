@@ -1,0 +1,28 @@
+{
+    "title":  "THE COOK, RELOAD AND SEARCH BARS GROW AT 4K",
+    "why":  "Seen on the 4K screenshots of 2026-10-08, after v19.55: the readouts over the operator (the frag cook countdown with its plate and bar, the reload bar, the search bar with its items left count) still kept their 1080p size at 4K. Each now grows with the screen about its own place, like the world prompts.",
+    "now":  "At 4K the cook countdown, reload bar and search bar over your operator are full size.",
+    "edits":  [
+                  {
+                      "anchor":  "    var cs2=w2s(p.x,30,p.y);\n    if(cs2){",
+                      "replacement":  "    var cs2=w2s(p.x,30,p.y);\n    if(cs2){\n      var _hsK=hudAtIn(cs2.x,cs2.y);   // v16.xx, seen on the 4K screenshots (2026-10-08): the cook countdown grows with the screen, plate and bar with it"
+                  },
+                  {
+                      "anchor":  "        ctx.font=FS(TYPE.micro); ctx.textAlign=\u0027left\u0027;\n      }\n    }\n  }\n// v4.05:",
+                      "replacement":  "        ctx.font=FS(TYPE.micro); ctx.textAlign=\u0027left\u0027;\n      }\n      if(_hsK) ctx.restore();\n    }\n  }\n// v4.05:"
+                  },
+                  {
+                      "anchor":  "    if(_rb){\n      ctx.fillStyle=\u0027rgba(6,9,13,.72)\u0027;\n      ctx.fillRect(_rb.x-27,_rb.y-LH(10),54,LH(8));\n      bar(_rb.x-25,_rb.y-LH(9),50,LH(5),clamp(1-p.reloading/p.wep.reload,0,1),\u0027#ffc04a\u0027);\n    }",
+                      "replacement":  "    if(_rb){\n      var _hsB=hudAtIn(_rb.x,_rb.y);   // v16.xx: the reload bar grows with the screen\n      ctx.fillStyle=\u0027rgba(6,9,13,.72)\u0027;\n      ctx.fillRect(_rb.x-27,_rb.y-LH(10),54,LH(8));\n      bar(_rb.x-25,_rb.y-LH(9),50,LH(5),clamp(1-p.reloading/p.wep.reload,0,1),\u0027#ffc04a\u0027);\n      if(_hsB) ctx.restore();\n    }"
+                  },
+                  {
+                      "anchor":  "      var _bc=\u0027#ffc04a\u0027;\n      bar(s2.x-30,s2.y-8,60,6,G.searchT/_sc.time,_bc);",
+                      "replacement":  "      var _bc=\u0027#ffc04a\u0027;\n      var _hsS=hudAtIn(s2.x,s2.y);   // v16.xx: the search bar and its count grow with the screen\n      bar(s2.x-30,s2.y-8,60,6,G.searchT/_sc.time,_bc);"
+                  },
+                  {
+                      "anchor":  "        ctx.fillText(_lbl,s2.x,s2.y-LH(15));\n        ctx.textAlign=\u0027left\u0027;\n      }",
+                      "replacement":  "        ctx.fillText(_lbl,s2.x,s2.y-LH(15));\n        ctx.textAlign=\u0027left\u0027;\n      }\n      if(_hsS) ctx.restore();"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the cook countdown grows at 4K: cooking a frag, COOKING over the operator is drawn about twice its 1080p size on a 4K screen\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame\u0026\u0026window.__forceSize)) return \u0027SKIP: this fixture cannot deploy and draw\u0027;\n     var bad=[], g, p, oFT=ctx.fillText, hit=null, s1, s4, d=(typeof DPR===\u0027number\u0027\u0026\u0026DPR\u003e0)?DPR:1;\n     function grab(){ var k; for(k=0;k\u003c8;k++){ hit=null; p.cooking=true; p.cookKind=\u0027frag\u0027; p.cookT=0.4; __frame(0.05); } return hit; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __forceSize(1920,1080);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       p=g.player; g.ents.length=0; g.bagOpen=false; g.mapOpen=false;\n       ctx.fillText=function(t,x,y){ if(String(t).indexOf(\u0027COOKING \u0027)===0\u0026\u0026!hit){ var m=ctx.getTransform(), fm=(/([\\d.]+)px/).exec(String(ctx.font)); hit={px:(fm?parseFloat(fm[1]):0)*m.d/d,ok:isFinite(x)\u0026\u0026isFinite(y)}; } return oFT.apply(this,arguments); };\n       s1=grab();\n       __forceSize(3840,2160); if(!(W\u003e3000)) return \u0027SKIP: the canvas would not go to 4K\u0027;\n       s4=grab();\n       if(!s1||!s4) return \u0027SKIP: the cook countdown was not drawn\u0027;\n       if(!s1.ok||!s4.ok) return \u0027SKIP: the countdown has no place on screen in this staging\u0027;\n       if(s4.px\u003cs1.px*1.7) bad.push(\u0027at 4K COOKING is \u0027+s4.px.toFixed(1)+\u0027 px against \u0027+s1.px.toFixed(1)+\u0027 px at 1080p\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ __forceSize(1920,1080); }catch(_f){} try{ var g2=__state(); if(g2){ g2.player.cooking=false; g2.player.cookKind=null; if(!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

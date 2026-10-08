@@ -1537,7 +1537,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.56';
+var VER='19.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27355,6 +27355,7 @@ ctx.fillStyle='#4de3d0';
   if(p.cooking&&p.cookKind){
     var cs2=w2s(p.x,30,p.y);
     if(cs2){
+      var _hsK=hudAtIn(cs2.x,cs2.y);   // v19.57, seen on the 4K screenshots (2026-10-08): the cook countdown grows with the screen, plate and bar with it
       var cf=clamp((p.cookT||0)/FRAG_FUSE,0,1);
       var isFrag=(p.cookKind==='frag');
       var ccol=!isFrag?'#7cc4ff':(cf>0.66?'#ff5a4a':(cf>0.33?'#ffc04a':'#7fc4a0'));
@@ -27392,6 +27393,7 @@ ctx.fillStyle='#4de3d0';
         ctx.fillText(_cshout,cs2.x,cs2.y-LH(46));
         ctx.font=FS(TYPE.micro); ctx.textAlign='left';
       }
+      if(_hsK) ctx.restore();
     }
   }
 // v4.05: "maybe a bar above character too", so there is one, in the same
@@ -27414,9 +27416,11 @@ ctx.fillStyle='#4de3d0';
 
     var _rb=w2s(p.x,34,p.y);
     if(_rb){
+      var _hsB=hudAtIn(_rb.x,_rb.y);   // v19.57: the reload bar grows with the screen
       ctx.fillStyle='rgba(6,9,13,.72)';
       ctx.fillRect(_rb.x-27,_rb.y-LH(10),54,LH(8));
       bar(_rb.x-25,_rb.y-LH(9),50,LH(5),clamp(1-p.reloading/p.wep.reload,0,1),'#ffc04a');
+      if(_hsB) ctx.restore();
     }
   }
   try{ if(NET.on&&G.netRevT>0&&G.netRevS>=0&&NET.up[G.netRevS]){   // v16.21, his note: the revive has a bar, like a search
@@ -27443,6 +27447,7 @@ ctx.fillStyle='#4de3d0';
       var _sc=G.searching;
       var _left=(_sc.net&&typeof _sc.netLeft==='number')?_sc.netLeft:(_sc.loot?_sc.loot.length:0);   // v16.32: a box on a linked window holds no list, only the count the host sends
       var _bc='#ffc04a';
+      var _hsS=hudAtIn(s2.x,s2.y);   // v19.57: the search bar and its count grow with the screen
       bar(s2.x-30,s2.y-8,60,6,G.searchT/_sc.time,_bc);
       if(_left>0){
         var _lbl=_left+(_left===1?' item left':' items left');
@@ -27454,6 +27459,7 @@ ctx.fillStyle='#4de3d0';
         ctx.fillText(_lbl,s2.x,s2.y-LH(15));
         ctx.textAlign='left';
       }
+      if(_hsS) ctx.restore();
     }
   }
   // The world pass already draws the name and a health pip on every visible
@@ -33400,7 +33406,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.56: In an extraction ring the call prompt no longer covers your character. Check 19.56 fails on v19.55',
+  now:'v19.57: At 4K the cook countdown, reload bar and search bar over your operator are full size. Check 19.57 fails on v19.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

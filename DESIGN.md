@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.57 - THE COOK, RELOAD AND SEARCH BARS GROW AT 4K
+
+Co-op hunt while he was away. Seen on the 4K screenshots of 2026-10-08, after v19.55: the readouts over the operator (the frag cook countdown with its plate and bar, the reload bar, the search bar with its items left count) still kept their 1080p size at 4K. Each now grows with the screen about its own place, like the world prompts.
+
+MEASURED. Check 19.57 passes, and fails on v19.56.
 ## v19.56 - THE CALL PROMPT IS SAID ONCE
 
 Co-op hunt while he was away. Seen on the 4K ring screenshot of 2026-10-08: standing in an extraction ring, [E] CALL FOR EXTRACTION printed over your own character while HOLD E TO CALL FOR EXTRACTION said the same thing above the belt with its own hold bar. The prompt over the character now steps aside while that line shows, as the EXTRACT prompt already did inside the ring.

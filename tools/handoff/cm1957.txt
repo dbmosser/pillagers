@@ -1,0 +1,7 @@
+v19.57: the cook, reload and search bars grow at 4k
+
+At 4K the cook countdown, reload bar and search bar over your operator are full size.
+
+Check 19.57. Fails on v19.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
