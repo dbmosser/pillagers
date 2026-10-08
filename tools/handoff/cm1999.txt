@@ -1,0 +1,7 @@
+v19.99: the extraction card shows the haul bigger
+
+The extraction card shows what you brought home in bigger pictures.
+
+Check 19.99. Fails on v19.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

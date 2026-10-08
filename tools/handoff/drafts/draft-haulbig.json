@@ -1,0 +1,16 @@
+{
+    "title":  "THE EXTRACTION CARD SHOWS THE HAUL BIGGER",
+    "why":  "Seen on the 4K extraction card screenshot of 2026-10-08: the pictures of what you brought home (v19.05) were 34 pixel chips under the items secured line, small on a TV next to the card text. They are 52 now with a little padding; a big haul wraps to a second row.",
+    "now":  "The extraction card shows what you brought home in bigger pictures.",
+    "edits":  [
+                  {
+                      "anchor":  "s+=\u0027\u003cspan title=\"\u0027+escHtml(ITEMS[keys[k]].name)+\u0027\" style=\"display:inline-block;margin:2px;border-radius:6px;",
+                      "replacement":  "s+=\u0027\u003cspan title=\"\u0027+escHtml(ITEMS[keys[k]].name)+\u0027\" style=\"display:inline-block;margin:3px;padding:3px;border-radius:8px;"
+                  },
+                  {
+                      "anchor":  "\u0027)+\u0027\"\u003e\u0027+iconImgHTML(keys[k],34)+\u0027\u003c/span\u003e\u0027; n++; } }",
+                      "replacement":  "\u0027)+\u0027\"\u003e\u0027+iconImgHTML(keys[k],52)+\u0027\u003c/span\u003e\u0027; n++; } }   // v16.xx, seen on the 4K extraction card (2026-10-08): the haul pictures were 34px chips; 52 now"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the extraction card shows the haul at a readable size: each secured item picture on the card is at least 50 menu pixels\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var bad=[], g, o, strip, pics, i, w;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_smg\u0027,\u0027bandage\u0027,\u0027frag\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       __endRaid(\u0027extract\u0027);\n       o=document.getElementById(\u0027outcome\u0027); strip=o\u0026\u0026o.querySelector(\u0027.haulstrip\u0027);\n       if(!strip) return \u0027SKIP: no haul strip on the card\u0027;\n       pics=[].slice.call(strip.querySelectorAll(\u0027img,canvas\u0027));\n       if(!pics.length) return \u0027SKIP: no pictures in the haul strip\u0027;\n       for(i=0;i\u003cpics.length;i++){ w=pics[i].offsetWidth||parseFloat(pics[i].getAttribute(\u0027width\u0027))||0; if(w\u003c50){ bad.push(\u0027a haul picture is \u0027+w+\u0027 px\u0027); break; } }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

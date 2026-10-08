@@ -1583,7 +1583,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.98';
+var VER='19.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21585,7 +21585,7 @@ var _cdone=contractExtract(G.bag,haul);
     (function(){ var keys=G.bag.slice(), iss=(_issN||0), k, s='', n=0;
       for(k=keys.length-1;k>=0&&iss>0;k--) if(keys[k]==='bandage'){ keys.splice(k,1); iss--; }
       keys.sort(function(a,b){ return ival(b)-ival(a); });
-      for(k=0;k<keys.length&&k<12;k++){ if(ITEMS[keys[k]]){ s+='<span title="'+escHtml(ITEMS[keys[k]].name)+'" style="display:inline-block;margin:2px;border-radius:6px;background:rgba(0,0,0,.25);border:1px solid '+(RCOL[dispR(keys[k])||ITEMS[keys[k]].r]||'rgba(127,146,216,.35)')+'">'+iconImgHTML(keys[k],34)+'</span>'; n++; } }
+      for(k=0;k<keys.length&&k<12;k++){ if(ITEMS[keys[k]]){ s+='<span title="'+escHtml(ITEMS[keys[k]].name)+'" style="display:inline-block;margin:3px;padding:3px;border-radius:8px;background:rgba(0,0,0,.25);border:1px solid '+(RCOL[dispR(keys[k])||ITEMS[keys[k]].r]||'rgba(127,146,216,.35)')+'">'+iconImgHTML(keys[k],52)+'</span>'; n++; } }   // v19.99, seen on the 4K extraction card (2026-10-08): the haul pictures were 34px chips; 52 now
       if(keys.length>12) s+='<span style="color:var(--ash);margin-left:6px">+'+(keys.length-12)+' more</span>';
       if(n) lines.push('<span class="haulstrip" style="display:inline-block;margin:4px 0 2px">'+s+'</span>');
     })();
@@ -33518,7 +33518,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.98: The stash shows about 6 tiles across instead of 3, so much more fits on screen. Check 19.98 fails on v19.97',
+  now:'v19.99: The extraction card shows what you brought home in bigger pictures. Check 19.99 fails on v19.98',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

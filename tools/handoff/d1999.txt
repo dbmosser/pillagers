@@ -1,0 +1,5 @@
+## v19.99 - THE EXTRACTION CARD SHOWS THE HAUL BIGGER
+
+Co-op hunt while he was away. Seen on the 4K extraction card screenshot of 2026-10-08: the pictures of what you brought home (v19.05) were 34 pixel chips under the items secured line, small on a TV next to the card text. They are 52 now with a little padding; a big haul wraps to a second row.
+
+MEASURED. Check 19.99 passes, and fails on v19.98.

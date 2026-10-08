@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.99 - THE EXTRACTION CARD SHOWS THE HAUL BIGGER
+
+Co-op hunt while he was away. Seen on the 4K extraction card screenshot of 2026-10-08: the pictures of what you brought home (v19.05) were 34 pixel chips under the items secured line, small on a TV next to the card text. They are 52 now with a little padding; a big haul wraps to a second row.
+
+MEASURED. Check 19.99 passes, and fails on v19.98.
 ## v19.98 - THE STASH SHOWS MORE AT ONCE
 
 Co-op hunt while he was away. His order of 2026-10-08 (fix this then), his pick Medium: on the default stash layout the tiles were 230 pixels times the menu zoom, so a TV showed about 3 across and 5 on screen with 435 things in his stash. The tiles are about half that now: about 6 across and three rows on screen at 1080p and 4K alike, and the backpack about 4 across. The pictures still fill most of each tile.

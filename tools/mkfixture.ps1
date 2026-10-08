@@ -5722,6 +5722,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.99',what:'the extraction card shows the haul at a readable size: each secured item picture on the card is at least 50 menu pixels',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     var bad=[], g, o, strip, pics, i, w;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_smg','bandage','frag'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
+       __endRaid('extract');
+       o=document.getElementById('outcome'); strip=o&&o.querySelector('.haulstrip');
+       if(!strip) return 'SKIP: no haul strip on the card';
+       pics=[].slice.call(strip.querySelectorAll('img,canvas'));
+       if(!pics.length) return 'SKIP: no pictures in the haul strip';
+       for(i=0;i<pics.length;i++){ w=pics[i].offsetWidth||parseFloat(pics[i].getAttribute('width'))||0; if(w<50){ bad.push('a haul picture is '+w+' px'); break; } }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.98',what:'the stash is medium density on the default layout: a wide stash grid shows 6 tiles across at any window size',
    run:function(){
      if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';
