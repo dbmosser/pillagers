@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.31 - A MOVED MAP LABEL STAYS ON THE MAP
+
+Co-op hunt while he was away. Seen on the 4K map screenshot of 2026-10-08: the map label placer of v19.02 moves a label off a clash, but it could move it anywhere, so the zone name RECEIVING APRON on The Cold Mile went up past the SECTOR MAP line and half off the top of the screen. A moved label now stays on the screen and below the header line; one with no room left is left off, as before.
+
+MEASURED. Check 19.31 passes, and fails on v19.30.
 ## v19.30 - THE WHAT IS NEW CARD NAMES THE 4K POLISH
 
 Co-op hunt while he was away. The card was stamped v19.15 and the stamp may not trail the build by more than 0.15. Its new second line names the sharp FASHION pictures (v19.17), the shop numbers (v19.23), the bar pictures (v19.27), the gambler offer picture (v19.24) and the bigger lift, map and raid labels (v19.22, v19.25, v19.29).

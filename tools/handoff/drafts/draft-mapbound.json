@@ -1,0 +1,20 @@
+{
+    "title":  "A MOVED MAP LABEL STAYS ON THE MAP",
+    "why":  "Seen on the 4K map screenshot of 2026-10-08: the map label placer of v19.02 moves a label off a clash, but it could move it anywhere, so the zone name RECEIVING APRON on The Cold Mile went up past the SECTOR MAP line and half off the top of the screen. A moved label now stays on the screen and below the header line; one with no room left is left off, as before.",
+    "now":  "Zone names on the sector map never end up above the map or off the screen.",
+    "edits":  [
+                  {
+                      "anchor":  "  G2.slice().sort(function(a,b){ return (b.p-a.p)||(a.i-b.i); }).forEach(function(g){",
+                      "replacement":  "  // v16.xx, seen on the 4K map screenshot (2026-10-08): a label moved off a clash could be moved anywhere, so RECEIVING APRON went up\n  // past the SECTOR MAP line and half off the top of the screen. A moved label now stays on the screen and below the header line.\n  var _bT=0, _bW=(ctx\u0026\u0026ctx.canvas)?ctx.canvas.width:1e9, _bH=(ctx\u0026\u0026ctx.canvas)?ctx.canvas.height:1e9;  G2.slice().sort(function(a,b){ return (b.p-a.p)||(a.i-b.i); }).forEach(function(g){"
+                  },
+                  {
+                      "anchor":  "    if(g.p===9){ placed.push(g.r); g.dx=0; g.dy=0; out.push(g); return; }",
+                      "replacement":  "    if(g.p===9){ placed.push(g.r); g.dx=0; g.dy=0; out.push(g); if(hdrY!==null\u0026\u0026g.items.some(function(L){ return L.y\u003c=hdrY+2; })) _bT=Math.max(_bT,g.r.b); return; }"
+                  },
+                  {
+                      "anchor":  "    for(k=0;k\u003ctries.length\u0026\u0026!ok;k++){ dx=tries[k][0]; dy=tries[k][1]; r={l:g.r.l+dx,t:g.r.t+dy,r:g.r.r+dx,b:g.r.b+dy}; if(!hits(r))",
+                      "replacement":  "    for(k=0;k\u003ctries.length\u0026\u0026!ok;k++){ dx=tries[k][0]; dy=tries[k][1]; r={l:g.r.l+dx,t:g.r.t+dy,r:g.r.r+dx,b:g.r.b+dy}; if(r.t\u003c_bT||r.b\u003e_bH||r.l\u003c0||r.r\u003e_bW) continue; if(!hits(r))"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a moved map label stays on the map: a zone name that clashes with the SECTOR MAP line is never moved up past that line or off the screen\u0027,\n   run:function(){\n     if(typeof mapPlaceLabels!==\u0027function\u0027||typeof mapLabelRect!==\u0027function\u0027) return \u0027SKIP: no label placer here\u0027;\n     var bad=[], got=[], m, c=document.createElement(\u0027canvas\u0027), x2=c.getContext(\u00272d\u0027), keep=ctx, n;\n     if(!x2) return \u0027SKIP: no canvas\u0027;\n     c.width=800; c.height=600;\n     function lab(s,x,y,ga){ x2.font=\u0027bold 14px sans-serif\u0027; return {s:s,x:x,y:y,font:x2.font,fs:\u0027#fff\u0027,ta:\u0027left\u0027,tb:\u0027alphabetic\u0027,ga:ga,m:new DOMMatrix([1,0,0,1,0,0]),fp:14,w:x2.measureText(s).width}; }\n     try{\n       ctx=x2;\n       n=mapPlaceLabels([lab(\u0027SECTOR MAP\u0027,20,40,1),lab(\u0027ZQX ZONE NAME\u0027,30,44,0.5),lab(\u0027ZQX BLOCK ONE\u0027,31,61.7,1),lab(\u0027ZQX BLOCK TWO\u0027,31,79.4,1)],40,function(s,x,y){ got.push({s:String(s),y:y}); });\n       m=got.filter(function(q){ return q.s===\u0027ZQX ZONE NAME\u0027; })[0];\n       if(m\u0026\u0026m.y\u003c40) bad.push(\u0027the zone name was moved up past the SECTOR MAP line to y \u0027+Math.round(m.y));\n       if(m\u0026\u0026m.y-14*0.82\u003c0) bad.push(\u0027the zone name was moved off the top of the screen\u0027);\n       if(!got.some(function(q){ return q.s===\u0027SECTOR MAP\u0027; })) bad.push(\u0027control: the header was not drawn\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ ctx=keep; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,7 @@
+v19.31: a moved map label stays on the map
+
+Zone names on the sector map never end up above the map or off the screen.
+
+Check 19.31. Fails on v19.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
