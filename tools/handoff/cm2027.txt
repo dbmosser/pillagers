@@ -1,0 +1,7 @@
+v20.27: weak points register
+
+Shots on a machine vent, optic or core seam now count as weak point hits, including on THE OVERSEER.
+
+Check 20.27. Fails on v20.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.26';
+var VER='20.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8469,12 +8469,19 @@ function weakPos(e,W){
 }
 // Which weak point, if any, a round at this point struck. Nearest wins, so two
 // openings that overlap on a small body cannot both pay out on one bullet.
-function weakHit(e,bx,by){
+// v20.27, from the whole-game bug hunt of 2026-10-08 (H1): a round is tested at the first 8 unit step inside the body circle, and
+// every opening sits wholly inside that circle, so a dead-centre shot on a Sentry vent paid about half the time at 60 Hz, a Warden
+// seam almost never at 144 Hz, and the Overseer's openings never at all. Given the round's direction (ux,uy), the test now follows
+// its path on into the body as far as the centre line and takes its nearest pass to each opening. An opening on the far side of
+// the centre is still out of reach, so the vent on a machine's back still needs a flank.
+function weakHit(e,bx,by,ux,uy){
   var L=weakOf(e); if(!L) return null;
-  var best=null,bd=1e9;
+  var best=null,bd=1e9, ray=(typeof ux==='number'&&typeof uy==='number'&&(ux!==0||uy!==0)), tc=0;
+  if(ray){ tc=(e.x-bx)*ux+(e.y-by)*uy; if(tc<0) tc=0; }
   for(var i=0;i<L.length;i++){
-    var W=L[i],pt=weakPos(e,W);
-    var dx=bx-pt.x,dy=by-pt.y,d=Math.sqrt(dx*dx+dy*dy);
+    var W=L[i],pt=weakPos(e,W), qx=bx, qy=by, t;
+    if(ray){ t=(pt.x-bx)*ux+(pt.y-by)*uy; if(t<0) t=0; else if(t>tc) t=tc; qx=bx+ux*t; qy=by+uy*t; }
+    var dx=qx-pt.x,dy=qy-pt.y,d=Math.sqrt(dx*dx+dy*dy);
     if(d<=W.rad&&d<bd){ bd=d; best=W; }
   }
   return best;
@@ -20522,7 +20529,7 @@ function updateBullets(dt){
               var edmg=b.dmg;
               // SPEC 8.7: a weak point is checked BEFORE armour, because it is
               // the gap in the armour. Nothing soaks a round through the vent.
-              var WK=weakHit(en,b.x,b.y);
+              var WK=weakHit(en,b.x,b.y,ux,uy);   // v20.27 (H1): along the round's path
               if(WK){
                 edmg*=WK.mult;
                 applyWeak(en,WK);
@@ -33644,7 +33651,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.26: YOUR STATS is easier to read. Check 20.26 fails on v20.25',
+  now:'v20.27: Shots on a machine vent, optic or core seam now count as weak point hits, including on THE OVERSEER. Check 20.27 fails on v20.26',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.27 - WEAK POINTS REGISTER
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08: a round is tested where it first touches a machine, and every weak point sits inside the body, so a perfect shot on a Sentry vent paid about half the time at 60 frames a second, a Warden seam almost never at 144, and THE OVERSEER core seam and optic never at all. The test now follows the round on into the body as far as its centre and pays if it passes over the opening, so a clean shot on the vent or seam is a weak hit at any frame rate. Openings on the far side still cannot be reached through the body: the vent on the back still needs a flank.
+
+MEASURED. Check 20.27 passes, and fails on v20.26.
 ## v20.26 - THE STAT CARDS ARE READABLE
 
 Co-op hunt while he was away. Seen on the 4K YOUR STATS screenshot of 2026-10-08: the card titles were 11 pixels and the lines under the figures 12, and the narrow cards stood seven to a row with empty space beside them. Titles 13, figures 28, lines 14, and wider cards that fill the row.
