@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.91 - UNDERCROFT FLOOR: GUN KEYS CAN BE PICKED UP, AND GUN 2 DROPPED ON KEY 1 BECOMES GUN 1
+
+Co-op hunt while he was away. On the Undercroft floor with the backpack open, pressing a gun key (key 1, key 2, or key 8 or 9 when the belt moved a gun down) picked nothing up and said nothing. Gun keys now pick up like any other item. Dropping one on the other gun's key makes gun 1 and gun 2 trade places, which is what the raid starts with. Dropping it back on its own key moves the item that covered that key to where the gun was. Any other drop says why it cannot go there, on the floor's own message line.
+
+MEASURED. Check 18.91 passes, and fails on v18.90.
 ## v18.90 - PICKING UP KEY 8 NO LONGER SWAPS HIS GUN
 
 Co-op hunt while he was away. If key 8 held his stowed gun, pressing it to start a drag swapped that gun into his hands right away, before he had dropped it anywhere. Pressing A on it with the controller did the same. A press now only picks the key up. A plain click, or A twice on the same key, still brings the gun up when he lets go.

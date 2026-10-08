@@ -1,0 +1,1 @@
+| UNDERCROFT FLOOR: GUN KEYS CAN BE PICKED UP, AND GUN 2 DROPPED ON KEY 1 BECOMES GUN 1 | v18.91 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 18.91 passes, fails on v18.90 |

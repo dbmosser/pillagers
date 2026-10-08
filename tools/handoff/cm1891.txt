@@ -1,0 +1,7 @@
+v18.91: undercroft floor: gun keys can be picked up, and gun 2 dropped on key 1 becomes gun 1
+
+On the Undercroft floor gun keys can be dragged, and gun 2 dropped on key 1 becomes gun 1.
+
+Check 18.91. Fails on v18.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
