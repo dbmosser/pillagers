@@ -1,0 +1,7 @@
+v20.53: the belt highlight drops nothing hidden
+
+With the backpack highlight on the belt, dropping, offering and equipping no longer act on an unmarked backpack item.
+
+Check 20.53. Fails on v20.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

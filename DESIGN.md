@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.53 - THE BELT HIGHLIGHT DROPS NOTHING HIDDEN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. With the backpack open, walking the highlight down past the last stack moves the gold ring onto the belt row. The backpack stack it left had no ring any more, but Z, Y on a controller, T and Enter still acted on it: pressing Z meaning to drop the Medkit ringed on the belt dropped a hidden backpack item instead (in co-op, a pile your teammate can take), T offered it and Enter equipped it. With the highlight on the belt these keys now say where the highlight is and do nothing, and clicking a backpack tile brings the highlight back into the backpack.
+
+MEASURED. Check 20.53 passes, and fails on v20.52.
 ## v20.52 - NO STRIKES THROUGH WALLS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A bare-hand strike (F, or a click with empty hands) only measured how far away the target was, so a machine or a pillager just the other side of a building wall or a locked room wall took the blow, sparked, and turned on you, and a peaceful pillager in the next room charged you for it. A strike now needs a clear line to what it hits, as a round does and as the crawler and Listener bites already do.
