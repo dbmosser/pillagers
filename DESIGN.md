@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.36 - THE RUN CARD BUTTONS SIT ON A SOLID STRIP
+
+Co-op hunt while he was away. Seen on the 4K death card screenshot of 2026-10-08: with five lost items the run card scrolls, and the pinned Log run and return and Copy report row (v10.74) faded from clear inside itself, so half-faded feel tags showed round and behind the two buttons. The row is solid now and the fade is a strip just above it, so the tags pass under cleanly.
+
+MEASURED. Check 19.36 passes, and fails on v19.35.
 ## v19.35 - THE UNDERCROFT WALLS SIT IN THE ROOM LIGHT
 
 Co-op hunt while he was away. Seen on the 4K Undercroft screenshot of 2026-10-08: the walls of the Undercroft wore the raid daylight wall colours at full strength, so in the dark navy room the blue walls by the lift, the purple block by the shop and the green block by Settings glowed like lit panels. Each wall keeps its colour, taken about half way down into the room own light, so they read as walls in a dim room. A look change: tell me if you want them back.

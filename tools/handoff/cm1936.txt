@@ -1,0 +1,7 @@
+v19.36: the run card buttons sit on a solid strip
+
+On a long run card the two buttons sit on a clean strip.
+
+Check 19.36. Fails on v19.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v19.36 - THE RUN CARD BUTTONS SIT ON A SOLID STRIP
+
+Co-op hunt while he was away. Seen on the 4K death card screenshot of 2026-10-08: with five lost items the run card scrolls, and the pinned Log run and return and Copy report row (v10.74) faded from clear inside itself, so half-faded feel tags showed round and behind the two buttons. The row is solid now and the fade is a strip just above it, so the tags pass under cleanly.
+
+MEASURED. Check 19.36 passes, and fails on v19.35.

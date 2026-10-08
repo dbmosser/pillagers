@@ -523,8 +523,13 @@
      ends in the card's own colour. */
   .ocacts{ position:sticky; bottom:0; z-index:2; width:100%;
     display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; justify-content:center;
-    padding:10px 0 4px;
-    background:linear-gradient(180deg,rgba(0,0,0,0),var(--win-bot) 38%); }
+    padding:12px 0 6px;
+    background:var(--win-bot); }
+  /* v19.36, seen on the 4K death card screenshot (2026-10-08): with five lost items the card scrolls, and the fade started at clear
+     inside the button row itself, so half-faded feel tags showed round and behind the two buttons. The row is solid now and the
+     fade is a strip just above it, so the tags pass under cleanly. */
+  .ocacts::before{ content:''; position:absolute; left:0; right:0; top:-28px; height:28px; pointer-events:none;
+    background:linear-gradient(180deg,rgba(0,0,0,0),var(--win-bot)); }
   .outcome.on{ display:flex; }
   .ocwin > *{ flex-shrink:0; }   /* v18.97, seen on the 4K run card screenshot (2026-10-07): with three achievement lines the card ran past the screen and, a flex column, squeezed the note box to a sliver; nothing shrinks now, the card scrolls (the buttons stay pinned) */
   .ocwin{ max-height:min(86vh,calc(100% - 32px)); }   /* v18.97: and the card always fits inside the screen, at any menu zoom */
@@ -1528,7 +1533,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.35';
+var VER='19.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33328,7 +33333,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.35: The Undercroft walls are dimmed to suit the room; each keeps its colour. Check 19.35 fails on v19.34',
+  now:'v19.36: On a long run card the two buttons sit on a clean strip. Check 19.36 fails on v19.35',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
