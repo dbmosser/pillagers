@@ -1522,7 +1522,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.00';
+var VER='19.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26130,7 +26130,7 @@ function drawBuzzFx(){
       } else if(S.kind==='heal'){
         ctx.fillRect(cx2-bw*0.06,cy2-bw*0.18,bw*0.12,bw*0.36);
         ctx.fillRect(cx2-bw*0.18,cy2-bw*0.06,bw*0.36,bw*0.12);
-      } else {
+      } else if(S.kind!=='empty'){   // v19.01, seen on the 4K screenshots (2026-10-07): an empty key drew this fallback T and a 0, like a broken item; it is just the key now
         ctx.fillRect(cx2-bw*0.05,cy2-bw*0.20,bw*0.10,bw*0.34);
         ctx.fillRect(cx2-bw*0.16,cy2-bw*0.22,bw*0.22,bw*0.09);
       }
@@ -26143,7 +26143,7 @@ function drawBuzzFx(){
         ctx.fillStyle='#7fc4a0';
         ctx.fillRect(bx+bw-LH(7),hy+LH(3),LH(4),LH(4));
       }
-      if(S.count!==null&&S.count!==undefined){
+      if(S.count!==null&&S.count!==undefined&&S.kind!=='empty'){   // v19.01: no count on an empty key
         ctx.font=beltFS(bw,0.16);   // v18.71: grows with the slot
         ctx.fillStyle=empty?'#7a5040':'#FFF6DC';
         ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
@@ -33146,7 +33146,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.00: Status effects show as icons with names and timers down the left of the screen. Check 19.00 fails on v18.99',
+  now:'v19.01: Empty belt keys show only their number. Check 19.01 fails on v19.00',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

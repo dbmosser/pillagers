@@ -1,0 +1,5 @@
+## v19.01 - AN EMPTY BELT KEY IS JUST A KEY
+
+Co-op hunt while he was away. Seen on the screenshots of 2026-10-07: every empty belt key (7, 8 and 9 on most raids) drew the fallback mark meant for an unknown item, a faint T, and a 0 count in its corner, so empty keys looked like broken items. An empty key now shows only its number. A key holding an item you have run out of still shows its picture and a 0.
+
+MEASURED. Check 19.01 passes, and fails on v19.00.

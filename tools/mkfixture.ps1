@@ -5721,6 +5721,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.01',what:'an empty belt key is just a key: no fallback glyph and no 0 count is drawn in it',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     var bad=[], g, sl, ei=-1, C, oFT=ctx.fillText, oFR=ctx.fillRect, txt=[], rects=0, i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); g.bagOpen=false; g.mapOpen=false;
+       __frame(0.016);
+       sl=hotbarSlots(); for(i=sl.length-1;i>=0;i--) if(sl[i]&&sl[i].kind==='empty'){ ei=i; break; }
+       if(ei<0||!g.hotCells) return 'SKIP: no empty belt key here';
+       C=null; for(i=0;i<g.hotCells.length;i++) if(g.hotCells[i].i===ei) C=g.hotCells[i];
+       if(!C) return 'SKIP: the empty key has no cell';
+       function inC(x,y){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1, sx=(m.a*x+m.c*y+m.e)/d, sy=(m.b*x+m.d*y+m.f)/d; return sx>C.x+2&&sx<C.x+C.w-2&&sy>C.y+2&&sy<C.y+C.h-2; }
+       ctx.fillText=function(s,x,y){ if(inC(x,y)) txt.push(String(s)); return oFT.apply(this,arguments); };
+       ctx.fillRect=function(x,y,w,h){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1; if(inC(x+w/2,y+h/2)&&Math.abs(w*m.a/d)<C.w*0.5) rects++; return oFR.apply(this,arguments); };
+       try{ __frame(0.016); } finally { delete ctx.fillText; delete ctx.fillRect; if(ctx.fillText!==oFT) ctx.fillText=oFT; if(ctx.fillRect!==oFR) ctx.fillRect=oFR; }
+       if(txt.some(function(s){ return s==='0'; })) bad.push('an empty key shows a 0 count');
+       if(rects>0) bad.push('an empty key draws a placeholder glyph ('+rects+' marks)');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ delete ctx.fillText; delete ctx.fillRect; if(ctx.fillText!==oFT) ctx.fillText=oFT; if(ctx.fillRect!==oFR) ctx.fillRect=oFR; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.00',what:'the status effects sit down the left side, his notes of 2026-10-07: with nothing running no status ring is drawn there; a Stim with 6 of its 10 seconds left draws a STIM icon on the left with its ring 60 percent lit and 6s beside it; a Bandage put on at 50 draws a HEALING icon on the left, clear of the pillager board and the controls, its ring lit for the share of the heal still to come and its seconds beside it, and from 80 the same counts to the Bandage stop at 85; the green heal ring over his head is gone, and the dial that keeps it for the older check still brings it back',
  run:function(){
    if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';

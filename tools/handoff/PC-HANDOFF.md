@@ -454,3 +454,12 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v18.73 tcardsolid: title step cards solid.
 - 9345 (4K soak) now runs in a real 3804x2055 window (soak4k.ps1 relaunches it when the port is down); 4K shots in tools/handoff/shots4k.
 - Heartbeat cron 3ef10367 at :17 and :47 (session-only, 7-day expiry).
+
+## 2026-10-07 late: his notes of the evening, 4K pass, three workflows (v18.74 to v19.00)
+- His notes shipped: v18.74 Overseer bar waits until seen (canSee latch e.barSeen); v18.75 heal/plate use bar (drawUseBar); v18.76 scoped ADS zoom (adsZf, G.adsZ, CFG.adsZoom 0.35; sprite scale ignores it); v18.93 Blotter gradual onset (workflow wf_c854b8f7-bd1, one k factor, BUZZRNDP crossfade); v18.94 hue phase (BUZZPH); v19.00 status icons on the left (workflow wf_8a4a5010-9a1; heal ring moved off the head, CFG.healRingHead dial; ACID row renamed BLOTTER).
+- Belt slot 8 to 1 (workflow wf_a2bde6e5-ae9): v18.87 handgun, v18.88 bagslot, v18.89 gunswap, v18.90 presspick, v18.91 floorgun, v18.92 stalekey.
+- Visual pass: v18.77 gambler lines centred, v18.78 framed-window text cap (#root .msub 1180 beat 1060), v18.79-v18.83 FASHION previews (outfit, fit, face, tattoo close-up, hat, beard, hairstyle; BUILD unchanged though v18.82's note says otherwise), v18.81 racks fill, v18.85 raid backpack text at 4K (bFS, LH*BZ), v18.86 legend hides under the backpack, v18.95 Undercroft text at 4K, v18.96 bar warning clamp, v18.97 run card note box, v18.98 stash belt one row.
+- Cards: v18.84 and v18.99 (stamp 18.99). Every new card check carries the moved-on SKIP (see ship-flow memory).
+- Draft gotchas: a draft why/now/title with double or single quotes breaks the generated p-script or the DEVNOW JS line; strip them. Agent-written checks need a trailing comma.
+- Fixture fixes: 17.71 restores salvagerun:kid; 17.66 pins kid comeback off; 16.33 finds YOUR PARTY; 11.65 and 11.63 trim the 60-run log first; 18.57/18.68 card checks skip once moved on.
+- 4K soak now real 4K (3804x2055): 56-60 fps; the 18 and 33 fps dips were my screenshots on the same Chrome. Co-op soak 16/16 pass; five runs at 4-7 fps likely load contention, coop-soak2 (40 runs) checking.
