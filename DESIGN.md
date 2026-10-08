@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.04 - THE KIA CARD SHOWS WHAT WAS LOST WITH PICTURES
+
+Co-op hunt while he was away. Seen on the KIA card screenshot of 2026-10-07: the card listed what you lost as plain names (Medkit LOST, Bandage LOST, Compact SMG LOST). Each line now carries the item or gun picture in front of its name, the same pictures the backpack and stash use, so the loss reads at a glance.
+
+MEASURED. Check 19.04 passes, and fails on v19.03.
 ## v19.03 - THE OPEN MAP HIDES WHAT IS UNDER IT
 
 Co-op hunt while he was away. Seen on the map screenshot of 2026-10-07: with the map open, the message under it (Partly cloudy. This will not hold.) still showed through faintly across THE LONG DOCK, because the map backing let six percent of the screen below through. It is near solid now, so only the map shows.

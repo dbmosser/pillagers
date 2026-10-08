@@ -1,0 +1,5 @@
+## v19.04 - THE KIA CARD SHOWS WHAT WAS LOST WITH PICTURES
+
+Co-op hunt while he was away. Seen on the KIA card screenshot of 2026-10-07: the card listed what you lost as plain names (Medkit LOST, Bandage LOST, Compact SMG LOST). Each line now carries the item or gun picture in front of its name, the same pictures the backpack and stash use, so the loss reads at a glance.
+
+MEASURED. Check 19.04 passes, and fails on v19.03.

@@ -1,0 +1,20 @@
+{
+    "title":  "THE KIA CARD SHOWS WHAT WAS LOST WITH PICTURES",
+    "why":  "Seen on the KIA card screenshot of 2026-10-07: the card listed what you lost as plain names (Medkit LOST, Bandage LOST, Compact SMG LOST). Each line now carries the item or gun picture in front of its name, the same pictures the backpack and stash use, so the loss reads at a glance.",
+    "now":  "The KILLED IN ACTION card shows a picture beside each item and gun you lost.",
+    "edits":  [
+                  {
+                      "anchor":  "      lines.push(\u0027\u003cspan style=\"color:\u0027+(RCOL[dispR(_lk2)||li2.r]||\u0027#cdd6dd\u0027)+\u0027\"\u003e\u0027+li2.name+\u0027\u003c/span\u003e\u0027+",
+                      "replacement":  "      lines.push(iconImgHTML(_lk2,24)+\u0027 \u0027+\u0027\u003cspan style=\"color:\u0027+(RCOL[dispR(_lk2)||li2.r]||\u0027#cdd6dd\u0027)+\u0027\"\u003e\u0027+li2.name+\u0027\u003c/span\u003e\u0027+   // v16.xx, seen on the KIA card screenshot (2026-10-07): each lost thing with its picture, as the backpack and stash show it"
+                  },
+                  {
+                      "anchor":  "        lines.push(\u0027\u003cspan style=\"color:#cdd6dd\"\u003e\u0027+gone[j].name+\u0027\u003c/span\u003e\u003cspan style=\"color:var(--rust)\"\u003e  LOST\u003c/span\u003e\u0027); }",
+                      "replacement":  "        lines.push((ITEMS[\u0027gun_\u0027+gone[j].id]?iconImgHTML(\u0027gun_\u0027+gone[j].id,24)+\u0027 \u0027:\u0027\u0027)+\u0027\u003cspan style=\"color:#cdd6dd\"\u003e\u0027+gone[j].name+\u0027\u003c/span\u003e\u003cspan style=\"color:var(--rust)\"\u003e  LOST\u003c/span\u003e\u0027); }   // v16.xx: and the gun\u0027s picture"
+                  },
+                  {
+                      "anchor":  "      else lines.push(\u0027\u003cspan style=\"color:#cdd6dd\"\u003e\u0027+gone[j].name+\u0027\u003c/span\u003e\u003cspan style=\"color:var(--rust)\"\u003e  LOST\u003c/span\u003e\u0027);",
+                      "replacement":  "      else lines.push((ITEMS[\u0027gun_\u0027+gone[j].id]?iconImgHTML(\u0027gun_\u0027+gone[j].id,24)+\u0027 \u0027:\u0027\u0027)+\u0027\u003cspan style=\"color:#cdd6dd\"\u003e\u0027+gone[j].name+\u0027\u003c/span\u003e\u003cspan style=\"color:var(--rust)\"\u003e  LOST\u003c/span\u003e\u0027);   // v16.xx: and the gun\u0027s picture"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the KIA card shows what was lost with pictures: every LOST line on the card carries the item or gun picture\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var bad=[], man, rows, n=0, withPic=0, i;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027bandage\u0027,\u0027medkit\u0027],safe:null,mapIx:0,seed:4242});\n       __endRaid(\u0027dead\u0027);\n       man=document.getElementById(\u0027oc_manifest\u0027);\n       if(!man) return \u0027SKIP: no run card manifest\u0027;\n       rows=String(man.innerHTML).split(\u0027\u003cbr\u003e\u0027);\n       for(i=0;i\u003crows.length;i++) if(rows[i].indexOf(\u0027LOST\u0027)\u003e=0){ n++; if(rows[i].indexOf(\u0027\u003cimg\u0027)\u003e=0) withPic++; }\n       if(!n) return \u0027SKIP: the card listed nothing lost\u0027;\n       if(withPic\u003cn) bad.push(withPic+\u0027 of \u0027+n+\u0027 LOST lines carry a picture\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

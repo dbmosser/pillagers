@@ -1522,7 +1522,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.03';
+var VER='19.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21477,7 +21477,7 @@ var _cdone=contractExtract(G.bag,haul);
       var _lk2=G.bag[shown[j]];
       var li2=ITEMS[_lk2];
       if(!li2) continue;
-      lines.push('<span style="color:'+(RCOL[dispR(_lk2)||li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+
+      lines.push(iconImgHTML(_lk2,24)+' '+'<span style="color:'+(RCOL[dispR(_lk2)||li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+   // v19.04, seen on the KIA card screenshot (2026-10-07): each lost thing with its picture, as the backpack and stash show it
         '<span style="color:var(--rust)">  LOST</span>');
     }
     var gone=carriedGuns(G.player), _gp0=G.player;
@@ -21502,14 +21502,14 @@ var _cdone=contractExtract(G.bag,haul);
       _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
       var wi=_egArm?P.weapons.indexOf(gone[j].id):-1;
       if(wi>=0){ P.weapons.splice(wi,1);
-        lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }
+        lines.push((ITEMS['gun_'+gone[j].id]?iconImgHTML('gun_'+gone[j].id,24)+' ':'')+'<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }   // v19.04: and the gun's picture
       // v9.55, HIS QUESTION: "KIA screen -- why is the gun different from the
       // others?" This branch is a gun picked up during the raid and never banked,
       // against the branch above which is one out of your armoury. The difference
       // is real, and it is also not actionable and not explained, and every loot
       // item beside it, picked up in the same raid, says LOST. One word, one
       // outcome.
-      else lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>');
+      else lines.push((ITEMS['gun_'+gone[j].id]?iconImgHTML('gun_'+gone[j].id,24)+' ':'')+'<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>');   // v19.04: and the gun's picture
     }
     if(lostIdx.length>shown.length) lines.push('<span style="color:var(--ash)">and '+(lostIdx.length-shown.length)+' more, all gone</span>');
     // v10.72: the guns are in this line now. It listed them as LOST above and
@@ -33208,7 +33208,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.03: Nothing from the HUD shows through the open map any more. Check 19.03 fails on v19.02',
+  now:'v19.04: The KILLED IN ACTION card shows a picture beside each item and gun you lost. Check 19.04 fails on v19.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

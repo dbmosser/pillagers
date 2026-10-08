@@ -1,0 +1,7 @@
+v19.04: the kia card shows what was lost with pictures
+
+The KILLED IN ACTION card shows a picture beside each item and gun you lost.
+
+Check 19.04. Fails on v19.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

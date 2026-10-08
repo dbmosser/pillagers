@@ -5721,6 +5721,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.04',what:'the KIA card shows what was lost with pictures: every LOST line on the card carries the item or gun picture',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     var bad=[], man, rows, n=0, withPic=0, i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['bandage','medkit'],safe:null,mapIx:0,seed:4242});
+       __endRaid('dead');
+       man=document.getElementById('oc_manifest');
+       if(!man) return 'SKIP: no run card manifest';
+       rows=String(man.innerHTML).split('<br>');
+       for(i=0;i<rows.length;i++) if(rows[i].indexOf('LOST')>=0){ n++; if(rows[i].indexOf('<img')>=0) withPic++; }
+       if(!n) return 'SKIP: the card listed nothing lost';
+       if(withPic<n) bad.push(withPic+' of '+n+' LOST lines carry a picture');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.03',what:'the open map hides what is under it: the backing it lays over the whole screen is at least 98 percent opaque',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
