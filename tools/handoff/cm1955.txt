@@ -1,0 +1,7 @@
+v19.55: the world prompts grow at 4k
+
+At 4K the search, door, revive and extraction prompts in the world are full size.
+
+Check 19.55. Fails on v19.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

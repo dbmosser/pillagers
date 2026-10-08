@@ -1,0 +1,52 @@
+{
+    "title":  "THE WORLD PROMPTS GROW AT 4K",
+    "why":  "Seen on the 4K ring screenshot of 2026-10-08: the prompts drawn at a place in the world ([E] CALL FOR EXTRACTION and the ring countdowns, [E] SEARCH over a container or body, UNLOCK at a door, REVIVE over a downed man) kept their 1080p size at 4K, small beside a world drawn twice as big (his v10.52 note was already that the search prompt was too small). Each now grows with the screen about its own place, its plates and bars with it.",
+    "now":  "At 4K the search, door, revive and extraction prompts in the world are full size.",
+    "edits":  [
+                  {
+                      "anchor":  "function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes===\u0027function\u0027)?hudRes():1); return (r===1)?f:f.replace((/([\\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*r).toFixed(1)+\u0027px\u0027; }); }",
+                      "replacement":  "function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes===\u0027function\u0027)?hudRes():1); return (r===1)?f:f.replace((/([\\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*r).toFixed(1)+\u0027px\u0027; }); }\n// v16.xx, seen on the 4K ring screenshot (2026-10-08): the prompts drawn at a place in the world ([E] CALL FOR EXTRACTION, [E] SEARCH,\n// UNLOCK, REVIVE) kept their 1080p size at 4K, small beside a world drawn twice as big. hudAtIn scales whatever follows about that\n// point (words, plates, bars together); the caller restores when it returns true.\nfunction hudAtIn(x,y){ var r=Math.max(1,(typeof hudRes===\u0027function\u0027)?hudRes():1); if(r===1||!isFinite(x)||!isFinite(y)) return false; ctx.save(); ctx.translate(x,y); ctx.scale(r,r); ctx.translate(-x,-y); return true; }"
+                  },
+                  {
+                      "anchor":  "      ctx.font=FS(TYPE.label); ctx.textAlign=\u0027center\u0027;\n      ctx.fillStyle=haveKey?\u0027#7fc4a0\u0027:\u0027#ff8a76\u0027;",
+                      "replacement":  "      var _hsD=hudAtIn(dsc.x,dsc.y);   // v16.xx: grows with the screen\n      ctx.font=FS(TYPE.label); ctx.textAlign=\u0027center\u0027;\n      ctx.fillStyle=haveKey?\u0027#7fc4a0\u0027:\u0027#ff8a76\u0027;"
+                  },
+                  {
+                      "anchor":  "      ctx.textAlign=\u0027left\u0027;\n    }\n  }\n  // A man on the floor is an interaction",
+                      "replacement":  "      ctx.textAlign=\u0027left\u0027;\n      if(_hsD) ctx.restore();\n    }\n  }\n  // A man on the floor is an interaction"
+                  },
+                  {
+                      "anchor":  "      ctx.font=FS(TYPE.label); ctx.textAlign=\u0027center\u0027;\n      ctx.fillStyle=\u0027#ffc04a\u0027;\n      // v14.12, HUD audit",
+                      "replacement":  "      var _hsR=hudAtIn(ds3.x,ds3.y);   // v16.xx: grows with the screen\n      ctx.font=FS(TYPE.label); ctx.textAlign=\u0027center\u0027;\n      ctx.fillStyle=\u0027#ffc04a\u0027;\n      // v14.12, HUD audit"
+                  },
+                  {
+                      "anchor":  "        \u0027  \u0027+_rvLeft.toFixed(0)+\u0027s\u0027,ds3.x,ds3.y);\n      ctx.textAlign=\u0027left\u0027;",
+                      "replacement":  "        \u0027  \u0027+_rvLeft.toFixed(0)+\u0027s\u0027,ds3.x,ds3.y);\n      ctx.textAlign=\u0027left\u0027;\n      if(_hsR) ctx.restore();"
+                  },
+                  {
+                      "anchor":  "      ctx.font=FS(TYPE.head); ctx.textAlign=\u0027center\u0027;   // v10.52, his note: the prompt was too small\n      ctx.fillStyle=\u0027#ffc04a\u0027;",
+                      "replacement":  "      var _hsC=hudAtIn(s.x,s.y);   // v16.xx: grows with the screen\n      ctx.font=FS(TYPE.head); ctx.textAlign=\u0027center\u0027;   // v10.52, his note: the prompt was too small\n      ctx.fillStyle=\u0027#ffc04a\u0027;"
+                  },
+                  {
+                      "anchor":  "          ctx.fillText(dit.name,s.x,s.y+LH(17)); }\n      }\n      ctx.textAlign=\u0027left\u0027;",
+                      "replacement":  "          ctx.fillText(dit.name,s.x,s.y+LH(17)); }\n      }\n      ctx.textAlign=\u0027left\u0027;\n      if(_hsC) ctx.restore();"
+                  },
+                  {
+                      "anchor":  "    var _rHold=(RZ.hold!==undefined\u0026\u0026RZ.hold!==null\u0026\u0026RZ.hold\u003e0);\n    ctx.font=FS(TYPE.label); ctx.textAlign=\u0027center\u0027;",
+                      "replacement":  "    var _rHold=(RZ.hold!==undefined\u0026\u0026RZ.hold!==null\u0026\u0026RZ.hold\u003e0);\n    var _hsZ=hudAtIn(rs.x,rs.y);   // v16.xx: grows with the screen\n    ctx.font=FS(TYPE.label); ctx.textAlign=\u0027center\u0027;"
+                  },
+                  {
+                      "anchor":  "      (\u0027EXTRACT \u0027+extLetter(RZ)+\u0027 INBOUND \u0027+Math.ceil(RZ.beaconT)+\u0027s\u0027),rs.x,rs.y);\n    ctx.textAlign=\u0027left\u0027;",
+                      "replacement":  "      (\u0027EXTRACT \u0027+extLetter(RZ)+\u0027 INBOUND \u0027+Math.ceil(RZ.beaconT)+\u0027s\u0027),rs.x,rs.y);\n    ctx.textAlign=\u0027left\u0027;\n    if(_hsZ) ctx.restore();"
+                  },
+                  {
+                      "anchor":  "    var ps=w2s(padZ.x,26,padZ.y);\n    if(ps){\n      ctx.font=FS(TYPE.label); ctx.textAlign=\u0027center\u0027;",
+                      "replacement":  "    var ps=w2s(padZ.x,26,padZ.y);\n    if(ps){\n      var _hsP=hudAtIn(ps.x,ps.y);   // v16.xx: grows with the screen\n      ctx.font=FS(TYPE.label); ctx.textAlign=\u0027center\u0027;"
+                  },
+                  {
+                      "anchor":  "        if(padZ.callT\u003e0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.callT/1.6,0,1),\u0027#4de3d0\u0027);\n      }\n      ctx.textAlign=\u0027left\u0027;",
+                      "replacement":  "        if(padZ.callT\u003e0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.callT/1.6,0,1),\u0027#4de3d0\u0027);\n      }\n      ctx.textAlign=\u0027left\u0027;\n      if(_hsP) ctx.restore();"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the world prompts grow at 4K: standing on a ring, [E] CALL FOR EXTRACTION over it is drawn about twice its 1080p size on a 4K screen, and nothing is left scaled after\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame\u0026\u0026window.__forceSize)) return \u0027SKIP: this fixture cannot deploy and draw\u0027;\n     var bad=[], g, p, z, oFT=ctx.fillText, hit=null, s1, s4, d=(typeof DPR===\u0027number\u0027\u0026\u0026DPR\u003e0)?DPR:1, m0, m1;\n     function grab(){ var k; hit=null; p.x=z.x; p.y=z.y; g.beaconT=null; for(k=0;k\u003c12;k++){ hit=null; __frame(0.05); } return hit; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __forceSize(1920,1080);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       p=g.player; g.ents.length=0; g.bagOpen=false; g.mapOpen=false;\n       z=g.zones\u0026\u0026g.zones[0]; if(!z) return \u0027SKIP: no ring\u0027;\n       g.active=z;\n       ctx.fillText=function(t,x,y){ if(/^\\[[^\\]]+\\] CALL FOR EXTRACTION$/.test(String(t))\u0026\u0026!hit){ var m=ctx.getTransform(), fm=(/([\\d.]+)px/).exec(String(ctx.font)); hit={px:(fm?parseFloat(fm[1]):0)*m.d/d,ok:isFinite(x)\u0026\u0026isFinite(y)}; } return oFT.apply(this,arguments); };\n       s1=grab();\n       __forceSize(3840,2160); if(!(W\u003e3000)) return \u0027SKIP: the canvas would not go to 4K\u0027;\n       m0=ctx.getTransform();\n       s4=grab();\n       m1=ctx.getTransform();\n       if(!s1||!s4) return \u0027SKIP: the ring prompt was not drawn\u0027; if(!s1.ok||!s4.ok) return \u0027SKIP: the ring prompt has no place on screen in this staging\u0027;\n       if(s4.px\u003cs1.px*1.7) bad.push(\u0027at 4K [E] CALL FOR EXTRACTION is \u0027+s4.px.toFixed(1)+\u0027 px against \u0027+s1.px.toFixed(1)+\u0027 px at 1080p\u0027);\n       if(Math.abs(m0.a-m1.a)\u003e1e-6||Math.abs(m0.e-m1.e)\u003e1e-6) bad.push(\u0027the frame left the canvas transform changed\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ __forceSize(1920,1080); }catch(_f){} try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,5 @@
+## v19.55 - THE WORLD PROMPTS GROW AT 4K
+
+Co-op hunt while he was away. Seen on the 4K ring screenshot of 2026-10-08: the prompts drawn at a place in the world ([E] CALL FOR EXTRACTION and the ring countdowns, [E] SEARCH over a container or body, UNLOCK at a door, REVIVE over a downed man) kept their 1080p size at 4K, small beside a world drawn twice as big (his v10.52 note was already that the search prompt was too small). Each now grows with the screen about its own place, its plates and bars with it.
+
+MEASURED. Check 19.55 passes, and fails on v19.54.

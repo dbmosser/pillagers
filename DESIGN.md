@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.55 - THE WORLD PROMPTS GROW AT 4K
+
+Co-op hunt while he was away. Seen on the 4K ring screenshot of 2026-10-08: the prompts drawn at a place in the world ([E] CALL FOR EXTRACTION and the ring countdowns, [E] SEARCH over a container or body, UNLOCK at a door, REVIVE over a downed man) kept their 1080p size at 4K, small beside a world drawn twice as big (his v10.52 note was already that the search prompt was too small). Each now grows with the screen about its own place, its plates and bars with it.
+
+MEASURED. Check 19.55 passes, and fails on v19.54.
 ## v19.54 - THE EXTRACTION LINES GROW AT 4K
 
 Co-op hunt while he was away. Seen on the 4K ring screenshot of 2026-10-08: the lines above the belt at an extraction ring (HOLD E TO CALL FOR EXTRACTION, EXTRACT A INBOUND and its countdown, the distance and arrow, the converging count) kept their 1080p size and spacing at 4K while the belt under them grew, so they read as small print at the most important moment of a raid. Their words and their gaps now grow with the screen, and the bandage bar keeps clear of them as before.
