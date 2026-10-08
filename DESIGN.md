@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.98 - THE STASH SHOWS MORE AT ONCE
+
+Co-op hunt while he was away. His order of 2026-10-08 (fix this then), his pick Medium: on the default stash layout the tiles were 230 pixels times the menu zoom, so a TV showed about 3 across and 5 on screen with 435 things in his stash. The tiles are about half that now: about 6 across and three rows on screen at 1080p and 4K alike, and the backpack about 4 across. The pictures still fill most of each tile.
+
+MEASURED. Check 19.98 passes, and fails on v19.97.
 ## v19.97 - SECTOR THUMBNAIL NAMES CLEAR THE RINGS
 
 Co-op hunt while he was away. Seen on the 4K lift screenshot of 2026-10-08: on the sector thumbnails a zone name could be printed straight through a cyan extraction ring (THE LONG DOCK on Cold Storage, BLAST LINE on The Cold Mile). A name that would touch a ring now moves to the nearest clear place just above or below it, inside its own zone.

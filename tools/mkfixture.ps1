@@ -5722,6 +5722,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.98',what:'the stash is medium density on the default layout: a wide stash grid shows 6 tiles across at any window size',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], gEl, cols, hub=document.getElementById('hub'), l0=P.stashLayout;
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       P.stashLayout=6;
+       __hubEnter(); __station('term','KeyE');
+       if(hub&&hub.getAttribute('data-slayout')!=='6') return 'SKIP: the stash is not on the default layout';
+       gEl=document.getElementById('stashgrid'); if(!gEl||!gEl.getBoundingClientRect().width) return 'SKIP: the stash grid is not showing';
+       cols=String(getComputedStyle(gEl).gridTemplateColumns||'').trim().split(/\s+/).filter(function(s){ return /px$/.test(s); }).length;
+       if(gEl.clientWidth>=700&&cols!==6) bad.push('the stash grid shows '+cols+' tiles across in '+gEl.clientWidth+' px (wanted 6)');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P.stashLayout=l0; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.97',what:'a sector thumbnail zone name clears the extraction rings: a name whose zone centre sits on a ring is drawn above or below the ring, not through it',
    run:function(){
      if(typeof sectorPreviewDraw!=='function') return 'SKIP: no sector thumbnails here';

@@ -1,0 +1,7 @@
+v19.98: the stash shows more at once
+
+The stash shows about 6 tiles across instead of 3, so much more fits on screen.
+
+Check 19.98. Fails on v19.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
