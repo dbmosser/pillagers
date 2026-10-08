@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.72 - THE NEW IN CARD SPEAKS CONTROLLER ON A CONTROLLER
+
+Co-op hunt while he was away. Seen on the controller pass of 2026-10-08: on a controller (player 2 in co-op) the card with what is new in this build said press ENTER or walk to dismiss, but the pad has no ENTER and no pad button closes the card; walking does. On a pad the line now says walk to dismiss.
+
+MEASURED. Check 19.72 passes, and fails on v19.71.
 ## v19.71 - THE PAUSE BOX SPEAKS CONTROLLER ON A CONTROLLER
 
 Co-op hunt while he was away. Seen on the 4K controller screenshot of 2026-10-08: on a controller (player 2 in co-op) the pause box listed MOUSE aim, LMB fire, WASD move and the rest of the keyboard, keys the pad player does not have. With a pad on it now lists the pad layout (sticks, RT fire, A roll, B crouch, X reload, MENU pause), from the same table as the full controls panel, so the two never disagree.

@@ -1,0 +1,5 @@
+## v19.72 - THE NEW IN CARD SPEAKS CONTROLLER ON A CONTROLLER
+
+Co-op hunt while he was away. Seen on the controller pass of 2026-10-08: on a controller (player 2 in co-op) the card with what is new in this build said press ENTER or walk to dismiss, but the pad has no ENTER and no pad button closes the card; walking does. On a pad the line now says walk to dismiss.
+
+MEASURED. Check 19.72 passes, and fails on v19.71.
