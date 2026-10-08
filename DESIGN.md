@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.26 - THE STAT CARDS ARE READABLE
+
+Co-op hunt while he was away. Seen on the 4K YOUR STATS screenshot of 2026-10-08: the card titles were 11 pixels and the lines under the figures 12, and the narrow cards stood seven to a row with empty space beside them. Titles 13, figures 28, lines 14, and wider cards that fill the row.
+
+MEASURED. Check 20.26 passes, and fails on v20.25.
 ## v20.25 - THE CRAFT RESOURCES ARE READABLE
 
 Co-op hunt while he was away. Seen on the 4K CRAFT screenshot of 2026-10-08: the REQUIRED RESOURCES rows on a recipe card (Scrap Metal 0/3, Copper Wire 0/2) were 13 pixels with 22 pixel pictures, the smallest thing on the card, and they are what tells you whether you can craft. They are 16 and 17 now, with 30 pixel pictures.

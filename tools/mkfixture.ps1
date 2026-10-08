@@ -5722,6 +5722,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.26',what:'the stat cards are readable: titles 13px, figures 28px and the lines under them 14px',
+   run:function(){
+     if(typeof renderStatCards!=='function') return 'SKIP: no stats page here';
+     var bad=[], c, f;
+     try{ renderStatCards(); }catch(e){ return 'threw: '+(e&&e.message||e); }
+     c=document.querySelector('#statgrid .scard'); if(!c) return 'SKIP: no stat cards';
+     f=function(sel){ var e=c.querySelector(sel); return e?parseFloat(getComputedStyle(e).fontSize):0; };
+     if(!(f('.sk')>=12.9)) bad.push('the title is '+f('.sk')+'px');
+     if(!(f('.sv')>=27.9||(c.querySelector('.sv.word')&&f('.sv')>=18.9))) bad.push('the figure is '+f('.sv')+'px');
+     if(c.querySelector('.ss')&&!(f('.ss')>=13.9)) bad.push('the line under it is '+f('.ss')+'px');
+     return bad.length?bad.join('; '):null; }},
   {v:'20.25',what:'the craft resource rows are readable: on a recipe card the resource names are 16px or more with 30px pictures',
    run:function(){
      if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the shop';

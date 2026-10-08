@@ -1,0 +1,12 @@
+{
+    "title":  "THE STAT CARDS ARE READABLE",
+    "why":  "Seen on the 4K YOUR STATS screenshot of 2026-10-08: the card titles were 11 pixels and the lines under the figures 12, and the narrow cards stood seven to a row with empty space beside them. Titles 13, figures 28, lines 14, and wider cards that fill the row.",
+    "now":  "YOUR STATS is easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "  .scard .ss b{ color:var(--amber); font-weight:600; }",
+                      "replacement":  "  .scard .ss b{ color:var(--amber); font-weight:600; }\n  /* v16.xx, seen on the 4K YOUR STATS screenshot (2026-10-08): the card titles were 11px and the lines under them 12px, and the\n     150px cards stood seven to a row with empty space beside them. Bigger print and wider cards that fill the row. */\n  #statgrid{ grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:9px; }\n  .scard{ padding:10px 12px; }\n  .scard .sk{ font-size:13px; }\n  .scard .sv{ font-size:28px; }\n  .scard .sv.word{ font-size:19px; }\n  .scard .ss{ font-size:14px; line-height:1.35; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stat cards are readable: titles 13px, figures 28px and the lines under them 14px\u0027,\n   run:function(){\n     if(typeof renderStatCards!==\u0027function\u0027) return \u0027SKIP: no stats page here\u0027;\n     var bad=[], c, f;\n     try{ renderStatCards(); }catch(e){ return \u0027threw: \u0027+(e\u0026\u0026e.message||e); }\n     c=document.querySelector(\u0027#statgrid .scard\u0027); if(!c) return \u0027SKIP: no stat cards\u0027;\n     f=function(sel){ var e=c.querySelector(sel); return e?parseFloat(getComputedStyle(e).fontSize):0; };\n     if(!(f(\u0027.sk\u0027)\u003e=12.9)) bad.push(\u0027the title is \u0027+f(\u0027.sk\u0027)+\u0027px\u0027);\n     if(!(f(\u0027.sv\u0027)\u003e=27.9||(c.querySelector(\u0027.sv.word\u0027)\u0026\u0026f(\u0027.sv\u0027)\u003e=18.9))) bad.push(\u0027the figure is \u0027+f(\u0027.sv\u0027)+\u0027px\u0027);\n     if(c.querySelector(\u0027.ss\u0027)\u0026\u0026!(f(\u0027.ss\u0027)\u003e=13.9)) bad.push(\u0027the line under it is \u0027+f(\u0027.ss\u0027)+\u0027px\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
