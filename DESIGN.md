@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.69 - THE CONTROLLER FOCUS IS EASY TO SEE
+
+Co-op hunt while he was away. Seen on the 4K controller screenshot of 2026-10-08: the ring that shows where the controller is pointing in menus (v6.84, meant to be found at a glance) was a 2 pixel line, easy to lose on a TV, and on an empty slot, which is drawn faded, it came out a dim brown. It is thicker now, with a brighter ring and a soft glow, and the focused thing is always at full strength.
+
+MEASURED. Check 19.69 passes, and fails on v19.68.
 ## v19.68 - THE PAD CONTROLS PANEL NAMES NO KEYBOARD KEY
 
 Co-op hunt while he was away. Seen on the 4K controller screenshot of 2026-10-08: on a controller (player 2 in co-op) the compact controls panel switches to pad buttons but still ended with H  full list, a keyboard key the pad player cannot press, since no pad button opens the full list. On a pad that line and its row are left out; with keyboard and mouse it is as before.

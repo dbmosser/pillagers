@@ -5721,6 +5721,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.69',what:'the controller focus is easy to see: a focused element has a 3px amber outline, a glow, and full strength even when faded',
+   run:function(){
+     var m=document.createElement('div'), el=document.createElement('div'), bad=[], s;
+     try{
+       m.className='modal on'; m.id='zqxpadring'; m.style.zIndex='-1';
+       el.style.cssText='width:80px;height:40px;opacity:.4'; el.className='padfocus';
+       m.appendChild(el); document.body.appendChild(m);
+       s=getComputedStyle(el);
+       if(!(parseFloat(s.outlineWidth)>=3)) bad.push('the focus outline is '+s.outlineWidth);
+       if(!(/rgba\(255, 192, 74/.test(s.boxShadow)&&(s.boxShadow.match(/rgba/g)||[]).length>=2)) bad.push('the focus has no glow ('+s.boxShadow.slice(0,60)+')');
+       if(parseFloat(s.opacity)<1) bad.push('a faded element stays faded when focused ('+s.opacity+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ document.body.removeChild(m); }catch(_r){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.68',what:'the compact controls panel on a controller names no keyboard key: with the pad on, H full list is not drawn, and with it off it is',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';

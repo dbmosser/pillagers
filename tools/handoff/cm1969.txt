@@ -1,0 +1,7 @@
+v19.69: the controller focus is easy to see
+
+Player 2 can see at a glance where the controller is pointing in every menu.
+
+Check 19.69. Fails on v19.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

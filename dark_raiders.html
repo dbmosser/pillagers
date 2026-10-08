@@ -586,8 +586,11 @@
   /* v6.84: where the controller is pointing. Bright enough to find at a glance on a
      panel that is already busy, and it never changes layout, so nothing reflows as it
      moves. */
-  .padfocus{ outline:2px solid var(--amber) !important; outline-offset:2px;
-    box-shadow:0 0 0 4px rgba(255,192,74,.22) !important; }
+  /* v19.69, seen on the 4K controller screenshot (2026-10-08): on a TV the 2px line was easy to lose, and on an empty slot, which
+     is drawn faded, it came out a dim brown. Thicker, with a brighter ring and a soft glow, and the focused thing always at full
+     strength, so player 2 finds it from the couch. */
+  .padfocus{ outline:3px solid var(--amber) !important; outline-offset:2px; opacity:1 !important;
+    box-shadow:0 0 0 6px rgba(255,192,74,.35), 0 0 22px 4px rgba(255,192,74,.45) !important; }
   /* v6.82, his note: a one question dialog is a card, not a page. */
   #askmodal{ align-items:center; justify-content:center; padding:24px; }
   #askmodal::before{ content:none; }
@@ -1537,7 +1540,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.68';
+var VER='19.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33422,7 +33425,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.68: On a controller the controls panel lists only pad buttons. Check 19.68 fails on v19.67',
+  now:'v19.69: Player 2 can see at a glance where the controller is pointing in every menu. Check 19.69 fails on v19.68',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
