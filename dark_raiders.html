@@ -501,6 +501,10 @@
   #topright{ position:fixed; top:6px; right:20px; height:44px; line-height:44px; z-index:9000; pointer-events:none;
     font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }
   #topright{ text-shadow:0 0 3px rgba(4,6,9,.95),0 0 8px rgba(4,6,9,.8); }   /* v18.62: the corner readout reads over a light wall (CREDITS vanished on the Undercroft side wall) */
+  /* v19.73, seen on the 4K shop and settings screenshots (2026-10-08): with a window open the corner readout sits in its heading row
+     (v11.52, v12.19), but 18 pixels above the heading, so at every size its figures sat on the window's frame. While a window is
+     up it drops to the heading's line. */
+  body:has(.modal.on) #topright{ top:24px; }
   #topright small{ font-size:14px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:7px; margin-right:20px; }
   #topright small:last-child{ margin-right:0; }
   .toprow{ padding-right:560px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide; v12.25: the readout carries the window zoom now, up to 1.3 times wider again at 1080p */
@@ -1552,7 +1556,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.72';
+var VER='19.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33446,7 +33450,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.72: On a controller the what is new card says walk to dismiss. Check 19.72 fails on v19.71',
+  now:'v19.73: The credits in the corner sit level with the window title instead of on its frame. Check 19.73 fails on v19.72',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

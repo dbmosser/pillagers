@@ -1,0 +1,7 @@
+v19.73: the corner credits line up with the window heading
+
+The credits in the corner sit level with the window title instead of on its frame.
+
+Check 19.73. Fails on v19.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

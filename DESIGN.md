@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.73 - THE CORNER CREDITS LINE UP WITH THE WINDOW HEADING
+
+Co-op hunt while he was away. Seen on the 4K shop and settings screenshots of 2026-10-08: with a window open (shop, stash, settings and the rest) the CREDITS and XP readout sits in the window heading row by design, but 18 pixels above the heading, so at every screen size its figures sat on the window frame line. While a window is up it now drops to the heading line; on the floor and in a raid it stays in the corner.
+
+MEASURED. Check 19.73 passes, and fails on v19.72.
 ## v19.72 - THE NEW IN CARD SPEAKS CONTROLLER ON A CONTROLLER
 
 Co-op hunt while he was away. Seen on the controller pass of 2026-10-08: on a controller (player 2 in co-op) the card with what is new in this build said press ENTER or walk to dismiss, but the pad has no ENTER and no pad button closes the card; walking does. On a pad the line now says walk to dismiss.
