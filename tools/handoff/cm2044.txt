@@ -1,0 +1,7 @@
+v20.44: focus aim does not carry into the next raid
+
+On a controller, a new raid always starts with focus aim off, whatever the last raid ended in.
+
+Check 20.44. Fails on v20.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

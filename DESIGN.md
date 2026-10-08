@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.44 - FOCUS AIM DOES NOT CARRY INTO THE NEXT RAID
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller, clicking the right stick turns focus aim on until it is clicked again. If a raid ended with it on, by extracting, dying or abandoning, the next raid started in focus aim on its very first frame: walking at about 60% speed, no sprint, [ADS] on the screen and the amber crosshair, until he clicked the stick again or held sprint. The switch was only ever turned off by a part of the controller code that the end-of-raid card never lets run. Every raid now starts with focus aim off.
+
+MEASURED. Check 20.44 passes, and fails on v20.43.
 ## v20.43 - A DEBT SURVIVES A RELOAD
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A hire who dies costs a death benefit, and that can leave you owing money: the run card says you are in debt. But loading the game reset any amount below zero to nothing, so pressing F5 wiped the debt for free, every time. A debt now loads as it is. Only a value that is not a number at all is still reset, and the other counts keep their floor of zero.

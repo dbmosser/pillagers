@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.43';
+var VER='20.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11359,6 +11359,12 @@ function startRaid(){
   // kit that goes up was committed before this line. No player text, no number and no seeded draw moved.
   try{ if(pauseOpen) togglePauseBox(false); }catch(_pz){}
   hubBagOpen=false; hubBagG=null;
+  // v20.44, from the whole-game bug hunt of 2026-10-08 (H43): FOCUS AIM NEVER RIDES UP FROM THE LAST RAID. RS click toggles focus aim
+  // on a pad, and the toggle was cleared only by a pad poll that saw the raid over, which never comes: the end-of-raid card owns the
+  // pad from the frame the raid ends (an instant quit goes straight to the floor), so pollPad returns before that line. A raid left
+  // in focus aim started the next one in it: 62% walking speed, no sprint, [ADS] on the HUD, until RS was clicked again. Every raid
+  // now starts with the toggle off and the steadying after a shot spent. No player text, no number and no seeded draw moved.
+  if(typeof PAD!=='undefined'&&PAD){ PAD.adsTog=false; PAD.adsT=0; }
   G=buildRaid(false);
   try{ G.hot=gunCell(); }catch(_gh){}   // v13.42: a raid starts with the gun in hand selected, wherever his belt put it
   G.carriedIn=bagValue();
@@ -33715,7 +33721,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.43: Reloading the game no longer wipes a debt left by a hire who died. Check 20.43 fails on v20.42',
+  now:'v20.44: On a controller, a new raid always starts with focus aim off, whatever the last raid ended in. Check 20.44 fails on v20.43',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
