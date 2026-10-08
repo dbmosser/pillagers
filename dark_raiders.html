@@ -571,7 +571,7 @@
   textarea:focus{ border-color:var(--amber); }
   .pausebox{ position:absolute; inset:0; background:rgba(8,12,32,.9); z-index:35;
     display:none; flex-direction:column; align-items:center; justify-content:center; gap:11px; }
-  .pausebox::before{ inset:50% auto auto 50%; width:780px; height:400px; transform:translate(-50%,-50%); }
+  .pausebox::before{ inset:50% auto auto 50%; width:780px; height:min(var(--pbh,400px),calc(100% - 28px)); transform:translate(-50%,-50%); }   /* v19.90: --pbh from pauseFrameFit() */
   .pausebox.on{ display:flex; }
 .pausebox h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:25px;
     letter-spacing:.24em; margin:0; color:var(--amber); text-transform:uppercase; }
@@ -1564,7 +1564,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.89';
+var VER='19.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13075,7 +13075,7 @@ function keysLegendHtml(){
     s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' interact &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyF')+' melee strike &nbsp; 1-9 tactical belt &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
     s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyZ')+' drop an item for a teammate &nbsp; '+s('KeyN')+' ping &nbsp; '+s('KeyH')+' controls &nbsp; TAB back out &nbsp; '+s('KeyP')+' / TAB pause';   // v18.25: the trade key, from the audit
 }
-function keysLegendApply(){ var el=document.getElementById('pausekeys'); if(!el) return false; el.innerHTML=String(keysLegendHtml()).split(' &nbsp; ').map(function(p){ return '<span style="white-space:nowrap">'+p+'</span>'; }).join(' &nbsp; '); return true; }   // v19.06, seen on the 4K pause screenshot (2026-10-07): an entry broke in two at the line end (TAB back / out); each key and its words now stay on one line
+function keysLegendApply(){ var el=document.getElementById('pausekeys'); if(!el) return false; el.innerHTML=String(keysLegendHtml()).split(' &nbsp; ').map(function(p){ return '<span style="white-space:nowrap">'+p+'</span>'; }).join(' &nbsp; '); try{ pauseFrameFit(); }catch(_pf){} return true; }   // v19.06, seen on the 4K pause screenshot (2026-10-07): an entry broke in two at the line end (TAB back / out); each key and its words now stay on one line
 function keysRowHtml(){
   var n=0, m=keysMap(), k; for(k in m) if(Object.prototype.hasOwnProperty.call(m,k)) n++;
   return '<div class="row"><div style="flex:1"><b>Keys</b><div class="hint">Change which key does what. Two actions never share a key: they swap.</div></div>'+
@@ -13114,6 +13114,17 @@ try{ window.addEventListener('keydown',function(ev){
   if(KEYS.waiting){ if(ev.code!=='Escape') keysBind(KEYS.waiting,ev.code); KEYS.waiting=null; keysRender(); try{ renderSettings(); }catch(_r3){} }
   else if(ev.code==='Escape'){ m.classList.remove('on'); }
 },true); }catch(_kw){}
+// v19.90, from the code review of 2026-10-08: the pause box frame was a fixed 400px, and with the controller key line (v19.71, six
+// lines) plus the BLEEDING OUT and hosting lines its content ran past the frame top and bottom. The frame now fits what is showing,
+// never smaller than before. Measured in the box's own layout pixels, so the menu zoom does not matter.
+function pauseFrameFit(){
+  var b=document.getElementById('pausebox'), i, c, t=1e9, bo=-1e9;
+  if(!b||!b.offsetHeight) return false;
+  for(i=0;i<b.children.length;i++){ c=b.children[i]; if(c.offsetHeight>0){ t=Math.min(t,c.offsetTop); bo=Math.max(bo,c.offsetTop+c.offsetHeight); } }
+  if(!(bo>t)) return false;
+  b.style.setProperty('--pbh',Math.max(400,Math.ceil(bo-t)+64)+'px');
+  return true;
+}
 function togglePauseBox(on){
   // v8.70, HIS REPORT: ESC pauses in the Undercroft too. This returned on the
   // spot whenever there was no raid, so the floor had no pause at all. syncPause
@@ -13196,6 +13207,7 @@ function togglePauseBox(on){
     if(_cs) _cs.style.display=(_inRaid||_bleed)?'none':'';
   })();
   syncPause();
+  if(on){ try{ pauseFrameFit(); }catch(_pf){} }   // v19.90: the frame fits what is showing
   // v12.22: THE BOX NO LONGER TAKES THE KEYBOARD ON OPEN. It used to focus its
   // note 40 ms in, and the key handler drops every key aimed at a text field, so
   // the second P (the key the legend names) typed a p into the note and the raid
@@ -33483,7 +33495,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.89: With the PARTY window open at 4K, the corner credits no longer sit on its frame. Check 19.89 fails on v19.88',
+  now:'v19.90: The pause box frame always fits around its text. Check 19.90 fails on v19.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

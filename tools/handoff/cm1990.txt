@@ -1,0 +1,7 @@
+v19.90: the pause box frame holds its content
+
+The pause box frame always fits around its text.
+
+Check 19.90. Fails on v19.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

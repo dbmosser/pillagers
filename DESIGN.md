@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.90 - THE PAUSE BOX FRAME HOLDS ITS CONTENT
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: the pause box frame was a fixed 400 pixels, and with the controller key line (v19.71, about six lines) plus the BLEEDING OUT and hosting lines, the heading crossed the frame top and the last line hung below it. The frame now fits whatever the box is showing, and is never smaller than before.
+
+MEASURED. Check 19.90 passes, and fails on v19.89.
 ## v19.89 - THE CORNER CREDITS STAY PUT OVER A CARD WINDOW
 
 Co-op hunt while he was away. Found by the code review of 2026-10-08: v19.73 moved the CREDITS and XP readout down to the heading row whenever any window was open, but the centred card windows (PARTY, TERMS, the gambler, the bar) have no heading row up there, and at 4K the move put the figures on the PARTY frame top line. Over those cards the readout keeps its corner place; over the full windows it still sits on the heading row.
