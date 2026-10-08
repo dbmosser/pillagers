@@ -1,0 +1,7 @@
+v20.24: the loadout question fits its buttons
+
+Every choice on the WHAT ARE YOU TAKING UP card sits on one line.
+
+Check 20.24. Fails on v20.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

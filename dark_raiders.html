@@ -629,6 +629,12 @@
   #askmodal h3 .modcur{ display:none; }   /* your balance is not part of this question */
   #askmodal .msub{ font-size:14px; line-height:1.55; color:var(--ash); margin:0 0 22px; }
   #askmodal .askrow{ display:flex; gap:10px; align-items:stretch; }
+  /* v20.24, seen on the 4K ascent screenshot (2026-10-08): the WHAT ARE YOU TAKING UP card held five choices in 560 pixels, so
+     RANDOM FROM STASH broke over three lines and MY LOADOUT over two. The card grows to fit its buttons on one line (up to 1000),
+     never narrower than before, and its words stay 560 wide so they do not run into long lines. A yes or no looks as it did. */
+  #askmodal .askcard{ width:fit-content; min-width:min(560px,90vw); max-width:min(1000px,94vw); }
+  #askmodal .askcard .msub{ max-width:560px; }
+  #askmodal .askrow button{ white-space:nowrap; }
   #askmodal .askrow button{ font-size:14px; letter-spacing:.10em; padding:13px 16px; }
   .modal .tpane{ min-height:0; overflow-y:auto; }
   /* openTrader and openSettings CLEAR inline display on the shown pane and this
@@ -1589,7 +1595,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.23';
+var VER='20.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33628,7 +33634,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.23: The achievements list under YOUR STATS is easier to read. Check 20.23 fails on v20.22',
+  now:'v20.24: Every choice on the WHAT ARE YOU TAKING UP card sits on one line. Check 20.24 fails on v20.23',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

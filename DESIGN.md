@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.24 - THE LOADOUT QUESTION FITS ITS BUTTONS
+
+Co-op hunt while he was away. Seen on the 4K ascent screenshot of 2026-10-08: the WHAT ARE YOU TAKING UP card held five choices in a fixed 560 pixel card, so RANDOM FROM STASH broke over three lines and MY LOADOUT over two. The card now grows to fit its buttons on one line, never narrower than before, with its words kept to the old width; a plain yes or no question looks as it did.
+
+MEASURED. Check 20.24 passes, and fails on v20.23.
 ## v20.23 - THE ACHIEVEMENTS LIST IS READABLE
 
 Co-op hunt while he was away. Seen on the 4K Mainframe screenshots of 2026-10-08: the achievements under YOUR STATS were 11 pixels with a 10 pixel heading, and the name column was so narrow that LOCKED MACHINE BREAKER broke over two lines. The rows are 14 now, the heading 13, and the names fit on one line.

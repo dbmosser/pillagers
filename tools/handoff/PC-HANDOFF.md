@@ -567,3 +567,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - heartbeat 16:45: logs unchanged. v20.20 card-2020: WHATSNEW_VER 20.20, line 1 RIVALS WITH FACES. Next refresh by ~20.35 (template scratchpad mk-card2020.ps1).
 - heartbeat 16:55: logs unchanged. Gambler (cardfit 580) and raid backpack shot at 4K: fine (the white square was my invalid test item). v20.21 losticons: death card lost-item pictures 24 -> 32.
 - 18:00 2026-10-08 HIS ORDER: burn the remaining usage by Sun 01:00. usage 18:00 weekly 36% (5h 3%). Target ~1.16%/h.
+- usage 18:06 weekly 37% (5h 7%) with the 10-area bug hunt running: one sample, too coarse; recheck ~18:40.
