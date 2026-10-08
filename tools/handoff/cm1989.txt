@@ -1,0 +1,7 @@
+v19.89: the corner credits stay put over a card window
+
+With the PARTY window open at 4K, the corner credits no longer sit on its frame.
+
+Check 19.89. Fails on v19.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

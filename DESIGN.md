@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.89 - THE CORNER CREDITS STAY PUT OVER A CARD WINDOW
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: v19.73 moved the CREDITS and XP readout down to the heading row whenever any window was open, but the centred card windows (PARTY, TERMS, the gambler, the bar) have no heading row up there, and at 4K the move put the figures on the PARTY frame top line. Over those cards the readout keeps its corner place; over the full windows it still sits on the heading row.
+
+MEASURED. Check 19.89 passes, and fails on v19.88.
 ## v19.88 - THE UNDERCROFT PAUSE BOX LISTS THE FLOOR PAD BUTTONS
 
 Co-op hunt while he was away. Found by the code review of 2026-10-08: with a pad, the pause box in the Undercroft listed the raid layout (A dodge roll, X reload, RT fire), but on the floor A works a station, X, Y and RB are its other actions, and LS click jogs, so nearly every line contradicted the pad in hand. On the floor the box now lists the floor buttons; in a raid it lists the raid ones as before.

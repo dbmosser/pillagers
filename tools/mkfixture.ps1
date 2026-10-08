@@ -5721,6 +5721,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.89',what:'the corner credits stay in the corner over a card window: with only the PARTY card open the readout keeps its corner place, and with the shop open it moves to the heading row',
+   run:function(){
+     var tr=document.getElementById('topright'), pm=document.getElementById('partymodal'), tm=document.getElementById('tradermodal'), bad=[], z, a, pOn, tOn;
+     if(!tr||!pm||!tm) return 'SKIP: no readout or windows here';
+     pOn=pm.classList.contains('on'); tOn=tm.classList.contains('on');
+     try{
+       [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(x){ x.classList.add('zqwason'); x.classList.remove('on'); });
+       z=parseFloat(tr.style.zoom)||1;
+       pm.classList.add('on'); a=tr.getBoundingClientRect();
+       if(Math.abs(a.top/z-6)>2) bad.push('with the PARTY card open the readout moved to '+Math.round(a.top/z)+' px');
+       pm.classList.remove('on'); tm.classList.add('on'); a=tr.getBoundingClientRect();
+       if(Math.abs(a.top/z-24)>2) bad.push('control: with the shop open the readout is at '+Math.round(a.top/z)+' px, not on the heading row');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ pm.classList.toggle('on',pOn); tm.classList.toggle('on',tOn); [].slice.call(document.querySelectorAll('.zqwason')).forEach(function(x){ x.classList.remove('zqwason'); x.classList.add('on'); }); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.88',what:'the Undercroft pause box lists the floor pad buttons: on the floor with a pad on it says A use a station and not A dodge roll, and in a raid the raid buttons',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot reach the floor and a raid';
