@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.26 - A BLANKED SECTOR LINE TAKES NO ROOM
+
+Co-op hunt while he was away. Seen on the 4K lift screenshot of 2026-10-08: he blanked both sector description lines with his text edits, and the empty lines still left a band of space between the sector name and its facts on every card. A blank line now takes no room; with Edit the words on, it stays so it can be clicked and given words again. His words are untouched.
+
+MEASURED. Check 19.26 passes, and fails on v19.25.
 ## v19.25 - THE LIFT SMALL PRINT IS READABLE
 
 Co-op hunt while he was away. Seen on the 4K lift screenshot of 2026-10-08: the box saying what you take up, with the amber warning that you go up with no armour on, was 11 pixels, the smallest text on the page and the last thing read before going up; the day and weather hints beside their buttons were 11 too. The box is 15 now and the hints 14.

@@ -1,0 +1,5 @@
+## v19.26 - A BLANKED SECTOR LINE TAKES NO ROOM
+
+Co-op hunt while he was away. Seen on the 4K lift screenshot of 2026-10-08: he blanked both sector description lines with his text edits, and the empty lines still left a band of space between the sector name and its facts on every card. A blank line now takes no room; with Edit the words on, it stays so it can be clicked and given words again. His words are untouched.
+
+MEASURED. Check 19.26 passes, and fails on v19.25.
