@@ -561,3 +561,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v20.15 rosemask: no rose mouth under hat mask/spartan/ghostmask. mkfixture retarget: the v20.01 check pins cosHat none (the gate profile can wear a mask).
 - v20.16 longhair: non-hero long cut on Curved = shorter back mass plus side locks, off the chest.
 - Full corpus on v20.10-v20.12 (corpus-0830 plus the rerun of two slices): all PASS except v10.27, retargeted (v19.39 writes a loss -$435; the check looked for -435). corpus-slices.sh now retries the result read 3 times.
+- heartbeat 15:55: logs quiet (corpus-day, coop-soak, daylong all old, no new FAILs). v20.17 cntpill: .cell .cnt stack counts in a dark pill set in from the corner (the amber slot badge keeps its inline style). Card stamp 20.07, refresh by ~20.22.
