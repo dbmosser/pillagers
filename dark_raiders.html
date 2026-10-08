@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.49';
+var VER='20.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32742,12 +32742,18 @@ function drawHubHUD(ox,oy){
   }
   if(HB.near){
     var s=HB.near;
+    // v20.50, from the whole-game bug hunt of 2026-10-08 (H39): THE STATION PROMPT SITS ABOVE THE FLOOR BELT. It was drawn at H-58 and
+    // H-42 whatever lay below, and the floor belt (on by default) is drawn after it across the bottom of the screen, so [E] and the
+    // station's line showed only as scraps between the belt keys at 1080p, 1440p and 4K. The key footer moved above the belt in
+    // v18.62 (hubFootY); the prompt now keeps the place above that footer it always had, so it rides up with it, and it grows with
+    // the screen as the footer does (hudRes). With the belt off at 1080p nothing moves.
+    var _hpR=Math.max(1,(typeof hudRes==='function')?hudRes():1), _hpF=hubFootY();
     ctx.textAlign='center';
-    ctx.font=FS(TYPE.head); ctx.fillStyle=s.c;
-    ctx.fillText('['+keyLabel('KeyE','E')+']  '+s.label,W/2,H-58);
+    ctx.font=hudFS(TYPE.head); ctx.fillStyle=s.c;
+    ctx.fillText('['+keyLabel('KeyE','E')+']  '+s.label,W/2,_hpF-42*_hpR);
     // v10.93, HIS NOTE: this was #8a96a1, which is the dimmest grey in the file.
-    ctx.font=FS(TYPE.label); ctx.fillStyle='#b7c2cd';
-    ctx.fillText(typeof s.sub==='function'?s.sub():s.sub,W/2,H-42);
+    ctx.font=hudFS(TYPE.label); ctx.fillStyle='#b7c2cd';
+    ctx.fillText(typeof s.sub==='function'?s.sub():s.sub,W/2,_hpF-26*_hpR);
     ctx.textAlign='left';
   }
   // The one-time card. Dismissed by walking, because the first thing anybody
@@ -33748,7 +33754,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.49: The co-op line on the what is new card shows whole. Check 20.49 fails on v20.48',
+  now:'v20.50: In the Undercroft the station prompt and [E] TAKE are no longer hidden behind the belt. Check 20.50 fails on v20.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39503,8 +39509,12 @@ function hubDrawDropPrompt(){
   var d=HB&&HB.nearDrop, it;
   if(!d) return false;
   it=ITEMS[d.k];
-  ctx.save(); ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#ffc04a';
-  ctx.fillText('['+keyLabel('KeyE','E')+'] TAKE '+(it?it.name.toUpperCase():d.k),W/2,H-LH(40));
+  // v20.50, from the whole-game bug hunt of 2026-10-08 (H39): AND [E] TAKE SITS ABOVE THE FLOOR BELT. It was drawn at H-LH(40), inside
+  // the belt keys that are drawn over it. It keeps the same place above the key footer it had with no belt, so it rides up with the
+  // footer, and it grows with the screen as the footer does. With the belt off at 1080p nothing moves.
+  var _dpR=Math.max(1,(typeof hudRes==='function')?hudRes():1);
+  ctx.save(); ctx.font=hudFS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#ffc04a';
+  ctx.fillText('['+keyLabel('KeyE','E')+'] TAKE '+(it?it.name.toUpperCase():d.k),W/2,hubFootY()-(LH(40)-16)*_dpR);
   ctx.restore();
   return true;
 }

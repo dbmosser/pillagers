@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.50 - THE STATION PROMPT SITS ABOVE THE BELT
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In the Undercroft, walking up to a station shows a prompt naming the key and what the station does, and walking up to a crate a teammate dropped shows [E] TAKE. Both were painted at the very bottom of the screen, and the floor belt, which is on by default, was then drawn over them, so only scraps of letters showed between the belt keys, at 1080p, 1440p and 4K. The line of keys along the bottom was already moved above the belt; these prompts now sit just above that line, and they grow with the screen as it does. With the belt turned off at 1080p they are exactly where they were.
+
+MEASURED. Check 20.50 passes, and fails on v20.49.
 ## v20.49 - THE CO-OP LINE FITS THE CARD
 
 Co-op hunt while he was away. Seen on the 4K screenshot of the what is new card (2026-10-08): the new co-op line was longer than the card shows, so it ended in dots halfway through. It is now short enough to show whole. The card is also stamped again, since the stamp may not trail the build by more than 0.15; the many fixes since are in the change list.

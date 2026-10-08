@@ -1,0 +1,7 @@
+v20.50: the station prompt sits above the belt
+
+In the Undercroft the station prompt and [E] TAKE are no longer hidden behind the belt.
+
+Check 20.50. Fails on v20.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

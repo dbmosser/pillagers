@@ -1,0 +1,5 @@
+## v20.50 - THE STATION PROMPT SITS ABOVE THE BELT
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In the Undercroft, walking up to a station shows a prompt naming the key and what the station does, and walking up to a crate a teammate dropped shows [E] TAKE. Both were painted at the very bottom of the screen, and the floor belt, which is on by default, was then drawn over them, so only scraps of letters showed between the belt keys, at 1080p, 1440p and 4K. The line of keys along the bottom was already moved above the belt; these prompts now sit just above that line, and they grow with the screen as it does. With the belt turned off at 1080p they are exactly where they were.
+
+MEASURED. Check 20.50 passes, and fails on v20.49.
