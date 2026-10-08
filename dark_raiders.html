@@ -1537,7 +1537,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.52';
+var VER='19.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31082,10 +31082,20 @@ if(G.trail&&G.trail.length>1){
     // v19.29, seen on the 4K map screenshot (2026-10-08): these two were 14 pixels apart whatever the text size and printed over each
     // other on a big screen. A line height apart now, and lifted together if the second would fall off the bottom of the screen.
     var _svf=parseFloat(((/([\d.]+)px/).exec(String(ctx.font))||[0,11])[1])||11, _svl=Math.max(14,_svf*1.15), _sv1=oy+WORLD_H*sc+Math.max(16,_svf*1.1);
-    if(_sv1+_svl>H-4) _sv1=Math.max(_svf,H-4-_svl);
-    ctx.fillText('SURVEYED  '+Math.round(f*100)+'%',ox+4,_sv1);
-    ctx.fillStyle='rgba(214,208,190,.45)';
-    ctx.fillText('what you walk stays on the map',ox+4,_sv1+_svl);
+    // v19.53, from the review (2026-10-08): lifting the pair to fit (v19.29) pushed SURVEYED into the map frame and cut the bottoms off
+    // the second line at 4K and at bigger text sizes. When both lines do not fit under the frame, they sit side by side on one line.
+    var _svT='SURVEYED  '+Math.round(f*100)+'%';
+    if(_sv1+_svl+_svf*0.25>H){
+      _sv1=Math.min(_sv1,H-_svf*0.25-2);
+      ctx.fillText(_svT,ox+4,_sv1);
+      var _svW=ctx.measureText((typeof TX==='function')?String(TX(_svT)):_svT).width;
+      ctx.fillStyle='rgba(214,208,190,.45)';
+      ctx.fillText('what you walk stays on the map',ox+4+_svW+_svf*1.2,_sv1);
+    } else {
+      ctx.fillText(_svT,ox+4,_sv1);
+      ctx.fillStyle='rgba(214,208,190,.45)';
+      ctx.fillText('what you walk stays on the map',ox+4,_sv1+_svl);
+    }
   })();
 }
 
@@ -33368,7 +33378,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.52: Map labels make room for your own wording. Check 19.52 fails on v19.51',
+  now:'v19.53: The SURVEYED note under the sector map is always whole. Check 19.53 fails on v19.52',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

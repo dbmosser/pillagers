@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.53 - THE SURVEYED NOTE STAYS ON THE SCREEN
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.29: lifting the two SURVEYED lines to fit pushed SURVEYED into the map frame and cut the bottoms off the second line at 4K and at bigger text sizes. When both lines do not fit under the frame they now sit side by side on one line, his two lines as they are.
+
+MEASURED. Check 19.53 passes, and fails on v19.52.
 ## v19.52 - MAP LABEL BOXES FOLLOW HIS WORDING
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.02: the map label placer measured each label on its original words, but the words drawn are his edits, so a longer wording could overlap a neighbour the placer thought was clear, and a label he blanked still pushed other labels aside for a word never shown. The box is measured on the words drawn now, and a blanked label takes no room.

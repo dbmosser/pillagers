@@ -1,0 +1,7 @@
+v19.53: the surveyed note stays on the screen
+
+The SURVEYED note under the sector map is always whole.
+
+Check 19.53. Fails on v19.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
