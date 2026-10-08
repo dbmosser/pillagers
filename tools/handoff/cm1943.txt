@@ -1,0 +1,7 @@
+v19.43: the bar warning sits under its own name
+
+The bar warning on the Undercroft floor sits under THE LAST POUR only.
+
+Check 19.43. Fails on v19.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

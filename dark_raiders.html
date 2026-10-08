@@ -1537,7 +1537,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.42';
+var VER='19.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32278,6 +32278,10 @@ function hubStationNames(S,ox,oy){
       // v18.96, seen on the 4K Undercroft screenshot (2026-10-07): his warning is wider than the station name above it, and centred
       // under the name it ran across the room's right wall. It slides inward like the names do (v6.73), measured as he wrote it (TX).
       var _ewd=wc.measureText((typeof TX==='function')?TX('***EXPERIMENTAL***'):'***EXPERIMENTAL***').width, _exx=_lx2;
+      // v19.43, seen on the 4K Undercroft screenshot (2026-10-08): his warning is about twice as wide as THE LAST POUR, so even slid
+      // in from the wall it reached across under THE STASH and read as that station's line. It shrinks to sit under its own name
+      // (never below 70 percent), his words as he wrote them.
+      if(_ewd>tw*1.15){ var _ek=Math.max(0.7,tw*1.15/_ewd); wc.font=String(wc.font).replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*_ek).toFixed(1)+'px'; }); _ewd=wc.measureText((typeof TX==='function')?TX('***EXPERIMENTAL***'):'***EXPERIMENTAL***').width; }
       if(_ewd<HUBW-_lm2*2){ if(_exx+_ewd/2>HUBW-_lm2) _exx=HUBW-_lm2-_ewd/2; if(_exx-_ewd/2<_lm2) _exx=_lm2+_ewd/2; }
       wc.fillText('***EXPERIMENTAL***',_exx,Math.max(s3.y-35,_lyT+_lDsc+3+_eAsc+2));
       wc.font=FS(TYPE.label);
@@ -33344,7 +33348,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.42: The TRADING line in the PARTY window sits inside the window. Check 19.42 fails on v19.41',
+  now:'v19.43: The bar warning on the Undercroft floor sits under THE LAST POUR only. Check 19.43 fails on v19.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

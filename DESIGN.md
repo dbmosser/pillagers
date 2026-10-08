@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.43 - THE BAR WARNING SITS UNDER ITS OWN NAME
+
+Co-op hunt while he was away. Seen on the 4K Undercroft screenshot of 2026-10-08: his warning under THE LAST POUR (***EXPERIMENTAL FEATURE MAY GLITCH***) is about twice as wide as the name, so even slid in from the wall (v18.96) it reached across under THE STASH and read as that station line. It now shrinks to sit under its own name, never below 70 percent, his words unchanged.
+
+MEASURED. Check 19.43 passes, and fails on v19.42.
 ## v19.42 - THE PARTY TRADING LINE STAYS IN THE WINDOW
 
 Co-op hunt while he was away. Seen on the 4K PARTY screenshot of 2026-10-08: the TRADING line in the PARTY window ran out past both sides of the window frame, across the whole screen, because its kind of text block was left out of the width cap the window gives its other lines (v18.78). It is held to the same width now.
