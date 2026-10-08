@@ -540,3 +540,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.96 slotbadge: the stash's equipped-gun 1/2 badge gets padding 1px 7px, radius 7, right 7, bottom 6, no text shadow (was a bare sliver in the rounded corner).
 - v19.97 thumbring: sectorPreviewDraw moves a zone name that would touch an extraction ring to the nearest clear y just above or below the ring, inside its zone (hits/place helpers in the label IIFE).
 - v19.98 stashmedium (HIS ORDER 2026-10-08, pick Medium): default layout 6 grid is repeat(auto-fill,minmax(max(96px,calc((100% - 40px)/6)),1fr)), so 6 across at every window size (a fixed px size could not: menu zoom is 0.9 in the gate window, 2.47 at 4K). Backpack is 6 across too.
+- v19.99 haulbig: extraction card haul strip pictures 34 -> 52 px with 3px padding and radius 8.
