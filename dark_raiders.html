@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.45';
+var VER='20.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33721,7 +33721,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.45: After you end a two player party on one machine, sound plays in both speakers again. Check 20.45 fails on v20.44',
+  now:'v20.46: The contract REWARDS strip now shows the gun or key a contract pays, next to the Credits. Check 20.46 fails on v20.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36708,7 +36708,7 @@ function renderConDetail(){
     var cell=document.createElement('div'); cell.className='crewcell';
     cell.innerHTML=iconImgHTML(gkey,26)+
       (seen[gkey]>1?('<span class="cnt">'+seen[gkey]+'</span>'):'');
-    cell.title=ITEMS[gkey].name+(seen[gkey]>1?('  x'+seen[gkey]):'');
+    cell.title=((c.gear&&(c.gear.kind==='wep'||c.gear.kind==='key'))?gearLabel(c.gear):ITEMS[gkey].name)+(seen[gkey]>1?('  x'+seen[gkey]):'');   // v20.46 (H28): the gun goes to the armoury, not as the field item, and the key is the room the claim rolls
     line.appendChild(cell);
   }
   rw.appendChild(line);
@@ -36735,6 +36735,12 @@ function gearKeys(g){
   if(!g) return [];
   if(typeof g==='string') return ITEMS[g]?[g]:[];
   if(Array.isArray(g.ks)) return g.ks.filter(function(k){ return !!ITEMS[k]; });
+  // v20.46, from the whole-game bug hunt of 2026-10-08 (H28): THE REWARDS STRIP SHOWS THE GUN OR THE KEY A CARD PAYS. A contract gun is
+  // {kind:'wep',k:'rifle'} while its item row is gun_rifle, and a key is {kind:'key'} with no item named at all, so both came back
+  // empty and every gun and key card on the Mainframe showed only its Credits. A gun now draws its own item, and a key draws the key
+  // to the first sealed room of the map he is set for: which room the claim pays is rolled at the claim (resolveKey), never here.
+  if(g.kind==='wep') return (g.k&&ITEMS['gun_'+g.k])?['gun_'+g.k]:[];
+  if(g.kind==='key'){ var _kl=((FIXED_MAPS[clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1)]||{}).locked)||[], _kk=_kl.length?('key_'+_kl[0].id):''; return (_kk&&ITEMS[_kk])?[_kk]:[]; }
   if(g.k&&ITEMS[g.k]) return [g.k];
   if(g.item&&ITEMS[g.item]) return [g.item];
   return [];

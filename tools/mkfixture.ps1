@@ -5722,6 +5722,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.46',what:'the Mainframe REWARDS strip draws the gun or the key a contract pays, not only its Credits',
+   run:function(){
+     if(typeof renderConDetail!=='function'||typeof gearLabel!=='function'||typeof FIXED_MAPS==='undefined'||!WEAPONS.rifle||!ITEMS.gun_rifle) return 'SKIP: no contract panel here';
+     var d=document.getElementById('condetail'); if(!d) return 'SKIP: no contract panel in this page';
+     var bad=[], c0=P.contracts, s0=P._conSel, cells, mi, L, kk;
+     function show(gear){
+       P.contracts=[{type:'kill',tgt:'sentry',n:3,prog:0,reward:4321,desc:'Destroy 3 Sentries',tier:'hard',gear:gear}]; P._conSel=0;
+       renderConDetail(); return d.querySelectorAll('.crewcell');
+     }
+     try{
+       cells=show({kind:'wep',k:'rifle'});
+       if(cells.length!==1) bad.push('a card that pays the Auto Rifle drew '+cells.length+' reward cells beside the Credits, not 1');
+       else if(cells[0].title!==WEAPONS.rifle.name) bad.push('the gun cell is titled '+cells[0].title+', not '+WEAPONS.rifle.name);
+       mi=clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1); L=(FIXED_MAPS[mi]&&FIXED_MAPS[mi].locked)||[]; kk=L.length?('key_'+L[0].id):'';
+       if(kk&&ITEMS[kk]){
+         cells=show({kind:'key'});
+         if(cells.length!==1) bad.push('a card that pays a key drew '+cells.length+' reward cells beside the Credits, not 1');
+         else if(cells[0].title!==gearLabel({kind:'key'})) bad.push('the key cell is titled '+cells[0].title);
+       }
+       cells=show({kind:'stash',ks:['medkit','medkit'],label:'2 Medkits'});
+       if(cells.length!==1||!cells[0].querySelector('.cnt')) bad.push('control: a card that pays 2 Medkits no longer draws one cell counted 2');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       P.contracts=c0; P._conSel=s0;
+       try{ renderConDetail(); }catch(_r){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.45',what:'ending a same machine party puts the sound back in both speakers: with player 1 panned hard left by SPLIT SPEAKERS, ending the party leaves the pan in the middle and the master gain at 1',
    run:function(){
      if(typeof NET!=='object'||!NET||typeof netSameStop!=='function'||typeof netSndApply!=='function'||typeof netSndWho!=='function'||typeof netSndSplitOn!=='function') return 'SKIP: no same machine party sound here';

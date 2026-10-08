@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.46 - CONTRACT REWARDS SHOW THE GUN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. At the Mainframe, a hard or elite contract that pays a gun (the Auto Rifle, Carbine, Scattergun, Marksman Rifle or Support MG) or a key to a sealed room said so on its row, but the REWARDS strip in the cream panel showed only the Credits. The strip looked the gun up under the wrong name and had nothing to draw for a key. It now shows the gun, and a key on a key card.
+
+MEASURED. Check 20.46 passes, and fails on v20.45.
 ## v20.45 - SOUND BACK IN BOTH SPEAKERS AFTER A PARTY
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In two player co-op on one machine, split speakers (on unless you switch it off) puts player 1 in the left speaker and player 2 in the right. Ending the party never put that back, so after END THE PARTY every sound in that window, guns, footsteps, the ambience and the Undercroft music, came out of one speaker only until the page was reloaded, and the sound rows that could change it only show during a party. Ending the party now puts the sound back in both speakers.
