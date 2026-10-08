@@ -1,0 +1,7 @@
+v19.07: the co-op hud draws where it should
+
+In two player raids your teammate health, the kill feed and pings show on screen at every resolution.
+
+Check 19.07. Fails on v19.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

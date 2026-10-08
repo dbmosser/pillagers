@@ -1522,7 +1522,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.06';
+var VER='19.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26443,6 +26443,7 @@ function drawStatusIcons(){
   oy=Math.round(H*0.40);                     // under the board, whose height is capped at 38 percent of the screen
   B=HUDBOX.raiders;                          // a board dragged or grown down into the band pushes the column below it
   if(B&&B.x<ox+wC&&B.x+B.w>ox&&B.y<=oy&&B.y+B.h+g*hr>oy) oy=Math.round(B.y+B.h+g*hr);
+  if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.y+NETTEAMBOX.h+g*hr>oy) oy=Math.round(NETTEAMBOX.y+NETTEAMBOX.h+g*hr);   // v19.07: and below the teammate rows
   yBot=H-LH(8)*hr;                           // and it stops above the controls and the vitals, wherever they sit
   B=HUDBOX.legend; if(B&&B.x<ox+wC&&B.x+B.w>ox&&B.y>oy) yBot=Math.min(yBot,B.y-g*hr);
   B=HUDBOX.body;   if(B&&B.x<ox+wC&&B.x+B.w>ox&&B.y>oy) yBot=Math.min(yBot,B.y-LH(20)*hr);
@@ -27561,10 +27562,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
   }
   ctx.font=FS(TYPE.title); ctx.fillStyle='#FFF6DC';
   ctx.fillText('HP  '+Math.round(p.hp),24,by+18);
-  try{ if(NET.on) netTeamHud(by); }catch(_nth){}   // v16.26: your teammates, their health and armour, above your own
-  try{ if(NET.on) netFeedDraw(); }catch(_nfd){}   // v16.42: the kill feed
-  try{ if(NET.on) netPingDraw(); }catch(_npd){}   // v16.43: the party pings
-  try{ if(NET.same) netPadHud(); }catch(_nph){}   // v16.78: the controller paused word, in the window whose pad went quiet
+  // v19.07: the co-op HUD (teammate rows, kill feed, pings, the controller paused word) is drawn after the corner scale ends, below
   // YOUR OWN STATUS, beside the health because that is where you already look.
   // Same verb and same colour the raider board gives them, from the same table,
   // so "FIGHTING" means the same thing about you as it does about the man whose
@@ -27621,6 +27619,17 @@ if(p.armor>0){
   ctx.fillText(p.stamLock?'WINDED':'STAMINA',16+280+8,by-15);
   ctx.restore();                          // v8.08: end of the corner scale
   ctx.restore();
+  // v19.07, FROM THE REVIEW OF 2026-10-07 (found checking the status icons against the teammate HUD): THE CO-OP HUD DRAWS WHERE
+  // IT SHOULD. netTeamHud, netFeedDraw, netPingDraw and netPadHud were called inside the vitals corner's zoom (hudZoomIn body, 1.4
+  // times hudRes about the bottom left), so every point they drew was pushed up and out: at 1080p the teammate rows sat in the top
+  // left corner and ran into the CURRENT PILLAGERS board, and at 1440p and 4K the rows, the kill feed and the pings were drawn off
+  // the screen altogether. They are drawn here, in plain screen space. The teammate rows start below the board and grow with the
+  // screen; the kill feed starts below CONDITIONS and grows too; the status column starts below the teammate rows.
+  try{ NETTEAMBOX.n=0; }catch(_ntb){}   // v19.07: no rows unless drawn this frame, so a party that ended never moves the status column
+  try{ if(NET.on) netTeamHud(by); }catch(_nth){}   // v16.26: your teammates, their health and armour
+  try{ if(NET.on) netFeedDraw(); }catch(_nfd){}   // v16.42: the kill feed
+  try{ if(NET.on) netPingDraw(); }catch(_npd){}   // v16.43: the party pings
+  try{ if(NET.same) netPadHud(); }catch(_nph){}   // v16.78: the controller paused word, in the window whose pad went quiet
   var _boG=hudOff('gear');
   ctx.save(); ctx.translate(_boG.dx,_boG.dy);
   hudZoomIn('gear',W,H);                 // v8.08: grows up and left from the corner
@@ -33218,7 +33227,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.06: The keys on the pause box wrap only between entries, never inside one. Check 19.06 fails on v19.05',
+  now:'v19.07: In two player raids your teammate health, the kill feed and pings show on screen at every resolution. Check 19.07 fails on v19.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39102,12 +39111,18 @@ function netMateArrow(g){
   ctx.textAlign='left';
   return {x:ax,y:ay,a:a};
 }
+var NETTEAMBOX={n:0,x:0,y:0,w:0,h:0};   // v19.07: where the teammate rows were drawn this frame, for the status column (not a click box)
 function netTeamHud(by){
   var i, g, n=0, x=16, w=150, y, f, t;
+  var _thr=Math.max(1,(typeof hudRes==='function')?hudRes():1), _tt=Math.round(H*0.30), _ty;   // v19.07: rows below the board, grown with the screen
+  if(HUDBOX.raiders) _tt=Math.max(_tt,Math.round(HUDBOX.raiders.y+HUDBOX.raiders.h+16*_thr));
+  NETTEAMBOX.n=0;
   if(typeof G==='undefined'||!G||G.over) return 0;
   for(i=0;i<NET.up.length;i++){
     g=NET.up[i]; if(!netUpShown(g)) continue;
     y=Math.round(H*0.30)+n*44; n++;   // v16.27, his note: the rows sat on the belt help line; they now run down the left edge, clear of it
+    _ty=_tt+(n-1)*Math.round(44*_thr)+Math.round(15*_thr); ctx.save(); ctx.translate(0,_ty-_thr*y); ctx.scale(_thr,_thr);   // v19.07: this row drawn at its screen place and size
+    NETTEAMBOX={n:n,x:Math.round(12*_thr),y:_tt,w:Math.round(158*_thr),h:Math.round(n*44*_thr)};
     ctx.fillStyle='rgba(6,9,13,.62)'; ctx.fillRect(x-4,y-15,w+8,36);
     ctx.font=FS(TYPE.label); ctx.textAlign='left';
     ctx.fillStyle=g.dn?'#ff8a80':'#bfe0ff'; ctx.fillText(netSeatName(g.seat)||'PILLAGER',x,y);
@@ -39116,6 +39131,7 @@ function netTeamHud(by){
     ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x,y+5,w,7);
     ctx.fillStyle=g.dn?'#8a2a22':(f<0.35?'#e2564a':'#6fe0a0'); ctx.fillRect(x,y+5,w*f,7);
     if(g.ac>0){ ctx.fillStyle='rgba(255,255,255,.10)'; ctx.fillRect(x,y+14,w,4); ctx.fillStyle='#6fb8ff'; ctx.fillRect(x,y+14,w*clamp((g.ar||0)/g.ac,0,1),4); }
+    ctx.restore();   // v19.07: the row's own scale ends before the edge arrow, which works in screen space
     try{ netMateArrow(g); }catch(_ma){}   // v16.41: an arrow at the screen edge to a teammate off screen
   }
   return n;
@@ -39433,8 +39449,9 @@ function netFeedPush(s,who){
   return NET.feed.length;
 }
 function netFeedDraw(){
-  var i, f, now=Date.now(), y=Math.round(H*0.40), x=W-LH(16), n=0, a, tw;
+  var i, f, now=Date.now(), y, x, n=0, a, tw, _fhr=Math.max(1,(typeof hudRes==='function')?hudRes():1);   // v19.07: grown with the screen
   if(!NET.feed||!NET.feed.length) return 0;
+  ctx.save(); ctx.scale(_fhr,_fhr); y=Math.round(H*0.46/_fhr); x=(W-LH(16)*_fhr)/_fhr;   // v19.07: below CONDITIONS (was 0.40, which a long contract list reaches)
   ctx.font=FS(TYPE.label); ctx.textAlign='right';
   for(i=NET.feed.length-1;i>=0;i--){
     f=NET.feed[i]; a=(now-f.at)/1000;
@@ -39446,6 +39463,7 @@ function netFeedDraw(){
     y+=LH(22); n++;
   }
   ctx.globalAlpha=1; ctx.textAlign='left';
+  ctx.restore();
   return n;
 }
 function netAllPaused(){

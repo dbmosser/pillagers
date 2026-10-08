@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.07 - THE CO-OP HUD DRAWS WHERE IT SHOULD
+
+Co-op hunt while he was away. Found by the review of 2026-10-07: in a party raid the teammate rows (name, health, armour), the kill feed, the pings and the controller paused word were drawn inside the zoom of the health corner, so everything they drew was pushed up and out. At 1080p the teammate rows sat in the top left corner over the CURRENT PILLAGERS board, and at 1440p and 4K (where he plays) the rows, the kill feed and the pings were drawn off the screen altogether. They now draw where they should: the teammate rows down the left below the board, the kill feed on the right below CONDITIONS, both grown with the screen, and the status icons below the teammate rows.
+
+MEASURED. Check 19.07 passes, and fails on v19.06.
 ## v19.06 - THE PAUSE KEY LINE NEVER BREAKS AN ENTRY
 
 Co-op hunt while he was away. Seen on the 4K pause screenshot of 2026-10-07: the line of keys on the RAID PAUSED box broke one entry across two lines (TAB back, then out on the next line). Each key and its words now stay together on one line; only the gaps between entries can wrap.
