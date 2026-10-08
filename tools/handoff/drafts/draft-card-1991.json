@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES THE EASIER READING",
+    "why":  "The card was stamped v19.75 and the stamp may not trail the build by more than 0.15. Its new second line names the bigger stash, lift and Mainframe print (v19.76 to v19.81), the even contract wrap (v19.82, v19.83) and the PlayStation button names (v19.86); the rest is in the change list.",
+    "now":  "The what is new card names the easier reading.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002719.75\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002719.91\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,",
+                      "replacement":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,\n  \u0027EASIER READING. Stash, lift and Mainframe print is bigger, long contracts split evenly, and a PlayStation pad is told its own buttons in the pause box.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and leads with the easier reading news\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof WN_SHOW===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e19.91+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), shown=WHATSNEW.slice(0,WN_SHOW).join(\u0027 | \u0027);\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(String(WHATSNEW[1]).indexOf(\u0027EASIER\u0027+\u0027 READING\u0027)!==0) bad.push(\u0027the card does not lead with the player 2 controller news\u0027);\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

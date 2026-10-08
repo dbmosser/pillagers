@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.91 - THE WHAT IS NEW CARD NAMES THE EASIER READING
+
+Co-op hunt while he was away. The card was stamped v19.75 and the stamp may not trail the build by more than 0.15. Its new second line names the bigger stash, lift and Mainframe print (v19.76 to v19.81), the even contract wrap (v19.82, v19.83) and the PlayStation button names (v19.86); the rest is in the change list.
+
+MEASURED. Check 19.91 passes, and fails on v19.90.
 ## v19.90 - THE PAUSE BOX FRAME HOLDS ITS CONTENT
 
 Co-op hunt while he was away. Found by the code review of 2026-10-08: the pause box frame was a fixed 400 pixels, and with the controller key line (v19.71, about six lines) plus the BLEEDING OUT and hosting lines, the heading crossed the frame top and the last line hung below it. The frame now fits whatever the box is showing, and is never smaller than before.
