@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.56 - THE CALL PROMPT IS SAID ONCE
+
+Co-op hunt while he was away. Seen on the 4K ring screenshot of 2026-10-08: standing in an extraction ring, [E] CALL FOR EXTRACTION printed over your own character while HOLD E TO CALL FOR EXTRACTION said the same thing above the belt with its own hold bar. The prompt over the character now steps aside while that line shows, as the EXTRACT prompt already did inside the ring.
+
+MEASURED. Check 19.56 passes, and fails on v19.55.
 ## v19.55 - THE WORLD PROMPTS GROW AT 4K
 
 Co-op hunt while he was away. Seen on the 4K ring screenshot of 2026-10-08: the prompts drawn at a place in the world ([E] CALL FOR EXTRACTION and the ring countdowns, [E] SEARCH over a container or body, UNLOCK at a door, REVIVE over a downed man) kept their 1080p size at 4K, small beside a world drawn twice as big (his v10.52 note was already that the search prompt was too small). Each now grows with the screen about its own place, its plates and bars with it.

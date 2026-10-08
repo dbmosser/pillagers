@@ -1,0 +1,5 @@
+## v19.56 - THE CALL PROMPT IS SAID ONCE
+
+Co-op hunt while he was away. Seen on the 4K ring screenshot of 2026-10-08: standing in an extraction ring, [E] CALL FOR EXTRACTION printed over your own character while HOLD E TO CALL FOR EXTRACTION said the same thing above the belt with its own hold bar. The prompt over the character now steps aside while that line shows, as the EXTRACT prompt already did inside the ring.
+
+MEASURED. Check 19.56 passes, and fails on v19.55.

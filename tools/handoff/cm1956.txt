@@ -1,0 +1,7 @@
+v19.56: the call prompt is said once
+
+In an extraction ring the call prompt no longer covers your character.
+
+Check 19.56. Fails on v19.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
