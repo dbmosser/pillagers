@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.29 - A KEY OPENS THE DOOR FOR THE WHOLE PARTY
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08: in co-op, a locked room opened with its key opened only in the window that used the key. The key is single use, so the other player could never get into that room, could not search the caches inside, and still saw the door as locked. Opening a door is now told to the party and every window opens it; a player who joins late finds it open too.
+
+MEASURED. Check 20.29 passes, and fails on v20.28.
 ## v20.28 - A MAN SENT AFTER YOU SEARCHES THE RIGHT PLACE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08: a pillager or machine that once lost you kept that old search point for the rest of the raid. Shot later from cover, or called by his crew to a fresh sighting, he turned and walked toward the old spot, sometimes across the map, instead of coming for you. A search point now belongs to the target it was built for, and a new target more than 90 units away gets a new one. No dice the game uses are spent.

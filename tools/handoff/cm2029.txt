@@ -1,0 +1,7 @@
+v20.29: a key opens the door for the whole party
+
+In co-op, a locked room opened with its key is open for both players.
+
+Check 20.29. Fails on v20.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
