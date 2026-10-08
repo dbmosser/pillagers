@@ -1,0 +1,32 @@
+{
+    "title":  "THE SECTOR MAP MARKER TAGS GROW AT 4K",
+    "why":  "Found by a 4K text scan of 2026-10-08: on the sector map every word grows with the screen except the marker tags (CACHE, ENCAMPMENT, the locked rooms, KEY, INTEL LIVE), which kept their 1080p size and were tiny on a 4K map. They grow with the screen now, and sit off their markers by the map zoom.",
+    "now":  "At 4K the CACHE and locked room tags on the sector map are full size.",
+    "edits":  [
+                  {
+                      "anchor":  "function mapLabel(txt,x,y,col,font){\n  ctx.font=font||FS(TYPE.label);\n  var w=ctx.measureText(txt).width+6,h=LH(11),ty=y;",
+                      "replacement":  "function mapLabel(txt,x,y,col,font){\n  // v16.xx, seen on the 4K map scan (2026-10-08): every other word on the sector map grows with the screen, but these marker tags\n  // (CACHE, ENCAMPMENT, the locked rooms, KEY) kept their 1080p size at 4K. They use the screen-grown font, and their callers lift them\n  // off their markers by the map\u0027s own zoom (_MZ).\n  ctx.font=font||hudFS(TYPE.label);\n  var w=ctx.measureText(txt).width+6,h=LH(11)*Math.max(1,(typeof hudRes===\u0027function\u0027)?hudRes():1),ty=y;"
+                  },
+                  {
+                      "anchor":  "    mapLabel(CQ.opened?\u0027LOOTED\u0027:\u0027CACHE\u0027,qx,qy-15,\u0027#e6b4ff\u0027);",
+                      "replacement":  "    mapLabel(CQ.opened?\u0027LOOTED\u0027:\u0027CACHE\u0027,qx,qy-15*_MZ,\u0027#e6b4ff\u0027);"
+                  },
+                  {
+                      "anchor":  "    mapLabel(\u0027ENCAMPMENT\u0027,cqx,cqy-14,\u0027#ff8a76\u0027);",
+                      "replacement":  "    mapLabel(\u0027ENCAMPMENT\u0027,cqx,cqy-14*_MZ,\u0027#ff8a76\u0027);"
+                  },
+                  {
+                      "anchor":  "lqx+lqw/2,lqy-6,LKM.open?",
+                      "replacement":  "lqx+lqw/2,lqy-6*_MZ,LKM.open?"
+                  },
+                  {
+                      "anchor":  "      mapLabel(\u0027KEY\u0027,ikx,iky-9,\u0027#ffc04a\u0027);",
+                      "replacement":  "      mapLabel(\u0027KEY\u0027,ikx,iky-9*_MZ,\u0027#ffc04a\u0027);"
+                  },
+                  {
+                      "anchor":  "    mapLabel(\u0027INTEL LIVE\u0027,ox+52,oy+14,\u0027#4de3d0\u0027);",
+                      "replacement":  "    mapLabel(\u0027INTEL LIVE\u0027,ox+52*_MZ,oy+14*_MZ,\u0027#4de3d0\u0027);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the sector map marker tags grow at 4K: a locked room or CACHE tag is drawn about twice its 1080p size on a 4K screen\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame\u0026\u0026window.__forceSize)) return \u0027SKIP: this fixture cannot deploy and draw\u0027;\n     var bad=[], g, k, proto=CanvasRenderingContext2D.prototype, o=proto.fillText, s1, s4;\n     function grab(){ var m=null; for(k=0;k\u003c4;k++) __frame(0.05); proto.fillText=function(t){ var s=String(t); if(!m\u0026\u0026(/  .  (LOCKED|OPEN)$/.test(s)||s===\u0027CACHE\u0027||s===\u0027LOOTED\u0027)){ var tr=this.getTransform(), fm=(/([\\d.]+)px/).exec(String(this.font)); m={t:s,px:(fm?parseFloat(fm[1]):0)*tr.d}; } return o.apply(this,arguments); }; try{ __frame(0.05); } finally { proto.fillText=o; } return m; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __forceSize(1920,1080);\n       __deploy({kit:[],safe:null,mapIx:1,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       g.ents.length=0; g.bagOpen=false; g.mapOpen=true;\n       s1=grab();\n       __forceSize(3840,2160); if(!(W\u003e3000)) return \u0027SKIP: the canvas would not go to 4K\u0027;\n       s4=grab();\n       if(!s1||!s4) return \u0027SKIP: no marker tag was drawn\u0027;\n       if(s4.px\u003cs1.px*1.7) bad.push(\u0027at 4K the map tag \u0027+s4.t+\u0027 is \u0027+s4.px.toFixed(1)+\u0027 px against \u0027+s1.px.toFixed(1)+\u0027 px at 1080p\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ proto.fillText=o; try{ __forceSize(1920,1080); }catch(_f){} try{ var g2=__state(); if(g2){ g2.mapOpen=false; if(!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

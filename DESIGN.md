@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.63 - THE SECTOR MAP MARKER TAGS GROW AT 4K
+
+Co-op hunt while he was away. Found by a 4K text scan of 2026-10-08: on the sector map every word grows with the screen except the marker tags (CACHE, ENCAMPMENT, the locked rooms, KEY, INTEL LIVE), which kept their 1080p size and were tiny on a 4K map. They grow with the screen now, and sit off their markers by the map zoom.
+
+MEASURED. Check 19.63 passes, and fails on v19.62.
 ## v19.62 - THE WHAT IS NEW CARD NAMES THE BIG SCREEN PROMPTS
 
 Co-op hunt while he was away. The card was stamped v19.46 and the stamp may not trail the build by more than 0.15. Its new second line names the 4K prompts and bars (v19.54, v19.55, v19.57, v19.61) and the co-op HUD placement (v19.47, v19.48, v19.58).

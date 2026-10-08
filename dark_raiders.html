@@ -1537,7 +1537,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.62';
+var VER='19.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30545,8 +30545,11 @@ function mapScreenToWorld(sx,sy){
 var _mapLbl=[];
 function mapLabelReset(){ _mapLbl.length=0; }
 function mapLabel(txt,x,y,col,font){
-  ctx.font=font||FS(TYPE.label);
-  var w=ctx.measureText(txt).width+6,h=LH(11),ty=y;
+  // v19.63, seen on the 4K map scan (2026-10-08): every other word on the sector map grows with the screen, but these marker tags
+  // (CACHE, ENCAMPMENT, the locked rooms, KEY) kept their 1080p size at 4K. They use the screen-grown font, and their callers lift them
+  // off their markers by the map's own zoom (_MZ).
+  ctx.font=font||hudFS(TYPE.label);
+  var w=ctx.measureText(txt).width+6,h=LH(11)*Math.max(1,(typeof hudRes==='function')?hudRes():1),ty=y;
   // FIRST ATTEMPT STACKED, and that was worse than the overlap it replaced. Three
   // caches near each other each pushed up off the one below and produced a ladder
   // of the word CACHE, which is more ink saying less. A repeat of the SAME word in
@@ -30822,7 +30825,7 @@ function drawMapOverlayRaw(){
     ctx.beginPath(); ctx.arc(qx,qy,(9+2*qp)*_MZ,0,6.2832); ctx.stroke();
     ctx.fillStyle='#e6b4ff';
     ctx.beginPath(); ctx.arc(qx,qy,3.5*_MZ,0,6.2832); ctx.fill();
-    mapLabel(CQ.opened?'LOOTED':'CACHE',qx,qy-15,'#e6b4ff');
+    mapLabel(CQ.opened?'LOOTED':'CACHE',qx,qy-15*_MZ,'#e6b4ff');
     ctx.globalAlpha=1;
   }
   // Encampments in red: advertised danger. You are told where the fight is and
@@ -30834,7 +30837,7 @@ function drawMapOverlayRaw(){
     ctx.beginPath();
     ctx.moveTo(cqx,cqy-9); ctx.lineTo(cqx+9,cqy); ctx.lineTo(cqx,cqy+9); ctx.lineTo(cqx-9,cqy); ctx.closePath();
     ctx.stroke();
-    mapLabel('ENCAMPMENT',cqx,cqy-14,'#ff8a76');
+    mapLabel('ENCAMPMENT',cqx,cqy-14*_MZ,'#ff8a76');
   }
   // LOCKED ROOMS, v3.65. HIS NOTE: "locked rooms should be clearly indicated on
   // the map". Amber outline and a keyhole while the door stands, green and OPEN
@@ -30851,7 +30854,7 @@ function drawMapOverlayRaw(){
     ctx.fillStyle=LKM.open?'rgba(127,196,160,.9)':'#ffc04a';
     ctx.beginPath(); ctx.arc(kcx,kcy,3.2*_MZ,0,6.2832); ctx.fill();
     ctx.beginPath(); ctx.moveTo(kcx-2.2,kcy+7.5); ctx.lineTo(kcx+2.2,kcy+7.5); ctx.lineTo(kcx,kcy+1); ctx.closePath(); ctx.fill();
-    mapLabel((LKM.name||'LOCKED ROOM')+(LKM.open?'  ·  OPEN':'  ·  LOCKED'),lqx+lqw/2,lqy-6,LKM.open?'#7fc4a0':'#ffc04a');
+    mapLabel((LKM.name||'LOCKED ROOM')+(LKM.open?'  ·  OPEN':'  ·  LOCKED'),lqx+lqw/2,lqy-6*_MZ,LKM.open?'#7fc4a0':'#ffc04a');
   }
   // INTEL, v3.81: a burned Data Core lights the map for one raid. Gold key
   // marks on the containers that hold the locked-room keys, gone once each is
@@ -30874,7 +30877,7 @@ function drawMapOverlayRaw(){
       ctx.fillStyle='#ffc04a';
       ctx.beginPath(); ctx.arc(ikx,iky-3,2.6,0,6.2832); ctx.fill();
       ctx.fillRect(ikx-1,iky-2,2,6);
-      mapLabel('KEY',ikx,iky-9,'#ffc04a');
+      mapLabel('KEY',ikx,iky-9*_MZ,'#ffc04a');
     }
     for(i=0;i<G.ents.length;i++){
       var IEE=G.ents[i];
@@ -30882,7 +30885,7 @@ function drawMapOverlayRaw(){
       ctx.fillStyle='#d08ce8';
       ctx.beginPath(); ctx.arc(ox+IEE.x*sc,oy+IEE.y*sc,3.4,0,6.2832); ctx.fill();
     }
-    mapLabel('INTEL LIVE',ox+52,oy+14,'#4de3d0');
+    mapLabel('INTEL LIVE',ox+52*_MZ,oy+14*_MZ,'#4de3d0');
   }
   // Landmarks are what the map is navigated BY, so they are labelled and boxed
   // rather than left as anonymous geometry.
@@ -33412,7 +33415,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.62: The what is new card names the big screen prompts. Check 19.62 fails on v19.61',
+  now:'v19.63: At 4K the CACHE and locked room tags on the sector map are full size. Check 19.63 fails on v19.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

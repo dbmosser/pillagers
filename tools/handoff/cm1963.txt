@@ -1,0 +1,7 @@
+v19.63: the sector map marker tags grow at 4k
+
+At 4K the CACHE and locked room tags on the sector map are full size.
+
+Check 19.63. Fails on v19.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
