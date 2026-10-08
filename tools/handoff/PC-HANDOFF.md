@@ -554,3 +554,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v20.09 crowdbuild: hubRollLook rolls the build too; the crowd draw passes build:_lk.build (own:_c persists, so Curved crowd members jiggle).
 - v20.10 buildsleeve: gun sleeve 5.8 tall on Broad, 4.0 on Curved, Lean literal 4.8.
 - v20.11 buildarmour: on Curved the bulk plate is clipped to the BUILD_CURVED path (ink at grow .6, steel at grow -.4) with a moulded chest riding _JG.c; pauldrons and collar unchanged; other builds keep the box.
+- v20.12 raiderlook: the raider drawOp call now passes his spawn look (hair..tattoo, faceMark) and build; raiderLook picks build LAST (other picks unchanged, hash only, no rr); mkRaider and the joiner copy store e.build. His answer 20 (v10.18) had never reached the screen: drawOp reads looks from st, never own.
