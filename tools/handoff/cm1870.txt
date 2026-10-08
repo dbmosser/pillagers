@@ -1,0 +1,7 @@
+v18.70: an extraction ring label stays whole on screen
+
+Extraction labels near the edge of the screen are no longer cut off.
+
+Check 18.70. Fails on v18.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

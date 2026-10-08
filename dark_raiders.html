@@ -1512,7 +1512,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.69';
+var VER='18.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26730,11 +26730,14 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     var zwid=ctx.measureText(zlab).width;
     // v10.90, HIS NOTE: this is the label in his screenshot, drawn straight
     // through SUPPORT MG. It is lifted clear of the corner readout instead.
-    var zsy=hudDodge(zs.x,zs.y,zwid/2+6,LH(15),0);
+    // v18.70, seen on the 4K raid screenshot (2026-10-07): a ring near the side of the screen had its label run off the edge
+    // (EXTRACTION POINT - SOUND THE ALARM TO BEGIN C). The label slides along to stay whole on screen; the ring stays put.
+    var zcx=(zwid+24<W)?clamp(zs.x,zwid/2+12,W-zwid/2-12):zs.x;
+    var zsy=hudDodge(zcx,zs.y,zwid/2+6,LH(15),0);
     ctx.fillStyle='rgba(6,9,13,.78)';
-    ctx.fillRect(zs.x-zwid/2-6,zsy-LH(11),zwid+12,LH(15));
+    ctx.fillRect(zcx-zwid/2-6,zsy-LH(11),zwid+12,LH(15));
     ctx.fillStyle=za?'#4de3d0':'rgba(168,180,193,.95)';
-    ctx.fillText(zlab,zs.x,zsy);
+    ctx.fillText(zlab,zcx,zsy);
     // v11.54: the closed whisper ("this one will not call") is inside his
     // CLOSED FOR THE REMAINDER OF THIS RAID line now.
   }
@@ -32763,7 +32766,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.69: The zone names on the sector maps are all readable. Check 18.69 fails on v18.68',
+  now:'v18.70: Extraction labels near the edge of the screen are no longer cut off. Check 18.70 fails on v18.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
