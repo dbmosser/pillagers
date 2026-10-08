@@ -650,7 +650,7 @@
   #opane_mf{ max-width:1080px; width:100%; margin:0 auto; }
   #opane_rew{ max-width:1080px; width:100%; margin:0 auto; }
   #termsmodal{ align-items:center; justify-content:center; }
-  #termsmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(600px,calc(100% - 28px)); transform:translate(-50%,-50%); }
+  #termsmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,600px),calc(100% - 28px)); transform:translate(-50%,-50%); }
   #termsmodal .msub, #termsmodal .plist, #termsmodal #termstotal{ max-width:1060px; width:100%; }
   #termsmodal .plist{ flex:0 1 auto; }
   /* v15.74: THE PARTY WINDOW, framed like the Terms. It scrolls inside itself, so a small window can still reach the codes. */
@@ -658,7 +658,7 @@
   /* v20.00, seen on the 4K PARTY screenshot (2026-10-08): in a window about 830 menu pixels tall (1080p, 1440p, a 4K window) the
      frame's top line ran 33 pixels down, under the CREDITS readout in the corner. The frame now stays 75 pixels clear of the top
      and bottom, which holds the party content with room and keeps the corner readout off its line. */
-  #partymodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(760px,calc(100% - 150px)); transform:translate(-50%,-50%); }
+  #partymodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,760px),calc(100% - 150px)); transform:translate(-50%,-50%); }
   #partymodal .msub, #partymodal .plist, #partymodal .pbox, #partymodal .hint{ max-width:1060px; width:100%; }   /* v19.42, seen on the 4K PARTY screenshot (2026-10-08): the TRADING line is a .hint and ran out past both sides of the window */
   #partymodal .plist{ flex:0 0 auto; }
   #partymodal textarea{ font-size:12px; word-break:break-all; }   /* v16.91: the game font, as every text box (his v11.09 rule) */
@@ -674,12 +674,12 @@
   #modemsg{ font-size:12.5px; line-height:1.5; color:var(--hazard); max-width:640px; }
   #p2line{ font-size:12.5px; line-height:1.5; color:var(--amber); max-width:640px; }
   #gamblemodal{ align-items:center; justify-content:center; }
-  #gamblemodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(620px,calc(100% - 28px)); transform:translate(-50%,-50%); }
+  #gamblemodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,620px),calc(100% - 28px)); transform:translate(-50%,-50%); }
   #gamblemodal .msub, #gamblemodal .plist{ max-width:1060px; width:100%; }
   #gamblemodal .msub{ text-align:center; }   /* v18.77, seen on the 4K screenshot (2026-10-07): the credits line and Wirt's line ran full width from the panel's left edge, flush against its border, under a centred title and centred cards; centred like them */
   #gamblemodal .plist{ flex:0 1 auto; }
   #barmodal{ align-items:center; justify-content:center; }
-  #barmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(640px,calc(100% - 28px)); transform:translate(-50%,-50%); }
+  #barmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,640px),calc(100% - 28px)); transform:translate(-50%,-50%); }
   #barmodal .msub, #barmodal .plist{ max-width:1060px; width:100%; }
   #barmodal .plist{ flex:0 1 auto; }
   #settingsmodal .msub{ font-size:15px; line-height:1.6; }
@@ -1589,7 +1589,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.17';
+var VER='20.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33627,7 +33627,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.17: The stack counts on stash tiles are easier to read. Check 20.17 fails on v20.16',
+  now:'v20.18: The bar, gambler, TERMS and PARTY windows fit their contents instead of floating in a big empty frame. Check 20.18 fails on v20.17',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33988,6 +33988,20 @@ function escCloseTopModal(){
   else m.classList.remove('on');
   return true;
 }
+// v20.18, seen on the 4K Last Pour screenshot (2026-10-08): the centred card windows (TERMS, the gambler, the bar, PARTY) drew a
+// frame of a fixed height, so the bar's two drinks sat in a frame 640 tall with empty bands above and below. The frame now fits
+// what the window holds (never taller than before), and follows it when the content changes while it is open (a gamble, a join).
+var CARDFIT={termsmodal:600,gamblemodal:620,barmodal:640,partymodal:760};
+function cardFrameFit(el){
+  if(!el||!CARDFIT[el.id]) return false;
+  var i, c, t=1e9, b=-1e9;
+  if(!el._cfObs&&typeof MutationObserver==='function'){ el._cfObs=new MutationObserver(function(){ if(el.classList.contains('on')&&!el._cfRaf){ el._cfRaf=requestAnimationFrame(function(){ el._cfRaf=0; cardFrameFit(el); }); } }); el._cfObs.observe(el,{childList:true,subtree:true,characterData:true}); }
+  if(!el.offsetHeight) return false;
+  for(i=0;i<el.children.length;i++){ c=el.children[i]; if(c.offsetHeight>0){ t=Math.min(t,c.offsetTop); b=Math.max(b,c.offsetTop+c.offsetHeight); } }
+  if(!(b>t)) return false;
+  el.style.setProperty('--cfh',Math.min(CARDFIT[el.id],Math.max(320,Math.ceil(b-t)+112))+'px');
+  return true;
+}
 function openModal(id){
   var el=document.getElementById(id); if(!el) return;
   stampBalance(el);
@@ -34000,6 +34014,7 @@ function openModal(id){
     m.classList.remove('on');
   }
   el.classList.add('on');
+  try{ cardFrameFit(el); }catch(_cf){}   // v20.18: a card window's frame fits what it holds
 }
 function renderTerms(){
   var el=document.getElementById('termslist'); el.innerHTML='';

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.18 - CARD WINDOWS FIT WHAT THEY HOLD
+
+Co-op hunt while he was away. Seen on the 4K Last Pour screenshot of 2026-10-08: the centred card windows (TERMS, the gambler, the bar and PARTY) drew a frame of a fixed height, so the two drinks at the bar sat in a frame 640 tall with wide empty bands above and below. The frame now fits what the window holds, never taller than before, and follows it when the content changes while open.
+
+MEASURED. Check 20.18 passes, and fails on v20.17.
 ## v20.17 - STACK COUNTS SIT IN A PILL
 
 Co-op hunt while he was away. Seen on the 4K stash screenshots of 2026-10-08: the number on a stacked item (2 bandages, 3 frags) was a bare digit tucked into the rounded corner of the tile, as the equipped gun badge was until v19.96. It sits in a small dark pill now, set in from the corner, so it reads on any picture.

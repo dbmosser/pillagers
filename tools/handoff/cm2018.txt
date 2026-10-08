@@ -1,0 +1,7 @@
+v20.18: card windows fit what they hold
+
+The bar, gambler, TERMS and PARTY windows fit their contents instead of floating in a big empty frame.
+
+Check 20.18. Fails on v20.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
