@@ -1,0 +1,5 @@
+## v18.77 - THE GAMBLER WINDOW LINES ARE CENTRED
+
+Co-op hunt while he was away. Seen on the 4K screenshot of 2026-10-07: in WIRT THE GAMBLER the credits line and Wirt line ran from the very left edge of the panel, touching its border, under a centred title and centred cards. They are centred like the rest of the window now; the words are unchanged.
+
+MEASURED. Check 18.77 passes, and fails on v18.76.

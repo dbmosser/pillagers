@@ -5721,6 +5721,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'18.77',what:'the gambler window lines are centred like its title and cards: the credits line and Wirt line read centred, never flush against the panel edge',
+   run:function(){
+     var a=document.getElementById('wallet_gamble'), b=document.getElementById('gamble_line'), bad=[];
+     if(!a||!b) return 'SKIP: no gambler window here';
+     if(getComputedStyle(a).textAlign!=='center') bad.push('the credits line is '+getComputedStyle(a).textAlign+' aligned');
+     if(getComputedStyle(b).textAlign!=='center') bad.push('the Wirt line is '+getComputedStyle(b).textAlign+' aligned');
+     return bad.length?bad.join('; '):null; }},
   {v:'18.76',what:'a scoped gun zooms in a little on ADS: the Longshot aimed pulls the zoom to about 1.49 times, the Auto Rifle about 1.09, letting go returns to 1, and the baked sprite scale never moves',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';

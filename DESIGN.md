@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.77 - THE GAMBLER WINDOW LINES ARE CENTRED
+
+Co-op hunt while he was away. Seen on the 4K screenshot of 2026-10-07: in WIRT THE GAMBLER the credits line and Wirt line ran from the very left edge of the panel, touching its border, under a centred title and centred cards. They are centred like the rest of the window now; the words are unchanged.
+
+MEASURED. Check 18.77 passes, and fails on v18.76.
 ## v18.76 - A SCOPED GUN ZOOMS IN A LITTLE ON ADS
 
 Co-op hunt while he was away. His note of 2026-10-07: a gun with a scope, like the Auto Rifle, should actually zoom in a little when you aim down sights. Aiming only pushed the view toward the cursor. Now a scoped gun eases the camera in by a share of its scope: the Auto Rifle about 9 percent, the Marksman Rifle about 30, the Longshot about half again, and it eases back out when you let go. The robots in the balance tests are not affected, and aiming never forces the walls and trees to be redrawn.

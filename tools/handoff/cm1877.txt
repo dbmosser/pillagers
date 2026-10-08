@@ -1,0 +1,7 @@
+v18.77: the gambler window lines are centred
+
+The lines at the top of the gambler window are centred and clear of the frame.
+
+Check 18.77. Fails on v18.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,12 @@
+{
+    "title":  "THE GAMBLER WINDOW LINES ARE CENTRED",
+    "why":  "Seen on the 4K screenshot of 2026-10-07: in WIRT THE GAMBLER the credits line and Wirt line ran from the very left edge of the panel, touching its border, under a centred title and centred cards. They are centred like the rest of the window now; the words are unchanged.",
+    "now":  "The lines at the top of the gambler window are centred and clear of the frame.",
+    "edits":  [
+                  {
+                      "anchor":  "  #gamblemodal .msub, #gamblemodal .plist{ max-width:1060px; width:100%; }",
+                      "replacement":  "  #gamblemodal .msub, #gamblemodal .plist{ max-width:1060px; width:100%; }\n  #gamblemodal .msub{ text-align:center; }   /* v16.xx, seen on the 4K screenshot (2026-10-07): the credits line and Wirt\u0027s line ran full width from the panel\u0027s left edge, flush against its border, under a centred title and centred cards; centred like them */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the gambler window lines are centred like its title and cards: the credits line and Wirt line read centred, never flush against the panel edge\u0027,\n   run:function(){\n     var a=document.getElementById(\u0027wallet_gamble\u0027), b=document.getElementById(\u0027gamble_line\u0027), bad=[];\n     if(!a||!b) return \u0027SKIP: no gambler window here\u0027;\n     if(getComputedStyle(a).textAlign!==\u0027center\u0027) bad.push(\u0027the credits line is \u0027+getComputedStyle(a).textAlign+\u0027 aligned\u0027);\n     if(getComputedStyle(b).textAlign!==\u0027center\u0027) bad.push(\u0027the Wirt line is \u0027+getComputedStyle(b).textAlign+\u0027 aligned\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
