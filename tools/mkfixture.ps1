@@ -8489,7 +8489,7 @@ window.__REGRESS=[
      var bad=[], neu='EXTRACT IN '+'PROGRESS!', old='EXTRACT '+'NOW', l=String(extractNowLine('B',11.4)), b=String(zoneBadge({open:true,beaconT:0,hold:11.4})), src='';
      if(l.indexOf(neu)!==0) bad.push('the banner reads "'+l+'"');
      if(b.indexOf(neu)<0) bad.push('the ring badge reads "'+b+'"');
-     try{ src=drawMapOverlay.toString(); }catch(e){ src=''; }
+     try{ src=((typeof drawMapOverlayRaw==='function')?drawMapOverlayRaw:drawMapOverlay).toString(); }catch(e){ src=''; }   // retargeted 2026-10-08: since v19.02 drawMapOverlay wraps drawMapOverlayRaw, which holds the lines
      if(src.indexOf("'"+neu)<0) bad.push('the sector map line does not say '+neu);
      if(src.indexOf("'"+old)>=0) bad.push('the sector map still says '+old);
      if(l.indexOf(old)>=0||b.indexOf(old)>=0) bad.push('the old words are still there');
@@ -8690,7 +8690,7 @@ window.__REGRESS=[
        rows=document.querySelectorAll('#sectorlist .sectorpick');
        if(!rows.length) return 'SKIP: staging: no sector rows';
        for(i=0;i<rows.length;i++){ cv=rows[i].querySelector('canvas.secprev'); if(!cv) continue; r=rows[i].getBoundingClientRect(); c=cv.getBoundingClientRect(); if(c.bottom>r.bottom+1) bad.push('sector '+i+' map spills '+Math.round(c.bottom-r.bottom)+' px below its row'); }
-       if(String(sectorPreviewDraw).indexOf('11px')<0) bad.push('the zone names are not 11 px');
+       if(String(sectorPreviewDraw).indexOf('11px')<0&&!(/fs=11[^0-9]/).test(String(sectorPreviewDraw))) bad.push('the zone names are not 11 px');   // retargeted 2026-10-08: since v18.69 a name starts at 11 px (fs=11) and shrinks to fit its zone
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      return bad.length?bad.join('; '):null; }},
   {v:'17.81',what:'the full controls legend (H twice) names a PlayStation pad in its own words: CIRCLE crouch, CROSS dodge roll',
@@ -15021,8 +15021,12 @@ window.__REGRESS=[
        if(o2!=='up:out'||rw2!=='roster'||erCalls.length||!G||G.over) bad.push('control: another seat leaving ended this raid ('+o2+', '+rw2+', '+js(erCalls)+', over '+(G?G.over:'no raid')+')');
        var o0=netOnMsg(H,js({t:'up',st:'out',how:'extract'}));   // the word exactly as netUpEnd on the host sends it: no seat named
        var sub=g('oc_sub')?String(g('oc_sub').textContent||''):'', ttl=g('oc_title')?String(g('oc_title').textContent||''):'', card=!!(g('outcome')&&g('outcome').classList.contains('on'));
-       if(o0!=='up:out'||js(erCalls)!==js(['abandon'])||!G||G.over!=='abandon') bad.push('the host out word did not end this raid as abandon through endRaid ('+o0+', '+js(erCalls)+', over '+(G?G.over:'no raid')+')');
-       if(!card||ttl!=='ABANDONED'||sub.indexOf('HOST')<0||sub.indexOf('ABANDON')<0) bad.push('the run card does not say the host left (card '+card+', title '+ttl+', line: '+sub+')');
+       // Retargeted 2026-10-08: his ruling of 2026-10-02 (v17.69) replaced this one. The remaining player picks up the raid, so on a
+       // build with that rule (netHostGone lets go of the shared seed) the out word must leave this raid running, not end it.
+       var _pickUp=(typeof netHostGone==='function'&&String(netHostGone).indexOf('NET.upSeed=0')>=0);
+       if(_pickUp){ if(o0!=='up:out'||erCalls.length||!G||G.over) bad.push('the host out word ended this raid, where the remaining player picks it up ('+o0+', '+js(erCalls)+', over '+(G?G.over:'no raid')+')'); }
+       else if(o0!=='up:out'||js(erCalls)!==js(['abandon'])||!G||G.over!=='abandon') bad.push('the host out word did not end this raid as abandon through endRaid ('+o0+', '+js(erCalls)+', over '+(G?G.over:'no raid')+')');
+       if(!_pickUp&&(!card||ttl!=='ABANDONED'||sub.indexOf('HOST')<0||sub.indexOf('ABANDON')<0)) bad.push('the run card does not say the host left (card '+card+', title '+ttl+', line: '+sub+')');
        if(!(/host/i).test(NET.status||'')) bad.push('the PARTY window status does not say the host left: '+NET.status);
        unspy();
        down();
@@ -15033,8 +15037,9 @@ window.__REGRESS=[
        spy(); erCalls.length=0; if(G) G.tel.shots=1;
        netDrop(H,'closed');
        sub=g('oc_sub')?String(g('oc_sub').textContent||''):'';
-       if(js(erCalls)!==js(['abandon'])||!G||G.over!=='abandon') bad.push('the lost link to the host did not end this raid as abandon through endRaid ('+js(erCalls)+', over '+(G?G.over:'no raid')+')');
-       if(sub.indexOf('HOST')<0||sub.indexOf('ABANDON')<0) bad.push('after the lost link the run card does not say the host was lost: '+sub);
+       if(_pickUp){ if(erCalls.length||!G||G.over) bad.push('the lost link to the host ended this raid, where the remaining player picks it up ('+js(erCalls)+', over '+(G?G.over:'no raid')+')'); }
+       else if(js(erCalls)!==js(['abandon'])||!G||G.over!=='abandon') bad.push('the lost link to the host did not end this raid as abandon through endRaid ('+js(erCalls)+', over '+(G?G.over:'no raid')+')');
+       if(!_pickUp&&(sub.indexOf('HOST')<0||sub.indexOf('ABANDON')<0)) bad.push('after the lost link the run card does not say the host was lost: '+sub);
        if(NET.on) bad.push('the party is still on after the link to the host was lost');
        unspy();
        down();
