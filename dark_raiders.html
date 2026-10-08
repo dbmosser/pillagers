@@ -1567,7 +1567,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.92';
+var VER='19.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29157,7 +29157,9 @@ function drawLegend(){
     // v11.39: above the vitals panel, not inside it. HUDBOX.body is set earlier
     // this frame and carries the panel drag, so the hint follows it.
     var _hy=(HUDBOX.body?HUDBOX.body.y-LH(6):H-14);
-    ctx.fillText('H  controls',14,_hy);
+    // v19.93, from the code review of 2026-10-08: no pad button sends H, so on a controller this hint (and H  hide below) named a key
+    // the pad player cannot press, as H  full list did before v19.68. On a pad they are left out.
+    if(!(PAD&&PAD.on)) ctx.fillText('H  controls',14,_hy);
     return;
   }
   // COMPACT, the default since v2.94. Two columns, twelve bindings, micro type,
@@ -29254,7 +29256,7 @@ var cy=top+LH(6);
   // and got a wall of prose instead. Both are still declared and still read
   // elsewhere; they are simply no longer in front of him when he presses H.
 ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.6)';
-  ctx.fillText('H  hide',x,top+boxH-LH(2));
+  if(!(PAD&&PAD.on)) ctx.fillText('H  hide',x,top+boxH-LH(2));
 }
 // Centred and large on purpose. This is the one moment in a raid where you
 // choose between money you can keep and money you might keep, and that deserves
@@ -33499,7 +33501,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.92: On a controller, a greyed-out button still looks greyed out when highlighted. Check 19.92 fails on v19.91',
+  now:'v19.93: On a controller the controls hints no longer name the H key. Check 19.93 fails on v19.92',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

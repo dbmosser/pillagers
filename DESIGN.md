@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.93 - THE COLLAPSED CONTROLS HINT NAMES NO KEYBOARD KEY ON A PAD
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: v19.68 left H  full list out on a controller, but a player with three or more raids starts every raid with the panel collapsed to H  controls, and the full list ends with H  hide; no pad button sends H. On a pad both are left out; with keyboard and mouse they are as before.
+
+MEASURED. Check 19.93 passes, and fails on v19.92.
 ## v19.92 - A DEAD CONTROL LOOKS DEAD UNDER THE PAD HIGHLIGHT
 
 Co-op hunt while he was away. Found by the code review of 2026-10-08: v19.69 drew whatever the controller highlights at full strength so faded empty slots stand out, but that also made a button that went dead under the highlight (for example BUILD A RACK right after building the last one you can afford) or a locked shop cell look live, and A on it did nothing. Those stay dimmed now; empty slots are still full strength.

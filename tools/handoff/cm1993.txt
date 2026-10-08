@@ -1,0 +1,7 @@
+v19.93: the collapsed controls hint names no keyboard key on a pad
+
+On a controller the controls hints no longer name the H key.
+
+Check 19.93. Fails on v19.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

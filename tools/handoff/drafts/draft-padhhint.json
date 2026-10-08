@@ -1,0 +1,16 @@
+{
+    "title":  "THE COLLAPSED CONTROLS HINT NAMES NO KEYBOARD KEY ON A PAD",
+    "why":  "Found by the code review of 2026-10-08: v19.68 left H  full list out on a controller, but a player with three or more raids starts every raid with the panel collapsed to H  controls, and the full list ends with H  hide; no pad button sends H. On a pad both are left out; with keyboard and mouse they are as before.",
+    "now":  "On a controller the controls hints no longer name the H key.",
+    "edits":  [
+                  {
+                      "anchor":  "    ctx.fillText(\u0027H  controls\u0027,14,_hy);",
+                      "replacement":  "    // v16.xx, from the code review of 2026-10-08: no pad button sends H, so on a controller this hint (and H  hide below) named a key\n    // the pad player cannot press, as H  full list did before v19.68. On a pad they are left out.\n    if(!(PAD\u0026\u0026PAD.on)) ctx.fillText(\u0027H  controls\u0027,14,_hy);"
+                  },
+                  {
+                      "anchor":  "  ctx.fillText(\u0027H  hide\u0027,x,top+boxH-LH(2));",
+                      "replacement":  "  if(!(PAD\u0026\u0026PAD.on)) ctx.fillText(\u0027H  hide\u0027,x,top+boxH-LH(2));"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the collapsed controls hint names no keyboard key on a pad: with the pad on, H controls and H hide are not drawn, and with it off they are\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     if(typeof drawLegend!==\u0027function\u0027||typeof PAD===\u0027undefined\u0027) return \u0027SKIP: no legend or pad here\u0027;\n     var bad=[], g, oFT=ctx.fillText, on0=PAD.on, seen, h0=P.hud?JSON.parse(JSON.stringify(P.hud)):undefined;\n     function run(pad,lo){ seen={}; PAD.on=pad; g.legendOn=lo; ctx.save(); try{ drawLegend(); } finally { ctx.restore(); } return seen; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       g.bagOpen=false; g.mapOpen=false; if(P.hud\u0026\u0026P.hud.legend) P.hud.legend.c=0;\n       ctx.fillText=function(t){ var s=String(t); if(s===\u0027H  controls\u0027) seen.ctl=1; if(s===\u0027H  hide\u0027) seen.hide=1; return oFT.apply(this,arguments); };\n       if(run(true,0).ctl) bad.push(\u0027on a pad the collapsed panel says H  controls\u0027);\n       if(run(true,2).hide) bad.push(\u0027on a pad the full list says H  hide\u0027);\n       if(!run(false,0).ctl) bad.push(\u0027control: with keyboard and mouse the collapsed panel does not say H  controls\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ PAD.on=on0; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; if(h0===undefined) delete P.hud; else P.hud=h0; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
