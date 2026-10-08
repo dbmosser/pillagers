@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.55 - THE BOSS BAR STAYS IN SIGHT
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The Overseer's health bar sat at the same height as the message line at the top of the screen, and the message is painted after it, so every pickup, kill or warning hid the boss name and bar for three seconds, at 1080p and at 4K. In two-player play on one PC the CONTROLLER PAUSED line and a trade offer also printed on top of each other. The top of the screen now stacks them: the message, then the boss bar, then the trade offer, then the controller line, each under the one above. With no boss and no offer nothing moves.
+
+MEASURED. Check 20.55 passes, and fails on v20.54.
 ## v20.54 - A RESTORE CODE WAITS FOR THE UNDERCROFT
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Settings opens in a raid, and the buttons there that would drop you out of a raid are greyed out, but the restore code buttons were not. Pasting a code in a raid replaced your save and reloaded the game, which threw the raid away, and the reload then handed the restored character any armoury guns carried up in that raid and billed him for a hire who died up there. In a raid READ CODE and REPLACE now say they work once you are back in the Undercroft, and a restored character never picks up the replaced one's open raid.

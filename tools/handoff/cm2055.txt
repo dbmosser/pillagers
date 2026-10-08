@@ -1,0 +1,7 @@
+v20.55: the boss bar stays in sight
+
+Messages no longer cover the health bar of THE OVERSEER, and the trade offer and controller lines no longer overlap.
+
+Check 20.55. Fails on v20.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -597,3 +597,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-08 19:35 H19 = H23 (fixed in v20.34, raidSpliced too); H41 = H26; H36 = H32. Burst 2: 6 drafting agents on 28 lows
 2026-10-08 19:44 agent drafts shipped: H2 v20.42 peddlerstall, H34 v20.43 debtload, H43 v20.44 adstog, H50 v20.45 sndpan, H28 v20.46 rewardgun, H18 v20.47 sellcarried, H58 v20.48 choircache; v20.49 card restamp + co-op line fits (card stamp gate stopped the loop at 0.16)
   RULE: a fast batch (~1 build/min) outruns the card: refresh it every 13 builds or the recent-80 card check stops the chain
+2026-10-08 19:50 HIS RESERVE: keep 20% weekly free for his Friday work. Weekly 44% now; my ceiling 80% at Sun 01:00 = 0.68%/h; light Fri 08:00-18:00

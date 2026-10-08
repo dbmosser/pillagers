@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.54';
+var VER='20.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26654,8 +26654,16 @@ function extractNowLine(letter,secs){
 // message feed and faded, so a player on a controller who missed it never knew an item was waiting. While an offer to this
 // player is open, a line under the boss bar names who offers what, the keys that take it and the seconds left; while this
 // player's own offer is open, it says who it waits on. Drawing only.
+// v20.55, from the whole-game bug hunt of 2026-10-08 (H38): THE TOP CENTRE STACKS, ONE BAND EACH: THE MESSAGE, THE BOSS BAR, THE
+// OFFER LINE, THE CONTROLLER WORD. The boss bar sat at the height of the message plate, which is painted after it, so every
+// message (a pickup, a kill, a warning) covered THE OVERSEER's name and bar for three seconds; and the CONTROLLER PAUSED word
+// and this offer line shared one band and printed on top of each other. Each now starts below the one above it and notes its
+// own bottom edge, in screen pixels, for the next (HUDBOSSB, HUDGIFTB; 0 when it was not drawn). With no boss bar and no
+// offer up, nothing moves.
+var HUDBOSSB=0, HUDGIFTB=0;
 function drawGiftLine(){
   var gi, go, t, s=null, it, w, y;
+  HUDGIFTB=0;
   if(typeof G==='undefined'||!G||G.over||!G.player) return null;
   gi=G.giftIn; go=G.giftOut;
   // v18.23, FROM THE TRADE AUDIT (2026-10-03): A TRADE THAT ENDS SAYS SO. An offer that ran out, on either side, simply vanished.
@@ -26665,11 +26673,13 @@ function drawGiftLine(){
   else if(go&&(t=GIFT_T-((G.t||0)-go.t))>0){ it=ITEMS[go.k]; s='Offered '+(it?it.name:go.k)+' to '+(netSeatName(go.to)||'your teammate')+'. Waiting for them to take it.  '+Math.ceil(t)+'s'; }
   if(!s) return null;
   y=Math.round(LH(132)*hudRes());   // v18.49: below the boss bar and above the message plate (was LH(104), on the toast)
+  if(HUDBOSSB>0) y=Math.max(y,HUDBOSSB+LH(4)+LH(15));   // v20.55 (H38): its plate starts under the boss bar when the bar is up
   ctx.save(); ctx.font=FS(TYPE.label); ctx.textAlign='center';
   w=ctx.measureText(s).width;
   ctx.fillStyle='rgba(6,9,13,.78)'; ctx.fillRect(W/2-w/2-12,y-LH(15),w+24,LH(22));
   ctx.fillStyle='#ffc04a'; ctx.fillText(s,W/2,y);
   ctx.restore();
+  HUDGIFTB=y+LH(7);   // v20.55 (H38): the bottom of this plate, for the controller word
   return s;
 }// v17.45, his pick 21: the boss bar, top centre, while THE OVERSEER is alive and within 900 of this player.
 // v18.75, HIS NOTE (2026-10-07): "need to be a bar for using the bandage/med pack, like how the bar to use armor works". Both
@@ -26899,6 +26909,7 @@ function drawStatusIcons(){
 var CONDWRAP={}, CONDWRAPN=0;   // v19.82: the CONDITIONS box's wrapped lines, by font, width and text (see wrap() below)
 function drawBossBar(){
   var e=null, p=G&&G.player, i, w, x, y, f;
+  HUDBOSSB=0;   // v20.55 (H38): nothing drawn yet this frame
   if(!G||G.over||!p||!G.ents) return;
   if(G.bossRef&&G.ents.indexOf(G.bossRef)>=0) e=G.bossRef;
   else for(i=0;i<G.ents.length;i++) if(G.ents[i]&&G.ents[i].name===BOSS_NAME){ e=G.ents[i]; break; }
@@ -26910,11 +26921,13 @@ function drawBossBar(){
   if(!e.barSeen){ var _bsv=false; try{ _bsv=canSee(p.x,p.y,p.face,e.x,e.y,G.vseg); }catch(_bs){ _bsv=false; } if(!_bsv) return; e.barSeen=1; }
   f=Math.max(0,Math.min(1,e.hp/(e.maxhp||e.hp)));
   w=Math.min(520,W*0.4); x=W/2-w/2; y=Math.round(LH(108)*hudRes());   // v18.49: below the clock, the compass and the extract arrow, scaled with them (was LH(64), inside the stack)
+  y=Math.round((LH(96)+LH(17))*(HUDZ.msg||1)*hudRes()*hudUserZ('msg'))+LH(4)+LH(16);   // v20.55 (H38): the plate starts under the message plate, at every screen size and message size
   ctx.save();
   ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(x-4,y-LH(16),w+8,LH(16)+10);
   ctx.fillStyle='#3a0d0d'; ctx.fillRect(x,y,w,6);
   ctx.fillStyle='#ff4a3a'; ctx.fillRect(x,y,w*f,6);
   ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#ffc04a'; ctx.fillText(e.name,W/2,y-LH(4));
+  HUDBOSSB=y+10;   // v20.55 (H38): the bottom of the boss plate, for the offer line and the controller word
   ctx.restore();
 }function drawHUD(){
   var p=G.player,T=G.tel,i;
@@ -33777,7 +33790,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.54: A restore code can no longer end a raid, and a restored character no longer takes on the guns or hire bill of the old one. Check 20.54 fails on v20.53',
+  now:'v20.55: Messages no longer cover the health bar of THE OVERSEER, and the trade offer and controller lines no longer overlap. Check 20.55 fails on v20.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -38522,8 +38535,11 @@ function netPadHud(){
     ctx.save();
     hudZoomIn('msg',W/2,0);
     ctx.font=FS(TYPE.label); ctx.textAlign='center'; w=ctx.measureText(t).width;
-    ctx.fillStyle='rgba(6,9,13,.62)'; ctx.fillRect(W/2-w/2-LH(8),LH(120),w+LH(16),LH(17));
-    ctx.fillStyle='#ffc04a'; ctx.fillText(t,W/2,LH(133));
+    // v20.55 (H38): and under the boss bar and the offer line when they are up. Their bottoms are screen pixels and this plate
+    // is drawn under the message scale, so the gap is divided by that scale. With neither up it stays at LH(120).
+    var _pz=(HUDZ.msg||1)*hudRes()*hudUserZ('msg'), _py=Math.max(LH(120),Math.ceil((Math.max(HUDBOSSB,HUDGIFTB)+LH(4))/_pz));
+    ctx.fillStyle='rgba(6,9,13,.62)'; ctx.fillRect(W/2-w/2-LH(8),_py,w+LH(16),LH(17));
+    ctx.fillStyle='#ffc04a'; ctx.fillText(t,W/2,_py+LH(133)-LH(120));
     ctx.restore();
   }catch(_e){ try{ ctx.restore(); }catch(_e2){} }
   return t;
