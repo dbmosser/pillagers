@@ -1,0 +1,7 @@
+v20.39: the hot ground is shared
+
+In co-op, both players see the hot ground in the same place, and both get its extra loot.
+
+Check 20.39. Fails on v20.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.39 - THE HOT GROUND IS SHARED
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op each window moved its own hot ground on its own dice, so after the first move player 1 and player 2 saw it in different places, and a box player 2 emptied on it never paid the two bonus items, because only the host's own open rolled them. The host now owns the hot ground: the other window shows it where the host has it and is told when it moves, and a box either player empties on it pays the bonus.
+
+MEASURED. Check 20.39 passes, and fails on v20.38.
 ## v20.38 - THE CRIER MARKS THE PLAYER IT SAW
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op a Crier that spotted player 2 told the host "A crier has you" and, when it fired, flashed MARKED on the host, who was never seen. Player 2, the one actually marked, got no line, no CRIER countdown and no banner, so the counterplay (kill it or move before it fires) was invisible to him. THE OVERSEER noticing player 2 was also said to the host. Now each warning goes to the player it is about, and every window draws the Crier countdown.

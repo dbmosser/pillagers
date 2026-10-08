@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.38';
+var VER='20.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33211,7 +33211,7 @@ function loop(ts){
       if(G&&G.netRevEat){ G.netRevEat=0; keys['KeyE']=true; }   // v16.11: E given back after the step a pick-up took it (netRevHold)
       if(!G.over){ updateEnts(dt); }
       if(!G.over){ updateBullets(dt); updateThrowables(dt); }
-      try{ tickHot(dt); }catch(e){}
+      if(!netEntsPeer()) try{ tickHot(dt); }catch(e){}   // v20.39 (H59): a linked window keeps the hot ground where the host has it (netWorldTake), as it keeps his weather
       if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
       if(G.msgT>0) G.msgT-=dt;
       // v13.32: one waiting line, shown when the current message runs out rather than
@@ -33688,7 +33688,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.38: In co-op, a Crier that spots player 2 warns player 2, shows him its countdown, and marks him, not the host. Check 20.38 fails on v20.37',
+  now:'v20.39: In co-op, both players see the hot ground in the same place, and both get its extra loot. Check 20.39 fails on v20.38',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40171,6 +40171,7 @@ function netWorldSend(){
   m.kb=kbOwn()?1:0;   // v17.71: and whether player 2 comes back after death, as the host has it
   m.af=afOwn()?1:0;   // v16.83, his order: auto-fire for player 2 as the host has it, live
   m.sh=CFG.superhot?1:0;   // v16.74, his order: Superhot as the host has it, for the whole party (netShTake on a linked window)
+  if(G.hotZone) m.hz=[Math.round(G.hotZone.x),Math.round(G.hotZone.y),G.hotZone.moves|0];   // v20.39 (H59): the hot ground, for the party
   for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&netSendFast(NET.peers[i],m)) n++;
   return n;
 }
@@ -40203,6 +40204,14 @@ function netWorldTake(peer,m){
     (G.netBolts=G.netBolts||{})[a[0]]=1;
     S={x:+a[1]||0,y:+a[2]||0,t:Math.max(0.05,+a[3]||0.05),hit:0,rm:1,rid:a[0]}; G.strikes.push(S);
     if(!G.sim) sfx('charge',S.x,S.y);
+  }
+  // v20.39, from the whole-game bug hunt of 2026-10-08 (H59): THE HOT GROUND IS THE HOST'S. Each window moved its own disc on its
+  // own dice, so after the first move the two maps showed it in different places. It is where the host has it, and a move is
+  // said here when the host makes it.
+  if(m.hz&&typeof m.hz.length==='number'&&G.hotZone&&isFinite(+m.hz[0])&&isFinite(+m.hz[1])){
+    a=G.hotZone; k=m.hz[2]|0;
+    a.x=clamp(+m.hz[0],a.r,WORLD_W-a.r); a.y=clamp(+m.hz[1],a.r,WORLD_H-a.r);
+    if(k>(a.moves|0)){ a.moves=k; a.at=0; if(!G.sim) say('The hot ground has moved. Check your map.'); }
   }
   return 'wd';
 }
@@ -41268,8 +41277,19 @@ function netGunsGone(ct,items){
 }
 // THE HOST, every frame: its own search is told held and freed for everyone, and each search one of the party holds runs
 // here on his slow factor, with the staged pulls the play path makes, each item sent to his window as it comes out.
+// v20.39, from the whole-game bug hunt of 2026-10-08 (H59): AND A BOX ONE OF THE PARTY EMPTIES ON THE HOT GROUND PAYS ITS BONUS. The
+// two extra items an open on the hot ground adds were rolled only for the host's own open, so the disc on player 2's map never
+// paid him. The host rolls them here, for the box the party member searched, and they come out with the last of it.
+function netHotBonus(ct){
+  var out=[], i, k, H=G.hotZone;
+  if(!H||!ct||ct.cache||ct.dropped||ct.hotPaid) return out;
+  if(Math.hypot(ct.x-H.x,ct.y-H.y)>H.r) return out;
+  for(i=0;i<2;i++){ k=rollLoot(LOOT.safe); if(k) out.push(k); }
+  ct.hotPaid=1;
+  return out;
+}
 function netSrchTick(dt){
-  var s, r, ct, q, tot, due, k, items, cid, n=0;
+  var s, r, ct, q, tot, due, k, items, cid, hot, n=0;
   if(!netContHost()) return 0;
   if(!isFinite(dt)||dt<0) dt=0;
   cid=(G.searching&&typeof G.searching.cid==='number')?G.searching.cid:-1;
@@ -41295,9 +41315,10 @@ function netSrchTick(dt){
     if(ct.noiseAcc>0.5){ ct.noiseAcc=0; ping(ct.x,ct.y,ct.strong?560:180,false,false,'player','move'); if(ct.strong&&!G.sim) sfx('alarm',ct.x,ct.y); }
     if(ct.prog>=(ct.time||1)){
       items=items.concat(ct.loot); ct.pulled=(ct.pulled||0)+ct.loot.length; ct.loot=[]; ct.best='common';
+      hot=netHotBonus(ct); if(hot.length) items=items.concat(hot);   // v20.39 (H59)
       netContOpenHost(ct,+s);
       netGunsGone(ct,items);   // v17.06, co-op hunt 2026-09-28: a host armoury gun handed over is his no more
-      netSend(q,{t:'loot',cid:r.cid,items:items,done:1});
+      netSend(q,{t:'loot',cid:r.cid,items:items,done:1,hot:hot.length?1:0});
       delete NET.holds[s];
     } else if(items.length){ netGunsGone(ct,items); netSend(q,{t:'loot',cid:r.cid,items:items}); }
     n++;
@@ -41396,6 +41417,7 @@ function netLootTake(peer,m){
       if(T){ T.containers++; if(T.firstLoot===null) T.firstLoot=G.t; if(ct.cache) T.cachesOpened=(T.cachesOpened||0)+1; if(ct.strong) T.strongbox=(T.strongbox||0)+1; }
       try{ contractOpen(ct); }catch(_co){}
     }
+    if(m.hot===1){ if(T) T.hotOpened=(T.hotOpened||0)+1; if(!G.sim) sayWhenFree('Hot ground. Extra loot in here.'); }   // v20.39 (H59): the bonus the host rolled for this search
     if(ct) netContOpen(ct,NET.seat);
     if(NET.srch&&NET.srch.cid===(m.cid|0)) NET.srch=null;
     if(ct&&G.searching===ct){ G.searching=null; G.searchT=0; }
