@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.83 - A WRAPPED CONTRACT HANGS ITS SECOND LINE
+
+Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-08 after v19.82: the second line of a wrapped contract in the CONDITIONS box started at the same margin as the next contract, so 1x Data Core 0/1 read as a contract of its own. Second lines now hang a little to the right, and the wrap leaves them the room so they stay inside the box.
+
+MEASURED. Check 19.83 passes, and fails on v19.82.
 ## v19.82 - LONG CONTRACTS WRAP EVENLY
 
 Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-08: in the CONDITIONS box a contract too long for one line left a single word and its count on the second line (Extract carrying 1x Data, then Core 0/1), splitting the item name. Lines are now shared out evenly (Extract carrying 1x, then Data Core 0/1), with the same number of lines, so the box keeps its size.

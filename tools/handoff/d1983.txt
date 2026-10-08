@@ -1,0 +1,5 @@
+## v19.83 - A WRAPPED CONTRACT HANGS ITS SECOND LINE
+
+Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-08 after v19.82: the second line of a wrapped contract in the CONDITIONS box started at the same margin as the next contract, so 1x Data Core 0/1 read as a contract of its own. Second lines now hang a little to the right, and the wrap leaves them the room so they stay inside the box.
+
+MEASURED. Check 19.83 passes, and fails on v19.82.

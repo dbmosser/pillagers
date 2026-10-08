@@ -1,0 +1,7 @@
+v19.83: a wrapped contract hangs its second line
+
+In the CONDITIONS box a contract that runs to two lines is easy to tell from the next one.
+
+Check 19.83. Fails on v19.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

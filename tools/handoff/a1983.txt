@@ -1,0 +1,1 @@
+| A WRAPPED CONTRACT HANGS ITS SECOND LINE | v19.83 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 19.83 passes, fails on v19.82 |
