@@ -1,0 +1,7 @@
+v20.22: the racks page is readable
+
+The Mainframe RACKS page is easier to read.
+
+Check 20.22. Fails on v20.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

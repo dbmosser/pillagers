@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.22 - THE RACKS PAGE IS READABLE
+
+Co-op hunt while he was away. Seen on the 4K Mainframe screenshots of 2026-10-08: on the RACKS page the rack count, what a rack costs, what an array is, what a Data Core does and the friend import line were all 11 pixels, the smallest print left in the Mainframe. They are 14 now.
+
+MEASURED. Check 20.22 passes, and fails on v20.21.
 ## v20.21 - THE DEATH CARD SHOWS WHAT YOU LOST BIGGER
 
 Co-op hunt while he was away. Seen on the 4K death card screenshot of 2026-10-08: the picture beside each item you lost was 24 pixels, a speck on a TV beside the 52 pixel pictures of what you bring home on an extraction (v19.99). They are 32 now, still in line with the names.

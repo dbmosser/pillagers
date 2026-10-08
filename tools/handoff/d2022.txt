@@ -1,0 +1,5 @@
+## v20.22 - THE RACKS PAGE IS READABLE
+
+Co-op hunt while he was away. Seen on the 4K Mainframe screenshots of 2026-10-08: on the RACKS page the rack count, what a rack costs, what an array is, what a Data Core does and the friend import line were all 11 pixels, the smallest print left in the Mainframe. They are 14 now.
+
+MEASURED. Check 20.22 passes, and fails on v20.21.

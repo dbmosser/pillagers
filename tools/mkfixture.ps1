@@ -5722,6 +5722,11 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.22',what:'the RACKS page is readable: its status line, the hints under its buttons and the name box are 14px',
+   run:function(){
+     var bad=[], ids=['mfstatus','mfhint','mfarrayhint','mfslothint','mfghosthint','mfghostname'], i, el, f;
+     for(i=0;i<ids.length;i++){ el=document.getElementById(ids[i]); if(!el) return 'SKIP: no RACKS page here'; f=parseFloat(getComputedStyle(el).fontSize); if(!(f>=13.9)) bad.push(ids[i]+' is '+f+'px'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.21',what:'the death card shows what you lost at a readable size: each lost item picture is at least 30 menu pixels',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';

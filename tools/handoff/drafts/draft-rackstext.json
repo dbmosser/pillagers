@@ -1,0 +1,32 @@
+{
+    "title":  "THE RACKS PAGE IS READABLE",
+    "why":  "Seen on the 4K Mainframe screenshots of 2026-10-08: on the RACKS page the rack count, what a rack costs, what an array is, what a Data Core does and the friend import line were all 11 pixels, the smallest print left in the Mainframe. They are 14 now.",
+    "now":  "The Mainframe RACKS page is easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "\u003cdiv id=\"mfstatus\" style=\"padding:6px 12px;font-size:11px\"\u003e\u003c/div\u003e",
+                      "replacement":  "\u003c!-- v16.xx, seen on the 4K Mainframe screenshots (2026-10-08): the RACKS page was 11px throughout; 14 now --\u003e\u003cdiv id=\"mfstatus\" style=\"padding:6px 12px;font-size:14px\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u003cdiv id=\"mfhint\" class=\"hint\" style=\"margin-top:5px;font-size:11px;line-height:1.4\"\u003e\u003c/div\u003e",
+                      "replacement":  "\u003cdiv id=\"mfhint\" class=\"hint\" style=\"margin-top:5px;font-size:14px;line-height:1.4\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u003cdiv id=\"mfarrayhint\" class=\"hint\" style=\"margin-top:5px;font-size:11px;line-height:1.4\"\u003e\u003c/div\u003e",
+                      "replacement":  "\u003cdiv id=\"mfarrayhint\" class=\"hint\" style=\"margin-top:5px;font-size:14px;line-height:1.4\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u003cdiv id=\"mfslothint\" class=\"hint\" style=\"margin-top:5px;font-size:11px;line-height:1.4\"\u003e\u003c/div\u003e",
+                      "replacement":  "\u003cdiv id=\"mfslothint\" class=\"hint\" style=\"margin-top:5px;font-size:14px;line-height:1.4\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u003cdiv id=\"mfghosthint\" class=\"hint\" style=\"margin-top:5px;font-size:11px;line-height:1.4\"\u003e\u003c/div\u003e",
+                      "replacement":  "\u003cdiv id=\"mfghosthint\" class=\"hint\" style=\"margin-top:5px;font-size:14px;line-height:1.4\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u003cinput id=\"mfghostname\" placeholder=\"friend\u0026#39;s name\" maxlength=\"18\"\n        style=\"flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:\u0027Rubik\u0027,system-ui,sans-serif;font-size:12px;padding:6px\"\u003e",
+                      "replacement":  "\u003cinput id=\"mfghostname\" placeholder=\"friend\u0026#39;s name\" maxlength=\"18\"\n        style=\"flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:\u0027Rubik\u0027,system-ui,sans-serif;font-size:14px;padding:7px\"\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the RACKS page is readable: its status line, the hints under its buttons and the name box are 14px\u0027,\n   run:function(){\n     var bad=[], ids=[\u0027mfstatus\u0027,\u0027mfhint\u0027,\u0027mfarrayhint\u0027,\u0027mfslothint\u0027,\u0027mfghosthint\u0027,\u0027mfghostname\u0027], i, el, f;\n     for(i=0;i\u003cids.length;i++){ el=document.getElementById(ids[i]); if(!el) return \u0027SKIP: no RACKS page here\u0027; f=parseFloat(getComputedStyle(el).fontSize); if(!(f\u003e=13.9)) bad.push(ids[i]+\u0027 is \u0027+f+\u0027px\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
