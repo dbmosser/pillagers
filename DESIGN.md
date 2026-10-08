@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.48 - THE KILL FEED STARTS UNDER CONDITIONS
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.07: the co-op kill feed started at 46 percent of the screen height, which clears a normal CONDITIONS panel, but a panel grown with its grip, dragged down or long with contracts reached past that, and each kill printed over its rows for six seconds. The feed now starts under the panel whenever the panel is in its column.
+
+MEASURED. Check 19.48 passes, and fails on v19.47.
 ## v19.47 - THE TEAMMATE ROWS STAY ON THE LEFT
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.07: the co-op teammate rows started under the pillager board wherever it had been dragged, so a board moved to the right or low on the screen pushed your teammate health and DOWN countdown under the controls list or off the bottom. They follow the board only when it sits over their own left column, and fall back to their old place when they would not fit.

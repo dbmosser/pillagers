@@ -1,0 +1,7 @@
+v19.48: the kill feed starts under conditions
+
+In co-op the kill feed never prints over the CONDITIONS panel.
+
+Check 19.48. Fails on v19.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v19.48 - THE KILL FEED STARTS UNDER CONDITIONS
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.07: the co-op kill feed started at 46 percent of the screen height, which clears a normal CONDITIONS panel, but a panel grown with its grip, dragged down or long with contracts reached past that, and each kill printed over its rows for six seconds. The feed now starts under the panel whenever the panel is in its column.
+
+MEASURED. Check 19.48 passes, and fails on v19.47.
