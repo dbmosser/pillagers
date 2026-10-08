@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.08 - THE JIGGLE FOLLOWS THE BODY
+
+Co-op hunt while he was away. Measured walking in a raid after v20.02: the chest sat on its limit at every step, which reads as a glitch. Two causes: the spring rang at the same pace as the footsteps, so each step pumped it higher, and it was fed the walk across the map as well as the body bob. It is now a quicker spring, clear of the walking and sprinting pace, damped so each wobble is gone before the next step, fed only the body rise and fall, and stepped in small slices so a slow frame cannot throw it.
+
+MEASURED. Check 20.08 passes, and fails on v20.07.
 ## v20.07 - THE WHAT IS NEW CARD NAMES THE BUILDS
 
 Co-op hunt while he was away. The card was stamped v19.91 and the stamp may not trail the build by more than 0.15. Its new second line names the body builds (v20.01 to v20.06: Lean, Broad and Curved, the jiggle, the teammate seeing it, the FASHION tiles and outfits fitting); the stash at 6 across (v19.98) and the rest are in the change list.

@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.07';
+var VER='20.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22739,11 +22739,18 @@ function bodyJiggle(o,ty,now){
   dt=(now-J.t)/1000;
   if(!J.t||dt>0.25||!isFinite(ty)){ J.t=now; J.py=ty; J.pv=0; J.c=J.h=J.vc=J.vh=0; return J; }
   if(dt<0.004) return J;
+  // v20.08, measured walking in a raid (2026-10-08): the first spring rang at 2.85 a second, and a walk lands a foot 2.9 times a
+  // second (a bob of 9 a second), so every step pumped it until it sat on its stop. It is a quicker spring now, about 6 a second,
+  // clear of the walk (2.9) and the sprint (4.8), damped so each wobble is gone before the next step, and stepped in slices of
+  // 16 ms so a slow frame cannot throw it. It is fed only the body's own rise and fall (see drawOp), never the walk across the map.
   J.t=now; v=(ty-J.py)/dt; a=v-J.pv; J.py=ty; J.pv=v;
   if(a>400) a=400; else if(a<-400) a=-400;
-  J.vc-=a*0.40; J.vh-=a*0.26;
-  J.vc+=(-320*J.c-9*J.vc)*dt; J.c+=J.vc*dt;
-  J.vh+=(-240*J.h-9*J.vh)*dt; J.h+=J.vh*dt;
+  J.vc-=a*0.85; J.vh-=a*0.50;
+  var _n=Math.max(1,Math.ceil(dt/0.016)), _h=dt/_n, _i;
+  for(_i=0;_i<_n;_i++){
+    J.vc+=(-1400*J.c-18*J.vc)*_h; J.c+=J.vc*_h;
+    J.vh+=(-1000*J.h-16*J.vh)*_h; J.h+=J.vh*_h;
+  }
   if(J.c>1.5){ J.c=1.5; J.vc=0; } else if(J.c<-1.5){ J.c=-1.5; J.vc=0; }
   if(J.h>0.9){ J.h=0.9; J.vh=0; } else if(J.h<-0.9){ J.h=-0.9; J.vh=0; }
   return J;
@@ -22826,7 +22833,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // free, and computing cc first keeps the invulnerable override working across
   // every band instead of leaving a seam.
   var OUTF=outfitOf(st);   // v10.54: an outfit overrules the racks below
-  var _BID=st.hero?cosWorn('build'):(st.build||'lean'), _BLD=(_BID==='broad'||_BID==='curved')?_BID:null, _JG=(_BLD==='curved')?bodyJiggle(st.own,ty):JIG0;   // v20.01: the body's build
+  var _BID=st.hero?cosWorn('build'):(st.build||'lean'), _BLD=(_BID==='broad'||_BID==='curved')?_BID:null, _JG=(_BLD==='curved')?bodyJiggle(st.own,ty-y):JIG0;   // v20.01: the body's build
   var cc=iv>0?'#2a6a5e':(OUTF?OUTF.coat:(st.hero?((FITCOL[cosWorn('fit')]||FITCOL.slate)[1]):coat)),cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);
   // Each leg gets its own ink plate, and the boots keep a real gap between them.
   // Drawn as one flush block they read as a single slab, which is the one place
@@ -33593,7 +33600,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.07: The what is new card names the body builds. Check 20.07 fails on v20.06',
+  now:'v20.08: The Curved jiggle bounces with each step and settles, instead of shaking. Check 20.08 fails on v20.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

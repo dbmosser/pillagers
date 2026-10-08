@@ -5722,6 +5722,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.08',what:'the jiggle follows the body, not the map: walking it swings the chest without sitting on its stop, and moving across the map with no bob does not shake it',
+   run:function(){
+     if(typeof bodyJiggle!=='function'||typeof drawOp!=='function') return 'SKIP: no jiggle spring here';
+     var bad=[], o={}, t=1000, i, J, ph, mx, hit, w0=wc, cv=document.createElement('canvas'), x2, own={wep:null}, k=(typeof COSKEY!=='undefined'&&COSKEY.build)||'cosBuild', b0=P[k];
+     function walk(rate){ o={}; t=1000; ph=0; mx=0; hit=0; bodyJiggle(o,0,t); for(i=0;i<240;i++){ t+=16.7; ph+=rate*0.0167; J=bodyJiggle(o,-Math.abs(Math.sin(ph))*1.5,t); if(i>60){ mx=Math.max(mx,Math.abs(J.c)); if(Math.abs(J.c)>=1.199) hit++; } } return {mx:mx,hit:hit}; }
+     var w=walk(9), s=walk(15);
+     if(w.hit||s.hit) bad.push('the chest sat on its stop while walking ('+w.hit+') or sprinting ('+s.hit+')');
+     if(!(w.mx>0.25)) bad.push('the chest barely moves while walking ('+w.mx.toFixed(2)+')');
+     cv.width=60; cv.height=60; x2=cv.getContext('2d');
+     try{
+       P[k]='curved'; wc=x2;
+       for(i=0;i<8;i++){ if(own._jg) own._jg.t-=20; drawOp(0,300+i*40,0,0,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:own}); }
+       wc=w0;
+       if(!own._jg) bad.push('no spring state on the body');
+       else if(Math.abs(own._jg.c)>0.05) bad.push('moving across the map with no bob shook the chest ('+own._jg.c.toFixed(2)+')');
+     }catch(e){ wc=w0; bad.push('threw: '+(e&&e.message||e)); }
+     finally{ wc=w0; P[k]=b0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.07',what:'the what is new card is stamped within 0.15 of the build and leads with the build news',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof WN_SHOW==='undefined') return 'SKIP: this build has no what is new card';

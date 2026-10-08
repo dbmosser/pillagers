@@ -1,0 +1,7 @@
+v20.08: the jiggle follows the body
+
+The Curved jiggle bounces with each step and settles, instead of shaking.
+
+Check 20.08. Fails on v20.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
