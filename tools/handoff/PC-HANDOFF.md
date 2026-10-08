@@ -511,3 +511,5 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - v19.70 stashpadbar: padBodyCls() keeps body.padon in step with PAD.on (pollPad and the release path); CSS swaps #invkeybar for #invkeybarpad (D-PAD, A pick up/place, Y all actions, B back). body.padon is available for other DOM pad hints.
 - v19.71 pausepad: keysLegendHtml() returns the LEGEND_PAD layout when PAD.on; togglePauseBox(true) calls keysLegendApply() so the pause key line matches the device when the box opens.
 - v19.72 wnpad: the NEW IN card's last line reads walk to dismiss when PAD.on (no pad button closes it; walking does).
+- v19.73 trheading: body:has(.modal.on) #topright{ top:24px } - with a window open the corner readout is centred on the window h3 (it sat 18 css px above, on the frame line).
+- v19.74 trright: and right:33px, so it ends where the h3 underline ends (measured 33 css px at 1080p and 4K).
